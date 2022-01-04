@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/betagouv/datasubvention#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "node-xlsx": "^0.21.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.1",
