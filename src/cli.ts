@@ -1,4 +1,4 @@
-import {CliStaticInterface} from "./intefaces/Cli.interface";
+import {CliStaticInterface} from "./@types/Cli.interface";
 import OsirisCliController from "./osiris/interfaces/cli/osirisCli.contoller";
 
 const contollers: CliStaticInterface[] = [
@@ -13,6 +13,7 @@ if (!Controller) {
     throw new Error(`Controller ${args[0]} not found`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const instance = new Controller() as any;
 
 if (!instance[args[1]]) {
