@@ -2,9 +2,15 @@
     "env": {
         "node": true
     },
-    "extends": "airbnb-base",
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:import/recommended"
+    ],
     "rules": {
         "indent": ["error", 4]
-
     }
 }
