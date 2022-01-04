@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "cli": "ts-node src/cli.ts",
     "build": "tsc --project ./",
     "lint": "eslint . --ext .ts",
     "test": "jest",
