@@ -1,10 +1,9 @@
+import OsirisFolderEntity from "./entities/OsirisFoldersEntity";
+
 export class OsirisService {
-    public addFolder() {
-
-    }
-
-    public addAction() {
-
+    public addFolder(folder: OsirisFolderEntity) {
+        // Save folder in DB
+        console.log(folder);
     }
 }
 
