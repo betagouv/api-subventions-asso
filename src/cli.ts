@@ -1,6 +1,8 @@
 import {CliStaticInterface} from "./intefaces/Cli.interface";
+import OsirisCliController from "./osiris/interfaces/cli/osirisCli.contoller";
 
 const contollers: CliStaticInterface[] = [
+    OsirisCliController,
 ];
 
 const args = process.argv.slice(2);
