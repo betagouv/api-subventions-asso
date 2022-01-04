@@ -4,6 +4,8 @@ export class OsirisService {
     public addFolder(folder: OsirisFolderEntity) {
         // Save folder in DB
         console.log(folder);
+
+        return folder;
     }
 }
 

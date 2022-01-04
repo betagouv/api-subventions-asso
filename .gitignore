@@ -105,3 +105,5 @@ dist
 
 # TS build folder
 build/
+
+.~lock*

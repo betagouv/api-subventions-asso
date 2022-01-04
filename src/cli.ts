@@ -1,5 +1,5 @@
-import {CliStaticInterface} from "./@types/Cli.interface";
-import OsirisCliController from "./osiris/interfaces/cli/osirisCli.contoller";
+import { CliStaticInterface } from "./@types/Cli.interface";
+import OsirisCliController from "./osiris/interfaces/cli/osiris.cli.contoller";
 
 const contollers: CliStaticInterface[] = [
     OsirisCliController,
@@ -7,7 +7,7 @@ const contollers: CliStaticInterface[] = [
 
 const args = process.argv.slice(2);
 
-const Controller = contollers.find(controller => controller.cmdName  === args[0]);
+const Controller = contollers.find(controller => controller.cmdName === args[0]);
 
 if (!Controller) {
     throw new Error(`Controller ${args[0]} not found`);

@@ -22,8 +22,13 @@ export default class OsirisCliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const folders = OsirisParser.parseFolders(fileContent);
-
-        folders.forEach(osirisFolder => osirisService.addFolder(osirisFolder));
+        if (type === "folders") {
+            const folders = OsirisParser.parseFolders(fileContent);
+            folders.forEach(osirisFolder => osirisService.addFolder(osirisFolder));
+        } else if (type === "actions") {
+            console.warn("Please implement me !");
+        } else {
+            throw new Error(`The type ${type} is not taken into account`);
+        }
     }
 }
