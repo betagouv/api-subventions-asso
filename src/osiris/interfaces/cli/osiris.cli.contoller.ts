@@ -11,7 +11,7 @@ import osirisService from "../../osiris.service";
 export default class OsirisCliController {
     static cmdName = "osiris";
 
-    parse(type: string, file: string) {
+    public async parse(type: string, file: string) {
         if (typeof type !== "string" || typeof file !== "string" ) {
             throw new Error("Parse command neet type and file args");
         }
@@ -24,11 +24,24 @@ export default class OsirisCliController {
 
         if (type === "folders") {
             const folders = OsirisParser.parseFolders(fileContent);
-            folders.forEach(osirisFolder => osirisService.addFolder(osirisFolder));
+            return Promise.all(folders.map((osirisFolder) => osirisService.addFolder(osirisFolder))).then((results) => {
+                const created = results.filter(({state}) => state === "created");
+                console.info(`${created.length} folders created and ${results.length - created.length} folders updated`);
+            });
         } else if (type === "actions") {
             console.warn("Please implement me !");
         } else {
             throw new Error(`The type ${type} is not taken into account`);
+        }
+    }
+
+    async findAll(format? :string) {
+        const folders = await osirisService.findAll();
+
+        if (format === "json") {
+            console.info(JSON.stringify(folders));
+        } else {
+            console.info(folders);
         }
     }
 }
