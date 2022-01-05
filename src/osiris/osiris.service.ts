@@ -1,3 +1,4 @@
+import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisFolderEntity from "./entities/OsirisFoldersEntity";
 import osirisRepository from "./repository/osiris.repository";
 
@@ -17,6 +18,21 @@ export class OsirisService {
         };
     }
 
+    public async addAction(action: OsirisActionEntity): Promise<{state: string, result: OsirisActionEntity}> {
+        const existingAction = await osirisRepository.findActionByOsirisId(action.folder.osirisId);
+        if (existingAction) {
+            return {
+                state: "updated",
+                result: await osirisRepository.updateAction(action),
+            };
+        }
+
+        return {
+            state: "created",
+            result: await osirisRepository.addAction(action),
+        };
+    }
+
     public findAllFolders() {
         return osirisRepository.findAllFolders();
     }
@@ -27,6 +43,18 @@ export class OsirisService {
 
     public findFolderByRna(rna: string) {
         return osirisRepository.findFolderByRna(rna);
+    }
+
+    public findAllAction() {
+        return osirisRepository.findAllActions();
+    }
+
+    public findActionsBySiret(siret: string) {
+        return osirisRepository.findActionsBySiret(siret);
+    }
+
+    public findActionsByRna(rna: string) {
+        return osirisRepository.findActionsByRna(rna);
     }
 }
 
