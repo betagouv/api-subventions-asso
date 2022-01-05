@@ -14,7 +14,7 @@ export default class OsirisCliController {
 
     public async parse(type: string, file: string) {
         if (typeof type !== "string" || typeof file !== "string" ) {
-            throw new Error("Parse command neet type and file args");
+            throw new Error("Parse command need type and file args");
         }
 
         if (!fs.existsSync(file)) {
