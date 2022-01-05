@@ -2,7 +2,8 @@ import path from "path";
 import OsirisFolderEntity from "../../../../src/osiris/entities/OsirisFoldersEntity";
 
 jest.mock('../../../../src/osiris/osiris.parser', () => ({
-    parseFolders: jest.fn(() => [])
+    parseFolders: jest.fn(() => []),
+    parseActions: jest.fn(() => [])
 }));
 
 
@@ -55,16 +56,17 @@ describe("OsirisCliController", () => {
         it('should call osiris parser', async () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("actions", filePath);
-            expect(consoleWarn).toBeCalled();
+            expect(consoleWarn).not.toBeCalled();
+            expect(OsirisParser.parseActions).toHaveBeenCalled();
         });
 
-        // it('should throw error because no agrs', () => {
-        //     expect(controller.parse).toThrowError("Parse command neet type and file args");
-        // });
+        it('should throw error because no agrs', () => {
+            expect(controller.parse).rejects.toThrowError("Parse command need type and file args");
+        });
 
-        // it('should throw an error because the file does not exist', () => {
-        //     expect(() => controller.parse("folders", "fake/path")).toThrowError("File not found fake/path");
-        // });
+        it('should throw an error because the file does not exist', () => {
+            expect(() => controller.parse("actions", "fake/path")).rejects.toThrowError("File not found fake/path");
+        });
     });
 
     describe('parse cli unknown', () => {

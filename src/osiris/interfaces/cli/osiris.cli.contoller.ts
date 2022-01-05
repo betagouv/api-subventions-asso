@@ -6,6 +6,7 @@ import { CliStaticInterface} from "../../../@types/Cli.interface";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
 import OsirisFolderEntity from "../../entities/OsirisFoldersEntity";
+import OsirisActionEntity from "../../entities/OsirisActionEntity";
 
 
 @StaticImplements<CliStaticInterface>()
@@ -39,19 +40,42 @@ export default class OsirisCliController {
                 console.info(`${created.length} folders created and ${results.length - created.length} folders updated`);
             });
         } else if (type === "actions") {
-            console.warn("Please implement me !");
+            const actions = OsirisParser.parseActions(fileContent);
+            return actions.reduce((acc, osirisAction) => {
+                return acc.then(
+                    (data = []) => {
+                        return osirisService.addAction(osirisAction).then((result) => data.concat(result))
+                    }
+                );
+            }, Promise.resolve([]) as Promise<{
+                state: string;
+                result: OsirisActionEntity;
+            }[]>).then(results => {
+                const created = results.filter(({state}) => state === "created");
+                console.info(`${created.length} actions created and ${results.length - created.length} actions updated`);
+            });
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
     }
 
-    async findAll(format? :string) {
-        const folders = await osirisService.findAll();
+    async findAll(type:string, format? :string) {
+        if (typeof type !== "string") {
+            throw new Error("Parse command need type args");
+        }
+
+        let data: Array<OsirisActionEntity | OsirisFolderEntity> = [];
+
+        if (type === "folders") {
+            data = await osirisService.findAllFolders();
+        } else if (type === "actions") {
+            data = await osirisService.findAllFolders();
+        }
 
         if (format === "json") {
-            console.info(JSON.stringify(folders));
+            console.info(JSON.stringify(data));
         } else {
-            console.info(folders);
+            console.info(data);
         }
     }
 
