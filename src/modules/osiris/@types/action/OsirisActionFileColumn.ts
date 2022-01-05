@@ -4,7 +4,7 @@ export default interface OsirisActionFileColumn {
     readonly financingType: string;
     readonly subFinancingType: string;
     readonly state: string;
-    readonly caId: string;
+    readonly lcaId: string;
     readonly pluriannuality: string;
     readonly fiscalYearStart: number;
     readonly fiscalYearEnd: number;
@@ -20,7 +20,7 @@ export const OsirisActionFileColumnKeys = {
     financingType: 2,
     subFinancingType: 3,
     state: 4,
-    caId: 5,
+    lcaId: 5,
     pluriannuality: 6,
     fiscalYearStart: 7,
     fiscalYearEnd: 8,

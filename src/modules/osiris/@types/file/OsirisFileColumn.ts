@@ -3,7 +3,7 @@ export default interface OsirisFileColumn {
     readonly financingType: string;
     readonly subFinancingType: string;
     readonly osirisId: string;
-    readonly caId: string;
+    readonly lcaId: string;
     readonly ejId?: string;
     readonly state: string;
     readonly pluriannuality: string;
@@ -18,7 +18,7 @@ export const OsirisFileColumnKeys = {
     financingType: 2,
     subFinancingType: 3,
     osirisId: 4,
-    caId: 5,
+    lcaId: 5,
     ejId: 6,
     state: 7,
     pluriannuality: 8,
