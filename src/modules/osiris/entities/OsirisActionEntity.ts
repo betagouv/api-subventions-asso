@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import OsirisActionFolderColumn from "../@types/action/OsirisActionFolderColumn";
+import OsirisActionFileColumn from "../@types/action/OsirisActionFileColumn";
 import OsirisActionBeneficiaryAssociationColumn from "../@types/action/OsirisActionBeneficiaryAssociationColumn";
 import OsirisActionSpecificationsColumn from "../@types/action/OsirisActionSpecificationsColumn";
 import OsirisActionAffiliatingFederationColumn from "../@types/action/OsirisActionAffiliatingFederationColumn";
@@ -15,7 +15,7 @@ import OsirisActionEvaluationColumn from "../@types/action/OsirisActionEvaluatio
 
 export default class OsirisActionEntity {
     constructor(
-        public readonly folder: OsirisActionFolderColumn,
+        public readonly folder: OsirisActionFileColumn,
         public readonly beneficiaryAssociation: OsirisActionBeneficiaryAssociationColumn,
         public readonly specifications: OsirisActionSpecificationsColumn,
         public readonly affiliatingFederation: OsirisActionAffiliatingFederationColumn,

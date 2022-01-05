@@ -1,43 +1,43 @@
 import db from "../../../shared/MongoConnection";
 import { MONGO_BATCH_SIZE } from "../../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
-import OsirisFolderEntity from "../entities/OsirisFoldersEntity";
+import OsirisFileEntity from "../entities/OsirisFileEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 
 export class OsirisRepository {
-    private readonly folderCollection = db.collection<OsirisFolderEntity>("osiris-folder");
-    private readonly actionCollection = db.collection<OsirisActionEntity>("osiris-action");
+    private readonly fileCollection = db.collection<OsirisFileEntity>("osiris-files");
+    private readonly actionCollection = db.collection<OsirisActionEntity>("osiris-actions");
 
-    // Folder Part
-    public async addFolder(osirisFolder: OsirisFolderEntity) {
-        await this.folderCollection.insertOne(osirisFolder);
-        return this.findFolderByOsirisId(osirisFolder.folder.osirisId) as OsirisFolderEntity;
+    // File Part
+    public async addFile(osirisFile: OsirisFileEntity) {
+        await this.fileCollection.insertOne(osirisFile);
+        return this.findFileByOsirisId(osirisFile.folder.osirisId) as OsirisFileEntity;
     }
 
-    public async updateFolder(osirisFolder: OsirisFolderEntity) {
+    public async updateFile(osirisFile: OsirisFileEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
-        return (await this.folderCollection.findOneAndUpdate({ 
-            folder: { osirisId: osirisFolder.folder.osirisId } 
+        return (await this.fileCollection.findOneAndUpdate({ 
+            folder: { osirisId: osirisFile.folder.osirisId } 
         },
-        { $set: osirisFolder }, options)).value as OsirisFolderEntity;
+        { $set: osirisFile }, options)).value as OsirisFileEntity;
     }
     
-    public async findAllFolders(limit:number = MONGO_BATCH_SIZE) {
-        return this.folderCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFolderEntity[];
+    public async findAllFiles(limit:number = MONGO_BATCH_SIZE) {
+        return this.fileCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFileEntity[];
     }
 
-    public findFolderByOsirisId(osirisId: string) {
-        return this.folderCollection.findOne({ "folder.osirisId": osirisId }) as unknown as (OsirisFolderEntity | null);
+    public findFileByOsirisId(osirisId: string) {
+        return this.fileCollection.findOne({ "folder.osirisId": osirisId }) as unknown as (OsirisFileEntity | null);
     }
 
-    public findFolderBySiret(siret: string) {
-        return this.folderCollection.findOne({
+    public findFileBySiret(siret: string) {
+        return this.fileCollection.findOne({
             "association.siret": siret
         });
     }
 
-    public findFolderByRna(rna: string) {
-        return this.folderCollection.findOne({
+    public findFileByRna(rna: string) {
+        return this.fileCollection.findOne({
             "association.rna": rna
         });
     }

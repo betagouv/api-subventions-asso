@@ -1,20 +1,20 @@
 import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisFolderEntity from "./entities/OsirisFoldersEntity";
+import OsirisFileEntity from "./entities/OsirisFileEntity";
 import osirisRepository from "./repository/osiris.repository";
 
 export class OsirisService {
-    public async addFolder(folder: OsirisFolderEntity): Promise<{state: string, result: OsirisFolderEntity}> {
-        const existingFolder = await osirisRepository.findFolderByOsirisId(folder.folder.osirisId);
-        if (existingFolder) {
+    public async addFile(folder: OsirisFileEntity): Promise<{state: string, result: OsirisFileEntity}> {
+        const existingFile = await osirisRepository.findFileByOsirisId(folder.folder.osirisId);
+        if (existingFile) {
             return {
                 state: "updated",
-                result: await osirisRepository.updateFolder(folder),
+                result: await osirisRepository.updateFile(folder),
             };
         }
 
         return {
             state: "created",
-            result: await osirisRepository.addFolder(folder),
+            result: await osirisRepository.addFile(folder),
         };
     }
 
@@ -33,16 +33,16 @@ export class OsirisService {
         };
     }
 
-    public findAllFolders() {
-        return osirisRepository.findAllFolders();
+    public findAllFiles() {
+        return osirisRepository.findAllFiles();
     }
 
-    public findFolderBySiret(siret: string) {
-        return osirisRepository.findFolderBySiret(siret);
+    public findFileBySiret(siret: string) {
+        return osirisRepository.findFileBySiret(siret);
     }
 
-    public findFolderByRna(rna: string) {
-        return osirisRepository.findFolderByRna(rna);
+    public findFileByRna(rna: string) {
+        return osirisRepository.findFileByRna(rna);
     }
 
     public findAllAction() {

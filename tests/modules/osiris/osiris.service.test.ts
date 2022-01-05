@@ -1,4 +1,4 @@
-import OsirisFolderEntity from "../../../src/modules/osiris/entities/OsirisFoldersEntity";
+import OsirisFileEntity from "../../../src/modules/osiris/entities/OsirisFileEntity";
 import osirisService, { OsirisService } from "../../../src/modules/osiris/osiris.service";
 
 describe("OsirisService", () => {
@@ -6,61 +6,61 @@ describe("OsirisService", () => {
         expect(osirisService).toBeInstanceOf(OsirisService);
     });
 
-    describe('addFolder', () => {
+    describe('addFile', () => {
         it('should return the added osiris folder', async () => {
-            const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFolderEntity;
-            expect((await osirisService.addFolder(entity)).result).toMatchObject(entity);
+            const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFileEntity;
+            expect((await osirisService.addFile(entity)).result).toMatchObject(entity);
         });
 
         it('should return the updated osiris folder', async () => {
-            const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFolderEntity;
-            await osirisService.addFolder(entity);
-            const result = await osirisService.addFolder(entity)
+            const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFileEntity;
+            await osirisService.addFile(entity);
+            const result = await osirisService.addFile(entity)
             expect(result.result).toMatchObject(entity);
             expect(result.state).toBe("updated");
         });
     });
 
-    describe('findAllFolders', () => {
+    describe('findAllFiles', () => {
 
         beforeEach(async () => {
-            const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFolderEntity;
-            await osirisService.addFolder(entity);
+            const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFileEntity;
+            await osirisService.addFile(entity);
         });
 
         it('should return one folder', async () => {
-            expect(await osirisService.findAllFolders()).toHaveLength(1);
+            expect(await osirisService.findAllFiles()).toHaveLength(1);
         });
 
         it('should return two folder', async () => {
-            const entity = { folder: { osirisId: "FAKE_ID_2"} } as unknown as OsirisFolderEntity;
-            await osirisService.addFolder(entity);
+            const entity = { folder: { osirisId: "FAKE_ID_2"} } as unknown as OsirisFileEntity;
+            await osirisService.addFile(entity);
 
-            expect(await osirisService.findAllFolders()).toHaveLength(2);
+            expect(await osirisService.findAllFiles()).toHaveLength(2);
         });
     });
 
-    describe('findFolderBySiret', () => {
-        const entity = { folder: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFolderEntity;
+    describe('findFileBySiret', () => {
+        const entity = { folder: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFileEntity;
 
         beforeEach(async () => {
-            await osirisService.addFolder(entity);
+            await osirisService.addFile(entity);
         });
 
         it('should return folder', async () => {
-            expect(await osirisService.findFolderBySiret("FAKE_SIRET")).toMatchObject(entity);
+            expect(await osirisService.findFileBySiret("FAKE_SIRET")).toMatchObject(entity);
         });
     });
 
-    describe('findFolderByRna', () => {
-        const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFolderEntity;
+    describe('findFileByRna', () => {
+        const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
 
         beforeEach(async () => {
-            await osirisService.addFolder(entity);
+            await osirisService.addFile(entity);
         });
 
         it('should return folder', async () => {
-            expect(await osirisService.findFolderByRna("FAKE_RNA")).toMatchObject(entity);
+            expect(await osirisService.findFileByRna("FAKE_RNA")).toMatchObject(entity);
         });
     });
 });

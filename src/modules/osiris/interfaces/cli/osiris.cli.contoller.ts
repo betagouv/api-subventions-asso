@@ -5,7 +5,7 @@ import { StaticImplements } from "../../../../decorators/staticImplements.decora
 import { CliStaticInterface} from "../../../../@types/Cli.interface";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
-import OsirisFolderEntity from "../../entities/OsirisFoldersEntity";
+import OsirisFileEntity from "../../entities/OsirisFileEntity";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";
 
 
@@ -25,16 +25,16 @@ export default class OsirisCliController {
         const fileContent = fs.readFileSync(file);
 
         if (type === "folders") {
-            const folders = OsirisParser.parseFolders(fileContent);
-            return folders.reduce((acc, osirisFolder) => {
+            const folders = OsirisParser.parseFiles(fileContent);
+            return folders.reduce((acc, osirisFile) => {
                 return acc.then(
                     (data = []) => {
-                        return osirisService.addFolder(osirisFolder).then((result) => data.concat(result))
+                        return osirisService.addFile(osirisFile).then((result) => data.concat(result))
                     }
                 );
             }, Promise.resolve([]) as Promise<{
                 state: string;
-                result: OsirisFolderEntity;
+                result: OsirisFileEntity;
             }[]>).then(results => {
                 const created = results.filter(({state}) => state === "created");
                 console.info(`${created.length} folders created and ${results.length - created.length} folders updated`);
@@ -64,12 +64,12 @@ export default class OsirisCliController {
             throw new Error("Parse command need type args");
         }
 
-        let data: Array<OsirisActionEntity | OsirisFolderEntity> = [];
+        let data: Array<OsirisActionEntity | OsirisFileEntity> = [];
 
         if (type === "folders") {
-            data = await osirisService.findAllFolders();
+            data = await osirisService.findAllFiles();
         } else if (type === "actions") {
-            data = await osirisService.findAllFolders();
+            data = await osirisService.findAllFiles();
         }
 
         if (format === "json") {
@@ -79,12 +79,12 @@ export default class OsirisCliController {
         }
     }
 
-    async findFolderBySiret(siret: string, format?: string) {
+    async findFileBySiret(siret: string, format?: string) {
         if (typeof siret !== "string" ) {
             throw new Error("Parse command need siret args");
         }
 
-        const folder = await osirisService.findFolderBySiret(siret);
+        const folder = await osirisService.findFileBySiret(siret);
 
 
         if (format === "json") {
@@ -94,12 +94,12 @@ export default class OsirisCliController {
         }
     }
 
-    async findFolderByRna(rna: string, format?: string) {
+    async findFileByRna(rna: string, format?: string) {
         if (typeof rna !== "string" ) {
             throw new Error("Parse command need rna args");
         }
 
-        const folder = await osirisService.findFolderByRna(rna);
+        const folder = await osirisService.findFileByRna(rna);
 
 
         if (format === "json") {

@@ -1,4 +1,4 @@
-export default interface OsirisFolderColumn {
+export default interface OsirisFileColumn {
     readonly service: string;
     readonly financingType: string;
     readonly subFinancingType: string;
@@ -13,7 +13,7 @@ export default interface OsirisFolderColumn {
     readonly commissionDate: string;
 }
 
-export const OsirisFolderColumnKeys = {
+export const OsirisFileColumnKeys = {
     service: 1,
     financingType: 2,
     subFinancingType: 3,

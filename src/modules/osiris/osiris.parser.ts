@@ -1,18 +1,18 @@
 import xlsx from 'node-xlsx';
 
-import OsirisFolderEntity from "./entities/OsirisFoldersEntity";
-import OsirisActionsNumberColumn, { OsirisActionsNumberColumnKeys } from "./@types/folder/OsirisActionsNumberColumn";
-import OsirisAmountsColumn, { OsirisAmountsColumnKeys } from "./@types/folder/OsirisAmountsColumn";
-import OsirisAssociationColumn, { OsirisAssociationColumnKeys } from "./@types/folder/OsirisAssociationColumn";
-import OsirisCommentsColumn, { OsirisCommentsColumnKeys } from "./@types/folder/OsirisCommentsColumn";
-import OsirisEvaluationColumn, { OsirisEvaluationColumnKeys } from "./@types/folder/OsirisEvaluationColumn";
-import OsirisFolderColumn, { OsirisFolderColumnKeys } from "./@types/folder/OsirisFolderColumn";
-import OsirisLegalRepresentativeColumn, { OsirisLegalRepresentativeColumnKeys } from "./@types/folder/OsirisLegalRepresentativeColumn";
-import OsirisMailingAddressColumn, { OsirisMailingAddressColumnKeys } from "./@types/folder/OsirisMailingAddressColumn";
-import OsirisPaymentsColumn, { OsirisPaymentsColumnKeys } from "./@types/folder/OsirisPaymentsColumn";
+import OsirisFileEntity from "./entities/OsirisFileEntity";
+import OsirisActionsNumberColumn, { OsirisActionsNumberColumnKeys } from "./@types/file/OsirisActionsNumberColumn";
+import OsirisAmountsColumn, { OsirisAmountsColumnKeys } from "./@types/file/OsirisAmountsColumn";
+import OsirisAssociationColumn, { OsirisAssociationColumnKeys } from "./@types/file/OsirisAssociationColumn";
+import OsirisCommentsColumn, { OsirisCommentsColumnKeys } from "./@types/file/OsirisCommentsColumn";
+import OsirisEvaluationColumn, { OsirisEvaluationColumnKeys } from "./@types/file/OsirisEvaluationColumn";
+import OsirisFileColumn, { OsirisFileColumnKeys } from "./@types/file/OsirisFileColumn";
+import OsirisLegalRepresentativeColumn, { OsirisLegalRepresentativeColumnKeys } from "./@types/file/OsirisLegalRepresentativeColumn";
+import OsirisMailingAddressColumn, { OsirisMailingAddressColumnKeys } from "./@types/file/OsirisMailingAddressColumn";
+import OsirisPaymentsColumn, { OsirisPaymentsColumnKeys } from "./@types/file/OsirisPaymentsColumn";
 
 import OsirisActionEntity from './entities/OsirisActionEntity';
-import OsirisActionFolderColumn, { OsirisActionFolderColumnKeys } from './@types/action/OsirisActionFolderColumn';
+import OsirisActionFileColumn, { OsirisActionFileColumnKeys } from './@types/action/OsirisActionFileColumn';
 import OsirisActionBeneficiariesColumn, { OsirisActionBeneficiariesColumnKeys } from './@types/action/OsirisActionBeneficiariesColumn';
 import OsirisActionSpecificationsColumn, { OsirisActionSpecificationsColumnKeys } from './@types/action/OsirisActionSpecificationsColumn';
 import OsirisActionAffiliatingFederationColumn, { OsirisActionAffiliatingFederationColumnKeys } from './@types/action/OsirisActionAffiliatingFederationColumn';
@@ -27,13 +27,13 @@ import OsirisActionResourcesEvaluationColumn, { OsirisActionResourcesEvaluationC
 import OsirisActionBeneficiaryAssociationColumn, { OsirisActionBeneficiaryAssociationColumnKeys } from './@types/action/OsirisActionBeneficiaryAssociationColumn';
 
 export default class OsirisParser {
-    public static parseFolders(content: Buffer): OsirisFolderEntity[] {
+    public static parseFiles(content: Buffer): OsirisFileEntity[] {
         const xls = xlsx.parse(content);
         const data = xls[0].data.filter((row) => (row as unknown[]).length);
         const raws = data.slice(2, data.length - 1) as unknown[]; // Delete Headers and footers
 
         return raws.map((raw) => {
-            const folderColumn = this.createObjectByColumnDef<OsirisFolderColumn>((raw as unknown[]), OsirisFolderColumnKeys);
+            const folderColumn = this.createObjectByColumnDef<OsirisFileColumn>((raw as unknown[]), OsirisFileColumnKeys);
             const associationColumn = this.createObjectByColumnDef<OsirisAssociationColumn>((raw as unknown[]), OsirisAssociationColumnKeys);
             const mailingAddressColumn = this.createObjectByColumnDef<OsirisMailingAddressColumn>((raw as unknown[]), OsirisMailingAddressColumnKeys);
             const legalRepresentativeColumn = this.createObjectByColumnDef<OsirisLegalRepresentativeColumn>((raw as unknown[]), OsirisLegalRepresentativeColumnKeys);
@@ -43,7 +43,7 @@ export default class OsirisParser {
             const evaluationColumn = this.createObjectByColumnDef<OsirisEvaluationColumn>((raw as unknown[]), OsirisEvaluationColumnKeys);
             const commentsColumn = this.createObjectByColumnDef<OsirisCommentsColumn>((raw as unknown[]), OsirisCommentsColumnKeys);
 
-            return new OsirisFolderEntity(
+            return new OsirisFileEntity(
                 folderColumn,
                 associationColumn,
                 mailingAddressColumn,
@@ -64,7 +64,7 @@ export default class OsirisParser {
         const raws = data.slice(2, data.length - 1) as unknown[]; // Delete Headers and footers
 
         return raws.map((raw) => {
-            const folderColumn = this.createObjectByColumnDef<OsirisActionFolderColumn>((raw as unknown[]), OsirisActionFolderColumnKeys);
+            const folderColumn = this.createObjectByColumnDef<OsirisActionFileColumn>((raw as unknown[]), OsirisActionFileColumnKeys);
             const beneficiariesColumn = this.createObjectByColumnDef<OsirisActionBeneficiaryAssociationColumn>((raw as unknown[]), OsirisActionBeneficiaryAssociationColumnKeys);
             const specifications = this.createObjectByColumnDef<OsirisActionSpecificationsColumn>((raw as unknown[]), OsirisActionSpecificationsColumnKeys);
             const affiliatingFederation = this.createObjectByColumnDef<OsirisActionAffiliatingFederationColumn>((raw as unknown[]), OsirisActionAffiliatingFederationColumnKeys);

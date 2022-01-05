@@ -1,8 +1,8 @@
 import path from "path";
-import OsirisFolderEntity from "../../../../../src/modules/osiris/entities/OsirisFoldersEntity";
+import OsirisFileEntity from "../../../../../src/modules/osiris/entities/OsirisFileEntity";
 
 jest.mock('../../../../../src/modules/osiris/osiris.parser', () => ({
-    parseFolders: jest.fn(() => []),
+    parseFiles: jest.fn(() => []),
     parseActions: jest.fn(() => [])
 }));
 
@@ -23,7 +23,7 @@ describe("OsirisCliController", () => {
         it('should call osiris parser', async () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("folders", filePath);
-            expect(OsirisParser.parseFolders).toHaveBeenCalled();
+            expect(OsirisParser.parseFiles).toHaveBeenCalled();
         });
 
         it('should throw error because no agrs', () => {
@@ -115,8 +115,8 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFolderEntity;
-            await osirisService.addFolder(entity);
+            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
+            await osirisService.addFile(entity);
 
         });
 
@@ -130,23 +130,23 @@ describe("OsirisCliController", () => {
         });
     });
 
-    describe('findFolderByRna cli ', () => {
+    describe('findFileByRna cli ', () => {
         let controller: OsirisCliController;
 
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFolderEntity;
-            await osirisService.addFolder(entity);
+            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
+            await osirisService.addFile(entity);
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.findFolderByRna).rejects.toThrowError("Parse command need rna args");
+            expect(controller.findFileByRna).rejects.toThrowError("Parse command need rna args");
         });
 
         it('should log a folder', async () => {
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation();
-            await controller.findFolderByRna("FAKE_RNA");
+            await controller.findFileByRna("FAKE_RNA");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
@@ -155,30 +155,30 @@ describe("OsirisCliController", () => {
         it('should log a folder in json', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findFolderByRna("FAKE_RNA", "json");
+            await controller.findFileByRna("FAKE_RNA", "json");
             expect(JSON.parse(data).association.rna).toBe("FAKE_RNA");
 
             consoleInfo.mockReset();
         });
     });
 
-    describe('findFolderBySiret cli ', () => {
+    describe('findFileBySiret cli ', () => {
         let controller: OsirisCliController;
 
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { folder: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFolderEntity;
-            await osirisService.addFolder(entity);
+            const entity = { folder: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFileEntity;
+            await osirisService.addFile(entity);
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.findFolderBySiret).rejects.toThrowError("Parse command need siret args");
+            expect(controller.findFileBySiret).rejects.toThrowError("Parse command need siret args");
         });
 
         it('should log a folder', async () => {
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation();
-            await controller.findFolderBySiret("FAKE_SIRET");
+            await controller.findFileBySiret("FAKE_SIRET");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
@@ -187,7 +187,7 @@ describe("OsirisCliController", () => {
         it('should log a folder in json', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findFolderBySiret("FAKE_SIRET", "json");
+            await controller.findFileBySiret("FAKE_SIRET", "json");
             expect(JSON.parse(data).association.siret).toBe("FAKE_SIRET");
 
             consoleInfo.mockReset();
