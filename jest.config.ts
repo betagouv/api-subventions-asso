@@ -40,7 +40,8 @@ export default {
         "@types",
         "decorators",
         "src/index.ts",
-        "src/cli.ts"
+        "src/cli.ts",
+        "src/shared/MongoConnection.ts"
     ],
 
     // A list of reporter names that Jest uses when writing coverage reports

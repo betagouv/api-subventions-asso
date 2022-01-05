@@ -1,4 +1,5 @@
 import path from "path";
+import OsirisFolderEntity from "../../../../src/osiris/entities/OsirisFoldersEntity";
 
 jest.mock('../../../../src/osiris/osiris.parser', () => ({
     parseFolders: jest.fn(() => [])
@@ -7,6 +8,7 @@ jest.mock('../../../../src/osiris/osiris.parser', () => ({
 
 import OsirisCliController from "../../../../src/osiris/interfaces/cli/osiris.cli.contoller";
 import OsirisParser from "../../../../src/osiris/osiris.parser";
+import osirisService from "../../../../src/osiris/osiris.service";
 
 
 describe("OsirisCliController", () => {
@@ -76,6 +78,53 @@ describe("OsirisCliController", () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
 
             expect(() => controller.parse("unknown",  filePath)).rejects.toThrowError("The type unknown is not taken into account");
+        });
+    });
+
+
+    describe('findAll cli', () => {
+        let controller: OsirisCliController;
+        let consoleInfo: jest.SpyInstance;
+
+
+        beforeEach(() => {
+            controller = new OsirisCliController();
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            consoleInfo = jest.spyOn(console, 'info').mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            consoleInfo.mockClear();
+        });
+
+        afterAll(() => {
+            consoleInfo.mockReset();
+        });
+
+        it('should log all folders', async () => {
+            await controller.findAll();
+            expect(consoleInfo).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('findAll cli json', () => {
+        let controller: OsirisCliController;
+
+        beforeEach(async () => {
+            controller = new OsirisCliController();
+
+            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFolderEntity;
+            await osirisService.addFolder(entity);
+
+        });
+
+        it('should log all folders', async () => {
+            let data = "";
+            const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
+            await controller.findAll("json");
+            expect(JSON.parse(data)).toHaveLength(1);
+
+            consoleInfo.mockReset();
         });
     });
 });
