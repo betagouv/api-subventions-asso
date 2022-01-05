@@ -1,10 +1,12 @@
 import db from "../../shared/MongoConnection";
-import OsirisFolderEntity from "../entities/OsirisFoldersEntity";
 import { MONGO_BATCH_SIZE } from "../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
+import OsirisFolderEntity from "../entities/OsirisFoldersEntity";
+import OsirisActionEntity from "../entities/OsirisActionEntity";
 
 export class OsirisRepository {
     private readonly folderCollection = db.collection<OsirisFolderEntity>("osiris-folder");
+    private readonly actionCollection = db.collection<OsirisActionEntity>("osiris-action");
 
     // Folder Part
     public async addFolder(osirisFolder: OsirisFolderEntity) {
@@ -19,7 +21,7 @@ export class OsirisRepository {
         },
         { $set: osirisFolder }, options)).value as OsirisFolderEntity;
     }
-
+    
     public async findAllFolders(limit:number = MONGO_BATCH_SIZE) {
         return this.folderCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFolderEntity[];
     }
@@ -37,6 +39,40 @@ export class OsirisRepository {
     public findFolderByRna(rna: string) {
         return this.folderCollection.findOne({
             "association.rna": rna
+        });
+    }
+
+    // Action Part
+    public async addAction(osirisAction: OsirisActionEntity) {
+        await this.actionCollection.insertOne(osirisAction);
+        return this.findActionByOsirisId(osirisAction.folder.osirisId) as OsirisActionEntity;
+    }
+
+    public async updateAction(osirisAction: OsirisActionEntity) {
+        const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
+        return (await this.actionCollection.findOneAndUpdate({ 
+            folder: { osirisId: osirisAction.folder.osirisId } 
+        },
+        { $set: osirisAction }, options)).value as OsirisActionEntity;
+    }
+    
+    public async findAllActions(limit:number = MONGO_BATCH_SIZE) {
+        return this.actionCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisActionEntity[];
+    }
+
+    public findActionByOsirisId(osirisId: string) {
+        return this.actionCollection.findOne({ "folder.osirisId": osirisId }) as unknown as (OsirisActionEntity | null);
+    }
+
+    public findActionsBySiret(siret: string) {
+        return this.actionCollection.find({
+            "beneficiaryAssociation:.siret": siret
+        });
+    }
+
+    public findActionsByRna(rna: string) {
+        return this.actionCollection.find({
+            "beneficiaryAssociation:.rna": rna
         });
     }
 }
