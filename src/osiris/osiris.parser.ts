@@ -11,15 +11,20 @@ import OsirisLegalRepresentativeColumn, { OsirisLegalRepresentativeColumnKeys } 
 import OsirisMailingAddressColumn, { OsirisMailingAddressColumnKeys } from "./@types/folder/OsirisMailingAddressColumn";
 import OsirisPaymentsColumn, { OsirisPaymentsColumnKeys } from "./@types/folder/OsirisPaymentsColumn";
 
-import OsirisActionsNumberColumn, { OsirisActionsNumberColumnKeys } from "./@types/OsirisActionsNumberColumn";
-import OsirisAmountsColumn, { OsirisAmountsColumnKeys } from "./@types/OsirisAmountsColumn";
-import OsirisAssociationColumn, { OsirisAssociationColumnKeys } from "./@types/OsirisAssociationColumn";
-import OsirisCommentsColumn, { OsirisCommentsColumnKeys } from "./@types/OsirisCommentsColumn";
-import OsirisEvaluationColumn, { OsirisEvaluationColumnKeys } from "./@types/OsirisEvaluationColumn";
-import OsirisFolderColumn, { OsirisFolderColumnKeys } from "./@types/OsirisFolderColumn";
-import OsirisLegalRepresentativeColumn, { OsirisLegalRepresentativeColumnKeys } from "./@types/OsirisLegalRepresentativeColumn";
-import OsirisMailingAddressColumn, { OsirisMailingAddressColumnKeys } from "./@types/OsirisMailingAddressColumn";
-import OsirisPaymentsColumn, { OsirisPaymentsColumnKeys } from "./@types/OsirisPaymentsColumn";
+import OsirisActionEntity from './entities/OsirisActionEntity';
+import OsirisActionFolderColumn, { OsirisActionFolderColumnKeys } from './@types/action/OsirisActionFolderColumn';
+import OsirisActionBeneficiariesColumn, { OsirisActionBeneficiariesColumnKeys } from './@types/action/OsirisActionBeneficiariesColumn';
+import OsirisActionSpecificationsColumn, { OsirisActionSpecificationsColumnKeys } from './@types/action/OsirisActionSpecificationsColumn';
+import OsirisActionAffiliatingFederationColumn, { OsirisActionAffiliatingFederationColumnKeys } from './@types/action/OsirisActionAffiliatingFederationColumn';
+import OsirisActionAmountsColumn, { OsirisActionAmountsColumnKeys } from './@types/action/OsirisActionAmountsColumn';
+import OsirisActionEvaluationColumn, { OsirisActionEvaluationColumnKeys } from './@types/action/OsirisActionEvaluationColumn';
+import OsirisActionResourcesColumn, { OsirisActionResourcesColumnKeys } from './@types/action/OsirisActionResourcesColumn';
+import OsirisActionTerritoriesColumn, { OsirisActionTerritoriesColumnKeys } from './@types/action/OsirisActionTerritoriesColumn';
+import OsirisActionCoFinanciersColumn, { OsirisActionCoFinanciersColumnKeys } from './@types/action/OsirisActionCoFinanciersColumn';
+import OsirisActionCustomColumn, { OsirisActionCustomColumnKeys } from './@types/action/OsirisActionCustomColumn';
+import OsirisActionOtherColumn, { OsirisActionOtherColumnKeys } from './@types/action/OsirisActionOtherColumn';
+import OsirisActionResourcesEvaluationColumn, { OsirisActionResourcesEvaluationColumnKeys } from './@types/action/OsirisActionResourcesEvaluationColumn';
+import OsirisActionBeneficiaryAssociationColumn, { OsirisActionBeneficiaryAssociationColumnKeys } from './@types/action/OsirisActionBeneficiaryAssociationColumn';
 
 export default class OsirisParser {
     public static parseFolders(content: Buffer): OsirisFolderEntity[] {
@@ -48,6 +53,45 @@ export default class OsirisParser {
                 paymentsColumn,
                 evaluationColumn,
                 commentsColumn
+            );
+        });
+    }
+
+    public static parseActions(content: Buffer) {
+        const xls = xlsx.parse(content);
+
+        const data = xls[0].data.filter((row) => (row as unknown[]).length);
+        const raws = data.slice(2, data.length - 1) as unknown[]; // Delete Headers and footers
+
+        return raws.map((raw) => {
+            const folderColumn = this.createObjectByColumnDef<OsirisActionFolderColumn>((raw as unknown[]), OsirisActionFolderColumnKeys);
+            const beneficiariesColumn = this.createObjectByColumnDef<OsirisActionBeneficiaryAssociationColumn>((raw as unknown[]), OsirisActionBeneficiaryAssociationColumnKeys);
+            const specifications = this.createObjectByColumnDef<OsirisActionSpecificationsColumn>((raw as unknown[]), OsirisActionSpecificationsColumnKeys);
+            const affiliatingFederation = this.createObjectByColumnDef<OsirisActionAffiliatingFederationColumn>((raw as unknown[]), OsirisActionAffiliatingFederationColumnKeys);
+            const beneficiaries = this.createObjectByColumnDef<OsirisActionBeneficiariesColumn>((raw as unknown[]), OsirisActionBeneficiariesColumnKeys);
+            const territories = this.createObjectByColumnDef<OsirisActionTerritoriesColumn>((raw as unknown[]), OsirisActionTerritoriesColumnKeys);
+            const resources = this.createObjectByColumnDef<OsirisActionResourcesColumn>((raw as unknown[]), OsirisActionResourcesColumnKeys);
+            const resourcesEvaluation = this.createObjectByColumnDef<OsirisActionResourcesEvaluationColumn>((raw as unknown[]), OsirisActionResourcesEvaluationColumnKeys);
+            const amount = this.createObjectByColumnDef<OsirisActionAmountsColumn>((raw as unknown[]), OsirisActionAmountsColumnKeys);
+            const coFinanciers = this.createObjectByColumnDef<OsirisActionCoFinanciersColumn>((raw as unknown[]), OsirisActionCoFinanciersColumnKeys);
+            const other = this.createObjectByColumnDef<OsirisActionOtherColumn>((raw as unknown[]), OsirisActionOtherColumnKeys);
+            const evaluation = this.createObjectByColumnDef<OsirisActionEvaluationColumn>((raw as unknown[]), OsirisActionEvaluationColumnKeys);
+            const custom = this.createObjectByColumnDef<OsirisActionCustomColumn>((raw as unknown[]), OsirisActionCustomColumnKeys);
+
+            return new OsirisActionEntity(
+                folderColumn,
+                beneficiariesColumn,
+                specifications,
+                affiliatingFederation,
+                beneficiaries,
+                territories,
+                resources,
+                resourcesEvaluation,
+                amount,
+                coFinanciers,
+                other,
+                evaluation,
+                custom,
             );
         });
     }
