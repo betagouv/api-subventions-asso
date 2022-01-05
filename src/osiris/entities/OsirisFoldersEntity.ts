@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 import OsirisActionsNumberColumn from "../@types/OsirisActionsNumberColumn";
 import OsirisAmountsColumn from "../@types/OsirisAmountsColumn";
 import OsirisAssociationColumn from "../@types/OsirisAssociationColumn";
@@ -18,6 +20,7 @@ export default class OsirisFolderEntity {
         public readonly amounts: OsirisAmountsColumn,
         public readonly payments: OsirisPaymentsColumn,
         public readonly evaluation: OsirisEvaluationColumn,
-        public readonly comments: OsirisCommentsColumn
+        public readonly comments: OsirisCommentsColumn,
+        public _id?: ObjectId
     ) {}
 }
