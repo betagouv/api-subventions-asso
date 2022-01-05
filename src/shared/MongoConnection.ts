@@ -2,7 +2,7 @@ import * as mongoDB from "mongodb";
 import {MONGO_DBNAME, MONGO_URL, MONGO_PASSWORD, MONGO_USER} from '../configurations/mongo.conf';
 
 
-const client: mongoDB.MongoClient = new mongoDB.MongoClient(
+const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(
     MONGO_URL, {
         auth: MONGO_USER && MONGO_PASSWORD ? {
             username: MONGO_USER,
@@ -11,10 +11,12 @@ const client: mongoDB.MongoClient = new mongoDB.MongoClient(
     }
 );
 
-export const connectionPromise = client.connect().catch((reason => {
+export const connectDB = () => mongoClient.connect().catch((reason => {
     console.log("MONGO CONNECTION ERROR")
     console.error(reason);
     process.exit(1);
 }));
+
+export const client = mongoClient;
     
-export default client.db(MONGO_DBNAME);
+export default mongoClient.db(MONGO_DBNAME);

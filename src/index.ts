@@ -1,14 +1,21 @@
 import express from 'express';
+import { connectDB } from './shared/MongoConnection';
 
 const appName = 'datasubvention';
 const port = process.env.PORT || 8080;
 
-const app = express();
+async function main() {
+    await connectDB();
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
-});
+    const app = express();
 
-app.listen(port, () => {
-    console.log(`${appName} listening at http://localhost:${port}`);
-});
+    app.get('/', (req, res) => {
+        res.send('Hello World');
+    });
+    
+    app.listen(port, () => {
+        console.log(`${appName} listening at http://localhost:${port}`);
+    });
+}
+
+main();
