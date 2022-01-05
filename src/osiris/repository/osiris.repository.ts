@@ -26,6 +26,18 @@ export class OsirisRepository {
     public findFolderByOsirisId(osirisId: string) {
         return this.folderCollection.findOne({ "folder.osirisId": osirisId }) as unknown as (OsirisFolderEntity | null);
     }
+
+    public findFolderBySiret(siret: string) {
+        return this.folderCollection.findOne({
+            "association.siret": siret
+        });
+    }
+
+    public findFolderByRna(rna: string) {
+        return this.folderCollection.findOne({
+            "association.rna": rna
+        });
+    }
 }
 
 const osirisRepository: OsirisRepository = new OsirisRepository();

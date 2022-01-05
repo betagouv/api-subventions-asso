@@ -20,6 +20,14 @@ export class OsirisService {
     public findAll() {
         return osirisRepository.findAll();
     }
+
+    public findBySiret(siret: string) {
+        return osirisRepository.findFolderBySiret(siret);
+    }
+
+    public findByRna(rna: string) {
+        return osirisRepository.findFolderByRna(rna);
+    }
 }
 
 const osirisService: OsirisService = new OsirisService();
