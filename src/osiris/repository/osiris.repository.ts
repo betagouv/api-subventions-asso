@@ -11,8 +11,8 @@ export class OsirisRepository {
         return this.findFolderByOsirisId(osirisFolder.folder.osirisId) as OsirisFolderEntity;
     }
 
-    public async findAll() {
-        return this.folderCollection.find({}).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFolderEntity[];
+    public async findAll(limit:number = MONGO_BATCH_SIZE) {
+        return this.folderCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFolderEntity[];
     }
 
     public async updateFolder(osirisFolder: OsirisFolderEntity) {
