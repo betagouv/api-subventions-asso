@@ -20,4 +20,8 @@ if (!instance[args[1]]) {
     throw new Error(`Method ${args[1]} not found in controller ${args[0]}`);
 }
 
-instance[args[1]].call(instance, ...args.slice(2));
+const result = instance[args[1]].call(instance, ...args.slice(2));
+
+if (result instanceof Promise) {
+    result.catch(console.error).finally(() => process.exit())
+}
