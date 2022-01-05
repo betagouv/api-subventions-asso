@@ -1,11 +1,24 @@
 import OsirisFolderEntity from "./entities/OsirisFoldersEntity";
+import osirisRepository from "./repository/osiris.repository";
 
 export class OsirisService {
-    public addFolder(folder: OsirisFolderEntity) {
-        // Save folder in DB
-        console.log(folder);
+    public async addFolder(folder: OsirisFolderEntity): Promise<{state: string, result: OsirisFolderEntity}> {
+        const existingFolder = await osirisRepository.findFolderByOsirisId(folder.folder.osirisId);
+        if (existingFolder) {
+            return {
+                state: "updated",
+                result: await osirisRepository.updateFolder(folder),
+            };
+        }
 
-        return folder;
+        return {
+            state: "created",
+            result: await osirisRepository.addFolder(folder),
+        };
+    }
+
+    public findAll() {
+        return osirisRepository.findAll();
     }
 }
 
