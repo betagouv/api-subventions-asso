@@ -1,6 +1,15 @@
 import xlsx from 'node-xlsx';
 
 import OsirisFolderEntity from "./entities/OsirisFoldersEntity";
+import OsirisActionsNumberColumn, { OsirisActionsNumberColumnKeys } from "./@types/folder/OsirisActionsNumberColumn";
+import OsirisAmountsColumn, { OsirisAmountsColumnKeys } from "./@types/folder/OsirisAmountsColumn";
+import OsirisAssociationColumn, { OsirisAssociationColumnKeys } from "./@types/folder/OsirisAssociationColumn";
+import OsirisCommentsColumn, { OsirisCommentsColumnKeys } from "./@types/folder/OsirisCommentsColumn";
+import OsirisEvaluationColumn, { OsirisEvaluationColumnKeys } from "./@types/folder/OsirisEvaluationColumn";
+import OsirisFolderColumn, { OsirisFolderColumnKeys } from "./@types/folder/OsirisFolderColumn";
+import OsirisLegalRepresentativeColumn, { OsirisLegalRepresentativeColumnKeys } from "./@types/folder/OsirisLegalRepresentativeColumn";
+import OsirisMailingAddressColumn, { OsirisMailingAddressColumnKeys } from "./@types/folder/OsirisMailingAddressColumn";
+import OsirisPaymentsColumn, { OsirisPaymentsColumnKeys } from "./@types/folder/OsirisPaymentsColumn";
 
 import OsirisActionsNumberColumn, { OsirisActionsNumberColumnKeys } from "./@types/OsirisActionsNumberColumn";
 import OsirisAmountsColumn, { OsirisAmountsColumnKeys } from "./@types/OsirisAmountsColumn";

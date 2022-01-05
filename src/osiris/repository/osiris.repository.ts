@@ -6,13 +6,10 @@ import { FindOneAndUpdateOptions } from "mongodb";
 export class OsirisRepository {
     private readonly folderCollection = db.collection<OsirisFolderEntity>("osiris-folder");
 
+    // Folder Part
     public async addFolder(osirisFolder: OsirisFolderEntity) {
         await this.folderCollection.insertOne(osirisFolder);
         return this.findFolderByOsirisId(osirisFolder.folder.osirisId) as OsirisFolderEntity;
-    }
-
-    public async findAll(limit:number = MONGO_BATCH_SIZE) {
-        return this.folderCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFolderEntity[];
     }
 
     public async updateFolder(osirisFolder: OsirisFolderEntity) {
@@ -21,6 +18,10 @@ export class OsirisRepository {
             folder: { osirisId: osirisFolder.folder.osirisId } 
         },
         { $set: osirisFolder }, options)).value as OsirisFolderEntity;
+    }
+
+    public async findAllFolders(limit:number = MONGO_BATCH_SIZE) {
+        return this.folderCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisFolderEntity[];
     }
 
     public findFolderByOsirisId(osirisId: string) {

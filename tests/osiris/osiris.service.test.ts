@@ -21,7 +21,7 @@ describe("OsirisService", () => {
         });
     });
 
-    describe('findAll', () => {
+    describe('findAllFolders', () => {
 
         beforeEach(async () => {
             const entity = { folder: { osirisId: "FAKE_ID"} } as unknown as OsirisFolderEntity;
@@ -29,18 +29,18 @@ describe("OsirisService", () => {
         });
 
         it('should return one folder', async () => {
-            expect(await osirisService.findAll()).toHaveLength(1);
+            expect(await osirisService.findAllFolders()).toHaveLength(1);
         });
 
         it('should return two folder', async () => {
             const entity = { folder: { osirisId: "FAKE_ID_2"} } as unknown as OsirisFolderEntity;
             await osirisService.addFolder(entity);
 
-            expect(await osirisService.findAll()).toHaveLength(2);
+            expect(await osirisService.findAllFolders()).toHaveLength(2);
         });
     });
 
-    describe('findBySiret', () => {
+    describe('findFolderBySiret', () => {
         const entity = { folder: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFolderEntity;
 
         beforeEach(async () => {
@@ -48,7 +48,7 @@ describe("OsirisService", () => {
         });
 
         it('should return folder', async () => {
-            expect(await osirisService.findBySiret("FAKE_SIRET")).toMatchObject(entity);
+            expect(await osirisService.findFolderBySiret("FAKE_SIRET")).toMatchObject(entity);
         });
     });
 
@@ -60,7 +60,7 @@ describe("OsirisService", () => {
         });
 
         it('should return folder', async () => {
-            expect(await osirisService.findByRna("FAKE_RNA")).toMatchObject(entity);
+            expect(await osirisService.findFolderByRna("FAKE_RNA")).toMatchObject(entity);
         });
     });
 });

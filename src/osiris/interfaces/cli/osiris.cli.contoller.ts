@@ -55,12 +55,12 @@ export default class OsirisCliController {
         }
     }
 
-    async findBySiret(siret: string, format?: string) {
+    async findFolderBySiret(siret: string, format?: string) {
         if (typeof siret !== "string" ) {
             throw new Error("Parse command need siret args");
         }
 
-        const folder = await osirisService.findBySiret(siret);
+        const folder = await osirisService.findFolderBySiret(siret);
 
 
         if (format === "json") {
@@ -70,12 +70,12 @@ export default class OsirisCliController {
         }
     }
 
-    async findByRna(rna: string, format?: string) {
+    async findFolderByRna(rna: string, format?: string) {
         if (typeof rna !== "string" ) {
             throw new Error("Parse command need rna args");
         }
 
-        const folder = await osirisService.findByRna(rna);
+        const folder = await osirisService.findFolderByRna(rna);
 
 
         if (format === "json") {

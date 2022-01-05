@@ -102,7 +102,7 @@ describe("OsirisCliController", () => {
         });
 
         it('should log all folders', async () => {
-            await controller.findAll();
+            await controller.findAll("folders");
             expect(consoleInfo).toHaveBeenCalledTimes(1);
         });
     });
@@ -121,14 +121,14 @@ describe("OsirisCliController", () => {
         it('should log all folders', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findAll("json");
+            await controller.findAll("folders", "json");
             expect(JSON.parse(data)).toHaveLength(1);
 
             consoleInfo.mockReset();
         });
     });
 
-    describe('findByRna cli ', () => {
+    describe('findFolderByRna cli ', () => {
         let controller: OsirisCliController;
 
         beforeEach(async () => {
@@ -139,12 +139,12 @@ describe("OsirisCliController", () => {
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.findByRna).rejects.toThrowError("Parse command need rna args");
+            expect(controller.findFolderByRna).rejects.toThrowError("Parse command need rna args");
         });
 
         it('should log a folder', async () => {
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation();
-            await controller.findByRna("FAKE_RNA");
+            await controller.findFolderByRna("FAKE_RNA");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
@@ -153,14 +153,14 @@ describe("OsirisCliController", () => {
         it('should log a folder in json', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findByRna("FAKE_RNA", "json");
+            await controller.findFolderByRna("FAKE_RNA", "json");
             expect(JSON.parse(data).association.rna).toBe("FAKE_RNA");
 
             consoleInfo.mockReset();
         });
     });
 
-    describe('findBySiret cli ', () => {
+    describe('findFolderBySiret cli ', () => {
         let controller: OsirisCliController;
 
         beforeEach(async () => {
@@ -171,12 +171,12 @@ describe("OsirisCliController", () => {
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.findBySiret).rejects.toThrowError("Parse command need siret args");
+            expect(controller.findFolderBySiret).rejects.toThrowError("Parse command need siret args");
         });
 
         it('should log a folder', async () => {
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation();
-            await controller.findBySiret("FAKE_SIRET");
+            await controller.findFolderBySiret("FAKE_SIRET");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
@@ -185,7 +185,7 @@ describe("OsirisCliController", () => {
         it('should log a folder in json', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findBySiret("FAKE_SIRET", "json");
+            await controller.findFolderBySiret("FAKE_SIRET", "json");
             expect(JSON.parse(data).association.siret).toBe("FAKE_SIRET");
 
             consoleInfo.mockReset();

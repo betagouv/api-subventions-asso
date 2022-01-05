@@ -17,15 +17,15 @@ export class OsirisService {
         };
     }
 
-    public findAll() {
-        return osirisRepository.findAll();
+    public findAllFolders() {
+        return osirisRepository.findAllFolders();
     }
 
-    public findBySiret(siret: string) {
+    public findFolderBySiret(siret: string) {
         return osirisRepository.findFolderBySiret(siret);
     }
 
-    public findByRna(rna: string) {
+    public findFolderByRna(rna: string) {
         return osirisRepository.findFolderByRna(rna);
     }
 }

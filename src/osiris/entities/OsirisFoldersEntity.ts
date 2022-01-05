@@ -1,14 +1,14 @@
 import { ObjectId } from "mongodb";
 
-import OsirisActionsNumberColumn from "../@types/OsirisActionsNumberColumn";
-import OsirisAmountsColumn from "../@types/OsirisAmountsColumn";
-import OsirisAssociationColumn from "../@types/OsirisAssociationColumn";
-import OsirisCommentsColumn from "../@types/OsirisCommentsColumn";
-import OsirisEvaluationColumn from "../@types/OsirisEvaluationColumn";
-import OsirisFolderColumn from "../@types/OsirisFolderColumn";
-import OsirisLegalRepresentativeColumn from "../@types/OsirisLegalRepresentativeColumn";
-import OsirisMailingAddressColumn from "../@types/OsirisMailingAddressColumn";
-import OsirisPaymentsColumn from "../@types/OsirisPaymentsColumn";
+import OsirisActionsNumberColumn from "../@types/folder/OsirisActionsNumberColumn";
+import OsirisAmountsColumn from "../@types/folder/OsirisAmountsColumn";
+import OsirisAssociationColumn from "../@types/folder/OsirisAssociationColumn";
+import OsirisCommentsColumn from "../@types/folder/OsirisCommentsColumn";
+import OsirisEvaluationColumn from "../@types/folder/OsirisEvaluationColumn";
+import OsirisFolderColumn from "../@types/folder/OsirisFolderColumn";
+import OsirisLegalRepresentativeColumn from "../@types/folder/OsirisLegalRepresentativeColumn";
+import OsirisMailingAddressColumn from "../@types/folder/OsirisMailingAddressColumn";
+import OsirisPaymentsColumn from "../@types/folder/OsirisPaymentsColumn";
 
 export default class OsirisFolderEntity {
     constructor(
