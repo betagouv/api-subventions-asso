@@ -1,5 +1,5 @@
-import db from "../../shared/MongoConnection";
-import { MONGO_BATCH_SIZE } from "../../configurations/mongo.conf";
+import db from "../../../shared/MongoConnection";
+import { MONGO_BATCH_SIZE } from "../../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisFolderEntity from "../entities/OsirisFoldersEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";

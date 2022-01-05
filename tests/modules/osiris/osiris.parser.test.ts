@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-import OsirisParser from "../../src/osiris/osiris.parser";
-import OsirisFolderEntity from "../../src/osiris/entities/OsirisFoldersEntity";
+import OsirisParser from "../../../src/modules/osiris/osiris.parser";
+import OsirisFolderEntity from "../../../src/modules/osiris/entities/OsirisFoldersEntity";
 
 describe("OsirisParser", () => {
     describe('parseFolders', () => {

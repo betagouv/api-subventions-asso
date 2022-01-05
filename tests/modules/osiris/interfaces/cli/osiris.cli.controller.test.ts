@@ -1,15 +1,15 @@
 import path from "path";
-import OsirisFolderEntity from "../../../../src/osiris/entities/OsirisFoldersEntity";
+import OsirisFolderEntity from "../../../../../src/modules/osiris/entities/OsirisFoldersEntity";
 
-jest.mock('../../../../src/osiris/osiris.parser', () => ({
+jest.mock('../../../../../src/modules/osiris/osiris.parser', () => ({
     parseFolders: jest.fn(() => []),
     parseActions: jest.fn(() => [])
 }));
 
 
-import OsirisCliController from "../../../../src/osiris/interfaces/cli/osiris.cli.contoller";
-import OsirisParser from "../../../../src/osiris/osiris.parser";
-import osirisService from "../../../../src/osiris/osiris.service";
+import OsirisCliController from "../../../../../src/modules/osiris/interfaces/cli/osiris.cli.contoller";
+import OsirisParser from "../../../../../src/modules/osiris/osiris.parser";
+import osirisService from "../../../../../src/modules/osiris/osiris.service";
 
 
 describe("OsirisCliController", () => {

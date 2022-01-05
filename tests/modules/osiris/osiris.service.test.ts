@@ -1,5 +1,5 @@
-import OsirisFolderEntity from "../../src/osiris/entities/OsirisFoldersEntity";
-import osirisService, { OsirisService } from "../../src/osiris/osiris.service";
+import OsirisFolderEntity from "../../../src/modules/osiris/entities/OsirisFoldersEntity";
+import osirisService, { OsirisService } from "../../../src/modules/osiris/osiris.service";
 
 describe("OsirisService", () => {
     it("should retrun an instance of osirisService", () => {

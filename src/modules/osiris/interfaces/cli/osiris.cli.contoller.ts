@@ -1,8 +1,8 @@
 import fs from "fs";
 
 
-import { StaticImplements } from "../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../@types/Cli.interface";
+import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
+import { CliStaticInterface} from "../../../../@types/Cli.interface";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
 import OsirisFolderEntity from "../../entities/OsirisFoldersEntity";
