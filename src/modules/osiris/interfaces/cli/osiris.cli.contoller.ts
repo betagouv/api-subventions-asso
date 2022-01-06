@@ -61,7 +61,7 @@ export default class OsirisCliController {
 
     async findAll(type:string, format? :string) {
         if (typeof type !== "string") {
-            throw new Error("Parse command need type args");
+            throw new Error("FindAll command need type args");
         }
 
         let data: Array<OsirisActionEntity | OsirisFileEntity> = [];

@@ -1,18 +1,28 @@
 import path from "path";
+import OsirisActionEntity from "../../../../../src/modules/osiris/entities/OsirisActionEntity";
 import OsirisFileEntity from "../../../../../src/modules/osiris/entities/OsirisFileEntity";
 
-jest.mock('../../../../../src/modules/osiris/osiris.parser', () => ({
-    parseFiles: jest.fn(() => []),
-    parseActions: jest.fn(() => [])
-}));
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 import OsirisCliController from "../../../../../src/modules/osiris/interfaces/cli/osiris.cli.contoller";
 import OsirisParser from "../../../../../src/modules/osiris/osiris.parser";
 import osirisService from "../../../../../src/modules/osiris/osiris.service";
 
 
+
 describe("OsirisCliController", () => {
+    const spys: jest.SpyInstance<unknown>[] = [];
+    beforeAll(() => {
+        spys.push(
+            jest.spyOn(OsirisParser, 'parseFiles'),
+            jest.spyOn(OsirisParser, 'parseActions'),
+        )
+    });
+
+    afterAll(() => {
+        spys.forEach(spy => spy.mockReset());
+    });
+
     describe('parse cli files', () => {
         let controller: OsirisCliController;
 
@@ -115,15 +125,30 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { file: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
-            await osirisService.addFile(entity);
+            const file = { file: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
+            const action = { file: { osirisId: "FAKE_ID"}, beneficiaryAssociation: { rna: "FAKE_RNA"} } as unknown as OsirisActionEntity;
 
+            await osirisService.addFile(file);
+            await osirisService.addAction(action);
+        });
+
+        it('should throw error because no agrs', () => {
+            expect(controller.findAll).rejects.toThrowError("FindAll command need type args");
         });
 
         it('should log all files', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
             await controller.findAll("files", "json");
+            expect(JSON.parse(data)).toHaveLength(1);
+
+            consoleInfo.mockReset();
+        });
+
+        it('should log all actions', async () => {
+            let data = "";
+            const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
+            await controller.findAll("actions", "json");
             expect(JSON.parse(data)).toHaveLength(1);
 
             consoleInfo.mockReset();
