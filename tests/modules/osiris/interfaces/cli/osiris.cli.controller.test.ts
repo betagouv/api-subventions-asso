@@ -13,7 +13,7 @@ import osirisService from "../../../../../src/modules/osiris/osiris.service";
 
 
 describe("OsirisCliController", () => {
-    describe('parse cli folders', () => {
+    describe('parse cli files', () => {
         let controller: OsirisCliController;
 
         beforeEach(() => {
@@ -22,7 +22,7 @@ describe("OsirisCliController", () => {
 
         it('should call osiris parser', async () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
-            await controller.parse("folders", filePath);
+            await controller.parse("files", filePath);
             expect(OsirisParser.parseFiles).toHaveBeenCalled();
         });
 
@@ -31,7 +31,7 @@ describe("OsirisCliController", () => {
         });
 
         it('should throw an error because the file does not exist', () => {
-            expect(() => controller.parse("folders", "fake/path")).rejects.toThrowError("File not found fake/path");
+            expect(() => controller.parse("files", "fake/path")).rejects.toThrowError("File not found fake/path");
         });
     });
 
@@ -103,8 +103,8 @@ describe("OsirisCliController", () => {
             consoleInfo.mockReset();
         });
 
-        it('should log all folders', async () => {
-            await controller.findAll("folders");
+        it('should log all files', async () => {
+            await controller.findAll("files");
             expect(consoleInfo).toHaveBeenCalledTimes(1);
         });
     });
@@ -115,80 +115,80 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
+            const entity = { file: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
             await osirisService.addFile(entity);
 
         });
 
-        it('should log all folders', async () => {
+        it('should log all files', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findAll("folders", "json");
+            await controller.findAll("files", "json");
             expect(JSON.parse(data)).toHaveLength(1);
 
             consoleInfo.mockReset();
         });
     });
 
-    describe('findFileByRna cli ', () => {
+    describe('findFilesByRna cli ', () => {
         let controller: OsirisCliController;
 
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { folder: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
+            const entity = { file: { osirisId: "FAKE_ID"}, association: { rna: "FAKE_RNA"} } as unknown as OsirisFileEntity;
             await osirisService.addFile(entity);
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.findFileByRna).rejects.toThrowError("Parse command need rna args");
+            expect(controller.findFilesByRna).rejects.toThrowError("Parse command need rna args");
         });
 
-        it('should log a folder', async () => {
+        it('should log a file', async () => {
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation();
-            await controller.findFileByRna("FAKE_RNA");
+            await controller.findFilesByRna("FAKE_RNA");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
         });
 
-        it('should log a folder in json', async () => {
+        it('should log a file in json', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findFileByRna("FAKE_RNA", "json");
-            expect(JSON.parse(data).association.rna).toBe("FAKE_RNA");
+            await controller.findFilesByRna("FAKE_RNA", "json");
+            expect(JSON.parse(data)[0].association.rna).toBe("FAKE_RNA");
 
             consoleInfo.mockReset();
         });
     });
 
-    describe('findFileBySiret cli ', () => {
+    describe('findFilesBySiret cli ', () => {
         let controller: OsirisCliController;
 
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity = { folder: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFileEntity;
+            const entity = { file: { osirisId: "FAKE_ID"}, association: { siret: "FAKE_SIRET"} } as unknown as OsirisFileEntity;
             await osirisService.addFile(entity);
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.findFileBySiret).rejects.toThrowError("Parse command need siret args");
+            expect(controller.findFilesBySiret).rejects.toThrowError("Parse command need siret args");
         });
 
-        it('should log a folder', async () => {
+        it('should log a file', async () => {
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation();
-            await controller.findFileBySiret("FAKE_SIRET");
+            await controller.findFilesBySiret("FAKE_SIRET");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
         });
 
-        it('should log a folder in json', async () => {
+        it('should log a file in json', async () => {
             let data = "";
             const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findFileBySiret("FAKE_SIRET", "json");
-            expect(JSON.parse(data).association.siret).toBe("FAKE_SIRET");
+            await controller.findFilesBySiret("FAKE_SIRET", "json");
+            expect(JSON.parse(data)[0].association.siret).toBe("FAKE_SIRET");
 
             consoleInfo.mockReset();
         });

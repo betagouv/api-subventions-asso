@@ -12,7 +12,7 @@ import OsirisPaymentsColumn from "../@types/file/OsirisPaymentsColumn";
 
 export default class OsirisFileEntity {
     constructor(
-        public readonly folder: OsirisFileColumn,
+        public readonly file: OsirisFileColumn,
         public readonly association: OsirisAssociationColumn,
         public readonly mailingAddress: OsirisMailingAddressColumn,
         public readonly legalRepresentative: OsirisLegalRepresentativeColumn,

@@ -6,12 +6,12 @@ import OsirisFileEntity from "../../../src/modules/osiris/entities/OsirisFileEnt
 
 describe("OsirisParser", () => {
     describe('parseFiles', () => {
-        it('should return osiris folders', () => {
+        it('should return osiris files', () => {
             const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls"));
-            const folders = OsirisParser.parseFiles(buffer);
+            const files = OsirisParser.parseFiles(buffer);
 
-            expect(folders).toHaveLength(1);
-            expect(folders[0]).toBeInstanceOf(OsirisFileEntity);
+            expect(files).toHaveLength(1);
+            expect(files[0]).toBeInstanceOf(OsirisFileEntity);
         });
     });
 });

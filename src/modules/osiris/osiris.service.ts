@@ -3,23 +3,23 @@ import OsirisFileEntity from "./entities/OsirisFileEntity";
 import osirisRepository from "./repository/osiris.repository";
 
 export class OsirisService {
-    public async addFile(folder: OsirisFileEntity): Promise<{state: string, result: OsirisFileEntity}> {
-        const existingFile = await osirisRepository.findFileByOsirisId(folder.folder.osirisId);
+    public async addFile(file: OsirisFileEntity): Promise<{state: string, result: OsirisFileEntity}> {
+        const existingFile = await osirisRepository.findFileByOsirisId(file.file.osirisId);
         if (existingFile) {
             return {
                 state: "updated",
-                result: await osirisRepository.updateFile(folder),
+                result: await osirisRepository.updateFile(file),
             };
         }
 
         return {
             state: "created",
-            result: await osirisRepository.addFile(folder),
+            result: await osirisRepository.addFile(file),
         };
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{state: string, result: OsirisActionEntity}> {
-        const existingAction = await osirisRepository.findActionByOsirisId(action.folder.osirisId);
+        const existingAction = await osirisRepository.findActionByOsirisId(action.file.osirisId);
         if (existingAction) {
             return {
                 state: "updated",
@@ -37,15 +37,15 @@ export class OsirisService {
         return osirisRepository.findAllFiles();
     }
 
-    public findFileBySiret(siret: string) {
-        return osirisRepository.findFileBySiret(siret);
+    public findFilesBySiret(siret: string) {
+        return osirisRepository.findFilesBySiret(siret);
     }
 
-    public findFileByRna(rna: string) {
-        return osirisRepository.findFileByRna(rna);
+    public findFilesByRna(rna: string) {
+        return osirisRepository.findFilesByRna(rna);
     }
 
-    public findAllAction() {
+    public findAllActions() {
         return osirisRepository.findAllActions();
     }
 

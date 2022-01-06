@@ -24,9 +24,9 @@ export default class OsirisCliController {
 
         const fileContent = fs.readFileSync(file);
 
-        if (type === "folders") {
-            const folders = OsirisParser.parseFiles(fileContent);
-            return folders.reduce((acc, osirisFile) => {
+        if (type === "files") {
+            const files = OsirisParser.parseFiles(fileContent);
+            return files.reduce((acc, osirisFile) => {
                 return acc.then(
                     (data = []) => {
                         return osirisService.addFile(osirisFile).then((result) => data.concat(result))
@@ -37,7 +37,7 @@ export default class OsirisCliController {
                 result: OsirisFileEntity;
             }[]>).then(results => {
                 const created = results.filter(({state}) => state === "created");
-                console.info(`${created.length} folders created and ${results.length - created.length} folders updated`);
+                console.info(`${created.length} files created and ${results.length - created.length} files updated`);
             });
         } else if (type === "actions") {
             const actions = OsirisParser.parseActions(fileContent);
@@ -66,10 +66,10 @@ export default class OsirisCliController {
 
         let data: Array<OsirisActionEntity | OsirisFileEntity> = [];
 
-        if (type === "folders") {
+        if (type === "files") {
             data = await osirisService.findAllFiles();
         } else if (type === "actions") {
-            data = await osirisService.findAllFiles();
+            data = await osirisService.findAllActions();
         }
 
         if (format === "json") {
@@ -79,33 +79,33 @@ export default class OsirisCliController {
         }
     }
 
-    async findFileBySiret(siret: string, format?: string) {
+    async findFilesBySiret(siret: string, format?: string) {
         if (typeof siret !== "string" ) {
             throw new Error("Parse command need siret args");
         }
 
-        const folder = await osirisService.findFileBySiret(siret);
+        const file = await osirisService.findFilesBySiret(siret);
 
 
         if (format === "json") {
-            console.info(JSON.stringify(folder));
+            console.info(JSON.stringify(file));
         } else {
-            console.info(folder);
+            console.info(file);
         }
     }
 
-    async findFileByRna(rna: string, format?: string) {
+    async findFilesByRna(rna: string, format?: string) {
         if (typeof rna !== "string" ) {
             throw new Error("Parse command need rna args");
         }
 
-        const folder = await osirisService.findFileByRna(rna);
+        const files = await osirisService.findFilesByRna(rna);
 
 
         if (format === "json") {
-            console.info(JSON.stringify(folder));
+            console.info(JSON.stringify(files));
         } else {
-            console.info(folder);
+            console.info(files);
         }
     }
 }

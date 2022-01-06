@@ -33,7 +33,7 @@ export default class OsirisParser {
         const raws = data.slice(2, data.length - 1) as unknown[]; // Delete Headers and footers
 
         return raws.map((raw) => {
-            const folderColumn = this.createObjectByColumnDef<OsirisFileColumn>((raw as unknown[]), OsirisFileColumnKeys);
+            const fileColumn = this.createObjectByColumnDef<OsirisFileColumn>((raw as unknown[]), OsirisFileColumnKeys);
             const associationColumn = this.createObjectByColumnDef<OsirisAssociationColumn>((raw as unknown[]), OsirisAssociationColumnKeys);
             const mailingAddressColumn = this.createObjectByColumnDef<OsirisMailingAddressColumn>((raw as unknown[]), OsirisMailingAddressColumnKeys);
             const legalRepresentativeColumn = this.createObjectByColumnDef<OsirisLegalRepresentativeColumn>((raw as unknown[]), OsirisLegalRepresentativeColumnKeys);
@@ -44,7 +44,7 @@ export default class OsirisParser {
             const commentsColumn = this.createObjectByColumnDef<OsirisCommentsColumn>((raw as unknown[]), OsirisCommentsColumnKeys);
 
             return new OsirisFileEntity(
-                folderColumn,
+                fileColumn,
                 associationColumn,
                 mailingAddressColumn,
                 legalRepresentativeColumn,
@@ -64,7 +64,7 @@ export default class OsirisParser {
         const raws = data.slice(2, data.length - 1) as unknown[]; // Delete Headers and footers
 
         return raws.map((raw) => {
-            const folderColumn = this.createObjectByColumnDef<OsirisActionFileColumn>((raw as unknown[]), OsirisActionFileColumnKeys);
+            const fileColumn = this.createObjectByColumnDef<OsirisActionFileColumn>((raw as unknown[]), OsirisActionFileColumnKeys);
             const beneficiariesColumn = this.createObjectByColumnDef<OsirisActionBeneficiaryAssociationColumn>((raw as unknown[]), OsirisActionBeneficiaryAssociationColumnKeys);
             const specifications = this.createObjectByColumnDef<OsirisActionSpecificationsColumn>((raw as unknown[]), OsirisActionSpecificationsColumnKeys);
             const affiliatingFederation = this.createObjectByColumnDef<OsirisActionAffiliatingFederationColumn>((raw as unknown[]), OsirisActionAffiliatingFederationColumnKeys);
@@ -79,7 +79,7 @@ export default class OsirisParser {
             const custom = this.createObjectByColumnDef<OsirisActionCustomColumn>((raw as unknown[]), OsirisActionCustomColumnKeys);
 
             return new OsirisActionEntity(
-                folderColumn,
+                fileColumn,
                 beneficiariesColumn,
                 specifications,
                 affiliatingFederation,

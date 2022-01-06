@@ -11,13 +11,13 @@ export class OsirisRepository {
     // File Part
     public async addFile(osirisFile: OsirisFileEntity) {
         await this.fileCollection.insertOne(osirisFile);
-        return this.findFileByOsirisId(osirisFile.folder.osirisId) as OsirisFileEntity;
+        return this.findFileByOsirisId(osirisFile.file.osirisId) as OsirisFileEntity;
     }
 
     public async updateFile(osirisFile: OsirisFileEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         return (await this.fileCollection.findOneAndUpdate({ 
-            folder: { osirisId: osirisFile.folder.osirisId } 
+            file: { osirisId: osirisFile.file.osirisId } 
         },
         { $set: osirisFile }, options)).value as OsirisFileEntity;
     }
@@ -27,31 +27,31 @@ export class OsirisRepository {
     }
 
     public findFileByOsirisId(osirisId: string) {
-        return this.fileCollection.findOne({ "folder.osirisId": osirisId }) as unknown as (OsirisFileEntity | null);
+        return this.fileCollection.findOne({ "file.osirisId": osirisId }) as unknown as (OsirisFileEntity | null);
     }
 
-    public findFileBySiret(siret: string) {
-        return this.fileCollection.findOne({
+    public findFilesBySiret(siret: string) {
+        return this.fileCollection.find({
             "association.siret": siret
-        });
+        }).toArray();
     }
 
-    public findFileByRna(rna: string) {
-        return this.fileCollection.findOne({
+    public findFilesByRna(rna: string) {
+        return this.fileCollection.find({
             "association.rna": rna
-        });
+        }).toArray();
     }
 
     // Action Part
     public async addAction(osirisAction: OsirisActionEntity) {
         await this.actionCollection.insertOne(osirisAction);
-        return this.findActionByOsirisId(osirisAction.folder.osirisId) as OsirisActionEntity;
+        return this.findActionByOsirisId(osirisAction.file.osirisId) as OsirisActionEntity;
     }
 
     public async updateAction(osirisAction: OsirisActionEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         return (await this.actionCollection.findOneAndUpdate({ 
-            folder: { osirisId: osirisAction.folder.osirisId } 
+            file: { osirisId: osirisAction.file.osirisId } 
         },
         { $set: osirisAction }, options)).value as OsirisActionEntity;
     }
@@ -61,19 +61,19 @@ export class OsirisRepository {
     }
 
     public findActionByOsirisId(osirisId: string) {
-        return this.actionCollection.findOne({ "folder.osirisId": osirisId }) as unknown as (OsirisActionEntity | null);
+        return this.actionCollection.findOne({ "file.osirisId": osirisId }) as unknown as (OsirisActionEntity | null);
     }
 
     public findActionsBySiret(siret: string) {
         return this.actionCollection.find({
-            "beneficiaryAssociation:.siret": siret
-        });
+            "beneficiaryAssociation.siret": siret
+        }).toArray();
     }
 
     public findActionsByRna(rna: string) {
         return this.actionCollection.find({
-            "beneficiaryAssociation:.rna": rna
-        });
+            "beneficiaryAssociation.rna": rna
+        }).toArray();
     }
 }
 

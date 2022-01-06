@@ -15,7 +15,7 @@ import OsirisActionEvaluationColumn from "../@types/action/OsirisActionEvaluatio
 
 export default class OsirisActionEntity {
     constructor(
-        public readonly folder: OsirisActionFileColumn,
+        public readonly file: OsirisActionFileColumn,
         public readonly beneficiaryAssociation: OsirisActionBeneficiaryAssociationColumn,
         public readonly specifications: OsirisActionSpecificationsColumn,
         public readonly affiliatingFederation: OsirisActionAffiliatingFederationColumn,

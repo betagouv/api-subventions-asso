@@ -1,10 +1,10 @@
 export default interface OsirisCommentsColumn {
-    readonly folders: string;
+    readonly file: string;
     readonly evaluation: string;
 }
 
 
 export const OsirisCommentsColumnKeys = {
-    folders: 54,
+    file: 54,
     evaluation: 55,
 }
