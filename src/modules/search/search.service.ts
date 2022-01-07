@@ -1,71 +1,47 @@
-import OsirisActionEntity from "../osiris/entities/OsirisActionEntity";
-import OsirisFileEntity from "../osiris/entities/OsirisFileEntity";
 import osirisService from "../osiris/osiris.service";
+import ProviderRequestInterface from "./@types/ProviderRequestInterface";
+import RequestEntity from "./entities/RequestEntity";
 import RnaProvider from "./providers/rna.provider";
 import SiretProvider from "./providers/siret.provider";
+
+const providers: ProviderRequestInterface[] = [
+    osirisService,
+]
 
 export class SearchService {
 
     public async getBySiret(siret: string) {
-        const files = await osirisService.findFilesBySiret(siret);
-        const actions = await osirisService.findActionsBySiret(siret);
-
-        const filesWithActions = files.reduce((acc, file) => {
-            const filtredAction = actions.filter(action => action.file.lcaId === file.file.lcaId);
-            acc.push({
-                file,
-                actions: filtredAction
+        const requests = await providers.reduce((acc, provider) => {
+            return acc.then(async (requests) => {
+                return requests.concat(...(await provider.findBySiret(siret)));
             });
-            return acc;
-        }, [] as { file: OsirisFileEntity, actions: OsirisActionEntity[]}[]);
-
-        const actionsWithoutFile = actions.reduce((acc, action) => {
-            if (files.find(file => action.file.lcaId === file.file.lcaId)) return acc;
-
-            acc.push(action);
-            return acc;
-        }, [] as OsirisActionEntity[]);
+        }, Promise.resolve([]) as Promise<RequestEntity[]>);
 
         return {
-            osiris: {
-                files: filesWithActions,
-                actionsWithoutFile
+            requests,
+            rnaAPI: {
+                rna: requests.length ? await RnaProvider.findByRna(requests[0].legalInformations.rna) : null,
+                siret: await RnaProvider.findBySiret(siret)
             },
-            rna: await RnaProvider.findBySiret(siret),
-            siret: await SiretProvider.findBySiret(siret),
+            siretAPI: await SiretProvider.findBySiret(siret),
         }
     }
 
     public async getByRna(rna: string) {
-        const files = await osirisService.findFilesByRna(rna);
-        const actions = await osirisService.findActionsByRna(rna);
-
-        const filesWithActions = files.reduce((acc, file) => {
-            const filtredAction = actions.filter(action => action.file.lcaId === file.file.lcaId);
-            acc.push({
-                file,
-                actions: filtredAction
+        const requests = await providers.reduce((acc, provider) => {
+            return acc.then(async (requests) => {
+                return requests.concat(...(await provider.findByRna(rna)));
             });
-            return acc;
-        }, [] as { file: OsirisFileEntity, actions: OsirisActionEntity[]}[]);
+        }, Promise.resolve([]) as Promise<RequestEntity[]>);
 
-        const actionsWithoutFile = actions.reduce((acc, action) => {
-            if (files.find(file => action.file.lcaId === file.file.lcaId)) return acc;
-
-            acc.push(action);
-            return acc;
-        }, [] as OsirisActionEntity[]);
-
-        const fileWithSiret = files.find(file => file.association.siret);
-        const siret = fileWithSiret ? fileWithSiret.association.siret : null;
 
         return {
-            osiris: {
-                files: filesWithActions,
-                actionsWithoutFile
+            requests,
+            rnaAPI: {
+                siret: requests.length ? await RnaProvider.findBySiret(requests[0].legalInformations.siret) : null,
+                rna: await RnaProvider.findByRna(rna)
             },
-            rna: await RnaProvider.findByRna(rna),
-            siret: siret ? await SiretProvider.findBySiret(siret) : null
+            siretAPI: requests.length ? await SiretProvider.findBySiret(requests[0].legalInformations.siret) : null,
         }
     }
 }

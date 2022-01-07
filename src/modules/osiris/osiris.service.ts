@@ -1,25 +1,26 @@
+import ProviderRequestInterface from "../search/@types/ProviderRequestInterface";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisFileEntity from "./entities/OsirisFileEntity";
+import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import osirisRepository from "./repository/osiris.repository";
 
-export class OsirisService {
-    public async addFile(file: OsirisFileEntity): Promise<{state: string, result: OsirisFileEntity}> {
-        const existingFile = await osirisRepository.findFileByOsirisId(file.file.osirisId);
+export class OsirisService implements ProviderRequestInterface {
+    public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
+        const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
         if (existingFile) {
             return {
                 state: "updated",
-                result: await osirisRepository.updateFile(file),
+                result: await osirisRepository.updateRequest(request),
             };
         }
 
         return {
             state: "created",
-            result: await osirisRepository.addFile(file),
+            result: await osirisRepository.addRequest(request),
         };
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{state: string, result: OsirisActionEntity}> {
-        const existingAction = await osirisRepository.findActionByOsirisId(action.file.osirisId);
+        const existingAction = await osirisRepository.findActionByOsirisId(action.indexedInformations.osirisActionId);
         if (existingAction) {
             return {
                 state: "updated",
@@ -33,28 +34,30 @@ export class OsirisService {
         };
     }
 
-    public findAllFiles() {
-        return osirisRepository.findAllFiles();
+    public async findBySiret(siret: string) {
+        const requests = await osirisRepository.findRequestsBySiret(siret);
+
+        for (const request of requests) {
+            request.actions = await osirisRepository.findActionsByCompteAssoId(request.providerInformations.compteAssoId)
+        }
+        return requests;
     }
 
-    public findFilesBySiret(siret: string) {
-        return osirisRepository.findFilesBySiret(siret);
+    public async findByRna(rna: string) {
+        const requests = await osirisRepository.findRequestsByRna(rna);
+
+        for (const request of requests) {
+            request.actions = await osirisRepository.findActionsByCompteAssoId(request.providerInformations.compteAssoId)
+        }
+        return requests;
     }
 
-    public findFilesByRna(rna: string) {
-        return osirisRepository.findFilesByRna(rna);
+    public findAllRequests() {
+        return osirisRepository.findAllRequests();
     }
 
     public findAllActions() {
         return osirisRepository.findAllActions();
-    }
-
-    public findActionsBySiret(siret: string) {
-        return osirisRepository.findActionsBySiret(siret);
-    }
-
-    public findActionsByRna(rna: string) {
-        return osirisRepository.findActionsByRna(rna);
     }
 }
 

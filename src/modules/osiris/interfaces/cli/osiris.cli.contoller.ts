@@ -5,8 +5,8 @@ import { StaticImplements } from "../../../../decorators/staticImplements.decora
 import { CliStaticInterface} from "../../../../@types/Cli.interface";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
-import OsirisFileEntity from "../../entities/OsirisFileEntity";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";
+import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 
 
 @StaticImplements<CliStaticInterface>()
@@ -24,20 +24,20 @@ export default class OsirisCliController {
 
         const fileContent = fs.readFileSync(file);
 
-        if (type === "files") {
-            const files = OsirisParser.parseFiles(fileContent);
-            return files.reduce((acc, osirisFile) => {
+        if (type === "requests") {
+            const requests = OsirisParser.parseRequests(fileContent);
+            return requests.reduce((acc, osirisRequest) => {
                 return acc.then(
                     (data = []) => {
-                        return osirisService.addFile(osirisFile).then((result) => data.concat(result))
+                        return osirisService.addRequest(osirisRequest).then((result) => data.concat(result))
                     }
                 );
             }, Promise.resolve([]) as Promise<{
                 state: string;
-                result: OsirisFileEntity;
+                result: OsirisRequestEntity;
             }[]>).then(results => {
                 const created = results.filter(({state}) => state === "created");
-                console.info(`${created.length} files created and ${results.length - created.length} files updated`);
+                console.info(`${created.length} requests created and ${results.length - created.length} requests updated`);
             });
         } else if (type === "actions") {
             const actions = OsirisParser.parseActions(fileContent);
@@ -64,10 +64,10 @@ export default class OsirisCliController {
             throw new Error("FindAll command need type args");
         }
 
-        let data: Array<OsirisActionEntity | OsirisFileEntity> = [];
+        let data: Array<OsirisActionEntity | OsirisRequestEntity> = [];
 
-        if (type === "files") {
-            data = await osirisService.findAllFiles();
+        if (type === "requests") {
+            data = await osirisService.findAllRequests();
         } else if (type === "actions") {
             data = await osirisService.findAllActions();
         }
@@ -79,12 +79,12 @@ export default class OsirisCliController {
         }
     }
 
-    async findFilesBySiret(siret: string, format?: string) {
+    async findBySiret(siret: string, format?: string) {
         if (typeof siret !== "string" ) {
             throw new Error("Parse command need siret args");
         }
 
-        const file = await osirisService.findFilesBySiret(siret);
+        const file = await osirisService.findBySiret(siret);
 
 
         if (format === "json") {
@@ -94,18 +94,18 @@ export default class OsirisCliController {
         }
     }
 
-    async findFilesByRna(rna: string, format?: string) {
+    async findByRna(rna: string, format?: string) {
         if (typeof rna !== "string" ) {
             throw new Error("Parse command need rna args");
         }
 
-        const files = await osirisService.findFilesByRna(rna);
+        const requests = await osirisService.findByRna(rna);
 
 
         if (format === "json") {
-            console.info(JSON.stringify(files));
+            console.info(JSON.stringify(requests));
         } else {
-            console.info(files);
+            console.info(requests);
         }
     }
 }

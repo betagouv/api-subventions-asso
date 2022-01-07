@@ -9,7 +9,7 @@ export default class SiretProvider {
             const res = await axios.get(`${SiretProvider.BASE_URL}/${siret}`);
             return res.data
         } catch {
-            return {};
+            return null;
         }
     }
 }
