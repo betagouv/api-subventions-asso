@@ -3,6 +3,8 @@ import siretService from "../external/siret.service";
 import osirisService from "../osiris/osiris.service";
 import ProviderRequestInterface from "./@types/ProviderRequestInterface";
 import RequestEntity from "./entities/RequestEntity";
+import leCompteAssoService from "../leCompteAsso/leCompteAsso.service";
+
 export class SearchService {
 
     public async getBySiret(siret: string) {
@@ -80,6 +82,7 @@ export class SearchService {
     private findRequests(id: string, type: "siret" | "rna") {
         const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop bugs)
             osirisService,
+            leCompteAssoService,
         ];
 
         return providers.reduce((acc, provider) => {

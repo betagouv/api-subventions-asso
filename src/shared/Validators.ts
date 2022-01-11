@@ -1,6 +1,6 @@
 
 export function isSiret(siret: string): boolean {
-    return typeof siret === "string" && siret.length === 14 && !isNaN(parseInt(siret, 10))
+    return typeof siret === "string" && /\d{14}/.test(siret);
 }
 
 export function isRna(rna: string): boolean {
