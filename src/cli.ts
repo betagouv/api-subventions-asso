@@ -1,10 +1,12 @@
 import { CliStaticInterface } from "./@types/Cli.interface";
+import OsirisCliController from "./modules/osiris/interfaces/cli/osiris.cli.contoller";
 import { connectDB } from "./shared/MongoConnection";
 
 async function main() {
     await connectDB();
 
     const contollers: CliStaticInterface[] = [
+        OsirisCliController,
     ];
     
     const args = process.argv.slice(2);
