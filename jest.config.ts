@@ -32,6 +32,11 @@ export default {
 
     // Indicates which provider should be used to instrument code for coverage
     coverageProvider: "v8",
+    collectCoverageFrom: [
+        "src/**/*.ts"
+    ],
+    coveragePathIgnorePatterns: [
+    ],
 
     // A list of reporter names that Jest uses when writing coverage reports
     // coverageReporters: [

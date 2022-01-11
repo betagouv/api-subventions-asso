@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc --project ./",
     "lint": "eslint . --ext .ts",
-    "test": "jest",
+    "test": "jest --runInBand",
     "postinstall": "husky install"
   },
   "repository": {
