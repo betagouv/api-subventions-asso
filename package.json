@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "cli": "ts-node src/cli.ts",
     "build": "tsc --project ./",
     "lint": "eslint . --ext .ts",
     "test": "jest --runInBand",
@@ -24,6 +25,7 @@
     "axios": "^0.24.0",
     "express": "^4.17.2",
     "mongodb": "^4.2.2",
+    "node-xlsx": "^0.21.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.1",
