@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/betagouv/datasubvention#readme",
   "dependencies": {
-    "mongodb": "^4.2.2"
+    "axios": "^0.24.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.1",
