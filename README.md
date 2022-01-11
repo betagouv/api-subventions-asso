@@ -1,6 +1,6 @@
 # Data Subvention
 
-Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.
+Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.   
 Vous devez également installer les dépendances avec `npm install`
 
 ## Démarrer l'app en local
