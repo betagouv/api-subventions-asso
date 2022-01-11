@@ -23,7 +23,7 @@ async function main() {
     }
     
     const result = instance[args[1]].call(instance, ...args.slice(2));
-
+    
     if (result instanceof Promise) {
         result.catch(console.error).finally(() => process.exit())
     }
