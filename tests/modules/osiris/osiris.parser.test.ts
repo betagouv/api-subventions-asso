@@ -24,7 +24,7 @@ describe("OsirisParser", () => {
                     rna: "W0000000",
                     name: "NANTES PLEINS CONTACTS"
                 },
-                provider: "osiris",
+                provider: "Osiris",
                 providerInformations: {
                     "osirisId": "DD00-00-0000",
                     "compteAssoId": "21-000000"

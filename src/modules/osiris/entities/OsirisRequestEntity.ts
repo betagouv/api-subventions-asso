@@ -5,7 +5,7 @@ import IOsirisRequestInformations from "../@types/IOsirisRequestInformations";
 import OsirisActionEntity from "./OsirisActionEntity";
 
 export default class OsirisRequestEntity extends RequestEntity {
-    public static defaultMainCategory = "";
+    public static defaultMainCategory = "Dossier";
 
     public static indexedProviderInformationsPath = {
         osirisId: ["Dossier", "N° Dossier Osiris"],
@@ -18,7 +18,7 @@ export default class OsirisRequestEntity extends RequestEntity {
         name: ["Association", "Nom"],
     }
 
-    public provider = "osiris";
+    public provider = "Osiris";
 
     constructor(
         public legalInformations: ILegalInformations,

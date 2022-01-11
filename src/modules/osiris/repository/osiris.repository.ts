@@ -5,22 +5,23 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 
 export class OsirisRepository {
-    private readonly requestCollection = db.collection<OsirisRequestEntity>("osiris-files");
+    private readonly requestCollection = db.collection<OsirisRequestEntity>("osiris-requests");
     private readonly actionCollection = db.collection<OsirisActionEntity>("osiris-actions");
 
     // Request Part
     public async addRequest(osirisRequest: OsirisRequestEntity) {
         await this.requestCollection.insertOne(osirisRequest);
-        osirisRequest.legalInformations.siret
         return this.findRequestByOsirisId(osirisRequest.providerInformations.osirisId) as OsirisRequestEntity;
     }
 
     public async updateRequest(osirisRequest: OsirisRequestEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {_id, ...requestWithoutId } = osirisRequest;
         return (await this.requestCollection.findOneAndUpdate({ 
             "providerInformations.osirisId": osirisRequest.providerInformations.osirisId 
         },
-        { $set: osirisRequest }, options)).value as OsirisRequestEntity;
+        { $set: requestWithoutId }, options)).value as OsirisRequestEntity;
     }
     
     public async findAllRequests(limit:number = MONGO_BATCH_SIZE) {
