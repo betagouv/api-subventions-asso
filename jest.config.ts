@@ -36,6 +36,10 @@ export default {
         "src/**/*.ts"
     ],
     coveragePathIgnorePatterns: [
+        "<rootDir>/node_modules",
+        "@types",
+        "decorators",
+        "src/cli.ts",
         "src/shared/MongoConnection.ts",
     ],
 
