@@ -1,48 +1,100 @@
+import rnaService from "../external/rna.service";
+import siretService from "../external/siret.service";
 import osirisService from "../osiris/osiris.service";
 import ProviderRequestInterface from "./@types/ProviderRequestInterface";
 import RequestEntity from "./entities/RequestEntity";
-import RnaProvider from "./providers/rna.provider";
-import SiretProvider from "./providers/siret.provider";
-
-const providers: ProviderRequestInterface[] = [
-    osirisService,
-]
+import leCompteAssoService from "../leCompteAsso/leCompteAsso.service";
 
 export class SearchService {
 
     public async getBySiret(siret: string) {
-        const requests = await providers.reduce((acc, provider) => {
-            return acc.then(async (requests) => {
-                return requests.concat(...(await provider.findBySiret(siret)));
+        const requests = await this.findRequestsBySiret(siret);
+
+        const { result } = requests.reduceRight((acc, request, requestIndex) => {
+            acc.stack.splice(requestIndex, 1);
+
+            const similarRequestIndexes: number[] = [];
+            acc.stack.forEach((otherRequest, pos) => {
+                const key = Object.keys(request.providerInformations).find((key) => otherRequest.providerInformations[key]);
+
+                if (!key || request.providerInformations[key] !== otherRequest.providerInformations[key]) {
+                    return;
+                }
+                similarRequestIndexes.push(pos);
             });
-        }, Promise.resolve([]) as Promise<RequestEntity[]>);
+
+            acc.result.push([request, ...similarRequestIndexes.map(index => acc.stack[index])]);
+
+            similarRequestIndexes.reverse().forEach(index => acc.stack.splice(index, 1));
+            return acc;
+        }, {result: [] as RequestEntity[][], stack: requests });
 
         return {
-            requests,
+            requests: result,
             rnaAPI: {
-                rna: requests.length ? await RnaProvider.findByRna(requests[0].legalInformations.rna) : null,
-                siret: await RnaProvider.findBySiret(siret)
+                rna: result.length ? await rnaService.findByRna(result[0][0].legalInformations.rna) : null,
+                siret: await rnaService.findBySiret(siret)
             },
-            siretAPI: await SiretProvider.findBySiret(siret),
+            siretAPI: await siretService.findBySiret(siret),
         }
     }
 
     public async getByRna(rna: string) {
-        const requests = await providers.reduce((acc, provider) => {
-            return acc.then(async (requests) => {
-                return requests.concat(...(await provider.findByRna(rna)));
-            });
-        }, Promise.resolve([]) as Promise<RequestEntity[]>);
+        const requests = await this.findRequestsByRna(rna);
 
+        const { result } = requests.reduceRight((acc, request, requestIndex) => {
+            acc.stack.splice(requestIndex, 1);
+
+            const similarRequestIndexes: number[] = [];
+            acc.stack.forEach((otherRequest, pos) => {
+                const key = Object.keys(request.providerInformations).find((key) => otherRequest.providerInformations[key]);
+
+                if (!key || request.providerInformations[key] !== otherRequest.providerInformations[key]) {
+                    return;
+                }
+                similarRequestIndexes.push(pos);
+            });
+
+            acc.result.push([request, ...similarRequestIndexes.map(index => acc.stack[index])]);
+
+            similarRequestIndexes.reverse().forEach(index => acc.stack.splice(index, 1));
+            return acc;
+        }, {result: [] as RequestEntity[][], stack: requests });
 
         return {
-            requests,
+            requests: result,
             rnaAPI: {
-                siret: requests.length ? await RnaProvider.findBySiret(requests[0].legalInformations.siret) : null,
-                rna: await RnaProvider.findByRna(rna)
+                siret: result.length ? await rnaService.findBySiret(result[0][0].legalInformations.siret) : null,
+                rna: await rnaService.findByRna(rna)
             },
-            siretAPI: requests.length ? await SiretProvider.findBySiret(requests[0].legalInformations.siret) : null,
+            siretAPI: result.length ? await siretService.findBySiret(result[0][0].legalInformations.siret) : null,
         }
+    }
+
+    public findRequestsBySiret(siret: string) {
+        return this.findRequests(siret, "siret");
+    }
+
+    public findRequestsByRna(rna: string) {
+        return this.findRequests(rna, "rna");
+    }
+
+    private findRequests(id: string, type: "siret" | "rna") {
+        const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop bugs)
+            osirisService,
+            leCompteAssoService,
+        ];
+
+        return providers.reduce((acc, provider) => {
+            return acc.then(async (requests) => {
+                if (type === "siret") {
+                    requests.push(...await provider.findBySiret(id));
+                } else {
+                    requests.push(...await provider.findByRna(id));
+                }
+                return requests;
+            });
+        }, Promise.resolve([]) as Promise<RequestEntity[]>);
     }
 }
 
