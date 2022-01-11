@@ -1,7 +1,9 @@
 # Data Subvention
 
-Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.   
-Vous devez également installer les dépendances avec `npm install`
+Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.
+Vous devez également installer les dépendances avec `npm install`.
+
+Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/datasubvention`.    Il est possible de paramétrer ses informations via les variables d'environnements. Voir le fichier `configurations/mongo.conf.ts`.
 
 ## Démarrer l'app en local
 
@@ -11,7 +13,6 @@ Vous devez également installer les dépendances avec `npm install`
 ## Démarrer les tests et le coverage
 
 1. Run `npm run test`
-
 
 ## Choix technique et architecture
 
@@ -27,7 +28,6 @@ L'architecture utilisée est une inspiration libre de la clean architecture (Voi
 MongoDB a été choisi pour sa simplicité d'utilisation et de mise en place. L'architecture permettra de change de système de base de données ou d'utiliser un ORM .
 
 Il est important de notés que chaque module ne peut communiquer avec un autre module SEULEMENT via le service de l'autre module. Il est préférable que chaque service qui est utilisé par un autre module décrive une interface (dans un fichier séparé) auquel le service répond. Ainsi si le service change il sera forcer de continuer à repondre à ce contrat avec les autres modules.
-
 
 Il faut au maximum évitée l'inter-dépendance entre modules.
 
