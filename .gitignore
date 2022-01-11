@@ -105,3 +105,8 @@ dist
 
 # TS build folder
 build/
+
+# Jest tests parts
+.~lock*
+
+globalConfig.json

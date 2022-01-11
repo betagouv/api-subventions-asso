@@ -5,7 +5,8 @@
         "rootDir": "./",
         "outDir": "./build",
         "esModuleInterop": true,
-        "strict": true
+        "strict": true,
+        "experimentalDecorators": true,
     },
     "exclude": [
         "tests",
