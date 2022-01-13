@@ -13,9 +13,9 @@ export default class OsirisRequestEntity extends RequestEntity {
     }
 
     public static indexedLegalInformationsPath = {
-        siret: ["Association", "N° Siret"],
-        rna: ["Association", "N° RNA"],
-        name: ["Association", "Nom"],
+        siret: [["Association", "Bénéficiaire"], "N° Siret"],
+        rna: [["Association", "Bénéficiaire"], "N° RNA"],
+        name: [["Association", "Bénéficiaire"], "Nom"],
     }
 
     public provider = "Osiris";
