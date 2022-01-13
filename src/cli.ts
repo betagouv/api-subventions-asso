@@ -1,3 +1,4 @@
+import { mkdirSync, existsSync } from "fs";
 import { CliStaticInterface } from "./@types/Cli.interface";
 import LeCompteAssoCliController from "./modules/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import OsirisCliController from "./modules/osiris/interfaces/cli/osiris.cli.contoller";
@@ -5,6 +6,10 @@ import { connectDB } from "./shared/MongoConnection";
 
 async function main() {
     await connectDB();
+
+    if (!existsSync("./logs")){
+        mkdirSync("./logs");
+    }
 
     const contollers: CliStaticInterface[] = [
         OsirisCliController,

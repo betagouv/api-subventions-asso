@@ -4,7 +4,7 @@ export function isSiret(siret: string): boolean {
 }
 
 export function isRna(rna: string): boolean {
-    return typeof rna === "string" && /W\d{9}/.test(rna);
+    return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
 }
 
 export function isAssociationName(name: string): boolean {
