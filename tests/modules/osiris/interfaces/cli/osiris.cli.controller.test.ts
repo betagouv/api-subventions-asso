@@ -89,7 +89,7 @@ describe("OsirisCliController", () => {
         it('should throw an error because unknown is not valid type', () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
 
-            expect(() => controller.parse("unknown",  filePath)).rejects.toThrowError("The type unknown is not taken into account");
+            expect(() => controller.parse("unknown" as "actions",  filePath)).rejects.toThrowError("The type unknown is not taken into account");
         });
     });
 
