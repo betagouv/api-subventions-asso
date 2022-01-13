@@ -54,9 +54,9 @@ describe("leCompteAssoService", () => {
     });
 
     describe("addRequest", () => {
-        let findRequestsBySiretMock: jest.SpyInstance<Promise<RequestEntity[]>, [siret: string]>;
-        let siretServiceFindBySiretMock: jest.SpyInstance<Promise<SiretDataInterface | null>, [siret: string]>;
-        let rnaServiceFindBySiretMock: jest.SpyInstance<Promise<RnaInterface | null>, [siret: string]>
+        let findRequestsBySiretMock: jest.SpyInstance<Promise<any>, any>;
+        let siretServiceFindBySiretMock: jest.SpyInstance<Promise<any>, any>;
+        let rnaServiceFindBySiretMock: jest.SpyInstance<Promise<any>, any>
 
         beforeEach(() => {
             findRequestsBySiretMock = jest.spyOn(searchService, "findRequestsBySiret");
