@@ -2,6 +2,7 @@ import xlsx from 'node-xlsx';
 
 import OsirisActionEntity from './entities/OsirisActionEntity';
 import OsirisRequestEntity from './entities/OsirisRequestEntity';
+import * as ParseHelper from "../../shared/helpers/ParserHelper";
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer): OsirisRequestEntity[] {
@@ -21,26 +22,15 @@ export default class OsirisParser {
                 if (!data[mainCategory]) data[mainCategory] = {};
                 data[mainCategory][category] = value
             });
-
             const legalInformations = {
-                siret: OsirisRequestEntity.indexedLegalInformationsPath.siret.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
-                rna: OsirisRequestEntity.indexedLegalInformationsPath.rna.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
-                name: OsirisRequestEntity.indexedLegalInformationsPath.name.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
+                siret: ParseHelper.findByPath(data, OsirisRequestEntity.indexedLegalInformationsPath.siret),
+                rna: ParseHelper.findByPath(data, OsirisRequestEntity.indexedLegalInformationsPath.rna),
+                name: ParseHelper.findByPath(data, OsirisRequestEntity.indexedLegalInformationsPath.name),
             };
 
             const indexedInformations = {
-                osirisId: OsirisRequestEntity.indexedProviderInformationsPath.osirisId.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
-                compteAssoId: OsirisRequestEntity.indexedProviderInformationsPath.compteAssoId.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
+                osirisId: ParseHelper.findByPath(data, OsirisRequestEntity.indexedProviderInformationsPath.osirisId),
+                compteAssoId: ParseHelper.findByPath(data, OsirisRequestEntity.indexedProviderInformationsPath.compteAssoId),
             };
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
@@ -67,12 +57,8 @@ export default class OsirisParser {
             });
 
             const indexedInformations = {
-                osirisActionId: OsirisActionEntity.indexedInformationsPath.osirisActionId.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
-                compteAssoId: OsirisActionEntity.indexedInformationsPath.compteAssoId.reduce((acc, name) => {
-                    return (acc as {[key: string]: unknown})[name];
-                }, data as unknown) as string,
+                osirisActionId: ParseHelper.findByPath(data, OsirisActionEntity.indexedInformationsPath.osirisActionId),
+                compteAssoId: ParseHelper.findByPath(data, OsirisActionEntity.indexedInformationsPath.compteAssoId),
             };
 
             return new OsirisActionEntity(indexedInformations, data);
@@ -85,10 +71,10 @@ export default class OsirisParser {
             return headers[0][position] || findLastHeader(position - 1);
         }
 
-        return (headers[0][position] || findLastHeader(position));
+        return (headers[0][position] || findLastHeader(position)).trim();
     }
 
     private static findCategory(headers: unknown[][], position: number): string {
-        return headers[1][position] as string;
+        return (headers[1][position] as string).trim();
     }
 }
