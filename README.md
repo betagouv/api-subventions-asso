@@ -3,7 +3,13 @@
 Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.
 Vous devez également installer les dépendances avec `npm install`.
 
-Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/datasubvention`.    Il est possible de paramétrer ses informations via les variables d'environnements. Voir le fichier `configurations/mongo.conf.ts`.
+Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    
+Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/datasubvention`.    
+Il est possible de paramétrer ses informations via les variables d'environnements. Voir le fichier `configurations/mongo.conf.ts`.
+
+Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :   
+`sudo docker pull mongo`   
+`sudo docker run -d -p 27017:27017 mongo`   
 
 ## Démarrer l'app en local
 
