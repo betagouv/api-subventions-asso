@@ -34,6 +34,6 @@ export async function findRnaBySiret(siret: string, wait = false) {
 
     return {
         state: "rejected",
-        code: ERRORS_CODES.ILLEGAL_CATEGORY,
+        code: ERRORS_CODES.RNA_NOT_FOUND,
     }
 }
