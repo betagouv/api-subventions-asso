@@ -24,7 +24,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "express": "^4.17.2",
-    "mongodb": "^4.2.2",
+    "mongodb": "^4.3.0",
     "node-xlsx": "^0.21.0"
   },
   "devDependencies": {
