@@ -1,4 +1,4 @@
-import RnaInterface from "../../../src/modules/external/interfaces/RnaInterface";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SiretDataInterface } from "../../../src/modules/external/interfaces/SiretDataInterface";
 import rnaService from "../../../src/modules/external/rna.service";
 import siretService from "../../../src/modules/external/siret.service";
@@ -54,6 +54,7 @@ describe("leCompteAssoService", () => {
     });
 
     describe("addRequest", () => {
+        
         let findRequestsBySiretMock: jest.SpyInstance<Promise<any>, any>;
         let siretServiceFindBySiretMock: jest.SpyInstance<Promise<any>, any>;
         let rnaServiceFindBySiretMock: jest.SpyInstance<Promise<any>, any>
@@ -140,7 +141,6 @@ describe("leCompteAssoService", () => {
                 result: {
                     "code": 10,
                     "data":  {
-                        "legalCategory": "0000",
                         "name": "HELLO WORLD",
                         "siret": "00000000000000",
                     },

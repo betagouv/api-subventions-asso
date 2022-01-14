@@ -3,11 +3,9 @@ import leCompteAssoRepository from "./repositories/leCompteAsso.repository";
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import ILegalInformations from "../search/@types/ILegalInformations";
-import searchService from "../search/search.service";
-import siretService from "../external/siret.service";
-import rnaService from "../external/rna.service";
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import { isAssociationName, isSiret, isCompteAssoId } from "../../shared/Validators";
+import * as RnaHelper from "../../shared/helpers/RnaHelper";
+
 
 export interface RejectedRequest {
     state: "rejected", result: { msg: string, code: number, data: unknown }
@@ -32,58 +30,37 @@ export class LeCompteAssoService implements ProviderRequestInterface {
 
     public async addRequest(partialEntity: ILeCompteAssoPartialRequestEntity): Promise<{state: string, result: LeCompteAssoRequestEntity} | RejectedRequest> {
         // Rna is not exported in CompteAsso so we search in api
-        let rna: null | string = null;
+        const rna = await RnaHelper.findRnaBySiret(partialEntity.legalInformations.siret, true);
+        if (typeof rna !== "string") {
+            if (rna.code === RnaHelper.ERRORS_CODES.RNA_NOT_FOUND) {
+                return {
+                    state: "rejected",
+                    result: {
+                        msg: "RNA not found",
+                        code: 11,
+                        data: partialEntity.legalInformations 
+                    }
+                }
+            }
 
-        // - 1 Search in local Db
-        const requests = await searchService.findRequestsBySiret(partialEntity.legalInformations.siret);
-        if (requests.length) {
-            rna = requests[0].legalInformations.rna;
-        }
-        if (!rna) { // - 2 If Rna not found search in siret api and check type of compagny
-            const siretData = await siretService.findBySiret(partialEntity.legalInformations.siret);
-            if (siretData) {
-                if (siretData.etablissement.unite_legale.identifiant_association) {
-                    rna = siretData.etablissement.unite_legale.identifiant_association;
-                } else if (!LEGAL_CATEGORIES_ACCEPTED.includes(siretData.etablissement.unite_legale.categorie_juridique)) { // Check if company is an association
-                    return {
-                        state: "rejected",
-                        result: {
-                            msg: "The company is not in legal cateries accepted",
-                            code: 10,
-                            data: {
-                                ...partialEntity.legalInformations,
-                                legalCategory: siretData.etablissement.unite_legale.categorie_juridique
-                            }
-                        }
+            return {
+                state: "rejected",
+                result: {
+                    msg: "The company is not in legal cateries accepted",
+                    code: 10,
+                    data: {
+                        ...partialEntity.legalInformations,
                     }
                 }
             }
         }
 
-        if (!rna) { // - 3 If Rna not found search in rna api
-            const rnaData = await rnaService.findBySiret(partialEntity.legalInformations.siret)
-            if (rnaData && rnaData.association.id_association) {
-                rna = rnaData.association.id_association;
-            }
-        }
-
-        if (!rna) {
-            return {
-                state: "rejected",
-                result: {
-                    msg: "RNA not found",
-                    code: 11,
-                    data: partialEntity.legalInformations 
-                }
-            }
-        }
-
         const legalInformations: ILegalInformations = {
+            ...partialEntity.legalInformations,
             rna,
-            ...partialEntity.legalInformations
         }
-        const request = new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)
 
+        const request = new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)
 
         const existingFile = await leCompteAssoRepository.findByCompteAssoId(request.providerInformations.compteAssoId);
         if (existingFile) {
