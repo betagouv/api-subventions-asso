@@ -39,14 +39,14 @@ export interface Etablissement { // All data is awailable in API (entreprise.dat
         code_postal: string,
         commune: string,
     }
-    representant_legal?: { // data provider
+    representants_legal?: { // data provider
         nom?: string,
         prenom?: string,
         civilite?: string,
         telephone?: string,
         email?: string,
         role?: string
-    }
+    }[]
     information_banquaire?: { // data provider
         iban?: string,
         bic?: string,
@@ -95,4 +95,5 @@ export interface Document {
     type: string, // exemple: rib
     nom: string, // RIB_assos_x
     url: string, // Lien pour télécharger le fichier
+    dernierre_modification: Date
 }
