@@ -26,6 +26,7 @@ export interface Association {
     denominations_usuelle: string[],
     date_creation: Date,
     etablissements: Etablissement[],
+    documents?: Document[],
 }
 
 export interface Etablissement { // All data is awailable in API (entreprise.data.gouv) expect the data signed with "data provider"
@@ -51,6 +52,7 @@ export interface Etablissement { // All data is awailable in API (entreprise.dat
         bic?: string,
     }
     demandes: Demande[], // data provider
+    documents?: Document[],
 }
 
 export interface Demande { // data provider
@@ -82,8 +84,15 @@ export interface Demande { // data provider
     },
     actions_proposee?: unknown[] // Revoirs
     evenements?: Evenement[],
+    documents?: Document[],
 }
 
 export interface Evenement { // Représente les données chorus ou autre evennement au cours de la vie d'un dossier
     type: string // Bancaire ou autre
+}
+
+export interface Document {
+    type: string, // exemple: rib
+    nom: string, // RIB_assos_x
+    url: string, // Lien pour télécharger le fichier
 }
