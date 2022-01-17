@@ -1,5 +1,4 @@
-import rnaService from "../../modules/external/rna.service";
-import siretService from "../../modules/external/siret.service";
+import entrepriseApiService from "../../modules/external/entreprise-api.service";
 import searchService from "../../modules/search/search.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../LegalCategoriesAccepted";
 
@@ -14,7 +13,7 @@ export async function findRnaBySiret(siret: string, wait = false) {
     if (requests.length) return requests[0].legalInformations.rna;
 
     // - 2 If Rna not found search in siret api and check type of compagny
-    const siretData = await siretService.findBySiret(siret, wait);
+    const siretData = await entrepriseApiService.findSiretDataBySiret(siret, wait);
     if (siretData) {
         if (siretData.etablissement.unite_legale.identifiant_association) {
             return siretData.etablissement.unite_legale.identifiant_association;
@@ -27,7 +26,7 @@ export async function findRnaBySiret(siret: string, wait = false) {
     }
 
     // - 3 If Rna not found search in rna api
-    const rnaData = await rnaService.findBySiret(siret, wait);
+    const rnaData = await entrepriseApiService.findRnaDataBySiret(siret, wait);
     if (rnaData && rnaData.association.id_association) {
         return rnaData.association.id_association;
     }

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SiretDataInterface } from "../../../src/modules/external/interfaces/SiretDataInterface";
-import rnaService from "../../../src/modules/external/rna.service";
-import siretService from "../../../src/modules/external/siret.service";
+import entrepriseApiService from "../../../src/modules/external/entreprise-api.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
 import leCompteAssoService from "../../../src/modules/leCompteAsso/leCompteAsso.service";
 import RequestEntity from "../../../src/modules/search/entities/RequestEntity";
@@ -56,25 +55,25 @@ describe("leCompteAssoService", () => {
     describe("addRequest", () => {
         
         let findRequestsBySiretMock: jest.SpyInstance<Promise<any>, any>;
-        let siretServiceFindBySiretMock: jest.SpyInstance<Promise<any>, any>;
-        let rnaServiceFindBySiretMock: jest.SpyInstance<Promise<any>, any>
+        let entrepriseApiServiceFindSiretDataBySiret: jest.SpyInstance<Promise<any>, any>;
+        let entrepriseApiServiceFindRnaDataBySiret: jest.SpyInstance<Promise<any>, any>
 
         beforeEach(() => {
             findRequestsBySiretMock = jest.spyOn(searchService, "findRequestsBySiret");
-            siretServiceFindBySiretMock = jest.spyOn(siretService, "findBySiret");
-            rnaServiceFindBySiretMock = jest.spyOn(rnaService, "findBySiret");
+            entrepriseApiServiceFindSiretDataBySiret = jest.spyOn(entrepriseApiService, "findSiretDataBySiret");
+            entrepriseApiServiceFindRnaDataBySiret = jest.spyOn(entrepriseApiService, "findRnaDataBySiret");
         });
 
         afterEach(() => {
             findRequestsBySiretMock.mockClear();
-            siretServiceFindBySiretMock.mockClear();
-            rnaServiceFindBySiretMock.mockClear();
+            entrepriseApiServiceFindSiretDataBySiret.mockClear();
+            entrepriseApiServiceFindRnaDataBySiret.mockClear();
         });
 
         afterAll(() => {
             findRequestsBySiretMock.mockReset();
-            siretServiceFindBySiretMock.mockReset();
-            rnaServiceFindBySiretMock.mockReset();
+            entrepriseApiServiceFindSiretDataBySiret.mockReset();
+            entrepriseApiServiceFindRnaDataBySiret.mockReset();
         })
 
         it("should be find rna in localdb and save data in database", async () => {
@@ -105,7 +104,7 @@ describe("leCompteAssoService", () => {
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            siretServiceFindBySiretMock.mockImplementationOnce(siret => Promise.resolve({
+            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve({
                 etablissement: {
                     siret,
                     unite_legale: { 
@@ -126,7 +125,7 @@ describe("leCompteAssoService", () => {
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            siretServiceFindBySiretMock.mockImplementationOnce(siret => Promise.resolve({
+            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve({
                 etablissement: {
                     siret,
                     unite_legale: { 
@@ -154,7 +153,7 @@ describe("leCompteAssoService", () => {
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            siretServiceFindBySiretMock.mockImplementationOnce(siret => Promise.resolve({
+            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve({
                 etablissement: {
                     siret,
                     unite_legale: { 
@@ -164,7 +163,7 @@ describe("leCompteAssoService", () => {
                 }
             } as unknown as SiretDataInterface));
 
-            rnaServiceFindBySiretMock.mockImplementationOnce(siret => Promise.resolve({
+            entrepriseApiServiceFindRnaDataBySiret.mockImplementationOnce(siret => Promise.resolve({
                 association: {
                     siret,
                     id_association: "FAKE_RNA",
@@ -183,9 +182,9 @@ describe("leCompteAssoService", () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            siretServiceFindBySiretMock.mockImplementationOnce(siret => Promise.resolve(null));
+            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve(null));
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            rnaServiceFindBySiretMock.mockImplementationOnce(siret => Promise.resolve(null));
+            entrepriseApiServiceFindRnaDataBySiret.mockImplementationOnce(siret => Promise.resolve(null));
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
                 state: "rejected",
