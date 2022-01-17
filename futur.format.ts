@@ -4,7 +4,7 @@
 /**
  * Un peu d'info pour les non dev
  * 
- * Une interface sert à représenter le format d'une donnée, une interface peut avoir comme enfants d'autres interfaces (exemple Association à comment enfant Establishment)
+ * Une interface sert à représenter le format d'une donnée, une interface peut avoir comme enfants d'autres interfaces (exemple Association à comment enfant Etablissement)
  *  
  * Dans les accolades ont défini à gauche le nom de la donnée et à droite son type/interface. string === Chaine de caractère, number === a un nombre, ....
  * Les crochets derniers un type indique une liste de ce type, par exemple : commonNames: stirng[] peut être égale a ["nomA", "nomB", "nomC"]
@@ -19,72 +19,71 @@
 // Find by assos
 export interface Association {
     siren: string,
-    headquartersNIC: string,
+    "nic_siege": string,
     rna?: string,
-    legalCategory: number,
-    name: string;
-    commonNames: string[],
-    creationDate: Date,
-    establishments: Establishment[],
+    categorie_juridique: number,
+    denomination: string;
+    denominations_usuelle: string[],
+    date_creation: Date,
+    etablissements: Etablissement[],
 }
 
-export interface Establishment { // All data is awailable in API (entreprise.data.gouv) expect the data signed with "data provider"
+export interface Etablissement { // All data is awailable in API (entreprise.data.gouv) expect the data signed with "data provider"
     siret: string,
-    isHeadquarters: boolean,
-    address: {
-        number: string,
-        trackType: string,
-        track: string,
-        postalCode: string,
-        townName: string,
+    siege: boolean,
+    addresse: {
+        numero: string,
+        type_voie: string,
+        voie: string,
+        code_postal: string,
+        commune: string,
     }
-    legalRepresentative?: { // data provider
-        firstname?: string,
-        lastname?: string,
-        civility?: string,
-        phone?: string,
+    representant_legal?: { // data provider
+        nom?: string,
+        prenom?: string,
+        civilite?: string,
+        telephone?: string,
         email?: string,
         role?: string
     }
-
-    banking?: { // data provider
+    information_banquaire?: { // data provider
         iban?: string,
         bic?: string,
     }
-    requests: Request[], // data provider
+    demandes: Demande[], // data provider
 }
 
-export interface Request { // data provider
-    instructorService: string,
-    planName: string,
-    subPlanName: string,
-    commissionDate?: Date,
-    createdAt?: Date,
-    transmittedAt?: Date,
+export interface Demande { // data provider
+    service_instructeur: string,
+    dispositif: string,
+    sous_dispositif: string,
+    date_commision?: Date,
+    creer_le?: Date,
+    transmis_le?: Date,
     contact: {
         email: string,
-        phone?: string,
+        telephone?: string,
     }
-    requestSate: string,
-    amounts?: {
+    status: string,
+    montants?: {
         total: number,
-        required: number,
-        offer: number,
-        give: number,
+        demande: number,
+        propose: number,
+        accorde: number,
     },
-    payments?: {
-        downPayment: number,
-        balance: number,
-        executed: number,
-        adjustement: {
-            lastYear: number,
-            now: number,
+    versement?: {
+        acompte: number,
+        solde: number,
+        realiser: number,
+        compensation: {
+            'n-1': number,
+            reversement: number,
         }
     },
-    actions?: unknown[] // Revoirs
-    events?: Event[],
+    actions_proposee?: unknown[] // Revoirs
+    evenements?: Evenement[],
 }
 
-export interface Event { // Représente les données chorus ou autre evennement au cours de la vie d'un dossier
+export interface Evenement { // Représente les données chorus ou autre evennement au cours de la vie d'un dossier
     type: string // Bancaire ou autre
 }
