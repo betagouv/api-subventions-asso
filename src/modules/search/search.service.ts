@@ -1,9 +1,8 @@
-import rnaService from "../external/rna.service";
-import siretService from "../external/siret.service";
 import osirisService from "../osiris/osiris.service";
 import ProviderRequestInterface from "./@types/ProviderRequestInterface";
 import RequestEntity from "./entities/RequestEntity";
 import leCompteAssoService from "../leCompteAsso/leCompteAsso.service";
+import entrepriseApiService from "../external/entreprise-api.service";
 
 export class SearchService {
 
@@ -32,10 +31,10 @@ export class SearchService {
         return {
             requests: result,
             rnaAPI: {
-                rna: result.length ? await rnaService.findByRna(result[0][0].legalInformations.rna) : null,
-                siret: await rnaService.findBySiret(siret)
+                rna: result.length ? await entrepriseApiService.findRnaDataByRna(result[0][0].legalInformations.rna) : null,
+                siret: await entrepriseApiService.findRnaDataBySiret(siret)
             },
-            siretAPI: await siretService.findBySiret(siret),
+            siretAPI: await entrepriseApiService.findSiretDataBySiret(siret),
         }
     }
 
@@ -64,10 +63,10 @@ export class SearchService {
         return {
             requests: result,
             rnaAPI: {
-                siret: result.length ? await rnaService.findBySiret(result[0][0].legalInformations.siret) : null,
-                rna: await rnaService.findByRna(rna)
+                siret: result.length ? await entrepriseApiService.findRnaDataBySiret(result[0][0].legalInformations.siret) : null,
+                rna: await entrepriseApiService.findRnaDataByRna(rna)
             },
-            siretAPI: result.length ? await siretService.findBySiret(result[0][0].legalInformations.siret) : null,
+            siretAPI: result.length ? await entrepriseApiService.findSiretDataBySiret(result[0][0].legalInformations.siret) : null,
         }
     }
 

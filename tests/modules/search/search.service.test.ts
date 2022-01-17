@@ -2,16 +2,15 @@ import OsirisActionEntity from "../../../src/modules/osiris/entities/OsirisActio
 import osirisService from "../../../src/modules/osiris/osiris.service";
 import searchService from "../../../src/modules/search/search.service";
 import OsirisRequestEntity from "../../../src/modules/osiris/entities/OsirisRequestEntity";
-import rnaService from "../../../src/modules/external/rna.service";
-import siretService from "../../../src/modules/external/siret.service";
+import entrepriseApiSerivce from "../../../src/modules/external/entreprise-api.service";
 
 describe("SearchService", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
     beforeAll(() => {
         spys.push(
-            jest.spyOn(rnaService, "findByRna"),
-            jest.spyOn(rnaService, "findBySiret"),
-            jest.spyOn(siretService, "findBySiret"),
+            jest.spyOn(entrepriseApiSerivce, "findRnaDataByRna"),
+            jest.spyOn(entrepriseApiSerivce, "findRnaDataBySiret"),
+            jest.spyOn(entrepriseApiSerivce, "findSiretDataBySiret"),
             jest.spyOn(osirisService, "findBySiret"),
             jest.spyOn(osirisService, "findByRna"),
         )
@@ -33,15 +32,15 @@ describe("SearchService", () => {
         it('should returns file contains actions but no provider data', async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findBySiret.mockImplementationOnce(() => null);
+            entrepriseApiSerivce.findRnaDataBySiret.mockImplementationOnce(() => null);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findByRna.mockImplementationOnce(() => null);
+            entrepriseApiSerivce.findRnaDataByRna.mockImplementationOnce(() => null);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            siretService.findBySiret.mockImplementationOnce(() => null);
+            entrepriseApiSerivce.findSiretDataBySiret.mockImplementationOnce(() => null);
 
             expect(await searchService.getBySiret("FAKE_SIRET")).toMatchObject({
                 requests: [
@@ -61,15 +60,15 @@ describe("SearchService", () => {
         it('should returns file contains actions', async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findBySiret.mockImplementationOnce(() => ({ a: 1, b: 2 }));
+            entrepriseApiSerivce.findRnaDataBySiret.mockImplementationOnce(() => ({ a: 1, b: 2 }));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findByRna.mockImplementationOnce(() => ({ a: 5, b: 6 }));
+            entrepriseApiSerivce.findRnaDataByRna.mockImplementationOnce(() => ({ a: 5, b: 6 }));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            siretService.findBySiret.mockImplementationOnce(() => ({ a: 3, b: 4 }));
+            entrepriseApiSerivce.findSiretDataBySiret.mockImplementationOnce(() => ({ a: 3, b: 4 }));
 
             expect(await searchService.getBySiret("FAKE_SIRET")).toMatchObject({
                 requests: [
@@ -100,15 +99,15 @@ describe("SearchService", () => {
         it('should returns file contains actions but no provider data', async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findBySiret.mockImplementationOnce(() => null);
+            entrepriseApiSerivce.findRnaDataBySiret.mockImplementationOnce(() => null);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findByRna.mockImplementationOnce(() => null);
+            entrepriseApiSerivce.findRnaDataByRna.mockImplementationOnce(() => null);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            siretService.findBySiret.mockImplementationOnce(() => null);
+            entrepriseApiSerivce.findSiretDataBySiret.mockImplementationOnce(() => null);
 
             expect(await searchService.getByRna("RNA")).toMatchObject({
                 requests: [
@@ -128,15 +127,15 @@ describe("SearchService", () => {
         it('should returns file contains actions', async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findBySiret.mockImplementationOnce(() => ({ a: 1, b: 2 }));
+            entrepriseApiSerivce.findRnaDataBySiret.mockImplementationOnce(() => ({ a: 1, b: 2 }));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            rnaService.findByRna.mockImplementationOnce(() => ({ a: 5, b: 6 }));
+            entrepriseApiSerivce.findRnaDataByRna.mockImplementationOnce(() => ({ a: 5, b: 6 }));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            siretService.findBySiret.mockImplementationOnce(() => ({ a: 3, b: 4 }));
+            entrepriseApiSerivce.findSiretDataBySiret.mockImplementationOnce(() => ({ a: 3, b: 4 }));
 
             expect(await searchService.getByRna("RNA")).toMatchObject({
                 requests: [
