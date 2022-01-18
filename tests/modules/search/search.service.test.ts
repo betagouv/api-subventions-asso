@@ -49,11 +49,13 @@ describe("SearchService", () => {
                         actions: [action]
                     }],
                 ],
-                siretAPI: null,
-                rnaAPI: {
-                    rna: null,
-                    siret: null
-                },
+                entrepriseApi: {
+                    association: {
+                        rna: null,
+                        siret: null
+                    },
+                    entreprise: null,
+                }
             })
         })
 
@@ -77,11 +79,14 @@ describe("SearchService", () => {
                         actions: [action]
                     }],
                 ],
-                siretAPI: { a: 3, b: 4 },
-                rnaAPI: {
-                    siret: { a: 1, b: 2 },
-                    rna: { a: 5, b: 6 }
-                },
+                entrepriseApi: {
+                    association: {
+                        siret: { a: 1, b: 2 },
+                        rna: { a: 5, b: 6 }
+                    },
+
+                    entreprise: { a: 3, b: 4 },
+                }
             })
         })
 
@@ -116,11 +121,13 @@ describe("SearchService", () => {
                         actions: [action]
                     }],
                 ],
-                siretAPI: null,
-                rnaAPI: {
-                    rna: null,
-                    siret: null
-                },
+                entrepriseApi: {
+                    association: {
+                        rna: null,
+                        siret: null,
+                    },
+                    entreprise: null
+                }
             })
         })
 
@@ -144,11 +151,13 @@ describe("SearchService", () => {
                         actions: [action]
                     }],
                 ],
-                siretAPI: { a: 3, b: 4 },
-                rnaAPI: {
-                    siret: { a: 1, b: 2 },
-                    rna: { a: 5, b: 6 }
-                },
+                entrepriseApi: {
+                    association: {
+                        siret: { a: 1, b: 2 },
+                        rna: { a: 5, b: 6 }
+                    },
+                    entreprise: { a: 3, b: 4 },
+                }
             })
         })
 

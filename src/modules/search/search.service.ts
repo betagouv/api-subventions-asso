@@ -30,11 +30,13 @@ export class SearchService {
 
         return {
             requests: result,
-            rnaAPI: {
-                rna: result.length ? await entrepriseApiService.findRnaDataByRna(result[0][0].legalInformations.rna) : null,
-                siret: await entrepriseApiService.findRnaDataBySiret(siret)
+            entrepriseApi: {
+                association: {
+                    rna: result.length ? await entrepriseApiService.findRnaDataByRna(result[0][0].legalInformations.rna) : null,
+                    siret: await entrepriseApiService.findRnaDataBySiret(siret)
+                },
+                entreprise: await entrepriseApiService.findSiretDataBySiret(siret),
             },
-            siretAPI: await entrepriseApiService.findSiretDataBySiret(siret),
         }
     }
 
@@ -62,11 +64,13 @@ export class SearchService {
 
         return {
             requests: result,
-            rnaAPI: {
-                siret: result.length ? await entrepriseApiService.findRnaDataBySiret(result[0][0].legalInformations.siret) : null,
-                rna: await entrepriseApiService.findRnaDataByRna(rna)
-            },
-            siretAPI: result.length ? await entrepriseApiService.findSiretDataBySiret(result[0][0].legalInformations.siret) : null,
+            entrepriseApi: {
+                association : {
+                    siret: result.length ? await entrepriseApiService.findRnaDataBySiret(result[0][0].legalInformations.siret) : null,
+                    rna: await entrepriseApiService.findRnaDataByRna(rna)
+                },
+                entreprise: result.length ? await entrepriseApiService.findSiretDataBySiret(result[0][0].legalInformations.siret) : null,
+            }
         }
     }
 
