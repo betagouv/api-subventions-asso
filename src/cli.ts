@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { mkdirSync, existsSync } from "fs";
 import { CliStaticInterface } from "./@types/Cli.interface";
 import LeCompteAssoCliController from "./modules/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
