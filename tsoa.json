@@ -1,0 +1,16 @@
+{
+    "swagger": {
+		"outputDirectory": ".",
+		"entryFile": "./src/index.ts"
+	},
+	"entryFile": "src/index.ts",
+	"noImplicitAdditionalProperties": "throw-on-extras",
+	"controllerPathGlobs": ["src/**/*Controller.ts"],
+	"spec": {
+		"outputDirectory": "tsoa",
+		"specVersion": 3
+	},
+	"routes": {
+		"routesDir": "tsoa"
+	}
+}

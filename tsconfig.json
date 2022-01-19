@@ -2,11 +2,15 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
+        "types": ["reflect-metadata", "jest"],
         "rootDir": "./",
         "outDir": "./build",
         "esModuleInterop": true,
         "strict": true,
+        "moduleResolution": "node",
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "resolveJsonModule": true
     },
     "exclude": [
         "tests",

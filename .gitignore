@@ -105,6 +105,7 @@ dist
 
 # TS build folder
 build/
+tsoa/
 
 # Jest tests parts
 .~lock*
