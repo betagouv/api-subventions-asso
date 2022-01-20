@@ -23,6 +23,7 @@ async function main() {
     }));
     app.use(bodyParser.json());
 
+    RegisterRoutes(app);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     app.use('/', swaggerUi.serve, swaggerUi.setup(await import('../tsoa/swagger.json'), {
         customCss: '.swagger-ui .topbar { display: none }',
@@ -30,7 +31,6 @@ async function main() {
         customfavIcon: "/assets/images/favicons/favicon.ico"
     }));
 
-    RegisterRoutes(app);
 
     app.listen(port, () => {
         console.log(`${appName} listening at http://localhost:${port}`);
