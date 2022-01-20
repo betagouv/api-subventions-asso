@@ -9,7 +9,9 @@
     "generate:docs": "tsoa swagger",
     "generate:routes": "tsoa routes",
     "generate": "npm run generate:routes && npm run generate:docs",
-    "build": "npm run generate && tsc --project ./",
+    "prebuild": "npm run generate",
+    "build": "tsc --project ./",
+    "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
     "test": "jest --runInBand",
     "postinstall": "husky install"
