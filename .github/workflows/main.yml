@@ -27,6 +27,15 @@ jobs:
           node-version: '16'
       - run: npm ci
       - run: npm run lint
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - uses: ArtiomTr/jest-coverage-report-action@v2.0-rc.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          threshold: 85 # optional parameter
   build:
     runs-on: ubuntu-latest
     steps:
