@@ -1,8 +1,11 @@
+import { Rna } from "../../../@types/Rna";
+import { Siret } from "../../../@types/Siret";
+
 export interface SiretDataInterface {
     etablissement: {
-        siret: string,
+        siret: Siret,
         unite_legale: {
-            identifiant_association: string,
+            identifiant_association: Rna,
             categorie_juridique: string
         }
     }

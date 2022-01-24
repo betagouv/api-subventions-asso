@@ -1,3 +1,5 @@
+import { Rna } from "../../@types/Rna";
+import { Siret } from "../../@types/Siret";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../shared/Validators";
 import ProviderRequestInterface from "../search/@types/ProviderRequestInterface";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
@@ -79,7 +81,7 @@ export class OsirisService implements ProviderRequestInterface {
         return { success: true };
     }
 
-    public async findBySiret(siret: string) {
+    public async findBySiret(siret: Siret) {
         const requests = await osirisRepository.findRequestsBySiret(siret);
 
         for (const request of requests) {
@@ -88,7 +90,7 @@ export class OsirisService implements ProviderRequestInterface {
         return requests;
     }
 
-    public async findByRna(rna: string) {
+    public async findByRna(rna: Rna) {
         const requests = await osirisRepository.findRequestsByRna(rna);
 
         for (const request of requests) {

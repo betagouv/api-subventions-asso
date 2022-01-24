@@ -3,10 +3,12 @@ import ProviderRequestInterface from "./@types/ProviderRequestInterface";
 import RequestEntity from "./entities/RequestEntity";
 import leCompteAssoService from "../leCompteAsso/leCompteAsso.service";
 import entrepriseApiService from "../external/entreprise-api.service";
+import { Siret } from "../../@types/Siret";
+import { Rna } from "../../@types/Rna";
 
 export class SearchService {
 
-    public async getBySiret(siret: string) {
+    public async getBySiret(siret: Siret) {
         const requests = await this.findRequestsBySiret(siret);
 
         const { result } = requests.reduceRight((acc, request, requestIndex) => {
@@ -40,7 +42,7 @@ export class SearchService {
         }
     }
 
-    public async getByRna(rna: string) {
+    public async getByRna(rna: Rna) {
         const requests = await this.findRequestsByRna(rna);
 
         const { result } = requests.reduceRight((acc, request, requestIndex) => {
@@ -74,11 +76,11 @@ export class SearchService {
         }
     }
 
-    public findRequestsBySiret(siret: string) {
+    public findRequestsBySiret(siret: Siret) {
         return this.findRequests(siret, "siret");
     }
 
-    public findRequestsByRna(rna: string) {
+    public findRequestsByRna(rna: Rna) {
         return this.findRequests(rna, "rna");
     }
 

@@ -5,6 +5,8 @@ import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequ
 import ILegalInformations from "../search/@types/ILegalInformations";
 import { isAssociationName, isSiret, isCompteAssoId } from "../../shared/Validators";
 import * as RnaHelper from "../../shared/helpers/RnaHelper";
+import { Rna } from "../../@types/Rna";
+import { Siret } from "../../@types/Siret";
 
 
 export interface RejectedRequest {
@@ -77,11 +79,11 @@ export class LeCompteAssoService implements ProviderRequestInterface {
     }
 
 
-    public async findBySiret(siret: string) {
+    public async findBySiret(siret: Siret) {
         return await leCompteAssoRepository.findsBySiret(siret);
     }
 
-    public async findByRna(rna: string) {
+    public async findByRna(rna: Rna) {
         return await leCompteAssoRepository.findsByRna(rna);
 
     }

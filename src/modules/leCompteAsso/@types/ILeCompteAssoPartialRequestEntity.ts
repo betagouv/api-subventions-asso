@@ -1,7 +1,8 @@
+import { Siret } from "../../../@types/Siret";
 import ILeCompteAssoRequestInformations from "./ILeCompteAssoRequestInformations";
 
 export default interface ILeCompteAssoPartialRequestEntity {
-    legalInformations: {siret: string, name: string},
+    legalInformations: {siret: Siret, name: string},
     providerInformations: ILeCompteAssoRequestInformations,
     data: unknown
 }
