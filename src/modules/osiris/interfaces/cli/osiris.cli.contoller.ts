@@ -9,6 +9,8 @@ import OsirisActionEntity from "../../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../shared/LogOptions";
 import * as RnaHelper from "../../../../shared/helpers/RnaHelper";
+import { Rna } from "../../../../@types/Rna";
+import { Siret } from "../../../../@types/Siret";
 
 
 @StaticImplements<CliStaticInterface>()
@@ -121,7 +123,7 @@ export default class OsirisCliController {
                     return data;
                 }
 
-                osirisRequest.legalInformations.rna = rna as string;
+                osirisRequest.legalInformations.rna = rna;
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
 
@@ -185,7 +187,7 @@ export default class OsirisCliController {
         }
     }
 
-    async findBySiret(siret: string, format?: string) {
+    async findBySiret(siret: Siret, format?: string) {
         if (typeof siret !== "string" ) {
             throw new Error("Parse command need siret args");
         }
@@ -200,7 +202,7 @@ export default class OsirisCliController {
         }
     }
 
-    async findByRna(rna: string, format?: string) {
+    async findByRna(rna: Rna, format?: string) {
         if (typeof rna !== "string" ) {
             throw new Error("Parse command need rna args");
         }

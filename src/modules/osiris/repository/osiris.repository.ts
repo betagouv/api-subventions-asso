@@ -3,6 +3,8 @@ import { MONGO_BATCH_SIZE } from "../../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
+import { Siret } from "../../../@types/Siret";
+import { Rna } from "../../../@types/Rna";
 
 export class OsirisRepository {
     private readonly requestCollection = db.collection<OsirisRequestEntity>("osiris-requests");
@@ -32,13 +34,13 @@ export class OsirisRepository {
         return this.requestCollection.findOne({ "providerInformations.osirisId": osirisId }) as unknown as (OsirisRequestEntity | null);
     }
 
-    public findRequestsBySiret(siret: string) {
+    public findRequestsBySiret(siret: Siret) {
         return this.requestCollection.find({
             "legalInformations.siret": siret
         }).toArray();
     }
 
-    public findRequestsByRna(rna: string) {
+    public findRequestsByRna(rna: Rna) {
         return this.requestCollection.find({
             "legalInformations.rna": rna
         }).toArray();

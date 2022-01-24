@@ -1,6 +1,8 @@
 import db from "../../../shared/MongoConnection";
 import { FindOneAndUpdateOptions } from "mongodb";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
+import { Rna } from "../../../@types/Rna";
+import { Siret } from "../../../@types/Siret";
 
 export class LeCompteAssoRepository {
     private readonly requestCollection = db.collection<LeCompteAssoRequestEntity>("lecompteasso-requests");
@@ -24,13 +26,13 @@ export class LeCompteAssoRepository {
         return this.requestCollection.findOne({ "providerInformations.compteAssoId": compteAssoId }) as unknown as (LeCompteAssoRequestEntity | null);
     }
 
-    public findsBySiret(siret: string) {
+    public findsBySiret(siret: Siret) {
         return this.requestCollection.find({
             "legalInformations.siret": siret
         }).toArray();
     }
 
-    public findsByRna(rna: string) {
+    public findsByRna(rna: Rna) {
         return this.requestCollection.find({
             "legalInformations.rna": rna
         }).toArray();

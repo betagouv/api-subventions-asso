@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Rna } from '../../@types/Rna';
+import { Siret } from '../../@types/Siret';
 import { waitPromise } from '../../shared/helpers/WaitHelper';
 import RnaInterface from './interfaces/RnaInterface';
 import { SiretDataInterface } from './interfaces/SiretDataInterface';
@@ -9,15 +11,15 @@ export class EntrepriseApiService {
     private SIRETTE_ROUTE = "api/sirene/v3/etablissements";
     private LIMITATION_NB_REQUEST_SEC = 7;
 
-    public findSiretDataBySiret(siret: string, wait = false): Promise<SiretDataInterface | null> {
+    public findSiretDataBySiret(siret: Siret, wait = false): Promise<SiretDataInterface | null> {
         return this.sendRequest<SiretDataInterface>(`${this.SIRETTE_ROUTE}/${siret}`, wait);
     }
 
-    public findRnaDataBySiret(siret: string, wait = false): Promise<RnaInterface | null> {
+    public findRnaDataBySiret(siret: Siret, wait = false): Promise<RnaInterface | null> {
         return this.sendRequest<RnaInterface>(`${this.RNA_ROUTE}/siret/${siret}`, wait);
     }
 
-    public findRnaDataByRna(rna: string, wait = false): Promise<RnaInterface | null> {
+    public findRnaDataByRna(rna: Rna, wait = false): Promise<RnaInterface | null> {
         return this.sendRequest<RnaInterface>(`${this.RNA_ROUTE}/id/${rna}`, wait);
     }
 
