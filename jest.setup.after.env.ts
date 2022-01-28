@@ -2,7 +2,12 @@
 jest.spyOn(console, 'info').mockImplementation(() => {});
 
 import { existsSync, mkdirSync } from "fs";
+
 import db, { connectDB, client } from "./src/shared/MongoConnection";
+import { startServer } from "./src/server";
+import { Server } from "http";
+
+const g = global as unknown as { app?: Server };
 
 beforeAll(async () => {
     await connectDB();
@@ -10,6 +15,9 @@ beforeAll(async () => {
     if (!existsSync("./logs")){ // Create folders for logs
         mkdirSync("./logs");
     }
+
+    if (g.app) return;
+    g.app = await startServer("1234", false);
 });
 
 afterEach(async () => { // Clear database between test
@@ -21,4 +29,5 @@ afterEach(async () => { // Clear database between test
 
 afterAll(async () => {
     client.close();
+    g.app?.close();
 });
