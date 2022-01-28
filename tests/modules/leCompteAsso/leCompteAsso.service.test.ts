@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SiretDataInterface } from "../../../src/modules/external/interfaces/SiretDataInterface";
+import { SiretDataInterface } from "../../../src/modules/external/@types/SiretDataInterface";
 import entrepriseApiService from "../../../src/modules/external/entreprise-api.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
 import leCompteAssoService from "../../../src/modules/leCompteAsso/leCompteAsso.service";
