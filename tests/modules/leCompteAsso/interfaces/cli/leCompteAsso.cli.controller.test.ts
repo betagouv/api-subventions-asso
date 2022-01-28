@@ -82,7 +82,7 @@ describe("LeCompteAssoCliController", () => {
             expect(info.mock.calls).toEqual([
                 ["2 files in the parse queue"],
                 ["You can read log in ./logs/lecompteasso.parse.log.txt"],
-                ["\nStart parse file: ", "/home/victor/Projects/beta-gouv/datasubvention/tests/modules/leCompteAsso/__fixtures__/le-compte-asso-export-tests-with-good-siret.csv",],
+                ["\nStart parse file: ", testFilePath,],
                 ["1 entities found in file."],
                 [
                     `All entities is valid !
@@ -95,11 +95,11 @@ Start register in database ...`,
             0 requests not valid
         `,
                 ],
-                ["\nStart parse file: ", "/home/victor/Projects/beta-gouv/datasubvention/tests/modules/leCompteAsso/__fixtures__/le-compte-asso-export-tests.csv",],
+                ["\nStart parse file: ", testWrongFilePath,],
                 ["1 entities found in file."],
                 ["Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE"]
             ])
-            expect(errorLog).toHaveBeenCalledWith(expect.stringMatching("An error occurred while parsing the file /home/victor/Projects/beta-gouv/datasubvention/tests/modules/leCompteAsso/__fixtures__/le-compte-asso-export-tests.csv"))
+            expect(errorLog).toHaveBeenCalledWith(expect.stringMatching("An error occurred while parsing the file " + testWrongFilePath))
             info.mockClear();
             errorLog.mockClear();
         });
@@ -112,7 +112,7 @@ Start register in database ...`,
             expect(info.mock.calls).toEqual([
                 ["1 files in the parse queue"],
                 ["You can read log in ./logs/lecompteasso.parse.log.txt"],
-                ["\nStart parse file: ", "/home/victor/Projects/beta-gouv/datasubvention/tests/modules/leCompteAsso/__fixtures__/le-compte-asso-export-tests-with-good-siret.csv",],
+                ["\nStart parse file: ", testFilePath,],
                 ["1 entities found in file."],
                 [
                     `All entities is valid !
