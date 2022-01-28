@@ -1,7 +1,8 @@
 # Data Subvention
 
 Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.
-Vous devez également installer les dépendances avec `npm install`.
+Installer les dépendances avec `npm install`.
+Puis il faut créer un fichier .env à la racine du projet, avec au moins la variable JWT_SECRET déclarer.
 
 Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    
 Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/datasubvention`.    
@@ -15,6 +16,10 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 
 1. Run `npm run dev`
 2. Visit [http://localhost:8080](http://localhost:8080)
+
+## Executer une commande
+
+1. Run `npm run cli [controller name] [method name] [...arguments]`
 
 ## Démarrer les tests et le coverage
 
