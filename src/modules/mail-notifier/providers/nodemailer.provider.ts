@@ -1,0 +1,37 @@
+import nodemailer from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../../../configurations/mail.conf";
+import IProvider from "./@types/IProvider";
+
+export default class NodeMailerProvider implements IProvider {
+
+    transport = nodemailer.createTransport({
+        host: MAIL_HOST,
+        port: MAIL_PORT,
+        requireTLS: true,
+        auth: {
+            user: MAIL_USER,
+            pass: MAIL_PASSWORD,
+        },
+    } as unknown as SMTPTransport.Options);
+
+    async sendMail(email: string, subject: string, html: string, text: string): Promise<boolean> {
+        try {
+            await this.transport.verify();
+        } catch(e) {
+            console.error(e);
+            return false;
+        }
+        const message = {
+            from: `DataSubvention <${MAIL_USER}>`,
+            to: email,
+            subject: subject,
+            text: text,
+            html: html
+        };
+
+        await this.transport.sendMail(message);
+
+        return true;
+    }
+}

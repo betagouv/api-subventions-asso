@@ -1,10 +1,12 @@
 import "reflect-metadata";
+import 'dotenv/config'
 
 import { mkdirSync, existsSync } from "fs";
 import { CliStaticInterface } from "./@types/Cli.interface";
 import LeCompteAssoCliController from "./modules/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import OsirisCliController from "./modules/osiris/interfaces/cli/osiris.cli.contoller";
 import { connectDB } from "./shared/MongoConnection";
+import MailNotifierCliController from "./modules/mail-notifier/interfaces/cli/mail-notifier.cli.controller";
 
 async function main() {
     await connectDB();
@@ -16,6 +18,7 @@ async function main() {
     const contollers: CliStaticInterface[] = [
         OsirisCliController,
         LeCompteAssoCliController,
+        MailNotifierCliController,
     ];
     
     const args = process.argv.slice(2);
