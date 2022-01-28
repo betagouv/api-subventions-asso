@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import passport from "passport"
 import passportLocal from 'passport-local';
 import passportJwt from 'passport-jwt';
@@ -50,6 +51,7 @@ describe("express.auth.hooks", () => {
             } 
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({success: false, message: "ERROR", code: 1}) )
             
             passportMock.mockImplementation((name) => {
