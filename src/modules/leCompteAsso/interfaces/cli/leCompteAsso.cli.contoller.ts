@@ -16,7 +16,7 @@ export default class LeCompteAssoCliController {
 
     public async validate(file: string) {
         if (typeof file !== "string" ) {
-            throw new Error("Parse command need file args");
+            throw new Error("Validate command need file args");
         }
 
         if (!fs.existsSync(file)) {
@@ -107,7 +107,7 @@ export default class LeCompteAssoCliController {
         if (parsageError) {
             console.error(`${COLORS.FgRed}An error occurred while parsing the file ${file}${COLORS.Reset}`);
             logs.push(`An error occurred while parsing the file ${file}`);
-            console.log("Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE");
+            console.info("Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE");
             return;
         }
 

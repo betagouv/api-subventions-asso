@@ -42,7 +42,6 @@ export default {
         "src/index.ts",
         "src/cli.ts",
         "src/shared/MongoConnection.ts",
-        "interfaces/",
     ],
 
     // A list of reporter names that Jest uses when writing coverage reports
