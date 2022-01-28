@@ -1,6 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 jest.spyOn(console, 'info').mockImplementation(() => {});
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+process.env.JWT_SECRET = require('crypto').randomBytes(256).toString('base64');
+
+
 import { existsSync, mkdirSync } from "fs";
 
 import db, { connectDB, client } from "./src/shared/MongoConnection";
