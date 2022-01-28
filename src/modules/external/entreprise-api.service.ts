@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Rna } from '../../@types/Rna';
 import { Siret } from '../../@types/Siret';
 import { waitPromise } from '../../shared/helpers/WaitHelper';
-import RnaInterface from './interfaces/RnaInterface';
-import { SiretDataInterface } from './interfaces/SiretDataInterface';
+import RnaInterface from './@types/RnaInterface';
+import { SiretDataInterface } from './@types/SiretDataInterface';
 
 export class EntrepriseApiService {
     private BASE_URL = "https://entreprise.data.gouv.fr";
