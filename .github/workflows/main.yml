@@ -34,6 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: npm ci
+      - run: npm run generate
       - uses: ArtiomTr/jest-coverage-report-action@v2.0-rc.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,5 +47,4 @@ jobs:
         with:
           node-version: '16'
       - run: npm ci
-      - run: npm run generate
       - run: npm run build
