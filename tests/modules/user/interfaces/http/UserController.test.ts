@@ -88,6 +88,75 @@ describe('UserController, /user', () => {
         })
     })
 
+    describe("Put /password", () => {
+        it("should return 200", async () => {
+            const response = await request(g.app)
+                .put("/user/password")
+                .send({
+                    password: "Test::11",
+                })
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json')
+                
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchObject({success: true, user: { email: "user@beta.gouv.fr", roles: ["user"]}})
+        })
+
+        it("should be change password", async () => {
+            const result = await userService.createUser("user@beta.gouv.fr");
+
+            if (!result.success) throw new Error("User create not works");
+
+            await userService.activeUser(result.user);
+
+            const response = await request(g.app)
+                .put("/user/password")
+                .send({
+                    password: "Test::11",
+                })
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json')
+                
+            expect(response.statusCode).toBe(200);
+            const userUpdated = await userService.findByEmail("user@beta.gouv.fr");
+
+            expect(userUpdated).toMatchObject(result.user);
+        })
+
+        it("should add reject because password is not hard", async () => {
+            const response = await request(g.app)
+                .put("/user/password")
+                .send({
+                    password: "azerty"
+                })
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json')
+            
+            expect(response.statusCode).toBe(500);
+            expect(response.body).toMatchObject({success: false, message: 'Password is not hard, please use this rules:\n' +
+            '    At least one digit [0-9]\n' +
+            '    At least one lowercase character [a-z]\n' +
+            '    At least one uppercase character [A-Z]\n' +
+            '    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]\n' +
+            '    At least 8 characters in length, but no more than 32.\n' +
+            '                    ',
+            code: 13})
+        })
+
+
+        it("should return 401 beacause user not connected", async () => {
+            const response = await request(g.app)
+                .put("/user/password")
+                .send({
+                    password: "Test::11",
+                })
+                .set('Accept', 'application/json')
+    
+            expect(response.statusCode).toBe(401);
+        })
+    })
+
+
     describe("POST /forget-password", () => {
         beforeEach(async () => {
             await userService.createUser("user@beta.gouv.fr");

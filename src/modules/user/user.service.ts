@@ -119,6 +119,25 @@ export class UserService {
         return {success: true, user: createdUser };
     }
 
+    public async updatePassword(currentUser: UserWithoutSecret, password: string): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+        if (!this.passwordValidator(password)) {
+            return {
+                success: false, 
+                message: 
+                    `Password is not hard, please use this rules:
+    At least one digit [0-9]
+    At least one lowercase character [a-z]
+    At least one uppercase character [A-Z]
+    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
+    At least 8 characters in length, but no more than 32.
+                    `,
+                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
+            }
+        }
+
+        return { success: true, user: await userRepository.update({...currentUser, hashPassword: await bcrypt.hash(password, 10), active: true })};
+    }
+
     public async addUsersByCsv(content: Buffer) {
         const data = content
             .toString()
