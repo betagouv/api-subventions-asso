@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
+import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ROLES } from "./entities/Roles";
 import User, { UserWithoutSecret } from "./entities/User";
 import UserReset from "./entities/UserReset";
@@ -159,9 +160,7 @@ export class UserService {
 
             if (!resetResult.success) return Promise.resolve([...data, { email, success: false, message: resetResult.message }]);
 
-            console.log("Create user, reset password:", resetResult);
-
-            // SEND NOTIFICATION FOR END CREATED COMPTE
+            await mailNotifierService.sendCreationMail(email, resetResult.reset.token);
 
             return Promise.resolve([...data, { email, success: true}]);
         }, Promise.resolve([]) as Promise<{ email: string, success: boolean, message ?:string}[]>)
@@ -257,8 +256,7 @@ export class UserService {
         const resetResult = await this.resetUser(user);
 
         if (resetResult.success) {
-            console.log("FORGET PASSWORD:", resetResult.reset);
-            // Send notification
+            await mailNotifierService.sendForgetPassword(email, resetResult.reset.token);
         }
 
         return resetResult;
