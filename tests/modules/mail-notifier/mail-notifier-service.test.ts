@@ -1,20 +1,11 @@
 import nodemailer from "nodemailer";
 import { MAIL_USER } from "../../../src/configurations/mail.conf";
 
-const transporter = {
-    verify: jest.fn(),
-    sendMail: jest.fn()
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-jest.spyOn(nodemailer, "createTransport").mockImplementation(() => transporter);
-
 import mailNotifierService from "../../../src/modules/mail-notifier/mail-notifier.service"
 
 describe("MailNotiferSerivce", () => {
     it("should send test mail", async () => {
-
+        const transporter = nodemailer.createTransport();
         await mailNotifierService.sendTestMail("test@beta.gouv.fr");
 
         expect(transporter.sendMail).toHaveBeenCalledWith({

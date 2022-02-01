@@ -108,21 +108,15 @@ describe("user.service.ts", () => {
     describe("createUsersByList", () => {
 
         it("should create two users", async() => {
-            const log = jest.spyOn(console, 'log').mockImplementation();
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const result = await userService.createUsersByList(["test@beta.gouv.fr", "test2@beta.gouv.fr"]);
             expect(result).toHaveLength(2);
             expect(result.every(r => r.success)).toBe(true);
-            expect(log).toHaveBeenCalled(); // In Futur check if notification center has been called
-            expect(log).toHaveBeenCalledTimes(2);
-
-            log.mockReset();
         });
 
         it("should create one user and reject one other user", async() => {
-            const log = jest.spyOn(console, 'log').mockImplementation();
 
             await userService.createUser("test@beta.gouv.fr");
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -131,10 +125,6 @@ describe("user.service.ts", () => {
             expect(result).toHaveLength(2);
             expect(result.filter(r => r.success)).toHaveLength(1);
             expect(result.filter(r => !r.success)).toHaveLength(1);
-            expect(log).toHaveBeenCalled(); // In Futur check if notification center has been called
-            expect(log).toHaveBeenCalledTimes(1);
-
-            log.mockReset();
         });
     });
 
@@ -269,12 +259,7 @@ describe("user.service.ts", () => {
 
 
         it("should be update user (called with user)", async () => {
-            const log = jest.spyOn(console, 'log').mockImplementation();
             await expect(userService.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({ success: true, reset: { userId: userId }});
-            expect(log).toHaveBeenCalled(); // In Futur check if notification center has been called
-            expect(log).toHaveBeenCalledTimes(1);
-
-            log.mockReset();
         })
     })
 
