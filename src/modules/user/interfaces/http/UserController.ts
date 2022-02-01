@@ -1,4 +1,6 @@
-import { Route, Controller, Tags, Post, Body, Security, SuccessResponse } from 'tsoa';
+import { Request as ExRequest } from 'express';
+import { Route, Controller, Tags, Post, Body, Security, SuccessResponse, Put, Request } from 'tsoa';
+import { UserWithoutSecret } from '../../entities/User';
 import userService from '../../user.service';
 
 @Route("user")
@@ -16,6 +18,21 @@ export class UserController extends Controller {
             this.setStatus(500);
         }
         return result
+    }
+
+    @Put("/password")
+    @Security("jwt")
+    public async changePassword(
+        @Request() req: ExRequest,
+        @Body() body: { password: string }
+    ) {
+        const user = req.user as UserWithoutSecret;
+        const result = await userService.updatePassword(user, body.password);
+
+        if (!result.success) {
+            this.setStatus(500);
+        }
+        return result;
     }
 
     @Post("/forget-password")
