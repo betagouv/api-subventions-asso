@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { UserWithoutSecret } from "../../../src/modules/user/entities/User";
 import UserReset from "../../../src/modules/user/entities/UserReset";
 import userResetRepository from "../../../src/modules/user/repositoies/user-reset.repository";
@@ -194,9 +195,15 @@ describe("user.service.ts", () => {
     })
 
     describe("resetPassword", () => {
+        let userId: ObjectId;
         beforeEach(async () => {
-            await userService.createUser("test@beta.gouv.fr")
-            await userResetRepository.create(new UserReset("test@beta.gouv.fr", "token", new Date()));
+            const result = await userService.createUser("test@beta.gouv.fr");
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            if (!result.success) throw new Error(result.message);
+            userId = result.user._id
+            await userResetRepository.create(new UserReset(userId, "token", new Date()));
         });
 
         it("should reject because resetToken not found", async () => {
@@ -204,16 +211,16 @@ describe("user.service.ts", () => {
         })
 
         it("should reject because resetToken not found", async () => {
-            await userResetRepository.removeAllByEmail("test@beta.gouv.fr");
-            await userResetRepository.create(new UserReset("test@beta.gouv.fr", "token", new Date(Date.now() - 1000* 60*60 * 24 * 11)));
+            await userResetRepository.removeAllByUserId(userId);
+            await userResetRepository.create(new UserReset(userId, "token", new Date(Date.now() - 1000* 60*60 * 24 * 11)));
 
             await expect(userService.resetPassword("", "token")).resolves.toMatchObject({ success: false, message: "Reset token has expired, please retry forget password", code: UserServiceErrors.RESET_TOKEN_EXPIRED });
         })
 
 
         it("should reject because user not found", async () => {
-            await userResetRepository.removeAllByEmail("test@beta.gouv.fr");
-            await userResetRepository.create(new UserReset("test5@beta.gouv.fr", "token", new Date()));
+            await userResetRepository.removeAllByUserId(userId);
+            await userResetRepository.create(new UserReset(new ObjectId(), "token", new Date()));
 
             await expect(userService.resetPassword("", "token")).resolves.toMatchObject({ success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND});
         })
@@ -241,13 +248,19 @@ describe("user.service.ts", () => {
         it("should remove resetUser", async () => {
             const mock = jest.spyOn(userResetRepository, "remove");
             await userService.resetPassword("newPass;word789", "token");
-            expect(mock).toHaveBeenCalledWith(expect.objectContaining({email: "test@beta.gouv.fr"}))
+            expect(mock).toHaveBeenCalledWith(expect.objectContaining({ userId: expect.any(ObjectId)}))
         })
     });
 
     describe("forgetPassword", () => {
+
+        let userId: ObjectId;
         beforeEach(async () => {
-            await userService.createUser("test@beta.gouv.fr")
+            const result = await userService.createUser("test@beta.gouv.fr");
+
+            if (!result.success) throw new Error("User create faild");
+
+            userId = result.user._id;
         });
 
         it("should be reject because user email not found", async () => {
@@ -257,7 +270,7 @@ describe("user.service.ts", () => {
 
         it("should be update user (called with user)", async () => {
             const log = jest.spyOn(console, 'log').mockImplementation();
-            await expect(userService.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({ success: true, reset: { email: "test@beta.gouv.fr" }});
+            await expect(userService.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({ success: true, reset: { userId: userId }});
             expect(log).toHaveBeenCalled(); // In Futur check if notification center has been called
             expect(log).toHaveBeenCalledTimes(1);
 
@@ -274,13 +287,13 @@ describe("user.service.ts", () => {
         });
 
         it("should be create a reset user", async () => {
-            const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByEmail");
+            const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByUserId");
             const mockCreate = jest.spyOn(userResetRepository, "create");
             const mockUpdate = jest.spyOn(userRepository, "update");
 
-            await expect(userService.resetUser(user)).resolves.toMatchObject({ success: true, reset: { email: user.email }});
-            expect(mockRemoveAll).toHaveBeenCalledWith(user.email);
-            expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({email: user.email}));
+            await expect(userService.resetUser(user)).resolves.toMatchObject({ success: true, reset: { userId: user._id }});
+            expect(mockRemoveAll).toHaveBeenCalledWith(user._id);
+            expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({userId: user._id}));
             expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ active: false}));
         });
     });

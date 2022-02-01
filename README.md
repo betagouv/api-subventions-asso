@@ -2,11 +2,16 @@
 
 Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.
 Installer les dépendances avec `npm install`.
-Puis il faut créer un fichier .env à la racine du projet, avec au moins la variable JWT_SECRET déclarer.
+Puis il faut créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes: 
+- JWT_SECRET
+- MAIL_HOST
+- MAIL_PORT
+- MAIL_USER
+- MAIL_PASSWORD
 
 Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    
 Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/datasubvention`.    
-Il est possible de paramétrer ses informations via les variables d'environnements. Voir le fichier `configurations/mongo.conf.ts`.
+Il est possible de paramétrer ses informations via le fichier .env .Le nom des variables ce trouve dans `configurations/mongo.conf.ts`.
 
 Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :   
 `sudo docker pull mongo`   

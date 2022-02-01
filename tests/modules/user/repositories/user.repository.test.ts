@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import User, { UserWithoutSecret } from "../../../../src/modules/user/entities/User";
 import userRepository from "../../../../src/modules/user/repositoies/user.repository";
 import userService from "../../../../src/modules/user/user.service"
@@ -62,7 +63,7 @@ describe("UserRepository", () => {
         it("should return null", async () => {
             const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false);
 
-            await expect(userRepository.findPassword(user)).resolves.toBe(null);
+            await expect(userRepository.findPassword(user as UserWithoutSecret)).resolves.toBe(null);
         })
     })
 
@@ -78,9 +79,9 @@ describe("UserRepository", () => {
         })
 
         it("should return null", async () => {
-            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false);
+            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false, new ObjectId());
 
-            await expect(userRepository.findJwt(user)).resolves.toBe(null);
+            await expect(userRepository.findJwt(user as UserWithoutSecret)).resolves.toBe(null);
         })
     })
 })

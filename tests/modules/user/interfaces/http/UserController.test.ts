@@ -101,7 +101,7 @@ describe('UserController, /user', () => {
                 .set('Accept', 'application/json');
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({success: true, reset: { email: "user@beta.gouv.fr" }})
+            expect(response.body).toMatchObject({success: true, reset: expect.objectContaining({userId: expect.any(String)})})
         })
 
         it("should add reject because user not found", async () => {
@@ -208,7 +208,6 @@ describe('UserController, /user', () => {
 
         it("should reject because user not active", async () => {
             await userService.createUser("test-login@beta.gouv.fr");
-            // await userService.activeUser("test-login@beta.gouv.fr");
 
             const response = await request(g.app)
                 .post("/user/login")

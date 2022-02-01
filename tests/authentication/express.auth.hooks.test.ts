@@ -4,6 +4,7 @@ import passportLocal from 'passport-local';
 import passportJwt from 'passport-jwt';
 import userService from "../../src/modules/user/user.service";
 import { authMocks } from '../../src/authentication/express.auth.hooks';
+import { ObjectId } from "mongodb";
 
 describe("express.auth.hooks", () => {
     let passportMock: jest.SpyInstance;
@@ -74,7 +75,7 @@ describe("express.auth.hooks", () => {
             } 
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, 'findByEmail').mockImplementationOnce((email) => Promise.resolve({ email, roles: [], active: true, jwt: { token: "", expirateDate: new Date()}}) )
+            jest.spyOn(userService, 'findByEmail').mockImplementationOnce((email) => Promise.resolve({ email, roles: [], active: true, jwt: { token: "", expirateDate: new Date()}, _id: new ObjectId()}) )
             
             passportMock.mockImplementation((name) => {
                 if (name === "login") return;

@@ -8,6 +8,7 @@ import { UserUpdateError } from "./repositoies/errors/UserUpdateError";
 import userResetRepository from "./repositoies/user-reset.repository";
 
 import userRepository from "./repositoies/user.repository";
+import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH = 2,
@@ -74,7 +75,7 @@ export class UserService {
     }
 
     async createUser(email: string, password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
-        if (!/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/.test(email)) {
+        if (!REGEX_MAIL.test(email)) {
             return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL }
         }
 
@@ -200,7 +201,7 @@ export class UserService {
             return { success: false, message: "Reset token has expired, please retry forget password", code: UserServiceErrors.RESET_TOKEN_EXPIRED }
         }
 
-        const user = await userRepository.findByEmail(reset.email);
+        const user = await userRepository.findById(reset.userId);
 
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND};
@@ -245,8 +246,8 @@ export class UserService {
     }
 
     async resetUser(user: UserWithoutSecret): Promise<UserServiceError | { success: true, reset: UserReset }>  {
-        await userResetRepository.removeAllByEmail(user.email);
-        const reset = new UserReset(user.email, await bcrypt.hash(user.email, Math.random() * 10 + 1), new Date());
+        await userResetRepository.removeAllByUserId(user._id);
+        const reset = new UserReset(user._id, await bcrypt.hash(user.email, Math.random() * 10 + 1), new Date());
         
         const createdReset = await userResetRepository.create(reset);
 
@@ -277,7 +278,7 @@ export class UserService {
     }
 
     private passwordValidator(password: string): boolean  {
-        return /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[\]:;<>,.?/~_+=|-]).{8,32}$/.test(password);
+        return REGEX_PASSWORD.test(password);
     }
 }
 

@@ -1,3 +1,4 @@
+import { ObjectId, WithId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User, { UserWithoutSecret } from "../entities/User";
 import { UserUpdateError } from "./errors/UserUpdateError";
@@ -11,6 +12,10 @@ export class UserRepository {
 
     async findByEmail(email: string) {
         return this.removeSecrets(await this.collection.findOne({email: email}));
+    }
+
+    async findById(userId: ObjectId) {
+        return this.removeSecrets(await this.collection.findOne({_id: userId}));
     }
 
     async update(user: User | UserWithoutSecret): Promise<UserWithoutSecret> {
@@ -39,7 +44,7 @@ export class UserRepository {
         return user ? user.jwt : null;
     }
 
-    private removeSecrets(user: User | null ): UserWithoutSecret | null {
+    private removeSecrets(user: WithId<User> | null ): UserWithoutSecret | null {
         if (!user) return null;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
