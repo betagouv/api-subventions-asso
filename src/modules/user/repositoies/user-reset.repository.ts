@@ -1,9 +1,6 @@
+import { ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import UserReset from "../entities/UserReset";
-
-export enum UserResetRepositoryErrors {
-    UPDATE_FAIL = 1
-}
 
 export class UserResetRepository {
     private readonly collection = db.collection<UserReset>("users-reset");
@@ -21,8 +18,8 @@ export class UserResetRepository {
         return this.collection.deleteOne(reset);
     }
 
-    public async removeAllByEmail(email: string) {
-        return this.collection.deleteMany({ email });
+    public async removeAllByUserId(userId: ObjectId) {
+        return this.collection.deleteMany({ userId });
     }
 }
 

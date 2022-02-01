@@ -5,6 +5,7 @@ import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
 import userService, {UserServiceError} from "../../src/modules/user/user.service";
 import userRepository from "../../src/modules/user/repositoies/user.repository";
+import { ObjectId } from "mongodb";
 
 describe("expressAuthentication", () => {
 
@@ -67,7 +68,7 @@ describe("expressAuthentication", () => {
             } as unknown
         } as express.Request;
 
-        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true}))
+        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true, _id: new ObjectId()}))
         jest.spyOn(userService, "findJwtByEmail").mockImplementation((email) => Promise.resolve({success: false} as UserServiceError))
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -86,7 +87,7 @@ describe("expressAuthentication", () => {
             } as unknown
         } as express.Request;
 
-        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true}))
+        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true, _id: new ObjectId()}))
         jest.spyOn(userService, "findJwtByEmail").mockImplementation((email) => Promise.resolve({success: true, jwt: { token: "Wrong token", expirateDate: new Date()}}))
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -105,7 +106,7 @@ describe("expressAuthentication", () => {
             } as unknown
         } as express.Request;
 
-        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true}))
+        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true, _id: new ObjectId()}))
         jest.spyOn(userService, "findJwtByEmail").mockImplementation((email) => Promise.resolve({success: true, jwt: { token: "token", expirateDate: new Date(Date.now() - 1000* 60*60*24)}}))
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -124,7 +125,7 @@ describe("expressAuthentication", () => {
             } as unknown
         } as express.Request;
 
-        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true}))
+        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: true, _id: new ObjectId()}))
         jest.spyOn(userService, "findJwtByEmail").mockImplementation((email) => Promise.resolve({success: true, jwt: { token: "token", expirateDate: new Date()}}))
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -143,7 +144,7 @@ describe("expressAuthentication", () => {
             } as unknown
         } as express.Request;
 
-        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: false}))
+        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user"], active: false, _id: new ObjectId()}))
         jest.spyOn(userService, "findJwtByEmail").mockImplementation((email) => Promise.resolve({success: true, jwt: { token: "token", expirateDate: new Date()}}))
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -162,10 +163,10 @@ describe("expressAuthentication", () => {
             } as unknown
         } as express.Request;
 
-        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user", "admin"], active: true}))
+        jest.spyOn(userService, "findByEmail").mockImplementation((email) => Promise.resolve({email, roles: ["user", "admin"], active: true, _id: new ObjectId()}))
         jest.spyOn(userService, "findJwtByEmail").mockImplementation((email) => Promise.resolve({success: true, jwt: { token: "token", expirateDate: new Date()}}))
         jest.spyOn(userRepository, "findJwt").mockImplementation(() => Promise.resolve({ token: "token", expirateDate: new Date()}))
-        jest.spyOn(userRepository, "update").mockImplementation((user) => Promise.resolve({email: user.email, roles: ["user", "admin"], active: true}))
+        jest.spyOn(userRepository, "update").mockImplementation((user) => Promise.resolve({email: user.email, roles: ["user", "admin"], active: true, _id: new ObjectId()}))
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

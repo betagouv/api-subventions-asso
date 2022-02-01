@@ -1,3 +1,4 @@
+import { ObjectId, WithId } from "mongodb";
 
 export default class User {
     constructor(
@@ -5,8 +6,9 @@ export default class User {
         public hashPassword: string,
         public roles: string[],
         public jwt: { token: string, expirateDate: Date },
-        public active: boolean
+        public active: boolean,
+        public _id?: ObjectId
     ){}
 }
 
-export type UserWithoutSecret = Omit<Omit<User, 'hashPassword'>, "jwt">;
+export type UserWithoutSecret = Omit<Omit<WithId<User>, 'hashPassword'>, "jwt">;
