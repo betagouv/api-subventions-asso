@@ -1,11 +1,12 @@
 import passport from 'passport';
+import { Express } from "express"
 import {Strategy as LocalStrategy} from 'passport-local';
 import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import userService from '../modules/user/user.service';
 import { JWT_SECRET } from '../configurations/jwt.conf';
 import { UserWithoutSecret } from '../modules/user/entities/User';
 
-export function authMocks() {
+export function authMocks(app: Express) {
     // A passport middleware to handle User login
     passport.use(
         'login',
@@ -52,4 +53,6 @@ export function authMocks() {
     passport.deserializeUser((user: UserWithoutSecret, done) => {
         done(null, user);
     });
+
+    app.post("/auth/login", passport.authenticate("login"));
 }

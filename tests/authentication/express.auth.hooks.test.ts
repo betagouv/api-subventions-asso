@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import passport from "passport"
+import { Express } from "express"
 import passportLocal from 'passport-local';
 import passportJwt from 'passport-jwt';
 import userService from "../../src/modules/user/user.service";
@@ -41,7 +42,7 @@ describe("express.auth.hooks", () => {
                 })
             });
 
-            authMocks();
+            authMocks({ post: jest.fn() } as unknown as Express);
         });
 
         it("Should be not logged user", (done) => {
@@ -62,7 +63,7 @@ describe("express.auth.hooks", () => {
                     done();
                 })
             });
-            authMocks();
+            authMocks({ post: jest.fn()} as unknown as Express);
         });
     })
 
@@ -86,7 +87,7 @@ describe("express.auth.hooks", () => {
                 })
             });
 
-            authMocks();
+            authMocks({ post: jest.fn()} as unknown as Express);
         });
 
         it("Should be not logged user", (done) => {
@@ -105,7 +106,7 @@ describe("express.auth.hooks", () => {
                     done();
                 })
             });
-            authMocks();
+            authMocks({ post: jest.fn()} as unknown as Express);
         });
     })
 })

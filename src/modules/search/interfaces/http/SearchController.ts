@@ -5,6 +5,7 @@ import { Siret } from '../../../../@types/Siret';
 import searchService from "../../search.service";
 
 @Route("search")
+@Security("jwt")
 @Tags("Search Controller")
 export class SearchController extends Controller {
     /**
@@ -12,7 +13,6 @@ export class SearchController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/siret/{siret}")
-    @Security("jwt")
     public findBySiret(
         siret: Siret,
     ) {
@@ -24,7 +24,6 @@ export class SearchController extends Controller {
      * @param rna Identifiant RNA
      */
     @Get("/rna/{rna}")
-    @Security("jwt")
     public findByRna(
         rna: Rna,
     ) {
