@@ -6,7 +6,6 @@ import passport from "passport"
 
 import { RegisterRoutes } from "../tsoa/routes";
 import { ValidateError } from "tsoa";
-import User from "./modules/user/entities/User";
 import { authMocks } from "./authentication/express.auth.hooks";
 
 const appName = 'datasubvention';
@@ -42,12 +41,7 @@ export async function startServer(port = '8080', verbose = true) {
     }));
     app.use(bodyParser.json());
     app.use(passport.initialize());
-    authMocks();
-    
-    app.post("/user/login", passport.authenticate("login"), (req, res) => {
-        const user = req.user as User;
-        res.json(user.jwt);
-    });
+    authMocks(app);
     RegisterRoutes(app);
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
