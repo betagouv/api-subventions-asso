@@ -47,7 +47,7 @@ export class UserService {
             return { success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH}
         }
 
-        const jwtParams = await userRepository.findJwt(user);
+        let jwtParams = await userRepository.findJwt(user);
         if (!user.active || !jwtParams ) {
             return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE}
         }
@@ -63,12 +63,27 @@ export class UserService {
             
             try {
                 await userRepository.update({...user, jwt: jwtUserParams});
+                jwtParams = jwtUserParams;
             } catch(e) {
                 return { success: false, message: UserUpdateError.message, code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL};
             }
         }
 
         return { success: true, user: {...user, jwt: jwtParams} }
+    }
+
+    public async logout(user: UserWithoutSecret) {
+        const jwtParams = await userRepository.findJwt(user);
+        if (!jwtParams ) { // No jwt, so user is already disconected
+            return user;
+        }
+
+        const jwtUserParams = {
+            token: jwtParams.token,
+            expirateDate: new Date('01/01/1970')
+        }
+
+        return userRepository.update({...user, jwt: jwtUserParams});
     }
 
     async findByEmail(email: string) {

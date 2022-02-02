@@ -1,7 +1,7 @@
-import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, } from 'tsoa';
+import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, } from 'tsoa';
 import { Request as ExRequest } from "express";
 import userService from '../../user.service';
-import User from '../../entities/User';
+import User, { UserWithoutSecret } from '../../entities/User';
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -51,5 +51,15 @@ export class AuthentificationController extends Controller {
         // If you change the route please change in express.auth.hooks.ts
 
         return (req.user as User).jwt;
+    }
+
+    @Get("/logout")
+    @Security("jwt")
+    public async logout(
+        @Request() req: ExRequest
+    ) {
+        await userService.logout(req.user as UserWithoutSecret);
+
+        return { success: true };
     }
 }
