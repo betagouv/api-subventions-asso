@@ -1,7 +1,6 @@
 import { ObjectId, WithId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User, { UserWithoutSecret } from "../entities/User";
-import { UserUpdateError } from "./errors/UserUpdateError";
 
 export enum UserRepositoryErrors {
     UPDATE_FAIL = 1
@@ -19,12 +18,9 @@ export class UserRepository {
     }
 
     async update(user: User | UserWithoutSecret): Promise<UserWithoutSecret> {
-        const result = await this.collection.findOneAndUpdate({email: user.email}, { $set:user });
+        await this.collection.updateOne({email: user.email}, { $set:user });
 
-        if (!result.ok || !result.value) {
-            throw new UserUpdateError()
-        }
-        return this.removeSecrets({...result.value, ...user }) as UserWithoutSecret;
+        return this.findByEmail(user.email) as unknown as UserWithoutSecret;
     }
 
     async create(user: User) {

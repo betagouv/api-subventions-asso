@@ -9,14 +9,17 @@ export function expressAuthentication(
     securityName = "jwt",
     scopes: string[] = []
 ) {
-    if (securityName !== "jwt") return Promise.reject(new Error("No security found"));
+    if (securityName !== "jwt") {
+        console.warn(`${securityName} is not an valid securtiy please change by jwt`);
+        return Promise.reject(new Error("Internal server error"));
+    }
 
     const token =
             request.body.token ||
             request.query.token ||
             request.headers["x-access-token"];
     
-    if (!token) return Promise.reject(new Error("No token provided"))
+    if (!token) return Promise.reject(new UserJWTError("No token provided"))
 
     return new Promise((resolve, reject) => {
         jwt.verify(token, JWT_SECRET, async (err: unknown, decoded: unknown) => {

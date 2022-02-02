@@ -20,7 +20,7 @@ describe("expressAuthentication", () => {
 
     it("Should be reject because security not available", () => {
         const req = {} as express.Request;
-        expect(expressAuthentication(req, "FAKE")).rejects.toThrowError("No security found");
+        expect(expressAuthentication(req, "FAKE")).rejects.toThrowError("Internal server error");
     });
 
     it("Should be reject because no token provided", () => {
