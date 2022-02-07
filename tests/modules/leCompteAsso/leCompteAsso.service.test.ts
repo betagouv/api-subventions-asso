@@ -18,7 +18,7 @@ describe("leCompteAssoService", () => {
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
                 success: false,
-                msg: 'INVALID SIRET FOR 000000000000aa',
+                message: 'INVALID SIRET FOR 000000000000aa',
                 data: {
                     siret: '000000000000aa',
                     name: 'HELLO WORLD'
@@ -31,7 +31,7 @@ describe("leCompteAssoService", () => {
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({ 
                 success: false,
-                msg: 'INVALID NAME FOR ',
+                message: 'INVALID NAME FOR ',
                 data: { 
                     siret: '00000000000000',
                     name: ''
@@ -44,7 +44,7 @@ describe("leCompteAssoService", () => {
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({ 
                 success: false,
-                msg: 'INVALID COMPTE ASSO ID FOR HELLO WORLD',
+                message: 'INVALID COMPTE ASSO ID FOR HELLO WORLD',
                 data: { 
                     "compteAssoId": "00000000000000",
                 }
@@ -143,7 +143,7 @@ describe("leCompteAssoService", () => {
                         "name": "HELLO WORLD",
                         "siret": "00000000000000",
                     },
-                    "msg": "The company is not in legal cateries accepted",
+                    "message": "The company is not in legal cateries accepted",
                 }
             });
         });
@@ -194,7 +194,7 @@ describe("leCompteAssoService", () => {
                         "name": "HELLO WORLD",
                         "siret": "00000000000000",
                     },
-                    "msg": "RNA not found",
+                    "message": "RNA not found",
                 }
             });
         });

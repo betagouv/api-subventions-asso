@@ -45,7 +45,7 @@ export default class LeCompteAssoCliController {
             entities.forEach((entity) => {
                 const result = leCompteAssoService.validEntity(entity);
                 if (!result.success) {
-                    console.error(`${COLORS.FgRed}${result.msg}${COLORS.Reset}`, result.data);
+                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
     
@@ -135,7 +135,7 @@ export default class LeCompteAssoCliController {
         `);
 
         rejected.forEach((request) => {
-            logs.push(`\n\nThis request is not registered because: ${request.result.msg}\n`, JSON.stringify(request.result.data, null, "\t"))
+            logs.push(`\n\nThis request is not registered because: ${request.result.message}\n`, JSON.stringify(request.result.data, null, "\t"))
         });
     }
 }
