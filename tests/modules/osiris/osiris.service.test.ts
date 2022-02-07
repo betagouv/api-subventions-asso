@@ -10,12 +10,12 @@ describe("OsirisService", () => {
     describe("requests part", () => {
         describe('addRequest', () => {
             it('should return the added osiris request', async () => {
-                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "OSIRISID", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "OSIRISID", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
                 expect((await osirisService.addRequest(entity)).result).toMatchObject(entity);
             });
         
             it('should return the updated osiris request', async () => {
-                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "OSIRISID", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "OSIRISID", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
                 await osirisService.addRequest(entity);
                 const result = await osirisService.addRequest(entity)
                 expect(result.result).toMatchObject(entity);
@@ -26,7 +26,7 @@ describe("OsirisService", () => {
         describe('findAllRequests', () => {
         
             beforeEach(async () => {
-                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
                 await osirisService.addRequest(entity);
             });
         
@@ -35,7 +35,7 @@ describe("OsirisService", () => {
             });
         
             it('should return two requests', async () => {
-                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
                 await osirisService.addRequest(entity);
         
                 expect(await osirisService.findAllRequests()).toHaveLength(2);
@@ -43,7 +43,7 @@ describe("OsirisService", () => {
         });
         
         describe('findBySiret', () => {
-            const entity = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+            const entity = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
         
             beforeEach(async () => {
                 await osirisService.addRequest(entity);
@@ -55,7 +55,7 @@ describe("OsirisService", () => {
         });
         
         describe('findByRna', () => {
-            const entity = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+            const entity = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
         
             beforeEach(async () => {
                 await osirisService.addRequest(entity);

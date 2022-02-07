@@ -125,7 +125,7 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const request = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+            const request = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
             const action =  new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"}, {}, undefined);
 
             await osirisService.addRequest(request);
@@ -161,7 +161,7 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
             await osirisService.addRequest(entity);
         });
 
@@ -193,7 +193,7 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"}, {}, undefined, []);
+            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
             await osirisService.addRequest(entity);
         });
 

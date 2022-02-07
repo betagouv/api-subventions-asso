@@ -15,6 +15,10 @@ export default class LeCompteAssoRequestEntity extends RequestEntity {
         name: ["Nom association"],
     }
 
+    public providerMatchingKeys: string[] = [
+        "compteAssoId",
+    ]
+
     constructor(
         public legalInformations: ILegalInformations,
         public providerInformations: ILeCompteAssoRequestInformations,
