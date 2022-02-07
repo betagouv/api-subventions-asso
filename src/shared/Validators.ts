@@ -24,3 +24,8 @@ export function isOsirisRequestId(requestId: string): boolean {
 export function isOsirisActionId(actionId: string): boolean {
     return typeof actionId === "string" && /[A-Z\d-]{4,16}/.test(actionId); // TODO: check if this rules is already true
 }
+
+// Chorus && Osiris
+export function isEJ(ej: string) {
+    return typeof ej === "string" && ej.length == 10;
+}
