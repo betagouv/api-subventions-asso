@@ -1,7 +1,19 @@
+import { ParserInfo } from "../../@types/ParserInfo";
 import ParserPath from "../../@types/ParserPath";
 
-export function findByPath(data: unknown, path: ParserPath) {
-    return path.reduce((acc, name) => {
+export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo) {
+    let path: ParserPath;
+    let adatper = (v: string | undefined): unknown => v;
+
+    if (Array.isArray(parserData)) {
+        path = parserData;
+    }
+    else {
+        path = parserData.path;
+        adatper = parserData.adapter || adatper;
+    }
+
+    const result = path.reduce((acc, name) => {
         if (acc === undefined) return acc;
 
         const obj = acc as {[key: string]: string};
@@ -15,4 +27,6 @@ export function findByPath(data: unknown, path: ParserPath) {
         if (!key) return undefined
         return obj[key];
     }, data) as string;
+
+    return adatper(result) as T;
 }

@@ -1,6 +1,7 @@
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import * as ParseHelper from "../../shared/helpers/ParserHelper";
+import { Siret } from "../../@types/Siret";
 
 export default class LeCompteAssoParser {
     public static parse(content: Buffer): ILeCompteAssoPartialRequestEntity[] {
@@ -18,17 +19,17 @@ export default class LeCompteAssoParser {
             }, {} as {[key: string]: string});
     
             const legalInformations = {
-                siret: ParseHelper.findByPath(parsedData, LeCompteAssoRequestEntity.indexedLegalInformationsPath.siret),
-                name: ParseHelper.findByPath(parsedData, LeCompteAssoRequestEntity.indexedLegalInformationsPath.name),
+                siret: ParseHelper.findByPath<Siret>(parsedData, LeCompteAssoRequestEntity.indexedLegalInformationsPath.siret),
+                name: ParseHelper.findByPath<string>(parsedData, LeCompteAssoRequestEntity.indexedLegalInformationsPath.name),
                 rna: null
             }
     
             const providerInformations = {
-                compteAssoId: ParseHelper.findByPath(parsedData, LeCompteAssoRequestEntity.indexedProviderInformationsPath.compteAssoId),
+                compteAssoId: ParseHelper.findByPath<string>(parsedData, LeCompteAssoRequestEntity.indexedProviderInformationsPath.compteAssoId),
             };
 
             entities.push({legalInformations, providerInformations, data: parsedData});
-                
+    
             return entities;
 
         }, [] as ILeCompteAssoPartialRequestEntity[]);
