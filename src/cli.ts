@@ -8,6 +8,7 @@ import OsirisCliController from "./modules/osiris/interfaces/cli/osiris.cli.cont
 import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
 import { connectDB } from "./shared/MongoConnection";
 import MailNotifierCliController from "./modules/mail-notifier/interfaces/cli/mail-notifier.cli.controller";
+import ChorusCliController from "./modules/chorus/interfaces/cli/chorus.cli.controller";
 
 async function main() {
     await connectDB();
@@ -21,6 +22,7 @@ async function main() {
         LeCompteAssoCliController,
         MailNotifierCliController,
         UserCliController,
+        ChorusCliController,
     ];
     
     const args = process.argv.slice(2);
