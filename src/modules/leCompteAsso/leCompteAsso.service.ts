@@ -10,21 +10,21 @@ import { Siret } from "../../@types/Siret";
 
 
 export interface RejectedRequest {
-    state: "rejected", result: { msg: string, code: number, data: unknown }
+    state: "rejected", result: { message: string, code: number, data: unknown }
 }
 
 export class LeCompteAssoService implements ProviderRequestInterface {
     public validEntity(partialEntity: ILeCompteAssoPartialRequestEntity) {
         if (!isSiret(partialEntity.legalInformations.siret)) {
-            return { success: false, msg: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`, data: partialEntity.legalInformations };
+            return { success: false, message: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`, data: partialEntity.legalInformations };
         }
 
         if (!isAssociationName(partialEntity.legalInformations.name)) {
-            return { success: false, msg: `INVALID NAME FOR ${partialEntity.legalInformations.name}`, data: partialEntity.legalInformations };
+            return { success: false, message: `INVALID NAME FOR ${partialEntity.legalInformations.name}`, data: partialEntity.legalInformations };
         }
 
         if (!isCompteAssoId(partialEntity.providerInformations.compteAssoId)) {
-            return { success: false, msg: `INVALID COMPTE ASSO ID FOR ${partialEntity.legalInformations.name}`, data: partialEntity.providerInformations };
+            return { success: false, message: `INVALID COMPTE ASSO ID FOR ${partialEntity.legalInformations.name}`, data: partialEntity.providerInformations };
         }
 
         return { success: true }
@@ -33,12 +33,13 @@ export class LeCompteAssoService implements ProviderRequestInterface {
     public async addRequest(partialEntity: ILeCompteAssoPartialRequestEntity): Promise<{state: string, result: LeCompteAssoRequestEntity} | RejectedRequest> {
         // Rna is not exported in CompteAsso so we search in api
         const rna = await RnaHelper.findRnaBySiret(partialEntity.legalInformations.siret, true);
+    
         if (typeof rna !== "string") {
             if (rna.code === RnaHelper.ERRORS_CODES.RNA_NOT_FOUND) {
                 return {
                     state: "rejected",
                     result: {
-                        msg: "RNA not found",
+                        message: "RNA not found",
                         code: 11,
                         data: partialEntity.legalInformations 
                     }
@@ -48,7 +49,7 @@ export class LeCompteAssoService implements ProviderRequestInterface {
             return {
                 state: "rejected",
                 result: {
-                    msg: "The company is not in legal cateries accepted",
+                    message: "The company is not in legal cateries accepted",
                     code: 10,
                     data: {
                         ...partialEntity.legalInformations,

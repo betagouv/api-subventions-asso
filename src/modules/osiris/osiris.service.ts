@@ -32,23 +32,23 @@ export class OsirisService implements ProviderRequestInterface {
 
     public validRequest(request: OsirisRequestEntity) {
         if (!isSiret(request.legalInformations.siret)) {
-            return { success: false, msg: `INVALID SIRET FOR ${request.legalInformations.siret}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET };
+            return { success: false, message: `INVALID SIRET FOR ${request.legalInformations.siret}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET };
         }
 
         if (!isRna(request.legalInformations.rna)) {
-            return { success: false, msg: `INVALID RNA FOR ${request.legalInformations.rna}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_RNA};
+            return { success: false, message: `INVALID RNA FOR ${request.legalInformations.rna}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_RNA};
         }
 
         if (!isAssociationName(request.legalInformations.name)) {
-            return { success: false, msg: `INVALID NAME FOR ${request.legalInformations.name}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_NAME };
+            return { success: false, message: `INVALID NAME FOR ${request.legalInformations.name}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_NAME };
         }
 
         if (!isCompteAssoId(request.providerInformations.compteAssoId)) {
-            return { success: false, msg: `INVALID COMPTE ASSO ID FOR ${request.legalInformations.name}`, data: request.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_CAID };
+            return { success: false, message: `INVALID COMPTE ASSO ID FOR ${request.legalInformations.name}`, data: request.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_CAID };
         }
 
         if (!isOsirisRequestId(request.providerInformations.osirisId)) {
-            return { success: false, msg: `INVALID OSIRIS ID FOR ${request.legalInformations.name}`, data: request.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID };
+            return { success: false, message: `INVALID OSIRIS ID FOR ${request.legalInformations.name}`, data: request.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID };
         }
 
         return { success: true };
@@ -71,11 +71,11 @@ export class OsirisService implements ProviderRequestInterface {
 
     public validAction(action: OsirisActionEntity) {
         if (!isCompteAssoId(action.indexedInformations.compteAssoId)) {
-            return { success: false, msg: `INVALID COMPTE ASSO ID FOR ${action.indexedInformations.compteAssoId}`, data: action.indexedInformations };
+            return { success: false, message: `INVALID COMPTE ASSO ID FOR ${action.indexedInformations.compteAssoId}`, data: action.indexedInformations };
         }
 
         if (!isOsirisActionId(action.indexedInformations.osirisActionId)) {
-            return { success: false, msg: `INVALID OSIRIS ACTION ID FOR ${action.indexedInformations.osirisActionId}`, data: action.indexedInformations };
+            return { success: false, message: `INVALID OSIRIS ACTION ID FOR ${action.indexedInformations.osirisActionId}`, data: action.indexedInformations };
         }
         
         return { success: true };

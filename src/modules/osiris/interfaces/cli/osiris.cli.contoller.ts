@@ -40,7 +40,7 @@ export default class OsirisCliController {
             requests.forEach((entity) => {
                 const result = osirisService.validRequest(entity);
                 if (!result.success) {
-                    console.error(`${COLORS.FgRed}${result.msg}${COLORS.Reset}`, result.data);
+                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
 
@@ -52,7 +52,7 @@ export default class OsirisCliController {
             actions.forEach((entity) => {
                 const result = osirisService.validAction(entity);
                 if (!result.success) {
-                    console.error(`${COLORS.FgRed}${result.msg}${COLORS.Reset}`, result.data);
+                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
 
@@ -128,7 +128,7 @@ export default class OsirisCliController {
             }
 
             if (!validation.success && validation.code != 2) {
-                logs.push(`\n\nThis request is not registered because: ${validation.msg}\n`, JSON.stringify(validation.data, null, "\t"));
+                logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
             } else data.push( await osirisService.addRequest(osirisRequest));
 
             return data;
@@ -149,7 +149,7 @@ export default class OsirisCliController {
             const validation = osirisService.validAction(osirisAction);
 
             if (!validation.success) {
-                logs.push(`\n\nThis request is not registered because: ${validation.msg}\n`, JSON.stringify(validation.data, null, "\t"));
+                logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
             } else data.push(await osirisService.addAction(osirisAction));
 
             return data;
