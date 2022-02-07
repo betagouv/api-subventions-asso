@@ -31,6 +31,20 @@ export class LeCompteAssoService implements ProviderRequestInterface {
     }
 
     public async addRequest(partialEntity: ILeCompteAssoPartialRequestEntity): Promise<{state: string, result: LeCompteAssoRequestEntity} | RejectedRequest> {
+        const existingEntity = await leCompteAssoRepository.findByCompteAssoId(partialEntity.providerInformations.compteAssoId);
+
+        if (existingEntity) {
+            const legalInformations: ILegalInformations = {
+                ...existingEntity.legalInformations,
+                ...partialEntity.legalInformations,
+            }
+    
+            return {
+                state: "updated",
+                result: await leCompteAssoRepository.updateRequest(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),
+            };
+        }
+
         // Rna is not exported in CompteAsso so we search in api
         const rna = await RnaHelper.findRnaBySiret(partialEntity.legalInformations.siret, true);
     
@@ -63,19 +77,9 @@ export class LeCompteAssoService implements ProviderRequestInterface {
             rna,
         }
 
-        const request = new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)
-
-        const existingFile = await leCompteAssoRepository.findByCompteAssoId(request.providerInformations.compteAssoId);
-        if (existingFile) {
-            return {
-                state: "updated",
-                result: await leCompteAssoRepository.updateRequest(request),
-            };
-        }
-
         return {
             state: "created",
-            result: await leCompteAssoRepository.addRequest(request),
+            result: await leCompteAssoRepository.addRequest(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),
         };
     }
 
