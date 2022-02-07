@@ -26,7 +26,7 @@ describe("chorus.parser.ts", () => {
             "indexedInformations":  {
                 "amount": 1,
                 "compte": "AUTRES PREST SERVICE",
-                "dateOperation": new Date("1969-12-31T23:00:00.000Z"),
+                "dateOperation": new Date(1970,0 ,1),
                 "ej": "2100000000",
                 "siret": "10000000000000",
             },

@@ -12,21 +12,34 @@ export class SearchController extends Controller {
      * Recherche des demandes de subventions via le siret de l'association
      * @param siret Identifiant Siret
      */
-    @Get("/siret/{siret}")
-    public findBySiret(
+    @Get("/etablissement/{siret}")
+    public async findBySiret(
         siret: Siret,
-    ) {
-        return searchService.getBySiret(siret);
+    ): Promise<{success: false, message: string } | { success: true, etablissement: unknown}>{
+        const result = await searchService.getBySiret(siret);
+
+        if (!result) {
+            this.setStatus(404);
+            return { success: false, message: "Etablissement not found"}
+        }
+
+        return { success: true, etablissement: result };
     }
 
     /**
      * Recherche des demandes de subventions via le rna de l'association
      * @param rna Identifiant RNA
      */
-    @Get("/rna/{rna}")
-    public findByRna(
+    @Get("/association/{rna}")
+    public async findByRna(
         rna: Rna,
-    ) {
-        return searchService.getByRna(rna);
+    ):  Promise<{success: false, message: string } | { success: true, association: unknown}> {
+        const result = await searchService.getByRna(rna);
+        if (!result) {
+            this.setStatus(404);
+            return { success: false, message: "Association not found"}
+        }
+
+        return { success: true, association: result };
     }
 }
