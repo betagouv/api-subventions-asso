@@ -7,12 +7,12 @@ const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(
         auth: MONGO_USER && MONGO_PASSWORD ? {
             username: MONGO_USER,
             password: MONGO_PASSWORD
-        }: undefined
+        }: undefined,
     }
 );
 
 export const connectDB = () => mongoClient.connect().catch((reason => {
-    console.log("MONGO CONNECTION ERROR")
+    console.log("MONGO CONNECTION ERROR\n")
     console.error(reason);
     process.exit(1);
 }));
