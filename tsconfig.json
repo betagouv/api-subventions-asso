@@ -14,6 +14,7 @@
     },
     "exclude": [
         "tests",
-        "jest.config.ts"
+        "jest.config.ts",
+        "jest.setup.after.env.ts"
     ]
 }
