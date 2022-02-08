@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
+    "prestart": "npm run build",
+    "start": "node ./build/src/index.js",
     "cli": "ts-node src/cli.ts",
     "generate:docs": "tsoa swagger",
     "generate:routes": "tsoa routes",
@@ -39,11 +41,13 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "ts-node": "^10.4.0",
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.3.0",
     "tsoa": "^3.14.1",
     "winston": "^3.5.1",
-    "winston-mongodb": "^5.0.7"
+    "winston-mongodb": "^5.0.7",
+    "husky": "^7.0.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.1",
@@ -67,12 +71,10 @@
     "crypto": "^1.0.1",
     "eslint": "^8.6.0",
     "eslint-plugin-import": "^2.25.4",
-    "husky": "^7.0.4",
     "jest": "^27.4.5",
     "nodemon": "^2.0.15",
     "supertest": "^6.2.2",
     "ts-jest": "^27.1.2",
-    "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   }
 }
