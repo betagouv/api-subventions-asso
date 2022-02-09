@@ -5,15 +5,36 @@ const fs = require("fs");
 const appName = process.argv[2];
 const envVarFile = process.argv[3];
 const firstEmail = process.argv[4];
+const dataFilePath = process.argv[5];
 
 
-if (process.argv.length < 5) {
-    console.error("Please use command: node deploy-app.js [YOUR_APP_NAME] [ENV_VAR_JSON_FILE] [FIRST_USER_EMAIL]");
+if (process.argv.length < 6) {
+    console.error("Please use command: node deploy-app.js [YOUR_APP_NAME] [ENV_VAR_JSON_FILE] [FIRST_USER_EMAIL] [DATA_FILE_PATH_TAR.GZ]");
     return;
 }
 
 function scalingoAppAction(action, value) {
     return child_process.execSync(`scalingo --app ${appName} ${action} ${value}`);
+}
+
+function scalingAsyncAppAction(action, value) {
+    const child = child_process.spawn(`scalingo --app ${appName} ${action} ${value}`);
+
+    return new Promise(resolve => {
+        console.log("RUN", `scalingo --app ${appName} ${action} ${value}`);
+
+        child.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+        
+        child.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+        
+        child.on('close', (code) => {
+            resolve()
+        });
+    })
 }
 
 console.log("Welcome to automation deploy app !\n");
@@ -52,3 +73,13 @@ console.log("Add role admin to", firstEmail);
 console.log(scalingoAppAction("run", `node ./build/src/cli.js user setRoles ${firstEmail} admin`).toString());
 
 console.log("User has been created, please use forget-password !");
+
+console.log("Uploading and init data");
+
+scalingAsyncAppAction("run", `--file ${dataFilePath} ./tools/extract_on_container.sh`).then(() => {
+    console.log("Extract end !");
+    console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);
+
+    console.log("Have a good day !");
+    process.exit();
+});
