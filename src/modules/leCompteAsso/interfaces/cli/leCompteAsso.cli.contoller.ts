@@ -105,10 +105,9 @@ export default class LeCompteAssoCliController {
 
         console.info("All entities is valid !\nStart register in database ...")
 
-        const results = await entities.reduce(async (acc, entity, i) => {
+        const results = await entities.reduce(async (acc, entity) => {
             const data = await acc;
             data.push(await leCompteAssoService.addRequest(entity));
-            console.info(`${i+1}/${entities.length}`)
             return data;
         }, Promise.resolve([]) as Promise<
         ({
