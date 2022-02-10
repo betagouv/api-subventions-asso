@@ -37,6 +37,7 @@ export class LeCompteAssoService implements ProviderRequestInterface {
             const legalInformations: ILegalInformations = {
                 ...existingEntity.legalInformations,
                 ...partialEntity.legalInformations,
+                rna: existingEntity.legalInformations.rna
             }
     
             return {
@@ -47,7 +48,7 @@ export class LeCompteAssoService implements ProviderRequestInterface {
 
         // Rna is not exported in CompteAsso so we search in api
         const rna = await RnaHelper.findRnaBySiret(partialEntity.legalInformations.siret, true);
-    
+
         if (typeof rna !== "string") {
             if (rna.code === RnaHelper.ERRORS_CODES.RNA_NOT_FOUND) {
                 return {
