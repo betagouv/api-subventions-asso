@@ -9,7 +9,7 @@ import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMi
 import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
 
-const appName = 'datasubvention';
+const appName = 'api-subventions-asso';
 
 export async function startServer(port = '8080', isTest = false) {
     port = process.env.PORT || port;

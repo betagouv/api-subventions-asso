@@ -10,7 +10,7 @@ Puis il faut créer un fichier .env à la racine du projet, avec au moins les va
 - MAIL_PASSWORD
 
 Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    
-Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/datasubvention`.    
+Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/api-subventions-asso`.    
 Il est possible de paramétrer ses informations via le fichier .env .Le nom des variables ce trouve dans `configurations/mongo.conf.ts`.
 
 Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :   

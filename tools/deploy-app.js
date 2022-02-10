@@ -32,7 +32,7 @@ function scalingAsyncAppAction(action, value) {
             console.error(`stderr: ${data}`);
         });
         
-        child.on('close', (code) => {
+        child.on('close', () => {
             resolve()
         });
     })

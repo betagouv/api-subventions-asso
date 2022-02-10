@@ -1,5 +1,5 @@
 {
-  "name": "datasubvention",
+  "name": "api-subventions-asso",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/betagouv/datasubvention.git"
+    "url": "git+https://github.com/betagouv/api-subventions-asso.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/betagouv/datasubvention/issues"
+    "url": "https://github.com/betagouv/api-subventions-asso/issues"
   },
-  "homepage": "https://github.com/betagouv/datasubvention#readme",
+  "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
