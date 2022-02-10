@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import { ParserInfo } from "../../@types/ParserInfo";
 import ParserPath from "../../@types/ParserPath";
 
@@ -29,4 +32,19 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
     }, data) as string;
 
     return adatper(result) as T;
+}
+
+export function findFiles(file: string) {
+    const files = [];
+
+    if (fs.lstatSync(file).isDirectory()) {
+        const filesInFolder = fs
+            .readdirSync(file)
+            .filter(fileName => !fileName.startsWith(".") && !fs.lstatSync(path.join(file, fileName)).isDirectory())
+            .map((fileName => path.join(file, fileName)));
+
+        files.push(...filesInFolder);
+    } else files.push(file);
+
+    return files;
 }

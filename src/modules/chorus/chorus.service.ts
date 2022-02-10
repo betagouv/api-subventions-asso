@@ -1,4 +1,5 @@
 import { Siret } from "../../@types/Siret";
+import { COMPTES_ACCEPTED } from "../../shared/ComptesAccepted";
 import { isEJ, isSiret } from "../../shared/Validators";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -10,7 +11,7 @@ export interface RejectedRequest {
 export class ChorusService {
 
     public validateEntity(entity: ChorusLineEntity) {
-        if (!["TD ASSOCIATION", "TI EP ASSO GIP"].includes(entity.indexedInformations.compte)) {
+        if (!COMPTES_ACCEPTED.includes(entity.indexedInformations.compte)) {
             return { success: false, message: `The comtpe ${entity.indexedInformations.compte} is not accepted in data`, data: entity }
         }
 

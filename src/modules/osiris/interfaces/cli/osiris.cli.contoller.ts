@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface} from "../../../../@types/Cli.interface";
@@ -11,6 +10,7 @@ import { COLORS } from "../../../../shared/LogOptions";
 import * as RnaHelper from "../../../../shared/helpers/RnaHelper";
 import { Rna } from "../../../../@types/Rna";
 import { Siret } from "../../../../@types/Siret";
+import { findFiles } from "../../../../shared/helpers/ParserHelper";
 
 
 @StaticImplements<CliStaticInterface>()
@@ -71,16 +71,7 @@ export default class OsirisCliController {
             throw new Error(`File not found ${file}`);
         }
 
-        const files = [];
-
-        if (fs.lstatSync(file).isDirectory()) {
-            const filesInFolder = fs
-                .readdirSync(file)
-                .filter(fileName => !fileName.startsWith(".") && !fs.lstatSync(path.join(file, fileName)).isDirectory())
-                .map((fileName => path.join(file, fileName)));
-
-            files.push(...filesInFolder);
-        } else files.push(file);
+        const files = findFiles(file);
 
         console.info(`${files.length} files in the parse queue`);
         console.info(`You can read log in ${this.logFileParsePath[type]}`);

@@ -7,6 +7,7 @@ import LeCompteAssoParser from "../../leCompteAsso.parser";
 import leCompteAssoService, { RejectedRequest } from "../../leCompteAsso.service";
 import LeCompteAssoRequestEntity from "../../entities/LeCompteAssoRequestEntity";
 import { COLORS } from "../../../../shared/LogOptions"
+import { findFiles } from "../../../../shared/helpers/ParserHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class LeCompteAssoCliController {
@@ -65,16 +66,7 @@ export default class LeCompteAssoCliController {
             throw new Error(`File not found ${file}`);
         }
 
-        const files = [];
-
-        if (fs.lstatSync(file).isDirectory()) {
-            const filesInFolder = fs
-                .readdirSync(file)
-                .filter(fileName => !fileName.startsWith(".") && !fs.lstatSync(path.join(file, fileName)).isDirectory())
-                .map((fileName => path.join(file, fileName)));
-
-            files.push(...filesInFolder);
-        } else files.push(file);
+        const files = findFiles(file);
 
         console.info(`${files.length} files in the parse queue`);
         console.info(`You can read log in ${this.logFileParsePath}`);
