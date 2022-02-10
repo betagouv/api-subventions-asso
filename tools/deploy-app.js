@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const child_process = require("child_process");
 const fs = require("fs");
+const path = require("path");
 
 const appName = process.argv[2];
 const envVarFile = process.argv[3];
@@ -18,7 +19,7 @@ function scalingoAppAction(action, value) {
 }
 
 function scalingAsyncAppAction(action, value) {
-    const child = child_process.spawn(`scalingo --app ${appName} ${action} ${value}`);
+    const child = child_process.spawn(`scalingo`, ['--app', appName, action, ...value.split(" ")], { env: process.env});
 
     return new Promise(resolve => {
         console.log("RUN", `scalingo --app ${appName} ${action} ${value}`);
@@ -76,7 +77,8 @@ console.log("User has been created, please use forget-password !");
 
 console.log("Uploading and init data");
 
-scalingAsyncAppAction("run", `--file ${dataFilePath} ./tools/extract_on_container.sh`).then(() => {
+
+scalingAsyncAppAction("run" ,`--file ${path.resolve(dataFilePath)} --size XL bash ./tools/extract_on_container.sh`).then(() => {
     console.log("Extract end !");
     console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);
 
