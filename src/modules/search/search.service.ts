@@ -7,11 +7,12 @@ import { Siret } from "../../@types/Siret";
 import { Rna } from "../../@types/Rna";
 import chorusService from "../chorus/chorus.service";
 import IBudgetLine from "./@types/IBudgetLine";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
 export class SearchService {
 
     public async getBySiret(siret: Siret) {
-        const siren = siret.slice(0,9);
+        const siren = siretToSiren(siret);
 
         const asso = await entrepriseApiService.findAssociationBySiren(siren);
         if (!asso) return null;
@@ -40,7 +41,7 @@ export class SearchService {
 
         if (!siret) return null;
 
-        const siren = siret.slice(0,9);
+        const siren = siretToSiren(siret);
 
         const asso = await entrepriseApiService.findAssociationBySiren(siren);
 

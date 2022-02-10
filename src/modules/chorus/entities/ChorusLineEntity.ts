@@ -35,9 +35,3 @@ export default class ChorusLineEntity {
         public _id?: ObjectId
     ) {}
 }
-
-/**
- * TD ASSOCIATION
- * TI EP ASSO GIP
- * 
- */
