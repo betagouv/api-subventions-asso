@@ -21,7 +21,7 @@ beforeAll(async () => {
     }
 
     if (g.app) return;
-    g.app = await startServer("1234", false);
+    g.app = await startServer("1234", true);
 });
 
 afterEach(async () => { // Clear database between test
