@@ -8,6 +8,8 @@ import { Rna } from "../../@types/Rna";
 import chorusService from "../chorus/chorus.service";
 import IBudgetLine from "./@types/IBudgetLine";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
+import associationsService from "../associations/associations.service";
+import etablissementService from "../etablissements/etablissements.service";
 
 export class SearchService {
 
@@ -19,19 +21,22 @@ export class SearchService {
 
         const currentEtablisement = asso.unite_legale.etablissements.find(e => e.siret = siret);
 
+        const etab = await etablissementService.getEtablissement(siret);
+
         if (!currentEtablisement) return null;
 
         const requests = await this.findByRequestsEtablisement(siret);
 
-        const assoData = await entrepriseApiService.findRnaDataBySiret(siret);
-        return this.cleanData({
-            ...currentEtablisement,
+        return {
+            ...etab,
+            // ...currentEtablisement,
             "demandes_subventions": requests,
             association: {
-                ...assoData?.association,
-                ...asso.unite_legale
+                // ...assoData?.association,
+                // ...asso.unite_legale,
+                ...await associationsService.getAssociationBySiren(siren)
             },
-        });
+        };
     }
 
     public async getByRna(rna: Rna) {

@@ -5,6 +5,7 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import { Siret } from "../../../@types/Siret";
 import { Rna } from "../../../@types/Rna";
+import { Siren } from "../../../@types/Siren";
 
 export class OsirisRepository {
     private readonly requestCollection = db.collection<OsirisRequestEntity>("osiris-requests");
@@ -43,6 +44,12 @@ export class OsirisRepository {
     public findRequestsByRna(rna: Rna) {
         return this.requestCollection.find({
             "legalInformations.rna": rna
+        }).toArray();
+    }
+
+    public async findRequestsBySiren(siren: Siren) {
+        return this.requestCollection.find({
+            "legalInformations.siret":  new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
 

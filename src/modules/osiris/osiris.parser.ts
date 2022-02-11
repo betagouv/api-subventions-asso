@@ -5,6 +5,7 @@ import OsirisRequestEntity from './entities/OsirisRequestEntity';
 import * as ParseHelper from "../../shared/helpers/ParserHelper";
 import { Siret } from '../../@types/Siret';
 import { Rna } from '../../@types/Rna';
+import IOsirisRequestInformations from './@types/IOsirisRequestInformations';
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer): OsirisRequestEntity[] {
@@ -31,13 +32,11 @@ export default class OsirisParser {
                 name: ParseHelper.findByPath<string>(data, OsirisRequestEntity.indexedLegalInformationsPath.name),
             };
 
-            const indexedInformations = {
-                osirisId: ParseHelper.findByPath<string>(data, OsirisRequestEntity.indexedProviderInformationsPath.osirisId),
-                compteAssoId: ParseHelper.findByPath<string>(data, OsirisRequestEntity.indexedProviderInformationsPath.compteAssoId),
-                ej: ParseHelper.findByPath<string>(data, OsirisRequestEntity.indexedProviderInformationsPath.ej),
-                amountAwarded: ParseHelper.findByPath<number>(data, OsirisRequestEntity.indexedProviderInformationsPath.amountAwarded),
-                dateCommission: ParseHelper.findByPath<Date>(data, OsirisRequestEntity.indexedProviderInformationsPath.dateCommission),
-            };
+            const indexedInformations = Object.keys(OsirisRequestEntity.indexedProviderInformationsPath).reduce((acc, key: string) => {
+                const tempAcc = (acc as { [key: string ] : string} );
+                tempAcc[key] = ParseHelper.findByPath(data, OsirisRequestEntity.indexedProviderInformationsPath[key]);
+                return tempAcc;
+            }, {} as unknown) as IOsirisRequestInformations;
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
