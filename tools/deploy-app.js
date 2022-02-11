@@ -83,5 +83,8 @@ scalingAsyncAppAction("run" ,`--file ${path.resolve(dataFilePath)} --size XL bas
     console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);
 
     console.log("Have a good day !");
+
+    scalingoAppAction('restart', "");
+
     process.exit();
 });
