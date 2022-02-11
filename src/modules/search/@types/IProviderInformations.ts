@@ -1,4 +1,4 @@
 
 export default interface IProviderInformations {
-    [key: string]: string | number | Date
+    [key: string]: string | number | Date | boolean
 }

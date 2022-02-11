@@ -29,7 +29,23 @@ export default class OsirisRequestEntity extends RequestEntity {
                 const [day, month, year] = value.split('/').map(v => parseInt(v, 10));
                 return new Date(year, month - 1, day);
             }
-        }
+        },
+        etablissementSiege: {
+            path: ["Association", "Siège"],
+            adapter: value => value === "Oui"
+        },
+        etablissementVoie: ["Coordonnées correspondance (publipostage)", "Voie"],
+        etablissementCodePostal: ["Coordonnées correspondance (publipostage)", "Code Postal"],
+        etablissementCommune: ["Coordonnées correspondance (publipostage)", "Commune"],
+        etablissementIBAN: ["Association", "IBAN"],
+        etablissementBIC: ["Association", "BIC"],
+
+        representantNom: ["Représentant légal", "Nom"],
+        representantPrenom: ["Représentant légal", "Prénom"],
+        representantRole: ["Représentant légal", "Fonction"],
+        representantCivilite: ["Représentant légal", "Civilité"],
+        representantEmail: ["Représentant légal", "Courriel"],
+        representantPhone: ["Représentant légal", "N° Téléphone"],
     }
 
     public static indexedLegalInformationsPath = {

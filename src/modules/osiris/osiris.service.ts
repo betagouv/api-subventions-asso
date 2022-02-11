@@ -1,7 +1,13 @@
 import { Rna } from "../../@types/Rna";
+import { Siren } from "../../@types/Siren";
 import { Siret } from "../../@types/Siret";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../shared/Validators";
+import Association from "../associations/interfaces/Association";
+import AssociationsProvider from "../associations/interfaces/AssociationsProvider";
+import Etablissement from "../etablissements/interfaces/Etablissement";
+import EtablissementProvider from "../etablissements/interfaces/EtablissementProvider";
 import ProviderRequestInterface from "../search/@types/ProviderRequestInterface";
+import OsirisRequestAdapter from "./adapters/OsirisRequestAdatper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import osirisRepository from "./repository/osiris.repository";
@@ -14,7 +20,7 @@ export const VALID_REQUEST_ERROR_CODE = {
     INVALID_OSIRISID: 5
 }
 
-export class OsirisService implements ProviderRequestInterface {
+export class OsirisService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
     public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
         const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
         if (existingFile) {
@@ -105,6 +111,39 @@ export class OsirisService implements ProviderRequestInterface {
 
     public findAllActions() {
         return osirisRepository.findAllActions();
+    }
+
+    /**
+     * |-------------------------|
+     * |    Associations Part    |
+     * |-------------------------|
+     */
+
+    isAssociationsProvider = true;
+
+    async getAssociationsBySiren(siren: Siren): Promise<Association | null> {
+        const requests = await osirisRepository.findRequestsBySiren(siren);
+
+        if (requests.length === 0) return null;
+
+        return Object.assign({}, ... requests.map(r => OsirisRequestAdapter.toAssociation(r)));
+    }
+
+
+    /**
+     * |-------------------------|
+     * |   Etablisesement Part   |
+     * |-------------------------|
+     */
+    
+    isEtablissementProvider = true;
+
+    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {   
+        const requests = await this.findBySiret(siret);
+
+        if (requests.length === 0) return null;
+
+        return requests.map(r => OsirisRequestAdapter.toEtablissement(r));
     }
 }
 
