@@ -19,7 +19,8 @@
     "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
     "test": "jest --runInBand",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
