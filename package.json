@@ -18,7 +18,7 @@
     "build": "tsc --project ./",
     "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
-    "test": "jest --runInBand",
+    "test": "NODE_OPTIONS=--max-old-space-size=8192 jest --runInBand",
     "test:cov": "jest --runInBand --coverage",
     "postinstall": "husky install",
     "release": "standard-version"
