@@ -19,6 +19,7 @@
     "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
     "test": "jest --runInBand",
+    "test:cov": "jest --runInBand --coverage",
     "postinstall": "husky install",
     "release": "standard-version"
   },
