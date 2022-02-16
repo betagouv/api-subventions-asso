@@ -1,6 +1,6 @@
 
-import ChorusLineEntity from "../../../src/modules/chorus/entities/ChorusLineEntity";
-import chorusService from "../../../src/modules/chorus/chorus.service";
+import ChorusLineEntity from "../../../src/modules/providers/chorus/entities/ChorusLineEntity";
+import chorusService from "../../../src/modules/providers/chorus/chorus.service";
 
 describe("chorus.service", () => {
 

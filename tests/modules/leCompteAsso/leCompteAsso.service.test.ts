@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SiretDataInterface } from "../../../src/modules/external/@types/SiretDataInterface";
 import entrepriseApiService from "../../../src/modules/external/entreprise-api.service";
-import ILeCompteAssoPartialRequestEntity from "../../../src/modules/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
-import leCompteAssoService from "../../../src/modules/leCompteAsso/leCompteAsso.service";
+import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
+import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
+import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
 import RequestEntity from "../../../src/modules/search/entities/RequestEntity";
 import searchService from "../../../src/modules/search/search.service";
 
 describe("leCompteAssoService", () => {
     describe("validate", () => {
         it("should validate data", () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({ success: true });
         });
 
         it("should reject validation because siret is wrong", () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "000000000000aa", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "000000000000aa", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
                 success: false,
@@ -27,7 +28,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should reject validation because name is wrong", () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: ""}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: ""}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({ 
                 success: false,
@@ -40,7 +41,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should reject validation because compteAssoId is wrong", () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "00000000000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "00000000000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({ 
                 success: false,
@@ -79,7 +80,7 @@ describe("leCompteAssoService", () => {
         it("should be find rna in localdb and save data in database", async () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([{legalInformations: {rna: "FAKE_RNA"}}]) as Promise<RequestEntity[]>);
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
                 state: "created",
@@ -90,7 +91,7 @@ describe("leCompteAssoService", () => {
         it("should be update in database", async () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([{legalInformations: {rna: "FAKE_RNA"}}]) as Promise<RequestEntity[]>);
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             await leCompteAssoService.addRequest(entity)
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
@@ -100,7 +101,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be find rna in siret api and save data in database", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
@@ -121,7 +122,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be reject because legalCategory is wrong", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
@@ -149,7 +150,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be find rna in rna api and save data in database", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
@@ -177,7 +178,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be reject because rna not found", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
@@ -217,7 +218,7 @@ describe("leCompteAssoService", () => {
         })
 
         it("should be found entity", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             await leCompteAssoService.addRequest(entity);
 
@@ -225,7 +226,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be not found entity", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             await leCompteAssoService.addRequest(entity);
 
@@ -250,7 +251,7 @@ describe("leCompteAssoService", () => {
         })
 
         it("should be found entity", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             await leCompteAssoService.addRequest(entity);
 
@@ -258,7 +259,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be not found entity", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"}, data: {}};
+            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             await leCompteAssoService.addRequest(entity);
 

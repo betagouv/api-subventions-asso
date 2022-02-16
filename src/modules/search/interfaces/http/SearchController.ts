@@ -3,27 +3,29 @@ import { Rna } from '../../../../@types/Rna';
 import { Siret } from '../../../../@types/Siret';
 
 import searchService from "../../search.service";
+import AssociationDto from './dto/AssociationDto';
+import EtablissementDto from './dto/EtablissmentDto';
 
 @Route("search")
 @Security("jwt")
 @Tags("Search Controller")
 export class SearchController extends Controller {
     /**
-     * Recherche des demandes de subventions via le siret de l'association
+     * Recherche des demandes de subventions via le siret de l'établissment
      * @param siret Identifiant Siret
      */
     @Get("/etablissement/{siret}")
     public async findBySiret(
         siret: Siret,
-    ): Promise<{success: false, message: string } | { success: true, etablissement: unknown}>{
-        const result = await searchService.getBySiret(siret);
+    ): Promise<{ success: boolean, etablissement?: unknown, message?: string}>{
+        const result = await searchService.getBySiret(siret) as EtablissementDto;
 
         if (!result) {
             this.setStatus(404);
             return { success: false, message: "Etablissement not found"}
+        } else {
+            return { success: true, etablissement: result };
         }
-
-        return { success: true, etablissement: result };
     }
 
     /**
@@ -33,8 +35,8 @@ export class SearchController extends Controller {
     @Get("/association/{rna}")
     public async findByRna(
         rna: Rna,
-    ):  Promise<{success: false, message: string } | { success: true, association: unknown}> {
-        const result = await searchService.getByRna(rna);
+    ): Promise<{ success: boolean, association?: unknown, message?: string}> {
+        const result = await searchService.getByRna(rna) as AssociationDto;
         if (!result) {
             this.setStatus(404);
             return { success: false, message: "Association not found"}

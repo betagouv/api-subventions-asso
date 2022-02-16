@@ -1,12 +1,14 @@
 import path from "path";
-import OsirisActionEntity from "../../../../../src/modules/osiris/entities/OsirisActionEntity";
-import OsirisRequestEntity from "../../../../../src/modules/osiris/entities/OsirisRequestEntity";
+import IOsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
+import IOsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
+import OsirisActionEntity from "../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-import OsirisCliController from "../../../../../src/modules/osiris/interfaces/cli/osiris.cli.contoller";
-import OsirisParser from "../../../../../src/modules/osiris/osiris.parser";
-import osirisService from "../../../../../src/modules/osiris/osiris.service";
+import OsirisCliController from "../../../../../src/modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
+import OsirisParser from "../../../../../src/modules/providers/osiris/osiris.parser";
+import osirisService from "../../../../../src/modules/providers/osiris/osiris.service";
 
 
 
@@ -125,8 +127,8 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const request = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
-            const action =  new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"}, {}, undefined);
+            const request = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
+            const action =  new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
 
             await osirisService.addRequest(request);
             await osirisService.addAction(action);
@@ -161,7 +163,7 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
+            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
             await osirisService.addRequest(entity);
         });
 
@@ -193,7 +195,7 @@ describe("OsirisCliController", () => {
         beforeEach(async () => {
             controller = new OsirisCliController();
 
-            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()}, {}, undefined, []);
+            const entity =  new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
             await osirisService.addRequest(entity);
         });
 

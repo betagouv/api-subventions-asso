@@ -17,7 +17,7 @@ export default {
     clearMocks: true,
 
     // Indicates whether the coverage information should be collected while executing the test
-    // collectCoverage: true,
+    collectCoverage: true,
 
     // An array of glob patterns indicating a set of files for which coverage information should be collected
     // collectCoverageFrom: undefined,
@@ -42,6 +42,10 @@ export default {
         "src/index.ts",
         "src/cli.ts",
         "src/shared/MongoConnection.ts",
+        "src/modules/associations/interfaces",
+        "src/modules/etablissements/interfaces",
+        "src/modules/demandes_subventions/interfaces",
+        "dto",
     ],
 
     // A list of reporter names that Jest uses when writing coverage reports
@@ -54,6 +58,15 @@ export default {
 
     // An object that configures minimum threshold enforcement for coverage results
     // coverageThreshold: undefined,
+    "coverageThreshold": {
+        "global": {
+            "branches": 85,
+            "functions": 85,
+            "lines": 85,
+            "statements": 85
+        }
+    },
+
 
     // A path to a custom dependency extractor
     // dependencyExtractor: undefined,

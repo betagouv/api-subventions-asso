@@ -2,13 +2,14 @@ import "reflect-metadata";
 import 'dotenv/config' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 import { mkdirSync, existsSync } from "fs";
-import { CliStaticInterface } from "./@types/Cli.interface";
-import LeCompteAssoCliController from "./modules/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
-import OsirisCliController from "./modules/osiris/interfaces/cli/osiris.cli.contoller";
+import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
+import MailNotifierCliController from "./modules/mail-notifier/interfaces/cli/mail-notifier.cli.controller";
+import ChorusCliController from "./modules/providers/chorus/interfaces/cli/chorus.cli.controller";
+import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
 import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
 import { connectDB } from "./shared/MongoConnection";
-import MailNotifierCliController from "./modules/mail-notifier/interfaces/cli/mail-notifier.cli.controller";
-import ChorusCliController from "./modules/chorus/interfaces/cli/chorus.cli.controller";
+
+import { CliStaticInterface } from "./@types/Cli.interface";
 
 async function main() {
     await connectDB();
