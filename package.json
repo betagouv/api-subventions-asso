@@ -19,7 +19,7 @@
     "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
     "test": "NODE_OPTIONS=--max-old-space-size=8192 jest --runInBand",
-    "test:cov": "jest --runInBand --coverage",
+    "test:cov": "npm run test -- --coverage",
     "postinstall": "husky install",
     "release": "standard-version"
   },
