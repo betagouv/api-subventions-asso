@@ -6,6 +6,9 @@ import AssociationSirenInfertace from './@types/AssociationSirenInfertace';
 import RnaInterface from './@types/RnaInterface';
 import { SiretDataInterface } from './@types/SiretDataInterface';
 
+/**
+ * @deprecated
+ */
 export class EntrepriseApiService {
     private BASE_URL = "https://entreprise.data.gouv.fr";
     private RNA_ROUTE = "api/rna/v1"

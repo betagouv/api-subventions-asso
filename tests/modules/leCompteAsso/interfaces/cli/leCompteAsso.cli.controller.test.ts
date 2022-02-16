@@ -1,5 +1,5 @@
 import path from "path";
-import LeCompteAssoCliController from "../../../../../src/modules/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller"
+import LeCompteAssoCliController from "../../../../../src/modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller"
 
 describe("LeCompteAssoCliController", () => {
     const testWrongFilePath = path.resolve(__dirname, "../../__fixtures__/le-compte-asso-export-tests.csv");

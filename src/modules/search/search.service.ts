@@ -1,76 +1,65 @@
-import osirisService from "../osiris/osiris.service";
-import ProviderRequestInterface from "./@types/ProviderRequestInterface";
+import leCompteAssoService from "../providers/leCompteAsso/leCompteAsso.service";
+import etablissementService from "../etablissements/etablissements.service";
+import associationsService from "../associations/associations.service";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
+import chorusService from "../providers/chorus/chorus.service";
+import osirisService from "../providers/osiris/osiris.service";
 import RequestEntity from "./entities/RequestEntity";
-import leCompteAssoService from "../leCompteAsso/leCompteAsso.service";
-import entrepriseApiService from "../external/entreprise-api.service";
+
+import ProviderRequestInterface from "./@types/ProviderRequestInterface";
+import IBudgetLine from "./@types/IBudgetLine";
 import { Siret } from "../../@types/Siret";
 import { Rna } from "../../@types/Rna";
-import chorusService from "../chorus/chorus.service";
-import IBudgetLine from "./@types/IBudgetLine";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import associationsService from "../associations/associations.service";
-import etablissementService from "../etablissements/etablissements.service";
+import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
+import Etablissement from "../etablissements/interfaces/Etablissement";
 
 export class SearchService {
 
     public async getBySiret(siret: Siret) {
         const siren = siretToSiren(siret);
 
-        const asso = await entrepriseApiService.findAssociationBySiren(siren);
-        if (!asso) return null;
+        const association = await associationsService.getAssociationBySiren(siren)
 
-        const currentEtablisement = asso.unite_legale.etablissements.find(e => e.siret = siret);
+        if (!association || !association.etablisements_siret?.find(providerValue => providerValue.value.includes(siret))) return null;
 
-        const etab = await etablissementService.getEtablissement(siret);
-
-        if (!currentEtablisement) return null;
-
-        const requests = await this.findByRequestsEtablisement(siret);
+        const etablissement = await etablissementService.getEtablissement(siret);
+        if (!etablissement) return null;
 
         return {
-            ...etab,
-            // ...currentEtablisement,
-            "demandes_subventions": requests,
-            association: {
-                // ...assoData?.association,
-                // ...asso.unite_legale,
-                ...await associationsService.getAssociationBySiren(siren)
-            },
+            ...etablissement,
+            association,
+            demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(siret),
         };
     }
 
     public async getByRna(rna: Rna) {
-        const requests = await this.findRequestsByRna(rna);
-
-        const siret = requests.length ? requests[0].legalInformations.siret : null;
+        const siret = await this.findSiretByRna(rna);
 
         if (!siret) return null;
 
         const siren = siretToSiren(siret);
 
-        const asso = await entrepriseApiService.findAssociationBySiren(siren);
+        const association = await associationsService.getAssociationBySiren(siren, rna);
 
-        if (!asso) return null;
+        if (!association) return null;
 
-        await asso.unite_legale.etablissements.reduce( async (acc, etablissement) => {
-            await acc;
-            const requests = await this.findByRequestsEtablisement(etablissement.siret);
-            (etablissement as unknown as { demandes_subventions: unknown }).demandes_subventions = requests
+        const sirets = (association.etablisements_siret || [])
+            .map(value => value.value)
+            .flat();
 
-            if (etablissement.nic === asso.unite_legale.nic_siege) asso.unite_legale.etablissement_siege = etablissement
-            
-            return Promise.resolve({});
-        }, Promise.resolve({}) as Promise<{ [key: string]: unknown }>);
+        const etablissements = (await Promise.all(
+            [...new Set(sirets)].map(siret => etablissementService.getEtablissement(siret))
+        )).filter(e => e) as Etablissement[];
 
-
-        const assoData = await entrepriseApiService.findRnaDataByRna(rna) || await entrepriseApiService.findRnaDataBySiret(siret);
-
-        const result =  {
-            ...assoData?.association,
-            ...asso.unite_legale
-        };
-
-        return this.cleanData(result);
+        return {
+            ...association,
+            etablissements: await Promise.all(
+                etablissements.map(async (etablissement) => ({
+                    ...etablissement,
+                    demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(etablissement.siret[0].value)
+                }))
+            )
+        }
     }
 
     public findRequestsBySiret(siret: Siret) {
@@ -81,8 +70,23 @@ export class SearchService {
         return this.findRequests(rna, "rna");
     }
 
+    private findSiretByRna(rna: Rna) {
+        const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop)
+            osirisService,
+            leCompteAssoService,
+        ];
+
+        return providers.reduce(async (acc, provider) => {
+            const siret = await acc;
+            if (siret) return siret;
+            const requests = await provider.findByRna(rna);
+
+            return requests.find(r => r.legalInformations.siret)?.legalInformations.siret || null;
+        }, Promise.resolve(null) as Promise<null|string>);
+    }
+
     private findRequests(id: string, type: "siret" | "rna") {
-        const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop bugs)
+        const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop)
             osirisService,
             leCompteAssoService,
         ];
@@ -110,114 +114,6 @@ export class SearchService {
                 return requests;
             });
         }, Promise.resolve([]) as Promise<{ indexedInformations: IBudgetLine }[]>);
-    }
-
-    private groupRequests(requests: RequestEntity[]) {
-        const { groupedRequests } = requests.reduceRight((acc, request, requestIndex) => {
-            acc.stack.splice(requestIndex, 1);
-
-            const similarRequestIndexes: number[] = [];
-            acc.stack.forEach((otherRequest, pos) => { // Check if two request have same matching key
-                const key = request.providerMatchingKeys.find((key) => otherRequest.providerMatchingKeys.includes(key) && otherRequest.providerInformations[key]);
-
-                if (!key || request.providerInformations[key] !== otherRequest.providerInformations[key]) {
-                    return;
-                }
-                similarRequestIndexes.push(pos);
-            });
-
-            const similarRequests = [request, ...similarRequestIndexes.map(index => acc.stack[index])];
-
-            const req = {
-                indexedData: Object.assign({}, ...similarRequests.map(r => ({...r.providerInformations, ...r.legalInformations})).flat()),
-                budgetLines: [],
-                details: similarRequests,
-            }
-
-            acc.groupedRequests.push(req);
-
-            similarRequestIndexes.reverse().forEach(index => acc.stack.splice(index, 1));
-            return acc;
-        }, { groupedRequests: [] as { indexedData: {[key:string]: unknown}, details: RequestEntity[], budgetLines: unknown[] }[], stack: requests });
-
-        return groupedRequests
-    }
-
-    private async findByRequestsEtablisement(siret: Siret) {
-        const requests = this.groupRequests(
-            await this.findRequestsBySiret(siret)
-        );
-
-        const budgetLines = await this.findBudgetLines(siret);
-
-        requests.forEach((data) => {
-            if (!data.indexedData['amountAwarded']) return;
-            let searchedAmount = data.indexedData['amountAwarded'] as number;
-
-            if (data.indexedData['ej']) {
-                const linesIndexWithSameEJ = budgetLines.reduce((acc, budgetLine, index) => {
-                    if (budgetLine.indexedInformations.ej === data.indexedData['ej']) {
-                        acc.push(index);
-                    }
-                    return acc;
-                }, [] as number[]);
-                searchedAmount -= linesIndexWithSameEJ.reduce((acc, index) => acc + budgetLines[index].indexedInformations.amount, 0);
-                data.budgetLines.push(...linesIndexWithSameEJ.sort((a,b) => b-a).map(index => budgetLines.splice(index, 1)));
-            }
-
-            if (searchedAmount === 0) return;
-
-            const findAllPosibilities = (
-                current: {indexedInformations: IBudgetLine}[],
-                posibilities: {indexedInformations: IBudgetLine}[],
-                restAmount: number,
-                result: {indexedInformations: IBudgetLine}[][] = []
-            ): {indexedInformations: IBudgetLine}[][] | null  => {
-                if (current.length && restAmount === current[current.length-1].indexedInformations.amount) return result.concat([current]);
-                if (current.length && restAmount < current[current.length-1].indexedInformations.amount) return null;
-
-                posibilities.forEach((line, index) => {
-                    const newPos = posibilities.slice();
-                    newPos.splice(index, 1);
-                    const newCurrent = current.concat(line);
-
-                    const r = findAllPosibilities(newCurrent, newPos, restAmount - line.indexedInformations.amount, result);
-                    if (r) result = result.concat(r);
-                });
-                return result;
-            }
-
-            const posibilities = findAllPosibilities([], budgetLines.slice(), searchedAmount);
-
-            if (!posibilities || posibilities.length === 0) return;
-            console.log("posibilities", posibilities);
-            const sortedPosibilities = posibilities.sort((a, b) => {
-                if(!data.indexedData["dateCommission"]) return 1;
-                const timeA = Math.min(...a.map((line) => (line.indexedInformations.dateOperation.getTime() - (data.indexedData["dateCommission"] as Date).getTime())))
-                const timeB = Math.min(...b.map((line) => (line.indexedInformations.dateOperation.getTime() - (data.indexedData["dateCommission"] as Date).getTime())))
-
-                return timeA - timeB;
-            });
-
-            data.budgetLines.push(...sortedPosibilities[0]);
-
-            const indexes = budgetLines.reduceRight((acc, line, index) => {
-                if (sortedPosibilities[0].includes(line)) acc.push(index);
-                return acc;
-            }, [] as number[]);
-
-            indexes.forEach(index => budgetLines.splice(index, 1));
-        });
-
-        return requests;
-    }
-
-    private cleanData(data: {[key: string]: unknown}) {
-        Object.keys(data).forEach(key => {
-            if(!data[key]) delete data[key];
-            if(typeof data[key] === "object") this.cleanData(data[key] as { [key: string]: unknown })
-        });
-        return data;
     }
 }
 
