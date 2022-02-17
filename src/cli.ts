@@ -4,6 +4,7 @@ import 'dotenv/config' // see https://github.com/motdotla/dotenv#how-do-i-use-do
 import { mkdirSync, existsSync } from "fs";
 import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import MailNotifierCliController from "./modules/mail-notifier/interfaces/cli/mail-notifier.cli.controller";
+import FonjepCliController from "./modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
 import ChorusCliController from "./modules/providers/chorus/interfaces/cli/chorus.cli.controller";
 import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
 import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
@@ -24,6 +25,7 @@ async function main() {
         MailNotifierCliController,
         UserCliController,
         ChorusCliController,
+        FonjepCliController,
     ];
     
     const args = process.argv.slice(2);

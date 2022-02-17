@@ -118,7 +118,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
 
     /**
      * |-------------------------|
-     * |   Etablisesement Part   |
+     * |   Etablissesement Part  |
      * |-------------------------|
      */
     
