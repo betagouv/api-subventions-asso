@@ -5,10 +5,7 @@ import { Siret } from "../../../@types/Siret";
 
 export default class LeCompteAssoParser {
     public static parse(content: Buffer): ILeCompteAssoPartialRequestEntity[] {
-        const data = content
-            .toString()
-            .split("\n") // Select line by line
-            .map(raw => raw.split(";").map(r => r.split("\t")).flat()) // Parse column
+        const data = ParseHelper.csvParse(content)
         const header = data[0];
         const raws = data.slice(1);
         return raws.reduce((entities, raw) => {
@@ -31,7 +28,7 @@ export default class LeCompteAssoParser {
             };
 
             entities.push({legalInformations, providerInformations, data: parsedData});
-    
+
             return entities;
 
         }, [] as ILeCompteAssoPartialRequestEntity[]);

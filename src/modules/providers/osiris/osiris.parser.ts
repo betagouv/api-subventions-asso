@@ -1,5 +1,3 @@
-import xlsx from 'node-xlsx';
-
 import OsirisActionEntity from './entities/OsirisActionEntity';
 import OsirisRequestEntity from './entities/OsirisRequestEntity';
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
@@ -10,8 +8,7 @@ import IOsirisActionsInformations from './@types/IOsirisActionsInformations';
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer): OsirisRequestEntity[] {
-        const xls = xlsx.parse(content);
-        const data = xls[0].data.filter((row) => (row as unknown[]).length);
+        const data = ParseHelper.xlsParse(content)[0]
         const headers = data.slice(0,2) as string[][];
         const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
@@ -44,9 +41,8 @@ export default class OsirisParser {
     }
 
     public static parseActions(content: Buffer) {
-        const xls = xlsx.parse(content);
+        const data = ParseHelper.xlsParse(content)[0]
 
-        const data = xls[0].data.filter((row) => (row as unknown[]).length);
         const headers = data.slice(0,2) as string[][];
         
         const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
