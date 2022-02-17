@@ -29,3 +29,17 @@ export function isOsirisActionId(actionId: string): boolean {
 export function isEJ(ej: string) {
     return typeof ej === "string" && ej.length == 10;
 }
+
+// Generique
+
+export function isDates(dates: unknown[]) {
+    return dates.every(date => date instanceof Date);
+}
+
+export function isStringsValid(strings: unknown[]) {
+    return strings.every(s => typeof s === "string" && s.length != 0);
+}
+
+export function isNumbersValid(numbers: unknown[]) {
+    return numbers.every(n => typeof n === "number" && !isNaN(n));
+}
