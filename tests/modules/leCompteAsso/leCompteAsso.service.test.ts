@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SiretDataInterface } from "../../../src/modules/external/@types/SiretDataInterface";
 import entrepriseApiService from "../../../src/modules/external/entreprise-api.service";
+import dataEntrepriseService from "../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
 import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
 import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
+import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 import RequestEntity from "../../../src/modules/search/entities/RequestEntity";
 import searchService from "../../../src/modules/search/search.service";
+import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 
 describe("leCompteAssoService", () => {
     describe("validate", () => {
@@ -55,31 +58,26 @@ describe("leCompteAssoService", () => {
 
     describe("addRequest", () => {
         
-        let findRequestsBySiretMock: jest.SpyInstance<Promise<any>, any>;
-        let entrepriseApiServiceFindSiretDataBySiret: jest.SpyInstance<Promise<any>, any>;
-        let entrepriseApiServiceFindRnaDataBySiret: jest.SpyInstance<Promise<any>, any>
+        let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
 
         beforeEach(() => {
-            findRequestsBySiretMock = jest.spyOn(searchService, "findRequestsBySiret");
-            entrepriseApiServiceFindSiretDataBySiret = jest.spyOn(entrepriseApiService, "findSiretDataBySiret");
-            entrepriseApiServiceFindRnaDataBySiret = jest.spyOn(entrepriseApiService, "findRnaDataBySiret");
+            dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
         });
 
         afterEach(() => {
-            findRequestsBySiretMock.mockClear();
-            entrepriseApiServiceFindSiretDataBySiret.mockClear();
-            entrepriseApiServiceFindRnaDataBySiret.mockClear();
-        });
+            dataEntrepriseServiceFindAssociationBySiren.mockClear();
+        })
 
         afterAll(() => {
-            findRequestsBySiretMock.mockReset();
-            entrepriseApiServiceFindSiretDataBySiret.mockReset();
-            entrepriseApiServiceFindRnaDataBySiret.mockReset();
+            dataEntrepriseServiceFindAssociationBySiren.mockReset();
         })
 
         it("should be find rna in localdb and save data in database", async () => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([{legalInformations: {rna: "FAKE_RNA"}}]) as Promise<RequestEntity[]>);
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+            }));
+
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
@@ -89,8 +87,11 @@ describe("leCompteAssoService", () => {
         });
 
         it("should be update in database", async () => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([{legalInformations: {rna: "FAKE_RNA"}}]) as Promise<RequestEntity[]>);
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+            }));
+
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
 
             await leCompteAssoService.addRequest(entity)
@@ -103,16 +104,9 @@ describe("leCompteAssoService", () => {
         it("should be find rna in siret api and save data in database", async () => {
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve({
-                etablissement: {
-                    siret,
-                    unite_legale: { 
-                        identifiant_association: "FAKE_RNA",
-                        categorie_juridique: "9220"
-                    }
-                }
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
             }));
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
@@ -124,17 +118,10 @@ describe("leCompteAssoService", () => {
         it("should be reject because legalCategory is wrong", async () => {
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve({
-                etablissement: {
-                    siret,
-                    unite_legale: { 
-                        identifiant_association: null,
-                        categorie_juridique: "0000"
-                    }
-                } 
-            } as unknown as SiretDataInterface));
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("0000", "test", new Date()),
+            }));
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
                 state: "rejected",
@@ -149,43 +136,10 @@ describe("leCompteAssoService", () => {
             });
         });
 
-        it("should be find rna in rna api and save data in database", async () => {
-            const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
-            
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve({
-                etablissement: {
-                    siret,
-                    unite_legale: { 
-                        identifiant_association: null,
-                        categorie_juridique: "9220"
-                    }
-                }
-            } as unknown as SiretDataInterface));
-
-            entrepriseApiServiceFindRnaDataBySiret.mockImplementationOnce(siret => Promise.resolve({
-                association: {
-                    siret,
-                    id_association: "FAKE_RNA",
-                }
-            }));
-
-            expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
-                state: "created",
-                result: { legalInformations: { rna: "FAKE_RNA"} }
-            });
-        });
 
         it("should be reject because rna not found", async () => {
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
-            
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock.mockImplementationOnce((siret) => Promise.resolve([]));
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            entrepriseApiServiceFindSiretDataBySiret.mockImplementationOnce(siret => Promise.resolve(null));
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            entrepriseApiServiceFindRnaDataBySiret.mockImplementationOnce(siret => Promise.resolve(null));
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve(null));
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({ 
                 state: "rejected",
@@ -202,19 +156,21 @@ describe("leCompteAssoService", () => {
     });
 
     describe("findBySiret", () => {
-        let findRequestsBySiretMock: jest.SpyInstance<Promise<RequestEntity[]>, [siret: string]>;
-
+        let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>
         beforeEach(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock = jest.spyOn(searchService, "findRequestsBySiret").mockImplementationOnce((siret) => Promise.resolve([{legalInformations: {rna: "FAKE_RNA"}}]) as Promise<RequestEntity[]>);
+            dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+            }));
         });
 
         afterEach(() => {
-            findRequestsBySiretMock.mockClear();
-        });
-
+            dataEntrepriseServiceFindAssociationBySiren.mockReset();
+        })
+        
         afterAll(() => {
-            findRequestsBySiretMock.mockReset();
+            dataEntrepriseServiceFindAssociationBySiren.mockClear();
         })
 
         it("should be found entity", async () => {
@@ -235,19 +191,21 @@ describe("leCompteAssoService", () => {
     });
 
     describe("findByRna", () => {
-        let findRequestsBySiretMock: jest.SpyInstance<Promise<RequestEntity[]>, [siret: string]>;
-
+        let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>
         beforeEach(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            findRequestsBySiretMock = jest.spyOn(searchService, "findRequestsBySiret").mockImplementationOnce((siret) => Promise.resolve([{legalInformations: {rna: "FAKE_RNA"}}]) as Promise<RequestEntity[]>);
+            dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
+            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+            }));
         });
 
         afterEach(() => {
-            findRequestsBySiretMock.mockClear();
-        });
-
+            dataEntrepriseServiceFindAssociationBySiren.mockReset();
+        })
+        
         afterAll(() => {
-            findRequestsBySiretMock.mockReset();
+            dataEntrepriseServiceFindAssociationBySiren.mockClear();
         })
 
         it("should be found entity", async () => {
