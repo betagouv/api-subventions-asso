@@ -7,6 +7,7 @@ import LeCompteAssoParser from "../../leCompteAsso.parser";
 import leCompteAssoService, { RejectedRequest } from "../../leCompteAsso.service";
 import LeCompteAssoRequestEntity from "../../entities/LeCompteAssoRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions"
+import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 
 @StaticImplements<CliStaticInterface>()
@@ -105,8 +106,11 @@ export default class LeCompteAssoCliController {
 
         console.info("All entities is valid !\nStart register in database ...")
 
-        const results = await entities.reduce(async (acc, entity) => {
+        const results = await entities.reduce(async (acc, entity, index) => {
             const data = await acc;
+
+            CliHelper.printProgress(index + 1 , entities.length);
+
             data.push(await leCompteAssoService.addRequest(entity));
             return data;
         }, Promise.resolve([]) as Promise<
