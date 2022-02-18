@@ -11,6 +11,7 @@ import * as RnaHelper from "../../../../../shared/helpers/RnaHelper";
 import { Rna } from "../../../../../@types/Rna";
 import { Siret } from "../../../../../@types/Siret";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
+import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 
 
 @StaticImplements<CliStaticInterface>()
@@ -100,7 +101,7 @@ export default class OsirisCliController {
 
     private async _parseRequest(contentFile: Buffer, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile);
-        const results = await requests.reduce(async (acc, osirisRequest) => {
+        const results = await requests.reduce(async (acc, osirisRequest, index) => {
             const data = await acc;
             let validation = osirisService.validRequest(osirisRequest);
 
@@ -117,6 +118,8 @@ export default class OsirisCliController {
                 osirisRequest.legalInformations.rna = rna;
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
+
+            CliHelper.printProgress(index + 1 , requests.length);
 
             if (!validation.success && validation.code != 2) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
@@ -135,9 +138,11 @@ export default class OsirisCliController {
 
     private async _parseAction(contentFile: Buffer, logs: unknown[]) {
         const actions = OsirisParser.parseActions(contentFile);
-        const results = await actions.reduce(async (acc, osirisAction) => {
+        const results = await actions.reduce(async (acc, osirisAction, index) => {
             const data = await acc;
             const validation = osirisService.validAction(osirisAction);
+
+            CliHelper.printProgress(index + 1 , actions.length);
 
             if (!validation.success) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
