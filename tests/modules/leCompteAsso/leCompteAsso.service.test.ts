@@ -1,13 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { SiretDataInterface } from "../../../src/modules/external/@types/SiretDataInterface";
-import entrepriseApiService from "../../../src/modules/external/entreprise-api.service";
 import dataEntrepriseService from "../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
 import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
 import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
-import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
-import RequestEntity from "../../../src/modules/search/entities/RequestEntity";
-import searchService from "../../../src/modules/search/search.service";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 
 describe("leCompteAssoService", () => {
