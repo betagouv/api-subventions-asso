@@ -1,5 +1,7 @@
 import path from "path";
+import dataEntrepriseService from "../../../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
 import LeCompteAssoCliController from "../../../../../src/modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller"
+import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderValueAdapter";
 
 describe("LeCompteAssoCliController", () => {
     const testWrongFilePath = path.resolve(__dirname, "../../__fixtures__/le-compte-asso-export-tests.csv");
@@ -63,6 +65,16 @@ describe("LeCompteAssoCliController", () => {
     })
 
     describe("parse", () => {
+        let mock: jest.SpyInstance<Promise<unknown>>;
+
+        beforeEach(() => {
+            mock = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
+        })
+
+        afterEach(() => {
+            mock.mockReset();
+        })
+
         it("should reject beause not var send", async() => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -76,6 +88,11 @@ describe("LeCompteAssoCliController", () => {
         it("should parse files in folders", async() => {
             const errorLog = jest.spyOn(console, 'error').mockImplementation();
             const info = jest.spyOn(console, 'info').mockImplementation();
+
+            mock.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+            }));
             
             await controller.parse(path.resolve(__dirname, "../../__fixtures__"));
 
@@ -107,6 +124,11 @@ Start register in database ...`,
         it("should be works, and show logs", async() => {
             const info = jest.spyOn(console, 'info').mockImplementation();
             
+            mock.mockImplementation(() => Promise.resolve({
+                rna: ProviderValueAdapter.toProviderValues("RNA", "test", new Date()),
+                categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+            }));
+
             await controller.parse(testFilePath);
 
             expect(info.mock.calls).toEqual([
