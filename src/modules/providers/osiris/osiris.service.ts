@@ -7,6 +7,7 @@ import AssociationsProvider from "../../associations/interfaces/AssociationsProv
 import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubvention";
 import Etablissement from "../../etablissements/interfaces/Etablissement";
 import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdatper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
@@ -24,6 +25,9 @@ export const VALID_REQUEST_ERROR_CODE = {
 export class OsirisService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
     public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
         const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
+
+        await rnaSirenService.add(request.legalInformations.rna, request.legalInformations.siret);
+        
         if (existingFile) {
             return {
                 state: "updated",

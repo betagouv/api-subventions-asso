@@ -12,6 +12,7 @@ import { Siret } from "../../@types/Siret";
 import { Rna } from "../../@types/Rna";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
 import Etablissement from "../etablissements/interfaces/Etablissement";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
 
 export class SearchService {
 
@@ -33,11 +34,10 @@ export class SearchService {
     }
 
     public async getByRna(rna: Rna) {
-        const siret = await this.findSiretByRna(rna);
+        const siren = await rnaSirenService.getSiren(rna);
 
-        if (!siret) return null;
+        if (!siren) return null;
 
-        const siren = siretToSiren(siret);
 
         const association = await associationsService.getAssociationBySiren(siren, rna);
 
@@ -70,20 +70,6 @@ export class SearchService {
         return this.findRequests(rna, "rna");
     }
 
-    private findSiretByRna(rna: Rna) {
-        const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop)
-            osirisService,
-            leCompteAssoService,
-        ];
-
-        return providers.reduce(async (acc, provider) => {
-            const siret = await acc;
-            if (siret) return siret;
-            const requests = await provider.findByRna(rna);
-
-            return requests.find(r => r.legalInformations.siret)?.legalInformations.siret || null;
-        }, Promise.resolve(null) as Promise<null|string>);
-    }
 
     private findRequests(id: string, type: "siret" | "rna") {
         const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop)

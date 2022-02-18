@@ -4,7 +4,6 @@ import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import ILegalInformations from "../../search/@types/ILegalInformations";
 import { isAssociationName, isSiret, isCompteAssoId } from "../../../shared/Validators";
-import * as RnaHelper from "../../../shared/helpers/RnaHelper";
 import { Rna } from "../../../@types/Rna";
 import { Siret } from "../../../@types/Siret";
 import { Siren } from "../../../@types/Siren";
@@ -13,6 +12,10 @@ import AssociationsProvider from "../../associations/interfaces/AssociationsProv
 import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
 import Etablissement from "../../etablissements/interfaces/Etablissement";
 import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 
 
 export interface RejectedRequest {
@@ -45,6 +48,8 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                 ...partialEntity.legalInformations,
                 rna: existingEntity.legalInformations.rna
             }
+
+            await rnaSirenService.add(legalInformations.rna, legalInformations.siret);
     
             return {
                 state: "updated",
@@ -53,20 +58,22 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         }
 
         // Rna is not exported in CompteAsso so we search in api
-        const rna = await RnaHelper.findRnaBySiret(partialEntity.legalInformations.siret, true);
+        const rna = await rnaSirenService.getRna(partialEntity.legalInformations.siret, true);
+        const asso = await dataEntrepriseService.findAssociationBySiren(siretToSiren(partialEntity.legalInformations.siret));
 
-        if (typeof rna !== "string") {
-            if (rna.code === RnaHelper.ERRORS_CODES.RNA_NOT_FOUND) {
-                return {
-                    state: "rejected",
-                    result: {
-                        message: "RNA not found",
-                        code: 11,
-                        data: partialEntity.legalInformations 
-                    }
+        if (!rna || !asso || !asso.categorie_juridique?.length) {
+            return {
+                state: "rejected",
+                result: {
+                    message: "RNA not found",
+                    code: 11,
+                    data: partialEntity.legalInformations 
                 }
             }
+        }
 
+
+        if (!LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value)){
             return {
                 state: "rejected",
                 result: {
