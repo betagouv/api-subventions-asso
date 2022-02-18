@@ -7,6 +7,7 @@ import Association from "../../associations/interfaces/Association";
 import AssociationsProvider from "../../associations/interfaces/AssociationsProvider";
 import Etablissement from "../../etablissements/interfaces/Etablissement";
 import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import AssociationDtoAdapter from "./adapters/AssociationDtoAdapter";
 import EntrepriseDtoAdapter from "./adapters/EntrepriseDtoAdapter";
 import EtablissementDtoAdapter from "./adapters/EtablisementDtoAdapter";
@@ -39,6 +40,10 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         
         if (!data) return null;
 
+        if (data.etablissement.unite_legale.identifiant_association) {
+            await rnaSirenService.add(data.etablissement.unite_legale.identifiant_association, siret);
+        }
+
         return EtablissementDtoAdapter.toEtablissement(data.etablissement);
     }
 
@@ -47,6 +52,10 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
         if (!data) return null;
 
+        if (data.unite_legale.identifiant_association) {
+            await rnaSirenService.add(data.unite_legale.identifiant_association, siren);
+        }
+
         return EntrepriseDtoAdapter.toAssociation(data);
     }
 
@@ -54,6 +63,10 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const data = await this.sendRequest<AssociationDto>(`${this.RNA_ROUTE}/${rna}`, wait);
 
         if (!data) return null;
+
+        if (data.association.siret) {
+            await rnaSirenService.add(rna, data.association.siret);
+        }
 
         return AssociationDtoAdapter.toAssociation(data);
     }
