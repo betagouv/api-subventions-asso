@@ -2,22 +2,24 @@ import ProviderValue from "../../../@types/ProviderValue";
 
 export default interface DemandeSubvention {
     service_instructeur: ProviderValue<string>,
-    dispositif: ProviderValue<string>,
-    sous_dispositif: ProviderValue<string>,
+    dispositif?: ProviderValue<string>,
+    sous_dispositif?: ProviderValue<string>,
     ej?: ProviderValue<string>
+    annee_demande?: ProviderValue<number>
     date_commision?: ProviderValue<Date>,
+    financeur_principal?: ProviderValue<string>
     creer_le?: ProviderValue<Date>,
     transmis_le?: ProviderValue<Date>,
-    pluriannualite: ProviderValue<string>
-    contact:{
+    pluriannualite?: ProviderValue<string>
+    contact?:{
         email: ProviderValue<string>,
         telephone?: ProviderValue<string>,
     }
     status: ProviderValue<string>,
     montants?: {
-        total: ProviderValue<number>,
-        demande: ProviderValue<number>,
-        propose: ProviderValue<number>,
+        total?: ProviderValue<number>,
+        demande?: ProviderValue<number>,
+        propose?: ProviderValue<number>,
         accorde: ProviderValue<number>,
     },
     versement?: {
