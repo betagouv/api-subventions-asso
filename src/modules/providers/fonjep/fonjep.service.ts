@@ -3,6 +3,9 @@ import { Siret } from "../../../@types/Siret";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../demandes_subventions/interfaces/DemandesSubventionsProvider";
 import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubvention";
+import Etablissement from "../../etablissements/interfaces/Etablissement";
+import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
+import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepRequestEntity from "./entities/FonjepRequestEntity";
 import fonjepRepository from "./repositories/fonjep.repository";
 
@@ -17,7 +20,7 @@ export interface RejectedRequest {
     data? : unknown
 }
 
-export class FonjepService implements DemandesSubventionsProvider {
+export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider {
 
     async createEntity(entity: FonjepRequestEntity): Promise<RejectedRequest | {success: true, entity: WithId<FonjepRequestEntity>, state: 'updated' | "created"}> {
         const valid = this.validateEntity(entity);
@@ -84,7 +87,27 @@ export class FonjepService implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        return null;
+        const entities = await fonjepRepository.findBySiret(siret);
+
+        if (entities.length === 0) return null;
+
+        return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
+    }
+
+    /**
+     * |----------------------|
+     * |  Etablissement Part  |
+     * |----------------------|
+     */
+
+    isEtablissementProvider = true
+
+    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
+        const entities = await fonjepRepository.findBySiret(siret);
+
+        if (entities.length === 0) return null;
+
+        return entities.map(e => FonjepEntityAdapter.toEtablissement(e));
     }
 }
 
