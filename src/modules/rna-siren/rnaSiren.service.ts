@@ -9,8 +9,22 @@ import osirisService from "../providers/osiris/osiris.service";
 import leCompteAssoService from "../providers/leCompteAsso/leCompteAsso.service";
 import dataEntrepriseService from "../providers/dataEntreprise/dataEntreprise.service";
 import RequestEntity from "../search/entities/RequestEntity";
+import EventManager from "../../shared/EventManager";
+
+export interface EventRnaSirenMatching {
+    rna: Rna,
+    siren: Siren
+}
 
 export class RnaSirenService {
+
+    constructor() {
+        EventManager.add('rna-siren.matching');
+
+        EventManager.on('rna-siren.matching', {}, (cbStop, data) => {
+            this.add((data as EventRnaSirenMatching).rna, (data as EventRnaSirenMatching).siren);
+        });
+    }
 
     async getRna(siren: Siret | Siren, withTimeout = false) {
         siren = siretToSiren(siren);
