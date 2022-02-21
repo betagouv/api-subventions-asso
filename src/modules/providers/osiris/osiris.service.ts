@@ -1,13 +1,13 @@
 import { Rna } from "../../../@types/Rna";
 import { Siren } from "../../../@types/Siren";
 import { Siret } from "../../../@types/Siret";
+import EventManager from "../../../shared/EventManager";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
 import Association from "../../associations/interfaces/Association";
 import AssociationsProvider from "../../associations/interfaces/AssociationsProvider";
 import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubvention";
 import Etablissement from "../../etablissements/interfaces/Etablissement";
 import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdatper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
@@ -26,7 +26,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
         const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
 
-        await rnaSirenService.add(request.legalInformations.rna, request.legalInformations.siret);
+        EventManager.call('rna-siren.matching', [{ rna: request.legalInformations.rna, siren: request.legalInformations.siret}])
         
         if (existingFile) {
             return {

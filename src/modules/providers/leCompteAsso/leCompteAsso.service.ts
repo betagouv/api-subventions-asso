@@ -16,6 +16,7 @@ import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
+import EventManager from "../../../shared/EventManager";
 
 
 export interface RejectedRequest {
@@ -49,7 +50,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                 rna: existingEntity.legalInformations.rna
             }
 
-            await rnaSirenService.add(legalInformations.rna, legalInformations.siret);
+            EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren:  legalInformations.siret}])
     
             return {
                 state: "updated",
