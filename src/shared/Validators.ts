@@ -43,3 +43,7 @@ export function isStringsValid(strings: unknown[]) {
 export function isNumbersValid(numbers: unknown[]) {
     return numbers.every(n => typeof n === "number" && !isNaN(n));
 }
+
+export function isCP(cp: string) {
+    return typeof cp === "string" && /[0-9]{5}/.test(cp);
+}

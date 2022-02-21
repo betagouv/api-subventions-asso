@@ -9,7 +9,6 @@ export default class FonjepParser {
         const data = ParseHelper.xlsParse(fileContent)[0]; // Use 0 because file have only one page
         const headers = data.slice(0,1)[0] as string[];
         const raws = data.slice(1, data.length) as (string|number)[][]; // Delete Headers 
-
         return raws.reduce((entities, raw) => {
             if (!raw.map(column => typeof column === "string" ? column.trim() : column ).filter(c => c).length) return entities;
             const parsedData = headers.reduce((acc, header, key) => {
