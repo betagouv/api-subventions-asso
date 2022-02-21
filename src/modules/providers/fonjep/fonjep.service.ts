@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import { Siret } from "../../../@types/Siret";
-import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
+import { isAssociationName, isCP, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../demandes_subventions/interfaces/DemandesSubventionsProvider";
 import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubvention";
 import Etablissement from "../../etablissements/interfaces/Etablissement";
@@ -56,13 +56,16 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         const strings = [
             entity.indexedInformations.status,
             entity.indexedInformations.service_instructeur,
-            entity.indexedInformations.code_postal,
             entity.indexedInformations.ville,
             entity.indexedInformations.financeur_principal,
         ]
 
         if (!isStringsValid(strings)) {
             return { success: false, message: `INVALID STRING FOR ${entity.legalInformations.siret}`, data: entity , code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+        }
+
+        if (!isCP(entity.indexedInformations.code_postal)) {
+            return { success: false, message: `INVALID CODE POSTAL FOR ${entity.legalInformations.siret}`, data: entity , code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
         }
 
         const numbers = [

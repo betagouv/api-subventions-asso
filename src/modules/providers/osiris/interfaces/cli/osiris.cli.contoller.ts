@@ -7,11 +7,11 @@ import osirisService from "../../osiris.service";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
-import * as RnaHelper from "../../../../../shared/helpers/RnaHelper";
 import { Rna } from "../../../../../@types/Rna";
 import { Siret } from "../../../../../@types/Siret";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
+import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
 
 
 @StaticImplements<CliStaticInterface>()
@@ -106,12 +106,10 @@ export default class OsirisCliController {
             let validation = osirisService.validRequest(osirisRequest);
 
             if (validation.code === 2) { // RNA NOT FOUND // TODO: use const for decribe error
-                const rna = await RnaHelper.findRnaBySiret(osirisRequest.legalInformations.siret, true);
+                const rna = await rnaSirenService.getRna(osirisRequest.legalInformations.siret, true);
 
                 if (typeof rna !== "string") {
-                    if (rna.code === RnaHelper.ERRORS_CODES.RNA_NOT_FOUND) {
-                        logs.push(`\n\nThis request is not registered because: RNA not found\n`, JSON.stringify(osirisRequest.legalInformations, null, "\t"))
-                    }
+                    logs.push(`\n\nThis request is not registered because: RNA not found\n`, JSON.stringify(osirisRequest.legalInformations, null, "\t"))
                     return data;
                 }
 
