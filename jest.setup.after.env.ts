@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 jest.spyOn(console, 'info').mockImplementation(() => {});
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-jest.spyOn(process.stdout, 'clearLine').mockImplementation(() => {});
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-jest.spyOn(process.stdout, 'cursorTo').mockImplementation(() => {});
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require('crypto').randomBytes(256).toString('base64');
