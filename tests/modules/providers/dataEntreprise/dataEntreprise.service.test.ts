@@ -11,7 +11,7 @@ describe("dateEntrepise.service", () => {
             const fakeData = { association: {id_association: "FAKE_DATA", updated_at: now}}
             const mock = jest.spyOn(axios, "get").mockImplementationOnce(() => (Promise.resolve({data: fakeData})));
 
-            const result = await dataEntrepriseService.findAssociationByRna("RNA_FAKE");
+            const result = await dataEntrepriseService.findAssociationByRna("RNA_FAKE", true);
 
             expect(mock).toHaveBeenCalled();
             expect(result).toMatchObject({
