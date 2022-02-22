@@ -21,7 +21,10 @@
     "test": "NODE_OPTIONS=--max-old-space-size=8192 jest --runInBand",
     "test:cov": "npm run test -- --coverage",
     "postinstall": "husky install",
-    "release": "standard-version"
+    "release": "standard-version",
+    "migration:new": "migrate-mongo create",
+    "migration:status": "migrate-mongo status",
+    "migration:apply": "migrate-mongo up"
   },
   "repository": {
     "type": "git",
@@ -77,6 +80,7 @@
     "eslint": "^8.6.0",
     "eslint-plugin-import": "^2.25.4",
     "jest": "^27.4.5",
+    "migrate-mongo": "^8.2.3",
     "nodemon": "^2.0.15",
     "standard-version": "^9.3.2",
     "supertest": "^6.2.2",
