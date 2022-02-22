@@ -1,3 +1,3 @@
 # web: node build/src/index.js
 
-postdeploy: npm run build && npm run migration:apply
+postdeploy: npm run migration:apply
