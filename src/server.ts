@@ -29,7 +29,7 @@ export async function startServer(port = '8080', isTest = false) {
 
     app.use('/docs', ...(await docsMiddlewares()));
 
-    app.use(errorHandler);
+    app.use(errorHandler(isTest));
 
     return app.listen(port, () => {
         if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);

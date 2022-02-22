@@ -5,15 +5,16 @@ import chorusService from "../../../src/modules/providers/chorus/chorus.service"
 describe("chorus.service", () => {
 
     describe("validateEntity", () => {
-        it('should be reject because compte not accepted', () => {
+        it('should be reject because codeBranche not accepted', () => {
             const entity = new ChorusLineEntity({
                 siret: "10000000000000",
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "WRONG COMPTE"
+                codeBranche: "WRONG CODE",
+                compte: "COMPTE"
             }, {});
-            expect(chorusService.validateEntity(entity)).toEqual( { success: false, message: `The comtpe ${entity.indexedInformations.compte} is not accepted in data`, data: entity })
+            expect(chorusService.validateEntity(entity)).toEqual( { success: false, message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`, data: entity })
         })
 
         it('should be reject amount is not number', () => {
@@ -22,7 +23,8 @@ describe("chorus.service", () => {
                 ej: "00000",
                 amount: undefined as unknown as number,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `Amount is not a number`, data: entity })
         })
@@ -33,7 +35,8 @@ describe("chorus.service", () => {
                 ej: "00000",
                 amount: 1000,
                 dateOperation: "01/01/1960" as unknown as Date,
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `Operation date is not a valid date`, data: entity })
         })
@@ -44,7 +47,8 @@ describe("chorus.service", () => {
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `INVALID SIRET FOR ${entity.indexedInformations.siret}`, data: entity })
         })
@@ -55,7 +59,8 @@ describe("chorus.service", () => {
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `INVALID EJ FOR ${entity.indexedInformations.ej}`, data: entity })
         })
@@ -66,7 +71,8 @@ describe("chorus.service", () => {
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: true })
         })
@@ -79,31 +85,38 @@ describe("chorus.service", () => {
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "rejected", result: expect.objectContaining({ success: false, message: "INVALID SIRET FOR SIRET"})});
         })
 
         it("should be create entity", async () => {
+            jest.spyOn(chorusService, "siretBelongAsso").mockImplementationOnce(() => Promise.resolve(true))
             const entity = new ChorusLineEntity({
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "created", result: entity });
+
         })
 
         it("should be update entity", async () => {
+            const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
+            
             const entity = new ChorusLineEntity({
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
 
             await chorusService.addChorusLine(entity);
@@ -111,15 +124,18 @@ describe("chorus.service", () => {
             entity.data = { "test": "update" };
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "updated", result: entity });
+            mock.mockReset();
         })
 
         it("should be not update because same ej but not same amout", async () => {
+            const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
             const entity = new ChorusLineEntity({
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
 
             await chorusService.addChorusLine(entity);
@@ -130,15 +146,19 @@ describe("chorus.service", () => {
             const {_id, ...entityWithoutId } = entity
 
             await expect(chorusService.addChorusLine(entityWithoutId)).resolves.toEqual({ state: "created", result: entityWithoutId });
+            mock.mockReset();
         })
 
         it("should be not update because same ej but not operation data", async () => {
+            const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
+
             const entity = new ChorusLineEntity({
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
-                compte: "TD ASSOCIATION"
+                codeBranche: "Z004",
+                compte: "COMPTE"
             }, {});
 
             await chorusService.addChorusLine(entity);
@@ -149,6 +169,8 @@ describe("chorus.service", () => {
             const {_id, ...entityWithoutId } = entity
 
             await expect(chorusService.addChorusLine(entityWithoutId)).resolves.toEqual({ state: "created", result: entityWithoutId });
+
+            mock.mockReset();
         })
     })
 
@@ -158,13 +180,14 @@ describe("chorus.service", () => {
             ej: "1000000000",
             amount: 1000,
             dateOperation: new Date(),
-            compte: "TD ASSOCIATION"
+            codeBranche: "Z004",
+            compte: "COMPTE"
         }, {});
 
         beforeEach(async () => {
+            jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
             await chorusService.addChorusLine(entity);
         })
-
 
         it("should be find entity", async () => {
             await expect(chorusService.findsBySiret("10000000000000")).resolves.toEqual([entity]);

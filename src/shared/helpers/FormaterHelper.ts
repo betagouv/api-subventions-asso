@@ -47,8 +47,8 @@ export default class FormaterHelper {
         return keys.reduce((acc, key) => {
             if (ProviderValueAdapter.isProviderValues(a[key] || b[key] || [])) {
                 acc[key] = [
-                    ...(a[key]?.length ? a[key] : []) as unknown[],
-                    ...(b[key]?.length ? b[key] : []) as unknown[],
+                    ...(a[key]?.length ? a[key].flat() : []) as unknown[],
+                    ...(b[key]?.length ? b[key].flat() : []) as unknown[],
                 ];
             }
             else if (a[key] && b[key]){

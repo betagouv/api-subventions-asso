@@ -1,6 +1,10 @@
 import { Siret } from "../../../@types/Siret";
-import { COMPTES_ACCEPTED } from "../../../shared/ComptesAccepted";
-import { isEJ, isSiret } from "../../../shared/Validators";
+import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
+import { isEJ, isRna, isSiret } from "../../../shared/Validators";
+import searchService from "../../search/search.service";
+import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
 
@@ -11,8 +15,8 @@ export interface RejectedRequest {
 export class ChorusService {
 
     public validateEntity(entity: ChorusLineEntity) {
-        if (!COMPTES_ACCEPTED.includes(entity.indexedInformations.compte)) {
-            return { success: false, message: `The comtpe ${entity.indexedInformations.compte} is not accepted in data`, data: entity }
+        if (!BRANCHE_ACCEPTED.includes(entity.indexedInformations.codeBranche)) {
+            return { success: false, message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`, data: entity }
         }
 
         if (isNaN(entity.indexedInformations.amount)) {
@@ -49,24 +53,57 @@ export class ChorusService {
         const alreadyExist = await chorusLineRepository.findByEJ(entity.indexedInformations.ej);
 
         if (
-            !alreadyExist 
-            || !datesAreOnSameDay(alreadyExist.indexedInformations.dateOperation, entity.indexedInformations.dateOperation) 
-            || entity.indexedInformations.amount != alreadyExist.indexedInformations.amount
-        ){  
+            alreadyExist 
+            && datesAreOnSameDay(alreadyExist.indexedInformations.dateOperation, entity.indexedInformations.dateOperation) 
+            && entity.indexedInformations.amount == alreadyExist.indexedInformations.amount
+        ){
             return {
-                state: "created",
-                result: await chorusLineRepository.create(entity),
+                state: "updated",
+                result: await chorusLineRepository.update(entity),
             }
         }
 
+        // Check if siret belongs to an asso
+        if (entity.indexedInformations.codeBranche !== ASSO_BRANCHE && ! (await this.siretBelongAsso(entity.indexedInformations.siret))) {
+            return {
+                state: "rejected",
+                result: {
+                    message: "The Siret does not correspond to an association",
+                    data: entity,
+                }
+            }
+        }
+        
         return {
-            state: "updated",
-            result: await chorusLineRepository.update(entity),
+            state: "created",
+            result: await chorusLineRepository.create(entity),
         }
     }
 
     public async findsBySiret(siret: Siret) {
         return chorusLineRepository.findsBySiret(siret);
+    }
+
+    public async siretBelongAsso(siret: Siret): Promise<boolean> { // TODO Change me when FONJEP has merged
+        const chorusLines = await this.findsBySiret(siret);
+        if (chorusLines.length) return true; 
+        
+        // - 2 Search in other provider
+        const requests = await searchService.findRequestsBySiret(siret);
+        if (requests.length) return true;
+
+        // - 3 If Rna not found search in siret api and check type of compagny
+        const siretData = await dataEntrepriseService.findAssociationBySiren(siretToSiren(siret), true);
+        if (siretData) {
+            if (siretData.rna && siretData.rna.length && isRna(siretData.rna[0].value)) return true;
+            if (
+                siretData.categorie_juridique 
+                && siretData.categorie_juridique.length 
+                && LEGAL_CATEGORIES_ACCEPTED.includes(siretData.categorie_juridique[0].value)
+            ) return true;
+        }
+
+        return false
     }
 }
 
