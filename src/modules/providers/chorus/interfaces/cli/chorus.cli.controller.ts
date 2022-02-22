@@ -52,7 +52,7 @@ export default class ChorusCliController {
 
         const results = await entities.reduce(async (acc, entity) => {
             const data = await acc;
-            data.push(await chorusService.addChorusLine(entity))
+            data.push(await chorusService.addChorusLine(entity));
             return data;
         }, Promise.resolve([]) as Promise<
         ({

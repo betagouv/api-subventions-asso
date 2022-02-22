@@ -11,11 +11,13 @@ export default class ChorusLineEntity {
         },
         siret: { path: ['Code taxe 1'] },
         compte: { path: ['Compte général'] }, 
+        codeBranche: { path: ['Branche CODE'] }, 
         amount: { 
             path: ["EUR"],
             adapter: (value) => {
                 if (!value) return value;
-                return parseFloat(value.replace("\r", "").replace(" ", ''))
+
+                return parseFloat(value.replace("\r", "").replace(" ", '').replace(",", "."))
             }
         }, 
         dateOperation: { 
@@ -24,7 +26,7 @@ export default class ChorusLineEntity {
                 if (!value) return value;
 
                 const [day, month, year] = value.split('.').map(v => parseInt(v, 10));
-                return new Date(year, month - 1, day);
+                return new Date(Date.UTC(year, month - 1, day));
             }
         }, 
     }

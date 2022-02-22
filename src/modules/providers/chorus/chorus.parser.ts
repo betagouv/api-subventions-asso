@@ -14,6 +14,13 @@ export default class ChorusParser {
         
         const headers = data.splice(0,7);
 
+        headers[6].forEach((header, index) => {
+            const isCode = headers[6].slice(index + 1).find(h => h === header);
+            if (isCode) {
+                headers[6][index] = `${header} CODE`;
+            }
+        })
+
         return data.reduce((entities, raw) => {
             if (!raw.map(column => column.trim()).filter(c => c).length) return entities;
             const parsedData = ParseHelper.linkHeaderToData(headers[6], raw);
