@@ -16,16 +16,9 @@ export default class ChorusParser {
 
         return data.reduce((entities, raw) => {
             if (!raw.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = headers[6].reduce((acc, header, key) => {
-                acc[header.trim()] = raw[key];
-                return acc;
-            }, {} as {[key: string]: string});
+            const parsedData = ParseHelper.linkHeaderToData(headers[6], raw);
             
-            const indexedInformations = Object.keys(ChorusLineEntity.indexedInformationsPath).reduce((acc, key: string) => {
-                const tempAcc = (acc as { [key: string ] : string} );
-                tempAcc[key] = ParseHelper.findByPath(parsedData, ChorusLineEntity.indexedInformationsPath[key]);
-                return tempAcc;
-            }, {} as unknown) as IChorusIndexedInformations;
+            const indexedInformations = ParseHelper.indexDataByPathObject(ChorusLineEntity.indexedInformationsPath, parsedData) as unknown as IChorusIndexedInformations;
 
             return entities.concat(new ChorusLineEntity(
                 indexedInformations,

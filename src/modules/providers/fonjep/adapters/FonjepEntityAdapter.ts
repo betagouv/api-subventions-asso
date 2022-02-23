@@ -5,11 +5,9 @@ import Etablissement from "../../../etablissements/interfaces/Etablissement";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
 export default class FonjepEntityAdapter {
-    
     static PROVIDER_NAME = "Fonjep"
     
     static toDemandeSubvention(entity: FonjepRequestEntity): DemandeSubvention {
-
         const dataDate = entity.indexedInformations.date_versement
         return {
             service_instructeur: ProviderValueAdapter.toProviderValue(entity.indexedInformations.service_instructeur, FonjepEntityAdapter.PROVIDER_NAME, dataDate),

@@ -4,6 +4,7 @@ import xlsx from 'node-xlsx';
 
 import { ParserInfo } from "../../@types/ParserInfo";
 import ParserPath from "../../@types/ParserPath";
+import { DefaultObject } from "../../@types/utils";
 
 export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo) {
     let path: ParserPath;
@@ -33,6 +34,21 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
     }, data) as string;
 
     return adatper(result) as T;
+}
+
+export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | ParserInfo>, data: DefaultObject<string|number|DefaultObject<string|number>>) {
+    return Object.keys(pathObject).reduce((acc, key: string) => {
+        const tempAcc = (acc as { [key: string ] : string} );
+        tempAcc[key] = findByPath(data, pathObject[key]);
+        return tempAcc;
+    }, {} as unknown) as DefaultObject<string|number>
+}
+
+export function linkHeaderToData(header: string[], data: string[]) {
+    return header.reduce((acc, header, key) => {
+        acc[header.trim()] = data[key];
+        return acc;
+    }, {} as {[key: string]: string});
 }
 
 export function findFiles(file: string) {
