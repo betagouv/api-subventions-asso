@@ -55,7 +55,7 @@ export class RnaSirenService {
     async add(rna: Rna, siren: Siren | Siret) {
         siren = siretToSiren(siren);
 
-        if (await rnaSirenRepository.findRna(siren)) return // Matching allready exist
+        if (await rnaSirenRepository.findRna(siren) || await rnaSirenRepository.findSiren(rna)) return // Matching already exist
 
         await rnaSirenRepository.create(new RnaSiren(rna, siren));
     }
