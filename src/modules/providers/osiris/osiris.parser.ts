@@ -1,10 +1,10 @@
 import OsirisActionEntity from './entities/OsirisActionEntity';
 import OsirisRequestEntity from './entities/OsirisRequestEntity';
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import { Siret } from '../../../@types/Siret';
-import { Rna } from '../../../@types/Rna';
 import IOsirisRequestInformations from './@types/IOsirisRequestInformations';
 import IOsirisActionsInformations from './@types/IOsirisActionsInformations';
+import { DefaultObject } from '../../../@types/utils';
+import ILegalInformations from '../../search/@types/ILegalInformations';
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer): OsirisRequestEntity[] {
@@ -14,27 +14,10 @@ export default class OsirisParser {
 
 
         return raws.map((raw) => {
-            const data: { [key: string]: { [key: string]: unknown} } = {};
+            const data: DefaultObject<DefaultObject<string|number>> = OsirisParser.rawToRawWithHeaders(headers, raw);
 
-            raw.forEach((value, index) => {
-                const mainCategory = OsirisParser.findMainCategory(headers, index);
-                const category = OsirisParser.findCategory(headers, index);
-
-                if (!data[mainCategory]) data[mainCategory] = {};
-                data[mainCategory][category] = value
-            });
-
-            const legalInformations = {
-                siret: ParseHelper.findByPath<Siret>(data, OsirisRequestEntity.indexedLegalInformationsPath.siret),
-                rna: ParseHelper.findByPath<Rna>(data, OsirisRequestEntity.indexedLegalInformationsPath.rna),
-                name: ParseHelper.findByPath<string>(data, OsirisRequestEntity.indexedLegalInformationsPath.name),
-            };
-
-            const indexedInformations = Object.keys(OsirisRequestEntity.indexedProviderInformationsPath).reduce((acc, key: string) => {
-                const tempAcc = (acc as { [key: string ] : string} );
-                tempAcc[key] = ParseHelper.findByPath(data, OsirisRequestEntity.indexedProviderInformationsPath[key]);
-                return tempAcc;
-            }, {} as unknown) as IOsirisRequestInformations;
+            const indexedInformations = ParseHelper.indexDataByPathObject(OsirisRequestEntity.indexedProviderInformationsPath, data) as IOsirisRequestInformations;
+            const legalInformations = ParseHelper.indexDataByPathObject(OsirisRequestEntity.indexedLegalInformationsPath, data) as unknown as ILegalInformations;
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
@@ -48,21 +31,9 @@ export default class OsirisParser {
         const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return raws.map((raw: unknown[]) => {
-            const data: { [key: string]: { [key: string]: unknown} } = {};
+            const data: DefaultObject<DefaultObject<string|number>> = OsirisParser.rawToRawWithHeaders(headers, raw);
 
-            raw.forEach((value, index) => {
-                const mainCategory = OsirisParser.findMainCategory(headers, index);
-                const category = OsirisParser.findCategory(headers, index);
-
-                if (!data[mainCategory]) data[mainCategory] = {};
-                data[mainCategory][category] = value
-            });
-
-            const indexedInformations = Object.keys(OsirisActionEntity.indexedInformationsPath).reduce((acc, key: string) => {
-                const tempAcc = (acc as { [key: string ] : string} );
-                tempAcc[key] = ParseHelper.findByPath(data, OsirisActionEntity.indexedInformationsPath[key]);
-                return tempAcc;
-            }, {} as unknown) as IOsirisActionsInformations;
+            const indexedInformations = ParseHelper.indexDataByPathObject(OsirisActionEntity.indexedInformationsPath, data) as unknown as IOsirisActionsInformations;
 
             return new OsirisActionEntity(indexedInformations, data);
         });
@@ -79,5 +50,19 @@ export default class OsirisParser {
 
     private static findCategory(headers: unknown[][], position: number): string {
         return (headers[1][position] as string).trim();
+    }
+
+    private static rawToRawWithHeaders(headers: string[][], raw: unknown[]) {
+        const data: DefaultObject<DefaultObject<string|number>> = {};
+
+        raw.forEach((value, index) => {
+            const mainCategory = OsirisParser.findMainCategory(headers, index);
+            const category = OsirisParser.findCategory(headers, index);
+
+            if (!data[mainCategory]) data[mainCategory] = {};
+            data[mainCategory][category] = value as string;
+        });
+
+        return data
     }
 }

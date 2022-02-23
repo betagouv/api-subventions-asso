@@ -2,6 +2,7 @@ import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequ
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { Siret } from "../../../@types/Siret";
+import ILeCompteAssoRequestInformations from "./@types/ILeCompteAssoRequestInformations";
 
 export default class LeCompteAssoParser {
     public static parse(content: Buffer): ILeCompteAssoPartialRequestEntity[] {
@@ -10,22 +11,15 @@ export default class LeCompteAssoParser {
         const raws = data.slice(1);
         return raws.reduce((entities, raw) => {
             if (!raw.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = header.reduce((acc, header, key) => {
-                acc[header.trim()] = raw[key];
-                return acc;
-            }, {} as {[key: string]: string});
+            const parsedData = ParseHelper.linkHeaderToData(header, raw);
     
             const legalInformations = {
-                siret: ParseHelper.findByPath<Siret>(parsedData, LeCompteAssoRequestEntity.indexedLegalInformationsPath.siret),
-                name: ParseHelper.findByPath<string>(parsedData, LeCompteAssoRequestEntity.indexedLegalInformationsPath.name),
+                ...ParseHelper.indexDataByPathObject(LeCompteAssoRequestEntity.indexedLegalInformationsPath, parsedData) as {siret: Siret, name: string},
                 rna: null
             }
-    
-            const providerInformations = {
-                compteAssoId: ParseHelper.findByPath<string>(parsedData, LeCompteAssoRequestEntity.indexedProviderInformationsPath.compteAssoId),
-                createur_email: ParseHelper.findByPath<string>(parsedData, LeCompteAssoRequestEntity.indexedProviderInformationsPath.createur_email),
-                transmis_le: ParseHelper.findByPath<Date>(parsedData, LeCompteAssoRequestEntity.indexedProviderInformationsPath.transmis_le),
-            };
+
+            const providerInformations = ParseHelper.indexDataByPathObject(LeCompteAssoRequestEntity.indexedProviderInformationsPath, parsedData) as ILeCompteAssoRequestInformations;
+
 
             entities.push({legalInformations, providerInformations, data: parsedData});
 

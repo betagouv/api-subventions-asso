@@ -65,7 +65,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (!data) return null;
 
         if (data.association.siret) {
-            EventManager.call('rna-siren.matching', [{ rna: rna, siren:  data.association.siret}])
+            EventManager.call('rna-siren.matching', [{ rna: rna, siren: data.association.siret}])
         }
 
         return AssociationDtoAdapter.toAssociation(data);
