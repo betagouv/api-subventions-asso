@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/betagouv/api-subventions-asso/compare/v0.1.0...v0.2.0) (2022-02-25)
+
+
+### Features
+
+* add cmd parse to fonjep cli controller ([15ada26](https://github.com/betagouv/api-subventions-asso/commit/15ada26fc15bf97dd20ced3c64d280ac0223afaa))
+* add event manager ([0eea7f8](https://github.com/betagouv/api-subventions-asso/commit/0eea7f8000a83e41f66e569318982e8ccc66a3a6))
+* add fonjep cli controller ([1e1a311](https://github.com/betagouv/api-subventions-asso/commit/1e1a311f83a689a1ac8d5edc44927df78a069b4a))
+* add migration for chorusline ([7ed550f](https://github.com/betagouv/api-subventions-asso/commit/7ed550feb7ad72cba1b49785720c5d1db742a452))
+* add migration for rnaSiren ([6367bcc](https://github.com/betagouv/api-subventions-asso/commit/6367bcce2042b6264595fcf6d139965a3905a937))
+* add rnaSiren module ([21cc9c2](https://github.com/betagouv/api-subventions-asso/commit/21cc9c2c84aa62db02365456323f5539ed6cdf94))
+* add tests FONJEP ([c10ef2c](https://github.com/betagouv/api-subventions-asso/commit/c10ef2c056d7394738fa8b0fad945c3be8b394ce))
+* create fonjep parser and fonjep entity ([70f11a5](https://github.com/betagouv/api-subventions-asso/commit/70f11a53222cd8a6f62c324fa4458fc19c5f5426))
+* create fonjep repository ([3d953ef](https://github.com/betagouv/api-subventions-asso/commit/3d953ef85d6a2349423d699417626567f6ab42c4))
+* create fonjep service ([b2b0944](https://github.com/betagouv/api-subventions-asso/commit/b2b0944b119a78b21d0797ffd4872de421f919e0))
+* fonjep as provider to etablissement and demandesubvention ([b2492d3](https://github.com/betagouv/api-subventions-asso/commit/b2492d3bc58159602a41bca5953ccd30a32138fe))
+* move parse file in parse helpers ([43b5f57](https://github.com/betagouv/api-subventions-asso/commit/43b5f57f776d352e7d2531ad9c16d2b4f3ae18cb))
+* osiris and lca loader on parse ([1f60957](https://github.com/betagouv/api-subventions-asso/commit/1f609571cface4823ef4bb07ef3c6cce161b1272))
+* parse new format of chorus ([c0215d4](https://github.com/betagouv/api-subventions-asso/commit/c0215d4fd3b9e678aa2c6d66c7e8f85e12ad5608))
+* print progree check if stdout exist ([e282ba9](https://github.com/betagouv/api-subventions-asso/commit/e282ba9ea07a65c768f5438c21710f0f0e21a4b5))
+* use rna siren on providers ([dc7d810](https://github.com/betagouv/api-subventions-asso/commit/dc7d810c862394eba1d8bf1aa4dd6156218f255e))
+
+
+### Bug Fixes
+
+* fix lca test with rna siret module ([f742e81](https://github.com/betagouv/api-subventions-asso/commit/f742e8175946360fa33f96d7b4a4b304a5e56dd3))
+* review clean ([61155ce](https://github.com/betagouv/api-subventions-asso/commit/61155cea11815b36b8be391f020b0e4314f902e9))
+* use good version ([bba0618](https://github.com/betagouv/api-subventions-asso/commit/bba0618ee18d2c1293529cf59ee89d6e163fb6fa))
+
 ## [0.1.0](https://github.com/betagouv/api-subventions-asso/compare/v0.0.1...v0.1.0) (2022-02-16)
 
 ### [0.0.2](https://github.com/betagouv/api-subventions-asso/compare/v0.0.1...v0.0.2) (2022-02-16)
