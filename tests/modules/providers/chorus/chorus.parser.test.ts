@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import ChorusPaser from "../../../src/modules/providers/chorus/chorus.parser";
+import ChorusPaser from "../../../../src/modules/providers/chorus/chorus.parser";
 
 describe("chorus.parser.ts", () => {
     it("should parse file", () => {

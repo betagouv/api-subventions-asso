@@ -1,4 +1,5 @@
 import ProviderValue from "../../../@types/ProviderValue";
+import Versement from "../../versements/interfaces/Versement";
 
 export default interface DemandeSubvention {
     service_instructeur: ProviderValue<string>,
@@ -60,4 +61,6 @@ export default interface DemandeSubvention {
         status: ProviderValue<string>
         commentaire: ProviderValue<string>
     }[]
+
+    versements?: Versement[]
 }
