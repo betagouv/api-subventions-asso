@@ -1,4 +1,5 @@
 import { WithId } from "mongodb";
+import { Siren } from "../../../../@types/Siren";
 import { Siret } from "../../../../@types/Siret";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
@@ -6,7 +7,7 @@ import ChorusLineEntity from "../entities/ChorusLineEntity";
 export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
     readonly collectionName = "chorus-line";
 
-    public async findByEJ(ej: string) {
+    public async findOneByEJ(ej: string) {
         return this.collection.findOne({ "indexedInformations.ej": ej });
     }
 
@@ -25,8 +26,18 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
         return this.collection.findOne({ "indexedInformations.ej": entity.indexedInformations.ej }) as Promise<WithId<ChorusLineEntity>>;
     }
 
-    public findsBySiret(siret: Siret) {
+    public findBySiret(siret: Siret) {
         return this.collection.find({ "indexedInformations.siret": siret }).toArray();
+    }
+
+    public findByEJ(ej: string) {
+        return this.collection.find({ "indexedInformations.ej": ej }).toArray();
+    }
+
+    public findBySiren(siren: Siren) {
+        return this.collection.find({
+            "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
+        }).toArray();
     }
 }
 

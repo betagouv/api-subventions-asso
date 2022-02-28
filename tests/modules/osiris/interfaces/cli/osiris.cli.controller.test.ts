@@ -25,7 +25,7 @@ describe("OsirisCliController", () => {
         spys.forEach(spy => spy.mockReset());
     });
 
-    describe('parse cli re<uests', () => {
+    describe('parse cli requests', () => {
         let controller: OsirisCliController;
 
         beforeEach(() => {

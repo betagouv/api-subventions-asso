@@ -1,18 +1,13 @@
-import leCompteAssoService from "../providers/leCompteAsso/leCompteAsso.service";
 import etablissementService from "../etablissements/etablissements.service";
 import associationsService from "../associations/associations.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import chorusService from "../providers/chorus/chorus.service";
-import osirisService from "../providers/osiris/osiris.service";
-import RequestEntity from "./entities/RequestEntity";
 
-import ProviderRequestInterface from "./@types/ProviderRequestInterface";
-import IBudgetLine from "./@types/IBudgetLine";
 import { Siret } from "../../@types/Siret";
 import { Rna } from "../../@types/Rna";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
 import Etablissement from "../etablissements/interfaces/Etablissement";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
+import versementsService from "../versements/versements.service";
 
 export class SearchService {
 
@@ -26,11 +21,13 @@ export class SearchService {
         const etablissement = await etablissementService.getEtablissement(siret);
         if (!etablissement) return null;
 
-        return {
+        const etablissementDto =  {
             ...etablissement,
             association,
             demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(siret),
         };
+
+        return await versementsService.aggregateVersementsByEtablissementSearch(etablissementDto);
     }
 
     public async getByRna(rna: Rna) {
@@ -51,7 +48,7 @@ export class SearchService {
             [...new Set(sirets)].map(siret => etablissementService.getEtablissement(siret))
         )).filter(e => e) as Etablissement[];
 
-        return {
+        const associationDto = {
             ...association,
             etablissements: await Promise.all(
                 etablissements.map(async (etablissement) => ({
@@ -60,46 +57,8 @@ export class SearchService {
                 }))
             )
         }
-    }
 
-    public findRequestsBySiret(siret: Siret) {
-        return this.findRequests(siret, "siret");
-    }
-
-    public findRequestsByRna(rna: Rna) {
-        return this.findRequests(rna, "rna");
-    }
-
-
-    private findRequests(id: string, type: "siret" | "rna") {
-        const providers: ProviderRequestInterface[] = [ // Set in method because LCA need Search and Search need LCA (Import loop)
-            osirisService,
-            leCompteAssoService,
-        ];
-
-        return providers.reduce((acc, provider) => {
-            return acc.then(async (requests) => {
-                if (type === "siret") {
-                    requests.push(...await provider.findBySiret(id));
-                } else {
-                    requests.push(...await provider.findByRna(id));
-                }
-                return requests;
-            });
-        }, Promise.resolve([]) as Promise<RequestEntity[]>);
-    }
-
-    private findBudgetLines(siret: Siret) {
-        const providers = [
-            chorusService
-        ]
-
-        return providers.reduce((acc, provider) => {
-            return acc.then(async (requests) => {
-                requests.push(...await provider.findsBySiret(siret));
-                return requests;
-            });
-        }, Promise.resolve([]) as Promise<{ indexedInformations: IBudgetLine }[]>);
+        return await versementsService.aggregateVersementsByAssoSearch(associationDto);
     }
 }
 

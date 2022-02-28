@@ -41,10 +41,12 @@ export default {
         "decorators",
         "src/index.ts",
         "src/cli.ts",
+        "src/middlewares",
         "src/shared/MongoConnection.ts",
         "src/modules/associations/interfaces",
         "src/modules/etablissements/interfaces",
         "src/modules/demandes_subventions/interfaces",
+        "src/modules/versements/interfaces",
         "dto",
     ],
 

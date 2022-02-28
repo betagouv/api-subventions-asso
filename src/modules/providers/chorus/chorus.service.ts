@@ -1,10 +1,12 @@
+import { Siren } from "../../../@types/Siren";
 import { Siret } from "../../../@types/Siret";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
-import { isEJ, isRna, isSiret } from "../../../shared/Validators";
-import searchService from "../../search/search.service";
-import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
+import { isEJ, isSiret } from "../../../shared/Validators";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import Versement from "../../versements/interfaces/Versement";
+import VersementsProvider from "../../versements/interfaces/VersementsProvider";
+import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
 
@@ -12,7 +14,7 @@ export interface RejectedRequest {
     state: "rejected", result: { message: string, code: number, data: unknown }
 }
 
-export class ChorusService {
+export class ChorusService implements VersementsProvider {
 
     public validateEntity(entity: ChorusLineEntity) {
         if (!BRANCHE_ACCEPTED.includes(entity.indexedInformations.codeBranche)) {
@@ -50,7 +52,7 @@ export class ChorusService {
             first.getMonth() === second.getMonth() &&
             first.getDate() === second.getDate();
             
-        const alreadyExist = await chorusLineRepository.findByEJ(entity.indexedInformations.ej);
+        const alreadyExist = await chorusLineRepository.findOneByEJ(entity.indexedInformations.ej);
 
         if (
             alreadyExist 
@@ -80,30 +82,42 @@ export class ChorusService {
         }
     }
 
-    public async findsBySiret(siret: Siret) {
-        return chorusLineRepository.findsBySiret(siret);
-    }
-
-    public async siretBelongAsso(siret: Siret): Promise<boolean> { // TODO Change me when FONJEP has merged
-        const chorusLines = await this.findsBySiret(siret);
+    public async siretBelongAsso(siret: Siret): Promise<boolean> {
+        const chorusLines = await chorusLineRepository.findBySiret(siret);
         if (chorusLines.length) return true; 
         
-        // - 2 Search in other provider
-        const requests = await searchService.findRequestsBySiret(siret);
-        if (requests.length) return true;
-
-        // - 3 If Rna not found search in siret api and check type of compagny
-        const siretData = await dataEntrepriseService.findAssociationBySiren(siretToSiren(siret), true);
-        if (siretData) {
-            if (siretData.rna && siretData.rna.length && isRna(siretData.rna[0].value)) return true;
-            if (
-                siretData.categorie_juridique 
-                && siretData.categorie_juridique.length 
-                && LEGAL_CATEGORIES_ACCEPTED.includes(siretData.categorie_juridique[0].value)
-            ) return true;
-        }
+        const rna = await rnaSirenService.getRna(siretToSiren(siret));
+        if (rna) return true;
 
         return false
+    }
+
+
+
+    /**
+     * |-------------------------|
+     * |   Versement Part        |
+     * |-------------------------|
+     */
+    
+    isVersementsProvider = true;
+
+    async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
+        const requests = await chorusLineRepository.findBySiret(siret);
+
+        return requests.map(r => ChorusAdapter.toVersement(r));
+    }
+
+    async getVersementsBySiren(siren: Siren): Promise<Versement[]> {
+        const requests = await chorusLineRepository.findBySiren(siren);
+
+        return requests.map(r => ChorusAdapter.toVersement(r));
+    }
+
+    async getVersementsByEJ(ej: string): Promise<Versement[]> {
+        const requests = await chorusLineRepository.findByEJ(ej);
+
+        return requests.map(r => ChorusAdapter.toVersement(r));
     }
 }
 
