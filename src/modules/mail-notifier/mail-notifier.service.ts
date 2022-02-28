@@ -26,7 +26,7 @@ export class MailNotifierService {
                 Félicitations, vous êtes inscrit à la plateforme DataSubvention !
             </p>
             <p>
-                Pour acceder à celle-ci, vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur l'outil Postman en cliquant <a href="https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83">ici</a>.
+                Pour accéder à celle-ci, vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur l'outil Postman en cliquant <a href="https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83">ici</a>.
                 <br>Ajoutez ceci dans le champ token: ${token}.
                 <br>Et saisissez votre mot de passe dans le champ password.
             </p>
@@ -39,7 +39,7 @@ export class MailNotifierService {
             Félicitation, vous êtes inscrit à la plateforme DataSubvention !
             
             
-            Pour acceder à celle-ci vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur l'outil Postman en cliquant sur ce lien : https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83 .
+            Pour accéder à celle-ci vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur l'outil Postman en cliquant sur ce lien : https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83 .
             Ajoutez ceci dans le champ token: ${token}. Et saisissez votre mot de passe dans le champ password.
             
 
