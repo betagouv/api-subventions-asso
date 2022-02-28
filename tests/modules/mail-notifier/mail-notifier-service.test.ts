@@ -11,7 +11,7 @@ describe("MailNotiferSerivce", () => {
         expect(transporter.sendMail).toHaveBeenCalledWith({
             from: `DataSubvention <${MAIL_USER}>`,
             to: "test@beta.gouv.fr",
-            subject: "Envoie de mail test", 
+            subject: "Envoi de mail test", 
             text:  `
             Data Subvention
             Ceci est un mail de test, merci de ne pas en prendre compte.
