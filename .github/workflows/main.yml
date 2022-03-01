@@ -39,7 +39,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: npm run test:cov
-          threshold: 85
+          # threshold: 85
   build:
     runs-on: ubuntu-latest
     steps:
