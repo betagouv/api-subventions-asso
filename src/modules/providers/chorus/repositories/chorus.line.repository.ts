@@ -1,10 +1,10 @@
 import { WithId } from "mongodb";
 import { Siret } from "../../../../@types/Siret";
-import db from "../../../../shared/MongoConnection";
+import MigrationRepository from "../../../../shared/MigrationRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
-export class ChorusLineRepository {
-    private readonly collection = db.collection<ChorusLineEntity>("chorus-line");
+export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
+    readonly collectionName = "chorus-line";
 
     public async findByEJ(ej: string) {
         return this.collection.findOne({ "indexedInformations.ej": ej });

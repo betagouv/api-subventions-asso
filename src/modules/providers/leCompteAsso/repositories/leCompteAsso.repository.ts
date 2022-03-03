@@ -1,15 +1,15 @@
-import db from "../../../../shared/MongoConnection";
 import { FindOneAndUpdateOptions } from "mongodb";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import { Rna } from "../../../../@types/Rna";
 import { Siret } from "../../../../@types/Siret";
 import { Siren } from "../../../../@types/Siren";
+import MigrationRepository from "../../../../shared/MigrationRepository";
 
-export class LeCompteAssoRepository {
-    private readonly requestCollection = db.collection<LeCompteAssoRequestEntity>("lecompteasso-requests");
+export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequestEntity> {
+    readonly collectionName = "lecompteasso-requests";
 
     public async addRequest(request: LeCompteAssoRequestEntity) {
-        await this.requestCollection.insertOne(request);
+        await this.collection.insertOne(request);
         return this.findByCompteAssoId(request.providerInformations.compteAssoId) as LeCompteAssoRequestEntity;
     }
 
@@ -17,30 +17,30 @@ export class LeCompteAssoRepository {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {_id, ...requestWithoutId } = request;
-        return (await this.requestCollection.findOneAndUpdate({ 
+        return (await this.collection.findOneAndUpdate({ 
             "providerInformations.compteAssoId": request.providerInformations.compteAssoId
         },
         { $set: requestWithoutId }, options)).value as LeCompteAssoRequestEntity;
     }
 
     public findByCompteAssoId(compteAssoId: string) {
-        return this.requestCollection.findOne({ "providerInformations.compteAssoId": compteAssoId }) as unknown as (LeCompteAssoRequestEntity | null);
+        return this.collection.findOne({ "providerInformations.compteAssoId": compteAssoId }) as unknown as (LeCompteAssoRequestEntity | null);
     }
 
     public findsBySiret(siret: Siret) {
-        return this.requestCollection.find({
+        return this.collection.find({
             "legalInformations.siret": siret
         }).toArray();
     }
 
     public findBySiren(siren: Siren) {
-        return this.requestCollection.find({
+        return this.collection.find({
             "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
 
     public findsByRna(rna: Rna) {
-        return this.requestCollection.find({
+        return this.collection.find({
             "legalInformations.rna": rna
         }).toArray();
     }
