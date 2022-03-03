@@ -1,6 +1,6 @@
 # Data Subvention
 
-Pour le fonctionnement de l'app, vous devez avoir Node.js et NPM d'installer.
+Pour le fonctionnement de l'api, vous devez avoir Node.js et NPM d'installer.
 Installer les dépendances avec `npm install`.
 Puis il faut créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes: 
 - JWT_SECRET
