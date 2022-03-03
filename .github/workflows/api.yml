@@ -1,0 +1,26 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI-API
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "packages/api/**"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "packages/api/**"
+
+jobs:
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - run: npm run generate
+      - uses: ArtiomTr/jest-coverage-report-action@v2.0-rc.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          test-script: npm run test:cov
+          working-directory: packages/api
