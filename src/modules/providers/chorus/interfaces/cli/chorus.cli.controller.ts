@@ -5,6 +5,7 @@ import { CliStaticInterface} from "../../../../../@types/Cli.interface";
 import ChorusParser from "../../chorus.parser";
 import chorusService, { RejectedRequest } from "../../chorus.service";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
+import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCliController {
@@ -50,8 +51,9 @@ export default class ChorusCliController {
 
         console.info("Start register in database ...")
 
-        const results = await entities.reduce(async (acc, entity) => {
+        const results = await entities.reduce(async (acc, entity, i) => {
             const data = await acc;
+            CliHelper.printProgress(i, entities.length);
             data.push(await chorusService.addChorusLine(entity));
             return data;
         }, Promise.resolve([]) as Promise<

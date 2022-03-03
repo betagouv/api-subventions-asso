@@ -12,6 +12,7 @@ export default class ChorusLineEntity {
         siret: { path: ['Code taxe 1'] },
         compte: { path: ['Compte général'] }, 
         codeBranche: { path: ['Branche CODE'] }, 
+        typeOperation: { path: ['Type d\'opération CODE'] }, 
         amount: { 
             path: ["EUR"],
             adapter: (value) => {

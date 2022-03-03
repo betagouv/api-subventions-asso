@@ -1,6 +1,7 @@
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { Siren } from "../../../../@types/Siren";
 import { Siret } from "../../../../@types/Siret";
+import { DefaultObject } from "../../../../@types/utils";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
@@ -26,6 +27,15 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
         return this.collection.findOne({ "indexedInformations.ej": entity.indexedInformations.ej }) as Promise<WithId<ChorusLineEntity>>;
     }
 
+    public async updateById(id: ObjectId, entity: ChorusLineEntity) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {_id, ...entityWithoutId } = entity;
+        
+        await this.collection.updateOne({ "_id": id }, {$set: entityWithoutId});
+
+        return this.collection.findOne({ "_id": id }) as Promise<WithId<ChorusLineEntity>>;
+    }
+
     public findBySiret(siret: Siret) {
         return this.collection.find({ "indexedInformations.siret": siret }).toArray();
     }
@@ -38,6 +48,10 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
         return this.collection.find({
             "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();
+    }
+
+    public cursorFind(query: DefaultObject<unknown> = {}) {
+        return this.collection.find(query);
     }
 }
 
