@@ -10,4 +10,5 @@ export default interface Versement {
     dateOperation: ProviderValue<Date>;
     compte?: ProviderValue<string>;
     codeBranche?: ProviderValue<string>;
+    type?: ProviderValue<string>;
 }

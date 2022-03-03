@@ -14,7 +14,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "WRONG CODE",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual( { success: false, message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`, data: entity })
         })
@@ -26,7 +27,8 @@ describe("chorus.service", () => {
                 amount: undefined as unknown as number,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `Amount is not a number`, data: entity })
         })
@@ -38,7 +40,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: "01/01/1960" as unknown as Date,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `Operation date is not a valid date`, data: entity })
         })
@@ -50,7 +53,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `INVALID SIRET FOR ${entity.indexedInformations.siret}`, data: entity })
         })
@@ -62,7 +66,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `INVALID EJ FOR ${entity.indexedInformations.ej}`, data: entity })
         })
@@ -74,7 +79,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
             expect(chorusService.validateEntity(entity)).toEqual({ success: true })
         })
@@ -88,7 +94,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "rejected", result: expect.objectContaining({ success: false, message: "INVALID SIRET FOR SIRET"})});
@@ -102,7 +109,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "created", result: entity });
@@ -118,7 +126,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z044",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "rejected", result: {
@@ -138,7 +147,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
 
             await chorusService.addChorusLine(entity);
@@ -157,7 +167,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
 
             await chorusService.addChorusLine(entity);
@@ -180,7 +191,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {});
 
             await chorusService.addChorusLine(entity);
@@ -211,7 +223,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
         })
 
@@ -227,7 +240,8 @@ describe("chorus.service", () => {
                 amount: toPV(1000),
                 dateOperation: toPV(now),
                 codeBranche: toPV("Z004"),
-                compte: toPV("COMPTE")
+                compte: toPV("COMPTE"),
+                type: toPV("ZSUB")
             }]);
         })
         it("should be no find entity", async () => {
@@ -249,7 +263,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
         })
 
@@ -265,7 +280,8 @@ describe("chorus.service", () => {
                 amount: toPV(1000),
                 dateOperation: toPV(now),
                 codeBranche: toPV("Z004"),
-                compte: toPV("COMPTE")
+                compte: toPV("COMPTE"),
+                type: toPV("ZSUB")
             }]);
         })
         it("should be no find entity", async () => {
@@ -287,7 +303,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
         })
 
@@ -303,7 +320,8 @@ describe("chorus.service", () => {
                 amount: toPV(1000),
                 dateOperation: toPV(now),
                 codeBranche: toPV("Z004"),
-                compte: toPV("COMPTE")
+                compte: toPV("COMPTE"),
+                type: toPV("ZSUB")
             }]);
         })
         it("should be no find entity", async () => {
@@ -325,7 +343,8 @@ describe("chorus.service", () => {
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {}))
         })
 

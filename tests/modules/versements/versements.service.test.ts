@@ -33,7 +33,8 @@ describe("VersementService", () => {
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {}));
         })
 
@@ -131,7 +132,8 @@ describe("VersementService", () => {
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
-                compte: "COMPTE"
+                compte: "COMPTE",
+                typeOperation: "ZSUB"
             }, {}));
         })
 

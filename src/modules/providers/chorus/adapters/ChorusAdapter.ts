@@ -15,6 +15,7 @@ export default class ChorusAdapter {
             dateOperation: ProviderValueAdapter.toProviderValue(entity.indexedInformations.dateOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             compte: ProviderValueAdapter.toProviderValue(entity.indexedInformations.compte, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             codeBranche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.codeBranche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            type: ProviderValueAdapter.toProviderValue(entity.indexedInformations.typeOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
         }
     }
 }

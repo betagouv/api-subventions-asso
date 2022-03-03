@@ -7,6 +7,7 @@ import AssociationDto from "../search/interfaces/http/dto/AssociationDto";
 import EtablissementDto from "../search/interfaces/http/dto/EtablissmentDto";
 
 export class VersementsService {
+    public static SUBVENTION_TYPE = "ZSUB";
 
     async aggregateVersementsByAssoSearch(asso: AssociationDto) {
         if (!asso.siren || asso.siren?.length === 0) return null;
@@ -19,7 +20,7 @@ export class VersementsService {
         }).flat().filter(ej => ej) || [];
 
         const { versementsND, versementSub } = versements.reduce((acc, versement)=> {
-            if (ejDemandesSub.includes(versement.ej.value)) acc.versementSub.push(versement)
+            if (ejDemandesSub.includes(versement.ej.value) || (versement.type && versement.type.value === VersementsService.SUBVENTION_TYPE)) acc.versementSub.push(versement)
             else acc.versementsND.push(versement);
             return acc;
         }, { versementsND: [] as Versement[], versementSub: [] as Versement[] });
