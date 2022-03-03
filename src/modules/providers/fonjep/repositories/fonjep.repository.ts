@@ -1,10 +1,10 @@
 import { WithId } from "mongodb";
 import { Siret } from "../../../../@types/Siret";
-import db from "../../../../shared/MongoConnection";
+import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
-export class FonjepRepository {
-    private readonly collection = db.collection<FonjepRequestEntity>("fonjep");
+export class FonjepRepository extends MigrationRepository<FonjepRequestEntity> {
+    readonly collectionName = "fonjep";
 
     async create(entity: FonjepRequestEntity) {
         const insertAction = await this.collection.insertOne(entity);

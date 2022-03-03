@@ -26,12 +26,15 @@ beforeAll(async () => {
 
 afterEach(async () => { // Clear database between test
     const collections = await db.listCollections().toArray();
-    await Promise.all(collections.map(async collection => {
-        await db.collection(collection.name).deleteMany({});
-    }))
+    await collections.reduce(async (acc, collection) => {
+        await acc;
+        await db.collection(collection.name).drop();
+
+        return Promise.resolve();
+    }, Promise.resolve() as Promise<void>);
 });
 
 afterAll(async () => {
-    client.close();
+    await client.close();
     g.app?.close();
 });
