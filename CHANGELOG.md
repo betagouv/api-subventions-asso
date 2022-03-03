@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/betagouv/api-subventions-asso/compare/v0.2.0...v0.3.0) (2022-03-03)
+
+
+### Features
+
+* add migration manager ([1f62394](https://github.com/betagouv/api-subventions-asso/commit/1f62394a204efb898f69c7a63da5dc4ca9138fe6))
+* add versement module ([8b7bd95](https://github.com/betagouv/api-subventions-asso/commit/8b7bd954b0553a58b97e2bfab084bd7cbc888f27))
+* index opertation type ([0c17581](https://github.com/betagouv/api-subventions-asso/commit/0c17581d049629288bd61d447116877fd4db7af1))
+
+
+### Bug Fixes
+
+* **mail-notifier:** suppressed tab no test is alright ([3f6313a](https://github.com/betagouv/api-subventions-asso/commit/3f6313a7ffd2da37b087499c7e465f2957164786))
+
 ## [0.2.0](https://github.com/betagouv/api-subventions-asso/compare/v0.1.0...v0.2.0) (2022-02-25)
 
 
