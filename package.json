@@ -9,7 +9,6 @@
   },
   "scripts": {
     "dev": "lerna run dev",
-    "start": "lerna run start",
     "build": "lerna run build",
     "generate": "lerna run generate",
     "lint": "lerna run lint",
