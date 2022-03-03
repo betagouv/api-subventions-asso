@@ -11,9 +11,11 @@
     "dev": "lerna run dev",
     "start": "lerna run start",
     "build": "lerna run build",
+    "generate": "lerna run generate",
     "lint": "lerna run lint",
     "test": "lerna run test",
     "test:cov": "lerna run test:cov",
+    "migration:apply": "lerna run migration:apply",
     "postinstall": "lerna bootstrap && husky install",
     "release": "standard-version"
   },
