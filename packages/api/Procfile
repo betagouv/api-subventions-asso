@@ -1,0 +1,2 @@
+
+postdeploy: npm run migration:apply
