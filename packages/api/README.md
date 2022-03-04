@@ -1,4 +1,4 @@
-# Data Subvention
+# Data Subvention API
 
 Pour le fonctionnement de l'api, vous devez avoir Node.js et NPM d'installer.
 Installer les dépendances avec `npm install`.
@@ -17,7 +17,7 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 `sudo docker pull mongo`   
 `sudo docker run -d -p 27017:27017 mongo`   
 
-## Démarrer l'app en local
+## Démarrer l'api en local
 
 1. Run `npm run dev`
 2. Visit [http://localhost:8080](http://localhost:8080)
