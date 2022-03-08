@@ -71,6 +71,7 @@
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
+    "@api-subventions-asso/dto": "file:../dto",
     "concurrently": "^7.0.0",
     "crypto": "^1.0.1",
     "eslint": "^8.6.0",

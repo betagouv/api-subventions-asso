@@ -2,6 +2,7 @@ import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Sec
 import { Request as ExRequest } from "express";
 import userService from '../../user.service';
 import User, { UserWithoutSecret } from '../../entities/User';
+import { LoginDtoResponse } from "@api-subventions-asso/dto"
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -45,7 +46,7 @@ export class AuthentificationController extends Controller {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Body() body: { email: string, password: string }, // Just for docs
         @Request() req: ExRequest
-    ): { token: string, expirateDate: Date } {
+    ): LoginDtoResponse {
         // This metod is call after passport hook
         // If passport hook not valid, method is not call
         // If you change the route please change in express.auth.hooks.ts
