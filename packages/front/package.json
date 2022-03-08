@@ -27,6 +27,8 @@
     "dev": "nodemon",
     "start": "node ./build/src/index.js",
     "build": "tsc --project ./",
+    "postbuild": "npm run copy-files",
+    "copy-files": "cp -r src/views build/src && cp -r src/static build/src/static && cp -r node_modules build/node_modules",
     "test": "echo 'no test in front'"
   },
   "bugs": {
