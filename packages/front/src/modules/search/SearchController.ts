@@ -25,6 +25,11 @@ export default class SearchController {
             return res.redirect("/association/" + searchInput);
         }
 
+
+        if (type === "SIRET") {
+            return res.redirect("/etablissement/" + searchInput);
+        }
+
         return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
     }
 }
