@@ -126,4 +126,52 @@ describe("SearchService", () => {
             })
         })
     });
+
+    describe("getBySiren", () => {
+
+        const request = new OsirisRequestEntity({ siret: "00000000900000", rna: "RNA", name: "NAME"}, { 
+            osirisId: "FAKE_ID_2",
+            compteAssoId: "COMPTEASSOID",
+            ej: "321165465",
+            amountAwarded: 10,
+            dateCommission: now,
+        } as IOsirisRequestInformations, {}, undefined, []);
+        const action =  new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
+        beforeEach(async () => {
+            await osirisService.addRequest(request);
+            await osirisService.addAction(action);
+        });
+
+        it('should returns file contains actions', async () => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            etablissementService.getEtablissement.mockImplementationOnce(() => ({ siret: toPVs("00000000900000") }));
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            associationsService.getAssociationBySiren.mockImplementationOnce((siren) => ({
+                siren: toPVs(siren),
+                etablisements_siret: toPVs([
+                    "00000000900000"
+                ])
+            }));
+
+            expect(await searchService.getBySiren("000000009")).toMatchObject({
+                siren: toPVs("000000009"),
+                etablisements_siret: toPVs([
+                    "00000000900000"
+                ]),
+                etablissements: [
+                    {
+                        siret: toPVs("00000000900000"),
+                        demandes_subventions: expect.arrayContaining([
+                            expect.objectContaining({
+                                ej: toPV("321165465", "Osiris"),
+                            })
+                        ]),
+                    }
+                ],
+            })
+        })
+    });
 });
