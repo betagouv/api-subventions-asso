@@ -26,6 +26,14 @@ export default class SearchController {
             association = result.data.association;
         }
 
+
+        if (type === "SIREN") {
+            const result = await apiDatasubService.searchAssoBySiren(searchInput, req);
+
+            if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+            association = result.data.association;
+        }
+
         if (!association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
         res.render('search/index', {
             pageTitle: 'Recherche',
