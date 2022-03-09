@@ -11,11 +11,15 @@ on:
     branches: [ main ]
     paths:
       - "packages/api/**"
+defaults:
+  run:
+    working-directory: packages/api
 
 jobs:
   codecov:
     runs-on: ubuntu-latest
     steps:
+    
       - uses: actions/checkout@v1
       - run: npm ci
       - run: npm run generate
@@ -23,4 +27,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: npm run test:cov
-          working-directory: packages/api
+          # working-directory: packages/api
