@@ -1,6 +1,8 @@
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { Rna } from '../../../../@types/Rna';
+import { Siren } from '../../../../@types/Siren';
 import { Siret } from '../../../../@types/Siret';
+import { isRna, isSiren } from '../../../../shared/Validators';
 
 import searchService from "../../search.service";
 import AssociationDto from './dto/AssociationDto';
@@ -30,13 +32,19 @@ export class SearchController extends Controller {
 
     /**
      * Recherche des demandes de subventions via le rna de l'association
-     * @param rna Identifiant RNA
+     * @param rna_or_siren Identifiant RNA ou Identifiant Siren
      */
-    @Get("/association/{rna}")
-    public async findByRna(
-        rna: Rna,
+    @Get("/association/{id}")
+    public async findAssociation(
+        id: Rna | Siren,
     ): Promise<{ success: boolean, association?: unknown, message?: string}> {
-        const result = await searchService.getByRna(rna) as AssociationDto;
+        let result: AssociationDto | null = null;
+        if (isRna(id)) {
+            result = await searchService.getByRna(id) as AssociationDto;
+        } else if (isSiren(id)){
+            result = await searchService.getBySiren(id) as AssociationDto;
+        }
+
         if (!result) {
             this.setStatus(404);
             return { success: false, message: "Association not found"}
