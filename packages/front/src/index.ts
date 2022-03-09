@@ -54,17 +54,17 @@ controllers.forEach((controllerClass)=> {
 
         switch (describe.method) {
             case "POST":
-                app.post(route, describe.function);
+                app.post(route, describe.function.bind(controller));
                 break;
             case "PUT":
-                app.put(route, describe.function);
+                app.put(route, describe.function.bind(controller));
                 break;
             case "DELETE":
-                app.delete(route, describe.function);
+                app.delete(route, describe.function.bind(controller));
                 break;
             case "GET":        
             default:
-                app.get(route, describe.function);
+                app.get(route, describe.function.bind(controller));
                 break;
         }
     })
