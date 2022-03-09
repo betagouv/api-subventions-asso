@@ -1,3 +1,4 @@
+import AssociationController from "./association/AssociationController";
 import AuthController from "./auth/AuthController";
 import DownloadController from "./download/DownloadController";
 import HomeController from "./home/HomeController";
@@ -8,4 +9,5 @@ export default [
     AuthController,
     SearchController,
     DownloadController,
+    AssociationController,
 ]
