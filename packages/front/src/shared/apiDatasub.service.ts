@@ -4,6 +4,7 @@ import { DATASUB_URL } from "./config";
 import { Request } from "express";
 import { DefaultObject } from "../@types/utils";
 import AssociationDtoResponse from "@api-subventions-asso/dto/search/AssociationDtoResponse";
+import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
 
 export class APIDatasubService {
     login(email: string, password: string) {
@@ -21,6 +22,12 @@ export class APIDatasubService {
 
     searchAssoBySiren(siren: string, req: Request) {
         return axios.get<AssociationDtoResponse>(`${DATASUB_URL}/search/association/${siren}`, {
+            headers: this.getHeaders(req)
+        });
+    }
+
+    searchEtablissement(siret: string, req: Request) {
+        return axios.get<EtablissementDtoResponse>(`${DATASUB_URL}/search/etablissement/${siret}`, {
             headers: this.getHeaders(req)
         });
     }
