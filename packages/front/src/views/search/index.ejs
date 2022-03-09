@@ -63,7 +63,8 @@
                                                     desc: "Télécharger l\'avis de situation du siege",
                                                     url: 'https://api.avis-situation-sirene.insee.fr/identification/pdf/' + helper.getValue(association.siren) + helper.getValue(association.nic_siege),
                                                     img: '/static/images/logo_insee.jpg',
-                                                    target: "_blank",
+                                                    download: "Avis_de_situation_au_répertoire_Sirene-"+ helper.getValue(association.siren) +".pdf",
+                                                    target: "_blank"
                                                 })
                                                 -%>
                                             <% } %>
@@ -73,8 +74,9 @@
                                             {
                                                 title: 'Télécharger les données brut',
                                                 desc: "Télécharger les données disponible au format JSON",
-                                                url: '/download/json/' + helper.getValue(association.rna),
+                                                url: '/download/json/association/' + helper.getValue(association.rna),
                                                 img: '/static/images/json.png',
+                                                download: "association-"+ helper.getValue(association.rna) +".json"
                                             })
                                             -%>
                                         </div>
@@ -187,7 +189,7 @@
                                                                                                     <th scope="col">N°EJ</th>
                                                                                                     <th scope="col">Année de la demande</th>
                                                                                                     <th scope="col">Date de la commision</th>
-                                                                                                    <th scope="col">Pluriannuelle</th>
+                                                                                                    <th scope="col">Pluriannuel</th>
                                                                                                     <th scope="col">Montants Accordé</th>
                                                                                                     <th scope="col">Provider</th>
                                                                                                     <th scope="col">Plus d'information</th>
@@ -203,7 +205,7 @@
                                                                                                         <td><%-helper.getValue(demande.ej)%></td>
                                                                                                         <td><%-helper.getValue(demande.annee_demande)%></td>
                                                                                                         <td><%-helper.date.toString(demande.date_commision)%></td>
-                                                                                                        <td><%-helper.getValue(demande.pluriannualite) ? "OUI" : "NON" %></td>
+                                                                                                        <td><%-helper.getValue(demande.pluriannualite)%></td>
                                                                                                         <td><%- demande.montants && demande.montants.accorde ? helper.getValue(demande.montants.accorde) : ""%></td>
                                                                                                         <td><%-helper.getProvider(demande.service_instructeur)%></td>
                                                                                                         <td>
