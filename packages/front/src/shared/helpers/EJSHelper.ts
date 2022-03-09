@@ -5,6 +5,9 @@ import ProviderValueHelper from "./ProviderValueHelper";
 export default {
     getValue: ProviderValueHelper.getValue,
     hasValue: ProviderValueHelper.hasValue,
+    getProvider: ProviderValueHelper.getProvider,
+
+    toJSONFile: (data: unknown) => Buffer.from(JSON.stringify(data, null, 4)).toString("base64"),
     
     adresse: {
         toString: AdresseHelper.providerValuesToString

@@ -7,7 +7,7 @@
             ],})
             -%>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-                <div class="fr-col fr-col-lg-12">
+                <div class="fr-col fr-col-xl-12">
                     <ul class="fr-accordions-group">
                         <li>
                             <section class="fr-accordion">
@@ -85,7 +85,6 @@
 
                         <li>
                             <section class="fr-accordion">
-                        
                                 <h3 class="fr-accordion__title">
                                     <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-1-body-1">Établissements</button>
                                 </h3>
@@ -110,6 +109,127 @@
                                     <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-2-body-2">Demandes de subventions</button>
                                 </h3>
                                 <div class="fr-collapse" id="fr-accordion-2-body-2">
+                                    <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+                                        <div class="fr-col fr-col-lg-12">
+                                            <ul class="fr-accordions-group">
+                                                <%const years = [...subventions.years].sort().reverse();%>
+                                                <% for( let index = 0; index < years.length; index++ ) { %>
+                                                    <% const year = years[index]; const yearText = year === "0000" ? "Année non communiqué" : year%>
+                                                    <li>
+                                                        <section class="fr-accordion">
+                                                            <h3 class="fr-accordion__title">
+                                                                <button class="fr-accordion__btn" aria-expanded="<%- index === 0 ? "true": "false" %>" aria-controls="fr-accordion-1<%- index %>-body-1<%- index %>"><%-yearText%></button>
+                                                            </h3>
+                                                            <div class="fr-collapse" id="fr-accordion-1<%- index %>-body-1<%- index %>">
+                                                                    <p>Montants des subventions attribuées (<%- yearText -%>) : <%- subventions.totalAccordeByYear[year] -%>€</p>
+                                                                    <ul class="fr-accordions-group">
+                                                                        <li>
+                                                                            <section class="fr-accordion">
+                                                                                <h3 class="fr-accordion__title">
+                                                                                    <button class="fr-accordion__btn" aria-expanded="true" aria-controls="fr-accordion-1<%- index %>2-body-1<%- index %>2">Montants totals</button>
+                                                                                </h3>
+                                                                                <div class="fr-collapse" id="fr-accordion-1<%- index %>2-body-1<%- index %>2">
+                                                                                    <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+                                                                                        <% const reqByStatus = Object.keys(subventions.byYear[year]);%> 
+                                                                                        <% for( let index = 0; index < reqByStatus.length; index++ ) { %>
+                                                                                            <div class="fr-col fr-col-lg-6"">
+                                                                                                <div class="fr-table">
+                                                                                                    <table>
+                                                                                                        <caption><%- reqByStatus[index] %></caption>
+                                                                                                        <thead>
+                                                                                                            <tr>
+                                                                                                                <th scope="col">Service Instructeur</th>
+                                                                                                                <!-- <th scope="col">Total</th> -->
+                                                                                                                <th scope="col">Demandé</th>
+                                                                                                                <th scope="col">Proposé</th>
+                                                                                                                <th scope="col">Accordé</th>
+                                                                                                            </tr>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                            <% const services = subventions.byYear[year][reqByStatus[index]];%>
+                                                                                                            <% for( let y = 0; y < Object.keys(services).length; y++ ) { %>
+                                                                                                                <% const serviceName = Object.keys(services)[y]; const serivce = services[serviceName];  %>
+                                                                                                                <% if (Object.keys(serivce).length != 0) { %>
+                                                                                                                    <tr>
+                                                                                                                        <td><%- serviceName %></td>
+                                                                                                                        <% for( let z = 0; z < Object.keys(serivce).length; z++) { %>
+                                                                                                                            <% if (Object.keys(serivce)[z] !=  "total") { %>
+
+                                                                                                                                <td><%- Object.values(serivce)[z] %></td>
+                                                                                                                            <% } %>
+                                                                                                                        <% } %>
+                                                                                                                    </tr>
+                                                                                                                <% } %>
+                                                                                                            <% } %>
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        <% } %>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </section>
+                                                                        </li>
+                                                                        <li>
+                                                                            <section class="fr-accordion">
+                                                                                <h3 class="fr-accordion__title">
+                                                                                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-1<%- index %>3-body-1<%- index %>3">Détails</button>
+                                                                                </h3>
+                                                                                <div class="fr-collapse" id="fr-accordion-1<%- index %>3-body-1<%- index %>3">
+                                                                                    <div class="fr-table">
+                                                                                        <table>
+                                                                                            <caption>Demandes de subventions</caption>
+                                                                                            <thead>
+                                                                                                <tr>
+                                                                                                    <th scope="col">Status</th>
+                                                                                                    <th scope="col">Service instructeur</th>
+                                                                                                    <th scope="col">Dispositif</th>
+                                                                                                    <th scope="col">N°EJ</th>
+                                                                                                    <th scope="col">Année de la demande</th>
+                                                                                                    <th scope="col">Date de la commision</th>
+                                                                                                    <th scope="col">Pluriannuelle</th>
+                                                                                                    <th scope="col">Montants Accordé</th>
+                                                                                                    <th scope="col">Provider</th>
+                                                                                                    <th scope="col">Plus d'information</th>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                <% for(let i = 0; i < subventions.demandes[year].length; i++ ) { %>
+                                                                                                    <% const demande = subventions.demandes[year][i] %> 
+                                                                                                    <tr>
+                                                                                                        <td><%-helper.getValue(demande.status) || "NC" %></td>
+                                                                                                        <td><%-helper.getValue(demande.service_instructeur)%></td>
+                                                                                                        <td><%-helper.getValue(demande.dispositif)%></td>
+                                                                                                        <td><%-helper.getValue(demande.ej)%></td>
+                                                                                                        <td><%-helper.getValue(demande.annee_demande)%></td>
+                                                                                                        <td><%-helper.date.toString(demande.date_commision)%></td>
+                                                                                                        <td><%-helper.getValue(demande.pluriannualite) ? "OUI" : "NON" %></td>
+                                                                                                        <td><%- demande.montants && demande.montants.accorde ? helper.getValue(demande.montants.accorde) : ""%></td>
+                                                                                                        <td><%-helper.getProvider(demande.service_instructeur)%></td>
+                                                                                                        <td>
+                                                                                                            <a download="demande_subvention.json" href="data:application/json;base64,<%- helper.toJSONFile(demande) %>">
+                                                                                                                <button class="fr-btn fr-fi-file-download-line" title="Télécharger les données sur la demande de subvention">
+                                                                                                                    Télécharger les données sur la demande de subvention
+                                                                                                                </button>
+                                                                                                            </a>
+
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                <% } %>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </section>
+                                                                        </li>
+                                                                    </ul>
+                                                            </div>
+                                                        </section>
+                                                    </li>                                                   
+                                                <% } %>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                         </li>
