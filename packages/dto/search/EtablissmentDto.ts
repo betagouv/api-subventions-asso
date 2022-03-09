@@ -7,6 +7,7 @@ export default interface EtablissementDto {
     siret: ProviderValues<Siret>,
     nic: ProviderValues<string>,
     siege?: ProviderValues<boolean>,
+    ouvert?: ProviderValues<boolean>,
     adresse?: ProviderValues<{
         numero?: string,
         type_voie?: string,

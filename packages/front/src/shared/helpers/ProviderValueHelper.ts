@@ -17,7 +17,7 @@ export default class ProviderValueHelper {
             return true;
         }
 
-        return !!(data as ProviderValue).value;
+        return !!(data as ProviderValue)?.value;
     }
 
     public static getProvider(data: ProviderValues | ProviderValue): string | undefined {

@@ -3,7 +3,8 @@
     <div class="fr-container fr-mb-8w">
         <%- include('../partials/ariane', { items: [
             { label: 'Accueil', url: '/' },
-            { label: 'Association' },
+            { label: 'Association', url: '/association/' + (helper.getValue(association.rna) || helper.getValue(association.siren) ) },
+            { label: 'Établissement' },
             ],})
             -%>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
@@ -12,12 +13,178 @@
                         <li>
                             <section class="fr-accordion">
                                 <h3 class="fr-accordion__title">
-                                    <button class="fr-accordion__btn" aria-expanded="true" aria-controls="fr-accordion-0-body-0">Informations administratives</button>
+                                    <button class="fr-accordion__btn" aria-expanded="true" aria-controls="fr-accordion-0-body-0">Établissement</button>
                                 </h3>
                                 <div class="fr-collapse" id="fr-accordion-0-body-0">
                                     <% if (helper.hasValue(association.denomination)) { %>
                                         <h4><%- helper.getValue(association.denomination) -%> </h4>
                                     <% } %>
+                                    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                                        <div class="fr-col fr-col-lg-6">
+                                            <% if (helper.hasValue(association.rna)) { %>
+                                                <p>RNA : <%- helper.getValue(association.rna) -%> </p>
+                                            <% } %>
+                                            <% if (helper.hasValue(etablissement.siret)) { %>
+                                                <p>SIRET : <%- helper.getValue(etablissement.siret) -%> </p>
+                                            <% } %>
+                                            <% if (helper.hasValue(association.adresse_siege)) { %>
+                                                <p>Adresse: <%- helper.adresse.toString(etablissement.adresse) -%> </p>
+                                            <% } %>
+                                        </div>
+                                        <div class="fr-col fr-col-lg-6">
+                                            <% if (helper.hasValue(etablissement.ouvert)) { %>
+                                                <p>Etat administratif : <%- helper.getValue(etablissement.ouvert) ? "OUVERT" : "FERMER" -%></p>
+                                            <% } %>
+                                            <% if (helper.hasValue(etablissement.siege)) { %>
+                                                <p>Siège : <%- helper.getValue(etablissement.siege) ? "OUI" : "NON" -%> </p>
+                                            <% } %>
+                                            <% if (helper.hasValue(etablissement.nic)) { %>
+                                                <p>NIC : <%- helper.getValue(etablissement.nic) -%> </p>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                                        <% if ( etablissement.representants_legaux && etablissement.representants_legaux.length) { %>
+                                            <div class="fr-col fr-col-lg-12">
+                                                <div class="fr-table">
+                                                    <table>
+                                                        <caption>Représentants légaux</caption>
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col"> Nom </th>
+                                                                <th scope="col"> Prenom </th>
+                                                                <th scope="col"> Civilité </th>
+                                                                <th scope="col"> Téléphone </th>
+                                                                <th scope="col"> Email </th>
+                                                                <th scope="col"> Role </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% for( let index = 0; index < etablissement.representants_legaux.length; index++ ) { %>
+                                                                <% let representant = helper.getValue(etablissement.representants_legaux[index]) %>
+                                                                <tr>
+                                                                    <td><%- representant.nom %></td>
+                                                                    <td><%- representant.prenom %></td>
+                                                                    <td><%- representant.civilite %></td>
+                                                                    <td><%- representant.telephone %></td>
+                                                                    <td><%- representant.email %></td>
+                                                                    <td><%- representant.role %></td>
+                                                                </tr>
+                                                            <% } %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div> 
+                                        <% } %>
+                                        <% if (etablissement.contacts && etablissement.contacts.length) { %>
+                                            <div class="fr-col fr-col-lg-12">
+                                                <div class="fr-table">
+                                                    <table>
+                                                        <caption>Contacts</caption>
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col"> Nom </th>
+                                                                <th scope="col"> Prenom </th>
+                                                                <th scope="col"> Civilité </th>
+                                                                <th scope="col"> Téléphone </th>
+                                                                <th scope="col"> Email </th>
+                                                                <th scope="col"> Role </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% for( let index = 0; index < etablissement.contacts.length; index++ ) { %>
+                                                                <% let contact = helper.getValue(etablissement.contacts[index])%>
+                                                                <tr>
+                                                                    <td><%- contact.nom %></td>
+                                                                    <td><%- contact.prenom %></td>
+                                                                    <td><%- contact.civilite %></td>
+                                                                    <td><%- contact.telephone %></td>
+                                                                    <td><%- contact.email %></td>
+                                                                    <td><%- contact.role %></td>
+                                                                </tr>
+                                                            <% } %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div> 
+                                        <% } %>
+                                    </div>
+                                    <% if (etablissement.information_banquaire && etablissement.information_banquaire.length) { %>
+                                        <div class="fr-col fr-col-lg-12">
+                                            <div class="fr-table">
+                                                <table>
+                                                    <caption>Informations banquaire</caption>
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col"> BIC </th>
+                                                            <th scope="col"> IBAN </th>
+                                                            <th scope="col"> Dernière modification</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% for( let index = 0; index < etablissement.information_banquaire.length; index++ ) { %>
+                                                            <% let information_banquaire = helper.getValue(etablissement.information_banquaire[index])%>
+                                                            <tr>
+                                                                <td><%- information_banquaire.bic %></td>
+                                                                <td><%- information_banquaire.iban %></td>
+                                                                <td><%- helper.date.formatDate(helper.getDate(etablissement.information_banquaire[index])) %></td>
+                                                            </tr>
+                                                        <% } %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div> 
+                                    <% } %>
+                                    <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+                                        <div class="fr-col fr-col-lg-6">
+                                            <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
+                                                <%- include('../partials/tile',
+                                                {
+                                                    title: 'Télécharger l\'avis de situation',
+                                                    desc: "Télécharger l\'avis de situation de l'établissement",
+                                                    url: 'https://api.avis-situation-sirene.insee.fr/identification/pdf/' + helper.getValue(etablissement.siret),
+                                                    img: '/static/images/logo_insee.jpg',
+                                                    target: "_blank"
+                                                })
+                                                -%>
+                                            <% } %>
+                                        </div>
+                                        <div class="fr-col fr-col-lg-6">
+                                            <%- include('../partials/tile',
+                                            {
+                                                title: 'Télécharger les données brut',
+                                                desc: "Télécharger les données disponible au format JSON",
+                                                url: '/download/json/etablissement/' + helper.getValue(etablissement.siret),
+                                                img: '/static/images/json.png',
+                                                download: "etablissement-"+ helper.getValue(etablissement.siret) +".json"
+                                            })
+                                            -%>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </li>
+                        <li>
+                            <section class="fr-accordion">
+                                <h3 class="fr-accordion__title">
+                                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-1-body-1">Informations administratives de l'Association</button>
+                                </h3>
+                                <div class="fr-collapse" id="fr-accordion-1-body-1">
+                                    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                                        <div class="fr-col fr-col-lg-6">
+                                            <% if (helper.hasValue(association.denomination)) { %>
+                                                <p><%- helper.getValue(association.denomination) -%> </p>
+                                            <% } %>
+                                        </div>
+                                        <div class="fr-col fr-col-lg-6">
+
+                                            <a href="<%- '/association/' + (helper.getValue(association.rna) || helper.getValue(association.siren)) %>">
+                                                <button class="fr-btn" title="Label bouton">
+                                                    Voir la page de l'association
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
                                     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
                                         <div class="fr-col fr-col-lg-6">
                                             <% if (helper.hasValue(association.rna)) { %>
@@ -35,10 +202,10 @@
                                                 <p>Adresse du siège : <%- helper.adresse.toString(association.adresse_siege) -%> </p>
                                             <% } %>
                                             <% if (helper.hasValue(association.date_creation)) { %>
-                                                <p>Date d'immatriculation : <%- helper.date.toProviderValueString(association.date_creation) -%> </p>
+                                                <p>Date d'immatriculation : <%- helper.date.toString(association.date_creation) -%> </p>
                                             <% } %>
                                             <% if (helper.hasValue(association.date_modification)) { %>
-                                                <p>Dernière modification au greffe : <%- helper.date.toProviderValueString(association.date_modification) -%> </p>
+                                                <p>Dernière modification au greffe : <%- helper.date.toString(association.date_modification) -%> </p>
                                             <% } %>
                                         </div>
                                     </div>
@@ -54,53 +221,6 @@
                                         </div>
                                     </div>
                                     <% } %>
-                                    <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
-                                        <div class="fr-col fr-col-lg-6">
-                                            <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
-                                                <%- include('../partials/tile',
-                                                {
-                                                    title: 'Télécharger l\'avis de situation',
-                                                    desc: "Télécharger l\'avis de situation du siege",
-                                                    url: 'https://api.avis-situation-sirene.insee.fr/identification/pdf/' + helper.getValue(association.siren) + helper.getValue(association.nic_siege),
-                                                    img: '/static/images/logo_insee.jpg',
-                                                    download: "Avis_de_situation_au_répertoire_Sirene-"+ helper.getValue(association.siren) +".pdf",
-                                                    target: "_blank"
-                                                })
-                                                -%>
-                                            <% } %>
-                                        </div>
-                                        <div class="fr-col fr-col-lg-6">
-                                            <%- include('../partials/tile',
-                                            {
-                                                title: 'Télécharger les données brut',
-                                                desc: "Télécharger les données disponible au format JSON",
-                                                url: '/download/json/association/' + helper.getValue(association.rna),
-                                                img: '/static/images/json.png',
-                                                download: "association-"+ helper.getValue(association.rna) +".json"
-                                            })
-                                            -%>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </li>
-
-                        <li>
-                            <section class="fr-accordion">
-                                <h3 class="fr-accordion__title">
-                                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-1-body-1">Établissements</button>
-                                </h3>
-                                <div class="fr-collapse" id="fr-accordion-1-body-1">
-                                    <div class="fr-grid-row fr-grid-row--gutters">
-                                        <% for( let index = 0; index < association.etablissements.length; index++ ) { %>
-                                            <%- include('./components/card_etablissement',
-                                            {
-                                                association: association,
-                                                etablissement: association.etablissements[index] 
-                                            })
-                                            -%>
-                                        <% } %>
-                                    </div>
                                 </div>
                             </section>
                         </li>
@@ -197,7 +317,7 @@
                                                                                             </thead>
                                                                                             <tbody>
                                                                                                 <% for(let i = 0; i < subventions.demandes[year].length; i++ ) { %>
-                                                                                                    <% const demande = subventions.demandes[year][i] %> 
+                                                                                                    <% const demande = subventions.demandes[year][i];%> 
                                                                                                     <tr>
                                                                                                         <td><%-helper.getValue(demande.status) || "NC" %></td>
                                                                                                         <td><%-helper.getValue(demande.service_instructeur)%></td>

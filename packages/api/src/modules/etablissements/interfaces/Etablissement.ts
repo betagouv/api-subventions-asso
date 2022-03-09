@@ -13,6 +13,7 @@ export default interface Etablissement extends DefaultObject<(
     siret: ProviderValues<Siret>,
     nic: ProviderValues<string>,
     siege?: ProviderValues<boolean>,
+    ouvert?: ProviderValues<boolean>,
     adresse?: ProviderValues<{
         numero?: string,
         type_voie?: string,

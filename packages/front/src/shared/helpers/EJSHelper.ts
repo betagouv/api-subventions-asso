@@ -6,6 +6,7 @@ export default {
     getValue: ProviderValueHelper.getValue,
     hasValue: ProviderValueHelper.hasValue,
     getProvider: ProviderValueHelper.getProvider,
+    getDate: ProviderValueHelper.getDate,
 
     toJSONFile: (data: unknown) => Buffer.from(JSON.stringify(data, null, 4)).toString("base64"),
     
@@ -13,6 +14,7 @@ export default {
         toString: AdresseHelper.providerValuesToString
     },
     date: {
-        toString: DateHelper.formatDate
+        toProviderValueString: DateHelper.toProviderValueString,
+        formatDate: DateHelper.formatDate
     }
 }
