@@ -10,6 +10,7 @@ import {version as designSystemVersion} from '../package-lock.json'
 import controllers from "./modules/controllers";
 import { DefaultObject } from './@types/utils';
 import ControllerMethod, { ControllerRouteDEF } from './@types/ControllerMethod';
+import EJSHelper from './shared/helpers/EJSHelper';
 
 const appName = `DataSubvention - V${designSystemVersion}`
 const appDescription = "Toutes les informations pour instruire vos demandes de subventions."
@@ -29,7 +30,9 @@ app.use(function(req, res, next){
   res.locals.appName = appName
   res.locals.appDescription = appDescription
   res.locals.appRepo = appRepo
-  res.locals.page = req.url
+  res.locals.page = req.url;
+
+  res.locals.helper = EJSHelper;
   next()
 })
 

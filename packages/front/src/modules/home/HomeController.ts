@@ -7,8 +7,9 @@ export default class HomeController {
 
     @Get("")
     public loginView(req: Request, res: Response, next: NextFunction) {
-        res.render('landing', {
-            pageTitle: 'Datasubvention'
+        res.render('home/home', {
+            pageTitle: 'Accueil',
+            error: req.query.error
         })
     }
 }

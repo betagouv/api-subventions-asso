@@ -2,7 +2,7 @@
 <div class="fr-tile fr-enlarge-link fr-tile--horizontal">
     <div class="fr-tile__body">
         <h4 class="fr-tile__title">
-            <a class="fr-tile__link" href="<%= url %>"><%= title %></a>
+            <a class="fr-tile__link" href="<%= url %>" target="<%= typeof target == 'undefined' ? "_self" : target %></a>"><%= title %></a>
         </h4>
         <% if (locals.desc) { %>
           <p class="fr-tile__desc"><%= desc %></p>
@@ -10,7 +10,7 @@
     </div>
     <% if (locals.img) { %>
     <div class="fr-tile__img">
-        <img src="https://place-hold.it/80x80" alt="">
+        <img src="<%=img%>" alt="">
         <!-- L'alternative de l'image (attribut alt) doit rester vide car l'image est illustrative et ne doit pas être restituée aux technologies d’assistance -->
     </div>
     <% } %>
