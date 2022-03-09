@@ -19,6 +19,12 @@ export class APIDatasubService {
         });
     }
 
+    searchAssoBySiren(siren: string, req: Request) {
+        return axios.get<AssociationDtoResponse>(`${DATASUB_URL}/search/association/${siren}`, {
+            headers: this.getHeaders(req)
+        });
+    }
+
     private getHeaders(req: Request): DefaultObject<string> {
         const sessionData = req.session as unknown as DefaultObject<DefaultObject>;
         return {
