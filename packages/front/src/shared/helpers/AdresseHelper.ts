@@ -11,7 +11,6 @@ export default class AdresseHelper {
             commune?: string,
         };
         if (!value) return 
-        
         const { numero = "", type_voie = "", voie = "" , code_postal = "", commune = ""} = value;
 
         return `${numero || ""} ${type_voie || ""} ${voie || ""} ${code_postal || ""} ${commune || ""}`.replace("  ", " ");

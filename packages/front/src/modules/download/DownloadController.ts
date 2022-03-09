@@ -31,4 +31,29 @@ export default class DownloadController {
         
         res.send(JSON.stringify(result.data.association, null, 4));
     }
+
+    @Get("/json/etablissement/*")
+    public async downloadEtablissement(req: Request, res: Response, next: NextFunction) {
+        const [_, id] = req.url.split("/json/etablissement/");
+        if (!id) {
+            res.statusCode = 422;
+            return res.render("error");
+        }
+
+        const type = IdentifierHelper.findType(id);
+
+        if (type !== "SIRET") {
+            res.statusCode = 422;
+            return res.render("error");
+        } 
+
+        const result = await apiDatasubService.searchEtablissement(id, req);
+
+        if (result.status != 200 || !result.data.success || !result.data.etablissement) {
+            res.statusCode = 422;
+            return res.render("error");
+        } 
+        
+        res.send(JSON.stringify(result.data.etablissement, null, 4));
+    }
 }

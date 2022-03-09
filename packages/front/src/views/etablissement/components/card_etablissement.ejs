@@ -2,17 +2,14 @@
     <div class="fr-card fr-enlarge-link">
         <div class="fr-card__body">
             <% if (helper.hasValue(association.denomination)) { %>
-                <h2 class="fr-card__title"><a href="/etablissement/<%- helper.getValue(etablissement.siret) -%>" class="fr-card__link"><%- helper.getValue(association.denomination) -%></a></h2>
+                <h2 class="fr-card__title"><a href="#" class="fr-card__link"><%- helper.getValue(association.denomination) -%></a></h2>
             <% } %>
             <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-12 fr-card__desc">
                     <% if (helper.hasValue(etablissement.nic) && helper.hasValue(association.nic_siege) && helper.getValue(etablissement.nic) == helper.getValue(association.nic_siege) ) { %>
                         <p>Siège de l'association</p>
                     <% } else { %>
-                        <% if(!helper.getValue(etablissement.ouvert)) {%>
-                            <p> -- Établissement fermer --</p>
-                        <% } %>
-                        <p>Établissement secondaire </p>
+                        <p>Établissement secondaire</p>
                     <% } %>
                             
                     <% if (helper.hasValue(etablissement.siret)) { %>

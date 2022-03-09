@@ -17,6 +17,7 @@ export default class EtablissementDtoAdapter {
                 code_postal:dto.code_postal,
                 commune:dto.libelle_commune,
             }, EtablissementDtoAdapter.PROVIDER_NAME, new Date(dto.updated_at)),
+            ouvert: ProviderValueAdapter.toProviderValues(dto.etat_administratif !== "F", EtablissementDtoAdapter.PROVIDER_NAME, new Date(dto.updated_at)),
         }
     }
 }
