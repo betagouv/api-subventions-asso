@@ -3,6 +3,10 @@ export function isSiret(siret: string): boolean {
     return typeof siret === "string" && /\d{14}/.test(siret);
 }
 
+export function isSiren(siren: string): boolean {
+    return typeof siren === "string" && /\d{9}$/.test(siren);
+}
+
 export function isRna(rna: string): boolean {
     return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
 }

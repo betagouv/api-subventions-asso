@@ -8,6 +8,7 @@ import demandesSubventionsService from "../demandes_subventions/demandes_subvent
 import Etablissement from "../etablissements/interfaces/Etablissement";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
+import { Siren } from "../../@types/Siren";
 
 export class SearchService {
 
@@ -35,6 +36,14 @@ export class SearchService {
 
         if (!siren) return null;
 
+        return this.getBySiren(siren, rna);
+    }
+
+    public async getBySiren(siren: Siren, rna ?: Rna) {
+
+        if (!rna) {
+            rna = await rnaSirenService.getRna(siren) || undefined
+        }
 
         const association = await associationsService.getAssociationBySiren(siren, rna);
 
