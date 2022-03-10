@@ -25,19 +25,28 @@ export default class AssociationController {
         let association: IAssociation | null = null;
 
         if (type === "RNA") {
-            const result = await apiDatasubService.searchAssoByRna(id, req);
-
-            if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
-            association = result.data.association;
+            try {
+                const result = await apiDatasubService.searchAssoByRna(id, req);
+                
+                if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+                association = result.data.association;
+            }  catch (e) {
+                return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+            }
         }
 
 
         if (type === "SIREN") {
-            const result = await apiDatasubService.searchAssoBySiren(id, req);
+            try {
+                const result = await apiDatasubService.searchAssoBySiren(id, req);
 
-            if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
-            association = result.data.association;
+                if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+                association = result.data.association;
+            }  catch (e) {
+                return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+            }
         }
+
 
         if (!association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
 

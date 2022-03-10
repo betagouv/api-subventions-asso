@@ -30,9 +30,16 @@ export class AssociationsService {
 
     private async aggregate(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
         const associationProviders = Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];
-        return[...(await Promise.all(
-            associationProviders.map( p => p.getAssociationsBySiren(siren, rna))
-        )).flat()];
+
+        return await associationProviders.reduce(async (acc, provider) => {
+            const result = await acc;
+            const assos = await provider.getAssociationsBySiren(siren, rna);
+            if (assos) {
+                result.push(...assos.flat());
+            }
+
+            return result;
+        }, Promise.resolve([]) as Promise<Association[]>);
     }
 
     private isAssociationsProvider(data: unknown): data is AssociationsProvider {

@@ -53,9 +53,15 @@ export class SearchService {
             .map(value => value.value)
             .flat();
 
-        const etablissements = (await Promise.all(
-            [...new Set(sirets)].map(siret => etablissementService.getEtablissement(siret))
-        )).filter(e => e) as Etablissement[];
+        const etablissements = await [...new Set(sirets)].reduce(async (acc, siret) => {
+            const etablisements = await acc;
+            const etablisement = await etablissementService.getEtablissement(siret);
+
+            if (etablisement) etablisements.push(etablisement);
+                
+
+            return etablisements;
+        }, Promise.resolve([]) as Promise<Etablissement[]>);
 
         const associationDto = {
             ...association,

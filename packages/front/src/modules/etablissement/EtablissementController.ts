@@ -24,21 +24,24 @@ export default class EtablissementController {
 
         let etablissement: null | IEtablissement = null;
 
-        const result = await apiDatasubService.searchEtablissement(siret, req);
+        try {
+            const result = await apiDatasubService.searchEtablissement(siret, req);
 
-        if (result.status != 200 || !result.data.success || !result.data.etablissement) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
-        
-        
-        etablissement = result.data.etablissement;
-        const association = etablissement.association;
-
-        const subventions = this.formatSubvention(etablissement);
-        res.render('etablissement/index', {
-            pageTitle: 'Recherche',
-            etablissement,
-            association,
-            subventions
-        });
+            if (result.status != 200 || !result.data.success || !result.data.etablissement) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+            
+            etablissement = result.data.etablissement;
+            const association = etablissement.association;
+    
+            const subventions = this.formatSubvention(etablissement);
+            res.render('etablissement/index', {
+                pageTitle: 'Recherche',
+                etablissement,
+                association,
+                subventions
+            });
+        }  catch (e) {
+            return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+        }  
     }
     
     private formatSubvention(etablisement: IEtablissement) {
