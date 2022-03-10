@@ -1,7 +1,7 @@
-<%- include('partials/header') -%>
+<%- include('../partials/header') -%>
 <main role="main" id="contenu">
     <div class="fr-container fr-mb-8w">
-        <%- include('partials/ariane', { items: [
+        <%- include('../partials/ariane', { items: [
             { label: 'Accueil', url: '/' },
             { label: 'Connexion' },
             ],})
@@ -13,6 +13,11 @@
                         <div role="alert" class="fr-alert fr-alert--warning">
                             <p class="fr-alert__title">Attention</p>
                             <p>Mot de passe ou Email incorrect</p>
+                        </div>
+                    <% } %>
+                    <% if (typeof success != 'undefined' && success) { %>
+                        <div role="alert" class="fr-alert fr-alert--success">
+                            <p><%-success === "COMPTE_ACTIVED" ? "Votre compte à bien été activer, vous pouvez maintenant vous connecter" : "Votre mot de passe à bien été changé"%></p>
                         </div>
                     <% } %>
                     <form action="/auth/login" method="POST">
@@ -35,4 +40,4 @@
         </div>
     </div>
 </main>
-<%- include('partials/footer') -%>
+<%- include('../partials/footer') -%>

@@ -9,15 +9,16 @@ export default class AuthController {
 
     @Get("login")
     public loginView(req: Request, res: Response, next: NextFunction) {
-        res.render('login', {
-            pageTitle: 'Connexion'
+        res.render('auth/login', {
+            pageTitle: 'Connexion',
+            success: req.query.success,
         })
     }
 
     @Post("login")
     public loginPost(req: Request, res: Response, next: NextFunction) {
         if (!req.body.email || !req.body.password) {
-            return res.render("login", {
+            return res.render("auth/login", {
                 pageTitle: 'Connexion',
                 loginError: true
             });
@@ -25,7 +26,7 @@ export default class AuthController {
         apiDatasubService.login(req.body.email as string, req.body.password).then((result) => {
             if (result.status != 200) {
                 res.statusCode = 422;
-                return res.render("login", {
+                return res.render("auth/login", {
                     pageTitle: 'Connexion',
                     loginError: true
                 });
@@ -33,7 +34,7 @@ export default class AuthController {
             const sessionData = req.session as unknown as DefaultObject;
             sessionData.user = result.data
             res.redirect("/")
-        }).catch(() =>  res.render("login", {
+        }).catch(() =>  res.render("auth/login", {
             pageTitle: 'Connexion',
             loginError: true
         }))
