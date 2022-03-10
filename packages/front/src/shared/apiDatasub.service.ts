@@ -14,6 +14,13 @@ export class APIDatasubService {
         })
     }
 
+    resetPassword(token: string, password: string) {
+        return axios.post<{success: boolean}>(`${DATASUB_URL}/auth/reset-password`, {
+            token,
+            password
+        })
+    }
+
     searchAssoByRna(rna: string, req: Request) {
         return axios.get<AssociationDtoResponse>(`${DATASUB_URL}/search/association/${rna}`, {
             headers: this.getHeaders(req)
