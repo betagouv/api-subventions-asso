@@ -92,13 +92,12 @@ export default class AuthController {
                     error: "WRONG_FIELD"
                 });
             }
-            console.log("/auth/login?success=" + (req.query.active ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED"));
             res.redirect("/auth/login?success=" + (req.query.active ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED"));
-        }).catch((e) => {res.render('auth/resetPassword', {
+        }).catch(() => res.render('auth/resetPassword', {
             pageTitle: 'Changement de mot de passe',
             token: req.body.token,
             activation: req.query.active,
             error: "WRONG_FIELD"
-        })});
+        }));
     }
 }
