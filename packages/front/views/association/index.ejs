@@ -1,7 +1,7 @@
-<%- include('../partials/header') -%>
+<%- include('../header') -%>
 <main role="main" id="contenu">
     <div class="fr-container fr-mb-8w">
-        <%- include('../partials/ariane', { items: [
+        <%- include('../global_components/ariane', { items: [
             { label: 'Accueil', url: '/' },
             { label: 'Association' },
             ],})
@@ -16,7 +16,7 @@
                                 </h3>
                                 <div class="fr-collapse" id="fr-accordion-0-body-0">
                                     <% if (helper.hasValue(association.denomination)) { %>
-                                        <p><%- helper.getValue(association.denomination) -%> </p>
+                                        <h4><%- helper.getValue(association.denomination) -%> </h4>
                                     <% } %>
                                     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
                                         <div class="fr-col fr-col-lg-6">
@@ -57,7 +57,7 @@
                                     <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
                                         <div class="fr-col fr-col-lg-6">
                                             <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
-                                                <%- include('../partials/tile',
+                                                <%- include('../global_components/tile',
                                                 {
                                                     title: 'Télécharger l\'avis de situation',
                                                     desc: "Télécharger l\'avis de situation du siege",
@@ -70,7 +70,7 @@
                                             <% } %>
                                         </div>
                                         <div class="fr-col fr-col-lg-6">
-                                            <%- include('../partials/tile',
+                                            <%- include('../global_components/tile',
                                             {
                                                 title: 'Télécharger les données brut',
                                                 desc: "Télécharger les données disponible au format JSON",
@@ -241,4 +241,4 @@
         </div>
     </div>
 </main>
-<%- include('../partials/footer') -%>
+<%- include('../footer') -%>

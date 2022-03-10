@@ -1,5 +1,5 @@
 {
-    "exec": "ts-node src/index.ts",
+    "exec": "npx webpack && ts-node src/index.ts",
     "watch": ["src", "views"],
-    "ext": "ts"
+    "ext": "ts, js"
 }

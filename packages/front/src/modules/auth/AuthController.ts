@@ -17,7 +17,7 @@ export default class AuthController {
 
     @Get("login")
     public loginView(req: Request, res: Response, next: NextFunction) {
-        res.render('auth/login', {
+        res.render('auth/login/login', {
             pageTitle: 'Connexion',
             success: req.query.success,
         })
@@ -26,7 +26,7 @@ export default class AuthController {
     @Post("login")
     public loginPost(req: Request, res: Response, next: NextFunction) {
         if (!req.body.email || !req.body.password) {
-            return res.render("auth/login", {
+            return res.render("auth/login/login", {
                 pageTitle: 'Connexion',
                 loginError: true
             });
@@ -34,7 +34,7 @@ export default class AuthController {
         apiDatasubService.login(req.body.email as string, req.body.password).then((result) => {
             if (result.status != 200) {
                 res.statusCode = 422;
-                return res.render("auth/login", {
+                return res.render("auth/login/login", {
                     pageTitle: 'Connexion',
                     loginError: true
                 });
@@ -42,7 +42,7 @@ export default class AuthController {
             const sessionData = req.session as unknown as DefaultObject;
             sessionData.user = result.data
             res.redirect("/")
-        }).catch(() =>  res.render("auth/login", {
+        }).catch(() =>  res.render("auth/login/login", {
             pageTitle: 'Connexion',
             loginError: true
         }))
@@ -57,7 +57,7 @@ export default class AuthController {
             return res.render("error");
         }
 
-        res.render('auth/resetPassword', {
+        res.render('auth/reset-password/resetPassword', {
             pageTitle: 'Changement de mot de passe',
             token: id,
             activation: req.query.active
@@ -73,7 +73,7 @@ export default class AuthController {
                 res.statusCode = 422;
                 return res.render("error");
             }
-            return res.render('auth/resetPassword', {
+            return res.render('auth/reset-password/resetPassword', {
                 pageTitle: 'Changement de mot de passe',
                 token: id,
                 activation: req.query.active,
@@ -85,7 +85,7 @@ export default class AuthController {
             console.log(result.data);
             if (result.status != 200) {
                 res.statusCode = 422;
-                return res.render('auth/resetPassword', {
+                return res.render('auth/reset-password/resetPassword', {
                     pageTitle: 'Changement de mot de passe',
                     token: req.body.token,
                     activation: req.query.active,
@@ -93,7 +93,7 @@ export default class AuthController {
                 });
             }
             res.redirect("/auth/login?success=" + (req.query.active ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED"));
-        }).catch(() => res.render('auth/resetPassword', {
+        }).catch(() => res.render('auth/reset-password/resetPassword', {
             pageTitle: 'Changement de mot de passe',
             token: req.body.token,
             activation: req.query.active,
