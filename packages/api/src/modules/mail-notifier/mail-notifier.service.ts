@@ -1,3 +1,4 @@
+import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderFactory from "./providers/provider-factory";
 
 export class MailNotifierService {
@@ -26,9 +27,7 @@ export class MailNotifierService {
                 Félicitations, vous êtes inscrit à la plateforme DataSubvention !
             </p>
             <p>
-                Pour accéder à celle-ci, vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur l'outil Postman en cliquant <a href="https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83">ici</a>.
-                <br>Ajoutez ceci dans le champ token: ${token}.
-                <br>Et saisissez votre mot de passe dans le champ password.
+                Pour accéder à celle-ci, vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">ici</a>.
             </p>
 
             <p>Bonne journée et à bientôt sur notre plateforme !</p>
@@ -39,9 +38,8 @@ export class MailNotifierService {
             Félicitation, vous êtes inscrit à la plateforme DataSubvention !
             
             
-            Pour accéder à celle-ci vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur l'outil Postman en cliquant sur ce lien : https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83 .
-            Ajoutez ceci dans le champ token: ${token}. Et saisissez votre mot de passe dans le champ password.
-            
+            Pour accéder à celle-ci vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant sur ce lien : ${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true .
+
 
             Bonne journée et à bientôt sur notre plateforme !
             L'équipe DataSubvention `
@@ -57,8 +55,7 @@ export class MailNotifierService {
                 Vous avez fait une demande de mot de passe perdu sur la plateforme DataSubvention.
             </p>
             <p>
-                Pour changer votre mot de passe, veuillez vous rendre sur l'outil Postman en cliquant <a href="https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83">ici</a>.
-                <br>Ajoutez ceci dans le champ token: ${token}. <br>Et saisissez votre mot de passe dans le champ password.
+                Pour changer votre mot de passe, veuillez  vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}">ici</a>
             </p>
             
             <p>Bonne journée, et à bientôt sur notre plateforme !</p>
@@ -69,9 +66,8 @@ export class MailNotifierService {
             Vous avez fait une demande de mot de passe perdu sur la plateforme DataSubvention.
             
             
-            Pour changer votre mot de passe, veuillez vous rendre sur l'outil Postman en cliquant sur ce lien : https://datasubvention.postman.co/workspace/Team-DataSubvention~064238d6-0f48-47f3-8f03-2f4312dbd702/request/9452502-6e7f4900-4f0d-4e36-b29d-aede3be4ff83 .
-            Ajoutez ceci dans le champ token: ${token}. Et saisissez votre mot de passe dans le champ password.
-            
+            Pour changer votre mot de passe, veuillez voous rendre sur la page d'activation en cliquant sur ce lien : ${FRONT_OFFICE_URL}/auth/reset-password/${token} .
+
 
             Bonne journée et à bientôt sur notre plateforme !
             L'équipe DataSubvention 
