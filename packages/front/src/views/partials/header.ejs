@@ -72,6 +72,11 @@
               <li>
                 <button class="fr-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal" data-fr-opened="false">Paramètres d'affichage</button>
               </li>
+              <% if (typeof user != "undefined" && user.token) { %>
+                <li>
+                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/auth/logout" title="se déconnecter" rel="noopener">Se déconnecter</a>
+                </li>              
+              <% } %>
             </ul>
           </div>
         </div>
