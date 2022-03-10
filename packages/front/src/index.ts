@@ -20,9 +20,9 @@ const port = process.env.PORT || 1235
 const app = express()
 
 app.set('view engine', 'ejs')
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, '../views'))
 
-app.use('/static', express.static(path.join(__dirname, 'static')))
+app.use('/static', express.static(path.join(__dirname, '../static')))
 // Hack for importing css from npm package
 app.use('/~', express.static(path.join(__dirname, '../node_modules')))
 // Populate some variables for all views
