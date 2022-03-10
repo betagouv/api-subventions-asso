@@ -26,11 +26,18 @@ export class EtablissementsService {
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
     }
 
-    private async aggregate(siret: Siret): Promise<(Etablissement[] | null)[]> {
+    private async aggregate(siret: Siret): Promise<(Etablissement[])> {
         const etablissementProviders = Object.values(providers).filter(this.isEtablissementProvider) as EtablissementProvider[];
-        return Promise.all(
-            etablissementProviders.map(p => p.getEtablissementsBySiret(siret))
-        );
+
+        return await etablissementProviders.reduce(async (acc, provider) => {
+            const result = await acc;
+            const etablissements = await provider.getEtablissementsBySiret(siret, true);
+            if (etablissements) {
+                result.push(...etablissements.flat());
+            }
+
+            return result;
+        }, Promise.resolve([]) as Promise<Etablissement[]>);
     }
 
     private isEtablissementProvider(data: unknown): data is EtablissementProvider {
