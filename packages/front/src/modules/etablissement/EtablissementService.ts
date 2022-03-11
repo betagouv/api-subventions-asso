@@ -1,49 +1,38 @@
-import { IAssociation, IEtablissement } from '@api-subventions-asso/dto';
-import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
-import ProviderValue from '@api-subventions-asso/dto/shared/ProviderValue';
-import e, { NextFunction, Request, Response } from 'express';
-import { DefaultObject } from '../../@types/utils';
-import Controller from '../../decorators/controller.decorator';
-import { Get } from '../../decorators/http.methods.decorator';
-import apiDatasubService from '../../shared/apiDatasub.service';
-import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
-import ProviderValueHelper from '../../shared/helpers/ProviderValueHelper';
+import { IEtablissement, Siret } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import ProviderValue from "@api-subventions-asso/dto/shared/ProviderValue";
+import User from "../../@types/User";
+import { DefaultObject } from "../../@types/utils";
+import apiDatasubService from "../../shared/apiDatasub.service";
+import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 
-@Controller("/etablissement")
-export default class EtablissementController {
-
-    @Get("/*")
-    public async loginView(req: Request, res: Response, next: NextFunction) {
-        const [_, siret] = req.url.split("/etablissement/");
-
-        if (!siret) return res.redirect("/?error=TYPE_UNKNOWN");
-
+export class EtablissementService {
+    async getEtablissement(siret: Siret, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: unknown }> {
         const type = IdentifierHelper.findType(siret);
 
-        if (type !== "SIRET") return res.redirect("/?error=TYPE_UNKNOWN"); // TODO send error
-
-        let etablissement: null | IEtablissement = null;
+        if (type !== "SIRET") return { type: "ERROR" }; // TODO send error
 
         try {
-            const result = await apiDatasubService.searchEtablissement(siret, req);
-
-            if (result.status != 200 || !result.data.success || !result.data.etablissement) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+            const result = await apiDatasubService.searchEtablissement(siret, user);
             
-            etablissement = result.data.etablissement;
+            const etablissement = result.data.etablissement as IEtablissement;
             const association = etablissement.association;
-    
             const subventions = this.formatSubvention(etablissement);
-            res.render('etablissement/index', {
-                pageTitle: 'Recherche',
-                etablissement,
-                association,
-                subventions
-            });
+
+            return {
+                type: "SUCCESS",
+                data: {
+                    association,
+                    etablissement,
+                    subventions
+                }
+            }
         }  catch (e) {
-            return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+            return { type: "ERROR" }; // TODO send error
         }  
     }
-    
+
     private formatSubvention(etablisement: IEtablissement) {
         const result = {
             lastYear: "NC",
@@ -120,3 +109,7 @@ export default class EtablissementController {
         return result
     }
 }
+
+const etablissementService = new EtablissementService();
+
+export default etablissementService;

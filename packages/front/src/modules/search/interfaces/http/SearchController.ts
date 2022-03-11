@@ -2,12 +2,12 @@ import { IAssociation } from '@api-subventions-asso/dto';
 import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
 import ProviderValue from '@api-subventions-asso/dto/shared/ProviderValue';
 import e, { NextFunction, Request, Response } from 'express';
-import { DefaultObject } from '../../@types/utils';
-import Controller from '../../decorators/controller.decorator';
-import { Get } from '../../decorators/http.methods.decorator';
-import apiDatasubService from '../../shared/apiDatasub.service';
-import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
-import ProviderValueHelper from '../../shared/helpers/ProviderValueHelper';
+import { DefaultObject } from '../../../../@types/utils';
+import Controller from '../../../../decorators/controller.decorator';
+import { Get } from '../../../../decorators/http.methods.decorator';
+import apiDatasubService from '../../../../shared/apiDatasub.service';
+import IdentifierHelper from '../../../../shared/helpers/IdentifierHelper';
+import ProviderValueHelper from '../../../../shared/helpers/ProviderValueHelper';
 
 @Controller("/search")
 export default class SearchController {
@@ -24,7 +24,6 @@ export default class SearchController {
         if (type === "RNA" || type === "SIREN") {
             return res.redirect("/association/" + searchInput);
         }
-
 
         if (type === "SIRET") {
             return res.redirect("/etablissement/" + searchInput);

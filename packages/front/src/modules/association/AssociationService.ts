@@ -1,64 +1,45 @@
-import { IAssociation } from '@api-subventions-asso/dto';
-import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
-import ProviderValue from '@api-subventions-asso/dto/shared/ProviderValue';
-import e, { NextFunction, Request, Response } from 'express';
-import { DefaultObject } from '../../@types/utils';
-import Controller from '../../decorators/controller.decorator';
-import { Get } from '../../decorators/http.methods.decorator';
-import apiDatasubService from '../../shared/apiDatasub.service';
-import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
-import ProviderValueHelper from '../../shared/helpers/ProviderValueHelper';
+import { IAssociation } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import ProviderValue from "@api-subventions-asso/dto/shared/ProviderValue";
+import User from "../../@types/User";
+import { DefaultObject } from "../../@types/utils";
+import apiDatasubService from "../../shared/apiDatasub.service";
+import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 
-@Controller("/association")
-export default class AssociationController {
-
-    @Get("/*")
-    public async loginView(req: Request, res: Response, next: NextFunction) {
-        const [_, id] = req.url.split("/association/");
-
-        if (!id) return res.redirect("/?error=TYPE_UNKNOWN");
-
+export class AssociationService {
+    async getAssociation(id: string, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: unknown }> {
         const type = IdentifierHelper.findType(id);
-
-        if (type === "UNKNOWN") return res.redirect("/?error=TYPE_UNKNOWN"); // TODO send error
+        if (type === "UNKNOWN") return { type: "ERROR" }; // TODO send error
 
         let association: IAssociation | null = null;
 
-        if (type === "RNA") {
-            try {
-                const result = await apiDatasubService.searchAssoByRna(id, req);
-                
-                if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
-                association = result.data.association;
-            }  catch (e) {
-                return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+        try {
+            if (type === "RNA") {
+                const result = await apiDatasubService.searchAssoByRna(id, user);
+                association = result.data.association as IAssociation;
             }
+            else if (type === "SIREN") {
+                const result = await apiDatasubService.searchAssoBySiren(id, user);
+                association = result.data.association as IAssociation;
+            }
+        }  catch (e) {
+            return { type: "ERROR" }; // TODO send error
         }
 
-
-        if (type === "SIREN") {
-            try {
-                const result = await apiDatasubService.searchAssoBySiren(id, req);
-
-                if (result.status != 200 || !result.data.success || !result.data.association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
-                association = result.data.association;
-            }  catch (e) {
-                return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
-            }
-        }
-
-
-        if (!association) return res.redirect("/?error=ASSO_NOT_FOUND"); // TODO send error
+        if (!association)  return { type: "ERROR" };
 
         const subventions = this.formatSubvention(association);
-        res.render('association/index', {
-            pageTitle: 'Recherche',
-            value: id,
-            association,
-            subventions
-        });
+
+        return {
+            type: "SUCCESS",
+            data: {
+                association,
+                subventions
+            }
+        }
     }
-    
+
     private formatSubvention(association: IAssociation) {
         const result = {
             lastYear: "NC",
@@ -137,3 +118,7 @@ export default class AssociationController {
         return result
     }
 }
+
+const associationService = new AssociationService();
+
+export default associationService;

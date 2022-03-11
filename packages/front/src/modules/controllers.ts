@@ -1,9 +1,9 @@
-import AssociationController from "./association/AssociationController";
-import AuthController from "./auth/AuthController";
-import DownloadController from "./download/DownloadController";
-import EtablissementController from "./etablissement/EtablissementController";
-import HomeController from "./home/HomeController";
-import SearchController from "./search/SearchController";
+import AssociationController from "./association/interfaces/http/AssociationController";
+import AuthController from "./auth/interfaces/http/AuthController";
+import DownloadController from "./download/interfaces/http/DownloadController";
+import EtablissementController from "./etablissement/interfaces/http/EtablissementController";
+import HomeController from "./home/interfaces/http/HomeController";
+import SearchController from "./search/interfaces/http/SearchController";
 
 export default [
     AuthController,
