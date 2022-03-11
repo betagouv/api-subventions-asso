@@ -18,7 +18,14 @@
   <link rel="shortcut icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
   <script src="/static/js/build.js" defer></script>
 </head>
-<body>
+<body data-controller="document">
+  <div class="ds-loader" data-document-target="loader">
+    <div class="ds-loader-container">
+      <p class=""><%= appName %></p>
+      <img src="/static/images/logo-beta.jpg" class="ds-loader-container-logo">
+      <p class="ds-loader-container-text" data-document-target="text"></p>
+    </div>
+  </div>
   <div class="fr-skiplinks">
     <nav class="fr-container" role="navigation" aria-label="Accès rapide">
         <ul class="fr-skiplinks__list">

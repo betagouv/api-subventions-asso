@@ -19,4 +19,37 @@ span.tofill::after {
 }
 span.tofill::before {
   content: "[";
-}  
+} 
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+.ds-loader {
+  display: none;
+  position: fixed;
+  top: 5px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ds-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ds-loader-container-logo {
+  width: 70px;
+  animation: spinner 1.8s ease infinite;
+}
+
+.ds-loader-container-text {
+  margin-top: 15px;
+}
