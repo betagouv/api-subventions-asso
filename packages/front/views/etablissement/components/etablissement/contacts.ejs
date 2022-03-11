@@ -1,0 +1,30 @@
+<div class="fr-col fr-col-lg-12">
+    <div class="fr-table">
+        <table>
+            <caption>Contacts</caption>
+            <thead>
+                <tr>
+                    <th scope="col"> Nom </th>
+                    <th scope="col"> Prenom </th>
+                    <th scope="col"> Civilité </th>
+                    <th scope="col"> Téléphone </th>
+                    <th scope="col"> Email </th>
+                    <th scope="col"> Role </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for( let index = 0; index < etablissement.contacts.length; index++ ) { %>
+                    <% let contact = helper.getValue(etablissement.contacts[index])%>
+                    <tr>
+                        <td><%- contact.nom %></td>
+                        <td><%- contact.prenom %></td>
+                        <td><%- contact.civilite %></td>
+                        <td><%- contact.telephone %></td>
+                        <td><%- contact.email %></td>
+                        <td><%- contact.role %></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div> 

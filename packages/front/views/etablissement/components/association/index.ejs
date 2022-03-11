@@ -1,0 +1,60 @@
+<li>
+<section class="fr-accordion">
+    <h3 class="fr-accordion__title">
+        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-1-body-1">Informations administratives de l'Association</button>
+    </h3>
+    <div class="fr-collapse" id="fr-accordion-1-body-1">
+        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+            <div class="fr-col fr-col-lg-6">
+                <% if (helper.hasValue(association.denomination)) { %>
+                    <p><%- helper.getValue(association.denomination) -%> </p>
+                <% } %>
+            </div>
+            <div class="fr-col fr-col-lg-6">
+
+                <a href="<%- '/association/' + (helper.getValue(association.rna) || helper.getValue(association.siren)) %>">
+                    <button class="fr-btn" title="Label bouton">
+                        Voir la page de l'association
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+            <div class="fr-col fr-col-lg-6">
+                <% if (helper.hasValue(association.rna)) { %>
+                    <p>RNA : <%- helper.getValue(association.rna) -%> </p>
+                <% } %>
+                <% if (helper.hasValue(association.siren)) { %>
+                    <p>SIREN : <%- helper.getValue(association.siren) -%> </p>
+                <% } %>
+                <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
+                    <p>SIRET du siège : <%- helper.getValue(association.siren) -%><%- helper.getValue(association.nic_siege) -%></p>
+                <% } %>
+            </div>
+            <div class="fr-col fr-col-lg-6">
+                <% if (helper.hasValue(association.adresse_siege)) { %>
+                    <p>Adresse du siège : <%- helper.adresse.toString(association.adresse_siege) -%> </p>
+                <% } %>
+                <% if (helper.hasValue(association.date_creation)) { %>
+                    <p>Date d'immatriculation : <%- helper.date.toProviderValueString(association.date_creation) -%> </p>
+                <% } %>
+                <% if (helper.hasValue(association.date_modification)) { %>
+                    <p>Dernière modification au greffe : <%- helper.date.toProviderValueString(association.date_modification) -%> </p>
+                <% } %>
+            </div>
+        </div>
+
+        <% if (helper.hasValue(association.objet_social)) { %>
+        <p>Objet social : </p>
+        <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+            <div class="fr-col fr-col-lg-6">
+                <p><%- helper.getValue(association.objet_social) -%></p>
+            </div>
+            <div class="fr-col fr-col-lg-6">
+                <p>Code objet social: <%- helper.getValue(association.code_objet_social_1) -%></p>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</section>
+</li>
