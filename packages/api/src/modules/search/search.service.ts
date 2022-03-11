@@ -40,7 +40,6 @@ export class SearchService {
     }
 
     public async getBySiren(siren: Siren, rna ?: Rna) {
-
         if (!rna) {
             rna = await rnaSirenService.getRna(siren) || undefined
         }
