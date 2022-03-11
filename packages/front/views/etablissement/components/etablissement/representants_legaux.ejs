@@ -1,0 +1,30 @@
+<div class="fr-col fr-col-lg-12">
+    <div class="fr-table">
+        <table>
+            <caption>Représentants légaux</caption>
+            <thead>
+                <tr>
+                    <th scope="col"> Nom </th>
+                    <th scope="col"> Prenom </th>
+                    <th scope="col"> Civilité </th>
+                    <th scope="col"> Téléphone </th>
+                    <th scope="col"> Email </th>
+                    <th scope="col"> Role </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for( let index = 0; index < etablissement.representants_legaux.length; index++ ) { %>
+                    <% let representant = helper.getValue(etablissement.representants_legaux[index]) %>
+                    <tr>
+                        <td><%- representant.nom %></td>
+                        <td><%- representant.prenom %></td>
+                        <td><%- representant.civilite %></td>
+                        <td><%- representant.telephone %></td>
+                        <td><%- representant.email %></td>
+                        <td><%- representant.role %></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div> 

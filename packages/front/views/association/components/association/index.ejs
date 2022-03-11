@@ -1,0 +1,75 @@
+<li>
+    <section class="fr-accordion">
+        <h3 class="fr-accordion__title">
+            <button class="fr-accordion__btn" aria-expanded="true" aria-controls="fr-accordion-0-body-0">Informations administratives</button>
+        </h3>
+        <div class="fr-collapse" id="fr-accordion-0-body-0">
+            <% if (helper.hasValue(association.denomination)) { %>
+                <h4><%- helper.getValue(association.denomination) -%> </h4>
+            <% } %>
+            <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                <div class="fr-col fr-col-lg-6">
+                    <% if (helper.hasValue(association.rna)) { %>
+                        <p>RNA : <%- helper.getValue(association.rna) -%> </p>
+                    <% } %>
+                    <% if (helper.hasValue(association.siren)) { %>
+                        <p>SIREN : <%- helper.getValue(association.siren) -%> </p>
+                    <% } %>
+                    <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
+                        <p>SIRET du siège : <%- helper.getValue(association.siren) -%><%- helper.getValue(association.nic_siege) -%></p>
+                    <% } %>
+                </div>
+                <div class="fr-col fr-col-lg-6">
+                    <% if (helper.hasValue(association.adresse_siege)) { %>
+                        <p>Adresse du siège : <%- helper.adresse.toString(association.adresse_siege) -%> </p>
+                    <% } %>
+                    <% if (helper.hasValue(association.date_creation)) { %>
+                        <p>Date d'immatriculation : <%- helper.date.toProviderValueString(association.date_creation) -%> </p>
+                    <% } %>
+                    <% if (helper.hasValue(association.date_modification)) { %>
+                        <p>Dernière modification au greffe : <%- helper.date.toProviderValueString(association.date_modification) -%> </p>
+                    <% } %>
+                </div>
+            </div>
+
+            <% if (helper.hasValue(association.objet_social)) { %>
+            <p>Objet social : </p>
+            <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+                <div class="fr-col fr-col-lg-6">
+                    <p><%- helper.getValue(association.objet_social) -%></p>
+                </div>
+                <div class="fr-col fr-col-lg-6">
+                    <p>Code objet social: <%- helper.getValue(association.code_objet_social_1) -%></p>
+                </div>
+            </div>
+            <% } %>
+            <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+                <div class="fr-col fr-col-lg-6">
+                    <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
+                        <%- include('../../../global_components/tile',
+                        {
+                            title: 'Télécharger l\'avis de situation',
+                            desc: "Télécharger l\'avis de situation du siege",
+                            url: 'https://api.avis-situation-sirene.insee.fr/identification/pdf/' + helper.getValue(association.siren) + helper.getValue(association.nic_siege),
+                            img: '/static/images/logo_insee.jpg',
+                            download: "Avis_de_situation_au_répertoire_Sirene-"+ helper.getValue(association.siren) +".pdf",
+                            target: "_blank"
+                        })
+                        -%>
+                    <% } %>
+                </div>
+                <div class="fr-col fr-col-lg-6">
+                    <%- include('../../../global_components/tile',
+                    {
+                        title: 'Télécharger les données brut',
+                        desc: "Télécharger les données disponible au format JSON",
+                        url: '/download/json/association/' + helper.getValue(association.rna),
+                        img: '/static/images/json.png',
+                        download: "association-"+ helper.getValue(association.rna) +".json"
+                    })
+                    -%>
+                </div>
+            </div>
+        </div>
+    </section>
+</li>
