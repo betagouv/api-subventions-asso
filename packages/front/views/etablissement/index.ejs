@@ -202,10 +202,10 @@
                                                 <p>Adresse du siège : <%- helper.adresse.toString(association.adresse_siege) -%> </p>
                                             <% } %>
                                             <% if (helper.hasValue(association.date_creation)) { %>
-                                                <p>Date d'immatriculation : <%- helper.date.toString(association.date_creation) -%> </p>
+                                                <p>Date d'immatriculation : <%- helper.date.toProviderValueString(association.date_creation) -%> </p>
                                             <% } %>
                                             <% if (helper.hasValue(association.date_modification)) { %>
-                                                <p>Dernière modification au greffe : <%- helper.date.toString(association.date_modification) -%> </p>
+                                                <p>Dernière modification au greffe : <%- helper.date.toProviderValueString(association.date_modification) -%> </p>
                                             <% } %>
                                         </div>
                                     </div>

@@ -11,6 +11,13 @@ import controllers from "./modules/controllers";
 import { DefaultObject } from './@types/utils';
 import ControllerMethod, { ControllerRouteDEF } from './@types/ControllerMethod';
 import EJSHelper from './shared/helpers/EJSHelper';
+import User from './@types/User'
+
+declare module 'express-session' {
+    interface Session {
+        user: User;
+    }
+}
 
 const appName = `DataSubvention - V${designSystemVersion}`
 const appDescription = "Toutes les informations pour instruire vos demandes de subventions."

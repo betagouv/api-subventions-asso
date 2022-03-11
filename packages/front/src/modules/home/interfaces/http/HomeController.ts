@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import Controller from '../../decorators/controller.decorator';
-import { Get } from '../../decorators/http.methods.decorator';
+import Controller from '../../../../decorators/controller.decorator';
+import { Get } from '../../../../decorators/http.methods.decorator';
 
 @Controller("/")
 export default class HomeController {
