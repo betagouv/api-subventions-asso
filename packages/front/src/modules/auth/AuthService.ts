@@ -20,6 +20,14 @@ export class AuthService {
         }
     }
 
+    async forgetPassword(email: string): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: unknown }> {
+        try {
+            const result = await apiDatasubService.forgetPassword(email);
+            return { type: "SUCCESS", data: result.data };
+        } catch (e) {
+            return { type: "ERROR" }
+        }
+    }
 }
 
 const authService = new AuthService();

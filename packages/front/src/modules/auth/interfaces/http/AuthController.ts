@@ -47,6 +47,39 @@ export default class AuthController {
         res.redirect("/");
     }
 
+    @Get("forget-password")
+    public forgetPasswordView(req: Request, res: Response) {
+        res.render('auth/forget-password/index', {
+            pageTitle: 'Mot de passe perdu',
+        })
+    }
+
+    @Post("forget-password")
+    public async forgetPasswordPost(req: Request, res: Response) {
+        if (!req.body.email) {
+            res.statusCode = 422;
+            return res.render('auth/forget-password/index', {
+                pageTitle: 'Mot de passe perdu',
+                error: true,
+            });
+        }
+
+        const result = await authService.forgetPassword(req.body.email);
+
+        if (result.type !== "SUCCESS") {
+            res.statusCode = 422;
+            return res.render('auth/forget-password/index', {
+                pageTitle: 'Mot de passe perdu',
+                error: true,
+            });
+        }
+
+        return res.render('auth/forget-password/index', {
+            pageTitle: 'Mot de passe perdu',
+            success: true,
+        });
+    }
+
     @Get("reset-password/:tokenId")
     public resetPasswordView(req: Request, res: Response, next: NextFunction) {
         const id = req.params.tokenId;

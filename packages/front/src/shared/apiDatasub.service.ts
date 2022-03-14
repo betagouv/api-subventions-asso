@@ -20,6 +20,12 @@ export class APIDatasubService {
         })
     }
 
+    forgetPassword(email: string) {
+        return this.sendRequest<{success: boolean}>("POST", "/auth/forget-password", undefined, {
+            email,
+        });
+    }
+
     searchAssoByRna(rna: string, user: User) {
         return this.sendRequest<AssociationDtoResponse>("GET", `/search/association/${rna}`, user);
     }

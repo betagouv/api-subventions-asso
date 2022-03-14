@@ -61,7 +61,7 @@ describe("associations.service.ts", () => {
                     ],
                     date_modification: [
                         {
-                            value: new Date("2022-03-10T11:51:58.163Z"),
+                            value: expect.any(Date),
                             provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'object'

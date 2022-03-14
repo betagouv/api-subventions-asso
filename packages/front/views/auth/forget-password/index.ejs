@@ -3,40 +3,38 @@
     <div class="fr-container fr-mb-8w">
         <%- include('../../global_components/ariane', { items: [
             { label: 'Accueil', url: '/' },
-            { label: 'Connexion' },
+            { label: 'Connexion', url: '/auth/login' },
+            { label: pageTitle },
             ],})
             -%>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-8">
-                    <h1>Connexion</h1>
-                    <% if (typeof loginError != 'undefined' && loginError) { %>
+                    <h1><%-pageTitle%></h1>
+                    <% if (typeof error != 'undefined' && error) { %>
                         <div role="alert" class="fr-alert fr-alert--warning">
                             <p class="fr-alert__title">Attention</p>
-                            <p>Mot de passe ou Email incorrect</p>
+                            <p>Email incorrect</p>
                         </div>
                     <% } %>
                     <% if (typeof success != 'undefined' && success) { %>
                         <div role="alert" class="fr-alert fr-alert--success">
-                            <p><%-success === "COMPTE_ACTIVED" ? "Votre compte à bien été activer, vous pouvez maintenant vous connecter" : "Votre mot de passe à bien été changé"%></p>
+                            <p>Vous allez recevoire un mail pour réinitialiser votre mot de passe</p>
+                            <p>Retounrée à la page <a class="fr-link" href="/auth/login">connexion</a></p>
                         </div>
                     <% } %>
-                    <form action="/auth/login" method="POST" data-turbo="false">
+                    <form action="" method="POST" data-turbo="false">
                         <fieldset class="fr-fieldset fr-my-4w">
-                            <legend class="fr-fieldset__legend" id='text-legend'>Vos identifiants</legend>
                             <div class="fr-input-group">
                                 <label class="fr-label" for="text-input-text">Email :</label>
                                 <input class="fr-input" type="text" name="email" required="true">
                             </div>
-                            <div class="fr-input-group">
-                                <label class="fr-label" for="text-input-text">Mot de passe :</label>
-                                <input class="fr-input" type="password" name="password" required="true">
-                            </div>
                         </fieldset>
                         <div class="fr-input-group fr-my-4w">
                             <button type="submit" class="fr-btn" title="Réserver ma conférence">Valider</button>
-                            <a class="fr-link" href="/auth/forget-password">Mot de passe perdu</a>
+                            <a class="fr-link" href="/auth/login">Retour à la page Connexion</a>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
