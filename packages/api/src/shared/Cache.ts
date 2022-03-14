@@ -20,6 +20,7 @@ export default class CacheData<T> {
     }
 
     public add(key: string, value: T) {
+        this.cleanCache();
         const values = [
             {
                 validateDate: new Date().getTime() + this.timeToCacheMS,
@@ -29,12 +30,12 @@ export default class CacheData<T> {
         if (this.collection.has(key)) values.push(...this.collection.get(key) as []);
 
         this.collection.set(key, values);
-        this.cleanCache();
     }
 
     public get(key: string): T[] {
-        if (!this.collection.has(key)) return [];
         this.cleanCache();
+
+        if (!this.collection.has(key)) return [];
 
         return (this.collection.get(key) as CacheValue<T>[])
             .map(v => v.value);
