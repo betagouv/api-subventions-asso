@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/betagouv/api-subventions-asso/compare/v0.3.0...v0.4.0) (2022-03-15)
+
+
+### Features
+
+* **api:** add cache systeme for data entreprise api ([01cac8a](https://github.com/betagouv/api-subventions-asso/commit/01cac8ab3e66a87982c7ae1d1220fbbaa127e0a8))
+* **api:** change mail for use front url ([8b387a0](https://github.com/betagouv/api-subventions-asso/commit/8b387a079f174cabb9e2936beb8cfff2b4b04f3a))
+* **api:** search asso by siren ([9353be6](https://github.com/betagouv/api-subventions-asso/commit/9353be6e2b512da2a8bf99636fb03a6d337068ac))
+* **dto:** add etablissement_dto_response ([237f14d](https://github.com/betagouv/api-subventions-asso/commit/237f14da97313c189f615fec6f80a84a856aba98))
+* **front:** add connection page ([5768907](https://github.com/betagouv/api-subventions-asso/commit/5768907af317ac948bc59932e226ebf2a1cac39a))
+* **front:** add disconect button ([5aab5c8](https://github.com/betagouv/api-subventions-asso/commit/5aab5c84bc53dad12780bf876ed17d012f08cf53))
+* **front:** add dowload controller and route for download association data ([c044177](https://github.com/betagouv/api-subventions-asso/commit/c044177b11f8ca3dcbdfc8ee854c4b10e0901979))
+* **front:** add etablisement page ([af17207](https://github.com/betagouv/api-subventions-asso/commit/af17207de0ddc2561442390413ed73e85bc48dd6))
+* **front:** add etablissement controller ([bb9f14d](https://github.com/betagouv/api-subventions-asso/commit/bb9f14db48706a8ae2937bff31606ca3d80c570f))
+* **front:** add forget-password view ([db9c246](https://github.com/betagouv/api-subventions-asso/commit/db9c246c57609113203eef9ceb5aa606965c5afb))
+* **front:** add loader between page when we use turbo ([12f88d1](https://github.com/betagouv/api-subventions-asso/commit/12f88d1035e8c01c90eb0aa3b92b1588dd9ee0ac))
+* **front:** add reset password part ([fbf44f5](https://github.com/betagouv/api-subventions-asso/commit/fbf44f5291d921d1fd89f4a649c4743effd1542d))
+* **front:** add search asso by siren ([72698c0](https://github.com/betagouv/api-subventions-asso/commit/72698c0e0226965e30d032cbe117cf42f3f15b5f))
+* **front:** add search part ([04327ad](https://github.com/betagouv/api-subventions-asso/commit/04327ad138a189964de6e79375abcb7d733a3d3a))
+* **front:** check password before send ([57317ce](https://github.com/betagouv/api-subventions-asso/commit/57317cef1c827c8d11a833e9d2a72326c290f008))
+* **front:** move login template page to folder auth ([d72fe63](https://github.com/betagouv/api-subventions-asso/commit/d72fe637e696e06c7d622232a2f572f7d257391d))
+* **front:** redirect to asso in search ([0bddafb](https://github.com/betagouv/api-subventions-asso/commit/0bddafb4068074fbfdf9d83a936be8bc98ac28da))
+* **front:** refacto archi backend of frontoffice ([5c22ba5](https://github.com/betagouv/api-subventions-asso/commit/5c22ba55eb0b216d859bf698c070b53079885020))
+* **front:** separates views into several components ([9326763](https://github.com/betagouv/api-subventions-asso/commit/93267637e079e845e80788806d199c97adc48747))
+* **front:** show request by asso ([d8dfad7](https://github.com/betagouv/api-subventions-asso/commit/d8dfad7029976b419035d05d1e47f40c0a656de9))
+
+
+### Bug Fixes
+
+* **api:** fix map of undefined on cache class ([d3b9b1a](https://github.com/betagouv/api-subventions-asso/commit/d3b9b1affc5a4238e2af1bdb0d4e7e2af0bd65bf))
+* **api:** search asso with rna ([7747cf8](https://github.com/betagouv/api-subventions-asso/commit/7747cf8bfaa8b5e903b61f24239c6a50a66864ae))
+* **back:** fix test ([9402587](https://github.com/betagouv/api-subventions-asso/commit/9402587032bbaf6661f6ea76c9cb8433ce35d9de))
+* **front_back:** fix error on search rna not found ([06c9355](https://github.com/betagouv/api-subventions-asso/commit/06c93558091b2518c0d633e2819182dbdb679867))
+* **front:** fix front controller no detected ([78cc520](https://github.com/betagouv/api-subventions-asso/commit/78cc520f5c7976dfca2d73eaf98459b9c606ab04))
+
 ## [0.3.0](https://github.com/betagouv/api-subventions-asso/compare/v0.2.0...v0.3.0) (2022-03-03)
 
 
