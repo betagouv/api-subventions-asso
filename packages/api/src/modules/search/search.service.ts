@@ -34,12 +34,21 @@ export class SearchService {
     public async getByRna(rna: Rna) {
         const siren = await rnaSirenService.getSiren(rna);
 
-        if (!siren) return null;
+        if (!siren) {
+            const association = await associationsService.getAssociationByRna(rna);
+
+            if (!association) return null;
+
+            return {
+                association,
+                etablissements: []
+            }
+        }
 
         return this.getBySiren(siren, rna);
     }
 
-    public async getBySiren(siren: Siren, rna ?: Rna) {
+    public async getBySiren(siren: Siren, rna?: Rna) {
         if (!rna) {
             rna = await rnaSirenService.getRna(siren) || undefined
         }
@@ -57,7 +66,6 @@ export class SearchService {
             const etablisement = await etablissementService.getEtablissement(siret);
 
             if (etablisement) etablisements.push(etablisement);
-                
 
             return etablisements;
         }, Promise.resolve([]) as Promise<Etablissement[]>);

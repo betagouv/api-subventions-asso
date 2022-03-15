@@ -124,6 +124,13 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
     }
 
+    async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
+        const requests = await leCompteAssoRepository.findsByRna(rna);
+        if (requests.length === 0) return null;
+        
+        return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
+    }
+
     /**
      * |-------------------------|
      * |   Etablissesement Part  |

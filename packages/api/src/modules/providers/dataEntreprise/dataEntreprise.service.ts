@@ -27,6 +27,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
     private etablissementsCache = new CacheData<Etablissement>(CACHE_TIME);
     private associationsCache = new CacheData<Association>(CACHE_TIME);
+    private associationsRnaCache = new CacheData<Association>(CACHE_TIME);
 
     private async sendRequest<T>(route: string, wait: boolean): Promise<T | null> {
         if (wait) {
@@ -116,6 +117,18 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         }
 
         return null;
+    }
+
+    async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
+        if (this.associationsRnaCache.has(rna)) return this.associationsRnaCache.get(rna);
+
+        const asso = await this.findAssociationByRna(rna);
+
+        if (!asso) return null; 
+        
+        this.associationsRnaCache.add(rna, asso);
+
+        return [ asso ];
     }
 
 
