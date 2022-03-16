@@ -9,6 +9,13 @@
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-8">
                     <h1>Connexion</h1>
+                    <% if (typeof loginError == 'undefined' && typeof success == 'undefined') { %>
+                        <div role="alert" class="fr-alert fr-alert--info fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                            <p>Vous souhaitez vous inscrire ?</p>
+                            <p><a class="fr-link" target="_blank" href="https://framaforms.org/creation-de-compte-datasubvention-1647443411">Rendez-vous sur notre formulaire de demande d'inscription (en cliquant sur ce lien)</a></p>
+                        </div>
+                    <% } %>
+
                     <% if (typeof loginError != 'undefined' && loginError) { %>
                         <div role="alert" class="fr-alert fr-alert--warning">
                             <p class="fr-alert__title">Attention</p>
@@ -25,7 +32,7 @@
                             <legend class="fr-fieldset__legend" id='text-legend'>Vos identifiants</legend>
                             <div class="fr-input-group">
                                 <label class="fr-label" for="text-input-text">Email :</label>
-                                <input class="fr-input" type="text" name="email" required="true">
+                                <input class="fr-input" type="email" name="email" required="true">
                             </div>
                             <div class="fr-input-group">
                                 <label class="fr-label" for="text-input-text">Mot de passe :</label>
@@ -37,6 +44,7 @@
                             <a class="fr-link" href="/auth/forget-password">Mot de passe perdu</a>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </div>
