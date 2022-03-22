@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.2](https://github.com/betagouv/api-subventions-asso/compare/v0.4.1...v0.4.2) (2022-03-22)
+
+
+### Bug Fixes
+
+* **front:** reset-token with \/ ([d4857b0](https://github.com/betagouv/api-subventions-asso/commit/d4857b0f551e3b23bed02111da8cbf82051d5cb9))
+* reset password token with \ ([ea4c1a5](https://github.com/betagouv/api-subventions-asso/commit/ea4c1a5717f3a18bed95896a403aa27df779d8a9))
+
 ### [0.4.1](https://github.com/betagouv/api-subventions-asso/compare/v0.4.0...v0.4.1) (2022-03-22)
 
 ## [0.4.0](https://github.com/betagouv/api-subventions-asso/compare/v0.3.0...v0.4.0) (2022-03-15)
