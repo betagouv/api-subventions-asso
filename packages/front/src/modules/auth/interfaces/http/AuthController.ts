@@ -96,6 +96,13 @@ export default class AuthController {
         })
     }
 
+    @Get("reset-password/*")
+    public async resetPasswordViewHOTFIX(req: Request, res: Response, next: NextFunction) {
+        req.params.tokenId = req.path.split("reset-password/")[1];
+        return this.resetPasswordView(req, res, next);
+    }
+
+
     @Post("reset-password/:tokenId")
     public async resetPasswordPost(req: Request, res: Response, next: NextFunction) {
         if (!req.body.token || !req.body.password) {
@@ -127,5 +134,11 @@ export default class AuthController {
             });
         }
         res.redirect("/auth/login?success=" + (req.query.active ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED"));
+    }
+
+    @Post("reset-password/*")
+    public async resetPasswordPostHOTFIX(req: Request, res: Response, next: NextFunction) {
+        req.params.tokenId = req.path.split("reset-password/")[1];
+        return this.resetPasswordPost(req, res, next);
     }
 }
