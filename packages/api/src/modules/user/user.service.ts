@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import * as RandToken from "rand-token";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ROLES } from "./entities/Roles";
@@ -279,7 +280,9 @@ export class UserService {
 
     async resetUser(user: UserWithoutSecret): Promise<UserServiceError | { success: true, reset: UserReset }>  {
         await userResetRepository.removeAllByUserId(user._id);
-        const reset = new UserReset(user._id, await bcrypt.hash(user.email, Math.random() * 10 + 1), new Date());
+
+        const token = RandToken.generate(32)
+        const reset = new UserReset(user._id, token, new Date());
         
         const createdReset = await userResetRepository.create(reset);
 
