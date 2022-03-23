@@ -39,7 +39,7 @@
                     <p><%- helper.getValue(association.objet_social) -%></p>
                 </div>
                 <div class="fr-col fr-col-lg-6">
-                    <p>Code objet social: <%- helper.getValue(association.code_objet_social_1) -%></p>
+                    <p>Code objet social : <%- helper.getValue(association.code_objet_social_1) -%></p>
                 </div>
             </div>
             <% } %>
@@ -49,7 +49,7 @@
                         <%- include('../../../global_components/tile',
                         {
                             title: 'Télécharger l\'avis de situation',
-                            desc: "Télécharger l\'avis de situation du siege",
+                            desc: "Télécharger l\'avis de situation du siège",
                             url: 'https://api.avis-situation-sirene.insee.fr/identification/pdf/' + helper.getValue(association.siren) + helper.getValue(association.nic_siege),
                             img: '/static/images/logo_insee.jpg',
                             download: "Avis_de_situation_au_répertoire_Sirene-"+ helper.getValue(association.siren) +".pdf",
@@ -61,8 +61,8 @@
                 <div class="fr-col fr-col-lg-6">
                     <%- include('../../../global_components/tile',
                     {
-                        title: 'Télécharger les données brut',
-                        desc: "Télécharger les données disponible au format JSON",
+                        title: 'Télécharger les données brutes',
+                        desc: "Télécharger les données disponibles au format JSON",
                         url: '/download/json/association/' + helper.getValue(association.rna),
                         img: '/static/images/json.png',
                         download: "association-"+ helper.getValue(association.rna) +".json"
