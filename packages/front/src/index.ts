@@ -20,7 +20,7 @@ declare module 'express-session' {
 }
 
 const appName = `DataSubvention - V${designSystemVersion}`
-const appDescription = "Toutes les informations pour instruire vos demandes de subventions."
+const appDescription = "Toutes les informations pour instruire vos demandes de subvention"
 const appRepo = 'https://github.com/betagouv/api-subventions-asso'
 const port = process.env.PORT || 1235
 
