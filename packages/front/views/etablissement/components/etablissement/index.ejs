@@ -16,12 +16,12 @@
                         <p>SIRET : <%- helper.getValue(etablissement.siret) -%> </p>
                     <% } %>
                     <% if (helper.hasValue(association.adresse_siege)) { %>
-                        <p>Adresse: <%- helper.adresse.toString(etablissement.adresse) -%> </p>
+                        <p>Adresse : <%- helper.adresse.toString(etablissement.adresse) -%> </p>
                     <% } %>
                 </div>
                 <div class="fr-col fr-col-lg-6">
                     <% if (helper.hasValue(etablissement.ouvert)) { %>
-                        <p>Etat administratif : <%- helper.getValue(etablissement.ouvert) ? "OUVERT" : "FERMER" -%></p>
+                        <p>État administratif : <%- helper.getValue(etablissement.ouvert) ? "OUVERT" : "FERMÉ" -%></p>
                     <% } %>
                     <% if (helper.hasValue(etablissement.siege)) { %>
                         <p>Siège : <%- helper.getValue(etablissement.siege) ? "OUI" : "NON" -%> </p>
@@ -65,7 +65,7 @@
                 <div class="fr-col fr-col-lg-6">
                     <%- include('../../../global_components/tile',
                     {
-                        title: 'Télécharger les données brut',
+                        title: 'Télécharger les données brutes',
                         desc: "Télécharger les données disponible au format JSON",
                         url: '/download/json/etablissement/' + helper.getValue(etablissement.siret),
                         img: '/static/images/json.png',
