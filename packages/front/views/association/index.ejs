@@ -38,6 +38,15 @@
                                 subventions
                             });
                         -%>
+
+                        <% if(versements) { %>
+                            <%-
+                                include("../global_components/versements/index", {
+                                    versements,
+                                    currentSiret: null
+                                });
+                            -%>
+                        <% } %>
                     </ul>
                 </div>
             </div>

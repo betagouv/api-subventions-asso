@@ -1,5 +1,7 @@
 import { IAssociation } from "@api-subventions-asso/dto";
+import AssociationDto from "@api-subventions-asso/dto/search/AssociationDto";
 import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import Versement from "@api-subventions-asso/dto/search/VersementDto";
 import ProviderValue from "@api-subventions-asso/dto/shared/ProviderValue";
 import User from "../../@types/User";
 import { DefaultObject } from "../../@types/utils";
@@ -8,7 +10,7 @@ import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 
 export class AssociationService {
-    async getAssociation(id: string, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: unknown }> {
+    async getAssociation(id: string, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: {association: AssociationDto, subventions: unknown, versements: DefaultObject<Versement[]> | null } }> {
         const type = IdentifierHelper.findType(id);
         if (type === "UNKNOWN") return { type: "ERROR" }; // TODO send error
 
@@ -30,14 +32,31 @@ export class AssociationService {
         if (!association)  return { type: "ERROR" };
 
         const subventions = this.formatSubvention(association);
+        const versements = this.formatVersements(association.versements);
 
         return {
             type: "SUCCESS",
             data: {
                 association,
-                subventions
+                subventions,
+                versements,
             }
         }
+    }
+
+    private formatVersements(versements?: Versement[]) {
+        if (!versements) return null;
+        const versementsByYear = versements.reduce((acc, versement) => {
+            const date = new Date(versement.dateOperation.value);
+            const year = date.getFullYear();
+            if (!acc[year]) acc[year] = [];
+            acc[year].push(versement);
+            return acc;
+        }, {} as DefaultObject<Versement[]>);
+
+        Object.values(versementsByYear).forEach(v => v.sort((a, b) => new Date(b.dateOperation.value).getTime() - new Date(a.dateOperation.value).getTime()))
+
+        return versementsByYear;
     }
 
     private formatSubvention(association: IAssociation) {
