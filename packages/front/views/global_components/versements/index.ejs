@@ -1,0 +1,36 @@
+<li>
+    <section class="fr-accordion">
+        <h3 class="fr-accordion__title">
+            <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-3-body-3">Historique des financements</button>
+        </h3>
+        <div class="fr-collapse" id="fr-accordion-3-body-3"">
+            <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
+                <div class="fr-col fr-col-lg-12">
+                    <ul class="fr-accordions-group">
+                        <%const years = Object.keys(versements).sort().reverse();%>
+                        <% for( let index = 0; index < years.length; index++ ) { %>
+                            <% const year = years[index]; const yearText = year === "0000" ? "Année non communiqué" : year %>
+                            <% const total = versements[year].reduce( (acc,v) => acc + helper.getValue(v.amount), 0).toFixed(2);%>
+                            <li>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="<%- index === 0 ? "true": "false" %>" aria-controls="fr-accordion-3<%- index %>-body-3<%- index %>"><%-yearText%></button>
+                                    </h3>
+                                    <div class="fr-collapse" id="fr-accordion-3<%- index %>-body-3<%- index %>">
+                                        Montants total pour l'année <%-yearText%> : <%-total%>€
+                                        <%-
+                                            include("./versements_table", {
+                                                versements: versements[year],
+                                                currentSiret
+                                            })
+                                        -%>
+                                    </div>
+                                </section>
+                            </li>                                                   
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</li>
