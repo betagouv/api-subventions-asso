@@ -26,6 +26,7 @@ export class SearchService {
             ...etablissement,
             association,
             demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(siret),
+            versements: []
         };
 
         return await versementsService.aggregateVersementsByEtablissementSearch(etablissementDto);
@@ -75,9 +76,11 @@ export class SearchService {
             etablissements: await Promise.all(
                 etablissements.map(async (etablissement) => ({
                     ...etablissement,
-                    demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(etablissement.siret[0].value)
+                    demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(etablissement.siret[0].value),
+                    versements: [],
                 }))
-            )
+            ),
+            versements: [],
         }
 
         return await versementsService.aggregateVersementsByAssoSearch(associationDto);

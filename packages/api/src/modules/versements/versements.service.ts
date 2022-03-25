@@ -7,7 +7,6 @@ import AssociationDto from "../search/interfaces/http/dto/AssociationDto";
 import EtablissementDto from "../search/interfaces/http/dto/EtablissmentDto";
 
 export class VersementsService {
-    public static SUBVENTION_TYPE = "ZSUB";
 
     async aggregateVersementsByAssoSearch(asso: AssociationDto) {
         if (!asso.siren || asso.siren?.length === 0) return null;
@@ -15,33 +14,17 @@ export class VersementsService {
         const siren = asso.siren[0].value;
         const versements = await this.getVersementsBySiren(siren);
 
-        const ejDemandesSub = asso.etablissements?.map(etab => {
-            return etab.demandes_subventions?.map(demandeSub => demandeSub.ej?.value);
-        }).flat().filter(ej => ej) || [];
-
-        const { versementsND, versementSub } = versements.reduce((acc, versement)=> {
-            if (ejDemandesSub.includes(versement.ej.value) || (versement.type && versement.type.value === VersementsService.SUBVENTION_TYPE)) acc.versementSub.push(versement)
-            else acc.versementsND.push(versement);
-            return acc;
-        }, { versementsND: [] as Versement[], versementSub: [] as Versement[] });
-        
-        asso.versements = {
-            versements_subventions: versementSub,
-            versements_autres: versementsND,
-        };
+        asso.versements = versements;
 
         asso.etablissements?.forEach(etablissement => {
-            etablissement.versements = {
-                versements_subventions: versementSub.filter(versement => versement.siret.value === etablissement.siret[0].value),
-                versements_autres: versementsND.filter(versement => versement.siret.value === etablissement.siret[0].value),
-            };
+            etablissement.versements = versements.filter(versement => versement.siret.value === etablissement.siret[0].value);
 
             etablissement.demandes_subventions?.forEach(demandeSubvention => {
                 const ej = demandeSubvention.ej && demandeSubvention.ej.value;
 
                 if (!ej) return;
 
-                demandeSubvention.versements = versementSub.filter(versement => versement.ej.value === ej);
+                demandeSubvention.versements = (etablissement.versements as Versement[]).filter(versement => versement.ej.value === ej);
             })
         })
 
@@ -53,25 +36,14 @@ export class VersementsService {
 
         const versements = await this.getVersementsBySiret(etablissement.siret[0].value);
 
-        const ejDemandesSub = etablissement.demandes_subventions?.map(demandeSub => demandeSub.ej?.value).flat().filter(ej => ej) || [];
-
-        const { versementsND, versementSub } = versements.reduce((acc, versement)=> {
-            if (ejDemandesSub.includes(versement.ej.value)) acc.versementSub.push(versement)
-            else acc.versementsND.push(versement);
-            return acc;
-        }, { versementsND: [] as Versement[], versementSub: [] as Versement[] });
-        
-        etablissement.versements = {
-            versements_subventions: versementSub.filter(versement => versement.siret.value === etablissement.siret[0].value),
-            versements_autres: versementsND.filter(versement => versement.siret.value === etablissement.siret[0].value),
-        };
+        etablissement.versements = versements;
 
         etablissement.demandes_subventions?.forEach(demandeSubvention => {
             const ej = demandeSubvention.ej && demandeSubvention.ej.value;
 
             if (!ej) return;
 
-            demandeSubvention.versements = versementSub.filter(versement => versement.ej.value === ej);
+            demandeSubvention.versements = versements.filter(versement => versement.ej.value === ej);
         })
 
         return etablissement;

@@ -8,25 +8,30 @@ describe("chorus.service", () => {
 
     describe("validateEntity", () => {
         it('should be reject because codeBranche not accepted', () => {
-            const entity = new ChorusLineEntity({
-                siret: "10000000000000",
-                ej: "00000",
-                amount: 1000,
-                dateOperation: new Date(),
-                codeBranche: "WRONG CODE",
-                compte: "COMPTE",
-                typeOperation: "ZSUB"
-            }, {});
+            const entity = new ChorusLineEntity(
+                "UNIQUE_ID",
+                {
+                    siret: "10000000000000",
+                    ej: "00000",
+                    amount: 1000,
+                    dateOperation: new Date(),
+                    codeBranche: "WRONG CODE",
+                    branche: "BRANCHE",
+                    compte: "COMPTE",
+                    typeOperation: "ZSUB"
+                }, {}
+            );
             expect(chorusService.validateEntity(entity)).toEqual( { success: false, message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`, data: entity })
         })
 
         it('should be reject amount is not number', () => {
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "00000",
                 amount: undefined as unknown as number,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -34,12 +39,13 @@ describe("chorus.service", () => {
         })
 
         it('should be reject dateOperation is not Date', () => {
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "00000",
                 amount: 1000,
                 dateOperation: "01/01/1960" as unknown as Date,
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -47,12 +53,13 @@ describe("chorus.service", () => {
         })
 
         it('should be reject siret is not valid', () => {
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "SIRET",
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -60,12 +67,13 @@ describe("chorus.service", () => {
         })
 
         it('should be reject ej is not valid', () => {
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -73,12 +81,13 @@ describe("chorus.service", () => {
         })
 
         it('should be accept', () => {
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -88,12 +97,13 @@ describe("chorus.service", () => {
 
     describe("addChorusLine", () => {
         it("should be reject because entity is not valid", async () => {
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "SIRET",
                 ej: "00000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -103,12 +113,13 @@ describe("chorus.service", () => {
 
         it("should be create entity", async () => {
             const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementationOnce(() => Promise.resolve(true))
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -120,12 +131,13 @@ describe("chorus.service", () => {
 
         it("should not create entity because code branche is not accepted", async () => {
             const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementationOnce(() => Promise.resolve(false))
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z044",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -141,12 +153,13 @@ describe("chorus.service", () => {
         it("should be update entity", async () => {
             const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
             
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -161,12 +174,13 @@ describe("chorus.service", () => {
 
         it("should be not update because same ej but not same amout", async () => {
             const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -185,12 +199,13 @@ describe("chorus.service", () => {
         it("should be not update because same ej but not operation data", async () => {
             const mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
 
-            const entity = new ChorusLineEntity({
+            const entity = new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: new Date(),
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -217,12 +232,13 @@ describe("chorus.service", () => {
 
         beforeEach(async () => {
             mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            entity = (await chorusService.addChorusLine(new ChorusLineEntity({
+            entity = (await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
@@ -239,6 +255,7 @@ describe("chorus.service", () => {
                 ej: toPV("1000000000"),
                 amount: toPV(1000),
                 dateOperation: toPV(now),
+                branche: toPV("BRANCHE"),
                 codeBranche: toPV("Z004"),
                 compte: toPV("COMPTE"),
                 type: toPV("ZSUB")
@@ -257,12 +274,13 @@ describe("chorus.service", () => {
 
         beforeEach(async () => {
             mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            entity = (await chorusService.addChorusLine(new ChorusLineEntity({
+            entity = (await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
@@ -279,6 +297,7 @@ describe("chorus.service", () => {
                 ej: toPV("1000000000"),
                 amount: toPV(1000),
                 dateOperation: toPV(now),
+                branche: toPV("BRANCHE"),
                 codeBranche: toPV("Z004"),
                 compte: toPV("COMPTE"),
                 type: toPV("ZSUB")
@@ -297,12 +316,13 @@ describe("chorus.service", () => {
     
         beforeEach(async () => {
             mock = jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            entity = (await chorusService.addChorusLine(new ChorusLineEntity({
+            entity = (await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
@@ -319,6 +339,7 @@ describe("chorus.service", () => {
                 ej: toPV("1000000000"),
                 amount: toPV(1000),
                 dateOperation: toPV(now),
+                branche: toPV("BRANCHE"),
                 codeBranche: toPV("Z004"),
                 compte: toPV("COMPTE"),
                 type: toPV("ZSUB")
@@ -337,12 +358,13 @@ describe("chorus.service", () => {
             jest.clearAllMocks();
             jest.spyOn(chorusService, "siretBelongAsso").mockImplementationOnce(() => Promise.resolve(true))
 
-            await chorusService.addChorusLine(new ChorusLineEntity({
+            await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))
