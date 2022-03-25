@@ -1,7 +1,8 @@
 import IBudgetLine from "../../../search/@types/IBudgetLine";
 
 export default interface IChorusIndexedInformations extends IBudgetLine {
-    compte: string,
+    compte?: string,
     codeBranche: string,
-    typeOperation: string,
+    branche: string,
+    typeOperation?: string,
 }
