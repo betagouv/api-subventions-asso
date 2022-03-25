@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { DefaultObject } from '../../../../@types/utils';
 import Controller from '../../../../decorators/controller.decorator';
 import { Get } from '../../../../decorators/http.methods.decorator';
 import associationService from '../../AssociationService';
@@ -13,17 +12,18 @@ export default class AssociationController {
 
         if (!id) return res.redirect("/?error=TYPE_UNKNOWN");
 
-        const result = await associationService.getAssociation(id, req.session.user) as { type: "SUCCESS" | "ERROR", data: DefaultObject };
+        const result = await associationService.getAssociation(id, req.session.user);
 
-        if (result.type !== "SUCCESS") {
+        if (result.type !== "SUCCESS" || !result.data) {
             return res.redirect("/?error=TYPE_UNKNOWN");
         }
         
         res.render('association/index', {
-            pageTitle: 'Recherche',
+            pageTitle: 'Association',
             value: id,
             association: result.data.association,
-            subventions: result.data.subventions
+            subventions: result.data.subventions,
+            versements: result.data.versements
         });
     }
     
