@@ -58,6 +58,14 @@ export class RnaSirenService {
         await rnaSirenRepository.create(new RnaSiren(rna, siren));
     }
 
+    async insertMany(entities: RnaSiren[]) {
+        await rnaSirenRepository.insertMany(entities);
+    }
+
+    async cleanDuplicate() {
+        await rnaSirenRepository.cleanDuplicate();
+    }
+
     private async findSirenByRna(rna: Rna, withTimeout = false) {
         const providers = [
             osirisService,
