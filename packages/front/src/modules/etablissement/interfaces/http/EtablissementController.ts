@@ -20,10 +20,11 @@ export default class EtablissementController {
         }
 
         res.render('etablissement/index', {
-            pageTitle: 'Recherche',
+            pageTitle: 'Établissement',
             etablissement: result.data.etablissement,
             association: result.data.association,
-            subventions: result.data.subventions
+            subventions: result.data.subventions,
+            versements: result.data.versements
         });
     }
 }
