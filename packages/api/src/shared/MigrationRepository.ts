@@ -4,6 +4,8 @@ import db from "./MongoConnection";
 export default class MigrationRepository<T> {
     public collectionName = "migration-repository";
 
+    protected db = db;
+
     constructor() {
         migrationManager.addMigrationRepository(this as MigrationRepository<unknown>);
     }
