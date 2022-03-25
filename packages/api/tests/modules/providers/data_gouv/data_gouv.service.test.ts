@@ -1,8 +1,8 @@
 import db from "../../../../src/shared/MongoConnection";
-import dataGouvService from "../../../../src/modules/providers/data_gouv/data_gouv.service";
-import dataGouvRepository from "../../../../src/modules/providers/data_gouv/repositories/entreprise_siren.repository";
+import dataGouvService from "../../../../src/modules/providers/datagouv/datagouv.service";
+import dataGouvRepository from "../../../../src/modules/providers/datagouv/repositories/entreprise_siren.repository";
 import { Collection } from "mongodb";
-import EntrepriseSirenEntity from "../../../../src/modules/providers/data_gouv/entities/EntrepriseSirenEntity";
+import EntrepriseSirenEntity from "../../../../src/modules/providers/datagouv/entities/EntrepriseSirenEntity";
 
 describe("DataGouvService",() => {
     describe("insertManyEntrepriseSiren", () => {
