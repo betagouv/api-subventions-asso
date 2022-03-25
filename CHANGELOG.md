@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/betagouv/api-subventions-asso/compare/v0.4.2...v0.5.0) (2022-03-25)
+
+
+### Features
+
+* **front:** add link to inscription form (farmaform) ([f226316](https://github.com/betagouv/api-subventions-asso/commit/f226316df873b23e3806932001dccfbac54f5223))
+
+
+### Bug Fixes
+
+* **front:** fix coquillette ([5778ac3](https://github.com/betagouv/api-subventions-asso/commit/5778ac33f65364b6b5a7a1deebfe514d5b9a4622))
+
 ### [0.4.2](https://github.com/betagouv/api-subventions-asso/compare/v0.4.1...v0.4.2) (2022-03-22)
 
 
