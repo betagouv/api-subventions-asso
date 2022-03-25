@@ -28,9 +28,14 @@ export default class ChorusParser {
             const indexedInformations = ParseHelper.indexDataByPathObject(ChorusLineEntity.indexedInformationsPath, parsedData) as unknown as IChorusIndexedInformations;
 
             return entities.concat(new ChorusLineEntity(
+                this.buildUniqueId(indexedInformations),
                 indexedInformations,
                 parsedData    
             ))
         }, [] as ChorusLineEntity[]);
+    }
+
+    private static buildUniqueId(indexedInformations: IChorusIndexedInformations): string {
+        return `${indexedInformations.siret}-${indexedInformations.ej}-${indexedInformations.dateOperation}-${indexedInformations.amount}`;
     }
 }

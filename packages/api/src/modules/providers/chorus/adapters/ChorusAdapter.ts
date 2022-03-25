@@ -13,9 +13,14 @@ export default class ChorusAdapter {
             siret: ProviderValueAdapter.toProviderValue(entity.indexedInformations.siret, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             amount: ProviderValueAdapter.toProviderValue(entity.indexedInformations.amount, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             dateOperation: ProviderValueAdapter.toProviderValue(entity.indexedInformations.dateOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
-            compte: ProviderValueAdapter.toProviderValue(entity.indexedInformations.compte, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            compte: entity.indexedInformations.compte
+                ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.compte, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
+                : undefined,
             codeBranche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.codeBranche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
-            type: ProviderValueAdapter.toProviderValue(entity.indexedInformations.typeOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            branche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.branche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            type: entity.indexedInformations.typeOperation
+                ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.typeOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
+                : undefined,
         }
     }
 }

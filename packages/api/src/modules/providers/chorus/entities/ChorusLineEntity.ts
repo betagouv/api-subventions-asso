@@ -12,7 +12,8 @@ export default class ChorusLineEntity {
         siret: { path: ['Code taxe 1'] },
         compte: { path: ['Compte général'] }, 
         codeBranche: { path: ['Branche CODE'] }, 
-        typeOperation: { path: ['Type d\'opération CODE'] }, 
+        branche: { path: ['Branche'] }, 
+        typeOperation: { path: ['Type d\'opération CODE', "Grpe cptes fourniss. CODE"] }, 
         amount: { 
             path: ["EUR"],
             adapter: (value) => {
@@ -33,6 +34,7 @@ export default class ChorusLineEntity {
     }
 
     constructor(
+        public uniqueId: string,
         public indexedInformations: IChorusIndexedInformations,
         public data: unknown,
         public _id?: ObjectId
