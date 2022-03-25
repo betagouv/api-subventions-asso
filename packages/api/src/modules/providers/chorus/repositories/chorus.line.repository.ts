@@ -1,5 +1,6 @@
+import { Siren, Siret } from "@api-subventions-asso/dto";
 import { ObjectId, WithId } from "mongodb";
-import { Siren, Siret, DefaultObject } from "../../../../@types";
+import { DefaultObject } from "../../../../@types";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
@@ -10,19 +11,35 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
         return this.collection.findOne({ "indexedInformations.ej": ej });
     }
 
+    public async findOneBySiret(siret: Siret) {
+        return this.collection.findOne({ "indexedInformations.siret": siret });
+    }
+
+    public async findOneBySiren(siren: Siren) {
+        return this.collection.findOne({ "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`) });
+    }
+
+    public async findOneByUniqueId(uniqueId: string) {
+        return this.collection.findOne({ "uniqueId": uniqueId });
+    }
+
     public async create(entity: ChorusLineEntity) {
         const result = await this.collection.insertOne(entity);
 
         return this.collection.findOne({ _id: result.insertedId }) as Promise<WithId<ChorusLineEntity>>;
     }
 
+    public async insertMany(entites: ChorusLineEntity[]) {
+        await this.collection.insertMany(entites, {ordered: false});
+    }
+
     public async update(entity: ChorusLineEntity) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {_id, ...entityWithoutId } = entity;
         
-        await this.collection.updateOne({ "indexedInformations.ej": entity.indexedInformations.ej }, {$set: entityWithoutId});
+        await this.collection.updateOne({ "uniqueId": entity.uniqueId }, {$set: entityWithoutId});
         
-        return this.collection.findOne({ "indexedInformations.ej": entity.indexedInformations.ej }) as Promise<WithId<ChorusLineEntity>>;
+        return this.collection.findOne({ "uniqueId": entity.uniqueId }) as Promise<WithId<ChorusLineEntity>>;
     }
 
     public async updateById(id: ObjectId, entity: ChorusLineEntity) {

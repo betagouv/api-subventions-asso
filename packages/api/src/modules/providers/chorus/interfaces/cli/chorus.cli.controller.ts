@@ -6,6 +6,7 @@ import ChorusParser from "../../chorus.parser";
 import chorusService, { RejectedRequest } from "../../chorus.service";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
+import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCliController {
@@ -37,13 +38,57 @@ export default class ChorusCliController {
             .then(() => fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" }));
     }
 
+    /**
+     * @param file path to file
+     * @param batchSize La taille des packets envoyer à mongo coup par coup
+     */
+    public async parseBigXls(file: string, batchSize = 1000) {
+        if (typeof file !== "string" ) {
+            throw new Error("Parse command need file args");
+        }
+
+        if (!fs.existsSync(file)) {
+            throw new Error(`File not found ${file}`);
+        }
+        const logs: unknown[] = [];
+
+        console.info("\nStart parse file: ", file);
+        logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
+
+        const fileContent = fs.readFileSync(file);
+        const entities = ChorusParser.parseXls(fileContent, (e) => chorusService.validateEntity(e).success);
+        const totalEnities = entities.length
+
+        console.info(`\n${totalEnities} valid entities found in file.`);
+
+        console.info("Start register in database ...");
+
+        const batchNumber = Math.ceil(totalEnities / batchSize);
+        const batchs = [];
+
+        for(let i = 0; i < batchNumber; i++) {
+            batchs.push(entities.splice(0, batchSize));
+        }
+        console.log(batchs.length);
+        const finalResult = {
+            created: 0,
+            rejected: 0,
+        }
+        await asyncForEach(batchs, async (batch, index) => {
+            CliHelper.printProgress(index * 1000, totalEnities);
+            const result = await chorusService.insertBatchChorusLine(batch);
+            finalResult.created += result.created;
+            finalResult.rejected += result.rejected;
+        });
+
+        console.log(finalResult);
+    }
 
     private async _parse(file: string, logs: unknown[]) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
-
 
         const entities = ChorusParser.parse(fileContent);
 
