@@ -1,0 +1,34 @@
+<div class="fr-table">
+    <table>
+        <!-- <caption>Financements</caption> -->
+        <thead>
+            <tr>
+                <th scope="col">Provider</th>
+                <th scope="col">N°EJ</th>
+                <th scope="col">Branche</th>
+                <th scope="col">Date</th>
+                <th scope="col">Montants</th>
+                <th scope="col">Plus</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(let i = 0; i < versements.length; i++ ) { %>
+                <% const versement = versements[i];%> 
+                <tr>
+                    <td><%-helper.getProvider(versement.amount)%></td>
+                    <td><%-helper.getValue(versement.ej)%></td>
+                    <td><%-helper.getValue(versement.branche)%></td>
+                    <td><%-helper.date.toProviderValueString(versement.dateOperation)%></td>
+                    <td><%-helper.getValue(versement.amount)%>€</td>
+                    <td>
+                        <% const siret = helper.getValue(versement.siret); %>
+                        <% if (currentSiret != siret) { %> 
+                            <a class="fr-link" href="/etablissement/<%-siret%>">Voir l'établissement</a>
+                        <% } else { %>
+                            <%-siret%>
+                        <% } %>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
