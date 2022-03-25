@@ -44,7 +44,7 @@ export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | Par
 
 export function linkHeaderToData(header: string[], data: string[]) {
     return header.reduce((acc, header, key) => {
-        acc[header.trim()] = data[key];
+        acc[header] = (data[key] || "").replace(/&#32;/g, " ");
         return acc;
     }, {} as {[key: string]: string});
 }

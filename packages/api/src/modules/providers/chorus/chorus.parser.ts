@@ -1,6 +1,7 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
+import * as CliHelper from "../../../shared/helpers/CliHelper";
 
 export default class ChorusParser {
 
@@ -14,16 +15,17 @@ export default class ChorusParser {
         
         const headers = data.splice(0,7);
 
-        headers[6].forEach((header, index) => {
+        const header = headers[6].map((header, index) => {
             const isCode = headers[6].slice(index + 1).find(h => h === header);
             if (isCode) {
-                headers[6][index] = `${header} CODE`;
+                return `${header.trim()} CODE`;
             }
+            return header.trim();
         })
 
         return data.reduce((entities, raw) => {
             if (!raw.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = ParseHelper.linkHeaderToData(headers[6], raw);
+            const parsedData = ParseHelper.linkHeaderToData(header, raw);
             
             const indexedInformations = ParseHelper.indexDataByPathObject(ChorusLineEntity.indexedInformationsPath, parsedData) as unknown as IChorusIndexedInformations;
 
@@ -35,7 +37,43 @@ export default class ChorusParser {
         }, [] as ChorusLineEntity[]);
     }
 
-    private static buildUniqueId(indexedInformations: IChorusIndexedInformations): string {
+    static parseXls(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
+        const page = ParseHelper.xlsParse(content)[2];
+
+        const headerRaw = page[2] as string[];
+        const header: string[] = [];
+
+        for (let i = 0; i < headerRaw.length; i++) {
+            if (!headerRaw[i]) {
+                const name = header[i-1] as string;
+                header[i-1] = `${name} CODE`;
+                header.push(name.replace("&#32;", " ").trim());
+            }
+            else {
+                header.push(headerRaw[i].replace(/&#32;/g, " ").trim())
+            }
+        }
+
+        const data = page.slice(4) as string[][];
+        return data.reduce((entities, raw, index) => {
+            CliHelper.printAtSameLine(`${index} entities parsed of ${data.length}`);
+
+            const parsedData = ParseHelper.linkHeaderToData(header, raw);
+            const indexedInformations = ParseHelper.indexDataByPathObject(ChorusLineEntity.indexedInformationsPath, parsedData) as unknown as IChorusIndexedInformations;
+            const entity = new ChorusLineEntity(
+                this.buildUniqueId(indexedInformations),
+                indexedInformations,
+                parsedData    
+            );
+
+            if (validator(entity)) {
+                return entities.concat(entity);
+            }
+            return entities;
+        }, [] as ChorusLineEntity[])
+    }
+
+    private static buildUniqueId(indexedInformations: IChorusIndexedInformations) : string {
         return `${indexedInformations.siret}-${indexedInformations.ej}-${indexedInformations.dateOperation}-${indexedInformations.amount}`;
     }
 }

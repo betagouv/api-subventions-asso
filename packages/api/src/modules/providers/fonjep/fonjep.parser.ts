@@ -6,7 +6,7 @@ import FonjepRequestEntity from "./entities/FonjepRequestEntity";
 export default class FonjepParser {
     public static parse(fileContent: Buffer) {
         const data = ParseHelper.xlsParse(fileContent)[0]; // Use 0 because file have only one page
-        const headers = data.slice(0,1)[0] as string[];
+        const headers = (data.slice(0,1)[0] as string[]).map((h: string) => h.trim());
         const raws = data.slice(1, data.length) as (string|number)[][]; // Delete Headers 
         return raws.reduce((entities, raw) => {
             if (!raw.map(column => typeof column === "string" ? column.trim() : column ).filter(c => c).length) return entities;
