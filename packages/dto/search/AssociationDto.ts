@@ -2,6 +2,7 @@ import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
 import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
+import Versement from "./VersementDto";
 
 export default interface AssociationDto {
     siren?: ProviderValues<Siren>,
@@ -45,5 +46,5 @@ export default interface AssociationDto {
         nombre?: ProviderValues<number>,
         ETPT?: ProviderValues<number>,
     }
-    // etablissements: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null,
+    versements?: Versement[],
 }

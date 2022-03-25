@@ -1,6 +1,7 @@
 import { ProviderValues } from "../shared/ProviderValue";
 import { Siret } from "../shared/Siret";
 import DemandeSubvention from "./DemandeSubventionDto";
+import Versement from "./VersementDto";
 
 export default interface EtablissementDto {
     demandes_subventions: DemandeSubvention[] | null
@@ -35,4 +36,5 @@ export default interface EtablissementDto {
         iban?: string,
         bic?: string,
     }>[]
+    versements?: Versement[],
 }

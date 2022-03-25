@@ -27,11 +27,12 @@ describe("VersementService", () => {
 
         beforeEach(async () => {
             jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            await chorusService.addChorusLine(new ChorusLineEntity({
+            await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
+                branche: "BRANCHE",
                 codeBranche: "Z004",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
@@ -41,33 +42,29 @@ describe("VersementService", () => {
         it("should be aggregate versements", () => {
             expect(versementsService.aggregateVersementsByAssoSearch(asso)).resolves.toMatchObject({
                 siren: toPVs("100000000"),
-                versements: {
-                    versements_subventions: [
-                        {
+                versements:  [
+                    {
+                        siret: toPV("10000000000000"),
+                        ej: toPV("1000000000"),
+                        amount: toPV(1000),
+                        dateOperation: toPV(now),
+                        codeBranche: toPV("Z004"),
+                        branche: toPV("BRANCHE"),
+                        compte: toPV("COMPTE"),
+                        type: toPV("ZSUB")
+                    }
+                ],
+                etablissements: [
+                    {
+                        siret: toPVs("10000000000000"),
+                        versements: [{
                             siret: toPV("10000000000000"),
                             ej: toPV("1000000000"),
                             amount: toPV(1000),
                             dateOperation: toPV(now),
                             codeBranche: toPV("Z004"),
                             compte: toPV("COMPTE")
-                        }
-                    ],
-                    versements_autres: [],
-                },
-                etablissements: [
-                    {
-                        siret: toPVs("10000000000000"),
-                        versements: {
-                            versements_subventions: [{
-                                siret: toPV("10000000000000"),
-                                ej: toPV("1000000000"),
-                                amount: toPV(1000),
-                                dateOperation: toPV(now),
-                                codeBranche: toPV("Z004"),
-                                compte: toPV("COMPTE")
-                            }],
-                            versements_autres: [],
-                        },
+                        }],
                         demandes_subventions: [
                             {
                                 ej: toPV("1000000000"),
@@ -89,17 +86,11 @@ describe("VersementService", () => {
         it("should be not aggregate versements", () => {
             expect(versementsService.aggregateVersementsByAssoSearch({...asso, siren: toPVs("100000080")})).resolves.toMatchObject({
                 siren: toPVs("100000080"),
-                versements: {
-                    versements_subventions: [],
-                    versements_autres: [],
-                },
+                versements: [],
                 etablissements: [
                     {
                         siret: toPVs("10000000000000"),
-                        versements: {
-                            versements_subventions: [],
-                            versements_autres: [],
-                        },
+                        versements: [],
                         demandes_subventions: [
                             {
                                 ej: toPV("1000000000"),
@@ -126,12 +117,13 @@ describe("VersementService", () => {
 
         beforeEach(async () => {
             jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            await chorusService.addChorusLine(new ChorusLineEntity({
+            await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID",{
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}));
@@ -140,17 +132,14 @@ describe("VersementService", () => {
         it("should be aggregate versements", () => {
             expect(versementsService.aggregateVersementsByEtablissementSearch(etablissementDto)).resolves.toMatchObject({
                 siret: toPVs("10000000000000"),
-                versements: {
-                    versements_subventions: [{
-                        siret: toPV("10000000000000"),
-                        ej: toPV("1000000000"),
-                        amount: toPV(1000),
-                        dateOperation: toPV(now),
-                        codeBranche: toPV("Z004"),
-                        compte: toPV("COMPTE")
-                    }],
-                    versements_autres: [],
-                },
+                versements: [{
+                    siret: toPV("10000000000000"),
+                    ej: toPV("1000000000"),
+                    amount: toPV(1000),
+                    dateOperation: toPV(now),
+                    codeBranche: toPV("Z004"),
+                    compte: toPV("COMPTE")
+                }],
                 demandes_subventions: [
                     {
                         ej: toPV("1000000000"),
@@ -170,10 +159,7 @@ describe("VersementService", () => {
         it("should be not aggregate versements", () => {
             expect(versementsService.aggregateVersementsByEtablissementSearch({...etablissementDto, siret: toPVs("10000000008000")})).resolves.toMatchObject({
                 siret: toPVs("10000000008000"),
-                versements: {
-                    versements_subventions: [],
-                    versements_autres: [],
-                },
+                versements: [],
                 demandes_subventions: [
                     {
                         ej: toPV("1000000000"),

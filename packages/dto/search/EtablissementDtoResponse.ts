@@ -1,4 +1,4 @@
-import Etablissement from "../../api/src/modules/etablissements/interfaces/Etablissement";
+import Etablissement from "./EtablissmentDto";
 import AssociationDto from "./AssociationDto";
 import DemandeSubvention from "./DemandeSubventionDto";
 
