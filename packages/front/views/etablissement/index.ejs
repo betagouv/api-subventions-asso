@@ -26,6 +26,14 @@
                                 subventions
                             });
                         -%>
+                        <% if(versements) { %>
+                            <%-
+                                include("../global_components/versements/index", {
+                                    versements,
+                                    currentSiret: helper.getValue(etablissement.siret)
+                                });
+                            -%>
+                        <% } %>
                     </ul>
                 </div>
             </div>
