@@ -1,5 +1,5 @@
 import fs from "fs"
-import DataGouvParser from "../../../../src/modules/providers/data_gouv/data_gouv.parser";
+import DataGouvParser from "../../../../src/modules/providers/datagouv/datagouv.parser";
 
 describe("DataGouvParser", () => {
     describe("parseUniteLegal", () => {
