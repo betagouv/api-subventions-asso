@@ -1,4 +1,4 @@
-import { Siret } from "../../../@types/Siret";
+import { Siret } from "../../../@types";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import FonjepRequestEntity from "./entities/FonjepRequestEntity";

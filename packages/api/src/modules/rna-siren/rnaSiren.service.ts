@@ -1,8 +1,6 @@
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
-import { Siret } from "../../@types/Siret";
-import { Siren } from "../../@types/Siren";
-import { Rna } from "../../@types/Rna";
+import { Siret, Siren, Rna } from "../../@types";
 import rnaSirenRepository from "./repositories/rnaSiren.repository";
 import RnaSiren from "./entities/RnaSirenEntity";
 import osirisService from "../providers/osiris/osiris.service";

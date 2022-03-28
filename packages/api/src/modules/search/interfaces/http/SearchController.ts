@@ -1,7 +1,5 @@
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
-import { Rna } from '../../../../@types/Rna';
-import { Siren } from '../../../../@types/Siren';
-import { Siret } from '../../../../@types/Siret';
+import { Rna, Siren, Siret } from '../../../../@types';
 import { isRna, isSiren } from '../../../../shared/Validators';
 
 import searchService from "../../search.service";

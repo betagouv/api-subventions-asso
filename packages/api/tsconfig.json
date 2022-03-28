@@ -3,6 +3,9 @@
         "target": "es6",
         "module": "commonjs",
         "types": ["reflect-metadata", "jest"],
+        "paths": {
+            "~": ["./src"]
+        },
         "rootDir": "./",
         "outDir": "./build",
         "esModuleInterop": true,

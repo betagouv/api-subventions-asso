@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../../../@types/Cli.interface";
+import { CliStaticInterface} from "../../../../../@types";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import FonjepParser from "../../fonjep.parser";
 import fonjepService, { RejectedRequest } from "../../fonjep.service";

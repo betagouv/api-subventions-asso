@@ -6,7 +6,7 @@ import IOsirisRequestInformations from "../../../../../src/modules/providers/osi
 import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderValueAdapter";
 import associationsService from "../../../../../src/modules/associations/associations.service";
 import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
-import ProviderValue, { ProviderValues } from "../../../../../src/@types/ProviderValue";
+import { ProviderValue, ProviderValues } from "../../../../../src/@types";
 
 const g = global as unknown as { app: unknown }
 

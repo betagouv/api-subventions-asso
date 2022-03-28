@@ -1,6 +1,4 @@
-import ProviderValue from "../../../@types/ProviderValue";
-import { Siret } from "../../../@types/Siret";
-
+import { ProviderValue, Siret } from "../../../@types";
 
 export default interface Versement {
     id: string,

@@ -1,17 +1,16 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../../../@types/Cli.interface";
+import { CliStaticInterface, Rna, Siret} from "../../../../../@types";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
-import { Rna } from "../../../../../@types/Rna";
-import { Siret } from "../../../../../@types/Siret";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
+import OsirisEvaluationEntity from '../../entities/OsirisEvaluationEntity';
 
 
 @StaticImplements<CliStaticInterface>()
@@ -21,6 +20,7 @@ export default class OsirisCliController {
     private logFileParsePath = {
         actions: "./logs/osiris.parse.actions.log.txt",
         requests: "./logs/osiris.parse.requests.log.txt",
+        evaluations: "./logs/osiris.parse.evaluations.log.txt"
     };
 
     public validate(type: string, file: string) {
@@ -63,7 +63,7 @@ export default class OsirisCliController {
         }
     }
 
-    public async parse(type: "actions" | "requests", file: string): Promise<unknown> {
+    public async parse(type: "actions" | "requests" | "evaluations", file: string): Promise<unknown> {
         if (typeof type !== "string" || typeof file !== "string" ) {
             throw new Error("Parse command need type and file args");
         }
@@ -94,6 +94,8 @@ export default class OsirisCliController {
             return this._parseRequest(fileContent, logs);
         } else if (type === "actions") {
             return this._parseAction(fileContent, logs);
+        } else if (type === "evaluations") {
+            return this._parseEvaluation(fileContent, logs);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
@@ -158,6 +160,35 @@ export default class OsirisCliController {
             ${results.length}/${actions.length}
             ${created.length} actions created and ${results.length - created.length} actions update
             ${actions.length - results.length} actions not valid
+        `);
+    }
+
+    private async _parseEvaluation(contentFile: Buffer, logs: unknown[]) {
+        
+        const evaluations = OsirisParser.parseEvaluations(contentFile);
+
+        const results = await evaluations.reduce(async (acc, entity, index) => {
+            const data = await acc;
+            const validation = osirisService.validEvaluation(entity);
+
+            CliHelper.printProgress(index + 1 , evaluations.length);
+
+            if (!validation.success) {
+                logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
+            } else data.push(await osirisService.addEvaluation(entity));
+
+            return data;
+        }, Promise.resolve([]) as Promise<{
+            state: string;
+            result: OsirisEvaluationEntity;
+        }[]>)
+
+
+        const created = results.filter(({state}) => state === "created");
+        console.info(`
+            ${results.length}/${evaluations.length}
+            ${created.length} evaluation created and ${results.length - created.length} evaluations updated
+            ${evaluations.length - results.length} evaluations not valid
         `);
     }
 

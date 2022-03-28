@@ -1,6 +1,6 @@
 import fs from "fs";
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../../@types/Cli.interface";
+import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
 
 @StaticImplements<CliStaticInterface>()

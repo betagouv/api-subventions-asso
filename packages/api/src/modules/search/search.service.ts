@@ -2,13 +2,11 @@ import etablissementService from "../etablissements/etablissements.service";
 import associationsService from "../associations/associations.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
-import { Siret } from "../../@types/Siret";
-import { Rna } from "../../@types/Rna";
+import { Siret, Rna, Siren } from "../../@types";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
 import Etablissement from "../etablissements/interfaces/Etablissement";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
-import { Siren } from "../../@types/Siren";
 
 export class SearchService {
 

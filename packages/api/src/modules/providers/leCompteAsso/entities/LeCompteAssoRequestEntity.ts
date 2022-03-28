@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
-import { ParserInfo } from "../../../../@types/ParserInfo";
-import ParserPath from "../../../../@types/ParserPath";
+import { ParserInfo, ParserPath } from "../../../../@types";
 import ILegalInformations from "../../../search/@types/ILegalInformations";
 import RequestEntity from "../../../search/entities/RequestEntity";
 import ILeCompteAssoRequestInformations from "../@types/ILeCompteAssoRequestInformations";

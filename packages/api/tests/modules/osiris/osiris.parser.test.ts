@@ -4,6 +4,7 @@ import path from "path";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
 import OsirisActionEntity from "../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
+import OsirisEvaluationEntity from '../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
 
 describe("OsirisParser", () => {
     describe('parseRequests', () => {
@@ -41,7 +42,7 @@ describe("OsirisParser", () => {
             expect(actions).toHaveLength(1);
             expect(actions[0]).toBeInstanceOf(OsirisActionEntity);
         });
-
+        
         it('should have good properties', () => {
             const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls"));
             const actions = OsirisParser.parseActions(buffer);
@@ -53,4 +54,25 @@ describe("OsirisParser", () => {
             });
         });
     });
+    
+    describe("parseEvaluations()", () => {
+        it("should return osiris evaluation", () => {
+            const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/SuiviActionsEvaluation_test.xlsx"));
+            const actual = OsirisParser.parseEvaluations(buffer);
+            expect(actual).toHaveLength(1);
+            expect(actual[0]).toBeInstanceOf(OsirisEvaluationEntity);
+        })
+        
+        it("should have properties", () => {
+            const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/test.xlsx"));
+            const actual = (OsirisParser.parseEvaluations(buffer)[0]).indexedInformations;
+            const expected =  {
+                "osirisActionId": "DD00-21-0000-1",
+                "siret": "0",
+                "evaluation_resultat": "Lorem ipsum dolor sit amet,",
+                "cout_total_realise": 3600
+            }
+            expect(actual).toMatchObject(expected);
+        })
+    })
 });

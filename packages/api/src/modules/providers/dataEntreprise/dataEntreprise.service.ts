@@ -1,7 +1,5 @@
 import axios from "axios";
-import { Rna } from "../../../@types/Rna";
-import { Siren } from "../../../@types/Siren";
-import { Siret } from "../../../@types/Siret";
+import { Rna, Siren, Siret } from "../../../@types";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
 import { waitPromise } from "../../../shared/helpers/WaitHelper";

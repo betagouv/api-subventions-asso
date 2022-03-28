@@ -1,5 +1,4 @@
-import { Siren } from "../../@types/Siren";
-import { Siret } from "../../@types/Siret";
+import { Siren, Siret } from "../../@types";
 
 export function siretToSiren(siret: Siret): Siren {
     return siret.slice(0,9);

@@ -1,8 +1,5 @@
 import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
-import { ParserInfo } from "../../../../@types/ParserInfo";
-import ParserPath from "../../../../@types/ParserPath";
-import { Siret } from "../../../../@types/Siret";
-import { DefaultObject } from "../../../../@types/utils";
+import { ParserInfo, ParserPath, Siret, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 
 export default class FonjepRequestEntity {

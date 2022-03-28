@@ -1,8 +1,6 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
-import { Rna } from "../../../../@types/Rna";
-import { Siret } from "../../../../@types/Siret";
-import { Siren } from "../../../../@types/Siren";
+import { Rna, Siret, Siren } from "../../../../@types";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 
 export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequestEntity> {

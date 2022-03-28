@@ -10,7 +10,7 @@ import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiri
 import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
 import { connectDB } from "./shared/MongoConnection";
 
-import { CliStaticInterface } from "./@types/Cli.interface";
+import { CliStaticInterface } from "./@types";
 
 async function main() {
     await connectDB();

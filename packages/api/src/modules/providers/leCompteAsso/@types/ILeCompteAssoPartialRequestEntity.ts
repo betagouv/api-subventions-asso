@@ -1,4 +1,4 @@
-import { Siret } from "../../../../@types/Siret";
+import { Siret } from "../../../../@types";
 import ILeCompteAssoRequestInformations from "./ILeCompteAssoRequestInformations";
 
 export default interface ILeCompteAssoPartialRequestEntity {

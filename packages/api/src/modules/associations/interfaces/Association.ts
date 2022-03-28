@@ -1,8 +1,4 @@
-import { ProviderValues } from "../../../@types/ProviderValue";
-import { Rna } from "../../../@types/Rna";
-import { Siren } from "../../../@types/Siren";
-import { Siret } from "../../../@types/Siret";
-import { DefaultObject } from "../../../@types/utils";
+import { ProviderValues, Siret, Rna, Siren, DefaultObject } from "../../../@types";
 
 export default interface Association extends DefaultObject<(ProviderValues<unknown> | undefined | DefaultObject<ProviderValues<unknown>> | unknown)> {
     siren?: ProviderValues<Siren>,

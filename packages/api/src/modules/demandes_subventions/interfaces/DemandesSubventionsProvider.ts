@@ -1,4 +1,4 @@
-import { Siret } from "../../../@types/Siret";
+import { Siret } from "../../../@types";
 import DemandeSubvention from "./DemandeSubvention";
 
 export default interface DemandesSubventionsProvider {

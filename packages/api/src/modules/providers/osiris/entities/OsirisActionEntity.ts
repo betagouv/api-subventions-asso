@@ -1,9 +1,10 @@
 import { ObjectId } from "mongodb";
-import { ParserInfo } from "../../../../@types/ParserInfo";
-import ParserPath from "../../../../@types/ParserPath";
+import { ParserInfo, ParserPath, Falsy } from "../../../../@types";
 import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
+import OsirisActionEntityDbo from './OsirisActionEntityDbo';
+import OsirisEvaluationEntity from './OsirisEvaluationEntity';
 
-export default class OsirisActionEntity {
+export default class OsirisActionEntity extends OsirisActionEntityDbo {
     public static defaultMainCategory = "Dossier/action";
 
     public static indexedInformationsPath: {[key: string]: ParserPath | ParserInfo }= {
@@ -54,6 +55,9 @@ export default class OsirisActionEntity {
     constructor(
         public indexedInformations: IOsirisActionsInformations,
         public data: unknown,
-        public _id?: ObjectId
-    ) {}
+        public _id?: ObjectId,
+        public evaluation?: Falsy<OsirisEvaluationEntity>,
+    ) {
+        super(indexedInformations, data, _id)
+    }
 }

@@ -1,5 +1,4 @@
-import { Siren } from "../../../@types/Siren";
-import { Siret } from "../../../@types/Siret";
+import { Siren, Siret } from "../../../@types";
 import Versement from "./Versement";
 
 export default interface VersementsProvider {

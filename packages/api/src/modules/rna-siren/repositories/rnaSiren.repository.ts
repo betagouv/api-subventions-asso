@@ -1,8 +1,7 @@
 
 import RnaSiren from ".././entities/RnaSirenEntity";
 import db from "../../../shared/MongoConnection";
-import { Siren } from "../../../@types/Siren";
-import { Rna } from "../../../@types/Rna";
+import { Siren, Rna } from "../../../@types";
 
 export class RnaSirenRepository {
     private readonly collection = db.collection<RnaSiren>("rna-siren");

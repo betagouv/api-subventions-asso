@@ -1,14 +1,11 @@
-import { Siren } from "../../@types/Siren";
+import { Siren, DefaultObject,  Rna, ProviderValues } from "../../@types";
 import Association from "./interfaces/Association";
 import AssociationsProvider from "./interfaces/AssociationsProvider";
 import providers from "../providers";
-import { DefaultObject } from "../../@types/utils";
 import EntrepriseDtoAdapter from "../providers/dataEntreprise/adapters/EntrepriseDtoAdapter";
-import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdatper";
+import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
-import { ProviderValues } from "../../@types/ProviderValue";
 import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/AssociationDtoAdapter";
-import { Rna } from "../../@types/Rna";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 
 export class AssociationsService {

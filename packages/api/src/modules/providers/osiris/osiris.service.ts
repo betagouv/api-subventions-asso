@@ -1,6 +1,4 @@
-import { Rna } from "../../../@types/Rna";
-import { Siren } from "../../../@types/Siren";
-import { Siret } from "../../../@types/Siret";
+import { Rna, Siren, Siret } from "../../../@types";
 import EventManager from "../../../shared/EventManager";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
 import Association from "../../associations/interfaces/Association";
@@ -9,10 +7,11 @@ import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubv
 import Etablissement from "../../etablissements/interfaces/Etablissement";
 import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
-import OsirisRequestAdapter from "./adapters/OsirisRequestAdatper";
+import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
+import OsirisEvaluationEntity from './entities/OsirisEvaluationEntity';
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import osirisRepository from "./repository/osiris.repository";
+import { osirisRepository, osirisEvaluationRepository } from "./repositories";
 
 export const VALID_REQUEST_ERROR_CODE = {
     INVALID_SIRET: 1,
@@ -92,11 +91,49 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return { success: true };
     }
 
+    public validEvaluation(entity: OsirisEvaluationEntity) {
+        const evaluation = entity.indexedInformations;
+        if (!isOsirisActionId(evaluation.osirisActionId)) {
+            return { success: false, message: `INVALID OSIRIS ACTION ID FOR ${evaluation.osirisActionId}`, data: evaluation };
+        }
+        
+        if (!isSiret(evaluation.siret)) {
+            return { success: false, message: `INVALID SIRET FOR ${evaluation.siret}`, data: evaluation };
+        }
+        
+        if(!evaluation.evaluation_resultat.length) {
+            return { success: false, message: `INVALID EVALUATION RESULTAT FOR ${evaluation.evaluation_resultat}`, data: evaluation };
+        }
+        
+        return { success: true };
+    }
+
+    public async addEvaluation(entity: OsirisEvaluationEntity) {
+        const evaluation = entity.indexedInformations;
+        const existingEvaluation = await osirisEvaluationRepository.findByActionId(evaluation.osirisActionId);
+        if (existingEvaluation) {
+            return {
+                state: "updated",
+                result: await osirisEvaluationRepository.update(entity),
+            };
+        }
+
+        return {
+            state: "created",
+            result: await osirisEvaluationRepository.add(entity),
+        };
+    }
+
     public async findBySiret(siret: Siret) {
         const requests = await osirisRepository.findRequestsBySiret(siret);
 
         for (const request of requests) {
             request.actions = await osirisRepository.findActionsByCompteAssoId(request.providerInformations.compteAssoId)
+            // map -> save actions + map -> save eval
+            await request.actions.reduce(async (acc, value) => {
+                await acc;
+                value.evaluation = await osirisEvaluationRepository.findByActionId(value.indexedInformations.osirisActionId)
+            },  Promise.resolve());
         }
         return requests;
     }

@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import { Siret } from "../../../@types/Siret";
+import { Siret } from "../../../@types";
 import { isAssociationName, isCP, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../demandes_subventions/interfaces/DemandesSubventionsProvider";
 import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubvention";

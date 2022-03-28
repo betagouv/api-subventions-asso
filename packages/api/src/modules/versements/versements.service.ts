@@ -1,5 +1,4 @@
-import { Siren } from "../../@types/Siren";
-import { Siret } from "../../@types/Siret";
+import { Siren, Siret } from "../../@types";
 import Versement from "./interfaces/Versement";
 import VersementsProvider from "./interfaces/VersementsProvider";
 import providers from "../providers";
