@@ -1,3 +1,4 @@
+import { Siren } from "../../../@types/Siren";
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
 
@@ -8,6 +9,10 @@ export class DataGouvService {
 
     replaceEntrepriseSirenCollection() {
         return entrepriseSirenRepository.replaceCollection();
+    }
+
+    async sirenIsEntreprise(siren: Siren) {
+        return !!( await entrepriseSirenRepository.findOne(siren));
     }
 }
 

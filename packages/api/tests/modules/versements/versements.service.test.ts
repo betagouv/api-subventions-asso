@@ -26,14 +26,14 @@ describe("VersementService", () => {
         } as unknown as AssociationDto;
 
         beforeEach(async () => {
-            jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID", {
+            jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
+            await chorusService.addChorusLine(new ChorusLineEntity("FAKE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,
                 dateOperation: now,
-                branche: "BRANCHE",
                 codeBranche: "Z004",
+                branche: "BRANCHE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}));
@@ -116,8 +116,8 @@ describe("VersementService", () => {
         } as unknown as EtablissementDto;
 
         beforeEach(async () => {
-            jest.spyOn(chorusService, "siretBelongAsso").mockImplementation(() => Promise.resolve(true))
-            await chorusService.addChorusLine(new ChorusLineEntity("UNIQUE_ID",{
+            jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
+            await chorusService.addChorusLine(new ChorusLineEntity("FAKE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
                 amount: 1000,

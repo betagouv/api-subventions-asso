@@ -7,6 +7,7 @@ import { isEJ, isSiret } from "../../../shared/Validators";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import Versement from "../../versements/interfaces/Versement";
 import VersementsProvider from "../../versements/interfaces/VersementsProvider";
+import dataGouvService from "../datagouv/datagouv.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -16,7 +17,7 @@ export interface RejectedRequest {
 }
 
 export class ChorusService implements VersementsProvider {
-    private siretBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
+    private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
     public validateEntity(entity: ChorusLineEntity) {
         if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {
@@ -45,21 +46,31 @@ export class ChorusService implements VersementsProvider {
     /**
      * @param entities /!\ entites must be validated upstream
      */
-    public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
-        const acceptedEntities = await asyncFilter(entities, async (entity, index) => {
-            console.log(index);
+    public async insertBatchChorusLine(entities: ChorusLineEntity[], dropedDb = false) {
+        const acceptedEntities = await asyncFilter(entities, async (entity) => {
             if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
-            console.log("b");
-            if (await this.siretBelongAsso(entity.indexedInformations.siret)) return true;
+            const siren = siretToSiren(entity.indexedInformations.siret);
+
+            if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
+
+            const sirenIsAsso = await this.sirenBelongAsso(siren);
+
+            this.sirenBelongAssoCache.add(siren, sirenIsAsso);
+
+            if (sirenIsAsso) return true;
             return false;
         });
 
-        // chorusLineRepository.insertMany(acceptedEntities);
+        await chorusLineRepository.insertMany(acceptedEntities, dropedDb);
 
         return {
             rejected: entities.length - acceptedEntities.length,
             created: acceptedEntities.length
         }
+    }
+
+    public async switchChorusRepo() {
+        return chorusLineRepository.switchCollection();
     }
 
     public async addChorusLine(entity: ChorusLineEntity) {
@@ -79,7 +90,7 @@ export class ChorusService implements VersementsProvider {
         }
 
         // Check if siret belongs to an asso
-        if (entity.indexedInformations.codeBranche !== ASSO_BRANCHE && ! (await this.siretBelongAsso(entity.indexedInformations.siret))) {
+        if (entity.indexedInformations.codeBranche !== ASSO_BRANCHE && ! (await this.sirenBelongAsso(siretToSiren(entity.indexedInformations.siret)))) {
             return {
                 state: "rejected",
                 result: {
@@ -95,19 +106,13 @@ export class ChorusService implements VersementsProvider {
         }
     }
 
-    public async siretBelongAsso(siret: Siret): Promise<boolean> {
-        const siren = siretToSiren(siret);
-
-        if (this.siretBelongAssoCache.has(siren)) return false;
+    public async sirenBelongAsso(siren: Siren): Promise<boolean> {
+        if (await dataGouvService.sirenIsEntreprise(siren)) return false;
+        if (await rnaSirenService.getRna(siren, true)) return true;
 
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);
         if (chorusLine) return true; 
         
-        const rna = await rnaSirenService.getRna(siren, true);
-
-        if (rna) return true;
-
-        this.siretBelongAssoCache.add(siren, false);
         return false
     }
 

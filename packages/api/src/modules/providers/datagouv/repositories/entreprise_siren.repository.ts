@@ -1,3 +1,4 @@
+import { Siren } from "../../../../@types/Siren";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
 
@@ -7,12 +8,12 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
 
     readonly collectionImportName = "datagouv-entreprise-siren-IMPORT"
 
-    async insertMany(enities: EntrepriseSirenEntity[], dropedDb = false) {
+    async insertMany(entities: EntrepriseSirenEntity[], dropedDb = false) {
         if (dropedDb) {
-            return this.db.collection<EntrepriseSirenEntity>(this.collectionImportName).insertMany(enities, { ordered: false });
+            return this.db.collection<EntrepriseSirenEntity>(this.collectionImportName).insertMany(entities, { ordered: false });
         }
 
-        return this.collection.insertMany(enities, { ordered: false });
+        return this.collection.insertMany(entities, { ordered: false });
     }
 
     public async replaceCollection() {
@@ -24,6 +25,10 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
         await this.db.collection(this.collectionImportName).rename(this.collectionName);
         
         if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
+    }
+
+    public async findOne(siren: Siren) {
+        return this.collection.findOne({ _id: siren });
     }
 }
 
