@@ -28,7 +28,7 @@ describe("ChorusCliController", () => {
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.parse_csv).rejects.toThrowError("Parse_csv command need file args");
+            expect(controller.parse_csv).rejects.toThrowError("parse_csv command need file args");
         });
 
         it('should throw an error because the file does not exist', () => {
