@@ -38,7 +38,9 @@ export default class ChorusParser {
     }
 
     static parseXls(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
+        console.log("Open and read file ...");
         const page = ParseHelper.xlsParse(content)[2];
+        console.log("Read file end");
 
         const headerRaw = page[2] as string[];
         const header: string[] = [];

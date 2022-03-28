@@ -17,7 +17,7 @@ export default class ChorusCliController {
     /**
      * @param file path to file
      */
-    public async parse(file: string) {
+    public async parse_csv(file: string) {
         if (typeof file !== "string" ) {
             throw new Error("Parse command need file args");
         }
@@ -42,7 +42,7 @@ export default class ChorusCliController {
      * @param file path to file
      * @param batchSize La taille des packets envoyer à mongo coup par coup
      */
-    public async parseBigXls(file: string, batchSize = 1000) {
+    public async parse_xls(file: string, batchSize = 1000) {
         if (typeof file !== "string" ) {
             throw new Error("Parse command need file args");
         }
@@ -67,21 +67,26 @@ export default class ChorusCliController {
         const batchs = [];
 
         for(let i = 0; i < batchNumber; i++) {
-            batchs.push(entities.splice(0, batchSize));
+            batchs.push(entities.splice(-batchSize));
         }
-        console.log(batchs.length);
+
         const finalResult = {
             created: 0,
             rejected: 0,
         }
+
         await asyncForEach(batchs, async (batch, index) => {
             CliHelper.printProgress(index * 1000, totalEnities);
-            const result = await chorusService.insertBatchChorusLine(batch);
+            const result = await chorusService.insertBatchChorusLine(batch, true);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
         });
 
-        console.log(finalResult);
+        console.log("\nSwitch chorus repo ...");
+        await chorusService.switchChorusRepo();
+        console.log("End switch");
+
+        logs.push(`RESULT: ${JSON.stringify(finalResult)}`);
     }
 
     private async _parse(file: string, logs: unknown[]) {

@@ -6,6 +6,7 @@ import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
     readonly collectionName = "chorus-line";
+    readonly collectionImportName = "chorus-line-IMPORT"
 
     public async findOneByEJ(ej: string) {
         return this.collection.findOne({ "indexedInformations.ej": ej });
@@ -29,8 +30,12 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
         return this.collection.findOne({ _id: result.insertedId }) as Promise<WithId<ChorusLineEntity>>;
     }
 
-    public async insertMany(entites: ChorusLineEntity[]) {
-        await this.collection.insertMany(entites, {ordered: false});
+    public async insertMany(entities: ChorusLineEntity[], dropDB = false) {
+        if (dropDB) {
+            return this.db.collection<ChorusLineEntity>(this.collectionImportName).insertMany(entities, { ordered: false });
+        }
+
+        return this.collection.insertMany(entities, {ordered: false});
     }
 
     public async update(entity: ChorusLineEntity) {
@@ -67,6 +72,17 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
 
     public cursorFind(query: DefaultObject<unknown> = {}) {
         return this.collection.find(query);
+    }
+
+    public async switchCollection() {
+        const collectionExist = (await this.db.listCollections().toArray())
+            .find(c => c.name === this.collectionName);
+
+        if (collectionExist) await this.collection.rename(this.collectionName + "-OLD");
+        
+        await this.db.collection(this.collectionImportName).rename(this.collectionName);
+        
+        if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
     }
 }
 
