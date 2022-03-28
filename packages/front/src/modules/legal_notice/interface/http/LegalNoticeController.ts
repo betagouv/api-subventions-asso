@@ -8,8 +8,7 @@ export default class LegalNoticeController {
     @Get("")
     public legalNoticeView(req: Request, res: Response, next: NextFunction) {
         res.render('legal_notice/index.ejs', {
-            pageTitle: 'Mentions Légales',
-            error: req.query.error
+            pageTitle: 'Mentions Légales'
         })
     }
 }

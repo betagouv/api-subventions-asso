@@ -5,7 +5,8 @@ const routesWithoutLogin = [
     "/auth/login",
     "/auth/reset-password",
     "/auth/forget-password",
-    "/mentions-legales"
+    "/mentions-legales",
+    "/contact"
 ]
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
