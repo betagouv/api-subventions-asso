@@ -22,6 +22,7 @@ declare module 'express-session' {
 const appName = `DataSubvention - V${designSystemVersion}`
 const appDescription = "Toutes les informations pour instruire vos demandes de subvention"
 const appRepo = 'https://github.com/betagouv/api-subventions-asso'
+const contactEmail = "contact@datasubvention.beta.gouv.fr"
 const port = process.env.PORT || 1235
 
 const app = express()
@@ -37,6 +38,7 @@ app.use(function(req, res, next){
   res.locals.appName = appName
   res.locals.appDescription = appDescription
   res.locals.appRepo = appRepo
+  res.locals.contactEmail = contactEmail
   res.locals.page = req.url;
 
   res.locals.helper = EJSHelper;

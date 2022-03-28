@@ -4,7 +4,8 @@ import { DefaultObject } from "../@types/utils";
 const routesWithoutLogin = [
     "/auth/login",
     "/auth/reset-password",
-    "/auth/forget-password"
+    "/auth/forget-password",
+    "/mentions-legales"
 ]
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
