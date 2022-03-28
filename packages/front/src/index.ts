@@ -11,6 +11,7 @@ import controllers from "./modules/controllers";
 import { DefaultObject } from './@types/utils';
 import ControllerMethod, { ControllerRouteDEF } from './@types/ControllerMethod';
 import EJSHelper from './shared/helpers/EJSHelper';
+import * as Components from "./modules/global_components/index"
 import User from './@types/User'
 
 declare module 'express-session' {
@@ -40,6 +41,7 @@ app.use(function(req, res, next){
   res.locals.page = req.url;
 
   res.locals.helper = EJSHelper;
+  res.locals.components = Components;
   next()
 })
 

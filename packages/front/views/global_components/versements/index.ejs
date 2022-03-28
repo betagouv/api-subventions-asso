@@ -1,4 +1,8 @@
 <li>
+    <%
+        const _versements_module = components.versements;
+        const _versements = _versements_module.format(versements);
+    %>
     <section class="fr-accordion">
         <h3 class="fr-accordion__title">
             <button class="fr-accordion__btn" aria-expanded="false" aria-controls="fr-accordion-3-body-3">Historique des financements</button>
@@ -7,10 +11,10 @@
             <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-12">
                     <ul class="fr-accordions-group">
-                        <%const years = Object.keys(versements).sort().reverse();%>
+                        <%const years = Object.keys(_versements).sort().reverse();%>
                         <% for( let index = 0; index < years.length; index++ ) { %>
                             <% const year = years[index]; const yearText = year === "0000" ? "Année non communiqué" : year %>
-                            <% const total = versements[year].reduce( (acc,v) => acc + helper.getValue(v.amount), 0).toFixed(2);%>
+                            <% const total = _versements[year].reduce( (acc,v) => acc + helper.getValue(v.amount), 0).toFixed(2);%>
                             <li>
                                 <section class="fr-accordion">
                                     <h3 class="fr-accordion__title">
@@ -20,7 +24,7 @@
                                         Montants total pour l'année <%-yearText%> : <%-total%>€
                                         <%-
                                             include("./versements_table", {
-                                                versements: versements[year],
+                                                versements: _versements[year],
                                                 currentSiret
                                             })
                                         -%>
