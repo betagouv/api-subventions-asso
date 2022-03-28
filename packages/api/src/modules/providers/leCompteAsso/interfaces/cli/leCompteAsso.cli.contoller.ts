@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../../../@types/Cli.interface";
+import { CliStaticInterface} from "../../../../../@types";
 import LeCompteAssoParser from "../../leCompteAsso.parser";
 import leCompteAssoService, { RejectedRequest } from "../../leCompteAsso.service";
 import LeCompteAssoRequestEntity from "../../entities/LeCompteAssoRequestEntity";

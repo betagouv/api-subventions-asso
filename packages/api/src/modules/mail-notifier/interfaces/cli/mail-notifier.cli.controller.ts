@@ -1,5 +1,5 @@
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../../@types/Cli.interface";
+import { CliStaticInterface } from "../../../../@types";
 import mailNotifierService from "../../mail-notifier.service";
 
 @StaticImplements<CliStaticInterface>()

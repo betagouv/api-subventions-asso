@@ -1,5 +1,4 @@
-import ProviderValue, { ProviderValues } from "../../@types/ProviderValue";
-import { DefaultObject } from "../../@types/utils";
+import { ProviderValue, ProviderValues, DefaultObject } from "../../@types";
 import ProviderValueAdapter from "../adapters/ProviderValueAdapter";
 
 export default class FormaterHelper {

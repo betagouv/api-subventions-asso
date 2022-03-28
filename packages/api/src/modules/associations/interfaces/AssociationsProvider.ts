@@ -1,5 +1,4 @@
-import { Rna } from "../../../@types/Rna";
-import { Siren } from "../../../@types/Siren";
+import { Rna, Siren } from "../../../@types";
 import Association from "./Association";
 
 export default interface AssociationsProvider {

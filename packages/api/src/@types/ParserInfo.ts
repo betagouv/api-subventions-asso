@@ -1,4 +1,4 @@
-import ParserPath from "./ParserPath";
+import { ParserPath } from "./ParserPath";
 
 export interface ParserInfo {
     path: ParserPath,

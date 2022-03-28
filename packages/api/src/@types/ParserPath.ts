@@ -1,2 +1,1 @@
-type ParserPath = (string | string[])[];
-export default ParserPath;
+export type ParserPath = (string | string[])[];

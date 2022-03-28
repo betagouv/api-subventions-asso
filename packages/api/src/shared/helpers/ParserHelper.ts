@@ -2,9 +2,7 @@ import fs from "fs";
 import path from "path";
 import xlsx from 'node-xlsx';
 
-import { ParserInfo } from "../../@types/ParserInfo";
-import ParserPath from "../../@types/ParserPath";
-import { DefaultObject } from "../../@types/utils";
+import { ParserInfo, ParserPath, DefaultObject } from "../../@types";
 
 export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo) {
     let path: ParserPath;

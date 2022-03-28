@@ -1,5 +1,4 @@
-import { Rna } from "../../../@types/Rna";
-import { Siret } from "../../../@types/Siret";
+import { Rna, Siret } from "../../../@types";
 
 export interface SiretDataInterface {
     etablissement: {

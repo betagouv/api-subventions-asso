@@ -1,4 +1,4 @@
-import ProviderValue, {ProviderValues} from "../../@types/ProviderValue";
+import { ProviderValue, ProviderValues } from "../../@types";
 
 export default class ProviderValueAdapter {
 

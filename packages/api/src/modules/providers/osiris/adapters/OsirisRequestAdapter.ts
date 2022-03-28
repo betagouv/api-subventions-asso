@@ -1,4 +1,4 @@
-import ProviderValue from "../../../../@types/ProviderValue";
+import { ProviderValue } from "../../../../@types";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import Association from "../../../associations/interfaces/Association";
@@ -184,7 +184,11 @@ export default class OsirisRequestAdapter {
                     attribue: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_attribue, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                     realise: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_realise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                     compensation: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_compensation, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                }
+                },
+                evaluation: action.evaluation? {
+                    evaluation_resultat: ProviderValueAdapter.toProviderValue(action.evaluation.indexedInformations.evaluation_resultat, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                    cout_total_realise: ProviderValueAdapter.toProviderValue(action.evaluation.indexedInformations.cout_total_realise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                } : undefined
             }))
         }
 

@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import { Siret } from "../../../../@types/Siret";
+import { Siret } from "../../../../@types";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 

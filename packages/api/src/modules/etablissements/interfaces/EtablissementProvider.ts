@@ -1,4 +1,4 @@
-import { Siret } from "../../../@types/Siret";
+import { Siret } from "../../../@types";
 import Etablissement from "./Etablissement";
 
 export default interface EtablissementProvider {

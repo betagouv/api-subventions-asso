@@ -1,4 +1,4 @@
-import ProviderValue from "../../../@types/ProviderValue";
+import { ProviderValue } from "../../../@types";
 import Versement from "../../versements/interfaces/Versement";
 
 export default interface DemandeSubvention {
@@ -56,11 +56,15 @@ export default interface DemandeSubvention {
             realise: ProviderValue<number>,
             compensation: ProviderValue<number>,
         },
-    }[],
+    }[]
     territoires?: {
         status: ProviderValue<string>
         commentaire: ProviderValue<string>
     }[]
 
-    versements?: Versement[]
+    versements?: Versement[],
+    evaluation?: {
+        evaluation_resultat: ProviderValue<string>,
+        cout_total_realise: ProviderValue<number>
+    }
 }

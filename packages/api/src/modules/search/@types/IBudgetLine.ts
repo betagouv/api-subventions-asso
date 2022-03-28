@@ -1,4 +1,4 @@
-import { Siret } from "../../../@types/Siret";
+import { Siret } from "../../../@types";
 
 export default interface IBudgetLine {
     siret: Siret,

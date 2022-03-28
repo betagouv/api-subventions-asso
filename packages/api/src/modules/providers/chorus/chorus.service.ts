@@ -1,5 +1,4 @@
-import { Siren } from "../../../@types/Siren";
-import { Siret } from "../../../@types/Siret";
+import { Siren, Siret } from "../../../@types";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";

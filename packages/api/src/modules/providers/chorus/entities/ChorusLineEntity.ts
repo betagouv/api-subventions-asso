@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { ParserInfo } from "../../../../@types/ParserInfo";
+import { ParserInfo } from "../../../../@types";
 import IChorusIndexedInformations from "../@types/IChorusIndexedInformations";
 
 export default class ChorusLineEntity {

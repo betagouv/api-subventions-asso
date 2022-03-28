@@ -1,7 +1,5 @@
 import { ObjectId, WithId } from "mongodb";
-import { Siren } from "../../../../@types/Siren";
-import { Siret } from "../../../../@types/Siret";
-import { DefaultObject } from "../../../../@types/utils";
+import { Siren, Siret, DefaultObject } from "../../../../@types";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 

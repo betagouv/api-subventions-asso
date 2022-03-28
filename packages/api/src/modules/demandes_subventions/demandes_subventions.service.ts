@@ -1,4 +1,4 @@
-import { Siret } from "../../@types/Siret";
+import { Siret } from "../../@types";
 import providers from "../providers";
 import DemandesSubventionsProvider from "./interfaces/DemandesSubventionsProvider";
 import DemandeSubvention from "./interfaces/DemandeSubvention";

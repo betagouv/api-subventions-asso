@@ -3,13 +3,14 @@ import { MONGO_BATCH_SIZE } from "../../../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
-import { Siret } from "../../../../@types/Siret";
-import { Rna } from "../../../../@types/Rna";
-import { Siren } from "../../../../@types/Siren";
+import { Siret, Rna, Siren } from "../../../../@types";
+import OsirisActionEntityDbo from '../entities/OsirisActionEntityDbo';
+import OsirisActionAdapter from './dboAdapters/osirisActionAdapter';
+import MongoCnxError from '../../../../shared/errors/MongoCnxError';
 
 export class OsirisRepository {
     private readonly requestCollection = db.collection<OsirisRequestEntity>("osiris-requests");
-    private readonly actionCollection = db.collection<OsirisActionEntity>("osiris-actions");
+    private readonly actionCollection = db.collection<OsirisActionEntityDbo>("osiris-actions");
 
     // Request Part
     public async addRequest(osirisRequest: OsirisRequestEntity) {
@@ -55,31 +56,41 @@ export class OsirisRepository {
 
     // Action Part
     public async addAction(osirisAction: OsirisActionEntity) {
-        await this.actionCollection.insertOne(osirisAction);
-        return this.findActionByOsirisId(osirisAction.indexedInformations.osirisActionId) as OsirisActionEntity;
+        await this.actionCollection.insertOne(OsirisActionAdapter.toDbo(osirisAction));
+        const dbo = await this.findActionByOsirisId(osirisAction.indexedInformations.osirisActionId);
+        if (!dbo) throw new MongoCnxError();
+        return OsirisActionAdapter.toEntity(dbo);
     }
 
     public async updateAction(osirisAction: OsirisActionEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...actionWithoutId } = osirisAction;
-        return (await this.actionCollection.findOneAndUpdate(
+        const {_id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
+        const dbo =  (await this.actionCollection.findOneAndUpdate(
             { "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId },
             { $set: actionWithoutId },
             options
-        )).value as OsirisActionEntity;
+        )).value;
+        if (!dbo) throw new MongoCnxError();
+        return OsirisActionAdapter.toEntity(dbo);
     }
     
+    /**
+     * @depricated
+     */
     public async findAllActions(limit:number = MONGO_BATCH_SIZE) {
         return this.actionCollection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisActionEntity[];
     }
 
-    public findActionByOsirisId(osirisId: string) {
-        return this.actionCollection.findOne({ "indexedInformations.osirisActionId": osirisId }) as unknown as (OsirisActionEntity | null);
+    public async findActionByOsirisId(osirisId: string) {
+        const dbo = await this.actionCollection.findOne({ "indexedInformations.osirisActionId": osirisId });
+        if(!dbo) return null;
+        return OsirisActionAdapter.toEntity(dbo);
     }
 
-    public findActionsByCompteAssoId(compteAssoId: string) {
-        return this.actionCollection.find({ "indexedInformations.compteAssoId": compteAssoId }).toArray();
+    public async findActionsByCompteAssoId(compteAssoId: string) {
+        const dbos = await this.actionCollection.find({ "indexedInformations.compteAssoId": compteAssoId }).toArray();
+        return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
     }
 }
 

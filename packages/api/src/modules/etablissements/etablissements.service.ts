@@ -1,14 +1,12 @@
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablisementDtoAdapter";
-import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdatper";
+import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
 import EtablissementProvider from "./interfaces/EtablissementProvider";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import Etablissement from "./interfaces/Etablissement";
 import providers from "../providers";
 
-import { ProviderValues } from "../../@types/ProviderValue";
-import { DefaultObject } from "../../@types/utils";
-import { Siret } from "../../@types/Siret";
+import { ProviderValues, DefaultObject, Siret } from "../../@types";
 
 export class EtablissementsService {
     

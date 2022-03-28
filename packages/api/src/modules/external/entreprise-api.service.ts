@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { Rna } from '../../@types/Rna';
-import { Siret } from '../../@types/Siret';
+import { Rna, Siret } from '../../@types';
 import { waitPromise } from '../../shared/helpers/WaitHelper';
 import AssociationSirenInfertace from './@types/AssociationSirenInfertace';
 import RnaInterface from './@types/RnaInterface';

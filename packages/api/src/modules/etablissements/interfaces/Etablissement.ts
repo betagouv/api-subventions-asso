@@ -1,6 +1,4 @@
-import {ProviderValues} from "../../../@types/ProviderValue";
-import { Siret } from "../../../@types/Siret";
-import { DefaultObject } from "../../../@types/utils";
+import { ProviderValues, Siret, DefaultObject } from "../../../@types";
 
 export default interface Etablissement extends DefaultObject<(
                                                 ProviderValues<unknown> 
