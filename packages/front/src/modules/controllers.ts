@@ -5,6 +5,7 @@ import EtablissementController from "./etablissement/interfaces/http/Etablisseme
 import HomeController from "./home/interfaces/http/HomeController";
 import SearchController from "./search/interfaces/http/SearchController";
 import LegalNoticeController from "./legal_notice/interface/http/LegalNoticeController";
+import ContactController from "./contact/interface/http/ContactController";
 
 export default [
     AuthController,
@@ -13,5 +14,6 @@ export default [
     EtablissementController,
     HomeController,
     SearchController,
-    LegalNoticeController
+    LegalNoticeController,
+    ContactController
 ]
