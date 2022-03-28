@@ -169,7 +169,7 @@ describe("chorus.service", () => {
             mock.mockRestore();
         })
 
-        it("should be not update because same ej but not same amout", async () => {
+        it("should be not update because same ej but not same id", async () => {
             const mock = jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
             const entity = new ChorusLineEntity("FAKE_ID", {
                 siret: "10000000000000",
@@ -184,38 +184,12 @@ describe("chorus.service", () => {
 
             await chorusService.addChorusLine(entity);
 
-            entity.indexedInformations.amount = 5000;
+            entity.uniqueId = "FAKE_ID_2";
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const {_id, ...entityWithoutId } = entity
 
             await expect(chorusService.addChorusLine(entityWithoutId)).resolves.toEqual({ state: "created", result: entityWithoutId });
-            mock.mockRestore();
-        })
-
-        it("should be not update because same ej but not operation data", async () => {
-            const mock = jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
-
-            const entity = new ChorusLineEntity("FAKE_ID", {
-                siret: "10000000000000",
-                ej: "1000000000",
-                amount: 1000,
-                dateOperation: new Date(),
-                branche: "BRANCHE",
-                codeBranche: "Z004",
-                compte: "COMPTE",
-                typeOperation: "ZSUB"
-            }, {});
-
-            await chorusService.addChorusLine(entity);
-
-            entity.indexedInformations.dateOperation = new Date(1,1,1970);
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {_id, ...entityWithoutId } = entity
-
-            await expect(chorusService.addChorusLine(entityWithoutId)).resolves.toEqual({ state: "created", result: entityWithoutId });
-
             mock.mockRestore();
         })
     })

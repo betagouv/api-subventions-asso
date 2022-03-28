@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { ParserInfo } from "../../../../@types";
+import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
 import IChorusIndexedInformations from "../@types/IChorusIndexedInformations";
 
 export default class ChorusLineEntity {
@@ -26,9 +27,12 @@ export default class ChorusLineEntity {
             path: ["Date de dernière opération sur la DP"],
             adapter: (value) => {
                 if (!value) return value;
+                if (value != parseInt(value, 10).toString()) {
+                    const [day, month, year] = value.split('.').map(v => parseInt(v, 10));
+                    return new Date(Date.UTC(year, month - 1, day));
+                }
 
-                const [day, month, year] = value.split('.').map(v => parseInt(v, 10));
-                return new Date(Date.UTC(year, month - 1, day));
+                return ExcelDateToJSDate(parseInt(value, 10));
             }
         }, 
     }
