@@ -1,3 +1,4 @@
+import RnaSiren from "../../../src/modules/rna-siren/entities/RnaSirenEntity";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service"
 import db from "../../../src/shared/MongoConnection";
 
@@ -37,4 +38,34 @@ describe("RnaSirenService", () => {
             expect(await rnaSirenService.getRna("000000001")).toBe(null)
         })
     })
+
+    describe("insertMany", () => {
+        it("should be insert 3 entities", async () => {
+            const entities = [
+                new RnaSiren("aaa", "111"),
+                new RnaSiren("bbb", "222"),
+                new RnaSiren("ccc", "333"),
+            ]
+            
+            await rnaSirenService.insertMany(entities);
+
+            expect(await db.collection("rna-siren").find().count()).toBe(4);
+        })
+    });
+
+    describe("cleanDuplicate", () => {
+        beforeEach(async () => {
+            const entities = [
+                new RnaSiren("W000000000", "000000000"),
+                new RnaSiren("W000000001", "000000001"),
+            ]
+            
+            await rnaSirenService.insertMany(entities);
+
+        })
+        it("should be clean duplicates entities", async () => {
+            await rnaSirenService.cleanDuplicate();
+            expect(await db.collection("rna-siren").find().count()).toBe(2);
+        })
+    });
 });
