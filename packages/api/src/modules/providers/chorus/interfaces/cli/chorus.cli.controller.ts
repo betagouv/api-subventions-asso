@@ -19,7 +19,7 @@ export default class ChorusCliController {
      */
     public async parse_csv(file: string) {
         if (typeof file !== "string" ) {
-            throw new Error("Parse command need file args");
+            throw new Error("parse_csv command need file args");
         }
 
         if (!fs.existsSync(file)) {
