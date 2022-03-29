@@ -13,6 +13,8 @@ export default class ChorusAdapter {
             siret: ProviderValueAdapter.toProviderValue(entity.indexedInformations.siret, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             amount: ProviderValueAdapter.toProviderValue(entity.indexedInformations.amount, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             dateOperation: ProviderValueAdapter.toProviderValue(entity.indexedInformations.dateOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            centreFinancier: ProviderValueAdapter.toProviderValue(entity.indexedInformations.centreFinancier, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            domaineFonctionnel: ProviderValueAdapter.toProviderValue(entity.indexedInformations.domaineFonctionnel, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             compte: entity.indexedInformations.compte
                 ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.compte, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
                 : undefined,

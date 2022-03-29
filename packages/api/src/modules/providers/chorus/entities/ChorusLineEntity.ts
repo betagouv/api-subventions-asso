@@ -12,14 +12,18 @@ export default class ChorusLineEntity {
         },
         siret: { path: ['Code taxe 1'] },
         compte: { path: ['Compte général'] }, 
-        codeBranche: { path: ['Branche CODE'] }, 
+        codeBranche: { path: ['Branche CODE'] },
         branche: { path: ['Branche'] }, 
+        centreFinancier: { path: ["Centre financier"]},
+        codeCentreFinancier: { path: ["Centre financier CODE"]},
+        domaineFonctionnel: { path: ["Domaine fonctionnel"]},
+        codeDomaineFonctionnel: { path: ["Domaine fonctionnel CODE"]},
         typeOperation: { path: ['Type d\'opération CODE', "Grpe cptes fourniss. CODE"] }, 
         amount: { 
             path: ["EUR"],
             adapter: (value) => {
-                if (!value) return value;
-
+                if (!value || typeof value === "number") return value;
+                
                 return parseFloat(value.replace("\r", "").replace(" ", '').replace(",", "."))
             }
         }, 
