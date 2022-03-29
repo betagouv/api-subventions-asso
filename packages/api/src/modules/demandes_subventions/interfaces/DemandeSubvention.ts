@@ -1,8 +1,10 @@
+import { Siret } from "@api-subventions-asso/dto";
 import { ProviderValue } from "../../../@types";
 import Versement from "../../versements/interfaces/Versement";
 
 export default interface DemandeSubvention {
     service_instructeur: ProviderValue<string>,
+    siret: ProviderValue<Siret>,
     dispositif?: ProviderValue<string>,
     sous_dispositif?: ProviderValue<string>,
     ej?: ProviderValue<string>

@@ -1,3 +1,4 @@
+import { Siren } from "@api-subventions-asso/dto";
 import { WithId } from "mongodb";
 import { Siret } from "../../../@types";
 import { isAssociationName, isCP, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
@@ -97,6 +98,14 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
     }
 
+    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
+        const entities = await fonjepRepository.findBySiren(siren);
+
+        if (entities.length === 0) return null;
+
+        return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
+    }
+
     /**
      * |----------------------|
      * |  Etablissement Part  |
@@ -112,6 +121,15 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
         return entities.map(e => FonjepEntityAdapter.toEtablissement(e));
     }
+
+    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
+        const entities = await fonjepRepository.findBySiren(siren);
+
+        if (entities.length === 0) return null;
+
+        return entities.map(e => FonjepEntityAdapter.toEtablissement(e));
+    }
+
 }
 
 const fonjepService = new FonjepService();

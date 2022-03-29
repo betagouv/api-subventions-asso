@@ -10,6 +10,7 @@ export default class FonjepEntityAdapter {
     static toDemandeSubvention(entity: FonjepRequestEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.date_versement
         return {
+            siret: ProviderValueAdapter.toProviderValue(entity.legalInformations.siret, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
             service_instructeur: ProviderValueAdapter.toProviderValue(entity.indexedInformations.service_instructeur, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
             status: ProviderValueAdapter.toProviderValue(entity.indexedInformations.status, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
             annee_demande: ProviderValueAdapter.toProviderValue(entity.indexedInformations.annee_demande, FonjepEntityAdapter.PROVIDER_NAME, dataDate),

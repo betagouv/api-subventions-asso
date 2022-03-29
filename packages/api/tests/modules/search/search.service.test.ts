@@ -23,6 +23,7 @@ describe("SearchService", () => {
             jest.spyOn(entrepriseApiSerivce, "findAssociationBySiren"),
             jest.spyOn(associationsService, "getAssociationBySiren"),
             jest.spyOn(etablissementService, "getEtablissement"),
+            jest.spyOn(etablissementService, "getEtablissementsBySiren"),
             jest.spyOn(osirisService, "findBySiret"),
             jest.spyOn(osirisService, "findByRna"),
         )
@@ -97,7 +98,7 @@ describe("SearchService", () => {
         it('should returns file contains actions', async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            etablissementService.getEtablissement.mockImplementationOnce(() => ({ siret: toPVs("00000000900000") }));
+            etablissementService.getEtablissementsBySiren.mockImplementationOnce(() => ([{ siret: toPVs("00000000900000") }]));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
@@ -145,7 +146,7 @@ describe("SearchService", () => {
         it('should returns file contains actions', async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            etablissementService.getEtablissement.mockImplementationOnce(() => ({ siret: toPVs("00000000900000") }));
+            etablissementService.getEtablissementsBySiren.mockImplementationOnce(() => ([{ siret: toPVs("00000000900000") }]));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore

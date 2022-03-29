@@ -30,6 +30,7 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         territoireCommentaire: ["Territoires", "Commentaire"],
 
         ej: ["Dossier/action", "N° EJ"],
+        siret: ["Bénéficiaire", "N° Siret"],
         rang: ["Caractéristiques actions", "Rang"],
         intitule: ["Caractéristiques actions", "Intitulé"],
         objectifs: ["Caractéristiques actions", "Objectifs"],

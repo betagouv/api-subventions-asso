@@ -101,6 +101,10 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         return await leCompteAssoRepository.findsBySiret(siret);
     }
 
+    public async findBySiren(siren: Siren) {
+        return await leCompteAssoRepository.findBySiren(siren);
+    }
+
     public async findByRna(rna: Rna) {
         return await leCompteAssoRepository.findsByRna(rna);
 
@@ -139,6 +143,14 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
 
     async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {   
         const requests = await this.findBySiret(siret);
+
+        if (requests.length === 0) return null;
+
+        return requests.map(r => LeCompteAssoRequestAdapter.toEtablissement(r));
+    }
+
+    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
+        const requests = await this.findBySiren(siren);
 
         if (requests.length === 0) return null;
 
