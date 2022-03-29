@@ -41,7 +41,6 @@ export const expressLogger = () => expressWinston.logger({
         'headers'
     ],
     responseWhitelist: [
-        "body",
         "statusCode",
     ],
     ignoreRoute: (req) => {
