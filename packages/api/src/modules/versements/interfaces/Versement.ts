@@ -6,6 +6,8 @@ export default interface Versement {
     siret: ProviderValue<Siret>;
     amount: ProviderValue<number>;
     dateOperation: ProviderValue<Date>;
+    centreFinancier: ProviderValue<string>
+    domaineFonctionnel: ProviderValue<string>,
     compte?: ProviderValue<string>;
     codeBranche?: ProviderValue<string>;
     branche?: ProviderValue<string>;

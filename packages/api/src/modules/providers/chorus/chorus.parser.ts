@@ -39,10 +39,11 @@ export default class ChorusParser {
 
     static parseXls(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
         console.log("Open and read file ...");
-        const page = ParseHelper.xlsParse(content)[2];
+        const pages = ParseHelper.xlsParse(content);
+        const page = pages[0];
         console.log("Read file end");
-
-        const headerRaw = page[2] as string[];
+    
+        const headerRaw = page[0] as string[];
         const header: string[] = [];
 
         for (let i = 0; i < headerRaw.length; i++) {
@@ -56,7 +57,7 @@ export default class ChorusParser {
             }
         }
 
-        const data = page.slice(4) as string[][];
+        const data = page.slice(1) as string[][];
         return data.reduce((entities, raw, index) => {
             CliHelper.printAtSameLine(`${index} entities parsed of ${data.length}`);
 
@@ -75,7 +76,7 @@ export default class ChorusParser {
         }, [] as ChorusLineEntity[])
     }
 
-    private static buildUniqueId(indexedInformations: IChorusIndexedInformations) : string {
+    private static buildUniqueId(indexedInformations: IChorusIndexedInformations): string {
         return `${indexedInformations.siret}-${indexedInformations.ej}-${indexedInformations.dateOperation}-${indexedInformations.amount}`;
     }
 }
