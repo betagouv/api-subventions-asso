@@ -30,10 +30,10 @@ export class MailNotifierService {
             Vous êtes inscrit à un test solution ou une démo avec notre équipe dans les jours qui viennent ? Inutile d'aller plus loin, nous prendrons le temps d'activer votre compte ensemble, lors de cet échange.
             </p>
             <p>
-            Vous aimeriez suivre une démo, que nous vous présentions l'outil pas à pas ? Vous pouvez nous écrire à <a href="mailto:contact@datasubvention.beta.gouv.fr">cette adresse</a>.
+            Vous aimeriez suivre une démo, pour que nous vous présentions l'outil pas à pas ? Vous pouvez nous écrire à <a href="mailto:contact@datasubvention.beta.gouv.fr">cette adresse</a>, nous nous ferons un plaisir de vous proposer un rendez-vous.
             </p>
             <p>
-                Si vous souhaitez accéder directement à la plateforme, il suffit d'activer votre compte et choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">ici</a>.
+                Vous souhaitez accéder directement à la plateforme ? Pour cela, il suffit d'activer votre compte et choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">ici</a>.
             </p>
 
             <p>Bonne journée et à bientôt sur notre plateforme !</p>
