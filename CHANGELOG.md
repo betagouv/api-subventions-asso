@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/betagouv/api-subventions-asso/compare/v0.5.0...v0.5.1) (2022-03-29)
+
+
+### Features
+
+* **api, dto:** disable sort by subvention and update dtos ([7dd05ea](https://github.com/betagouv/api-subventions-asso/commit/7dd05ea4721b7d3deaad98d97e4a2279d05435de))
+* **api:** add branche and unique_id in chorus entity and versement inteface ([5a083fc](https://github.com/betagouv/api-subventions-asso/commit/5a083fc95bc1c912202f28fa3c062ee8c19d28c2))
+* **front:** add components module (global_components) ([1e281fc](https://github.com/betagouv/api-subventions-asso/commit/1e281fcd4240c29f9116b1ae3c31f75b50d477d9))
+* **front:** add versement components ([42671aa](https://github.com/betagouv/api-subventions-asso/commit/42671aaf6d92a0168aa7349022f53f6805597e17))
+* **front:** add versement in association view ([8983672](https://github.com/betagouv/api-subventions-asso/commit/89836720b47147a189906025587d0cb1632a4fa9))
+* **front:** add versement in etablisement view ([4bfc878](https://github.com/betagouv/api-subventions-asso/commit/4bfc8783dc0c473299bcb528677b37d3add84cfb))
+
 ## [0.5.0](https://github.com/betagouv/api-subventions-asso/compare/v0.4.2...v0.5.0) (2022-03-25)
 
 
