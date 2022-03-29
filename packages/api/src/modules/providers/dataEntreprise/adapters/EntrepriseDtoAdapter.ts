@@ -23,9 +23,9 @@ export default class EntrepriseDtoAdapter {
                 code_postal:data.unite_legale.etablissement_siege.code_postal,
                 commune:data.unite_legale.etablissement_siege.libelle_commune,
             }, EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)) : undefined,
-            etablisements_siret: ProviderValueAdapter.toProviderValues(
+            etablisements_siret:  data.unite_legale.etablissements ? ProviderValueAdapter.toProviderValues(
                 data.unite_legale.etablissements.map(e => e.siret)
-                , EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
+                , EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)) : undefined,
         }
     }
 }

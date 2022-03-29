@@ -39,7 +39,7 @@ export default interface EntrepriseDto {
         caractere_employeur: string,
         created_at: string,
         updated_at: string,
-        etablissement_siege: {
+        etablissement_siege?: {
             id: number,
             siren: string,
             nic: string,
@@ -103,6 +103,6 @@ export default interface EntrepriseDto {
             updated_at: string
         },
         numero_tva_intra: string,
-        etablissements: EtablisementDto[]
+        etablissements?: EtablisementDto[]
     }
 }

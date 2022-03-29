@@ -5,6 +5,11 @@ import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueA
 describe("dateEntrepise.service", () => {
     const now = new Date();
     const toPVs = (value: unknown, provider = "TEST") => ProviderValueAdapter.toProviderValues(value, provider, now);
+    beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dataEntrepriseService.requestCache.destroy();
+    })
 
     describe("findAssociationByRna", () => {
         it("should be called api", async () => {
