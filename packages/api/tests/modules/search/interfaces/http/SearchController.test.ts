@@ -22,6 +22,7 @@ describe('SearchController, /search', () => {
     beforeAll(() => {
         spys.push(
             jest.spyOn(associationsService, "getAssociationBySiren"),
+            jest.spyOn(etablissementService, "getEtablissementsBySiren"),
             jest.spyOn(etablissementService, "getEtablissement"),
         )
     });
@@ -125,7 +126,7 @@ describe('SearchController, /search', () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            etablissementService.getEtablissement.mockImplementationOnce(() => ({ siret: toPVs("12345678911111") }));
+            etablissementService.getEtablissementsBySiren.mockImplementationOnce(() => ([{ siret: toPVs("12345678911111") }]));
 
         })
         it("should return 200", async () => {

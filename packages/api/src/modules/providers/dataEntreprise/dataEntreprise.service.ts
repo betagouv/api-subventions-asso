@@ -14,7 +14,7 @@ import AssociationDto from "./dto/AssociationDto";
 import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
 
-const CACHE_TIME = 1000*60*10; // 10min
+const CACHE_TIME = 1000 * 60 * 60 * 24; // 1 day
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     private BASE_URL = "https://entreprise.data.gouv.fr";
@@ -65,7 +65,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         }
 
         data.unite_legale.etablissements.forEach(etablissement => {
-            const etab = EtablissementDtoAdapter.toEtablissement(etablissement);
+            const etab = EtablissementDtoAdapter.toEtablissement({ ...etablissement, unite_legale: data.unite_legale });
             this.etablissementsCache.add(etablissement.siret, etab);
         });
 
@@ -146,6 +146,26 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (!result) return null
 
         return [result];
+    }
+
+    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
+        let etablisementsList: string[] = [];
+
+        const associations = await this.getAssociationsBySiren(siren);
+
+        
+        if (associations && associations.length) {
+            const association = associations.find(a => a.etablisements_siret && a.etablisements_siret.length);
+            
+            if (!association || !association.etablisements_siret?.flat()[0].value) return null;
+            
+            etablisementsList = association.etablisements_siret?.flat()[0].value as string[];
+        }
+
+        return etablisementsList.reduce(async (acc, siret) => {
+            const data = await acc;
+            return data.concat(... (await this.getEtablissementsBySiret(siret)) as Etablissement[]);
+        }, Promise.resolve([]) as Promise<Etablissement[]>);
     }
 
 }

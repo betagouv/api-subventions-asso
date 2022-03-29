@@ -138,6 +138,17 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return requests;
     }
 
+    public async findBySiren(siren: Siren) {
+        const requests = await osirisRepository.findRequestsBySiren(siren);
+        
+        const actions = await osirisRepository.findActionsBySiren(siren);
+
+        for (const request of requests) {
+            request.actions = actions.filter(a => a.indexedInformations.compteAssoId === request.providerInformations.compteAssoId);
+        }
+        return requests;
+    }
+
     public async findByRna(rna: Rna) {
         const requests = await osirisRepository.findRequestsByRna(rna);
 
@@ -210,6 +221,14 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return requests.map(r => OsirisRequestAdapter.toEtablissement(r));
     }
 
+    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
+        const requests = await this.findBySiren(siren);
+
+        if (requests.length === 0) return null;
+
+        return requests.map(r => OsirisRequestAdapter.toEtablissement(r));
+    }
+
 
     /**
      * |------------------------------|
@@ -221,6 +240,14 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {   
         const requests = await this.findBySiret(siret);
+
+        if (requests.length === 0) return null;
+
+        return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
+    }
+
+    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {   
+        const requests = await this.findBySiren(siren);
 
         if (requests.length === 0) return null;
 

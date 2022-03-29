@@ -4,7 +4,6 @@ import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
 import { Siret, Rna, Siren } from "../../@types";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
-import Etablissement from "../etablissements/interfaces/Etablissement";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 
@@ -12,7 +11,6 @@ export class SearchService {
 
     public async getBySiret(siret: Siret) {
         const siren = siretToSiren(siret);
-
         const association = await associationsService.getAssociationBySiren(siren)
 
         if (!association || !association.etablisements_siret?.find(providerValue => providerValue.value.includes(siret))) return null;
@@ -51,32 +49,25 @@ export class SearchService {
         if (!rna) {
             rna = await rnaSirenService.getRna(siren) || undefined
         }
-
         const association = await associationsService.getAssociationBySiren(siren, rna);
 
         if (!association) return null;
+        const etablissements = (await etablissementService.getEtablissementsBySiren(siren) || []).sort(e => {
+            if (!e.ouvert || !e.ouvert[0].value) return 2;
+            if (e.siege && e.siege[0].value) return -1;
+            return 1;
+        });
 
-        const sirets = (association.etablisements_siret || [])
-            .map(value => value.value)
-            .flat();
-
-        const etablissements = await [...new Set(sirets)].reduce(async (acc, siret) => {
-            const etablisements = await acc;
-            const etablisement = await etablissementService.getEtablissement(siret);
-
-            if (etablisement) etablisements.push(etablisement);
-
-            return etablisements;
-        }, Promise.resolve([]) as Promise<Etablissement[]>);
+        const demandesSubventions = await demandesSubventionsService.getDemandeSubventionsBySiren(siren);
 
         const associationDto = {
             ...association,
-            etablissements: await Promise.all(
-                etablissements.map(async (etablissement) => ({
+            etablissements: etablissements.map((etablissement) => (
+                {
                     ...etablissement,
-                    demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(etablissement.siret[0].value),
+                    demandes_subventions: demandesSubventions?.filter(d => d.siret.value === etablissement.siret[0].value) || [],
                     versements: [],
-                }))
+                })
             ),
             versements: [],
         }

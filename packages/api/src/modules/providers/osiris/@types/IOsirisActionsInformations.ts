@@ -1,3 +1,4 @@
+import { Siret } from "@api-subventions-asso/dto";
 
 export default interface IOsirisActionsInformations {
     osirisActionId: string,
@@ -23,6 +24,7 @@ export default interface IOsirisActionsInformations {
     territoireCommentaire: string
 
     ej: string,
+    siret: Siret,
     rang: number,
     intitule: string,
     objectifs: string,

@@ -106,6 +106,7 @@ export default class OsirisRequestAdapter {
         const dataDate = entity.providerInformations.dateCommission || entity.providerInformations.exerciceDebut;
         
         const data: DemandeSubvention = {
+            siret: ProviderValueAdapter.toProviderValue(entity.legalInformations.siret, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             service_instructeur: ProviderValueAdapter.toProviderValue(entity.providerInformations.service_instructeur, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             sous_dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.sous_dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),

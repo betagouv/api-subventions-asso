@@ -92,6 +92,11 @@ export class OsirisRepository {
         const dbos = await this.actionCollection.find({ "indexedInformations.compteAssoId": compteAssoId }).toArray();
         return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
     }
+
+    public async findActionsBySiren(siren: Siren) {
+        const dbos = await this.actionCollection.find({ "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`) }).toArray();
+        return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
+    }
 }
 
 const osirisRepository: OsirisRepository = new OsirisRepository();
