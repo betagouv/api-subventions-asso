@@ -8,6 +8,7 @@ import IOsirisActionsInformations from "../../../src/modules/providers/osiris/@t
 import associationsService from "../../../src/modules/associations/associations.service";
 import etablissementService from "../../../src/modules/etablissements/etablissements.service";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
+import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 
 describe("SearchService", () => {
     const now = new Date();
@@ -22,6 +23,7 @@ describe("SearchService", () => {
             jest.spyOn(entrepriseApiSerivce, "findSiretDataBySiret"),
             jest.spyOn(entrepriseApiSerivce, "findAssociationBySiren"),
             jest.spyOn(associationsService, "getAssociationBySiren"),
+            jest.spyOn(associationsService, "getAssociationBySiret"),
             jest.spyOn(etablissementService, "getEtablissement"),
             jest.spyOn(etablissementService, "getEtablissementsBySiren"),
             jest.spyOn(osirisService, "findBySiret"),
@@ -55,8 +57,8 @@ describe("SearchService", () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            associationsService.getAssociationBySiren.mockImplementationOnce((siren) => ({
-                siren: toPVs(siren),
+            associationsService.getAssociationBySiret.mockImplementationOnce((siret) => ({
+                siren: toPVs(siretToSiren(siret)),
                 etablisements_siret: toPVs([
                     "00000000900000"
                 ])

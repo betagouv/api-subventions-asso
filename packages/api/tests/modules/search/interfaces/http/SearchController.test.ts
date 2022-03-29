@@ -7,6 +7,7 @@ import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderVal
 import associationsService from "../../../../../src/modules/associations/associations.service";
 import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
 import { ProviderValue, ProviderValues } from "../../../../../src/@types";
+import { siretToSiren } from "../../../../../src/shared/helpers/SirenHelper";
 
 const g = global as unknown as { app: unknown }
 
@@ -22,6 +23,7 @@ describe('SearchController, /search', () => {
     beforeAll(() => {
         spys.push(
             jest.spyOn(associationsService, "getAssociationBySiren"),
+            jest.spyOn(associationsService, "getAssociationBySiret"),
             jest.spyOn(etablissementService, "getEtablissementsBySiren"),
             jest.spyOn(etablissementService, "getEtablissement"),
         )
@@ -40,12 +42,12 @@ describe('SearchController, /search', () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            associationsService.getAssociationBySiren.mockImplementationOnce((siren) => ({
-                siren: toPVs(siren),
+            associationsService.getAssociationBySiret.mockImplementationOnce((siret) => (siret != "00000000000000" ?{
+                siren: toPVs(siretToSiren(siret)),
                 etablisements_siret: toPVs([
                     "12345678911111"
                 ])
-            }));
+            } : null));
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore

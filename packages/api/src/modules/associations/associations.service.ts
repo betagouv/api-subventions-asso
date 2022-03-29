@@ -1,4 +1,5 @@
-import { Siren, DefaultObject,  Rna, ProviderValues } from "../../@types";
+import { DefaultObject, ProviderValues } from "../../@types";
+import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import Association from "./interfaces/Association";
 import AssociationsProvider from "./interfaces/AssociationsProvider";
 import providers from "../providers";
@@ -20,6 +21,13 @@ export class AssociationsService {
     async getAssociationBySiren(siren: Siren, rna?: Rna) {
         const data = await (await this.aggregateSiren(siren, rna)).filter(asso => asso) as Association[];
 
+        if (!data.length) return null;
+
+        return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
+    }
+
+    async getAssociationBySiret(siret: Siret, rna?: Rna) {
+        const data = await (await this.aggregateSiret(siret, rna)).filter(asso => asso) as Association[];
         if (!data.length) return null;
 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
@@ -47,6 +55,21 @@ export class AssociationsService {
             return result;
         }, Promise.resolve([]) as Promise<Association[]>);
     }
+
+    private async aggregateSiret(siret: Siret, rna?: Rna): Promise<(Association | null)[]> {
+        const associationProviders = Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];
+
+        return await associationProviders.reduce(async (acc, provider) => {
+            const result = await acc;
+            const assos = await provider.getAssociationsBySiret(siret, rna);
+            if (assos) {
+                result.push(...assos.flat());
+            }
+
+            return result;
+        }, Promise.resolve([]) as Promise<Association[]>);
+    }
+
 
     private async aggregateRna(rna: Rna): Promise<(Association | null)[]> {
         const associationProviders = Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];

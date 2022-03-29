@@ -2,6 +2,7 @@ import axios from "axios";
 import { Rna, Siren, Siret } from "../../../@types";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { waitPromise } from "../../../shared/helpers/WaitHelper";
 import Association from "../../associations/interfaces/Association";
 import AssociationsProvider from "../../associations/interfaces/AssociationsProvider";
@@ -26,14 +27,18 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
     private etablissementsCache = new CacheData<Etablissement>(CACHE_TIME);
     private associationsCache = new CacheData<Association>(CACHE_TIME);
     private associationsRnaCache = new CacheData<Association>(CACHE_TIME);
+    private requestCache = new CacheData<unknown>(CACHE_TIME);
 
     private async sendRequest<T>(route: string, wait: boolean): Promise<T | null> {
+        if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;
+
         if (wait) {
             await waitPromise(1000 / this.LIMITATION_NB_REQUEST_SEC);
         }
 
         try {
             const res = await axios.get<T>(`${this.BASE_URL}/${route}`);
+            this.requestCache.add(route, res.data);
             return res.data;
         } catch {
             return null;
@@ -64,10 +69,12 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
             EventManager.call('rna-siren.matching', [{ rna: data.unite_legale.identifiant_association, siren: siren}])
         }
 
-        data.unite_legale.etablissements.forEach(etablissement => {
-            const etab = EtablissementDtoAdapter.toEtablissement({ ...etablissement, unite_legale: data.unite_legale });
-            this.etablissementsCache.add(etablissement.siret, etab);
-        });
+        if (data.unite_legale.etablissements) {
+            data.unite_legale.etablissements.forEach(etablissement => {
+                const etab = EtablissementDtoAdapter.toEtablissement({ ...etablissement, unite_legale: data.unite_legale });
+                this.etablissementsCache.add(etablissement.siret, etab);
+            });
+        }
 
         return EntrepriseDtoAdapter.toAssociation(data);
     }
@@ -115,6 +122,28 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         }
 
         return null;
+    }
+
+    async getAssociationsBySiret(siret: Siret, rna?: Rna): Promise<Association[] | null> {
+        const siren = siretToSiren(siret);
+        if (this.associationsCache.has(siren)) return this.associationsCache.get(siren);
+
+        const assos = [];
+        const result = await this.sendRequest<{etablissement: EtablisementDto}>(`${this.SIRETTE_ROUTE}/${siret}`, false);
+
+        if (result && result.etablissement) assos.push(
+            EntrepriseDtoAdapter.toAssociation({
+                unite_legale: {
+                    ...result.etablissement.unite_legale
+                }
+            })
+        );
+        if (rna) {
+            const data = await this.findAssociationByRna(rna);
+            if (data) assos.push(data);
+        }
+
+        return assos;
     }
 
     async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {

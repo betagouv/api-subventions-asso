@@ -126,6 +126,13 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
     }
 
+    async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
+        const requests = await leCompteAssoRepository.findsBySiret(siret);
+        if (requests.length === 0) return null;
+        
+        return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
+    }
+
     async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
         const requests = await leCompteAssoRepository.findsByRna(rna);
         if (requests.length === 0) return null;

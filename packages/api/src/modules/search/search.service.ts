@@ -1,6 +1,5 @@
 import etablissementService from "../etablissements/etablissements.service";
 import associationsService from "../associations/associations.service";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
 import { Siret, Rna, Siren } from "../../@types";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
@@ -10,13 +9,11 @@ import versementsService from "../versements/versements.service";
 export class SearchService {
 
     public async getBySiret(siret: Siret) {
-        const siren = siretToSiren(siret);
-        const association = await associationsService.getAssociationBySiren(siren)
-
-        if (!association || !association.etablisements_siret?.find(providerValue => providerValue.value.includes(siret))) return null;
-
         const etablissement = await etablissementService.getEtablissement(siret);
         if (!etablissement) return null;
+
+        const association = await associationsService.getAssociationBySiret(siret)
+        if (!association) return null;
 
         const etablissementDto =  {
             ...etablissement,
