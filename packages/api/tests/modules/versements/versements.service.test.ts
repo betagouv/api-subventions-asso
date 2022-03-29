@@ -34,6 +34,10 @@ describe("VersementService", () => {
                 dateOperation: now,
                 codeBranche: "Z004",
                 branche: "BRANCHE",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}));
@@ -124,6 +128,10 @@ describe("VersementService", () => {
                 dateOperation: now,
                 codeBranche: "Z004",
                 branche: "BRANCHE",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}));

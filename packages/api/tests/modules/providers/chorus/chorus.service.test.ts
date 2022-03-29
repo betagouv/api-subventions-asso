@@ -15,6 +15,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "WRONG CODE",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -29,6 +33,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -43,6 +51,10 @@ describe("chorus.service", () => {
                 dateOperation: "01/01/1960" as unknown as Date,
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -57,6 +69,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -71,6 +87,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -85,6 +105,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -101,6 +125,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -117,6 +145,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -135,6 +167,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z044",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -157,6 +193,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -178,6 +218,10 @@ describe("chorus.service", () => {
                 dateOperation: new Date(),
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
@@ -210,6 +254,10 @@ describe("chorus.service", () => {
                 dateOperation: now,
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
@@ -228,6 +276,8 @@ describe("chorus.service", () => {
                 dateOperation: toPV(now),
                 branche: toPV("BRANCHE"),
                 codeBranche: toPV("Z004"),
+                centreFinancier: toPV("CENTRE_FINANCIER"),
+                domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                 compte: toPV("COMPTE"),
                 type: toPV("ZSUB")
             }]);
@@ -252,6 +302,10 @@ describe("chorus.service", () => {
                 dateOperation: now,
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
@@ -270,6 +324,8 @@ describe("chorus.service", () => {
                 dateOperation: toPV(now),
                 branche: toPV("BRANCHE"),
                 codeBranche: toPV("Z004"),
+                centreFinancier: toPV("CENTRE_FINANCIER"),
+                domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                 compte: toPV("COMPTE"),
                 type: toPV("ZSUB")
             }]);
@@ -294,6 +350,10 @@ describe("chorus.service", () => {
                 dateOperation: now,
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))).result as WithId<ChorusLineEntity>;
@@ -312,6 +372,8 @@ describe("chorus.service", () => {
                 dateOperation: toPV(now),
                 branche: toPV("BRANCHE"),
                 codeBranche: toPV("Z004"),
+                centreFinancier: toPV("CENTRE_FINANCIER"),
+                domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                 compte: toPV("COMPTE"),
                 type: toPV("ZSUB")
             }]);
@@ -336,6 +398,10 @@ describe("chorus.service", () => {
                 dateOperation: now,
                 branche: "BRANCHE",
                 codeBranche: "Z004",
+                centreFinancier: "CENTRE_FINANCIER",
+                codeCentreFinancier: "CENTRE_FINANCIER_CODE",
+                domaineFonctionnel: "DOMAINE_FONCTIONNEL",
+                codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}))
