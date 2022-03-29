@@ -24,10 +24,16 @@ export class MailNotifierService {
             "Inscription à la plateforme DataSubvention",
             `<h1>Data Subvention</h1>
             <p>
-                Félicitations, vous êtes inscrit à la plateforme DataSubvention !
+                Bienvenue sur la plateforme DataSubvention !
+            </p>
+            <p> 
+            Vous êtes inscrit à un test solution ou une démo avec notre équipe dans les jours qui viennent ? Inutile d'aller plus loin, nous prendrons le temps d'activer votre compte ensemble, lors de cet échange.
             </p>
             <p>
-                Pour accéder à celle-ci, vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">ici</a>.
+            Vous aimeriez suivre une démo, pour que nous vous présentions l'outil pas à pas ? Vous pouvez nous écrire à <a href="mailto:contact@datasubvention.beta.gouv.fr">cette adresse</a>, nous nous ferons un plaisir de vous proposer un rendez-vous.
+            </p>
+            <p>
+                Vous souhaitez accéder directement à la plateforme ? Pour cela, il suffit d'activer votre compte et de choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">ici</a>.
             </p>
 
             <p>Bonne journée et à bientôt sur notre plateforme !</p>
@@ -35,11 +41,13 @@ export class MailNotifierService {
             `,
             `Data Subvention
             
-            Félicitation, vous êtes inscrit à la plateforme DataSubvention !
+            Bienvenue sur la plateforme DataSubvention !
             
+            Vous êtes inscrit à un test solution ou une démo avec notre équipe dans les jours qui viennent ? Inutile d'aller plus loin, nous prendrons le temps d'activer votre compte ensemble, lors de cet échange.
             
-            Pour accéder à celle-ci vous devez activer votre compte et choisir un mot de passe. Veuillez vous rendre sur la page d'activation en cliquant sur ce lien : ${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true .
-
+            Vous aimeriez suivre une démo, pour que nous vous présentions l'outil pas à pas ? Vous pouvez nous écrire à l'adresse contact@datasubvention.beta.gouv.fr, nous nous ferons un plaisir de vous proposer un rendez-vous.
+           
+            Vous souhaitez accéder directement à la plateforme ? Pour cela, il suffit d'activer votre compte et de choisir un mot de passe.. Veuillez vous rendre sur la page d'activation en cliquant sur ce lien : ${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true .
 
             Bonne journée et à bientôt sur notre plateforme !
             L'équipe DataSubvention `
@@ -66,7 +74,7 @@ export class MailNotifierService {
             Vous avez fait une demande de mot de passe perdu sur la plateforme DataSubvention.
             
             
-            Pour changer votre mot de passe, veuillez voous rendre sur la page d'activation en cliquant sur ce lien : ${FRONT_OFFICE_URL}/auth/reset-password/${token} .
+            Pour changer votre mot de passe, veuillez vous rendre sur la page d'activation en cliquant sur ce lien : ${FRONT_OFFICE_URL}/auth/reset-password/${token} .
 
 
             Bonne journée et à bientôt sur notre plateforme !
