@@ -48,13 +48,13 @@ export class MailNotifierService {
             `
            Bienvenue sur la plateforme DataSubvention !
             
-           Vous voilà inscrit à notre portail interministériel qui recense toutes les informations pour instruire vos demandes de subvention, <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">pour activer votre compte c'est par ici </a> !
+           Vous voilà inscrit à notre portail interministériel qui recense toutes les informations pour instruire vos demandes de subvention, pour activer votre compte c'est par ici ${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true !
            
            Vous avez une démo programmée avec notre équipe dans les jours qui viennent ?
            Inutile d'aller plus loin, nous prendrons le temps d'activer votre compte ensemble, lors de cet échange.
            
            Vous souhaitez assister à une démo de l'outil ?
-           Inscrivez-vous <a href="https://calendly.com/alexandra-morel-1/demo-data-subvention?month=2022-03">sur ce lien </a>.
+           Inscrivez-vous sur https://calendly.com/alexandra-morel-1/demo-data-subvention?month=2022-03 .
            
             Bonne journée et à bientôt sur notre plateforme !
             L'équipe DataSubvention `
