@@ -15,7 +15,7 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
         return this.collection.insertMany(enities, { ordered: false });
     }
 
-    public async switchCollection() {
+    public async replaceCollection() {
         const collectionExist = (await this.db.listCollections().toArray())
             .find(c => c.name === this.collectionName);
 

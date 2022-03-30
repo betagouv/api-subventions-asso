@@ -89,7 +89,7 @@ export default class DataGouvCliController {
         }
 
         console.log("\nSwitch entreprise siren repo ...");
-        await dataGouvService.switchEntrepriseSirenRepo();
+        await dataGouvService.replaceEntrepriseSirenCollection();
         console.log("End switch");
 
         console.log("Remove duplicate in rna-siren table");
