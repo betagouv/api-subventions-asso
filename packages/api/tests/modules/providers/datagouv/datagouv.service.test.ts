@@ -42,7 +42,7 @@ describe("DataGouvService",() => {
         });
     });
 
-    describe("switchEntrepriseSirenRepo", () => {
+    describe("replaceEntrepriseSirenCollection", () => {
         const entities: EntrepriseSirenEntity[] = [];
 
         beforeEach(async () => {
@@ -61,7 +61,7 @@ describe("DataGouvService",() => {
         })
 
         it("should be create collection with insert collection data", async () => {
-            await dataGouvService.switchEntrepriseSirenRepo();
+            await dataGouvService.replaceEntrepriseSirenCollection();
 
             const collectionLength = await db.collection(dataGouvRepository.collectionName).find().count();
 
@@ -73,7 +73,7 @@ describe("DataGouvService",() => {
                 new EntrepriseSirenEntity("000000099"),
             ]);
 
-            await dataGouvService.switchEntrepriseSirenRepo();
+            await dataGouvService.replaceEntrepriseSirenCollection();
 
             const collectionEntities = await db.collection(dataGouvRepository.collectionName).find().toArray();
 

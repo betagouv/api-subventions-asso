@@ -6,8 +6,8 @@ export class DataGouvService {
         return entrepriseSirenRepository.insertMany(entities, dropedDb);
     }
 
-    switchEntrepriseSirenRepo() {
-        return entrepriseSirenRepository.switchCollection();
+    replaceEntrepriseSirenCollection() {
+        return entrepriseSirenRepository.replaceCollection();
     }
 }
 
