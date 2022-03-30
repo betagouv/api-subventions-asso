@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/betagouv/api-subventions-asso/compare/v0.5.2...v0.6.0) (2022-03-30)
+
+
+### Features
+
+* add tier demandePayment activitee ([9cd6d8f](https://github.com/betagouv/api-subventions-asso/commit/9cd6d8f9bc02a96ac5ba535cf2f879e3645a9afa))
+* **api:** add cmd for datagouv ([751fbd9](https://github.com/betagouv/api-subventions-asso/commit/751fbd99e633054d5caab34fa6bfd7d7d937eb72))
+* **api:** add datagouv parser ([084edde](https://github.com/betagouv/api-subventions-asso/commit/084edde4443de67b0781026ee8c1214b85bbd79f))
+* **api:** add Entreprise siren entity and types ([ebcc26b](https://github.com/betagouv/api-subventions-asso/commit/ebcc26bc446d065aea92a30763395fbd7b683e6b))
+* **api:** add osiris actions evaluation ([9214d51](https://github.com/betagouv/api-subventions-asso/commit/9214d51f9451643ee7ab861b1a195ce2dabbf396))
+* **api:** add parse datagouv unitelegal ([a6cbddd](https://github.com/betagouv/api-subventions-asso/commit/a6cbddd9663a363ddf69d91fdeb49281f4d50a53))
+* **api:** add repository for save siren in database ([4ed3cfe](https://github.com/betagouv/api-subventions-asso/commit/4ed3cfeeb2939e598916317c98d941862bff2ca1))
+* **api:** chorus date can be excel date ([5a2ce7a](https://github.com/betagouv/api-subventions-asso/commit/5a2ce7a53501e47df56ee2d72d885965ad8c3141))
+* **api:** insert many enitites in rna-siren and clean duplicate entities in collection ([68b9a53](https://github.com/betagouv/api-subventions-asso/commit/68b9a53acdade17310c30f0bb26ba4a121b67f68))
+* **api:** parse chorus xls file ([92f52eb](https://github.com/betagouv/api-subventions-asso/commit/92f52eb71864b101abce692471500606fbe8aaa7))
+* **api:** parse new file ([4eb1f7e](https://github.com/betagouv/api-subventions-asso/commit/4eb1f7e676d3570fab304aa7814133c3d1568a8f))
+* **api:** parse new format off chorus ([8cc1f83](https://github.com/betagouv/api-subventions-asso/commit/8cc1f8394e6069ecf1c5dd50fe17efad1574bfbe))
+* **front:** add contact view ([ac70911](https://github.com/betagouv/api-subventions-asso/commit/ac7091151217035badf7bd0eaffc3686dcffddec))
+* **front:** add legal notice view ([83ed57f](https://github.com/betagouv/api-subventions-asso/commit/83ed57f39a0f506d73ceb63553d165eb32cd0d0a))
+* **front:** add news collumn in versement ([923edac](https://github.com/betagouv/api-subventions-asso/commit/923edac646752125efac98981a773f363047217c))
+
+
+### Bug Fixes
+
+* **api:** remove html in texte ([ccf95e9](https://github.com/betagouv/api-subventions-asso/commit/ccf95e9d511fb557f9e7f83925d27ea6e5d4e2be))
+* **front:** change payments by paiements ([0290751](https://github.com/betagouv/api-subventions-asso/commit/02907517a58604d74cd2849cde657919c77cce59))
+
 ### [0.5.2](https://github.com/betagouv/api-subventions-asso/compare/v0.5.1...v0.5.2) (2022-03-29)
 
 ### [0.5.1](https://github.com/betagouv/api-subventions-asso/compare/v0.5.0...v0.5.1) (2022-03-29)
