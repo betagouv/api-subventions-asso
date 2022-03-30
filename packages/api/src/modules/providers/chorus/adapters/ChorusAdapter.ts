@@ -15,11 +15,20 @@ export default class ChorusAdapter {
             dateOperation: ProviderValueAdapter.toProviderValue(entity.indexedInformations.dateOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             centreFinancier: ProviderValueAdapter.toProviderValue(entity.indexedInformations.centreFinancier, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             domaineFonctionnel: ProviderValueAdapter.toProviderValue(entity.indexedInformations.domaineFonctionnel, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            codeBranche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.codeBranche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            branche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.branche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            numeroDemandePayment: entity.indexedInformations.numeroDemandePayment
+                ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.numeroDemandePayment, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
+                : undefined,
+            numeroTier: entity.indexedInformations.numeroTier
+                ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.numeroTier, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
+                : undefined,
+            activitee: entity.indexedInformations.activitee
+                ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.activitee, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
+                : undefined,
             compte: entity.indexedInformations.compte
                 ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.compte, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
                 : undefined,
-            codeBranche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.codeBranche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
-            branche: ProviderValueAdapter.toProviderValue(entity.indexedInformations.branche, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             type: entity.indexedInformations.typeOperation
                 ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.typeOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation)
                 : undefined,

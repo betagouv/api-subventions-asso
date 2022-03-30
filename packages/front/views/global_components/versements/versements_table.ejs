@@ -4,26 +4,30 @@
         <thead>
             <tr>
                 <th scope="col">Provider</th>
-                <th scope="col">N°EJ</th>
-                <th scope="col">Branche</th>
-                <th scope="col">Centre financier</th>
                 <th scope="col">Domaine fonctionnel</th>
-                <th scope="col">Date</th>
+                <th scope="col">Activitée</th>
+                <th scope="col">Centre financier</th>
+                <th scope="col">N°Tier</th>
+                <th scope="col">N°EJ</th>
+                <th scope="col">N°Demande de payments</th>
                 <th scope="col">Montants</th>
+                <th scope="col">Date</th>
                 <th scope="col">Plus</th>
             </tr>
         </thead>
         <tbody>
             <% for(let i = 0; i < versements.length; i++ ) { %>
-                <% const versement = versements[i];%> 
+                <% const versement = versements[i]; console.log(versement)%> 
                 <tr>
                     <td><%-helper.getProvider(versement.amount)%></td>
-                    <td><%-helper.getValue(versement.ej)%></td>
-                    <td><%-helper.getValue(versement.branche)%></td>
-                    <td><%-helper.getValue(versement.centreFinancier)%></td>
                     <td><%-helper.getValue(versement.domaineFonctionnel)%></td>
-                    <td><%-helper.date.toProviderValueString(versement.dateOperation)%></td>
+                    <td><%-helper.getValue(versement.activitee)%></td>
+                    <td><%-helper.getValue(versement.centreFinancier)%></td>
+                    <td><%-helper.getValue(versement.numeroTier)%></td>
+                    <td><%-helper.getValue(versement.ej)%></td>
+                    <td><%-helper.getValue(versement.numeroDemandePayment)%></td>
                     <td><%-helper.getValue(versement.amount)%>€</td>
+                    <td><%-helper.date.toProviderValueString(versement.dateOperation)%></td>
                     <td>
                         <% const siret = helper.getValue(versement.siret); %>
                         <% if (currentSiret != siret) { %> 
