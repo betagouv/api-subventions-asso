@@ -7,6 +7,9 @@ export default interface IChorusIndexedInformations extends IBudgetLine {
     codeCentreFinancier: string,
     domaineFonctionnel: string,
     codeDomaineFonctionnel: string,
+    numeroDemandePayment?: string,
+    numeroTier?: string
+    activitee?: string
     typeOperation?: string,
     compte?: string,
 }
