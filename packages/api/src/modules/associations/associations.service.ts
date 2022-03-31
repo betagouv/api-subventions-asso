@@ -43,7 +43,7 @@ export class AssociationsService {
 
 
     private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
-        const associationProviders = Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];
+        const associationProviders = this.getAssociationProviders();
 
         return await associationProviders.reduce(async (acc, provider) => {
             const result = await acc;
@@ -57,7 +57,7 @@ export class AssociationsService {
     }
 
     private async aggregateSiret(siret: Siret, rna?: Rna): Promise<(Association | null)[]> {
-        const associationProviders = Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];
+        const associationProviders = this.getAssociationProviders();
 
         return await associationProviders.reduce(async (acc, provider) => {
             const result = await acc;
@@ -72,7 +72,7 @@ export class AssociationsService {
 
 
     private async aggregateRna(rna: Rna): Promise<(Association | null)[]> {
-        const associationProviders = Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];
+        const associationProviders = this.getAssociationProviders();
 
         return await associationProviders.reduce(async (acc, provider) => {
             const result = await acc;
@@ -87,6 +87,10 @@ export class AssociationsService {
 
     private isAssociationsProvider(data: unknown): data is AssociationsProvider {
         return (data as AssociationsProvider).isAssociationsProvider
+    }
+
+    private getAssociationProviders() {
+        return Object.values(providers).filter((p) => this.isAssociationsProvider(p)) as AssociationsProvider[];
     }
 
 }

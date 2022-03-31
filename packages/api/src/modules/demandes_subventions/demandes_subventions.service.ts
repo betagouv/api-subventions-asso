@@ -22,19 +22,22 @@ export class DemandesSubventionsService {
     }
 
     private async aggregateSiret(siret: Siret): Promise<(DemandeSubvention | null)[]> {
-        const associationProviders = Object.values(providers).filter((p) => (p as DemandesSubventionsProvider).isDemandesSubventionsProvider) as DemandesSubventionsProvider[]
-        return[...(await Promise.all(
-            associationProviders.map( p => p.getDemandeSubventionBySiret(siret))
+        const demandesSubventionsProviders = this.getDemandesSubventionsProviders();
+        return [...(await Promise.all(
+            demandesSubventionsProviders.map(p => p.getDemandeSubventionBySiret(siret))
         )).flat()];
     }
 
     private async aggregateSiren(siren: Siren): Promise<(DemandeSubvention | null)[]> {
-        const associationProviders = Object.values(providers).filter((p) => (p as DemandesSubventionsProvider).isDemandesSubventionsProvider) as DemandesSubventionsProvider[]
-        return[...(await Promise.all(
-            associationProviders.map( p => p.getDemandeSubventionBySiren(siren))
+        const demandesSubventionsProviders = this.getDemandesSubventionsProviders();
+        return [...(await Promise.all(
+            demandesSubventionsProviders.map(p => p.getDemandeSubventionBySiren(siren))
         )).flat()];
     }
 
+    private getDemandesSubventionsProviders() {
+        return Object.values(providers).filter((p) => (p as DemandesSubventionsProvider).isDemandesSubventionsProvider) as DemandesSubventionsProvider[];
+    }
 }
 
 const demandesSubventionsService = new DemandesSubventionsService();
