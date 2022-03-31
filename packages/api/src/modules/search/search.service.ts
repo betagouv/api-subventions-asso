@@ -44,25 +44,29 @@ export class SearchService {
     }
 
     public async getBySiren(siren: Siren, rna?: Rna) {
-        if (!rna) {
-            rna = await rnaSirenService.getRna(siren) || undefined
-        }
-        const association = await associationsService.getAssociationBySiren(siren, rna);
+        if (!rna) rna = await rnaSirenService.getRna(siren) || undefined;
 
+        const association = await associationsService.getAssociationBySiren(siren, rna);
         if (!association) return null;
-        const etablissements = (await etablissementService.getEtablissementsBySiren(siren) || []).sort((etablisementA,etablisementB) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA));
+
+        const etablissements = await etablissementService.getEtablissementsBySiren(siren);
+        if (!etablissements) return null;
+
+        const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
+        
+        const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
 
         const demandesSubventions = await demandesSubventionsService.getDemandeSubventionsBySiren(siren);
 
+        const buildCompletEtablissement = (etablissement: Etablissement) => ({
+            ...etablissement,
+            demandes_subventions: demandesSubventions?.filter(d => d.siret.value === etablissement.siret[0].value) || [],
+            versements: [],
+        })
+
         const associationDto = {
             ...association,
-            etablissements: etablissements.map((etablissement) => (
-                {
-                    ...etablissement,
-                    demandes_subventions: demandesSubventions?.filter(d => d.siret.value === etablissement.siret[0].value) || [],
-                    versements: [],
-                })
-            ),
+            etablissements: sortedEtablissments.map(buildCompletEtablissement),
             versements: [],
         }
 

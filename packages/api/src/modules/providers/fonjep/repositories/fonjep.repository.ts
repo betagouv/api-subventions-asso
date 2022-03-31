@@ -11,13 +11,13 @@ export class FonjepRepository extends MigrationRepository<FonjepRequestEntity> {
         return await this.collection.findOne({ _id: insertAction.insertedId }) as WithId<FonjepRequestEntity>;
     }
 
-    async findBySiret(siret: Siret) {
+    findBySiret(siret: Siret) {
         return this.collection.find({
             "legalInformations.siret": siret
         }).toArray();
     }
 
-    async findBySiren(siren: Siren) {
+    findBySiren(siren: Siren) {
         return this.collection.find({
             "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();

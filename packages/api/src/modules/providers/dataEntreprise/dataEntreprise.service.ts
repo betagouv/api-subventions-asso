@@ -184,11 +184,12 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
         
         if (associations && associations.length) {
-            const association = associations.find(a => a.etablisements_siret && a.etablisements_siret.length);
-            
-            if (!association || !association.etablisements_siret?.flat()[0].value) return null;
-            
-            etablisementsList = association.etablisements_siret?.flat()[0].value as string[];
+            const association = associations.find(a => a.etablisements_siret?.length);
+            const associationWithEtablisements = association?.etablisements_siret?.flat()[0].value;
+
+            if (!associationWithEtablisements) return null;
+
+            etablisementsList = associationWithEtablisements;
         }
 
         return etablisementsList.reduce(async (acc, siret) => {
