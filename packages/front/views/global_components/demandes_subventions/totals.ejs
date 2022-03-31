@@ -5,42 +5,42 @@
         </h3>
         <div class="fr-collapse" id="fr-accordion-1<%- index %>2-body-1<%- index %>2">
             <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
-                <% const reqByStatus = Object.keys(subventions.byYear[year]);%> 
-                <% for( let index = 0; index < reqByStatus.length; index++ ) { %>
-                    <div class="fr-col fr-col-lg-6"">
-                        <div class="fr-table">
-                            <table>
-                                <caption><%- reqByStatus[index] %></caption>
-                                <thead>
+                <div class="fr-col fr-col-lg-6"">
+                    <div class="fr-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Service Instructeur</th>
+                                    <th scope="col">Demandé</th>
+                                    <th scope="col">Proposé</th>
+                                    <th scope="col">Accordé</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% 
+                                    let currentSubventions = subventions.byYear[year];
+                                    const requestStatus = Object.keys(currentSubventions);
+                                    const addStatusAndServiceName = function(status) {
+                                        const subventionsByStatus = currentSubventions[status];
+                                        return Object.keys(subventionsByStatus).map(name => ({ ...subventionsByStatus[name], status: status, serviceName: name }));
+                                    }
+                                    currentSubventionsWithStatusAndName = requestStatus.map(addStatusAndServiceName).flat();
+                                %>
+                                <% for (let subventionIndex = 0; subventionIndex < currentSubventionsWithStatusAndName.length; subventionIndex++) { %>
+                                    <% const subvention = currentSubventionsWithStatusAndName[subventionIndex] %>
                                     <tr>
-                                        <th scope="col">Service Instructeur</th>
-                                        <!-- <th scope="col">Total</th> -->
-                                        <th scope="col">Demandé</th>
-                                        <th scope="col">Proposé</th>
-                                        <th scope="col">Accordé</th>
+                                        <td><%- subvention.serviceName %></td>
+                                        <td><%- subvention.demande %></td>
+                                        <td><%- subvention.propose %></td>
+                                        <td><%- subvention.accorde %></td>
+                                        <td><%- subvention.status %></td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <% const services = subventions.byYear[year][reqByStatus[index]];%>
-                                    <% for( let y = 0; y < Object.keys(services).length; y++ ) { %>
-                                        <% const serviceName = Object.keys(services)[y]; const serivce = services[serviceName];  %>
-                                        <% if (Object.keys(serivce).length != 0) { %>
-                                            <tr>
-                                                <td><%- serviceName %></td>
-                                                <% for( let z = 0; z < Object.keys(serivce).length; z++) { %>
-                                                    <% if (Object.keys(serivce)[z] !=  "total") { %>
-
-                                                        <td><%- Object.values(serivce)[z] %></td>
-                                                    <% } %>
-                                                <% } %>
-                                            </tr>
-                                        <% } %>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
+                                <% } %>
+                            </tbody>
+                        </table>
                     </div>
-                <% } %>
+                </div>
             </div>
         </div>
     </section>
