@@ -9,6 +9,10 @@ export class UserResetRepository {
         return this.collection.findOne({ token });
     }
 
+    public async findByUserId(userId: ObjectId) {
+        return this.collection.findOne({ userId });
+    }
+
     public async create(reset: UserReset) {
         const result = await this.collection.insertOne(reset);
         return await this.collection.findOne({_id: result.insertedId});

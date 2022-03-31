@@ -80,6 +80,11 @@
               <li>
                 <button class="fr-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal" data-fr-opened="false">Paramètres d'affichage</button>
               </li>
+              <% if (typeof currentSession != "undefined" && typeof currentSession.roles != "undefined" && currentSession.roles.includes("admin") ) { %>
+                <li>
+                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin" rel="noopener">Admin</a>
+                </li>              
+              <% } %>
               <% if (typeof user != "undefined" && user.token) { %>
                 <li>
                   <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/auth/logout" title="se déconnecter" rel="noopener">Se déconnecter</a>

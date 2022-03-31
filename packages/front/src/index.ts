@@ -34,6 +34,13 @@ app.set('views', path.join(__dirname, '../views'))
 app.use('/static', express.static(path.join(__dirname, '../static')))
 // Hack for importing css from npm package
 app.use('/~', express.static(path.join(__dirname, '../node_modules')))
+
+app.use(bodyParser.json());      
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(sessionMiddleware());
+app.use(authMiddleware);
+
 // Populate some variables for all views
 app.use(function(req, res, next){
   res.locals.appName = appName
@@ -44,15 +51,9 @@ app.use(function(req, res, next){
 
   res.locals.helper = EJSHelper;
   res.locals.components = Components;
+  res.locals.currentSession = req.session;
   next()
 })
-
-app.use(bodyParser.json());      
-app.use(bodyParser.urlencoded({extended: true}));
-
-app.use(sessionMiddleware());
-app.use(authMiddleware);
-
 controllers.forEach((controllerClass)=> {
     const controller = new controllerClass() as unknown as DefaultObject<ControllerMethod>;
     const basePath = (controller as unknown as DefaultObject<string>).basePath;

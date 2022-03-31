@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
+import User from '../../../../@types/User';
 import { DefaultObject } from '../../../../@types/utils';
 import Controller from '../../../../decorators/controller.decorator';
 import { Get, Post } from '../../../../decorators/http.methods.decorator';
+import userService from '../../../user/user.service';
 import authService from '../../AuthService';
 
 @Controller("/auth")
@@ -44,6 +46,13 @@ export default class AuthController {
 
         const sessionData = req.session as unknown as DefaultObject;
         sessionData.user = result.data;
+
+        const rolesResult = await userService.getRoles(result.data as User);
+
+        if (rolesResult.type === "SUCCESS") {
+            sessionData.roles = rolesResult.data;
+        }
+
         res.redirect("/");
     }
 

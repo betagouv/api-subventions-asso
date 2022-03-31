@@ -4,12 +4,27 @@ import { DATASUB_URL } from "./config";
 import AssociationDtoResponse from "@api-subventions-asso/dto/search/AssociationDtoResponse";
 import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
 import User from "../@types/User";
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
 
 export class APIDatasubService {
     login(email: string, password: string) {
         return this.sendRequest<LoginDtoResponse>("POST", "/auth/login", undefined, {
             email,
             password
+        })
+    }
+
+    getRoles(user: User) {
+        return this.sendRequest<{success: boolean, roles: string[]}>("GET", "/user/roles", user)
+    }
+
+    listUser(user: User) {
+        return this.sendRequest<{success: boolean, users: UserDto[]}>("GET", "/user/admin/list-users", user)
+    }
+
+    createUser(userEmail: string, adminUser: User) {
+        return this.sendRequest<{success: boolean}>("POST", "/user/admin/create-user", adminUser, {
+            email: userEmail
         })
     }
 

@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { WithId } from "mongodb";
 import * as RandToken from "rand-token";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
@@ -165,7 +166,7 @@ export class UserService {
         return this.createUsersByList(emails);
     }
 
-    private async createUsersByList(emails: string[]) {
+    public async createUsersByList(emails: string[]) {
         return emails.reduce(async(acc, email) => {
             const data = await acc;
             const result = await this.createUser(email);
@@ -314,6 +315,26 @@ export class UserService {
 
     private passwordValidator(password: string): boolean  {
         return REGEX_PASSWORD.test(password);
+    }
+
+    public getRoles(user: User) {
+        return user.roles
+    }
+
+    public async listUsers() {
+        const users = (await userRepository.find()).filter(user => user) as WithId<UserWithoutSecret>[];
+        return {
+            success: true,
+            users: await Promise.all(users.map(async user => {
+                const reset = await userResetRepository.findByUserId(user._id);
+                return {
+                    ...user,
+                    _id: user._id.toString(),
+                    resetToken: reset?.token,
+                    resetTokenDate: reset?.createdAt
+                }
+            }))
+        } 
     }
 }
 
