@@ -1,3 +1,6 @@
+import Association from "../../../src/modules/associations/interfaces/Association";
+import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
+import osirisService from "../../../src/modules/providers/osiris/osiris.service";
 import RnaSiren from "../../../src/modules/rna-siren/entities/RnaSirenEntity";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service"
 import db from "../../../src/shared/MongoConnection";
@@ -30,12 +33,40 @@ describe("RnaSirenService", () => {
     })
 
     describe("getRna", () => {
-        it("should be retrun one siren", async () => {
+        it("should be retrun one rna", async () => {
             expect(await rnaSirenService.getRna("000000000")).toBe("W000000000")
         })
 
-        it("should not return siren", async () => {
+        it("should not return rna", async () => {
             expect(await rnaSirenService.getRna("000000001")).toBe(null)
+        })
+
+        it("should return oriris rna", async () => {
+
+            jest.spyOn(osirisService, "getAssociationsBySiren").mockImplementationOnce(() => Promise.resolve([{
+                rna: [
+                    {value: "W000000001"}
+                ],
+                siren: [
+                    {value: "000000001"}
+                ]
+            }] as unknown as Association[]))
+
+            expect(await rnaSirenService.getRna("000000001")).toBe("W000000001")
+        })
+
+        it("should return lca rna", async () => {
+
+            jest.spyOn(leCompteAssoService, "getAssociationsBySiren").mockImplementationOnce(() => Promise.resolve([{
+                rna: [
+                    {value: "W000000001"}
+                ],
+                siren: [
+                    {value: "000000001"}
+                ]
+            }] as unknown as Association[]))
+
+            expect(await rnaSirenService.getRna("000000001")).toBe("W000000001")
         })
     })
 

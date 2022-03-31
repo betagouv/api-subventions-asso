@@ -5,6 +5,7 @@ import OsirisActionEntity from "../../../src/modules/providers/osiris/entities/O
 import OsirisEvaluationEntity from '../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
 import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import osirisService, { OsirisService } from "../../../src/modules/providers/osiris/osiris.service";
+import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 
 describe("OsirisService", () => {
     it("should retrun an instance of osirisService", () => {
@@ -184,4 +185,128 @@ describe("OsirisService", () => {
             });
         })
     });
+
+    describe("demande_subvention part", () => {
+        const now = new Date();
+        const toPV = (value: unknown, provider = "Osiris") => ProviderValueAdapter.toProviderValue(value, provider, now);
+
+        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
+        
+        beforeEach(async () => {
+            await osirisService.addRequest(entity);
+        });
+
+        describe("getDemandeSubventionBySiret",  () => {
+
+            it("should return one demande", async () => {
+                const expected = [{
+                    siret: toPV("12345678900000")
+                }]
+    
+                const actual = await osirisService.getDemandeSubventionBySiret("12345678900000");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+        describe("getDemandeSubventionBySiren", () => {
+            it("should return one demande", async () => {
+                const expected = [{
+                    siret: toPV("12345678900000")
+                }]
+    
+                const actual = await osirisService.getDemandeSubventionBySiren("123456789");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+    })
+
+    describe("Etablisesement part", () => {
+        const now = new Date();
+        const toPVs = (value: unknown, provider = "Osiris") => ProviderValueAdapter.toProviderValues(value, provider, now);
+
+        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
+        
+        beforeEach(async () => {
+            await osirisService.addRequest(entity);
+        });
+
+        describe("getEtablissementsBySiret",  () => {
+
+            it("should return one demande", async () => {
+                const expected = [{
+                    siret: toPVs("12345678900000"),
+                    nic: toPVs("00000")
+                }]
+    
+                const actual = await osirisService.getEtablissementsBySiret("12345678900000");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+        describe("getEtablissementsBySiren", () => {
+            it("should return one demande", async () => {
+                const expected = [{
+                    siret: toPVs("12345678900000"),
+                    nic: toPVs("00000")
+                }]
+    
+                const actual = await osirisService.getEtablissementsBySiren("123456789");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+    })
+
+    describe("Association part", () => {
+        const now = new Date();
+        const toPVs = (value: unknown, provider = "Osiris") => ProviderValueAdapter.toProviderValues(value, provider, now);
+
+        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "W1234567", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
+        
+        beforeEach(async () => {
+            await osirisService.addRequest(entity);
+        });
+
+        describe("getAssociationsBySiret",  () => {
+
+            it("should return one demande", async () => {
+                const expected = [{
+                    siren: toPVs("123456789"),
+                    rna: toPVs("W1234567"),
+                    etablisements_siret: toPVs([
+                        "12345678900000"
+                    ])
+                }]
+    
+                const actual = await osirisService.getAssociationsBySiret("12345678900000");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+        describe("getAssociationsBySiren", () => {
+            it("should return one demande", async () => {
+                const expected = [{
+                    siren: toPVs("123456789"),
+                    rna: toPVs("W1234567"),
+                    etablisements_siret: toPVs([
+                        "12345678900000"
+                    ])
+                }]
+    
+                const actual = await osirisService.getAssociationsBySiren("123456789");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+
+        describe("getAssociationsByRna", () => {
+            it("should return one demande", async () => {
+                const expected = [{
+                    siren: toPVs("123456789"),
+                    rna: toPVs("W1234567"),
+                    etablisements_siret: toPVs([
+                        "12345678900000"
+                    ])
+                }]
+    
+                const actual = await osirisService.getAssociationsByRna("W1234567");
+                expect(actual).toMatchObject(expected);
+            })
+        })
+    })
 });
