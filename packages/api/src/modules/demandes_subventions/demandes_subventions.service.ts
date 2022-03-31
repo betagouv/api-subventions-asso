@@ -6,7 +6,7 @@ import DemandeSubvention from "./interfaces/DemandeSubvention";
 export class DemandesSubventionsService {
 
     async getDemandeSubventionsBySiret(siret: Siret) {
-        const data = await (await this.aggregateSiret(siret)).filter(asso => asso) as DemandeSubvention[];
+        const data = await (await this.aggregate(siret, "SIRET")).filter(asso => asso) as DemandeSubvention[];
 
         if (!data.length) return null;
 
@@ -14,24 +14,20 @@ export class DemandesSubventionsService {
     }
 
     async getDemandeSubventionsBySiren(siren: Siren) {
-        const data = await (await this.aggregateSiren(siren)).filter(asso => asso) as DemandeSubvention[];
+        const data = await (await this.aggregate(siren, "SIREN")).filter(asso => asso) as DemandeSubvention[];
 
         if (!data.length) return null;
 
         return data;
     }
 
-    private async aggregateSiret(siret: Siret): Promise<(DemandeSubvention | null)[]> {
-        const demandesSubventionsProviders = this.getDemandesSubventionsProviders();
-        return [...(await Promise.all(
-            demandesSubventionsProviders.map(p => p.getDemandeSubventionBySiret(siret))
-        )).flat()];
-    }
 
-    private async aggregateSiren(siren: Siren): Promise<(DemandeSubvention | null)[]> {
+    private async aggregate(id: Siren | Siret, type: "SIRET" | "SIREN") {
         const demandesSubventionsProviders = this.getDemandesSubventionsProviders();
         return [...(await Promise.all(
-            demandesSubventionsProviders.map(p => p.getDemandeSubventionBySiren(siren))
+            type === "SIREN"
+                ? demandesSubventionsProviders.map(p => p.getDemandeSubventionBySiren(id))
+                : demandesSubventionsProviders.map(p => p.getDemandeSubventionBySiret(id))
         )).flat()];
     }
 

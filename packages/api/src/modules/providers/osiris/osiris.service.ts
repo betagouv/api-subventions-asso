@@ -190,7 +190,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     }
 
     async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
-        const requests = await osirisRepository.findRequestsBySiren(siret);
+        const requests = await osirisRepository.findRequestsBySiret(siret);
 
         if (requests.length === 0) return null;
         const associations = await Promise.all(

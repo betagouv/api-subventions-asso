@@ -21,7 +21,7 @@ export class EtablissementsService {
     }
 
     async getEtablissement(siret: Siret) {
-        const data = await (await this.aggregateSiret(siret)).flat().filter(d => d) as Etablissement[];
+        const data = await (await this.aggregate(siret, "SIRET")).flat().filter(d => d) as Etablissement[];
         
         if (!data.length) return null;
 
@@ -29,7 +29,7 @@ export class EtablissementsService {
     }
 
     async getEtablissementsBySiren(siren: Siren) {
-        const data = await (await this.aggregateSiren(siren)).flat().filter(d => d) as Etablissement[];
+        const data = await (await this.aggregate(siren, "SIREN")).flat().filter(d => d) as Etablissement[];
         
         if (!data.length) return null;
 
@@ -47,32 +47,27 @@ export class EtablissementsService {
         return Object.values(groupBySiret).map(etablisements => FormaterHelper.formatData(etablisements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
     }
 
-    private async aggregateSiret(siret: Siret): Promise<(Etablissement[])> {
-        const etablissementProviders = Object.values(providers).filter(this.isEtablissementProvider) as EtablissementProvider[];
 
-        return await etablissementProviders.reduce(async (acc, provider) => {
+    private async aggregate(id: Siren | Siret, type: "SIRET" | "SIREN") {
+        const etablisementProviders = this.getEtablissementProviders();
+        
+        return await etablisementProviders.reduce(async (acc, provider) => {
             const result = await acc;
-            const etablissements = await provider.getEtablissementsBySiret(siret, true);
-            if (etablissements) {
-                result.push(...etablissements.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Etablissement[]>);
-    }
-
-    private async aggregateSiren(siren: Siren): Promise<(Etablissement[])> {
-        const etablissementProviders = Object.values(providers).filter(this.isEtablissementProvider) as EtablissementProvider[];
-
-        return await etablissementProviders.reduce(async (acc, provider) => {
-            const result = await acc;
-            const etablissements = await provider.getEtablissementsBySiren(siren, true);
+            const etablissements = await (
+                type === "SIREN"
+                    ? provider.getEtablissementsBySiren(id, true)
+                    : provider.getEtablissementsBySiret(id, true)
+            );
             if (etablissements) {
                 result.push(...etablissements.flat());
             }
 
             return acc;
         }, Promise.resolve([]) as Promise<Etablissement[]>);
+    }
+
+    private getEtablissementProviders() {
+        return Object.values(providers).filter(this.isEtablissementProvider) as EtablissementProvider[];
     }
 
     private isEtablissementProvider(data: unknown): data is EtablissementProvider {
