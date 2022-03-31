@@ -13,6 +13,11 @@ export class UserRepository {
         return this.removeSecrets(await this.collection.findOne({email: email}));
     }
 
+    async find(query = {}) {
+        const dbos = await this.collection.find(query).toArray();
+        return dbos.map(dbo => this.removeSecrets(dbo));
+    }
+
     async findById(userId: ObjectId) {
         return this.removeSecrets(await this.collection.findOne({_id: userId}));
     }
@@ -40,7 +45,7 @@ export class UserRepository {
         return user ? user.jwt : null;
     }
 
-    private removeSecrets(user: WithId<User> | null ): UserWithoutSecret | null {
+    private removeSecrets(user: WithId<User> | null ): WithId<UserWithoutSecret> | null {
         if (!user) return null;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

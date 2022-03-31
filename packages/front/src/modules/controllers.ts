@@ -6,6 +6,7 @@ import HomeController from "./home/interfaces/http/HomeController";
 import SearchController from "./search/interfaces/http/SearchController";
 import LegalNoticeController from "./legal_notice/interface/http/LegalNoticeController";
 import ContactController from "./contact/interface/http/ContactController";
+import AdminController from "./admin/interfaces/http/AdminController";
 
 export default [
     AuthController,
@@ -15,5 +16,6 @@ export default [
     HomeController,
     SearchController,
     LegalNoticeController,
-    ContactController
+    ContactController,
+    AdminController,
 ]
