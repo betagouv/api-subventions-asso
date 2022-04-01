@@ -62,7 +62,7 @@
                                         <td><%-user.active ? "Oui" : "Non"%></td>
                                         <td>
                                             <% if (user.resetToken) { %>
-                                                <a href="/auth/reset-password/<%-user.resetToken%>">/auth/reset-password/<%-user.resetToken%></a>
+                                                <a href="/auth/reset-password/<%-user.resetToken%>?active=true" class="fr-link" target="_blank">Copier moi !</a>
                                             <% } %>
                                         </td>
                                         <td><%-user.resetTokenDate%></td>
