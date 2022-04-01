@@ -54,7 +54,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for(let i = 0; i < users.length; i++ ) { %>
+                                <% for(let i = users.length -1 ; i > 0; i-- ) { %>
                                     <% const user = users[i];%> 
                                     <tr>
                                         <td><%-user.email%></td>
@@ -65,7 +65,11 @@
                                                 <a href="/auth/reset-password/<%-user.resetToken%>?active=true" class="fr-link" target="_blank">Copier moi !</a>
                                             <% } %>
                                         </td>
-                                        <td><%-user.resetTokenDate%></td>
+                                        <td>
+                                            <% if (user.resetTokenDate) { %>
+                                                <%-helper.date.formatDateWithHour(user.resetTokenDate)%>
+                                            <% } %>
+                                        </td>
                                     </tr>
                                 <% } %>
                             </tbody>

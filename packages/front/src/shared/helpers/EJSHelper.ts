@@ -15,6 +15,7 @@ export default {
     },
     date: {
         toProviderValueString: DateHelper.toProviderValueString,
-        formatDate: DateHelper.formatDate
+        formatDate: DateHelper.formatDate,
+        formatDateWithHour: DateHelper.formatDateWithHour
     }
 }
