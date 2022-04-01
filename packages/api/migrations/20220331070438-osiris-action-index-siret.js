@@ -5,7 +5,7 @@ const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const migrationManager = require("../build/src/shared/MigrationManager").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const repo = require("../build/src/modules/providers/osiris/repository/osiris.repository").default;
+const repo = require("../build/src/modules/providers/osiris/repositories/osiris.repository").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const enity = require("../build/src/modules/providers/osiris/entities/OsirisActionEntity").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
