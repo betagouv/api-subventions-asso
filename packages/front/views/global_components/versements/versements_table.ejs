@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             <% for(let i = 0; i < versements.length; i++ ) { %>
-                <% const versement = versements[i]; console.log(versement)%> 
+                <% const versement = versements[i];%> 
                 <tr>
                     <td><%-helper.getProvider(versement.amount)%></td>
                     <td><%-helper.getValue(versement.domaineFonctionnel)%></td>
