@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/betagouv/api-subventions-asso/compare/v0.6.0...v0.7.0) (2022-04-01)
+
+
+### Features
+
+* add admin page and list user and create usre ([69e94e4](https://github.com/betagouv/api-subventions-asso/commit/69e94e4ee72445f3dc274414c6691827e8e40e70))
+* **api:** order etablisements in association ([b9d18cb](https://github.com/betagouv/api-subventions-asso/commit/b9d18cbfe9b13fec2315856404b777cb6a228d17))
+
 ## [0.6.0](https://github.com/betagouv/api-subventions-asso/compare/v0.5.2...v0.6.0) (2022-03-30)
 
 
