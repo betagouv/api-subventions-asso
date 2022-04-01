@@ -1,4 +1,5 @@
 import AdresseHelper from "./AdresseHelper";
+import CurrencyHelper from './CurrencyHelper';
 import DateHelper from "./DateHelper";
 import ProviderValueHelper from "./ProviderValueHelper";
 
@@ -17,5 +18,8 @@ export default {
         toProviderValueString: DateHelper.toProviderValueString,
         formatDate: DateHelper.formatDate,
         formatDateWithHour: DateHelper.formatDateWithHour
+    },
+    currency: {
+        addSpaces: CurrencyHelper.numberWithSpaces
     }
 }
