@@ -5,9 +5,17 @@ export default class DateHelper {
     public static formatDate(value: string) {
         const date = new Date(value);
 
-        const doubleNumber = (num: number) => ("0" + num).slice(-2)
+        const doubleNumber = (num: number) => ("0" + num).slice(-2);
 
         return `${doubleNumber(date.getDate())}/${(doubleNumber(date.getMonth() + 1))}/${date.getFullYear()}`.replace("  ", " ");
+    }
+
+    public static formatDateWithHour(value: string) {
+        const date = new Date(value);
+
+        const doubleNumber = (num: number) => ("0" + num).slice(-2);
+        
+        return `${this.formatDate(date.toString())} à ${doubleNumber(date.getHours())}:${doubleNumber(date.getMinutes())}h`
     }
 
     public static toProviderValueString(data: ProviderValues) {
