@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.1](https://github.com/betagouv/api-subventions-asso/compare/v0.7.0...v0.7.1) (2022-04-01)
+
+
+### Bug Fixes
+
+* **api:** fix error in migration ([22b3e11](https://github.com/betagouv/api-subventions-asso/commit/22b3e1189748638d258656142faea491d2f3ca48))
+
 ## [0.7.0](https://github.com/betagouv/api-subventions-asso/compare/v0.6.0...v0.7.0) (2022-04-01)
 
 
