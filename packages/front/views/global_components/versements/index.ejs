@@ -10,6 +10,9 @@
         <div class="fr-collapse" id="fr-accordion-3-body-3"">
             <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-12">
+                    <% if (versements.length === 0) { %>
+                        <p>Nous n'avons trouvé aucun versements !</p>
+                    <% } %>
                     <ul class="fr-accordions-group">
                         <%const years = Object.keys(_versements).sort().reverse();%>
                         <% for( let index = 0; index < years.length; index++ ) { %>

@@ -6,6 +6,9 @@
         <div class="fr-collapse" id="fr-accordion-2-body-2">
             <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-12">
+                    <% if (subventions.length === 0) { %>
+                     <p>Nous n'avons trouvé aucune demande de subventions !</p>
+                    <% } %>
                     <ul class="fr-accordions-group">
                         <%const years = [...subventions.years].sort().reverse();%>
                         <% for( let index = 0; index < years.length; index++ ) { %>
