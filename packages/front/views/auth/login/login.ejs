@@ -19,12 +19,12 @@
                     <% if (typeof loginError != 'undefined' && loginError) { %>
                         <div role="alert" class="fr-alert fr-alert--warning">
                             <p class="fr-alert__title">Attention</p>
-                            <p>Mot de passe ou Email incorrect</p>
+                            <p>Mot de passe ou email incorrect</p>
                         </div>
                     <% } %>
                     <% if (typeof success != 'undefined' && success) { %>
                         <div role="alert" class="fr-alert fr-alert--success">
-                            <p><%-success === "COMPTE_ACTIVED" ? "Votre compte à bien été activer, vous pouvez maintenant vous connecter" : "Votre mot de passe à bien été changé"%></p>
+                            <p><%-success === "COMPTE_ACTIVED" ? "Votre compte a bien été activé, vous pouvez maintenant vous connecter" : "Votre mot de passe a bien été changé"%></p>
                         </div>
                     <% } %>
                     <form action="/auth/login" method="POST" data-turbo="false">
