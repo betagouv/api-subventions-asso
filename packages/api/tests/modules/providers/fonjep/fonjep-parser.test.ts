@@ -8,7 +8,6 @@ describe("FonjepParser", () => {
     it("parse", () => {
         const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"));
         const requests = FonjepParser.parse(buffer);
-
         expect(requests).toHaveLength(1);
         expect(requests[0]).toBeInstanceOf(FonjepRequestEntity);
     })

@@ -5,40 +5,57 @@ import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 export default class FonjepRequestEntity {
 
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
-        siret: ["ACT_SIRET"],
-        name: ["raison sociale association bénéficiaire"],
+        siret: {
+            path: ["Association", "SiretOuRidet"],
+            adapter: (value) =>  {
+                if(!value) return value;
+
+                return value.replace(/ /g, "");
+            }
+        },
+        name: ["Association", "RaisonSociale"],
     }
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
-        montant_paye: ["MTT_PAYE"],
-        status: ["statut du poste"],
-        service_instructeur: ["Service  qui\nattribue le poste"],
-        annee_demande: ["ANNEE"],
-        date_versement: {
-            path: ["DT_VERS"],
+        montant_paye: {
+            path: ["MontantSubvention"],
             adapter: (value) => {
-                if (!value) return value;
-                return ParseHelper.ExcelDateToJSDate(value as unknown as number);
-            }
-        },
+                if(!value) return 0;
 
-        date_fin_effet: {
-            path: ["DT_FINEFFET"],
-            adapter: (value) => {
-                if (!value) return value;
-                return ParseHelper.ExcelDateToJSDate(value as unknown as number);
+                return !value.length ? parseFloat(value) : 0
             }
-        },        
+        },
+        status: ["PstStatutPosteLibelle"],
+        service_instructeur: ["Financeur", "RaisonSociale"],
+        annee_demande: ["Annee"],
         date_fin_triennale: {
-            path: ["DT_FINTRIENN"],
+            path: ["DateFinTriennalite"],
             adapter: (value) => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(value as unknown as number);
             }
         },
-        ville: ["Ville"],
-        code_postal: ["Code postal"],
-        financeur_principal: ["Financeur Principal"]
+        updated_at: ["updated_at"],
+        unique_id: ["id"],
+        type_post: ["TypePoste", "Libelle"],
+        ville: ["Association", "Ville"],
+        code_postal: {
+            path: ["Association", "CodePostal"],
+            adapter: (value) =>  {
+                if(!value) return value;
+
+                const formatedValue = value.replace(/ /g, "");
+                
+                if(formatedValue.length != 5) return undefined
+
+                return formatedValue
+            }
+        },
+        contact: ["Association", "ContactEmail"],
+        co_financeur: ["Co-Financeur", "RaisonSociale"],
+        co_financeur_contact: ["Co-Financeur", "ContactEmail"],
+        co_financeur_siret: ["Co-Financeur", "SiretOuRidet"],
+        co_financeur_montant: ["Co-Financements", "MontantFinance"],
     }
 
     constructor(

@@ -14,6 +14,7 @@ export default interface DemandeSubvention {
     creer_le?: ProviderValue<Date>,
     transmis_le?: ProviderValue<Date>,
     pluriannualite?: ProviderValue<string>
+    date_fin?: ProviderValue<Date>
     contact?:{
         email: ProviderValue<string>,
         telephone?: ProviderValue<string>,
@@ -33,6 +34,12 @@ export default interface DemandeSubvention {
             'n-1': ProviderValue<number>,
             reversement: ProviderValue<number>,
         }
+    },
+    co_financement?: {
+        cofinanceur: ProviderValue<string>,
+        cofinanceur_email: ProviderValue<string>,
+        cofinanceur_siret?: ProviderValue<string>,
+        montants: ProviderValue<number>,
     },
     actions_proposee?: {
         ej?: ProviderValue<string>

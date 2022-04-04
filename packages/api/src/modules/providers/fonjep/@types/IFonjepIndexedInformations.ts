@@ -1,12 +1,17 @@
 export default interface IFonjepIndexedInformations {
+    updated_at: Date,
+    unique_id: string,
     montant_paye: number,
     status: string,
     service_instructeur: string,
     annee_demande: number,
-    date_versement: Date,
-    date_fin_effet: Date,
     date_fin_triennale: Date,
-    code_postal: string,
+    type_post: string,
     ville: string,
-    financeur_principal: string
+    code_postal?: string,
+    contact: string,
+    co_financeur?: string,
+    co_financeur_contact?: string,
+    co_financeur_siret?: string,
+    co_financeur_montant?: number,
 }

@@ -34,7 +34,7 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
     return adatper(result) as T;
 }
 
-export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | ParserInfo>, data: DefaultObject<string|number|DefaultObject<string|number>>) {
+export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | ParserInfo>, data: DefaultObject<undefined|Date|string|number|DefaultObject<string|number>>) {
     return Object.keys(pathObject).reduce((acc, key: string) => {
         const tempAcc = (acc as { [key: string ] : string} );
         tempAcc[key] = findByPath(data, pathObject[key]);

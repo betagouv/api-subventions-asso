@@ -26,8 +26,9 @@
                                 subventions
                             });
                         -%>
-                        <% if(versements) { %>
+                        <% if(versements && versements.length) { %>
                             <%-
+                                
                                 include("../global_components/versements/index", {
                                     versements,
                                     currentSiret: helper.getValue(etablissement.siret)
