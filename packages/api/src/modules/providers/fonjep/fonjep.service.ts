@@ -1,7 +1,7 @@
 import { Siren } from "@api-subventions-asso/dto";
 import { WithId } from "mongodb";
 import { Siret } from "../../../@types";
-import { isAssociationName, isCP, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
+import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../demandes_subventions/interfaces/DemandesSubventionsProvider";
 import DemandeSubvention from "../../demandes_subventions/interfaces/DemandeSubvention";
 import Etablissement from "../../etablissements/interfaces/Etablissement";
@@ -45,9 +45,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         }
 
         const dates = [
-            entity.indexedInformations.date_versement,
             entity.indexedInformations.date_fin_triennale,
-            entity.indexedInformations.date_fin_effet,
         ]
 
         if (!isDates(dates)) {
@@ -58,15 +56,14 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             entity.indexedInformations.status,
             entity.indexedInformations.service_instructeur,
             entity.indexedInformations.ville,
-            entity.indexedInformations.financeur_principal,
+            entity.indexedInformations.type_post,
+            entity.indexedInformations.ville,
+            entity.indexedInformations.code_postal,
+            entity.indexedInformations.contact,
         ]
 
         if (!isStringsValid(strings)) {
             return { success: false, message: `INVALID STRING FOR ${entity.legalInformations.siret}`, data: entity , code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
-        }
-
-        if (!isCP(entity.indexedInformations.code_postal)) {
-            return { success: false, message: `INVALID CODE POSTAL FOR ${entity.legalInformations.siret}`, data: entity , code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
         }
 
         const numbers = [

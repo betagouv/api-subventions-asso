@@ -11,16 +11,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toEqual({ success: true })
@@ -31,16 +32,17 @@ describe("FonjepService", () => {
                 siret: "0000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID SIRET FOR 0000000000000"})
@@ -51,16 +53,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: ""
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NAME FOR 00000000000000"})
@@ -72,15 +75,16 @@ describe("FonjepService", () => {
                 name: "Fake name"
             }, {
                 montant_paye: undefined as unknown as number,
+                unique_id: "unique_id",
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NUMBER FOR 00000000000000"})
@@ -92,16 +96,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                annee_demande:  undefined as unknown as number,
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
-                annee_demande:  undefined as unknown as number,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NUMBER FOR 00000000000000"})
@@ -112,16 +117,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
-                montant_paye: 500,
                 status: undefined as unknown as string,
+                unique_id: "unique_id",
+                montant_paye: 500,
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
@@ -133,16 +139,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
-                montant_paye: 500,
-                status: "xxx",
                 service_instructeur: undefined as unknown as string,
+                unique_id: "unique_id",
+                montant_paye: 500,
+                status: "En cours",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
@@ -153,19 +160,20 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
-                status: "xxx",
-                service_instructeur: "xxx",
+                status: "En cours",
+                service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
-                code_postal: undefined as unknown as string,
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE",
+                code_postal: undefined as unknown as string,
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID CODE POSTAL FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
         });
 
         it("should not valid because ville is wrong", () => {
@@ -173,36 +181,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
-                status: "xxx",
-                service_instructeur: "xxx",
+                status: "En cours",
+                service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE",
                 ville: undefined as unknown as string,
-                financeur_principal: "XXX"
-            }, {})
-
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
-        });
-
-        it("should not valid because financeur_principal is wrong", () => {
-            const entity = new FonjepEntity({
-                siret: "00000000000000",
-                name: "Fake name"
-            }, {
-                montant_paye: 500,
-                status: "xxx",
-                service_instructeur: "xxx",
-                annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
-                date_fin_triennale: new Date(),
-                code_postal: "75000",
-                ville: "Paris",
-                financeur_principal:undefined as unknown as string
             }, {})
 
             expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
@@ -215,16 +204,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(await fonjepService.createEntity(entity)).toMatchObject({ success: true, entity, state: "created" })
@@ -236,16 +226,17 @@ describe("FonjepService", () => {
                 siret: "WRONG SIRET",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: new Date(),
-                date_fin_effet: new Date(),
+                updated_at: new Date(),
                 date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             expect(await fonjepService.createEntity(entity)).toMatchObject({ success: false });
@@ -260,16 +251,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: now,
-                date_fin_effet: now,
+                updated_at: now,
                 date_fin_triennale: now,
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             await fonjepService.createEntity(entity);
@@ -297,12 +289,6 @@ describe("FonjepService", () => {
                     last_update: now,
                     type: 'number'
                 },
-                financeur_principal: {
-                    value: 'XXX',
-                    provider: 'Fonjep',
-                    last_update: now,
-                    type: 'string'
-                },
                 montants: {
                     accorde: {
                         value: 500,
@@ -320,16 +306,17 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
+                unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
                 service_instructeur: "XXX",
                 annee_demande: 2022,
-                date_versement: now,
-                date_fin_effet: now,
-                date_fin_triennale: now,
+                updated_at: new Date(),
+                date_fin_triennale: new Date(),
                 code_postal: "75000",
                 ville: "Paris",
-                financeur_principal: "XXX"
+                contact: "contact@beta.gouv.fr",
+                type_post: "POSTE"
             }, {})
 
             await fonjepService.createEntity(entity);
