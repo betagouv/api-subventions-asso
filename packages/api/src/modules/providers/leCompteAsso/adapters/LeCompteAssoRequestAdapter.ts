@@ -3,6 +3,7 @@ import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import Etablissement from "../../../etablissements/@types/Etablissement";
+import { ProviderValues, Rna } from "@api-subventions-asso/dto";
 
 export default class LeCompteAssoRequestAdapter {
     static PROVIDER_NAME = "LeCompteAsso"
@@ -11,7 +12,7 @@ export default class LeCompteAssoRequestAdapter {
         const dataDate = entity.providerInformations.transmis_le
         return {
             siren: ProviderValueAdapter.toProviderValues(siretToSiren(entity.legalInformations.siret), LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate),
-            rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.rna, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate),
+            rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.rna, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate) as ProviderValues<Rna>,
             denomination: ProviderValueAdapter.toProviderValues(entity.legalInformations.name, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate),
         }
     }

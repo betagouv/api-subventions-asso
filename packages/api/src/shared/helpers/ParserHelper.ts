@@ -25,16 +25,16 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
             return obj[name];
         }
 
-        const key = name.find((key) => obj[key]); // TODO manage multiple valid case (with filters)
+        const key = name.find((key) => obj[key.trim()]); // TODO manage multiple valid case (with filters)
 
         if (!key) return undefined
-        return obj[key];
+        return obj[key.trim()];
     }, data) as string;
 
     return adatper(result) as T;
 }
 
-export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | ParserInfo>, data: DefaultObject<undefined|Date|string|number|DefaultObject<string|number>>) {
+export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | ParserInfo>, data: DefaultObject<unknown>) {
     return Object.keys(pathObject).reduce((acc, key: string) => {
         const tempAcc = (acc as { [key: string ] : string} );
         tempAcc[key] = findByPath(data, pathObject[key]);
@@ -42,12 +42,13 @@ export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | Par
     }, {} as unknown) as DefaultObject<string|number>
 }
 
-export function linkHeaderToData(header: string[], data: string[]) {
+export function linkHeaderToData(header: string[], data: unknown[]) {
     return header.reduce((acc, header, key) => {
-        const value = typeof data[key] === "string" ? data[key].replace(/&#32;/g, " ") : data[key];
-        acc[header] = value || "";
+        const value = typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
+        const trimedHeader = typeof header === "string" ? header.trim() : header;
+        acc[trimedHeader] = value || "";
         return acc;
-    }, {} as {[key: string]: string});
+    }, {} as DefaultObject<unknown>);
 }
 
 export function findFiles(file: string) {
@@ -74,9 +75,12 @@ export function csvParse(content: Buffer) {
 }
 
 export function xlsParse(content: Buffer) {
-    const xls = xlsx.parse(content, { raw: true, rawNumbers: true, cellNF:true, dateNF: "165"});
+    return xlsParseWithPageName(content).map(page => page.data);
+}
 
-    return xls.map(xlsPage => xlsPage.data.filter((row) => (row as unknown[]).length));
+export function xlsParseWithPageName(content: Buffer) {
+    const xls = xlsx.parse(content, { raw: true, rawNumbers: true, cellNF:true, dateNF: "165"});
+    return xls.map(xlsPage => ({ data: xlsPage.data.filter((row) => (row as unknown[]).length), name: xlsPage.name }));
 }
 
 export function ExcelDateToJSDate(serial: number) {

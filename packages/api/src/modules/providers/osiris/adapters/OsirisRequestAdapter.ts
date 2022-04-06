@@ -1,3 +1,4 @@
+import { ProviderValues, Rna } from "@api-subventions-asso/dto";
 import { ProviderValue } from "../../../../@types";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
@@ -19,7 +20,7 @@ export default class OsirisRequestAdapter {
 
         return {
             siren: ProviderValueAdapter.toProviderValues(siretToSiren(entity.legalInformations.siret), OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.rna, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+            rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.rna, OsirisRequestAdapter.PROVIDER_NAME, dataDate) as ProviderValues<Rna>,
             denomination: ProviderValueAdapter.toProviderValues(entity.legalInformations.name, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             etablisements_siret: ProviderValueAdapter.toProviderValues(
                 [entity.legalInformations.siret]
