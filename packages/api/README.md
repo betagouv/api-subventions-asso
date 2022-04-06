@@ -2,20 +2,21 @@
 
 Pour le fonctionnement de l'api, vous devez avoir Node.js et NPM d'installer.
 Installer les dépendances avec `npm install`.
-Puis il faut créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes: 
+Puis il faut créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes:
+
 - JWT_SECRET
 - MAIL_HOST
 - MAIL_PORT
 - MAIL_USER
 - MAIL_PASSWORD
 
-Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.    
-Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/api-subventions-asso`.    
+Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.  
+Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/api-subventions-asso`.  
 Il est possible de paramétrer ses informations via le fichier .env .Le nom des variables ce trouve dans `configurations/mongo.conf.ts`.
 
-Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :   
-`sudo docker pull mongo`   
-`sudo docker run -d -p 27017:27017 mongo`   
+Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
+`sudo docker pull mongo`  
+`sudo docker run -d -p 27017:27017 mongo`
 
 ## Démarrer l'api en local
 
@@ -26,6 +27,17 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 
 1. Run `npm run cli [controller name] [method name] [...arguments]`
 
+### Créer son utilisateur en local
+
+1. Run `npm run cli user create [your email]``
+2. Call HTTP POST localhost:8080/auth/forget-password with the body
+   `{ "email": [your email] }`
+3. Get in mongodb user-reset collection and copy the token value
+4. Call HTTP POST localhost:8080/auth/reset-password with the body
+   `{ "password": [your new password], "token": [token from step 3] }`
+5. Call HTTP POST localhost:8080/auth/login with the body
+   `{ "email": [your email]}, "password": [password defined in step 4] }`
+
 ## Démarrer les tests et le coverage
 
 1. Run `npm run test`
@@ -34,10 +46,10 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 
 Le projet uttilisent la stack technique suivante:
 
-* NodeJs
-* Typescript
-* Express
-* MongoDB
+- NodeJs
+- Typescript
+- Express
+- MongoDB
 
 L'architecture utilisée est une inspiration libre de la clean architecture (Voir aussi architecture Oignon et Hexagonal). Le concept n'est pas poussé à fond, pour une question de rapidité de mise en place et pour garder un maximum de souplesse en cas de changement radical du produit.
 
