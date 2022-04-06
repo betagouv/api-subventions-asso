@@ -1,6 +1,7 @@
 import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import { ParserInfo, ParserPath, Siret, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
+import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
 
 export default class FonjepRequestEntity {
 
@@ -32,7 +33,7 @@ export default class FonjepRequestEntity {
             path: ["DateFinTriennalite"],
             adapter: (value) => {
                 if (!value) return value;
-                return ParseHelper.ExcelDateToJSDate(value as unknown as number);
+                return ParseHelper.ExcelDateToJSDate(Number(value));
             }
         },
         updated_at: ["updated_at"],
@@ -41,15 +42,7 @@ export default class FonjepRequestEntity {
         ville: ["Association", "Ville"],
         code_postal: {
             path: ["Association", "CodePostal"],
-            adapter: (value) =>  {
-                if(!value) return value;
-
-                const formatedValue = value.replace(/ /g, "");
-                
-                if(formatedValue.length != 5) return undefined
-
-                return formatedValue
-            }
+            adapter: formatCP
         },
         contact: ["Association", "ContactEmail"],
         co_financeur: ["Co-Financeur", "RaisonSociale"],
