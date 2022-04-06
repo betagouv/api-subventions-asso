@@ -1,7 +1,7 @@
 import EventManager from "../../../shared/EventManager";
 import GisproRequestEntity from './entities/GisproRequestEntity';
 import gisproRepository from './repositories/gispro.repository';
-import { isSiret, isAssociationName,  isRna } from "../../../shared/Validators";
+import { isSiret, isAssociationName } from "../../../shared/Validators";
 import DemandeSubvention from '../../demandes_subventions/interfaces/DemandeSubvention';
 import { Rna, Siren, Siret } from '../../../@types';
 import GisproRequestAdapter from './adapters/GisproRequestAdapter';
