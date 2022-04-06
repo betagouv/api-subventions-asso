@@ -1,8 +1,8 @@
-import Association from "../../../associations/interfaces/Association";
+import Association from "../../../associations/@types/Association";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
-import Etablissement from "../../../etablissements/interfaces/Etablissement";
+import Etablissement from "../../../etablissements/@types/Etablissement";
 
 export default class LeCompteAssoRequestAdapter {
     static PROVIDER_NAME = "LeCompteAsso"

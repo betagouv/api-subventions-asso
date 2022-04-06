@@ -3,9 +3,9 @@ import { Siren, Siret } from "@api-subventions-asso/dto";
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablisementDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
-import EtablissementProvider from "./interfaces/EtablissementProvider";
+import EtablissementProvider from "./@types/EtablissementProvider";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
-import Etablissement from "./interfaces/Etablissement";
+import Etablissement from "./@types/Etablissement";
 import providers from "../providers";
 
 import { ProviderValues, DefaultObject } from "../../@types";

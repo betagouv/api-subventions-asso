@@ -1,7 +1,7 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
 import providers from "../providers";
-import DemandesSubventionsProvider from "./interfaces/DemandesSubventionsProvider";
-import DemandeSubvention from "./interfaces/DemandeSubvention";
+import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
+import DemandeSubvention from "./@types/DemandeSubvention";
 
 export class DemandesSubventionsService {
 

@@ -5,11 +5,11 @@ import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequ
 import ILegalInformations from "../../search/@types/ILegalInformations";
 import { isAssociationName, isSiret, isCompteAssoId } from "../../../shared/Validators";
 import { Rna, Siret, Siren } from "../../../@types";
-import Association from "../../associations/interfaces/Association";
-import AssociationsProvider from "../../associations/interfaces/AssociationsProvider";
+import Association from "../../associations/@types/Association";
+import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
-import Etablissement from "../../etablissements/interfaces/Etablissement";
-import EtablissementProvider from "../../etablissements/interfaces/EtablissementProvider";
+import Etablissement from "../../etablissements/@types/Etablissement";
+import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
