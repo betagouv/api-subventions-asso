@@ -1,5 +1,5 @@
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
-import Association from "../../../associations/interfaces/Association";
+import Association from "../../../associations/@types/Association";
 import EntrepriseDto from "../dto/EntrepriseDto";
 
 export default class EntrepriseDtoAdapter {

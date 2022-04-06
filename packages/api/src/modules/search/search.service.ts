@@ -5,7 +5,7 @@ import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
-import Etablissement from "../etablissements/interfaces/Etablissement";
+import Etablissement from "../etablissements/@types/Etablissement";
 
 export class SearchService {
 

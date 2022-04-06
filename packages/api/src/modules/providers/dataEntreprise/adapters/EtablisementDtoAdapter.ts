@@ -1,5 +1,5 @@
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
-import Etablissement from "../../../etablissements/interfaces/Etablissement";
+import Etablissement from "../../../etablissements/@types/Etablissement";
 import EtablisementDto from "../dto/EtablissementDto";
 
 export default class EtablissementDtoAdapter {

@@ -1,6 +1,6 @@
 import { Siren, Siret } from "../../@types";
-import Versement from "./interfaces/Versement";
-import VersementsProvider from "./interfaces/VersementsProvider";
+import Versement from "./@types/Versement";
+import VersementsProvider from "./@types/VersementsProvider";
 import providers from "../providers";
 import AssociationDto from "../search/interfaces/http/dto/AssociationDto";
 import EtablissementDto from "../search/interfaces/http/dto/EtablissmentDto";

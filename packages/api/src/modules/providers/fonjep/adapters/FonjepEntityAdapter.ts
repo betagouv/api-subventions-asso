@@ -1,7 +1,7 @@
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
-import DemandeSubvention from "../../../demandes_subventions/interfaces/DemandeSubvention";
-import Etablissement from "../../../etablissements/interfaces/Etablissement";
+import DemandeSubvention from "../../../demandes_subventions/@types/DemandeSubvention";
+import Etablissement from "../../../etablissements/@types/Etablissement";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
 export default class FonjepEntityAdapter {

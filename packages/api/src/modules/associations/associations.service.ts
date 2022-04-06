@@ -1,7 +1,7 @@
 import { DefaultObject, ProviderValues } from "../../@types";
 import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
-import Association from "./interfaces/Association";
-import AssociationsProvider from "./interfaces/AssociationsProvider";
+import Association from "./@types/Association";
+import AssociationsProvider from "./@types/AssociationsProvider";
 import providers from "../providers";
 import EntrepriseDtoAdapter from "../providers/dataEntreprise/adapters/EntrepriseDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
