@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
-import { ParserInfo, ParserPath } from "../../../../@types";
+import { DefaultObject, ParserInfo, ParserPath } from "../../../../@types";
 import ILegalInformations from "../../../search/@types/ILegalInformations";
 import RequestEntity from "../../../search/entities/RequestEntity";
 import IGisproRequestInformations from '../@types/IGisproRequestInformations';
 
 export default class GisproRequestEntity extends RequestEntity {
 
-    public static indexedProviderInformationsPath : {[key: string]: ParserPath | ParserInfo} = {
+    public static indexedProviderInformationsPath : DefaultObject<ParserPath | ParserInfo> = {
         gisproId: ["Projet - Code dossier"],
         dispositif: ["Thème (1)"],
         sous_dispositif: ["Sous thème"],

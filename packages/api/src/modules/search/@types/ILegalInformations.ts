@@ -2,6 +2,6 @@ import { Rna, Siret } from "../../../@types";
 
 export default interface ILegalInformations {
     siret: Siret;
-    rna: Rna;
+    rna?: Rna;
     name: string;
 }
