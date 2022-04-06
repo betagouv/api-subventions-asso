@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.2](https://github.com/betagouv/api-subventions-asso/compare/v0.7.1...v0.7.2) (2022-04-06)
+
+
+### Features
+
+* **api:** fonjep add data format helper and cast number ([8971a19](https://github.com/betagouv/api-subventions-asso/commit/8971a1998aebb2f068410275a606bb9807862886))
+* **api:** parse new fonjep data ([2854035](https://github.com/betagouv/api-subventions-asso/commit/285403528c7c621597cc8957bea1fc2a26458f6a))
+* **front:** add space to currency ([b618f13](https://github.com/betagouv/api-subventions-asso/commit/b618f13124ec031507ff867212cb200857976192))
+* **front:** show message when data not found in versement and demande_subvention ([d0b14b6](https://github.com/betagouv/api-subventions-asso/commit/d0b14b6015f5e6518574d8dcaa3692e6ff6d4e62))
+
+
+### Bug Fixes
+
+* **front:** orthographe && remove log ([0c78ccd](https://github.com/betagouv/api-subventions-asso/commit/0c78ccd8e63c498dce5cd8315eedea83d93ed19e))
+
 ### [0.7.1](https://github.com/betagouv/api-subventions-asso/compare/v0.7.0...v0.7.1) (2022-04-01)
 
 
