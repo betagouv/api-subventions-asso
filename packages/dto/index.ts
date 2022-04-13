@@ -1,5 +1,6 @@
 export * from "./auth/LoginDtoResponse"
 export * from "./auth/ResetPasswordDtoResponse"
+export * from "./auth/SignupDtoResponse"
 export * from "./search/AssociationDto"
 export * from "./search/AssociationDtoResponse"
 export * from "./search/EtablissementDtoResponse"
