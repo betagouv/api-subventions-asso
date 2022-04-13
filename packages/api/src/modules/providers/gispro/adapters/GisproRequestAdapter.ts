@@ -1,20 +1,26 @@
 import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
-import DemandeSubvention from "../../../demandes_subventions/interfaces/DemandeSubvention";
-import GisproRequestEntity from "../entities/GisproRequestEntity";
+import GisproActionEntity from "../entities/GisproActionEntity";
 
 export default class GisproRequestAdapter {
     static PROVIDER_NAME = "Gispro"
 
-    public static toDemandeSubvention(entity: GisproRequestEntity): DemandeSubvention {
+    public static toDemandeSubvention(entities: GisproActionEntity[]): DemandeSubvention {
         const dataDate = new Date();
         
         const data: DemandeSubvention = {
-            siret: ProviderValueAdapter.toProviderValue(entity.legalInformations.siret, GisproRequestAdapter.PROVIDER_NAME, dataDate),
-            service_instructeur: ProviderValueAdapter.toProviderValue("TODO: FIND SERVICE_INSTRUCTEUR", GisproRequestAdapter.PROVIDER_NAME, dataDate),
-            status: ProviderValueAdapter.toProviderValue("TODO: FIND STATUS", GisproRequestAdapter.PROVIDER_NAME, dataDate),
-            dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.dispositif, GisproRequestAdapter.PROVIDER_NAME, dataDate),
-            sous_dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.sous_dispositif, GisproRequestAdapter.PROVIDER_NAME, dataDate),
+            siret: ProviderValueAdapter.toProviderValue(entities[0].providerInformations.siret, GisproRequestAdapter.PROVIDER_NAME, dataDate),
+            service_instructeur: ProviderValueAdapter.toProviderValue("Non communiquer par GISPRO", GisproRequestAdapter.PROVIDER_NAME, dataDate),
+            status: ProviderValueAdapter.toProviderValue("Non communiquer par GISPRO", GisproRequestAdapter.PROVIDER_NAME, dataDate),
+            montants: {
+                accorde:  ProviderValueAdapter.toProviderValue(entities.reduce((total, entity) => total + entity.providerInformations.montant, 0), GisproRequestAdapter.PROVIDER_NAME, dataDate),
+            },
+            actions_proposee: entities.map(entity => ({
+                intitule: ProviderValueAdapter.toProviderValue(entity.providerInformations.action, GisproRequestAdapter.PROVIDER_NAME, dataDate),
+                montants_versement: {
+                    accorde: ProviderValueAdapter.toProviderValue(entity.providerInformations.montant, GisproRequestAdapter.PROVIDER_NAME, dataDate),
+                },
+            }))
         }
 
         return data

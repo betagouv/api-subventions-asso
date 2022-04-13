@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from "fs";
-import GisproRequestEntity from '../../../../src/modules/providers/gispro/entities/GisproRequestEntity';
+import GisproActionEntity from '../../../../src/modules/providers/gispro/entities/GisproActionEntity';
 import GisproParser from '../../../../src/modules/providers/gispro/gispro.parser';
 
 describe("GisproParser", () => {
@@ -8,18 +8,13 @@ describe("GisproParser", () => {
 
     describe("parseRequests()", () => {
         it("return the expected number of items", () => {
-            // const expected = GisproRequestEntity;
-            const actual = parser.parseRequests(fs.readFileSync(path.resolve(__dirname, "./__fixtures__/gispro.xlsx")));
-            expect(actual).toHaveLength(4);
+            // const expected = GisproActionEntity;
+            const actual = parser.parseActions(fs.readFileSync(path.resolve(__dirname, "./__fixtures__/gispro-test.xltx")));
+            expect(actual).toHaveLength(1);
         })
-        it("return an array of GisproRequestEntity", () => {
-            const entities = parser.parseRequests(fs.readFileSync(path.resolve(__dirname, "./__fixtures__/gispro.xlsx")));
-            console.log({entities});
-            const actual = entities.reduce((acc, entity) => { 
-                if (!acc) return acc;
-                if (!(entity instanceof GisproRequestEntity)) acc = false;
-                return acc;
-            }, true)
+        it("return an array of GisproActionEntity", () => {
+            const entities = parser.parseActions(fs.readFileSync(path.resolve(__dirname, "./__fixtures__/gispro-test.xltx")));
+            const actual = entities.every(entity => entity instanceof GisproActionEntity)
             expect(actual).toBeTruthy();
         })
     })

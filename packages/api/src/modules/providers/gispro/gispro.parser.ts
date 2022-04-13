@@ -1,14 +1,12 @@
-import GisproRequestEntity from './entities/GisproRequestEntity';
 import * as ParserHelper from '../../../shared/helpers/ParserHelper'
-import IGisproRequestInformations from './@types/IGisproRequestInformations';
-import ILegalInformations from '../../search/@types/ILegalInformations';
 import { DefaultObject } from '../../../@types';
 import ActionsPagesIndexer from './indexers/ActionsPagesIndexer';
 import TiersPagesIndexer from './indexers/TiersPagesIndexer';
-import ProjectsPagesIndexer from './indexers/ProjectsPagesIndexer';
+import GisproActionEntity from './entities/GisproActionEntity';
+import IGisproActionInformations from './@types/IGisproActionInformations';
 
 export default class GisproParser {
-    public static parseRequests(content: Buffer): GisproRequestEntity[] {
+    public static parseActions(content: Buffer): GisproActionEntity[] {
         const pages = ParserHelper.xlsParseWithPageName(content);
 
         const pagesWithHeader = pages.reduce((acc, page) => {
@@ -23,77 +21,35 @@ export default class GisproParser {
         const findPage = (query: string | RegExp) => pagesWithHeader.find(p => p.name.match(query));
 
         const actionsPage = findPage(/(actions)|(base 2016 GISPRO)/);
-        const projetsPage = findPage("projets");
-        const tiersPage = findPage("base .* tiers");
+        const tiersPage = findPage(/(CUMUL PAR .* TIERS)|(CUMUL PAR ORG)|(CUMUL ORGANISME)|(base .* tiers)/);
 
-        console.log(actionsPage && actionsPage.name, projetsPage && projetsPage.name, tiersPage && tiersPage.name);
         if (!actionsPage) return [];
 
-        const getTiers = (siret: unknown) => {
-            if (!siret) return undefined;
+        const getUniformatedTier = (siret: unknown): undefined | { siret: string | number, CodeTiers: string | number, Tiers: string, TypeTiers: string} => {
+            if (!siret || !tiersPage) return undefined;
 
-            const action = actionsPage.data.find(raw => ParserHelper.findByPath(raw, ActionsPagesIndexer.siret) === siret);
-
-            if (!action) return undefined;
-
-            const tierAction = {
-                "Tiers": ParserHelper.findByPath(action, ActionsPagesIndexer.Tiers),
-                "Code SIRET": ParserHelper.findByPath(action, ActionsPagesIndexer.siret),
-                "Tiers - Code": ParserHelper.findByPath(action, ActionsPagesIndexer['Tiers - Code']),
-                "Type de tiers": ParserHelper.findByPath(action, ActionsPagesIndexer['Type de tiers']),
-                "Adresse administrative - Adresse complète": ParserHelper.findByPath(action, ActionsPagesIndexer['Adresse administrative - Adresse complète']),
-                "Libellé abrégé de la région": ParserHelper.findByPath(action, ActionsPagesIndexer['Libellé abrégé de la région']),
-                "dépt": ParserHelper.findByPath(action, ActionsPagesIndexer.dépt),
-            }
-
-            if (tiersPage) {
-                const tiers = tiersPage.data.find(raw => ParserHelper.findByPath(raw, TiersPagesIndexer.siret) === siret);
-                if (tiers) return { ...tierAction, ...tiers};
-            }
-
-            return tierAction;
+            const tiers = tiersPage.data.find(raw => ParserHelper.findByPath(raw, TiersPagesIndexer.siret) === siret);
+            if (tiers) return {
+                siret: ParserHelper.findByPath(tiers, TiersPagesIndexer.siret),
+                "CodeTiers": ParserHelper.findByPath(tiers, TiersPagesIndexer.CodeTiers),
+                Tiers: ParserHelper.findByPath(tiers, TiersPagesIndexer.Tiers),
+                "TypeTiers": ParserHelper.findByPath(tiers, TiersPagesIndexer.TypeTiers)
+            };
         }
 
-        const getProject = (codeProjet: unknown) => {
-            if (!codeProjet) return undefined;
-
-            const action = actionsPage.data.find(raw => ParserHelper.findByPath(raw, ActionsPagesIndexer['Projet - Code dossier']) === codeProjet);
-
-            if (!action) return undefined;
-
-            const projectInAction = {
-                'Projet - Code dossier': ParserHelper.findByPath(action, ActionsPagesIndexer['Projet - Code dossier']),
-                'DR/DD/PN': ParserHelper.findByPath(action, ActionsPagesIndexer['DR/DD/PN']),
-                'Région':  ParserHelper.findByPath(action, ActionsPagesIndexer.Région),
-                'Projet' :  ParserHelper.findByPath(action, ActionsPagesIndexer.Projet),
-                "Libellé de la procédure de l'action":  ParserHelper.findByPath(action, ActionsPagesIndexer['Libellé de la procédure de l\'action']),
-                'libellé projet':  ParserHelper.findByPath(action, ActionsPagesIndexer['libellé projet']),
-                'MT': ParserHelper.findByPath(action, ActionsPagesIndexer.MT),
+        return actionsPage.data.reduce((acc, actionLine) => {
+            const parsedData = ParserHelper.indexDataByPathObject(ActionsPagesIndexer, actionLine);
+            const tier = getUniformatedTier(parsedData.siret);
+            const raw = {
+                tier,
+                action: parsedData
             }
 
-            if (projetsPage) {
-                const project = projetsPage.data.find(raw => ParserHelper.findByPath(raw, ProjectsPagesIndexer['Projet - Code dossier']) === codeProjet);
-                if (project) return { ...projectInAction, ...project};
-            }
+            const indexedInformations = ParserHelper.indexDataByPathObject(GisproActionEntity.indexedProviderInformationsPath, raw) as unknown as IGisproActionInformations;
 
-            return projectInAction;
-        }
-
-        const siret = ParserHelper.findByPath(actionsPage.data[0], ActionsPagesIndexer.siret);
-        const codeProject = ParserHelper.findByPath(actionsPage.data[0], ActionsPagesIndexer['Projet - Code dossier']);
-
-        console.log(getProject(codeProject));
-        // console.log(getTiers(siret))
-
-
-        return [];
-        // const headers = data.slice(0,1).flat() as string[];
-        // const raws = data.slice(1, data.length) as unknown[][]; // Delete Headers
-        // return raws.map((raw) => {
-        //     const data = ParserHelper.linkHeaderToData(headers, raw);
-        //     const indexedInformations = ParserHelper.indexDataByPathObject(GisproRequestEntity.indexedProviderInformationsPath, data) as IGisproRequestInformations;
-        //     const legalInformations = ParserHelper.indexDataByPathObject(GisproRequestEntity.indexedLegalInformationsPath, data) as unknown as ILegalInformations;
-        //     return new GisproRequestEntity(legalInformations, indexedInformations, data);
-        // });
+            return acc.concat([
+                new GisproActionEntity(indexedInformations, raw)
+            ]);
+        }, [] as GisproActionEntity[]);
     }
 }

@@ -1,52 +1,67 @@
 import { FindOneAndUpdateOptions } from 'mongodb';
-import { Rna, Siren, Siret } from '../../../../@types';
-import db from "../../../../shared/MongoConnection";
-import GisproRequestEntity from "../entities/GisproRequestEntity";
+import { Siren, Siret } from '../../../../@types';
+import MigrationRepository from '../../../../shared/MigrationRepository';
+import GisproActionEntity from "../entities/GisproActionEntity";
 
-export class GisproRepository {
-    private readonly requestCollection = db.collection<GisproRequestEntity>("gispro-requests");
+export class GisproRepository extends MigrationRepository<GisproActionEntity>{
+    public collectionName = "gispro-actions";
 
-    public async upsertMany(gisproRequests: GisproRequestEntity[]) {
-        // TODO implement upsertMany
-        console.log(gisproRequests);
+    public async upsertMany(entities: GisproActionEntity[]) {
+        const result = await this.collection.bulkWrite(entities.map(entity => {
+        
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const {_id, ...entityWithoutId } = entity;
+            return {
+                updateOne: {
+                    filter: { "providerInformations.codeAction": entity.providerInformations.codeAction },
+                    update: {$set: entityWithoutId },
+                    upsert: true,
+                }
+            }
+        }))
+
+        return {
+            insertedCount: result.insertedCount,
+            modifiedCount: result.modifiedCount,
+        }
     }
 
-    // Request Part
-    public async addRequest(gisproRequest: GisproRequestEntity) {
-        await this.requestCollection.insertOne(gisproRequest);
-        return this.findRequestByGisproId(gisproRequest.providerInformations.gisproId) as GisproRequestEntity;
+    public async insertMany(entities: GisproActionEntity[]) {
+        const result = await this.collection.insertMany(entities);
+        return {
+            insertedCount: result.insertedCount,
+        }
     }
 
-    public findRequestByGisproId(gisproId: string) {
-        return this.requestCollection.findOne({ "providerInformations.gisproId": gisproId }) as unknown as (GisproRequestEntity | null);
+    public async add(entity: GisproActionEntity) {
+        await this.collection.insertOne(entity);
+        return this.findByActionCode(entity.providerInformations.codeAction) as GisproActionEntity;
     }
 
-    public async updateRequest(gisproRequest: GisproRequestEntity) {
+    public findByActionCode(codeAction: string) {
+        return this.collection.findOne({ "providerInformations.codeAction": codeAction }) as unknown as (GisproActionEntity | null);
+    }
+
+    public async update(entity: GisproActionEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...requestWithoutId } = gisproRequest;
-        return (await this.requestCollection.findOneAndUpdate({ 
-            "providerInformations.gisproId": gisproRequest.providerInformations.gisproId 
+        const {_id, ...entityWithoutId } = entity;
+        return (await this.collection.findOneAndUpdate({ 
+            "providerInformations.codeAction": entity.providerInformations.codeAction 
         },
-        { $set: requestWithoutId }, options)).value as GisproRequestEntity;
+        { $set: entityWithoutId }, options)).value as GisproActionEntity;
     }
 
     // TODO: extract this and share with other repositories
-    public findRequestsBySiret(siret: Siret) {
-        return this.requestCollection.find({
-            "legalInformations.siret": siret
+    public findBySiret(siret: Siret) {
+        return this.collection.find({
+            "providerInformations.siret": siret
         }).toArray();
     }
 
-    public findRequestsByRna(rna: Rna) {
-        return this.requestCollection.find({
-            "legalInformations.rna": rna
-        }).toArray();
-    }
-
-    public async findRequestsBySiren(siren: Siren) {
-        return this.requestCollection.find({
-            "legalInformations.siret":  new RegExp(`^${siren}\\d{5}`)
+    public async findBySiren(siren: Siren) {
+        return this.collection.find({
+            "providerInformations.siret":  new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
 }
