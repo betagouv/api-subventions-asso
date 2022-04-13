@@ -1,9 +1,9 @@
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import { Rna, Siren, Siret } from "../../../@types";
 import EventManager from "../../../shared/EventManager";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
 import Association from "../../associations/@types/Association";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import DemandeSubvention from "../../demandes_subventions/@types/DemandeSubvention";
 import Etablissement from "../../etablissements/@types/Etablissement";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";

@@ -1,12 +1,12 @@
 import { AssociationIdentifiers, StructureIdentifiers } from '../../@types';
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper"
-import providers from "../providers";
 import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
-import DemandeSubvention from "./@types/DemandeSubvention";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { siretToSiren } from '../../shared/helpers/SirenHelper';
 import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper'
-import { Siret } from '@api-subventions-asso/dto';
+import { Siret } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import providers from "../providers";
 
 export class DemandesSubventionsService {
 

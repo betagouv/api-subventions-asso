@@ -1,6 +1,6 @@
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
-import DemandeSubvention from "../../../demandes_subventions/@types/DemandeSubvention";
 import Etablissement from "../../../etablissements/@types/Etablissement";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 

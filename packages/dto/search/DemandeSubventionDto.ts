@@ -1,8 +1,11 @@
+
+import { Siret } from "..";
 import ProviderValue from "../shared/ProviderValue";
 import Versement from "./VersementDto";
 
 export default interface DemandeSubvention {
     service_instructeur: ProviderValue<string>,
+    siret: ProviderValue<Siret>,
     dispositif?: ProviderValue<string>,
     sous_dispositif?: ProviderValue<string>,
     ej?: ProviderValue<string>
@@ -11,6 +14,7 @@ export default interface DemandeSubvention {
     financeur_principal?: ProviderValue<string>
     creer_le?: ProviderValue<Date>,
     transmis_le?: ProviderValue<Date>,
+    date_fin?: ProviderValue<Date>,
     pluriannualite?: ProviderValue<string>
     contact?:{
         email: ProviderValue<string>,
@@ -34,33 +38,43 @@ export default interface DemandeSubvention {
     },
     actions_proposee?: {
         ej?: ProviderValue<string>
-        rang: ProviderValue<number>,
+        rang?: ProviderValue<number>,
         intitule: ProviderValue<string>,
-        objectifs: ProviderValue<string>,
-        objectifs_operationnels: ProviderValue<string>,
-        description: ProviderValue<string>,
-        nature_aide: ProviderValue<string>,
-        modalite_aide: ProviderValue<string>,
-        modalite_ou_dispositif: ProviderValue<string>,
-        indicateurs: ProviderValue<string>,
-        cofinanceurs: {
+        objectifs?: ProviderValue<string>,
+        objectifs_operationnels?: ProviderValue<string>,
+        description?: ProviderValue<string>,
+        nature_aide?: ProviderValue<string>,
+        modalite_aide?: ProviderValue<string>,
+        modalite_ou_dispositif?: ProviderValue<string>,
+        indicateurs?: ProviderValue<string>,
+        cofinanceurs?: {
             noms: ProviderValue<string>,
             montant_demandes: ProviderValue<number>,
         },
         montants_versement: {
-            total: ProviderValue<number>,
-            demande: ProviderValue<number>,
-            propose: ProviderValue<number>,
-            accorde: ProviderValue<number>,
-            attribue: ProviderValue<number>,
-            realise: ProviderValue<number>,
-            compensation: ProviderValue<number>,
+            total?: ProviderValue<number>,
+            demande?: ProviderValue<number>,
+            propose?: ProviderValue<number>,
+            accorde?: ProviderValue<number>,
+            attribue?: ProviderValue<number>,
+            realise?: ProviderValue<number>,
+            compensation?: ProviderValue<number>,
         },
     }[],
+    co_financement?: {
+        cofinanceur: ProviderValue<string>,
+        cofinanceur_email: ProviderValue<string>,
+        cofinanceur_siret?: ProviderValue<string>,
+        montants: ProviderValue<number>,
+    },
     territoires?: {
         status: ProviderValue<string>
         commentaire: ProviderValue<string>
     }[]
 
-    versements?: Versement[]
+    versements?: Versement[],
+    evaluation?: {
+        evaluation_resultat: ProviderValue<string>,
+        cout_total_realise: ProviderValue<number>
+    }
 }

@@ -1,6 +1,6 @@
+import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { Siret } from '../../../../@types';
-import DemandeSubvention from '../../../demandes_subventions/@types/DemandeSubvention';
 import etablissementService from '../../etablissements.service';
 
 @Route("etablissement")
