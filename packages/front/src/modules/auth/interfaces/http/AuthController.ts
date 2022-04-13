@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes } from '@api-subventions-asso/dto';
+import { ResetPasswordErrorCodes, SignupErrorCodes} from '@api-subventions-asso/dto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
 import { DefaultObject } from '../../../../@types/utils';
@@ -152,5 +152,33 @@ export default class AuthController {
     public async resetPasswordPostHOTFIX(req: Request, res: Response, next: NextFunction) {
         req.params.tokenId = req.path.split("reset-password/")[1];
         return this.resetPasswordPost(req, res, next);
+    }
+
+    @Get("signup")
+    public async signupView(req: Request, res: Response, next: NextFunction) {
+        return res.render('auth/signup/index', {
+            pageTitle: 'Créer votre compte sur Datasubvention',
+        });
+    }
+
+    @Post("signup")
+    public async signupPost(req: Request, res: Response, next: NextFunction) {
+        const email = req.body.email;
+
+        const result = await authService.signup(email);
+
+        if (result.type === "SUCCESS") {
+            return res.render('auth/signup/index', {
+                pageTitle: 'Créer votre compte sur Datasubvention',
+                success: true,
+            });
+        }
+
+        return res.render('auth/signup/index', {
+            pageTitle: 'Créer votre compte sur Data.subvention',
+            error: true,
+            errorCode: result.code,
+            SignupErrorCodes,
+        });
     }
 }
