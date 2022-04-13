@@ -4,14 +4,14 @@ import path from "path";
 import GisproCliController from "../../../../../../src/modules/providers/gispro/interfaces/cli/gispro.cli.controller"
 import GisproParser from "../../../../../../src/modules/providers/gispro/gispro.parser";
 
-const filePath = path.resolve(__dirname, "../../__fixtures__/gispro.xlsx");
+const filePath = path.resolve(__dirname, "../../__fixtures__/gispro-test.xltx");
 
 describe("GisproCliController", () => {
     let controller: GisproCliController;
     const spys: jest.SpyInstance<unknown>[] = [];
     beforeAll(() => {
         spys.push(
-            jest.spyOn(GisproParser, 'parseRequests'),
+            jest.spyOn(GisproParser, 'parseActions'),
         )
     });
 
@@ -90,7 +90,7 @@ describe("GisproCliController", () => {
                 const expected = "Parse command need type and file args";
                 let actual = "";
                 try {
-                    await controller.parse("requests", []);
+                    await controller.parse("actions", []);
                 } catch (e) {
                     actual = e.message;
                 }
@@ -101,7 +101,7 @@ describe("GisproCliController", () => {
                 const expected = "File not found ./myFile";
                 let actual = "";
                 try {
-                    await controller.parse("requests", './myFile');
+                    await controller.parse("actions", './myFile');
                 } catch (e) {
                     actual = e.message;
                 }
@@ -120,9 +120,9 @@ describe("GisproCliController", () => {
             } )
         })
 
-        it('should call parseRequests()', async () => {
-            await controller.parse("requests", filePath);
-            expect(GisproParser.parseRequests).toHaveBeenCalled();
+        it('should call parseActions()', async () => {
+            await controller.parse("actions", filePath);
+            expect(GisproParser.parseActions).toHaveBeenCalled();
         });
     });
 });

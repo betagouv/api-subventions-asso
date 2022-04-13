@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ObjectId } from 'mongodb';
-import IGisproRequestInformations from '../../../../../src/modules/providers/gispro/@types/IGisproRequestInformations';
 import GisproRequestAdapter from '../../../../../src/modules/providers/gispro/adapters/GisproRequestAdapter';
 import ProviderValue from '@api-subventions-asso/dto/shared/ProviderValue';
-import GisproRequestEntity from '../../../../../src/modules/providers/gispro/entities/GisproRequestEntity';
+import GisproActionEntity from '../../../../../src/modules/providers/gispro/entities/GisproActionEntity';
 import ILegalInformations from '../../../../../src/modules/search/@types/ILegalInformations';
+import IGisproActionInformations from '../../../../../src/modules/providers/gispro/@types/IGisproActionInformations';
 
 describe('GisproRequestAdapter', () => {
     describe('toDemandeSubvention()', () => {
@@ -13,14 +13,13 @@ describe('GisproRequestAdapter', () => {
                 siret: {} as ProviderValue,
                 service_instructeur: {} as ProviderValue,
                 status: {} as ProviderValue,
-                dispositif: {} as ProviderValue,
-                sous_dispositif: {} as ProviderValue
+                montants: {} as ProviderValue,
+                actions_proposee: {} as ProviderValue
             };
-            const legalInformations = {} as ILegalInformations;
-            const providerInformations = {} as IGisproRequestInformations;
+            const providerInformations = {} as IGisproActionInformations;
             const data = {};
             const id = {} as ObjectId;
-            const actual = GisproRequestAdapter.toDemandeSubvention(new GisproRequestEntity(legalInformations, providerInformations , data,  id));
+            const actual = GisproRequestAdapter.toDemandeSubvention([new GisproActionEntity(providerInformations, data,  id)]);
             expect(Object.keys(actual)).toEqual(Object.keys(expected));
         })
     })

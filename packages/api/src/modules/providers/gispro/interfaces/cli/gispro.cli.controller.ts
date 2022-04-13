@@ -4,18 +4,18 @@ import { StaticImplements } from "../../../../../decorators/staticImplements.dec
 import { CliStaticInterface} from "../../../../../@types";
 import GisproParser from "../../gispro.parser";
 import gisproService from "../../gispro.service";
-import OsirisRequestEntity from "../../entities/GisproRequestEntity";
+import GisproActionEntity from "../../entities/GisproActionEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
-import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
+import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class GisproCliController {
     static cmdName = "gispro";
 
     private logFileParsePath = {
-        requests: "./logs/gispro.parse.requests.log.txt"
+        actions: "./logs/gispro.parse.actions.log.txt"
     };
 
     public validate(type: string, file: string) {
@@ -29,12 +29,12 @@ export default class GisproCliController {
 
         const fileContent = fs.readFileSync(file);
 
-        if (type === "requests") {
-            const requests = GisproParser.parseRequests(fileContent);
+        if (type === "actions") {
+            const actions = GisproParser.parseActions(fileContent);
 
-            console.info(`Check ${requests.length} entities!`);
-            requests.forEach((entity) => {
-                const result = gisproService.validRequest(entity);
+            console.info(`Check ${actions.length} entities!`);
+            actions.forEach((entity) => {
+                const result = gisproService.validEntity(entity);
                 if (!result.success) {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
@@ -47,7 +47,7 @@ export default class GisproCliController {
     }
 
     // REFACTOR: this could be extract and shared through different CLI
-    public async parse(type: "requests", file: string): Promise<unknown> {
+    public async parse(type: "actions", file: string, forceInsert = false): Promise<unknown> {
         if (typeof type !== "string" || typeof file !== "string" ) {
             throw new Error("Parse command need type and file args");
         }
@@ -64,45 +64,60 @@ export default class GisproCliController {
         const logs: unknown[] = [];
         
         return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(type, filePath, logs));
+            return acc.then(() => this._parse(type, filePath, logs, forceInsert));
         }, Promise.resolve())
             .then(() => fs.writeFileSync(this.logFileParsePath[type], logs.join(''), { flag: "w", encoding: "utf-8" }));
     }
 
-    private async _parse(type: string, file: string, logs: unknown[]) {
+    private async _parse(type: string, file: string, logs: unknown[], forceInsert: boolean) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
 
-        if (type === "requests") {
-            return this._parseRequest(fileContent, logs);
+        if (type === "actions") {
+            return this._parseActions(fileContent, logs, forceInsert);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
     }
 
-    private async _parseRequest(contentFile: Buffer, logs: unknown[]) {
-        const requests = GisproParser.parseRequests(contentFile);
-        const results = await requests.reduce(async (acc, gisproRequest, index) => {
-            const data = await acc;
-            const validation = gisproService.validRequest(gisproRequest);
+    private async _parseActions(contentFile: Buffer, logs: unknown[], forceInsert: boolean) {
+        const actions = GisproParser.parseActions(contentFile);
+        const stack: GisproActionEntity[] = [];
+        let created = 0;
+        let updated = 0;
 
-            CliHelper.printProgress(index + 1 , requests.length);
+        const insert = async (entities: GisproActionEntity[]) => {
+            const result: { insertedCount: number, modifiedCount?: number} = forceInsert 
+                ? await gisproService.insertMany(entities)
+                : await gisproService.upsertMany(entities);
 
-            // TODO: Stack 1000 request before insert to mongo
+            created += result.insertedCount;
+            updated += result.modifiedCount || 0;
+        }
+
+        await asyncForEach(actions, async (action, index) => {
+            const validation = gisproService.validEntity(action);
+
+            CliHelper.printProgress(index + 1 , actions.length);
+
             if (!validation.success) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
-            } else data.push( await gisproService.addRequest(gisproRequest));
+            } else stack.push(action);
 
-            return data;
-        }, Promise.resolve([]) as Promise<{ state: string, result: OsirisRequestEntity}[]>);
+            if (stack.length >= 1000) {
+                const chunk = stack.splice(-1000);
+                await insert(chunk);
+            }
+        })
 
-        const created = results.filter(({state}) => state === "created");
+        if (stack.length != 0) await insert(stack);
+
         console.info(`
-            ${results.length}/${requests.length}
-            ${created.length} requests created and ${results.length - created.length} requests updated
-            ${requests.length - results.length} requests not valid
+            ${created + updated}/${actions.length}
+            ${created} actions created and ${updated} actions updated
+            ${actions.length - (created + updated)} actions not valid
         `);
     }
 }

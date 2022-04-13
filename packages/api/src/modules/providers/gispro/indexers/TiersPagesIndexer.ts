@@ -1,10 +1,6 @@
 export default {
-    siret: [["Code Siret", "Code SIRET"]],
-    // Tiers: [["Tiers"]],
-    // "Code Siret": [["Code Siret", "Code SIRET"]],
-    // "Tiers - Code": [["Tiers - Code"]],
-    // "Type de tiers": [["Type de tiers"]],
-    // "Adresse administrative - Adresse complète": [["Adresse administrative - Adresse complète"]],
-    // "Libellé abrégé de la région": [["Libellé abrégé de la région"]],
-    // "dépt": [["dépt"]],
+    siret: [["Code Siret", "Code SIRET", "SIRET", "SIRET,"]],
+    "CodeTiers": [["Tiers - Code", "Code Organisme", "CODE TIERS",]],
+    Tiers: [["Tiers", "Raison Sociale Longue", "tiers", "TIERS"]],
+    "TypeTiers": [["Type de tiers", "types de tiers", "TYPE DE TIERS", "type de tiers"]],
 }

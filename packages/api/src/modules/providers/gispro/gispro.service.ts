@@ -1,8 +1,9 @@
-import EventManager from "../../../shared/EventManager";
-import GisproRequestEntity from './entities/GisproRequestEntity';
+import GisproActionEntity from './entities/GisproActionEntity';
 import gisproRepository from './repositories/gispro.repository';
 import { isSiret, isAssociationName } from "../../../shared/Validators";
+import { DefaultObject } from '../../../@types';
 import GisproRequestAdapter from './adapters/GisproRequestAdapter';
+import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
 import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
 import { Rna, Siren, Siret } from '@api-subventions-asso/dto';
 
@@ -11,68 +12,83 @@ export const VALID_REQUEST_ERROR_CODE = {
     INVALID_NAME: 2
 }
 
-export class GisproService {
-    public validRequest(request: GisproRequestEntity) {
-        if (!isSiret(request.legalInformations.siret)) {
-            return { success: false, message: `INVALID SIRET FOR ${request.legalInformations.siret}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET };
+export class GisproService implements DemandesSubventionsProvider {
+    public validEntity(entity: GisproActionEntity) {
+        if (!isSiret(entity.providerInformations.siret)) {
+            return { success: false, message: `INVALID SIRET FOR ${entity.providerInformations.siret}`, data: entity.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET };
         }
 
-        if (!isAssociationName(request.legalInformations.name)) {
-            return { success: false, message: `INVALID NAME FOR ${request.legalInformations.name}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_NAME };
+        if (!isAssociationName(entity.providerInformations.tier)) {
+            return { success: false, message: `INVALID NAME FOR ${entity.providerInformations.tier}`, data: entity.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_NAME };
         }
 
         return { success: true };
     }
 
-    public async addRequest(request: GisproRequestEntity): Promise<{state: string, result: GisproRequestEntity}> {
-        const existingFile = await gisproRepository.findRequestByGisproId(request.providerInformations.gisproId);
+    public async upsertMany(requests: GisproActionEntity[]) {
+        return await gisproRepository.upsertMany(requests);
+    }
 
-        EventManager.call('rna-siren.matching', [{ rna: request.legalInformations.rna, siren: request.legalInformations.siret}])
-        
+    public async insertMany(requests: GisproActionEntity[]) {
+        return await gisproRepository.insertMany(requests);
+    }
+
+    public async add(enitity: GisproActionEntity): Promise<{state: string, result: GisproActionEntity}> {
+        const existingFile = await gisproRepository.findByActionCode(enitity.providerInformations.codeAction);
+
         if (existingFile) {
             return {
                 state: "updated",
-                result: await gisproRepository.updateRequest(request),
+                result: await gisproRepository.update(enitity),
             };
         }
 
         return {
             state: "created",
-            result: await gisproRepository.addRequest(request),
+            result: await gisproRepository.add(enitity),
         };
     }
 
     public async findBySiret(siret: Siret) {
-        const requests = await gisproRepository.findRequestsBySiret(siret);
-        return requests;
+        const actions = await gisproRepository.findBySiret(siret);
+        return actions;
     }
 
     public async findBySiren(siren: Siren) {
-        const requests = await gisproRepository.findRequestsBySiren(siren);
-        return requests;
+        const actions = await gisproRepository.findBySiren(siren);
+        return actions;
     }
 
-    public async findByRna(rna: Rna) {
-        const requests = await gisproRepository.findRequestsByRna(rna);
-        return requests;
+    private groupByRequestCode(entities: GisproActionEntity[]): GisproActionEntity[][] {
+        const entitiesByCode = entities.reduce((acc, entity) => {
+            if (!acc[entity.providerInformations.codeRequest]) acc[entity.providerInformations.codeRequest] = [];
+            acc[entity.providerInformations.codeRequest].push(entity);
+            return acc;
+        }, {} as DefaultObject<GisproActionEntity[]>)
+
+        return Object.values(entitiesByCode);
     }
 
     isDemandesSubventionsProvider = true;
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {   
-        const requests = await this.findBySiret(siret);
+        const actions = await this.findBySiret(siret);
 
-        if (requests.length === 0) return null;
+        if (actions.length === 0) return null;
 
-        return requests.map(r => GisproRequestAdapter.toDemandeSubvention(r));
+        const groupedActions = this.groupByRequestCode(actions);
+
+        return groupedActions.map(group => GisproRequestAdapter.toDemandeSubvention(group));
     }
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {   
-        const requests = await this.findBySiren(siren);
+        const actions = await this.findBySiren(siren);
 
-        if (requests.length === 0) return null;
+        if (actions.length === 0) return null;
 
-        return requests.map(r => GisproRequestAdapter.toDemandeSubvention(r));
+        const groupedActions = this.groupByRequestCode(actions);
+
+        return groupedActions.map(group => GisproRequestAdapter.toDemandeSubvention(group));
     }
 
     async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
