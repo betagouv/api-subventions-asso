@@ -5,6 +5,7 @@ const routesWithoutLogin = [
     "/auth/login",
     "/auth/reset-password",
     "/auth/forget-password",
+    "/auth/signup",
     "/mentions-legales",
     "/contact"
 ]

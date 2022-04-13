@@ -1,0 +1,57 @@
+<%- include('../../header') -%>
+<main role="main" id="contenu">
+    <div class="fr-container fr-mb-8w">
+        <%- include('../../global_components/ariane', { items: [
+            { label: 'Accueil', url: '/' },
+            { label: 'Connexion', url: '/auth/login' },
+            { label: pageTitle },
+            ],})
+            -%>
+            <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                <div class="fr-col fr-col-lg-8">
+                    <h1><%-pageTitle%></h1>
+                    <% if (typeof error != 'undefined' && error) { %>
+                        <div role="alert" class="fr-alert fr-alert--warning">
+                            <p class="fr-alert__title">Attention</p>
+                            <% if (errorCode === SignupErrorCodes.EMAIL_NOT_VALID) { %>
+                                <p>L'adresse mail fournie ne semble pas être une adresse valide.</p>
+                            <% } else if (errorCode === SignupErrorCodes.USER_ALREADY_EXIST) {%>
+                                <p>Un compte lié à cette adresse mail existe déjà.</p>
+                            <% } else if (errorCode === SignupErrorCodes.CREATION_ERROR || errorCode === SignupErrorCodes.CREATION_RESET_ERROR) {%>
+                                <p>Une erreur est survenue lors de la création de votre compte. Re-essayer plus tard ou <a href="http://localhost:1235/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a></p>
+                            <% } else if (errorCode === SignupErrorCodes.EMAIL_MUST_BE_END_GOUV) {%>
+                                <p>L'adresse mail fournie ne semble pas être liée au gouvernement.</p>
+                            <% } else { %>
+                                <p>Une erreur est survenue lors de la création de votre compte.</p>
+                            <% } %>
+                        </div>
+                    <% } %>
+                    <% if (typeof success != 'undefined' && success) { %>
+                        <div role="alert" class="fr-alert fr-alert--success">
+                            <p class="fr-alert__title">Félicitation votre inscription à bien été prise en compte</p>
+                            <p>Vous allez recevoir un mail pour finaliser votre inscription</p>
+                        </div>
+                    <% } %>
+                    <div role="alert" class="fr-alert fr-alert--info">
+                        <p class="fr-alert__title">Data.subvention étant réservé aux agents de l'Etat, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public.</p>
+                        <p>Si votre adresse mail n'est pas reconnue, contactez-nous à <a href="mailto:contact@datasubvention.beta.gouv.fr">contact@datasubvention.beta.gouv.fr</a>.</p>
+                    </div>
+                    <form action="" method="POST" data-turbo="false">
+                        <fieldset class="fr-fieldset fr-my-4w">
+                            <div class="fr-input-group">
+                                <label class="fr-label" for="text-input-text">Email :</label>
+                                <input class="fr-input" type="text" name="email" required="true">
+                            </div>
+                        </fieldset>
+                        <div class="fr-input-group fr-my-4w">
+                            <button type="submit" class="fr-btn" title="S'inscrire">S'inscrire</button>
+                            <a class="fr-link" href="/auth/login">Retour à la page Connexion</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<%- include('../../footer') -%>
