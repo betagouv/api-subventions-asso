@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { WithId } from "mongodb";
 import * as RandToken from "rand-token";
+import { ACCEPTED_EMAIL_DOMAIN } from "../../configurations/auth.conf";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ROLES } from "./entities/Roles";
@@ -26,6 +27,7 @@ export enum UserServiceErrors {
     RESET_TOKEN_NOT_FOUND = 10,
     RESET_TOKEN_EXPIRED = 11,
     CREATE_RESET_PASSWORD_WRONG = 12,
+    CREATE_EMAIL_GOUV = 13,
 }
 
 export interface UserServiceError {
@@ -34,7 +36,15 @@ export interface UserServiceError {
 
 export class UserService {
 
-    public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms  
+    public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
+    public static PASSWORD_VALIDATOR_MESSAGE = 
+        `Password is not hard, please use this rules:
+    At least one digit [0-9]
+    At least one lowercase character [a-z]
+    At least one uppercase character [A-Z]
+    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
+    At least 8 characters in length, but no more than 32.
+                    `
 
     async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<User, 'hashPassword'> }>{
         const user = await userRepository.findByEmail(email);
@@ -97,6 +107,10 @@ export class UserService {
             return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL }
         }
 
+        if (!ACCEPTED_EMAIL_DOMAIN.some(domain => email.endsWith(domain))) {
+            return { success: false, message: `Email must be end by ${ACCEPTED_EMAIL_DOMAIN.join(",")}`, code: UserServiceErrors.CREATE_EMAIL_GOUV }
+        }
+
         if (await userRepository.findByEmail(email)) {
             return { success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST }
         }
@@ -104,14 +118,7 @@ export class UserService {
         if (!this.passwordValidator(password)) {
             return {
                 success: false, 
-                message: 
-                    `Password is not hard, please use this rules:
-    At least one digit [0-9]
-    At least one lowercase character [a-z]
-    At least one uppercase character [A-Z]
-    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-    At least 8 characters in length, but no more than 32.
-                    `,
+                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
                 code: UserServiceErrors.FORMAT_PASSWORD_INVALID
             }
         }
@@ -141,14 +148,7 @@ export class UserService {
         if (!this.passwordValidator(password)) {
             return {
                 success: false, 
-                message: 
-                    `Password is not hard, please use this rules:
-    At least one digit [0-9]
-    At least one lowercase character [a-z]
-    At least one uppercase character [A-Z]
-    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-    At least 8 characters in length, but no more than 32.
-                    `,
+                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
                 code: UserServiceErrors.FORMAT_PASSWORD_INVALID
             }
         }
@@ -169,18 +169,23 @@ export class UserService {
     public async createUsersByList(emails: string[]) {
         return emails.reduce(async(acc, email) => {
             const data = await acc;
-            const result = await this.createUser(email);
-
-            if (!result.success) return Promise.resolve([...data, { email, success: false, message: result.message }]);
-
-            const resetResult = await this.resetUser(result.user);
-
-            if (!resetResult.success) return Promise.resolve([...data, { email, success: false, message: resetResult.message }]);
-
-            await mailNotifierService.sendCreationMail(email, resetResult.reset.token);
-
-            return Promise.resolve([...data, { email, success: true}]);
+            const result = await this.signup(email);
+            return Promise.resolve([...data, { email, ...result }]);
         }, Promise.resolve([]) as Promise<{ email: string, success: boolean, message ?:string}[]>)
+    }
+
+    public async signup(email: string): Promise<UserServiceError | { success: true, email: string }> {
+        const result = await this.createUser(email);
+
+        if (!result.success) return  { success: false, message: result.message, code: result.code };
+
+        const resetResult = await this.resetUser(result.user);
+
+        if (!resetResult.success) return { success: false, message: resetResult.message, code: resetResult.code };
+
+        await mailNotifierService.sendCreationMail(email, resetResult.reset.token);
+
+        return { email, success: true };
     }
 
     async addRolesToUser(user: UserWithoutSecret | string, roles: string[]): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {

@@ -2,7 +2,7 @@ import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Sec
 import { Request as ExRequest } from "express";
 import userService, { UserServiceErrors } from '../../user.service';
 import User, { UserWithoutSecret } from '../../entities/User';
-import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes } from "@api-subventions-asso/dto"
+import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -83,6 +83,44 @@ export class AuthentificationController extends Controller {
         // If you change the route please change in express.auth.hooks.ts
 
         return (req.user as User).jwt;
+    }
+
+    @Post("/signup")
+    @SuccessResponse("201", "Signup successfully")
+    public async signup(
+        @Body() body: { email: string },
+    ): Promise<SignupDtoResponse> {
+        const result = await userService.signup(body.email);
+
+        if (result.success) {
+            this.setStatus(201);
+            return {
+                success: true,
+                data: {
+                    message: `The user ${body.email}, is succefully created`
+                }
+            }
+        }
+
+        let errorCode: SignupErrorCodes = SignupErrorCodes.CREATION_ERROR;
+
+        const internalServerError = [SignupErrorCodes.CREATION_ERROR, SignupErrorCodes.CREATION_RESET_ERROR];
+
+        if (result.code === UserServiceErrors.CREATE_INVALID_EMAIL) errorCode = SignupErrorCodes.EMAIL_NOT_VALID;
+        if (result.code === UserServiceErrors.CREATE_USER_ALREADY_EXIST) errorCode = SignupErrorCodes.USER_ALREADY_EXIST;
+        if (result.code === UserServiceErrors.CREATE_USER_WRONG) errorCode = SignupErrorCodes.CREATION_ERROR;
+        if (result.code === UserServiceErrors.CREATE_RESET_PASSWORD_WRONG) errorCode = SignupErrorCodes.CREATION_RESET_ERROR;
+        if (result.code === UserServiceErrors.CREATE_EMAIL_GOUV) errorCode = SignupErrorCodes.EMAIL_MUST_BE_END_GOUV;
+
+        this.setStatus(internalServerError.includes(errorCode) ? 500 : 422);
+
+        return {
+            success: false,
+            data: {
+                errorCode,
+                message: result.message
+            }
+        }
     }
 
     @Get("/logout")
