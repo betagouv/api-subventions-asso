@@ -1,9 +1,9 @@
 import { ProviderValues, Rna } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import { ProviderValue } from "../../../../@types";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import Association from "../../../associations/@types/Association";
-import DemandeSubvention from "../../../demandes_subventions/@types/DemandeSubvention";
 import Etablissement from "../../../etablissements/@types/Etablissement";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";

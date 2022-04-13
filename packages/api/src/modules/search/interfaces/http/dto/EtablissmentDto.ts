@@ -1,6 +1,6 @@
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import Versement from "@api-subventions-asso/dto/search/VersementDto";
 import Association from "../../../../associations/@types/Association";
-import DemandeSubvention from "../../../../demandes_subventions/@types/DemandeSubvention";
 import Etablissement from "../../../../etablissements/@types/Etablissement";
 
 export default interface EtablissementDto extends Etablissement {

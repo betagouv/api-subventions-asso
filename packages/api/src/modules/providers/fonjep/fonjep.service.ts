@@ -1,9 +1,9 @@
 import { Siren } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import { WithId } from "mongodb";
 import { Siret } from "../../../@types";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
-import DemandeSubvention from "../../demandes_subventions/@types/DemandeSubvention";
 import Etablissement from "../../etablissements/@types/Etablissement";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";

@@ -12,7 +12,7 @@ export default class FonjepParser {
             const headers = (page.slice(0,1)[0] as string[]).map((h: string) => h.trim());
             const raws = page.slice(1, page.length) as (string|number)[][]; // Delete Headers 
 
-            return raws.map(data => ParseHelper.linkHeaderToData(headers, data as string[]));
+            return raws.map(data => ParseHelper.linkHeaderToData(headers, data) as DefaultObject<string>);
         });
 
         const findTiers = (codeTier: string) => tiers.find(tier => tier["Code"] === codeTier);
