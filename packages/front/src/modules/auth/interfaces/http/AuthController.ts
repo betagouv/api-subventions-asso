@@ -157,7 +157,7 @@ export default class AuthController {
     @Get("signup")
     public async signupView(req: Request, res: Response, next: NextFunction) {
         return res.render('auth/signup/index', {
-            pageTitle: 'Créer votre compte sur Datasubvention',
+            pageTitle: `Créer votre compte sur ${res.locals.appName}`,
         });
     }
 
@@ -169,13 +169,13 @@ export default class AuthController {
 
         if (result.type === "SUCCESS") {
             return res.render('auth/signup/index', {
-                pageTitle: 'Créer votre compte sur Datasubvention',
+                pageTitle: `Créer votre compte sur ${res.locals.appName}`,
                 success: true,
             });
         }
 
         return res.render('auth/signup/index', {
-            pageTitle: 'Créer votre compte sur Data.subvention',
+            pageTitle: `Créer votre compte sur ${res.locals.appName}`,
             error: true,
             errorCode: result.code,
             SignupErrorCodes,
