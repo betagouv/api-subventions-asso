@@ -21,7 +21,7 @@
 <body data-controller="document">
   <div class="ds-loader" data-document-target="loader">
     <div class="ds-loader-container">
-      <p class=""><%= appName %></p>
+      <p class=""><%= appName %> - V<%= appVersion %></p>
       <img src="/static/images/logo-beta.jpg" class="ds-loader-container-logo">
       <p class="ds-loader-container-text" data-document-target="text"></p>
     </div>
@@ -65,7 +65,7 @@
           </div>
           <div class="fr-header__service">
             <a href="/" title="Accueil - <%= appName %>">
-              <p class="fr-header__service-title"><%= appName %></p>
+              <p class="fr-header__service-title"><%= appName %> - V<%= appVersion %></p>
             </a>
             <p class="fr-header__service-tagline"><%= appDescription %></p>
           </div>

@@ -21,7 +21,8 @@ declare module 'express-session' {
     }
 }
 
-const appName = `DataSubvention - V${designSystemVersion}`
+const appName = `Data.subvention`
+const appVersion = designSystemVersion;
 const appDescription = "Toutes les informations pour instruire vos demandes de subvention"
 const appRepo = 'https://github.com/betagouv/api-subventions-asso'
 const contactEmail = "contact@datasubvention.beta.gouv.fr"
@@ -45,6 +46,7 @@ app.use(authMiddleware);
 // Populate some variables for all views
 app.use(function(req, res, next){
   res.locals.appName = appName
+  res.locals.appVersion = appVersion
   res.locals.appDescription = appDescription
   res.locals.appRepo = appRepo
   res.locals.contactEmail = contactEmail
