@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
-import {LoginDtoResponse} from "@api-subventions-asso/dto"
+import {LoginDtoResponse, ResetPasswordDtoResponse} from "@api-subventions-asso/dto"
 import { DATASUB_URL } from "./config";
 import AssociationDtoResponse from "@api-subventions-asso/dto/search/AssociationDtoResponse";
 import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
@@ -29,7 +29,7 @@ export class APIDatasubService {
     }
 
     resetPassword(token: string, password: string) {
-        return this.sendRequest<{success: boolean}>("POST", "/auth/reset-password", undefined, {
+        return this.sendRequest<ResetPasswordDtoResponse>("POST", "/auth/reset-password", undefined, {
             token,
             password
         })

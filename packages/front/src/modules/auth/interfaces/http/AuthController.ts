@@ -1,3 +1,4 @@
+import { ResetPasswordErrorCodes } from '@api-subventions-asso/dto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
 import { DefaultObject } from '../../../../@types/utils';
@@ -127,7 +128,8 @@ export default class AuthController {
                 pageTitle: 'Changement de mot de passe',
                 token: id || req.body.token,
                 activation: req.query.active,
-                error: "WRONG_FIELD"
+                error: ResetPasswordErrorCodes.INTERNAL_ERROR,
+                errorCodes: ResetPasswordErrorCodes,
             });
         }
 
@@ -139,7 +141,8 @@ export default class AuthController {
                 pageTitle: 'Changement de mot de passe',
                 token: req.body.token,
                 activation: req.query.active,
-                error: "WRONG_FIELD"
+                error: result.code,
+                errorCodes: ResetPasswordErrorCodes,
             });
         }
         res.redirect("/auth/login?success=" + (req.query.active ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED"));
