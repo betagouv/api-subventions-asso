@@ -1,8 +1,8 @@
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, } from 'tsoa';
 import { Request as ExRequest } from "express";
-import userService from '../../user.service';
+import userService, { UserServiceErrors } from '../../user.service';
 import User, { UserWithoutSecret } from '../../entities/User';
-import { LoginDtoResponse } from "@api-subventions-asso/dto"
+import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes } from "@api-subventions-asso/dto"
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -31,13 +31,44 @@ export class AuthentificationController extends Controller {
             password: string,
             token: string,
         }
-    ) {
+    ): Promise<ResetPasswordDtoResponse> {
         const result = await userService.resetPassword(body.password, body.token);
 
         if (!result.success) {
             this.setStatus(500);
+
+            let errorCode = ResetPasswordErrorCodes.INTERNAL_ERROR;
+
+            switch (result.code) {
+            case UserServiceErrors.RESET_TOKEN_NOT_FOUND:
+                errorCode = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
+                break;
+            case UserServiceErrors.RESET_TOKEN_EXPIRED:
+                errorCode = ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+                break;
+            case UserServiceErrors.USER_NOT_FOUND:
+                errorCode = ResetPasswordErrorCodes.USER_NOT_FOUND
+                break;            
+            case UserServiceErrors.FORMAT_PASSWORD_INVALID:
+                errorCode = ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+                break;            
+            }
+
+            return {
+                success: false,
+                data: {
+                    message: result.message,
+                    code: errorCode
+                }
+            }
         }
-        return result
+
+        return {
+            success: result.success,
+            data: {
+                user: { ...result.user, _id: result.user._id.toString()}
+            }
+        }
     }
 
     @Post("/login")

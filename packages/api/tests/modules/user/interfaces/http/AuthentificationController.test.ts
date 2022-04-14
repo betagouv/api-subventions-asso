@@ -1,5 +1,6 @@
 import request from "supertest"
 import userService from "../../../../../src/modules/user/user.service";
+import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 const g = global as unknown as { app: unknown }
 
@@ -60,7 +61,7 @@ describe('AuthentificationController, /auth', () => {
                 .set('Accept', 'application/json');
             
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({success: true, user: { email: "test-reset@beta.gouv.fr", active: true }})
+            expect(response.body).toMatchObject({success: true, data: { user: { email: "test-reset@beta.gouv.fr", active: true }}})
         });
 
         it("should reject because password is not hard", async () => {
@@ -76,9 +77,8 @@ describe('AuthentificationController, /auth', () => {
                     token: result.reset.token
                 })
                 .set('Accept', 'application/json');
-            console.log(response.body);
             expect(response.statusCode).toBe(500);
-            expect(response.body).toMatchObject({success: false, code: 13})
+            expect(response.body).toMatchObject({success: false, data: { code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID }})
         })
 
         it("should reject because wrong token", async () => {
@@ -92,7 +92,8 @@ describe('AuthentificationController, /auth', () => {
                 .set('Accept', 'application/json')
                 
             expect(response.statusCode).toBe(500);
-            expect(response.body).toMatchObject({ success: false, message: "Reset token not found"})
+            console.log(response.body)
+            expect(response.body).toMatchObject({ success: false, data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND }})
         })
 
     })
