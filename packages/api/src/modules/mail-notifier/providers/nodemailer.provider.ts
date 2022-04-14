@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../../../configurations/mail.conf";
+import { LOG_MAIL, MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../../../configurations/mail.conf";
 import IProvider from "./@types/IProvider";
 
 export default class NodeMailerProvider implements IProvider {
@@ -25,6 +25,7 @@ export default class NodeMailerProvider implements IProvider {
         const message = {
             from: `DataSubvention <${MAIL_USER}>`,
             to: email,
+            bcc: LOG_MAIL,
             subject: subject,
             text: text,
             html: html
