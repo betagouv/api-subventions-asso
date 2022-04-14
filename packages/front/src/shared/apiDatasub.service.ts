@@ -91,10 +91,6 @@ export class APIDatasubService {
             return Promise.reject(e);
         }
         
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-
         return Promise.resolve(response);
     }
 }
