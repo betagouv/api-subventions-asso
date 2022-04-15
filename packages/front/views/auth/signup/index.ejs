@@ -18,7 +18,7 @@
                             <% } else if (errorCode === SignupErrorCodes.USER_ALREADY_EXIST) {%>
                                 <p>Un compte lié à cette adresse mail existe déjà.</p>
                             <% } else if (errorCode === SignupErrorCodes.CREATION_ERROR || errorCode === SignupErrorCodes.CREATION_RESET_ERROR) {%>
-                                <p>Une erreur est survenue lors de la création de votre compte. Re-essayer plus tard ou <a href="http://localhost:1235/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a></p>
+                                <p>Une erreur est survenue lors de la création de votre compte. Re-essayer plus tard ou <a href="/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a></p>
                             <% } else if (errorCode === SignupErrorCodes.EMAIL_MUST_BE_END_GOUV) {%>
                                 <p>L'adresse mail fournie ne semble pas être liée au gouvernement.</p>
                             <% } else { %>
