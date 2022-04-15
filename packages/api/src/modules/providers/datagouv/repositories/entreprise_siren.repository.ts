@@ -17,14 +17,16 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
     }
 
     public async replaceCollection() {
-        const collectionExist = (await this.db.listCollections().toArray())
+        const oldCollectionExist = (await this.db.listCollections().toArray())
             .find(c => c.name === this.collectionName);
+        const newCollectionExist = (await this.db.listCollections().toArray())
+            .find(c => c.name === this.collectionImportName);
 
-        if (collectionExist) await this.collection.rename(this.collectionName + "-OLD");
+        if (oldCollectionExist) await this.collection.rename(this.collectionName + "-OLD");
         
-        await this.db.collection(this.collectionImportName).rename(this.collectionName);
+        if (newCollectionExist) await this.db.collection(this.collectionImportName).rename(this.collectionName);
         
-        if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
+        if (oldCollectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
     }
 
     public async findOne(siren: Siren) {
