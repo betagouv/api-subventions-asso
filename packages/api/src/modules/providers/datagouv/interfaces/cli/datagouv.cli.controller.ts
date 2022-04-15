@@ -63,7 +63,6 @@ export default class DataGouvCliController {
             if (stackEntreprise.length > 1000)  {
                 const chunkEntreprise = stackEntreprise.splice(-1000);
                 await dataGouvService.insertManyEntrepriseSiren(chunkEntreprise, true);
-
             }
 
             if (stackRnaSiren.length > 1000) {
