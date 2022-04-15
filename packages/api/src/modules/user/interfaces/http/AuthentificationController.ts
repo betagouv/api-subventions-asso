@@ -3,6 +3,7 @@ import { Request as ExRequest } from "express";
 import userService, { UserServiceErrors } from '../../user.service';
 import User, { UserWithoutSecret } from '../../entities/User';
 import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
+import { DefaultObject } from '../../../../@types';
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -102,15 +103,18 @@ export class AuthentificationController extends Controller {
             }
         }
 
-        let errorCode: SignupErrorCodes = SignupErrorCodes.CREATION_ERROR;
 
         const internalServerError = [SignupErrorCodes.CREATION_ERROR, SignupErrorCodes.CREATION_RESET_ERROR];
 
-        if (result.code === UserServiceErrors.CREATE_INVALID_EMAIL) errorCode = SignupErrorCodes.EMAIL_NOT_VALID;
-        if (result.code === UserServiceErrors.CREATE_USER_ALREADY_EXIST) errorCode = SignupErrorCodes.USER_ALREADY_EXIST;
-        if (result.code === UserServiceErrors.CREATE_USER_WRONG) errorCode = SignupErrorCodes.CREATION_ERROR;
-        if (result.code === UserServiceErrors.CREATE_RESET_PASSWORD_WRONG) errorCode = SignupErrorCodes.CREATION_RESET_ERROR;
-        if (result.code === UserServiceErrors.CREATE_EMAIL_GOUV) errorCode = SignupErrorCodes.EMAIL_MUST_BE_END_GOUV;
+        const errorMatch: DefaultObject<SignupErrorCodes> = {
+            [UserServiceErrors.CREATE_INVALID_EMAIL]: SignupErrorCodes.EMAIL_NOT_VALID,
+            [UserServiceErrors.CREATE_USER_ALREADY_EXIST]: SignupErrorCodes.USER_ALREADY_EXIST,
+            [UserServiceErrors.CREATE_USER_WRONG]: SignupErrorCodes.CREATION_ERROR,
+            [UserServiceErrors.CREATE_RESET_PASSWORD_WRONG]: SignupErrorCodes.CREATION_RESET_ERROR,
+            [UserServiceErrors.CREATE_EMAIL_GOUV]: SignupErrorCodes.EMAIL_MUST_BE_END_GOUV,
+        };
+
+        const errorCode: SignupErrorCodes = errorMatch[result.code] || SignupErrorCodes.CREATION_ERROR;
 
         this.setStatus(internalServerError.includes(errorCode) ? 500 : 422);
 

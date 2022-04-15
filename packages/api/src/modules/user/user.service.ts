@@ -103,25 +103,9 @@ export class UserService {
     }
 
     async createUser(email: string, password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
-        if (!REGEX_MAIL.test(email)) {
-            return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL }
-        }
+        const validUser = await this.validUser(email, password);
 
-        if (!ACCEPTED_EMAIL_DOMAIN.some(domain => email.endsWith(domain))) {
-            return { success: false, message: `Email must be end by ${ACCEPTED_EMAIL_DOMAIN.join(",")}`, code: UserServiceErrors.CREATE_EMAIL_GOUV }
-        }
-
-        if (await userRepository.findByEmail(email)) {
-            return { success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST }
-        }
-
-        if (!this.passwordValidator(password)) {
-            return {
-                success: false, 
-                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            }
-        }
+        if (!validUser.success) return validUser;
 
         const partialUser = {
             email,
@@ -130,7 +114,7 @@ export class UserService {
         };
 
         const jwtParams = {
-            token: jwt.sign(partialUser, `${JWT_SECRET}`, { expiresIn: JWT_EXPIRES_TIME }),
+            token: jwt.sign(partialUser, JWT_SECRET, { expiresIn: JWT_EXPIRES_TIME }),
             expirateDate: new Date(Date.now() + JWT_EXPIRES_TIME)
         };
 
@@ -139,9 +123,10 @@ export class UserService {
         const createdUser = await userRepository.create(user);
 
         if (!createdUser) {
-            return { success: false, message: "The user could not be created", code: UserServiceErrors.CREATE_USER_WRONG }
+            return { success: false, message: "The user could not be created", code: UserServiceErrors.CREATE_USER_WRONG };
         }
-        return {success: true, user: createdUser };
+
+        return { success: true, user: createdUser };
     }
 
     public async updatePassword(currentUser: UserWithoutSecret, password: string): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
@@ -340,6 +325,38 @@ export class UserService {
                 }
             }))
         } 
+    }
+
+    private async validUser(email: string, password: string): Promise<UserServiceError | { success: true }> {
+        const emailValid = this.validEmail(email);
+
+        if (!emailValid.success) return emailValid;
+
+        if (await userRepository.findByEmail(email)) {
+            return { success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST }
+        }
+
+        if (!this.passwordValidator(password)) {
+            return {
+                success: false, 
+                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
+                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
+            }
+        }
+
+        return { success: true }
+    }
+
+    private validEmail(email: string): UserServiceError | { success: true } {
+        if (!REGEX_MAIL.test(email)) {
+            return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL }
+        }
+
+        if (!ACCEPTED_EMAIL_DOMAIN.some(domain => email.endsWith(domain))) {
+            return { success: false, message: `Email must be end by ${ACCEPTED_EMAIL_DOMAIN.join(",")}`, code: UserServiceErrors.CREATE_EMAIL_GOUV }
+        }
+
+        return { success: true }
     }
 }
 
