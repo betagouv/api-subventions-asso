@@ -1,6 +1,7 @@
 import request from "supertest"
-import userService from "../../../../../src/modules/user/user.service";
+import userService, { UserService } from "../../../../../src/modules/user/user.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import db from "../../../../../src/shared/MongoConnection";
 
 const g = global as unknown as { app: unknown }
 
@@ -92,10 +93,51 @@ describe('AuthentificationController, /auth', () => {
                 .set('Accept', 'application/json')
                 
             expect(response.statusCode).toBe(500);
-            console.log(response.body)
             expect(response.body).toMatchObject({ success: false, data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND }})
         })
 
+        it("should reject because token is outdated", async () => {
+            await userService.createUser("test-reset@beta.gouv.fr");
+            const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
+
+            if (!result.success) throw new Error("forget password error");
+
+            const oldResetTimout = UserService.RESET_TIMEOUT;
+            UserService.RESET_TIMEOUT = 0;
+
+            const response = await request(g.app)
+                .post("/auth/reset-password")
+                .send({
+                    password: "AAAAaaaaa;;;;2222",
+                    token: result.reset.token
+                })
+                .set('Accept', 'application/json')
+                
+            expect(response.statusCode).toBe(500);
+            expect(response.body).toMatchObject({ success: false, data: { code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED }});
+
+            UserService.RESET_TIMEOUT = oldResetTimout;
+        })
+
+        it("should reject because user is deleted", async () => {
+            await userService.createUser("test-reset@beta.gouv.fr");
+            const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
+
+            if (!result.success) throw new Error("forget password error");
+
+            await db.collection("users").deleteOne({ email: "test-reset@beta.gouv.fr"});
+
+            const response = await request(g.app)
+                .post("/auth/reset-password")
+                .send({
+                    password: "AAAAaaaaa;;;;2222",
+                    token: result.reset.token
+                })
+                .set('Accept', 'application/json')
+                
+            expect(response.statusCode).toBe(500);
+            expect(response.body).toMatchObject({ success: false, data: { code: ResetPasswordErrorCodes.USER_NOT_FOUND }});
+        })
     })
 
     describe("POST /login", () => {
