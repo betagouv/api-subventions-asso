@@ -19,7 +19,7 @@ export class SearchService {
         const etablissementDto =  {
             ...etablissement,
             association,
-            demandes_subventions: await demandesSubventionsService.getDemandeSubventionsBySiret(siret),
+            demandes_subventions: await demandesSubventionsService.getByEtablissement(siret),
             versements: []
         };
 
@@ -56,7 +56,7 @@ export class SearchService {
         
         const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
 
-        const demandesSubventions = await demandesSubventionsService.getDemandeSubventionsBySiren(siren);
+        const demandesSubventions = await demandesSubventionsService.getByAssociation(siren);
 
         const buildCompletEtablissement = (etablissement: Etablissement) => ({
             ...etablissement,

@@ -19,7 +19,6 @@ export class SearchController extends Controller {
         siret: Siret,
     ): Promise<{ success: boolean, etablissement?: unknown, message?: string}>{
         const result = await searchService.getBySiret(siret) as EtablissementDto;
-
         if (!result) {
             this.setStatus(404);
             return { success: false, message: "Etablissement not found"}

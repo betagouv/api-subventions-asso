@@ -244,6 +244,14 @@ describe("FonjepService", () => {
         })
     })
 
+    describe("getDemandeSubventionByRna", () => {
+        it("should return null", async () => {
+            const expected = null;
+            const actual = await fonjepService.getDemandeSubventionByRna("FAKE_RNA");
+            expect(actual).toEqual(expected);
+        })
+    });
+
     describe("getDemandeSubventionBySiret", () => {
         const now =  new Date();
         beforeEach( async () => {
