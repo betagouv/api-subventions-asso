@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret, Rna } from "@api-subventions-asso/dto";
 import DemandeSubvention from "./DemandeSubvention";
 
 export default interface DemandesSubventionsProvider {
@@ -6,4 +6,5 @@ export default interface DemandesSubventionsProvider {
 
     getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null>
     getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null>
+    getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null>
 }

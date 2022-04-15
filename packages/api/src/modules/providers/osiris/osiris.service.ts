@@ -261,8 +261,9 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
     }
 
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {   
+    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         const requests = await this.findBySiren(siren);
+        console.log("OSIRIS RESULT", requests, siren);   
 
         if (requests.length === 0) return null;
 

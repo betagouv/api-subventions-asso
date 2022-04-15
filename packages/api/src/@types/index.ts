@@ -2,6 +2,8 @@ export * from './Falsy';
 export * from './Rna';
 export * from './Siren';
 export * from './Siret';
+export * from './StructureIdentifiers'
+export * from './AssociationIdentifiers'
 export * from './ProviderValue';
 export *  from './ParserPath';
 export *  from './ParserInfo';

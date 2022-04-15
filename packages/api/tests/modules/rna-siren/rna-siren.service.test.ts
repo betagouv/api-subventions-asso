@@ -1,4 +1,4 @@
-import Association from "../../../src/modules/associations/interfaces/Association";
+import Association from "../../../src/modules/associations/@types/Association";
 import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
 import osirisService from "../../../src/modules/providers/osiris/osiris.service";
 import RnaSiren from "../../../src/modules/rna-siren/entities/RnaSirenEntity";
