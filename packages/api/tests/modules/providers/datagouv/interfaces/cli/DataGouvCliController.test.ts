@@ -96,7 +96,7 @@ describe("DataGouvCliController", () => {
 
         it("should save rna-siren entities with two chunk", async () => {
             (Parser.parseUniteLegal as jest.Mock).mockImplementationOnce((file, save) => {
-                for (let i = 0; i < 1002; i++) {
+                for (let i = 1000; i < 2002; i++) {
                     save(new RnaSiren("RNA-" + i, "SIREN-" + i), () => null, () => null);
                 }
             }) 
