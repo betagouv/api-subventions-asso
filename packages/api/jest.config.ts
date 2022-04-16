@@ -43,8 +43,7 @@ export default {
         "src/cli.ts",
         "src/middlewares",
         "src/shared/MongoConnection.ts",
-        "src/*/@types",
-        "src/*/@enum",
+        "@enum",
         "dto",
     ],
 
