@@ -263,7 +263,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         const requests = await this.findBySiren(siren);
-        console.log("OSIRIS RESULT", requests, siren);   
 
         if (requests.length === 0) return null;
 
