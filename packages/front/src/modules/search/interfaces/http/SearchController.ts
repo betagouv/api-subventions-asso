@@ -15,7 +15,7 @@ export default class SearchController {
     @Get("/association")
     public async loginView(req: Request, res: Response, next: NextFunction) {
         if (!req.query["search-input"]) return res.redirect("/");
-        const searchInput = req.query["search-input"] as string;
+        const searchInput = (req.query["search-input"] as string).replaceAll(" ", "");
 
         const type = IdentifierHelper.findType(searchInput);
 

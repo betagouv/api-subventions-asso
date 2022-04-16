@@ -11,6 +11,7 @@ export default class IdentifierHelper {
         return typeof value === "string" && /\d{9}/.test(value);
     }
 
+    // REFACTO: can we mutualize this with API somehow ?
     static findType(value: string) {
         if (this.isRna(value)) return "RNA";
         if (this.isSiret(value)) return "SIRET";
