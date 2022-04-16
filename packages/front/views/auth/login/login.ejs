@@ -1,4 +1,24 @@
 <%- include('../../header') -%>
+
+<noscript>
+    <div class="fr-callout fr-callout--pink-tuile fr-my-2w">
+  
+        <h4 class="fr-callout__title"></h4>
+      
+    
+        <p class="fr-callout__text">
+            JavaScript est désactivé. Pour utiliser l'application, vous devez le réactiver. 
+            <br> Vous pouvez également 
+                <a title="Contactez-nous"
+                    href="mailto:<%= contactEmail %>"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                nous contacter.
+                </a>
+    </p>
+    </div>
+</noscript>
+
 <main role="main" id="contenu">
     <div class="fr-container fr-mb-8w">
         <%- include('../../global_components/ariane', { items: [
