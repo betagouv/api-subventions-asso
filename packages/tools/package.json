@@ -15,7 +15,7 @@
     "url": "git+https://github.com/betagouv/api-subventions-asso.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\""
   },
   "bugs": {
     "url": "https://github.com/betagouv/api-subventions-asso/issues"
