@@ -1,8 +1,7 @@
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { Siret } from '../../../../@types';
 import DemandeSubvention from '../../../demandes_subventions/@types/DemandeSubvention';
-
-import demandeSubventionsService from "../../../demandes_subventions/demandes_subventions.service"
+import etablissementService from '../../etablissements.service';
 
 @Route("etablissement")
 @Security("jwt")
@@ -17,7 +16,7 @@ export class EtablissementController extends Controller {
         siret: Siret,
     ): Promise<{ success: boolean, subventions?: DemandeSubvention[], message?: string}>{
         try {
-            const result = await demandeSubventionsService.getByEtablissement(siret) as DemandeSubvention[];
+            const result = await etablissementService.getSubventions(siret) as DemandeSubvention[];
             return { success: true, subventions: result };
         } catch (e: unknown) {
             this.setStatus(404);

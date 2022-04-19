@@ -2,7 +2,7 @@ import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { StructureIdentifiers } from '../../../../@types';
 import DemandeSubvention from '../../../demandes_subventions/@types/DemandeSubvention';
 
-import demandeSubventionsService from "../../../demandes_subventions/demandes_subventions.service"
+import associationService from "../../associations.service";
 
 @Route("association")
 @Security("jwt")
@@ -15,7 +15,7 @@ export class AssociationController extends Controller {
      @Get("/{identifier}/subventions")
     public async getDemandeSubventions(identifier: StructureIdentifiers): Promise<{success: boolean, message?: string, subventions?: DemandeSubvention[]}> {
         try {
-            const result = await demandeSubventionsService.getByAssociation(identifier) as DemandeSubvention[];
+            const result = await associationService.getSubventions(identifier) as DemandeSubvention[];
             return { success: true, subventions: result };
         } catch (e: unknown) {
             this.setStatus(404);

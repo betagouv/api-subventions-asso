@@ -1,4 +1,4 @@
-import { DefaultObject, ProviderValues } from "../../@types";
+import { AssociationIdentifiers, DefaultObject, ProviderValues } from "../../@types";
 import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import Association from "./@types/Association";
 import AssociationsProvider from "./@types/AssociationsProvider";
@@ -8,6 +8,7 @@ import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdap
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/AssociationDtoAdapter";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
+import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 
 export class AssociationsService {
 
@@ -39,6 +40,10 @@ export class AssociationsService {
         if (!data.length) return null;
 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
+    }
+
+    async getSubventions(identifier: AssociationIdentifiers) {
+        return await demandesSubventionsService.getByAssociation(identifier);
     }
 
 

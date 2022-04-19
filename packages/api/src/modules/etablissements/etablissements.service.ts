@@ -10,6 +10,7 @@ import providers from "../providers";
 
 import { ProviderValues, DefaultObject } from "../../@types";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
+import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 
 export class EtablissementsService {
     
@@ -47,6 +48,9 @@ export class EtablissementsService {
         return Object.values(groupBySiret).map(etablisements => FormaterHelper.formatData(etablisements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
     }
 
+    async getSubventions(siret: Siret) {
+        return await demandesSubventionsService.getByEtablissement(siret);
+    }
 
     private async aggregate(id: Siren | Siret, type: "SIRET" | "SIREN") {
         const etablisementProviders = this.getEtablissementProviders();
