@@ -19,5 +19,10 @@
   },
   "bugs": {
     "url": "https://github.com/betagouv/api-subventions-asso/issues"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "jsdom": "^19.0.0",
+    "node-xlsx": "^0.21.0"
   }
 }
