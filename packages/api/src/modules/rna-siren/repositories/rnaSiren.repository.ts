@@ -7,11 +7,15 @@ import { ObjectId } from "mongodb";
 export class RnaSirenRepository {
     private readonly collection = db.collection<RnaSiren>("rna-siren");
 
-    findRna(siren: Siren) {
+    findById(id: ObjectId) {
+        return this.collection.findOne({ "_id": id});
+    }
+
+    findBySiren(siren: Siren) {
         return this.collection.findOne({ siren });
     }
 
-    findSiren(rna: Rna) {
+    findByRna(rna: Rna) {
         return this.collection.findOne({ rna });
     }
 

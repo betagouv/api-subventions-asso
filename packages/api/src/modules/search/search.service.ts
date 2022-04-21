@@ -6,7 +6,7 @@ import demandesSubventionsService from "../demandes_subventions/demandes_subvent
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 import Etablissement from "../etablissements/@types/Etablissement";
-
+import associationNameService from "../association-name/associationName.service"
 export class SearchService {
 
     public async getBySiret(siret: Siret) {
@@ -71,6 +71,11 @@ export class SearchService {
         }
 
         return await versementsService.aggregateVersementsByAssoSearch(associationDto);
+    }
+    
+    public async getAssociationsKeys(value: string) {
+        console.log("getAssociationKeys");
+        return await associationNameService.getAllStartingWith(value);
     }
 
     private scoreEtablisement(etablisement: Etablissement) {

@@ -8,6 +8,7 @@ import leCompteAssoService from "../providers/leCompteAsso/leCompteAsso.service"
 import dataEntrepriseService from "../providers/dataEntreprise/dataEntreprise.service";
 import RequestEntity from "../search/entities/RequestEntity";
 import EventManager from "../../shared/EventManager";
+import { WithId } from 'mongodb';
 
 export interface EventRnaSirenMatching {
     rna: Rna,
@@ -27,7 +28,7 @@ export class RnaSirenService {
     async getRna(siren: Siret | Siren, withTimeout = false) {
         siren = siretToSiren(siren);
         
-        const entity = await rnaSirenRepository.findRna(siren);
+        const entity = await rnaSirenRepository.findBySiren(siren);
 
         if (entity) return entity.rna;
 
@@ -38,9 +39,14 @@ export class RnaSirenService {
         return rna;
     }
 
-    async getSiren(rna: Rna, withTimeout = false) {
-        const entity = await rnaSirenRepository.findSiren(rna);
+    // Used to remove _id to avoid typescript manipulation...
+    private toRnaSiren(entity: WithId<RnaSiren> | null) {
+        if (!entity) return entity; 
+        return new RnaSiren(entity.rna, entity.siren, entity.names);
+    }
 
+    async getSiren(rna: Rna, withTimeout = false) {
+        const entity = await rnaSirenRepository.findByRna(rna);
         if (entity) return entity.siren;
 
         const siren = await this.findSirenByRna(rna, withTimeout);
@@ -50,12 +56,12 @@ export class RnaSirenService {
         return siren;
     }
 
-    async add(rna: Rna, siren: Siren | Siret) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async add(rna: Rna, siren: Siren) {
         siren = siretToSiren(siren);
+        const entity = await rnaSirenRepository.findBySiren(siren);
+        if (!entity) return await rnaSirenRepository.create(new RnaSiren(rna, siren)) 
 
-        if (await rnaSirenRepository.findRna(siren) && await rnaSirenRepository.findSiren(rna)) return // Matching already exist
-
-        await rnaSirenRepository.create(new RnaSiren(rna, siren));
     }
 
     async insertMany(entities: RnaSiren[]) {
@@ -119,6 +125,7 @@ export class RnaSirenService {
     
         return asso.rna[0].value;
     }
+
 }
 
 const rnaSirenService = new RnaSirenService();

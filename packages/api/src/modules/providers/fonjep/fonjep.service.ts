@@ -22,6 +22,7 @@ export interface RejectedRequest {
 }
 
 export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider {
+    providerName = "FONJEP";
 
     async createEntity(entity: FonjepRequestEntity): Promise<RejectedRequest | {success: true, entity: WithId<FonjepRequestEntity>, state: 'updated' | "created"}> {
         const valid = this.validateEntity(entity);

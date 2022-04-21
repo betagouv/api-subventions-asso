@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Association from "../../../src/modules/associations/@types/Association";
 import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
 import osirisService from "../../../src/modules/providers/osiris/osiris.service";
@@ -5,12 +6,25 @@ import RnaSiren from "../../../src/modules/rna-siren/entities/RnaSirenEntity";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service"
 import db from "../../../src/shared/MongoConnection";
 
+// Not the same as entity from MongoDB
+// It is supposed to reference new RnaSiren from a provider document
+const RnaSirenArray = [
+    {rna: "W000000000", siren: "000000000"},
+    {rna: "W000000001", siren: "000000001"},
+    {rna: "W000000002", siren: "000000002"},
+    {rna: "W000000003", siren: "000000003"}
+];
+
 describe("RnaSirenService", () => {
     beforeEach(async () => {
-        await rnaSirenService.add("W000000000", "000000000");
+        await Promise.all(RnaSirenArray.map(entity => rnaSirenService.add(entity.rna, entity.siren)))
+    })
+
+    afterEach(async () => {
+        await db.collection("rna-siren").drop();
     })
     describe("add", () => {
-        it("should be add", async () => {
+        it("should add RnaSiren", async () => {
             expect(await db.collection("rna-siren").findOne({rna: "W000000000"})).toMatchObject({rna: "W000000000", siren: "000000000"})
             expect(await db.collection("rna-siren").findOne({siren: "000000000"})).toMatchObject({rna: "W000000000", siren: "000000000"})
         })
@@ -23,12 +37,12 @@ describe("RnaSirenService", () => {
     })
 
     describe("getSiren", () => {
-        it("should be retrun one siren", async () => {
-            expect(await rnaSirenService.getSiren("W000000000")).toBe("000000000")
+        it("should retrun one siren", async () => {
+            expect(await rnaSirenService.getSiren(RnaSirenArray[0].rna)).toBe(RnaSirenArray[0].siren)
         })
 
         it("should not return siren", async () => {
-            expect(await rnaSirenService.getSiren("W000000001")).toBe(null)
+            expect(await rnaSirenService.getSiren("W000000004")).toBe(null)
         })
     })
 
@@ -38,7 +52,7 @@ describe("RnaSirenService", () => {
         })
 
         it("should not return rna", async () => {
-            expect(await rnaSirenService.getRna("000000001")).toBe(null)
+            expect(await rnaSirenService.getRna("000000004")).toBe(null)
         })
 
         it("should return oriris rna", async () => {
@@ -78,9 +92,11 @@ describe("RnaSirenService", () => {
                 new RnaSiren("ccc", "333"),
             ]
             
+            const previous = await db.collection("rna-siren").find().count();
             await rnaSirenService.insertMany(entities);
+            const next = await db.collection("rna-siren").find().count();
 
-            expect(await db.collection("rna-siren").find().count()).toBe(4);
+            expect(next - previous).toBe(3);
         })
     });
 
@@ -96,7 +112,7 @@ describe("RnaSirenService", () => {
         })
         it("should be clean duplicates entities", async () => {
             await rnaSirenService.cleanDuplicate();
-            expect(await db.collection("rna-siren").find().count()).toBe(2);
+            expect(await db.collection("rna-siren").find().count()).toBe(RnaSirenArray.length);
         })
     });
-});
+})

@@ -1,6 +1,7 @@
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { Rna, Siren, Siret } from '../../../../@types';
 import { isRna, isSiren } from '../../../../shared/Validators';
+import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
 import AssociationDto from './dto/AssociationDto';
@@ -48,5 +49,20 @@ export class SearchController extends Controller {
         }
 
         return { success: true, association: result };
+    }
+
+    /**
+     * Recherche des associations via le rna, siren ou nom partiel ou complet de l'association
+     * @param rna_or_siren Identifiant RNA ou Identifiant Siren
+     */
+    @Get("/associations/{input}")
+    public async findAssociations(input: string): Promise<{ success: boolean, result?: AssociationNameEntity[], message?: string }> {
+        const result = await searchService.getAssociationsKeys(input);
+        if (!result || (Array.isArray(result) && result.length == 0)) {
+            this.setStatus(404);
+            return { success: false, message: `Could match any association with given input : ${input}`}
+        }
+        this.setStatus(200);
+        return { success: true, result };
     }
 }
