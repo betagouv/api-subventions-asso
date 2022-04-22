@@ -1,5 +1,4 @@
 import fs from "fs"
-
 import DataGouvCliController from '../../../../../../src/modules/providers/datagouv/interfaces/cli/datagouv.cli.controller'
 import Parser from '../../../../../../src/modules/providers/datagouv/datagouv.parser'
 import datagouvService from '../../../../../../src/modules/providers/datagouv/datagouv.service'
@@ -35,6 +34,8 @@ describe("DataGouvCliController", () => {
                 jest.spyOn(fs, 'existsSync'),
             )
         });
+            
+        
 
         it('should be call _parse', async () => {
             (fs.existsSync as jest.Mock).mockImplementationOnce(() => true);
@@ -65,6 +66,40 @@ describe("DataGouvCliController", () => {
             controller = new DataGouvCliController()
         });
 
+        it("should save EntrepriseSirenEntity entities with two chunk", async () => {
+            (Parser.parseUniteLegal as jest.Mock).mockImplementationOnce((file, save) => {
+                for (let i = 0; i < 1002; i++) {
+                    save(new EntrepriseSirenEntity("SIREN-" + i), () => null, () => null);
+                }
+            }) 
+            
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            await controller._parse("fake_path", []);
+        
+            expect(datagouvService.insertManyEntrepriseSiren).toHaveBeenCalledTimes(2);
+            expect(datagouvService.insertManyEntrepriseSiren).toHaveBeenLastCalledWith(expect.any(Array), true);
+            expect((datagouvService.insertManyEntrepriseSiren as jest.Mock).mock.calls[0][0]).toHaveLength(1000);
+            expect((datagouvService.insertManyEntrepriseSiren as jest.Mock).mock.calls[1][0]).toHaveLength(2);
+        });
+
+        it("should save rna-siren entities with two chunk", async () => {
+            (Parser.parseUniteLegal as jest.Mock).mockImplementationOnce((file, save) => {
+                for (let i = 0; i < 1002; i++) {
+                    save(new RnaSiren("RNA-" + i, "SIREN-" + i), () => null, () => null);
+                }
+            }) 
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            await controller._parse("fake_path", []);
+
+            expect(rnaSirenService.insertMany).toHaveBeenCalledTimes(2);
+            expect(rnaSirenService.insertMany).toHaveBeenLastCalledWith(expect.any(Array));
+            expect((rnaSirenService.insertMany as jest.Mock).mock.calls[0][0]).toHaveLength(1000);
+            expect((rnaSirenService.insertMany as jest.Mock).mock.calls[1][0]).toHaveLength(2);
+        });
+
         it("should save one rna-siren entity", async () => {
             const rnaSirenEntity = new RnaSiren("RNA", "SIREN");
             (Parser.parseUniteLegal as jest.Mock).mockImplementationOnce((file, save) => {
@@ -91,41 +126,6 @@ describe("DataGouvCliController", () => {
 
             expect(datagouvService.insertManyEntrepriseSiren).toHaveBeenCalledTimes(1);
             expect(datagouvService.insertManyEntrepriseSiren).toHaveBeenCalledWith([entrepriseSirenEnity], true);
-        });
-
-
-        it("should save rna-siren entities with two chunk", async () => {
-            (Parser.parseUniteLegal as jest.Mock).mockImplementationOnce((file, save) => {
-                for (let i = 0; i < 1002; i++) {
-                    save(new RnaSiren("RNA-" + i, "SIREN-" + i), () => null, () => null);
-                }
-            }) 
-        
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            await controller._parse("fake_path", []);
-
-            expect(rnaSirenService.insertMany).toHaveBeenCalledTimes(2);
-            expect(rnaSirenService.insertMany).toHaveBeenLastCalledWith(expect.any(Array));
-            expect((rnaSirenService.insertMany as jest.Mock).mock.calls[0][0]).toHaveLength(1000);
-            expect((rnaSirenService.insertMany as jest.Mock).mock.calls[1][0]).toHaveLength(2);
-        });
-
-        it("should save EntrepriseSirenEntity entities with two chunk", async () => {
-            (Parser.parseUniteLegal as jest.Mock).mockImplementationOnce((file, save) => {
-                for (let i = 0; i < 1002; i++) {
-                    save(new EntrepriseSirenEntity("SIREN-" + i), () => null, () => null);
-                }
-            }) 
-        
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            await controller._parse("fake_path", []);
-
-            expect(datagouvService.insertManyEntrepriseSiren).toHaveBeenCalledTimes(2);
-            expect(datagouvService.insertManyEntrepriseSiren).toHaveBeenLastCalledWith(expect.any(Array), true);
-            expect((datagouvService.insertManyEntrepriseSiren as jest.Mock).mock.calls[0][0]).toHaveLength(1000);
-            expect((datagouvService.insertManyEntrepriseSiren as jest.Mock).mock.calls[1][0]).toHaveLength(2);
         });
 
         it("should save EntrepriseSirenEntity and RnaSiren entities with two chunk", async () => {
