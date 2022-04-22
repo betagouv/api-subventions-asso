@@ -11,10 +11,12 @@ import providers from "../providers";
 import { ProviderValues, DefaultObject } from "../../@types";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
 import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
+import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 
 export class EtablissementsService {
     
     private provider_score: DefaultObject<number> = {
+        [ApiAssoDtoAdapter.providerNameSiren]: 1,
         [EtablissementDtoAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,

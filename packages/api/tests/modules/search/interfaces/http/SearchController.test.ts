@@ -9,7 +9,6 @@ import associationsService from "../../../../../src/modules/associations/associa
 import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
 import { ProviderValue, ProviderValues } from "../../../../../src/@types";
 import { siretToSiren } from "../../../../../src/shared/helpers/SirenHelper";
-import RnaSiren from '../../../../../src/modules/rna-siren/entities/RnaSirenEntity';
 import AssociationNameEntity from '../../../../../src/modules/association-name/entities/AssociationNameEntity';
 
 const g = global as unknown as { app: unknown }
