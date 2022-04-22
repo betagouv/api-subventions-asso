@@ -1,3 +1,10 @@
+## Data.Subvention
+Le projet est porté par beta.gouv.fr : https://beta.gouv.fr/startups/data-subvention.html
+
+Un premier client de notre API est disponible ici : https://datasubvention.beta.gouv.fr/
+
+Contactez nous pour toute question ou si vous souhaitez tester l'application ou l'API : data.subvention@beta.gouv.fr
+
 ## Contexte
 
 En France, près d’1,5 million d’associations mobilisent 12,5 millions de bénévoles - dont 5 millions s’engagent chaque semaine - et font vivre la solidarité, le lien social, le développement et l’animation des territoires. En termes d’emploi, près de 160 000 associations salarient plus d’1,8 millions de personnes ce qui représente 9,3% des effectifs salariés de l’ensemble du secteur privé.
