@@ -9,6 +9,8 @@ import associationsService from "../../../src/modules/associations/associations.
 import etablissementService from "../../../src/modules/etablissements/etablissements.service";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
+import rnaSirenService from '../../../src/modules/rna-siren/rnaSiren.service';
+import RnaSiren from '../../../src/modules/rna-siren/entities/RnaSirenEntity';
 
 describe("SearchService", () => {
     const now = new Date();

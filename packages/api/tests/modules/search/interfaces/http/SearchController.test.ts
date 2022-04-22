@@ -4,10 +4,13 @@ import osirisService from "../../../../../src/modules/providers/osiris/osiris.se
 import getUserToken from "../../../../__helpers__/getUserToken";
 import IOsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
 import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderValueAdapter";
+import searchService from "../../../../../src/modules/search/search.service";
 import associationsService from "../../../../../src/modules/associations/associations.service";
 import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
 import { ProviderValue, ProviderValues } from "../../../../../src/@types";
 import { siretToSiren } from "../../../../../src/shared/helpers/SirenHelper";
+import RnaSiren from '../../../../../src/modules/rna-siren/entities/RnaSirenEntity';
+import AssociationNameEntity from '../../../../../src/modules/association-name/entities/AssociationNameEntity';
 
 const g = global as unknown as { app: unknown }
 
@@ -182,6 +185,28 @@ describe('SearchController, /search', () => {
                 .set('Accept', 'application/json')
 
             expect(response.statusCode).toBe(404);
+        })
+    })
+
+    describe("GET /{input}", () => {
+        it("should return 200 if an RnaSiren is found", async () => {
+            jest.spyOn(searchService, "getAssociationsKeys").mockImplementation(async () => [new AssociationNameEntity("", "", "", "", new Date())])
+            const expected = 200;
+            const actual = (await request(g.app)
+                .get("/search/associations/00000000000000")
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json')).statusCode;
+            expect(actual).toEqual(expected);
+        })
+
+        it("should return 404 if return an empty array", async () => {
+            jest.spyOn(searchService, "getAssociationsKeys").mockImplementation(async () => [])
+            const expected = 404;
+            const actual = (await request(g.app)
+                .get("/search/associations/00000000000000")
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json')).statusCode;
+            expect(actual).toEqual(expected);
         })
     })
 });

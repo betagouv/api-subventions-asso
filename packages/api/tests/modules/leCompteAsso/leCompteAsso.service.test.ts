@@ -2,7 +2,9 @@ import dataEntrepriseService from "../../../src/modules/providers/dataEntreprise
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity"
 import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
 import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
+import leCompteAssoRepository from '../../../src/modules/providers/leCompteAsso/repositories/leCompteAsso.repository';
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
+import EventManager from '../../../src/shared/EventManager';
 
 describe("leCompteAssoService", () => {
     describe("validate", () => {
@@ -51,7 +53,7 @@ describe("leCompteAssoService", () => {
     });
 
     describe("addRequest", () => {
-        
+        const eventManagerMock = jest.spyOn(EventManager, "call").mockImplementation((name, value) => Promise.resolve({name, value}));
         let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
 
         beforeEach(() => {
@@ -64,9 +66,10 @@ describe("leCompteAssoService", () => {
 
         afterAll(() => {
             dataEntrepriseServiceFindAssociationBySiren.mockReset();
+            eventManagerMock.mockReset();
         })
 
-        it("should be find rna in localdb and save data in database", async () => {
+        it("should find rna in localdb and save data in database", async () => {
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
                 rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                 categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -80,7 +83,7 @@ describe("leCompteAssoService", () => {
             });
         });
 
-        it("should be update in database", async () => {
+        it("should update in database", async () => {
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
                 rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                 categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -95,7 +98,7 @@ describe("leCompteAssoService", () => {
             });
         });
 
-        it("should be find rna in siret api and save data in database", async () => {
+        it("should find rna in siret api and save data in database", async () => {
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
@@ -109,7 +112,7 @@ describe("leCompteAssoService", () => {
             });
         });
 
-        it("should be reject because legalCategory is wrong", async () => {
+        it("should reject because legalCategory is wrong", async () => {
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve({
@@ -131,7 +134,7 @@ describe("leCompteAssoService", () => {
         });
 
 
-        it("should be reject because rna not found", async () => {
+        it("should reject because rna not found", async () => {
             const entity: ILeCompteAssoPartialRequestEntity = {legalInformations: { siret: "00000000000000", name: "HELLO WORLD"}, providerInformations: { compteAssoId: "21-000000"} as ILeCompteAssoRequestInformations, data: {}};
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve(null));
 
@@ -147,6 +150,24 @@ describe("leCompteAssoService", () => {
                 }
             });
         });
+
+        it("should call EventManager", async () => {
+            // @ts-expect-error: Jest mock
+            jest.spyOn(leCompteAssoRepository, "findByCompteAssoId").mockImplementationOnce(() => Promise.resolve({legalInformations: {rna: RNA}}))
+            const LAST_UPDATE = new Date();
+            const RNA = "RNA";
+            const SIREN = "SIREN";
+            const NAME = "NAME";
+            const PARTIAL_ENTITY = { 
+                legalInformations: { siret: SIREN, name: NAME },
+                providerInformations: { compeAssoId: "", transmis_le: LAST_UPDATE } as unknown as ILeCompteAssoRequestInformations,
+                data: {}
+            };
+            await leCompteAssoService.addRequest(PARTIAL_ENTITY);
+            expect(eventManagerMock).toHaveBeenCalledTimes(2);
+            expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
+            expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: leCompteAssoService.providerName, lastUpdate: LAST_UPDATE}]);
+        })
     });
 
     describe("findBySiret", () => {

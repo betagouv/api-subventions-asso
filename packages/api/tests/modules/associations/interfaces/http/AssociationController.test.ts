@@ -1,6 +1,6 @@
 import request from "supertest"
 import getUserToken from "../../../../__helpers__/getUserToken";
-import demandeSubventionsService from "../../../../../src/modules/demandes_subventions/demandes_subventions.service"
+import associationService from "../../../../../src/modules/associations/associations.service"
 
 const g = global as unknown as { app: unknown }
 
@@ -9,7 +9,7 @@ const ASSOCIATION_RNA = "W123456789";
 describe("AssociationController", () => {
 
     beforeEach(() => {
-        jest.spyOn(demandeSubventionsService, 'getByAssociation')
+        jest.spyOn(associationService, 'getSubventions')
     })
 
     describe("GET /association/{RNA_NUMBER}/subventions", () => {
@@ -17,7 +17,7 @@ describe("AssociationController", () => {
             const ERROR_MESSAGE = "This is an Error message";
             
             it("should return 404 when an error occur", async () => {
-                (demandeSubventionsService.getByAssociation as jest.Mock).mockImplementation(() => { throw new Error(); });
+                (associationService.getSubventions as jest.Mock).mockImplementation(() => { throw new Error(); });
                 const actual = (await request(g.app)
                     .get(`/association/${ASSOCIATION_RNA}/subventions`)
                     .set("x-access-token", await getUserToken())
@@ -27,7 +27,7 @@ describe("AssociationController", () => {
             })
 
             it("should return an object when an error occur", async () => {
-                (demandeSubventionsService.getByAssociation as jest.Mock).mockImplementation(async () => { throw new Error(ERROR_MESSAGE); });
+                (associationService.getSubventions as jest.Mock).mockImplementation(async () => { throw new Error(ERROR_MESSAGE); });
                 const expected = { success: false, message: ERROR_MESSAGE}
                 const actual = (await request(g.app)
                     .get(`/association/${ASSOCIATION_RNA}/subventions`)
@@ -41,7 +41,7 @@ describe("AssociationController", () => {
         describe("on success", () => {
             const SUBVENTIONS = ["subventions"];
             beforeAll(() => {
-                (demandeSubventionsService.getByAssociation as jest.Mock).mockImplementation(() => SUBVENTIONS);
+                (associationService.getSubventions as jest.Mock).mockImplementation(() => SUBVENTIONS);
             })
             it("should return 200", async () => {
                 const actual = (await request(g.app)

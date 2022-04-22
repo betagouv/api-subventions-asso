@@ -16,12 +16,13 @@ import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
 
-
 export interface RejectedRequest {
     state: "rejected", result: { message: string, code: number, data: unknown }
 }
 
 export class LeCompteAssoService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
+    providerName = "LE COMPTE ASSO";
+
     public validEntity(partialEntity: ILeCompteAssoPartialRequestEntity) {
         if (!isSiret(partialEntity.legalInformations.siret)) {
             return { success: false, message: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`, data: partialEntity.legalInformations };
@@ -42,6 +43,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         const existingEntity = await leCompteAssoRepository.findByCompteAssoId(partialEntity.providerInformations.compteAssoId);
 
         if (existingEntity) {
+
             const legalInformations: ILegalInformations = {
                 ...existingEntity.legalInformations,
                 ...partialEntity.legalInformations,
@@ -49,7 +51,8 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             }
 
             EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren: legalInformations.siret}])
-    
+            EventManager.call('association-name.matching', [{rna: legalInformations.rna, siren: legalInformations.siret, name: legalInformations.name, provider: this.providerName, lastUpdate: partialEntity.providerInformations.transmis_le}])
+
             return {
                 state: "updated",
                 result: await leCompteAssoRepository.updateRequest(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),

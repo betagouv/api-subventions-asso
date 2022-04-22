@@ -17,6 +17,8 @@ export interface RejectedRequest {
 }
 
 export class ChorusService implements VersementsProvider {
+    providerName = "CHORUS";
+
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
     public validateEntity(entity: ChorusLineEntity) {

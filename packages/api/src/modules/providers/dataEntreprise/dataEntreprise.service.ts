@@ -18,6 +18,8 @@ import EtablisementDto from "./dto/EtablissementDto";
 const CACHE_TIME = 1000 * 60 * 60 * 24; // 1 day
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
+    providerName = "API DATA ENTREPRISE";
+
     private BASE_URL = "https://entreprise.data.gouv.fr";
     private RNA_ROUTE = "api/rna/v1/id"
     private SIRETTE_ROUTE = "api/sirene/v3/etablissements";
@@ -31,7 +33,6 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
     private async sendRequest<T>(route: string, wait: boolean): Promise<T | null> {
         if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;
-
         if (wait) {
             await waitPromise(1000 / this.LIMITATION_NB_REQUEST_SEC);
         }
@@ -47,11 +48,15 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
     public async findEtablissementBySiret(siret: Siret, wait = false): Promise<Etablissement | null> {
         const data = await this.sendRequest<{etablissement: EtablisementDto}>(`${this.SIRETTE_ROUTE}/${siret}`, wait);
+        if (!data?.etablissement) return null;
 
-        if (!data) return null;
+        const association = data.etablissement?.unite_legale;
+        const rna = association?.identifiant_association;
 
-        if (data.etablissement.unite_legale.identifiant_association) {
-            EventManager.call('rna-siren.matching', [{ rna: data.etablissement.unite_legale.identifiant_association, siren: siret}])
+        if (rna) {
+            EventManager.call('rna-siren.matching', [{ rna, siren: siret}]);
+            const name = association.denomination;
+            if (name) EventManager.call('association-name.matching', [{rna, siren: siret, name, provider: this.providerName, lastUpdate: data.etablissement.updated_at}]);
         }
 
         const etablissement = EtablissementDtoAdapter.toEtablissement(data.etablissement);
@@ -62,30 +67,35 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
     public async findAssociationBySiren(siren: Siren, wait = false) {
         const data = await this.sendRequest<EntrepriseDto>(`${this.SIRENE_ROUTE}/${siren}`, wait);
-
         if (!data) return null;
 
-        if (data.unite_legale.identifiant_association) {
-            EventManager.call('rna-siren.matching', [{ rna: data.unite_legale.identifiant_association, siren: siren}])
+        const association = data.unite_legale;
+        const rna = association.identifiant_association;
+        if (rna) {
+            const name = association.denomination;
+            EventManager.call('rna-siren.matching', [{ rna, siren}]);
+            EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: association.updated_at}]);
         }
-
+        
         if (data.unite_legale.etablissements) {
             data.unite_legale.etablissements.forEach(etablissement => {
                 const etab = EtablissementDtoAdapter.toEtablissement({ ...etablissement, unite_legale: data.unite_legale });
                 this.etablissementsCache.add(etablissement.siret, etab);
             });
         }
-
+        
         return EntrepriseDtoAdapter.toAssociation(data);
     }
-
+    
     public async findAssociationByRna(rna: Rna, wait = false) {
         const data = await this.sendRequest<AssociationDto>(`${this.RNA_ROUTE}/${rna}`, wait);
-
         if (!data) return null;
-
-        if (data.association.siret) {
-            EventManager.call('rna-siren.matching', [{ rna: rna, siren: data.association.siret}])
+        
+        const association = data.association;
+        if (association.siret) {
+            const name = association.titre;
+            EventManager.call('rna-siren.matching', [{rna, siren: association.siret}])
+            EventManager.call('association-name.matching', [{rna, siren: association.siret, name, provider: this.providerName, lastUpdate: association.updated_at}]);
         }
 
         return AssociationDtoAdapter.toAssociation(data);

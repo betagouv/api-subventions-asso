@@ -16,7 +16,7 @@ export class EtablissementController extends Controller {
         siret: Siret,
     ): Promise<{ success: boolean, subventions?: DemandeSubvention[], message?: string}>{
         try {
-            const result = await etablissementService.getSubventions(siret) as DemandeSubvention[];
+            const result = await etablissementService.getSubventions(siret);
             return { success: true, subventions: result };
         } catch (e: unknown) {
             this.setStatus(404);

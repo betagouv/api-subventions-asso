@@ -22,22 +22,27 @@ export const VALID_REQUEST_ERROR_CODE = {
 }
 
 export class OsirisService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
+    providerName = "OSIRIS"
+
     public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
         const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
-
-        EventManager.call('rna-siren.matching', [{ rna: request.legalInformations.rna, siren: request.legalInformations.siret}])
+        const { rna, siret: siren, name } = request.legalInformations
+        const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
+        
+        EventManager.call('rna-siren.matching', [{ rna, siren }]);
+        EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: date}])
         
         if (existingFile) {
             return {
                 state: "updated",
                 result: await osirisRepository.updateRequest(request),
             };
+        } else {
+            return {
+                state: "created",
+                result: await osirisRepository.addRequest(request),
+            };
         }
-
-        return {
-            state: "created",
-            result: await osirisRepository.addRequest(request),
-        };
     }
 
     public validRequest(request: OsirisRequestEntity) {

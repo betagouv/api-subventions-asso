@@ -5,7 +5,9 @@ import OsirisActionEntity from "../../../src/modules/providers/osiris/entities/O
 import OsirisEvaluationEntity from '../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
 import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import osirisService, { OsirisService } from "../../../src/modules/providers/osiris/osiris.service";
+import { osirisRepository } from '../../../src/modules/providers/osiris/repositories';
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
+import EventManager from '../../../src/shared/EventManager';
 
 describe("OsirisService", () => {
     it("should retrun an instance of osirisService", () => {
@@ -14,6 +16,8 @@ describe("OsirisService", () => {
 
     describe("requests part", () => {
         describe('addRequest', () => {
+            
+            
             it('should return the added osiris request', async () => {
                 const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "OSIRISID", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
                 expect((await osirisService.addRequest(entity)).result).toMatchObject(entity);
@@ -26,6 +30,25 @@ describe("OsirisService", () => {
                 expect(result.result).toMatchObject(entity);
                 expect(result.state).toBe("updated");
             });
+
+            it("should call EventManager", async () => {
+                const eventManagerMock = jest.spyOn(EventManager, "call").mockImplementation((name, value) => Promise.resolve({name, value}));
+                // @ts-expect-error: Jest mock
+                jest.spyOn(osirisRepository, "findRequestByOsirisId").mockImplementationOnce(() => Promise.resolve(null));
+                const LAST_UPDATE = new Date();
+                const RNA = "RNA";
+                const SIREN = "SIREN";
+                const NAME = "NAME";
+                const ENTITY = { 
+                    legalInformations: {rna: RNA, siret: SIREN, name: NAME },
+                    providerInformations: { osirisId: null, dateCommission: LAST_UPDATE }
+                };
+                await osirisService.addRequest(ENTITY as unknown as OsirisRequestEntity);
+                expect(eventManagerMock).toHaveBeenCalledTimes(2);
+                expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
+                expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: osirisService.providerName, lastUpdate: LAST_UPDATE}]);
+                eventManagerMock.mockReset();
+            })
         });
         
         describe('findAllRequests', () => {
