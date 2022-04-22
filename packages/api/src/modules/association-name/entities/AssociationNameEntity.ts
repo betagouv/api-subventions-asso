@@ -5,7 +5,6 @@ export default class AssociationNameEntity {
         public rna: Rna,
         public siren: Siren,
         public name: string,
-        // TODO: ProviderEnum ?
         public provider: string,
         public lastUpdate: Date
     ) {}

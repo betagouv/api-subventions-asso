@@ -15,8 +15,6 @@ import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
-import { runInThisContext } from 'vm';
-
 
 export interface RejectedRequest {
     state: "rejected", result: { message: string, code: number, data: unknown }

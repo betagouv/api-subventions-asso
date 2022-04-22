@@ -1,4 +1,3 @@
-import { WithId } from 'mongodb';
 import EventManager from '../../shared/EventManager';
 import IAssociationName from './@types/IAssociationName';
 import AssociationNameEntity from './entities/AssociationNameEntity';
@@ -9,20 +8,16 @@ export class AssociationNameService {
         EventManager.add('association-name.matching');
 
         EventManager.on('association-name.matching', {}, (cbStop, data) => {
-            this.add(this.toEntity((data as IAssociationName)));
+            this.add((data as IAssociationName));
         });
     }
 
     async getAllStartingWith(value: string) {
-        return (await associationNameRepository.findAllStartingWith(value)).map(this.toEntity)
+        return await associationNameRepository.findAllStartingWith(value)
     }
 
     async add(entity: AssociationNameEntity) {
         return await associationNameRepository.create(entity);
-    }
-
-    public toEntity(document: WithId<AssociationNameEntity> | IAssociationName) {
-        return new AssociationNameEntity(document.rna, document.siren, document.name, document.provider, document.lastUpdate);
     }
 }
 

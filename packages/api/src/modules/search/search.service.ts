@@ -74,7 +74,6 @@ export class SearchService {
     }
     
     public async getAssociationsKeys(value: string) {
-        console.log("getAssociationKeys");
         return await associationNameService.getAllStartingWith(value);
     }
 
