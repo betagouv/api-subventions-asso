@@ -3,6 +3,8 @@ Le projet est porté par beta.gouv.fr : https://beta.gouv.fr/startups/data-subve
 
 Un premier client de notre API est disponible ici : https://datasubvention.beta.gouv.fr/
 
+L'API est documentée ici : https://api-subvention-asso-prod.osc-secnum-fr1.scalingo.io/docs/
+
 Contactez nous pour toute question ou si vous souhaitez tester l'application ou l'API : contact@datasubvention.beta.gouv.fr
 
 ## Contexte
