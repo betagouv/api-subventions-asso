@@ -8,7 +8,6 @@ describe("GisproParser", () => {
 
     describe("parseRequests()", () => {
         it("return the expected number of items", () => {
-            // const expected = GisproActionEntity;
             const actual = parser.parseActions(fs.readFileSync(path.resolve(__dirname, "./__fixtures__/gispro-test.xltx")));
             expect(actual).toHaveLength(1);
         })

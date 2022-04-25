@@ -6,7 +6,7 @@ export default class GisproRequestAdapter {
     static PROVIDER_NAME = "Gispro"
 
     public static toDemandeSubvention(entities: GisproActionEntity[]): DemandeSubvention {
-        const dataDate = new Date();
+        const dataDate = entities[0].providerInformations.importedDate;
         
         const data: DemandeSubvention = {
             siret: ProviderValueAdapter.toProviderValue(entities[0].providerInformations.siret, GisproRequestAdapter.PROVIDER_NAME, dataDate),
