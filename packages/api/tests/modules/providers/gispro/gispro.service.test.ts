@@ -14,6 +14,7 @@ const ValidGisproRequestInformation: IGisproActionInformations  = {
     codeAction: "FAKE_CODE_ACTION",
     direction: "FAKE_CODE_DIRECTION",
     pnOrOs: "FAKE_CODE_PNOS",
+    importedDate: new Date(),
 }
 
 describe("GisproService", () => {

@@ -11,4 +11,5 @@ export default interface IGisproActionInformations {
     codeAction: string,
     direction: string,
     pnOrOs: string,
+    importedDate: Date
 }

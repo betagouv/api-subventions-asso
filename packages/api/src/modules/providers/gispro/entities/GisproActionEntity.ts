@@ -15,7 +15,8 @@ export default class GisproActionEntity {
         codeAction: ['action', "Action - Code dossier"],
         direction: ['action', 'DR/DD/PN'],
         pnOrOs: ['action', 'PN/OS'],
-        ligneBudgetaire: ["action", "Ligne budgétaire"]
+        ligneBudgetaire: ["action", "Ligne budgétaire"],
+        importedDate: ["generated", "importedDate"]
     }
 
     public provider = "Gispro";

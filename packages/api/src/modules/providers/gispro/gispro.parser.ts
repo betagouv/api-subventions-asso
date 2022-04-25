@@ -7,6 +7,7 @@ import IGisproActionInformations from './@types/IGisproActionInformations';
 
 export default class GisproParser {
     public static parseActions(content: Buffer): GisproActionEntity[] {
+        const importedDate = new Date();
         const pages = ParserHelper.xlsParseWithPageName(content);
 
         const pagesWithHeader = pages.reduce((acc, page) => {
@@ -21,9 +22,10 @@ export default class GisproParser {
         const findPage = (query: string | RegExp) => pagesWithHeader.find(p => p.name.match(query));
 
         const actionsPage = findPage(/(actions)|(base 2016 GISPRO)/);
-        const tiersPage = findPage(/(CUMUL PAR .* TIERS)|(CUMUL PAR ORG)|(CUMUL ORGANISME)|(base .* tiers)/);
 
         if (!actionsPage) return [];
+
+        const tiersPage = findPage(/(CUMUL PAR .* TIERS)|(CUMUL PAR ORG)|(CUMUL ORGANISME)|(base .* tiers)/);
 
         const getUniformatedTier = (siret: unknown): undefined | { siret: string | number, CodeTiers: string | number, Tiers: string, TypeTiers: string} => {
             if (!siret || !tiersPage) return undefined;
@@ -42,7 +44,10 @@ export default class GisproParser {
             const tier = getUniformatedTier(parsedData.siret);
             const raw = {
                 tier,
-                action: parsedData
+                action: parsedData,
+                generated: {
+                    importedDate
+                }
             }
 
             const indexedInformations = ParserHelper.indexDataByPathObject(GisproActionEntity.indexedProviderInformationsPath, raw) as unknown as IGisproActionInformations;
