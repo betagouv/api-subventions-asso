@@ -38,7 +38,7 @@ export const expressLogger = () => expressWinston.logger({
         "body",
         "user",
         "connection",
-        'headers'
+        "headers"
     ],
     responseWhitelist: [
         "statusCode",
