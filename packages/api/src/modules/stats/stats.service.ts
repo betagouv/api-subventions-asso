@@ -1,10 +1,7 @@
-import { formatTimestamp, getYMDFromISO } from '../../shared/helpers/DateHelper';
 import statsRepository from './repositories/statsRepository';
 
 class StatsService {
-    async getNbUsersByRequestsOnPeriod(start: string, end: string, minReq: string) {
-        start = getYMDFromISO(formatTimestamp(start));
-        end = getYMDFromISO(formatTimestamp(end));
+    async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number) {
         return await statsRepository.countUsersByRequestNbOnPeriod(start, end, minReq)
     }
 }
