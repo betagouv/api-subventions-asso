@@ -1,16 +1,18 @@
 import db from '../../../shared/MongoConnection';
+
 export class StatsRepository {
     private readonly collection = db.collection("log");
 
-    public async countUsersByRequestNbOnPeriod(start: string, end: string, nb: string | number) {
-        nb = Number(nb);
-        let counter = 0;
-        await this.collection.aggregate([
+    public async countUsersByRequestNbOnPeriod(start: Date, end: Date, nbReq: number) {
+        const aggregate = await this.collection.aggregate([
             { $match: { timestamp: { $gte: start, $lte: end } } } ,
-            {$group : { _id : '$meta.user.email', nbOfRequest : {$sum : 1}}},
-            { $match: { "nbOfRequest": { $gte: nb } } }
-        ]).forEach(() => { counter++ });
-        return counter;
+            {$group : { _id : '$meta.req.user.email', nbOfRequest : {$sum : 1}}},
+            { $match: { "nbOfRequest": { $gte: nbReq } } },
+            { $count: "nbOfUsers"}
+        ]);
+        const result = await aggregate.next();
+        if (result) return result.nbOfUsers;
+        return null;
     }
 }
 

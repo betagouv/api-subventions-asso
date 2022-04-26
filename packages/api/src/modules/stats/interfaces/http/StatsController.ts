@@ -15,7 +15,7 @@ export  class StatsController extends Controller {
     async getNbUsersByRequestsOnPeriod(@Query() start: string, @Query() end: string, @Query() nbReq: string): Promise<{ success: boolean, data?: number, message?: string}> {
         let result;
         try {
-            result = await statsService.getNbUsersByRequestsOnPeriod(start, end, nbReq);
+            result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq));
             return { success: true, data: result }
         } catch (e) {
             this.setStatus(500);
