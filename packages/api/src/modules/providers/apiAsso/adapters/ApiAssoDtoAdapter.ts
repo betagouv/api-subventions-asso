@@ -40,7 +40,7 @@ export default class ApiAssoDtoAdapter {
         if (structure.identite.date_modif_siren) {
             const adresse = structure.coordonnees.adresse_siege_sirene || fromRNA ? undefined : structure.coordonnees.adresse_siege;
             const sirenAssociation: Association = {
-                denomination: structure.identite.nom_sirene ? toSirenPvs(structure.identite.nom_sirene):  toSirenPvs(structure.identite.nom),
+                denomination: structure.identite.nom_sirene ? toSirenPvs(structure.identite.nom_sirene): toSirenPvs(structure.identite.nom),
                 siren: toSirenPvs(structure.identite.id_siren),
                 nic_siege: toSirenPvs(siretToNIC(structure.identite.id_siret_siege)),
                 categorie_juridique: toSirenPvs(structure.identite.id_forme_juridique.toString()),
@@ -62,7 +62,7 @@ export default class ApiAssoDtoAdapter {
         return [...assos, rnaAssociation]
     }
 
-    static toEtablissement(etablissement:StructureEtablissementDto, ribs: StructureRibDto[], representantsLegaux: StructureRepresentantLegalDto[], dateModif: string): Etablissement {
+    static toEtablissement(etablissement: StructureEtablissementDto, ribs: StructureRibDto[], representantsLegaux: StructureRepresentantLegalDto[], dateModif: string): Etablissement {
         const toDate = (stringDate: string) => {
             const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
             return new Date(Date.UTC(year, month-1, day));

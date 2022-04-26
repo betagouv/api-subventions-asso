@@ -1,5 +1,6 @@
 import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import axios from "axios";
+import { AssociationIdentifiers } from "../../../@types";
 import { API_ASSO_URL } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
@@ -40,14 +41,13 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         }
     }
 
-    private async getAssociationsAndEtablissementsBySiren(sirenOrRna: Siren | Rna): Promise<{associations: Association[], etablissements: Etablissement[]} | null> {
-        if (this.dataSirenCache.has(sirenOrRna)) return this.dataSirenCache.get(sirenOrRna)[0];
-        if (this.dataRnaCache.has(sirenOrRna)) return this.dataRnaCache.get(sirenOrRna)[0];
+    private async getAssociationsAndEtablissementsBySiren(identifier: AssociationIdentifiers): Promise<{associations: Association[], etablissements: Etablissement[]} | null> {
+        if (this.dataSirenCache.has(identifier)) return this.dataSirenCache.get(identifier)[0];
+        if (this.dataRnaCache.has(identifier)) return this.dataRnaCache.get(identifier)[0];
 
         let etablissements: Etablissement[] = [];
 
-        const structure = await this.sendRequest<StructureDto>(`/structure/${sirenOrRna}`);
-
+        const structure = await this.sendRequest<StructureDto>(`/structure/${identifier}`);
         if (!structure) return null;
 
         if (structure.identite.id_rna && structure.identite.id_siren) {
