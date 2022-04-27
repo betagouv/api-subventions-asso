@@ -2,13 +2,13 @@ import ProviderValueFactory from "../../src/shared/ProviderValueFactory"
 
 describe("ProviderValueFactory", () => {
     describe("buildProviderValueAdapter", () => {
-        it("should retrun function", () => {
+        it("should return function", () => {
             const actual = ProviderValueFactory.buildProviderValueAdapter('TEST', new Date());
             const expected = expect.any(Function)
             expect(actual).toEqual(expected);
         })
 
-        it("should retrun function", () => {
+        it("should return function", () => {
             const now = new Date();
             const func = ProviderValueFactory.buildProviderValueAdapter('TEST', now);
             const actual = func("STRING_VALUE");
@@ -23,13 +23,13 @@ describe("ProviderValueFactory", () => {
     })
 
     describe("buildProviderValuesAdapter", () => {
-        it("should retrun function", () => {
+        it("should return function", () => {
             const actual = ProviderValueFactory.buildProviderValuesAdapter('TEST', new Date());
             const expected = expect.any(Function)
             expect(actual).toEqual(expected);
         })
 
-        it("should retrun function", () => {
+        it("should return function", () => {
             const now = new Date();
             const func = ProviderValueFactory.buildProviderValuesAdapter('TEST', now);
             const actual = func("STRING_VALUE");

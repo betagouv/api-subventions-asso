@@ -18,8 +18,6 @@ export default class ApiAssoDtoAdapter {
 
         const fromRNA = structure.identite.regime === "loi1901"; // Data come from rna
 
-        const assos = [];
-
         const rnaAssociation: Association = {
             rna: toRnaPvs(structure.identite.id_rna),
             denomination: toRnaPvs(structure.identite.nom),
@@ -56,10 +54,10 @@ export default class ApiAssoDtoAdapter {
                 etablisements_siret: toSirenPvs(structure.etablissement.map(e => e.id_siret))
             }
 
-            assos.push(sirenAssociation);
+            return [sirenAssociation, rnaAssociation]
         }
 
-        return [...assos, rnaAssociation]
+        return [rnaAssociation]
     }
 
     static toEtablissement(etablissement: StructureEtablissementDto, ribs: StructureRibDto[], representantsLegaux: StructureRepresentantLegalDto[], dateModif: string): Etablissement {

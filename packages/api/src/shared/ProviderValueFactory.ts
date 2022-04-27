@@ -1,11 +1,11 @@
 import ProviderValueAdapter from "./adapters/ProviderValueAdapter";
 
 export default class ProviderValueFactory {
-    static buildProviderValueAdapter(proivder: string, dataDate: Date) {
-        return <T>(value: T) => ProviderValueAdapter.toProviderValue(value, proivder, dataDate)
+    static buildProviderValueAdapter(provider: string, dataDate: Date) {
+        return <T>(value: T) => ProviderValueAdapter.toProviderValue(value, provider, dataDate)
     }
 
-    static buildProviderValuesAdapter(proivder: string, dataDate: Date) {
-        return <T>(value: T) => ProviderValueAdapter.toProviderValues(value, proivder, dataDate)
+    static buildProviderValuesAdapter(provider: string, dataDate: Date) {
+        return <T>(value: T) => ProviderValueAdapter.toProviderValues(value, provider, dataDate)
     }
 }

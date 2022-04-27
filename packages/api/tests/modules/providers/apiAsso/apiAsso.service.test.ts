@@ -7,7 +7,11 @@ import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 
 describe("ApiAssoService", () => {
     const axiosMock = jest.spyOn(axios, "get");
-    const adapterAssoMock = jest.spyOn(ApiAssoDtoAdapter, "toAssociation").mockImplementation((r) => [r] as unknown[] as Association[]);
+    const adapterAssoMock = jest.spyOn(ApiAssoDtoAdapter, "toAssociation").mockImplementation((r) => [{
+        ...r,
+        denomination: [{ value: r.identite.nom, provider: "TEST" }],
+        date_modification: [{ value: new Date() }]
+    }] as unknown[] as Association[]);
     const adapterEtablissementMock = jest.spyOn(ApiAssoDtoAdapter, "toEtablissement").mockImplementation((r) => ({...r, siret: [{value: r.id_siret }]}) as unknown as Etablissement);
 
     afterAll(() => {
@@ -38,7 +42,7 @@ describe("ApiAssoService", () => {
             })
 
             it('should be return association', async () => {
-                const expected = [fixtureAsso];
+                const expected = [expect.objectContaining(fixtureAsso)];
                 const actual = await apiAssoService.getAssociationsBySiren("509221941");
 
                 expect(actual).toEqual(expected);
@@ -62,7 +66,7 @@ describe("ApiAssoService", () => {
             })
 
             it('should be return association', async () => {
-                const expected = [fixtureAsso];
+                const expected = [expect.objectContaining(fixtureAsso)];
                 const actual = await apiAssoService.getAssociationsBySiret("50922194100000");
 
                 expect(actual).toEqual(expected);
@@ -87,7 +91,7 @@ describe("ApiAssoService", () => {
             })
 
             it('should be return association', async () => {
-                const expected = [fixtureAsso];
+                const expected = [expect.objectContaining(fixtureAsso)];
                 const actual = await apiAssoService.getAssociationsByRna("W0000000");
 
                 expect(actual).toEqual(expected);
