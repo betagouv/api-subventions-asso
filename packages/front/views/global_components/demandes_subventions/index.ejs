@@ -22,14 +22,6 @@
                                             <p>Montants des subventions attribuées (<%- yearText -%>) : <%- helper.currency.addSpaces(subventions.totalAccordeByYear[year]) -%>€</p>
                                             <ul class="fr-accordions-group">
                                                 <%-
-                                                    include("./totals", {
-                                                        subventions,
-                                                        index,
-                                                        year,
-                                                        yearText,
-                                                    })
-                                                -%>
-                                                <%-
                                                     include("./details", {
                                                         subventions,
                                                         index,
