@@ -18,8 +18,7 @@ jobs:
           node-version: '16'
       - run: npm ci
       - run: npm run generate
-      - run: npm run test
-      - run: npm run test:integ
+      - run: npm test
   lint:
     runs-on: ubuntu-latest
     steps:
