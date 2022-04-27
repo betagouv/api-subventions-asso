@@ -92,6 +92,10 @@ export class OsirisRepository {
         return this.actionCollection.find(query);
     }
 
+    public cursorFindRequests(query = {}){
+        return this.requestCollection.find(query);
+    }
+
     public async findActionsByCompteAssoId(compteAssoId: string) {
         const dbos = await this.actionCollection.find({ "indexedInformations.compteAssoId": compteAssoId }).toArray();
         return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));

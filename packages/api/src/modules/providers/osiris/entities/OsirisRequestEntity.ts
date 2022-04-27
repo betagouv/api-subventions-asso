@@ -26,14 +26,14 @@ export default class OsirisRequestEntity extends RequestEntity {
                 if (!value) return value;
 
                 const [day, month, year] = value.split('/').map(v => parseInt(v, 10));
-                return new Date(year, month - 1, day);
+                return new Date(Date.UTC(year, month - 1 , day));
             }
         },
         exerciceDebut: {
             path: ["Dossier", 'Exercice Début'],
             adapter: (value) => {
                 if (!value) return value;
-                return new Date(parseInt(value), 0, 0);
+                return new Date(Date.UTC(parseInt(value), 0));
             }
         },
         etablissementSiege: {
