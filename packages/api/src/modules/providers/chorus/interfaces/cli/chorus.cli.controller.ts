@@ -42,7 +42,7 @@ export default class ChorusCliController {
      * @param file path to file
      * @param batchSize La taille des packets envoyer à mongo coup par coup
      */
-    public async parse_xls(file: string, batchSize = 1000) {
+    public async parse_xls(file: string, forceClean = false,  batchSize = 1000) {
         if (typeof file !== "string" ) {
             throw new Error("Parse command need file args");
         }
@@ -77,14 +77,16 @@ export default class ChorusCliController {
 
         await asyncForEach(batchs, async (batch, index) => {
             CliHelper.printProgress(index * 1000, totalEnities);
-            const result = await chorusService.insertBatchChorusLine(batch, true);
+            const result = await chorusService.insertBatchChorusLine(batch, forceClean);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
         });
 
-        console.log("\nSwitch chorus repo ...");
-        await chorusService.switchChorusRepo();
-        console.log("End switch");
+        if (forceClean) {
+            console.log("\nSwitch chorus repo ...");
+            await chorusService.switchChorusRepo();
+            console.log("End switch");
+        }
 
         logs.push(`RESULT: ${JSON.stringify(finalResult)}`);
     }
