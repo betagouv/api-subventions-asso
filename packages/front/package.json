@@ -37,7 +37,7 @@
     "url": "https://github.com/betagouv/datasubvention/issues"
   },
   "dependencies": {
-    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?86b1e31",
+    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?cb9436f",
     "@gouvfr/dsfr": "1.4",
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
