@@ -26,16 +26,18 @@
     "checkHTMLLocal": "site-validator --verbose --local --url http://localhost:1234",
     "dev": "nodemon",
     "start": "node ./build/src/index.js",
-    "prebuild": "webpack",
-    "build": "tsc --project ./",
+    "prebuild": "npx webpack",
+    "build": "npx tsc --project ./",
     "postbuild": "npm run copy-files",
     "copy-files": "cp -r views build/views && cp -r static build/static && cp -r node_modules build/node_modules",
-    "test": "echo 'no test in front'"
+    "test": "echo 'no test in front'",
+    "postinstall": "cd node_modules/@api-subventions-asso/dto && npm run build"
   },
   "bugs": {
     "url": "https://github.com/betagouv/datasubvention/issues"
   },
   "dependencies": {
+    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?162-preprod",
     "@gouvfr/dsfr": "^1.2.1",
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
@@ -52,7 +54,6 @@
     "ts-node": "^10.4.0"
   },
   "devDependencies": {
-    "@api-subventions-asso/dto": "file:../dto",
     "@types/axios": "^0.14.0",
     "@types/connect-mongo": "^3.1.3",
     "@types/express": "^4.17.13",
