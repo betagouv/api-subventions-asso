@@ -5,7 +5,7 @@
   "author": "Victor Serain <victor.serain@epitech.eu>",
   "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/dto#readme",
   "license": "ISC",
-  "main": "index.ts",
+  "main": "build/index.js",
   "types": "./index.ts",
   "directories": {
     "lib": "lib",
@@ -19,9 +19,13 @@
     "url": "git+https://github.com/betagouv/datasubvention.git"
   },
   "scripts": {
-    "test": "echo 'no test in dto'"
+    "test": "echo 'no test in dto'",
+    "build": "tsc --project ./"
   },
   "bugs": {
     "url": "https://github.com/betagouv/datasubvention/issues"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.3"
   }
 }

@@ -22,7 +22,8 @@
     "test:cov": "npm run test -- --coverage",
     "migration:new": "migrate-mongo create",
     "migration:status": "migrate-mongo status",
-    "migration:apply": "migrate-mongo up"
+    "migration:apply": "migrate-mongo up",
+    "postinstall": "cd node_modules/@api-subventions-asso/dto && npm run build"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
   },
   "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
+    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?162-preprod",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",
@@ -57,7 +59,6 @@
     "winston-mongodb": "^5.0.7"
   },
   "devDependencies": {
-    "@api-subventions-asso/dto": "file:../dto",
     "@shelf/jest-mongodb": "^2.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
