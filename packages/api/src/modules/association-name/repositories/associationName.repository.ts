@@ -6,12 +6,18 @@ import AssociationNameEntity  from "../entities/AssociationNameEntity";
 export class AssociationNameRepository {
     private readonly collection = db.collection<AssociationNameEntity>("association-name");
 
-    private  toEntity(document: WithId<AssociationNameEntity> | IAssociationName) {
+    private toEntity(document: WithId<AssociationNameEntity> | IAssociationName) {
         return new AssociationNameEntity(document.rna, document.siren, document.name, document.provider, document.lastUpdate);
     }
 
     async findAllStartingWith(value: string) {
         return  (await this.collection.find({ $or: [ {siren: { $regex: `^${value}` }}, {rna: { $regex: `^${value}` }}, {name: { $regex: `^${value}` }}] }).toArray()).map(document => this.toEntity(document));
+    }
+
+    async findOneByEnity(entity: AssociationNameEntity) {
+        const result = await this.collection.findOne({ rna: entity.rna, siren: entity.siren, name: entity.name });
+        if (result) return this.toEntity(result);
+        return null;
     }
 
     async create(entity: AssociationNameEntity) {
