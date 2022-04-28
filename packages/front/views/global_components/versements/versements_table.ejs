@@ -26,7 +26,7 @@
                     <td><%-helper.getValue(versement.numeroTier)%></td>
                     <td><%-helper.getValue(versement.ej)%></td>
                     <td><%-helper.getValue(versement.numeroDemandePayment)%></td>
-                    <td><%-helper.getValue(versement.amount)%>€</td>
+                    <td><%-helper.currency.addSpaces(helper.getValue(versement.amount))%>€</td>
                     <td><%-helper.date.toProviderValueString(versement.dateOperation)%></td>
                     <td>
                         <% const siret = helper.getValue(versement.siret); %>
