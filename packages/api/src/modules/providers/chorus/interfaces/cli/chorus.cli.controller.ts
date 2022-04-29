@@ -56,7 +56,13 @@ export default class ChorusCliController {
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
-        const entities = ChorusParser.parseXls(fileContent, (e) => chorusService.validateEntity(e).success);
+        const entities = ChorusParser.parseXls(fileContent, (e) => {
+            const validation = chorusService.validateEntity(e);
+
+            if (!validation.success) logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"))
+
+            return validation.success;
+        });
         const totalEnities = entities.length
 
         console.info(`\n${totalEnities} valid entities found in file.`);
@@ -89,6 +95,8 @@ export default class ChorusCliController {
         }
 
         logs.push(`RESULT: ${JSON.stringify(finalResult)}`);
+
+        fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" });
     }
 
     private async _parse(file: string, logs: unknown[]) {
