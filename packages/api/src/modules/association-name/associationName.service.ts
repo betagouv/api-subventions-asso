@@ -7,8 +7,9 @@ export class AssociationNameService {
     constructor() {
         EventManager.add('association-name.matching');
 
-        EventManager.on('association-name.matching', {}, (cbStop, data) => {
-            this.add((data as IAssociationName));
+        EventManager.on('association-name.matching', {}, async (cbStop, data) => {
+            await this.add((data as IAssociationName));
+            cbStop(); // HOTFIX premet d'attendre que le add soit fait avant d'envoyer un add
         });
     }
 

@@ -4,6 +4,7 @@ import { AssociationIdentifiers } from "../../../@types";
 import { API_ASSO_URL } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
+import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import Association from "../../associations/@types/Association";
@@ -62,8 +63,8 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         
         if (structure.identite.id_rna && structure.identite.id_siren) {
             EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren}])
-            result.associations.forEach(association => {
-                EventManager.call('association-name.matching', [{
+            await asyncForEach(result.associations, async (association) => {
+                await EventManager.call('association-name.matching', [{
                     rna: structure.identite.id_rna,
                     siren: structure.identite.id_siren,
                     name: association.denomination[0].value,

@@ -51,7 +51,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             }
 
             EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren: legalInformations.siret}])
-            EventManager.call('association-name.matching', [{rna: legalInformations.rna, siren: legalInformations.siret, name: legalInformations.name, provider: this.providerName, lastUpdate: partialEntity.providerInformations.transmis_le}])
+            await EventManager.call('association-name.matching', [{rna: legalInformations.rna, siren: legalInformations.siret, name: legalInformations.name, provider: this.providerName, lastUpdate: partialEntity.providerInformations.transmis_le}])
 
             return {
                 state: "updated",

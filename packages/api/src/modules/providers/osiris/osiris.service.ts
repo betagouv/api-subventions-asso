@@ -30,7 +30,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
         
         EventManager.call('rna-siren.matching', [{ rna, siren }]);
-        EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: date}])
+        await EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: date}])
         
         if (existingFile) {
             return {
