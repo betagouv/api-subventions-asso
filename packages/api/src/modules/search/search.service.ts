@@ -3,7 +3,7 @@ import associationsService from "../associations/associations.service";
 
 import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
+import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 import Etablissement from "../etablissements/@types/Etablissement";
 import associationNameService from "../association-name/associationName.service"

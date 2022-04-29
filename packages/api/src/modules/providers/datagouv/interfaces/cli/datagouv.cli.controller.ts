@@ -6,9 +6,9 @@ import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import DataGouvParser from "../../datagouv.parser";
 import dataGouvService from "../../datagouv.service";
 import EntrepriseSirenEntity from "../../entities/EntrepriseSirenEntity";
-import RnaSiren from "../../../../rna-siren/entities/RnaSirenEntity";
+import RnaSiren from "../../../../open-data/rna-siren/entities/RnaSirenEntity";
 import { IStreamAction } from "../../@types";
-import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../../../open-data/rna-siren/rnaSiren.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataGouvCliController {

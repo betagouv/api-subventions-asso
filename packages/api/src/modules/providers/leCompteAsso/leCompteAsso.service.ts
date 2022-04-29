@@ -10,7 +10,7 @@ import AssociationsProvider from "../../associations/@types/AssociationsProvider
 import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
 import Etablissement from "../../etablissements/@types/Etablissement";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
