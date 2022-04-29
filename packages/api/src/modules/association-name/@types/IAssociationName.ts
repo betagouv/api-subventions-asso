@@ -1,4 +1,4 @@
-import { Rna, Siren } from '@api-subventions-asso/dto'
+import { Rna, Siren } from 'api-subventions-asso-dto'
 
 export default interface IAssociationName {
     rna: Rna,

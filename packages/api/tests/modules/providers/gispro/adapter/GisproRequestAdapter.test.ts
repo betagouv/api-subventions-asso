@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ObjectId } from 'mongodb';
 import GisproRequestAdapter from '../../../../../src/modules/providers/gispro/adapters/GisproRequestAdapter';
-import ProviderValue from '@api-subventions-asso/dto/shared/ProviderValue';
+import ProviderValue from 'api-subventions-asso-dto/shared/ProviderValue';
 import GisproActionEntity from '../../../../../src/modules/providers/gispro/entities/GisproActionEntity';
 import ILegalInformations from '../../../../../src/modules/search/@types/ILegalInformations';
 import IGisproActionInformations from '../../../../../src/modules/providers/gispro/@types/IGisproActionInformations';

@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes, SignupErrorCodes} from '@api-subventions-asso/dto';
+import { ResetPasswordErrorCodes, SignupErrorCodes} from 'api-subventions-asso-dto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
 import { DefaultObject } from '../../../../@types/utils';

@@ -1,4 +1,4 @@
-import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
 import { Rna, Siren, Siret } from "../../../@types";
 import EventManager from "../../../shared/EventManager";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
