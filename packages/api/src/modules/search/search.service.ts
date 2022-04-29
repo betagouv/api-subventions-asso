@@ -65,8 +65,14 @@ export class SearchService {
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
         
         const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
-
-        const demandesSubventions = await demandesSubventionsService.getByAssociation(siren);
+        let demandesSubventions: DemandeSubvention[] = []
+        try {
+            demandesSubventions = await demandesSubventionsService.getByAssociation(siren);
+        } catch (e) {
+            if (e instanceof Error && e.message != "Association not found") {
+                throw e;
+            }
+        }
 
         const buildCompletEtablissement = (etablissement: Etablissement) => ({
             ...etablissement,
