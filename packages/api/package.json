@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
-    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?6540320",
+    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?v0.8.0",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",
