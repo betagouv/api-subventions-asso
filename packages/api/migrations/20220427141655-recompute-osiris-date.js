@@ -12,9 +12,10 @@ const ParseHelper = require("../build/src/shared/helpers/ParserHelper");
 
 module.exports = {
     async up(db, client) {
-        console.log("Start Osris action indexed siret migration");
+        console.log("Connect to DB");
         await connectDB();
-
+        
+        console.log("Start Osris action indexed siret migration");
         const cursor = repo.cursorFindRequests();
 
         let counter = 0;
