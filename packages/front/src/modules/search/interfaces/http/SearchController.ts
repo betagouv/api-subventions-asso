@@ -1,6 +1,6 @@
-import { IAssociation } from '@api-subventions-asso/dto';
-import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
-import ProviderValue from '@api-subventions-asso/dto/shared/ProviderValue';
+import { IAssociation } from 'api-subventions-asso-dto';
+import DemandeSubvention from 'api-subventions-asso-dto/search/DemandeSubventionDto';
+import ProviderValue from 'api-subventions-asso-dto/shared/ProviderValue';
 import e, { NextFunction, Request, Response } from 'express';
 import { DefaultObject } from '../../../../@types/utils';
 import Controller from '../../../../decorators/controller.decorator';

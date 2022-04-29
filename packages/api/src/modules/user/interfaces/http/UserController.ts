@@ -1,4 +1,4 @@
-import UserDto from '@api-subventions-asso/dto/user/UserDto';
+import UserDto from 'api-subventions-asso-dto/user/UserDto';
 import { Request as ExRequest } from 'express';
 import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get } from 'tsoa';
 import User, { UserWithoutSecret } from '../../entities/User';

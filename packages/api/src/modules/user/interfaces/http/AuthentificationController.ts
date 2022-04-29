@@ -2,7 +2,7 @@ import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Sec
 import { Request as ExRequest } from "express";
 import userService, { UserServiceErrors } from '../../user.service';
 import User, { UserWithoutSecret } from '../../entities/User';
-import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
+import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "api-subventions-asso-dto"
 import { DefaultObject } from '../../../../@types';
 
 @Route("/auth")

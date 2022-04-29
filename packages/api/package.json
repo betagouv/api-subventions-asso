@@ -23,7 +23,7 @@
     "migration:new": "migrate-mongo create",
     "migration:status": "migrate-mongo status",
     "migration:apply": "migrate-mongo up",
-    "postinstall": "cd node_modules/@api-subventions-asso/dto && npm run build"
+    "postinstall": "cd node_modules/api-subventions-asso-dto && npm run build"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
-    "@api-subventions-asso/dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?v0.8.0",
+    "api-subventions-asso-dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?v0.8.0",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",

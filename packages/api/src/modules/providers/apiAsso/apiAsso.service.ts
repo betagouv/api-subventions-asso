@@ -1,4 +1,4 @@
-import { ProviderValues, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { ProviderValues, Rna, Siren, Siret } from "api-subventions-asso-dto";
 import axios from "axios";
 import { AssociationIdentifiers } from "../../../@types";
 import { API_ASSO_URL } from "../../../configurations/apis.conf";

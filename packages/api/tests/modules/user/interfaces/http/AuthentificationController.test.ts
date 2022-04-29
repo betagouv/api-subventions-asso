@@ -1,6 +1,6 @@
 import request from "supertest"
 import userService, { UserService } from "../../../../../src/modules/user/user.service";
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes } from "api-subventions-asso-dto";
 import db from "../../../../../src/shared/MongoConnection";
 
 const g = global as unknown as { app: unknown }

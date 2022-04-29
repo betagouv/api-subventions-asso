@@ -1,13 +1,13 @@
 import etablissementService from "../etablissements/etablissements.service";
 import associationsService from "../associations/associations.service";
 
-import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
+import { Siret, Rna, Siren } from "api-subventions-asso-dto";
 import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 import Etablissement from "../etablissements/@types/Etablissement";
 import associationNameService from "../association-name/associationName.service"
-import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
 export class SearchService {
 
     public async getBySiret(siret: Siret) {

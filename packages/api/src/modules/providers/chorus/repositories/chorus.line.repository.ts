@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "api-subventions-asso-dto";
 import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../../../@types";
 import MigrationRepository from "../../../../shared/MigrationRepository";

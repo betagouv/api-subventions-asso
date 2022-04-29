@@ -4,8 +4,8 @@ import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { siretToSiren } from '../../shared/helpers/SirenHelper';
 import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper'
-import { Siret } from "@api-subventions-asso/dto";
-import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import { Siret } from "api-subventions-asso-dto";
+import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
 import providers from "../providers";
 
 export class DemandesSubventionsService {
