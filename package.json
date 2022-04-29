@@ -1,6 +1,6 @@
 {
   "name": "api-subventions-asso",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "",
   "main": "index.js",
   "engines": {

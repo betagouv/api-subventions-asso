@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.5](https://github.com/betagouv/api-subventions-asso/compare/v0.8.4...v0.8.5) (2022-04-29)
+
+
+### Bug Fixes
+
+* **api:** hot fix wait association name hase been save before send an other ([a2fe0d3](https://github.com/betagouv/api-subventions-asso/commit/a2fe0d32dda072e5ef6a89562d571c34bba6f41c))
+
 ### [0.8.4](https://github.com/betagouv/api-subventions-asso/compare/v0.8.3...v0.8.4) (2022-04-29)
 
 
