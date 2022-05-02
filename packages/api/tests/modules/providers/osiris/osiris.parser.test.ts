@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
 
-import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
-import OsirisActionEntity from "../../../src/modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
-import OsirisEvaluationEntity from '../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
+import OsirisParser from "../../../../src/modules/providers/osiris/osiris.parser";
+import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
+import OsirisEvaluationEntity from '../../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
 
 describe("OsirisParser", () => {
     describe('parseRequests', () => {

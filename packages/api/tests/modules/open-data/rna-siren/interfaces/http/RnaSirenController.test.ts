@@ -1,6 +1,6 @@
 import request from "supertest"
-import getUserToken from "../../../../__helpers__/getUserToken";
-import rnaSirenService from "../../../../../src/modules/rna-siren/rnaSiren.service"
+import getUserToken from "../../../../../__helpers__/getUserToken";
+import rnaSirenService from "../../../../../../src/modules/open-data/rna-siren/rnaSiren.service"
 
 const g = global as unknown as { app: unknown }
 

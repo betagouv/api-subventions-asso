@@ -1,5 +1,5 @@
 import { Siren } from "../../../@types/Siren";
-import Provider from '../@types/Provider';
+import Provider from '../@types/IProvider';
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
 

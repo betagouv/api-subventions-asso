@@ -2,8 +2,8 @@
 import Association from "../../../../src/modules/associations/@types/Association";
 import leCompteAssoService from "../../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
 import osirisService from "../../../../src/modules/providers/osiris/osiris.service";
-import RnaSiren from "../../../src/modules/rna-siren/entities/RnaSirenEntity";
-import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service"
+import RnaSiren from "../../../../src/modules/open-data/rna-siren/entities/RnaSirenEntity";
+import rnaSirenService from "../../../../src/modules/open-data/rna-siren/rnaSiren.service"
 import db from "../../../../src/shared/MongoConnection";
 
 // Not the same as entity from MongoDB
