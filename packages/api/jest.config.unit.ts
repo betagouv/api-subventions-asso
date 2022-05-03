@@ -44,10 +44,10 @@ export default Object.assign(baseConfig, {
     // coverageThreshold: undefined,
     "coverageThreshold": {
         "global": {
-            "branches": 85,
-            "functions": 85,
-            "lines": 85,
-            "statements": 85
+            "branches": 0,
+            "functions": 0,
+            "lines": 0,
+            "statements": 0
         }
     },
 
