@@ -12,3 +12,5 @@ export * from "./shared/Rna"
 export * from "./shared/Siren"
 export * from "./shared/Siret"
 export * from "./user/UserDto"
+
+// Test version lerna
