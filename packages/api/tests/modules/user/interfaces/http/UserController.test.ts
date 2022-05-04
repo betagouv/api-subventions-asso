@@ -1,7 +1,7 @@
 import request from "supertest"
 import getUserToken from "../../../../__helpers__/getUserToken";
 import getAdminToken from "../../../../__helpers__/getAdminToken";
-import userService from "../../../../../src/modules/user/user.service";
+import userService, { UserServiceErrors } from "../../../../../src/modules/user/user.service";
 
 const g = global as unknown as { app: unknown }
 
@@ -140,7 +140,7 @@ describe('UserController, /user', () => {
             '    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]\n' +
             '    At least 8 characters in length, but no more than 32.\n' +
             '                    ',
-            code: 13})
+            code: UserServiceErrors.FORMAT_PASSWORD_INVALID })
         })
 
 
