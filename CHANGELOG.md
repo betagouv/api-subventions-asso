@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.6](https://github.com/betagouv/api-subventions-asso/compare/v0.8.5...v0.8.6) (2022-05-04)
+
+
+### Bug Fixes
+
+* **api:** add valides domaines emails ([6bfc99e](https://github.com/betagouv/api-subventions-asso/commit/6bfc99e818c73c089a54dab972cddadf40d12bfa))
+
 ### [0.8.5](https://github.com/betagouv/api-subventions-asso/compare/v0.8.4...v0.8.5) (2022-04-29)
 
 
