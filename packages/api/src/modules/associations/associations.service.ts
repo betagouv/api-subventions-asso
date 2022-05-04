@@ -1,5 +1,5 @@
 import { AssociationIdentifiers, DefaultObject, ProviderValues } from "../../@types";
-import { Siret, Rna, Siren } from "api-subventions-asso-dto";
+import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import Association from "./@types/Association";
 import AssociationsProvider from "./@types/AssociationsProvider";
 import providers from "../providers";

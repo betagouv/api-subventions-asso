@@ -1,4 +1,4 @@
-import DemandeSubvention from 'api-subventions-asso-dto/search/DemandeSubventionDto';
+import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { StructureIdentifiers } from '../../../../@types';
 

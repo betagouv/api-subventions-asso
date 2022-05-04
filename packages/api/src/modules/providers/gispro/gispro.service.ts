@@ -4,8 +4,8 @@ import { isSiret, isAssociationName } from "../../../shared/Validators";
 import { DefaultObject } from '../../../@types';
 import GisproRequestAdapter from './adapters/GisproRequestAdapter';
 import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
-import DemandeSubvention from 'api-subventions-asso-dto/search/DemandeSubventionDto';
-import { Rna, Siren, Siret } from 'api-subventions-asso-dto';
+import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
+import { Rna, Siren, Siret } from '@api-subventions-asso/dto';
 
 export const VALID_REQUEST_ERROR_CODE = {
     INVALID_SIRET: 1,

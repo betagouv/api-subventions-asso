@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
-    "api-subventions-asso-dto": "../dto",
+    "@api-subventions-asso/dto": "../dto",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",
