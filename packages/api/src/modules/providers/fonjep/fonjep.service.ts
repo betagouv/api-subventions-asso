@@ -1,5 +1,5 @@
-import { Siren } from "api-subventions-asso-dto";
-import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
+import { Siren } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import { WithId } from "mongodb";
 import { Siret } from "../../../@types";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";

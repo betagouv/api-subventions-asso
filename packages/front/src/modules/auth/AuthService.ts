@@ -1,4 +1,4 @@
-import { ResetPasswordDtoNegativeResponse, ResetPasswordErrorCodes, SignupDtoNegativeResponse, SignupErrorCodes } from "api-subventions-asso-dto";
+import { ResetPasswordDtoNegativeResponse, ResetPasswordErrorCodes, SignupDtoNegativeResponse, SignupErrorCodes } from "@api-subventions-asso/dto";
 import axios, { AxiosError } from "axios";
 import apiDatasubService from "../../shared/apiDatasub.service";
 

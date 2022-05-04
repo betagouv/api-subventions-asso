@@ -1,5 +1,5 @@
-import { ProviderValues, Rna } from "api-subventions-asso-dto";
-import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
+import { ProviderValues, Rna } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import { ProviderValue } from "../../../../@types";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";

@@ -1,4 +1,4 @@
-import { Siret, Rna, Siren } from "api-subventions-asso-dto";
+import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import Provider from '../../providers/@types/Provider';
 import Association from "./Association";
 
