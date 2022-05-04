@@ -1,4 +1,4 @@
-import { Siret } from "api-subventions-asso-dto";
+import { Siret } from "@api-subventions-asso/dto";
 import User from "../../@types/User";
 import apiDatasubService from "../../shared/apiDatasub.service";
 import IdentifierHelper from "../../shared/helpers/IdentifierHelper";

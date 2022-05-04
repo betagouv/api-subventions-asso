@@ -1,4 +1,4 @@
-import { Siret } from 'api-subventions-asso-dto';
+import { Siret } from '@api-subventions-asso/dto';
 
 export default interface IOsirisEvaluationsInformations {
     osirisActionId: string,

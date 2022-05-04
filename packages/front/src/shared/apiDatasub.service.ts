@@ -1,10 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
-import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "api-subventions-asso-dto"
+import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@api-subventions-asso/dto"
 import { DATASUB_URL } from "./config";
-import AssociationDtoResponse from "api-subventions-asso-dto/search/AssociationDtoResponse";
-import EtablissementDtoResponse from "api-subventions-asso-dto/search/EtablissementDtoResponse";
+import AssociationDtoResponse from "@api-subventions-asso/dto/search/AssociationDtoResponse";
+import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
 import User from "../@types/User";
-import UserDto from "api-subventions-asso-dto/user/UserDto";
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
 
 export class APIDatasubService {
     login(email: string, password: string) {

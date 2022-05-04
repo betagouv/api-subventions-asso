@@ -1,4 +1,4 @@
-import { Siren, Siret } from "api-subventions-asso-dto";
+import { Siren, Siret } from "@api-subventions-asso/dto";
 import Provider from '../../providers/@types/Provider';
 import Etablissement from "./Etablissement";
 
