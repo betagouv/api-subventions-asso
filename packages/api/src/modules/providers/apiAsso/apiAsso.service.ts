@@ -9,17 +9,17 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
+import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto from "./dto/StructureDto";
 
-export class ApiAssoService implements AssociationsProvider, EtablissementProvider {
+export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = { 
         name: "API ASSO",
         type: ProviderEnum.api,
         description: "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
     };
-
     private dataSirenCache = new CacheData<{ associations: Association[], etablissements: Etablissement[]}>(CACHE_TIMES.ONE_DAY);
     private dataRnaCache = new CacheData<{ associations: Association[], etablissements: Etablissement[]}>(CACHE_TIMES.ONE_DAY);
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
@@ -134,6 +134,26 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (!result) return null;
 
         return result.etablissements;
+    }
+
+
+    /**
+     * |---------------------|
+     * |   Documents Part    |
+     * |---------------------|
+     */
+    
+
+    isDocumentProvider = true;
+
+    async getDocumentsBySiren(siren: Siren) {
+        return null
+    }
+    async getDocumentsBySiret(siret: Siret) {
+        return null
+    }
+    async getDocumentsByRna(rna: Rna) {
+        return null
     }
 }
 
