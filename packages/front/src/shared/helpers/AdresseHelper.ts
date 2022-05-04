@@ -1,4 +1,4 @@
-import { ProviderValues } from "api-subventions-asso-dto";
+import { ProviderValues } from "@api-subventions-asso/dto";
 import ProviderValueHelper from "./ProviderValueHelper";
 
 export default class AdresseHelper {

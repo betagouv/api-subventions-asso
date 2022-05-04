@@ -1,4 +1,4 @@
-import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import GisproActionEntity from "../entities/GisproActionEntity";
 
