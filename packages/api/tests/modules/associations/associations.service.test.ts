@@ -16,16 +16,16 @@ describe("associations.service.ts", () => {
                     rna: [
                         {
                             value: 'W852001474',
-                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'string'
                         },
                         {
                             value: 'W852001474',
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'string'
-                        }
+                        },
                     ],
                     siren: [
                         {
@@ -54,16 +54,16 @@ describe("associations.service.ts", () => {
                     date_creation: [
                         {
                             value: new Date("2009-09-22T00:00:00.000Z"),
-                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'object'
                         },
                         {
                             value: new Date("2009-09-22T00:00:00.000Z"),
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'object'
-                        }
+                        },
                     ],
                     date_modification: [
                         {
@@ -75,19 +75,31 @@ describe("associations.service.ts", () => {
                     ],
                     denomination: [
                         {
+                            value: 'ASSOCIATION DEPARTEMENTALE VENDEENNE DES RESTAURANTS DU COEUR - RELAIS DU COEUR',
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            last_update: expect.any(Date),
+                            type: 'string'
+                        },
+                        {
                             value: 'ASSOCIATION DEPARTEMENTALE VENDEENNE DES RESTAURANTS DU COEUR RELAIS DU COEUR',
                             provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'string'
                         },
-                        {
-                            value: 'ASSOCIATION DEPARTEMENTALE VENDEENNE DES RESTAURANTS DU COEUR - RELAIS DU COEUR',
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
-                            last_update: expect.any(Date),
-                            type: 'string'
-                        }
                     ],
                     adresse_siege: [
+                        {
+                            value: {
+                                "code_postal": "85000",
+                                "numero": "10",
+                                "commune": "Mouilleron-le-Captif",
+                                "type_voie": "RUE",
+                                "voie": "de La Roche,",
+                            },
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            last_update: expect.any(Date),
+                            type: 'object'
+                        },
                         {
                             value: {
                                 "code_postal": "85000",
@@ -100,18 +112,6 @@ describe("associations.service.ts", () => {
                             last_update: expect.any(Date),
                             type: 'object'
                         },
-                        {
-                            value: {
-                                "code_postal": "85000",
-                                "numero": "10",
-                                "commune": "Mouilleron-le-Captif",
-                                "type_voie": "RUE",
-                                "voie": "de La Roche,",
-                            },
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
-                            last_update: expect.any(Date),
-                            type: 'object'
-                        }
                     ],
                     etablisements_siret: [
                         {
@@ -166,16 +166,16 @@ describe("associations.service.ts", () => {
                     rna: [
                         {
                             value: 'W852001474',
-                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'string'
                         },
                         {
                             value: 'W852001474',
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'string'
-                        }
+                        },
                     ],
                     siren: [
                         {
@@ -204,16 +204,16 @@ describe("associations.service.ts", () => {
                     date_creation: [
                         {
                             value: new Date("2009-09-22T00:00:00.000Z"),
-                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'object'
                         },
                         {
                             value: new Date("2009-09-22T00:00:00.000Z"),
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'object'
-                        }
+                        },
                     ],
                     date_modification: [
                         {
@@ -225,19 +225,31 @@ describe("associations.service.ts", () => {
                     ],
                     denomination: [
                         {
+                            value: 'ASSOCIATION DEPARTEMENTALE VENDEENNE DES RESTAURANTS DU COEUR - RELAIS DU COEUR',
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            last_update: expect.any(Date),
+                            type: 'string'
+                        },
+                        {
                             value: 'ASSOCIATION DEPARTEMENTALE VENDEENNE DES RESTAURANTS DU COEUR RELAIS DU COEUR',
                             provider: '<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>',
                             last_update: expect.any(Date),
                             type: 'string'
                         },
-                        {
-                            value: 'ASSOCIATION DEPARTEMENTALE VENDEENNE DES RESTAURANTS DU COEUR - RELAIS DU COEUR',
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
-                            last_update: expect.any(Date),
-                            type: 'string'
-                        }
                     ],
                     adresse_siege: [
+                        {
+                            value: {
+                                "code_postal": "85000",
+                                "numero": "10",
+                                "commune": "Mouilleron-le-Captif",
+                                "type_voie": "RUE",
+                                "voie": "de La Roche,",
+                            },
+                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
+                            last_update: expect.any(Date),
+                            type: 'object'
+                        },
                         {
                             value: {
                                 "code_postal": "85000",
@@ -250,18 +262,6 @@ describe("associations.service.ts", () => {
                             last_update: expect.any(Date),
                             type: 'object'
                         },
-                        {
-                            value: {
-                                "code_postal": "85000",
-                                "numero": "10",
-                                "commune": "Mouilleron-le-Captif",
-                                "type_voie": "RUE",
-                                "voie": "de La Roche,",
-                            },
-                            provider: '<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>',
-                            last_update: expect.any(Date),
-                            type: 'object'
-                        }
                     ],
                     etablisements_siret: [
                         {
