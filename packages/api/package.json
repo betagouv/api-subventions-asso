@@ -18,12 +18,13 @@
     "build": "tsc --project ./",
     "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
-    "test": "NODE_OPTIONS=--max-old-space-size=8192 jest --runInBand",
-    "test:cov": "npm run test -- --coverage",
+    "test": "npm run test:unit && npm run test:integ",
+    "test:unit": "NODE_OPTIONS=--max-old-space-size=8192 jest ./src -c jest.config.unit.ts --runInBand",
+    "test:integ": "NODE_OPTIONS=--max-old-space-size=8192 jest ./tests -c jest.config.integ.ts --runInBand",
+    "test:cov": "npm run test:unit -- --coverage",
     "migration:new": "migrate-mongo create",
     "migration:status": "migrate-mongo status",
-    "migration:apply": "migrate-mongo up",
-    "postinstall": "cd node_modules/api-subventions-asso-dto && npm run build"
+    "migration:apply": "migrate-mongo up"
   },
   "repository": {
     "type": "git",
@@ -36,7 +37,7 @@
   },
   "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
-    "api-subventions-asso-dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?v0.8.0",
+    "@api-subventions-asso/dto": "../dto",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",

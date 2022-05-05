@@ -1,7 +1,7 @@
-import { IEtablissement, Siret } from "api-subventions-asso-dto";
-import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
-import Versement from "api-subventions-asso-dto/search/VersementDto";
-import ProviderValue from "api-subventions-asso-dto/shared/ProviderValue";
+import { IEtablissement, Siret } from "@api-subventions-asso/dto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import Versement from "@api-subventions-asso/dto/search/VersementDto";
+import ProviderValue from "@api-subventions-asso/dto/shared/ProviderValue";
 import User from "../../@types/User";
 import { DefaultObject } from "../../@types/utils";
 import apiDatasubService from "../../shared/apiDatasub.service";

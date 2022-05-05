@@ -1,4 +1,4 @@
-import DemandeSubvention from "api-subventions-asso-dto/search/DemandeSubventionDto";
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import GisproActionEntity from "../entities/GisproActionEntity";
 
@@ -10,7 +10,7 @@ export default class GisproRequestAdapter {
         
         const data: DemandeSubvention = {
             siret: ProviderValueAdapter.toProviderValue(entities[0].providerInformations.siret, GisproRequestAdapter.PROVIDER_NAME, dataDate),
-            service_instructeur: ProviderValueAdapter.toProviderValue("Non communiquer par GISPRO", GisproRequestAdapter.PROVIDER_NAME, dataDate),
+            service_instructeur: ProviderValueAdapter.toProviderValue(entities[0].providerInformations.direction, GisproRequestAdapter.PROVIDER_NAME, dataDate),
             status: ProviderValueAdapter.toProviderValue("Non communiquer par GISPRO", GisproRequestAdapter.PROVIDER_NAME, dataDate),
             montants: {
                 accorde:  ProviderValueAdapter.toProviderValue(entities.reduce((total, entity) => total + entity.providerInformations.montant, 0), GisproRequestAdapter.PROVIDER_NAME, dataDate),

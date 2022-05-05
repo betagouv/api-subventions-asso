@@ -30,14 +30,13 @@
     "build": "npx tsc --project ./",
     "postbuild": "npm run copy-files",
     "copy-files": "cp -r views build/views && cp -r static build/static && cp -r node_modules build/node_modules",
-    "test": "echo 'no test in front'",
-    "postinstall": "cd node_modules/api-subventions-asso-dto && npm run build"
+    "test": "echo 'no test in front'"
   },
   "bugs": {
     "url": "https://github.com/betagouv/datasubvention/issues"
   },
   "dependencies": {
-    "api-subventions-asso-dto": "https://gitpkg.now.sh/betagouv/api-subventions-asso/packages/dto?v0.8.0",
+    "@api-subventions-asso/dto": "../dto",
     "@gouvfr/dsfr": "1.4",
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
