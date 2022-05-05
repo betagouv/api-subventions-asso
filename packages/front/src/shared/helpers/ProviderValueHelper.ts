@@ -35,6 +35,6 @@ export default class ProviderValueHelper {
             return data[0].last_update.toString();
         }
 
-        return (data as ProviderValue)?.last_update.toString();
+        return (data as ProviderValue)?.last_update?.toString();
     }
 }

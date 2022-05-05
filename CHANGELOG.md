@@ -2,6 +2,102 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.6](https://github.com/betagouv/api-subventions-asso/compare/v0.8.5...v0.8.6) (2022-05-04)
+
+
+### Bug Fixes
+
+* **api:** add valides domaines emails ([6bfc99e](https://github.com/betagouv/api-subventions-asso/commit/6bfc99e818c73c089a54dab972cddadf40d12bfa))
+
+### [0.8.5](https://github.com/betagouv/api-subventions-asso/compare/v0.8.4...v0.8.5) (2022-04-29)
+
+
+### Bug Fixes
+
+* **api:** hot fix wait association name hase been save before send an other ([a2fe0d3](https://github.com/betagouv/api-subventions-asso/commit/a2fe0d32dda072e5ef6a89562d571c34bba6f41c))
+
+### [0.8.4](https://github.com/betagouv/api-subventions-asso/compare/v0.8.3...v0.8.4) (2022-04-29)
+
+
+### Bug Fixes
+
+* crash on asso not found ([7b724ea](https://github.com/betagouv/api-subventions-asso/commit/7b724ea17bca15bcc4db4906f3534f81ec6eb68e))
+
+### [0.8.3](https://github.com/betagouv/api-subventions-asso/compare/v0.8.2...v0.8.3) (2022-04-29)
+
+
+### Bug Fixes
+
+* **api:** fix parsage siret gispro and chorus logs ([be2ca6c](https://github.com/betagouv/api-subventions-asso/commit/be2ca6ca5e26f6dad4598387e9874a5486ead195))
+
+### [0.8.2](https://github.com/betagouv/api-subventions-asso/compare/v0.8.1...v0.8.2) (2022-04-29)
+
+### [0.8.1](https://github.com/betagouv/api-subventions-asso/compare/v0.7.2...v0.8.1) (2022-04-29)
+
+
+### Features
+
+* **api:** adapte format to dto ([deff50d](https://github.com/betagouv/api-subventions-asso/commit/deff50d45022231feffacfa6056c7e40f1b25224))
+* **api:** add route to get sub for association or establishment ([ec0fd76](https://github.com/betagouv/api-subventions-asso/commit/ec0fd767a3cfc76c9ad54b99ad3185adb15551d3))
+* **api:** add signup route ([d2b317b](https://github.com/betagouv/api-subventions-asso/commit/d2b317bd08b086bf3c02981b317c800b34b7ddd6))
+* **api:** add stats route from logs ([972bc94](https://github.com/betagouv/api-subventions-asso/commit/972bc948e46ad2333fe3ffaf15d6d7ddf73d0cfe))
+* **api:** integrate api asso ([5e90d1d](https://github.com/betagouv/api-subventions-asso/commit/5e90d1d2f253676c8a71b3955aa7dc33d3b8d30e))
+* **api:** legalInformation rna not required and quick fix on parser and validator ([31a4661](https://github.com/betagouv/api-subventions-asso/commit/31a4661924fde3a6eaf9e476cb75ba9e8d7b6db2))
+* **api:** parse gispro action and tiers pages ([cdc1ac1](https://github.com/betagouv/api-subventions-asso/commit/cdc1ac105147542a2c25e543a415c8a544954db1))
+* **api:** wip gispro parser ([0329ea5](https://github.com/betagouv/api-subventions-asso/commit/0329ea5ddf8cf95a8660c43068176c53d4bd1ae0))
+* **dto:** add reset password response ([9354d22](https://github.com/betagouv/api-subventions-asso/commit/9354d22632bf1313a36df5b3cee7ccd001038245))
+* **dto:** add signup dto response ([6d4f11d](https://github.com/betagouv/api-subventions-asso/commit/6d4f11d0aa6ac55c4287414f4ae05f6bf88d798b))
+* **front:** add signup page ([7859ac1](https://github.com/betagouv/api-subventions-asso/commit/7859ac1320b6bf919376a97a79da2857d96d4969))
+* **front:** display info when JS disabled ([5b3f3d6](https://github.com/betagouv/api-subventions-asso/commit/5b3f3d63938a54fcb4918824d24318087ca81b37))
+* **front:** remove white spaces in input ([0f5349b](https://github.com/betagouv/api-subventions-asso/commit/0f5349b9b7cf032459f0f119124fa5197b30c0f0))
+* **front:** show good errors on reset password wrong ([44a3dac](https://github.com/betagouv/api-subventions-asso/commit/44a3dacdf547eac4537faf3cebba977be312d2d1))
+* **front:** unifomize app name ([8a4c8bc](https://github.com/betagouv/api-subventions-asso/commit/8a4c8bc72d5c69ba860c096bcc026fc62793b658))
+* **tools:** add script for scrapping phone in annuaire service public ([8fdfa1f](https://github.com/betagouv/api-subventions-asso/commit/8fdfa1f389aff38d1b2e408327b830cbb26da4ac))
+* **tools:** init learna package ([7119c1d](https://github.com/betagouv/api-subventions-asso/commit/7119c1dfddd9ae0a1020fddfe0dfb0e8ec5b5735))
+
+
+### Bug Fixes
+
+* **api:** fix osiris date exercice debut to utc date ([d35bc51](https://github.com/betagouv/api-subventions-asso/commit/d35bc51adcc60b876cce4aaeee10f054e5098189))
+* **api:** switch tests position to avoid unknown bug ([e1a06ee](https://github.com/betagouv/api-subventions-asso/commit/e1a06ee4cc2e30b51fceb37d59bbb4a8afda9ad1))
+* fix testing return ([2422aa7](https://github.com/betagouv/api-subventions-asso/commit/2422aa75ed84de497da07c1be9dcb214efa3b349))
+* **front:** dependabot[#11](https://github.com/betagouv/api-subventions-asso/issues/11) update ejs to upgrade corrupted dependency ([370d899](https://github.com/betagouv/api-subventions-asso/commit/370d8998021eaad24b6977e254ed51b6a1216227))
+* **front:** dependency vulnerability through ejs ([e9dba16](https://github.com/betagouv/api-subventions-asso/commit/e9dba1649bfd08828e6ed57dea44d573beed0eda))
+* **front:** http status 201 is not an error (disable promise reject when status is not 200) ([acf60bf](https://github.com/betagouv/api-subventions-asso/commit/acf60bf7601115dcfd7ac9349a8ee4361b318b49))
+
+## [0.8.0](https://github.com/betagouv/api-subventions-asso/compare/v0.7.2...v0.8.0) (2022-04-29)
+
+
+### Features
+
+* **api:** adapte format to dto ([deff50d](https://github.com/betagouv/api-subventions-asso/commit/deff50d45022231feffacfa6056c7e40f1b25224))
+* **api:** add route to get sub for association or establishment ([ec0fd76](https://github.com/betagouv/api-subventions-asso/commit/ec0fd767a3cfc76c9ad54b99ad3185adb15551d3))
+* **api:** add signup route ([d2b317b](https://github.com/betagouv/api-subventions-asso/commit/d2b317bd08b086bf3c02981b317c800b34b7ddd6))
+* **api:** add stats route from logs ([972bc94](https://github.com/betagouv/api-subventions-asso/commit/972bc948e46ad2333fe3ffaf15d6d7ddf73d0cfe))
+* **api:** integrate api asso ([5e90d1d](https://github.com/betagouv/api-subventions-asso/commit/5e90d1d2f253676c8a71b3955aa7dc33d3b8d30e))
+* **api:** legalInformation rna not required and quick fix on parser and validator ([31a4661](https://github.com/betagouv/api-subventions-asso/commit/31a4661924fde3a6eaf9e476cb75ba9e8d7b6db2))
+* **api:** parse gispro action and tiers pages ([cdc1ac1](https://github.com/betagouv/api-subventions-asso/commit/cdc1ac105147542a2c25e543a415c8a544954db1))
+* **api:** wip gispro parser ([0329ea5](https://github.com/betagouv/api-subventions-asso/commit/0329ea5ddf8cf95a8660c43068176c53d4bd1ae0))
+* **dto:** add reset password response ([9354d22](https://github.com/betagouv/api-subventions-asso/commit/9354d22632bf1313a36df5b3cee7ccd001038245))
+* **dto:** add signup dto response ([6d4f11d](https://github.com/betagouv/api-subventions-asso/commit/6d4f11d0aa6ac55c4287414f4ae05f6bf88d798b))
+* **front:** add signup page ([7859ac1](https://github.com/betagouv/api-subventions-asso/commit/7859ac1320b6bf919376a97a79da2857d96d4969))
+* **front:** display info when JS disabled ([5b3f3d6](https://github.com/betagouv/api-subventions-asso/commit/5b3f3d63938a54fcb4918824d24318087ca81b37))
+* **front:** remove white spaces in input ([0f5349b](https://github.com/betagouv/api-subventions-asso/commit/0f5349b9b7cf032459f0f119124fa5197b30c0f0))
+* **front:** show good errors on reset password wrong ([44a3dac](https://github.com/betagouv/api-subventions-asso/commit/44a3dacdf547eac4537faf3cebba977be312d2d1))
+* **front:** unifomize app name ([8a4c8bc](https://github.com/betagouv/api-subventions-asso/commit/8a4c8bc72d5c69ba860c096bcc026fc62793b658))
+* **tools:** add script for scrapping phone in annuaire service public ([8fdfa1f](https://github.com/betagouv/api-subventions-asso/commit/8fdfa1f389aff38d1b2e408327b830cbb26da4ac))
+* **tools:** init learna package ([7119c1d](https://github.com/betagouv/api-subventions-asso/commit/7119c1dfddd9ae0a1020fddfe0dfb0e8ec5b5735))
+
+
+### Bug Fixes
+
+* **api:** fix osiris date exercice debut to utc date ([d35bc51](https://github.com/betagouv/api-subventions-asso/commit/d35bc51adcc60b876cce4aaeee10f054e5098189))
+* **api:** switch tests position to avoid unknown bug ([e1a06ee](https://github.com/betagouv/api-subventions-asso/commit/e1a06ee4cc2e30b51fceb37d59bbb4a8afda9ad1))
+* fix testing return ([6540320](https://github.com/betagouv/api-subventions-asso/commit/65403205d949adb3ad0eaa940d0a3f6a29cd8173))
+* **front:** dependabot[#11](https://github.com/betagouv/api-subventions-asso/issues/11) update ejs to upgrade corrupted dependency ([370d899](https://github.com/betagouv/api-subventions-asso/commit/370d8998021eaad24b6977e254ed51b6a1216227))
+* **front:** dependency vulnerability through ejs ([e9dba16](https://github.com/betagouv/api-subventions-asso/commit/e9dba1649bfd08828e6ed57dea44d573beed0eda))
+* **front:** http status 201 is not an error (disable promise reject when status is not 200) ([acf60bf](https://github.com/betagouv/api-subventions-asso/commit/acf60bf7601115dcfd7ac9349a8ee4361b318b49))
+
 ### [0.7.2](https://github.com/betagouv/api-subventions-asso/compare/v0.7.1...v0.7.2) (2022-04-06)
 
 

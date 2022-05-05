@@ -9,10 +9,13 @@ import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCom
 import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/AssociationDtoAdapter";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
+import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 
 export class AssociationsService {
 
     private provider_score: DefaultObject<number> = {
+        [ApiAssoDtoAdapter.providerNameSiren]: 1,
+        [ApiAssoDtoAdapter.providerNameRna]: 1,
         [EntrepriseDtoAdapter.PROVIDER_NAME]: 1,
         [AssociationDtoAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,

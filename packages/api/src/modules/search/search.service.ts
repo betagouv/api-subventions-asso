@@ -7,6 +7,7 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 import Etablissement from "../etablissements/@types/Etablissement";
 import associationNameService from "../association-name/associationName.service"
+import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 export class SearchService {
 
     public async getBySiret(siret: Siret) {
@@ -16,13 +17,22 @@ export class SearchService {
         const association = await associationsService.getAssociationBySiret(siret)
         if (!association) return null;
 
+        let demandes_subventions: DemandeSubvention[] = [];
+
+        try {
+            demandes_subventions = await demandesSubventionsService.getByEtablissement(siret);
+        } catch (e) {
+            if (e instanceof Error && e.message != "Establishment not found") {
+                throw e;
+            }
+        }        
+
         const etablissementDto =  {
             ...etablissement,
             association,
-            demandes_subventions: await demandesSubventionsService.getByEtablissement(siret),
+            demandes_subventions: demandes_subventions,
             versements: []
         };
-
         return await versementsService.aggregateVersementsByEtablissementSearch(etablissementDto);
     }
 
@@ -55,8 +65,14 @@ export class SearchService {
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
         
         const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
-
-        const demandesSubventions = await demandesSubventionsService.getByAssociation(siren);
+        let demandesSubventions: DemandeSubvention[] = []
+        try {
+            demandesSubventions = await demandesSubventionsService.getByAssociation(siren);
+        } catch (e) {
+            if (e instanceof Error && e.message != "Association not found") {
+                throw e;
+            }
+        }
 
         const buildCompletEtablissement = (etablissement: Etablissement) => ({
             ...etablissement,

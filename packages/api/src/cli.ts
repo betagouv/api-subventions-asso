@@ -14,6 +14,8 @@ import { connectDB } from "./shared/MongoConnection";
 
 import { CliStaticInterface } from "./@types";
 
+import "./modules/association-name/associationName.service"; // Load association-name for load service in eventManager
+
 async function main() {
     await connectDB();
 

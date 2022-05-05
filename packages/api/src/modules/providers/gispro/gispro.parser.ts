@@ -32,7 +32,7 @@ export default class GisproParser {
 
             const tiers = tiersPage.data.find(raw => ParserHelper.findByPath(raw, TiersPagesIndexer.siret) === siret);
             if (tiers) return {
-                siret: ParserHelper.findByPath(tiers, TiersPagesIndexer.siret),
+                siret: (ParserHelper.findByPath(tiers, TiersPagesIndexer.siret) as string).toString(),
                 "CodeTiers": ParserHelper.findByPath(tiers, TiersPagesIndexer.CodeTiers),
                 Tiers: ParserHelper.findByPath(tiers, TiersPagesIndexer.Tiers),
                 "TypeTiers": ParserHelper.findByPath(tiers, TiersPagesIndexer.TypeTiers)

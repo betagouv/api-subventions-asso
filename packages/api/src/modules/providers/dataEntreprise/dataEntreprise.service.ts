@@ -3,6 +3,7 @@ import { Rna, Siren, Siret } from "../../../@types";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { waitPromise } from "../../../shared/helpers/WaitHelper";
 import Association from "../../associations/@types/Association";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
@@ -15,8 +16,6 @@ import AssociationDto from "./dto/AssociationDto";
 import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
 
-const CACHE_TIME = 1000 * 60 * 60 * 24; // 1 day
-
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     providerName = "API DATA ENTREPRISE";
 
@@ -26,10 +25,10 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
     private SIRENE_ROUTE = "api/sirene/v3/unites_legales";
     private LIMITATION_NB_REQUEST_SEC = 7;
 
-    private etablissementsCache = new CacheData<Etablissement>(CACHE_TIME);
-    private associationsCache = new CacheData<Association>(CACHE_TIME);
-    private associationsRnaCache = new CacheData<Association>(CACHE_TIME);
-    private requestCache = new CacheData<unknown>(CACHE_TIME);
+    private etablissementsCache = new CacheData<Etablissement>(CACHE_TIMES.ONE_DAY);
+    private associationsCache = new CacheData<Association>(CACHE_TIMES.ONE_DAY);
+    private associationsRnaCache = new CacheData<Association>(CACHE_TIMES.ONE_DAY);
+    private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
     private async sendRequest<T>(route: string, wait: boolean): Promise<T | null> {
         if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;
@@ -56,7 +55,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (rna) {
             EventManager.call('rna-siren.matching', [{ rna, siren: siret}]);
             const name = association.denomination;
-            if (name) EventManager.call('association-name.matching', [{rna, siren: siret, name, provider: this.providerName, lastUpdate: data.etablissement.updated_at}]);
+            if (name) await EventManager.call('association-name.matching', [{rna, siren: siret, name, provider: this.providerName, lastUpdate: data.etablissement.updated_at}]);
         }
 
         const etablissement = EtablissementDtoAdapter.toEtablissement(data.etablissement);
@@ -74,7 +73,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (rna) {
             const name = association.denomination;
             EventManager.call('rna-siren.matching', [{ rna, siren}]);
-            EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: association.updated_at}]);
+            await EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: association.updated_at}]);
         }
         
         if (data.unite_legale.etablissements) {
@@ -95,7 +94,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (association.siret) {
             const name = association.titre;
             EventManager.call('rna-siren.matching', [{rna, siren: association.siret}])
-            EventManager.call('association-name.matching', [{rna, siren: association.siret, name, provider: this.providerName, lastUpdate: association.updated_at}]);
+            await EventManager.call('association-name.matching', [{rna, siren: association.siret, name, provider: this.providerName, lastUpdate: association.updated_at}]);
         }
 
         return AssociationDtoAdapter.toAssociation(data);

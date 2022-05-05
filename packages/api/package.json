@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -18,8 +18,10 @@
     "build": "tsc --project ./",
     "prelint": "npm run generate",
     "lint": "eslint . --ext .ts",
-    "test": "NODE_OPTIONS=--max-old-space-size=8192 jest --runInBand",
-    "test:cov": "npm run test -- --coverage",
+    "test": "npm run test:unit && npm run test:integ",
+    "test:unit": "NODE_OPTIONS=--max-old-space-size=8192 jest ./src -c jest.config.unit.ts --runInBand",
+    "test:integ": "NODE_OPTIONS=--max-old-space-size=8192 jest ./tests -c jest.config.integ.ts --runInBand",
+    "test:cov": "npm run test:unit -- --coverage",
     "migration:new": "migrate-mongo create",
     "migration:status": "migrate-mongo status",
     "migration:apply": "migrate-mongo up"
@@ -35,6 +37,7 @@
   },
   "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
   "dependencies": {
+    "@api-subventions-asso/dto": "../dto",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",
@@ -57,7 +60,6 @@
     "winston-mongodb": "^5.0.7"
   },
   "devDependencies": {
-    "@api-subventions-asso/dto": "file:../dto",
     "@shelf/jest-mongodb": "^2.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",

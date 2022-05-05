@@ -1,0 +1,666 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApiAssoDtoAdapter toAssociation should retrun rna association 1`] = `
+Object {
+  "adresse_siege": undefined,
+  "code_objet_social_1": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "code_objet_social_2": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "date_creation": undefined,
+  "date_modification": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "denomination": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "TEST",
+    },
+  ],
+  "objet_social": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "rna": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "W00000000",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toAssociation should retrun rna association with adresse 1`] = `
+Object {
+  "adresse_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": "paris",
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "code_objet_social_1": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "code_objet_social_2": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "date_creation": undefined,
+  "date_modification": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "denomination": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "TEST",
+    },
+  ],
+  "objet_social": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "rna": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "W00000000",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toAssociation should retrun rna association with date creation 1`] = `
+Object {
+  "adresse_siege": undefined,
+  "code_objet_social_1": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "code_objet_social_2": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "date_creation": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "date_modification": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "denomination": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "TEST",
+    },
+  ],
+  "objet_social": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "rna": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "W00000000",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toAssociation should retrun siren association 1`] = `
+Object {
+  "adresse_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": "paris",
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "categorie_juridique": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "9220",
+    },
+  ],
+  "date_creation": undefined,
+  "date_modification": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "denomination": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "TEST SIREN 2",
+    },
+  ],
+  "etablisements_siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Array [
+        "50922194100000",
+        "50922194100001",
+      ],
+    },
+  ],
+  "nic_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "0000",
+    },
+  ],
+  "siren": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "509221941",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toAssociation should retrun siren association with date creation 1`] = `
+Object {
+  "adresse_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": "paris",
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "categorie_juridique": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "9220",
+    },
+  ],
+  "date_creation": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "date_modification": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "denomination": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "TEST SIREN 2",
+    },
+  ],
+  "etablisements_siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Array [
+        "50922194100000",
+        "50922194100001",
+      ],
+    },
+  ],
+  "nic_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "0000",
+    },
+  ],
+  "siren": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "509221941",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toAssociation should retrun siren association without nom siren 1`] = `
+Object {
+  "adresse_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": "paris",
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "categorie_juridique": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "9220",
+    },
+  ],
+  "date_creation": undefined,
+  "date_modification": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": 1906-07-15T00:00:00.000Z,
+    },
+  ],
+  "denomination": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "TEST",
+    },
+  ],
+  "etablisements_siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Array [
+        "50922194100000",
+        "50922194100001",
+      ],
+    },
+  ],
+  "nic_siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "0000",
+    },
+  ],
+  "siren": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "509221941",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement with contact 1`] = `
+Object {
+  "adresse": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": undefined,
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "contacts": Array [
+    Array [
+      Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE SIREN <Via API ASSO>",
+        "type": "object",
+        "value": Object {
+          "civilite": undefined,
+          "email": undefined,
+          "nom": "Jedusor",
+          "prenom": "Tom",
+          "role": undefined,
+          "telephone": undefined,
+        },
+      },
+    ],
+  ],
+  "information_banquaire": Array [],
+  "nic": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "00000",
+    },
+  ],
+  "ouvert": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "representants_legaux": Array [
+    Array [
+      Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE SIREN <Via API ASSO>",
+        "type": "object",
+        "value": Object {
+          "civilite": undefined,
+          "email": undefined,
+          "nom": "Jedusor",
+          "prenom": "Tom",
+          "role": undefined,
+          "telephone": undefined,
+        },
+      },
+    ],
+  ],
+  "siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "50922194100000",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement with rib 1`] = `
+Object {
+  "adresse": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": undefined,
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "contacts": Array [],
+  "information_banquaire": Array [
+    Array [
+      Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE SIREN <Via API ASSO>",
+        "type": "object",
+        "value": Object {
+          "bic": "BIC_TEST",
+          "iban": "TEST",
+        },
+      },
+    ],
+  ],
+  "nic": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "00000",
+    },
+  ],
+  "ouvert": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "representants_legaux": Array [],
+  "siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "50922194100000",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement without contact 1`] = `
+Object {
+  "adresse": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": undefined,
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "contacts": undefined,
+  "information_banquaire": Array [],
+  "nic": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "00001",
+    },
+  ],
+  "ouvert": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "representants_legaux": undefined,
+  "siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "50922194100001",
+    },
+  ],
+}
+`;
+
+exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement without rib 1`] = `
+Object {
+  "adresse": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "object",
+      "value": Object {
+        "code_postal": undefined,
+        "commune": undefined,
+        "numero": undefined,
+        "type_voie": undefined,
+        "voie": undefined,
+      },
+    },
+  ],
+  "contacts": Array [],
+  "information_banquaire": Array [],
+  "nic": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "00001",
+    },
+  ],
+  "ouvert": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "representants_legaux": Array [],
+  "siege": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "undefined",
+      "value": undefined,
+    },
+  ],
+  "siret": Array [
+    Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE SIREN <Via API ASSO>",
+      "type": "string",
+      "value": "50922194100001",
+    },
+  ],
+}
+`;

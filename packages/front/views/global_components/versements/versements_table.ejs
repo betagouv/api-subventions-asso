@@ -31,7 +31,7 @@
                     <td>
                         <% const siret = helper.getValue(versement.siret); %>
                         <% if (currentSiret != siret) { %> 
-                            <a class="fr-link" href="/etablissement/<%-siret%>">Voir l'établissement</a>
+                            <a href="/etablissement/<%-siret%>">Voir l'établissement</a>
                         <% } else { %>
                             <%-siret%>
                         <% } %>
