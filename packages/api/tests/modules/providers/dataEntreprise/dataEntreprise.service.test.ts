@@ -49,7 +49,7 @@ describe("DataEntrepriseService", () => {
             await dataEntrepriseService.findAssociationByRna(RNA);
             expect(spyEventManager).toHaveBeenCalledTimes(2);
             expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: DATA.association.siret }]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren:DATA.association.siret, name: DATA.association.titre, provider: dataEntrepriseService.providerName, lastUpdate: DATA.association.updated_at}]);
+            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren:DATA.association.siret, name: DATA.association.titre, provider: dataEntrepriseService.provider.name, lastUpdate: DATA.association.updated_at}]);
         })
     });
 
@@ -81,7 +81,7 @@ describe("DataEntrepriseService", () => {
             await dataEntrepriseService.findEtablissementBySiret(SIRET);
             expect(spyEventManager).toHaveBeenCalledTimes(2);
             expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIRET }]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIRET, name: NAME, provider: dataEntrepriseService.providerName, lastUpdate: LAST_UPDATE}]);
+            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIRET, name: NAME, provider: dataEntrepriseService.provider.name, lastUpdate: LAST_UPDATE}]);
             spyEventManager
         })
     });
@@ -121,7 +121,7 @@ describe("DataEntrepriseService", () => {
             await dataEntrepriseService.findAssociationBySiren(SIREN);
             expect(spyEventManager).toHaveBeenCalledTimes(2);
             expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: dataEntrepriseService.providerName, lastUpdate: LAST_UPDATE}]);
+            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: dataEntrepriseService.provider.name, lastUpdate: LAST_UPDATE}]);
         })
     });
 

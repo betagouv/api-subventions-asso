@@ -1,4 +1,4 @@
-import { Rna, Siren } from "../../../@types";
+import { Rna, Siren } from "../../../../@types";
 
 export default class RnaSiren {
     constructor(

@@ -1,13 +1,13 @@
-import IOsirisActionsInformations from "../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
-import IOsirisEvaluationsInformations from '../../../src/modules/providers/osiris/@types/IOsirisEvaluationsInformations';
-import IOsirisRequestInformations from "../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
-import OsirisActionEntity from "../../../src/modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisEvaluationEntity from '../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
-import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
-import osirisService, { OsirisService } from "../../../src/modules/providers/osiris/osiris.service";
-import { osirisRepository } from '../../../src/modules/providers/osiris/repositories';
-import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
-import EventManager from '../../../src/shared/EventManager';
+import IOsirisActionsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
+import IOsirisEvaluationsInformations from '../../../../src/modules/providers/osiris/@types/IOsirisEvaluationsInformations';
+import IOsirisRequestInformations from "../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
+import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisEvaluationEntity from '../../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
+import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
+import osirisService, { OsirisService } from "../../../../src/modules/providers/osiris/osiris.service";
+import { osirisRepository } from '../../../../src/modules/providers/osiris/repositories';
+import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
+import EventManager from '../../../../src/shared/EventManager';
 
 describe("OsirisService", () => {
     it("should retrun an instance of osirisService", () => {
@@ -46,7 +46,7 @@ describe("OsirisService", () => {
                 await osirisService.addRequest(ENTITY as unknown as OsirisRequestEntity);
                 expect(eventManagerMock).toHaveBeenCalledTimes(2);
                 expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-                expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: osirisService.providerName, lastUpdate: LAST_UPDATE}]);
+                expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: osirisService.provider.name, lastUpdate: LAST_UPDATE}]);
                 eventManagerMock.mockReset();
             })
         });

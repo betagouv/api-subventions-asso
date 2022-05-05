@@ -1,6 +1,6 @@
 import { Route, Get, Controller, Tags, Response } from 'tsoa';
-import { Rna, Siren, Siret } from '../../../../@types';
-import { siretToSiren } from '../../../../shared/helpers/SirenHelper';
+import { Rna, Siren, Siret } from '../../../../../@types';
+import { siretToSiren } from '../../../../../shared/helpers/SirenHelper';
 import rnaSirenService from '../../rnaSiren.service';
 
 

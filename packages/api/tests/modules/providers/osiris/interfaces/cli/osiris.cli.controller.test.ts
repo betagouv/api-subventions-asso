@@ -1,14 +1,14 @@
 import path from "path";
-import IOsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
-import IOsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
-import OsirisActionEntity from "../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
+import IOsirisActionsInformations from "../../../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
+import IOsirisRequestInformations from "../../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
+import OsirisActionEntity from "../../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisRequestEntity from "../../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-import OsirisCliController from "../../../../../src/modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
-import OsirisParser from "../../../../../src/modules/providers/osiris/osiris.parser";
-import osirisService from "../../../../../src/modules/providers/osiris/osiris.service";
+import OsirisCliController from "../../../../../../src/modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
+import OsirisParser from "../../../../../../src/modules/providers/osiris/osiris.parser";
+import osirisService from "../../../../../../src/modules/providers/osiris/osiris.service";
 
 
 

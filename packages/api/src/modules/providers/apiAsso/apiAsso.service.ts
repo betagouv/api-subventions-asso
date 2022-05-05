@@ -1,5 +1,6 @@
 import { ProviderValues, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import axios from "axios";
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { AssociationIdentifiers } from "../../../@types";
 import { API_ASSO_URL } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
@@ -14,10 +15,13 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto from "./dto/StructureDto";
 
-
-
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider {
-    public providerName = "API ASSO";
+    public provider = { 
+        name: "API ASSO",
+        type: ProviderEnum.api,
+        description: "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
+    };
+
     private dataSirenCache = new CacheData<{ associations: Association[], etablissements: Etablissement[]}>(CACHE_TIMES.ONE_DAY);
     private dataRnaCache = new CacheData<{ associations: Association[], etablissements: Etablissement[]}>(CACHE_TIMES.ONE_DAY);
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);

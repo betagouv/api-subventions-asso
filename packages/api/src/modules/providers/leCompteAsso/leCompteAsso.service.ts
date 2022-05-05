@@ -10,18 +10,23 @@ import AssociationsProvider from "../../associations/@types/AssociationsProvider
 import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
 import Etablissement from "../../etablissements/@types/Etablissement";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 
 export interface RejectedRequest {
     state: "rejected", result: { message: string, code: number, data: unknown }
 }
 
 export class LeCompteAssoService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
-    providerName = "LE COMPTE ASSO";
+    provider = {
+        name: "Le Compte Asso", 
+        type: ProviderEnum.api,
+        description: "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET."
+    }
 
     public validEntity(partialEntity: ILeCompteAssoPartialRequestEntity) {
         if (!isSiret(partialEntity.legalInformations.siret)) {
@@ -51,7 +56,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             }
 
             EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren: legalInformations.siret}])
-            await EventManager.call('association-name.matching', [{rna: legalInformations.rna, siren: legalInformations.siret, name: legalInformations.name, provider: this.providerName, lastUpdate: partialEntity.providerInformations.transmis_le}])
+            EventManager.call('association-name.matching', [{rna: legalInformations.rna, siren: legalInformations.siret, name: legalInformations.name, provider: this.provider.name, lastUpdate: partialEntity.providerInformations.transmis_le}])
 
             return {
                 state: "updated",

@@ -9,7 +9,7 @@ import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
-import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../../../open-data/rna-siren/rnaSiren.service";
 import OsirisEvaluationEntity from '../../entities/OsirisEvaluationEntity';
 
 
