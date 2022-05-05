@@ -1,6 +1,7 @@
 import { Siren } from "@api-subventions-asso/dto";
 import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
 import { WithId } from "mongodb";
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { Siret } from "../../../@types";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
@@ -22,7 +23,11 @@ export interface RejectedRequest {
 }
 
 export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider {
-    providerName = "FONJEP";
+    provider = {
+        name: "Extranet FONJEP",
+        type: ProviderEnum.raw,
+        description: "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
+    }
 
     async createEntity(entity: FonjepRequestEntity): Promise<RejectedRequest | {success: true, entity: WithId<FonjepRequestEntity>, state: 'updated' | "created"}> {
         const valid = this.validateEntity(entity);

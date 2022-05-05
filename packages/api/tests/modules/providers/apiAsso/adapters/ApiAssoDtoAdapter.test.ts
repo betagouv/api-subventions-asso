@@ -1,5 +1,5 @@
 import ApiAssoDtoAdapter from "../../../../../src/modules/providers/apiAsso/adapters/ApiAssoDtoAdapter";
-import { StructureRepresentantLegalDto, StructureRibDto } from "../../../../../src/modules/providers/apiAsso/dto/StructureDto";
+import { StructureRepresentantLegalDto } from "../../../../../src/modules/providers/apiAsso/dto/StructureDto";
 import { fixtureAsso, fixtureEtablissements, fixtureRepresentantLegal, fixtureRib } from "../__fixtures__/ApiAssoStructureFixture";
 
 describe("ApiAssoDtoAdapter", () => {

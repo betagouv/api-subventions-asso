@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { LOG_MAIL, MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../../../configurations/mail.conf";
-import IProvider from "./@types/IProvider";
+import IProvider from "./@types/INotifier";
 
 export default class NodeMailerProvider implements IProvider {
 

@@ -157,7 +157,7 @@ export default Object.assign(baseConfig, {
     // ],
 
     // The regexp pattern or array of patterns that Jest uses to detect test files
-    testRegex: ["\\.(spec|test)\\.[jt]s$"],
+    testRegex: ["(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]s$"],
 
     // This option allows the use of a custom results processor
     // testResultsProcessor: undefined,

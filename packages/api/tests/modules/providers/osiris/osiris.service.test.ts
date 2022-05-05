@@ -46,7 +46,7 @@ describe("OsirisService", () => {
                 await osirisService.addRequest(ENTITY as unknown as OsirisRequestEntity);
                 expect(eventManagerMock).toHaveBeenCalledTimes(2);
                 expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-                expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: osirisService.providerName, lastUpdate: LAST_UPDATE}]);
+                expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: osirisService.provider.name, lastUpdate: LAST_UPDATE}]);
                 eventManagerMock.mockReset();
             })
         });

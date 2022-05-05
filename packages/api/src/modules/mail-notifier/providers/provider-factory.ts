@@ -1,4 +1,4 @@
-import IProvider from "./@types/IProvider";
+import IProvider from "./@types/INotifier";
 import NodeMailerProvider from "./nodemailer.provider";
 
 export default class ProviderFactory {
