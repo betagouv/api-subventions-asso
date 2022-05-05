@@ -149,7 +149,7 @@ export default Object.assign(baseConfig, {
     // testLocationInResults: false,
 
     // The glob patterns Jest uses to detect test files
-    // testMatch: [],
+    testMatch: ['<rootDir>/tests/**/*.(spec|test).ts'],
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
     // testPathIgnorePatterns: [
@@ -157,7 +157,7 @@ export default Object.assign(baseConfig, {
     // ],
 
     // The regexp pattern or array of patterns that Jest uses to detect test files
-    testRegex: ["(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]s$"],
+    // testRegex: [],
 
     // This option allows the use of a custom results processor
     // testResultsProcessor: undefined,
