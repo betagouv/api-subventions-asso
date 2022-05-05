@@ -27,7 +27,7 @@ export class DocumentsService {
     }
 
     private isDocumentProvider(data: unknown): data is DocumentProvider {
-        return (data as DocumentProvider).isDocumentProvider
+        return !!(data as DocumentProvider).isDocumentProvider
     }
 
     private getDocumentProviders() {
@@ -50,6 +50,6 @@ export class DocumentsService {
     }
 }
 
-const associationsService = new DocumentsService();
+const documentsService = new DocumentsService();
 
-export default associationsService;
+export default documentsService;

@@ -142,7 +142,6 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
      * |   Documents Part    |
      * |---------------------|
      */
-    
 
     isDocumentProvider = true;
 
