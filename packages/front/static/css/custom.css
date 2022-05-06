@@ -53,3 +53,7 @@ span.tofill::before {
 .ds-loader-container-text {
   margin-top: 15px;
 }
+
+.fr-callout__text > a {
+  color: #3558A2
+}

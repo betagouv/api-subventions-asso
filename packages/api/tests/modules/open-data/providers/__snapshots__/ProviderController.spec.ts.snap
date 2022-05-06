@@ -4,8 +4,8 @@ exports[`ProviderController getProvidersInfos should return a list of providers 
 Object {
   "api": Array [
     Object {
-      "description": "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
-      "name": "API ENTREPRISE",
+      "description": "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv.",
+      "name": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
     },
     Object {
       "description": "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET.",
@@ -14,10 +14,6 @@ Object {
     Object {
       "description": "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
       "name": "API ASSO",
-    },
-    Object {
-      "description": "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv.",
-      "name": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
     },
   ],
   "raw": Array [
@@ -36,6 +32,10 @@ Object {
     Object {
       "description": "Gispro est un système d'information permettant d'effectuer l'instruction et la mise en paiement des dossiers de subvention recevables transmis via Dauphin.",
       "name": "GISPRO",
+    },
+    Object {
+      "description": "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire).",
+      "name": "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
     },
   ],
 }
