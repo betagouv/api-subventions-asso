@@ -4,20 +4,25 @@ import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import Versement from "../../versements/@types/Versement";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 
 export interface RejectedRequest {
     state: "rejected", result: { message: string, code: number, data: unknown }
 }
 
 export class ChorusService implements VersementsProvider {
-    providerName = "CHORUS";
+    provider = {
+        name: "Chorus",
+        type: ProviderEnum.raw,
+        description: "Chorus est un système d'information porté par l'AIFE pour les services de l'Etat qui permet de gérer les paiements des crédits Etat, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'Etat."
+    }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 

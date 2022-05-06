@@ -6,7 +6,7 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccept
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { formatBytes } from "../../../shared/helpers/LogHelper";
-import RnaSiren from "../../rna-siren/entities/RnaSirenEntity";
+import RnaSiren from "../../open-data/rna-siren/entities/RnaSirenEntity";
 import { isRna, isSiren } from "../../../shared/Validators";
 import { UniteLegalRaw, IStreamAction} from "./@types";
 

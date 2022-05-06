@@ -1,4 +1,5 @@
 import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { Rna, Siren, Siret } from "../../../@types";
 import EventManager from "../../../shared/EventManager";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
@@ -22,15 +23,18 @@ export const VALID_REQUEST_ERROR_CODE = {
 }
 
 export class OsirisService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
-    providerName = "OSIRIS"
-
+    provider = {
+        name: "OSIRIS",
+        type: ProviderEnum.raw,
+        description: "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement)."
+    }
     public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
         const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
         const { rna, siret: siren, name } = request.legalInformations
         const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
         
         EventManager.call('rna-siren.matching', [{ rna, siren }]);
-        await EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: date}])
+        EventManager.call('association-name.matching', [{rna, siren, name, provider: this.provider.name, lastUpdate: date}])
         
         if (existingFile) {
             return {

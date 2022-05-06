@@ -1,10 +1,15 @@
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { Siren } from "../../../@types/Siren";
-import Provider from '../@types/Provider';
+import Provider from '../@types/IProvider';
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
 
 export class DataGouvService implements Provider {
-    providerName = "API DATA GOUV";
+    provider = {
+        name: "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
+        type: ProviderEnum.raw,
+        description: "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire)."
+    }
 
     insertManyEntrepriseSiren(entities: EntrepriseSirenEntity[], dropedDb = false) {
         return entrepriseSirenRepository.insertMany(entities, dropedDb);

@@ -2,8 +2,8 @@ import fs from "fs"
 import DataGouvCliController from '../../../../../../src/modules/providers/datagouv/interfaces/cli/datagouv.cli.controller'
 import Parser from '../../../../../../src/modules/providers/datagouv/datagouv.parser'
 import datagouvService from '../../../../../../src/modules/providers/datagouv/datagouv.service'
-import rnaSirenService from '../../../../../../src/modules/rna-siren/rnaSiren.service'
-import RnaSiren from '../../../../../../src/modules/rna-siren/entities/RnaSirenEntity';
+import rnaSirenService from '../../../../../../src/modules/open-data/rna-siren/rnaSiren.service'
+import RnaSiren from '../../../../../../src/modules/open-data/rna-siren/entities/RnaSirenEntity';
 import EntrepriseSirenEntity from '../../../../../../src/modules/providers/datagouv/entities/EntrepriseSirenEntity';
 import * as ParserHelper from "../../../../../../src/shared/helpers/ParserHelper";
 
