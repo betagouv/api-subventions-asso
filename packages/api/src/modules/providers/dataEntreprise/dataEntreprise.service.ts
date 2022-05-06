@@ -19,9 +19,9 @@ import EtablisementDto from "./dto/EtablissementDto";
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     provider = {
-        name: "API ENTREPRISE",
+        name: "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
         type: ProviderEnum.api,
-        description: "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...)."
+        description: "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv."
     }
 
     private BASE_URL = "https://entreprise.data.gouv.fr";

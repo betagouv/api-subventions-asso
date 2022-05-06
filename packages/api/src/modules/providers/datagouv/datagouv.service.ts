@@ -6,9 +6,9 @@ import entrepriseSirenRepository from "./repositories/entreprise_siren.repositor
 
 export class DataGouvService implements Provider {
     provider = {
-        name: "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
-        type: ProviderEnum.api,
-        description: "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv."
+        name: "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
+        type: ProviderEnum.raw,
+        description: "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire)."
     }
 
     insertManyEntrepriseSiren(entities: EntrepriseSirenEntity[], dropedDb = false) {
