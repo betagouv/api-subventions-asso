@@ -1,3 +1,4 @@
+import { Adresse } from '../shared/Adresse';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
 import { Siren } from "../shared/Siren";
@@ -16,13 +17,7 @@ export default interface AssociationDto {
     code_objet_social_1?: ProviderValues<string>;
     code_objet_social_2?: ProviderValues<string>;
     etablisements_siret?: ProviderValues<Siret[]>;
-    adresse_siege?: ProviderValues<{ // via rna et ou osiris
-        numero?: string,
-        type_voie?: string,
-        voie?: string,
-        code_postal?: string,
-        commune?: string,
-    }>,
+    adresse_siege?: ProviderValues<Adresse>,
     federation?: ProviderValues<string>,
     licencies?: { // Uniquement les asso sportive
         total?: ProviderValues<number>,

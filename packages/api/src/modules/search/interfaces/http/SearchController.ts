@@ -4,7 +4,7 @@ import { isRna, isSiren } from '../../../../shared/Validators';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
-import AssociationDto from './dto/AssociationDto';
+import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
 import EtablissementDto from './dto/EtablissmentDto';
 
 @Route("search")
