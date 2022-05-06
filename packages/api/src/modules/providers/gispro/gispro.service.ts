@@ -99,6 +99,7 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
         return groupedActions.map(group => GisproRequestAdapter.toDemandeSubvention(group));
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
         return null;
     }

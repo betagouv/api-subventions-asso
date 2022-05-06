@@ -5,7 +5,7 @@ import AssociationNameEntity from '../../../association-name/entities/Associatio
 
 import searchService from "../../search.service";
 import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
-import EtablissementDto from './dto/EtablissmentDto';
+import EtablissementDto from '@api-subventions-asso/dto/search/EtablissmentDto';
 
 @Route("search")
 @Security("jwt")
@@ -18,7 +18,7 @@ export class SearchController extends Controller {
     @Get("/etablissement/{siret}")
     public async findBySiret(
         siret: Siret,
-    ): Promise<{ success: boolean, etablissement?: unknown, message?: string}>{
+    ): Promise<{ success: boolean, etablissement?: EtablissementDto, message?: string}>{
         const result = await searchService.getBySiret(siret) as EtablissementDto;
         if (!result) {
             this.setStatus(404);
@@ -35,7 +35,7 @@ export class SearchController extends Controller {
     @Get("/association/{id}")
     public async findAssociation(
         id: Rna | Siren,
-    ): Promise<{ success: boolean, association?: unknown, message?: string}> {
+    ): Promise<{ success: boolean, association?: AssociationDto, message?: string}> {
         let result: AssociationDto | null = null;
         if (isRna(id)) {
             result = await searchService.getByRna(id) as AssociationDto;
