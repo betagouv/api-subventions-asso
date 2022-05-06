@@ -166,7 +166,7 @@ describe("leCompteAssoService", () => {
             await leCompteAssoService.addRequest(PARTIAL_ENTITY);
             expect(eventManagerMock).toHaveBeenCalledTimes(2);
             expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-            expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: leCompteAssoService.providerName, lastUpdate: LAST_UPDATE}]);
+            expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: leCompteAssoService.provider.name, lastUpdate: LAST_UPDATE}]);
         })
     });
 

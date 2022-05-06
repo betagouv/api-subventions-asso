@@ -2,7 +2,7 @@ import ChorusLineEntity from "../../../../src/modules/providers/chorus/entities/
 import chorusService from "../../../../src/modules/providers/chorus/chorus.service";
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
 import { WithId } from "mongodb";
-import rnaSirenService from "../../../../src/modules/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../../../src/modules/open-data/rna-siren/rnaSiren.service";
 
 describe("chorus.service", () => {
 

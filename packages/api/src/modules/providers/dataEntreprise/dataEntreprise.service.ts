@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { Rna, Siren, Siret } from "../../../@types";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
@@ -17,7 +18,11 @@ import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
-    providerName = "API DATA ENTREPRISE";
+    provider = {
+        name: "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
+        type: ProviderEnum.api,
+        description: "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv."
+    }
 
     private BASE_URL = "https://entreprise.data.gouv.fr";
     private RNA_ROUTE = "api/rna/v1/id"
@@ -55,7 +60,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (rna) {
             EventManager.call('rna-siren.matching', [{ rna, siren: siret}]);
             const name = association.denomination;
-            if (name) await EventManager.call('association-name.matching', [{rna, siren: siret, name, provider: this.providerName, lastUpdate: data.etablissement.updated_at}]);
+            if (name) EventManager.call('association-name.matching', [{rna, siren: siret, name, provider: this.provider.name, lastUpdate: data.etablissement.updated_at}]);
         }
 
         const etablissement = EtablissementDtoAdapter.toEtablissement(data.etablissement);
@@ -73,7 +78,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (rna) {
             const name = association.denomination;
             EventManager.call('rna-siren.matching', [{ rna, siren}]);
-            await EventManager.call('association-name.matching', [{rna, siren, name, provider: this.providerName, lastUpdate: association.updated_at}]);
+            EventManager.call('association-name.matching', [{rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at}]);
         }
         
         if (data.unite_legale.etablissements) {
@@ -94,7 +99,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (association.siret) {
             const name = association.titre;
             EventManager.call('rna-siren.matching', [{rna, siren: association.siret}])
-            await EventManager.call('association-name.matching', [{rna, siren: association.siret, name, provider: this.providerName, lastUpdate: association.updated_at}]);
+            EventManager.call('association-name.matching', [{rna, siren: association.siret, name, provider: this.provider.name, lastUpdate: association.updated_at}]);
         }
 
         return AssociationDtoAdapter.toAssociation(data);

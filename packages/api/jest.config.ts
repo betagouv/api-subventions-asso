@@ -5,5 +5,6 @@ export default {
     // transform: undefined,
     transform:  {
         "\\.(ts)$": "ts-jest"
-    }
+    },
+    modulePathIgnorePatterns: ["./build"]
 };

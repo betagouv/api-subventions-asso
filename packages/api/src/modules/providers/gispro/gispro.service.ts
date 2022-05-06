@@ -6,13 +6,21 @@ import GisproRequestAdapter from './adapters/GisproRequestAdapter';
 import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
 import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
 import { Rna, Siren, Siret } from '@api-subventions-asso/dto';
+import IProvider from '../../providers/@types/IProvider';
+import { ProviderEnum } from '../../../@enums/ProviderEnum';
 
 export const VALID_REQUEST_ERROR_CODE = {
     INVALID_SIRET: 1,
     INVALID_NAME: 2
 }
 
-export class GisproService implements DemandesSubventionsProvider {
+export class GisproService implements DemandesSubventionsProvider, IProvider {
+    provider = {
+        name: "GISPRO",
+        type: ProviderEnum.raw,
+        description: "Gispro est un système d'information permettant d'effectuer l'instruction et la mise en paiement des dossiers de subvention recevables transmis via Dauphin."
+    }
+
     public validEntity(entity: GisproActionEntity) {
         if (!isSiret(entity.providerInformations.siret)) {
             return { success: false, message: `INVALID SIRET FOR ${entity.providerInformations.siret}`, data: entity.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET };
