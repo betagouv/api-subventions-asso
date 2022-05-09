@@ -1,5 +1,5 @@
 import { AssociationIdentifiers, StructureIdentifiers } from '../../@types';
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper"
+import IdentifierHelper from "../../shared/helpers/IdentifierHelper"
 import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { siretToSiren } from '../../shared/helpers/SirenHelper';
@@ -11,7 +11,7 @@ import providers from "../providers";
 export class DemandesSubventionsService {
 
     async getByAssociation(id: AssociationIdentifiers) {
-        const type = getIdentifierType(id) ;
+        const type = IdentifierHelper.getIdentifierType(id) ;
         if (!type) throw new Error("You must provide a valid SIREN or RNA");
         const data = (await this.aggregate(id, type))?.filter(asso => asso);
         if (!data.length) throw new Error("Association not found");
