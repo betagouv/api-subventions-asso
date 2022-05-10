@@ -1,4 +1,4 @@
-import { AssociationIdentifiers, DefaultObject, ProviderValues } from "../../@types";
+import { AssociationIdentifiers, DefaultObject, ProviderValues, StructureIdentifiers } from "../../@types";
 import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import Association from "./@types/Association";
 import AssociationsProvider from "./@types/AssociationsProvider";
@@ -10,6 +10,9 @@ import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/Associat
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
+import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
+import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
+import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
 
 export class AssociationsService {
 
@@ -20,6 +23,14 @@ export class AssociationsService {
         [AssociationDtoAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
+    }
+
+    async getAssociation(id: StructureIdentifiers): Promise<AssociationDto | null> {
+        const type = IdentifierHelper.getIdentifierType(id);
+        if (type === StructureIdentifiersEnum.rna) return await this.getAssociationByRna(id);
+        if (type === StructureIdentifiersEnum.siren) return await this.getAssociationBySiren(id);
+        if (type === StructureIdentifiersEnum.siret) return await this.getAssociationBySiret(id);
+        throw new Error("You must give a valid RNA, SIREN or SIRET number.");
     }
 
     async getAssociationBySiren(siren: Siren, rna?: Rna) {
@@ -48,7 +59,6 @@ export class AssociationsService {
     async getSubventions(identifier: AssociationIdentifiers) {
         return await demandesSubventionsService.getByAssociation(identifier);
     }
-
 
     private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
         const associationProviders = this.getAssociationProviders();
@@ -93,8 +103,8 @@ export class AssociationsService {
         }, Promise.resolve([]) as Promise<Association[]>);
     }
 
-    private isAssociationsProvider(data: unknown): data is AssociationsProvider {
-        return (data as AssociationsProvider).isAssociationsProvider
+    public isAssociationsProvider(provider: unknown): provider is AssociationsProvider {
+        return (provider as AssociationsProvider).isAssociationsProvider
     }
 
     private getAssociationProviders() {
