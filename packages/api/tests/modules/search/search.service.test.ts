@@ -2,7 +2,6 @@ import OsirisActionEntity from "../../../src/modules/providers/osiris/entities/O
 import osirisService from "../../../src/modules/providers/osiris/osiris.service";
 import searchService from "../../../src/modules/search/search.service";
 import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
-import entrepriseApiSerivce from "../../../src/modules/external/entreprise-api.service";
 import IOsirisRequestInformations from "../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
 import IOsirisActionsInformations from "../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
 import associationsService from "../../../src/modules/associations/associations.service";
@@ -18,10 +17,6 @@ describe("SearchService", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
     beforeAll(() => {
         spys.push(
-            jest.spyOn(entrepriseApiSerivce, "findRnaDataByRna"),
-            jest.spyOn(entrepriseApiSerivce, "findRnaDataBySiret"),
-            jest.spyOn(entrepriseApiSerivce, "findSiretDataBySiret"),
-            jest.spyOn(entrepriseApiSerivce, "findAssociationBySiren"),
             jest.spyOn(associationsService, "getAssociationBySiren"),
             jest.spyOn(associationsService, "getAssociationBySiret"),
             jest.spyOn(etablissementService, "getEtablissement"),
