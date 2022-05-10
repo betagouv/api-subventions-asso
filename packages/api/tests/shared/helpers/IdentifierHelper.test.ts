@@ -1,4 +1,4 @@
-import * as IdentifierHelper from "../../../src/shared/helpers/IdentifierHelper";
+import IdentifierHelper from "../../../src/shared/helpers/IdentifierHelper";
 
 describe("IdentifierHelper", () => {
     describe("getIdentifierType()", () => {
