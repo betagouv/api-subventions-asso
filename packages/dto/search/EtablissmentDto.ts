@@ -1,3 +1,6 @@
+import { Adresse } from '../shared/Adresse';
+import { InformationBancaire } from '../shared/InformationBancaire';
+import { Personne } from '../shared/Personne';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Siret } from "../shared/Siret";
 import DemandeSubvention from "./DemandeSubventionDto";
@@ -9,32 +12,9 @@ export default interface EtablissementDto {
     nic: ProviderValues<string>,
     siege?: ProviderValues<boolean>,
     ouvert?: ProviderValues<boolean>,
-    adresse?: ProviderValues<{
-        numero?: string,
-        type_voie?: string,
-        voie?: string,
-        code_postal?: string,
-        commune?: string,
-    }>,
-    representants_legaux?: ProviderValues<{ // data provider
-        nom?:string,
-        prenom?:string,
-        civilite?:string,
-        telephone?:string,
-        email?:string,
-        role?:string
-    }>[]
-    contacts?: ProviderValues<{ // data provider
-        nom?:string,
-        prenom?:string,
-        civilite?:string,
-        telephone?:string,
-        email?:string,
-        role?:string
-    }>[],
-    information_banquaire?: ProviderValues<{ // data provider
-        iban?: string,
-        bic?: string,
-    }>[]
+    adresse?: ProviderValues<Adresse>,
+    representants_legaux?: ProviderValues<Personne>[]
+    contacts?: ProviderValues<Personne>[],
+    information_banquaire?: ProviderValues<InformationBancaire>[]
     versements?: Versement[],
 }

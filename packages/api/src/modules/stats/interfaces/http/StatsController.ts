@@ -1,8 +1,9 @@
-import { Controller, Get, Query, Route, Security } from 'tsoa';
+import { Controller, Get, Query, Route, Security, Tags } from 'tsoa';
 import statsService from '../../stats.service';
 
 @Route("stats")
 @Security("jwt", ['admin'])
+@Tags("Stats Controller")
 export  class StatsController extends Controller {
     /**
      * 
