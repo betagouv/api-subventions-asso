@@ -4,26 +4,7 @@ import fonjepRepository from '../../../../src/modules/providers/fonjep/repositor
 import FonjepEntityFixture from '../../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../../providers/osiris/__fixtures__/entity';
 
-const g = global as unknown as { app: unknown }
-
-const OUTPUT = {
-    api: [
-        {
-            provider: "DATA ENTREPRISE",
-            description: "DATA ENTREPRISE DESCRIPTION"
-        }
-    ],
-    raw: [
-        {
-            provider: "OSIRIS",
-            description: "OSIRIS DESCRIPTION",
-        }, 
-        { 
-            provider: "FONJEP",
-            description: "FONJEP DESCRIPTION",
-        }
-    ]
-}
+const g = global as unknown as { app: unknown };
 
 describe("ProviderController", () => {
     beforeEach( async () => {
