@@ -17,8 +17,16 @@ describe("AssociationService", () => {
     const getAssociationBySirenSpy = jest.spyOn(associationsService, "getAssociationBySiren");
     const getAssociationBySiretSpy = jest.spyOn(associationsService, "getAssociationBySiret");
     const getIdentifierTypeSpy = jest.spyOn(IdentifierHelper, "getIdentifierType");
-    const formatDataSpy = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as any);
     const getByAssociationMock = jest.spyOn(demandesSubventionsService, "getByAssociation");
+    
+    let formatDataMock: jest.SpyInstance;
+    beforeAll(() => {
+        formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as any);
+    })
+
+    afterAll(() => {
+        formatDataMock.mockRestore();
+    })
 
     // Could not find a way to restore manual mock (from __mocks__) after being changed in a single test (cf: getAssociationBySiren)
     // @ts-expect-error: mock

@@ -1,5 +1,5 @@
-import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
 import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
+import { GetAssociationResponseDto } from '@api-subventions-asso/dto';
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { StructureIdentifiers } from '../../../../@types';
 
@@ -29,7 +29,7 @@ export class AssociationController extends Controller {
      * @param identifier Siret, Siren ou Rna
      */
       @Get("/{identifier}")
-     public async getAssociation(identifier: StructureIdentifiers): Promise<{success: boolean, message?: string, association?: AssociationDto}> {
+     public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
          try {
              const result = await associationService.getAssociation(identifier);
              if (!result) return { success: true, association: undefined, message: "Association not found" };
