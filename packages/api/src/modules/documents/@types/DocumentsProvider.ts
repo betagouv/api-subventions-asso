@@ -1,5 +1,5 @@
 import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
-import Provider from '../../providers/@types/Provider';
+import Provider from '../../providers/@types/IProvider';
 import Document from "./Document";
 
 export default interface DocumentProvider extends Provider {

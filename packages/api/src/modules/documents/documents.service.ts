@@ -35,7 +35,7 @@ export class DocumentsService {
     }
 
     private async aggregate(id: StructureIdentifiers): Promise<(Document | null)[]> {
-        const associationProviders = this.getDocumentProviders();
+        const documentProviders = this.getDocumentProviders();
 
         const type = getIdentifierType(id) ;
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
@@ -44,7 +44,7 @@ export class DocumentsService {
             : type === StructureIdentifiersEnum.siren ? 'getDocumentsBySiren'
                 : "getDocumentsBySiret"
 
-        const result = await Promise.all(associationProviders.map(provider => provider[method].call(provider, id)));
+        const result = await Promise.all(documentProviders.map(provider => provider[method].call(provider, id)));
 
         return result.flat();
     }
