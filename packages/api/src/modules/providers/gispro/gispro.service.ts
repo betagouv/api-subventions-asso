@@ -3,8 +3,8 @@ import gisproRepository from './repositories/gispro.repository';
 import { isSiret, isAssociationName } from "../../../shared/Validators";
 import { DefaultObject } from '../../../@types';
 import GisproRequestAdapter from './adapters/GisproRequestAdapter';
-import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
 import { DemandeSubvention , Rna, Siren, Siret } from '@api-subventions-asso/dto';
+import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import IProvider from '../../providers/@types/IProvider';
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 
@@ -101,6 +101,15 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
         return null;
+    }
+
+    // TODO: Comment retourner une demande de subvention par ID unique ?
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async getDemandeSubventionById(id: string): Promise<DemandeSubvention | null> {
+        return null;
+        // const entity = await gisproRepository.findById(id);
+        // if (!entity) return null;
+        // return GisproRequestAdapter.toDemandeSubvention(entity);
     }
 }
 

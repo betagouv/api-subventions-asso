@@ -64,6 +64,13 @@ export class GisproRepository extends MigrationRepository<GisproActionEntity>{
             "providerInformations.siret":  new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
+
+    // TODO: Comment retourner une demande de subvention par ID unique ?
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async findById(id: string) {
+        return null;
+        // return this.collection.findOne({ "_id": new ObjectId(string) });
+    }
 }
 
 const gisproRepository: GisproRepository = new GisproRepository();

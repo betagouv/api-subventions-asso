@@ -63,5 +63,17 @@ Le code de logique métier doit être uniquement écrit dans les services. C'est
 
 ## Tests et Coverage
 
-Pour la partie tests, il est demandé que chaque feature soit tester avec au moins un test.
-Le PR ne doivent pas être merger si le taux de couverture est inférieur à 85% et tendant toujours vers 100% du code couvert par les tests.
+Les tests sont divisés en deux parties : 
+
+### Test unitaire
+
+Les tests unitaires sont présents au plus proche du code testé. Leur nom doit se terminer par ```.unit.test ```. C'est sur ces test qu'est exécuté le coverage, qui a une tolérance de 85%. Un exemple type est présent dans ```/src/example.unit.test ```. Il montre l'utilisation, si possible, de deux constantes ```actual``` et ```expected``` qui sont ensuite comparés via ```expect(actual).toEqual(expected)```. Cette façon de faire forcer les tests à être unitaire et atomique, ne testant qu'une seule chose à la fois et en rendant le test lisible et compréhensible.
+
+Le coverage se teste avec la commande ```npm run test:cov ```qui parcours tous les fichiers ```.unit.ts``` présents dans ```./src ```. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande ```npm run test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts ```.
+
+### Test d'intégration
+
+Les tests d'intégration sont présents dans le dosser test à la racine du projet. Leur nom de fichier se termine par ```spec.ts ```. Ils ne doivent tester que les fonctionnalités de bout en bout. Comme les routes HTTP ou les CLI. 
+
+Pour ce faire, nous avons décidé d'utiliser le snapshot de Jest pour garder ces tests simples et concis. Dans l'example type d'un test d'intégration présent dans ```/tests/example.spec.ts```on y voit l'utilisation de ```.toMatchSnapshot() ``` qui crée un snapshot à la première exécution et qui valide le test. Il faut dans un premier temps s'assurer via un test manuel que la fonctionnalité fonctionne bien correctement. Les autres exécutions de ```.toMatchSnapshot() ``` vont ensuite comparer le snapshot présent (et versionné sur Github) à celui re-généré. Si le nouveau snapshot ne "match" pas le premier, et que c'est lié à une modification de la fonctionnalité, il est nécesaire de mettre à jour le snapshot. Pour ce faire, il faut utiliser l'option ```--updateSnapshot ``` (ou ```-u ```) de Jest. La commande pour mettre à jour tout un fichier de test est la suivante :  ``` npm run test:integ -- nom-du-fichier.spec -u ```. Mais il est également possible de mettre à jour tous les fichiers tests en même temps (```npm run test:integ -- -u ```) ou de mettre à jour le snapshot d'un seul test (a.k.a ```describe```) au sein d'un fichier (```npm run test:integ -- nom-du-fichier.spec -u -t test-name ```).
+

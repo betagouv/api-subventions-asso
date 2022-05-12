@@ -2,7 +2,7 @@ import etablissementService from "../etablissements/etablissements.service";
 import associationsService from "../associations/associations.service";
 
 import { Siret, Rna, Siren ,DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
-import demandesSubventionsService from "../demandes_subventions/demandes_subventions.service";
+import subventionsService from "../subventions/subventions.service";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 import associationNameService from "../association-name/associationName.service"
@@ -18,7 +18,7 @@ export class SearchService {
         let demandes_subventions: DemandeSubvention[] = [];
 
         try {
-            demandes_subventions = await demandesSubventionsService.getByEtablissement(siret);
+            demandes_subventions = await subventionsService.getDemandesByEtablissement(siret);
         } catch (e) {
             if (e instanceof Error && e.message != "Establishment not found") {
                 throw e;
@@ -65,7 +65,7 @@ export class SearchService {
         const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
         let demandesSubventions: DemandeSubvention[] = []
         try {
-            demandesSubventions = await demandesSubventionsService.getByAssociation(siren);
+            demandesSubventions = await subventionsService.getDemandesByAssociation(siren);
         } catch (e) {
             if (e instanceof Error && e.message != "Association not found") {
                 throw e;
