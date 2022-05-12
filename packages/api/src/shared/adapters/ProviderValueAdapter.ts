@@ -1,4 +1,4 @@
-import { ProviderValue, ProviderValues } from "../../@types";
+import { ProviderValue, ProviderValues } from "@api-subventions-asso/dto";
 
 export default class ProviderValueAdapter {
 

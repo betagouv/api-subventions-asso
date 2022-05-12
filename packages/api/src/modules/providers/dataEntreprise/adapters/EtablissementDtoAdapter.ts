@@ -1,5 +1,5 @@
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
-import Etablissement from "../../../etablissements/@types/Etablissement";
+import { Etablissement } from "@api-subventions-asso/dto";
 import EtablisementDto from "../dto/EtablissementDto";
 
 export default class EtablissementDtoAdapter {

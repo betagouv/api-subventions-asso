@@ -1,4 +1,5 @@
-import { DefaultObject, Siret } from "../../../@types";
+import { Siret } from "@api-subventions-asso/dto"
+import { DefaultObject } from "../../../@types";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import FonjepRequestEntity from "./entities/FonjepRequestEntity";

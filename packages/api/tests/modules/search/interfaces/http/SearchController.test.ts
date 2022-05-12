@@ -7,7 +7,7 @@ import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderVal
 import searchService from "../../../../../src/modules/search/search.service";
 import associationsService from "../../../../../src/modules/associations/associations.service";
 import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
-import { ProviderValue, ProviderValues } from "../../../../../src/@types";
+import { ProviderValue, ProviderValues } from "@api-subventions-asso/dto";
 import { siretToSiren } from "../../../../../src/shared/helpers/SirenHelper";
 import AssociationNameEntity from '../../../../../src/modules/association-name/entities/AssociationNameEntity';
 

@@ -1,5 +1,5 @@
 import { FindOneAndUpdateOptions } from 'mongodb';
-import { Siren, Siret } from '../../../../@types';
+import { Siren, Siret } from '@api-subventions-asso/dto';
 import MigrationRepository from '../../../../shared/MigrationRepository';
 import GisproActionEntity from "../entities/GisproActionEntity";
 

@@ -1,11 +1,10 @@
-import { Siren, Siret } from "../../../@types";
+import { Siren, Siret ,Versement } from "@api-subventions-asso/dto";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
-import Versement from "../../versements/@types/Versement";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";

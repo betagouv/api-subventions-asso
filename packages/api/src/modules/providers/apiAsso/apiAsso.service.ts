@@ -1,4 +1,4 @@
-import { ProviderValues, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { ProviderValues, Rna, Siren, Siret , Association, Etablissement } from "@api-subventions-asso/dto";
 import axios from "axios";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { AssociationIdentifiers } from "../../../@types";
@@ -8,9 +8,7 @@ import EventManager from "../../../shared/EventManager";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
-import Association from "../../associations/@types/Association";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import Etablissement from "../../etablissements/@types/Etablissement";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto from "./dto/StructureDto";

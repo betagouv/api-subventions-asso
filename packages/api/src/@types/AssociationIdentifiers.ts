@@ -1,4 +1,3 @@
-import { Rna } from './Rna';
-import { Siren } from './Siren';
+import { Siren, Rna } from '@api-subventions-asso/dto';
 
 export type AssociationIdentifiers =  Siren | Rna;

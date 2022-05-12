@@ -1,11 +1,9 @@
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
-import { Rna, Siren, Siret } from '../../../../@types';
+import { Rna, Siren, Siret, Association, Etablissement } from '@api-subventions-asso/dto';
 import { isRna, isSiren } from '../../../../shared/Validators';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
-import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
-import EtablissementDto from '@api-subventions-asso/dto/search/EtablissmentDto';
 
 @Route("search")
 @Security("jwt")
@@ -18,8 +16,8 @@ export class SearchController extends Controller {
     @Get("/etablissement/{siret}")
     public async findBySiret(
         siret: Siret,
-    ): Promise<{ success: boolean, etablissement?: EtablissementDto, message?: string}>{
-        const result = await searchService.getBySiret(siret) as EtablissementDto;
+    ): Promise<{ success: boolean, etablissement?: Etablissement, message?: string}>{
+        const result = await searchService.getBySiret(siret) as Etablissement;
         if (!result) {
             this.setStatus(404);
             return { success: false, message: "Etablissement not found"}
@@ -35,12 +33,12 @@ export class SearchController extends Controller {
     @Get("/association/{id}")
     public async findAssociation(
         id: Rna | Siren,
-    ): Promise<{ success: boolean, association?: AssociationDto, message?: string}> {
-        let result: AssociationDto | null = null;
+    ): Promise<{ success: boolean, association?: Association, message?: string}> {
+        let result: Association | null = null;
         if (isRna(id)) {
-            result = await searchService.getByRna(id) as AssociationDto;
+            result = await searchService.getByRna(id) as Association;
         } else if (isSiren(id)){
-            result = await searchService.getBySiren(id) as AssociationDto;
+            result = await searchService.getBySiren(id) as Association;
         }
 
         if (!result) {

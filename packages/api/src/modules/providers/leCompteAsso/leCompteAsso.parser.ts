@@ -1,7 +1,7 @@
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import { Siret } from "../../../@types";
+import { Siret } from "@api-subventions-asso/dto";
 import ILeCompteAssoRequestInformations from "./@types/ILeCompteAssoRequestInformations";
 
 export default class LeCompteAssoParser {

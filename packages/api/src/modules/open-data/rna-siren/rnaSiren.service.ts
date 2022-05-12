@@ -1,6 +1,6 @@
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 
-import { Siret, Siren, Rna } from "../../../@types";
+import { Siret, Siren, Rna } from "@api-subventions-asso/dto";
 import rnaSirenRepository from "./repositories/rnaSiren.repository";
 import RnaSiren from "./entities/RnaSirenEntity";
 import osirisService from "../../providers/osiris/osiris.service";

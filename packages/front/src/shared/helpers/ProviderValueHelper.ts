@@ -1,5 +1,4 @@
-import { ProviderValues } from "@api-subventions-asso/dto";
-import ProviderValue from "@api-subventions-asso/dto/shared/ProviderValue";
+import { ProviderValues, ProviderValue } from "@api-subventions-asso/dto";
 
 export default class ProviderValueHelper {
     public static getValue<T>(data: ProviderValues<T> | ProviderValue<T>): T | undefined {

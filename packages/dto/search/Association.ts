@@ -3,9 +3,11 @@ import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
 import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
-import Versement from "./VersementDto";
+import { DemandeSubvention } from './DemandeSubvention';
+import { Etablissement } from './Etablissment';
+import { Versement } from "./Versement";
 
-export default interface AssociationDto {
+export interface Association {
     siren?: ProviderValues<Siren>,
     rna?: ProviderValues<Rna>,
     nic_siege?: ProviderValues<string>,
@@ -42,4 +44,5 @@ export default interface AssociationDto {
         ETPT?: ProviderValues<number>,
     }
     versements?: Versement[],
+    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null
 }

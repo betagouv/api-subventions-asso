@@ -1,4 +1,5 @@
-import { ProviderValue, ProviderValues, DefaultObject } from "../../@types";
+import { ProviderValue, ProviderValues } from "@api-subventions-asso/dto";
+import { DefaultObject } from "../../@types";
 import ProviderValueAdapter from "../adapters/ProviderValueAdapter";
 
 export default class FormaterHelper {

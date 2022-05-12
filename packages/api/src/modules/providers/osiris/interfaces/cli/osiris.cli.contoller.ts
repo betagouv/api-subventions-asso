@@ -1,7 +1,8 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface, Rna, Siret} from "../../../../../@types";
+import { Rna, Siret } from "@api-subventions-asso/dto";
+import { CliStaticInterface} from "../../../../../@types";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";

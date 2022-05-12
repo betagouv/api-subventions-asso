@@ -1,4 +1,4 @@
-import Versement from "@api-subventions-asso/dto/search/VersementDto";
+import { Versement } from "@api-subventions-asso/dto";
 import { DefaultObject } from "../../../@types/utils";
 
 export function format(versements?: Versement[]) {

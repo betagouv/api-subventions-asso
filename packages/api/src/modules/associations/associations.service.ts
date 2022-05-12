@@ -1,6 +1,5 @@
-import { AssociationIdentifiers, DefaultObject, ProviderValues, StructureIdentifiers } from "../../@types";
-import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
-import Association from "./@types/Association";
+import { ProviderValues, Association, Siret, Rna, Siren } from '@api-subventions-asso/dto';
+import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../@types";
 import AssociationsProvider from "./@types/AssociationsProvider";
 import providers from "../providers";
 import EntrepriseDtoAdapter from "../providers/dataEntreprise/adapters/EntrepriseDtoAdapter";
@@ -8,10 +7,9 @@ import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdap
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/AssociationDtoAdapter";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
+import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
-import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
-import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
 
 export class AssociationsService {
@@ -25,7 +23,7 @@ export class AssociationsService {
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
     }
 
-    async getAssociation(id: StructureIdentifiers): Promise<AssociationDto | null> {
+    async getAssociation(id: StructureIdentifiers): Promise<Association | null> {
         const type = IdentifierHelper.getIdentifierType(id);
         if (type === StructureIdentifiersEnum.rna) return await this.getAssociationByRna(id);
         if (type === StructureIdentifiersEnum.siren) return await this.getAssociationBySiren(id);
@@ -38,21 +36,24 @@ export class AssociationsService {
 
         if (!data.length) return null;
 
+        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
-
+    
     async getAssociationBySiret(siret: Siret, rna?: Rna) {
         const data = await (await this.aggregateSiret(siret, rna)).filter(asso => asso) as Association[];
         if (!data.length) return null;
-
+        
+        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
-
+    
     async getAssociationByRna(rna: Rna) {
         const data = await (await this.aggregateRna(rna)).filter(asso => asso) as Association[];
-
+        
         if (!data.length) return null;
-
+        
+        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
