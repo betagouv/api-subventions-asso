@@ -1,4 +1,4 @@
-import { Siren, Siret } from "../../@types";
+import { Siren, Siret } from "@api-subventions-asso/dto";
 
 export function siretToSiren(siret: Siret): Siren {
     return siret.slice(0,9);

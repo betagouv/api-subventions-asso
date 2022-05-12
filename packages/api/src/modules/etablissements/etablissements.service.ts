@@ -1,14 +1,12 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { ProviderValues, Siren, Siret, Etablissement } from "@api-subventions-asso/dto";
 
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
-import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablisementDtoAdapter";
+import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablissementDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
+import { DefaultObject } from "../../@types";
 import EtablissementProvider from "./@types/EtablissementProvider";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
-import Etablissement from "./@types/Etablissement";
 import providers from "../providers";
-
-import { ProviderValues, DefaultObject } from "../../@types";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
 import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
@@ -27,7 +25,7 @@ export class EtablissementsService {
         const data = await (await this.aggregate(siret, "SIRET")).flat().filter(d => d) as Etablissement[];
         
         if (!data.length) return null;
-
+        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
     }
 
@@ -46,7 +44,7 @@ export class EtablissementsService {
 
             return acc;
         }, {} as DefaultObject<Etablissement[]>);
-
+        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
         return Object.values(groupBySiret).map(etablisements => FormaterHelper.formatData(etablisements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
     }
 

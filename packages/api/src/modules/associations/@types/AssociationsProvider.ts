@@ -1,6 +1,5 @@
-import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
+import { Siret, Rna, Siren ,Association} from "@api-subventions-asso/dto";
 import Provider from '../../providers/@types/IProvider';
-import Association from "./Association";
 
 export default interface AssociationsProvider extends Provider {
     isAssociationsProvider: boolean,

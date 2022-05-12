@@ -1,6 +1,5 @@
 import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
-import AssociationDto from '@api-subventions-asso/dto/search/AssociationDto';
 import osirisRepository from '../../../src/modules/providers/osiris/repositories/osiris.repository';
 import fonjepRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.repository';
 import FonjepEntityFixture from '../providers/fonjep/__fixtures__/entity';

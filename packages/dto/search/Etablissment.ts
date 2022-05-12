@@ -3,11 +3,11 @@ import { InformationBancaire } from '../shared/InformationBancaire';
 import { Personne } from '../shared/Personne';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Siret } from "../shared/Siret";
-import DemandeSubvention from "./DemandeSubventionDto";
-import Versement from "./VersementDto";
+import { DemandeSubvention } from "./DemandeSubvention";
+import { Versement } from "./Versement";
 
-export default interface EtablissementDto {
-    demandes_subventions: DemandeSubvention[] | null
+export interface Etablissement {
+    demandes_subventions?: DemandeSubvention[] | null
     siret: ProviderValues<Siret>,
     nic: ProviderValues<string>,
     siege?: ProviderValues<boolean>,

@@ -1,7 +1,6 @@
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import Association from "../../../associations/@types/Association";
-import Etablissement from "../../../etablissements/@types/Etablissement";
+import { Etablissement, Association }from "@api-subventions-asso/dto";
 import StructureDto, { StructureEtablissementDto, StructureRepresentantLegalDto, StructureRibDto } from "../dto/StructureDto";
 
 export default class ApiAssoDtoAdapter {

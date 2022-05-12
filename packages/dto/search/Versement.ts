@@ -1,13 +1,15 @@
-import { ProviderValue, Siret } from "../../../@types";
+import { ProviderValue } from "../shared/ProviderValue";
+import { Siret } from "../shared/Siret";
 
-export default interface Versement {
+
+export interface Versement {
     id: string,
     ej: ProviderValue<string>;
     siret: ProviderValue<Siret>;
     amount: ProviderValue<number>;
     dateOperation: ProviderValue<Date>;
-    centreFinancier: ProviderValue<string>;
-    domaineFonctionnel: ProviderValue<string>;
+    centreFinancier: ProviderValue<string>
+    domaineFonctionnel: ProviderValue<string>,
     numeroDemandePayment?: ProviderValue<string>;
     numeroTier?: ProviderValue<string>;
     activitee?: ProviderValue<string>;

@@ -4,8 +4,7 @@ import { isSiret, isAssociationName } from "../../../shared/Validators";
 import { DefaultObject } from '../../../@types';
 import GisproRequestAdapter from './adapters/GisproRequestAdapter';
 import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
-import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
-import { Rna, Siren, Siret } from '@api-subventions-asso/dto';
+import { DemandeSubvention , Rna, Siren, Siret } from '@api-subventions-asso/dto';
 import IProvider from '../../providers/@types/IProvider';
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 

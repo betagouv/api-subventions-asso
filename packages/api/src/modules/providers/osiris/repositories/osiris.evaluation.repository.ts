@@ -1,6 +1,6 @@
 
 import OsirisEvaluationEntity from '../entities/OsirisEvaluationEntity';
-import { Siret, Siren } from "../../../../@types";
+import { Siret, Siren } from "@api-subventions-asso/dto";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import { FindOneAndUpdateOptions } from 'mongodb';
 

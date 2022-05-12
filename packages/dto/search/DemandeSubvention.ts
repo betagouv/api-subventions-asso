@@ -1,9 +1,9 @@
 
 import { Siret } from "..";
-import ProviderValue from "../shared/ProviderValue";
-import Versement from "./VersementDto";
+import { ProviderValue } from "../shared/ProviderValue";
+import { Versement } from "./Versement";
 
-export default interface DemandeSubvention {
+export interface DemandeSubvention {
     service_instructeur: ProviderValue<string>,
     siret: ProviderValue<Siret>,
     dispositif?: ProviderValue<string>,

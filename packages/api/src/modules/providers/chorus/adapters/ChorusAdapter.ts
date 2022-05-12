@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
-import Versement from "../../../versements/@types/Versement";
+import { Versement } from "@api-subventions-asso/dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export default class ChorusAdapter {

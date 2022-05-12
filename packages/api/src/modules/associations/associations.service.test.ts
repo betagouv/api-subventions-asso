@@ -4,7 +4,7 @@ import FormaterHelper from '../../shared/helpers/FormaterHelper';
 import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import associationsService from "./associations.service";
 import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
-import DemandeSubvention from '@api-subventions-asso/dto/search/DemandeSubventionDto';
+import { DemandeSubvention } from '@api-subventions-asso/dto';
 import * as providers from '../providers';
 
 jest.mock('../providers/index');

@@ -1,5 +1,4 @@
-import { Siren, Siret, Rna } from "@api-subventions-asso/dto";
-import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
+import { Siren, Siret, Rna , DemandeSubvention } from "@api-subventions-asso/dto";
 
 export default interface DemandesSubventionsProvider {
     isDemandesSubventionsProvider: boolean,
