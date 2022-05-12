@@ -1,5 +1,5 @@
 import { AssociationIdentifiers, StructureIdentifiers } from '../../@types';
-import IdentifierHelper from "../../shared/helpers/IdentifierHelper"
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper"
 import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { siretToSiren } from '../../shared/helpers/SirenHelper';
@@ -7,20 +7,29 @@ import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper'
 import { Siret , DemandeSubvention } from "@api-subventions-asso/dto";
 import providers from "../providers";
 
-export class DemandesSubventionsService {
-
-    async getByAssociation(id: AssociationIdentifiers) {
-        const type = IdentifierHelper.getIdentifierType(id) ;
+export class SubventionsService {
+    async getDemandesByAssociation(id: AssociationIdentifiers) {
+        const type = getIdentifierType(id) ;
         if (!type) throw new Error("You must provide a valid SIREN or RNA");
         const data = (await this.aggregate(id, type))?.filter(asso => asso);
         if (!data.length) throw new Error("Association not found");
         return data;
     }
     
-    async getByEtablissement(id: Siret) {
+    async getDemandesByEtablissement(id: Siret) {
+        const type = getIdentifierType(id);
+        if (type !== StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIRET");
         const data = await (await this.aggregateByType(id, StructureIdentifiersEnum.siret))?.filter(asso => asso) as DemandeSubvention[];
         if(!data.length) throw new Error("Establishment not found");
         return data;
+    }
+
+    async getDemandeById(id: string) {
+        const rejectIfNull = (demande: DemandeSubvention) => demande ? demande : Promise.reject();
+        const providers = this.getDemandesSubventionsProviders();
+        // @ts-expect-error: return Promise.reject instead of null to be able to use Promises.any
+        const promises = providers.map(p => p.getDemandeSubventionById(id).then(rejectIfNull));
+        return await Promise.any(promises).catch(() => null);
     }
     
     private async aggregate(id: StructureIdentifiers, type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]): Promise<DemandeSubvention[]> {
@@ -37,15 +46,16 @@ export class DemandesSubventionsService {
     }
     
     private async aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Promise<DemandeSubvention[]> {
-        const promises = this.getDemandesSubventionsProviders().map(p => p[`getDemandeSubventionBy${capitalizeFirstLetter(type)}` as "getDemandeSubventionBySiret" | "getDemandeSubventionBySiren" | "getDemandeSubventionByRna"](id));
+        const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as "getDemandeSubventionBySiret" | "getDemandeSubventionBySiren" | "getDemandeSubventionByRna";
+        const promises = this.getDemandesSubventionsProviders().map(p =>  p[functionName](id));
         return [...(await Promise.all(promises)).flat()] as DemandeSubvention[];
     }
 
     private getDemandesSubventionsProviders() {
-        return Object.values(providers).filter((p) => (p as DemandesSubventionsProvider).isDemandesSubventionsProvider) as unknown as DemandesSubventionsProvider[];
+        return Object.values(providers).filter((p) => (p as unknown as DemandesSubventionsProvider).isDemandesSubventionsProvider) as unknown as DemandesSubventionsProvider[];
     }
 }
 
-const demandesSubventionsService = new DemandesSubventionsService();
+const subventionsService = new SubventionsService();
 
-export default demandesSubventionsService;
+export default subventionsService;

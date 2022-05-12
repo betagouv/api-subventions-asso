@@ -1,8 +1,8 @@
-import { Siret, Siren , DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
+import { Siret, Siren, DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
 import { WithId } from "mongodb";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
-import DemandesSubventionsProvider from "../../demandes_subventions/@types/DemandesSubventionsProvider";
+import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepRequestEntity from "./entities/FonjepRequestEntity";
@@ -109,6 +109,12 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
         return null;
+    }
+
+    async getDemandeSubventionById(id: string): Promise<DemandeSubvention | null> {
+        const entity = await fonjepRepository.findById(id);
+        if (!entity) return Promise.reject(new Error("DemandeSubvention not found"));
+        return FonjepEntityAdapter.toDemandeSubvention(entity);
     }
 
     /**

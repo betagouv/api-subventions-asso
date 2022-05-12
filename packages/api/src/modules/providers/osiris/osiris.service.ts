@@ -1,4 +1,4 @@
-import {DemandeSubvention, Rna, Siren, Siret ,Association,Etablissement} from "@api-subventions-asso/dto";
+import {DemandeSubvention, Rna, Siren, Siret, Association, Etablissement} from "@api-subventions-asso/dto";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import EventManager from "../../../shared/EventManager";
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
@@ -273,6 +273,17 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (requests.length === 0) return null;
 
         return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
+        return null;
+    }
+
+    async getDemandeSubventionById(id: string): Promise<DemandeSubvention | null> {
+        const request = await osirisRepository.findRequestByMongoId(id);
+        if (!request) return Promise.reject(new Error("DemandeSubvention not found"));
+        return OsirisRequestAdapter.toDemandeSubvention(request);
     }
 }
 

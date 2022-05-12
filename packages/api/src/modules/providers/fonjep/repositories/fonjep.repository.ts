@@ -1,5 +1,5 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
-import { WithId } from "mongodb";
+import { Document, ObjectId, WithId } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
@@ -21,6 +21,10 @@ export class FonjepRepository extends MigrationRepository<FonjepRequestEntity> {
         return this.collection.find({
             "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();
+    }
+
+    async findById(id: string) {
+        return this.collection.findOne({ "_id": new ObjectId(id) });
     }
 }
 

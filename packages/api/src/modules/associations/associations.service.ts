@@ -7,9 +7,9 @@ import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdap
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/AssociationDtoAdapter";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
-import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
-import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
+import subventionsService from '../subventions/subventions.service';
+import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
 
 export class AssociationsService {
@@ -58,7 +58,7 @@ export class AssociationsService {
     }
 
     async getSubventions(identifier: AssociationIdentifiers) {
-        return await demandesSubventionsService.getByAssociation(identifier);
+        return await subventionsService.getDemandesByAssociation(identifier);
     }
 
     private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {

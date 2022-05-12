@@ -8,7 +8,7 @@ import EtablissementProvider from "./@types/EtablissementProvider";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
-import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
+import subventionsService from '../subventions/subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 
 export class EtablissementsService {
@@ -49,7 +49,7 @@ export class EtablissementsService {
     }
 
     async getSubventions(siret: Siret) {
-        return await demandesSubventionsService.getByEtablissement(siret);
+        return await subventionsService.getDemandesByEtablissement(siret);
     }
 
     private async aggregate(id: Siren | Siret, type: "SIRET" | "SIREN") {
