@@ -1,7 +1,6 @@
+import { Association, Etablissement } from "@api-subventions-asso/dto";
 import chorusService from "../../../src/modules/providers/chorus/chorus.service";
 import ChorusLineEntity from "../../../src/modules/providers/chorus/entities/ChorusLineEntity";
-import AssociationDto from "../../../src/modules/search/interfaces/http/dto/AssociationDto";
-import EtablissementDto from "../../../src/modules/search/interfaces/http/dto/EtablissmentDto";
 import versementsService from "../../../src/modules/versements/versements.service";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 
@@ -23,7 +22,7 @@ describe("VersementService", () => {
                     ]
                 }
             ]
-        } as unknown as AssociationDto;
+        } as unknown as Association;
 
         beforeEach(async () => {
             jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
@@ -117,7 +116,7 @@ describe("VersementService", () => {
                     ej: toPV("1000000000")
                 }
             ]
-        } as unknown as EtablissementDto;
+        } as unknown as Etablissement;
 
         beforeEach(async () => {
             jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))

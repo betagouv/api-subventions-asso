@@ -1,9 +1,9 @@
-import {SuccessResponse, ErrorResponse} from "../shared/ResponseStatus";
-import AssociationDto from "../search/AssociationDto";
+import { SuccessResponse, ErrorResponse } from "../shared/ResponseStatus";
+import { Association } from "../search/Association";
 
 export interface GetAssociationSuccessResponse extends SuccessResponse {
     success: true,
-    association?: AssociationDto,
+    association?: Association,
     message?: string
 }
 export interface GetAssociationErrorResponse extends ErrorResponse {

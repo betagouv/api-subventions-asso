@@ -1,4 +1,4 @@
-import { Rna, Siren } from "../../../../@types";
+import { Rna, Siren } from "@api-subventions-asso/dto";
 
 export default class RnaSiren {
     constructor(

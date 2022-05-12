@@ -1,4 +1,4 @@
-import { Siret } from "../../../../@types";
+import { Siret } from "@api-subventions-asso/dto";
 import ILeCompteAssoRequestInformations from "./ILeCompteAssoRequestInformations";
 
 export default interface ILeCompteAssoPartialRequestEntity {

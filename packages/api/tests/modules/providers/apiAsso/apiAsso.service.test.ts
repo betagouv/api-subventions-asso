@@ -1,6 +1,5 @@
 import axios from "axios";
-import Association from "../../../../src/modules/associations/@types/Association";
-import Etablissement from "../../../../src/modules/etablissements/@types/Etablissement";
+import { Association, Etablissement } from "@api-subventions-asso/dto";
 import ApiAssoDtoAdapter from "../../../../src/modules/providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import apiAssoService from "../../../../src/modules/providers/apiAsso/apiAsso.service"
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";

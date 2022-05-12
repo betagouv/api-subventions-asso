@@ -1,9 +1,9 @@
-import Etablissement from "./EtablissmentDto";
-import AssociationDto from "./AssociationDto";
-import DemandeSubvention from "./DemandeSubventionDto";
+import { Etablissement } from "./Etablissment";
+import { Association } from "./Association";
+import { DemandeSubvention } from "./DemandeSubvention";
 
 export interface IEtablissement extends Etablissement {
-    association: AssociationDto,
+    association: Association,
     demandes_subventions: DemandeSubvention[] | null
 }
 

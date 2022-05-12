@@ -1,13 +1,7 @@
-import AssociationDto from "./AssociationDto";
-import DemandeSubvention from "./DemandeSubventionDto";
-import EtablissementDto from "./EtablissmentDto";
-
-export interface IAssociation extends AssociationDto {
-    etablissements: ({ demandes_subventions: DemandeSubvention[] | null } & EtablissementDto)[] | null,
-}
+import { Association } from "../index";
 
 export default interface AssociationDtoResponse {
     success: boolean;
-    association?: IAssociation,
+    association?: Association,
     message?: string
 }

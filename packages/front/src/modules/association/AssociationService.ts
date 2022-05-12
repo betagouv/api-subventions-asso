@@ -1,8 +1,4 @@
-import { IAssociation } from "@api-subventions-asso/dto";
-import AssociationDto from "@api-subventions-asso/dto/search/AssociationDto";
-import DemandeSubvention from "@api-subventions-asso/dto/search/DemandeSubventionDto";
-import Versement from "@api-subventions-asso/dto/search/VersementDto";
-import ProviderValue from "@api-subventions-asso/dto/shared/ProviderValue";
+import { Association, DemandeSubvention, Versement, ProviderValue } from "@api-subventions-asso/dto";
 import User from "../../@types/User";
 import { DefaultObject } from "../../@types/utils";
 import apiDatasubService from "../../shared/apiDatasub.service";
@@ -10,20 +6,20 @@ import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 
 export class AssociationService {
-    async getAssociation(id: string, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: {association: AssociationDto, subventions: unknown, versements: Versement[] } }> {
+    async getAssociation(id: string, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: {association: Association, subventions: unknown, versements: Versement[] } }> {
         const type = IdentifierHelper.findType(id);
         if (type === "UNKNOWN") return { type: "ERROR" }; // TODO send error
 
-        let association: IAssociation | null = null;
+        let association: Association | null = null;
 
         try {
             if (type === "RNA") {
                 const result = await apiDatasubService.searchAssoByRna(id, user);
-                association = result.data.association as IAssociation;
+                association = result.data.association as Association;
             }
             else if (type === "SIREN") {
                 const result = await apiDatasubService.searchAssoBySiren(id, user);
-                association = result.data.association as IAssociation;
+                association = result.data.association as Association;
             }
         }  catch (e) {
             return { type: "ERROR" }; // TODO send error
@@ -43,7 +39,7 @@ export class AssociationService {
         }
     }
 
-    private formatSubvention(association: IAssociation) {
+    private formatSubvention(association: Association) {
         const result = {
             lastYear: "NC",
             totalAccordeByYear: {} as DefaultObject<number>,
@@ -56,9 +52,9 @@ export class AssociationService {
             }>>>,
             demandes: {} as DefaultObject<DemandeSubvention[]>
         };
-        association.etablissements?.reduce((acc, etablisement) => {
-            if (!etablisement.demandes_subventions || etablisement.demandes_subventions.length === 0) return acc;
-            etablisement.demandes_subventions.forEach(demande => {
+        association.etablissements?.reduce((acc, etablissement) => {
+            if (!etablissement.demandes_subventions || etablissement.demandes_subventions.length === 0) return acc;
+            etablissement.demandes_subventions.forEach(demande => {
                 const status = ProviderValueHelper.getValue(demande.status) || "Autres";
 
                 let year = (demande.annee_demande && ProviderValueHelper.getValue(demande.annee_demande)?.toString());

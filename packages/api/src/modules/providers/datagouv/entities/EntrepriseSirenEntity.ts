@@ -1,4 +1,4 @@
-import { Siren } from "../../../../@types/Siren";
+import { Siren } from "@api-subventions-asso/dto";
 
 export default class EntrepriseSirenEntity {
     constructor(

@@ -1,4 +1,4 @@
-import { Siren } from "../../../../@types/Siren";
+import { Siren } from "@api-subventions-asso/dto";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
 

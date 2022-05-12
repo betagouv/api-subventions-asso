@@ -3,7 +3,7 @@ import { MONGO_BATCH_SIZE } from "../../../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
-import { Siret, Rna, Siren } from "../../../../@types";
+import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import OsirisActionEntityDbo from '../entities/OsirisActionEntityDbo';
 import OsirisActionAdapter from './dboAdapters/osirisActionAdapter';
 import MongoCnxError from '../../../../shared/errors/MongoCnxError';

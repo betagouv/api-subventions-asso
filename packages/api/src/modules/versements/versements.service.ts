@@ -1,13 +1,10 @@
-import { Siren, Siret } from "../../@types";
-import Versement from "./@types/Versement";
+import { Siren, Siret, Versement, Association, Etablissement } from "@api-subventions-asso/dto";
 import VersementsProvider from "./@types/VersementsProvider";
 import providers from "../providers";
-import AssociationDto from "../search/interfaces/http/dto/AssociationDto";
-import EtablissementDto from "../search/interfaces/http/dto/EtablissmentDto";
 
 export class VersementsService {
 
-    async aggregateVersementsByAssoSearch(asso: AssociationDto) {
+    async aggregateVersementsByAssoSearch(asso: Association) {
         if (!asso.siren || asso.siren?.length === 0) return null;
 
         const siren = asso.siren[0].value;
@@ -30,7 +27,7 @@ export class VersementsService {
         return asso;
     }
 
-    async aggregateVersementsByEtablissementSearch(etablissement: EtablissementDto) {
+    async aggregateVersementsByEtablissementSearch(etablissement: Etablissement) {
         if (!etablissement.siret || etablissement.siret.length === 0) return null;
 
         const versements = await this.getVersementsBySiret(etablissement.siret[0].value);

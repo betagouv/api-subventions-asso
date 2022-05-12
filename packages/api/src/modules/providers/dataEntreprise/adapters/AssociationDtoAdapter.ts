@@ -1,6 +1,6 @@
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToSiren } from "../../../../shared/helpers/SirenHelper";
-import Association from "../../../associations/@types/Association";
+import { Association } from "@api-subventions-asso/dto";
 import AssociationDto from "../dto/AssociationDto";
 
 export default class AssociationDtoAdapter {

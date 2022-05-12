@@ -1,6 +1,5 @@
-import { Siren, Siret } from "../../../@types";
+import { Versement, Siren, Siret } from "@api-subventions-asso/dto";
 import Provider from '../../providers/@types/IProvider';
-import Versement from "./Versement";
 
 export default interface VersementsProvider extends Provider {
 
