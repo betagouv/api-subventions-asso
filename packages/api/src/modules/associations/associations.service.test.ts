@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
 import FormaterHelper from '../../shared/helpers/FormaterHelper';
-import IdentifierHelper from '../../shared/helpers/IdentifierHelper';
+import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import associationsService from "./associations.service";
-import demandesSubventionsService from '../demandes_subventions/demandes_subventions.service';
 import { DemandeSubvention } from '@api-subventions-asso/dto';
+import subventionService from '../subventions/subventions.service';
 import * as providers from '../providers';
 
 jest.mock('../providers/index');
@@ -17,7 +17,7 @@ describe("AssociationService", () => {
     const getAssociationBySirenSpy = jest.spyOn(associationsService, "getAssociationBySiren");
     const getAssociationBySiretSpy = jest.spyOn(associationsService, "getAssociationBySiret");
     const getIdentifierTypeSpy = jest.spyOn(IdentifierHelper, "getIdentifierType");
-    const getByAssociationMock = jest.spyOn(demandesSubventionsService, "getByAssociation");
+    const getByAssociationMock = jest.spyOn(subventionService, "getDemandesByAssociation");
     
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {

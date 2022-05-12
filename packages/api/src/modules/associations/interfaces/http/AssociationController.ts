@@ -30,9 +30,10 @@ export class AssociationController extends Controller {
       @Get("/{identifier}")
      public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
          try {
-             const result = await associationService.getAssociation(identifier);
-             if (!result) return { success: true, association: undefined, message: "Association not found" };
-             return { success: true, association: result };
+             const association = await associationService.getAssociation(identifier);
+             if (association) return { success: true, association };
+             this.setStatus(404);
+             return { success: true, message: "Association not found" };
          } catch (e: unknown) {
              return { success: false, message: (e as Error).message }
          }
