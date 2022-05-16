@@ -27,7 +27,6 @@ export class SubventionsService {
     async getDemandeById(id: string) {
         const rejectIfNull = (demande: DemandeSubvention) => demande ? demande : Promise.reject();
         const providers = this.getDemandesSubventionsProviders();
-        // @ts-expect-error: return Promise.reject instead of null to be able to use Promises.any
         const promises = providers.map(p => p.getDemandeSubventionById(id).then(rejectIfNull));
         return await Promise.any(promises).catch(() => null);
     }

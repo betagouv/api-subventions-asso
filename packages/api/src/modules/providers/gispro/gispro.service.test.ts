@@ -33,8 +33,13 @@ describe("GisproService", () => {
         // })
 
         it("should return null because not implemented", async () => {
-            const expected = null;
-            const actual = await gisproService.getDemandeSubventionById(MONGO_ID);
+            const expected =  new Error("getDemandeSubventionById() is not implemented for Gispro provider");
+            let actual;
+            try {
+                actual = await gisproService.getDemandeSubventionById(MONGO_ID);
+            } catch (e) {
+                actual = e
+            }
             expect(actual).toEqual(expected);
         })
     })

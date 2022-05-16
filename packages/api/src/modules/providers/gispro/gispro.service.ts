@@ -105,8 +105,8 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
 
     // TODO: Comment retourner une demande de subvention par ID unique ?
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionById(id: string): Promise<DemandeSubvention | null> {
-        return null;
+    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
+        throw new Error("getDemandeSubventionById() is not implemented for Gispro provider");
         // const entity = await gisproRepository.findById(id);
         // if (!entity) return null;
         // return GisproRequestAdapter.toDemandeSubvention(entity);
