@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.0](https://github.com/betagouv/api-subventions-asso/compare/v0.8.6...v0.9.0) (2022-05-16)
+
+
+### Features
+
+* **front:** add spaces for currency amount in arrays ([#200](https://github.com/betagouv/api-subventions-asso/issues/200)) ([22a4554](https://github.com/betagouv/api-subventions-asso/commit/22a4554597b9e4da65a387aedf31c9a220b0a8e7))
+* **front:** prefill nojs mailto ([#199](https://github.com/betagouv/api-subventions-asso/issues/199)) ([5d1ffd0](https://github.com/betagouv/api-subventions-asso/commit/5d1ffd01dad28adacfd662d7e1a6cfea33707601))
+* **front:** remove li in demande sub details ([d5786d8](https://github.com/betagouv/api-subventions-asso/commit/d5786d8fed8254adfd5e0f4a07cb20f2364eb173))
+* **front:** remove totals array in subventions ([3bc528c](https://github.com/betagouv/api-subventions-asso/commit/3bc528cf06459e0e0ba15e55c875541c21df15f3))
+
 ### [0.8.6](https://github.com/betagouv/api-subventions-asso/compare/v0.8.5...v0.8.6) (2022-05-04)
 
 
