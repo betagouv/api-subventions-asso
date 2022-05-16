@@ -54,7 +54,6 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const structure = await this.sendRequest<StructureDto>(`/structure/${identifier}`);
         if (!structure) return null;
 
-        
         if (structure.etablissement) {
             etablissements = structure.etablissement.map(e => ApiAssoDtoAdapter.toEtablissement(e, structure.rib, structure.representant_legal, structure.identite.date_modif_siren));
         }

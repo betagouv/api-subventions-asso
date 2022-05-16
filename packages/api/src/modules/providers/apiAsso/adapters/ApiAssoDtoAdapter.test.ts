@@ -1,29 +1,29 @@
-import ApiAssoDtoAdapter from "../../../../../src/modules/providers/apiAsso/adapters/ApiAssoDtoAdapter";
-import { StructureRepresentantLegalDto } from "../../../../../src/modules/providers/apiAsso/dto/StructureDto";
+import ApiAssoDtoAdapter from "./ApiAssoDtoAdapter";
+import StructureDto, { StructureRepresentantLegalDto } from "../dto/StructureDto";
 import { fixtureAsso, fixtureEtablissements, fixtureRepresentantLegal, fixtureRib } from "../__fixtures__/ApiAssoStructureFixture";
 
 describe("ApiAssoDtoAdapter", () => {
     describe("toAssociation", () => {
-        it("should retrun two associations", () => {
+        it("should return two associations", () => {
             const expected = 2;
             const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
 
             expect(actual).toHaveLength(expected);
         })
 
-        it("should retrun siren association", () => {
+        it("should return siren association", () => {
             const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
 
             expect(actual[0]).toMatchSnapshot();
         })
 
-        it("should retrun rna association", () => {
+        it("should return rna association", () => {
             const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
 
             expect(actual[1]).toMatchSnapshot();
         })
 
-        it("should retrun rna association with adresse", () => {
+        it("should return rna association with adresse", () => {
             const actual = ApiAssoDtoAdapter.toAssociation({
                 ...fixtureAsso,
                 identite: {
@@ -35,7 +35,7 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual[1]).toMatchSnapshot();
         })
 
-        it("should retrun rna association with date creation", () => {
+        it("should return rna association with date creation", () => {
             const actual = ApiAssoDtoAdapter.toAssociation({
                 ...fixtureAsso,
                 identite: {
@@ -47,7 +47,7 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual[1]).toMatchSnapshot();
         })
 
-        it("should retrun siren association with date creation", () => {
+        it("should return siren association with date creation", () => {
             const actual = ApiAssoDtoAdapter.toAssociation({
                 ...fixtureAsso,
                 identite: {
@@ -59,7 +59,7 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual[0]).toMatchSnapshot();
         })
 
-        it("should retrun siren association without nom siren", () => {
+        it("should return siren association without nom siren", () => {
             const actual = ApiAssoDtoAdapter.toAssociation({
                 ...fixtureAsso,
                 identite: {
@@ -73,28 +73,67 @@ describe("ApiAssoDtoAdapter", () => {
     })
 
     describe("toEtablissement", () => {
-        it("should retrun etablissement with rib", () => {
+        it("should return etablissement with rib", () => {
             const actual = ApiAssoDtoAdapter.toEtablissement(fixtureEtablissements[0], fixtureRib, [], fixtureAsso.identite.date_modif_siren);
 
             expect(actual).toMatchSnapshot();
         })
 
-        it("should retrun etablissement with contact", () => {
+        it("should return etablissement with contact", () => {
             const actual = ApiAssoDtoAdapter.toEtablissement(fixtureEtablissements[0], [], fixtureRepresentantLegal, fixtureAsso.identite.date_modif_siren);
 
             expect(actual).toMatchSnapshot();
         })
 
-        it("should retrun etablissement without rib", () => {
+        it("should return etablissement without rib", () => {
             const actual = ApiAssoDtoAdapter.toEtablissement(fixtureEtablissements[1], fixtureRib, [], fixtureAsso.identite.date_modif_siren);
 
             expect(actual).toMatchSnapshot();
         })
 
-        it("should retrun etablissement without contact", () => {
+        it("should return etablissement without contact", () => {
             const actual = ApiAssoDtoAdapter.toEtablissement(fixtureEtablissements[1], [], undefined as unknown as StructureRepresentantLegalDto[], fixtureAsso.identite.date_modif_siren);
 
             expect(actual).toMatchSnapshot();
         })
+    })
+
+    describe("toDocuments", () => {
+        it("should return documents", () => {
+            const actual = ApiAssoDtoAdapter.toDocuments(fixtureAsso);
+
+            expect(actual).toMatchSnapshot();
+        })
+
+        it("should return rna documents", () => {
+            const actual = ApiAssoDtoAdapter.toDocuments({
+                ...fixtureAsso,
+                document_dac: [],
+                rib: []
+            });
+
+            expect(actual).toMatchSnapshot();
+        })
+
+        it("should return dac documents", () => {
+            const actual = ApiAssoDtoAdapter.toDocuments({
+                ...fixtureAsso,
+                document_rna: [],
+                rib: []
+            });
+
+            expect(actual).toMatchSnapshot();
+        })
+        
+        it("should return rib documents", () => {
+            const actual = ApiAssoDtoAdapter.toDocuments({
+                ...fixtureAsso,
+                document_rna: [],
+                document_dac: []
+            });
+
+            expect(actual).toMatchSnapshot();
+        })
+
     })
 });
