@@ -6,5 +6,5 @@ export default interface DemandesSubventionsProvider {
     getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null>
     getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null>
     getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null>
-    getDemandeSubventionById(id: string): Promise<DemandeSubvention | null>
+    getDemandeSubventionById(id: string): Promise<DemandeSubvention>
 }

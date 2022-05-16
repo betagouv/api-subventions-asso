@@ -280,9 +280,9 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return null;
     }
 
-    async getDemandeSubventionById(id: string): Promise<DemandeSubvention | null> {
+    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
         const request = await osirisRepository.findRequestByMongoId(id);
-        if (!request) return Promise.reject(new Error("DemandeSubvention not found"));
+        if (!request) throw new Error("DemandeSubvention not found");
         return OsirisRequestAdapter.toDemandeSubvention(request);
     }
 }
