@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.1](https://github.com/betagouv/api-subventions-asso/compare/v0.9.0...v0.9.1) (2022-05-16)
+
+
+### Features
+
+* **api:** add get subvention by mongo id ([e1e7d71](https://github.com/betagouv/api-subventions-asso/commit/e1e7d71598a75d6abe44b3b8394c6158b09bbba4))
+* **api:** code review ([d3fcebc](https://github.com/betagouv/api-subventions-asso/commit/d3fcebc3e137f91f006520883ca43bc1f10e897b))
+
+
+### Bug Fixes
+
+* **dto:** change package main file ([fe1cca9](https://github.com/betagouv/api-subventions-asso/commit/fe1cca9ad69d079f7578e2cb2831c870fedf0ddc))
+
 ## [0.9.0](https://github.com/betagouv/api-subventions-asso/compare/v0.8.6...v0.9.0) (2022-05-16)
 
 
