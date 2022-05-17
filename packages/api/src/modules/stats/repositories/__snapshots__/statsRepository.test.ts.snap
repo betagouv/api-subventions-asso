@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatsRepository countUsersByRequestNbOnPeriod() should be call mongo with admin filters 1`] = `
+Array [
+  Array [
+    Array [
+      Object {
+        "$match": Object {
+          "meta.req.user.roles": Object {
+            "$nin": Array [
+              "admin",
+            ],
+          },
+          "timestamp": Object {
+            "$gte": 2021-12-31T00:00:00.000Z,
+            "$lte": 2022-01-02T00:00:00.000Z,
+          },
+        },
+      },
+      Object {
+        "$group": Object {
+          "_id": "$meta.req.user.email",
+          "nbOfRequest": Object {
+            "$sum": 1,
+          },
+        },
+      },
+      Object {
+        "$match": Object {
+          "nbOfRequest": Object {
+            "$gte": 3,
+          },
+        },
+      },
+      Object {
+        "$count": "nbOfUsers",
+      },
+    ],
+  ],
+]
+`;
+
+exports[`StatsRepository countUsersByRequestNbOnPeriod() should be call mongo without admin filters 1`] = `
+Array [
+  Array [
+    Array [
+      Object {
+        "$match": Object {
+          "timestamp": Object {
+            "$gte": 2021-12-31T00:00:00.000Z,
+            "$lte": 2022-01-02T00:00:00.000Z,
+          },
+        },
+      },
+      Object {
+        "$group": Object {
+          "_id": "$meta.req.user.email",
+          "nbOfRequest": Object {
+            "$sum": 1,
+          },
+        },
+      },
+      Object {
+        "$match": Object {
+          "nbOfRequest": Object {
+            "$gte": 3,
+          },
+        },
+      },
+      Object {
+        "$count": "nbOfUsers",
+      },
+    ],
+  ],
+]
+`;
