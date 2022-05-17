@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Express } from "express"
-import {Strategy as LocalStrategy} from 'passport-local';
+import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
 import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import userService from '../modules/user/user.service';
 import { JWT_SECRET } from '../configurations/jwt.conf';
@@ -19,7 +19,7 @@ export function authMocks(app: Express) {
                 const result = await userService.login(email, password);
                 if (result.success) return done(null, result.user, { message: 'Logged in Successfully' });
                 
-                return done(null, false, { message: result.message });
+                return done(null, false, { message: result.code.toString() }); // It's hack because message accept just string
             }
         )
     );
@@ -54,5 +54,15 @@ export function authMocks(app: Express) {
         done(null, user);
     });
 
-    app.post("/auth/login", passport.authenticate("login"));
+    app.post("/auth/login", (req, res, next) => {
+        passport.authenticate("login", (error, user, info: IVerifyOptions) => {
+            if (error) return next(error)
+            if (user) {
+                req.user = user;
+            }
+            req.authInfo = info;
+
+            next();
+        })(req, res, next);
+    });
 }
