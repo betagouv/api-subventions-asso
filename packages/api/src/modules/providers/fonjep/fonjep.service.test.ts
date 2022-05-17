@@ -3,7 +3,7 @@ import fonjepService from './fonjep.service';
 import fonjepRepository from "./repositories/fonjep.repository";
 
 const MONGO_ID = "ID";
-const findByIdMock = jest.spyOn(fonjepRepository, "findById");
+const findByIdMock: jest.SpyInstance<Promise<unknown>> = jest.spyOn(fonjepRepository, "findById");
 const toDemandeSubventionMock = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
 
 describe("FonjepService", () => {
@@ -31,9 +31,10 @@ describe("FonjepService", () => {
         
         it("should call FonjepEntityAdapter.toDemandeSubvention", async () => {
             const entity = { siret: "000000001"};
-            // @ts-expect-error: mock
-            findByIdMock.mockImplementationOnce(async id => entity);
+            findByIdMock.mockImplementationOnce(() => Promise.resolve(entity));
+
             await fonjepService.getDemandeSubventionById(MONGO_ID);
+
             expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledWith(entity);
         })
     })
