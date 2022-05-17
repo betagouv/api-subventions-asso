@@ -1,4 +1,5 @@
-import { Controller, Get, Query, Route, Security, Tags } from 'tsoa';
+import { StatsRequestDtoNegativeResponse, StatsRequestDtoResponse } from '@api-subventions-asso/dto';
+import { Controller, Get, Query, Route, Security, Tags, Response } from 'tsoa';
 import statsService from '../../stats.service';
 
 @Route("stats")
@@ -6,15 +7,25 @@ import statsService from '../../stats.service';
 @Tags("Stats Controller")
 export  class StatsController extends Controller {
     /**
+     * Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X requêtes sur une période données
      * 
      * @param start Timestamp starting date for the period
      * @param end Timestamp ending date for the period
      * @param nbReq Number minimal number of requests that user must have done in the defined period
-     * @param {string?} includesAdmin true if we include admin in stats, false for exlude admin (default: false)
-     * @returns 
+     * @param {string=} [includesAdmin = "false"] true if we include admin in stats, false for exlude admin (All value other of "true" will be considered as false)
+     * @returns {StatsRequestDtoResponse}
      */
     @Get("/requests")
-    async getNbUsersByRequestsOnPeriod(@Query() start: string, @Query() end: string, @Query() nbReq: string, @Query() includesAdmin = "false"): Promise<{ success: boolean, data?: number, message?: string }> {
+    @Response<StatsRequestDtoNegativeResponse>(500, "Error", {
+        success: false,
+        message: "An Error message",
+    })
+    async getNbUsersByRequestsOnPeriod(
+        @Query() start: string,
+        @Query() end: string,
+        @Query() nbReq: string,
+        @Query() includesAdmin = "false"
+    ): Promise<StatsRequestDtoResponse> {
         try {
             const result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq), includesAdmin === "true");
             return { success: true, data: result }
