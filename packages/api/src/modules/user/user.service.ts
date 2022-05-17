@@ -52,6 +52,11 @@ export class UserService {
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND};
         }
+        
+        let jwtParams = await userRepository.findJwt(user);
+        if (!user.active || !jwtParams ) {
+            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE}
+        }
 
         const validPassword = await bcrypt.compare(password, await userRepository.findPassword(user) as string);
 
@@ -59,10 +64,6 @@ export class UserService {
             return { success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH}
         }
 
-        let jwtParams = await userRepository.findJwt(user);
-        if (!user.active || !jwtParams ) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE}
-        }
 
         if (Date.now() > jwtParams.expirateDate.getTime()) { // Generate new JTW Token
             const now = new Date();

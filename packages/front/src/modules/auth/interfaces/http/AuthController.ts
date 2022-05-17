@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes, SignupErrorCodes} from '@api-subventions-asso/dto';
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes, SignupErrorCodes} from '@api-subventions-asso/dto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
 import { DefaultObject } from '../../../../@types/utils';
@@ -41,7 +41,9 @@ export default class AuthController {
             res.statusCode = 422;
             return res.render("auth/login/login", {
                 pageTitle: 'Connexion',
-                loginError: true
+                loginError: true,
+                errorCode: result.code,
+                errorCodes: LoginDtoErrorCodes,
             });
         }
 
