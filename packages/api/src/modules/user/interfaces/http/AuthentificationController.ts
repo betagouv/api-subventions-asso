@@ -2,8 +2,9 @@ import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Sec
 import { Request as ExRequest } from "express";
 import userService, { UserServiceErrors } from '../../user.service';
 import User, { UserWithoutSecret } from '../../entities/User';
-import { LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
+import { LoginDtoErrorCodes, LoginDtoNegativeResponse, LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
 import { DefaultObject } from '../../../../@types';
+import { IVerifyOptions } from 'passport-local';
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -79,11 +80,49 @@ export class AuthentificationController extends Controller {
         @Body() body: { email: string, password: string }, // Just for docs
         @Request() req: ExRequest
     ): LoginDtoResponse {
-        // This metod is call after passport hook
-        // If passport hook not valid, method is not call
         // If you change the route please change in express.auth.hooks.ts
 
-        return (req.user as User).jwt;
+        if (req.user) { // Succesfuly logged
+            return {
+                success: true,
+                data: (req.user as User).jwt
+            };
+        }
+
+        const errorCode = parseInt((req.authInfo as IVerifyOptions).message, 10);
+
+        const errors: DefaultObject<{
+            errorCode: LoginDtoErrorCodes,
+            message: string
+        }> = {
+            [UserServiceErrors.USER_NOT_FOUND]: {
+                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
+                message: "Email or password not match"
+            },
+            [UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH]: {
+                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
+                message: "Email or password not match"
+            },
+            [UserServiceErrors.USER_NOT_ACTIVE]: {
+                errorCode: LoginDtoErrorCodes.USER_NOT_ACTIVE,
+                message: "User is inactive"
+            },
+            [UserServiceErrors.LOGIN_UPDATE_JWT_FAIL]: {
+                errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
+                message: "Internal error, please try later"
+            }
+        }
+
+        const result: LoginDtoNegativeResponse = {
+            success: false, 
+            data: errors[errorCode] || {
+                errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
+                message: "Internal error, please try later"
+            }
+        }
+
+        this.setStatus(401);
+        return result; 
     }
 
     @Post("/signup")
