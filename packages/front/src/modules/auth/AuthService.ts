@@ -1,15 +1,20 @@
-import { ResetPasswordDtoNegativeResponse, ResetPasswordErrorCodes, SignupDtoNegativeResponse, SignupErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes, LoginDtoNegativeResponse, ResetPasswordDtoNegativeResponse, ResetPasswordErrorCodes, SignupDtoNegativeResponse, SignupErrorCodes } from "@api-subventions-asso/dto";
 import axios, { AxiosError } from "axios";
 import apiDatasubService from "../../shared/apiDatasub.service";
 
 export class AuthService {
 
-    async login(email: string, password: string): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: unknown }> {
+    async login(email: string, password: string): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: unknown, code?: LoginDtoErrorCodes }> {
         try {
             const result = await apiDatasubService.login(email as string, password);
-            return { type: "SUCCESS", data: result.data };
+            return { type: "SUCCESS", data: result.data.data };
         } catch (e) {
-            return { type: "ERROR" }
+            let errorCode = LoginDtoErrorCodes.INTERNAL_ERROR;
+            if (axios.isAxiosError(e)) {
+                const errorData = e.response?.data as LoginDtoNegativeResponse;
+                if (e.response?.data.data) errorCode = errorData.data.errorCode;
+            }
+            return { type: "ERROR", code: errorCode }
         }
     }
 
