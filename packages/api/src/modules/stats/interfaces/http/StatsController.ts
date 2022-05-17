@@ -10,13 +10,13 @@ export  class StatsController extends Controller {
      * @param start Timestamp starting date for the period
      * @param end Timestamp ending date for the period
      * @param nbReq Number minimal number of requests that user must have done in the defined period
+     * @param {string?} includesAdmin true if we include admin in stats, false for exlude admin (default: false)
      * @returns 
      */
     @Get("/requests")
-    async getNbUsersByRequestsOnPeriod(@Query() start: string, @Query() end: string, @Query() nbReq: string): Promise<{ success: boolean, data?: number, message?: string}> {
-        let result;
+    async getNbUsersByRequestsOnPeriod(@Query() start: string, @Query() end: string, @Query() nbReq: string, @Query() includesAdmin = "false"): Promise<{ success: boolean, data?: number, message?: string }> {
         try {
-            result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq));
+            const result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq), includesAdmin === "true");
             return { success: true, data: result }
         } catch (e) {
             this.setStatus(500);
