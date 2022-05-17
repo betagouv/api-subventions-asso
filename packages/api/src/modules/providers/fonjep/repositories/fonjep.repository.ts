@@ -1,5 +1,5 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
-import { Document, ObjectId, WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
