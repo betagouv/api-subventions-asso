@@ -17,5 +17,4 @@ export * from "./shared/Adresse"
 export * from "./shared/Personne"
 export * from "./shared/InformationBancaire"
 export * from "./user/UserDto"
-
-// Test version lerna
+export * from "./stats/RequestsDtoResponse"
