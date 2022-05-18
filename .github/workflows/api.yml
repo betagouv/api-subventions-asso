@@ -4,11 +4,11 @@ name: CI-API
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop ]
     paths:
       - "packages/api/**"
   pull_request:
-    branches: [ main ]
+    branches: [ develop ]
     paths:
       - "packages/api/**"
 
