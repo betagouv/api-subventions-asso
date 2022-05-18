@@ -6,7 +6,7 @@ import getUserToken from "../../../../__helpers__/getUserToken";
 const g = global as unknown as { app: unknown };
 
 describe("StatsController", () => {
-    const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod");
+    const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod") as jest.SpyInstance<Promise<unknown>>;
 
     describe("getUserRequestsByPeriod", () => {
         const TODAY = new Date();
