@@ -14,9 +14,8 @@ describe("StatsRepository", () => {
         const START = dateFactory(-1);
         const END = dateFactory(1);
 
-        it('should be call mongo with admin filters', async () => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+        it('should call mongo with admin filters', async () => {
+            // @ts-expect-error statsRepository.collection is private attribute
             const mock = jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({next: () => ({})}));
 
             await statsRepository.countUsersByRequestNbOnPeriod(START, END, NB_REQUESTS, false);
@@ -24,9 +23,8 @@ describe("StatsRepository", () => {
             expect(mock.mock.calls).toMatchSnapshot()
         })
 
-        it('should be call mongo without admin filters', async () => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+        it('should call mongo without admin filters', async () => {
+            // @ts-expect-error statsRepository.collection is private attribute
             const mock = jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({next: () => ({})}));
 
             await statsRepository.countUsersByRequestNbOnPeriod(START, END, NB_REQUESTS, true);
