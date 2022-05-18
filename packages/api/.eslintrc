@@ -18,5 +18,9 @@
     ],
     "rules": {
         "indent": ["error", 4]
-    }
+    },
+    "ignorePatterns": [
+        "*.test.ts",
+        "*.spec.ts"    
+    ]
 }
