@@ -1,7 +1,8 @@
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { Etablissement, Association }from "@api-subventions-asso/dto";
-import StructureDto, { StructureEtablissementDto, StructureRepresentantLegalDto, StructureRibDto } from "../dto/StructureDto";
+import Document from "../../../documents/@types/Document";
+import StructureDto, { StructureDacDocumentDto, StructureEtablissementDto, StructureRepresentantLegalDto, StructureRibDto, StructureRnaDocumentDto } from "../dto/StructureDto";
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "BASE RNA <Via API ASSO>";
@@ -98,6 +99,63 @@ export default class ApiAssoDtoAdapter {
             contacts: representantsLegaux ? representantsLegaux
                 .filter(r => r.id_siret === etablissement.id_siret)
                 .map(r => toSirenPvs(toContact(r))) : undefined,
+        }
+    }
+
+    static toDocuments(structure: StructureDto): Document[] {
+        const toDate = (stringDate: string) => {
+            const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
+            return new Date(Date.UTC(year, month-1, day));
+        }
+
+        const dataDate = toDate(structure.identite.date_modif_rna);
+        const rnaDocuments = structure.document_rna?.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document, dataDate)) || [];
+        const dacDocuments = structure.document_dac?.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document, dataDate)) || [];
+        const ribDocuments = structure.rib?.map(rib => ApiAssoDtoAdapter.ribDocumentToDocument(rib, dataDate)) || [];
+
+        return [
+            ...rnaDocuments,
+            ...dacDocuments,
+            ...ribDocuments.filter(r => r) as Document[]
+        ]
+    }
+
+    private static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto, date: Date): Document {
+        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
+
+        return {
+            nom: toRnaPv(rnaDocument.id),
+            type: toRnaPv(rnaDocument.type),
+            url: toRnaPv(rnaDocument.url),
+            __meta__: {}
+        }
+    }
+
+    private static dacDocumentToDocument(dacDocument: StructureDacDocumentDto, date: Date): Document {
+        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
+
+        return {
+            nom: toRnaPv(dacDocument.nom),
+            type: toRnaPv(dacDocument.meta.type),
+            url: toRnaPv(dacDocument.url),
+            __meta__: {
+                siret: dacDocument.meta.id_siret
+            }
+        }
+    }
+
+    private static ribDocumentToDocument(rib: StructureRibDto, date: Date): Document | null {
+        if (!rib.url) return null;
+
+        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
+
+        return {
+            nom: toRnaPv(rib.iban),
+            type: toRnaPv("RIB"),
+            url: toRnaPv(rib.url),
+            __meta__: {
+                siret: rib.id_siret
+            }
         }
     }
 }

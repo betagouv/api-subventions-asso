@@ -1,0 +1,167 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApiAssoService findFullScopeAssociation should return data with etablisements and documents 1`] = `
+Object {
+  "associations": Array [
+    Object {
+      "activites": Object {},
+      "coordonnees": Object {
+        "adresse_siege": Object {
+          "commune": "paris",
+        },
+      },
+      "date_modification": Array [
+        Object {
+          "value": 2022-01-01T00:00:00.000Z,
+        },
+      ],
+      "denomination": Array [
+        Object {
+          "provider": "TEST",
+          "value": "TEST",
+        },
+      ],
+      "document_dac": Array [
+        Object {
+          "meta": Object {
+            "id_siret": "50922194100000",
+            "type": "dacType",
+          },
+          "nom": "nom fake",
+          "url": "/fake/url",
+        },
+      ],
+      "document_rna": Array [
+        Object {
+          "id": "ididididid",
+          "type": "fake-type",
+          "url": "/fake/url",
+        },
+      ],
+      "etablissement": Array [
+        Object {
+          "adresse": Object {},
+          "id_siret": "50922194100000",
+        },
+        Object {
+          "adresse": Object {},
+          "id_siret": "50922194100001",
+        },
+      ],
+      "identite": Object {
+        "date_modif_rna": "01-01-2022",
+        "date_modif_siren": "01-01-2022",
+        "id_forme_juridique": "9220",
+        "id_rna": "W00000000",
+        "id_siren": "509221941",
+        "id_siret_siege": "5092219410000",
+        "nom": "TEST",
+        "nom_sirene": "TEST SIREN 2",
+        "regime": "Autre",
+      },
+      "rib": Array [
+        Object {
+          "bic": "BIC_TEST",
+          "iban": "TEST",
+          "id_siret": "50922194100000",
+        },
+        Object {
+          "bic": "BIC_TEST 2",
+          "iban": "TEST 2",
+          "id_siret": "50922194100000",
+          "url": "fake/path/to/rib",
+        },
+      ],
+    },
+  ],
+  "documents": Array [
+    Object {
+      "__meta__": Object {},
+      "nom": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "ididididid",
+      },
+      "type": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "fake-type",
+      },
+      "url": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "/fake/url",
+      },
+    },
+    Object {
+      "__meta__": Object {
+        "siret": "50922194100000",
+      },
+      "nom": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "nom fake",
+      },
+      "type": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "dacType",
+      },
+      "url": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "/fake/url",
+      },
+    },
+    Object {
+      "__meta__": Object {
+        "siret": "50922194100000",
+      },
+      "nom": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "TEST 2",
+      },
+      "type": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "RIB",
+      },
+      "url": Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE RNA <Via API ASSO>",
+        "type": "string",
+        "value": "fake/path/to/rib",
+      },
+    },
+  ],
+  "etablissements": Array [
+    Object {
+      "adresse": Object {},
+      "id_siret": "50922194100000",
+      "siret": Array [
+        Object {
+          "value": "50922194100000",
+        },
+      ],
+    },
+    Object {
+      "adresse": Object {},
+      "id_siret": "50922194100001",
+      "siret": Array [
+        Object {
+          "value": "50922194100001",
+        },
+      ],
+    },
+  ],
+}
+`;
