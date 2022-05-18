@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApiAssoDtoAdapter toAssociation should retrun rna association 1`] = `
+exports[`ApiAssoDtoAdapter toAssociation should return rna association 1`] = `
 Object {
   "adresse_siege": undefined,
   "code_objet_social_1": Array [
@@ -55,7 +55,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should retrun rna association with adresse 1`] = `
+exports[`ApiAssoDtoAdapter toAssociation should return rna association with adresse 1`] = `
 Object {
   "adresse_siege": Array [
     Object {
@@ -123,7 +123,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should retrun rna association with date creation 1`] = `
+exports[`ApiAssoDtoAdapter toAssociation should return rna association with date creation 1`] = `
 Object {
   "adresse_siege": undefined,
   "code_objet_social_1": Array [
@@ -185,7 +185,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should retrun siren association 1`] = `
+exports[`ApiAssoDtoAdapter toAssociation should return siren association 1`] = `
 Object {
   "adresse_siege": Array [
     Object {
@@ -256,7 +256,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should retrun siren association with date creation 1`] = `
+exports[`ApiAssoDtoAdapter toAssociation should return siren association with date creation 1`] = `
 Object {
   "adresse_siege": Array [
     Object {
@@ -334,7 +334,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should retrun siren association without nom siren 1`] = `
+exports[`ApiAssoDtoAdapter toAssociation should return siren association without nom siren 1`] = `
 Object {
   "adresse_siege": Array [
     Object {
@@ -405,7 +405,161 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement with contact 1`] = `
+exports[`ApiAssoDtoAdapter toDocuments should return dac documents 1`] = `
+Array [
+  Object {
+    "__meta__": Object {
+      "siret": "50922194100000",
+    },
+    "nom": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "nom fake",
+    },
+    "type": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "dacType",
+    },
+    "url": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "/fake/url",
+    },
+  },
+]
+`;
+
+exports[`ApiAssoDtoAdapter toDocuments should return documents 1`] = `
+Array [
+  Object {
+    "__meta__": Object {},
+    "nom": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "ididididid",
+    },
+    "type": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "fake-type",
+    },
+    "url": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "/fake/url",
+    },
+  },
+  Object {
+    "__meta__": Object {
+      "siret": "50922194100000",
+    },
+    "nom": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "nom fake",
+    },
+    "type": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "dacType",
+    },
+    "url": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "/fake/url",
+    },
+  },
+  Object {
+    "__meta__": Object {
+      "siret": "50922194100000",
+    },
+    "nom": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "TEST 2",
+    },
+    "type": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "RIB",
+    },
+    "url": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "fake/path/to/rib",
+    },
+  },
+]
+`;
+
+exports[`ApiAssoDtoAdapter toDocuments should return rib documents 1`] = `
+Array [
+  Object {
+    "__meta__": Object {
+      "siret": "50922194100000",
+    },
+    "nom": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "TEST 2",
+    },
+    "type": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "RIB",
+    },
+    "url": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "fake/path/to/rib",
+    },
+  },
+]
+`;
+
+exports[`ApiAssoDtoAdapter toDocuments should return rna documents 1`] = `
+Array [
+  Object {
+    "__meta__": Object {},
+    "nom": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "ididididid",
+    },
+    "type": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "fake-type",
+    },
+    "url": Object {
+      "last_update": 1906-07-15T00:00:00.000Z,
+      "provider": "BASE RNA <Via API ASSO>",
+      "type": "string",
+      "value": "/fake/url",
+    },
+  },
+]
+`;
+
+exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with contact 1`] = `
 Object {
   "adresse": Array [
     Object {
@@ -491,7 +645,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement with rib 1`] = `
+exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with rib 1`] = `
 Object {
   "adresse": Array [
     Object {
@@ -517,6 +671,17 @@ Object {
         "value": Object {
           "bic": "BIC_TEST",
           "iban": "TEST",
+        },
+      },
+    ],
+    Array [
+      Object {
+        "last_update": 1906-07-15T00:00:00.000Z,
+        "provider": "BASE SIREN <Via API ASSO>",
+        "type": "object",
+        "value": Object {
+          "bic": "BIC_TEST 2",
+          "iban": "TEST 2",
         },
       },
     ],
@@ -557,7 +722,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement without contact 1`] = `
+exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without contact 1`] = `
 Object {
   "adresse": Array [
     Object {
@@ -611,7 +776,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should retrun etablissement without rib 1`] = `
+exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without rib 1`] = `
 Object {
   "adresse": Array [
     Object {

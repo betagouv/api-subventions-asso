@@ -57,6 +57,31 @@ export interface StructureRepresentantLegalDto {
     id_siret: string,
 }
 
+export interface StructureRnaDocumentDto {
+    id: string,
+    type: string,
+    "sous-type": string,
+    "lib_sous-type": string,
+    annee: number,
+    time: number,
+    url: string,
+}
+
+export interface StructureDacDocumentDto {
+    uuid: string,
+    origin: string,
+    nom: string,
+    commentaire: string,
+    annee_validite: number,
+    time_depot: number,
+    url: string,
+    etat: string,
+    meta: {
+        type: string,
+        id_siret: string,
+    }
+}
+
 export default interface StructureDto {
     identite: {
         nom: string,
@@ -226,28 +251,6 @@ export default interface StructureDto {
         note: string
     },
 
-    document_rna: {
-        id: string,
-        type: string,
-        "sous-type": string,
-        "lib_sous-type": string,
-        annee: number,
-        time: number,
-        url: string,
-    }[]
-
-    document_dac: {
-        uuid: string,
-        origin: string,
-        nom: string,
-        commentaire: string,
-        annee_validite: number,
-        time_depot: number,
-        url: string,
-        etat: string,
-        meta: {
-            type: string,
-            id_siret: string,
-        }
-    }[]
+    document_rna: StructureRnaDocumentDto[]
+    document_dac: StructureDacDocumentDto[]
 }
