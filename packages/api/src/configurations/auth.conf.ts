@@ -36,4 +36,5 @@ export const ACCEPTED_EMAIL_DOMAIN = [
     "ac-grenoble.fr",
     "ac-dijon.fr",
     "ac-amiens.fr",
+    "ac-toulouse.fr"
 ]
