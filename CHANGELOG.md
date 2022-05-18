@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.7](https://github.com/betagouv/api-subventions-asso/compare/v0.8.6...v0.8.7) (2022-05-18)
+
+
+### Bug Fixes
+
+* **api:** add ac-toulouse ([793c62d](https://github.com/betagouv/api-subventions-asso/commit/793c62db482a9198b7f2019891e6f34c06fb1294))
+
 ### [0.8.6](https://github.com/betagouv/api-subventions-asso/compare/v0.8.5...v0.8.6) (2022-05-04)
 
 
