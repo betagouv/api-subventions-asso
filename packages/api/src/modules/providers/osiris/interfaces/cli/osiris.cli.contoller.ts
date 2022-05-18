@@ -8,10 +8,10 @@ import osirisService from "../../osiris.service";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
-import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import rnaSirenService from "../../../../open-data/rna-siren/rnaSiren.service";
 import OsirisEvaluationEntity from '../../entities/OsirisEvaluationEntity';
+import { findFiles } from '../../../../../shared/helpers/ParserHelper';
 
 
 @StaticImplements<CliStaticInterface>()
@@ -64,28 +64,26 @@ export default class OsirisCliController {
         }
     }
 
-    public async parse(type: "actions" | "requests" | "evaluations", file: string): Promise<unknown> {
-        if (typeof type !== "string" || typeof file !== "string" ) {
+    public async parse(type: "requests" | "actions" | "evaluations", file: string): Promise<unknown> {
+        if (typeof type != "string" && typeof file != "string") {
             throw new Error("Parse command need type and file args");
         }
-
         if (!fs.existsSync(file)) {
             throw new Error(`File not found ${file}`);
         }
-
         const files = findFiles(file);
+        const logs: unknown[] = [];
 
         console.info(`${files.length} files in the parse queue`);
-        console.info(`You can read log in ${this.logFileParsePath[type]}`);
+        console.info(`You can read log in ${ this.logFileParsePath }`);
 
-        const logs: unknown[] = [];
         return files.reduce((acc, filePath) => {
             return acc.then(() => this._parse(type, filePath, logs));
         }, Promise.resolve())
             .then(() => fs.writeFileSync(this.logFileParsePath[type], logs.join(''), { flag: "w", encoding: "utf-8" }));
     }
 
-    private async _parse(type: string, file: string, logs: unknown[]) {
+    protected async _parse(type: string, file: string, logs: unknown[]) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 

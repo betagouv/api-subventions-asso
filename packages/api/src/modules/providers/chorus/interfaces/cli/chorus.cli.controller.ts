@@ -4,41 +4,18 @@ import { StaticImplements } from "../../../../../decorators/staticImplements.dec
 import { CliStaticInterface } from "../../../../../@types";
 import ChorusParser from "../../chorus.parser";
 import chorusService, { RejectedRequest } from "../../chorus.service";
-import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
+import CliController from '../../../../../shared/CliController';
 
 @StaticImplements<CliStaticInterface>()
-export default class ChorusCliController {
+export default class ChorusCliController extends CliController {
     static cmdName = "chorus";
 
-    private logFileParsePath = "./logs/chorus.parse.log.txt"
+    protected logFileParsePath = "./logs/chorus.parse.log.txt"
 
     /**
-     * @param file path to file
-     */
-    public async parse_csv(file: string) {
-        if (typeof file !== "string" ) {
-            throw new Error("parse_csv command need file args");
-        }
-
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-
-        const files = findFiles(file);
-
-        console.info(`${files.length} files in the parse queue`);
-        console.info(`You can read log in ${this.logFileParsePath}`);
-        const logs: unknown[] = [];
-
-        return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(filePath, logs));
-        }, Promise.resolve())
-            .then(() => fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" }));
-    }
-
-    /**
+     * Parse XLS files
      * @param file path to file
      * @param batchSize La taille des packets envoyer à mongo coup par coup
      */
@@ -99,7 +76,14 @@ export default class ChorusCliController {
         fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" });
     }
 
-    private async _parse(file: string, logs: unknown[]) {
+    /**
+     * @param file path to file
+     */
+    public async parse_csv(file: string) {
+        await super.parse(file);
+    }
+
+    protected async _parse(file: string, logs: unknown[]) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 

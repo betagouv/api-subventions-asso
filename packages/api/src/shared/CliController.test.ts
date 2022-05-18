@@ -1,0 +1,87 @@
+import fs from "fs";
+import CliController from './CliController';
+import * as ParserHelper from './helpers/ParserHelper';
+
+describe("CliController", () => {
+    const controller = new CliController();
+    const FILENAME = "FILENAME";
+    const existsSyncMock = jest.spyOn(fs, "existsSync");
+    const writeFileSyncMock = jest.spyOn(fs, "writeFileSync").mockImplementation(() => ({}));
+
+    afterAll(() => {
+        writeFileSyncMock.mockRestore();
+    })
+
+    describe("valideParseFile()", () => {
+        it("should throw an error if args is not a string",  () => {
+            const expected = new Error("Parse command needs file path args");
+            let actual;
+            try {
+                // @ts-expect-error: test private methode
+                actual = controller.validParseFile(1234);
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
+        });
+    });
+    describe("validFileExists()", () => {
+        it("should throw an error",  () => {
+            existsSyncMock.mockImplementationOnce(() => false)
+            const expected = new Error(`File not found ${FILENAME}`);
+            let actual;
+            try {
+                // @ts-expect-error: test private methode
+                actual = controller.validFileExists(FILENAME);
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
+        });
+        it("should return true",  () => {
+            existsSyncMock.mockImplementationOnce(() => true)
+            // @ts-expect-error: test private methode
+            const actual = controller.validFileExists(FILENAME);
+            expect(actual).toEqual(true);
+        });
+    });
+    describe("parse()", () => {
+        const findFilesMock = jest.spyOn(ParserHelper, "findFiles");
+        let validFileExistsMock: jest.SpyInstance;
+        let _parseSpy: jest.SpyInstance;
+        
+        beforeAll(() => {
+            // @ts-expect-error: spy on protected method
+            _parseSpy = jest.spyOn(controller, "_parse").mockImplementation(() => true);
+            // @ts-expect-error: spy on protected method
+            validFileExistsMock = jest.spyOn(controller, "validFileExists").mockImplementationOnce(() => true);
+            jest.spyOn(console, 'info').mockImplementation(() => undefined);
+            existsSyncMock.mockImplementation(() => true);
+        })
+        
+        afterEach(() => {
+            findFilesMock.mockReset();
+        })
+
+        afterAll(() => {
+            _parseSpy.mockRestore();
+            validFileExistsMock.mockRestore();
+        })
+
+        it("should call _parse() one time", async () => {
+            findFilesMock.mockImplementationOnce(() => [FILENAME])
+            const expected = 1;
+            await controller.parse(FILENAME);
+            const actual = _parseSpy.mock.calls.length;
+            expect(actual).toEqual(expected);
+        });
+        it("should call _parse() multiple times", async () => {
+            const FILES =  [FILENAME, FILENAME, FILENAME]
+            findFilesMock.mockImplementationOnce(() => FILES)
+            const expected = FILES.length;
+            await controller.parse(FILENAME);
+            const actual = _parseSpy.mock.calls.length;
+            expect(actual).toEqual(expected);
+        });
+    })
+});
