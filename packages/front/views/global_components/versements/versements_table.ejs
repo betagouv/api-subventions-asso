@@ -1,6 +1,5 @@
 <div class="fr-table">
-    <table>
-        <!-- <caption>Financements</caption> -->
+    <table class="custom-table-center-text">
         <thead>
             <tr>
                 <th scope="col">Provider</th>
@@ -19,15 +18,15 @@
             <% for(let i = 0; i < versements.length; i++ ) { %>
                 <% const versement = versements[i];%> 
                 <tr>
-                    <td><%-helper.getProvider(versement.amount)%></td>
-                    <td><%-helper.getValue(versement.domaineFonctionnel)%></td>
-                    <td><%-helper.getValue(versement.activitee)%></td>
-                    <td><%-helper.getValue(versement.centreFinancier)%></td>
-                    <td><%-helper.getValue(versement.numeroTier)%></td>
-                    <td><%-helper.getValue(versement.ej)%></td>
-                    <td><%-helper.getValue(versement.numeroDemandePayment)%></td>
-                    <td><%-helper.currency.addSpaces(helper.getValue(versement.amount))%>€</td>
-                    <td><%-helper.date.toProviderValueString(versement.dateOperation)%></td>
+                    <td><%-helper.getProvider(versement.amount) || "-" %></td>
+                    <td><%-helper.getValue(versement.domaineFonctionnel) || "-" %></td>
+                    <td><%-helper.getValue(versement.activitee) || "-" %></td>
+                    <td><%-helper.getValue(versement.centreFinancier) || "-" %></td>
+                    <td><%-helper.getValue(versement.numeroTier) || "-" %></td>
+                    <td><%-helper.getValue(versement.ej) || "-" %></td>
+                    <td><%-helper.getValue(versement.numeroDemandePayment) || "-" %></td>
+                    <td><%-helper.currency.addSpaces(helper.getValue(versement.amount)) || "-" %>€</td>
+                    <td><%-helper.date.toProviderValueString(versement.dateOperation) || "-" %></td>
                     <td>
                         <% const siret = helper.getValue(versement.siret); %>
                         <% if (currentSiret != siret) { %> 
