@@ -3,10 +3,17 @@ import associationsService from "../associations/associations.service";
 
 import { Siret, Rna, Siren ,DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
 import subventionsService from "../subventions/subventions.service";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import versementsService from "../versements/versements.service";
 import associationNameService from "../association-name/associationName.service"
+import { AssociationIdentifiers } from '../../@types';
+import { isRna, isSiren } from '../../shared/Validators';
 export class SearchService {
+
+    public async getAssociation(id: AssociationIdentifiers) {
+        if (isRna(id)) return await this.getByRna(id);
+        else if (isSiren(id)) return await this.getBySiren(id);
+        throw new Error("You must give a valid RNA or Siren");
+    }
 
     public async getBySiret(siret: Siret) {
         const etablissement = await etablissementService.getEtablissement(siret);
@@ -35,26 +42,14 @@ export class SearchService {
     }
 
     public async getByRna(rna: Rna) {
-        const siren = await rnaSirenService.getSiren(rna);
-
-        if (!siren) {
-            const association = await associationsService.getAssociationByRna(rna);
-
-            if (!association) return null;
-
-            return {
-                association,
-                etablissements: []
-            }
-        }
-
-        return this.getBySiren(siren, rna);
+        const association = await associationsService.getAssociationByRna(rna);
+        if (!association) return null;
+        association.etablissements = [];
+        return association;
     }
 
-    public async getBySiren(siren: Siren, rna?: Rna) {
-        if (!rna) rna = await rnaSirenService.getRna(siren) || undefined;
-
-        const association = await associationsService.getAssociationBySiren(siren, rna);
+    public async getBySiren(siren: Siren) {
+        const association = await associationsService.getAssociationBySiren(siren);
         if (!association) return null;
 
         const etablissements = await etablissementService.getEtablissementsBySiren(siren);

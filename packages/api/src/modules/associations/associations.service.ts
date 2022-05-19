@@ -35,8 +35,8 @@ export class AssociationsService {
         throw new Error("You must give a valid RNA, SIREN or SIRET number.");
     }
 
-    async getAssociationBySiren(siren: Siren, rna?: Rna) {
-        const data = await (await this.aggregateSiren(siren, rna)).filter(asso => asso) as Association[];
+    async getAssociationBySiren(siren: Siren) {
+        const data = await (await this.aggregateSiren(siren)).filter(asso => asso) as Association[];
 
         if (!data.length) return null;
 
@@ -44,8 +44,8 @@ export class AssociationsService {
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
     
-    async getAssociationBySiret(siret: Siret, rna?: Rna) {
-        const data = await (await this.aggregateSiret(siret, rna)).filter(asso => asso) as Association[];
+    async getAssociationBySiret(siret: Siret) {
+        const data = await (await this.aggregateSiret(siret)).filter(asso => asso) as Association[];
         if (!data.length) return null;
         
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
@@ -96,22 +96,22 @@ export class AssociationsService {
         return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
     }
 
-    private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
+    private async aggregateSiren(siren: Siren): Promise<(Association | null)[]> {
         const associationProviders = this.getAssociationProviders();
 
         const promises = associationProviders.map(async provider => { 
-            const assos = await provider.getAssociationsBySiren(siren, rna);
+            const assos = await provider.getAssociationsBySiren(siren);
             if (assos) return assos.flat();
             else return null;
         });
         return (await Promise.all(promises)).flat();
     }
 
-    private async aggregateSiret(siret: Siret, rna?: Rna): Promise<(Association | null)[]> {
+    private async aggregateSiret(siret: Siret): Promise<(Association | null)[]> {
         const associationProviders = this.getAssociationProviders();
 
         const promises = associationProviders.map(async provider => { 
-            const assos = await provider.getAssociationsBySiret(siret, rna);
+            const assos = await provider.getAssociationsBySiret(siret);
             if (assos) return assos.flat();
             else return null;
         });

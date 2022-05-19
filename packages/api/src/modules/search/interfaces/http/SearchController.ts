@@ -1,6 +1,5 @@
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { Rna, Siren, Siret, Association, Etablissement } from '@api-subventions-asso/dto';
-import { isRna, isSiren } from '../../../../shared/Validators';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
@@ -27,18 +26,20 @@ export class SearchController extends Controller {
     }
 
     /**
-     * Recherche des demandes de subventions via le rna de l'association
-     * @param rna_or_siren Identifiant RNA ou Identifiant Siren
+     * Recherche des demandes de subventions via l'identifiant de l'association
+     * @param rna_or_siren Identifiant RNA ou Siren
      */
     @Get("/association/{id}")
     public async findAssociation(
         id: Rna | Siren,
     ): Promise<{ success: boolean, association?: Association, message?: string}> {
         let result: Association | null = null;
-        if (isRna(id)) {
-            result = await searchService.getByRna(id) as Association;
-        } else if (isSiren(id)){
-            result = await searchService.getBySiren(id) as Association;
+        
+        try {
+            result = await searchService.getAssociation(id);
+        } catch (e) {
+            this.setStatus(404);
+            return { success: false, message: (e as Error).message }
         }
 
         if (!result) {
@@ -50,7 +51,7 @@ export class SearchController extends Controller {
     }
 
     /**
-     * Recherche des associations via le rna, siren ou nom partiel ou complet de l'association
+     * Recherche des informations liées à une association via son rna, siren et nom partiel ou complet
      * @param rna_or_siren Identifiant RNA ou Identifiant Siren
      */
     @Get("/associations/{input}")
