@@ -10,6 +10,7 @@ import providers from "../providers";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
 import subventionsService from '../subventions/subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
+import { isSiren } from '../../shared/Validators';
 
 export class EtablissementsService {
     
@@ -22,7 +23,7 @@ export class EtablissementsService {
     }
 
     async getEtablissement(siret: Siret) {
-        const data = await (await this.aggregate(siret, "SIRET")).flat().filter(d => d) as Etablissement[];
+        const data = await (await this.aggregate(siret)).flat().filter(d => d) as Etablissement[];
         
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
@@ -30,44 +31,38 @@ export class EtablissementsService {
     }
 
     async getEtablissementsBySiren(siren: Siren) {
-        const data = await (await this.aggregate(siren, "SIREN")).flat().filter(d => d) as Etablissement[];
+        const data = await (await this.aggregate(siren)).flat().filter(d => d) as Etablissement[];
         
         if (!data.length) return null;
 
-        const groupBySiret = data.reduce((acc, etablisement) => {
-            const siret = etablisement.siret[0].value;
+        const groupBySiret = data.reduce((acc, etablissement) => {
+            const siret = etablissement.siret[0].value;
 
             if (!siret) return acc;
 
             if (!acc[siret]) acc[siret] = [];
-            acc[siret].push(etablisement);
+            acc[siret].push(etablissement);
 
             return acc;
         }, {} as DefaultObject<Etablissement[]>);
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
-        return Object.values(groupBySiret).map(etablisements => FormaterHelper.formatData(etablisements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
+        return Object.values(groupBySiret).map(etablissements => FormaterHelper.formatData(etablissements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
     }
 
     async getSubventions(siret: Siret) {
         return await subventionsService.getDemandesByEtablissement(siret);
     }
 
-    private async aggregate(id: Siren | Siret, type: "SIRET" | "SIREN") {
+    private async aggregate(id: Siren | Siret) {
+        const getter = isSiren(id) ? "getEtablissementsBySiren" : "getEtablissementsBySiret"
         const etablisementProviders = this.getEtablissementProviders();
         
-        return await etablisementProviders.reduce(async (acc, provider) => {
-            const result = await acc;
-            const etablissements = await (
-                type === "SIREN"
-                    ? provider.getEtablissementsBySiren(id, true)
-                    : provider.getEtablissementsBySiret(id, true)
-            );
-            if (etablissements) {
-                result.push(...etablissements.flat());
-            }
-
-            return acc;
-        }, Promise.resolve([]) as Promise<Etablissement[]>);
+        const promises = etablisementProviders.map(async provider => { 
+            const etabs = await provider[getter](id, true);
+            if (etabs) return etabs.flat();
+            else return null;
+        });
+        return (await Promise.all(promises)).flat();
     }
 
     private getEtablissementProviders() {

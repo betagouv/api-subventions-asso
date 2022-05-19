@@ -99,44 +99,34 @@ export class AssociationsService {
     private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
         const associationProviders = this.getAssociationProviders();
 
-        return await associationProviders.reduce(async (acc, provider) => {
-            const result = await acc;
+        const promises = associationProviders.map(async provider => { 
             const assos = await provider.getAssociationsBySiren(siren, rna);
-            if (assos) {
-                result.push(...assos.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Association[]>);
+            if (assos) return assos.flat();
+            else return null;
+        });
+        return (await Promise.all(promises)).flat();
     }
 
     private async aggregateSiret(siret: Siret, rna?: Rna): Promise<(Association | null)[]> {
         const associationProviders = this.getAssociationProviders();
 
-        return await associationProviders.reduce(async (acc, provider) => {
-            const result = await acc;
+        const promises = associationProviders.map(async provider => { 
             const assos = await provider.getAssociationsBySiret(siret, rna);
-            if (assos) {
-                result.push(...assos.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Association[]>);
+            if (assos) return assos.flat();
+            else return null;
+        });
+        return (await Promise.all(promises)).flat();
     }
-
 
     private async aggregateRna(rna: Rna): Promise<(Association | null)[]> {
         const associationProviders = this.getAssociationProviders();
 
-        return await associationProviders.reduce(async (acc, provider) => {
-            const result = await acc;
+        const promises = associationProviders.map(async provider => { 
             const assos = await provider.getAssociationsByRna(rna);
-            if (assos) {
-                result.push(...assos.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Association[]>);
+            if (assos) return assos.flat();
+            else return null;
+        });
+        return (await Promise.all(promises)).flat();
     }
 
     public isAssociationsProvider(provider: unknown): provider is AssociationsProvider {
