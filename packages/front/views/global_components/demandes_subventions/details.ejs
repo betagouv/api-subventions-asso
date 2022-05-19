@@ -18,15 +18,15 @@
             <% for(let i = 0; i < subventions.demandes[year].length; i++ ) { %>
                 <% const demande = subventions.demandes[year][i];%> 
                 <tr>
-                    <td><%-helper.getValue(demande.status) || "-" %></td>
-                    <td><%-helper.getValue(demande.service_instructeur) || "-" %></td>
-                    <td><%-helper.getValue(demande.dispositif) || "-" %></td>
-                    <td><%-helper.getValue(demande.ej) || "-" %></td>
-                    <td><%-helper.getValue(demande.annee_demande) || "-" %></td>
-                    <td><%-helper.date.toProviderValueString(demande.date_commision) || "-" %></td>
-                    <td><%-helper.getValue(demande.pluriannualite) || "-" %></td>
-                    <td><%- demande.montants && demande.montants.accorde ? helper.currency.addSpaces(helper.getValue(demande.montants.accorde)) : "-"%></td>
-                    <td><%-helper.getProvider(demande.service_instructeur)  || "-" %></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getValue(demande.status))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getValue(demande.service_instructeur))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getValue(demande.dispositif))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getValue(demande.ej))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getValue(demande.annee_demande))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.date.toProviderValueString(demande.date_commision))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getValue(demande.pluriannualite))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.currency.addSpaces(helper.getValue(demande.montants.accorde)))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.getProvider(demande.service_instructeur) )%></td>
                     <td>
                         <a download="demande_subvention.json" href="data:application/json;base64,<%- helper.toJSONFile(demande) %>">
                             <button class="fr-btn fr-fi-file-download-line" title="Télécharger les données sur la demande de subvention">

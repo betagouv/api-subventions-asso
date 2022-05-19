@@ -1,12 +1,12 @@
 <div class="fr-col fr-col-lg-12">
     <div class="fr-table">
-        <table>
+        <table class="custom-table-center-text">
             <caption>Représentants légaux</caption>
             <thead>
                 <tr>
+                    <th scope="col"> Civilité </th>
                     <th scope="col"> Nom </th>
                     <th scope="col"> Prénom </th>
-                    <th scope="col"> Civilité </th>
                     <th scope="col"> Téléphone </th>
                     <th scope="col"> Email </th>
                     <th scope="col"> Rôle </th>
@@ -16,12 +16,12 @@
                 <% for( let index = 0; index < etablissement.representants_legaux.length; index++ ) { %>
                     <% let representant = helper.getValue(etablissement.representants_legaux[index]) %>
                     <tr>
-                        <td><%- representant.nom %></td>
-                        <td><%- representant.prenom %></td>
-                        <td><%- representant.civilite %></td>
-                        <td><%- representant.telephone %></td>
-                        <td><%- representant.email %></td>
-                        <td><%- representant.role %></td>
+                        <td><%- helper.returnValueOrHyphen(representant.civilite)%></td>
+                        <td><%- helper.returnValueOrHyphen(representant.nom)%></td>
+                        <td><%- helper.returnValueOrHyphen(representant.prenom)%></td>
+                        <td><%- helper.returnValueOrHyphen(helper.phone.format(representant.telephone)) %></td>
+                        <td><%- helper.returnValueOrHyphen(representant.email) %></td>
+                        <td><%- helper.returnValueOrHyphen(representant.role) %></td>
                     </tr>
                 <% } %>
             </tbody>
