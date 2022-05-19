@@ -6,7 +6,7 @@ import getUserToken from "../../../../__helpers__/getUserToken";
 const g = global as unknown as { app: unknown };
 
 describe("StatsController", () => {
-    const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod") as jest.SpyInstance<Promise<unknown>>;
+    const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod") as jest.SpyInstance;
 
     describe("getUserRequestsByPeriod", () => {
         const TODAY = new Date();
@@ -14,8 +14,8 @@ describe("StatsController", () => {
         const MIN_REQUESTS = "10";
 
         it("should return data with HTTP status code 200", async () => {
-            const DATA = ["Here", "some", "data"];
-            spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => Promise.resolve(DATA));
+            const DATA = 5;
+            spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => DATA);
             const expected = { success: true, data: DATA};
             const actual = await request(g.app)
                 .get("/stats/requests")
