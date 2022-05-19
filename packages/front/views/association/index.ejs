@@ -39,7 +39,7 @@
                             });
                         -%>
 
-                        <% if(versements) { %>
+                        <% if(versements && versements.length) { %>
                             <%-
                                 include("../global_components/versements/index", {
                                     versements,
