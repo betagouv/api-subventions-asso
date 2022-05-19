@@ -1,46 +1,20 @@
-import fs from "fs";
-
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface} from "../../../../../@types/Cli.interface";
-import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 import DataGouvParser from "../../datagouv.parser";
 import dataGouvService from "../../datagouv.service";
 import EntrepriseSirenEntity from "../../entities/EntrepriseSirenEntity";
 import RnaSiren from "../../../../open-data/rna-siren/entities/RnaSirenEntity";
 import { IStreamAction } from "../../@types";
 import rnaSirenService from "../../../../open-data/rna-siren/rnaSiren.service";
+import CliController from '../../../../../shared/CliController';
 
 @StaticImplements<CliStaticInterface>()
-export default class DataGouvCliController {
+export default class DataGouvCliController extends CliController {
     static cmdName = "datagouv";
 
-    private logFileParsePath = "./logs/datagouv.parse.log.txt"
+    protected logFileParsePath = "./logs/datagouv.parse.log.txt"
 
-    /**
-     * @param file path to file
-     */
-    public async parse_unite_legal(file: string) {
-        if (typeof file !== "string" ) {
-            throw new Error("Parse command need file args");
-        }
-
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-
-        const files = findFiles(file);
-
-        console.info(`${files.length} files in the parse queue`);
-        console.info(`You can read log in ${this.logFileParsePath}`);
-        const logs: unknown[] = [];
-
-        return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(filePath, logs));
-        }, Promise.resolve())
-            .then(() => fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" }));
-    }
-
-    private async _parse(file: string, logs: unknown[]) {
+    protected async _parse(file: string, logs: unknown[]) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
