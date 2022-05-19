@@ -19,7 +19,7 @@
                                         <button class="fr-accordion__btn" aria-expanded="<%- index === 0 ? "true": "false" %>" aria-controls="fr-accordion-1<%- index %>-body-1<%- index %>"><%-yearText%></button>
                                     </h3>
                                     <div class="fr-collapse" id="fr-accordion-1<%- index %>-body-1<%- index %>">
-                                        <p>Montant des subventions attribuées (<%- yearText -%>) : <%- helper.currency.addSpaces(subventions.totalAccordeByYear[year]) -%>€</p>
+                                        <p>Montant des subventions attribuées (<%- yearText -%>) : <%- helper.currency.addSpaces(subventions.totalAccordeByYear[year]) -%> €</p>
                                         <%-
                                             include("./details", {
                                                 subventions,

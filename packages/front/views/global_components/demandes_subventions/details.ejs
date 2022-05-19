@@ -25,7 +25,7 @@
                     <td><%-helper.returnValueOrHyphen(helper.getValue(demande.annee_demande))%></td>
                     <td><%-helper.returnValueOrHyphen(helper.date.toProviderValueString(demande.date_commision))%></td>
                     <td><%-helper.returnValueOrHyphen(helper.getValue(demande.pluriannualite))%></td>
-                    <td><%-helper.returnValueOrHyphen(helper.currency.addSpaces(helper.getValue(demande.montants.accorde)))%></td>
+                    <td><%-helper.returnValueOrHyphen(helper.currency.addSpaces(helper.getValue(demande.montants.accorde)))%> €</td>
                     <td><%-helper.returnValueOrHyphen(helper.getProvider(demande.service_instructeur) )%></td>
                     <td>
                         <a download="demande_subvention.json" href="data:application/json;base64,<%- helper.toJSONFile(demande) %>">
