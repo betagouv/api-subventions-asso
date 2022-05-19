@@ -169,7 +169,7 @@ describe("DataGouvParser", () => {
             );
         })
 
-        it("should be call pause stream and resume stream", async () => {
+        it("should call pause stream and resume stream", async () => {
             const buffer = buildFileContent([{
                 siren: "000000001",
                 categorieJuridiqueUniteLegale: "FAKE",

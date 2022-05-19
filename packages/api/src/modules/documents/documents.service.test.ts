@@ -47,7 +47,7 @@ describe("Documents Service", () => {
             expect(actual).toHaveLength(expected);
         })
 
-        it("should be call aggregate with SIREN", async () => {
+        it("should call aggregate with SIREN", async () => {
             const expected = "SIREN";
             aggregateMock.mockImplementationOnce(() => Promise.resolve([]));
             
@@ -98,7 +98,7 @@ describe("Documents Service", () => {
             expect(actual).toHaveLength(expected);
         })
 
-        it("should be call aggregate with SIRET", async () => {
+        it("should call aggregate with SIRET", async () => {
             const expected = "SIRET";
             aggregateMock.mockImplementationOnce(() => Promise.resolve([]));
             
@@ -149,7 +149,7 @@ describe("Documents Service", () => {
             expect(actual).toHaveLength(expected);
         })
 
-        it("should be call aggregate with RNA", async () => {
+        it("should call aggregate with RNA", async () => {
             const expected = "RNA";
             aggregateMock.mockImplementationOnce(() => Promise.resolve([]));
             
@@ -260,7 +260,7 @@ describe("Documents Service", () => {
             expect(actual).rejects.toThrowError(expected);
         })
 
-        it("should be call getDocumentsByRna", async () => {
+        it("should call getDocumentsByRna", async () => {
             const mock = jest.fn(() => true);
             const expected = "W00000000";
 
@@ -278,7 +278,7 @@ describe("Documents Service", () => {
             expect(mock).toHaveBeenCalledWith(expected);
         })
 
-        it("should be call getDocumentsBySiren", async () => {
+        it("should call getDocumentsBySiren", async () => {
             const mock = jest.fn(() => true);
             const expected = "123456789";
 
@@ -296,7 +296,7 @@ describe("Documents Service", () => {
             expect(mock).toHaveBeenCalledWith(expected);
         })
 
-        it("should be call getDocumentsBySiret", async () => {
+        it("should call getDocumentsBySiret", async () => {
             const mock = jest.fn(() => true);
             const expected = "12345678912345";
 
