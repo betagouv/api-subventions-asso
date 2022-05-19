@@ -16,6 +16,7 @@ describe("user.service.ts", () => {
         });
 
         it("should be reject because password dont match", async () => {
+            await userService.activeUser("test@beta.gouv.fr");
             await expect(userService.login("test@beta.gouv.fr", "")).resolves.toMatchObject({ success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH})
         });
 
