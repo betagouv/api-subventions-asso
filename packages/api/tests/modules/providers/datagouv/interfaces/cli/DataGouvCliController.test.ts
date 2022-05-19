@@ -25,7 +25,7 @@ describe("DataGouvCliController", () => {
         })
     })
 
-    describe("parse_unite_legal", () => {
+    describe("parse", () => {
         let controller: DataGouvCliController;
         beforeEach(() => {
             controller = new DataGouvCliController()
@@ -40,7 +40,7 @@ describe("DataGouvCliController", () => {
         it('should be call _parse', async () => {
             (fs.existsSync as jest.Mock).mockImplementationOnce(() => true);
             (ParserHelper.findFiles as jest.Mock).mockImplementationOnce((file) => [file]);
-            await controller.parse_unite_legal("FAKE_PATH");
+            await controller.parse("FAKE_PATH");
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -52,11 +52,11 @@ describe("DataGouvCliController", () => {
 
         it('should be throw file not found error', async () => {
             (fs.existsSync as jest.Mock).mockImplementationOnce(() => false);
-            await expect(controller.parse_unite_legal("FAKE_PATH")).rejects.toThrowError(`File not found FAKE_PATH`);
+            await expect(controller.parse("FAKE_PATH")).rejects.toThrowError(`File not found FAKE_PATH`);
         })
 
         it('should be throw file not found error', async () => {
-            await expect(controller.parse_unite_legal(undefined as unknown as string)).rejects.toThrowError("Parse command need file args");
+            await expect(controller.parse(undefined as unknown as string)).rejects.toThrowError("Parse command needs file path args");
         })
     });
 

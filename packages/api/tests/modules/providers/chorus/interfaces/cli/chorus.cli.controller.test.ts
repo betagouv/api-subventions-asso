@@ -14,25 +14,17 @@ describe("ChorusCliController", () => {
         spys.forEach(spy => spy.mockReset());
     });
 
-    describe('parse_csv cli requests', () => {
+    describe('parse cli requests', () => {
         let controller: ChorusCliController;
 
         beforeEach(() => {
             controller = new ChorusCliController();
         });
 
-        it('should call osiris parse_csvr', async () => {
+        it('should call osiris parse', async () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/infbud-53.tests.csv");
-            await controller.parse_csv(filePath);
+            await controller.parse(filePath);
             expect(ChorusParser.parse).toHaveBeenCalled();
-        });
-
-        it('should throw error because no agrs', () => {
-            expect(controller.parse_csv).rejects.toThrowError("parse_csv command need file args");
-        });
-
-        it('should throw an error because the file does not exist', () => {
-            expect(() => controller.parse_csv("fake/path")).rejects.toThrowError("File not found fake/path");
         });
     });
 
