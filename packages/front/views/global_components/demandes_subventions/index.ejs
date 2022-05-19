@@ -7,7 +7,7 @@
             <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-12">
                     <% if (subventions.length === 0 || subventions.years.size === 0 ) { %>
-                     <p>Nous n'avons trouvé aucune demande de subventions !</p>
+                        <p>Nous n'avons trouvé aucune demande de subvention !</p>
                     <% } %>
                     <ul class="fr-accordions-group">
                         <%const years = [...subventions.years].sort().reverse();%>
@@ -19,7 +19,7 @@
                                         <button class="fr-accordion__btn" aria-expanded="<%- index === 0 ? "true": "false" %>" aria-controls="fr-accordion-1<%- index %>-body-1<%- index %>"><%-yearText%></button>
                                     </h3>
                                     <div class="fr-collapse" id="fr-accordion-1<%- index %>-body-1<%- index %>">
-                                        <p>Montants des subventions attribuées (<%- yearText -%>) : <%- helper.currency.addSpaces(subventions.totalAccordeByYear[year]) -%>€</p>
+                                        <p>Montant des subventions attribuées (<%- yearText -%>) : <%- helper.currency.addSpaces(subventions.totalAccordeByYear[year]) -%>€</p>
                                         <%-
                                             include("./details", {
                                                 subventions,
