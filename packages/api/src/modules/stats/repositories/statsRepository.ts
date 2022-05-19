@@ -25,7 +25,7 @@ export class StatsRepository {
         ]).next())?.nbOfUsers || 0; // If no stats found nbOfUsers is null but whant retrun an number
     }
 
-    public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean) {
+    public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean): Promise<number> {
         const buildQuery = () => {
             const matchQuery: { $match: DefaultObject } = { 
                 $match: {

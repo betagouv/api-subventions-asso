@@ -15,7 +15,7 @@ describe("StatsController", () => {
 
         it("should return data with HTTP status code 200", async () => {
             const DATA = 5;
-            spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => DATA);
+            spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => Promise.resolve(DATA));
             const expected = { success: true, data: DATA};
             const actual = await request(g.app)
                 .get("/stats/requests")
@@ -47,6 +47,54 @@ describe("StatsController", () => {
             const actual = await request(g.app)
                 .get("/stats/requests")
                 .query({ nbReq: MIN_REQUESTS, start: YESTERDAY.toString(), end: TODAY.toString() })
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json');
+            
+            expect(actual.statusCode).toBe(401);
+            expect(actual.body).toEqual(expected);
+        })
+    })
+
+    describe("getMedianRequestOnPeriod", () => {
+        const TODAY = new Date();
+        const YESTERDAY = (new Date(TODAY)).setDate(TODAY.getDate() + 1);
+        const spyGetMedianRequestsOnPeriod = jest.spyOn(statsService, "getMedianRequestsOnPeriod");
+
+
+        it("should return data with HTTP status code 200", async () => {
+            const DATA = 2;
+            spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => Promise.resolve(DATA));
+            const expected = { success: true, data: DATA};
+            const actual = await request(g.app)
+                .get("/stats/requests/median")
+                .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
+                .set("x-access-token", await getAdminToken())
+                .set('Accept', 'application/json');
+            expect(actual.statusCode).toEqual(200);
+            expect(actual.body).toEqual(expected);
+        });
+
+        it("should return error with HTTP status code 500", async () => {
+            const ERROR_MESSAGE = "Something went wrong";
+            spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => Promise.reject(new Error(ERROR_MESSAGE)));
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await request(g.app)
+                .get("/stats/requests/median")
+                .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
+                .set("x-access-token", await getAdminToken())
+                .set('Accept', 'application/json');
+            
+            expect(actual.statusCode).toBe(500);
+            expect(actual.body).toEqual(expected);
+        })
+
+        it("should return error with HTTP status code 401", async () => {
+            const ERROR_MESSAGE = "Something went wrong";
+            spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => Promise.reject(new Error(ERROR_MESSAGE)));
+            const expected = {success: false, message:  "JWT does not contain required scope." };
+            const actual = await request(g.app)
+                .get("/stats/requests/median")
+                .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json');
             

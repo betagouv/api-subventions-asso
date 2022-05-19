@@ -54,7 +54,7 @@ export  class StatsController extends Controller {
             return { success: true, data: result }
         } catch (e) {
             this.setStatus(500);
-            return { success: false, message: (e as Error).message}
+            return { success: false, message: (e as Error).message }
         }
     }
 }
