@@ -59,7 +59,7 @@ describe("express.auth.hooks", () => {
             passportMock.mockImplementation((name) => {
                 if (name !== "login") return;
                 (obj.callback as (...args: unknown[]) => void)("test@beta.gouv.fr", "AAA", (...args: unknown[]) => {
-                    expect(args[2]).toMatchObject({ message: 'ERROR'});
+                    expect(args[2]).toMatchObject({ message: "1"});
                     done();
                 })
             });
