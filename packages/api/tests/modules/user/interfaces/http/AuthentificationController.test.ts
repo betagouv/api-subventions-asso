@@ -154,7 +154,7 @@ describe('AuthentificationController, /auth', () => {
                 .set('Accept', 'application/json');
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({ token: expect.any(String)})
+            expect(response.body).toMatchObject({ success: true, data: { token: expect.any(String)} })
         });
 
         it("should not log user", async () => {
