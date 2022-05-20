@@ -103,6 +103,8 @@ export default class ApiAssoDtoAdapter {
     }
 
     static toDocuments(structure: StructureDto): Document[] {
+        if (!structure.identite.date_modif_rna) return [];
+
         const toDate = (stringDate: string) => {
             const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
             return new Date(Date.UTC(year, month-1, day));
