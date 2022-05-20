@@ -128,22 +128,5 @@ describe("AssociationController", () => {
             const actual = await controller.getEtablissement(IDENTIFIER, NIC);
             expect(actual).toEqual(expected);
         })
-
-        it("should return an error object", async () => {
-            const ERROR_MESSAGE = "Error";
-            getEtablissementSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
-            const expected = { success: false, message: ERROR_MESSAGE }
-            const actual = await controller.getEtablissement(IDENTIFIER, NIC);
-            expect(actual).toEqual(expected);
-        })
-
-        it("should return an error object", async () => {
-            const ERROR_MESSAGE = "Error";
-            getEtablissementSpy.mockImplementationOnce(() => Promise.reject(new NotFoundError(ERROR_MESSAGE)))
-            const expected = { success: false, message: ERROR_MESSAGE }
-            const actual = await controller.getEtablissement(IDENTIFIER, NIC);
-            expect(actual).toEqual(expected);
-            expect(controller.getStatus()).toBe(404);
-        })
     })
 })
