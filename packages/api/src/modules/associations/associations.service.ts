@@ -11,6 +11,8 @@ import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import subventionsService from '../subventions/subventions.service';
 import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
+import etablissementService from '../etablissements/etablissements.service';
+import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 
 export class AssociationsService {
 
@@ -59,6 +61,21 @@ export class AssociationsService {
 
     async getSubventions(identifier: AssociationIdentifiers) {
         return await subventionsService.getDemandesByAssociation(identifier);
+    }
+
+    async getEtablissements(identifier: AssociationIdentifiers) {
+        const type = IdentifierHelper.getIdentifierType(identifier) ;
+        if (!type || type === StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIREN or RNA");
+
+        if(type === StructureIdentifiersEnum.rna) {
+            const siren = await rnaSirenService.getSiren(identifier);
+
+            if (!siren) return [];
+
+            identifier = siren;
+        }
+
+        return await etablissementService.getEtablissementsBySiren(identifier) || [];
     }
 
     private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
