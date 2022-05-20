@@ -13,6 +13,8 @@ import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
 import etablissementService from '../etablissements/etablissements.service';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
+import { NotFoundError } from '../../shared/errors/httpErrors/NotFoundError';
+import { BadRequestError } from '../../shared/errors/httpErrors/BadRequestError';
 
 export class AssociationsService {
 
@@ -76,6 +78,22 @@ export class AssociationsService {
         }
 
         return await etablissementService.getEtablissementsBySiren(identifier) || [];
+    }
+
+    async getEtablissement(identifier: AssociationIdentifiers, nic: string) {
+        const type = IdentifierHelper.getIdentifierType(identifier);
+
+        if (!type || type === StructureIdentifiersEnum.siret) throw new BadRequestError("You must provide a valid SIREN or RNA");
+
+        if(type === StructureIdentifiersEnum.rna) {
+            const siren = await rnaSirenService.getSiren(identifier);
+
+            if (!siren) throw new NotFoundError(`We dont have found a siren corresponding to rna ${identifier}`);
+
+            identifier = siren;
+        }
+
+        return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
     }
 
     private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {

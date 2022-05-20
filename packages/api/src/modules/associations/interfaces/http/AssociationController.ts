@@ -1,6 +1,7 @@
-import { DemandeSubvention, GetAssociationResponseDto, GetEtablissementsResponseDto } from '@api-subventions-asso/dto';
+import { DemandeSubvention, GetAssociationResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto } from '@api-subventions-asso/dto';
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import { AssociationIdentifiers, StructureIdentifiers } from '../../../../@types';
+import HttpError from '../../../../shared/errors/httpErrors/HttpError';
 
 import associationService from "../../associations.service";
 
@@ -34,6 +35,24 @@ export class AssociationController extends Controller {
             return { success: true, etablissements };
         } catch (e: unknown) {
             this.setStatus(404);
+            return { success: false, message: (e as Error).message }
+        }
+    }
+
+    /**
+     * Remonte les informations d'un établissement liée à l'association
+     * @param identifier Identifiant Siren ou Rna
+     * @param nic Code nic de l'établissement
+     */
+    @Get("/{identifier}/etablissement/{nic}")
+    public async getEtablissement(identifier: AssociationIdentifiers, nic: string): Promise<GetEtablissementResponseDto> {
+        try {
+            const etablissement = await associationService.getEtablissement(identifier, nic);
+            return { success: true, etablissement };
+        } catch (e: unknown) {
+            if (e instanceof HttpError) {
+                this.setStatus(e.code);
+            } else this.setStatus(500);
             return { success: false, message: (e as Error).message }
         }
     }
