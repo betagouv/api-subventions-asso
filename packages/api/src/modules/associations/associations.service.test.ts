@@ -3,7 +3,7 @@ import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum'
 import FormaterHelper from '../../shared/helpers/FormaterHelper';
 import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import associationsService from "./associations.service";
-import { DemandeSubvention } from '@api-subventions-asso/dto';
+import { DemandeSubvention, Etablissement } from '@api-subventions-asso/dto';
 import subventionService from '../subventions/subventions.service';
 import * as providers from '../providers';
 import etablissementService from '../etablissements/etablissements.service';
@@ -138,7 +138,7 @@ describe("AssociationService", () => {
 
     describe("getEtablissements()", () => {
         it("should call etablissementService.getEtablissementsBySiren()", async () => {
-            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([]));
+            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([{ etablissement: true } as unknown as Etablissement]));
             getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             await associationsService.getEtablissements(IDENTIFIER);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(IDENTIFIER);
@@ -155,7 +155,6 @@ describe("AssociationService", () => {
 
         it("should return empty array (siren not matching with rna)", async () => {
             const expected = 0;
-            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([]));
             getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
             const actual = await associationsService.getEtablissements(IDENTIFIER);
@@ -164,8 +163,10 @@ describe("AssociationService", () => {
 
         it("should return empty array (EtablissementService return null)", async () => {
             const expected = 0;
+
             getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve(null));
             getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+
             const actual = await associationsService.getEtablissements(IDENTIFIER);
             expect(actual).toHaveLength(expected);
         })

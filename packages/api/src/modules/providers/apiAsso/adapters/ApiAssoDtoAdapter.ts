@@ -14,7 +14,6 @@ export default class ApiAssoDtoAdapter {
             return new Date(Date.UTC(year, month-1, day));
         }
         const toRnaPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameRna, toDate(structure.identite.date_modif_rna));
-        const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameSiren, toDate(structure.identite.date_modif_siren));
 
         const fromRNA = structure.identite.regime === "loi1901"; // Data come from rna
 
@@ -36,6 +35,7 @@ export default class ApiAssoDtoAdapter {
         }
 
         if (structure.identite.date_modif_siren) {
+            const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameSiren, toDate(structure.identite.date_modif_siren));
             const adresse = structure.coordonnees.adresse_siege_sirene || fromRNA ? undefined : structure.coordonnees.adresse_siege;
             const sirenAssociation: Association = {
                 denomination: structure.identite.nom_sirene ? toSirenPvs(structure.identite.nom_sirene): toSirenPvs(structure.identite.nom),
