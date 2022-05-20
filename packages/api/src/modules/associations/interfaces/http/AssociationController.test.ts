@@ -5,6 +5,7 @@ const controller = new AssociationController();
 
 describe("AssociationController", () => {
     const IDENTIFIER = "000000001";
+
     describe("getDemandeSubventions", () => {
         const getSubventionsSpy = jest.spyOn(associationsService, "getSubventions");
         it("should call service with args", async () => {
@@ -39,6 +40,7 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         })
     })
+
     describe("getAssociation", () => {
         const getAssociationSpy = jest.spyOn(associationsService, "getAssociation");
         it("should call service with args", async () => {
@@ -69,6 +71,41 @@ describe("AssociationController", () => {
             getAssociationSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
             const expected = { success: false, message: ERROR_MESSAGE }
             const actual = await controller.getAssociation(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+    })
+
+    describe("getEtablissements", () => {
+        const getEtablissementSpy = jest.spyOn(associationsService, "getEtablissements");
+        it("should call service with args", async () => {
+            getEtablissementSpy.mockImplementationOnce(jest.fn());
+            await controller.getEtablissements(IDENTIFIER);
+            expect(getEtablissementSpy).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("should return a success object", async () => {
+            // @ts-expect-error: mock
+            getEtablissementSpy.mockImplementationOnce(() => etablissements)
+            const etablissements = [{}];
+            const expected = { success: true, etablissements }
+            const actual = await controller.getEtablissements(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+
+        it("should return a success object", async () => {
+            // @ts-expect-error: mock
+            getEtablissementSpy.mockImplementationOnce(() => etablissements)
+            const etablissements = [{}];
+            const expected = { success: true, etablissements }
+            const actual = await controller.getEtablissements(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+
+        it("should return an error object", async () => {
+            const ERROR_MESSAGE = "Error";
+            getEtablissementSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
+            const expected = { success: false, message: ERROR_MESSAGE }
+            const actual = await controller.getEtablissements(IDENTIFIER);
             expect(actual).toEqual(expected);
         })
     })
