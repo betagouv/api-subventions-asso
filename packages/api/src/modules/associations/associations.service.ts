@@ -15,6 +15,8 @@ import etablissementService from '../etablissements/etablissements.service';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 import { NotFoundError } from '../../shared/errors/httpErrors/NotFoundError';
 import { BadRequestError } from '../../shared/errors/httpErrors/BadRequestError';
+import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper';
+import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
 
 export class AssociationsService {
 
@@ -32,11 +34,11 @@ export class AssociationsService {
         if (type === StructureIdentifiersEnum.rna) return await this.getAssociationByRna(id);
         if (type === StructureIdentifiersEnum.siren) return await this.getAssociationBySiren(id);
         if (type === StructureIdentifiersEnum.siret) return await this.getAssociationBySiret(id);
-        throw new Error("You must give a valid RNA, SIREN or SIRET number.");
+        throw new StructureIdentifiersError();
     }
 
     async getAssociationBySiren(siren: Siren) {
-        const data = await (await this.aggregateSiren(siren)).filter(asso => asso) as Association[];
+        const data = await (await this.aggregate(siren)).filter(asso => asso) as Association[];
 
         if (!data.length) return null;
 
@@ -45,7 +47,7 @@ export class AssociationsService {
     }
     
     async getAssociationBySiret(siret: Siret) {
-        const data = await (await this.aggregateSiret(siret)).filter(asso => asso) as Association[];
+        const data = await (await this.aggregate(siret)).filter(asso => asso) as Association[];
         if (!data.length) return null;
         
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
@@ -53,7 +55,7 @@ export class AssociationsService {
     }
     
     async getAssociationByRna(rna: Rna) {
-        const data = await (await this.aggregateRna(rna)).filter(asso => asso) as Association[];
+        const data = await (await this.aggregate(rna)).filter(asso => asso) as Association[];
         
         if (!data.length) return null;
         
@@ -96,33 +98,13 @@ export class AssociationsService {
         return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
     }
 
-    private async aggregateSiren(siren: Siren): Promise<(Association | null)[]> {
+    private async aggregate(id: StructureIdentifiers) {
+        const idType = IdentifierHelper.getIdentifierType(id);
+        if (!idType) throw new StructureIdentifiersError();
         const associationProviders = this.getAssociationProviders();
 
         const promises = associationProviders.map(async provider => { 
-            const assos = await provider.getAssociationsBySiren(siren);
-            if (assos) return assos.flat();
-            else return null;
-        });
-        return (await Promise.all(promises)).flat();
-    }
-
-    private async aggregateSiret(siret: Siret): Promise<(Association | null)[]> {
-        const associationProviders = this.getAssociationProviders();
-
-        const promises = associationProviders.map(async provider => { 
-            const assos = await provider.getAssociationsBySiret(siret);
-            if (assos) return assos.flat();
-            else return null;
-        });
-        return (await Promise.all(promises)).flat();
-    }
-
-    private async aggregateRna(rna: Rna): Promise<(Association | null)[]> {
-        const associationProviders = this.getAssociationProviders();
-
-        const promises = associationProviders.map(async provider => { 
-            const assos = await provider.getAssociationsByRna(rna);
+            const assos = await provider[`getAssociationsBy${capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret"}`](id);
             if (assos) return assos.flat();
             else return null;
         });
