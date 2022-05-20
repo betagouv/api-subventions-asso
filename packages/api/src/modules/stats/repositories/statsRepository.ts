@@ -51,10 +51,9 @@ export class StatsRepository {
 
         if (!result.length) return 0;
 
-        const len = result.length;
         const middle = Math.floor(result.length / 2);
 
-        if (len % 2 === 0) {
+        if (result.length % 2 === 0) {
             return (result[middle - 1].nbOfRequest + result[middle].nbOfRequest) / 2;
         }
         

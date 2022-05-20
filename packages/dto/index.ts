@@ -19,4 +19,3 @@ export * from "./shared/InformationBancaire"
 export * from "./user/UserDto"
 export * from "./stats/RequestsDtoResponse"
 export * from "./stats/StatsRequestsMedianDto"
-// Test version lerna
