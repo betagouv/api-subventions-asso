@@ -6,6 +6,8 @@ import associationsService from "./associations.service";
 import { DemandeSubvention } from '@api-subventions-asso/dto';
 import subventionService from '../subventions/subventions.service';
 import * as providers from '../providers';
+import etablissementService from '../etablissements/etablissements.service';
+import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 
 jest.mock('../providers/index');
 
@@ -18,6 +20,8 @@ describe("AssociationService", () => {
     const getAssociationBySiretSpy = jest.spyOn(associationsService, "getAssociationBySiret");
     const getIdentifierTypeSpy = jest.spyOn(IdentifierHelper, "getIdentifierType");
     const getByAssociationMock = jest.spyOn(subventionService, "getDemandesByAssociation");
+    const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
+    const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
     
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {
@@ -128,6 +132,54 @@ describe("AssociationService", () => {
             getByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as DemandeSubvention[]));
             await associationsService.getSubventions(IDENTIFIER);
             expect(getByAssociationMock).toHaveBeenCalledWith(IDENTIFIER);
+        })
+    })
+
+
+    describe("getEtablissements()", () => {
+        it("should call etablissementService.getEtablissementsBySiren()", async () => {
+            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([]));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+            await associationsService.getEtablissements(IDENTIFIER);
+            expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(IDENTIFIER);
+        })
+
+        it("should call search siren match with rna", async () => {
+            const expected = "SIREN";
+            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([]));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(expected));
+            await associationsService.getEtablissements(IDENTIFIER);
+            expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(expected);
+        })
+
+        it("should return empty array (siren not matching with rna)", async () => {
+            const expected = 0;
+            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([]));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
+            const actual = await associationsService.getEtablissements(IDENTIFIER);
+            expect(actual).toHaveLength(expected);
+        })
+
+        it("should return empty array (EtablissementService return null)", async () => {
+            const expected = 0;
+            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve(null));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+            const actual = await associationsService.getEtablissements(IDENTIFIER);
+            expect(actual).toHaveLength(expected);
+        })
+
+        it("should throw error (identifiers type not accepted)", async () => {
+            const expected = "You must provide a valid SIREN or RNA";
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
+            expect(associationsService.getEtablissements(IDENTIFIER)).rejects.toThrowError(expected)
+        })
+
+        it("should throw error (identifiers type not fund)", async () => {
+            const expected = "You must provide a valid SIREN or RNA";
+            getIdentifierTypeSpy.mockImplementationOnce(() => null);
+            expect(associationsService.getEtablissements(IDENTIFIER)).rejects.toThrowError(expected)
         })
     })
 });
