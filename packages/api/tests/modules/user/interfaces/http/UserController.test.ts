@@ -62,7 +62,7 @@ describe('UserController, /user', () => {
             expect(response.body).toMatchObject({ success: false, message: "The role \"test\" does not exist"})
         })
 
-        it("should return 401 beacause user dont have rigth", async () => {
+        it("should return 401 because user dont have rigth", async () => {
             const response = await request(g.app)
                 .post("/user/admin/roles")
                 .send({
@@ -75,7 +75,7 @@ describe('UserController, /user', () => {
             expect(response.statusCode).toBe(401);
         })
 
-        it("should return 401 beacause user not connected", async () => {
+        it("should return 401 because user not connected", async () => {
             const response = await request(g.app)
                 .post("/user/admin/roles")
                 .send({

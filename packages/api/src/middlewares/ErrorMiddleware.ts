@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidateError } from "tsoa";
+import HttpError from "../shared/errors/httpErrors/HttpError";
 
 
 export function errorHandler(isTest: boolean) {
@@ -20,7 +21,7 @@ export function errorHandler(isTest: boolean) {
         }
         if (err instanceof Error) {
             if (!isTest) console.error(err);
-            const statusCode = (err as unknown as { status: number}).status || 500;
+            const statusCode = err instanceof HttpError ? err.status : 500;
             return res.status(statusCode).json({
                 success: false,
                 message: err.message,

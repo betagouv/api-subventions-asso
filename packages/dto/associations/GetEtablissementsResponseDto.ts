@@ -11,4 +11,4 @@ export interface GetEtablissementsNegativeResponseDto {
     message: string
 }
 
-export type GetEtablissementsResponseDto = GetEtablissementsNegativeResponseDto | GetEtablissementsPositiveResponseDto;
+export type GetEtablissementsResponseDto = GetEtablissementsPositiveResponseDto | GetEtablissementsNegativeResponseDto;
