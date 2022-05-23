@@ -15,13 +15,13 @@ export default class FonjepCliController extends CliController {
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     // Called in CliController parse()
-    protected async _parse(file: string, logs: unknown[]) {
+    protected async _parse(file: string, logs: unknown[], exportDate: string) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
 
-        const entities = FonjepParser.parse(fileContent);
+        const entities = FonjepParser.parse(fileContent, exportDate);
 
         console.info("Start register in database ...")
         
