@@ -1,6 +1,7 @@
 import AdresseHelper from "./AdresseHelper";
 import CurrencyHelper from './CurrencyHelper';
 import DateHelper from "./DateHelper";
+import PhoneHelper from "./PhoneHelper";
 import ProviderValueHelper from "./ProviderValueHelper";
 
 export default {
@@ -10,9 +11,13 @@ export default {
     getDate: ProviderValueHelper.getDate,
 
     toJSONFile: (data: unknown) => Buffer.from(JSON.stringify(data, null, 4)).toString("base64"),
+    returnValueOrHyphen: (value: unknown) => value || "-",
     
     adresse: {
         toString: AdresseHelper.providerValuesToString
+    },
+    phone: {
+        format: PhoneHelper.formatWithSpace
     },
     date: {
         toProviderValueString: DateHelper.toProviderValueString,
@@ -21,5 +26,6 @@ export default {
     },
     currency: {
         addSpaces: CurrencyHelper.numberWithSpaces
-    }
+    },
+    capitalizeFirstLetter: (str: string)=> str[0].toUpperCase() + str.slice(1).toLowerCase(),
 }

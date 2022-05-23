@@ -57,3 +57,11 @@ span.tofill::before {
 .fr-callout__text > a {
   color: #3558A2
 }
+
+.custom-table-center-text td {
+  text-align: center;
+}
+
+.custom-table-center-text th {
+  text-align: center;
+}
