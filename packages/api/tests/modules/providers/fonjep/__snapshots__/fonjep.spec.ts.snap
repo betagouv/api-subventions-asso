@@ -58,6 +58,7 @@ Array [
       "contact": "exemple@beta.gouv.fr",
       "date_fin_triennale": 2018-12-31T00:00:00.000Z,
       "montant_paye": 6666,
+      "plein_temps": "Oui",
       "service_instructeur": "CENTRE D'INFO ****",
       "status": "Attribué",
       "type_post": "Poste FONJEP",

@@ -3,6 +3,7 @@ export default interface IFonjepIndexedInformations {
     unique_id: string,
     montant_paye: number,
     status: string,
+    plein_temps: string,
     service_instructeur: string,
     annee_demande: number,
     date_fin_triennale: Date,
