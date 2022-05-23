@@ -21,6 +21,7 @@ describe("AssociationService", () => {
     const getIdentifierTypeSpy = jest.spyOn(IdentifierHelper, "getIdentifierType");
     const getByAssociationMock = jest.spyOn(subventionService, "getDemandesByAssociation");
     const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
+    const getEtablissementMock = jest.spyOn(etablissementService, "getEtablissement");
     const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
     
     let formatDataMock: jest.SpyInstance;
@@ -135,7 +136,6 @@ describe("AssociationService", () => {
         })
     })
 
-
     describe("getEtablissements()", () => {
         it("should call etablissementService.getEtablissementsBySiren()", async () => {
             getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([{ etablissement: true } as unknown as Etablissement]));
@@ -181,6 +181,56 @@ describe("AssociationService", () => {
             const expected = "You must provide a valid SIREN or RNA";
             getIdentifierTypeSpy.mockImplementationOnce(() => null);
             expect(associationsService.getEtablissements(IDENTIFIER)).rejects.toThrowError(expected)
+        })
+    })
+
+    describe("getEtablissement()", () => {
+        const NIC = "00032"
+        it("should call etablissementService.getEtablissement()", async () => {
+            getEtablissementMock.mockImplementationOnce(() => Promise.resolve({ etablissement: true } as unknown as Etablissement));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+            await associationsService.getEtablissement(IDENTIFIER, NIC);
+            expect(getEtablissementMock).toHaveBeenCalledWith(IDENTIFIER + NIC);
+        })
+
+        it("should call search siren match with rna", async () => {
+            const expected = "SIRET";
+            getEtablissementMock.mockImplementationOnce(() => Promise.resolve({ etablissement: true } as unknown as Etablissement));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(expected));
+            await associationsService.getEtablissement(IDENTIFIER, NIC);
+            expect(getEtablissementMock).toHaveBeenCalledWith(expected + NIC);
+        })
+
+
+        it("should throw error not found error (siren not matching with rna)", async () => {
+            const expected = `We dont have found a siren corresponding to rna ${IDENTIFIER}`
+
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+
+            expect(associationsService.getEtablissement(IDENTIFIER, NIC)).rejects.toThrowError(expected)
+        })
+
+        it("should throw error not found error (EtablissementService return null)", async () => {
+            const expected = "Etablissement not found"
+
+            getEtablissementMock.mockImplementationOnce(() => Promise.resolve(null));
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+
+            expect(associationsService.getEtablissement(IDENTIFIER, NIC)).rejects.toThrowError(expected)
+        })
+
+        it("should throw error (identifiers type not accepted)", async () => {
+            const expected = "You must provide a valid SIREN or RNA";
+            getIdentifierTypeSpy.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
+            expect(associationsService.getEtablissement(IDENTIFIER, NIC)).rejects.toThrowError(expected)
+        })
+
+        it("should throw error (identifiers type not found)", async () => {
+            const expected = "You must provide a valid SIREN or RNA";
+            getIdentifierTypeSpy.mockImplementationOnce(() => null);
+            expect(associationsService.getEtablissement(IDENTIFIER, NIC)).rejects.toThrowError(expected)
         })
     })
 });
