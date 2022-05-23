@@ -15,7 +15,7 @@ describe("StatsController", () => {
 
         it("should return data with HTTP status code 200", async () => {
             const DATA = 5;
-            spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => Promise.resolve(DATA));
+            spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => DATA);
             const expected = { success: true, data: DATA};
             const actual = await request(g.app)
                 .get("/stats/requests")
@@ -63,7 +63,7 @@ describe("StatsController", () => {
 
         it("should return data with HTTP status code 200", async () => {
             const DATA = 2;
-            spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => Promise.resolve(DATA));
+            spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => DATA);
             const expected = { success: true, data: DATA};
             const actual = await request(g.app)
                 .get("/stats/requests/median")
