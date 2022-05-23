@@ -14,14 +14,8 @@
                         <% } %>
                         <p>Établissement secondaire </p>
                     <% } %>
-                            
-                    <% if (helper.hasValue(etablissement.siret)) { %>
-                        <p>SIRET : <%- helper.getValue(etablissement.siret) -%> </p>
-                    <% } %>
-                    <% if (helper.hasValue(etablissement.adresse)) { %>
-                        <p><%- helper.adresse.toString(etablissement.adresse) -%> </p>
-                    <% } %>
-
+                    <p>SIRET : <%- helper.returnValueOrHyphen(helper.getValue(etablissement.siret)) -%> </p>
+                    <p><%- helper.returnValueOrHyphen(helper.adresse.toString(etablissement.adresse)) -%> </p>
                 </div>
             </div>
 
