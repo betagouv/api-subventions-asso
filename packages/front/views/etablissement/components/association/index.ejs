@@ -7,7 +7,7 @@
         <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
             <div class="fr-col fr-col-lg-6">
                 <% if (helper.hasValue(association.denomination)) { %>
-                    <p><%- helper.getValue(association.denomination) -%> </p>
+                    <p><%- helper.returnValueOrHyphen(helper.getValue(association.denomination))-%> </p>
                 <% } %>
             </div>
             <div class="fr-col fr-col-lg-6">
@@ -21,40 +21,24 @@
         </div>
         <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
             <div class="fr-col fr-col-lg-6">
-                <% if (helper.hasValue(association.rna)) { %>
-                    <p>RNA : <%- helper.getValue(association.rna) -%> </p>
-                <% } %>
-                <% if (helper.hasValue(association.siren)) { %>
-                    <p>SIREN : <%- helper.getValue(association.siren) -%> </p>
-                <% } %>
-                <% if (helper.hasValue(association.nic_siege) && helper.hasValue(association.siren)) { %>
-                    <p>SIRET du siège : <%- helper.getValue(association.siren) -%><%- helper.getValue(association.nic_siege) -%></p>
-                <% } %>
+                <p>RNA : <%- helper.returnValueOrHyphen(helper.getValue(association.rna)) -%> </p>
+                <p>SIREN : <%- helper.returnValueOrHyphen(helper.getValue(association.siren)) -%> </p>
+                <p>SIRET du siège : <%- helper.returnValueOrHyphen(helper.getValue(association.siren)) -%><%- helper.returnValueOrHyphen(helper.getValue(association.nic_siege)) -%></p>
             </div>
             <div class="fr-col fr-col-lg-6">
-                <% if (helper.hasValue(association.adresse_siege)) { %>
-                    <p>Adresse du siège : <%- helper.adresse.toString(association.adresse_siege) -%> </p>
-                <% } %>
-                <% if (helper.hasValue(association.date_creation)) { %>
-                    <p>Date d'immatriculation : <%- helper.date.toProviderValueString(association.date_creation) -%> </p>
-                <% } %>
-                <% if (helper.hasValue(association.date_modification)) { %>
-                    <p>Dernière modification au greffe : <%- helper.date.toProviderValueString(association.date_modification) -%> </p>
-                <% } %>
+                <p>Adresse du siège : <%- helper.returnValueOrHyphen(helper.adresse.toString(association.adresse_siege))-%> </p>
+                <p>Date d'immatriculation : <%- helper.returnValueOrHyphen(helper.date.toProviderValueString(association.date_creation))-%> </p>
+                <p>Dernière modification au greffe : <%- helper.returnValueOrHyphen(helper.date.toProviderValueString(association.date_modification)) -%> </p>
             </div>
         </div>
 
-        <% if (helper.hasValue(association.objet_social)) { %>
-        <p>Objet social : </p>
         <div class="fr-grid-row fr-grid-row--left fr-grid-row--gutters">
-            <div class="fr-col fr-col-lg-6">
-                <p><%- helper.getValue(association.objet_social) -%></p>
-            </div>
-            <div class="fr-col fr-col-lg-6">
-                <p>Code objet social: <%- helper.getValue(association.code_objet_social_1) -%></p>
+            <div class="fr-col fr-col-lg-12">
+                <h6>Objet social</h6>
+                <p>Code objet social : <%- helper.returnValueOrHyphen(helper.getValue(association.code_objet_social_1)) -%></p>
+                <p><%- helper.returnValueOrHyphen(helper.capitalizeFirstLetter(helper.getValue(association.objet_social))) -%></p>
             </div>
         </div>
-        <% } %>
     </div>
 </section>
 </li>
