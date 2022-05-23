@@ -3,6 +3,7 @@ import { Rna, Siren, Siret, Association, Etablissement } from '@api-subventions-
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
+import { AssociationIdentifiers } from '../../../../@types';
 
 @Route("search")
 @Security("jwt")
@@ -31,7 +32,7 @@ export class SearchController extends Controller {
      */
     @Get("/association/{id}")
     public async findAssociation(
-        id: Rna | Siren,
+        id: AssociationIdentifiers,
     ): Promise<{ success: boolean, association?: Association, message?: string}> {
         let result: Association | null = null;
         

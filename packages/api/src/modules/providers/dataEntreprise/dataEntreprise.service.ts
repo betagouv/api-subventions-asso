@@ -118,10 +118,11 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const assos = [];
         const assoFromSiren = await this.findAssociationBySiren(siren);
         if (assoFromSiren) assos.push(assoFromSiren);
-
-        let rna = await rnaSirenService.getRna(siren);
-        if (!rna && assoFromSiren?.rna?.length && assoFromSiren.rna[0].value) {
+        let rna;
+        if (assoFromSiren?.rna?.length && assoFromSiren.rna[0].value) {
             rna = assoFromSiren.rna[0].value;
+        } else {
+            rna = await rnaSirenService.getRna(siren);
         }
         
         if (rna) {

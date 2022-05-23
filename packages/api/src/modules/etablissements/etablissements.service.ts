@@ -23,15 +23,14 @@ export class EtablissementsService {
     }
 
     async getEtablissement(siret: Siret) {
-        const data = await (await this.aggregate(siret)).flat().filter(d => d) as Etablissement[];
-        
+        const data = await this.aggregate(siret);
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
     }
 
     async getEtablissementsBySiren(siren: Siren) {
-        const data = await (await this.aggregate(siren)).flat().filter(d => d) as Etablissement[];
+        const data = await this.aggregate(siren);
         
         if (!data.length) return null;
 
@@ -59,10 +58,10 @@ export class EtablissementsService {
         
         const promises = etablisementProviders.map(async provider => { 
             const etabs = await provider[getter](id, true);
-            if (etabs) return etabs.flat();
+            if (etabs) return etabs;
             else return null;
         });
-        return (await Promise.all(promises)).flat();
+        return (await Promise.all(promises)).flat().flat().filter(etablissement => etablissement) as Etablissement[];
     }
 
     private getEtablissementProviders() {

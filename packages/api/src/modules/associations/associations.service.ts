@@ -38,27 +38,22 @@ export class AssociationsService {
     }
 
     async getAssociationBySiren(siren: Siren) {
-        const data = await (await this.aggregate(siren)).filter(asso => asso) as Association[];
-
+        const data = await this.aggregate(siren);
         if (!data.length) return null;
-
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
     
     async getAssociationBySiret(siret: Siret) {
-        const data = await (await this.aggregate(siret)).filter(asso => asso) as Association[];
+        const data = await this.aggregate(siret);
         if (!data.length) return null;
-        
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
     
     async getAssociationByRna(rna: Rna) {
-        const data = await (await this.aggregate(rna)).filter(asso => asso) as Association[];
-        
+        const data = await this.aggregate(rna);
         if (!data.length) return null;
-        
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
@@ -102,13 +97,13 @@ export class AssociationsService {
         const idType = IdentifierHelper.getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
         const associationProviders = this.getAssociationProviders();
-
+        const capitalizedId = capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret";
         const promises = associationProviders.map(async provider => { 
-            const assos = await provider[`getAssociationsBy${capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret"}`](id);
-            if (assos) return assos.flat();
+            const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
+            if (assos) return assos;
             else return null;
         });
-        return (await Promise.all(promises)).flat();
+        return (await Promise.all(promises)).flat().filter(asso => asso) as Association[];
     }
 
     public isAssociationsProvider(provider: unknown): provider is AssociationsProvider {
