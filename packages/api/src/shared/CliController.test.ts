@@ -83,7 +83,7 @@ describe("CliController", () => {
             const actual = _parseSpy.mock.calls.length;
             expect(actual).toEqual(expected);
         });
-        it.only("should call _parse() with a specific export date", async () => {
+        it("should call _parse() with a specific export date", async () => {
             const LOGS: unknown[] = [];
             const exportDate = "2022-03-03"
             findFilesMock.mockImplementationOnce(() => [FILENAME])

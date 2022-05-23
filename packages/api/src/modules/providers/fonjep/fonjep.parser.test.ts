@@ -78,7 +78,8 @@ describe("FonjepParser", () => {
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             // @ts-expect-error: params are mocked inside the children methods
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
-            expect(createFonjepEntityMock.mock.calls[0]).toMatchSnapshot();
+            // @ts-expect-error: test
+            expect(createFonjepEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
         })
     });
 });
