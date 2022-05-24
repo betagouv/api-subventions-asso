@@ -10,6 +10,6 @@ describe("FonjepParser", () => {
             const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"));
             const entities = FonjepParser.parse(buffer, EXPORT_DATE);
             expect(entities).toMatchSnapshot();
-        })
+        });
     });
 });

@@ -7,6 +7,7 @@ import fonjepService, { RejectedRequest } from "../../fonjep.service";
 import FonjepRequestEntity from "../../entities/FonjepRequestEntity";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import CliController from '../../../../../shared/CliController';
+import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
 
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCliController extends CliController {
@@ -16,6 +17,7 @@ export default class FonjepCliController extends CliController {
 
     // Called in CliController parse()
     protected async _parse(file: string, logs: unknown[], exportDate: string) {
+        if (!exportDate) throw new ExportDateError();
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 

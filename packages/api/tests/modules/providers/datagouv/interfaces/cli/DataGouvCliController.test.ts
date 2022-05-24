@@ -27,10 +27,11 @@ describe("DataGouvCliController", () => {
 
     describe("parse", () => {
         let controller: DataGouvCliController;
+        let _parseMock: jest.SpyInstance;
         beforeEach(() => {
-            controller = new DataGouvCliController()
+            controller = new DataGouvCliController();
             spys.push(
-                jest.spyOn(controller as unknown as { _parse: () => Promise<null> }, '_parse').mockImplementation(() => Promise.resolve(null)),
+                _parseMock = jest.spyOn(controller as unknown as { _parse: () => Promise<null> }, '_parse').mockImplementation(() => Promise.resolve(null)),
                 jest.spyOn(fs, 'existsSync'),
             )
         });
@@ -44,10 +45,13 @@ describe("DataGouvCliController", () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            expect(controller._parse).toHaveBeenCalledTimes(1);
+            expect(_parseMock).toHaveBeenCalledTimes(1);
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            expect(controller._parse).toHaveBeenCalledWith("FAKE_PATH", []);
+            const expected = ["FAKE_PATH", []];
+            // Do not want to test that_parse is called with a 3rd arguments that isn't used in that implementation of _parse
+            const actual = [_parseMock.mock.calls[0][0], _parseMock.mock.calls[0][1]]
+            expect(actual).toEqual(expected);
         })
 
         it('should be throw file not found error', async () => {

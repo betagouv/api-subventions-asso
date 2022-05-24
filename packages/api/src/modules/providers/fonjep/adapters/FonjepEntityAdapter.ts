@@ -12,7 +12,7 @@ export default class FonjepEntityAdapter {
         return {
             siret: toProviderValue(entity.legalInformations.siret),
             service_instructeur: toProviderValue(entity.indexedInformations.service_instructeur),
-            dispositif: toProviderValue("Fonjep"),
+            dispositif: toProviderValue(this.PROVIDER_NAME),
             status: toProviderValue(entity.indexedInformations.status),
             pluriannualite: toProviderValue("Oui"),
             plein_temps: toProviderValue(entity.indexedInformations.plein_temps),

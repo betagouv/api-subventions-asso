@@ -16,9 +16,14 @@ export default class CliController {
         } else return true
     }
 
+    /**
+     * 
+     * @param file Path to the file
+     * @param exportDate Explicite date of import (any valid date string, like "YYYY-DD-MM")
+     * @returns 
+     */
     public async parse(file: string, exportDate?: string): Promise<unknown> {
-        if (!exportDate) exportDate = new Date().toISOString();
-        else exportDate = new Date(exportDate).toISOString();
+        if (exportDate) exportDate = new Date(exportDate).toISOString();
 
         this.validParseFile(file);
         this.validFileExists(file);
@@ -29,13 +34,13 @@ export default class CliController {
         console.info(`You can read log in ${ this.logFileParsePath }`);
 
         return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(filePath, logs, exportDate as string));
+            return acc.then(() => exportDate ? this._parse(filePath, logs, exportDate) : this._parse(filePath, logs) );
         }, Promise.resolve())
             .then(() => fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" }));
     }
     
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(file: string, logs: unknown[], exportDate: string) {
+    protected async _parse(file: string, logs: unknown[], exportDate?: string) {
         throw new Error("_parse() need to be implemented by the child class");
     }
 }
