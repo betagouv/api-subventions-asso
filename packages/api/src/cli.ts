@@ -15,6 +15,7 @@ import { connectDB } from "./shared/MongoConnection";
 import { CliStaticInterface } from "./@types";
 
 import "./modules/association-name/associationName.service"; // Load association-name for load service in eventManager
+import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
 
 async function main() {
     await connectDB();
@@ -31,7 +32,8 @@ async function main() {
         ChorusCliController,
         FonjepCliController,
         DataGouvCliController,
-        GisproCliController
+        GisproCliController,
+        SubventiaCliController
     ];
     
     const args = process.argv.slice(2);
