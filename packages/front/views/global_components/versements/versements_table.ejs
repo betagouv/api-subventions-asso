@@ -25,7 +25,7 @@
                     <td><%-helper.returnValueOrHyphen(helper.getValue(versement.numeroTier))%></td>
                     <td><%-helper.returnValueOrHyphen(helper.getValue(versement.ej))%></td>
                     <td><%-helper.returnValueOrHyphen(helper.getValue(versement.numeroDemandePayment))%></td>
-                    <td><%-helper.returnValueOrHyphen(helper.currency.addSpaces(helper.getValue(versement.amount)))%>€</td>
+                    <td><%-helper.returnValueOrHyphen(helper.amount.providerValueToEuro(versement.amount))%></td>
                     <td><%-helper.returnValueOrHyphen(helper.date.toProviderValueString(versement.dateOperation))%></td>
                     <td>
                         <% const siret = helper.getValue(versement.siret); %>
