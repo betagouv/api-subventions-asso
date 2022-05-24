@@ -1,5 +1,5 @@
 import AdresseHelper from "./AdresseHelper";
-import CurrencyHelper from './CurrencyHelper';
+import AmountHelper from "./AmountHelper";
 import DateHelper from "./DateHelper";
 import PhoneHelper from "./PhoneHelper";
 import ProviderValueHelper from "./ProviderValueHelper";
@@ -24,8 +24,9 @@ export default {
         formatDate: DateHelper.formatDate,
         formatDateWithHour: DateHelper.formatDateWithHour
     },
-    currency: {
-        addSpaces: CurrencyHelper.numberWithSpaces
-    },
     capitalizeFirstLetter: (str: string)=> str[0].toUpperCase() + str.slice(1).toLowerCase(),
+    amount: {
+        providerValueToEuro: AmountHelper.providerValueToEuro,
+        numberToEuro: AmountHelper.numberToEuro,
+    }
 }
