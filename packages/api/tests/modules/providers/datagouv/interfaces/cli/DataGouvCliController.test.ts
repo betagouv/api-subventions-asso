@@ -37,7 +37,7 @@ describe("DataGouvCliController", () => {
             
         
 
-        it('should be call _parse', async () => {
+        it('should call _parse', async () => {
             (fs.existsSync as jest.Mock).mockImplementationOnce(() => true);
             (ParserHelper.findFiles as jest.Mock).mockImplementationOnce((file) => [file]);
             await controller.parse("FAKE_PATH");
