@@ -45,7 +45,7 @@ Array [
         "Code": "FONJEP",
         "Libelle": "Poste FONJEP",
       },
-      "id": "J10540-Mon Dec 31 2018 01:00:00 GMT+0100 (heure normale d’Europe centrale)",
+      "id": "J10540-2018-12-31T00:00:00.000Z",
       "updated_at": 2022-03-03T00:00:00.000Z,
     },
     "indexedInformations": Object {
@@ -62,7 +62,7 @@ Array [
       "service_instructeur": "CENTRE D'INFO ****",
       "status": "Attribué",
       "type_post": "Poste FONJEP",
-      "unique_id": "J10540-Mon Dec 31 2018 01:00:00 GMT+0100 (heure normale d’Europe centrale)",
+      "unique_id": "J10540-2018-12-31T00:00:00.000Z",
       "updated_at": 2022-03-03T00:00:00.000Z,
       "ville": "Paris",
     },

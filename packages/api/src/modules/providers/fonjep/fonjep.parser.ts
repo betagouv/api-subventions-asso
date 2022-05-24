@@ -25,9 +25,9 @@ export default class FonjepParser {
         return new FonjepRequestEntity(legalInformations, indexedInformations, parsedData);
     }
     
-    public static parse(fileContent: Buffer, exportDate: string) {
+    public static parse(fileContent: Buffer, exportDate: Date) {
         const pages = ParserHelper.xlsParse(fileContent);
-        const currentDate = new Date(exportDate);
+        const currentDate = exportDate;
 
         const [tiers, postes, cofinancements, typePoste] = this.mapHeaderToData(pages);
 
@@ -39,7 +39,7 @@ export default class FonjepParser {
             const financeur = findTiers(poste["FinanceurAttributeurCode"]);
             const typePoste = findTypePoste(poste["PstTypePosteCode"]);
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
-            const uniqueId = `${poste["Code"]}-${ParserHelper.ExcelDateToJSDate(parseFloat(poste["DateFinTriennalite"]))}`;
+            const uniqueId = `${poste["Code"]}-${ParserHelper.ExcelDateToJSDate(parseFloat(poste["DateFinTriennalite"])).toISOString()}`;
             
             let cofinanceur: DefaultObject<string> | undefined;
             const coFinancements = findCoFinancements(poste["Code"]);

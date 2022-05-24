@@ -16,7 +16,7 @@ export default class FonjepCliController extends CliController {
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     // Called in CliController parse()
-    protected async _parse(file: string, logs: unknown[], exportDate: string) {
+    protected async _parse(file: string, logs: unknown[], exportDate: Date) {
         if (!exportDate) throw new ExportDateError();
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
