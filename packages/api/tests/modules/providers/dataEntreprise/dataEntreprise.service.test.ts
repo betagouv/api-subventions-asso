@@ -23,7 +23,7 @@ describe("DataEntrepriseService", () => {
         const SIRET = "SIRET";
         const LAST_UPDATE = now;
         const DATA = { association: {id_association: "ID_ASSO", siret: SIRET, titre: "TITRE", updated_at: LAST_UPDATE}}
-        it("should be called api", async () => {
+        it("should called api", async () => {
             
             const mock = jest.spyOn(axios, "get").mockImplementationOnce(() => (Promise.resolve({data: DATA})));
 

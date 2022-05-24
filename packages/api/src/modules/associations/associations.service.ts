@@ -15,6 +15,8 @@ import etablissementService from '../etablissements/etablissements.service';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 import { NotFoundError } from '../../shared/errors/httpErrors/NotFoundError';
 import { BadRequestError } from '../../shared/errors/httpErrors/BadRequestError';
+import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper';
+import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
 
 export class AssociationsService {
 
@@ -32,31 +34,26 @@ export class AssociationsService {
         if (type === StructureIdentifiersEnum.rna) return await this.getAssociationByRna(id);
         if (type === StructureIdentifiersEnum.siren) return await this.getAssociationBySiren(id);
         if (type === StructureIdentifiersEnum.siret) return await this.getAssociationBySiret(id);
-        throw new Error("You must give a valid RNA, SIREN or SIRET number.");
+        throw new StructureIdentifiersError();
     }
 
-    async getAssociationBySiren(siren: Siren, rna?: Rna) {
-        const data = await (await this.aggregateSiren(siren, rna)).filter(asso => asso) as Association[];
-
+    async getAssociationBySiren(siren: Siren) {
+        const data = await this.aggregate(siren);
         if (!data.length) return null;
-
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
     
-    async getAssociationBySiret(siret: Siret, rna?: Rna) {
-        const data = await (await this.aggregateSiret(siret, rna)).filter(asso => asso) as Association[];
+    async getAssociationBySiret(siret: Siret) {
+        const data = await this.aggregate(siret);
         if (!data.length) return null;
-        
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
     
     async getAssociationByRna(rna: Rna) {
-        const data = await (await this.aggregateRna(rna)).filter(asso => asso) as Association[];
-        
+        const data = await this.aggregate(rna);
         if (!data.length) return null;
-        
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
@@ -96,47 +93,17 @@ export class AssociationsService {
         return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
     }
 
-    private async aggregateSiren(siren: Siren, rna?: Rna): Promise<(Association | null)[]> {
+    private async aggregate(id: StructureIdentifiers) {
+        const idType = IdentifierHelper.getIdentifierType(id);
+        if (!idType) throw new StructureIdentifiersError();
         const associationProviders = this.getAssociationProviders();
-
-        return await associationProviders.reduce(async (acc, provider) => {
-            const result = await acc;
-            const assos = await provider.getAssociationsBySiren(siren, rna);
-            if (assos) {
-                result.push(...assos.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Association[]>);
-    }
-
-    private async aggregateSiret(siret: Siret, rna?: Rna): Promise<(Association | null)[]> {
-        const associationProviders = this.getAssociationProviders();
-
-        return await associationProviders.reduce(async (acc, provider) => {
-            const result = await acc;
-            const assos = await provider.getAssociationsBySiret(siret, rna);
-            if (assos) {
-                result.push(...assos.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Association[]>);
-    }
-
-
-    private async aggregateRna(rna: Rna): Promise<(Association | null)[]> {
-        const associationProviders = this.getAssociationProviders();
-
-        return await associationProviders.reduce(async (acc, provider) => {
-            const result = await acc;
-            const assos = await provider.getAssociationsByRna(rna);
-            if (assos) {
-                result.push(...assos.flat());
-            }
-
-            return result;
-        }, Promise.resolve([]) as Promise<Association[]>);
+        const capitalizedId = capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret";
+        const promises = associationProviders.map(async provider => { 
+            const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
+            if (assos) return assos;
+            else return null;
+        });
+        return (await Promise.all(promises)).flat().filter(asso => asso) as Association[];
     }
 
     public isAssociationsProvider(provider: unknown): provider is AssociationsProvider {

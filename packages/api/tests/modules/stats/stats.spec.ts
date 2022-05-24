@@ -1,14 +1,14 @@
 import request from "supertest";
-import statsService from '../../../../../src/modules/stats/stats.service';
-import getAdminToken from '../../../../__helpers__/getAdminToken';
-import getUserToken from "../../../../__helpers__/getUserToken";
+import statsService from '../../../src/modules/stats/stats.service';
+import getAdminToken from '../../__helpers__/getAdminToken';
+import getUserToken from "../../__helpers__/getUserToken";
 
 const g = global as unknown as { app: unknown };
 
-describe("StatsController", () => {
-    const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod") as jest.SpyInstance;
+describe("/stats", () => {
+    const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod");
 
-    describe("getUserRequestsByPeriod", () => {
+    describe("/requests", () => {
         const TODAY = new Date();
         const YESTERDAY = (new Date(TODAY)).setDate(TODAY.getDate() + 1);
         const MIN_REQUESTS = "10";

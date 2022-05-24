@@ -14,6 +14,7 @@ import EtablissementDtoAdapter from "./adapters/EtablissementDtoAdapter";
 import AssociationDto from "./dto/AssociationDto";
 import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
+import rnaSirenService from '../../open-data/rna-siren/rnaSiren.service';
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     provider = {
@@ -111,45 +112,47 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
     
     isAssociationsProvider = true;
 
-    async getAssociationsBySiren(siren: Siren, rna?: Rna): Promise<Association[] | null> {
+    async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
         if (this.associationsCache.has(siren)) return this.associationsCache.get(siren);
 
         const assos = [];
-        const asso = await this.findAssociationBySiren(siren);
-
-        if (asso) assos.push(asso);
-        if (!rna && asso && asso.rna && asso.rna.length && asso.rna[0].value) {
-            rna = asso.rna[0].value;
+        const assoFromSiren = await this.findAssociationBySiren(siren);
+        if (assoFromSiren) assos.push(assoFromSiren);
+        let rna;
+        if (assoFromSiren?.rna?.length && assoFromSiren.rna[0].value) {
+            rna = assoFromSiren.rna[0].value;
+        } else {
+            rna = await rnaSirenService.getRna(siren);
         }
         
         if (rna) {
-            const data = await this.findAssociationByRna(rna);
-            if (data) assos.push(data);
+            const assoFromRna = await this.findAssociationByRna(rna);
+            if (assoFromRna) assos.push(assoFromRna);
         }
 
         if (assos.length) {
             assos.forEach(asso => this.associationsCache.add(siren, asso));
-
             return assos;
         }
 
         return null;
     }
 
-    async getAssociationsBySiret(siret: Siret, rna?: Rna): Promise<Association[] | null> {
+    async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
         const siren = siretToSiren(siret);
         if (this.associationsCache.has(siren)) return this.associationsCache.get(siren);
-
         const assos = [];
         const result = await this.sendRequest<{etablissement: EtablisementDto}>(`${this.SIRETTE_ROUTE}/${siret}`, false);
 
-        if (result && result.etablissement) assos.push(
+        if (result?.etablissement) assos.push(
             EntrepriseDtoAdapter.toAssociation({
                 unite_legale: {
                     ...result.etablissement.unite_legale
                 }
             })
         );
+
+        const rna = await rnaSirenService.getRna(siren);
         if (rna) {
             const data = await this.findAssociationByRna(rna);
             if (data) assos.push(data);
