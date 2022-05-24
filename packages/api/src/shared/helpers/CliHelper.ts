@@ -10,6 +10,6 @@ export function printAtSameLine(text: string) {
         process.stdout.cursorTo(0);
         process.stdout.write(text);
     } else {
-        console.log(text);
+        // console.log(text);
     }
 }
