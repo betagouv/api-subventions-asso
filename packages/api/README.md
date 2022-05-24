@@ -1,46 +1,4 @@
-# Data Subvention API
-
-Pour le fonctionnement de l'api, vous devez avoir Node.js et NPM d'installer.
-Installer les dépendances avec `npm install`.
-Puis il faut créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes:
-
-- JWT_SECRET
-- MAIL_HOST
-- MAIL_PORT
-- MAIL_USER
-- MAIL_PASSWORD
-
-Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.  
-Par défaut, elle se connecte à l'url suivante: `mongodb://localhost:27017/api-subventions-asso`.  
-Il est possible de paramétrer ses informations via le fichier .env .Le nom des variables ce trouve dans `configurations/mongo.conf.ts`.
-
-Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
-`sudo docker pull mongo`  
-`sudo docker run -d -p 27017:27017 mongo`
-
-## Démarrer l'api en local
-
-1. Run `npm run dev`
-2. Visit [http://localhost:8080](http://localhost:8080)
-
-## Executer une commande
-
-1. Run `npm run cli [controller name] [method name] [...arguments]`
-
-### Créer son utilisateur en local
-
-1. Run `npm run cli user create [your email]``
-2. Call HTTP POST localhost:8080/auth/forget-password with the body
-   `{ "email": [your email] }`
-3. Get in mongodb user-reset collection and copy the token value
-4. Call HTTP POST localhost:8080/auth/reset-password with the body
-   `{ "password": [your new password], "token": [token from step 3] }`
-5. Call HTTP POST localhost:8080/auth/login with the body
-   `{ "email": [your email]}, "password": [password defined in step 4] }`
-
-## Démarrer les tests et le coverage
-
-1. Run `npm run test`
+# Data.Subvention API
 
 ## Choix technique et architecture
 
@@ -60,6 +18,73 @@ Il est important de notés que chaque module ne peut communiquer avec un autre m
 Il faut au maximum évitée l'inter-dépendance entre modules.
 
 Le code de logique métier doit être uniquement écrit dans les services. C'est aux interfaces (HTTP, CLI…) de formater les données renvoyer par les services à leurs interlocuteurs. L'accès à la base de données doit ce faire exclusivement dans les repositories pour faciliter le développement en cas de refactorisation.
+
+## Setup
+
+Pour utiliser l'api, vous devez au préalable avoir installé Node.js et NPM.
+
+Vous devez ensuite installer les dépendances avec `npm install`.
+
+Ensuite, il vous faudra créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes:
+
+- JWT_SECRET
+- MAIL_HOST
+- MAIL_PORT
+- MAIL_USER
+- MAIL_PASSWORD
+
+Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.  
+Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
+Il est possible de paramétrer ces informations dans le fichier .env. Le nom des variables se trouve dans `configurations/mongo.conf.ts`.
+
+Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
+`sudo docker pull mongo`  
+`sudo docker run -d -p 27017:27017 mongo`
+
+## Démarrer l'api en local
+
+1. Run `npm run dev`
+2. Visit [http://localhost:8080](http://localhost:8080)
+
+## Executer une commande CLI
+
+1. Run `npm run cli [controller name] [method name] [...arguments]`
+
+### Créer son utilisateur en local
+
+1. Exécutez `npm run cli user create [your email]`.
+2. Faites une requête HTTP POST localhost:8080/auth/forget-password avec comme corps `{ "email": [your email] }` pour générer un token de réinitialisation de mot de passe.
+3. Allez dans la collection "user-reset" de mongodb user et copiez la valeur du token nouvellement généré.
+4. Faites ensuite une requête HTTP POST localhost:8080/auth/reset-password avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
+5. Enfin, pour vous connecter, faite une requête HTTP POST localhost:8080/auth/login avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
+
+## Git
+
+### Hooks
+
+#### Commit
+
+À chaque commit, un hook husky vérifie le nom du commit selon le [Conventionnal Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Pour faire simple, chaque commit doit spécifier le ou les packages lerna ciblés par le développement ainsi qu'un mot clé identifiant la nature du développement (feature, refactoring, test, hotfix, etc).
+
+Par exemple, un commit de feature classique sur l'API se nommera "feat(api): nouvelle fontionnalité".
+
+#### Push
+
+À chaque push, les tests unitaires sont exécuté. Le coverage est également mesuré mais le seuil est pour l'instant désactivé car nous sommes en refactoring de tests (séparation unitaire - intégration).
+
+### Branches
+
+Chaque branche doit correspondre à un ticket issue du GitHub Project et inclure en début le numéro du ticket. Par exemple `123-new-dev-on-api` pour le ticket #123.
+
+Par défaut, les développements se font sur la branche develop.
+
+La branche main représente la pre-prod et la branche PROD l'environnement en production.
+
+### CI
+
+Chaque création de Pull-Request déclenche une série de commande npm (build, lint, test) qui doivent toutes se terminer avec succès sans quoi la PR sera bloquée.
 
 ## Tests et Coverage
 
