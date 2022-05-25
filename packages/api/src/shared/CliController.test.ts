@@ -87,7 +87,7 @@ describe("CliController", () => {
             const LOGS: unknown[] = [];
             const exportDate = "2022-03-03"
             findFilesMock.mockImplementationOnce(() => [FILENAME])
-            const expected = new Date(exportDate).toISOString();
+            const expected = new Date(exportDate);
             await controller.parse(FILENAME, exportDate);
             expect(_parseSpy).toHaveBeenCalledWith(FILENAME, LOGS, expected);
         })
