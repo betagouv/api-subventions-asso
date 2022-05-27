@@ -8,7 +8,7 @@ const g = global as unknown as { app: unknown };
 
 describe("open-data/providers", () => {
     beforeEach( async () => {
-        await osirisRepository.addRequest(OsirisRequestEntityFixture);
+        await osirisRepository.add(OsirisRequestEntityFixture);
         await fonjepRepository.create(FonjepEntityFixture);
     })
     

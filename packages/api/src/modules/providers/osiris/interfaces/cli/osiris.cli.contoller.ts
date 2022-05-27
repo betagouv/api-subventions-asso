@@ -145,7 +145,7 @@ export default class OsirisCliController {
 
             if (!validation.success) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
-            } else data.push(await osirisService.addAction(osirisAction));
+            } else data.push(await osirisService.add(osirisAction));
 
             return data;
         }, Promise.resolve([]) as Promise<{
@@ -199,9 +199,9 @@ export default class OsirisCliController {
         let data: Array<OsirisActionEntity | OsirisRequestEntity> = [];
 
         if (type === "requests") {
-            data = await osirisService.findAllRequests();
+            data = await osirisService.findAll();
         } else if (type === "actions") {
-            data = await osirisService.findAllActions();
+            data = await osirisService.findAll();
         }
 
         if (format === "json") {

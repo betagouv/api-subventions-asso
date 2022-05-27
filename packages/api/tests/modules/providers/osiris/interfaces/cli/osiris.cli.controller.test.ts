@@ -131,7 +131,7 @@ describe("OsirisCliController", () => {
             const action =  new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
 
             await osirisService.addRequest(request);
-            await osirisService.addAction(action);
+            await osirisService.add(action);
         });
 
         it('should throw error because no agrs', () => {

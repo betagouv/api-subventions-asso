@@ -58,7 +58,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
 
             return {
                 state: "updated",
-                result: await leCompteAssoRepository.updateRequest(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),
+                result: await leCompteAssoRepository.update(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),
             };
         }
 

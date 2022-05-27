@@ -16,7 +16,7 @@ module.exports = {
         await connectDB();
         
         console.log("Start Osris action indexed siret migration");
-        const cursor = repo.cursorFindRequests();
+        const cursor = repo.cursorFind();
 
         let counter = 0;
         while(await cursor.hasNext()) {
@@ -24,7 +24,7 @@ module.exports = {
             if (!doc) continue;
             const data = doc.data;
             doc.providerInformations = ParseHelper.indexDataByPathObject(entity.indexedProviderInformationsPath, data);
-            await repo.updateRequest(doc);
+            await repo.update(doc);
             counter++;
             printAtSameLine(counter.toString());
         }

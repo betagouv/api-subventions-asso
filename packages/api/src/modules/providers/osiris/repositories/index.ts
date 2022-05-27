@@ -1,8 +1,9 @@
-import osirisRepository from "./osiris.repository"
-
+import osirisRequestRepository from "./osiris.request.repository";
+import osirisActionRepository from "./osiris.action.repository"
 import osirisEvaluationRepository from "./osiris.evaluation.repository"
 
 export { 
-    osirisRepository,
+    osirisRequestRepository,
+    osirisActionRepository,
     osirisEvaluationRepository
 }

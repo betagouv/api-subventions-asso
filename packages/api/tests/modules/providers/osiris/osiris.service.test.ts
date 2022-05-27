@@ -51,7 +51,7 @@ describe("OsirisService", () => {
             })
         });
         
-        describe('findAllRequests', () => {
+        describe('findAll', () => {
         
             beforeEach(async () => {
                 const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
@@ -59,14 +59,14 @@ describe("OsirisService", () => {
             });
         
             it('should return one request', async () => {
-                expect(await osirisService.findAllRequests()).toHaveLength(1);
+                expect(await osirisService.findAll()).toHaveLength(1);
             });
         
             it('should return two requests', async () => {
                 const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
                 await osirisService.addRequest(entity);
         
-                expect(await osirisService.findAllRequests()).toHaveLength(2);
+                expect(await osirisService.findAll()).toHaveLength(2);
             });
         });
         
@@ -82,7 +82,7 @@ describe("OsirisService", () => {
             });
 
             it('should return action without evaluation', async () => {
-                await osirisService.addAction(new OsirisActionEntity({ osirisActionId: "FAKE_ACTION_ID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined));
+                await osirisService.add(new OsirisActionEntity({ osirisActionId: "FAKE_ACTION_ID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined));
                 const osirisActions = (await osirisService.findBySiret("FAKE_SIRET"))[0].actions as OsirisActionEntity[];
                 const actual = osirisActions[0];
                 const expected = { indexedInformations: { osirisActionId: 'FAKE_ACTION_ID', compteAssoId: 'COMPTEASSOID' },
@@ -93,7 +93,7 @@ describe("OsirisService", () => {
             });
 
             it('should return action with evaluation', async () => {
-                await osirisService.addAction(new OsirisActionEntity({ osirisActionId: "FAKE_ACTION_ID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined));
+                await osirisService.add(new OsirisActionEntity({ osirisActionId: "FAKE_ACTION_ID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined));
                 await osirisService.addEvaluation(new OsirisEvaluationEntity({ osirisActionId: "FAKE_ACTION_ID", siret: "FAKE_SIRET", evaluation_resultat: "", cout_total_realise: 2000} as IOsirisEvaluationsInformations, {}));
                 const osirisActions = (await osirisService.findBySiret("FAKE_SIRET"))[0].actions as OsirisActionEntity[];
                 const actual = osirisActions[0];
@@ -121,40 +121,40 @@ describe("OsirisService", () => {
     })
 
     describe("actions part", () => {
-        describe('addAction', () => {
+        describe('add', () => {
             it('should return the added osiris action', async () => {
                 const entity = new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
-                const expected = await osirisService.addAction(entity)
+                const expected = await osirisService.add(entity)
                 expect(entity).toMatchObject(expected.result);
             });
         
             it('should return the updated osiris action', async () => {
                 const entity = new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
-                await osirisService.addAction(entity);
-                const expected = await osirisService.addAction(entity)
+                await osirisService.add(entity);
+                const expected = await osirisService.add(entity)
                 expect(entity).toMatchObject(expected.result);
                 expect(expected.state).toBe("updated");
             });
         });
         
-        describe('findAllActions', () => {
+        describe('findAll', () => {
         
             beforeEach(async () => {
                 const entity = new OsirisActionEntity({ osirisActionId: "FAKE_ID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
 
-                await osirisService.addAction(entity);
+                await osirisService.add(entity);
             });
         
             it('should return one action', async () => {
-                expect(await osirisService.findAllActions()).toHaveLength(1);
+                expect(await osirisService.findAll()).toHaveLength(1);
             });
         
             it('should return two actions', async () => {
                 const entity = new OsirisActionEntity({ osirisActionId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
 
-                await osirisService.addAction(entity);
+                await osirisService.add(entity);
         
-                expect(await osirisService.findAllActions()).toHaveLength(2);
+                expect(await osirisService.findAll()).toHaveLength(2);
             });
         });
     })

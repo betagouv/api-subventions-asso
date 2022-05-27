@@ -10,7 +10,7 @@ const g = global as unknown as { app: unknown }
 describe('/search', () => {
     describe("/etablissement/{siret}", () => {
         it("should return an association", async () => {
-            await osirisRepository.addRequest(OsirisRequestEntityFixture);
+            await osirisRepository.add(OsirisRequestEntityFixture);
             const response = await request(g.app)
             .get(`/search/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
             .set("x-access-token", await getUserToken())
@@ -23,7 +23,7 @@ describe('/search', () => {
     
     describe("/association/{rna}", () => {
         it("should return an association", async () => {
-            await osirisRepository.addRequest(OsirisRequestEntityFixture);
+            await osirisRepository.add(OsirisRequestEntityFixture);
             const response = await request(g.app)
                 .get(`/search/association/${OsirisRequestEntityFixture.legalInformations.rna}`)
                 .set("x-access-token", await getUserToken())

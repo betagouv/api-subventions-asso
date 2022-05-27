@@ -13,7 +13,7 @@ let fonjepDocumentId: string | undefined;
 
 describe("/subvention", () => {
     beforeEach( async () => {
-        osirisDocumentId = ((await osirisRepository.addRequest(OsirisRequestEntityFixture)) as Document)._id.toString();
+        osirisDocumentId = ((await osirisRepository.add(OsirisRequestEntityFixture)) as Document)._id.toString();
         fonjepDocumentId = ((await fonjepRepository.create(FonjepEntityFixture)) as Document)._id.toString();
     })
     

@@ -17,7 +17,7 @@ module.exports = {
         await connectDB();
         await migrationManager.startMigration();
 
-        const cursor = repo.cursorFindActions();
+        const cursor = repo.cursorFind();
 
         let counter = 0;
         while(await cursor.hasNext()) {
@@ -25,7 +25,7 @@ module.exports = {
             if (!doc) continue;
             const data = doc.data;
             doc.indexedInformations = ParseHelper.indexDataByPathObject(enity.indexedInformationsPath, data);
-            await repo.updateAction(doc);
+            await repo.update(doc);
             counter++;
             printAtSameLine(counter.toString());
         }

@@ -11,7 +11,7 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
         return this.findByCompteAssoId(request.providerInformations.compteAssoId) as LeCompteAssoRequestEntity;
     }
 
-    public async updateRequest(request: LeCompteAssoRequestEntity) {
+    public async update(request: LeCompteAssoRequestEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {_id, ...requestWithoutId } = request;
