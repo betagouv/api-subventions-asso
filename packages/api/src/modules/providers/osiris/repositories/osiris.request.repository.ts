@@ -1,6 +1,5 @@
 import db from "../../../../shared/MongoConnection";
 import { FindOneAndUpdateOptions, ObjectId } from 'mongodb';
-import { MONGO_BATCH_SIZE } from "../../../../configurations/mongo.conf";
 import OsirisRequestEntity from '../entities/OsirisRequestEntity';
 import { Rna, Siren, Siret } from '@api-subventions-asso/dto';
 
@@ -20,10 +19,6 @@ export class OsirisRequestRepository {
             "providerInformations.osirisId": osirisRequest.providerInformations.osirisId 
         },
         { $set: requestWithoutId }, options)).value as OsirisRequestEntity;
-    }
-    
-    public async findAll(limit:number = MONGO_BATCH_SIZE) {
-        return this.collection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisRequestEntity[];
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {

@@ -164,14 +164,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return requests;
     }
 
-    public findAllRequests() {
-        return osirisRequestRepository.findAll();
-    }
-
-    public findAllActions() {
-        return osirisActionRepository.findAll();
-    }
-
     /**
      * |-------------------------|
      * |    Associations Part    |

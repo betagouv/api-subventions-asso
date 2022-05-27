@@ -1,11 +1,6 @@
 import path from "path";
-import IOsirisActionsInformations from "../../../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
 import IOsirisRequestInformations from "../../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
-import OsirisActionEntity from "../../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-
 import OsirisCliController from "../../../../../../src/modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
 import OsirisParser from "../../../../../../src/modules/providers/osiris/osiris.parser";
 import osirisService from "../../../../../../src/modules/providers/osiris/osiris.service";
@@ -92,68 +87,6 @@ describe("OsirisCliController", () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
 
             expect(() => controller.parse("unknown" as "actions",  filePath)).rejects.toThrowError("The type unknown is not taken into account");
-        });
-    });
-
-
-    describe('findAll cli', () => {
-        let controller: OsirisCliController;
-        let consoleInfo: jest.SpyInstance;
-
-
-        beforeEach(() => {
-            controller = new OsirisCliController();
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            consoleInfo = jest.spyOn(console, 'info').mockImplementation(() => {});
-        });
-
-        afterEach(() => {
-            consoleInfo.mockClear();
-        });
-
-        afterAll(() => {
-            consoleInfo.mockReset();
-        });
-
-        it('should log all requests', async () => {
-            await controller.findAll("requests");
-            expect(consoleInfo).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('findAll cli json', () => {
-        let controller: OsirisCliController;
-
-        beforeEach(async () => {
-            controller = new OsirisCliController();
-
-            const request = new OsirisRequestEntity({ siret: "FAKE_SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
-            const action =  new OsirisActionEntity({ osirisActionId: "OSIRISID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
-
-            await osirisService.addRequest(request);
-            await osirisService.add(action);
-        });
-
-        it('should throw error because no agrs', () => {
-            expect(controller.findAll).rejects.toThrowError("FindAll command need type args");
-        });
-
-        it('should log all requests', async () => {
-            let data = "";
-            const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findAll("requests", "json");
-            expect(JSON.parse(data)).toHaveLength(1);
-
-            consoleInfo.mockReset();
-        });
-
-        it('should log all actions', async () => {
-            let data = "";
-            const consoleInfo = jest.spyOn(console, 'info').mockImplementation((dataLogged: string) => data = dataLogged);
-            await controller.findAll("actions", "json");
-            expect(JSON.parse(data)).toHaveLength(1);
-
-            consoleInfo.mockReset();
         });
     });
 

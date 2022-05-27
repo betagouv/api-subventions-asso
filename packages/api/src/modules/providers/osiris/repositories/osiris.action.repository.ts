@@ -1,5 +1,4 @@
 import db from "../../../../shared/MongoConnection";
-import { MONGO_BATCH_SIZE } from "../../../../configurations/mongo.conf";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import { Siren } from "@api-subventions-asso/dto";
@@ -29,13 +28,6 @@ export class OsirisActionRepository {
         )).value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
-    }
-    
-    /**
-     * @depricated
-     */
-    public async findAll(limit:number = MONGO_BATCH_SIZE) {
-        return this.collection.find({}).limit(limit).batchSize(MONGO_BATCH_SIZE).toArray() as unknown as OsirisActionEntity[];
     }
 
     public async findByOsirisId(osirisId: string) {

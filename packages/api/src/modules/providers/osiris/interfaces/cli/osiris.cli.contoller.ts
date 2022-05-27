@@ -191,26 +191,6 @@ export default class OsirisCliController {
         `);
     }
 
-    async findAll(type:string, format? :string) {
-        if (typeof type !== "string") {
-            throw new Error("FindAll command need type args");
-        }
-
-        let data: Array<OsirisActionEntity | OsirisRequestEntity> = [];
-
-        if (type === "requests") {
-            data = await osirisService.findAll();
-        } else if (type === "actions") {
-            data = await osirisService.findAll();
-        }
-
-        if (format === "json") {
-            console.info(JSON.stringify(data));
-        } else {
-            console.info(data);
-        }
-    }
-
     async findBySiret(siret: Siret, format?: string) {
         if (typeof siret !== "string" ) {
             throw new Error("Parse command need siret args");

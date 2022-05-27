@@ -5,7 +5,7 @@ import OsirisActionEntity from "../../../../src/modules/providers/osiris/entitie
 import OsirisEvaluationEntity from '../../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity';
 import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import osirisService, { OsirisService } from "../../../../src/modules/providers/osiris/osiris.service";
-import { osirisRepository } from '../../../../src/modules/providers/osiris/repositories';
+import { osirisRequestRepository } from '../../../../src/modules/providers/osiris/repositories';
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
 import EventManager from '../../../../src/shared/EventManager';
 
@@ -34,7 +34,7 @@ describe("OsirisService", () => {
             it("should call EventManager", async () => {
                 const eventManagerMock = jest.spyOn(EventManager, "call").mockImplementation((name, value) => Promise.resolve({name, value}));
                 // @ts-expect-error: Jest mock
-                jest.spyOn(osirisRepository, "findRequestByOsirisId").mockImplementationOnce(() => Promise.resolve(null));
+                jest.spyOn(osirisRequestRepository, "findByOsirisId").mockImplementationOnce(() => Promise.resolve(null));
                 const LAST_UPDATE = new Date();
                 const RNA = "RNA";
                 const SIREN = "SIREN";
@@ -49,25 +49,6 @@ describe("OsirisService", () => {
                 expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren: SIREN, name: NAME, provider: osirisService.provider.name, lastUpdate: LAST_UPDATE}]);
                 eventManagerMock.mockReset();
             })
-        });
-        
-        describe('findAll', () => {
-        
-            beforeEach(async () => {
-                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
-                await osirisService.addRequest(entity);
-            });
-        
-            it('should return one request', async () => {
-                expect(await osirisService.findAll()).toHaveLength(1);
-            });
-        
-            it('should return two requests', async () => {
-                const entity = new OsirisRequestEntity({ siret: "SIRET", rna: "RNA", name: "NAME"}, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date()} as IOsirisRequestInformations, {}, undefined, []);
-                await osirisService.addRequest(entity);
-        
-                expect(await osirisService.findAll()).toHaveLength(2);
-            });
         });
         
         describe('findBySiret', () => {
@@ -136,27 +117,7 @@ describe("OsirisService", () => {
                 expect(expected.state).toBe("updated");
             });
         });
-        
-        describe('findAll', () => {
-        
-            beforeEach(async () => {
-                const entity = new OsirisActionEntity({ osirisActionId: "FAKE_ID", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
 
-                await osirisService.add(entity);
-            });
-        
-            it('should return one action', async () => {
-                expect(await osirisService.findAll()).toHaveLength(1);
-            });
-        
-            it('should return two actions', async () => {
-                const entity = new OsirisActionEntity({ osirisActionId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID"} as IOsirisActionsInformations, {}, undefined);
-
-                await osirisService.add(entity);
-        
-                expect(await osirisService.findAll()).toHaveLength(2);
-            });
-        });
     })
 
     describe("evaluation part", () => {
