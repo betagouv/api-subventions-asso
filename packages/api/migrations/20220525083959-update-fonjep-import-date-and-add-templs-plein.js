@@ -9,8 +9,8 @@ module.exports = {
         console.log("Connecting to DB...");
         await connectDB();
         await migrationManager.startMigration();
-        const fonjepCollection = db.collection("fonjep");
-        const cursor = db.collection("fonjep").find({});
+        const fonjepCollection = db.collection("fonjep-MIGRATION-DATABASE");
+        const cursor = fonjepCollection.find({});
         console.log("Starting fonjep update...");
         let counter = 0;
         while (await cursor.hasNext()) {
