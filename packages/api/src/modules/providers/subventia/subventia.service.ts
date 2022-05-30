@@ -17,12 +17,12 @@ export interface RejectedRequest {
 export interface AcceptedRequest {
     success: true,
     entity: WithId<SubventiaRequestEntity>,
-    state: 'updated' | "created"
+    state: "created"
 }
 
 export class SubventiaService {
 
-    validateEntity(entity: SubventiaRequestEntity): { success: true} | RejectedRequest  {
+    validateEntity(entity: SubventiaRequestEntity): { success: true } | RejectedRequest  {
         if (!isSiret(entity.legalInformations.siret)) {
             return { success: false, message: `INVALID SIRET FOR ${entity.legalInformations.siret}`, data: entity , code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY };
         }
@@ -54,7 +54,6 @@ export class SubventiaService {
     }
 
     async createEntity(entity: SubventiaRequestEntity): Promise<RejectedRequest | AcceptedRequest> {
-
         const valid = this.validateEntity(entity);
         
         if (!valid.success) return valid;

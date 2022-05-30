@@ -16,15 +16,15 @@ export default class SubventiaCliController extends CliController {
 
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
 
-    protected async _parse(file: string, logs: unknown[]) {
-        console.info("\nStart parse file: ", file);
-        logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
+    protected async _parse(file: string) {
+        this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
+        this.logger.logIC("\nStart parse file: ", file);
 
         const fileContent = fs.readFileSync(file);
 
         const entities = SubventiaParser.parse(fileContent);
 
-        console.info("Start register in database ...")
+        this.logger.logIC("Start register in database ...")
 
         const saveEntities = async (acc: Promise<(RejectedRequest | AcceptedRequest)[]> , entity: SubventiaRequestEntity, index: number) => {
             const data = await acc;
@@ -35,18 +35,17 @@ export default class SubventiaCliController extends CliController {
         
         const results = await entities.reduce(saveEntities, Promise.resolve([]));
 
-        const created = results.filter((result) => result.success && result.state === "created");
-        const updated = results.filter((result) => result.success && result.state === "updated");
+        const created = results.filter((result) => result.success) as AcceptedRequest[];
         const rejected = results.filter((result) => !result.success) as RejectedRequest[];
 
-        console.info(`
+        this.logger.logIC(`
             ${results.length}/${entities.length}
-            ${created.length} requests created and ${updated.length} requests updated
+            ${created.length} requests created
             ${rejected.length} requests not valid
         `);
 
         rejected.forEach((result) => {
-            logs.push(`\n\nThis request is not registered because: ${result.message}\n`, JSON.stringify(result.data, null, "\t"))
+            this.logger.log(`\n\nThis request is not registered because: ${result.message}\n`, JSON.stringify(result.data, null, "\t"))
         });
     }
 }

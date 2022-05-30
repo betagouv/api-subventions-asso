@@ -1,8 +1,10 @@
 import fs from "fs";
+import CliLogger from "./CliLogger";
 import { findFiles } from './helpers/ParserHelper';
 
 export default class CliController {
     protected logFileParsePath = "";
+    protected logger = new CliLogger();
 
     private validParseFile(file: string): boolean {
         if (typeof file != "string") {
@@ -28,13 +30,14 @@ export default class CliController {
         const files = findFiles(file);
         const logs: unknown[] = [];
 
-        console.info(`${files.length} files in the parse queue`);
-        console.info(`You can read log in ${ this.logFileParsePath }`);
+        this.logger.logIC(`${files.length} files in the parse queue`);
+        this.logger.logIC(`You can read log in ${ this.logFileParsePath }`);
 
         return files.reduce((acc, filePath) => {
             return acc.then(() => exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs) );
         }, Promise.resolve())
-            .then(() => fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" }));
+            // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
+            .then(() => fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), { flag: "w", encoding: "utf-8" }));
     }
     
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

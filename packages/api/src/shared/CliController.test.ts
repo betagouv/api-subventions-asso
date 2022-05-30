@@ -92,4 +92,11 @@ describe("CliController", () => {
             expect(_parseSpy).toHaveBeenCalledWith(FILENAME, LOGS, expected);
         })
     })
+
+    describe("_parse()", () => {
+        it("should throw error", () => {
+            //@ts-expect-error _parse is protected method
+            expect(() => controller._parse("", [])).rejects.toThrowError("_parse() need to be implemented by the child class")
+        })
+    })
 });

@@ -5,8 +5,8 @@ import ILegalInformations from "../../search/@types/ILegalInformations";
 
 export default class SubventiaParser {
     static parse(fileContent: Buffer): SubventiaRequestEntity[] {
-        const data = ParseHelper.xlsParse(fileContent)[0]
-        const headers = data[0] as string[]
+        const data = ParseHelper.xlsParse(fileContent)[0];
+        const headers = data[0] as string[];
         const raws = data.slice(1) as unknown[][];
 
         return raws.map((raw) => {
