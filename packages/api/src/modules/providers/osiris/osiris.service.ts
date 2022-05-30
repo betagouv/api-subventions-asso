@@ -1,6 +1,7 @@
 import {DemandeSubvention, Rna, Siren, Siret, Association, Etablissement} from "@api-subventions-asso/dto";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import EventManager from "../../../shared/EventManager";
+import { siretToSiren } from '../../../shared/helpers/SirenHelper';
 import { isSiret, isAssociationName, isCompteAssoId, isRna, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
@@ -27,7 +28,8 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     }
     public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
         const existingFile = await osirisRepository.findRequestByOsirisId(request.providerInformations.osirisId);
-        const { rna, siret: siren, name } = request.legalInformations
+        const { rna, siret, name } = request.legalInformations
+        const siren = siretToSiren(siret);
         const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
         
         EventManager.call('rna-siren.matching', [{ rna, siren }]);
