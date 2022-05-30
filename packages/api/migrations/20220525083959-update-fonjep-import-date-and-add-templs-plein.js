@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require('../build/src/shared/MongoConnection');
+const migrationManager = require("../build/src/shared/MigrationManager").default;
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const { ObjectId } = require('mongodb');
 
 module.exports = {
     async up(db, client) {
         console.log("Connecting to DB...");
-        connectDB();
+        await connectDB();
+        await migrationManager.startMigration();
         const fonjepCollection = db.collection("fonjep");
         const cursor = db.collection("fonjep").find({});
         console.log("Starting fonjep update...");
@@ -18,15 +20,16 @@ module.exports = {
             await fonjepCollection.updateOne(
                 { _id: ObjectId(doc._id) },
                 { $set: 
-                  { 
-                      "indexedInformations.updated_at": new Date(iso), 
-                      "indexedInformations.plein_temps": doc.data.PleinTemps
-                  }
+                    { 
+                        "indexedInformations.updated_at": new Date(iso), 
+                        "indexedInformations.plein_temps": doc.data.PleinTemps
+                    }
                 }
             );
             counter++;
             printAtSameLine(counter.toString());
         }
+        await migrationManager.endMigration();
     },
 
     async down(db, client) {
