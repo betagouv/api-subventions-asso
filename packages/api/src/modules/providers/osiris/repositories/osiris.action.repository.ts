@@ -7,14 +7,14 @@ import OsirisActionAdapter from './dboAdapters/osirisActionAdapter';
 import MongoCnxError from '../../../../shared/errors/MongoCnxError';
 
 export class OsirisActionRepository {
-    private readonly collection = db.collection<OsirisActionEntityDbo>("osiris-actions");
+    private readonly collection =  db.collection<OsirisActionEntityDbo>("osiris-actions");
 
     // Action Part
     public async add(osirisAction: OsirisActionEntity) {
         await this.collection.insertOne(OsirisActionAdapter.toDbo(osirisAction));
         const dbo = await this.findByOsirisId(osirisAction.indexedInformations.osirisActionId);
         if (!dbo) throw new MongoCnxError();
-        return OsirisActionAdapter.toEntity(dbo);
+        return dbo;
     }
 
     public async update(osirisAction: OsirisActionEntity) {
