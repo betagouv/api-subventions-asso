@@ -5,7 +5,7 @@ const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const migrationManager = require("../build/src/shared/MigrationManager").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const repo = require("../build/src/modules/providers/osiris/repositories/osiris.repository").default;
+const osirisActionRepository = require("../build/src/modules/providers/osiris/repositories/osiris.action.repository").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const enity = require("../build/src/modules/providers/osiris/entities/OsirisActionEntity").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -17,7 +17,7 @@ module.exports = {
         await connectDB();
         await migrationManager.startMigration();
 
-        const cursor = repo.cursorFindActions();
+        const cursor = osirisActionRepository.cursorFind();
 
         let counter = 0;
         while(await cursor.hasNext()) {
@@ -25,7 +25,7 @@ module.exports = {
             if (!doc) continue;
             const data = doc.data;
             doc.indexedInformations = ParseHelper.indexDataByPathObject(enity.indexedInformationsPath, data);
-            await repo.updateAction(doc);
+            await osirisActionRepository.update(doc);
             counter++;
             printAtSameLine(counter.toString());
         }

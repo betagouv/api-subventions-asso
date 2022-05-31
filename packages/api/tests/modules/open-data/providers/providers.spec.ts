@@ -1,5 +1,5 @@
 import request from 'supertest'
-import osirisRepository from '../../../../src/modules/providers/osiris/repositories/osiris.repository';
+import osirisRequestRepository from '../../../../src/modules/providers/osiris/repositories/osiris.request.repository';
 import fonjepRepository from '../../../../src/modules/providers/fonjep/repositories/fonjep.repository';
 import FonjepEntityFixture from '../../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../../providers/osiris/__fixtures__/entity';
@@ -8,7 +8,7 @@ const g = global as unknown as { app: unknown };
 
 describe("open-data/providers", () => {
     beforeEach( async () => {
-        await osirisRepository.addRequest(OsirisRequestEntityFixture);
+        await osirisRequestRepository.add(OsirisRequestEntityFixture);
         await fonjepRepository.create(FonjepEntityFixture);
     })
     
