@@ -1,8 +1,8 @@
 import migrationManager from "./MigrationManager";
 import db from "./MongoConnection";
 
-export default class MigrationRepository<T> {
-    public collectionName = "migration-repository";
+export default abstract class MigrationRepository<T> {
+    public abstract collectionName: string;
 
     protected db = db;
 
