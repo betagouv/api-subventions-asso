@@ -14,13 +14,13 @@ describe("ApiAssoDtoAdapter", () => {
         it("should return siren association", () => {
             const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
 
-            expect(actual[0]).toMatchSnapshot();
+            expect(actual[1]).toMatchSnapshot();
         })
 
         it("should return rna association", () => {
             const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
 
-            expect(actual[1]).toMatchSnapshot();
+            expect(actual[0]).toMatchSnapshot();
         })
 
         it("should return rna association with adresse", () => {
@@ -32,7 +32,7 @@ describe("ApiAssoDtoAdapter", () => {
                 }
             });
 
-            expect(actual[1]).toMatchSnapshot();
+            expect(actual[0]).toMatchSnapshot();
         })
 
         it("should return rna association with date creation", () => {
@@ -44,7 +44,7 @@ describe("ApiAssoDtoAdapter", () => {
                 }
             });
 
-            expect(actual[1]).toMatchSnapshot();
+            expect(actual[0]).toMatchSnapshot();
         })
 
         it("should return siren association with date creation", () => {
@@ -56,7 +56,7 @@ describe("ApiAssoDtoAdapter", () => {
                 }
             });
 
-            expect(actual[0]).toMatchSnapshot();
+            expect(actual[1]).toMatchSnapshot();
         })
 
         it("should return siren association without nom siren", () => {
@@ -68,7 +68,7 @@ describe("ApiAssoDtoAdapter", () => {
                 }
             });
 
-            expect(actual[0]).toMatchSnapshot();
+            expect(actual[1]).toMatchSnapshot();
         })
     })
 

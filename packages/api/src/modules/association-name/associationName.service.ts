@@ -18,7 +18,7 @@ export class AssociationNameService {
     }
 
     async add(entity: AssociationNameEntity) {
-        if (await associationNameRepository.findOneByEnity(entity)) return; // TODO: UPDATE DATE ?
+        if (await associationNameRepository.findOneByEntity(entity)) return; // TODO: UPDATE DATE ?
 
         return await associationNameRepository.create(entity);
     }
