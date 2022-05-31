@@ -14,7 +14,7 @@ export class AssociationNameRepository {
         return  (await this.collection.find({ $or: [ {siren: { $regex: `^${value}` }}, {rna: { $regex: `^${value}` }}, {name: { $regex: `^${value}` }}] }).toArray()).map(document => this.toEntity(document));
     }
 
-    async findOneByEnity(entity: AssociationNameEntity) {
+    async findOneByEntity(entity: AssociationNameEntity) {
         const result = await this.collection.findOne({ rna: entity.rna, siren: entity.siren, name: entity.name });
         if (result) return this.toEntity(result);
         return null;
