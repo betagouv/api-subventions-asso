@@ -102,7 +102,6 @@ describe("AssociationService", () => {
         });
 
         it("should call capitalizeFirstLetter()", () => {
-            console.log(getIdentifierTypeMock);
             const capitalizeFirstLetterSpy = jest.spyOn(StringHelper, "capitalizeFirstLetter");
             // @ts-expect-error: test private method
             associationsService.aggregate(RNA);

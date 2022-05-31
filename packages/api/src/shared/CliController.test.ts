@@ -83,5 +83,13 @@ describe("CliController", () => {
             const actual = _parseSpy.mock.calls.length;
             expect(actual).toEqual(expected);
         });
+        it("should call _parse() with a specific export date", async () => {
+            const LOGS: unknown[] = [];
+            const exportDate = "2022-03-03"
+            findFilesMock.mockImplementationOnce(() => [FILENAME])
+            const expected = new Date(exportDate);
+            await controller.parse(FILENAME, exportDate);
+            expect(_parseSpy).toHaveBeenCalledWith(FILENAME, LOGS, expected);
+        })
     })
 });

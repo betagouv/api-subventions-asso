@@ -50,6 +50,7 @@ export default class FonjepRequestEntity {
         co_financeur_contact: ["Co-Financeur", "ContactEmail"],
         co_financeur_siret: ["Co-Financeur", "SiretOuRidet"],
         co_financeur_montant: ["Co-Financements", "MontantFinance"],
+        plein_temps: ["PleinTemps"]
     }
 
     constructor(

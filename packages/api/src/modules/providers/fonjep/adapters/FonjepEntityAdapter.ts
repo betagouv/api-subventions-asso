@@ -1,5 +1,5 @@
 import { DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
-import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
+import ProviderValueFactory from '../../../../shared/ProviderValueFactory';
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
@@ -7,43 +7,47 @@ export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep"
     
     static toDemandeSubvention(entity: FonjepRequestEntity): DemandeSubvention {
-        const dataDate = entity.indexedInformations.updated_at
+        const dataDate = entity.indexedInformations.updated_at;
+        const toProviderValue = ProviderValueFactory.buildProviderValueAdapter(this.PROVIDER_NAME, dataDate);
         return {
-            siret: ProviderValueAdapter.toProviderValue(entity.legalInformations.siret, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-            service_instructeur: ProviderValueAdapter.toProviderValue(entity.indexedInformations.service_instructeur, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-            status: ProviderValueAdapter.toProviderValue(entity.indexedInformations.status, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-            annee_demande: ProviderValueAdapter.toProviderValue(entity.indexedInformations.annee_demande, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-            date_fin: entity.indexedInformations.date_fin_triennale 
-                ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.date_fin_triennale, FonjepEntityAdapter.PROVIDER_NAME, dataDate)
-                : undefined,
+            siret: toProviderValue(entity.legalInformations.siret),
+            service_instructeur: toProviderValue(entity.indexedInformations.service_instructeur),
+            dispositif: toProviderValue(this.PROVIDER_NAME),
+            status: toProviderValue(entity.indexedInformations.status),
+            pluriannualite: toProviderValue("Oui"),
+            plein_temps: toProviderValue(entity.indexedInformations.plein_temps),
+            annee_demande: toProviderValue(entity.indexedInformations.annee_demande),
+            date_fin: toProviderValue(entity.indexedInformations.date_fin_triennale),
             montants: {
-                accorde: ProviderValueAdapter.toProviderValue(entity.indexedInformations.montant_paye, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
+                accorde: toProviderValue(entity.indexedInformations.montant_paye),
+                demande: toProviderValue(entity.indexedInformations.montant_paye),
             },
             co_financement: entity.indexedInformations.co_financeur ? {
-                cofinanceur: ProviderValueAdapter.toProviderValue(entity.indexedInformations.co_financeur as string, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-                cofinanceur_email: ProviderValueAdapter.toProviderValue(entity.indexedInformations.co_financeur_contact as string, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
+                cofinanceur: toProviderValue(entity.indexedInformations.co_financeur as string),
+                cofinanceur_email: toProviderValue(entity.indexedInformations.co_financeur_contact as string),
                 cofinanceur_siret: entity.indexedInformations.co_financeur_siret?.length != 0 
-                    ? ProviderValueAdapter.toProviderValue(entity.indexedInformations.co_financeur_siret as string, FonjepEntityAdapter.PROVIDER_NAME, dataDate)
+                    ? toProviderValue(entity.indexedInformations.co_financeur_siret as string)
                     : undefined,
-                montants: ProviderValueAdapter.toProviderValue(entity.indexedInformations.co_financeur_montant as number, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
+                montants: toProviderValue(entity.indexedInformations.co_financeur_montant as number),
             } : undefined
         }
     }
 
     static toEtablissement(entity: FonjepRequestEntity): Etablissement {
-        const dataDate = entity.indexedInformations.updated_at
+        const dataDate = entity.indexedInformations.updated_at;
+        const toProviderValues = ProviderValueFactory.buildProviderValuesAdapter(this.PROVIDER_NAME, dataDate);
 
         return {
-            siret: ProviderValueAdapter.toProviderValues(entity.legalInformations.siret, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-            nic: ProviderValueAdapter.toProviderValues(siretToNIC(entity.legalInformations.siret), FonjepEntityAdapter.PROVIDER_NAME, dataDate),
-            adresse: ProviderValueAdapter.toProviderValues({
+            siret: toProviderValues(entity.legalInformations.siret),
+            nic: toProviderValues(siretToNIC(entity.legalInformations.siret)),
+            adresse: toProviderValues({
                 code_postal: entity.indexedInformations.code_postal,
                 commune: entity.indexedInformations.ville
-            }, FonjepEntityAdapter.PROVIDER_NAME, dataDate),
+            }),
             contacts: [
-                ProviderValueAdapter.toProviderValues({
+                toProviderValues({
                     email: entity.indexedInformations.contact
-                }, FonjepEntityAdapter.PROVIDER_NAME, dataDate)
+                })
             ],
         }
     }
