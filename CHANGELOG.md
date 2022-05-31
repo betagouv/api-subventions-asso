@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.6](https://github.com/betagouv/api-subventions-asso/compare/v0.9.4...v0.9.6) (2022-05-30)
+
+
+### Bug Fixes
+
+* **api:** check if api asso send rna data before parse date of rna updadte ([dd27c33](https://github.com/betagouv/api-subventions-asso/commit/dd27c33acec94b923e7991bdeddd6143e8ec8f82))
+
+### [0.9.5](https://github.com/betagouv/api-subventions-asso/compare/v0.9.4...v0.9.5) (2022-05-30)
+
+
+### Features
+
+* **api:** add many extentions in mail accepted ([b80cadf](https://github.com/betagouv/api-subventions-asso/commit/b80cadf5d6b296b7eb03018b18bb8c33a0f2058b))
+
 ### [0.9.4](https://github.com/betagouv/api-subventions-asso/compare/v0.8.7...v0.9.4) (2022-05-19)
 
 

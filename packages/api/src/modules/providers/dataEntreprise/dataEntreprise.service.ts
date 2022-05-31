@@ -96,9 +96,10 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         
         const association = data.association;
         if (association.siret) {
+            const siren = siretToSiren(association.siret);
             const name = association.titre;
-            EventManager.call('rna-siren.matching', [{rna, siren: association.siret}])
-            EventManager.call('association-name.matching', [{rna, siren: association.siret, name, provider: this.provider.name, lastUpdate: association.updated_at}]);
+            EventManager.call('rna-siren.matching', [{rna, siren}])
+            EventManager.call('association-name.matching', [{rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at}]);
         }
 
         return AssociationDtoAdapter.toAssociation(data);
