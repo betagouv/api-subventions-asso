@@ -14,15 +14,15 @@ export class OsirisRequestRepository {
     public async update(osirisRequest: OsirisRequestEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...requestWithoutId } = osirisRequest;
-        return (await this.collection.findOneAndUpdate({ 
-            "providerInformations.osirisId": osirisRequest.providerInformations.osirisId 
-        },
-        { $set: requestWithoutId }, options)).value as OsirisRequestEntity;
+        const { _id, ...requestWithoutId } = osirisRequest;
+        return (await this.collection.findOneAndUpdate(
+            { "providerInformations.osirisId": osirisRequest.providerInformations.osirisId },
+            { $set: requestWithoutId }, options)
+        ).value as OsirisRequestEntity;
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {
-        return this.collection.findOne({"_id": new ObjectId(id)});
+        return this.collection.findOne({ "_id": new ObjectId(id) });
     }
 
     public findByOsirisId(osirisId: string) {
@@ -43,11 +43,11 @@ export class OsirisRequestRepository {
 
     public async findBySiren(siren: Siren) {
         return this.collection.find({
-            "legalInformations.siret":  new RegExp(`^${siren}\\d{5}`)
+            "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
 
-    public cursorFindRequests(query = {}){
+    public cursorFindRequests(query = {}) {
         return this.collection.find(query);
     }
 }

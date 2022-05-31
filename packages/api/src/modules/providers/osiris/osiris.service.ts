@@ -1,4 +1,4 @@
-import {DemandeSubvention, Rna, Siren, Siret, Association, Etablissement} from "@api-subventions-asso/dto";
+import { DemandeSubvention, Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import EventManager from "../../../shared/EventManager";
 import { siretToSiren } from '../../../shared/helpers/SirenHelper';
@@ -26,15 +26,15 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         type: ProviderEnum.raw,
         description: "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement)."
     }
-    public async addRequest(request: OsirisRequestEntity): Promise<{state: string, result: OsirisRequestEntity}> {
+    public async addRequest(request: OsirisRequestEntity): Promise<{ state: string, result: OsirisRequestEntity }> {
         const existingFile = await osirisRequestRepository.findByOsirisId(request.providerInformations.osirisId);
         const { rna, siret, name } = request.legalInformations
         const siren = siretToSiren(siret);
         const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
-        
+
         EventManager.call('rna-siren.matching', [{ rna, siren }]);
-        EventManager.call('association-name.matching', [{rna, siren, name, provider: this.provider.name, lastUpdate: date}])
-        
+        EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: date }])
+
         if (existingFile) {
             return {
                 state: "updated",
@@ -54,7 +54,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         }
 
         if (!isRna(request.legalInformations.rna)) {
-            return { success: false, message: `INVALID RNA FOR ${request.legalInformations.rna}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_RNA};
+            return { success: false, message: `INVALID RNA FOR ${request.legalInformations.rna}`, data: request.legalInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_RNA };
         }
 
         if (!isAssociationName(request.legalInformations.name)) {
@@ -72,7 +72,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         return { success: true };
     }
 
-    public async add(action: OsirisActionEntity): Promise<{state: string, result: OsirisActionEntity}> {
+    public async addAction(action: OsirisActionEntity): Promise<{ state: string, result: OsirisActionEntity }> {
         const existingAction = await osirisActionRepository.findByOsirisId(action.indexedInformations.osirisActionId);
         if (existingAction) {
             return {
@@ -95,7 +95,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (!isOsirisActionId(action.indexedInformations.osirisActionId)) {
             return { success: false, message: `INVALID OSIRIS ACTION ID FOR ${action.indexedInformations.osirisActionId}`, data: action.indexedInformations };
         }
-        
+
         return { success: true };
     }
 
@@ -104,15 +104,15 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (!isOsirisActionId(evaluation.osirisActionId)) {
             return { success: false, message: `INVALID OSIRIS ACTION ID FOR ${evaluation.osirisActionId}`, data: evaluation };
         }
-        
+
         if (!isSiret(evaluation.siret)) {
             return { success: false, message: `INVALID SIRET FOR ${evaluation.siret}`, data: evaluation };
         }
-        
-        if(!evaluation.evaluation_resultat.length) {
+
+        if (!evaluation.evaluation_resultat.length) {
             return { success: false, message: `INVALID EVALUATION RESULTAT FOR ${evaluation.evaluation_resultat}`, data: evaluation };
         }
-        
+
         return { success: true };
     }
 
@@ -141,14 +141,14 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             await request.actions.reduce(async (acc, value) => {
                 await acc;
                 value.evaluation = await osirisEvaluationRepository.findByActionId(value.indexedInformations.osirisActionId)
-            },  Promise.resolve());
+            }, Promise.resolve());
         }
         return requests;
     }
 
     public async findBySiren(siren: Siren) {
         const requests = await osirisRequestRepository.findBySiren(siren);
-        
+
         const actions = await osirisActionRepository.findBySiren(siren);
 
         for (const request of requests) {
@@ -179,7 +179,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (requests.length === 0) return null;
         const associations = await Promise.all(
-            requests.map(async r => 
+            requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
                     (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined)
@@ -194,7 +194,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (requests.length === 0) return null;
         const associations = await Promise.all(
-            requests.map(async r => 
+            requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
                     (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined)
@@ -209,7 +209,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (requests.length === 0) return null;
         const associations = await Promise.all(
-            requests.map(async r => 
+            requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
                     (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined)
@@ -225,10 +225,10 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
      * |   Etablisesement Part   |
      * |-------------------------|
      */
-    
+
     isEtablissementProvider = true;
 
-    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {   
+    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
         const requests = await this.findBySiret(siret);
 
         if (requests.length === 0) return null;
@@ -250,10 +250,10 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
      * | Demandes de Subventions Part |
      * |------------------------------|
      */
-    
+
     isDemandesSubventionsProvider = true;
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {   
+    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const requests = await this.findBySiret(siret);
 
         if (requests.length === 0) return null;
