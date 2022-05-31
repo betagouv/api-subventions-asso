@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.10.0](https://github.com/betagouv/api-subventions-asso/compare/v0.8.7...v0.10.0) (2022-05-31)
+
+
+### Features
+
+* **api,front,dto:** error on login better manage ([d0bec45](https://github.com/betagouv/api-subventions-asso/commit/d0bec4500004f5aea9e3b06ba1688b1cdd40cd95))
+* **api:** add get subvention by mongo id ([f24ec3b](https://github.com/betagouv/api-subventions-asso/commit/f24ec3bdcc6a1caeaab0e8868a09558edc54b62f))
+* **api:** add migration to fill association-name from osiris ([#259](https://github.com/betagouv/api-subventions-asso/issues/259)) ([00d9d75](https://github.com/betagouv/api-subventions-asso/commit/00d9d75cf94e1bff3a93fdedfc121af84835411d))
+* **api:** add route for getting list of etablissements ([2bd138a](https://github.com/betagouv/api-subventions-asso/commit/2bd138aef212406beb225c47cd6636fa6d34fd3a))
+* **api:** add route for getting one etablissement ([#255](https://github.com/betagouv/api-subventions-asso/issues/255)) ([fd6697d](https://github.com/betagouv/api-subventions-asso/commit/fd6697d4755691880bf7400723920776fffe2d06))
+* **api:** add stats route, for compute median number of requests [#243](https://github.com/betagouv/api-subventions-asso/issues/243) ([a1b9925](https://github.com/betagouv/api-subventions-asso/commit/a1b9925e35abf626ad752b1ca75b7ee9be05c06c))
+* **api:** code review ([0d3389f](https://github.com/betagouv/api-subventions-asso/commit/0d3389fb324e4e5041418d73fb2ce4a557128124))
+* **api:** stats allow the exclusion of the admin ([abf5348](https://github.com/betagouv/api-subventions-asso/commit/abf5348b68922064ff1f37c4015baba5104a5044))
+* **api:** update README ([#258](https://github.com/betagouv/api-subventions-asso/issues/258)) ([d5fe983](https://github.com/betagouv/api-subventions-asso/commit/d5fe983926c401ce4a9df0e85a7ed17617300b33))
+* **front:** add € on amount ([3510490](https://github.com/betagouv/api-subventions-asso/commit/3510490b880a836bdd110bbfe9e349b9e267b652))
+* **front:** add pipe drive chat bot ([2ce6f6e](https://github.com/betagouv/api-subventions-asso/commit/2ce6f6ef067875a23046afcc6789666a306bad73))
+* **front:** add spaces for currency amount in arrays ([#200](https://github.com/betagouv/api-subventions-asso/issues/200)) ([d27fa87](https://github.com/betagouv/api-subventions-asso/commit/d27fa8721dd714199e2d24f6ba4ce42655965ea8))
+* **front:** add tiret - on value not found ([#249](https://github.com/betagouv/api-subventions-asso/issues/249)) ([7e55201](https://github.com/betagouv/api-subventions-asso/commit/7e55201bbc30053205159ffc3b98e870cf95ea3c))
+* **front:** prefill nojs mailto ([#199](https://github.com/betagouv/api-subventions-asso/issues/199)) ([64c4f7d](https://github.com/betagouv/api-subventions-asso/commit/64c4f7d155fa691c6d86824e2436a9131bcfbb87))
+* **front:** remove li in demande sub details ([32add28](https://github.com/betagouv/api-subventions-asso/commit/32add286321e1d04accae9f75e44336e8b4b23f5))
+* **front:** remove totals array in subventions ([2b96a38](https://github.com/betagouv/api-subventions-asso/commit/2b96a380083c8b64d435d215b8d76bc3cd59f876))
+
+
+### Bug Fixes
+
+* **api:** fix siret as siren in association-name ([#263](https://github.com/betagouv/api-subventions-asso/issues/263)) ([6ec704f](https://github.com/betagouv/api-subventions-asso/commit/6ec704f3dc7208a28a873ba7798e77643604fb8e))
+* **api:** quick fix not uuse var date_modif_siren before checking if var exist ([fe0e971](https://github.com/betagouv/api-subventions-asso/commit/fe0e971e804636ab0ca1ce7080eae8aaafe95a45))
+* **dto:** change package main file ([f6867eb](https://github.com/betagouv/api-subventions-asso/commit/f6867ebd8b0721c14ef26e66565c5316c0ca207e))
+* **front:** fix ortho ([4bb2504](https://github.com/betagouv/api-subventions-asso/commit/4bb25044200ea22a3256b6c43e40cbf24fae5fe4))
+
 ### [0.9.6](https://github.com/betagouv/api-subventions-asso/compare/v0.9.4...v0.9.6) (2022-05-30)
 
 
