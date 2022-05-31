@@ -45,7 +45,7 @@ describe("FonjepService", () => {
                 type_post: "POSTE"
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID SIRET FOR 0000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID SIRET FOR 0000000000000" })
         });
 
         it("should not valid because name is wrong", () => {
@@ -66,7 +66,7 @@ describe("FonjepService", () => {
                 type_post: "POSTE"
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NAME FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NAME FOR 00000000000000" })
         });
 
         it("should not valid because montant_paye is wrong", () => {
@@ -87,7 +87,7 @@ describe("FonjepService", () => {
                 type_post: "POSTE"
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NUMBER FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NUMBER FOR 00000000000000" })
         });
 
 
@@ -96,7 +96,7 @@ describe("FonjepService", () => {
                 siret: "00000000000000",
                 name: "Fake name"
             }, {
-                annee_demande:  undefined as unknown as number,
+                annee_demande: undefined as unknown as number,
                 unique_id: "unique_id",
                 montant_paye: 500,
                 status: "En cours",
@@ -109,7 +109,7 @@ describe("FonjepService", () => {
                 type_post: "POSTE"
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NUMBER FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID NUMBER FOR 00000000000000" })
         });
 
         it("should not valid because status is wrong", () => {
@@ -130,7 +130,7 @@ describe("FonjepService", () => {
                 type_post: "POSTE"
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000" })
         });
 
 
@@ -152,7 +152,7 @@ describe("FonjepService", () => {
                 type_post: "POSTE"
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000" })
         });
 
         it("should not valid because code_postal is wrong", () => {
@@ -173,7 +173,7 @@ describe("FonjepService", () => {
                 code_postal: undefined as unknown as string,
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000" })
         });
 
         it("should not valid because ville is wrong", () => {
@@ -194,7 +194,7 @@ describe("FonjepService", () => {
                 ville: undefined as unknown as string,
             }, {})
 
-            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000"})
+            expect(fonjepService.validateEntity(entity)).toMatchObject({ success: false, "code": 1, "message": "INVALID STRING FOR 00000000000000" })
         });
     });
 
@@ -253,8 +253,8 @@ describe("FonjepService", () => {
     });
 
     describe("getDemandeSubventionBySiret", () => {
-        const now =  new Date();
-        beforeEach( async () => {
+        const now = new Date();
+        beforeEach(async () => {
             const entity = new FonjepEntity({
                 siret: "00000000000000",
                 name: "Fake name"
@@ -275,9 +275,10 @@ describe("FonjepService", () => {
             await fonjepService.createEntity(entity);
         })
 
-        it("should be retrun one entity", async () => {
+        it("should return one entity", async () => {
             const result = await fonjepService.getDemandeSubventionBySiret("00000000000000");
             expect(result).toHaveLength(1);
+
             expect(result).toEqual(expect.arrayContaining([expect.objectContaining({
                 service_instructeur: {
                     value: 'XXX',
@@ -303,9 +304,16 @@ describe("FonjepService", () => {
                         provider: 'Fonjep',
                         last_update: now,
                         type: 'number'
+                    },
+                    demande: {
+                        "last_update": now,
+                        "provider": "Fonjep",
+                        "type": "number",
+                        "value": 500,
                     }
-                }
-            
+                },
+                co_financement: undefined
+
             })]));
         })
 
