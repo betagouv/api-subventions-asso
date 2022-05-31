@@ -15,7 +15,8 @@ export interface DemandeSubvention {
     creer_le?: ProviderValue<Date>,
     transmis_le?: ProviderValue<Date>,
     date_fin?: ProviderValue<Date>,
-    pluriannualite?: ProviderValue<string>
+    pluriannualite?: ProviderValue<string>,
+    plein_temps?: ProviderValue<string>,
     contact?:{
         email: ProviderValue<string>,
         telephone?: ProviderValue<string>,
