@@ -24,8 +24,4 @@ describe("MongoDb Configuration", () => {
     it("should export mongo dbname", () => {
         expect(config).toHaveProperty("MONGO_DBNAME");
     });
-
-    it("should export mongo batch size", () => {
-        expect(config).toHaveProperty("MONGO_BATCH_SIZE");
-    });
 });

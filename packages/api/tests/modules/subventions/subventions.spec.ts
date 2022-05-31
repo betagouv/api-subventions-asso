@@ -1,6 +1,6 @@
 import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
-import osirisRepository from '../../../src/modules/providers/osiris/repositories/osiris.repository';
+import osirisRequestRepository from '../../../src/modules/providers/osiris/repositories/osiris.request.repository';
 import fonjepRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.repository';
 import FonjepEntityFixture from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
@@ -13,7 +13,7 @@ let fonjepDocumentId: string | undefined;
 
 describe("/subvention", () => {
     beforeEach( async () => {
-        osirisDocumentId = ((await osirisRepository.addRequest(OsirisRequestEntityFixture)) as Document)._id.toString();
+        osirisDocumentId = ((await osirisRequestRepository.add(OsirisRequestEntityFixture)) as Document)._id.toString();
         fonjepDocumentId = ((await fonjepRepository.create(FonjepEntityFixture)) as Document)._id.toString();
     })
     

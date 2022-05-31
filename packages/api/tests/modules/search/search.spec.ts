@@ -1,6 +1,6 @@
 import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
-import { osirisRepository } from '../../../src/modules/providers/osiris/repositories';
+import { osirisRequestRepository } from '../../../src/modules/providers/osiris/repositories';
 import associationNameRepository from '../../../src/modules/association-name/repositories/associationName.repository';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import AssociationNameFixture from '../association-name/__fixtures__/entity';
@@ -10,7 +10,7 @@ const g = global as unknown as { app: unknown }
 describe('/search', () => {
     describe("/etablissement/{siret}", () => {
         it("should return an association", async () => {
-            await osirisRepository.addRequest(OsirisRequestEntityFixture);
+            await osirisRequestRepository.add(OsirisRequestEntityFixture);
             const response = await request(g.app)
             .get(`/search/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
             .set("x-access-token", await getUserToken())
@@ -23,7 +23,7 @@ describe('/search', () => {
     
     describe("/association/{rna}", () => {
         it("should return an association", async () => {
-            await osirisRepository.addRequest(OsirisRequestEntityFixture);
+            await osirisRequestRepository.add(OsirisRequestEntityFixture);
             const response = await request(g.app)
                 .get(`/search/association/${OsirisRequestEntityFixture.legalInformations.rna}`)
                 .set("x-access-token", await getUserToken())

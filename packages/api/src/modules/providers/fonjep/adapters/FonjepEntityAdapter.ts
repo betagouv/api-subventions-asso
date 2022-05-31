@@ -5,7 +5,7 @@ import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep"
-    
+
     static toDemandeSubvention(entity: FonjepRequestEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;
         const toProviderValue = ProviderValueFactory.buildProviderValueAdapter(this.PROVIDER_NAME, dataDate);
@@ -25,7 +25,7 @@ export default class FonjepEntityAdapter {
             co_financement: entity.indexedInformations.co_financeur ? {
                 cofinanceur: toProviderValue(entity.indexedInformations.co_financeur as string),
                 cofinanceur_email: toProviderValue(entity.indexedInformations.co_financeur_contact as string),
-                cofinanceur_siret: entity.indexedInformations.co_financeur_siret?.length != 0 
+                cofinanceur_siret: entity.indexedInformations.co_financeur_siret?.length != 0
                     ? toProviderValue(entity.indexedInformations.co_financeur_siret as string)
                     : undefined,
                 montants: toProviderValue(entity.indexedInformations.co_financeur_montant as number),

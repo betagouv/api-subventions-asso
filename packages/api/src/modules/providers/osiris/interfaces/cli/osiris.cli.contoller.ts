@@ -2,7 +2,7 @@ import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { Rna, Siret } from "@api-subventions-asso/dto";
-import { CliStaticInterface} from "../../../../../@types";
+import { CliStaticInterface } from "../../../../../@types";
 import OsirisParser from "../../osiris.parser";
 import osirisService from "../../osiris.service";
 import OsirisActionEntity from "../../entities/OsirisActionEntity";
@@ -25,7 +25,7 @@ export default class OsirisCliController {
     };
 
     public validate(type: string, file: string) {
-        if (typeof type !== "string" || typeof file !== "string" ) {
+        if (typeof type !== "string" || typeof file !== "string") {
             throw new Error("Validate command need type and file args");
         }
 
@@ -75,7 +75,7 @@ export default class OsirisCliController {
         const logs: unknown[] = [];
 
         console.info(`${files.length} files in the parse queue`);
-        console.info(`You can read log in ${ this.logFileParsePath }`);
+        console.info(`You can read log in ${this.logFileParsePath}`);
 
         return files.reduce((acc, filePath) => {
             return acc.then(() => this._parse(type, filePath, logs));
@@ -118,16 +118,16 @@ export default class OsirisCliController {
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
 
-            CliHelper.printProgress(index + 1 , requests.length);
+            CliHelper.printProgress(index + 1, requests.length);
 
             if (!validation.success && validation.code != 2) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
-            } else data.push( await osirisService.addRequest(osirisRequest));
+            } else data.push(await osirisService.addRequest(osirisRequest));
 
             return data;
-        }, Promise.resolve([]) as Promise<{ state: string, result: OsirisRequestEntity}[]>);
+        }, Promise.resolve([]) as Promise<{ state: string, result: OsirisRequestEntity }[]>);
 
-        const created = results.filter(({state}) => state === "created");
+        const created = results.filter(({ state }) => state === "created");
         console.info(`
             ${results.length}/${requests.length}
             ${created.length} requests created and ${results.length - created.length} requests updated
@@ -141,7 +141,7 @@ export default class OsirisCliController {
             const data = await acc;
             const validation = osirisService.validAction(osirisAction);
 
-            CliHelper.printProgress(index + 1 , actions.length);
+            CliHelper.printProgress(index + 1, actions.length);
 
             if (!validation.success) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
@@ -154,7 +154,7 @@ export default class OsirisCliController {
         }[]>)
 
 
-        const created = results.filter(({state}) => state === "created");
+        const created = results.filter(({ state }) => state === "created");
         console.info(`
             ${results.length}/${actions.length}
             ${created.length} actions created and ${results.length - created.length} actions update
@@ -163,14 +163,14 @@ export default class OsirisCliController {
     }
 
     private async _parseEvaluation(contentFile: Buffer, logs: unknown[]) {
-        
+
         const evaluations = OsirisParser.parseEvaluations(contentFile);
 
         const results = await evaluations.reduce(async (acc, entity, index) => {
             const data = await acc;
             const validation = osirisService.validEvaluation(entity);
 
-            CliHelper.printProgress(index + 1 , evaluations.length);
+            CliHelper.printProgress(index + 1, evaluations.length);
 
             if (!validation.success) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
@@ -183,7 +183,7 @@ export default class OsirisCliController {
         }[]>)
 
 
-        const created = results.filter(({state}) => state === "created");
+        const created = results.filter(({ state }) => state === "created");
         console.info(`
             ${results.length}/${evaluations.length}
             ${created.length} evaluation created and ${results.length - created.length} evaluations updated
@@ -191,28 +191,8 @@ export default class OsirisCliController {
         `);
     }
 
-    async findAll(type:string, format? :string) {
-        if (typeof type !== "string") {
-            throw new Error("FindAll command need type args");
-        }
-
-        let data: Array<OsirisActionEntity | OsirisRequestEntity> = [];
-
-        if (type === "requests") {
-            data = await osirisService.findAllRequests();
-        } else if (type === "actions") {
-            data = await osirisService.findAllActions();
-        }
-
-        if (format === "json") {
-            console.info(JSON.stringify(data));
-        } else {
-            console.info(data);
-        }
-    }
-
     async findBySiret(siret: Siret, format?: string) {
-        if (typeof siret !== "string" ) {
+        if (typeof siret !== "string") {
             throw new Error("Parse command need siret args");
         }
 
@@ -227,7 +207,7 @@ export default class OsirisCliController {
     }
 
     async findByRna(rna: Rna, format?: string) {
-        if (typeof rna !== "string" ) {
+        if (typeof rna !== "string") {
             throw new Error("Parse command need rna args");
         }
 
