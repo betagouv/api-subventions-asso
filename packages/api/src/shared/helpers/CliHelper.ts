@@ -10,6 +10,7 @@ export function printAtSameLine(text: string) {
         process.stdout.cursorTo(0);
         process.stdout.write(text);
     } else {
-        console.log(text);
+        // Reactivate this to have more logs in CI
+        // console.log(text);
     }
 }
