@@ -42,5 +42,5 @@ export const ACCEPTED_EMAIL_DOMAIN = [
     "region-academique-occitanie.fr",
     "region-academique-ocitanie.fr",
     "region-academique-paca.fr",
-    "stjs.w"
+    "stjs.wf"
 ]
