@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.7](https://github.com/betagouv/api-subventions-asso/compare/v0.9.4...v0.9.7) (2022-06-01)
+
+
+### Bug Fixes
+
+* **api:** fix mail extention (missing f) ([b7d18a9](https://github.com/betagouv/api-subventions-asso/commit/b7d18a90657f22a4eb911647b88e08d6bb3fcc67))
+
 ### [0.9.6](https://github.com/betagouv/api-subventions-asso/compare/v0.9.4...v0.9.6) (2022-05-30)
 
 
