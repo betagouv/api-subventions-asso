@@ -15,10 +15,10 @@ export function expressAuthentication(
     }
 
     const token =
-            request.body.token ||
-            request.query.token ||
-            request.headers["x-access-token"];
-    
+        request.body.token ||
+        request.query.token ||
+        request.headers["x-access-token"];
+
     if (!token) return Promise.reject(new UserJWTError("No token provided"))
 
     return new Promise((resolve, reject) => {
@@ -27,7 +27,7 @@ export function expressAuthentication(
                 console.warn(err);
                 reject(new UserJWTError("JWT parse error"));
             } else {
-                const email = (decoded as {[key: string]: string})["email"];
+                const email = (decoded as { [key: string]: string })["email"];
                 const user = await userService.findByEmail(email);
 
                 if (!user) {
