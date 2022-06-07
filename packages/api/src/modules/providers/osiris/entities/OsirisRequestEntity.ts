@@ -8,7 +8,7 @@ import OsirisActionEntity from "./OsirisActionEntity";
 export default class OsirisRequestEntity extends RequestEntity {
     public static defaultMainCategory = "Dossier";
 
-    public static indexedProviderInformationsPath : {[key: string]: ParserPath | ParserInfo} = {
+    public static indexedProviderInformationsPath: { [key: string]: ParserPath | ParserInfo } = {
         osirisId: ["Dossier", "N° Dossier Osiris"],
         compteAssoId: ["Dossier", "N° Dossier Compte Asso"],
         ej: ["Dossier", 'N° EJ'],
@@ -26,7 +26,7 @@ export default class OsirisRequestEntity extends RequestEntity {
                 if (!value) return value;
 
                 const [day, month, year] = value.split('/').map(v => parseInt(v, 10));
-                return new Date(Date.UTC(year, month - 1 , day));
+                return new Date(Date.UTC(year, month - 1, day));
             }
         },
         exerciceDebut: {
@@ -56,43 +56,43 @@ export default class OsirisRequestEntity extends RequestEntity {
         service_instructeur: ["Dossier", 'Service'],
         dispositif: ["Dossier", "N° programme  / Type financement"],
         sous_dispositif: ["Dossier", "Sous-Type financement"],
-        status: ["Dossier", "Etat Dossier"],
+        status: ["Dossier", ["Etat Dossier", "Etat dossier"]],
         pluriannualite: ["Dossier", "Pluriannualité"],
 
-        montantsTotal:  {
+        montantsTotal: {
             path: ["Montants", "Coût (Total des Charges)"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        montantsDemande:  {
+        montantsDemande: {
             path: ["Montants", "Demandé"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        montantsPropose:  {
+        montantsPropose: {
             path: ["Montants", "Proposé"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        montantsAccorde:  {
+        montantsAccorde: {
             path: ["Montants", "Accordé"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
 
-        versementAcompte:  {
+        versementAcompte: {
             path: ["Versements", "Acompte"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        versementSolde:  {
+        versementSolde: {
             path: ["Versements", "Solde"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        versementRealise:  {
+        versementRealise: {
             path: ["Versements", "Réalisé"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        versementCompensationN1:  {
+        versementCompensationN1: {
             path: ["Versements", "Compensation N-1"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
-        versementCompensationN:  {
+        versementCompensationN: {
             path: ["Versements", "Reversement/Compensation"],
             adapter: (value) => value ? parseFloat(value) : value,
         },
@@ -105,7 +105,7 @@ export default class OsirisRequestEntity extends RequestEntity {
     }
 
     public provider = "Osiris";
-    
+
     public providerMatchingKeys: string[] = [
         "osirisId",
         "compteAssoId",
