@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.2](https://github.com/betagouv/api-subventions-asso/compare/v0.8.7...v0.10.2) (2022-06-08)
+
+
+### Features
+
+* **api,front,dto:** error on login better manage ([de14c0b](https://github.com/betagouv/api-subventions-asso/commit/de14c0b18cb741e1f0e94bdefeb239a069116616))
+* **api:** add get subvention by mongo id ([f24ec3b](https://github.com/betagouv/api-subventions-asso/commit/f24ec3bdcc6a1caeaab0e8868a09558edc54b62f))
+* **api:** add migration to fill association-name from osiris ([#259](https://github.com/betagouv/api-subventions-asso/issues/259)) ([7cb2c4c](https://github.com/betagouv/api-subventions-asso/commit/7cb2c4c1b831b8fecda390d54a90b05b12129cdb))
+* **api:** add route for getting list of etablissements ([36861f7](https://github.com/betagouv/api-subventions-asso/commit/36861f7b4b0fb36e465d1e67cb7ef1b63e3a09aa))
+* **api:** add route for getting one etablissement ([#255](https://github.com/betagouv/api-subventions-asso/issues/255)) ([d86a945](https://github.com/betagouv/api-subventions-asso/commit/d86a945fbe5aec1346ded037f78966dea21dec46))
+* **api:** add stats route, for compute median number of requests [#243](https://github.com/betagouv/api-subventions-asso/issues/243) ([4ca169c](https://github.com/betagouv/api-subventions-asso/commit/4ca169c295bd30385635ccd7057a3c609da67f59))
+* **api:** code review ([0d3389f](https://github.com/betagouv/api-subventions-asso/commit/0d3389fb324e4e5041418d73fb2ce4a557128124))
+* **api:** stats allow the exclusion of the admin ([381c84c](https://github.com/betagouv/api-subventions-asso/commit/381c84c6df28d8f486c43fc2818389fcacef48db))
+* **api:** update README ([#258](https://github.com/betagouv/api-subventions-asso/issues/258)) ([0362818](https://github.com/betagouv/api-subventions-asso/commit/03628183cdcb2e8ea7f5d5f608ff2d8425a745bf))
+* **front:** add € on amount ([069cbb5](https://github.com/betagouv/api-subventions-asso/commit/069cbb56200757fdac9b557076b55cc7e4cc2e78))
+* **front:** add pipe drive chat bot ([cfb0054](https://github.com/betagouv/api-subventions-asso/commit/cfb0054a977bea3de6ae34071f32d9f9d9488d3b))
+* **front:** add spaces for currency amount in arrays ([#200](https://github.com/betagouv/api-subventions-asso/issues/200)) ([d27fa87](https://github.com/betagouv/api-subventions-asso/commit/d27fa8721dd714199e2d24f6ba4ce42655965ea8))
+* **front:** add tiret - on value not found ([#249](https://github.com/betagouv/api-subventions-asso/issues/249)) ([e9febc6](https://github.com/betagouv/api-subventions-asso/commit/e9febc6d5725368cdfefdb91fae0fc168ba459ef))
+* **front:** prefill nojs mailto ([#199](https://github.com/betagouv/api-subventions-asso/issues/199)) ([64c4f7d](https://github.com/betagouv/api-subventions-asso/commit/64c4f7d155fa691c6d86824e2436a9131bcfbb87))
+* **front:** remove li in demande sub details ([32add28](https://github.com/betagouv/api-subventions-asso/commit/32add286321e1d04accae9f75e44336e8b4b23f5))
+* **front:** remove totals array in subventions ([2b96a38](https://github.com/betagouv/api-subventions-asso/commit/2b96a380083c8b64d435d215b8d76bc3cd59f876))
+
+
+### Bug Fixes
+
+* **api:** fix association-name siret-to-siren migration ([#293](https://github.com/betagouv/api-subventions-asso/issues/293)) ([9ac3bc0](https://github.com/betagouv/api-subventions-asso/commit/9ac3bc0831b8c62172b00b32022304d95087608f))
+* **api:** fix mail extention (missing f) ([4e0e026](https://github.com/betagouv/api-subventions-asso/commit/4e0e0268a3ab376ec4854a5c497e21f7ec011677))
+* **api:** fix siret as siren in association-name ([#263](https://github.com/betagouv/api-subventions-asso/issues/263)) ([e954f22](https://github.com/betagouv/api-subventions-asso/commit/e954f223cbd5fbd8c799e98386217645a9b50579))
+* **api:** osiris service tests ([4ca6dcd](https://github.com/betagouv/api-subventions-asso/commit/4ca6dcdeb9f4bf18232e51f1eb1dd55486304438))
+* **api:** quick fix not uuse var date_modif_siren before checking if var exist ([598296f](https://github.com/betagouv/api-subventions-asso/commit/598296f6f50ba253365401fa697d390a28c735d1))
+* **dto:** change package main file ([f6867eb](https://github.com/betagouv/api-subventions-asso/commit/f6867ebd8b0721c14ef26e66565c5316c0ca207e))
+* **front:** fix ortho ([4bb2504](https://github.com/betagouv/api-subventions-asso/commit/4bb25044200ea22a3256b6c43e40cbf24fae5fe4))
+
 ### [0.10.1](https://github.com/betagouv/api-subventions-asso/compare/v0.8.7...v0.10.1) (2022-05-31)
 
 
