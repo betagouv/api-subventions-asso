@@ -15,6 +15,7 @@ export default class extends Controller {
         document.addEventListener("turbo:before-render", () => {
             this.clearInterval();
             this.loaderTarget.removeAttribute("style");
+            this.reloadChatPipedrive();
         });
     }
 
@@ -41,5 +42,13 @@ export default class extends Controller {
         for(let i = 0; i <= futurPoints; i++) { text += "."}
 
         this.textTarget.textContent = text;
+    }
+
+    reloadChatPipedrive() {
+        const head = document.getElementsByTagName('head')[0];
+        const script = document.createElement('script');
+        script.src = 'https://leadbooster-chat.pipedrive.com/assets/loader.js';
+        script.async = true;
+        head.appendChild(script);
     }
 }
