@@ -4,6 +4,7 @@ import etablissementService from "../../../src/modules/etablissements/etablissem
 import subventionsService from '../subventions/subventions.service';
 import { Association, DemandeSubvention, Etablissement } from '@api-subventions-asso/dto';
 import versementsService from '../versements/versements.service';
+import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 
 const SIRET = "SIRET";
 const SIREN = "SIREN";
@@ -27,28 +28,30 @@ describe("SearchService", () => {
             aggregateVersementsByEtablissementSearchMock.mockImplementationOnce(async etablissement => etablissement)
             const expected = {
                 ...ETABLISSEMENT,
-                association: {}, 
+                association: {},
                 demandes_subventions: DEMANDES_SUBVENTIONS,
                 versements: []
             };
             const actual = await searchService.getBySiret(SIRET);
             expect(actual).toEqual(expected);
         })
-        
+
     });
-    
+
     describe("getByRna", () => {
+        const getSirenMock = jest.spyOn(rnaSirenService, "getSiren");
         const getAssociationByRnaMock = jest.spyOn(associationsService, "getAssociationByRna");
         it('should returns file contains actions', async () => {
             // @ts-expect-error: mock
             getAssociationByRnaMock.mockImplementationOnce(async () => ({ rna: RNA }));
-            
+            getSirenMock.mockImplementationOnce(jest.fn());
+
             const expected = { rna: RNA, etablissements: [] };
             const actual = await searchService.getByRna(RNA);
             expect(actual).toEqual(expected);
         });
     });
-    
+
     describe("getBySiren", () => {
         const getAssociationBySirenMock = jest.spyOn(associationsService, "getAssociationBySiren");
         const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
@@ -62,9 +65,9 @@ describe("SearchService", () => {
             getAssociationBySirenMock.mockImplementationOnce(() => ({ siren: SIREN }));
             getDemandesByAssociationMock.mockImplementationOnce(async () => DEMANDES_SUBVENTIONS);
             aggregateVersementsByAssoSearchMock.mockImplementationOnce(async association => association);
-            
+
             const expected = {
-                siren: SIREN, 
+                siren: SIREN,
                 etablissements: ETABLISSEMENTS,
                 versements: []
             };
