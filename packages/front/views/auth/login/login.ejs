@@ -21,7 +21,7 @@
                             <% if (errorCode === errorCodes.EMAIL_OR_PASSWORD_NOT_MATCH) { %>
                                 <p>Mot de passe ou email incorrect</p>
                             <% } else if (errorCode === errorCodes.USER_NOT_ACTIVE) { %>
-                                <p>Votre compte ne semble pas encore activé, si vous ne retrouvez pas votre mail d'activation vous pouvez faire mot de passe oublier.</p>
+                                <p>Votre compte ne semble pas encore activé, si vous ne retrouvez pas votre mail d'activation vous pouvez faire mot de passe oublié.</p>
                             <% } else { %>
                                 <p>Une erreur interne est survenue, veuillez réessayer plus tard. Si le problème persiste, n'hésitez pas à  <a title="Contactez-nous"
                                     href="mailto:<%= `${contactEmail}?subject=Problème de connexion&body=Bonjour, %0D%0A %0D%0A Je n'arrive pas à me connecter, votre application m'indique une erreur interne. Voici le code erreur : ${errorCode}&html=true` %>"

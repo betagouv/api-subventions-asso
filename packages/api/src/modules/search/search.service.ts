@@ -1,12 +1,13 @@
 import etablissementService from "../etablissements/etablissements.service";
 import associationsService from "../associations/associations.service";
 
-import { Siret, Rna, Siren ,DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
+import { Siret, Rna, Siren, DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
 import subventionsService from "../subventions/subventions.service";
 import versementsService from "../versements/versements.service";
 import associationNameService from "../association-name/associationName.service"
 import { AssociationIdentifiers } from '../../@types';
 import { isRna, isSiren } from '../../shared/Validators';
+import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 export class SearchService {
 
     public async getAssociation(id: AssociationIdentifiers) {
@@ -30,9 +31,9 @@ export class SearchService {
             if (e instanceof Error && e.message != "Establishment not found") {
                 throw e;
             }
-        }        
+        }
 
-        const etablissementDto =  {
+        const etablissementDto = {
             ...etablissement,
             association,
             demandes_subventions: demandes_subventions,
@@ -42,9 +43,15 @@ export class SearchService {
     }
 
     public async getByRna(rna: Rna) {
-        const association = await associationsService.getAssociationByRna(rna);
+        const siren = await rnaSirenService.getSiren(rna);
+        let association;
+        if (siren) {
+            association = await this.getBySiren(siren);
+        } else {
+            association = await associationsService.getAssociationByRna(rna);
+        }
         if (!association) return null;
-        association.etablissements = [];
+        if (!association.etablissements) association.etablissements = [];
         return association;
     }
 
@@ -56,7 +63,7 @@ export class SearchService {
         if (!etablissements) return null;
 
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
-        
+
         const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
         let demandesSubventions: DemandeSubvention[] = []
         try {
@@ -81,7 +88,7 @@ export class SearchService {
 
         return await versementsService.aggregateVersementsByAssoSearch(associationDto);
     }
-    
+
     public async getAssociationsKeys(value: string) {
         return await associationNameService.getAllStartingWith(value);
     }
