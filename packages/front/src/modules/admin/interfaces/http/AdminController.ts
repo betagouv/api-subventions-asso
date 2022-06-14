@@ -1,5 +1,7 @@
+import UserDto from '@api-subventions-asso/dto/user/UserDto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
+import { DefaultObject } from '../../../../@types/utils';
 import Controller from '../../../../decorators/controller.decorator';
 import { Get, Post } from '../../../../decorators/http.methods.decorator';
 import adminService from '../../user.service';
@@ -29,6 +31,33 @@ export default class AdminController {
         res.render('admin/list-users', {
             pageTitle: 'Admin - Liste des utilisateurs',
             users: result.type === "SUCCESS" ? result.data : [],
+        })
+    }
+
+    @Get("/users/domain")
+    public async domainUsersView(req: Request, res: Response, next: NextFunction) {
+        if (!req.session.roles || !req.session.roles.includes("admin")) {
+            return res.redirect("/");
+        }
+
+        const result = await adminService.listUsers(req.session.user as User);
+
+        const users = result.data || [];
+
+        const usersByDomainName = users.reduce((acc, user) => {
+            const domaine = user.email.match(/@.+/)?.toString();
+
+            if (!domaine) return acc;
+
+            if (!acc[domaine]) acc[domaine] = [];
+            acc[domaine].push(user);
+            return acc;
+        }, {} as DefaultObject<UserDto[]>)
+
+
+        res.render('admin/domain', {
+            pageTitle: 'Admin - Nom de domaines',
+            usersByDomainName
         })
     }
 
