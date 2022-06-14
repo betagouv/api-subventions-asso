@@ -31,7 +31,9 @@ export default class AuthController {
         if (!req.body.email || !req.body.password) {
             return res.render("auth/login/login", {
                 pageTitle: 'Connexion',
-                loginError: true
+                loginError: true,
+                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
+                errorCodes: LoginDtoErrorCodes,
             });
         }
 
