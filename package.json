@@ -43,11 +43,5 @@
     "nodemon": "^2.0.15",
     "standard-version": "^9.3.2",
     "typescript": "^4.5.4"
-  },
-  "standard-version": {
-    "skip": {
-      "commit": true,
-      "tag": true
-    }
   }
 }
