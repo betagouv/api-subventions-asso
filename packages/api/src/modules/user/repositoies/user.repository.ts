@@ -1,4 +1,4 @@
-import { ObjectId, WithId } from "mongodb";
+import { Filter, ObjectId, WithId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User, { UserWithoutSecret } from "../entities/User";
 
@@ -13,7 +13,7 @@ export class UserRepository {
         return this.removeSecrets(await this.collection.findOne({email: email}));
     }
 
-    async find(query = {}) {
+    async find(query: Filter<User> = {}) {
         const dbos = await this.collection.find(query).toArray();
         return dbos.map(dbo => this.removeSecrets(dbo));
     }
@@ -23,9 +23,15 @@ export class UserRepository {
     }
 
     async update(user: User | UserWithoutSecret): Promise<UserWithoutSecret> {
-        await this.collection.updateOne({email: user.email}, { $set:user });
+        if (user._id) await this.collection.updateOne({_id: user._id}, { $set:user });
+        else await this.collection.updateOne({email: user.email}, { $set:user });
 
         return this.findByEmail(user.email) as unknown as UserWithoutSecret;
+    }
+
+    async delete(user:UserWithoutSecret): Promise<boolean> {
+        const result = await this.collection.deleteOne({ _id: user._id});
+        return result.acknowledged;
     }
 
     async create(user: User) {
@@ -40,7 +46,7 @@ export class UserRepository {
     }
 
     async findJwt(userWithoutSecret: UserWithoutSecret) {
-        const user = await this.collection.findOne({email: userWithoutSecret.email});
+        const user = await this.collection.findOne({_id: userWithoutSecret._id});
 
         return user ? user.jwt : null;
     }
