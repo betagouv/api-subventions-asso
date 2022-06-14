@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import * as RandToken from "rand-token";
+import { DefaultObject } from "../../@types";
 import { ACCEPTED_EMAIL_DOMAIN } from "../../configurations/auth.conf";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
@@ -47,7 +48,7 @@ export class UserService {
                     `
 
     async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<User, 'hashPassword'> }>{
-        const user = await userRepository.findByEmail(email);
+        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
 
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND};
@@ -100,16 +101,20 @@ export class UserService {
     }
 
     async findByEmail(email: string) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email.toLocaleLowerCase());
+    }
+    
+    async find(query: DefaultObject = {}) {
+        return userRepository.find(query)
     }
 
     async createUser(email: string, password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
-        const validUser = await this.validUser(email, password);
+        const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
 
         if (!validUser.success) return validUser;
 
         const partialUser = {
-            email,
+            email: email.toLocaleLowerCase(),
             password: await bcrypt.hash(password, 10),
             roles: ["user"]
         };
@@ -142,6 +147,18 @@ export class UserService {
         return { success: true, user: await userRepository.update({...currentUser, hashPassword: await bcrypt.hash(password, 10), active: true })};
     }
 
+    public async update(currentUser: UserWithoutSecret): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+        const emailIsValid = this.validEmail(currentUser.email);
+        if (!emailIsValid.success) {
+            return emailIsValid;
+        }
+        return { success: true, user: await userRepository.update(currentUser)};
+    }
+
+    public async delete(currentUser: UserWithoutSecret): Promise<{ success: boolean }> {
+        return { success: await userRepository.delete(currentUser) };
+    }
+
     public async addUsersByCsv(content: Buffer) {
         const data = content
             .toString()
@@ -155,13 +172,13 @@ export class UserService {
     public async createUsersByList(emails: string[]) {
         return emails.reduce(async(acc, email) => {
             const data = await acc;
-            const result = await this.signup(email);
+            const result = await this.signup(email.toLocaleLowerCase());
             return Promise.resolve([...data, { email, ...result }]);
         }, Promise.resolve([]) as Promise<{ email: string, success: boolean, message ?:string}[]>)
     }
 
     public async signup(email: string): Promise<UserServiceError | { success: true, email: string }> {
-        const result = await this.createUser(email);
+        const result = await this.createUser(email.toLocaleLowerCase());
 
         if (!result.success) return  { success: false, message: result.message, code: result.code };
 
@@ -169,7 +186,7 @@ export class UserService {
 
         if (!resetResult.success) return { success: false, message: resetResult.message, code: resetResult.code };
 
-        await mailNotifierService.sendCreationMail(email, resetResult.reset.token);
+        await mailNotifierService.sendCreationMail(email.toLocaleLowerCase(), resetResult.reset.token);
 
         return { email, success: true };
     }
@@ -256,7 +273,7 @@ export class UserService {
     }
 
     async forgetPassword(email: string): Promise<UserServiceError | { success: true, reset: UserReset }> {
-        const user = await userRepository.findByEmail(email);
+        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND};
         }
@@ -264,7 +281,7 @@ export class UserService {
         const resetResult = await this.resetUser(user);
 
         if (resetResult.success) {
-            mailNotifierService.sendForgetPassword(email, resetResult.reset.token);
+            mailNotifierService.sendForgetPassword(email.toLocaleLowerCase(), resetResult.reset.token);
         }
 
         return resetResult;
@@ -290,7 +307,7 @@ export class UserService {
     }
 
     async findJwtByEmail(email: string) : Promise<UserServiceError | { success: true, jwt: {token: string; expirateDate: Date}}> {
-        const user = await userRepository.findByEmail(email);
+        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND};
         }
@@ -302,6 +319,14 @@ export class UserService {
         }
 
         return { success: true, jwt };
+    }
+
+    async findJwtByUser(user: UserWithoutSecret) {
+        return userRepository.findJwt(user);
+    }
+
+    async findUserResetByUserId(userId: ObjectId) {
+        return userResetRepository.findByUserId(userId)
     }
 
     private passwordValidator(password: string): boolean  {
@@ -328,7 +353,7 @@ export class UserService {
         } 
     }
 
-    private async validUser(email: string, password: string): Promise<UserServiceError | { success: true }> {
+    private async validEmailAndPassword(email: string, password: string): Promise<UserServiceError | { success: true }> {
         const emailValid = this.validEmail(email);
 
         if (!emailValid.success) return emailValid;
