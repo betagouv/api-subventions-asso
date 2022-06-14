@@ -8,72 +8,36 @@
             -%>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-12">
-                    <h1>Admin</h1>
-
-                    <% if (typeof error != 'undefined' && error) { %>
-                        <% if (error == "USER_EMAIL_NOT_FOUND") { %>
-                            <div role="alert" class="fr-alert fr-alert--warning">
-                                <p>Nous n'avons pas réussi à récupérer l'email</p>
+                    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                        <div class="fr-col fr-col-lg-12">
+                            <div role="alert" class="fr-alert fr-alert--info fr-alert--sm">
+                                <p>
+                                    Bienvenue sur l'interface administrateur
+                                </p>
                             </div>
-                        <% } else { %>
-                            <div role="alert" class="fr-alert fr-alert--warning">
-                                <p>Une erreur est survenue ! Contactez les devs !</p>
-                            </div>
-                        <% } %>
-                    <% } %>
-
-                    <% if (typeof success != 'undefined' && success) { %>
-                        <div role="alert" class="fr-alert fr-alert--success">
-                            <p>L'utilisateur à bien été inscrit</p>
                         </div>
-                    <% } %>
+                    </div>
+                    <div class="fr-grid-row fr-grid-row--gutters">
+                            <%- include('../global_components/card',
+                                {
+                                    title: 'Liste des utilisateurs',
+                                    description: "(ancienne page Admin)",
+                                    url: '/admin/users/list',
+                                    size: 6,
+                                    img: '',
+                                })
+                            -%>
 
-                    <form action="/admin/user/create" method="POST" data-turbo="false">
-                        <fieldset class="fr-fieldset fr-my-4w">
-                            <legend class="fr-fieldset__legend" id='text-legend'>Créer un utilisateur</legend>
-                            <div class="fr-input-group">
-                                <label class="fr-label" for="text-input-text">Email :</label>
-                                <input class="fr-input" type="email" name="email" required="true">
-                            </div>
-                        </fieldset>
-                        <div class="fr-input-group fr-my-4w">
-                            <button type="submit" class="fr-btn" title="Inscrire l'utilisateur">Envoyer</button>
-                        </div>
-                    </form>
-
-                    <div class="fr-table">
-                        <table>
-                            <caption>Users</caption>
-                            <thead>
-                                <tr>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Roles</th>
-                                    <th scope="col">Actif</th>
-                                    <th scope="col">Reset link</th>
-                                    <th scope="col">Date du token de reset</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% for(let i = users.length -1 ; i > 0; i-- ) { %>
-                                    <% const user = users[i];%> 
-                                    <tr>
-                                        <td><%-user.email%></td>
-                                        <td><%-user.roles.join(" - ")%></td>
-                                        <td><%-user.active ? "Oui" : "Non"%></td>
-                                        <td>
-                                            <% if (user.resetToken) { %>
-                                                <a href="/auth/reset-password/<%-user.resetToken%>?active=true" class="fr-link" target="_blank">Copier moi !</a>
-                                            <% } %>
-                                        </td>
-                                        <td>
-                                            <% if (user.resetTokenDate) { %>
-                                                <%-helper.date.formatDateWithHour(user.resetTokenDate)%>
-                                            <% } %>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
+                            <%- include('../global_components/card',
+                            {
+                                title: 'Création d\'un utilisateur',
+                                description: "Vous permet de créer un utilisateur",
+                                url: '/admin/users/create',
+                                size: 6,
+                                img: '',
+                            })
+                            -%>
+                    </div>
                 </div>
             </div>
         </div>
