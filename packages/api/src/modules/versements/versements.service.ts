@@ -1,8 +1,26 @@
 import { Siren, Siret, Versement, Association, Etablissement } from "@api-subventions-asso/dto";
 import VersementsProvider from "./@types/VersementsProvider";
 import providers from "../providers";
+import { AssociationIdentifiers } from "../../@types";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
+import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 
 export class VersementsService {
+
+    async getVersementsByAssociation(identifier: AssociationIdentifiers) {
+        const type = getIdentifierType(identifier) ;
+        if (!type || type === StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIREN or RNA");
+
+        let siren = type === StructureIdentifiersEnum.siren ? identifier : null; 
+        if (!siren) {
+            siren = await rnaSirenService.getSiren(identifier);
+        }
+
+        if (!siren) return [];
+
+        return this.getVersementsBySiren(siren);
+    }
 
     async aggregateVersementsByAssoSearch(asso: Association) {
         if (!asso.siren || asso.siren?.length === 0) return null;
@@ -45,7 +63,7 @@ export class VersementsService {
         return etablissement;
     }
 
-    private async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
+    async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
         const providers = this.getProviders()
         return [...(await Promise.all(
             providers.map(p => p.getVersementsBySiret(siret))

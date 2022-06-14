@@ -1,4 +1,4 @@
-import { DemandeSubvention, Siret} from '@api-subventions-asso/dto';
+import { DemandeSubvention, Siret, Versement} from '@api-subventions-asso/dto';
 import { Route, Get, Controller, Tags, Security } from 'tsoa';
 import etablissementService from '../../etablissements.service';
 
@@ -7,10 +7,12 @@ import etablissementService from '../../etablissements.service';
 @Tags("Etablissement Controller")
 export class EtablissementController extends Controller {
     /**
-     * Recherche les demandes de subventions liées à un Siret
+     * Recherche les demandes de subventions liées à un établisement
+     * 
+     * @summary Recherche les demandes de subventions liées à un établisement
      * @param siret Identifiant Siret
      */
-     @Get("/{siret}/subventions")
+    @Get("/{siret}/subventions")
     public async getDemandeSubventions(
         siret: Siret,
     ): Promise<{ success: boolean, subventions?: DemandeSubvention[], message?: string}>{
@@ -19,7 +21,26 @@ export class EtablissementController extends Controller {
             return { success: true, subventions: result };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message}
+            return { success: false, message: (e as Error).message }
+        }
+    }
+
+    /**
+     * Recherche les versements liées à un établisement
+     * 
+     * @summary Recherche les versements liées à un établisement
+     * @param siret Identifiant Siret
+     */
+    @Get("/{siret}/versements")
+    public async getVersements(
+        siret: Siret,
+    ): Promise<{ success: boolean, versements?: Versement[], message?: string}>{
+        try {
+            const result = await etablissementService.getVersements(siret);
+            return { success: true, versements: result };
+        } catch (e: unknown) {
+            this.setStatus(404);
+            return { success: false, message: (e as Error).message }
         }
     }
 }

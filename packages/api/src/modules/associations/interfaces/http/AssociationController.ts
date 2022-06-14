@@ -1,4 +1,4 @@
-import { DemandeSubvention, GetAssociationResponseDto, GetEtablissementNegativeResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto } from '@api-subventions-asso/dto';
+import { DemandeSubvention, GetAssociationResponseDto, GetEtablissementNegativeResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto, Versement } from '@api-subventions-asso/dto';
 import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
 import { AssociationIdentifiers, StructureIdentifiers } from '../../../../@types';
 
@@ -10,13 +10,32 @@ import associationService from "../../associations.service";
 export class AssociationController extends Controller {
     /**
      * Recherche les demandes de subventions liées à une association
-     * @param identifier Identifiant Siret, Siren ou Rna
+     * 
+     * @summary Recherche les demandes de subventions liées à une association
+     * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/subventions")
-    public async getDemandeSubventions(identifier: StructureIdentifiers): Promise<{success: boolean, message?: string, subventions?: DemandeSubvention[]}> {
+    public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<{success: boolean, message?: string, subventions?: DemandeSubvention[]}> {
         try {
             const result = await associationService.getSubventions(identifier) as DemandeSubvention[];
             return { success: true, subventions: result };
+        } catch (e: unknown) {
+            this.setStatus(404);
+            return { success: false, message: (e as Error).message }
+        }
+    }
+
+    /**
+     * Recherche les versements liées à une association
+     * 
+     * @summary Recherche les versements liées à une association
+     * @param identifier Identifiant Siren ou Rna
+     */
+    @Get("/{identifier}/versements")
+    public async getVersements(identifier: AssociationIdentifiers): Promise<{success: boolean, message?: string, versements?: Versement[]}> {
+        try {
+            const result = await associationService.getVersements(identifier) as Versement[];
+            return { success: true, versements: result };
         } catch (e: unknown) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }
