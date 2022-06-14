@@ -17,7 +17,7 @@
     "test:cov": "lerna run test:cov",
     "migration:apply": "lerna run migration:apply",
     "postinstall": "lerna bootstrap && husky install",
-    "release": "standard-version",
+    "release": "lerna version --conventional-commits",
     "start": "node ./packages/api/build/src/index.js"
   },
   "repository": {
