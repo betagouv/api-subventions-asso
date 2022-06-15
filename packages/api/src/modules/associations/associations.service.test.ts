@@ -4,12 +4,13 @@ import FormaterHelper from '../../shared/helpers/FormaterHelper';
 import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import * as StringHelper from '../../shared/helpers/StringHelper';
 import associationsService from "./associations.service";
-import { DemandeSubvention, Etablissement } from '@api-subventions-asso/dto';
+import { DemandeSubvention, Etablissement, Versement } from '@api-subventions-asso/dto';
 import subventionService from '../subventions/subventions.service';
 import * as providers from '../providers';
 import etablissementService from '../etablissements/etablissements.service';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
+import versementsService from '../versements/versements.service';
 
 jest.mock('../providers/index');
 
@@ -24,7 +25,8 @@ describe("AssociationService", () => {
     const getAssociationBySirenSpy = jest.spyOn(associationsService, "getAssociationBySiren");
     const getAssociationBySiretSpy = jest.spyOn(associationsService, "getAssociationBySiret");
     const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
-    const getByAssociationMock = jest.spyOn(subventionService, "getDemandesByAssociation");
+    const getDemandesByAssociationMock = jest.spyOn(subventionService, "getDemandesByAssociation");
+    const getVersementsByAssociationMock = jest.spyOn(versementsService, "getVersementsByAssociation");
     const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
     const getEtablissementMock = jest.spyOn(etablissementService, "getEtablissement");
     const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
@@ -186,9 +188,18 @@ describe("AssociationService", () => {
 
     describe("getSubventions()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
-            getByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as DemandeSubvention[]));
+            getDemandesByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as DemandeSubvention[]));
             await associationsService.getSubventions(SIREN);
-            expect(getByAssociationMock).toHaveBeenCalledWith(SIREN);
+            expect(getDemandesByAssociationMock).toHaveBeenCalledWith(SIREN);
+        })
+    })
+
+
+    describe("getVersements()", () => {
+        it("should call DemandeSubventionService.getByAssociation()", async () => {
+            getVersementsByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as Versement[]));
+            await associationsService.getVersements(SIREN);
+            expect(getVersementsByAssociationMock).toHaveBeenCalledWith(SIREN);
         })
     })
 

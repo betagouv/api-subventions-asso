@@ -1,6 +1,6 @@
 import { NotFoundError } from '../../../../shared/errors/httpErrors/NotFoundError';
 import associationsService from '../../associations.service'
-import { AssociationController } from '../../interfaces/http/AssociationController';
+import { AssociationController } from './AssociationController';
 
 const controller = new AssociationController();
 
@@ -24,12 +24,29 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         })
 
+        it("should return an error object", async () => {
+            const ERROR_MESSAGE = "Error";
+            getSubventionsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
+            const expected = { success: false, message: ERROR_MESSAGE }
+            const actual = await controller.getDemandeSubventions(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+    })
+
+    describe("getVersements", () => {
+        const getSubventionsSpy = jest.spyOn(associationsService, "getVersements");
+        it("should call service with args", async () => {
+            getSubventionsSpy.mockImplementationOnce(jest.fn());
+            await controller.getVersements(IDENTIFIER);
+            expect(getSubventionsSpy).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
         it("should return a success object", async () => {
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => subventions)
-            const subventions = [{}];
-            const expected = { success: true, subventions }
-            const actual = await controller.getDemandeSubventions(IDENTIFIER);
+            getSubventionsSpy.mockImplementationOnce(() => versements)
+            const versements = [{}];
+            const expected = { success: true, versements }
+            const actual = await controller.getVersements(IDENTIFIER);
             expect(actual).toEqual(expected);
         })
 
@@ -37,7 +54,7 @@ describe("AssociationController", () => {
             const ERROR_MESSAGE = "Error";
             getSubventionsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
             const expected = { success: false, message: ERROR_MESSAGE }
-            const actual = await controller.getDemandeSubventions(IDENTIFIER);
+            const actual = await controller.getVersements(IDENTIFIER);
             expect(actual).toEqual(expected);
         })
     })
