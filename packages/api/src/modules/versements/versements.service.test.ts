@@ -1,5 +1,6 @@
 import { Versement } from "@api-subventions-asso/dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import versementsService from "./versements.service";
@@ -15,7 +16,7 @@ describe("VersementsService", () => {
         it("should throw error because indentifier is not valid", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
 
-            await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError("You must provide a valid SIREN or RNA");
+            await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(new AssociationIdentifierError());
         });
 
         it("should call rnaSirenService", async () => {

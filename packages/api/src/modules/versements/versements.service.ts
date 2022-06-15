@@ -5,12 +5,13 @@ import { AssociationIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
 export class VersementsService {
 
     async getVersementsByAssociation(identifier: AssociationIdentifiers) {
         const type = getIdentifierType(identifier) ;
-        if (!type || type === StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIREN or RNA");
+        if (!type || type === StructureIdentifiersEnum.siret) throw new AssociationIdentifierError();
 
         let siren = type === StructureIdentifiersEnum.siren ? identifier : null; 
         if (!siren) {
