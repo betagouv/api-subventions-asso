@@ -11,6 +11,7 @@ import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapte
 import subventionsService from '../subventions/subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from '../../shared/Validators';
+import versementsService from "../versements/versements.service";
 
 export class EtablissementsService {
     
@@ -50,6 +51,10 @@ export class EtablissementsService {
 
     async getSubventions(siret: Siret) {
         return await subventionsService.getDemandesByEtablissement(siret);
+    }
+
+    async getVersements(siret: Siret) {
+        return await versementsService.getVersementsBySiret(siret);
     }
 
     private async aggregate(id: Siren | Siret) {
