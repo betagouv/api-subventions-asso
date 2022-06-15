@@ -9,6 +9,7 @@ import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/Associat
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import subventionsService from '../subventions/subventions.service';
+import versementsService from '../versements/versements.service';
 import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
 import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
 import etablissementService from '../etablissements/etablissements.service';
@@ -60,6 +61,10 @@ export class AssociationsService {
 
     async getSubventions(identifier: AssociationIdentifiers) {
         return await subventionsService.getDemandesByAssociation(identifier);
+    }
+
+    async getVersements(identifier: AssociationIdentifiers) {
+        return await versementsService.getVersementsByAssociation(identifier);
     }
 
     async getEtablissements(identifier: AssociationIdentifiers) {
