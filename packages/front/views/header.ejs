@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr" data-fr-scheme>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>
     <% if (locals.pageTitle) { %>
       <%= pageTitle %> | <%= appName %>
-    <% } else { %>
-      <%= appName %>
-    <% } %>
+          <% } else { %>
+            <%= appName %>
+              <% } %>
   </title>
   <meta name="theme-color" content="#000091">
   <link rel="stylesheet" href="/~/@gouvfr/dsfr/dist/dsfr/dsfr.min.css">
@@ -17,96 +18,114 @@
   <link rel="icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.svg" type="image/svg+xml">
   <link rel="shortcut icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
   <script src="/static/js/build.js" defer></script>
-  <script>window.pipedriveLeadboosterConfig = {base: 'leadbooster-chat.pipedrive.com',companyId: 10768636,playbookUuid: 'e92e6057-cbcf-46ae-a987-8dd76d860540',version: 2};(function () {var w = window;if (w.LeadBooster) {console.warn('LeadBooster already exists');} else {w.LeadBooster = {q: [],on: function (n, h) {this.q.push({ t: 'o', n: n, h: h });},trigger: function (n) {this.q.push({ t: 't', n: n });},};}})();</script>
+  <script>window.pipedriveLeadboosterConfig = { base: 'leadbooster-chat.pipedrive.com', companyId: 10768636, playbookUuid: 'e92e6057-cbcf-46ae-a987-8dd76d860540', version: 2 }; (function () { var w = window; if (w.LeadBooster) { console.warn('LeadBooster already exists'); } else { w.LeadBooster = { q: [], on: function (n, h) { this.q.push({ t: 'o', n: n, h: h }); }, trigger: function (n) { this.q.push({ t: 't', n: n }); }, }; } })();</script>
   <script src="https://leadbooster-chat.pipedrive.com/assets/loader.js" async></script>
 </head>
+
 <body data-controller="document">
   <div class="ds-loader" data-document-target="loader">
     <div class="ds-loader-container">
-      <p class=""><%= appName %> - V<%= appVersion %></p>
+      <p class="">
+        <%= appName %> - V<%= appVersion %>
+      </p>
       <img src="/static/images/logo-beta.jpg" class="ds-loader-container-logo">
       <p class="ds-loader-container-text" data-document-target="text"></p>
     </div>
   </div>
   <div class="fr-skiplinks">
     <nav class="fr-container" role="navigation" aria-label="Accès rapide">
-        <ul class="fr-skiplinks__list">
-            <li>
-                <a class="fr-nav__link" href="#contenu">Contenu</a>
-            </li>
-            <li>
-                <a class="fr-nav__link" href="#header-navigation">Menu</a>
-            </li>
-            <li>
-                <a class="fr-nav__link" href="#header-search">Recherche</a>
-            </li>
-            <li>
-                <a class="fr-nav__link" href="#footer">Pied de page</a>
-            </li>
-        </ul>
+      <ul class="fr-skiplinks__list">
+        <li>
+          <a class="fr-nav__link" href="#contenu">Contenu</a>
+        </li>
+        <li>
+          <a class="fr-nav__link" href="#header-navigation">Menu</a>
+        </li>
+        <li>
+          <a class="fr-nav__link" href="#header-search">Recherche</a>
+        </li>
+        <li>
+          <a class="fr-nav__link" href="#footer">Pied de page</a>
+        </li>
+      </ul>
     </nav>
-</div>
+  </div>
 
-<header role="banner" class="fr-header">
-  <div class="fr-header__body">
-    <div class="fr-container">
-      <div class="fr-header__body-row">
-        <div class="fr-header__brand fr-enlarge-link">
-          <div class="fr-header__brand-top">
-            <div class="fr-header__logo">
-              <p class="fr-logo">
-                République
-                <br>Française
+  <header role="banner" class="fr-header">
+    <div class="fr-header__body">
+      <div class="fr-container">
+        <div class="fr-header__body-row">
+          <div class="fr-header__brand fr-enlarge-link">
+            <div class="fr-header__brand-top">
+              <div class="fr-header__logo">
+                <p class="fr-logo">
+                  République
+                  <br>Française
+                </p>
+              </div>
+              <div class="fr-header__navbar">
+                <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu"
+                  aria-haspopup="menu" title="Menu">
+                  Menu
+                </button>
+              </div>
+            </div>
+            <div class="fr-header__service">
+              <a href="/" title="Accueil - <%= appName %>">
+                <p class="fr-header__service-title">
+                  <%= appName %> - V<%= appVersion %>
+                </p>
+              </a>
+              <p class="fr-header__service-tagline">
+                <%= appDescription %>
               </p>
             </div>
-            <div class="fr-header__navbar">
-              <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu" aria-haspopup="menu" title="Menu">
-                Menu
-              </button>
-            </div>
           </div>
-          <div class="fr-header__service">
-            <a href="/" title="Accueil - <%= appName %>">
-              <p class="fr-header__service-title"><%= appName %> - V<%= appVersion %></p>
-            </a>
-            <p class="fr-header__service-tagline"><%= appDescription %></p>
-          </div>
-        </div>
 
-        <div class="fr-header__tools">
-          <div class="fr-header__tools-links">
-            <ul class="fr-links-group">
-              <li>
-                <a class="fr-link fr-fi-external-link-line fr-link--icon-right" href="https://github.com/betagouv/api-subventions-asso" title="code source - nouvelle fenêtre" target="_blank" rel="noopener">Code source</a>
-              </li>
-              <li>
-                <button class="fr-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal" data-fr-opened="false">Paramètres d'affichage</button>
-              </li>
-              <% if (typeof currentSession != "undefined" && typeof currentSession.roles != "undefined" && currentSession.roles.includes("admin") ) { %>
+          <div class="fr-header__tools">
+            <div class="fr-header__tools-links">
+              <ul class="fr-links-group">
                 <li>
-                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin" rel="noopener">Admin</a>
-                </li>              
-              <% } %>
-              <% if (typeof user != "undefined" && user.token) { %>
+                  <a class="fr-link fr-fi-external-link-line fr-link--icon-right"
+                    href="https://github.com/betagouv/api-subventions-asso" title="code source - nouvelle fenêtre"
+                    target="_blank" rel="noopener">Code source</a>
+                </li>
                 <li>
-                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/auth/logout" title="se déconnecter" rel="noopener">Se déconnecter</a>
-                </li>              
-              <% } %>
-            </ul>
+                  <button class="fr-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal"
+                    data-fr-opened="false">Paramètres d'affichage</button>
+                </li>
+                <li>
+                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-left" href="/svelte/hello" title="svelte-example"
+                    rel="noopener">Svelte</a>
+                </li>
+                <% if (typeof currentSession !="undefined" && typeof currentSession.roles !="undefined" &&
+                  currentSession.roles.includes("admin") ) { %>
+                  <li>
+                    <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin"
+                      rel="noopener">Admin</a>
+                  </li>
+                  <% } %>
+                    <% if (typeof user !="undefined" && user.token) { %>
+                      <li>
+                        <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/auth/logout"
+                          title="se déconnecter" rel="noopener">Se déconnecter</a>
+                      </li>
+                      <% } %>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-<!-- TODO : fix arria-labellby -->
-  <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="button-825">
-    <div class="fr-container">
-      <button class="fr-link--close fr-link" aria-controls="modal-menu">Fermer</button>
-      <div class="fr-header__menu-links">
-      </div>
+    <!-- TODO : fix arria-labellby -->
+    <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="button-825">
+      <div class="fr-container">
+        <button class="fr-link--close fr-link" aria-controls="modal-menu">Fermer</button>
+        <div class="fr-header__menu-links">
+        </div>
 
-      <!-- <nav class="fr-nav" role="navigation" aria-label="Menu principal" id="header-navigation">
+        <!-- <nav class="fr-nav" role="navigation" aria-label="Menu principal" id="header-navigation">
         <ul class="fr-nav__list">
           <li class="fr-nav__item">
             <a class="fr-nav__link" href="/" target="_self" <% if (page === '/') { %> aria-current="page" <% } %>>Accueil</a>
@@ -128,26 +147,25 @@
           </li>
         </ul>
       </nav> -->
+      </div>
     </div>
-  </div>
-  
-  <noscript>
-    <div class="fr-callout fr-callout--pink-tuile fr-my-2w">
-  
-        <h4 class="fr-callout__title"></h4>
-      
-    
-        <p class="fr-callout__text">
-            JavaScript est désactivé. Pour utiliser l'application, vous devez le réactiver. 
-            <br> Vous pouvez également 
-            <a title="Contactez-nous"
-                href="mailto:<%= `${contactEmail}?subject=Javascript désactivé&body=Bonjour, %0D%0A %0D%0A Javascript est désactivé sur mon poste. Comment puis-je utiliser votre application ?&html=true` %>"
-                target="_blank"
-                rel="noopener noreferrer">
-            nous contacter.
-            </a>
-        </p>
-    </div>
-</noscript>
 
-</header>
+    <noscript>
+      <div class="fr-callout fr-callout--pink-tuile fr-my-2w">
+
+        <h4 class="fr-callout__title"></h4>
+
+
+        <p class="fr-callout__text">
+          JavaScript est désactivé. Pour utiliser l'application, vous devez le réactiver.
+          <br> Vous pouvez également
+          <a title="Contactez-nous"
+            href="mailto:<%= `${contactEmail}?subject=Javascript désactivé&body=Bonjour, %0D%0A %0D%0A Javascript est désactivé sur mon poste. Comment puis-je utiliser votre application ?&html=true` %>"
+            target="_blank" rel="noopener noreferrer">
+            nous contacter.
+          </a>
+        </p>
+      </div>
+    </noscript>
+
+  </header>

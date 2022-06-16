@@ -1,11 +1,12 @@
 {
   "name": "front",
-  "version": "0.10.0",
+  "version": "0.10.3",
   "description": "> TODO: description",
   "author": "Victor Serain <victor.serain@epitech.eu>",
   "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/front#readme",
   "license": "MIT",
   "main": "build/index.js",
+  "svelte": "build/svelte-index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -30,7 +31,8 @@
     "build": "npx tsc --project ./",
     "postbuild": "npm run copy-files",
     "copy-files": "cp -r views build/views && cp -r static build/static && cp -r node_modules build/node_modules",
-    "test": "echo 'no test in front'"
+    "test": "echo 'no test in front'",
+    "dev:svelte": "webpack --config webpack.svelte.config.js"
   },
   "bugs": {
     "url": "https://github.com/betagouv/datasubvention/issues"
@@ -60,11 +62,19 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "concurrently": "^7.0.0",
+    "css-loader": "^6.7.1",
     "eslint": "^8.6.0",
     "eslint-plugin-import": "^2.25.4",
+    "mini-css-extract-plugin": "^2.6.0",
     "nodemon": "^2.0.6",
+    "rollup": "^2.75.6",
+    "serve": "^13.0.2",
+    "svelte": "^3.48.0",
+    "svelte-loader": "^3.1.3",
+    "ts-loader": "^9.3.0",
     "typescript": "^4.5.4",
     "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.2"
   }
 }

@@ -1,4 +1,4 @@
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes, SignupErrorCodes} from '@api-subventions-asso/dto';
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes, SignupErrorCodes } from '@api-subventions-asso/dto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
 import { DefaultObject } from '../../../../@types/utils';
@@ -95,7 +95,7 @@ export default class AuthController {
     @Get("reset-password/:tokenId")
     public resetPasswordView(req: Request, res: Response, next: NextFunction) {
         const id = req.params.tokenId;
-        
+
         if (!id) {
             res.statusCode = 422;
             return res.render("error");
@@ -137,7 +137,7 @@ export default class AuthController {
 
         const result = await authService.resetPassword(req.body.token, req.body.password);
 
-        if (result.type === "ERROR"){
+        if (result.type === "ERROR") {
             res.statusCode = 422;
             return res.render('auth/reset-password/resetPassword', {
                 pageTitle: 'Changement de mot de passe',
@@ -182,5 +182,11 @@ export default class AuthController {
             errorCode: result.code,
             SignupErrorCodes,
         });
+    }
+
+    @Get("token")
+    public async getUser(req: Request, res: Response) {
+        if (!req.session.user) res.redirect("/login");
+        res.send(req.session.user);
     }
 }

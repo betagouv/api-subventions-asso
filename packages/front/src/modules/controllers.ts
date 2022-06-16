@@ -7,6 +7,7 @@ import SearchController from "./search/interfaces/http/SearchController";
 import LegalNoticeController from "./legal_notice/interface/http/LegalNoticeController";
 import ContactController from "./contact/interface/http/ContactController";
 import AdminController from "./admin/interfaces/http/AdminController";
+import SvelteController from './svelte-example/SvelteController';
 
 export default [
     AuthController,
@@ -18,4 +19,5 @@ export default [
     LegalNoticeController,
     ContactController,
     AdminController,
+    SvelteController
 ]
