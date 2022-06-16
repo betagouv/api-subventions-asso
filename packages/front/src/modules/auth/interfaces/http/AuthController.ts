@@ -31,7 +31,9 @@ export default class AuthController {
         if (!req.body.email || !req.body.password) {
             return res.render("auth/login/login", {
                 pageTitle: 'Connexion',
-                loginError: true
+                loginError: true,
+                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
+                errorCodes: LoginDtoErrorCodes,
             });
         }
 
@@ -173,6 +175,7 @@ export default class AuthController {
             return res.render('auth/signup/index', {
                 pageTitle: `Créer votre compte sur ${res.locals.appName}`,
                 success: true,
+                signupMail: email
             });
         }
 
@@ -180,7 +183,7 @@ export default class AuthController {
             pageTitle: `Créer votre compte sur ${res.locals.appName}`,
             error: true,
             errorCode: result.code,
-            SignupErrorCodes,
+            SignupErrorCodes
         });
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "api-subventions-asso",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -17,7 +17,7 @@
     "test:cov": "lerna run test:cov",
     "migration:apply": "lerna run migration:apply",
     "postinstall": "lerna bootstrap && husky install",
-    "release": "standard-version",
+    "release": "lerna version --conventional-commits",
     "start": "node ./packages/api/build/src/index.js"
   },
   "repository": {
