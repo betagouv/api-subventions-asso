@@ -1,1 +1,2 @@
-/static/js/build.js
+/static/js/*
+/static/css/svelte.*
