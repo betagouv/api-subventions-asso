@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr" data-fr-scheme>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>
+        <!-- TODO: rendre le nom dynamique -->
+        Data.subvention
+    </title>
+    <meta name="theme-color" content="#000091">
+    <link rel="stylesheet" href="/~/@gouvfr/dsfr/dist/dsfr/dsfr.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <link rel="stylesheet" href="/static/css/svelte.css">
+    <link rel="apple-touch-icon" href="/~/@gouvfr/dsfr/dist/favicon/apple-touch-icon.png"><!-- 180×180 -->
+    <link rel="icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
+    <script type="module" src='/static/js/svelte.js' defer></script>
+    <script>window.pipedriveLeadboosterConfig = { base: 'leadbooster-chat.pipedrive.com', companyId: 10768636, playbookUuid: 'e92e6057-cbcf-46ae-a987-8dd76d860540', version: 2 }; (function () { var w = window; if (w.LeadBooster) { console.warn('LeadBooster already exists'); } else { w.LeadBooster = { q: [], on: function (n, h) { this.q.push({ t: 'o', n: n, h: h }); }, trigger: function (n) { this.q.push({ t: 't', n: n }); }, }; } })();</script>
+    <script src="https://leadbooster-chat.pipedrive.com/assets/loader.js" async></script>
+</head>
+
+<body id="svelte-body"></body>
+
+<script>
+    // Options disponibles à l'initialisation du DSFR
+    window.dsfr = {
+        verbose: true,
+        mode: 'runtime'
+    };
+</script>
+<script type="module" src="/~/@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js"></script>
+<script type="text/javascript" nomodule src="/~/@gouvfr/dsfr/dist/dsfr/dsfr.nomodule.min.js"></script>
+
+<!-- Matomo -->
+<script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+        var u = "https://stats.data.gouv.fr/";
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '211']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+    })();
+</script>
+<!-- End Matomo Code -->
+
+</html>

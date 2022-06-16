@@ -1,5 +1,7 @@
 import express from "express";
-import passport from "passport"
+import passport from "passport";
+
+import cors from "cors";
 
 import { RegisterRoutes } from "../tsoa/routes";
 import { authMocks } from "./authentication/express.auth.hooks";
@@ -15,8 +17,12 @@ export async function startServer(port = '8080', isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
+    app.use(cors({
+        origin: "*"
+    }));
+
     if (!isTest) app.use(expressLogger());
-    
+
     app.use("/assets", AssetsMiddleware);
     app.use(BodyParserUrlEncoded);
     app.use(BodyParserJSON);
@@ -30,6 +36,7 @@ export async function startServer(port = '8080', isTest = false) {
     app.use('/docs', ...(await docsMiddlewares()));
 
     app.use(errorHandler(isTest));
+
 
     return app.listen(port, () => {
         if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);
