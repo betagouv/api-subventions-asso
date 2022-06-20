@@ -65,3 +65,11 @@ span.tofill::before {
 .custom-table-center-text th {
   text-align: center;
 }
+
+html { scroll-behavior: smooth; } 
+
+.admin-domain-ul {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}
