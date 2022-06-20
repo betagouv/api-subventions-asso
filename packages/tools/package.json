@@ -38,7 +38,11 @@
         "lint-staged": "^13.1.2",
         "node-fetch": "^3.2.10",
         "node-xlsx": "^0.21.0",
-        "qs": "^6.11.0"
+        "qs": "^6.11.0",
+        "fetch": "^1.1.0",
+        "jquery": "^3.6.0",
+        "puppeteer": "^14.4.0",
+        "signalr": "^2.4.3"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.53.0",
