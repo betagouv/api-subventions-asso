@@ -4,7 +4,7 @@
         <%- include('../global_components/ariane', { items: [
                 { label: 'Accueil', url: '/' },
                 { label: 'Admin', url: "/admin" },
-                { label: 'Création d\'un uttilisateur' },
+                { label: 'Création d\'un utilisateur' },
             ],})
             -%>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
@@ -23,7 +23,7 @@
 
                     <% if (typeof success != 'undefined' && success) { %>
                         <div role="alert" class="fr-alert fr-alert--success">
-                            <p>L'utilisateur à bien été inscrit</p>
+                            <p>L'utilisateur a bien été inscrit</p>
                         </div>
                     <% } %>
 

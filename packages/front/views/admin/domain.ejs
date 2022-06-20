@@ -4,7 +4,7 @@
         <%- include('../global_components/ariane', { items: [
                 { label: 'Accueil', url: '/' },
                 { label: 'Admin', url: "/admin" },
-                { label: 'Nom de domaines' },
+                { label: 'Noms de domaines' },
             ],})
             -%>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
@@ -33,7 +33,7 @@
                     <div class="fr-col-12 fr-col-md-6" id="<%= domainName %>">
                         <h3> <%- domainName %> </h3>
                         <p>Nombre d'utilisateurs : <%= users.length %></p>
-                        <p>Nombre d'utilisateurs ayant activer leurs comptes : <%= users.filter(u => u.active).length %></p>
+                        <p>Nombre d'utilisateurs ayant activé leur compte : <%= users.filter(u => u.active).length %></p>
 
                         <div class="fr-table">
                             <table>
