@@ -1,6 +1,6 @@
 <script>
-  import { version as designSystemVersion } from "../../package-lock.json";
-  import { user as userStore } from "../store/auth.store";
+  import { version } from "../../package.json";
+  import { user as userStore } from "../store/user.store";
   import { getContext } from "svelte";
 
   const user = $userStore;
@@ -29,7 +29,7 @@
           <div class="fr-header__service">
             <a href="/" title="Accueil - {name}">
               <p class="fr-header__service-title">
-                {name} - V{designSystemVersion}
+                {name} - V{version}
               </p>
             </a>
             <p class="fr-header__service-tagline">

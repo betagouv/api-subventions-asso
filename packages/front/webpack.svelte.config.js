@@ -7,7 +7,7 @@ const { DefinePlugin } = require('webpack');
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
-module.exports = {
+module.exports =  {
 	entry: {
 		'build/bundle': ['./svelte/main.js']
 	},
@@ -59,7 +59,8 @@ module.exports = {
 	mode,
 	plugins: [
 		new DefinePlugin({
-			'process.env': JSON.stringify({ DATASUB_URL: process.env.DATASUB_URL } || {})
+			'process.env': JSON.stringify({ DATASUB_URL: process.env.DATASUB_URL }),
+			PRODUCTION: JSON.stringify(true)
 		}),
 		new MiniCssExtractPlugin({
 			filename: '../css/svelte.css'
