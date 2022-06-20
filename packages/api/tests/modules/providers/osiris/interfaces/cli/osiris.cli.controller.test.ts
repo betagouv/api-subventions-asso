@@ -29,16 +29,16 @@ describe("OsirisCliController", () => {
 
         it('should call osiris parser', async () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
-            await controller.parse("requests", filePath);
+            await controller.parse("requests", filePath, "2022");
             expect(OsirisParser.parseRequests).toHaveBeenCalled();
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.parse).rejects.toThrowError("Parse command need type and file args");
+            expect(controller.parse).rejects.toThrowError("Parse command need type, extractYear and file args");
         });
 
         it('should throw an error because the file does not exist', () => {
-            expect(() => controller.parse("requests", "fake/path")).rejects.toThrowError("File not found fake/path");
+            expect(() => controller.parse("requests", "fake/path", "2022")).rejects.toThrowError("File not found fake/path");
         });
     });
 
@@ -62,17 +62,17 @@ describe("OsirisCliController", () => {
 
         it('should call osiris parser', async () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviActions_test.xls");
-            await controller.parse("actions", filePath);
+            await controller.parse("actions", filePath, "2022");
             expect(consoleWarn).not.toBeCalled();
             expect(OsirisParser.parseActions).toHaveBeenCalled();
         });
 
         it('should throw error because no agrs', () => {
-            expect(controller.parse).rejects.toThrowError("Parse command need type and file args");
+            expect(controller.parse).rejects.toThrowError("Parse command need type, extractYear and file args");
         });
 
         it('should throw an error because the file does not exist', () => {
-            expect(() => controller.parse("actions", "fake/path")).rejects.toThrowError("File not found fake/path");
+            expect(() => controller.parse("actions", "fake/path", "2022")).rejects.toThrowError("File not found fake/path");
         });
     });
 
@@ -86,7 +86,7 @@ describe("OsirisCliController", () => {
         it('should throw an error because unknown is not valid type', () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
 
-            expect(() => controller.parse("unknown" as "actions",  filePath)).rejects.toThrowError("The type unknown is not taken into account");
+            expect(() => controller.parse("unknown" as "actions",  filePath, "2022")).rejects.toThrowError("The type unknown is not taken into account");
         });
     });
 

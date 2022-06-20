@@ -9,7 +9,7 @@ import OsirisEvaluationEntity from './entities/OsirisEvaluationEntity';
 import IOsirisEvaluationsInformations from './@types/IOsirisEvaluationsInformations';
 
 export default class OsirisParser {
-    public static parseRequests(content: Buffer): OsirisRequestEntity[] {
+    public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
         const data = ParseHelper.xlsParse(content)[0]
         const headers = data.slice(0,2) as string[][];
         const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
@@ -21,11 +21,13 @@ export default class OsirisParser {
             const indexedInformations = ParseHelper.indexDataByPathObject(OsirisRequestEntity.indexedProviderInformationsPath, data) as IOsirisRequestInformations;
             const legalInformations = ParseHelper.indexDataByPathObject(OsirisRequestEntity.indexedLegalInformationsPath, data) as unknown as ILegalInformations;
 
+            indexedInformations.extractYear = year;
+
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
     }
 
-    public static parseActions(content: Buffer) {
+    public static parseActions(content: Buffer, year: number) {
         const data = ParseHelper.xlsParse(content)[0]
 
         const headers = data.slice(0,2) as string[][];
@@ -36,12 +38,13 @@ export default class OsirisParser {
             const data: DefaultObject<DefaultObject<string|number>> = OsirisParser.rawToRawWithHeaders(headers, raw, OsirisActionEntity.defaultMainCategory);
 
             const indexedInformations = ParseHelper.indexDataByPathObject(OsirisActionEntity.indexedInformationsPath, data) as unknown as IOsirisActionsInformations;
+            indexedInformations.extractYear = year;
 
             return new OsirisActionEntity(indexedInformations, data);
         });
     }
 
-    public static parseEvaluations(content: Buffer) {
+    public static parseEvaluations(content: Buffer, year: number) {
         const data = ParseHelper.xlsParse(content)[0]
 
         const headers = data.slice(0,2) as string[][];
@@ -51,8 +54,9 @@ export default class OsirisParser {
         return raws.map((raw: unknown[]) => {
             const data: DefaultObject<DefaultObject<string|number>> = OsirisParser.rawToRawWithHeaders(headers, raw, OsirisEvaluationEntity.defaultMainCategory);
             const indexedInformations = ParseHelper.indexDataByPathObject(OsirisEvaluationEntity.indexedInformationsPath, data) as unknown as IOsirisEvaluationsInformations;
-            const entity = new OsirisEvaluationEntity(indexedInformations, data);
-            return entity;
+            indexedInformations.extractYear = year;
+            
+            return new OsirisEvaluationEntity(indexedInformations, data);
         });
     }
 

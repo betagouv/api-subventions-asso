@@ -37,6 +37,10 @@ export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvalua
             "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
+
+    public cursorFind(query = {}){
+        return this.collection.find(query);
+    }
 }
 
 const osirisEvaluationRepository = new OsirisEvaluationRepository();

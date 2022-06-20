@@ -100,6 +100,12 @@ exports[`/subvention /{id} should return a subvention from osiris-request collec
 Object {
   "subvention": Object {
     "actions_proposee": Array [],
+    "annee_demande": Object {
+      "last_update": "2022-01-01T00:00:00.000Z",
+      "provider": "Osiris",
+      "type": "number",
+      "value": 2022,
+    },
     "contact": Object {
       "email": Object {
         "last_update": "2022-01-01T00:00:00.000Z",

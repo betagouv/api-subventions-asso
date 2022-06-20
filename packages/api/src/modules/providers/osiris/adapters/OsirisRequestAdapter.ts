@@ -8,7 +8,7 @@ export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris"
 
     static toAssociation(entity: OsirisRequestEntity, actions : OsirisActionEntity[] = []): Association {
-        const dataDate = entity.providerInformations.dateCommission || entity.providerInformations.exerciceDebut;
+        const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const federation = actions.length && actions.find(action => action.indexedInformations.federation)?.indexedInformations.federation;
         const licencies = actions.length && actions.find(action => action.indexedInformations.federation)?.indexedInformations.licencies;
         const licenciesHommes = actions.length && actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesHommes;
@@ -58,7 +58,7 @@ export default class OsirisRequestAdapter {
     }
 
     static toEtablissement(entity: OsirisRequestEntity): Etablissement {
-        const dataDate = entity.providerInformations.dateCommission || entity.providerInformations.exerciceDebut;
+        const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         return {
             siret: ProviderValueAdapter.toProviderValues(entity.legalInformations.siret, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             nic: ProviderValueAdapter.toProviderValues(siretToNIC(entity.legalInformations.siret), OsirisRequestAdapter.PROVIDER_NAME, dataDate),
@@ -100,9 +100,10 @@ export default class OsirisRequestAdapter {
     }
 
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
-        const dataDate = entity.providerInformations.dateCommission || entity.providerInformations.exerciceDebut;
-        
+        const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
+
         const data: DemandeSubvention = {
+            annee_demande: ProviderValueAdapter.toProviderValue(entity.providerInformations.extractYear, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             siret: ProviderValueAdapter.toProviderValue(entity.legalInformations.siret, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             service_instructeur: ProviderValueAdapter.toProviderValue(entity.providerInformations.service_instructeur, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
