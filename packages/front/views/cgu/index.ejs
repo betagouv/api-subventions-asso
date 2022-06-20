@@ -1,0 +1,13 @@
+<%- include('../header') -%>
+<main role="main" id="contenu"> 
+  <div class="fr-container fr-mb-8w">
+    <%- include('../global_components/ariane', { items: [
+          { label: 'Accueil', url: '/' },
+          { label: pageTitle },
+      ],})
+    -%>
+
+    <iframe class="cgu-iframe" src="/static/files/CGU_Data.Subvention.pdf#toolbar=0" width="100%"></iframe>
+  </div>
+</main>
+<%- include('../footer') -%>
