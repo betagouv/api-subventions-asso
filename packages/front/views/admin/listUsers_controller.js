@@ -35,7 +35,7 @@ export default class extends Controller {
 
         const orderedChilder = [...this.listTarget.children].sort((elementA, elementB) => {
 
-            if (value.length <= 3) {
+            if (value.length <= 0) {
                 return 1
             }
 

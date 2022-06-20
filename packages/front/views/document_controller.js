@@ -45,10 +45,14 @@ export default class extends Controller {
     }
 
     reloadChatPipedrive() {
-        const head = document.getElementsByTagName('head')[0];
-        const script = document.createElement('script');
-        script.src = 'https://leadbooster-chat.pipedrive.com/assets/loader.js';
-        script.async = true;
-        head.appendChild(script);
+        setTimeout(() => {
+            if (document.getElementById("LeadboosterContainer")) return // PipeDrive is allready loaded
+    
+            const head = document.getElementsByTagName('head')[0];
+            const script = document.createElement('script');
+            script.src = 'https://leadbooster-chat.pipedrive.com/assets/loader.js';
+            script.async = true;
+            head.appendChild(script);
+        }, 1000)
     }
 }
