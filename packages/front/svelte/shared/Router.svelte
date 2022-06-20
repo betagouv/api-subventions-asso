@@ -1,5 +1,5 @@
 <script>
-  import Association from "../views/association/Association.svelte";
+  import Association from "../views/association/association.svelte";
   export let route;
 </script>
 
