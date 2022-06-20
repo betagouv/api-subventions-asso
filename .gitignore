@@ -107,6 +107,9 @@ dist
 build/
 tsoa/
 
+# Osiris Extract folder
+extract/
+
 # Jest tests parts
 .~lock*
 
