@@ -6,7 +6,7 @@ import bodyParser from 'body-parser'
 import authMiddleware from "./middlewares/auth.middleware"
 import { expressLogger } from './middlewares/LogMiddleware'
 import sessionMiddleware from "./middlewares/session.middleware"
-import {version as designSystemVersion} from '../package-lock.json'
+import { version as designSystemVersion } from '../package-lock.json'
 
 import controllers from "./modules/controllers";
 import { DefaultObject } from './@types/utils';
@@ -24,7 +24,7 @@ declare module 'express-session' {
 
 const appName = `Data.subvention`
 const appVersion = designSystemVersion;
-const appDescription = "Toutes les informations pour instruire vos demandes de subvention"
+const appDescription = "Les dernières informations sur les associations et leurs subventions"
 const appRepo = 'https://github.com/betagouv/api-subventions-asso'
 const contactEmail = "contact@datasubvention.beta.gouv.fr"
 const port = process.env.PORT || 1235
@@ -38,28 +38,28 @@ app.use('/static', express.static(path.join(__dirname, '../static')))
 // Hack for importing css from npm package
 app.use('/~', express.static(path.join(__dirname, '../node_modules')))
 
-app.use(bodyParser.json());      
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(expressLogger());
 app.use(sessionMiddleware());
 app.use(authMiddleware);
 
 // Populate some variables for all views
-app.use(function(req, res, next){
-  res.locals.appName = appName
-  res.locals.appVersion = appVersion
-  res.locals.appDescription = appDescription
-  res.locals.appRepo = appRepo
-  res.locals.contactEmail = contactEmail
-  res.locals.page = req.url;
+app.use(function (req, res, next) {
+    res.locals.appName = appName
+    res.locals.appVersion = appVersion
+    res.locals.appDescription = appDescription
+    res.locals.appRepo = appRepo
+    res.locals.contactEmail = contactEmail
+    res.locals.page = req.url;
 
-  res.locals.helper = EJSHelper;
-  res.locals.components = Components;
-  res.locals.currentSession = req.session;
-  next()
+    res.locals.helper = EJSHelper;
+    res.locals.components = Components;
+    res.locals.currentSession = req.session;
+    next()
 })
-controllers.forEach((controllerClass)=> {
+controllers.forEach((controllerClass) => {
     const controller = new controllerClass() as unknown as DefaultObject<ControllerMethod>;
     const basePath = (controller as unknown as DefaultObject<string>).basePath;
 
@@ -79,7 +79,7 @@ controllers.forEach((controllerClass)=> {
             case "DELETE":
                 app.delete(route, describe.function.bind(controller));
                 break;
-            case "GET":        
+            case "GET":
             default:
                 app.get(route, describe.function.bind(controller));
                 break;
@@ -148,5 +148,5 @@ controllers.forEach((controllerClass)=> {
 // })
 
 module.exports = app.listen(port, () => {
-  console.log(`${appName} listening at http://localhost:${port}`)
+    console.log(`${appName} listening at http://localhost:${port}`)
 })
