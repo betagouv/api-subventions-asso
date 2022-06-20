@@ -1,7 +1,7 @@
 <script>
   import axios from "axios";
   import UserService from "../../src/modules/user/user.service";
-  import { user as userStore } from "../store/auth.store";
+  import { user as userStore } from "../store/user.store";
 
   async function getUser() {
     let user;
@@ -30,7 +30,7 @@
 <div>
   {#await promise}
     spinning...
-  {:then user}
+  {:then}
     <slot />
   {/await}
 </div>

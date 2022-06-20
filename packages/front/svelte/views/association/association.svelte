@@ -1,25 +1,28 @@
 <script>
-  import { onMount } from "svelte";
-  import { user as userStore } from "../../store/auth.store";
-  import apiDatasubService from "../../../build/src/shared/apiDatasub.service";
-  import IdentifierHelper from "../../../build/src/shared/helpers/IdentifierHelper";
+  import { onMount, getContext } from "svelte";
+  import axios from "axios";
+  import { user as userStore } from "../../store/user.store";
+  import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
 
-  let identifier = document.getElementById("svelte-association").getAttribute("data-identifier");
+  export let route;
+  const { getApiUrl } = getContext("app");
+  let apiUrl = getApiUrl();
+  const token = $userStore.token;
+  const segments = [{ label: "Accueil", url: "/" }, { label: `Association (${route.split("/")[1]})` }];
 
-  let user;
   let promise;
 
   onMount(async () => {
-    user = $userStore;
-    promise = getUserToken();
+    promise = getAssociation();
   });
 
-  async function getUserToken() {
-    if (IdentifierHelper.isRna(identifier)) apiDatasubService.searchAssoByRna(identifier);
-    else apiDatasubService.searchAssoBySiren(identifier, user);
+  async function getAssociation() {
+    const path = `${apiUrl}/${route}`;
+    return await axios.get(path, { headers: { "x-access-token": token } });
   }
 </script>
 
+<Breadcrumb {segments} />
 <div>
   {#await promise}
     <p>...waiting</p>
