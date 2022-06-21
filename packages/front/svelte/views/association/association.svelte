@@ -7,9 +7,8 @@
   import InfosLegales from "./InfosLegales.svelte";
   import Tabs from "../../dsfr/Tabs.svelte";
   import TabContent from "../../dsfr/TabContent.svelte";
-  import Tab from "../../dsfr/Tab.svelte";
 
-  const tabNames = ["Tableau de bord des subventions", "Pièces administratives", "Établissement"];
+  const tabNames = ["Tableau de bord des subventions", "Pièces administratives", "Établissements"];
   export let route;
   const { getApiUrl } = getContext("app");
   let apiUrl = getApiUrl();
