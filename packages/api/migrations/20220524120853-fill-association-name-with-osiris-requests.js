@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { default: osirisRepository } = require('../build/src/modules/providers/osiris/repositories/osiris.repository');
+const { default: osirisRepository } = require('../build/src/modules/providers/osiris/repositories/osiris.request.repository');
 const { default: associationNameRepository } = require('../build/src/modules/association-name/repositories/associationName.repository');
 const { connectDB } = require('../build/src/shared/MongoConnection');
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
