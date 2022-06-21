@@ -16,7 +16,11 @@ module.exports = {
             if (!doc) continue;
             doc.siren = siretToSiren(doc.siren);
             const { _id, ...entity } = doc; 
-            await collection.findOneAndUpdate({ _id: _id }, { $set: entity });
+            try {
+                await collection.findOneAndUpdate({ _id: _id }, { $set: entity });
+            } catch {
+                await collection.deleteOne({ _id: _id });
+            }
         }
     },
 
