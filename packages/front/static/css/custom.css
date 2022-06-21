@@ -83,3 +83,7 @@ html { scroll-behavior: smooth; }
   margin-top: 20px;
   margin-bottom: 50px;
 }
+
+.cgu-iframe {
+  height: 100vh;
+}
