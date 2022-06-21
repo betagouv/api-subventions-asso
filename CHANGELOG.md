@@ -14,7 +14,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
 
 
-### Features
+
+### Bug Fixes
 
 * **api:** add versements routes ([#301](https://github.com/betagouv/api-subventions-asso/issues/301)) ([0a354f5](https://github.com/betagouv/api-subventions-asso/commit/0a354f59df88236bec1ed039abd9eb37ba43e3db))
 * **api:** user email to lower case ([#298](https://github.com/betagouv/api-subventions-asso/issues/298)) ([e15ce0c](https://github.com/betagouv/api-subventions-asso/commit/e15ce0c1f12582101870b9b6ef3769f82c931a66))
