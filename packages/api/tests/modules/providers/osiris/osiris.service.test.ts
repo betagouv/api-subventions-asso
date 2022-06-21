@@ -126,28 +126,28 @@ describe("OsirisService", () => {
     describe("evaluation part", () => {
         describe("validEvaluation()", () => {
             it("should return a message if action ID is invalid", () => {
-                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "W&-", siret: "WRONG_SIRET", evaluation_resultat: "" }, {});
+                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "W&-", siret: "WRONG_SIRET", evaluation_resultat: "", extractYear: 2022 }, {});
                 const expected = { success: false, message: `INVALID OSIRIS ACTION ID FOR ${evaluation.indexedInformations.osirisActionId}`, data: evaluation.data };
                 const actual = osirisService.validEvaluation(evaluation);
                 expect(actual).toMatchObject(expected);
             })
 
             it("should return a message if siret is invalid", () => {
-                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "FAKE_OSIRIS_ID", siret: "WRONG_SIRET", evaluation_resultat: "" }, {});
+                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "FAKE_OSIRIS_ID", siret: "WRONG_SIRET", evaluation_resultat: "", extractYear: 2022 }, {});
                 const expected = { success: false, message: `INVALID SIRET FOR ${evaluation.indexedInformations.siret}`, data: evaluation.data };
                 const actual = osirisService.validEvaluation(evaluation);
                 expect(actual).toMatchObject(expected);
             })
 
             it("should return a message if evaluation result is empty", () => {
-                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "FAKE_OSIRIS_ID", siret: "01234567891112", evaluation_resultat: "" }, {});
+                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "FAKE_OSIRIS_ID", siret: "01234567891112", evaluation_resultat: "", extractYear: 2022 }, {});
                 const expected = { success: false, message: `INVALID EVALUATION RESULTAT FOR ${evaluation.indexedInformations.evaluation_resultat}`, data: evaluation.data };
                 const actual = osirisService.validEvaluation(evaluation);
                 expect(actual).toMatchObject(expected);
             })
 
             it("should return success if valid", () => {
-                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "FAKE_OSIRIS_ID", siret: "01234567891112", evaluation_resultat: "FAKE_RESULT" }, {});
+                const evaluation = new OsirisEvaluationEntity({ osirisActionId: "FAKE_OSIRIS_ID", siret: "01234567891112", evaluation_resultat: "FAKE_RESULT", extractYear: 2022 }, {});
                 const expected = { success: true };
                 const actual = osirisService.validEvaluation(evaluation);
                 expect(actual).toMatchObject(expected);
@@ -174,10 +174,10 @@ describe("OsirisService", () => {
     });
 
     describe("Etablisesement part", () => {
-        const now = new Date();
+        const now = new Date(Date.UTC(2022, 0));
         const toPVs = (value: unknown, provider = "Osiris") => ProviderValueAdapter.toProviderValues(value, provider, now);
 
-        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "RNA", name: "NAME" }, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date() } as IOsirisRequestInformations, {}, undefined, []);
+        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "RNA", name: "NAME" }, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date(), extractYear: 2022 } as IOsirisRequestInformations, {}, undefined, []);
 
         beforeEach(async () => {
             await osirisService.addRequest(entity);
@@ -209,10 +209,10 @@ describe("OsirisService", () => {
     })
 
     describe("Association part", () => {
-        const now = new Date();
+        const now = new Date(Date.UTC(2022, 0));
         const toPVs = (value: unknown, provider = "Osiris") => ProviderValueAdapter.toProviderValues(value, provider, now);
 
-        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "W1234567", name: "NAME" }, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date() } as IOsirisRequestInformations, {}, undefined, []);
+        const entity = new OsirisRequestEntity({ siret: "12345678900000", rna: "W1234567", name: "NAME" }, { osirisId: "FAKE_ID_2", compteAssoId: "COMPTEASSOID", ej: "", amountAwarded: 0, dateCommission: new Date(), extractYear: 2022 } as IOsirisRequestInformations, {}, undefined, []);
 
         beforeEach(async () => {
             await osirisService.addRequest(entity);

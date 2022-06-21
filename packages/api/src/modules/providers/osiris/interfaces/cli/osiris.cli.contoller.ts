@@ -24,9 +24,13 @@ export default class OsirisCliController {
         evaluations: "./logs/osiris.parse.evaluations.log.txt"
     };
 
-    public validate(type: string, file: string) {
-        if (typeof type !== "string" || typeof file !== "string") {
-            throw new Error("Validate command need type and file args");
+    public validate(type: string, file: string, extractYear = "2022") {
+        if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
+            throw new Error("Validate command need type, extractYear and file args");
+        }
+
+        if (Number.isNaN(parseInt(extractYear, 10))) {
+            throw new Error("extractYear must be a number");
         }
 
         if (!fs.existsSync(file)) {
@@ -36,7 +40,7 @@ export default class OsirisCliController {
         const fileContent = fs.readFileSync(file);
 
         if (type === "requests") {
-            const requests = OsirisParser.parseRequests(fileContent);
+            const requests = OsirisParser.parseRequests(fileContent, parseInt(extractYear, 10));
 
             console.info(`Check ${requests.length} entities!`);
             requests.forEach((entity) => {
@@ -49,7 +53,7 @@ export default class OsirisCliController {
             console.info(`${COLORS.Reset}Validation done`);
         }
         else if (type === "actions") {
-            const actions = OsirisParser.parseActions(fileContent);
+            const actions = OsirisParser.parseActions(fileContent, parseInt(extractYear, 10));
             console.info(`Check ${actions.length} entities!`);
             actions.forEach((entity) => {
                 const result = osirisService.validAction(entity);
@@ -64,13 +68,19 @@ export default class OsirisCliController {
         }
     }
 
-    public async parse(type: "requests" | "actions" | "evaluations", file: string): Promise<unknown> {
-        if (typeof type != "string" && typeof file != "string") {
-            throw new Error("Parse command need type and file args");
+    public async parse(type: "requests" | "actions" | "evaluations", file: string, extractYear: string): Promise<unknown> {
+        if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
+            throw new Error("Parse command need type, extractYear and file args");
         }
+
+        if (Number.isNaN(parseInt(extractYear, 10))) {
+            throw new Error("extractYear must be a number");
+        }
+
         if (!fs.existsSync(file)) {
             throw new Error(`File not found ${file}`);
         }
+
         const files = findFiles(file);
         const logs: unknown[] = [];
 
@@ -78,30 +88,30 @@ export default class OsirisCliController {
         console.info(`You can read log in ${this.logFileParsePath}`);
 
         return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(type, filePath, logs));
+            return acc.then(() => this._parse(type, filePath, parseInt(extractYear, 10), logs));
         }, Promise.resolve())
             .then(() => fs.writeFileSync(this.logFileParsePath[type], logs.join(''), { flag: "w", encoding: "utf-8" }));
     }
 
-    protected async _parse(type: string, file: string, logs: unknown[]) {
+    protected async _parse(type: string, file: string, year: number, logs: unknown[]) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
 
         if (type === "requests") {
-            return this._parseRequest(fileContent, logs);
+            return this._parseRequest(fileContent, year, logs);
         } else if (type === "actions") {
-            return this._parseAction(fileContent, logs);
+            return this._parseAction(fileContent, year, logs);
         } else if (type === "evaluations") {
-            return this._parseEvaluation(fileContent, logs);
+            return this._parseEvaluation(fileContent, year, logs);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
     }
 
-    private async _parseRequest(contentFile: Buffer, logs: unknown[]) {
-        const requests = OsirisParser.parseRequests(contentFile);
+    private async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
+        const requests = OsirisParser.parseRequests(contentFile, year);
         const results = await requests.reduce(async (acc, osirisRequest, index) => {
             const data = await acc;
             let validation = osirisService.validRequest(osirisRequest);
@@ -135,8 +145,8 @@ export default class OsirisCliController {
         `);
     }
 
-    private async _parseAction(contentFile: Buffer, logs: unknown[]) {
-        const actions = OsirisParser.parseActions(contentFile);
+    private async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
+        const actions = OsirisParser.parseActions(contentFile, year);
         const results = await actions.reduce(async (acc, osirisAction, index) => {
             const data = await acc;
             const validation = osirisService.validAction(osirisAction);
@@ -162,9 +172,9 @@ export default class OsirisCliController {
         `);
     }
 
-    private async _parseEvaluation(contentFile: Buffer, logs: unknown[]) {
+    private async _parseEvaluation(contentFile: Buffer, year: number, logs: unknown[]) {
 
-        const evaluations = OsirisParser.parseEvaluations(contentFile);
+        const evaluations = OsirisParser.parseEvaluations(contentFile, year);
 
         const results = await evaluations.reduce(async (acc, entity, index) => {
             const data = await acc;

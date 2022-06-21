@@ -3,7 +3,7 @@ import OsirisRequestEntity from '../../../../../src/modules/providers/osiris/ent
 
 export default new OsirisRequestEntity(
     { siret: "00000000000001", rna: "W000000001", name: "OSIRIS_ENTITY_FIXTURE"},
-    { osirisId: "OSIRIS_ID", compteAssoId: "LE_COMPTE_ASSO_ID", ej: "", amountAwarded: 0, dateCommission: new Date("2022-01-01")} as IOsirisRequestInformations,
+    { osirisId: "OSIRIS_ID", compteAssoId: "LE_COMPTE_ASSO_ID", ej: "", amountAwarded: 0, dateCommission: new Date("2022-01-01"), extractYear: 2022} as IOsirisRequestInformations,
     {},
     undefined,
     []

@@ -38,4 +38,6 @@ export default interface IOsirisRequestInformations extends IProviderInformation
     versementRealise: number,
     versementCompensationN1: number,
     versementCompensationN: number,
+
+    extractYear: number
 }
