@@ -52,6 +52,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/datasubvention/issues/302)) ([776ff2d](https://github.com/betagouv/datasubvention/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
 
 
+
+### Bug Fixes
+
+* **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/datasubvention/issues/312)) ([293f36d](https://github.com/betagouv/datasubvention/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+* **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/datasubvention/issues/302)) ([776ff2d](https://github.com/betagouv/datasubvention/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+
+
 ### Features
 
 * **front:** add cgu page ([#313](https://github.com/betagouv/datasubvention/issues/313)) ([51ca9c0](https://github.com/betagouv/datasubvention/commit/51ca9c0439689e97bf2114f33708991bfdc10363))
