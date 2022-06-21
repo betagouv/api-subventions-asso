@@ -1,5 +1,5 @@
 <script>
-  import TitleWithData from "../../shared/TitleWithData.svelte";
+  import TitleWithData from "../../components/TitleWithData.svelte";
   export let association;
 
   const creationDate = new Date(association.date_creation).toLocaleDateString();
@@ -37,5 +37,6 @@
     grid-template-rows: auto;
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 24px;
+    margin-bottom: 72px;
   }
 </style>
