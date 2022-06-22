@@ -4,83 +4,55 @@
   import { user as userStore } from "../../store/user.store";
   import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
   import ProviderValueHelper from "../../../src/shared/helpers/ProviderValueHelper";
+  import InfosLegales from "./InfosLegales.svelte";
+  import Tabs from "../../dsfr/Tabs.svelte";
+  import TabContent from "../../dsfr/TabContent.svelte";
 
+  const tabNames = ["Tableau de bord des subventions", "Pièces administratives", "Établissements"];
   export let route;
   const { getApiUrl } = getContext("app");
   let apiUrl = getApiUrl();
   const token = $userStore.token;
   const segments = [{ label: "Accueil", url: "/" }, { label: `Association (${route.split("/")[1]})` }];
 
-  let promise;
-
-  onMount(async () => {
-    promise = getAssociation();
-    console.log({ promise });
-  });
-
   function getAssociation() {
     const path = `${apiUrl}/${route}`;
     return axios.get(path, { headers: { "x-access-token": token } }).then((result) => {
       const association = result.data.association;
-      Object.keys(result.data.association).map((key) => (association[key] = ProviderValueHelper.getValue(association[key])));
+      Object.keys(result.data.association).map(
+        (key) => (association[key] = ProviderValueHelper.getValue(association[key]))
+      );
       return association;
     });
   }
 </script>
 
 <Breadcrumb {segments} />
-{#await promise}
+{#await getAssociation()}
   <p>Fetching association...</p>
 {:then association}
-  <h1>{association?.denomination}</h1>
-  <div class="grid">
-    <div>
-      <div>
-        <span>RNA</span>
-        <p>{association?.rna}</p>
-      </div>
-      <div>
-        <span>SIREN</span>
-        <p>{association?.siren}</p>
-      </div>
-      <div>
-        <span>SIRET du siège</span>
-        <p>{association?.siren + association?.nic_siege}</p>
-      </div>
+  {#if association}
+    <InfosLegales {association} />
+    <div class="tab-asso">
+      <Tabs titles={tabNames}>
+        <svelte:fragment slot="tab-content">
+          {#each tabNames as tab, index}
+            {#if index === 0}
+              <TabContent selected={true} {index}>{tab}</TabContent>
+            {:else}
+              <TabContent selected={false} {index}>{tab}</TabContent>
+            {/if}
+          {/each}
+        </svelte:fragment>
+      </Tabs>
     </div>
-    <div>
-      <span>Objet social</span>
-      <p>{association?.objet_social}</p>
-    </div>
-    <div>
-      <div>
-        <span>Adresse siège</span>
-        <p>{association?.adresse_siege?.code_postal} - {association?.adresse_siege?.commune}</p>
-      </div>
-      <div>
-        <span>Date d'immatriculation</span>
-        <p>{new Date(association?.date_creation).toLocaleDateString()}</p>
-      </div>
-      {#if association?.date_modification}
-        <div>
-          <span>Dernière modification au greffe</span>
-          <p>{new Date(association?.date_modification).toLocaleDateString()}</p>
-        </div>
-      {/if}
-    </div>
-  </div>
+  {/if}
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}
 
 <style>
-  .grid {
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  .grid span {
-    font-weight: 700;
+  .tab-asso :global(.fr-tabs > .fr-tabs__list) {
+    justify-content: center;
   }
 </style>
