@@ -15,31 +15,26 @@
   const token = $userStore.token;
   const segments = [{ label: "Accueil", url: "/" }, { label: `Association (${route.split("/")[1]})` }];
 
-  let promise;
-
-  onMount(async () => {
-    promise = getAssociation();
-    console.log({ promise });
-  });
-
   function getAssociation() {
     const path = `${apiUrl}/${route}`;
     return axios.get(path, { headers: { "x-access-token": token } }).then((result) => {
       const association = result.data.association;
-      Object.keys(result.data.association).map((key) => (association[key] = ProviderValueHelper.getValue(association[key])));
+      Object.keys(result.data.association).map(
+        (key) => (association[key] = ProviderValueHelper.getValue(association[key]))
+      );
       return association;
     });
   }
 </script>
 
 <Breadcrumb {segments} />
-{#await promise}
+{#await getAssociation()}
   <p>Fetching association...</p>
 {:then association}
   {#if association}
     <InfosLegales {association} />
     <div class="tab-asso">
-      <Tabs titles={tabNames} class="tab-asso">
+      <Tabs titles={tabNames}>
         <svelte:fragment slot="tab-content">
           {#each tabNames as tab, index}
             {#if index === 0}

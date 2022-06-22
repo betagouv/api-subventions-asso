@@ -1,11 +1,12 @@
 <script>
+  import { getSiegeAddress } from "../../helpers/associationHelper";
   import TitleWithData from "../../components/TitleWithData.svelte";
+  import DateHelper from "../../../src/shared/helpers/DateHelper";
   export let association;
 
-  const creationDate = new Date(association.date_creation).toLocaleDateString();
-  const updateDate = new Date(association.date_modification).toLocaleDateString();
-  const address = `${association.adresse_siege.numero} ${association.adresse_siege.type_voie} ${association.adresse_siege.voie.toUpperCase()} ${association.adresse_siege.code_postal} ${association.adresse_siege.commune.toUpperCase()}`;
-  console.log(address);
+  const creationDate = DateHelper.formatDate(association.date_creation);
+  const updateDate = DateHelper.formatDate(association.date_modification);
+  const address = getSiegeAddress(association.adresse_siege);
 </script>
 
 <h1>{association.denomination}</h1>
