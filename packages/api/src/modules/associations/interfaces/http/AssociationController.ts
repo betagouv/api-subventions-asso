@@ -1,6 +1,7 @@
 import { DemandeSubvention, GetAssociationResponseDto, GetEtablissementNegativeResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto, Versement } from '@api-subventions-asso/dto';
 import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
 import { AssociationIdentifiers, StructureIdentifiers } from '../../../../@types';
+import Document from '../../../documents/@types/Document';
 
 import associationService from "../../associations.service";
 
@@ -36,6 +37,23 @@ export class AssociationController extends Controller {
         try {
             const result = await associationService.getVersements(identifier) as Versement[];
             return { success: true, versements: result };
+        } catch (e: unknown) {
+            this.setStatus(404);
+            return { success: false, message: (e as Error).message }
+        }
+    }
+
+    /**
+     * Recherche les documents liées à une association
+     * 
+     * @summary Recherche les documents liées à une association
+     * @param identifier Identifiant Siren ou Rna
+     */
+    @Get("/{identifier}/documents")
+    public async getDocuments(identifier: AssociationIdentifiers): Promise<{success: boolean, message?: string, documents?: Document[]}> {
+        try {
+            const result = await associationService.getDocuments(identifier) as Document[];
+            return { success: true, documents: result };
         } catch (e: unknown) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }
