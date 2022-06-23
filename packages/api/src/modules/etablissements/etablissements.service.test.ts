@@ -1,3 +1,4 @@
+import documentsService from "../documents/documents.service";
 import subventiaService from "../providers/subventia/subventia.service";
 import subventionsService from "../subventions/subventions.service";
 import versementsService from "../versements/versements.service";
@@ -27,6 +28,19 @@ describe("EtablissementsService", () => {
             await etablissementService.getSubventions(SIRET);
 
             expect(getDemandesByEtablissementMock).toHaveBeenCalledWith(SIRET);
+        })
+    });
+
+    describe("getDocuments", () => {
+        const getDocumentBySiretMock = jest.spyOn(documentsService, "getDocumentBySiret");
+        const SIRET = '000000000000000';
+
+        it('should call subventions service', async () => {
+            getDocumentBySiretMock.mockImplementation(async () => []);
+
+            await etablissementService.getDocuments(SIRET);
+
+            expect(getDocumentBySiretMock).toHaveBeenCalledWith(SIRET);
         })
     });
 })

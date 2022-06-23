@@ -26,7 +26,12 @@ export class AvisSituationInseeService implements DocumentProvider {
     } | false>(CACHE_TIMES.ONE_DAY);
 
 
-    private async getInseeEtablissements(identifier: StructureIdentifiers) {
+    private async getInseeEtablissements(identifier: StructureIdentifiers) : Promise<{
+        etablissements: {
+            nic: string,
+            etablissementSiege: boolean
+        }[]
+    } | false> {
         const type = IdentifierHelper.getIdentifierType(identifier)?.toLocaleLowerCase();
 
         if (!type) return false;
