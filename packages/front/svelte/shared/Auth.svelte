@@ -11,6 +11,8 @@
       document.location.href = "/";
     }
     userStore.update((oldUser) => Object.assign(oldUser, user));
+    // set header token for each requests
+    axios.defaults.headers.common["x-access-token"] = user.token;
   }
 
   async function getRole(user) {

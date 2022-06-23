@@ -59,8 +59,7 @@ module.exports =  {
 	mode,
 	plugins: [
 		new DefinePlugin({
-			'process.env': JSON.stringify({ DATASUB_URL: process.env.DATASUB_URL }),
-			PRODUCTION: JSON.stringify(true)
+			'process.env': JSON.stringify({ DATASUB_URL: process.env.DATASUB_URL , ENV: process.env.ENV })
 		}),
 		new MiniCssExtractPlugin({
 			filename: '../css/svelte.css'

@@ -1,6 +1,6 @@
 <script>
   import "./global.css";
-  import { DATASUB_URL } from "../src/shared/config";
+  import { DATASUB_URL, ENV } from "../src/shared/config";
   import Auth from "./shared/Auth.svelte";
   import Router from "./shared/Router.svelte";
   import Header from "./shared/Header.svelte";
@@ -14,11 +14,12 @@
   const route = location.href.replace(baseUrl, "");
 
   setContext("app", {
+    getEnv: () => ENV,
     getApiUrl: () => DATASUB_URL,
     getName: () => "Data.Subvention",
     getDescription: () => "Les dernières informations sur les associations et leurs subventions",
     getContact: () => "contact@datasubvention.beta.gouv.fr",
-    getRepo: () => "https://github.com/betagouv/api-subventions-asso"
+    getRepo: () => "https://github.com/betagouv/api-subventions-asso",
   });
 </script>
 
