@@ -1,5 +1,5 @@
 <script>
-  import { getSiegeAddress } from "../association.helper";
+  import { getAddress } from "../association.helper";
   import TitleWithData from "../../../components/TitleWithData.svelte";
   import DateHelper from "../../../../src/shared/helpers/DateHelper";
 
@@ -7,7 +7,7 @@
 
   const creationDate = DateHelper.formatDate(association.date_creation);
   const updateDate = DateHelper.formatDate(association.date_modification);
-  const address = getSiegeAddress(association.adresse_siege);
+  const address = getAddress(association.adresse_siege);
 </script>
 
 <h1>{association.denomination}</h1>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toAssociationView } from "./association.adapter";
+import { toAssociationView, toEtablissementComponent } from "./association.adapter";
 
 export class AssociationService {
     async getAssociation(id) {
@@ -7,7 +7,14 @@ export class AssociationService {
         return axios.get(path).then((result) => {
             return toAssociationView(result.data.association);
         });
-      }
+    }
+
+    async getEtablissements(associationIdentifier) {
+        const path = `/association/${associationIdentifier}/etablissements`;
+        return axios.get(path).then((result) => {
+            return toEtablissementComponent(result.data.etablissements);
+        });
+    }
 }
 
 const associationService = new AssociationService();
