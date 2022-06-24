@@ -1,23 +1,30 @@
 <script>
   import "./global.css";
+  import { ENV } from "../src/shared/config";
   import Auth from "./shared/Auth.svelte";
+  import Router from "./shared/Router.svelte";
   import Header from "./shared/Header.svelte";
   import Footer from "./shared/Footer.svelte";
   import Theme from "./shared/Theme.svelte";
   import { setContext } from "svelte";
 
+  const route = location.pathname;
+
   setContext("app", {
-    getName: () => "Data.subvention",
+    getEnv: () => ENV,
+    getName: () => "Data.Subvention",
     getDescription: () => "Les dernières informations sur les associations et leurs subventions",
     getContact: () => "contact@datasubvention.beta.gouv.fr",
-    getRepo: () => "https://github.com/betagouv/api-subventions-asso"
+    getRepo: () => "https://github.com/betagouv/api-subventions-asso",
   });
 </script>
 
 <Auth>
   <div class="app-container">
     <Header />
-    <main>Hello World</main>
+    <div class="fr-container fr-mb-8w">
+      <Router {route} />
+    </div>
     <Footer />
     <Theme />
   </div>
@@ -35,10 +42,5 @@
       "header"
       "main"
       "footer";
-  }
-
-  .app-container > main {
-    display: flex;
-    margin: auto;
   }
 </style>

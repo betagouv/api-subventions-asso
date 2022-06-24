@@ -1,31 +1,26 @@
 <script>
-  import { onMount } from "svelte";
-  import { user as userStore } from "../../store/auth.store";
-  import apiDatasubService from "../../../build/src/shared/apiDatasub.service";
-  import IdentifierHelper from "../../../build/src/shared/helpers/IdentifierHelper";
+  import associationService from "./association.service.js";
+  import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
+  import InfosLegales from "./components/InfosLegales.svelte";
+  import TabsAsso from "./components/TabsAsso.svelte";
 
-  let identifier = document.getElementById("svelte-association").getAttribute("data-identifier");
+  export let route = "";
+  const routeSegments = route.split("/");
+  const id = routeSegments[routeSegments.length - 1];
 
-  let user;
-  let promise;
+  let promise = associationService.getAssociation(id);
 
-  onMount(async () => {
-    user = $userStore;
-    promise = getUserToken();
-  });
+  const titles = ["Tableau de bord des subventions", "Pièces administratives", "Établissements"];
 
-  async function getUserToken() {
-    if (IdentifierHelper.isRna(identifier)) apiDatasubService.searchAssoByRna(identifier);
-    else apiDatasubService.searchAssoBySiren(identifier, user);
-  }
+  const segments = [{ label: "Accueil", url: "/" }, { label: `Association (${id})` }];
 </script>
 
-<div>
-  {#await promise}
-    <p>...waiting</p>
-  {:then association}
-    <p>Here is your association : {association}</p>
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
-</div>
+<Breadcrumb {segments} />
+{#await promise}
+  <p>Fetching association...</p>
+{:then association}
+  <InfosLegales {association} />
+  <TabsAsso {titles} />
+{:catch error}
+  <p style="color: red">{error.message}</p>
+{/await}
