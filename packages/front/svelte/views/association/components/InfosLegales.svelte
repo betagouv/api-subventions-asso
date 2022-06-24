@@ -1,7 +1,8 @@
 <script>
-  import { getSiegeAddress } from "../../helpers/associationHelper";
-  import TitleWithData from "../../components/TitleWithData.svelte";
-  import DateHelper from "../../../src/shared/helpers/DateHelper";
+  import { getSiegeAddress } from "../association.helper";
+  import TitleWithData from "../../../components/TitleWithData.svelte";
+  import DateHelper from "../../../../src/shared/helpers/DateHelper";
+
   export let association;
 
   const creationDate = DateHelper.formatDate(association.date_creation);

@@ -6,7 +6,11 @@
   async function getUser() {
     let user;
     try {
-      user = (await axios.get("/auth/token")).data;
+      user = (
+        await axios.get("/auth/token", {
+          baseURL: "",
+        })
+      ).data;
     } catch (e) {
       document.location.href = "/";
     }

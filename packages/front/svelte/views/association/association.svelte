@@ -1,16 +1,17 @@
 <script>
-  import associationService from "../../services/association.service.js";
+  import associationService from "./association.service.js";
   import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
-  import InfosLegales from "./InfosLegales.svelte";
-  import Tabs from "../../dsfr/Tabs.svelte";
-  import TabContent from "../../dsfr/TabContent.svelte";
+  import InfosLegales from "./components/InfosLegales.svelte";
+  import TabsAsso from "./components/TabsAsso.svelte";
 
   export let route = "";
-  const id = route.split("/")[1];
+  const routeSegments = route.split("/");
+  const id = routeSegments[routeSegments.length - 1];
 
   let promise = associationService.getAssociation(id);
 
-  const tabNames = ["Tableau de bord des subventions", "Pièces administratives", "Établissements"];
+  const titles = ["Tableau de bord des subventions", "Pièces administratives", "Établissements"];
+
   const segments = [{ label: "Accueil", url: "/" }, { label: `Association (${id})` }];
 </script>
 
@@ -19,25 +20,7 @@
   <p>Fetching association...</p>
 {:then association}
   <InfosLegales {association} />
-  <div class="tab-asso">
-    <Tabs titles={tabNames}>
-      <svelte:fragment slot="tab-content">
-        {#each tabNames as tab, index}
-          {#if index === 0}
-            <TabContent selected={true} {index}>{tab}</TabContent>
-          {:else}
-            <TabContent selected={false} {index}>{tab}</TabContent>
-          {/if}
-        {/each}
-      </svelte:fragment>
-    </Tabs>
-  </div>
+  <TabsAsso {titles} />
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}
-
-<style>
-  .tab-asso :global(.fr-tabs > .fr-tabs__list) {
-    justify-content: center;
-  }
-</style>
