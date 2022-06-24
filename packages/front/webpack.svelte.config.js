@@ -7,7 +7,7 @@ const { DefinePlugin } = require('webpack');
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
-module.exports = {
+module.exports =  {
 	entry: {
 		'build/bundle': ['./svelte/main.js']
 	},
