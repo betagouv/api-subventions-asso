@@ -4,6 +4,7 @@ import express from 'express'
 import path from 'path'
 import bodyParser from 'body-parser'
 import authMiddleware from "./middlewares/auth.middleware"
+import { expressLogger } from './middlewares/LogMiddleware'
 import sessionMiddleware from "./middlewares/session.middleware"
 import {version as designSystemVersion} from '../package-lock.json'
 
@@ -40,6 +41,7 @@ app.use('/~', express.static(path.join(__dirname, '../node_modules')))
 app.use(bodyParser.json());      
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(expressLogger());
 app.use(sessionMiddleware());
 app.use(authMiddleware);
 
