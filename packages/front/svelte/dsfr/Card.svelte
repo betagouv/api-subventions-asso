@@ -3,7 +3,7 @@
     export let title;
     export let url;
     export let img = false;
-    export let target=""
+    export let target = "";
 </script>
 
 

@@ -12,7 +12,7 @@ export class AssociationService {
     async getEtablissements(associationIdentifier) {
         const path = `/association/${associationIdentifier}/etablissements`;
         return axios.get(path).then((result) => {
-            return toEtablissementComponent(result.data.etablissements);
+            return result.data.etablissements.map(etablissement => toEtablissementComponent(etablissement))
         });
     }
 }

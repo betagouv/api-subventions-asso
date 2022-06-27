@@ -4,8 +4,8 @@ export const toAssociationView = association => {
     return flatenProviderValue(association);
 }
 
-export const toEtablissementComponent = etablissements => {
-    return etablissements.map(etablissement => flatenProviderValue(etablissement))
+export const toEtablissementComponent = etablissement => {
+    return flatenProviderValue(etablissement);
 }
 
 export const flatenProviderValue = (providerValueObject) => {
