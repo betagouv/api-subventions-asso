@@ -1,15 +1,25 @@
 <script>
     import Tabs from "../../../dsfr/Tabs.svelte";
     import TabContent from "../../../dsfr/TabContent.svelte";
+    import Etablissements from "./Etablissements.svelte";
 
     export let titles;
+    export let associationIdentifier;
 </script>
 
 <div class="tabs-asso">
     <Tabs {titles}>
         <svelte:fragment slot="tab-content">
             {#each titles as title, index}
-                <TabContent selected={index == 0} {index}>{title}</TabContent>
+                <TabContent selected={index == 0} {index}>
+                    {#if index == 0} 
+                        {title}
+                    {:else if index == 1}
+                        {title}
+                    {:else}
+                        <Etablissements associationIdentifier={associationIdentifier}></Etablissements>
+                    {/if}
+                </TabContent>
             {/each}
         </svelte:fragment>
     </Tabs>
