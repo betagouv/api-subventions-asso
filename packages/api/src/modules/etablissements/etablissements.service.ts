@@ -47,7 +47,10 @@ export class EtablissementsService {
             return acc;
         }, {} as DefaultObject<Etablissement[]>);
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
-        return Object.values(groupBySiret).map(etablissements => FormaterHelper.formatData(etablissements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
+        const etablissements = Object.values(groupBySiret).map(etablissements => FormaterHelper.formatData(etablissements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
+        
+        const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
+        return etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
     }
 
     async getSubventions(siret: Siret) {
@@ -80,6 +83,14 @@ export class EtablissementsService {
 
     private isEtablissementProvider(data: unknown): data is EtablissementProvider {
         return (data as EtablissementProvider).isEtablissementProvider;
+    }
+
+    private scoreEtablisement(etablisement: Etablissement) {
+        let score = 0;
+
+        if (etablisement.ouvert && etablisement.ouvert[0].value) score += 1;
+        if (etablisement.siege && etablisement.siege[0].value) score += 10;
+        return score
     }
 }
 

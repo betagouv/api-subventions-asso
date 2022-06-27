@@ -1,6 +1,7 @@
 <script>
   import associationService from "./association.service.js";
   import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
+  import Spinner from "../../components/Spinner.svelte";
   import InfosLegales from "./components/InfosLegales.svelte";
   import TabsAsso from "./components/TabsAsso.svelte";
 
@@ -17,10 +18,10 @@
 
 <Breadcrumb {segments} />
 {#await promise}
-  <p>Fetching association...</p>
+  <Spinner description="Chargement de l'association {id} en cours ..."/>
 {:then association}
   <InfosLegales {association} />
-  <TabsAsso {titles} />
+  <TabsAsso {titles} associationIdentifier={id} />
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}
