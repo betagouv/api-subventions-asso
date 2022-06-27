@@ -10,7 +10,8 @@
         <a href="/" title="Retour à l’accueil">
           <p class="fr-logo">
             République
-            <br />française
+            <br />
+            française
           </p>
         </a>
       </div>
@@ -24,7 +25,7 @@
         </p>
         <ul class="fr-footer__content-list">
           <li class="fr-footer__content-item">
-            <a class="fr-footer__content-link" title="Contactez-nous" href="/contact"> Contactez-nous </a>
+            <a class="fr-footer__content-link" title="Contactez-nous" href="/contact">Contactez-nous</a>
           </li>
           <li class="fr-footer__content-item">
             <a class="fr-footer__content-link" href="https://www.numerique.gouv.fr/">numerique.gouv.fr</a>
@@ -53,16 +54,18 @@
           <button
             class="fr-footer__bottom-link fr-fi-sun-fill-line fr-link--icon-left"
             aria-controls="fr-theme-modal"
-            data-fr-opened="false">Paramètres d'affichage</button
-          >
+            data-fr-opened="false">
+            Paramètres d'affichage
+          </button>
         </li>
       </ul>
       <div class="fr-footer__bottom-copy">
         <p>
           Sauf mention contraire, tous les contenus de ce site sont sous <a
             href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-            target="_blank">licence etalab-2.0</a
-          >
+            target="_blank">
+            licence etalab-2.0
+          </a>
         </p>
       </div>
     </div>
