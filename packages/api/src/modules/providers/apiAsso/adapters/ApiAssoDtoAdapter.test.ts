@@ -1,5 +1,5 @@
 import ApiAssoDtoAdapter from "./ApiAssoDtoAdapter";
-import StructureDto, { StructureRepresentantLegalDto } from "../dto/StructureDto";
+import { StructureRepresentantLegalDto } from "../dto/StructureDto";
 import { fixtureAsso, fixtureEtablissements, fixtureRepresentantLegal, fixtureRib } from "../__fixtures__/ApiAssoStructureFixture";
 
 describe("ApiAssoDtoAdapter", () => {

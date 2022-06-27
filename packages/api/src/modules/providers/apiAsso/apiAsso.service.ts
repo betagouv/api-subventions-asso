@@ -13,7 +13,7 @@ import Document from "../../documents/@types/Document";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
-import StructureDto from "./dto/StructureDto";
+import StructureDto, { StructureRnaDocumentDto } from "./dto/StructureDto";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = { 
@@ -59,8 +59,42 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             etablissements = structure.etablissement.map(e => ApiAssoDtoAdapter.toEtablissement(e, structure.rib, structure.representant_legal, structure.identite.date_modif_siren));
         }
 
-        const documents = ApiAssoDtoAdapter.toDocuments(structure);
-        
+        const documents: Document[] = [];
+
+        if (structure.document_rna.length) {
+            const acceptedType = ["MD", "LDC", 'PV', "STC"];
+
+            const sortRnaDocuments = (a: StructureRnaDocumentDto, b: StructureRnaDocumentDto) => {
+                return parseFloat(`${a.annee}.${a.time}`) - parseFloat(`${b.annee}.${b.time}`); 
+            }
+
+            const filtredRnaDocument = acceptedType.map(type => (
+                structure.document_rna
+                    .filter(document => document["sous-type"].toLocaleUpperCase() === type)
+                    .sort(sortRnaDocuments)[0]
+            )).filter((a) => a);
+            
+            documents.push(...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)));
+        }
+
+        if (structure.document_dac.length) {
+            const acceptedType = ["RFA", "BPA", "RCA", "RAR", "CAP"];
+            const currentStats = structure.document_dac.filter(document => document.meta.etat === "courant");
+
+            const filtredDacDocument = acceptedType.map(type => (
+                currentStats
+                    .filter(document => document.meta.type.toLocaleUpperCase() === type)
+                    .sort((a,b) => new Date(a.time_depot).getTime() - new Date(b.time_depot).getTime())[0]
+            )).filter((a) => a);
+
+            documents.push(...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
+
+            const ribs = currentStats
+                .filter(document => document.meta.type.toLocaleUpperCase() === "RIB" && document.meta.id_siret === structure.identite.id_siret_siege);
+
+            documents.push(...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
+        }
+
         const result =  {
             associations: ApiAssoDtoAdapter.toAssociation(structure),
             etablissements,

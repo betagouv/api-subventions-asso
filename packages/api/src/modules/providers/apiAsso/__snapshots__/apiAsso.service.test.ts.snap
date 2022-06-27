@@ -24,17 +24,22 @@ Object {
       "document_dac": Array [
         Object {
           "meta": Object {
+            "etat": "courant",
             "id_siret": "50922194100000",
-            "type": "dacType",
+            "type": "BPA",
           },
           "nom": "nom fake",
+          "time_depot": "2021-06-18 12:02:53",
           "url": "/fake/url",
         },
       ],
       "document_rna": Array [
         Object {
+          "annee": 2021,
           "id": "ididididid",
-          "type": "fake-type",
+          "sous-type": "PV",
+          "time": 1622557171,
+          "type": "PV",
           "url": "/fake/url",
         },
       ],
@@ -78,19 +83,19 @@ Object {
     Object {
       "__meta__": Object {},
       "nom": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
+        "last_update": 2021-01-19T18:42:37.171Z,
         "provider": "BASE RNA <Via API ASSO>",
         "type": "string",
         "value": "ididididid",
       },
       "type": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
+        "last_update": 2021-01-19T18:42:37.171Z,
         "provider": "BASE RNA <Via API ASSO>",
         "type": "string",
-        "value": "fake-type",
+        "value": "PV",
       },
       "url": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
+        "last_update": 2021-01-19T18:42:37.171Z,
         "provider": "BASE RNA <Via API ASSO>",
         "type": "string",
         "value": "/fake/url",
@@ -101,45 +106,22 @@ Object {
         "siret": "50922194100000",
       },
       "nom": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
-        "provider": "BASE RNA <Via API ASSO>",
+        "last_update": 2021-06-18T10:02:53.000Z,
+        "provider": "Document déposer dans le comtpe asso <Via API ASSO>",
         "type": "string",
         "value": "nom fake",
       },
       "type": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
-        "provider": "BASE RNA <Via API ASSO>",
+        "last_update": 2021-06-18T10:02:53.000Z,
+        "provider": "Document déposer dans le comtpe asso <Via API ASSO>",
         "type": "string",
-        "value": "dacType",
+        "value": "BPA",
       },
       "url": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
-        "provider": "BASE RNA <Via API ASSO>",
+        "last_update": 2021-06-18T10:02:53.000Z,
+        "provider": "Document déposer dans le comtpe asso <Via API ASSO>",
         "type": "string",
         "value": "/fake/url",
-      },
-    },
-    Object {
-      "__meta__": Object {
-        "siret": "50922194100000",
-      },
-      "nom": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
-        "provider": "BASE RNA <Via API ASSO>",
-        "type": "string",
-        "value": "TEST 2",
-      },
-      "type": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
-        "provider": "BASE RNA <Via API ASSO>",
-        "type": "string",
-        "value": "RIB",
-      },
-      "url": Object {
-        "last_update": 1906-07-15T00:00:00.000Z,
-        "provider": "BASE RNA <Via API ASSO>",
-        "type": "string",
-        "value": "fake/path/to/rib",
       },
     },
   ],

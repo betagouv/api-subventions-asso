@@ -6,6 +6,7 @@ import StructureDto, { StructureDacDocumentDto, StructureEtablissementDto, Struc
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "BASE RNA <Via API ASSO>";
+    static providerNameLcaDocument = "Document déposer dans le comtpe asso <Via API ASSO>";
     static providerNameSiren = "BASE SIREN <Via API ASSO>";
 
     static toAssociation(structure: StructureDto): Association[] {
@@ -111,8 +112,8 @@ export default class ApiAssoDtoAdapter {
         }
 
         const dataDate = toDate(structure.identite.date_modif_rna);
-        const rnaDocuments = structure.document_rna?.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document, dataDate)) || [];
-        const dacDocuments = structure.document_dac?.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document, dataDate)) || [];
+        const rnaDocuments = structure.document_rna?.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)) || [];
+        const dacDocuments = structure.document_dac?.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)) || [];
         const ribDocuments = structure.rib?.map(rib => ApiAssoDtoAdapter.ribDocumentToDocument(rib, dataDate)) || [];
 
         return [
@@ -122,7 +123,10 @@ export default class ApiAssoDtoAdapter {
         ]
     }
 
-    private static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto, date: Date): Document {
+    static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): Document {
+        const date = new Date(rnaDocument.time);
+        date.setFullYear(rnaDocument.annee);
+
         const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
 
         return {
@@ -133,8 +137,8 @@ export default class ApiAssoDtoAdapter {
         }
     }
 
-    private static dacDocumentToDocument(dacDocument: StructureDacDocumentDto, date: Date): Document {
-        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
+    static dacDocumentToDocument(dacDocument: StructureDacDocumentDto): Document {
+        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameLcaDocument, new Date(dacDocument.time_depot));
 
         return {
             nom: toRnaPv(dacDocument.nom),
@@ -146,7 +150,7 @@ export default class ApiAssoDtoAdapter {
         }
     }
 
-    private static ribDocumentToDocument(rib: StructureRibDto, date: Date): Document | null {
+    static ribDocumentToDocument(rib: StructureRibDto, date: Date): Document | null {
         if (!rib.url) return null;
 
         const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);

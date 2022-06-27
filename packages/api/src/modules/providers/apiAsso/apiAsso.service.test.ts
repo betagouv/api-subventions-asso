@@ -360,8 +360,8 @@ describe("ApiAssoService", () => {
         })
 
         describe("getDocumentsBySiret", () => {
-            it('should be return 2 document', async () => {
-                const expected = 2;
+            it('should be return one document', async () => {
+                const expected = 1;
                 const actual = await apiAssoService.getDocumentsBySiret("50922194100000");
     
                 expect(actual).toHaveLength(expected);
@@ -379,8 +379,8 @@ describe("ApiAssoService", () => {
 
 
         describe("getDocumentsBySiren", () => {
-            it('should be return 3 documents', async () => {
-                const expected = 3;
+            it('should be return 2 documents', async () => {
+                const expected = 2;
                 const actual = await apiAssoService.getDocumentsBySiren("509221941");
     
                 expect(actual).toHaveLength(expected);
@@ -397,8 +397,8 @@ describe("ApiAssoService", () => {
         })
 
         describe("getDocumentsByRna", () => {
-            it('should be return 3 documents', async () => {
-                const expected = 3;
+            it('should be return 2 documents', async () => {
+                const expected = 2;
                 const actual = await apiAssoService.getDocumentsByRna("W00000000");
     
                 expect(actual).toHaveLength(expected);
