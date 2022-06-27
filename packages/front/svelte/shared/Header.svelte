@@ -29,7 +29,8 @@
                 data-fr-opened="false"
                 aria-controls="modal-menu"
                 aria-haspopup="menu"
-                title="Menu">
+                title="Menu"
+              >
                 Menu
               </button>
             </div>
@@ -58,18 +59,21 @@
                   href="https://github.com/betagouv/api-subventions-asso"
                   title="code source - nouvelle fenêtre"
                   target="_blank"
-                  rel="noopener">Code source</a>
+                  rel="noopener">Code source</a
+                >
               </li>
               <li>
                 <button
                   class="fr-link fr-fi-sun-fill-line fr-link--icon-left"
                   aria-controls="fr-theme-modal"
-                  data-fr-opened="false">Paramètres d'affichage</button>
+                  data-fr-opened="false">Paramètres d'affichage</button
+                >
               </li>
               {#if user?.roles.includes("admin")}
                 <li>
                   <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin" rel="noopener"
-                    >Admin</a>
+                    >Admin</a
+                  >
                 </li>
               {/if}
               {#if user?.token}
@@ -78,7 +82,8 @@
                     class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
                     href="/auth/logout"
                     title="se déconnecter"
-                    rel="noopener">Se déconnecter</a>
+                    rel="noopener">Se déconnecter</a
+                  >
                 </li>
               {/if}
             </ul>
@@ -108,7 +113,8 @@
           title="Contactez-nous"
           href="mailto:{contact}?subject=Javascript désactivé&body=Bonjour, %0D%0A %0D%0A Javascript est désactivé sur mon poste. Comment puis-je utiliser votre application ?&html=true"
           target="_blank"
-          rel="noopener noreferrer">
+          rel="noopener noreferrer"
+        >
           nous contacter.
         </a>
       </p>

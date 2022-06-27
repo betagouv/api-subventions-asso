@@ -15,7 +15,9 @@
               <div id="fr-display" class="fr-form-group fr-display">
                 <div class="fr-form-group">
                   <fieldset class="fr-fieldset">
-                    <legend class="fr-fieldset__legend fr-text--regular" id="-legend"> Choisissez un thème pour personnaliser l’apparence du site. </legend>
+                    <legend class="fr-fieldset__legend fr-text--regular" id="-legend">
+                      Choisissez un thème pour personnaliser l’apparence du site.
+                    </legend>
                     <div class="fr-fieldset__content">
                       <div class="fr-radio-group fr-radio-rich">
                         <input value="light" type="radio" id="fr-radios-theme-light" name="fr-radios-theme" />

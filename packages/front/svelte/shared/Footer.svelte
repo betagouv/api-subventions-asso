@@ -50,11 +50,20 @@
           <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
         </li>
         <li class="fr-footer__bottom-item">
-          <button class="fr-footer__bottom-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal" data-fr-opened="false">Paramètres d'affichage</button>
+          <button
+            class="fr-footer__bottom-link fr-fi-sun-fill-line fr-link--icon-left"
+            aria-controls="fr-theme-modal"
+            data-fr-opened="false">Paramètres d'affichage</button
+          >
         </li>
       </ul>
       <div class="fr-footer__bottom-copy">
-        <p>Sauf mention contraire, tous les contenus de ce site sont sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank">licence etalab-2.0</a></p>
+        <p>
+          Sauf mention contraire, tous les contenus de ce site sont sous <a
+            href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
+            target="_blank">licence etalab-2.0</a
+          >
+        </p>
       </div>
     </div>
   </div>

@@ -67,6 +67,8 @@
     "eslint-plugin-import": "^2.25.4",
     "mini-css-extract-plugin": "^2.6.0",
     "nodemon": "^2.0.6",
+    "prettier": "^2.7.1",
+    "prettier-plugin-svelte": "^2.7.0",
     "rollup": "^2.75.6",
     "serve": "^13.0.2",
     "svelte": "^3.48.0",
