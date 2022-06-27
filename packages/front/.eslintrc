@@ -28,5 +28,5 @@
       "svelte3/typescript": true
     },
     "plugins": ["svelte3", "@typescript-eslint"],
-    "ignorePatterns": ["node_modules", "webpack.*"]
+    "ignorePatterns": ["node_modules", "webpack.*", "views/index.js"]
   }
