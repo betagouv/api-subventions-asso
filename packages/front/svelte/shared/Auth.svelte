@@ -8,20 +8,20 @@
     try {
       user = (
         await axios.get("/auth/token", {
-          baseURL: "",
+          baseURL: ""
         })
       ).data;
     } catch (e) {
       document.location.href = "/";
     }
-    userStore.update((oldUser) => Object.assign(oldUser, user));
+    userStore.update(oldUser => Object.assign(oldUser, user));
     // set header token for each requests
     axios.defaults.headers.common["x-access-token"] = user.token;
   }
 
   async function getRole(user) {
     const roles = (await UserService.getRoles(user)).data;
-    userStore.update((oldUser) => Object.assign(oldUser, { roles }));
+    userStore.update(oldUser => Object.assign(oldUser, { roles }));
     return roles;
   }
 

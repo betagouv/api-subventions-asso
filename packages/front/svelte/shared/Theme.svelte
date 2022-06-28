@@ -15,11 +15,13 @@
               <div id="fr-display" class="fr-form-group fr-display">
                 <div class="fr-form-group">
                   <fieldset class="fr-fieldset">
-                    <legend class="fr-fieldset__legend fr-text--regular" id="-legend"> Choisissez un thème pour personnaliser l’apparence du site. </legend>
+                    <legend class="fr-fieldset__legend fr-text--regular" id="-legend">
+                      Choisissez un thème pour personnaliser l’apparence du site.
+                    </legend>
                     <div class="fr-fieldset__content">
                       <div class="fr-radio-group fr-radio-rich">
                         <input value="light" type="radio" id="fr-radios-theme-light" name="fr-radios-theme" />
-                        <label class="fr-label" for="fr-radios-theme-light">Thème clair </label>
+                        <label class="fr-label" for="fr-radios-theme-light">Thème clair</label>
                         <div class="fr-radio-rich__img" data-fr-inject-svg>
                           <img src="/~/@gouvfr/dsfr/dist/artwork/light.svg" alt="" />
                           <!-- L’alternative de l’image (attribut alt) doit rester vide car l’image est illustrative et ne doit pas être restituée aux technologies d’assistance -->
@@ -27,7 +29,7 @@
                       </div>
                       <div class="fr-radio-group fr-radio-rich">
                         <input value="dark" type="radio" id="fr-radios-theme-dark" name="fr-radios-theme" />
-                        <label class="fr-label" for="fr-radios-theme-dark">Thème sombre </label>
+                        <label class="fr-label" for="fr-radios-theme-dark">Thème sombre</label>
                         <div class="fr-radio-rich__img" data-fr-inject-svg>
                           <img src="/~/@gouvfr/dsfr/dist/artwork/dark.svg" alt="" />
                           <!-- L’alternative de l’image (attribut alt) doit rester vide car l’image est illustrative et ne doit pas être restituée aux technologies d’assistance -->
@@ -35,8 +37,8 @@
                       </div>
                       <div class="fr-radio-group fr-radio-rich">
                         <input value="system" type="radio" id="fr-radios-theme-system" name="fr-radios-theme" />
-                        <label class="fr-label" for="fr-radios-theme-system"
-                          >Système
+                        <label class="fr-label" for="fr-radios-theme-system">
+                          Système
                           <span class="fr-hint-text">Utilise les paramètres système.</span>
                         </label>
                         <div class="fr-radio-rich__img" data-fr-inject-svg>

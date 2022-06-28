@@ -20,7 +20,8 @@
             <div class="fr-header__logo">
               <p class="fr-logo">
                 République
-                <br />Française
+                <br />
+                Française
               </p>
             </div>
             <div class="fr-header__navbar">
@@ -58,18 +59,23 @@
                   href="https://github.com/betagouv/api-subventions-asso"
                   title="code source - nouvelle fenêtre"
                   target="_blank"
-                  rel="noopener">Code source</a>
+                  rel="noopener">
+                  Code source
+                </a>
               </li>
               <li>
                 <button
                   class="fr-link fr-fi-sun-fill-line fr-link--icon-left"
                   aria-controls="fr-theme-modal"
-                  data-fr-opened="false">Paramètres d'affichage</button>
+                  data-fr-opened="false">
+                  Paramètres d'affichage
+                </button>
               </li>
               {#if user?.roles.includes("admin")}
                 <li>
-                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin" rel="noopener"
-                    >Admin</a>
+                  <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin" rel="noopener">
+                    Admin
+                  </a>
                 </li>
               {/if}
               {#if user?.token}
@@ -78,7 +84,9 @@
                     class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
                     href="/auth/logout"
                     title="se déconnecter"
-                    rel="noopener">Se déconnecter</a>
+                    rel="noopener">
+                    Se déconnecter
+                  </a>
                 </li>
               {/if}
             </ul>
@@ -103,7 +111,8 @@
 
       <p class="fr-callout__text">
         JavaScript est désactivé. Pour utiliser l'application, vous devez le réactiver.
-        <br /> Vous pouvez également
+        <br />
+        Vous pouvez également
         <a
           title="Contactez-nous"
           href="mailto:{contact}?subject=Javascript désactivé&body=Bonjour, %0D%0A %0D%0A Javascript est désactivé sur mon poste. Comment puis-je utiliser votre application ?&html=true"
