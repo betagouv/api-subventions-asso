@@ -10,6 +10,7 @@ export default class extends Controller {
 
     const stats = [notActived, actived, admin];
 
+    // eslint-disable-next-line no-undef
     var myChart = new Chart(this.canvasTarget, {
       type: "doughnut",
       option: {
@@ -37,7 +38,9 @@ export default class extends Controller {
       }
 
       return (
+        // eslint-disable-next-line no-undef
         stringSimilarity.compareTwoStrings(value, elementB.children[0].textContent.toLowerCase()) -
+        // eslint-disable-next-line no-undef
         stringSimilarity.compareTwoStrings(value, elementA.children[0].textContent.toLowerCase())
       );
     });
