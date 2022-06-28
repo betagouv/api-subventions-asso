@@ -11,5 +11,7 @@
     tabindex={selected ? "0" : "-1"}
     role="tab"
     aria-selected={selected ? true : false}
-    aria-controls={`tabpanel-${index}-panel`}>{title}</button>
+    aria-controls={`tabpanel-${index}-panel`}>
+    {title}
+  </button>
 </li>
