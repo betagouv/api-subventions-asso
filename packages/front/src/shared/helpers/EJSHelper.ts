@@ -24,7 +24,7 @@ export default {
         formatDate: DateHelper.formatDate,
         formatDateWithHour: DateHelper.formatDateWithHour
     },
-    capitalizeFirstLetter: (str: string)=> str[0].toUpperCase() + str.slice(1).toLowerCase(),
+    capitalizeFirstLetter: (str: string | undefined)=> str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str,
     amount: {
         providerValueToEuro: AmountHelper.providerValueToEuro,
         numberToEuro: AmountHelper.numberToEuro,
