@@ -2,7 +2,7 @@ import { ProviderValues, Rna, Siren, Siret , Association, Etablissement } from "
 import axios from "axios";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { AssociationIdentifiers } from "../../../@types";
-import { API_ASSO_URL } from "../../../configurations/apis.conf";
+import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
@@ -31,7 +31,8 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         try {
             const res = await axios.get<T>(`${API_ASSO_URL}/${route}`, {
                 headers: {
-                    'Accept': "application/json"
+                    'Accept': "application/json",
+                    "X-Gravitee-Api-Key": API_ASSO_TOKEN as string
                 }
             });
 
