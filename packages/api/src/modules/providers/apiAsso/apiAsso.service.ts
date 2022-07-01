@@ -78,7 +78,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         }
 
         if (structure.document_dac.length) {
-            const acceptedType = ["RFA", "BPA", "RCA", "RAR", "CAP"];
+            const acceptedType = ["RFA", "BPA", "RCA", "RAR", "CAP", "Jeunesse et Education Populaire (JEP)", "Education nationale", "Formation"];
             const currentStats = structure.document_dac.filter(document => document.meta.etat === "courant");
 
             const filtredDacDocument = acceptedType.map(type => (
@@ -90,7 +90,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             documents.push(...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
 
             const ribs = currentStats
-                .filter(document => document.meta.type.toLocaleUpperCase() === "RIB" && document.meta.id_siret === structure.identite.id_siret_siege);
+                .filter(document => document.meta.type.toLocaleUpperCase() === "RIB");
 
             documents.push(...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
         }
@@ -188,23 +188,49 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         if (!result) return null;
 
-        return result.documents;
+        const nicSiege = result.associations.find(a => a.nic_siege && a.nic_siege[0]?.value)?.nic_siege;
+
+        if (!nicSiege || !nicSiege.length) return result.documents; // Siege not found so we return all documents
+
+        const siretSiege = siren + nicSiege[0].value;
+
+        return result.documents.filter(document => {
+            if (document.type.value != "RIB") return true;
+
+            if (document.__meta__.siret === siretSiege) return true;
+            return false;
+        });
     }
     async getDocumentsBySiret(siret: Siret) {
         const siren = siretToSiren(siret);
     
-        const result = await this.getDocumentsBySiren(siren);
+        const result = await this.findFullScopeAssociation(siren);
 
         if (!result) return null;
 
-        return result.filter(e => e.__meta__.siret === siret);
+        return result.documents.filter(document => {
+            if (document.__meta__.siret === siret) return true;
+            return false;
+        });
     }
     async getDocumentsByRna(rna: Rna) {
         const result = await this.findFullScopeAssociation(rna);
 
         if (!result) return null;
 
-        return result.documents;
+        const nicSiege = result.associations.find(a => a.nic_siege && a.nic_siege[0]?.value)?.nic_siege;
+        const siren = result.associations.find(a => a.siren && a.siren[0]?.value)?.siren;
+
+        if (!nicSiege || !nicSiege.length || !siren || !siren.length) return result.documents; // Siege not found so we return all documents
+
+        const siretSiege = siren[0].value + nicSiege[0].value;
+
+        return result.documents.filter(document => {
+            if (document.type.value != "RIB") return true;
+
+            if (document.__meta__.siret === siretSiege) return true;
+            return false;
+        });
     }
 }
 

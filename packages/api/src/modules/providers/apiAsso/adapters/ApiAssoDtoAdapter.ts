@@ -124,8 +124,9 @@ export default class ApiAssoDtoAdapter {
     }
 
     static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): Document {
-        const date = new Date(rnaDocument.time);
-        date.setFullYear(rnaDocument.annee);
+        const date = new Date(Date.UTC(rnaDocument.annee, 0));
+
+        date.setTime(date.getTime() + rnaDocument.time);
 
         const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
 
@@ -138,12 +139,19 @@ export default class ApiAssoDtoAdapter {
     }
 
     static dacDocumentToDocument(dacDocument: StructureDacDocumentDto): Document {
-        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameLcaDocument, new Date(dacDocument.time_depot));
+        const isoDate = new Date(dacDocument.time_depot);
+        const toLCAPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameLcaDocument, new Date(Date.UTC(
+            isoDate.getFullYear(),
+            isoDate.getMonth(),
+            isoDate.getDate(),
+            isoDate.getHours(),
+            isoDate.getMinutes(),
+        )));
 
         return {
-            nom: toRnaPv(dacDocument.nom),
-            type: toRnaPv(dacDocument.meta.type),
-            url: toRnaPv(dacDocument.url),
+            nom: toLCAPv(dacDocument.nom),
+            type: toLCAPv(dacDocument.meta.type),
+            url: toLCAPv(dacDocument.url),
             __meta__: {
                 siret: dacDocument.meta.id_siret
             }
