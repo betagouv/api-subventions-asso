@@ -18,6 +18,8 @@ import { NotFoundError } from '../../shared/errors/httpErrors/NotFoundError';
 import { BadRequestError } from '../../shared/errors/httpErrors/BadRequestError';
 import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper';
 import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
+import documentsService from '../documents/documents.service';
+import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
 
 export class AssociationsService {
 
@@ -65,6 +67,14 @@ export class AssociationsService {
 
     async getVersements(identifier: AssociationIdentifiers) {
         return await versementsService.getVersementsByAssociation(identifier);
+    }
+
+    async getDocuments(identifier: AssociationIdentifiers) {
+        const type = IdentifierHelper.getIdentifierType(identifier);
+        if (type === StructureIdentifiersEnum.rna) return documentsService.getDocumentByRna(identifier);
+        if (type === StructureIdentifiersEnum.siren) return documentsService.getDocumentBySiren(identifier);
+
+        throw new AssociationIdentifierError();
     }
 
     async getEtablissements(identifier: AssociationIdentifiers) {

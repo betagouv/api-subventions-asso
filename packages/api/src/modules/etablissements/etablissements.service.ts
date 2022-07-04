@@ -12,6 +12,7 @@ import subventionsService from '../subventions/subventions.service';
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from '../../shared/Validators';
 import versementsService from "../versements/versements.service";
+import documentsService from "../documents/documents.service";
 
 export class EtablissementsService {
     
@@ -55,6 +56,10 @@ export class EtablissementsService {
 
     async getVersements(siret: Siret) {
         return await versementsService.getVersementsBySiret(siret);
+    }
+
+    async getDocuments(siret: Siret) {
+        return await documentsService.getDocumentBySiret(siret);
     }
 
     private async aggregate(id: Siren | Siret) {

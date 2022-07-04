@@ -6,6 +6,7 @@ import chorusService from "./chorus/chorus.service"
 import gisproService from "./gispro/gispro.service"
 import apiAssoService from "./apiAsso/apiAsso.service"
 import dataGouvService from './datagouv/datagouv.service'
+import avisSituationInseeService from './avisSituationInsee/avisSituationInsee.service'
 
 export default {
     dataEntrepriseService,
@@ -15,5 +16,6 @@ export default {
     chorusService,
     gisproService,
     apiAssoService,
-    dataGouvService
+    dataGouvService,
+    avisSituationInseeService,
 }

@@ -59,6 +59,32 @@ describe("AssociationController", () => {
         })
     })
 
+    describe("getDocuments", () => {
+        const getDocumentsSpy = jest.spyOn(associationsService, "getDocuments");
+        it("should call service with args", async () => {
+            getDocumentsSpy.mockImplementationOnce(jest.fn());
+            await controller.getDocuments(IDENTIFIER);
+            expect(getDocumentsSpy).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("should return a success object", async () => {
+            // @ts-expect-error: mock
+            getDocumentsSpy.mockImplementationOnce(() => documents)
+            const documents = [{}];
+            const expected = { success: true, documents }
+            const actual = await controller.getDocuments(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+
+        it("should return an error object", async () => {
+            const ERROR_MESSAGE = "Error";
+            getDocumentsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
+            const expected = { success: false, message: ERROR_MESSAGE }
+            const actual = await controller.getDocuments(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+    })
+
     describe("getAssociation", () => {
         const getAssociationSpy = jest.spyOn(associationsService, "getAssociation");
         it("should call service with args", async () => {

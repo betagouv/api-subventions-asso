@@ -15,6 +15,10 @@ Object {
       "description": "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
       "name": "API ASSO",
     },
+    Object {
+      "description": "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
+      "name": "Avis de Situation Insee",
+    },
   ],
   "raw": Array [
     Object {
