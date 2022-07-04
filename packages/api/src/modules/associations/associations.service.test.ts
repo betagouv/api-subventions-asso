@@ -11,6 +11,9 @@ import etablissementService from '../etablissements/etablissements.service';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
 import versementsService from '../versements/versements.service';
+import documentsService from '../documents/documents.service';
+import Document from '../documents/@types/Document';
+import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
 
 jest.mock('../providers/index');
 
@@ -27,6 +30,8 @@ describe("AssociationService", () => {
     const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
     const getDemandesByAssociationMock = jest.spyOn(subventionService, "getDemandesByAssociation");
     const getVersementsByAssociationMock = jest.spyOn(versementsService, "getVersementsByAssociation");
+    const getDocumentBySirenMock = jest.spyOn(documentsService, "getDocumentBySiren");
+    const getDocumentByRnaMock = jest.spyOn(documentsService, "getDocumentByRna");
     const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
     const getEtablissementMock = jest.spyOn(etablissementService, "getEtablissement");
     const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
@@ -200,6 +205,29 @@ describe("AssociationService", () => {
             getVersementsByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as Versement[]));
             await associationsService.getVersements(SIREN);
             expect(getVersementsByAssociationMock).toHaveBeenCalledWith(SIREN);
+        })
+    })
+
+
+    describe("getDocuments()", () => {
+        it("should call documentService.getDocumentBySiren()", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+            getDocumentBySirenMock.mockImplementationOnce(() => Promise.resolve([{}] as Document[]));
+            await associationsService.getDocuments(SIREN);
+            expect(getDocumentBySirenMock).toHaveBeenCalledWith(SIREN);
+        })
+
+        it("should call documentService.getDocumentByRna()", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            getDocumentByRnaMock.mockImplementationOnce(() => Promise.resolve([{}] as Document[]));
+            await associationsService.getDocuments(RNA);
+            expect(getDocumentByRnaMock).toHaveBeenCalledWith(RNA);
+        })
+
+        it("should throw error because id is not rna or siren", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => null);
+           
+            expect(() => associationsService.getDocuments(RNA)).rejects.toThrowError(AssociationIdentifierError);
         })
     })
 
