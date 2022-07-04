@@ -18,6 +18,8 @@ export class AvisSituationInseeService implements DocumentProvider {
         description: "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation."
     }
 
+    static API_URL = "https://api.avis-situation-sirene.insee.fr/identification"
+
     private requestCache = new CacheData<{
         etablissements: {
             nic: string,
@@ -44,7 +46,7 @@ export class AvisSituationInseeService implements DocumentProvider {
                     nic: string,
                     etablissementSiege: boolean
                 }[]
-            }>(`https://api.avis-situation-sirene.insee.fr/identification/${type}/${identifier}`);
+            }>(`${AvisSituationInseeService.API_URL}/${type}/${identifier}`);
 
             if (result.status == 200) {
                 this.requestCache.add(identifier, result.data);
@@ -71,7 +73,7 @@ export class AvisSituationInseeService implements DocumentProvider {
         return [
             {
                 type: ProviderValueAdapter.toProviderValue('Avis Situation Insee', this.provider.name, new Date()),
-                url: ProviderValueAdapter.toProviderValue(`https://api.avis-situation-sirene.insee.fr/identification/pdf/${siren}${nic}`, this.provider.name, new Date()),
+                url: ProviderValueAdapter.toProviderValue(`${AvisSituationInseeService.API_URL}/pdf/${siren}${nic}`, this.provider.name, new Date()),
                 nom: ProviderValueAdapter.toProviderValue(`Avis Situation Insee (${siren}${nic})`, this.provider.name, new Date()),
                 __meta__: {
                     siret: siren+nic
@@ -87,7 +89,7 @@ export class AvisSituationInseeService implements DocumentProvider {
         return [
             {
                 type: ProviderValueAdapter.toProviderValue('Avis Situation Insee', this.provider.name, new Date()),
-                url: ProviderValueAdapter.toProviderValue('https://api.avis-situation-sirene.insee.fr/identification/pdf/' + siret, this.provider.name, new Date()),
+                url: ProviderValueAdapter.toProviderValue(`${AvisSituationInseeService.API_URL}/pdf/${siret}`, this.provider.name, new Date()),
                 nom: ProviderValueAdapter.toProviderValue(`Avis Situation Insee (${siret})`, this.provider.name, new Date()),
                 __meta__: {
                     siret
