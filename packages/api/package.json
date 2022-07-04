@@ -51,6 +51,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "qs": "^6.11.0",
     "rand-token": "^1.0.1",
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.3.0",
