@@ -29,7 +29,7 @@
                     title={document.label}
                     url="{document.url}" 
                     size="6"
-                    footer="Déposer le {document.date.toLocaleDateString()}"
+                    footer="Déposé le {document.date.toLocaleDateString()}"
                 >
                     {document.nom}
                 </CardDocuments>
