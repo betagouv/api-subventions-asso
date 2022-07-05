@@ -5,6 +5,7 @@
 
     import Card from "../../../dsfr/Card.svelte";
     import Spinner from "../../../components/Spinner.svelte";
+    import ErrorAlert from "../../../components/ErrorAlert.svelte";
 
     import { valueOrHyphen } from "../../../helpers/dataHelper";
     import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
@@ -39,7 +40,7 @@
             {/each}
         </div>
     {:catch error}
-        <p style="color: red">{error.message}</p>
+        <ErrorAlert message={error.message}></ErrorAlert>
     {/await}
 </div>
 

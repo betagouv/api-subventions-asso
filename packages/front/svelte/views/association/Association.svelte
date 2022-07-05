@@ -2,6 +2,7 @@
   import associationService from "./association.service.js";
   import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
   import Spinner from "../../components/Spinner.svelte";
+  import ErrorAlert from "../../components/ErrorAlert.svelte";
   import InfosLegales from "./components/InfosLegales.svelte";
   import TabsAsso from "./components/TabsAsso.svelte";
 
@@ -23,5 +24,5 @@
   <InfosLegales {association} />
   <TabsAsso {titles} associationIdentifier={id} />
 {:catch error}
-  <p style="color: red">{error.message}</p>
+  <ErrorAlert message={error.message}></ErrorAlert>
 {/await}

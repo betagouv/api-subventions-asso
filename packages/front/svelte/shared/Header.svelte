@@ -71,7 +71,7 @@
                   Paramètres d'affichage
                 </button>
               </li>
-              {#if user?.roles.includes("admin")}
+              {#if user?.roles?.includes("admin")}
                 <li>
                   <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin" rel="noopener">
                     Admin
