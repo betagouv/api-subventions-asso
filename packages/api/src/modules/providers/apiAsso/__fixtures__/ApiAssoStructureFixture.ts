@@ -20,17 +20,22 @@ export const fixtureEtablissements = [
 
 export const fixtureDocumentRna = [{
     url: "/fake/url",
-    type: "fake-type",
-    id: "ididididid"
+    type: "PV",
+    'sous-type': "PV",
+    id: "ididididid",
+    time: 1622557171,
+    annee: 2021,
 }] as StructureRnaDocumentDto[]
 
 export const fixtureDocumentDac = [{
     url: "/fake/url",
     nom: "nom fake",
     meta: {
-        type: "dacType",
-        id_siret: "50922194100000"
-    }
+        type: "BPA",
+        id_siret: "50922194100000",
+        etat: "courant"
+    },
+    time_depot: "2021-06-18 12:02:53"
 }] as StructureDacDocumentDto[]
 
 export const fixtureRib = [
