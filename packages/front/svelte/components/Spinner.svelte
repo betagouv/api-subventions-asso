@@ -1,15 +1,17 @@
 <script>
-    export let description = ""
+    export let description = "";
 </script>
 
 <div class="spinner-container">
     <p>{description}</p>
-    <img src="/static/images/logo-beta.jpg" class="spinner" alt="Chargement en cours">
+    <img src="/static/images/logo-beta.jpg" class="spinner" alt="Chargement en cours" />
 </div>
 
-<style> 
+<style>
     @keyframes spinner {
-        to {transform: rotate(360deg);}
+        to {
+            transform: rotate(360deg);
+        }
     }
     .spinner {
         width: 70px;

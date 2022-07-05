@@ -5,6 +5,7 @@
 
     import Card from "../../../dsfr/Card.svelte";
     import Spinner from "../../../components/Spinner.svelte";
+    import ErrorAlert from "../../../components/ErrorAlert.svelte";
 
     import { valueOrHyphen } from "../../../helpers/dataHelper";
     import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
@@ -17,21 +18,22 @@
     onMount(async () => {
         await waitElementIsVisible(element);
         promise = associationService.getEtablissements(associationIdentifier);
-    })
+    });
 </script>
 
 <div bind:this={element}>
     {#await promise}
-        <Spinner description="Chargement des établissements en cours ..."/>
+        <Spinner description="Chargement des établissements en cours ..." />
     {:then etablissements}
+        <h3>Les établissements rattachés à cette association</h3>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {#each etablissements as etablissement }
+            {#each etablissements as etablissement}
                 <Card title={etablissement.siret} url="/etablissement/{etablissement.siret}" target="_blank">
-                    {#if etablissement.siege }
+                    {#if etablissement.siege}
                         <p>Siège de l'association</p>
-                    {:else if !etablissement.ouvert }
+                    {:else if !etablissement.ouvert}
                         <p>-- Établissement fermé --</p>
-                    {:else }
+                    {:else}
                         <p>Établissement secondaire</p>
                     {/if}
                     <p>{valueOrHyphen(getAddress(etablissement.adresse))}</p>
@@ -39,7 +41,7 @@
             {/each}
         </div>
     {:catch error}
-        <p style="color: red">{error.message}</p>
+        <ErrorAlert message={error.message} />
     {/await}
 </div>
 
