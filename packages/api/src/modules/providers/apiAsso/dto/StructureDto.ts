@@ -73,12 +73,13 @@ export interface StructureDacDocumentDto {
     nom: string,
     commentaire: string,
     annee_validite: number,
-    time_depot: number,
+    time_depot: string,
     url: string,
     etat: string,
     meta: {
         type: string,
         id_siret: string,
+        etat: string
     }
 }
 
