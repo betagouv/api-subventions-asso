@@ -1,10 +1,10 @@
 <script>
-  import Association from "../views/association/Association.svelte";
-  export let route;
+    import Association from "../views/association/Association.svelte";
+    export let route;
 </script>
 
 {#if route.includes("association")}
-  <Association {route} />
+    <Association {route} />
 {:else}
-  Default Route
+    Default Route
 {/if}
