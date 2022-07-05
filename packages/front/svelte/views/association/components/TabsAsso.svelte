@@ -2,6 +2,7 @@
   import Tabs from "../../../dsfr/Tabs.svelte";
   import TabContent from "../../../dsfr/TabContent.svelte";
   import Etablissements from "./Etablissements.svelte";
+  import Documents from "./Documents.svelte";
 
   export let titles;
   export let associationIdentifier;
@@ -15,7 +16,7 @@
           {#if index == 0}
             {title}
           {:else if index == 1}
-            {title}
+            <Documents {associationIdentifier} />
           {:else}
             <Etablissements {associationIdentifier} />
           {/if}
