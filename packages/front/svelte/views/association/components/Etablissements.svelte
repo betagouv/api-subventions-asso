@@ -25,6 +25,7 @@
     {#await promise}
         <Spinner description="Chargement des établissements en cours ..."/>
     {:then etablissements}
+        <h3>Les établissements rattachés à cette association</h3>
         <div class="fr-grid-row fr-grid-row--gutters">
             {#each etablissements as etablissement }
                 <Card title={etablissement.siret} url="/etablissement/{etablissement.siret}" target="_blank">
