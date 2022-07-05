@@ -1,5 +1,5 @@
 import ProviderValueHelper from "../../../src/shared/helpers/ProviderValueHelper";
-import { flatenProviderValue } from "../../helpers/dataHelper"
+import { flatenProviderValue } from "../../helpers/dataHelper";
 
 export const toAssociationView = association => {
     return flatenProviderValue(association);
