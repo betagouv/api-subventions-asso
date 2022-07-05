@@ -4,3 +4,15 @@ export const getAddress = address => {
         commune.toUpperCase() || ""
     }`;
 };
+
+export const mapVersementsToSubventions = ({ subventions, versements }) => {
+    console.log(subventions, versements);
+    versements = versements.reduce(groupVersementsByEJ, {});
+    return versements;
+};
+
+const groupVersementsByEJ = (obj, versement) => {
+    if (!obj[versement.ej]) obj[versement.ej] = [];
+    obj[versement.ej].push(versement);
+    return obj;
+};

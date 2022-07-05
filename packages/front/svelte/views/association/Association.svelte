@@ -22,7 +22,7 @@
     <Spinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
     <InfosLegales {association} />
-    <TabsAsso {titles} associationIdentifier={id} />
+    <TabsAsso {titles} associationIdentifier={id} {association} />
 {:catch error}
     <ErrorAlert message={error.message} />
 {/await}
