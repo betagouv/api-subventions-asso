@@ -3,7 +3,7 @@
     import Button from "../../../dsfr/Button.svelte";
     import Select from "../../../dsfr/Select.svelte";
     import associationService from "../association.service";
-    import { mapVersementsToSubventions } from "../association.helper";
+    import { mapSubventionsAndVersements } from "../association.helper";
     import { numberToEuro } from "../../../helpers/dataHelper";
     import SubventionTable from "./SubventionTable.svelte";
     import VersementTable from "./VersementTable.svelte";
@@ -27,7 +27,7 @@
     onMount(async () => {
         const subventions = await associationService.getSubventions(association.siren);
         const versements = await associationService.getVersements(association.siren);
-        console.log("mapVersementsToSubventions", mapVersementsToSubventions({ subventions, versements }));
+        mapSubventionsAndVersements({ subventions, versements });
     });
 
     function filterEtablissements(event) {
@@ -69,7 +69,7 @@
             d'après les données collectées à ce jour
         </p>
     </div>
-    <div class="payments">
+    <div class="versements">
         <h3>Versements réalisés</h3>
         <p>
             Pour l'exercice {currentExercice.value} :
@@ -113,7 +113,7 @@
         flex-grow: 3;
     }
 
-    .totals > .payments {
+    .totals > .versements {
         flex-grow: 1;
     }
 </style>

@@ -1,10 +1,6 @@
 import axios from "axios";
 import { flatenProviderValue } from "../../helpers/dataHelper";
-import {
-    toAssociationView,
-    toEtablissementComponent,
-    toDocumentComponent,
-} from "./association.adapter";
+import { toAssociationView, toEtablissementComponent, toDocumentComponent } from "./association.adapter";
 
 export class AssociationService {
     basePath = "/association/";
