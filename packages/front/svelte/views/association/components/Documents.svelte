@@ -5,7 +5,7 @@
 
     import Spinner from "../../../components/Spinner.svelte";
     import CardDocuments from "../../../components/CardDocuments.svelte";
-    import ErrorAlert from "../../../components/ErrorAlert.svelte"
+    import ErrorAlert from "../../../components/ErrorAlert.svelte";
 
     export let associationIdentifier;
 
@@ -15,28 +15,27 @@
     onMount(async () => {
         await waitElementIsVisible(element);
         promise = associationService.getDocuments(associationIdentifier);
-    })
+    });
 </script>
 
 <div bind:this={element}>
     {#await promise}
-        <Spinner description="Chargement des pièces administratives en cours ..."/>
+        <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then Documents}
         <h3>Pièces administratives pour cette association</h3>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {#each Documents as document }
-                <CardDocuments 
+            {#each Documents as document}
+                <CardDocuments
                     title={document.label}
-                    url="{document.url}" 
+                    url={document.url}
                     size="6"
-                    footer="Déposé le {document.date.toLocaleDateString()}"
-                >
+                    footer="Déposé le {document.date.toLocaleDateString()}">
                     {document.nom}
                 </CardDocuments>
             {/each}
         </div>
     {:catch error}
-        <ErrorAlert message={error.message}></ErrorAlert>
+        <ErrorAlert message={error.message} />
     {/await}
 </div>
 

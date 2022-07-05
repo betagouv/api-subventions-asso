@@ -1,5 +1,5 @@
 <script>
-    import Alert from "../dsfr/Alert"
+    import Alert from "../dsfr/Alert";
 
     export let message;
 </script>

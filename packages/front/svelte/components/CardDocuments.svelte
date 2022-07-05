@@ -5,13 +5,12 @@
     export let footer = "";
 </script>
 
-
 <div class="fr-col-{size} fr-col-md-{size}">
     <div class="fr-card fr-card--no-arrow fr-enlarge-link">
         <div class="fr-card__body">
-            <h2 class="fr-card__title"><a href="{url}" class="fr-card__link" download>{title}</a></h2>
+            <h2 class="fr-card__title"><a href={url} class="fr-card__link" download>{title}</a></h2>
             <p class="fr-card__desc">
-                <slot/>
+                <slot />
             </p>
             <div class="fr-card__footer">
                 <div class="fr-grid-row fr-grid-row--gutters">
@@ -19,7 +18,9 @@
                         <p>{footer}</p>
                     </div>
                     <div class="fr-col-6 fr-col-md-6 card--document-column">
-                        <button class="fr-btn fr-fi-download-line fr-btn--tertiary-no-outline" title="Télécharger le fichier"></button>
+                        <button
+                            class="fr-btn fr-fi-download-line fr-btn--tertiary-no-outline"
+                            title="Télécharger le fichier" />
                     </div>
                 </div>
             </div>
@@ -31,10 +32,10 @@
     .card--document-column {
         display: flex;
         align-items: center;
-        --text-spacing: 0,0,0;
+        --text-spacing: 0, 0, 0;
     }
 
-    .card--document-column > p{
+    .card--document-column > p {
         font-size: 0.7em;
     }
 

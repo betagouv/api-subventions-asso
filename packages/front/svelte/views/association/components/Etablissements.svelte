@@ -18,22 +18,22 @@
     onMount(async () => {
         await waitElementIsVisible(element);
         promise = associationService.getEtablissements(associationIdentifier);
-    })
+    });
 </script>
 
 <div bind:this={element}>
     {#await promise}
-        <Spinner description="Chargement des établissements en cours ..."/>
+        <Spinner description="Chargement des établissements en cours ..." />
     {:then etablissements}
         <h3>Les établissements rattachés à cette association</h3>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {#each etablissements as etablissement }
+            {#each etablissements as etablissement}
                 <Card title={etablissement.siret} url="/etablissement/{etablissement.siret}" target="_blank">
-                    {#if etablissement.siege }
+                    {#if etablissement.siege}
                         <p>Siège de l'association</p>
-                    {:else if !etablissement.ouvert }
+                    {:else if !etablissement.ouvert}
                         <p>-- Établissement fermé --</p>
-                    {:else }
+                    {:else}
                         <p>Établissement secondaire</p>
                     {/if}
                     <p>{valueOrHyphen(getAddress(etablissement.adresse))}</p>
@@ -41,7 +41,7 @@
             {/each}
         </div>
     {:catch error}
-        <ErrorAlert message={error.message}></ErrorAlert>
+        <ErrorAlert message={error.message} />
     {/await}
 </div>
 
