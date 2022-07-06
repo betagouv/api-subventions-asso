@@ -1,89 +1,99 @@
 <%- include('../header') -%>
-<main role="main" id="contenu">
-    <div class="fr-container fr-mb-8w">
-        <%- include('../global_components/ariane', { items: [
-                { label: 'Accueil', url: '/' },
-                { label: 'Admin', url: "/admin" },
-                { label: 'Liste des utilisateurs' },
-            ],})
-            -%>
-            <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters" data-controller="admin--listUsers">
-                <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters admin_list-users_stats">
-                    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters fr-col fr-col-lg-12">
-                        <h2>Statistiques utilisateurs: </h2>
+    <main role="main" id="contenu">
+        <div class="fr-container fr-mb-8w">
+            <%- include('../global_components/ariane', { items: [ { label: 'Accueil' , url: '/' }, { label: 'Admin' ,
+                url: "/admin" }, { label: 'Liste des utilisateurs' }, ],}) -%>
+                <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters" data-controller="admin--listUsers">
+                    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters admin_list-users_stats">
+                        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters fr-col fr-col-lg-12">
+                            <h2>Statistiques utilisateurs: </h2>
+                        </div>
+                        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                            <div class="fr-col fr-col-lg-6" data-admin--listUsers-target="stats">
+                                <% const numberOfUsers=users.filter(u=> !u.roles.includes("admin")).length;
+                                    const numberOfActiveUsers = users.filter(u => !u.roles.includes("admin") &&
+                                    u.active).length;
+                                    const numberOfAdmin = users.filter(u => u.roles.includes("admin")).length;
+                                    %>
+
+                                    <p data-value="<%- numberOfUsers %>">Il y a <b>
+                                            <%- numberOfUsers %>
+                                        </b> utilisateurs inscrits (hors admin).</p>
+                                    <p data-value="<%- numberOfActiveUsers %>">Dont <b>
+                                            <%- numberOfActiveUsers %>
+                                        </b> ayant activé leur compte (hors admin).</p>
+                                    <p data-value="<%- numberOfAdmin %>">Nombre d'administrateurs: <b>
+                                            <%- numberOfAdmin %>
+                                        </b></p>
+                            </div>
+                            <div class="fr-col fr-col-lg-6">
+                                <canvas id="usersChart" data-admin--listUsers-target="canvas"></canvas>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-                        <div class="fr-col fr-col-lg-6" data-admin--listUsers-target="stats">
-                            <%
-                                const numberOfUsers = users.filter(u => !u.roles.includes("admin")).length;
-                                const numberOfActiveUsers = users.filter(u => !u.roles.includes("admin") && u.active).length;
-                                const numberOfAdmin = users.filter(u => u.roles.includes("admin")).length;
-                            %>
+                        <div class="fr-col fr-col-lg-8 fr-grid-row fr-grid-row--center">
+                            <h2>Liste des utilisateurs :</h2>
+                        </div>
+                        <div class="fr-col fr-col-lg-10">
+                            <div class="fr-search-bar" role="search">
+                                <label class="fr-label" for="admin-search-input">
+                                    Recherche
+                                </label>
+                                <input type="text" placeholder="Recherche par email (insensible à la casse)"
+                                    name="admin-search-input" id="admin-search-input" class="fr-input"
+                                    data-admin--listUsers-target="source"
+                                    data-action="input->admin--listUsers#valueChange">
+                                <button class="fr-btn" title="Rechercher">
+                                    Rechercher
+                                </button>
+                            </div>
+                        </div>
 
-                            <p data-value="<%- numberOfUsers %>">Il y à <b><%- numberOfUsers %></b> utilisateurs inscrits (hors admin).</p>
-                            <p data-value="<%- numberOfActiveUsers %>">Dont <b><%- numberOfActiveUsers %></b> ayant activé leur compte (hors admin).</p>
-                            <p data-value="<%- numberOfAdmin %>">Nombre d'administrateurs: <b><%- numberOfAdmin %></b></p>
-                        </div>
-                        <div  class="fr-col fr-col-lg-6">
-                            <canvas id="usersChart" data-admin--listUsers-target="canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-                    <div class="fr-col fr-col-lg-8 fr-grid-row fr-grid-row--center">
-                        <h2>Liste des utilisateurs :</h2>
-                    </div>
-                    <div class="fr-col fr-col-lg-10">
-                        <div class="fr-search-bar" role="search">
-                            <label class="fr-label" for="admin-search-input">
-                                Recherche
-                            </label>
-                            <input type="text" placeholder="Recherche par email (insensible à la casse)" name="admin-search-input" id="admin-search-input" class="fr-input" data-admin--listUsers-target="source" data-action="input->admin--listUsers#valueChange">
-                            <button class="fr-btn" title="Rechercher">
-                                Rechercher
-                            </button>
-                        </div>
-                    </div>
-                
-                    <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
-                        <div class="fr-table">
-                            <table class="admin_list-users_table" data-admin--listUsers-target="view">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Roles</th>
-                                        <th scope="col">Actif</th>
-                                        <th scope="col">Lien d'activation</th>
-                                        <th scope="col">Date du token de reset</th>
-                                    </tr>
-                                </thead>
-                                <tbody data-admin--listUsers-target="list">
-                                    <% for(let i = users.length -1 ; i >= 0; i-- ) { %>
-                                        <% const user = users[i];%> 
+                        <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
+                            <div class="fr-table">
+                                <table class="admin_list-users_table" data-admin--listUsers-target="view">
+                                    <thead>
                                         <tr>
-                                            <td><%-user.email%></td>
-                                            <td><%-user.roles.join(" - ")%></td>
-                                            <td><%-user.active ? "Oui" : "Non"%></td>
-                                            <td>
-                                                <% if (user.resetToken) { %>
-                                                    <a href="/auth/reset-password/<%-user.resetToken%>?active=true" class="fr-link" target="_blank">Copiez-moi !</a>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if (user.resetTokenDate) { %>
-                                                    <%-helper.date.formatDateWithHour(user.resetTokenDate)%>
-                                                <% } %>
-                                            </td>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Roles</th>
+                                            <th scope="col">Actif</th>
+                                            <th scope="col">Lien d'activation</th>
+                                            <th scope="col">Date du token de reset</th>
                                         </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody data-admin--listUsers-target="list">
+                                        <% for(let i=users.length -1 ; i>= 0; i-- ) { %>
+                                            <% const user=users[i];%>
+                                                <tr>
+                                                    <td>
+                                                        <%-user.email%>
+                                                    </td>
+                                                    <td>
+                                                        <%-user.roles.join(" - ")%></td>
+                                            <td><%-user.active ? " Oui" : "Non" %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (user.resetToken) { %>
+                                                            <a href="/auth/reset-password/<%-user.resetToken%>?active=true"
+                                                                class="fr-link" target="_blank">Copiez-moi !</a>
+                                                            <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (user.resetTokenDate) { %>
+                                                            <%-helper.date.formatDateWithHour(user.resetTokenDate)%>
+                                                                <% } %>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
-    </div>
-</main>
-<%- include('../footer') -%>
+        </div>
+    </main>
+    <%- include('../footer') -%>
