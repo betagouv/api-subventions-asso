@@ -13,10 +13,9 @@ describe("AssociationController", () => {
             expect(getSubventionsSpy).toHaveBeenCalledWith(MONGO_ID);
         });
 
-        it("should return a success object when not found", async () => {
+        it("should return an ErrorResponse when not found", async () => {
             getSubventionsSpy.mockImplementationOnce(async () => null)
-            const subvention = undefined;
-            const expected = { success: true, subvention, message: "Subvention not found" };
+            const expected = { success: false, message: "Subvention not found" };
             const actual = await controller.getDemandeSubventionById(MONGO_ID);
             expect(actual).toEqual(expected);
         })

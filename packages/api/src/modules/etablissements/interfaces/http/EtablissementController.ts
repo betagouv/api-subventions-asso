@@ -1,6 +1,5 @@
-import { GetDocumentsResponseDto, GetSubventionsResponseDto, GetVersementsResponseDto, Siret, Versement } from '@api-subventions-asso/dto';
+import { GetDocumentsResponseDto, GetSubventionsResponseDto, GetVersementsResponseDto, Siret } from '@api-subventions-asso/dto';
 import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
-import { Document } from '@api-subventions-asso/dto/search/Document';
 import etablissementService from '../../etablissements.service';
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 

@@ -302,7 +302,7 @@ describe("AssociationService", () => {
 
 
         it("should throw error not found error (siren not matching with rna)", async () => {
-            const expected = `We dont have found a siren corresponding to rna ${SIREN}`
+            const expected = `We haven't found a corresponding SIREN to the given RNA ${SIREN}`
 
             rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);

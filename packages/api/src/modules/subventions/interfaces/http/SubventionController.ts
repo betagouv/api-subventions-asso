@@ -8,7 +8,7 @@ import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 @Tags("Subvention Controller")
 export class SubventionController extends Controller {
     @Get("/{id}")
-    @Response<ErrorResponse>("404")
+    @Response<ErrorResponse>("404", "Demande de subvention non trouvée")
     async getDemandeSubventionById(id: string): Promise<GetSubventionResponseDto> {
         try {
             const subvention = await subventionsService.getDemandeById(id);

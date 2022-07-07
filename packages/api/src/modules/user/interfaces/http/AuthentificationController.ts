@@ -18,7 +18,7 @@ export class AuthentificationController extends Controller {
 
         if (result.success) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {token: _token, ...reset } = result.reset;
+            const { token: _token, ...reset } = result.reset;
             return { success: true, reset };
         }
 
@@ -42,18 +42,18 @@ export class AuthentificationController extends Controller {
             let errorCode = ResetPasswordErrorCodes.INTERNAL_ERROR;
 
             switch (result.code) {
-            case UserServiceErrors.RESET_TOKEN_NOT_FOUND:
-                errorCode = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
-                break;
-            case UserServiceErrors.RESET_TOKEN_EXPIRED:
-                errorCode = ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
-                break;
-            case UserServiceErrors.USER_NOT_FOUND:
-                errorCode = ResetPasswordErrorCodes.USER_NOT_FOUND
-                break;            
-            case UserServiceErrors.FORMAT_PASSWORD_INVALID:
-                errorCode = ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
-                break;            
+                case UserServiceErrors.RESET_TOKEN_NOT_FOUND:
+                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
+                    break;
+                case UserServiceErrors.RESET_TOKEN_EXPIRED:
+                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+                    break;
+                case UserServiceErrors.USER_NOT_FOUND:
+                    errorCode = ResetPasswordErrorCodes.USER_NOT_FOUND
+                    break;
+                case UserServiceErrors.FORMAT_PASSWORD_INVALID:
+                    errorCode = ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+                    break;
             }
 
             return {
@@ -68,7 +68,7 @@ export class AuthentificationController extends Controller {
         return {
             success: result.success,
             data: {
-                user: { ...result.user, _id: result.user._id.toString()}
+                user: { ...result.user, _id: result.user._id.toString() }
             }
         }
     }
@@ -114,7 +114,7 @@ export class AuthentificationController extends Controller {
         }
 
         const result: LoginDtoNegativeResponse = {
-            success: false, 
+            success: false,
             data: errors[errorCode] || {
                 errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
                 message: "Internal error, please try later"
@@ -122,7 +122,7 @@ export class AuthentificationController extends Controller {
         }
 
         this.setStatus(401);
-        return result; 
+        return result;
     }
 
     @Post("/signup")
