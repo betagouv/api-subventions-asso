@@ -14,7 +14,7 @@ export default class EntrepriseDtoAdapter {
             nic_siege: ProviderValueAdapter.toProviderValues(data.unite_legale.nic_siege, EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
             categorie_juridique: ProviderValueAdapter.toProviderValues(data.unite_legale.categorie_juridique, EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
             date_creation: ProviderValueAdapter.toProviderValues(new Date(data.unite_legale.date_creation), EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
-            date_modification: ProviderValueAdapter.toProviderValues(new Date(data.unite_legale.updated_at), EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
+            date_modification_siren: ProviderValueAdapter.toProviderValues(new Date(data.unite_legale.updated_at), EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
             denomination: ProviderValueAdapter.toProviderValues(data.unite_legale.denomination, EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
             adresse_siege: data.unite_legale.etablissement_siege ? ProviderValueAdapter.toProviderValues({
                 numero:data.unite_legale.etablissement_siege.numero_voie,

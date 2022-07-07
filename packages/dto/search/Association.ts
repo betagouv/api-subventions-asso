@@ -15,6 +15,7 @@ export interface Association {
     denomination: ProviderValues<string>,
     date_creation?: ProviderValues<Date>,
     date_modification?: ProviderValues<Date>,
+    date_modification_siren?: ProviderValues<Date>,
     objet_social?: ProviderValues<string>;
     code_objet_social_1?: ProviderValues<string>;
     code_objet_social_2?: ProviderValues<string>;
