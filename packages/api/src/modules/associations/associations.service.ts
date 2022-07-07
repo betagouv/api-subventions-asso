@@ -55,6 +55,9 @@ export class AssociationsService {
     }
     
     async getAssociationByRna(rna: Rna) {
+        const siren = await rnaSirenService.getSiren(rna);
+        if (siren) return this.getAssociationBySiren(siren)
+
         const data = await this.aggregate(rna);
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
@@ -114,9 +117,13 @@ export class AssociationsService {
         const associationProviders = this.getAssociationProviders();
         const capitalizedId = capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret";
         const promises = associationProviders.map(async provider => { 
-            const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
-            if (assos) return assos;
-            else return null;
+            try{
+                const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
+                if (assos) return assos;
+            }  catch(e) {
+                console.error(provider, e);
+            }
+            return null;
         });
         return (await Promise.all(promises)).flat().filter(asso => asso) as Association[];
     }
