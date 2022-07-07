@@ -1,13 +1,7 @@
+import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
 
-
-export interface StatsRequestDtoPositiveResponse {
-    success: true,
-    data: number,
+export interface StatsRequestDtoSuccessResponse extends SuccessResponse {
+    data: number
 }
 
-export interface StatsRequestDtoNegativeResponse {
-    success: false,
-    message: string
-}
-
-export type StatsRequestDtoResponse = StatsRequestDtoPositiveResponse | StatsRequestDtoNegativeResponse;
+export type StatsRequestDtoResponse = StatsRequestDtoSuccessResponse | ErrorResponse;

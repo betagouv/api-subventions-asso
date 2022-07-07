@@ -1,11 +1,12 @@
-import { StatsRequestDtoNegativeResponse, StatsRequestDtoResponse, StatsRequestsMedianDtoResponse } from '@api-subventions-asso/dto';
+import { StatsRequestDtoResponse, StatsRequestsMedianDtoResponse } from '@api-subventions-asso/dto';
+import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from 'tsoa';
 import statsService from '../../stats.service';
 
 @Route("stats")
 @Security("jwt", ['admin'])
 @Tags("Stats Controller")
-export  class StatsController extends Controller {
+export class StatsController extends Controller {
     /**
      * Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X requêtes sur une période données
      * 
@@ -16,7 +17,7 @@ export  class StatsController extends Controller {
      * @returns {StatsRequestDtoResponse}
      */
     @Get("/requests")
-    @Response<StatsRequestDtoNegativeResponse>(500, "Error", {
+    @Response<ErrorResponse>(500, "Error", {
         success: false,
         message: "An Error message",
     })
@@ -31,7 +32,7 @@ export  class StatsController extends Controller {
             return { success: true, data: result }
         } catch (e) {
             this.setStatus(500);
-            return { success: false, message: (e as Error).message}
+            return { success: false, message: (e as Error).message }
         }
     }
 
@@ -44,6 +45,7 @@ export  class StatsController extends Controller {
      * @returns 
      */
     @Get("/requests/median")
+    @Response<ErrorResponse>("500")
     async getMedianRequestOnPeriod(
         @Query() start: string,
         @Query() end: string,

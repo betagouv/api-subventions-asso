@@ -1,11 +1,8 @@
-export interface StatsRequestsMedianDtoPositiveResponse {
+import { ErrorResponse } from "../shared/ResponseStatus";
+
+export interface StatsRequestsMedianDtoSuccessResponse {
     success: true,
     data: number
 }
 
-export interface StatsRequestsMedianDtoNegativeResponse {
-    success: false,
-    message: string
-}
-
-export type StatsRequestsMedianDtoResponse = StatsRequestsMedianDtoNegativeResponse | StatsRequestsMedianDtoPositiveResponse;
+export type StatsRequestsMedianDtoResponse = StatsRequestsMedianDtoSuccessResponse | ErrorResponse;
