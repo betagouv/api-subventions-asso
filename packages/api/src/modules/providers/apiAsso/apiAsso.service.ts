@@ -75,7 +75,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                     siren: structure.identite.id_siren,
                     name: association.denomination[0].value,
                     provider: association.denomination[0].provider,
-                    lastUpdate: (association.date_modification as ProviderValues<Date>)[0].value
+                    lastUpdate: ((association.date_modification || association.date_modification_siren) as ProviderValues<Date>)[0].value
                 }]);
             })
         }

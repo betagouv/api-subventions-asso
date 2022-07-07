@@ -46,7 +46,7 @@ export default class ApiAssoDtoAdapter {
                 nic_siege: toSirenPvs(siretToNIC(structure.identite.id_siret_siege)),
                 categorie_juridique: toSirenPvs(structure.identite.id_forme_juridique.toString()),
                 date_creation: structure.identite.date_creation_sirene ? toSirenPvs(toDate(structure.identite.date_creation_sirene)) : undefined,
-                date_modification: toSirenPvs(toDate(structure.identite.date_modif_siren)),
+                date_modification_siren: toSirenPvs(toDate(structure.identite.date_modif_siren)),
                 adresse_siege: adresse ? toSirenPvs({
                     numero: adresse.num_voie,
                     type_voie: adresse.type_voie,
