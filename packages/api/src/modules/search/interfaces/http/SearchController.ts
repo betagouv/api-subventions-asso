@@ -1,9 +1,10 @@
-import { Route, Get, Controller, Tags, Security } from 'tsoa';
-import { Siret, Association, Etablissement } from '@api-subventions-asso/dto';
+import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
+import { Siret, Association, Etablissement, GetEtablissementResponseDto, SearchEtablissementSuccessResponseDto, GetAssociationResponseDto } from '@api-subventions-asso/dto';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
 import { AssociationIdentifiers } from '../../../../@types';
+import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 
 @Route("search")
 @Security("jwt")
@@ -14,13 +15,15 @@ export class SearchController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/etablissement/{siret}")
+    @Response<SearchEtablissementSuccessResponseDto>("200")
+    @Response<ErrorResponse>("404")
     public async findBySiret(
         siret: Siret,
-    ): Promise<{ success: boolean, etablissement?: Etablissement, message?: string}>{
+    ): Promise<GetEtablissementResponseDto> {
         const result = await searchService.getBySiret(siret) as Etablissement;
         if (!result) {
             this.setStatus(404);
-            return { success: false, message: "Etablissement not found"}
+            return { success: false, message: "Etablissement not found" }
         } else {
             return { success: true, etablissement: result };
         }
@@ -31,11 +34,12 @@ export class SearchController extends Controller {
      * @param rna_or_siren Identifiant RNA ou Siren
      */
     @Get("/association/{id}")
+    @Response<ErrorResponse>("404", "Aucune demande de subvention retrouvée", { success: false, message: "Could not match any subvention for this association" })
     public async findAssociation(
         id: AssociationIdentifiers,
-    ): Promise<{ success: boolean, association?: Association, message?: string}> {
+    ): Promise<GetAssociationResponseDto> {
         let result: Association | null = null;
-        
+
         try {
             result = await searchService.getAssociation(id);
         } catch (e) {
@@ -45,7 +49,7 @@ export class SearchController extends Controller {
 
         if (!result) {
             this.setStatus(404);
-            return { success: false, message: "Association not found"}
+            return { success: false, message: "Could not match any subvention for this association" }
         }
 
         return { success: true, association: result };
@@ -56,11 +60,12 @@ export class SearchController extends Controller {
      * @param rna_or_siren Identifiant RNA ou Identifiant Siren
      */
     @Get("/associations/{input}")
+    @Response<ErrorResponse>("404", "Aucune association retrouvée", { success: false, message: "Could match any association with given input : ${input}" })
     public async findAssociations(input: string): Promise<{ success: boolean, result?: AssociationNameEntity[], message?: string }> {
         const result = await searchService.getAssociationsKeys(input);
         if (!result || (Array.isArray(result) && result.length == 0)) {
             this.setStatus(404);
-            return { success: false, message: `Could match any association with given input : ${input}`}
+            return { success: false, message: `Could match any association with given input : ${input}` }
         }
         this.setStatus(200);
         return { success: true, result };
