@@ -2,6 +2,8 @@
     import { onMount } from "svelte";
     import Button from "../../../dsfr/Button.svelte";
     import Select from "../../../dsfr/Select.svelte";
+    import Spinner from "../../../components/Spinner.svelte";
+    import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import associationService from "../association.service";
     import { mapSubventionsAndVersements } from "../association.helper";
     import { numberToEuro } from "../../../helpers/dataHelper";
@@ -10,34 +12,87 @@
 
     export let association;
 
-    const etablissementFilterArray = ["Pour l'ensemble des établissements (siège + établissements)"];
-    const FIRST_EXERCICE_YEAR = 2017;
-    const CURRENT_YEAR = new Date().getFullYear();
-
+    const defaultEtablissementFilter = {
+        value: "*",
+        label: "Pour l'ensemble des établissements (siège + établissements)"
+    };
+    let years = [];
+    let etablissementFilterArray = [];
     let exercices = [];
-    for (let i = FIRST_EXERCICE_YEAR; i <= CURRENT_YEAR; i++) {
-        exercices.push({ value: i, label: `Exercice ${i} (année civile)` });
-    }
-
-    let selectedExerciceIndex = exercices.length - 1;
-    $: currentExercice = exercices[selectedExerciceIndex];
+    let selectedExerciceIndex = 0;
     let selectedEtablissement = 0;
+    let elements = [];
+
+    let scopedElements = [];
+    let scopedVersementsAmount = 0;
+    let scopedSubventionAmount = 0;
+    let scopedSubventionRequestedAmount = 0;
+    let scopedPerscentSubvention = 0;
 
     let promise = new Promise(resolve => null);
     onMount(async () => {
-        const subventions = await associationService.getSubventions(association.siren);
-        const versements = await associationService.getVersements(association.siren);
-        mapSubventionsAndVersements({ subventions, versements });
+        promise = new Promise(async resolve => {
+            const siretSiege = association.siren + association.nic_siege;
+            const subventions = await associationService.getSubventions(association.siren);
+            const versements = await associationService.getVersements(association.siren);
+
+            elements = mapSubventionsAndVersements({ subventions, versements });
+
+            const sirets = [...new Set(elements.map(element => element.siret))];
+            years = [...new Set(elements.map(element => element.year))].sort((a, b) => a - b);
+
+            exercices = years.map((year, i) => ({ value: i, label: `Exercice ${year} (année civile)` }));
+            selectedExerciceIndex = years.length - 1;
+            etablissementFilterArray = [
+                defaultEtablissementFilter,
+                ...sirets.map(siret => ({
+                    value: siret,
+                    label: siret === siretSiege ? `Pour le siège (${siret})` : `Pour l'établissement (${siret})`
+                }))
+            ];
+
+            applyScope();
+
+            resolve();
+        });
     });
 
     function filterEtablissements(event) {
         selectedEtablissement = event.detail;
-        console.log("filterEtablissements", event.detail);
+        applyScope();
     }
 
     function filterExercice(event) {
         selectedExerciceIndex = event.detail;
-        console.log("filterExercice", event.detail);
+        applyScope();
+    }
+
+    function applyScope() {
+        const currentSiret = etablissementFilterArray[selectedEtablissement].value;
+        const currentYear = years[exercices[selectedExerciceIndex].value];
+
+        scopedElements = elements.filter(element => {
+            const goodSiret = currentSiret == "*" ? true : element.siret === currentSiret;
+            const goodYear = element.year == currentYear;
+
+            return goodSiret && goodYear;
+        });
+
+        scopedVersementsAmount = scopedElements.reduce((acc, element) => {
+            if (!element.versements) return acc;
+            return acc + element.versements.reduce((total, versement) => total + versement.amount, 0);
+        }, 0);
+
+        scopedSubventionAmount = scopedElements.reduce((acc, element) => {
+            if (!element.subvention || !element.subvention.montants) return acc;
+            return acc + (element.subvention.montants.accorde | 0);
+        }, 0);
+
+        scopedSubventionRequestedAmount = scopedElements.reduce((acc, element) => {
+            if (!element.subvention || !element.subvention.montants) return acc;
+            return acc + (element.subvention.montants.demande | 0);
+        }, 0);
+        scopedPerscentSubvention = ((scopedSubventionAmount / scopedSubventionRequestedAmount) * 100 || 100).toFixed(0);
     }
 
     function displayProviders() {
@@ -45,43 +100,52 @@
     }
 </script>
 
-<div class="title">
-    <h2>Tableau de bord des subventions</h2>
+{#await promise}
+    <Spinner description="Chargement des demandes de subventions en cours ..." />
+{:then _null}
+    <div class="title">
+        <h2>Tableau de bord des subventions</h2>
+        <div>
+            <Button on:click={displayProviders} type="secondary" disabled={true}>
+                Voir la liste des fournisseurs de donnée
+            </Button>
+        </div>
+    </div>
+    <div class="filters">
+        <div class="select-wrapper">
+            <Select
+                on:change={filterEtablissements}
+                selected={etablissementFilterArray[selectedEtablissement].value}
+                options={etablissementFilterArray} />
+        </div>
+        <div class="select-wrapper">
+            <Select on:change={filterExercice} selected={exercices[selectedExerciceIndex].value} options={exercices} />
+        </div>
+    </div>
+    <div class="totals">
+        <div class="subventions">
+            <h3>Demande de subventions</h3>
+            <p>
+                Montant total accordé : <b>{numberToEuro(scopedSubventionAmount)}</b>
+                (sur {numberToEuro(scopedSubventionRequestedAmount)} demandé, soit {scopedPerscentSubvention}%)
+                <br />
+                d'après les données collectées à ce jour
+            </p>
+        </div>
+        <div class="versements">
+            <h3>Versements réalisés</h3>
+            <p>
+                Pour l'exercice {years[exercices[selectedExerciceIndex].value]} :
+                <b>{numberToEuro(scopedVersementsAmount)}</b>
+            </p>
+        </div>
+    </div>
     <div>
-        <Button on:click={displayProviders} type="secondary">Voir la liste des fournisseurs de donnée</Button>
+        <SubventionTable elements={scopedElements} />
+        <VersementTable elements={scopedElements} />
     </div>
-</div>
-<div class="filters">
-    <div class="select-wrapper">
-        <Select on:change={filterEtablissements} selected={selectedEtablissement} options={etablissementFilterArray} />
-    </div>
-    <div class="select-wrapper">
-        <Select on:change={filterExercice} selected={exercices[selectedExerciceIndex].value} options={exercices} />
-    </div>
-</div>
-<div class="totals">
-    <div class="subventions">
-        <h3>Demande de subventions</h3>
-        <p>
-            Montant total accordé : <b>{numberToEuro(115900)}</b>
-            (sur {numberToEuro(168000)} demandé, soit {76}%)
-            <br />
-            d'après les données collectées à ce jour
-        </p>
-    </div>
-    <div class="versements">
-        <h3>Versements réalisés</h3>
-        <p>
-            Pour l'exercice {currentExercice.value} :
-            <b>{numberToEuro(816786)}</b>
-        </p>
-    </div>
-</div>
-{#await promise then result}
-    <div>
-        <SubventionTable subventions={result[0]} />
-        <VersementTable versements={result[1]} />
-    </div>
+{:catch error}
+    <ErrorAlert message={error.message} />
 {/await}
 
 <style>

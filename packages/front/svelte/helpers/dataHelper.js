@@ -3,10 +3,23 @@ import ProviderValueHelper from "../../src/shared/helpers/ProviderValueHelper";
 export const valueOrHyphen = value => value || "-";
 
 export const flatenProviderValue = providerValueObject => {
-    const reduceProviderValues = (acc, prop) => ({
-        ...acc,
-        [prop]: ProviderValueHelper.getValue(providerValueObject[prop])
-    });
+    const reduceProviderValues = (acc, prop) => {
+        return {
+            ...acc,
+            [prop]:
+                ProviderValueHelper.isProviderValues(providerValueObject[prop]) ||
+                ProviderValueHelper.isProviderValue(providerValueObject[prop])
+                    ? ProviderValueHelper.getValue(providerValueObject[prop])
+                    : flatenProviderValue(providerValueObject[prop])
+        };
+    };
+
+    if (["number", "string"].includes(typeof providerValueObject)) return providerValueObject;
+
+    if (Array.isArray(providerValueObject)) {
+        return providerValueObject.map(ob => flatenProviderValue(ob));
+    }
+
     const providerValueObjectProps = Object.keys(providerValueObject);
     return providerValueObjectProps.reduce(reduceProviderValues, {});
 };

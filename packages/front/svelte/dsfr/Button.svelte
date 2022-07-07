@@ -4,9 +4,13 @@
     export let type = "primary";
     export let outline = true;
     export let size = "medium";
+    export let disabled = false;
     export let icon = "";
+    export let iconPosition = "";
 
     const dispatch = createEventDispatcher();
+
+    const iconClass = !icon.length || icon.startsWith("fr-fi-") ? icon : `fr-fi-${icon}`;
 
     const classBySize = {
         small: "fr-btn--sm",
@@ -20,8 +24,18 @@
         tertiary: ["fr-btn--tertiary", "fr-btn--tertiary-no-outline"]
     };
 
+    const classByIcon = {
+        right: "fr-btn--icon-right",
+        left: "fr-btn--icon-left",
+        default: ""
+    };
+
     function getSpecificSizeClass() {
         return classBySize[size];
+    }
+
+    function getSpecificIconClass() {
+        return classByIcon[iconPosition] || classByIcon.default;
     }
 
     function getSpecificTypeClass() {
@@ -31,6 +45,10 @@
     }
 </script>
 
-<button on:click={() => dispatch("click")} class="fr-btn {getSpecificTypeClass()} {getSpecificSizeClass()} {icon}">
+<button
+    on:click={() => dispatch("click")}
+    class="fr-btn {getSpecificTypeClass()} {getSpecificSizeClass()} {iconClass} {getSpecificIconClass()}"
+    {disabled}
+    alt="test">
     <slot />
 </button>
