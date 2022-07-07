@@ -46,14 +46,14 @@ export class AssociationsService {
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
-    
+
     async getAssociationBySiret(siret: Siret) {
         const data = await this.aggregate(siret);
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
-    
+
     async getAssociationByRna(rna: Rna) {
         const siren = await rnaSirenService.getSiren(rna);
         if (siren) return this.getAssociationBySiren(siren)
@@ -81,10 +81,10 @@ export class AssociationsService {
     }
 
     async getEtablissements(identifier: AssociationIdentifiers) {
-        const type = IdentifierHelper.getIdentifierType(identifier) ;
+        const type = IdentifierHelper.getIdentifierType(identifier);
         if (!type || type === StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIREN or RNA");
 
-        if(type === StructureIdentifiersEnum.rna) {
+        if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);
 
             if (!siren) return [];
@@ -100,10 +100,10 @@ export class AssociationsService {
 
         if (!type || type === StructureIdentifiersEnum.siret) throw new BadRequestError("You must provide a valid SIREN or RNA");
 
-        if(type === StructureIdentifiersEnum.rna) {
+        if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);
 
-            if (!siren) throw new NotFoundError(`We dont have found a siren corresponding to rna ${identifier}`);
+            if (!siren) throw new NotFoundError(`We haven't found a corresponding SIREN to the given RNA ${identifier}`);
 
             identifier = siren;
         }

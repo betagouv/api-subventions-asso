@@ -2,13 +2,7 @@ import { SuccessResponse, ErrorResponse } from "../shared/ResponseStatus";
 import { Association } from "../search/Association";
 
 export interface GetAssociationSuccessResponse extends SuccessResponse {
-    success: true,
-    association?: Association,
-    message?: string
-}
-export interface GetAssociationErrorResponse extends ErrorResponse {
-    success: false,
-    message: string
+    association: Association,
 }
 
-export type GetAssociationResponseDto = GetAssociationSuccessResponse | GetAssociationErrorResponse;
+export type GetAssociationResponseDto = GetAssociationSuccessResponse | ErrorResponse;

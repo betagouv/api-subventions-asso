@@ -1,4 +1,4 @@
-import { ProviderValues, Rna, Siren, Siret , Association, Etablissement } from "@api-subventions-asso/dto";
+import { ProviderValues, Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
 import axios from "axios";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { AssociationIdentifiers } from "../../../@types";
@@ -9,20 +9,20 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import Document from "../../documents/@types/Document";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, { StructureRnaDocumentDto } from "./dto/StructureDto";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
-    public provider = { 
+    public provider = {
         name: "API ASSO",
         type: ProviderEnum.api,
         description: "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
     };
-    private dataSirenCache = new CacheData<{ associations: Association[], etablissements: Etablissement[], documents: Document[]}>(CACHE_TIMES.ONE_DAY);
-    private dataRnaCache = new CacheData<{ associations: Association[], etablissements: Etablissement[], documents: Document[]}>(CACHE_TIMES.ONE_DAY);
+    private dataSirenCache = new CacheData<{ associations: Association[], etablissements: Etablissement[], documents: Document[] }>(CACHE_TIMES.ONE_DAY);
+    private dataRnaCache = new CacheData<{ associations: Association[], etablissements: Etablissement[], documents: Document[] }>(CACHE_TIMES.ONE_DAY);
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
     private async sendRequest<T>(route: string): Promise<T | null> {
@@ -46,7 +46,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         }
     }
 
-    private async findFullScopeAssociation(identifier: AssociationIdentifiers): Promise<{ associations: Association[], etablissements: Etablissement[], documents: Document[]} | null> {
+    private async findFullScopeAssociation(identifier: AssociationIdentifiers): Promise<{ associations: Association[], etablissements: Etablissement[], documents: Document[] } | null> {
         if (this.dataSirenCache.has(identifier)) return this.dataSirenCache.get(identifier)[0];
         if (this.dataRnaCache.has(identifier)) return this.dataRnaCache.get(identifier)[0];
 
@@ -65,7 +65,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             const acceptedType = ["MD", "LDC", 'PV', "STC"];
 
             const sortRnaDocuments = (a: StructureRnaDocumentDto, b: StructureRnaDocumentDto) => {
-                return parseFloat(`${a.annee}.${a.time}`) - parseFloat(`${b.annee}.${b.time}`); 
+                return parseFloat(`${a.annee}.${a.time}`) - parseFloat(`${b.annee}.${b.time}`);
             }
 
             const filtredRnaDocument = acceptedType.map(type => (
@@ -73,7 +73,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                     .filter(document => document["sous-type"].toLocaleUpperCase() === type)
                     .sort(sortRnaDocuments)[0]
             )).filter((a) => a);
-            
+
             documents.push(...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)));
         }
 
@@ -84,7 +84,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             const filtredDacDocument = acceptedType.map(type => (
                 currentStats
                     .filter(document => document.meta.type.toLocaleUpperCase() === type)
-                    .sort((a,b) => new Date(a.time_depot).getTime() - new Date(b.time_depot).getTime())[0]
+                    .sort((a, b) => new Date(a.time_depot).getTime() - new Date(b.time_depot).getTime())[0]
             )).filter((a) => a);
 
             documents.push(...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
@@ -95,14 +95,14 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             documents.push(...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
         }
 
-        const result =  {
+        const result = {
             associations: ApiAssoDtoAdapter.toAssociation(structure),
             etablissements,
             documents
         };
-        
+
         if (structure.identite.id_rna && structure.identite.id_siren) {
-            EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren}])
+            EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren }])
             await asyncForEach(result.associations, async (association) => {
                 await EventManager.call('association-name.matching', [{
                     rna: structure.identite.id_rna,
@@ -139,7 +139,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
         return this.getAssociationsBySiren(siretToSiren(siret));
     }
-    
+
     async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
         const result = await this.findFullScopeAssociation(rna);
 
@@ -153,12 +153,12 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
      * |   Etablissement Part    |
      * |-------------------------|
      */
-    
+
     isEtablissementProvider = true;
 
     async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
         const siren = siretToSiren(siret);
-    
+
         const result = await this.getEtablissementsBySiren(siren);
 
         if (!result) return null;
@@ -203,7 +203,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     }
     async getDocumentsBySiret(siret: Siret) {
         const siren = siretToSiren(siret);
-    
+
         const result = await this.findFullScopeAssociation(siren);
 
         if (!result) return null;

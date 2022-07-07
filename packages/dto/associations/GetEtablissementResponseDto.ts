@@ -1,14 +1,8 @@
 import { Etablissement } from "../search/Etablissment";
+import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
 
-
-export interface GetEtablissementPositiveResponseDto {
-    success: true,
+export interface GetEtablissementSuccessResponseDto extends SuccessResponse {
     etablissement: Omit<Omit<Etablissement, "demandes_subventions">, "versements">
 }
 
-export interface GetEtablissementNegativeResponseDto {
-    success: false,
-    message: string
-}
-
-export type GetEtablissementResponseDto = GetEtablissementPositiveResponseDto | GetEtablissementNegativeResponseDto;
+export type GetEtablissementResponseDto = GetEtablissementSuccessResponseDto | ErrorResponse;

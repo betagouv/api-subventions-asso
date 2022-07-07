@@ -1,7 +1,8 @@
-import { DemandeSubvention, Siret, Versement} from '@api-subventions-asso/dto';
-import { Route, Get, Controller, Tags, Security } from 'tsoa';
-import Document from '../../../documents/@types/Document';
+import { GetDocumentsResponseDto, GetSubventionsResponseDto, GetVersementsResponseDto, Siret, Versement } from '@api-subventions-asso/dto';
+import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
+import { Document } from '@api-subventions-asso/dto/search/Document';
 import etablissementService from '../../etablissements.service';
+import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 
 @Route("etablissement")
 @Security("jwt")
@@ -14,12 +15,13 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/subventions")
+    @Response<ErrorResponse>("404")
     public async getDemandeSubventions(
         siret: Siret,
-    ): Promise<{ success: boolean, subventions?: DemandeSubvention[], message?: string}>{
+    ): Promise<GetSubventionsResponseDto> {
         try {
-            const result = await etablissementService.getSubventions(siret);
-            return { success: true, subventions: result };
+            const subventions = await etablissementService.getSubventions(siret);
+            return { success: true, subventions };
         } catch (e: unknown) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }
@@ -33,12 +35,13 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/versements")
+    @Response<ErrorResponse>("404")
     public async getVersements(
         siret: Siret,
-    ): Promise<{ success: boolean, versements?: Versement[], message?: string}>{
+    ): Promise<GetVersementsResponseDto> {
         try {
-            const result = await etablissementService.getVersements(siret);
-            return { success: true, versements: result };
+            const versements = await etablissementService.getVersements(siret);
+            return { success: true, versements };
         } catch (e: unknown) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }
@@ -52,12 +55,13 @@ export class EtablissementController extends Controller {
  * @param siret Identifiant Siret
  */
     @Get("/{siret}/documents")
+    @Response<ErrorResponse>("404")
     public async getDocuments(
         siret: Siret,
-    ): Promise<{ success: boolean, documents?: Document[], message?: string}>{
+    ): Promise<GetDocumentsResponseDto> {
         try {
-            const result = await etablissementService.getDocuments(siret);
-            return { success: true, documents: result };
+            const documents = await etablissementService.getDocuments(siret);
+            return { success: true, documents };
         } catch (e: unknown) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }

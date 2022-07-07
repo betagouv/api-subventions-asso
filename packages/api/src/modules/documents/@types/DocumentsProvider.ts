@@ -1,6 +1,6 @@
 import { Siret, Rna, Siren } from "@api-subventions-asso/dto";
 import Provider from '../../providers/@types/IProvider';
-import Document from "./Document";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 
 export default interface DocumentProvider extends Provider {
     isDocumentProvider: boolean,
