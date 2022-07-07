@@ -8,35 +8,53 @@ export const getAddress = address => {
 };
 
 export const mapSubventionsAndVersements = ({ subventions, versements }) => {
-    const versementsGroupByEJ = groupVersementsByEJ(versements);
+    const groupedByEj = groupByEj([
+        ...subventions.map(s => ({ ...s, isSub: true })),
+        ...versements.map(s => ({ ...s, isVersement: true }))
+    ]);
 
-    function mapVersementsToSubventions() {
-        return subventions.map(subvention => {
-            const newObj = { subvention };
-            const EJ = subvention.ej;
-            if (EJ && versementsGroupByEJ[EJ]) {
-                newObj.versements = versementsGroupByEJ[EJ];
-                delete versements[EJ];
-            } else newObj.versements = null;
+    const dataWithoutEj = groupedByEj["undefined"].map(sub => [sub]);
+
+    delete groupedByEj["undefined"];
+
+    const uniformizedElements = [...Object.values(groupedByEj), ...dataWithoutEj].reduce((acc, group) => {
+        const subvention = group.find(element => element.isSub);
+        const versements = group.filter(element => element.isVersement);
+        const siret = subvention?.siret || versements?.find(v => v.siret)?.siret;
+        const dateString = subvention?.date_commision || getLastVersementsDate(versements);
+        const date = dateString ? new Date(dateString) : null;
+        const year = date ? date.getFullYear() : subvention ? subvention.annee_demande : null;
+
+        acc.push({
+            versements: versements.length ? versements : null,
+            subvention,
+            siret,
+            date,
+            year
         });
-    }
+        return acc;
+    }, []);
 
-    const subventionsWithVersements = mapVersementsToSubventions();
-
-    // const allSubventionsAndVersements = [
-    //     ...subventionsWithVersements,
-    //     versementsGroupByEJ.map(versements => ({ subvention: null, versements }))
-    // ];
-    // const allSubventionsAndVersementsWithDate = allSubventionsAndVersements.forEach(item => {
-    //     if (item.date_commission) item.date;
-    //     item.versements ? (item.date = item.date_commission) : (item.date = item.date_operation);
-    // });
-    // const allSortedSubventionsAndVersements = allSubventionsAndVersements.sort(sortByDateAsc);
+    return uniformizedElements.sort(sortByDateAsc);
 };
 
-const groupVersementsByEJ = versements =>
-    versements.reduce((obj, versement) => {
-        if (!obj[versement.ej]) obj[versement.ej] = [];
-        obj[versement.ej].push(versement);
+const groupByEj = elements =>
+    elements.reduce((obj, element) => {
+        const ej = element.ej?.toLowerCase().trim();
+        if (!obj[ej]) obj[ej] = [];
+        obj[ej].push(element);
         return obj;
     }, {});
+
+export const getLastVersementsDate = versements => {
+    const orderedVersements = versements.sort((versementA, versementB) => {
+        const dateA = new Date(versementA.dateOperation);
+        const dateB = new Date(versementB.dateOperation);
+
+        return dateA.getTime() - dateB.getTime();
+    });
+
+    if (!orderedVersements.length) return null;
+
+    return new Date(orderedVersements[0].dateOperation);
+};
