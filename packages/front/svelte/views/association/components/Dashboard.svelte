@@ -106,7 +106,7 @@
     <div class="title">
         <h2>Tableau de bord des subventions</h2>
         <div>
-            <Button on:click={displayProviders} type="secondary" disabled={true}>
+            <Button on:click={displayProviders} type="secondary" disabled={true} tooltip="Fonctionnalités en cours de développement">
                 Voir la liste des fournisseurs de donnée
             </Button>
         </div>
