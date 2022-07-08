@@ -18,8 +18,6 @@
 <style>
     th {
         padding-bottom: 0px;
-        height: 88px;
-        max-height: 88px;
         vertical-align: top;
     }
 

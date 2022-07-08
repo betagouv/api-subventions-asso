@@ -32,7 +32,7 @@
         {#each elements as element}
             <tr>
                 {#if !element.subvention}
-                    <TableCell colspan="6" class="button-cell">
+                    <TableCell colspan="6" position="center">
                         <Button disabled="true" icon="information-line" iconPosition="right">
                             Je cherche d'avantage d'informations sur cette demande
                         </Button>
@@ -51,7 +51,7 @@
                     <TableCell>
                         {valueOrHyphen(getProjectName(element.subvention))}
                     </TableCell>
-                    <TableCell>
+                    <TableCell position="center">
                         <Button
                             disabled="true"
                             icon="information-line"
@@ -70,6 +70,3 @@
         {/each}
     </svelte:fragment>
 </Table>
-
-<style>
-</style>
