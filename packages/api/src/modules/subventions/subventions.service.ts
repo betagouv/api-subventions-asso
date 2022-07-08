@@ -6,11 +6,21 @@ import { siretToSiren } from '../../shared/helpers/SirenHelper';
 import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper'
 import { Siret , DemandeSubvention } from "@api-subventions-asso/dto";
 import providers from "../providers";
+import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 
 export class SubventionsService {
     async getDemandesByAssociation(id: AssociationIdentifiers) {
-        const type = getIdentifierType(id) ;
+        let type = getIdentifierType(id) ;
         if (!type) throw new Error("You must provide a valid SIREN or RNA");
+
+        if (type === StructureIdentifiersEnum.rna) {
+            const siren = await rnaSirenService.getSiren(id);
+            if (siren) {
+                id = siren;
+                type = StructureIdentifiersEnum.siren;
+            }
+        }
+
         const data = (await this.aggregate(id, type))?.filter(asso => asso);
         if (!data.length) throw new Error("Association not found");
         return data;

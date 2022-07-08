@@ -8,14 +8,12 @@ export function waitElementIsVisible(element, percentage = 50) {
         if (!intersectionObserverSupport) return resolve();
 
         let observer;
-
         function intersect(entries) {
             if (!entries[0].isIntersecting) return;
 
             observer.unobserve(element.parentElement);
             resolve();
         }
-
         observer = new IntersectionObserver(intersect, {
             threshold: percentage / 100
         });

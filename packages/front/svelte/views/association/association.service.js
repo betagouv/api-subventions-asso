@@ -1,7 +1,10 @@
 import axios from "axios";
+import { flatenProviderValue } from "../../helpers/dataHelper";
 import { toAssociationView, toEtablissementComponent, toDocumentComponent } from "./association.adapter";
 
 export class AssociationService {
+    basePath = "/association/";
+
     async getAssociation(id) {
         const path = `/association/${id}`;
         return axios.get(path).then(result => {
@@ -56,6 +59,20 @@ export class AssociationService {
                 )
                 .flat()
         );
+    }
+
+    async getSubventions(associationIdentifier) {
+        const path = `${this.basePath}${associationIdentifier}/subventions`;
+        return axios.get(path).then(result => {
+            return result.data.subventions.map(subvention => flatenProviderValue(subvention));
+        });
+    }
+
+    async getVersements(associationIdentifier) {
+        const path = `${this.basePath}${associationIdentifier}/versements`;
+        return axios.get(path).then(result => {
+            return result.data.versements.map(versement => flatenProviderValue(versement));
+        });
     }
 }
 
