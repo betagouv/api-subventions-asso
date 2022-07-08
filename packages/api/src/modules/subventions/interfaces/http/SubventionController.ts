@@ -1,19 +1,21 @@
-import { Controller, Get, Route, Security, Tags } from 'tsoa';
+import { Controller, Get, Route, Security, Tags, Response } from 'tsoa';
 import subventionsService from '../../subventions.service';
-import { GetDemandeSubventionResponseDto } from '@api-subventions-asso/dto';
+import { GetSubventionResponseDto } from '@api-subventions-asso/dto';
+import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 
 @Route("/subvention")
 @Security("jwt")
 @Tags("Subvention Controller")
 export class SubventionController extends Controller {
     @Get("/{id}")
-    async getDemandeSubventionById(id: string): Promise<GetDemandeSubventionResponseDto>  {
+    @Response<ErrorResponse>("404", "Demande de subvention non trouvée")
+    async getDemandeSubventionById(id: string): Promise<GetSubventionResponseDto> {
         try {
             const subvention = await subventionsService.getDemandeById(id);
-            if (subvention) return { success: true, subvention};
+            if (subvention) return { success: true, subvention };
             this.setStatus(404);
             return {
-                success: true,
+                success: false,
                 message: "Subvention not found"
             }
         } catch (e) {
@@ -23,6 +25,6 @@ export class SubventionController extends Controller {
                 message: (e as Error).message
             }
         }
-       
+
     }
 }

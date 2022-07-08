@@ -1,4 +1,3 @@
-import { NotFoundError } from '../../../../shared/errors/httpErrors/NotFoundError';
 import associationsService from '../../associations.service'
 import { AssociationController } from './AssociationController';
 
@@ -102,10 +101,10 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         })
 
-        it("should return a success object with message if no association found", async () => {
+        it("should return an ErrorResponse if no association found", async () => {
             // @ts-expect-error: mock
             getAssociationSpy.mockImplementationOnce(() => null)
-            const expected = { success: true, association: undefined, message: "Association not found" }
+            const expected = { success: false, message: "Association not found" };
             const actual = await controller.getAssociation(IDENTIFIER);
             expect(actual).toEqual(expected);
         })

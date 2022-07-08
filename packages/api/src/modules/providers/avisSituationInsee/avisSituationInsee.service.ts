@@ -4,7 +4,7 @@ import { Siren, Siret, Rna } from "@api-subventions-asso/dto";
 import * as IdentifierHelper from '../../../shared/helpers/IdentifierHelper';
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { StructureIdentifiers } from "../../../@types";
-import Document from "../../documents/@types/Document";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
@@ -28,7 +28,7 @@ export class AvisSituationInseeService implements DocumentProvider {
     } | false>(CACHE_TIMES.ONE_DAY);
 
 
-    private async getInseeEtablissements(identifier: StructureIdentifiers) : Promise<{
+    private async getInseeEtablissements(identifier: StructureIdentifiers): Promise<{
         etablissements: {
             nic: string,
             etablissementSiege: boolean
@@ -76,7 +76,7 @@ export class AvisSituationInseeService implements DocumentProvider {
                 url: ProviderValueAdapter.toProviderValue(`${AvisSituationInseeService.API_URL}/pdf/${siren}${nic}`, this.provider.name, new Date()),
                 nom: ProviderValueAdapter.toProviderValue(`Avis Situation Insee (${siren}${nic})`, this.provider.name, new Date()),
                 __meta__: {
-                    siret: siren+nic
+                    siret: siren + nic
                 }
             }
         ]
@@ -97,10 +97,10 @@ export class AvisSituationInseeService implements DocumentProvider {
             }
         ]
     }
-    
+
     async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
         const siren = await rnaSirenService.getSiren(rna);
-        
+
         if (!siren) return null;
 
         return this.getDocumentsBySiren(siren);

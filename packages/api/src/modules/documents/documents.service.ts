@@ -1,7 +1,7 @@
 import providers from "../providers";
 import DocumentProvider from "./@types/DocumentsProvider";
 import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
-import Document from "./@types/Document";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
@@ -37,7 +37,7 @@ export class DocumentsService {
     private async aggregate(id: StructureIdentifiers): Promise<(Document | null)[]> {
         const documentProviders = this.getDocumentProviders();
 
-        const type = getIdentifierType(id) ;
+        const type = getIdentifierType(id);
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
         const method = type === StructureIdentifiersEnum.rna ? 'getDocumentsByRna'

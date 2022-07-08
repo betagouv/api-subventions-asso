@@ -1,7 +1,8 @@
 import { Route, Get, Controller, Tags, Response } from 'tsoa';
-import { Rna, Siren, Siret } from '@api-subventions-asso/dto';
 import { siretToSiren } from '../../../../../shared/helpers/SirenHelper';
 import rnaSirenService from '../../rnaSiren.service';
+import { Rna, Siren, RnaSirenResponseDto, GetRnaSirenErrorResponse } from "@api-subventions-asso/dto";
+import { StructureIdentifiers } from "../../../../../@types";
 
 
 @Route("open-data/rna-siren")
@@ -15,10 +16,10 @@ export class RnaSirenController extends Controller {
      * @param rna_or_siren_or_siret Peut-être soit le Rna, soit le Siren d'une association ou bien le Siret d'un établissement
      */
     @Get("{rna_or_siren_or_siret}")
-    @Response(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren", { success: false, rna: null, siren: null })
+    @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren", { success: false, rna: null, siren: null })
     public async findBySiret(
-        rna_or_siren_or_siret: Siret | Rna | Siren,
-    ): Promise<{ success: boolean, siren: Siren | null, rna: Rna | null}>{
+        rna_or_siren_or_siret: StructureIdentifiers,
+    ): Promise<RnaSirenResponseDto> {
         let siren: null | Siren = null;
         let rna: null | Rna = null;
 
@@ -30,15 +31,21 @@ export class RnaSirenController extends Controller {
             siren = siretToSiren(rna_or_siren_or_siret);
         }
 
-        const success =  !!(siren && rna);
+        const match = !!(siren && rna);
 
-        if (!success) this.setStatus(404);
-
-        return {
-            siren,
-            rna,
-            success
+        if (!match) {
+            this.setStatus(404)
+            return {
+                siren,
+                rna,
+                success: false
+            }
+        } else {
+            return {
+                siren: siren as Siren,
+                rna: rna as Rna,
+                success: true
+            }
         }
     }
-
 }

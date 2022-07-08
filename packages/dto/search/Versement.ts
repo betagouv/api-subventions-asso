@@ -1,7 +1,6 @@
 import { ProviderValue } from "../shared/ProviderValue";
 import { Siret } from "../shared/Siret";
 
-
 export interface Versement {
     id: string,
     ej: ProviderValue<string>;

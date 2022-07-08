@@ -17,7 +17,7 @@ export interface DemandeSubvention {
     date_fin?: ProviderValue<Date>,
     pluriannualite?: ProviderValue<string>,
     plein_temps?: ProviderValue<string>,
-    contact?:{
+    contact?: {
         email: ProviderValue<string>,
         telephone?: ProviderValue<string>,
     }
@@ -72,7 +72,6 @@ export interface DemandeSubvention {
         status: ProviderValue<string>
         commentaire: ProviderValue<string>
     }[]
-
     versements?: Versement[],
     evaluation?: {
         evaluation_resultat: ProviderValue<string>,

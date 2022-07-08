@@ -1,14 +1,8 @@
 import { Etablissement } from "../search/Etablissment";
+import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
 
-
-export interface GetEtablissementsPositiveResponseDto {
-    success: true,
+export interface GetEtablissementsSuccessResponseDto extends SuccessResponse {
     etablissements: Etablissement[]
 }
 
-export interface GetEtablissementsNegativeResponseDto {
-    success: false,
-    message: string
-}
-
-export type GetEtablissementsResponseDto = GetEtablissementsPositiveResponseDto | GetEtablissementsNegativeResponseDto;
+export type GetEtablissementsResponseDto = GetEtablissementsSuccessResponseDto | ErrorResponse;

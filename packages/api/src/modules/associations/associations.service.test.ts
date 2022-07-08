@@ -12,7 +12,7 @@ import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
 import versementsService from '../versements/versements.service';
 import documentsService from '../documents/documents.service';
-import Document from '../documents/@types/Document';
+import { Document } from '@api-subventions-asso/dto/search/Document';
 import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
 
 jest.mock('../providers/index');
@@ -37,7 +37,7 @@ describe("AssociationService", () => {
     const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
     // @ts-expect-error: mock private method
     const aggregateMock = jest.spyOn(associationsService, "aggregate");
-    
+
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {
         formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as any);
@@ -51,7 +51,7 @@ describe("AssociationService", () => {
     // @ts-expect-error: mock
     // eslint-disable-next-line import/namespace
     afterEach(() => providers.default = DEFAULT_PROVIDERS)
-    
+
     describe("getAssociation()", () => {
         it("should call getAssociationByRna", async () => {
             getAssociationByRnaSpy.mockImplementationOnce(jest.fn());
@@ -83,18 +83,18 @@ describe("AssociationService", () => {
             expect(actual).toEqual(expected);
         })
     });
-    
+
     describe("isAssociationsProvider()", () => {
         it("should return true", () => {
             const actual = associationsService.isAssociationsProvider({ isAssociationsProvider: true });
             expect(actual).toBeTruthy();
         }),
-        it("should return true", () => {
-            const actual = associationsService.isAssociationsProvider({ isAssociationsProvider: false });
-            expect(actual).toBeFalsy();
-        })
+            it("should return true", () => {
+                const actual = associationsService.isAssociationsProvider({ isAssociationsProvider: false });
+                expect(actual).toBeFalsy();
+            })
     })
-    
+
     describe("aggregate", () => {
         it('should throw StructureIdentifierError with invalid StructueIdentifier', async () => {
             const expected = new StructureIdentifiersError();
@@ -114,7 +114,7 @@ describe("AssociationService", () => {
             associationsService.aggregate(RNA);
             expect(capitalizeFirstLetterSpy).toHaveBeenCalled();
         })
-    })    
+    })
 
     describe("getAssociationBySiren()", () => {
         it('should call aggregate', async () => {
@@ -229,7 +229,7 @@ describe("AssociationService", () => {
 
         it("should throw error because id is not rna or siren", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
-           
+
             expect(() => associationsService.getDocuments(RNA)).rejects.toThrowError(AssociationIdentifierError);
         })
     })
@@ -302,7 +302,7 @@ describe("AssociationService", () => {
 
 
         it("should throw error not found error (siren not matching with rna)", async () => {
-            const expected = `We dont have found a siren corresponding to rna ${SIREN}`
+            const expected = `We haven't found a corresponding SIREN to the given RNA ${SIREN}`
 
             rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
