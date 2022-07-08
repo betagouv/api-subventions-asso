@@ -32,8 +32,8 @@
         {#each elements as element}
             <tr>
                 {#if !element.subvention}
-                    <TableCell colspan="6" position="center">
-                        <Button disabled="true" icon="information-line" iconPosition="right">
+                    <TableCell colspan="6" class="button-cell">
+                        <Button disabled="true" icon="information-line" iconPosition="right" tooltip="Fonctionnalités en cours de développement">
                             Je cherche d'avantage d'informations sur cette demande
                         </Button>
                     </TableCell>
@@ -70,3 +70,6 @@
         {/each}
     </svelte:fragment>
 </Table>
+
+<style>
+</style>

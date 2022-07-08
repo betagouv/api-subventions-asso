@@ -2,7 +2,6 @@
     export let primary = false;
     export let colspan = undefined;
     export let position = "end";
-    console.log({ position });
     const style = `--justify: ${position}`;
 </script>
 
@@ -25,7 +24,6 @@
         justify-content: var(--justify);
         height: 71px;
         max-height: 71px;
-        overflow: hidden;
     }
 
     div :global(.fr-btn),

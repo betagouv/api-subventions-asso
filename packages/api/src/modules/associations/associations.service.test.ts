@@ -170,6 +170,7 @@ describe("AssociationService", () => {
         it('should call aggregate', async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
             await associationsService.getAssociationByRna(RNA);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
@@ -177,6 +178,7 @@ describe("AssociationService", () => {
         it('should return null if aggregates return an empty array', async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
             const expected = null;
             const actual = await associationsService.getAssociationByRna(RNA);
             expect(actual).toEqual(expected);
@@ -184,6 +186,7 @@ describe("AssociationService", () => {
         it("should call FormaterHelper.formatData()", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => [{}]);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
             const expected = 1;
             await associationsService.getAssociationByRna(RNA);
             const actual = formatDataMock.mock.calls.length;

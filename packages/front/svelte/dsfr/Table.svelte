@@ -20,6 +20,7 @@
     /* TODO: export this to avoid modifying DSFR components */
     table {
         border-collapse: collapse;
+        overflow: hidden;
     }
 
     thead tr {

@@ -190,6 +190,6 @@
         width: 69%;
     }
     .tables div:last-child {
-        width: 30%;
+        width: 31%;
     }
 </style>
