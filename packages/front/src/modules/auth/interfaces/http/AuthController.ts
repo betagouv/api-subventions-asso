@@ -186,4 +186,10 @@ export default class AuthController {
             SignupErrorCodes
         });
     }
+
+    @Get("token")
+    public async getUser(req: Request, res: Response) {
+        if (!req.session.user) res.redirect("/login");
+        res.send(req.session.user);
+    }
 }
