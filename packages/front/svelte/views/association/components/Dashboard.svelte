@@ -31,13 +31,11 @@
 
     let promise = new Promise(resolve => null);
     onMount(async () => {
-        promise = new Promise(async resolve => {
-            const siretSiege = association.siren + association.nic_siege;
-            const subventions = await associationService.getSubventions(association.siren);
-            const versements = await associationService.getVersements(association.siren);
-
+        const siretSiege = association.siren + association.nic_siege;
+        const subventionsPromise = associationService.getSubventions(association.siren);
+        const versementsPromise = associationService.getVersements(association.siren);
+        promise = Promise.all([subventionsPromise, versementsPromise]).then(([subventions, versements]) => {
             elements = mapSubventionsAndVersements({ subventions, versements });
-
             const sirets = [...new Set(elements.map(element => element.siret))];
             years = [...new Set(elements.map(element => element.year))].sort((a, b) => a - b);
 
@@ -52,8 +50,6 @@
             ];
 
             applyScope();
-
-            resolve();
         });
     });
 
@@ -140,9 +136,13 @@
             </p>
         </div>
     </div>
-    <div>
-        <SubventionTable elements={scopedElements} />
-        <VersementTable elements={scopedElements} />
+    <div class="tables">
+        <div>
+            <SubventionTable elements={scopedElements} />
+        </div>
+        <div>
+            <VersementTable elements={scopedElements} />
+        </div>
     </div>
 {:catch error}
     <ErrorAlert message={error.message} />
@@ -179,5 +179,17 @@
 
     .totals > .versements {
         flex-grow: 1;
+    }
+
+    .tables {
+        display: flex;
+        gap: 1%;
+    }
+
+    .tables div:first-child {
+        width: 69%;
+    }
+    .tables div:last-child {
+        width: 30%;
     }
 </style>

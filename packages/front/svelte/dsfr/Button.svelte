@@ -8,7 +8,7 @@
     export let icon = "";
     export let iconPosition = "";
     export let tooltip = "";
-    
+
     let element;
     let tooltipElement;
 
@@ -18,11 +18,11 @@
                 const boxElement = element.getBoundingClientRect();
                 const boxTooltipElement = tooltipElement.getBoundingClientRect();
 
-                const computedRigthPosition = (boxElement.width - boxTooltipElement.width) / 2
+                const computedRigthPosition = (boxElement.width - boxTooltipElement.width) / 2;
                 tooltipElement.style.right = `${computedRigthPosition}px`;
             });
         }
-    })
+    });
 
     const dispatch = createEventDispatcher();
 
@@ -59,20 +59,17 @@
         else if (outline) return classByType[type][0];
         else return classByType[type][1];
     }
+
+    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${iconClass} 
+     ${getSpecificIconClass()}`;
 </script>
 
-<button
-    bind:this={element}
-    on:click={() => dispatch("click")}
-    class="fr-btn {getSpecificTypeClass()} {getSpecificSizeClass()} {iconClass} {getSpecificIconClass()}"
-    {disabled}
-    alt="test">
+<button bind:this={element} on:click={() => dispatch("click")} class={classes} {disabled} alt="test">
     <slot />
-    { #if tooltip.length }
+    {#if tooltip.length}
         <span class="tooltiptext" bind:this={tooltipElement}>{tooltip}</span>
     {/if}
 </button>
-
 
 <style>
     button {
@@ -110,6 +107,6 @@
     }
 
     button:hover {
-        overflow:initial;
+        overflow: initial;
     }
 </style>

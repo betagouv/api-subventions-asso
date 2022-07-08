@@ -14,7 +14,7 @@ export const flatenProviderValue = providerValueObject => {
         };
     };
 
-    if (["number", "string"].includes(typeof providerValueObject)) return providerValueObject;
+    if (["number", "string"].includes(typeof providerValueObject) | !providerValueObject) return providerValueObject;
 
     if (Array.isArray(providerValueObject)) {
         return providerValueObject.map(ob => flatenProviderValue(ob));
