@@ -51,7 +51,7 @@
                     <TableCell>
                         {valueOrHyphen(getProjectName(element.subvention))}
                     </TableCell>
-                    <TableCell>
+                    <TableCell position="center">
                         <Button
                             disabled="true"
                             icon="information-line"

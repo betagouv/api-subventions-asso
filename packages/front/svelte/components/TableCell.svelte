@@ -1,10 +1,12 @@
 <script>
     export let primary = false;
     export let colspan = undefined;
+    export let position = "end";
+    const style = `--justify: ${position}`;
 </script>
 
 <td {colspan} class:primary>
-    <div style="--justify: {colspan ? 'center' : 'end'}">
+    <div {style}>
         <slot />
     </div>
 </td>
@@ -22,6 +24,11 @@
         align-items: center;
         height: 71px;
         max-height: 71px;
+    }
+
+    div :global(.fr-btn),
+    div :global(p) {
+        justify-self: end;
     }
 
     td.primary {
