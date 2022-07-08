@@ -34,7 +34,7 @@
             <tr>
                 {#if !element.subvention}
                     <td colspan="7">
-                        <Button disabled="true" icon="information-line" iconPosition="right">
+                        <Button disabled="true" icon="information-line" iconPosition="right" tooltip="Fonctionnalités en cours de développement">
                             Je cherche d'avantage d'informations sur cette demande
                         </Button>
                     </td>
@@ -58,8 +58,7 @@
                         {/if}
                     </TableCell>
                     <TableCell>
-                        <Button disabled="true" icon="information-line">
-                            Je cherche d'avantage d'informations sur cette demande
+                        <Button disabled="true" icon="information-line" tooltip="Fonctionnalités en cours de développement">
                         </Button>
                     </TableCell>
                     <TableCell>{valueOrHyphen(numberToEuro(element.subvention.montants?.demande))}</TableCell>
