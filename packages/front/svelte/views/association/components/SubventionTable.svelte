@@ -1,6 +1,6 @@
 <script>
     import TableCell from "../../../components/TableCell.svelte";
-
+    import TableHead from "../../../components/TableHead.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import Table from "../../../dsfr/Table.svelte";
     import { valueOrHyphen, numberToEuro } from "../../../helpers/dataHelper";
@@ -13,31 +13,31 @@
 
         return subvention.actions_proposee
             .sort((actionA, actionB) => actionA.rang - actionB.rang)
-            .map(action => `${helpers.capitalizeFirstLetter(action.intitule)}.`.replace("..", "."));
+            .map(action => `${helpers.capitalizeFirstLetter(action.intitule)}.`.replace("..", "."))
+            .join("-");
     };
-
-    console.log(elements);
 </script>
 
 <Table>
     <svelte:fragment slot="head">
-        <th scope="col">À qui a été adressé la demande ?</th>
-        <th scope="col">À quelle date ?</th>
-        <th scope="col">Pour quel dispositif la demande a-t-elle été faite ?</th>
-        <th scope="col">Pour quel projet la demande a-t-elle été faite ?</th>
-        <th scope="col">Plus d'infos</th>
-        <th scope="col">Quel montant demandé ?</th>
-        <th scope="col">Quel montant accordé ?</th>
+        <TableHead action={() => console.log("filter")}>À qui a été adressé la demande ?</TableHead>
+        <TableHead action={() => console.log("filter")}>À quelle date ?</TableHead>
+        <TableHead action={() => console.log("filter")}>Pour quel dispositif la demande a-t-elle été faite ?</TableHead>
+        <TableHead action={() => console.log("filter")}>Pour quel projet la demande a-t-elle été faite ?</TableHead>
+        <TableHead>Plus d'infos</TableHead>
+        <TableHead action={() => console.log("filter")}>Quel montant demandé ?</TableHead>
+        <TableHead action={() => console.log("filter")}>Quel montant accordé ?</TableHead>
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each elements as element}
             <tr>
                 {#if !element.subvention}
-                    <td colspan="7">
+                    <TableCell colspan="6" class="button-cell">
                         <Button disabled="true" icon="information-line" iconPosition="right" tooltip="Fonctionnalités en cours de développement">
                             Je cherche d'avantage d'informations sur cette demande
                         </Button>
-                    </td>
+                    </TableCell>
+                    <TableCell primary={true}>?</TableCell>
                 {:else}
                     <TableCell>{element.subvention.service_instructeur}</TableCell>
                     <TableCell>
@@ -49,20 +49,16 @@
                     </TableCell>
                     <TableCell>{valueOrHyphen(element.subvention.dispositif)}</TableCell>
                     <TableCell>
-                        {#if getProjectName(element.subvention) && getProjectName(element.subvention).length}
-                            {#each getProjectName(element.subvention) as label}
-                                <p>{label}</p>
-                            {/each}
-                        {:else}
-                            {valueOrHyphen()}
-                        {/if}
+                        {valueOrHyphen(getProjectName(element.subvention))}
                     </TableCell>
                     <TableCell>
-                        <Button disabled="true" icon="information-line" tooltip="Fonctionnalités en cours de développement">
-                        </Button>
+                        <Button
+                            disabled="true"
+                            icon="information-line"
+                            tooltip="Fonctionnalités en cours de développement" />
                     </TableCell>
                     <TableCell>{valueOrHyphen(numberToEuro(element.subvention.montants?.demande))}</TableCell>
-                    <TableCell primary="true">
+                    <TableCell primary={true}>
                         {#if element.subvention.montants?.accorde}
                             {numberToEuro(element.subvention.montants?.accorde)}
                         {:else}
@@ -74,3 +70,6 @@
         {/each}
     </svelte:fragment>
 </Table>
+
+<style>
+</style>

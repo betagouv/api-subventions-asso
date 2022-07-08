@@ -1,13 +1,30 @@
 <script>
     export let primary = false;
+    export let colspan = undefined;
 </script>
 
-<th class:primary>
-    <slot />
-</th>
+<td {colspan} class:primary>
+    <div style="--justify: {colspan ? 'center' : 'end'}">
+        <slot />
+    </div>
+</td>
 
 <style>
-    th.primary {
-        background-color: "#f5f5fe";
+    td {
+        height: 71px;
+        max-height: 71px;
+    }
+
+    div {
+        /* 140-16*2 padding - 1 to avoid bug*/
+        display: flex;
+        justify-content: var(--justify);
+        align-items: center;
+        height: 71px;
+        max-height: 71px;
+    }
+
+    td.primary {
+        background-color: #f5f5fe;
     }
 </style>
