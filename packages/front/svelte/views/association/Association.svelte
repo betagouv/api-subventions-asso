@@ -9,6 +9,7 @@
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "./components/InfosLegales.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
+    import DataNotFound from "../../components/DataNotFound.svelte";
 
     export let route = "";
     const routeSegments = route.split("/");
@@ -33,5 +34,9 @@
     <InfosLegales {association} />
     <TabsAsso {titles} associationIdentifier={id} {association} />
 {:catch error}
-    <ErrorAlert message={error.message} />
+    {#if error.request && error.request.status == 404}
+        <DataNotFound />
+    {:else}
+        <ErrorAlert message={error.message} />
+    {/if}
 {/await}

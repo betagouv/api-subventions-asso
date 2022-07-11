@@ -9,7 +9,7 @@
     import { numberToEuro } from "../../../helpers/dataHelper";
     import SubventionTable from "./SubventionTable.svelte";
     import VersementTable from "./VersementTable.svelte";
-import DataNotFound from "../../../components/DataNotFound.svelte";
+    import DataNotFound from "../../../components/DataNotFound.svelte";
 
     export let association;
 
@@ -103,7 +103,11 @@ import DataNotFound from "../../../components/DataNotFound.svelte";
     <div class="title">
         <h2>Tableau de bord des subventions</h2>
         <div>
-            <Button on:click={displayProviders} type="secondary" disabled={true} tooltip="Fonctionnalités en cours de développement">
+            <Button
+                on:click={displayProviders}
+                type="secondary"
+                disabled={true}
+                tooltip="Fonctionnalités en cours de développement">
                 Voir la liste des fournisseurs de donnée
             </Button>
         </div>
@@ -147,7 +151,7 @@ import DataNotFound from "../../../components/DataNotFound.svelte";
     </div>
 {:catch error}
     {#if error.request && error.request.status == 404}
-        <DataNotFound/>
+        <DataNotFound />
     {:else}
         <ErrorAlert message={error.message} />
     {/if}

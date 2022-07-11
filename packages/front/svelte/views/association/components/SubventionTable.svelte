@@ -33,7 +33,11 @@
             <tr>
                 {#if !element.subvention}
                     <TableCell colspan="6" class="button-cell">
-                        <Button disabled="true" icon="information-line" iconPosition="right" tooltip="Fonctionnalités en cours de développement">
+                        <Button
+                            disabled="true"
+                            icon="information-line"
+                            iconPosition="right"
+                            tooltip="Fonctionnalités en cours de développement">
                             Je cherche d'avantage d'informations sur cette demande
                         </Button>
                     </TableCell>

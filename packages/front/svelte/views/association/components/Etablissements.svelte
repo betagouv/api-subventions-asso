@@ -42,11 +42,11 @@
             {/each}
         </div>
     {:catch error}
-    {#if error.request && error.request.status == 404}
-        <DataNotFound/>
-    {:else}
-        <ErrorAlert message={error.message} />
-    {/if}
+        {#if error.request && error.request.status == 404}
+            <DataNotFound />
+        {:else}
+            <ErrorAlert message={error.message} />
+        {/if}
     {/await}
 </div>
 
