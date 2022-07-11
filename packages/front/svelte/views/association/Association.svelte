@@ -1,6 +1,10 @@
 <script>
+    import { isAssociation } from "../../helpers/entrepriseHelper";
     import associationService from "./association.service.js";
+
     import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
+    import Alert from "../../dsfr/Alert.svelte";
+
     import Spinner from "../../components/Spinner.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "./components/InfosLegales.svelte";
@@ -21,6 +25,11 @@
 {#await promise}
     <Spinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
+    {#if !isAssociation(association.categorie_juridique)}
+        <Alert type="warning" title="Attention">
+            Il semblerait que vous cherchiez une entreprise et non une association
+        </Alert>
+    {/if}
     <InfosLegales {association} />
     <TabsAsso {titles} associationIdentifier={id} {association} />
 {:catch error}

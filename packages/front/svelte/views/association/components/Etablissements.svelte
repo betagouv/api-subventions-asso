@@ -6,6 +6,7 @@
     import Card from "../../../dsfr/Card.svelte";
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
+    import DataNotFound from "../../../components/DataNotFound.svelte";
 
     import { valueOrHyphen } from "../../../helpers/dataHelper";
     import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
@@ -41,7 +42,11 @@
             {/each}
         </div>
     {:catch error}
+    {#if error.request && error.request.status == 404}
+        <DataNotFound/>
+    {:else}
         <ErrorAlert message={error.message} />
+    {/if}
     {/await}
 </div>
 

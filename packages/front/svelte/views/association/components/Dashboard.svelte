@@ -9,6 +9,7 @@
     import { numberToEuro } from "../../../helpers/dataHelper";
     import SubventionTable from "./SubventionTable.svelte";
     import VersementTable from "./VersementTable.svelte";
+import DataNotFound from "../../../components/DataNotFound.svelte";
 
     export let association;
 
@@ -145,7 +146,11 @@
         </div>
     </div>
 {:catch error}
-    <ErrorAlert message={error.message} />
+    {#if error.request && error.request.status == 404}
+        <DataNotFound/>
+    {:else}
+        <ErrorAlert message={error.message} />
+    {/if}
 {/await}
 
 <style>
