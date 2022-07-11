@@ -27,7 +27,7 @@
     "checkHTMLLocal": "site-validator --verbose --local --url http://localhost:1234",
     "dev": "nodemon",
     "start": "node ./build/src/index.js",
-    "prebuild": "npx webpack",
+    "prebuild": "npx webpack && npx webpack --config ./webpack.svelte.config.js",
     "build": "npx tsc --project ./",
     "postbuild": "npm run copy-files",
     "copy-files": "cp -r views build/views && cp -r static build/static && cp -r node_modules build/node_modules",
