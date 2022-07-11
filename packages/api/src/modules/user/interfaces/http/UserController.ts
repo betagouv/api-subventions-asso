@@ -1,6 +1,7 @@
 import UserDto from '@api-subventions-asso/dto/user/UserDto';
 import { Request as ExRequest } from 'express';
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get } from 'tsoa';
+import { ObjectId } from 'mongodb';
+import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path } from 'tsoa';
 import User, { UserWithoutSecret } from '../../entities/User';
 import userService from '../../user.service';
 
@@ -44,6 +45,22 @@ export class UserController extends Controller {
             this.setStatus(500);
         }
         return result[0];
+    }
+
+    @Delete("/admin/user/:id")
+    @Security("jwt", ['admin'])
+    public async deleteUser(
+        @Path() id: string
+    ): Promise<{success: boolean }> {
+        const result = await userService.delete({_id: new ObjectId(id)});
+
+        if (!result.success) {
+            this.setStatus(500);
+        }
+        else {
+            this.setStatus(204)
+        }
+        return result;
     }
     
 

@@ -29,7 +29,7 @@ export class UserRepository {
         return this.findByEmail(user.email) as unknown as UserWithoutSecret;
     }
 
-    async delete(user:UserWithoutSecret): Promise<boolean> {
+    async delete(user:UserWithoutSecret | { _id: ObjectId}): Promise<boolean> {
         const result = await this.collection.deleteOne({ _id: user._id});
         return result.acknowledged;
     }
