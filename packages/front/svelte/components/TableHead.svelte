@@ -17,7 +17,7 @@
 
 <style>
     th {
-        padding-bottom: 0px;
+        padding: 12px;
         vertical-align: top;
     }
 

@@ -192,13 +192,15 @@
 
     .tables {
         display: flex;
-        gap: 1%;
+        justify-content: space-between;
     }
 
     .tables div:first-child {
-        width: 69%;
+        width: 760px;
+        max-width: 760px;
     }
     .tables div:last-child {
-        width: 31%;
+        width: 360px;
+        max-width: 360px;
     }
 </style>
