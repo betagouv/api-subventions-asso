@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.1](https://github.com/betagouv/datasubvention/compare/v0.12.0...v0.12.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* **front:** fix build svelte ([cd7aef9](https://github.com/betagouv/datasubvention/commit/cd7aef93954c55f95ff207beb3a6666f5602f36b))
+
+
+
+
+
 # [0.12.0](https://github.com/betagouv/datasubvention/compare/v0.10.3...v0.12.0) (2022-07-11)
 
 
