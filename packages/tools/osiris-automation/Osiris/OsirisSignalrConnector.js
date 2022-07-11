@@ -12,12 +12,34 @@ class OsirisSignalrConnector {
     constructor(cookies, debug = false) {
         this.connection = $.hubConnection(`${window._origin}/OsirisSignalr/signalr`, { useDefaultPath: false });
         this.reportHubProxy = this.connection.createHubProxy("reporthub");
+        this.connection.reconnectDelay = 1;
+        this.connection.reconnecting(() => {
+            console.log("SignalR trying reconnecting")
+        })
+        this.connection.connectionSlow(() => {
+            console.log("SignalR connection slow")
+        })
+        this.connection.error((e) => {
+            console.log("SignalR error :", e);
+            this.errorCallbacks.forEach(cb => cb(e));
+        })
+        this.connection.stateChanged((oldState) => {
+            console.log(oldState)
+        })
+        this.connection.disconnected(() => {
+            console.log("Disconnected beacause : " + this.connection.lastError.message);
+            setTimeout(() => {
+                console.log("Trying reconnection")
+                this.connect();
+            }, 5000)
+        });
 
         this.debug = debug;
         this.connectionCookies = cookies;
         this.connection.logging = debug;
         this.statusCallbacks = [];
         this.contentCallbacks = [];
+        this.errorCallbacks = [];
 
         this.reportHubProxy.on("reportStatus", (result) => {
             if (debug) {
@@ -34,8 +56,6 @@ class OsirisSignalrConnector {
 
             this.contentCallbacks.forEach(cb => cb(result));
         })
-
-
     }
 
     async connect() {
@@ -64,6 +84,10 @@ class OsirisSignalrConnector {
 
     onContent(callback) {
         this.contentCallbacks.push(callback);
+    }
+
+    onError(callback) {
+        this.errorCallbacks.push(callback);
     }
 }
 
