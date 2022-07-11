@@ -5,11 +5,12 @@ const qs = require("qs");
 const OsirisSignalrConnector = require("./OsirisSignalrConnector");
 
 class OsirisExtractDownloader {
-    constructor(cookie, debug = false) {
+    constructor(cookie, year, debug = false) {
         this.connector = new OsirisSignalrConnector(cookie, debug);
         this.BASE_URL = "https://osiris.extranet.jeunesse-sports.gouv.fr/";
         this.connectionCookies = cookie;
         this.debug = debug;
+        this.year = year;
 
         this.currentDownloadFileName = "";
         this.currentDownloadCallback = null;
@@ -105,26 +106,30 @@ class OsirisExtractDownloader {
     }
 
     __save(name, byte) {
-        fs.writeFile("./extract/" + this.currentDownloadFileName + name, byte);
+        fs.writeFile(`./extract/${this.year}` + this.currentDownloadFileName + name, byte, (err) => err && console.error(err));
         const cb = this.currentDownloadCallback;
         this.currentDownloadCallback = null;
         cb();
     };
 
     __clearReportDir() {
-        const dirPath = "./extract";
+        const dirPath = `./extract/`;
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath);
         }
 
-        fs.readdir(dirPath, (err, files) => {
-            if (err) throw err;
-            for (const file of files) {
-                fs.unlink(path.join(dirPath, file), err => {
-                    if (err) throw err;
-                });
-            }
-        });
+        if (!fs.existsSync(dirPath + this.year)) {
+            fs.mkdirSync(dirPath + this.year);
+        }
+
+        // fs.readdir(dirPath, (err, files) => {
+        //     if (err) throw err;
+        //     for (const file of files) {
+        //         fs.unlink(path.join(dirPath, file), err => {
+        //             if (err) throw err;
+        //         });
+        //     }
+        // });
     }   
 }
 
