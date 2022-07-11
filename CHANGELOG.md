@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.12.0) (2022-07-11)
+
+
+### Bug Fixes
+
+* **api:** add 'Etat dossier' in path for osirisRequestEntity status ([#294](https://github.com/betagouv/api-subventions-asso/issues/294)) ([b355edf](https://github.com/betagouv/api-subventions-asso/commit/b355edf74d39a0fa7bc588fd6c4a25df2780849f))
+* **api:** fix date modification ([35a0ade](https://github.com/betagouv/api-subventions-asso/commit/35a0aded8bdb71fd47d708f2cb0f344aabba2750))
+* **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+* **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+* **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
+* **front:** spelling correction ([#346](https://github.com/betagouv/api-subventions-asso/issues/346)) ([a26af0f](https://github.com/betagouv/api-subventions-asso/commit/a26af0f6d3689f3148994a41b913a4858fc31316))
+
+
+### Features
+
+* **api:** add route for getting documents ([#324](https://github.com/betagouv/api-subventions-asso/issues/324)) ([17acc6a](https://github.com/betagouv/api-subventions-asso/commit/17acc6a67992176908410b221264b87404a4c312))
+* **api:** add service for api entreprise ([#342](https://github.com/betagouv/api-subventions-asso/issues/342)) ([382bfba](https://github.com/betagouv/api-subventions-asso/commit/382bfba952ca7a24c5b0479eee21b652e71f826a))
+* **api:** add versements routes ([#301](https://github.com/betagouv/api-subventions-asso/issues/301)) ([0a354f5](https://github.com/betagouv/api-subventions-asso/commit/0a354f59df88236bec1ed039abd9eb37ba43e3db))
+* **api:** apply new rules for api asso documents ([#336](https://github.com/betagouv/api-subventions-asso/issues/336)) ([145f1b4](https://github.com/betagouv/api-subventions-asso/commit/145f1b4823c7b876b75cbe2a990d0a424f221ee1))
+* **api:** user email to lower case ([#298](https://github.com/betagouv/api-subventions-asso/issues/298)) ([e15ce0c](https://github.com/betagouv/api-subventions-asso/commit/e15ce0c1f12582101870b9b6ef3769f82c931a66))
+* **front:** add cgu page ([#313](https://github.com/betagouv/api-subventions-asso/issues/313)) ([69fd4d5](https://github.com/betagouv/api-subventions-asso/commit/69fd4d58d382e38302abfbe43257a090715eda9b))
+* **front:** add mailto activation mail not received ([#295](https://github.com/betagouv/api-subventions-asso/issues/295)) ([be2498a](https://github.com/betagouv/api-subventions-asso/commit/be2498a35f39e80950a41aa6a547094c1affb0b0)), closes [#292](https://github.com/betagouv/api-subventions-asso/issues/292) [#239](https://github.com/betagouv/api-subventions-asso/issues/239) [#207](https://github.com/betagouv/api-subventions-asso/issues/207) [#245](https://github.com/betagouv/api-subventions-asso/issues/245) [#242](https://github.com/betagouv/api-subventions-asso/issues/242) [#243](https://github.com/betagouv/api-subventions-asso/issues/243) [#249](https://github.com/betagouv/api-subventions-asso/issues/249) [#255](https://github.com/betagouv/api-subventions-asso/issues/255) [#253](https://github.com/betagouv/api-subventions-asso/issues/253) [#258](https://github.com/betagouv/api-subventions-asso/issues/258) [#263](https://github.com/betagouv/api-subventions-asso/issues/263) [#259](https://github.com/betagouv/api-subventions-asso/issues/259) [#256](https://github.com/betagouv/api-subventions-asso/issues/256) [#256](https://github.com/betagouv/api-subventions-asso/issues/256) [#270](https://github.com/betagouv/api-subventions-asso/issues/270) [#265](https://github.com/betagouv/api-subventions-asso/issues/265)
+* **front:** update app description ([#306](https://github.com/betagouv/api-subventions-asso/issues/306)) ([6fc26b5](https://github.com/betagouv/api-subventions-asso/commit/6fc26b5b1b7b28bf81623c1b995726d6b51b90c6))
+
+
+
+
+
 ## [0.11.3](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.11.3) (2022-07-07)
 
 
