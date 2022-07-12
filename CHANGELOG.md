@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.3](https://github.com/betagouv/api-subventions-asso/compare/v0.12.2...v0.12.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* **front:** fix no data found if no sub found ([1e94beb](https://github.com/betagouv/api-subventions-asso/commit/1e94beb23648302ed20bcc1ab9332b2fff184977))
+
+
+
+
+
 ## [0.12.2](https://github.com/betagouv/api-subventions-asso/compare/v0.12.1...v0.12.2) (2022-07-12)
 
 **Note:** Version bump only for package api-subventions-asso
