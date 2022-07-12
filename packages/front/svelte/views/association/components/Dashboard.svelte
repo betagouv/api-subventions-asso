@@ -30,7 +30,7 @@
     let scopedSubventionRequestedAmount = 0;
     let scopedPerscentSubvention = 0;
 
-    let promise = new Promise(resolve => null);
+    let promise = new Promise(() => null);
     onMount(async () => {
         const siretSiege = association.siren + association.nic_siege;
         const subventionsPromise = associationService.getSubventions(association.siren);
@@ -47,7 +47,7 @@
                 ...sirets.map(siret => ({
                     value: siret,
                     label: siret === siretSiege ? `Pour le siège (${siret})` : `Pour l'établissement (${siret})`
-                }))
+                })).sort((etablisement) => etablisement.value === siretSiege ? -1 : 0)
             ];
 
             applyScope();
