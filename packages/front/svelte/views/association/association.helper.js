@@ -13,6 +13,8 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
         ...versements.map(s => ({ ...s, isVersement: true }))
     ]);
 
+    if (!Object.keys(groupedByEj).length) return [];
+
     const dataWithoutEj = groupedByEj["undefined"].map(sub => [sub]);
 
     delete groupedByEj["undefined"];

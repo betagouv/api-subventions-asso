@@ -1,8 +1,10 @@
 <script>
     export let primary = false;
     export let colspan = undefined;
-    export let position = "end";
-    const style = `--justify: ${position}`;
+    export let position = "start";
+    export let overflow = "hidden";
+
+    $: style = `--justify: ${position}; --overflow: ${overflow}`;
 </script>
 
 <td {colspan} class:primary>
@@ -12,23 +14,17 @@
 </td>
 
 <style>
-    td {
-        height: 71px;
-        max-height: 71px;
-    }
-
     div {
-        /* 140-16*2 padding - 1 to avoid bug*/
         display: flex;
         justify-content: var(--justify);
         align-items: center;
-        height: 71px;
-        max-height: 71px;
+        height: 92px;
+        max-height: 92px;
+        overflow: var(--overflow);
     }
 
-    div :global(.fr-btn),
-    div :global(p) {
-        justify-self: end;
+    td {
+        padding: 12px;
     }
 
     td.primary {

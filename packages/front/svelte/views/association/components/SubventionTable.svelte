@@ -4,6 +4,7 @@
     import Button from "../../../dsfr/Button.svelte";
     import Table from "../../../dsfr/Table.svelte";
     import { valueOrHyphen, numberToEuro } from "../../../helpers/dataHelper";
+    import { breakDateYear } from "../../../helpers/dateHelper";
     import helpers from "../../../../src/shared/helpers/EJSHelper";
 
     export let elements = [];
@@ -11,18 +12,31 @@
     const getProjectName = subvention => {
         if (!subvention.actions_proposee || !subvention.actions_proposee.length) return;
 
-        return subvention.actions_proposee
+        const names = subvention.actions_proposee
             .sort((actionA, actionB) => actionA.rang - actionB.rang)
-            .map(action => `${helpers.capitalizeFirstLetter(action.intitule)}.`.replace("..", "."))
-            .join("-");
+            .map(action => `${helpers.capitalizeFirstLetter(action.intitule)}.`.replace("..", "."));
+
+        // Remove duplicates
+        return [...new Set(names)].join("-");
     };
 </script>
 
 <Table>
+    <svelte:fragment slot="colgroup">
+        <colgroup>
+            <col class="col-120" />
+            <col class="col-80" />
+            <col class="col-80" />
+            <col />
+            <col class="col-80" />
+            <col class="col-120" />
+            <col class="col-120" />
+        </colgroup>
+    </svelte:fragment>
     <svelte:fragment slot="head">
         <TableHead action={() => console.log("filter")}>À qui a été adressé la demande ?</TableHead>
         <TableHead action={() => console.log("filter")}>À quelle date ?</TableHead>
-        <TableHead action={() => console.log("filter")}>Pour quel dispositif la demande a-t-elle été faite ?</TableHead>
+        <TableHead action={() => console.log("filter")}>Pour quel dispositif ?</TableHead>
         <TableHead action={() => console.log("filter")}>Pour quel projet la demande a-t-elle été faite ?</TableHead>
         <TableHead>Plus d'infos</TableHead>
         <TableHead action={() => console.log("filter")}>Quel montant demandé ?</TableHead>
@@ -32,33 +46,39 @@
         {#each elements as element}
             <tr>
                 {#if !element.subvention}
-                    <TableCell colspan="6" class="button-cell">
-                        <Button disabled="true" icon="information-line" iconPosition="right" tooltip="Fonctionnalités en cours de développement">
-                            Je cherche d'avantage d'informations sur cette demande
-                        </Button>
+                    <TableCell colspan="6" position="center" overflow="visible">
+                        <div class="tooltip-wrapper-2">
+                            <span class="tooltip">Fonctionnalité en cours de développement</span>
+                            <Button disabled="true" icon="information-line" iconPosition="right">
+                                Je cherche d'avantage d'informations sur cette demande
+                            </Button>
+                        </div>
                     </TableCell>
-                    <TableCell primary={true}>?</TableCell>
+                    <TableCell primary={true} position="end">?</TableCell>
                 {:else}
                     <TableCell>{element.subvention.service_instructeur}</TableCell>
-                    <TableCell>
+                    <TableCell position="center">
                         {#if element.subvention.date_commision}
-                            {new Date(element.subvention.date_commision).toLocaleDateString()}
+                            {@html breakDateYear(new Date(element.subvention.date_commision).toLocaleDateString())}
                         {:else}
                             {valueOrHyphen()}
                         {/if}
                     </TableCell>
                     <TableCell>{valueOrHyphen(element.subvention.dispositif)}</TableCell>
-                    <TableCell>
+                    <TableCell
+                        position={valueOrHyphen(getProjectName(element.subvention)) === "-" ? "center" : "start"}>
                         {valueOrHyphen(getProjectName(element.subvention))}
                     </TableCell>
-                    <TableCell position="center">
-                        <Button
-                            disabled="true"
-                            icon="information-line"
-                            tooltip="Fonctionnalités en cours de développement" />
+                    <TableCell position="center" overflow="visible">
+                        <div class="tooltip-wrapper">
+                            <span class="tooltip">Fonctionnalité en cours de développement</span>
+                            <Button disabled="true" icon="information-line" />
+                        </div>
                     </TableCell>
-                    <TableCell>{valueOrHyphen(numberToEuro(element.subvention.montants?.demande))}</TableCell>
-                    <TableCell primary={true}>
+                    <TableCell position="end">
+                        {valueOrHyphen(numberToEuro(element.subvention.montants?.demande))}
+                    </TableCell>
+                    <TableCell primary={true} position="end">
                         {#if element.subvention.montants?.accorde}
                             {numberToEuro(element.subvention.montants?.accorde)}
                         {:else}
@@ -72,4 +92,55 @@
 </Table>
 
 <style>
+    /* This is a quick fix and if needed a Tooltip component should be made */
+    .tooltip-wrapper,
+    .tooltip-wrapper-2 {
+        position: relative;
+    }
+
+    .tooltip-wrapper .tooltip {
+        top: -40px;
+        left: -134px;
+    }
+
+    .tooltip-wrapper-2 .tooltip {
+        top: -40px;
+        left: 100px;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        color: #fff;
+        background-color: #555;
+        padding: 5px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip-wrapper:hover > span.tooltip,
+    .tooltip-wrapper-2:hover > span.tooltip {
+        display: block;
+    }
+
+    .col-120 {
+        width: 120px;
+        max-width: 120px;
+    }
+
+    .col-80 {
+        width: 80px;
+        max-width: 80px;
+    }
 </style>
