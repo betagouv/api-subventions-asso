@@ -46,14 +46,13 @@
         {#each elements as element}
             <tr>
                 {#if !element.subvention}
-                    <TableCell colspan="6" position="center">
-                        <Button
-                            disabled="true"
-                            icon="information-line"
-                            iconPosition="right"
-                            tooltip="Fonctionnalités en cours de développement">
-                            Je cherche d'avantage d'informations sur cette demande
-                        </Button>
+                    <TableCell colspan="6" position="center" overflow="visible">
+                        <div class="tooltip-wrapper-2">
+                            <span class="tooltip">Fonctionnalité en cours de développement</span>
+                            <Button disabled="true" icon="information-line" iconPosition="right">
+                                Je cherche d'avantage d'informations sur cette demande
+                            </Button>
+                        </div>
                     </TableCell>
                     <TableCell primary={true} position="end">?</TableCell>
                 {:else}
@@ -70,11 +69,11 @@
                         position={valueOrHyphen(getProjectName(element.subvention)) === "-" ? "center" : "start"}>
                         {valueOrHyphen(getProjectName(element.subvention))}
                     </TableCell>
-                    <TableCell position="center">
-                        <Button
-                            disabled="true"
-                            icon="information-line"
-                            tooltip="Fonctionnalités en cours de développement" />
+                    <TableCell position="center" overflow="visible">
+                        <div class="tooltip-wrapper">
+                            <span class="tooltip">Fonctionnalité en cours de développement</span>
+                            <Button disabled="true" icon="information-line" />
+                        </div>
                     </TableCell>
                     <TableCell position="end">
                         {valueOrHyphen(numberToEuro(element.subvention.montants?.demande))}
@@ -93,6 +92,48 @@
 </Table>
 
 <style>
+    /* This is a quick fix and if needed a Tooltip component should be made */
+    .tooltip-wrapper,
+    .tooltip-wrapper-2 {
+        position: relative;
+    }
+
+    .tooltip-wrapper .tooltip {
+        top: -40px;
+        left: -134px;
+    }
+
+    .tooltip-wrapper-2 .tooltip {
+        top: -40px;
+        left: 100px;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        color: #fff;
+        background-color: #555;
+        padding: 5px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip-wrapper:hover > span.tooltip,
+    .tooltip-wrapper-2:hover > span.tooltip {
+        display: block;
+    }
+
     .col-120 {
         width: 120px;
         max-width: 120px;

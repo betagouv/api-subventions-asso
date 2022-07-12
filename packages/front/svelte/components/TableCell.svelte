@@ -2,8 +2,9 @@
     export let primary = false;
     export let colspan = undefined;
     export let position = "start";
+    export let overflow = "hidden";
 
-    $: style = `--justify: ${position}`;
+    $: style = `--justify: ${position}; --overflow: ${overflow}`;
 </script>
 
 <td {colspan} class:primary>
@@ -19,7 +20,7 @@
         align-items: center;
         height: 92px;
         max-height: 92px;
-        overflow: hidden;
+        overflow: var(--overflow);
     }
 
     td {

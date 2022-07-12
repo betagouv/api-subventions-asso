@@ -8,7 +8,6 @@ export const getAddress = address => {
 };
 
 export const mapSubventionsAndVersements = ({ subventions, versements }) => {
-    console.log(subventions, versements);
     const groupedByEj = groupByEj([
         ...subventions.map(s => ({ ...s, isSub: true })),
         ...versements.map(s => ({ ...s, isVersement: true }))
