@@ -4,6 +4,7 @@
 
 <div class="fr-table fr-table--bordered">
     <table>
+        <slot name="colgroup" />
         <caption class="sr-only">{title}</caption>
         <thead>
             <tr>
@@ -19,6 +20,8 @@
 <style>
     /* TODO: export this to avoid modifying DSFR components */
     table {
+        display: table;
+        table-layout: fixed;
         border-collapse: collapse;
         overflow: hidden;
     }

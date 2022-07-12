@@ -6,6 +6,7 @@
     import Spinner from "../../../components/Spinner.svelte";
     import CardDocuments from "../../../components/CardDocuments.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
+    import DataNotFound from "../../../components/DataNotFound.svelte";
 
     export let associationIdentifier;
 
@@ -35,7 +36,11 @@
             {/each}
         </div>
     {:catch error}
-        <ErrorAlert message={error.message} />
+        {#if error.request && error.request.status == 404}
+            <DataNotFound />
+        {:else}
+            <ErrorAlert message={error.message} />
+        {/if}
     {/await}
 </div>
 

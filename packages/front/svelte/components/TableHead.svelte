@@ -10,14 +10,14 @@
             <slot />
         </p>
         {#if action}
-            <Button on:click={action} disabled="true" icon="arrow-left-s-line" />
+            <!-- <Button on:click={action} disabled="true" icon="arrow-left-s-line" /> -->
         {/if}
     </div>
 </th>
 
 <style>
     th {
-        padding-bottom: 0px;
+        padding: 12px;
         vertical-align: top;
     }
 

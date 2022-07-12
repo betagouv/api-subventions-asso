@@ -7,22 +7,6 @@
     export let disabled = false;
     export let icon = "";
     export let iconPosition = "";
-    export let tooltip = "";
-
-    let element;
-    let tooltipElement;
-
-    onMount(() => {
-        if (tooltipElement && element) {
-            element.addEventListener("mouseover", () => {
-                const boxElement = element.getBoundingClientRect();
-                const boxTooltipElement = tooltipElement.getBoundingClientRect();
-
-                const computedRigthPosition = (boxElement.width - boxTooltipElement.width) / 2;
-                tooltipElement.style.right = `${computedRigthPosition}px`;
-            });
-        }
-    });
 
     const dispatch = createEventDispatcher();
 
@@ -64,49 +48,6 @@
      ${getSpecificIconClass()}`;
 </script>
 
-<button bind:this={element} on:click={() => dispatch("click")} class={classes} {disabled} alt="test">
+<button on:click={() => dispatch("click")} class={classes} {disabled} alt="test">
     <slot />
-    {#if tooltip.length}
-        <span class="tooltiptext" bind:this={tooltipElement}>{tooltip}</span>
-    {/if}
 </button>
-
-<style>
-    button {
-        position: relative;
-    }
-
-    button .tooltiptext {
-        visibility: hidden;
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    button .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
-
-    button:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    button:hover {
-        overflow: initial;
-    }
-</style>
