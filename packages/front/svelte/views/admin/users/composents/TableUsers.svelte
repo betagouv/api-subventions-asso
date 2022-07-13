@@ -1,12 +1,12 @@
 <script>
     import { createEventDispatcher } from "svelte";
-import TableCell from "../../../../components/TableCell.svelte";
-import TableHead from "../../../../components/TableHead.svelte";
+    import TableCell from "../../../../components/TableCell.svelte";
+    import TableHead from "../../../../components/TableHead.svelte";
 
     import Button from "../../../../dsfr/Button.svelte";
     import Modal from "../../../../dsfr/Modal.svelte";
-import Table from "../../../../dsfr/Table.svelte";
-import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
+    import Table from "../../../../dsfr/Table.svelte";
+    import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
     import adminService from "../../admin.service";
 
     export let users;
@@ -55,7 +55,7 @@ import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
                                 {new Date(user.resetTokenDate).toLocaleString()}
                             </td>
                         {:else}
-                            <td colspan="2"></td>
+                            <td colspan="2" />
                         {/if}
                         <td>
                             <Button type="tertiary" icon="delete-fill" ariaControls="fr-modal-{user._id}" />

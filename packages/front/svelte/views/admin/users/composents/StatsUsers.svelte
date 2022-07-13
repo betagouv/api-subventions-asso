@@ -18,7 +18,7 @@
         chart = new Chart(canvas, {
             type: "doughnut",
             option: {
-                responsive: true,
+                responsive: true
             },
             data: {
                 labels: ["Non Actif", "Actif", "Admin"],
@@ -47,13 +47,13 @@
             Il y a <b>
                 {numberOfUsers}
             </b>
-             utilisateurs inscrits (hors admin).
+            utilisateurs inscrits (hors admin).
         </p>
         <p data-value={numberOfActiveUsers}>
             Dont <b>
                 {numberOfActiveUsers}
             </b>
-             ayant activé leur compte (hors admin).
+            ayant activé leur compte (hors admin).
         </p>
         <p data-value={numberOfAdmin}>
             Nombre d'administrateurs: <b>
