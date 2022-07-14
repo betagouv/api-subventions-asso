@@ -1,6 +1,11 @@
 import etablissementsService from "../../../src/modules/etablissements/etablissements.service";
+import apiEntrepriseService from "../../../src/modules/providers/apiEntreprise/apiEntreprise.service";
 
 describe("etablissements.service.ts", () => {
+
+    beforeAll(() =>
+        jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementationOnce(async () => null)
+    )
 
     describe("getEtablissementsBySiren", () => {
         it('should return etablissement data', async () => {
@@ -29,7 +34,7 @@ describe("etablissements.service.ts", () => {
                             type: 'object'
                         },
                     ],
-                    "nic":  [
+                    "nic": [
                         {
                             last_update: expect.any(Date),
 
@@ -38,7 +43,7 @@ describe("etablissements.service.ts", () => {
                             "value": "00016",
                         },
                     ],
-                    "ouvert":  [
+                    "ouvert": [
                         {
                             last_update: expect.any(Date),
                             "provider": "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>",
@@ -46,7 +51,7 @@ describe("etablissements.service.ts", () => {
                             "value": true,
                         }
                     ],
-                    "siege":  [
+                    "siege": [
                         {
                             last_update: expect.any(Date),
                             "provider": "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>",
@@ -91,7 +96,7 @@ describe("etablissements.service.ts", () => {
                         type: 'object'
                     },
                 ],
-                "nic":  [
+                "nic": [
                     {
                         last_update: expect.any(Date),
 
@@ -100,7 +105,7 @@ describe("etablissements.service.ts", () => {
                         "value": "00016",
                     },
                 ],
-                "ouvert":  [
+                "ouvert": [
                     {
                         last_update: expect.any(Date),
                         "provider": "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>",
@@ -108,7 +113,7 @@ describe("etablissements.service.ts", () => {
                         "value": true,
                     }
                 ],
-                "siege":  [
+                "siege": [
                     {
                         last_update: expect.any(Date),
                         "provider": "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>",

@@ -1,4 +1,4 @@
-import { Etablissement } from "../search/Etablissment";
+import { Etablissement } from "../search/Etablissement";
 import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
 
 export interface GetEtablissementSuccessResponseDto extends SuccessResponse {
