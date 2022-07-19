@@ -4,13 +4,15 @@ import qs from "qs";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf"
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
-import { isSiret } from "../../../shared/Validators";
-import { Siret } from "@api-subventions-asso/dto";
+import { isSiren, isSiret } from "../../../shared/Validators";
+import { Siren, Siret } from "@api-subventions-asso/dto";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
+import ExtraitRcs from "@api-subventions-asso/dto/associations/ExtraitRcs";
 
 export class ApiEntrepriseService {
     static API_URL = "https://entreprise.api.gouv.fr/v2/"
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
+    RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
 
     private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string) {
         const defaultParams = {
@@ -68,6 +70,18 @@ export class ApiEntrepriseService {
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
         return this.sendRequest(`${this.buildHeadcountUrl(subtractMonths)}/etablissement/${siret}`, {}, this.HEADCOUNT_REASON);
+    }
+
+    public async getExtractRcs(siren: Siren) {
+        if (isSiren(siren)) {
+            try {
+                return await this.sendRequest(`extraits_rcs_infogreffe/${siren}`, {}, this.RCS_EXTRACT_REASON) as ExtraitRcs
+            } catch (e) {
+                return null;
+            }
+        } else {
+            throw new StructureIdentifiersError("siren");
+        }
     }
 }
 

@@ -20,6 +20,8 @@ import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper';
 import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
 import documentsService from '../documents/documents.service';
 import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
+import apiEntrepriseService from "../providers/apiEntreprise/apiEntreprise.service";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
 export class AssociationsService {
 
@@ -34,10 +36,24 @@ export class AssociationsService {
 
     async getAssociation(id: StructureIdentifiers): Promise<Association | null> {
         const type = IdentifierHelper.getIdentifierType(id);
-        if (type === StructureIdentifiersEnum.rna) return await this.getAssociationByRna(id);
-        if (type === StructureIdentifiersEnum.siren) return await this.getAssociationBySiren(id);
-        if (type === StructureIdentifiersEnum.siret) return await this.getAssociationBySiret(id);
-        throw new StructureIdentifiersError();
+        let association;
+        if (type === StructureIdentifiersEnum.rna) {
+            association = await this.getAssociationByRna(id);
+            const siren = await rnaSirenService.getSiren(id);
+            if (association && siren) association.extrait_rcs = await this.getExtraitRcs(siren);
+            return association;
+        }
+        else if (type === StructureIdentifiersEnum.siren) {
+            association = await this.getAssociationBySiren(id);
+            if (association) association.extrait_rcs = await this.getExtraitRcs(id)
+            return association;
+        }
+        else if (type === StructureIdentifiersEnum.siret) {
+            association = await this.getAssociationBySiret(id);
+            if (association) association.extrait_rcs = await this.getExtraitRcs(siretToSiren(id))
+            return association;
+        }
+        else throw new StructureIdentifiersError();
     }
 
     async getAssociationBySiren(siren: Siren) {
@@ -45,6 +61,7 @@ export class AssociationsService {
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
+
     }
 
     async getAssociationBySiret(siret: Siret) {
@@ -111,16 +128,20 @@ export class AssociationsService {
         return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
     }
 
+    public async getExtraitRcs(siren: Siren) {
+        return apiEntrepriseService.getExtractRcs(siren);
+    }
+
     private async aggregate(id: StructureIdentifiers) {
         const idType = IdentifierHelper.getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
         const associationProviders = this.getAssociationProviders();
         const capitalizedId = capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret";
-        const promises = associationProviders.map(async provider => { 
-            try{
+        const promises = associationProviders.map(async provider => {
+            try {
                 const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
                 if (assos) return assos;
-            }  catch(e) {
+            } catch (e) {
                 console.error(provider, e);
             }
             return null;

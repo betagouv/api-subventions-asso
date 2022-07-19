@@ -6,8 +6,13 @@ import apiEntrepriseService from "./apiEntreprise.service";
 
 describe("ApiEntrepriseService", () => {
     jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
-    const SIRET = "12003400500001";
-    const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention"
+    const SIREN = "120034005"
+    const SIRET = SIREN + "00001";
+    const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
+    const RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
+
+    // @ts-expect-error
+    const sendRequestMock = jest.spyOn(apiEntrepriseService, "sendRequest")
 
     describe("sendRequest()", () => {
         const axiosGetMock = jest.spyOn(axios, "get");
@@ -137,8 +142,7 @@ describe("ApiEntrepriseService", () => {
     describe("getEtablissementHeadcount()", () => {
 
         it("should call sendRequest() with arguments", async () => {
-            // @ts-expect-error: spy on private method
-            const sendRequestMock = jest.spyOn(apiEntrepriseService, "sendRequest").mockImplementationOnce(jest.fn());
+            sendRequestMock.mockImplementationOnce(jest.fn());
             // @ts-expect-error
             const expected = [`${apiEntrepriseService.buildHeadcountUrl()}/etablissement/${SIRET}`, {}, HEADCOUNT_REASON];
             // @ts-expect-error
@@ -160,6 +164,43 @@ describe("ApiEntrepriseService", () => {
             const expected = "effectifs_mensuels_acoss_covid/2021/12"
             // @ts-expect-error
             const actual = apiEntrepriseService.buildHeadcountUrl(1);
+            expect(actual).toEqual(expected);
+        })
+    })
+
+    describe("getExtraitRcs", () => {
+        it("should return StructureIdentifierError", async () => {
+            const execpted = new StructureIdentifiersError("siren");
+            let actual;
+            try {
+                await apiEntrepriseService.getExtractRcs("NOT_A_SIREN");
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(execpted);
+        });
+
+        it("should return rcs extract", async () => {
+            const expected = {};
+            // @ts-expect-error
+            sendRequestMock.mockImplementationOnce(async () => expected);
+            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call sendRequest() with valid URL", async () => {
+            const expected = [`extraits_rcs_infogreffe/${SIREN}`, {}, RCS_EXTRACT_REASON];
+            // @ts-expect-error
+            sendRequestMock.mockImplementationOnce(async () => expected);
+            await apiEntrepriseService.getExtractRcs(SIREN);
+            const actual = sendRequestMock.mock.calls[0]
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return null if axios", async () => {
+            const expected = null;
+            sendRequestMock.mockImplementationOnce(() => { throw new Error() })
+            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
             expect(actual).toEqual(expected);
         })
     })
