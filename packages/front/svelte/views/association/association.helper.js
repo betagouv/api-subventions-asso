@@ -1,3 +1,4 @@
+import lodash from "lodash";
 import { sortByDateAsc } from "../../helpers/dateHelper";
 
 export const getAddress = address => {
@@ -59,4 +60,42 @@ export const getLastVersementsDate = versements => {
     if (!orderedVersements.length) return null;
 
     return new Date(orderedVersements[0].dateOperation);
+};
+
+export const sortByColumn = (elements, path) => {
+    return elements.sort((elementA, elementB) => {
+        let attributeA = lodash.get(elementA, path);
+        let attributeB = lodash.get(elementB, path);
+
+        if (path.includes("lastDate")) {
+            attributeA = getLastVersementsDate(elementA.versements || []);
+            attributeB = getLastVersementsDate(elementB.versements || []);
+        }
+
+        if (path.includes("amount")) {
+            attributeA = elementA.versements?.reduce((acc, versement) => acc + versement.amount, 0);
+            attributeB = elementB.versements?.reduce((acc, versement) => acc + versement.amount, 0);
+        }
+
+        if (!attributeA && !attributeB) return sortByDateAsc(elementB, elementA);
+        else if (!attributeA) return 1;
+        else if (!attributeB) return -1;
+
+        if (typeof attributeA == "number" || !isNaN(Number(attributeA))) {
+            return attributeB - attributeA;
+        }
+
+        // Check if string is date
+        const dateA = new Date(attributeA);
+        const dateB = new Date(attributeB);
+
+        if (!isNaN(dateA) && !isNaN(dateB)) {
+            return dateB.getTime() - dateA.getTime();
+        }
+
+        if (attributeB.toLowerCase() > attributeA.toLowerCase()) return 1;
+        if (attributeB.toLowerCase() < attributeA.toLowerCase()) return -1;
+
+        return sortByDateAsc(elementB, elementA);
+    });
 };

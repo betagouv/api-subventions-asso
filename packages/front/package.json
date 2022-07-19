@@ -52,6 +52,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "express-winston": "^4.2.0",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^10.4.0",
     "winston": "^3.8.0",
