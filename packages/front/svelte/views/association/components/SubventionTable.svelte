@@ -8,6 +8,9 @@
     import helpers from "../../../../src/shared/helpers/EJSHelper";
 
     export let elements = [];
+    export let sort = () => {};
+    export let currentSort = null;
+    export let sortDirection = null;
 
     const getProjectName = subvention => {
         if (!subvention.actions_proposee || !subvention.actions_proposee.length) return;
@@ -34,13 +37,43 @@
         </colgroup>
     </svelte:fragment>
     <svelte:fragment slot="head">
-        <TableHead action={() => console.log("filter")}>À qui a été adressé la demande ?</TableHead>
-        <TableHead action={() => console.log("filter")}>À quelle date ?</TableHead>
-        <TableHead action={() => console.log("filter")}>Pour quel dispositif ?</TableHead>
-        <TableHead action={() => console.log("filter")}>Pour quel projet la demande a-t-elle été faite ?</TableHead>
+        <TableHead
+            action={() => sort("subvention.service_instructeur")}
+            actionActive={currentSort === "subvention.service_instructeur"}
+            actionDirection={sortDirection}>
+            À qui a été adressé la demande ?
+        </TableHead>
+        <TableHead
+            action={() => sort("subvention.date_commision")}
+            actionActive={currentSort === "subvention.date_commision"}
+            actionDirection={sortDirection}>
+            À quelle date ?
+        </TableHead>
+        <TableHead
+            action={() => sort("subvention.dispositif")}
+            actionActive={currentSort === "subvention.dispositif"}
+            actionDirection={sortDirection}>
+            Pour quel dispositif ?
+        </TableHead>
+        <TableHead
+            action={() => sort("subvention.project-name")}
+            actionActive={currentSort === "subvention.project-name"}
+            actionDirection={sortDirection}>
+            Pour quel projet la demande a-t-elle été faite ?
+        </TableHead>
         <TableHead>Plus d'infos</TableHead>
-        <TableHead action={() => console.log("filter")}>Quel montant demandé ?</TableHead>
-        <TableHead action={() => console.log("filter")}>Quel montant accordé ?</TableHead>
+        <TableHead
+            action={() => sort("subvention.montants.demande")}
+            actionActive={currentSort === "subvention.montants.demande"}
+            actionDirection={sortDirection}>
+            Quel montant demandé ?
+        </TableHead>
+        <TableHead
+            action={() => sort("subvention.montants.accorde")}
+            actionActive={currentSort === "subvention.montants.accorde"}
+            actionDirection={sortDirection}>
+            Quel montant accordé ?
+        </TableHead>
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each elements as element}

@@ -7,6 +7,9 @@
     import TableHead from "../../../components/TableHead.svelte";
 
     export let elements = [];
+    export let sort = () => {};
+    export let currentSort = null;
+    export let sortDirection = null;
 
     const countTotal = versements => {
         return versements.reduce((acc, versement) => acc + versement.amount, 0);
@@ -22,9 +25,24 @@
         </colgroup>
     </svelte:fragment>
     <svelte:fragment slot="head">
-        <TableHead action={() => console.log("filter")}>Quel montant versé ?</TableHead>
-        <TableHead action={() => console.log("filter")}>Quel service a effectué le versement ?</TableHead>
-        <TableHead action={() => console.log("filter")}>À quelle date ?</TableHead>
+        <TableHead
+            action={() => sort("versement.montant")}
+            actionActive={currentSort === "versement.montant"}
+            actionDirection={sortDirection}>
+            Quel montant versé ?
+        </TableHead>
+        <TableHead
+            action={() => sort("versement.centreFinancier")}
+            actionActive={currentSort === "versement.centreFinancier"}
+            actionDirection={sortDirection}>
+            Quel service a effectué le versement ?
+        </TableHead>
+        <TableHead
+            action={() => sort("versement.date")}
+            actionActive={currentSort === "versement.date"}
+            actionDirection={sortDirection}>
+            À quelle date ?
+        </TableHead>
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each elements as element}
