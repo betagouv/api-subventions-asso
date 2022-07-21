@@ -31,17 +31,31 @@ export default class CliController {
         const logs: unknown[] = [];
 
         this.logger.logIC(`${files.length} files in the parse queue`);
-        this.logger.logIC(`You can read log in ${ this.logFileParsePath }`);
+        this.logger.logIC(`You can read log in ${this.logFileParsePath}`);
 
         return files.reduce((acc, filePath) => {
-            return acc.then(() => exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs) );
+            return acc.then(() => exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs));
         }, Promise.resolve())
             // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
             .then(() => fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), { flag: "w", encoding: "utf-8" }));
     }
-    
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async _parse(file: string, logs: unknown[], exportDate?: Date) {
         throw new Error("_parse() need to be implemented by the child class");
+    }
+
+    public async compare(previousFile: string, newFile: string) {
+        this.validParseFile(previousFile);
+        this.validParseFile(newFile);
+        this.validFileExists(previousFile);
+        this.validFileExists(newFile);
+
+        this._compare(previousFile, newFile)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected async _compare(previousFile: string, newFile: string) {
+        throw new Error("_compare() need to be implemented by the child class");
     }
 }
