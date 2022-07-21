@@ -12,6 +12,7 @@
     import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
 
     export let associationIdentifier;
+    export let association;
 
     let element;
     let promise = new Promise(() => null);
@@ -29,7 +30,7 @@
         <h3>Les établissements rattachés à cette association</h3>
         <div class="fr-grid-row fr-grid-row--gutters">
             {#each etablissements as etablissement}
-                <Card title={etablissement.siret} url="/etablissement/{etablissement.siret}" target="_blank">
+                <Card title={association.denomination} url="/etablissement/{etablissement.siret}" target="_blank">
                     {#if etablissement.siege}
                         <p>Siège de l'association</p>
                     {:else if !etablissement.ouvert}
@@ -37,6 +38,7 @@
                     {:else}
                         <p>Établissement secondaire</p>
                     {/if}
+                    <p>SIRET: {valueOrHyphen(etablissement.siret)}</p>
                     <p>{valueOrHyphen(getAddress(etablissement.adresse))}</p>
                 </Card>
             {/each}
