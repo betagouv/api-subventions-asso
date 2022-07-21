@@ -34,35 +34,32 @@ export class ApiEntrepriseService {
      * Si un SIRET est donné, alors renvoi l'effectif pour l'établissement donné
      */
     public async getHeadcount(id: StructureIdentifiers) {
-        if (isSiret(id)) {
-            let retries = 0;
-            let headcount;
-            let error;
-            // At the time of this writting, API Entreprise returns a 404 error if their is no entry for the year + month
-            // We retry a maximum of 5 times, going back from one month each time trying to find the last headcount saved
-            while (retries < 5) {
-                try {
-                    headcount = await this.getEtablissementHeadcount(id, retries) as IApiEntrepriseHeadcount;
-                    retries = 5;
-                } catch (e) {
-                    retries++;
-                    error = e
-                    if ((e as AxiosError)?.response?.status != 404) retries = 5;
-                }
+        if (!isSiret(id)) throw new StructureIdentifiersError();
+        let retries = 0;
+        let headcount;
+        let error;
+        // At the time of this writting, API Entreprise returns a 404 error if their is no entry for the year + month
+        // We retry a maximum of 5 times, going back from one month each time trying to find the last headcount saved
+        while (retries < 5) {
+            try {
+                headcount = await this.getEtablissementHeadcount(id, retries) as IApiEntrepriseHeadcount;
+                retries = 5;
+            } catch (e) {
+                retries++;
+                error = e
+                if ((e as AxiosError)?.response?.status != 404) retries = 5;
             }
-            if (headcount) return headcount;
-            else if (error) throw error;
-            else return null;
-
-        } else throw new StructureIdentifiersError()
+        }
+        if (headcount) return headcount;
+        else if (error) throw error;
+        else return null;
     }
 
     private buildHeadcountUrl(subtractMonths = 0) {
         const today = new Date();
         if (subtractMonths != 0) today.setMonth(today.getMonth() - subtractMonths);
         const year = today.getFullYear();
-        let month: string | number = today.getMonth() + 1;
-        month = month < 10 ? "0" + month : month;
+        const month = ("0" + (today.getMonth() + 1)).slice(-2);
         return `effectifs_mensuels_acoss_covid/${year}/${month}`;
     }
 
