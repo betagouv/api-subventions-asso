@@ -20,7 +20,7 @@
                     {:else if index == 1}
                         <Documents {associationIdentifier} />
                     {:else}
-                        <Etablissements {associationIdentifier} />
+                        <Etablissements {associationIdentifier} {association}/>
                     {/if}
                 </TabContent>
             {/each}
