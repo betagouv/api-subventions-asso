@@ -14,7 +14,7 @@ export class AssociationNameService {
     }
 
     async getAllStartingWith(value: string) {
-        return await associationNameRepository.findAllStartingWith(value)
+        return await associationNameRepository.findAllStartingWith(value);
     }
 
     async add(entity: AssociationNameEntity) {
