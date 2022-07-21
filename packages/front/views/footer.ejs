@@ -14,18 +14,18 @@
   /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="https://stats.data.gouv.fr/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '211']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  (function () {
+    var u = "https://stats.data.gouv.fr/";
+    _paq.push(['setTrackerUrl', u + 'matomo.php']);
+    _paq.push(['setSiteId', '256']);
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
   })();
 </script>
 <!-- End Matomo Code -->
 
 <div class="fr-follow">
-    <!-- <div class="fr-container">
+  <!-- <div class="fr-container">
         <div class="fr-grid-row">
             <div class="fr-col-12">
                 <div class="fr-follow__social">
@@ -51,30 +51,24 @@
   <div class="fr-container">
     <div class="fr-footer__body">
       <div class="fr-footer__brand fr-enlarge-link">
-          <a href="/" title="Retour à l’accueil">
-              <p class="fr-logo">
-                  République
-                  <br>française
-              </p>
-          </a>
+        <a href="/" title="Retour à l’accueil">
+          <p class="fr-logo">
+            République
+            <br>française
+          </p>
+        </a>
       </div>
       <div class="fr-footer__content">
         <p class="fr-footer__content-desc">
           <%= appDescription %>
         </p>
         <p class="fr-footer__content-desc">
-            Le code source est ouvert et les contributions sont bienvenues.
-            <a title="Voir le code source"
-               href="<%= appRepo %>"
-               target="_blank"
-               rel="noopener"
-               >Voir le code source</a>
+          Le code source est ouvert et les contributions sont bienvenues.
+          <a title="Voir le code source" href="<%= appRepo %>" target="_blank" rel="noopener">Voir le code source</a>
         </p>
         <ul class="fr-footer__content-list">
           <li class="fr-footer__content-item">
-            <a class="fr-footer__content-link"
-               title="Contactez-nous"
-               href="/contact">
+            <a class="fr-footer__content-link" title="Contactez-nous" href="/contact">
               Contactez-nous
             </a>
           </li>
@@ -105,15 +99,19 @@
           <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
         </li>
         <li class="fr-footer__bottom-item">
-            <button class="fr-footer__bottom-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal" data-fr-opened="false">Paramètres d'affichage</button>
+          <button class="fr-footer__bottom-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal"
+            data-fr-opened="false">Paramètres d'affichage</button>
         </li>
       </ul>
       <div class="fr-footer__bottom-copy">
-        <p>Sauf mention contraire, tous les contenus de ce site sont sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank">licence etalab-2.0</a></p>
+        <p>Sauf mention contraire, tous les contenus de ce site sont sous <a
+            href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank">licence etalab-2.0</a>
+        </p>
       </div>
     </div>
   </div>
   <%- include('./global_components/dark-mode-modale') -%>
 </footer>
 </body>
+
 </html>
