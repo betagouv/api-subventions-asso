@@ -1,3 +1,4 @@
+import path from "path";
 import UserDto from '@api-subventions-asso/dto/user/UserDto';
 import { NextFunction, Request, Response } from 'express';
 import User from '../../../../@types/User';
@@ -26,12 +27,7 @@ export default class AdminController {
             return res.redirect("/");
         }
 
-        const result = await adminService.listUsers(req.session.user as User);
-
-        res.render('admin/list-users', {
-            pageTitle: 'Admin - Liste des utilisateurs',
-            users: result.type === "SUCCESS" ? result.data : [],
-        })
+        res.sendFile(path.join(__dirname, '../../../../../static/svelte-index.html'));
     }
 
     @Get("/users/domain")

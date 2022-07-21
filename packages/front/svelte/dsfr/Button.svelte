@@ -7,6 +7,7 @@
     export let disabled = false;
     export let icon = "";
     export let iconPosition = "";
+    export let ariaControls = "";
 
     const dispatch = createEventDispatcher();
 
@@ -48,6 +49,11 @@
      ${getSpecificIconClass()}`;
 </script>
 
-<button on:click={() => dispatch("click")} class={classes} {disabled} alt="test">
+<button
+    on:click={() => dispatch("click")}
+    class={classes}
+    {disabled}
+    aria-controls={ariaControls}
+    data-fr-opened={ariaControls.length ? "false" : ""}>
     <slot />
 </button>

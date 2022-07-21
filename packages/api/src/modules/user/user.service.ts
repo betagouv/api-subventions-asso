@@ -155,7 +155,7 @@ export class UserService {
         return { success: true, user: await userRepository.update(currentUser)};
     }
 
-    public async delete(currentUser: UserWithoutSecret): Promise<{ success: boolean }> {
+    public async delete(currentUser: UserWithoutSecret | {_id: ObjectId}): Promise<{ success: boolean }> {
         return { success: await userRepository.delete(currentUser) };
     }
 
