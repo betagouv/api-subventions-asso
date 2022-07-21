@@ -51,7 +51,7 @@ console.log(`Current plan : ${oldPlan}`);
 
 console.log(`Upgrade Plan of mongodb ${oldPlan} to ${nessesaryMongoPlan} ...`);
 
-// console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${nessesaryMongoPlan}`).toString());
+console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${nessesaryMongoPlan}`).toString());
 
 console.log(`Upgrade Plan of mongodb ${oldPlan} to ${nessesaryMongoPlan} DONE !`);
 
@@ -61,11 +61,11 @@ console.log(`Start deploy ${appName} ...\n`);
 scalingAsyncAppAction("run" ,`--size 2XL --file ${osirisFile} --env TMP_YEAR_OF_FILE=${yearOfFile} bash ./packages/api/tools/osiris/deploy-files-container.sh`).then(() => {
     console.log("Extract end !");
 
-    console.log("Downgrad mongodb plan ...")
+    console.log("Downgrade mongodb plan ...")
 
-    // console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${oldPlan}`).toString());
+    console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${oldPlan}`).toString());
 
-    console.log("Downgrad mongodb plan DONE !")
+    console.log("Downgrade mongodb plan DONE !")
 
     console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);
 

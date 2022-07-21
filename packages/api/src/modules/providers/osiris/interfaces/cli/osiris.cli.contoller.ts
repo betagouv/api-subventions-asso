@@ -116,6 +116,10 @@ export default class OsirisCliController {
         let tictackClock = true;
         const results = await requests.reduce(async (acc, osirisRequest, index) => {
             const data = await acc;
+
+            tictackClock = !tictackClock;
+            console.log(tictackClock ? "TIC" : "TAC");
+5
             let validation = osirisService.validRequest(osirisRequest);
 
             if (validation.code === 2) { // RNA NOT FOUND // TODO: use const for decribe error
@@ -135,10 +139,6 @@ export default class OsirisCliController {
             if (!validation.success && validation.code != 2) {
                 logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
             } else data.push(await osirisService.addRequest(osirisRequest));
-
-            tictackClock = !tictackClock;
-
-            console.log(tictackClock ? "TIC" : "TAC");
 
             return data;
         }, Promise.resolve([]) as Promise<{ state: string, result: OsirisRequestEntity }[]>);

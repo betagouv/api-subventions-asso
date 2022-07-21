@@ -9,3 +9,5 @@ for file in "./logs/*"; do
     cat $file;
     echo;
 done
+
+exit;
