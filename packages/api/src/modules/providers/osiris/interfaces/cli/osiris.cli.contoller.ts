@@ -119,7 +119,7 @@ export default class OsirisCliController {
 
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
-5
+
             let validation = osirisService.validRequest(osirisRequest);
 
             if (validation.code === 2) { // RNA NOT FOUND // TODO: use const for decribe error
