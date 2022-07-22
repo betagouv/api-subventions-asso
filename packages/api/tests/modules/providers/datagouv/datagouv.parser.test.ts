@@ -73,7 +73,7 @@ describe("DataGouvParser", () => {
         })
 
         it("should be parse 1000 entreprise", async () => {
-            const data = [];
+            const data: any[] = [];
             for (let i = 0; i < 10000; i++) {
                 data.push({
                     siren: ("000000000" + i).slice(-9),
@@ -115,7 +115,7 @@ describe("DataGouvParser", () => {
         })
 
         it("should be parse 1000 rna-siren", async () => {
-            const data = [];
+            const data: any[] = [];
             for (let i = 0; i < 10000; i++) {
                 data.push({
                     siren: ("000000000" + i).slice(-9),
