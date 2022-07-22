@@ -7,6 +7,7 @@ import chorusService, { RejectedRequest } from "../../chorus.service";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
 import CliController from '../../../../../shared/CliController';
+import ChorusLineEntity from "../../entities/ChorusLineEntity";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCliController extends CliController {
@@ -19,8 +20,8 @@ export default class ChorusCliController extends CliController {
      * @param file path to file
      * @param batchSize La taille des packets envoyer à mongo coup par coup
      */
-    public async parse_xls(file: string, forceClean = false,  batchSize = 1000) {
-        if (typeof file !== "string" ) {
+    public async parse_xls(file: string, forceClean = false, batchSize = 1000) {
+        if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
 
@@ -47,9 +48,9 @@ export default class ChorusCliController extends CliController {
         console.info("Start register in database ...");
 
         const batchNumber = Math.ceil(totalEnities / batchSize);
-        const batchs = [];
+        const batchs: ChorusLineEntity[][] = [];
 
-        for(let i = 0; i < batchNumber; i++) {
+        for (let i = 0; i < batchNumber; i++) {
             batchs.push(entities.splice(-batchSize));
         }
 
@@ -101,15 +102,15 @@ export default class ChorusCliController extends CliController {
             data.push(await chorusService.addChorusLine(entity));
             return data;
         }, Promise.resolve([]) as Promise<
-        ({
-            state: string, 
-            result: unknown
-        } 
-        | RejectedRequest)[]>)
+            ({
+                state: string,
+                result: unknown
+            }
+                | RejectedRequest)[]>)
 
-        const created = results.filter(({state}) => state === "created");
-        const updated = results.filter(({state}) => state === "updated");
-        const rejected = results.filter(({state}) => state === "rejected") as RejectedRequest[];
+        const created = results.filter(({ state }) => state === "created");
+        const updated = results.filter(({ state }) => state === "updated");
+        const rejected = results.filter(({ state }) => state === "rejected") as RejectedRequest[];
 
         console.info(`
             ${results.length}/${entities.length}

@@ -19,7 +19,7 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
     const result = path.reduce((acc, name) => {
         if (acc === undefined) return acc;
 
-        const obj = acc as {[key: string]: string};
+        const obj = acc as { [key: string]: string };
 
         if (!(name instanceof Array)) { // So is string
             return obj[name];
@@ -36,10 +36,10 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
 
 export function indexDataByPathObject(pathObject: DefaultObject<ParserPath | ParserInfo>, data: DefaultObject<unknown>) {
     return Object.keys(pathObject).reduce((acc, key: string) => {
-        const tempAcc = (acc as { [key: string ] : string} );
+        const tempAcc = (acc as { [key: string]: string });
         tempAcc[key] = findByPath(data, pathObject[key]);
         return tempAcc;
-    }, {} as unknown) as DefaultObject<string|number>
+    }, {} as unknown) as DefaultObject<string | number>
 }
 
 export function linkHeaderToData(header: string[], data: unknown[]) {
@@ -52,7 +52,7 @@ export function linkHeaderToData(header: string[], data: unknown[]) {
 }
 
 export function findFiles(file: string) {
-    const files = [];
+    const files: string[] = [];
 
     if (fs.lstatSync(file).isDirectory()) {
         const filesInFolder = fs
@@ -79,13 +79,13 @@ export function xlsParse(content: Buffer) {
 }
 
 export function xlsParseWithPageName(content: Buffer) {
-    const xls = xlsx.parse(content, { raw: true, rawNumbers: true, cellNF:true, dateNF: "165"});
+    const xls = xlsx.parse(content, { raw: true, rawNumbers: true, cellNF: true, dateNF: "165" });
     return xls.map(xlsPage => ({ data: xlsPage.data.filter((row) => (row as unknown[]).length), name: xlsPage.name }));
 }
 
 export function ExcelDateToJSDate(serial: number) {
-    const utc_days  = Math.floor(serial - 25569);
-    const utc_value = utc_days * 86400;                                        
+    const utc_days = Math.floor(serial - 25569);
+    const utc_value = utc_days * 86400;
     const date_info = new Date(utc_value * 1000);
 
     const fractional_day = serial - Math.floor(serial) + 0.0000001;
