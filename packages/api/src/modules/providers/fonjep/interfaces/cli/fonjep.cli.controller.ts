@@ -56,7 +56,7 @@ export default class FonjepCliController extends CliController {
     }
 
     // Check if previous export documents are in new export file
-    public async compare(previousFile: string, newFile: string) {
+    public async _compare(previousFile: string, newFile: string) {
         console.log("start parsing files...");
 
         const today = new Date();
@@ -92,20 +92,21 @@ export default class FonjepCliController extends CliController {
         // Sort entity by date to increase performance
         const sortedNewEntities: any = splitEntitiesByYear(newEntities);
         while (loop && noMissingDocument) {
-            counter++
+            const currentEntity = previousEntities[counter];
             CliHelper.printAtSameLine(String(counter));
 
-            const currentEntity = previousEntities[counter];
             const currentYear = currentEntity.indexedInformations.annee_demande;
 
             // @ts-expect-error: any
-            const match = sortedNewEntities[currentYear].find(newEntity => isSameDocument(currentEntity, newEntity));
+            const match = sortedNewEntities[currentYear]?.find(newEntity => isSameDocument(currentEntity, newEntity));
             if (!match) {
                 noMissingDocument = false;
             }
-            if (counter == previousEntities.length - 1) loop = false;
+            counter++
+            if (counter == previousEntities.length) loop = false;
         }
         if (noMissingDocument) console.log("GREAT ! No missing document in the new file, we can drop and insert")
         else console.log("ARGFFF..! Some documents are missing so we have to find and update...")
+        return noMissingDocument
     }
 }
