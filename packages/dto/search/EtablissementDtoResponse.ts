@@ -1,4 +1,4 @@
-import { Etablissement } from "./Etablissment";
+import { Etablissement } from "./Etablissement";
 import { Association } from "./Association";
 import { DemandeSubvention } from "./DemandeSubvention";
 

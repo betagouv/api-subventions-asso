@@ -4,7 +4,7 @@ import { Rna } from "../shared/Rna";
 import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
 import { DemandeSubvention } from './DemandeSubvention';
-import { Etablissement } from './Etablissment';
+import { Etablissement } from './Etablissement';
 import { Versement } from "./Versement";
 
 export interface Association {
