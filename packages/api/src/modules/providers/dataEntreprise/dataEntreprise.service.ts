@@ -50,16 +50,16 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
     }
 
     public async findEtablissementBySiret(siret: Siret, wait = false): Promise<Etablissement | null> {
-        const data = await this.sendRequest<{etablissement: EtablisementDto}>(`${this.SIRETTE_ROUTE}/${siret}`, wait);
+        const data = await this.sendRequest<{ etablissement: EtablisementDto }>(`${this.SIRETTE_ROUTE}/${siret}`, wait);
         if (!data?.etablissement) return null;
 
         const association = data.etablissement?.unite_legale;
         const rna = association?.identifiant_association;
 
         if (rna) {
-            EventManager.call('rna-siren.matching', [{ rna, siren: siret}]);
+            EventManager.call('rna-siren.matching', [{ rna, siren: siret }]);
             const name = association.denomination;
-            if (name) EventManager.call('association-name.matching', [{rna, siren: siret, name, provider: this.provider.name, lastUpdate: data.etablissement.updated_at}]);
+            if (name) EventManager.call('association-name.matching', [{ rna, siren: siret, name, provider: this.provider.name, lastUpdate: data.etablissement.updated_at }]);
         }
 
         const etablissement = EtablissementDtoAdapter.toEtablissement(data.etablissement);
@@ -76,30 +76,30 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const rna = association.identifiant_association;
         if (rna) {
             const name = association.denomination;
-            EventManager.call('rna-siren.matching', [{ rna, siren}]);
-            EventManager.call('association-name.matching', [{rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at}]);
+            EventManager.call('rna-siren.matching', [{ rna, siren }]);
+            EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at }]);
         }
-        
+
         if (data.unite_legale.etablissements) {
             data.unite_legale.etablissements.forEach(etablissement => {
                 const etab = EtablissementDtoAdapter.toEtablissement({ ...etablissement, unite_legale: data.unite_legale });
                 this.etablissementsCache.add(etablissement.siret, etab);
             });
         }
-        
+
         return EntrepriseDtoAdapter.toAssociation(data);
     }
-    
+
     public async findAssociationByRna(rna: Rna, wait = false) {
         const data = await this.sendRequest<AssociationDto>(`${this.RNA_ROUTE}/${rna}`, wait);
         if (!data) return null;
-        
+
         const association = data.association;
         if (association.siret) {
             const siren = siretToSiren(association.siret);
             const name = association.titre;
-            EventManager.call('rna-siren.matching', [{rna, siren}])
-            EventManager.call('association-name.matching', [{rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at}]);
+            EventManager.call('rna-siren.matching', [{ rna, siren }])
+            EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at }]);
         }
 
         return AssociationDtoAdapter.toAssociation(data);
@@ -110,13 +110,13 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
      * |    Associations Part    |
      * |-------------------------|
      */
-    
+
     isAssociationsProvider = true;
 
     async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
         if (this.associationsCache.has(siren)) return this.associationsCache.get(siren);
 
-        const assos = [];
+        const assos: Association[] = [];
         const assoFromSiren = await this.findAssociationBySiren(siren);
         if (assoFromSiren) assos.push(assoFromSiren);
         let rna;
@@ -125,7 +125,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         } else {
             rna = await rnaSirenService.getRna(siren);
         }
-        
+
         if (rna) {
             const assoFromRna = await this.findAssociationByRna(rna);
             if (assoFromRna) assos.push(assoFromRna);
@@ -142,8 +142,8 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
     async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
         const siren = siretToSiren(siret);
         if (this.associationsCache.has(siren)) return this.associationsCache.get(siren);
-        const assos = [];
-        const result = await this.sendRequest<{etablissement: EtablisementDto}>(`${this.SIRETTE_ROUTE}/${siret}`, false);
+        const assos: Association[] = [];
+        const result = await this.sendRequest<{ etablissement: EtablisementDto }>(`${this.SIRETTE_ROUTE}/${siret}`, false);
 
         if (result?.etablissement) assos.push(
             EntrepriseDtoAdapter.toAssociation({
@@ -167,11 +167,11 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
         const asso = await this.findAssociationByRna(rna);
 
-        if (!asso) return null; 
-        
+        if (!asso) return null;
+
         this.associationsRnaCache.add(rna, asso);
 
-        return [ asso ];
+        return [asso];
     }
 
 
@@ -180,7 +180,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
      * |   Etablisesement Part   |
      * |-------------------------|
      */
-    
+
     isEtablissementProvider = true;
 
     async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
@@ -198,7 +198,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
 
         const associations = await this.getAssociationsBySiren(siren);
 
-        
+
         if (associations && associations.length) {
             const association = associations.find(a => a.etablisements_siret?.length);
             const associationWithEtablisements = association?.etablisements_siret?.flat()[0].value;

@@ -25,7 +25,6 @@ describe("expressAuthentication", () => {
         } as unknown
     } as express.Request;
     const SECURITY_NAME = "jwt";
-    // @ts-expect-error: mock
     const VERIFY_DEFAULT_MOCK = (_, __, cb: (err: null, d: unknown) => void) => {
         cb(null, { email: "test@beta.gouv.fr" })
     };
