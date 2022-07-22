@@ -55,7 +55,7 @@ export default class CliController {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _compare(previousFile: string, newFile: string) {
+    protected async _compare(previousFile: string, newFile: string): Promise<boolean> {
         throw new Error("_compare() need to be implemented by the child class");
     }
 }
