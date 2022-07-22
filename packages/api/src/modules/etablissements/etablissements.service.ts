@@ -13,7 +13,6 @@ import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from '../../shared/Validators';
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
-import apiEntrepriseService from "../providers/apiEntreprise/apiEntreprise.service";
 
 export class EtablissementsService {
 
@@ -29,10 +28,7 @@ export class EtablissementsService {
         const data = await this.aggregate(siret);
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
-        const etablissement = FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
-        const headcount = await apiEntrepriseService.getHeadcount(siret);
-        if (headcount) etablissement.headcount = headcount.effectifs_mensuels;
-        return etablissement;
+        return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
     }
 
     async getEtablissementsBySiren(siren: Siren) {

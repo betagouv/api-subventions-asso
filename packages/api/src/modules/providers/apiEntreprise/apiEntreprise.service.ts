@@ -5,11 +5,24 @@ import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf"
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import { isSiret } from "../../../shared/Validators";
-import { Siret } from "@api-subventions-asso/dto";
+import { Etablissement, Siret } from "@api-subventions-asso/dto";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
+import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import { siretToNIC } from "../../../shared/helpers/SirenHelper";
+import EtablissementDtoAdapter from "../dataEntreprise/adapters/EtablissementDtoAdapter";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import ApiEntrepriseAdapter from "./adapters/apiEntreprise.adapter";
 
-export class ApiEntrepriseService {
-    static API_URL = "https://entreprise.api.gouv.fr/v2/"
+export class ApiEntrepriseService implements EtablissementProvider {
+    isEtablissementProvider = true;
+
+    public provider = {
+        name: "API ENTREPRISE",
+        type: ProviderEnum.api,
+        description: "L'API Entreprise permet un accès direct, standardisé et documenté aux informations administratives des entreprises"
+    };
+
+    static API_URL = "https://entreprise.api.gouv.fr/v2/";
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
 
     private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string) {
@@ -61,6 +74,24 @@ export class ApiEntrepriseService {
         const year = today.getFullYear();
         const month = ("0" + (today.getMonth() + 1)).slice(-2);
         return `effectifs_mensuels_acoss_covid/${year}/${month}`;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async getEtablissementsBySiret(siret: string, wait?: boolean | undefined): Promise<Etablissement[] | null> {
+        const result = await this.getHeadcount(siret);
+
+        const etablissement = ApiEntrepriseAdapter.toEtablissement({
+            siret: siret,
+            nic: siretToNIC(siret),
+            headcount: result?.effectifs_mensuels
+        })
+
+        return [etablissement]
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getEtablissementsBySiren(siret: string, wait?: boolean | undefined): Promise<Etablissement[] | null> {
+        throw new Error("Not implemented by API Entreprise");
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
