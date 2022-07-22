@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../../../../@types";
+import { CliStaticInterface, DefaultObject } from "../../../../../@types";
 import FonjepParser from "../../fonjep.parser";
 import fonjepService, { RejectedRequest } from "../../fonjep.service";
 import FonjepRequestEntity from "../../entities/FonjepRequestEntity";
@@ -90,14 +90,13 @@ export default class FonjepCliController extends CliController {
         }
 
         // Sort entity by date to increase performance
-        const sortedNewEntities: any = splitEntitiesByYear(newEntities);
+        const sortedNewEntities: DefaultObject<FonjepRequestEntity[]> = splitEntitiesByYear(newEntities);
         while (loop && noMissingDocument) {
             const currentEntity = previousEntities[counter];
             CliHelper.printAtSameLine(String(counter));
 
             const currentYear = currentEntity.indexedInformations.annee_demande;
 
-            // @ts-expect-error: any
             const match = sortedNewEntities[currentYear]?.find(newEntity => isSameDocument(currentEntity, newEntity));
             if (!match) {
                 noMissingDocument = false;
@@ -105,8 +104,20 @@ export default class FonjepCliController extends CliController {
             counter++
             if (counter == previousEntities.length) loop = false;
         }
-        if (noMissingDocument) console.log("GREAT ! No missing document in the new file, we can drop and insert")
-        else console.log("ARGFFF..! Some documents are missing so we have to find and update...")
-        return noMissingDocument
+        if (noMissingDocument) console.log("GREAT ! No missing document in the new file, we can drop and insert");
+        else console.log("ARGFFF..! Some documents are missing so we have to find and update...");
+        return noMissingDocument;
+    }
+
+    public async drop() {
+        await fonjepService.dropCollection();
+    }
+
+    public async rename(newTableName: string | undefined) {
+        if(!newTableName) {
+            throw new Error("newTableName arguments is missing");
+        }
+
+        await fonjepService.renameCollection(newTableName);
     }
 }

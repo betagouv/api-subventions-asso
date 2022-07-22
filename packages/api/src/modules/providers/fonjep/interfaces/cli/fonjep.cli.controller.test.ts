@@ -2,6 +2,7 @@ import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateEr
 import FonjepCliController from './fonjep.cli.controller'
 import fs from "fs";
 import FonjepParser from "../../fonjep.parser";
+import fonjepRepository from "../../repositories/fonjep.repository";
 jest.mock("fs");
 
 
@@ -22,7 +23,7 @@ describe("FonjepCliController", () => {
         });
     });
 
-    describe.only("_compare()", () => {
+    describe("_compare()", () => {
         const mockParse = jest.spyOn(FonjepParser, "parse");
 
         it("should return true", async () => {
@@ -65,6 +66,16 @@ describe("FonjepCliController", () => {
                 ]))
             const expected = false;
             const actual = await cli._compare("file1", "file2");
+            expect(actual).toEqual(expected);
+        })
+    })
+
+    describe.only("drop()", () => {
+        it("should call FonjepRepository.drop()", async () => {
+            const mockDrop = jest.spyOn(fonjepRepository, "drop").mockImplementationOnce(jest.fn());
+            const expected = 1;
+            await cli.drop();
+            const actual = mockDrop.mock.calls.length;
             expect(actual).toEqual(expected);
         })
     })
