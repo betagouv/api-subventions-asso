@@ -26,6 +26,10 @@ export class FonjepRepository extends MigrationRepository<FonjepRequestEntity> {
     async findById(id: string) {
         return this.collection.findOne({ "_id": new ObjectId(id) });
     }
+
+    async drop() {
+        return this.collection.drop();
+    }
 }
 
 const fonjepRepository = new FonjepRepository();

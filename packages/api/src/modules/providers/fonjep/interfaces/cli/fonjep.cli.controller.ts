@@ -105,8 +105,12 @@ export default class FonjepCliController extends CliController {
             counter++
             if (counter == previousEntities.length) loop = false;
         }
-        if (noMissingDocument) console.log("GREAT ! No missing document in the new file, we can drop and insert")
-        else console.log("ARGFFF..! Some documents are missing so we have to find and update...")
-        return noMissingDocument
+        if (noMissingDocument) console.log("GREAT ! No missing document in the new file, we can drop and insert");
+        else console.log("ARGFFF..! Some documents are missing so we have to find and update...");
+        return noMissingDocument;
+    }
+
+    public async drop() {
+        await fonjepService.dropCollection();
     }
 }
