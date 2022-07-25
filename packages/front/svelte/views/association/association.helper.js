@@ -64,17 +64,18 @@ export const getLastVersementsDate = versements => {
 
 export const sortByColumn = (elements, path) => {
     return elements.sort((elementA, elementB) => {
-        let attributeA = lodash.get(elementA, path);
-        let attributeB = lodash.get(elementB, path);
+        let attributeA;
+        let attributeB;
 
         if (path.includes("lastDate")) {
             attributeA = getLastVersementsDate(elementA.versements || []);
             attributeB = getLastVersementsDate(elementB.versements || []);
-        }
-
-        if (path.includes("amount")) {
+        } else if (path.includes("amount")) {
             attributeA = elementA.versements?.reduce((acc, versement) => acc + versement.amount, 0);
             attributeB = elementB.versements?.reduce((acc, versement) => acc + versement.amount, 0);
+        } else {
+            attributeA = lodash.get(elementA, path);
+            attributeB = lodash.get(elementB, path);
         }
 
         if (!attributeA && !attributeB) return sortByDateAsc(elementB, elementA);
