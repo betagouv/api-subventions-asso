@@ -63,22 +63,28 @@ export class AssociationService {
 
     async getSubventions(associationIdentifier) {
         const path = `${this.basePath}${associationIdentifier}/subventions`;
-        return axios.get(path).then(result => {
-            return result.data.subventions.map(subvention => flatenProviderValue(subvention));
-        }).catch((e) => {
-            if (e.request.status == 404) return [];
-            return e;
-        });
+        return axios
+            .get(path)
+            .then(result => {
+                return result.data.subventions.map(subvention => flatenProviderValue(subvention));
+            })
+            .catch(e => {
+                if (e.request.status == 404) return [];
+                return e;
+            });
     }
 
     async getVersements(associationIdentifier) {
         const path = `${this.basePath}${associationIdentifier}/versements`;
-        return axios.get(path).then(result => {
-            return result.data.versements.map(versement => flatenProviderValue(versement));
-        }).catch((e) => {
-            if (e.request.status == 404) return [];
-            return e;
-        });
+        return axios
+            .get(path)
+            .then(result => {
+                return result.data.versements.map(versement => flatenProviderValue(versement));
+            })
+            .catch(e => {
+                if (e.request.status == 404) return [];
+                return e;
+            });
     }
 }
 
