@@ -1,5 +1,4 @@
-import axios, { AxiosError } from "axios"
-import e from "express";
+import axios from "axios"
 import qs from "qs";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import apiEntrepriseService from "./apiEntreprise.service";
@@ -8,6 +7,11 @@ describe("ApiEntrepriseService", () => {
     jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
     const SIRET = "12003400500001";
     const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention"
+
+    beforeEach(() => {
+        // @ts-expect-error requestCache is private
+        apiEntrepriseService.requestCache.collection.clear();
+    })
 
     describe("sendRequest()", () => {
         const axiosGetMock = jest.spyOn(axios, "get");
