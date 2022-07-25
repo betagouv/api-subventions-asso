@@ -1,7 +1,7 @@
 import UserDto from '@api-subventions-asso/dto/user/UserDto';
 import { Request as ExRequest } from 'express';
 import { ObjectId } from 'mongodb';
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path } from 'tsoa';
+import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from 'tsoa';
 import User, { UserWithoutSecret } from '../../entities/User';
 import userService from '../../user.service';
 
@@ -49,6 +49,8 @@ export class UserController extends Controller {
 
     @Delete("/admin/user/:id")
     @Security("jwt", ['admin'])
+    @Response(204, "Retourne true si l'opération s'est bien exécutée", { success: true })
+    @Response(500, "Retourne false si une erreur est survenue pendant l'exécution", { success: false })
     public async deleteUser(
         @Path() id: string
     ): Promise<{success: boolean }> {

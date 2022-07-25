@@ -13,7 +13,7 @@
 </script>
 
 <!-- svelte-ignore a11y-no-redundant-roles -->
-<dialog aria-labelledby="fr-modal-title-{modalId}" role="dialog" id="fr-modal-{modalId}" class="fr-modal">
+<dialog aria-labelledby="fr-modal-title-{modalId}" id="fr-modal-{modalId}" class="fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
