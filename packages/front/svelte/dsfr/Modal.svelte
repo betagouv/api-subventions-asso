@@ -16,24 +16,40 @@
 <dialog aria-labelledby="fr-modal-title-{modalId}" id="fr-modal-{modalId}" class="fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+            <div class="fr-col-12 fr-col-md-8 fr-col-lg-8">
                 <div class="fr-modal__body">
                     <div class="fr-modal__header">
-                        <Button icon="close-line" ariaControls="fr-modal-{modalId}">Fermer</Button>
+                        <Button
+                            iconPosition="right"
+                            icon="close-line"
+                            ariaControls="fr-modal-{modalId}"
+                            type="tertiary">
+                            Fermer
+                        </Button>
                     </div>
                     <div class="fr-modal__content">
                         <h1 id="fr-modal-title-{modalId}" class="fr-modal__title">
+                            <span class="fr-fi-arrow-right-line fr-fi--lg" aria-hidden="true" />
                             {title}
                         </h1>
                         <p>
                             <slot name="content" />
                         </p>
                     </div>
-                    <div class="fr-modal__footer">
-                        <slot name="footer" />
-                    </div>
+                    {#if $$slots.footer}
+                        <div class="fr-modal__footer">
+                            <slot name="footer" />
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>
     </div>
 </dialog>
+
+<style>
+    .fr-modal__header {
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>

@@ -86,6 +86,15 @@ export class AssociationService {
                 return e;
             });
     }
+
+    async getProviders() {
+        const path = "/open-data/providers";
+
+        return axios.get(path).then(result => {
+            if (result.data) return result.data;
+            return result;
+        });
+    }
 }
 
 const associationService = new AssociationService();

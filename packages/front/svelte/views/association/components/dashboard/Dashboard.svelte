@@ -11,6 +11,7 @@
     import VersementTable from "../VersementTable.svelte";
 
     import DashboardCore from "./Dashboard.core";
+    import ProviderModal from "../ProviderModal.svelte";
 
     export let association;
 
@@ -20,10 +21,6 @@
 
     onMount(() => (promise = dashboardCore.mount()));
     dashboardCore.onRender(_data => (data = _data));
-
-    function displayProviders() {
-        console.log("displayProviders");
-    }
 </script>
 
 {#await promise}
@@ -32,12 +29,8 @@
     <div class="title">
         <h2>Tableau de bord des subventions</h2>
         <div>
-            <Button
-                on:click={displayProviders}
-                type="secondary"
-                disabled={true}
-                tooltip="Fonctionnalités en cours de développement">
-                Voir la liste des fournisseurs de donnée
+            <Button type="secondary" ariaControls="fr-modal-providers">
+                Voir la liste des fournisseurs de données
             </Button>
         </div>
     </div>
@@ -89,6 +82,7 @@
                 sortDirection={data.sortDirection} />
         </div>
     </div>
+    <ProviderModal id="providers" />
 {:catch error}
     {#if error.request && error.request.status == 404}
         <DataNotFound />
