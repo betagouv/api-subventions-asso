@@ -13,12 +13,14 @@ import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from '../../shared/Validators';
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
+import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 
 export class EtablissementsService {
-    
+
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoAdapter.providerNameSiren]: 1,
         [EtablissementDtoAdapter.PROVIDER_NAME]: 1,
+        [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
         [FonjepEntityAdapter.PROVIDER_NAME]: 0.5
@@ -33,7 +35,7 @@ export class EtablissementsService {
 
     async getEtablissementsBySiren(siren: Siren) {
         const data = await this.aggregate(siren);
-        
+
         if (!data.length) return null;
 
         const groupBySiret = data.reduce((acc, etablissement) => {
@@ -48,7 +50,7 @@ export class EtablissementsService {
         }, {} as DefaultObject<Etablissement[]>);
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
         const etablissements = Object.values(groupBySiret).map(etablissements => FormaterHelper.formatData(etablissements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
-        
+
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
         return etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
     }
@@ -68,8 +70,8 @@ export class EtablissementsService {
     private async aggregate(id: Siren | Siret) {
         const getter = isSiren(id) ? "getEtablissementsBySiren" : "getEtablissementsBySiret"
         const etablisementProviders = this.getEtablissementProviders();
-        
-        const promises = etablisementProviders.map(async provider => { 
+
+        const promises = etablisementProviders.map(async provider => {
             const etabs = await provider[getter](id, true);
             if (etabs) return etabs;
             else return null;

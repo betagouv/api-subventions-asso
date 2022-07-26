@@ -1,9 +1,19 @@
 import axios from "axios"
 import qs from "qs";
+import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import apiEntrepriseService from "./apiEntreprise.service";
 
 describe("ApiEntrepriseService", () => {
-    describe("sendRequest", () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
+    const SIRET = "12003400500001";
+    const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention"
+
+    beforeEach(() => {
+        // @ts-expect-error requestCache is private
+        apiEntrepriseService.requestCache.collection.clear();
+    })
+
+    describe("sendRequest()", () => {
         const axiosGetMock = jest.spyOn(axios, "get");
         const qsMock = jest.spyOn(qs, "stringify");
 
@@ -14,43 +24,34 @@ describe("ApiEntrepriseService", () => {
                 data: expected
             }))
 
-            // @ts-expect-error sendRequest is private methode
+            // @ts-expect-error sendRequest is private method
             const actual = await apiEntrepriseService.sendRequest('test', {}, "");
 
             expect(expected).toBe(actual);
-        })
+        });
 
-        it("should return null (axios throw error)", async () => {
-            const expected = null;
-            axiosGetMock.mockImplementationOnce(async() => { throw new Error("ERROR") });
-
-            // @ts-expect-error sendRequest is private methode
-            const actual = await apiEntrepriseService.sendRequest('test', {}, "");
-
+        it("should throw error", async () => {
+            const expected = { response: { status: 404 } };
+            axiosGetMock.mockImplementationOnce(async () => { throw expected });
+            let actual;
+            try {
+                // @ts-expect-error sendRequest is private methode
+                await apiEntrepriseService.sendRequest('test', {}, "");
+            } catch (e) {
+                actual = e;
+            }
             expect(expected).toBe(actual);
-        })
-
-        it("should return null (axios status 404)", async () => {
-            const expected = null;
-            axiosGetMock.mockImplementationOnce(async() => ({
-                status: 404,
-                data: { test: true }
-            }));
-
-            // @ts-expect-error sendRequest is private methode
-            const actual = await apiEntrepriseService.sendRequest('test', {}, "");
-
-            expect(expected).toBe(actual);
-        })
+        });
 
         it("should call queryString with default params", async () => {
-            const expected = {
+            const params = {
                 context: "aides publiques",
-                recipent: "12004101700035",
-                object: 'TEST',
+                recipient: "12004101700035"
             };
 
-            axiosGetMock.mockImplementationOnce(async() => ({
+            const expected = [{ ...params, object: HEADCOUNT_REASON }];
+
+            axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
                 data: { test: true }
             }));
@@ -58,9 +59,112 @@ describe("ApiEntrepriseService", () => {
             qsMock.mockImplementationOnce(() => "QUERY");
 
             // @ts-expect-error sendRequest is private methode
-            apiEntrepriseService.sendRequest('test', {}, expected.object);
+            apiEntrepriseService.sendRequest('test', {}, HEADCOUNT_REASON);
+            const actual = qsMock.mock.calls[0];
+            expect(actual).toEqual(expected);
+        })
+    })
 
-            expect(qsMock).toHaveBeenCalledWith(expect.objectContaining(expected));
+    describe("getHeadcount()", () => {
+        // I don't know why I have to specify <any> here... TS forces me to return a string in mock implementation.
+        // Remove it and check error line 113
+        // @ts-expect-error
+        let getEtablissementHeadcountMock = jest.spyOn<any>(apiEntrepriseService, "getEtablissementHeadcount");
+
+        afterAll(() => getEtablissementHeadcountMock.mockRestore())
+
+        it("should look for etablissement headcount given a SIRET", async () => {
+            getEtablissementHeadcountMock.mockImplementationOnce(jest.fn());
+            await apiEntrepriseService.getHeadcount(SIRET);
+            const actual = getEtablissementHeadcountMock.mock.calls.length;
+            expect(actual).toEqual(1);
+        });
+
+        it("should not retry if error status not 404", async () => {
+            const expected = { response: { status: 500 } };
+            let actual;
+            getEtablissementHeadcountMock.mockImplementation(() => { throw expected });
+            try {
+                await apiEntrepriseService.getHeadcount(SIRET);
+            } catch (e) {
+                actual = e;
+            }
+            expect(getEtablissementHeadcountMock).toHaveBeenCalledTimes(1);
+            expect(actual).toEqual(expected);
+            getEtablissementHeadcountMock.mockReset();
+        });
+
+        it("should retry 5 times and throw error", async () => {
+            const expected = { response: { status: 404 } };
+            let actual;
+            getEtablissementHeadcountMock.mockImplementation(() => { throw expected });
+            try {
+                await apiEntrepriseService.getHeadcount(SIRET);
+            } catch (e) {
+                actual = e;
+            }
+            expect(getEtablissementHeadcountMock).toHaveBeenCalledTimes(5);
+            expect(actual).toEqual(expected);
+            getEtablissementHeadcountMock.mockReset();
+        });
+
+        it("should retry 5 times and return headcount", async () => {
+            const error = { response: { status: 404 } };
+            const expected = {};
+            let actual;
+            getEtablissementHeadcountMock
+                .mockImplementationOnce(() => { throw error })
+                .mockImplementationOnce(() => { throw error })
+                .mockImplementationOnce(() => { throw error })
+                .mockImplementationOnce(() => { throw error })
+                // @ts-exect-error
+                .mockImplementationOnce(() => expected);
+            try {
+                actual = await apiEntrepriseService.getHeadcount(SIRET);
+            } catch (e) { }
+            expect(actual).toEqual(expected);
+        });
+
+        it("should throw StructureIdentifiersError", async () => {
+            const expected = new StructureIdentifiersError();
+            getEtablissementHeadcountMock.mockImplementationOnce(jest.fn());
+            let actual;
+            try {
+                await apiEntrepriseService.getHeadcount("NOT_A_SIRET");
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
+        });
+    })
+
+    describe("getEtablissementHeadcount()", () => {
+
+        it("should call sendRequest() with arguments", async () => {
+            // @ts-expect-error: spy on private method
+            const sendRequestMock = jest.spyOn(apiEntrepriseService, "sendRequest").mockImplementationOnce(jest.fn());
+            // @ts-expect-error
+            const expected = [`${apiEntrepriseService.buildHeadcountUrl()}/etablissement/${SIRET}`, {}, HEADCOUNT_REASON];
+            // @ts-expect-error
+            await apiEntrepriseService.getEtablissementHeadcount(SIRET);
+            const actual = sendRequestMock.mock.calls[0];
+            expect(actual).toEqual(expected);
+        });
+    })
+
+    describe("buildHeadcountUrl()", () => {
+        it("should return a valid URL", () => {
+            const expected = "effectifs_mensuels_acoss_covid/2022/01";
+            // @ts-expect-error
+            const actual = apiEntrepriseService.buildHeadcountUrl();
+            expect(actual).toEqual(expected);
+        });
+
+        it("should minus the date month", () => {
+            const expected = "effectifs_mensuels_acoss_covid/2021/12"
+            // @ts-expect-error
+            const actual = apiEntrepriseService.buildHeadcountUrl(1);
+            expect(actual).toEqual(expected);
         })
     })
 })

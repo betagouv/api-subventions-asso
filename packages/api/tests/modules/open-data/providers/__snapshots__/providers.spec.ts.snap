@@ -19,6 +19,10 @@ Object {
       "description": "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
       "name": "Avis de Situation Insee",
     },
+    Object {
+      "description": "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
+      "name": "API Entreprise",
+    },
   ],
   "raw": Array [
     Object {
