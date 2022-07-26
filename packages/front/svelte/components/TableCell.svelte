@@ -21,6 +21,7 @@
         height: 92px;
         max-height: 92px;
         overflow: var(--overflow);
+        overflow-wrap: anywhere;
     }
 
     td {

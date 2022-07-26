@@ -5,15 +5,32 @@
     import TableCell from "../../../components/TableCell.svelte";
     import Table from "../../../dsfr/Table.svelte";
     import TableHead from "../../../components/TableHead.svelte";
+    import VersementsInfoModal from "./VersementsInfoModal.svelte";
 
     export let elements = [];
     export let sort = () => {};
     export let currentSort = null;
     export let sortDirection = null;
 
+    let selectedVersements = null;
+
     const countTotal = versements => {
         return versements.reduce((acc, versement) => acc + versement.amount, 0);
     };
+
+    const onTRClick = element => {
+        if (element.versements) selectedVersements = element.versements;
+    };
+
+    const countVersements = elements => {
+        return elements.filter(e => e.versements?.length).length;
+    };
+
+    let noVersements = false;
+
+    const updateNoVersements = () => (noVersements = !countVersements(elements));
+
+    $: elements, updateNoVersements();
 </script>
 
 <Table>
@@ -28,28 +45,37 @@
         <TableHead
             action={() => sort("versement.montant")}
             actionActive={currentSort === "versement.montant"}
-            actionDirection={sortDirection}>
+            actionDirection={sortDirection}
+            actionDisable={noVersements}>
             Quel montant versé ?
         </TableHead>
         <TableHead
             action={() => sort("versement.centreFinancier")}
             actionActive={currentSort === "versement.centreFinancier"}
-            actionDirection={sortDirection}>
+            actionDirection={sortDirection}
+            actionDisable={noVersements}>
             Quel service a effectué le versement ?
         </TableHead>
         <TableHead
             action={() => sort("versement.date")}
             actionActive={currentSort === "versement.date"}
-            actionDirection={sortDirection}>
+            actionDirection={sortDirection}
+            actionDisable={noVersements}>
             À quelle date ?
         </TableHead>
     </svelte:fragment>
     <svelte:fragment slot="body">
-        {#each elements as element}
-            <tr>
-                {#if !element.versements}
+        {#each elements as element, key}
+            {#if !element.versements}
+                <tr>
                     <TableCell colspan="3" />
-                {:else}
+                </tr>
+            {:else}
+                <tr
+                    on:click={() => onTRClick(element)}
+                    aria-controls="fr-modal-versements-modal"
+                    data-fr-opened="false"
+                    class="clickabel">
                     <TableCell primary="true" position="end">
                         {numberToEuro(countTotal(element.versements))}
                     </TableCell>
@@ -57,11 +83,13 @@
                     <TableCell>
                         {@html breakDateYear(getLastVersementsDate(element.versements).toLocaleDateString())}
                     </TableCell>
-                {/if}
-            </tr>
+                </tr>
+            {/if}
         {/each}
     </svelte:fragment>
 </Table>
+
+<VersementsInfoModal versements={selectedVersements} id="versements-modal" />
 
 <style>
     .col-160 {
@@ -77,5 +105,9 @@
     .col-80 {
         width: 80px;
         max-width: 80px;
+    }
+
+    tr.clickabel {
+        cursor: pointer;
     }
 </style>
