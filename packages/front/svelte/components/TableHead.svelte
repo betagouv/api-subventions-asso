@@ -4,6 +4,7 @@
     export let action = undefined;
     export let actionActive = false;
     export let actionDirection = "asc";
+    export let actionDisable = false;
 </script>
 
 <th scope="col">
@@ -12,7 +13,7 @@
             <slot />
         </p>
         {#if action}
-            <Button on:click={action} icon="arrow-left-s-line" />
+            <Button on:click={action} disabled={actionDisable} icon="arrow-left-s-line" />
         {/if}
     </div>
 </th>

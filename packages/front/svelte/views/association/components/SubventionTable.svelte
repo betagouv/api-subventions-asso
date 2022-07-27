@@ -6,21 +6,30 @@
     import { valueOrHyphen, numberToEuro } from "../../../helpers/dataHelper";
     import { breakDateYear } from "../../../helpers/dateHelper";
     import helpers from "../../../../src/shared/helpers/EJSHelper";
+    import SubventionInfoModal from "./SubventionInfoModal.svelte";
 
     export let elements = [];
     export let sort = () => {};
     export let currentSort = null;
     export let sortDirection = null;
 
+    let currentSelectSub = null;
+
     const getProjectName = subvention => {
         if (!subvention.actions_proposee || !subvention.actions_proposee.length) return;
 
-        const names = subvention.actions_proposee
+        let names = subvention.actions_proposee
             .sort((actionA, actionB) => actionA.rang - actionB.rang)
             .map(action => `${helpers.capitalizeFirstLetter(action.intitule)}.`.replace("..", "."));
 
         // Remove duplicates
-        return [...new Set(names)].join("-");
+        names = [...new Set(names)].join("-");
+
+        if (names.length > 63) {
+            return names.slice(0, 60) + "...";
+        }
+
+        return names;
     };
 </script>
 
@@ -103,10 +112,19 @@
                         {valueOrHyphen(getProjectName(element.subvention))}
                     </TableCell>
                     <TableCell position="center" overflow="visible">
-                        <div class="tooltip-wrapper">
-                            <span class="tooltip">Fonctionnalité en cours de développement</span>
-                            <Button disabled="true" icon="information-line" />
-                        </div>
+                        {#if element.subvention.actions_proposee?.length}
+                            <Button
+                                icon="information-line"
+                                ariaControls="fr-modal-subvention-modal"
+                                on:click={() => (currentSelectSub = element.subvention)} />
+                        {:else}
+                            <div class="tooltip-wrapper">
+                                <span class="tooltip">
+                                    Nous ne disposons pas de plus d'informations au sujet de cette subvention
+                                </span>
+                                <Button disabled="true" icon="information-line" />
+                            </div>
+                        {/if}
                     </TableCell>
                     <TableCell position="end">
                         {valueOrHyphen(numberToEuro(element.subvention.montants?.demande))}
@@ -124,6 +142,8 @@
     </svelte:fragment>
 </Table>
 
+<SubventionInfoModal subvention={currentSelectSub} id="subvention-modal" />
+
 <style>
     /* This is a quick fix and if needed a Tooltip component should be made */
     .tooltip-wrapper,
@@ -133,7 +153,7 @@
 
     .tooltip-wrapper .tooltip {
         top: -40px;
-        left: -134px;
+        left: -237px;
     }
 
     .tooltip-wrapper-2 .tooltip {

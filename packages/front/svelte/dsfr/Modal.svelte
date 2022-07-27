@@ -32,9 +32,9 @@
                             <span class="fr-fi-arrow-right-line fr-fi--lg" aria-hidden="true" />
                             {title}
                         </h1>
-                        <p>
+                        <div>
                             <slot name="content" />
-                        </p>
+                        </div>
                     </div>
                     {#if $$slots.footer}
                         <div class="fr-modal__footer">
@@ -51,5 +51,9 @@
     .fr-modal__header {
         display: flex;
         justify-content: flex-end;
+    }
+
+    .fr-modal__content > div {
+        padding-top: 50px;
     }
 </style>

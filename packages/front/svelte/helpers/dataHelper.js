@@ -26,5 +26,10 @@ export const flatenProviderValue = providerValueObject => {
 
 export const numberToEuro = value => {
     value = typeof value === "string" ? parseFloat(value) : value;
-    return value.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
+    // maximumFractionDigits: check if value have digits if not digits no display N,00
+    return value.toLocaleString("fr-FR", {
+        style: "currency",
+        currency: "EUR",
+        maximumFractionDigits: value % 1 ? 2 : 0
+    });
 };
