@@ -1,23 +1,22 @@
 import path from "path";
-import UserDto from '@api-subventions-asso/dto/user/UserDto';
-import { NextFunction, Request, Response } from 'express';
-import User from '../../../../@types/User';
-import { DefaultObject } from '../../../../@types/utils';
-import Controller from '../../../../decorators/controller.decorator';
-import { Get, Post } from '../../../../decorators/http.methods.decorator';
-import adminService from '../../user.service';
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { NextFunction, Request, Response } from "express";
+import User from "../../../../@types/User";
+import { DefaultObject } from "../../../../@types/utils";
+import Controller from "../../../../decorators/controller.decorator";
+import { Get, Post } from "../../../../decorators/http.methods.decorator";
+import adminService from "../../user.service";
 
 @Controller("/admin")
 export default class AdminController {
-
     @Get("")
     public async adminView(req: Request, res: Response, next: NextFunction) {
         if (!req.session.roles || !req.session.roles.includes("admin")) {
             return res.redirect("/");
         }
 
-        res.render('admin/index', {
-            pageTitle: 'Admin',
+        res.render("admin/index", {
+            pageTitle: "Admin"
         });
     }
 
@@ -27,7 +26,7 @@ export default class AdminController {
             return res.redirect("/");
         }
 
-        res.sendFile(path.join(__dirname, '../../../../../static/svelte-index.html'));
+        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Get("/users/domain")
@@ -48,13 +47,12 @@ export default class AdminController {
             if (!acc[domaine]) acc[domaine] = [];
             acc[domaine].push(user);
             return acc;
-        }, {} as DefaultObject<UserDto[]>)
+        }, {} as DefaultObject<UserDto[]>);
 
-
-        res.render('admin/domain', {
-            pageTitle: 'Admin - Nom de domaines',
+        res.render("admin/domain", {
+            pageTitle: "Admin - Nom de domaines",
             usersByDomainName
-        })
+        });
     }
 
     @Get("/users/create")
@@ -63,11 +61,10 @@ export default class AdminController {
             return res.redirect("/");
         }
 
-        return res.render('admin/create-user', {
-            pageTitle: 'Admin - Création d\'utilisateur',
-        })
+        return res.render("admin/create-user", {
+            pageTitle: "Admin - Création d'utilisateur"
+        });
     }
-
 
     @Post("/users/create")
     public async createUser(req: Request, res: Response, next: NextFunction) {
@@ -76,18 +73,18 @@ export default class AdminController {
         }
 
         if (!req.body.email) {
-            return res.render('admin/create-user', {
-                pageTitle: 'Admin - Création d\'utilisateur',
-                error: "USER_EMAIL_NOT_FOUND",
+            return res.render("admin/create-user", {
+                pageTitle: "Admin - Création d'utilisateur",
+                error: "USER_EMAIL_NOT_FOUND"
             });
         }
-        
+
         const result = await adminService.createUser(req.body.email, req.session.user);
 
-        return res.render('admin/create-user', {
-            pageTitle: 'Admin - Création d\'utilisateur',
+        return res.render("admin/create-user", {
+            pageTitle: "Admin - Création d'utilisateur",
             error: result.type === "SUCCESS" ? null : "API_ERROR",
             success: result.type === "SUCCESS"
-        })
+        });
     }
 }

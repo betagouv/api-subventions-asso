@@ -6,7 +6,13 @@ import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 
 export class AssociationService {
-    async getAssociation(id: string, user: User): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR", data?: {association: Association, subventions: unknown, versements: Versement[] } }> {
+    async getAssociation(
+        id: string,
+        user: User
+    ): Promise<{
+        type: "REDIRECT" | "SUCCESS" | "ERROR";
+        data?: { association: Association; subventions: unknown; versements: Versement[] };
+    }> {
         const type = IdentifierHelper.findType(id);
         if (type === "UNKNOWN") return { type: "ERROR" }; // TODO send error
 
@@ -16,16 +22,15 @@ export class AssociationService {
             if (type === "RNA") {
                 const result = await apiDatasubService.searchAssoByRna(id, user);
                 association = result.data.association as Association;
-            }
-            else if (type === "SIREN") {
+            } else if (type === "SIREN") {
                 const result = await apiDatasubService.searchAssoBySiren(id, user);
                 association = result.data.association as Association;
             }
-        }  catch (e) {
+        } catch (e) {
             return { type: "ERROR" }; // TODO send error
         }
 
-        if (!association)  return { type: "ERROR" };
+        if (!association) return { type: "ERROR" };
 
         const subventions = this.formatSubvention(association);
 
@@ -34,9 +39,9 @@ export class AssociationService {
             data: {
                 association,
                 subventions,
-                versements: association.versements || [],
+                versements: association.versements || []
             }
-        }
+        };
     }
 
     private formatSubvention(association: Association) {
@@ -44,12 +49,16 @@ export class AssociationService {
             lastYear: "NC",
             totalAccordeByYear: {} as DefaultObject<number>,
             years: new Set<string>(),
-            byYear: {} as DefaultObject<DefaultObject<DefaultObject<{
-                total: number,
-                demande: number,
-                propose: number,
-                accorde: number,
-            }>>>,
+            byYear: {} as DefaultObject<
+                DefaultObject<
+                    DefaultObject<{
+                        total: number;
+                        demande: number;
+                        propose: number;
+                        accorde: number;
+                    }>
+                >
+            >,
             demandes: {} as DefaultObject<DemandeSubvention[]>
         };
         association.etablissements?.reduce((acc, etablissement) => {
@@ -57,10 +66,12 @@ export class AssociationService {
             etablissement.demandes_subventions.forEach(demande => {
                 const status = ProviderValueHelper.getValue(demande.status) || "Autres";
 
-                let year = (demande.annee_demande && ProviderValueHelper.getValue(demande.annee_demande)?.toString());
+                let year = demande.annee_demande && ProviderValueHelper.getValue(demande.annee_demande)?.toString();
 
                 if (!year) {
-                    const date = (demande.date_commision && ProviderValueHelper.getValue(demande.date_commision)) ||  ProviderValueHelper.getDate(demande.status);
+                    const date =
+                        (demande.date_commision && ProviderValueHelper.getValue(demande.date_commision)) ||
+                        ProviderValueHelper.getDate(demande.status);
                     if (date) {
                         year = new Date(date).getFullYear().toString();
                     } else {
@@ -68,37 +79,33 @@ export class AssociationService {
                     }
                 }
 
-                acc.years.add(year)
+                acc.years.add(year);
                 if (!acc.byYear[year]) acc.byYear[year] = {};
-
 
                 if (!acc.byYear[year][status]) acc.byYear[year][status] = {};
 
                 const service = ProviderValueHelper.getValue(demande.service_instructeur) || "AUTRES";
 
-                if (!acc.byYear[year][status][service]) acc.byYear[year][status][service] = {
-                    total: 0,
-                    demande: 0,
-                    propose: 0,
-                    accorde: 0,
-                };
+                if (!acc.byYear[year][status][service])
+                    acc.byYear[year][status][service] = {
+                        total: 0,
+                        demande: 0,
+                        propose: 0,
+                        accorde: 0
+                    };
 
-                acc.byYear[year][status][service].demande += 
-                    !demande.montants
-                        ? 0
-                        : ProviderValueHelper.getValue(demande.montants.propose as ProviderValue<number>) || 0;
-    
-                acc.byYear[year][status][service].propose += 
-                    !demande.montants
-                        ? 0
-                        : ProviderValueHelper.getValue(demande.montants.propose as ProviderValue<number>) || 0;
+                acc.byYear[year][status][service].demande += !demande.montants
+                    ? 0
+                    : ProviderValueHelper.getValue(demande.montants.propose as ProviderValue<number>) || 0;
 
-                acc.byYear[year][status][service].accorde += 
-                    !demande.montants
-                        ? 0
-                        : ProviderValueHelper.getValue(demande.montants.accorde as ProviderValue<number>) || 0;
+                acc.byYear[year][status][service].propose += !demande.montants
+                    ? 0
+                    : ProviderValueHelper.getValue(demande.montants.propose as ProviderValue<number>) || 0;
 
-                
+                acc.byYear[year][status][service].accorde += !demande.montants
+                    ? 0
+                    : ProviderValueHelper.getValue(demande.montants.accorde as ProviderValue<number>) || 0;
+
                 if (!acc.totalAccordeByYear[year]) acc.totalAccordeByYear[year] = 0;
 
                 acc.totalAccordeByYear[year] += !demande.montants
@@ -112,9 +119,9 @@ export class AssociationService {
             return acc;
         }, result);
 
-        result.lastYear = [...result.years].sort((a, b) => a === "0000" ? Infinity : b.localeCompare(a))[0] || "0000";
+        result.lastYear = [...result.years].sort((a, b) => (a === "0000" ? Infinity : b.localeCompare(a)))[0] || "0000";
 
-        return result
+        return result;
     }
 }
 

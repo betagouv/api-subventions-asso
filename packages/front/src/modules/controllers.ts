@@ -8,7 +8,7 @@ import LegalNoticeController from "./legal_notice/interface/http/LegalNoticeCont
 import CGUController from "./cgu/interface/http/CGUController";
 import ContactController from "./contact/interface/http/ContactController";
 import AdminController from "./admin/interfaces/http/AdminController";
-import SvelteController from './svelte-example/SvelteController';
+import SvelteController from "./svelte-example/SvelteController";
 
 export default [
     AuthController,
@@ -22,4 +22,4 @@ export default [
     AdminController,
     CGUController,
     SvelteController
-]
+];

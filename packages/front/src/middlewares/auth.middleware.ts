@@ -8,12 +8,12 @@ const routesWithoutLogin = [
     "/auth/signup",
     "/mentions-legales",
     "/contact"
-]
+];
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const sessionData = req.session as unknown as DefaultObject<DefaultObject>;
     if (!sessionData.user) {
-        sessionData.user = {}
+        sessionData.user = {};
     }
     const token = sessionData.user.token;
 
