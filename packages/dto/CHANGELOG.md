@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/betagouv/datasubvention/compare/v0.12.3...v0.13.0) (2022-07-28)
+
+
+### Features
+
+* **api, dto:** retrieve API Entreprise etablissement headcount ([#367](https://github.com/betagouv/datasubvention/issues/367)) ([82419e6](https://github.com/betagouv/datasubvention/commit/82419e6a596d6a0922426c89cc6c5803205be0bf))
+
+
+
+
+
 # [0.12.0](https://github.com/betagouv/datasubvention/compare/v0.10.3...v0.12.0) (2022-07-11)
 
 

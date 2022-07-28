@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/betagouv/datasubvention/compare/v0.12.3...v0.13.0) (2022-07-28)
+
+
+### Bug Fixes
+
+* **front:** fix many little bugs ([d52ea3a](https://github.com/betagouv/datasubvention/commit/d52ea3a0f7e3cfbfb2661af83e215824196558dd))
+
+
+### Features
+
+* **api:** add posibilities to remove user ([#364](https://github.com/betagouv/datasubvention/issues/364)) ([cd562d3](https://github.com/betagouv/datasubvention/commit/cd562d38bbd4d398fdab5fb8319a4f00365207aa))
+* **front:** add modals providers ([#380](https://github.com/betagouv/datasubvention/issues/380)) ([7f5e04a](https://github.com/betagouv/datasubvention/commit/7f5e04a9bfca4aceffa25936f817e08ec7f143ed))
+* **front:** add sort in table ([#369](https://github.com/betagouv/datasubvention/issues/369)) ([c2ae588](https://github.com/betagouv/datasubvention/commit/c2ae5889194487a7364b0575a05bdd920d3783f9))
+* **front:** add versements and subvention modals ([#381](https://github.com/betagouv/datasubvention/issues/381)) ([1624c6a](https://github.com/betagouv/datasubvention/commit/1624c6ac698850c8f830113ec25e287518831d54))
+* **front:** change title of etablissements and target blank on download document ([#377](https://github.com/betagouv/datasubvention/issues/377)) ([6b1bd8f](https://github.com/betagouv/datasubvention/commit/6b1bd8f31cdf22a43bce9824490391ce59919cf7))
+* **front:** enable matomo with datasub id ([#368](https://github.com/betagouv/datasubvention/issues/368)) ([e03aee0](https://github.com/betagouv/datasubvention/commit/e03aee02b121a07d59a8a0339e60ce0d0018474e)), closes [#366](https://github.com/betagouv/datasubvention/issues/366)
+
+
+
+
+
 ## [0.12.3](https://github.com/betagouv/datasubvention/compare/v0.12.2...v0.12.3) (2022-07-12)
 
 
