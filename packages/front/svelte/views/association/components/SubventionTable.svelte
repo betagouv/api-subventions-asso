@@ -106,7 +106,9 @@
                             {valueOrHyphen()}
                         {/if}
                     </TableCell>
-                    <TableCell>{valueOrHyphen(element.subvention.dispositif)}</TableCell>
+                    <TableCell>
+                        {valueOrHyphen(element.subvention.dispositif)}
+                    </TableCell>
                     <TableCell
                         position={valueOrHyphen(getProjectName(element.subvention)) === "-" ? "center" : "start"}>
                         {valueOrHyphen(getProjectName(element.subvention))}

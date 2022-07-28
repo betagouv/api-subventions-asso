@@ -26,7 +26,7 @@ export default class DashboardCore extends ComponentCore {
             elements: [],
             versementsAmount: 0,
             subventionAmount: 0,
-            subventionRequesteAmount: 0,
+            subventionRequestedAmount: 0,
             percentSubvention: 0
         };
     }
@@ -35,18 +35,20 @@ export default class DashboardCore extends ComponentCore {
         const subventionsPromise = associationService.getSubventions(this.association.siren);
         const versementsPromise = associationService.getVersements(this.association.siren);
 
-        return Promise.all([subventionsPromise, versementsPromise]).then(([subventions, versements]) => {
-            this.elements = mapSubventionsAndVersements({ subventions, versements });
+        return Promise.all([subventionsPromise, versementsPromise])
+            .then(([subventions, versements]) => {
+                this.elements = mapSubventionsAndVersements({ subventions, versements });
 
-            this.computed.years = [...new Set(this.elements.map(element => element.year))].sort((a, b) => a - b);
-            const sirets = [...new Set(this.elements.map(element => element.siret))];
+                this.computed.years = [...new Set(this.elements.map(element => element.year))].sort((a, b) => a - b);
+                const sirets = [...new Set(this.elements.map(element => element.siret))];
 
-            this.computed.exercices = this.buildExercices();
-            this.computed.selectedExerciceIndex = this.computed.years.length - 1;
-            this.computed.etablissements = this.buildEtablissementList(sirets);
+                this.computed.exercices = this.buildExercices();
+                this.computed.selectedExerciceIndex = this.computed.years.length - 1;
+                this.computed.etablissements = this.buildEtablissementList(sirets);
 
-            this.applyScope();
-        });
+                this.applyScope();
+            })
+            .catch(e => console.log(e));
     }
 
     filterByEtablissement(etablissement) {
@@ -103,6 +105,8 @@ export default class DashboardCore extends ComponentCore {
     }
 
     applyScope() {
+        if (!this.elements.length) return;
+
         const currentSiret = this.computed.etablissements[this.computed.selectedEtablissement].value;
         const currentYear = this.computed.years[this.computed.exercices[this.computed.selectedExerciceIndex].value];
 
@@ -120,12 +124,12 @@ export default class DashboardCore extends ComponentCore {
 
         this.scoped.subventionAmount = this.scoped.elements.reduce((acc, element) => {
             if (!element.subvention || !element.subvention.montants) return acc;
-            return acc + (element.subvention.montants.accorde | 0);
+            return acc + (element.subvention.montants.accorde || 0);
         }, 0);
 
-        this.scoped.subventionRequesteAmount = this.scoped.elements.reduce((acc, element) => {
+        this.scoped.subventionRequestedAmount = this.scoped.elements.reduce((acc, element) => {
             if (!element.subvention || !element.subvention.montants) return acc;
-            return acc + (element.subvention.montants.demande | 0);
+            return acc + (element.subvention.montants.demande || 0);
         }, 0);
 
         this.scoped.percentSubvention = (
@@ -142,7 +146,7 @@ export default class DashboardCore extends ComponentCore {
             elements: this.scoped.elements,
             versementsAmount: this.scoped.versementsAmount,
             subventionAmount: this.scoped.subventionAmount,
-            subventionRequesteAmount: this.scoped.subventionRequesteAmount,
+            subventionRequestedAmount: this.scoped.subventionRequestedAmount,
             percentSubvention: this.scoped.percentSubvention,
 
             etablissements: this.computed.etablissements,

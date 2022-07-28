@@ -25,6 +25,7 @@ export const flatenProviderValue = providerValueObject => {
 };
 
 export const numberToEuro = value => {
+    if (!value) return;
     value = typeof value === "string" ? parseFloat(value) : value;
     // maximumFractionDigits: check if value have digits if not digits no display N,00
     return value.toLocaleString("fr-FR", {
