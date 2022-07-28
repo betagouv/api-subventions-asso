@@ -13,12 +13,14 @@ if (process.argv.length < 5) {
 const [day, month, year] = dateString.split("/");
 const date = new Date(year, month + 1, day);
 
+const filePath = fonjepFile.split("/");
+
 console.log("Welcome to automation deploy fonjep file !\n");
 
 console.log(`Start extract on ${appName} ...\n`);
 
 
-scalingoHelper.asyncAppAction("run" ,`--size 2XL --file ${fonjepFile} --env IMPORT_DATE=${date} bash ./packages/api/tools/fonjep/import-file.sh`, appName).then(() => {
+scalingoHelper.asyncAppAction("run" ,`--size 2XL --file ${fonjepFile} --env IMPORT_DATE=${date} --env FILE_NAME=${filePath[filePath.length -1]} bash ./packages/api/tools/fonjep/import-file.sh`, appName).then(() => {
     console.log("Extract end !");
 
     console.log("Check if data is good, and drop old data table");
