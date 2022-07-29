@@ -73,7 +73,7 @@ export default class FonjepCliController extends CliController {
         console.log("start comparing files...");
 
         function splitEntitiesByYear(array: FonjepRequestEntity[]) {
-            function reduceEntities(obj: any, entity: FonjepRequestEntity) {
+            function reduceEntities(obj: DefaultObject<FonjepRequestEntity[]>, entity: FonjepRequestEntity) {
                 const year = entity.indexedInformations.annee_demande;
                 if (!obj[year]) obj[year] = [];
                 obj[year].push(entity);

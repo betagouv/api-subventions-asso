@@ -68,6 +68,10 @@ export class AssociationsService {
         return await subventionsService.getDemandesByAssociation(identifier);
     }
 
+    getSubventionsFlux(identifier: AssociationIdentifiers) {
+        return subventionsService.getSubventionsFluxByAssociation(identifier);
+    }
+
     async getVersements(identifier: AssociationIdentifiers) {
         return await versementsService.getVersementsByAssociation(identifier);
     }

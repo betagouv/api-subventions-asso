@@ -10,6 +10,7 @@ import { AssetsMiddleware } from "./middlewares/AssetsMiddleware";
 import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMiddleware";
 import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
+import RegisterSSERoutes from "./sse"
 
 const appName = 'api-subventions-asso';
 
@@ -33,10 +34,11 @@ export async function startServer(port = '8080', isTest = false) {
 
     RegisterRoutes(app); // TSOA Part
 
+    RegisterSSERoutes(app); // SSE Part
+
     app.use('/docs', ...(await docsMiddlewares()));
 
     app.use(errorHandler(isTest));
-
 
     return app.listen(port, () => {
         if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);
