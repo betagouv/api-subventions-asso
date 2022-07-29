@@ -1,9 +1,41 @@
 import axios from "axios";
+import { writable } from "svelte/store";
+
 import { flatenProviderValue } from "../../helpers/dataHelper";
+import SSEConnector from "../../shared/SseConnector";
 import { toAssociationView, toEtablissementComponent, toDocumentComponent } from "./association.adapter";
 
 export class AssociationService {
     basePath = "/association/";
+
+    connectSuventionsFlux(associationIdentifier) {
+        const path = `/sse${this.basePath}${associationIdentifier}/subventions`;
+        const connector = new SSEConnector(path);
+        const flux = writable({
+            status: "inProgress",
+            subventions: []
+        });
+
+        connector.onData(data => {
+            flux.update(state => ({
+                ...state,
+                subventions: state.subventions.concat(data.subventions.map(d => flatenProviderValue(d))),
+                count: data.count,
+                totalProvider: data.totalProvider
+            }));
+        });
+
+        connector.onClose(() => {
+            flux.update(state => {
+                return {
+                    ...state,
+                    status: "close"
+                };
+            });
+        });
+
+        return flux;
+    }
 
     async getAssociation(id) {
         const path = `/association/${id}`;
