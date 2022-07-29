@@ -5,3 +5,4 @@ export *  from './ParserPath';
 export *  from './ParserInfo';
 export *  from './utils';
 export *  from './Cli.interface';
+export * from "./ControllerMethod";
