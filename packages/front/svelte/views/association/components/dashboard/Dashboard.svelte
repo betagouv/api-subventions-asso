@@ -12,7 +12,7 @@
 
     import DashboardCore from "./Dashboard.core";
     import ProviderModal from "../ProviderModal.svelte";
-    import Alert from "../../../../dsfr/Alert.svelte";
+    import ProgressBar from "../../../../components/ProgressBar.svelte";
 
     export let association;
 
@@ -68,6 +68,9 @@
                 </p>
             </div>
         </div>
+        {#if data.status != "end"}
+            <ProgressBar percent={(data.totalLoadedProviders / data.totalProviders) * 100} />
+        {/if}
         <div class="tables">
             <div>
                 <SubventionTable

@@ -16,10 +16,13 @@ export default class DashboardCore extends ComponentCore {
             exercices: [],
             etablissements: [],
             selectedEtablissement: 0,
-            selectedExerciceIndex: 0,
+            selectedExerciceIndex: null,
             siretSiege: this.association.siren + this.association.nic_siege,
             currentSortColumn: null,
-            sortDirection: "asc"
+            sortDirection: "asc",
+            status: "loading",
+            totalProviders: 0,
+            totalLoadedProviders: 0
         };
 
         this.scoped = {
@@ -31,24 +34,28 @@ export default class DashboardCore extends ComponentCore {
         };
     }
 
-    mount() {
-        const subventionsPromise = associationService.getSubventions(this.association.siren);
-        const versementsPromise = associationService.getVersements(this.association.siren);
+    async mount() {
+        const subventionsFlux = associationService.connectSuventionsFlux(this.association.siren);
+        const versements = await associationService.getVersements(this.association.siren);
 
-        return Promise.all([subventionsPromise, versementsPromise])
-            .then(([subventions, versements]) => {
-                this.elements = mapSubventionsAndVersements({ subventions, versements });
+        subventionsFlux.subscribe(state => {
+            if (state.status === "close") this.computed.status = "end";
+            this.elements = mapSubventionsAndVersements({ subventions: state.subventions, versements });
 
-                this.computed.years = [...new Set(this.elements.map(element => element.year))].sort((a, b) => a - b);
-                const sirets = [...new Set(this.elements.map(element => element.siret))];
+            this.computed.years = [...new Set(this.elements.map(element => element.year))].sort((a, b) => a - b);
+            const sirets = [...new Set(this.elements.map(element => element.siret))];
 
-                this.computed.exercices = this.buildExercices();
-                this.computed.selectedExerciceIndex = this.computed.years.length - 1;
-                this.computed.etablissements = this.buildEtablissementList(sirets);
+            this.computed.exercices = this.buildExercices();
+            this.computed.selectedExerciceIndex =
+                this.computed.selectedExerciceIndex === null
+                    ? this.computed.years.length - 1
+                    : this.computed.selectedExerciceIndex;
+            this.computed.etablissements = this.buildEtablissementList(sirets);
+            this.computed.totalProviders = state.totalProvider;
+            this.computed.totalLoadedProviders = state.count;
 
-                this.applyScope();
-            })
-            .catch(e => console.log(e));
+            this.applyScope();
+        });
     }
 
     filterByEtablissement(etablissement) {
@@ -157,7 +164,11 @@ export default class DashboardCore extends ComponentCore {
             selectedYear: this.computed.years[this.computed.exercices[this.computed.selectedExerciceIndex].value],
 
             currentSort: this.computed.currentSortColumn,
-            sortDirection: this.computed.sortDirection
+            sortDirection: this.computed.sortDirection,
+
+            status: this.computed.status,
+            totalProviders: this.computed.totalProviders,
+            totalLoadedProviders: this.computed.totalLoadedProviders
         };
     }
 
