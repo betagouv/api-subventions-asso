@@ -20,7 +20,7 @@ export class AssociationSSEController {
         req: express.Request,
         res: SSEResponse,
     ) {
-        const flux = await associationService.getSubventionsFlux(req.params.identifier);
+        const flux = await associationService.getSubventions(req.params.identifier);
 
         flux.onData((data) => {
             res.sendSSEData(data);

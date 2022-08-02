@@ -56,7 +56,7 @@ export class EtablissementsService {
     }
 
     async getSubventions(siret: Siret) {
-        return await subventionsService.getDemandesByEtablissement(siret);
+        return subventionsService.getDemandesByEtablissement(siret);
     }
 
     async getVersements(siret: Siret) {
