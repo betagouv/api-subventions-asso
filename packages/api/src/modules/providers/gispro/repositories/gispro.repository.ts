@@ -8,13 +8,13 @@ export class GisproRepository extends MigrationRepository<GisproActionEntity>{
 
     public async upsertMany(entities: GisproActionEntity[]) {
         const result = await this.collection.bulkWrite(entities.map(entity => {
-        
+
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {_id, ...entityWithoutId } = entity;
+            const { _id, ...entityWithoutId } = entity;
             return {
                 updateOne: {
                     filter: { "providerInformations.codeAction": entity.providerInformations.codeAction },
-                    update: {$set: entityWithoutId },
+                    update: { $set: entityWithoutId },
                     upsert: true,
                 }
             }
@@ -34,8 +34,7 @@ export class GisproRepository extends MigrationRepository<GisproActionEntity>{
     }
 
     public async add(entity: GisproActionEntity) {
-        await this.collection.insertOne(entity);
-        return this.findByActionCode(entity.providerInformations.codeAction) as GisproActionEntity;
+        return this.collection.insertOne(entity);
     }
 
     public findByActionCode(codeAction: string) {
@@ -45,11 +44,10 @@ export class GisproRepository extends MigrationRepository<GisproActionEntity>{
     public async update(entity: GisproActionEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...entityWithoutId } = entity;
-        return (await this.collection.findOneAndUpdate({ 
-            "providerInformations.codeAction": entity.providerInformations.codeAction 
-        },
-        { $set: entityWithoutId }, options)).value as GisproActionEntity;
+        const { _id, ...entityWithoutId } = entity;
+        return (await this.collection.findOneAndUpdate(
+            { "providerInformations.codeAction": entity.providerInformations.codeAction },
+            { $set: entityWithoutId }, options)).value as GisproActionEntity;
     }
 
     // TODO: extract this and share with other repositories
@@ -61,7 +59,7 @@ export class GisproRepository extends MigrationRepository<GisproActionEntity>{
 
     public async findBySiren(siren: Siren) {
         return this.collection.find({
-            "providerInformations.siret":  new RegExp(`^${siren}\\d{5}`)
+            "providerInformations.siret": new RegExp(`^${siren}\\d{5}`)
         }).toArray();
     }
 

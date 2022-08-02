@@ -3,7 +3,7 @@ import gisproRepository from './repositories/gispro.repository';
 import { isSiret, isAssociationName } from "../../../shared/Validators";
 import { DefaultObject } from '../../../@types';
 import GisproRequestAdapter from './adapters/GisproRequestAdapter';
-import { DemandeSubvention , Rna, Siren, Siret } from '@api-subventions-asso/dto';
+import { DemandeSubvention, Rna, Siren, Siret } from '@api-subventions-asso/dto';
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import IProvider from '../../providers/@types/IProvider';
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
@@ -40,19 +40,19 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
         return await gisproRepository.insertMany(requests);
     }
 
-    public async add(enitity: GisproActionEntity): Promise<{state: string, result: GisproActionEntity}> {
-        const existingFile = await gisproRepository.findByActionCode(enitity.providerInformations.codeAction);
+    public async add(entity: GisproActionEntity): Promise<{ state: string, result: GisproActionEntity }> {
+        const existingFile = await gisproRepository.findByActionCode(entity.providerInformations.codeAction);
 
         if (existingFile) {
             return {
                 state: "updated",
-                result: await gisproRepository.update(enitity),
+                result: await gisproRepository.update(entity),
             };
         }
-
+        await gisproRepository.add(entity)
         return {
             state: "created",
-            result: await gisproRepository.add(enitity),
+            result: entity,
         };
     }
 
@@ -78,7 +78,7 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
 
     isDemandesSubventionsProvider = true;
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {   
+    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const actions = await this.findBySiret(siret);
 
         if (actions.length === 0) return null;
@@ -88,7 +88,7 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
         return groupedActions.map(group => GisproRequestAdapter.toDemandeSubvention(group));
     }
 
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {   
+    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         const actions = await this.findBySiren(siren);
 
         if (actions.length === 0) return null;
