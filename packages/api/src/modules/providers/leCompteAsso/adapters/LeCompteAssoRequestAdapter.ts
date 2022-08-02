@@ -1,4 +1,4 @@
-import { Association, Etablissement , ProviderValues, Rna } from "@api-subventions-asso/dto";
+import { Association, Etablissement, ProviderValues, Rna } from "@api-subventions-asso/dto";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
@@ -11,7 +11,7 @@ export default class LeCompteAssoRequestAdapter {
         return {
             siren: ProviderValueAdapter.toProviderValues(siretToSiren(entity.legalInformations.siret), LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate),
             rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.rna, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate) as ProviderValues<Rna>,
-            denomination: ProviderValueAdapter.toProviderValues(entity.legalInformations.name, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate),
+            denomination_rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.name, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate),
         }
     }
 
@@ -25,7 +25,7 @@ export default class LeCompteAssoRequestAdapter {
                 ProviderValueAdapter.toProviderValues({
                     email: entity.providerInformations.createur_email,
                 }, LeCompteAssoRequestAdapter.PROVIDER_NAME, dataDate)
-            ]: undefined
+            ] : undefined
         }
     }
 }

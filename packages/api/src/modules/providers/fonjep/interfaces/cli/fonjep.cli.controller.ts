@@ -73,7 +73,7 @@ export default class FonjepCliController extends CliController {
         console.log("start comparing files...");
 
         function splitEntitiesByYear(array: FonjepRequestEntity[]) {
-            function reduceEntities(obj: any, entity: FonjepRequestEntity) {
+            function reduceEntities(obj, entity: FonjepRequestEntity) {
                 const year = entity.indexedInformations.annee_demande;
                 if (!obj[year]) obj[year] = [];
                 obj[year].push(entity);
@@ -114,7 +114,7 @@ export default class FonjepCliController extends CliController {
     }
 
     public async rename(newTableName: string | undefined) {
-        if(!newTableName) {
+        if (!newTableName) {
             throw new Error("newTableName arguments is missing");
         }
 

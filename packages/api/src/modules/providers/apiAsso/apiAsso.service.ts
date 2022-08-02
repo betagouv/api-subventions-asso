@@ -14,6 +14,7 @@ import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, { StructureRnaDocumentDto } from "./dto/StructureDto";
+import { isDateNewer } from "../../../shared/helpers/DateHelper";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = {
@@ -102,13 +103,18 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         };
 
         if (structure.identite.id_rna && structure.identite.id_siren) {
+
+
             EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren }])
             await asyncForEach(result.associations, async (association) => {
+                let denomination;
+                if (isDateNewer(structure.identite.date_modif_rna, structure.identite.date_modif_siren)) denomination = association.denomination_rna
+                else denomination = association.denomination_siren;
                 await EventManager.call('association-name.matching', [{
                     rna: structure.identite.id_rna,
                     siren: structure.identite.id_siren,
-                    name: association.denomination[0].value,
-                    provider: association.denomination[0].provider,
+                    name: denomination[0].value,
+                    provider: denomination[0].provider,
                     lastUpdate: ((association.date_modification || association.date_modification_siren) as ProviderValues<Date>)[0].value
                 }]);
             })

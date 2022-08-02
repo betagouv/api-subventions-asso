@@ -12,9 +12,13 @@ export interface Association {
     rna?: ProviderValues<Rna>,
     nic_siege?: ProviderValues<string>,
     categorie_juridique?: ProviderValues<string>,
-    denomination: ProviderValues<string>,
+    denomination_siren?: ProviderValues<string>,
+    denomination_rna?: ProviderValues<string>,
     date_creation?: ProviderValues<Date>,
+    date_creation_siren?: ProviderValues<Date>,
+    date_creation_rna?: ProviderValues<Date>,
     date_modification?: ProviderValues<Date>,
+    date_modification_rna?: ProviderValues<Date>,
     date_modification_siren?: ProviderValues<Date>,
     objet_social?: ProviderValues<string>;
     code_objet_social_1?: ProviderValues<string>;

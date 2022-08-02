@@ -3,7 +3,7 @@
 exports[`/association /{structure_identifier} should return an association 1`] = `
 Object {
   "association": Object {
-    "denomination": Array [
+    "denomination_rna": Array [
       Object {
         "last_update": "2022-01-01T00:00:00.000Z",
         "provider": "Osiris",

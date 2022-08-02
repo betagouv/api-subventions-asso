@@ -43,14 +43,12 @@ export class AssociationsService {
     async getAssociationBySiren(siren: Siren) {
         const data = await this.aggregate(siren);
         if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
     async getAssociationBySiret(siret: Siret) {
         const data = await this.aggregate(siret);
         if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
@@ -60,7 +58,6 @@ export class AssociationsService {
 
         const data = await this.aggregate(rna);
         if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
@@ -116,11 +113,11 @@ export class AssociationsService {
         if (!idType) throw new StructureIdentifiersError();
         const associationProviders = this.getAssociationProviders();
         const capitalizedId = capitalizeFirstLetter(idType) as "Rna" | "Siren" | "Siret";
-        const promises = associationProviders.map(async provider => { 
-            try{
+        const promises = associationProviders.map(async provider => {
+            try {
                 const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
                 if (assos) return assos;
-            }  catch(e) {
+            } catch (e) {
                 console.error(provider, e);
             }
             return null;
