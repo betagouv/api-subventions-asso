@@ -25,8 +25,6 @@ export default class Flux<T> {
                 this.onDataCb(data);
             })
         }
-
-        if (this.isClose) this.onCloseCb();
     }
 
     close(){
@@ -38,6 +36,8 @@ export default class Flux<T> {
 
     onClose(cb: () => unknown) {
         this.onCloseCb = cb;
+
+        if (this.isClose) this.onCloseCb();
     }
 
     toPromise(): Promise<T[]> {
