@@ -11,24 +11,6 @@ import { SubventionsFlux } from './@types/SubventionsFlux';
 import Flux from '../../shared/Flux';
 
 export class SubventionsService {
-    async getSubventionsFluxByAssociation(id: AssociationIdentifiers) {
-        const subventionsFlux = new Flux<SubventionsFlux>();
-        let type = getIdentifierType(id) ;
-        if (!type) throw new Error("You must provide a valid SIREN or RNA");
-
-        if (type === StructureIdentifiersEnum.rna) {
-            const siren = await rnaSirenService.getSiren(id);
-            if (siren) {
-                id = siren;
-                type = StructureIdentifiersEnum.siren;
-            }
-        }
-
-        this.aggregate(id, type, subventionsFlux);
-
-        return subventionsFlux;
-    }
-
     async getDemandesByAssociation(id: AssociationIdentifiers) {
         let type = getIdentifierType(id) ;
         if (!type) throw new Error("You must provide a valid SIREN or RNA");
@@ -41,17 +23,18 @@ export class SubventionsService {
             }
         }
 
-        const data = (await this.aggregate(id, type))?.filter(asso => asso);
-        if (!data.length) throw new Error("Association not found");
-        return data;
+        return this.aggregate(id, type);
     }
-    
+
     async getDemandesByEtablissement(id: Siret) {
         const type = getIdentifierType(id);
         if (type !== StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIRET");
-        const data = await (await this.aggregateByType(id, StructureIdentifiersEnum.siret))?.filter(asso => asso) as DemandeSubvention[];
-        if(!data.length) throw new Error("Establishment not found");
-        return data;
+
+        const data = await this.aggregateByType(id, StructureIdentifiersEnum.siret).toPromise()
+        const subventions = data.map(subFlux => subFlux.subventions).flat();
+    
+        if(!subventions.length) throw new Error("Establishment not found");
+        return subventions;
     }
 
     async getDemandeById(id: string) {
@@ -61,41 +44,36 @@ export class SubventionsService {
         return await Promise.any(promises).catch(() => null);
     }
     
-    private async aggregate(id: StructureIdentifiers, type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum], flux ?: Flux<SubventionsFlux>): Promise<DemandeSubvention[]> {
-        let subventions;
+    private aggregate(id: StructureIdentifiers, type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]): Flux<SubventionsFlux> {
         if (type === StructureIdentifiersEnum.siret || type === StructureIdentifiersEnum.siren) {
             if (type === StructureIdentifiersEnum.siret) id = siretToSiren(id);
-            subventions = await this.aggregateByType(id, StructureIdentifiersEnum.siren, flux);
-            if (subventions.length > 0) return subventions;
+            return this.aggregateByType(id, StructureIdentifiersEnum.siren);
         }
         else {
-            subventions = await this.aggregateByType(id, StructureIdentifiersEnum.rna, flux);
+            return this.aggregateByType(id, StructureIdentifiersEnum.rna);
         }
-        return subventions;
     }
     
-    private async aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum, flux ?: Flux<SubventionsFlux>): Promise<DemandeSubvention[]> {
+    private aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Flux<SubventionsFlux> {
         const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as "getDemandeSubventionBySiret" | "getDemandeSubventionBySiren" | "getDemandeSubventionByRna";
-        const promises = this.getDemandesSubventionsProviders().map(p =>  p[functionName](id));
-        if (flux) {
-            let countProvider = 0;
-            promises.forEach(p => p.then(sub => {
-                countProvider++;
+        const subventionsFlux = new Flux<SubventionsFlux>();
+        const providers = this.getDemandesSubventionsProviders();
+        
+        let countProvider = 0;
+        
+        providers.forEach(p => p[functionName](id).then(subventions => {
+            countProvider++;
+    
+            subventionsFlux.push({
+                count: countProvider,
+                totalProvider: providers.length,
+                subventions: subventions || [],
+            });
 
-                if (sub) flux.push({
-                    count: countProvider,
-                    totalProvider: promises.length,
-                    subventions: sub,
-                });
-                return sub;
-            }));
-        }
+            if (countProvider === providers.length) subventionsFlux.close();
+        }));
 
-        const result = [...(await Promise.all(promises)).flat()] as DemandeSubvention[];
-
-        if (flux) flux.close();
-
-        return result;
+        return subventionsFlux;
     }
 
     private getDemandesSubventionsProviders() {

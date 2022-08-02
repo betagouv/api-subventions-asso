@@ -46,6 +46,96 @@ exports[`/association /{structure_identifier}/subventions should return a list o
 Object {
   "subventions": Array [
     Object {
+      "annee_demande": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "number",
+        "value": 2022,
+      },
+      "co_financement": Object {
+        "cofinanceur": Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Fonjep",
+          "type": "string",
+          "value": "CoFinanceur",
+        },
+        "cofinanceur_email": Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Fonjep",
+          "type": "string",
+          "value": "co.financeur@email.fr",
+        },
+        "cofinanceur_siret": Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Fonjep",
+          "type": "string",
+          "value": "00230104",
+        },
+        "montants": Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Fonjep",
+          "type": "number",
+          "value": 1700,
+        },
+      },
+      "date_fin": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "object",
+        "value": "2022-01-03T00:00:00.000Z",
+      },
+      "dispositif": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "string",
+        "value": "Fonjep",
+      },
+      "montants": Object {
+        "accorde": Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Fonjep",
+          "type": "number",
+          "value": 500,
+        },
+        "demande": Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Fonjep",
+          "type": "number",
+          "value": 500,
+        },
+      },
+      "plein_temps": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "string",
+        "value": "Oui",
+      },
+      "pluriannualite": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "string",
+        "value": "Oui",
+      },
+      "service_instructeur": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "string",
+        "value": "XXX",
+      },
+      "siret": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "string",
+        "value": "00000000000002",
+      },
+      "status": Object {
+        "last_update": "2022-01-02T00:00:00.000Z",
+        "provider": "Fonjep",
+        "type": "string",
+        "value": "En cours",
+      },
+    },
+    Object {
       "actions_proposee": Array [],
       "annee_demande": Object {
         "last_update": "2022-01-01T00:00:00.000Z",
@@ -148,96 +238,6 @@ Object {
           "provider": "Osiris",
           "type": "undefined",
         },
-      },
-    },
-    Object {
-      "annee_demande": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "number",
-        "value": 2022,
-      },
-      "co_financement": Object {
-        "cofinanceur": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "string",
-          "value": "CoFinanceur",
-        },
-        "cofinanceur_email": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "string",
-          "value": "co.financeur@email.fr",
-        },
-        "cofinanceur_siret": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "string",
-          "value": "00230104",
-        },
-        "montants": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "number",
-          "value": 1700,
-        },
-      },
-      "date_fin": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "object",
-        "value": "2022-01-03T00:00:00.000Z",
-      },
-      "dispositif": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "string",
-        "value": "Fonjep",
-      },
-      "montants": Object {
-        "accorde": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "number",
-          "value": 500,
-        },
-        "demande": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "number",
-          "value": 500,
-        },
-      },
-      "plein_temps": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "string",
-        "value": "Oui",
-      },
-      "pluriannualite": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "string",
-        "value": "Oui",
-      },
-      "service_instructeur": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "string",
-        "value": "XXX",
-      },
-      "siret": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "string",
-        "value": "00000000000002",
-      },
-      "status": Object {
-        "last_update": "2022-01-02T00:00:00.000Z",
-        "provider": "Fonjep",
-        "type": "string",
-        "value": "En cours",
       },
     },
   ],

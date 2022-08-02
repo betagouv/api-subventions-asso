@@ -67,7 +67,8 @@ export class SearchService {
         const sortedEtablissments = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
         let demandesSubventions: DemandeSubvention[] = []
         try {
-            demandesSubventions = await subventionsService.getDemandesByAssociation(siren);
+            const flux = await subventionsService.getDemandesByAssociation(siren);
+            demandesSubventions = (await flux.toPromise()).map(fluxSubvention => fluxSubvention.subventions).flat();
         } catch (e) {
             if (e instanceof Error && e.message != "Association not found") {
                 throw e;

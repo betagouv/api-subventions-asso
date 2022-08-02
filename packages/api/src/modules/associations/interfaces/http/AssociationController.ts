@@ -37,8 +37,9 @@ export class AssociationController extends Controller {
     @Response<ErrorResponse>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
         try {
-            const result = await associationService.getSubventions(identifier);
-            return { success: true, subventions: result };
+            const flux = await associationService.getSubventions(identifier);
+            const result = await flux.toPromise();
+            return { success: true, subventions: result.map(fluxSub => fluxSub.subventions).flat() };
         } catch (e) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }
