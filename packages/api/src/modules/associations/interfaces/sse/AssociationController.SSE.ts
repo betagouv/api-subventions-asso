@@ -27,7 +27,7 @@ export class AssociationSSEController {
         });
 
         flux.onClose(() => {
-            res.sendSSEData({ event: "close"});
+            res.sendSSEData({ event: "close" });
         });
     }
 }

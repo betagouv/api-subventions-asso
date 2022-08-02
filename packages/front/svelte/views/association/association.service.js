@@ -13,15 +13,18 @@ export class AssociationService {
         const connector = new SSEConnector(path);
         const flux = writable({
             status: "inProgress",
-            subventions: []
+            subventions: [],
+            __meta__: {
+                providerCalls: 0,
+                providerAnswers: 0
+            }
         });
 
         connector.onData(data => {
             flux.update(state => ({
                 ...state,
                 subventions: state.subventions.concat(data.subventions.map(d => flatenProviderValue(d))),
-                count: data.count,
-                totalProvider: data.totalProvider
+                __meta__: data.__meta__
             }));
         });
 
