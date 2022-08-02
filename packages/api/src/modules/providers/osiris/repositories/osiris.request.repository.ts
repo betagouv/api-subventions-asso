@@ -7,8 +7,7 @@ export class OsirisRequestRepository {
     private readonly collection = db.collection<OsirisRequestEntity>("osiris-requests");
 
     public async add(osirisRequest: OsirisRequestEntity) {
-        await this.collection.insertOne(osirisRequest);
-        return this.findByOsirisId(osirisRequest.providerInformations.osirisId) as OsirisRequestEntity;
+        return this.collection.insertOne(osirisRequest);
     }
 
     public async update(osirisRequest: OsirisRequestEntity) {

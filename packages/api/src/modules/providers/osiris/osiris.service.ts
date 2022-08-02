@@ -36,14 +36,16 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         await EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: date }]);
 
         if (existingFile) {
+            await osirisRequestRepository.update(request)
             return {
                 state: "updated",
-                result: await osirisRequestRepository.update(request),
+                result: request,
             };
         } else {
+            await osirisRequestRepository.add(request)
             return {
                 state: "created",
-                result: await osirisRequestRepository.add(request),
+                result: request,
             };
         }
     }
