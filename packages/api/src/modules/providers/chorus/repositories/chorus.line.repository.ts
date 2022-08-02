@@ -25,9 +25,7 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
     }
 
     public async create(entity: ChorusLineEntity) {
-        const result = await this.collection.insertOne(entity);
-
-        return this.collection.findOne({ _id: result.insertedId }) as Promise<WithId<ChorusLineEntity>>;
+        await this.collection.insertOne(entity);
     }
 
     public async insertMany(entities: ChorusLineEntity[], dropDB = false) {
@@ -35,23 +33,23 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
             return this.db.collection<ChorusLineEntity>(this.collectionImportName).insertMany(entities, { ordered: false });
         }
 
-        return this.collection.insertMany(entities, {ordered: false});
+        return this.collection.insertMany(entities, { ordered: false });
     }
 
     public async update(entity: ChorusLineEntity) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...entityWithoutId } = entity;
-        
-        await this.collection.updateOne({ "uniqueId": entity.uniqueId }, {$set: entityWithoutId});
-        
+        const { _id, ...entityWithoutId } = entity;
+
+        await this.collection.updateOne({ "uniqueId": entity.uniqueId }, { $set: entityWithoutId });
+
         return this.collection.findOne({ "uniqueId": entity.uniqueId }) as Promise<WithId<ChorusLineEntity>>;
     }
 
     public async updateById(id: ObjectId, entity: ChorusLineEntity) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...entityWithoutId } = entity;
-        
-        await this.collection.updateOne({ "_id": id }, {$set: entityWithoutId});
+        const { _id, ...entityWithoutId } = entity;
+
+        await this.collection.updateOne({ "_id": id }, { $set: entityWithoutId });
 
         return this.collection.findOne({ "_id": id }) as Promise<WithId<ChorusLineEntity>>;
     }
@@ -79,9 +77,9 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
             .find(c => c.name === this.collectionName);
 
         if (collectionExist) await this.collection.rename(this.collectionName + "-OLD");
-        
+
         await this.db.collection(this.collectionImportName).rename(this.collectionName);
-        
+
         if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
     }
 }

@@ -22,7 +22,7 @@ describe("chorus.service", () => {
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {});
-            expect(chorusService.validateEntity(entity)).toEqual( { success: false, message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`, data: entity })
+            expect(chorusService.validateEntity(entity)).toEqual({ success: false, message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`, data: entity })
         })
 
         it('should be reject amount is not number', () => {
@@ -133,7 +133,7 @@ describe("chorus.service", () => {
                 typeOperation: "ZSUB"
             }, {});
 
-            await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "rejected", result: expect.objectContaining({ success: false, message: "INVALID SIRET FOR SIRET"})});
+            await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "rejected", result: expect.objectContaining({ success: false, message: "INVALID SIRET FOR SIRET" }) });
         })
 
         it("should be create entity", async () => {
@@ -175,17 +175,20 @@ describe("chorus.service", () => {
                 typeOperation: "ZSUB"
             }, {});
 
-            await expect(chorusService.addChorusLine(entity)).resolves.toEqual({ state: "rejected", result: {
-                message: "The Siret does not correspond to an association",
-                data: entity,
-            }});
+            await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
+                state: "rejected",
+                result: {
+                    message: "The Siret does not correspond to an association",
+                    data: entity,
+                }
+            });
 
             mock.mockRestore();
         })
 
-        it("should be update entity", async () => {
+        it("should update entity", async () => {
             const mock = jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
-            
+
             const entity = new ChorusLineEntity("FAKE_ID", {
                 siret: "10000000000000",
                 ej: "1000000000",
@@ -231,7 +234,7 @@ describe("chorus.service", () => {
             entity.uniqueId = "FAKE_ID_2";
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {_id, ...entityWithoutId } = entity
+            const { _id, ...entityWithoutId } = entity
 
             await expect(chorusService.addChorusLine(entityWithoutId)).resolves.toEqual({ state: "created", result: entityWithoutId });
             mock.mockRestore();
@@ -340,7 +343,7 @@ describe("chorus.service", () => {
         let entity: WithId<ChorusLineEntity>
         const toPV = (value: unknown, provider = "Chorus") => ProviderValueAdapter.toProviderValue(value, provider, now);
         let mock: jest.SpyInstance<Promise<boolean>, [siret: string]>;
-    
+
         beforeEach(async () => {
             mock = jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true))
             entity = (await chorusService.addChorusLine(new ChorusLineEntity("FAKE_ID", {
@@ -406,7 +409,7 @@ describe("chorus.service", () => {
                 typeOperation: "ZSUB"
             }, {}))
         })
-        
+
         it("should be return true because siret is already in chorusline", async () => {
             await expect(chorusService.sirenBelongAsso("10000000")).resolves.toBe(true);
         })

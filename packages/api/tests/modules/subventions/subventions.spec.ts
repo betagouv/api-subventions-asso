@@ -12,11 +12,13 @@ let osirisDocumentId: string | undefined;
 let fonjepDocumentId: string | undefined;
 
 describe("/subvention", () => {
-    beforeEach( async () => {
-        osirisDocumentId = ((await osirisRequestRepository.add(OsirisRequestEntityFixture)) as Document)._id.toString();
-        fonjepDocumentId = ((await fonjepRepository.create(FonjepEntityFixture)) as Document)._id.toString();
+    beforeEach(async () => {
+        await osirisRequestRepository.add(OsirisRequestEntityFixture)
+        await fonjepRepository.create(FonjepEntityFixture)
+        osirisDocumentId = ((await osirisRequestRepository.findBySiret(OsirisRequestEntityFixture.legalInformations.siret))[0] as Document)._id.toString();
+        fonjepDocumentId = ((await fonjepRepository.findBySiret(FonjepEntityFixture.legalInformations.siret))[0] as Document)._id.toString();
     })
-    
+
     describe("/{id}", () => {
         it("should return a subvention from osiris-request collection", async () => {
             const response = await request(g.app)
