@@ -59,18 +59,20 @@ export class SubventionsService {
         const subventionsFlux = new Flux<SubventionsFlux>();
         const providers = this.getDemandesSubventionsProviders();
         
-        let countProvider = 0;
+        let countAnswers = 0;
         
         providers.forEach(p => p[functionName](id).then(subventions => {
-            countProvider++;
+            countAnswers++;
     
             subventionsFlux.push({
-                count: countProvider,
-                totalProvider: providers.length,
+                __meta__: {
+                    providerCalls: providers.length,
+                    providerAnswers: countAnswers
+                },
                 subventions: subventions || [],
             });
 
-            if (countProvider === providers.length) subventionsFlux.close();
+            if (countAnswers === providers.length) subventionsFlux.close();
         }));
 
         return subventionsFlux;

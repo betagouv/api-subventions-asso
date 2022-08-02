@@ -21,8 +21,10 @@ export default class DashboardCore extends ComponentCore {
             currentSortColumn: null,
             sortDirection: "asc",
             status: "loading",
-            totalProviders: 0,
-            totalLoadedProviders: 0
+            subventionLoading: {
+                providerCalls: 0,
+                providerAnswers: 0
+            }
         };
 
         this.scoped = {
@@ -51,9 +53,10 @@ export default class DashboardCore extends ComponentCore {
                     ? this.computed.years.length - 1
                     : this.computed.selectedExerciceIndex;
             this.computed.etablissements = this.buildEtablissementList(sirets);
-            this.computed.totalProviders = state.totalProvider;
-            this.computed.totalLoadedProviders = state.count;
-
+            this.computed.subventionLoading = {
+                providerCalls: state.__meta__.providerCalls,
+                providerAnswers: state.__meta__.providerAnswers
+            }
             this.applyScope();
         });
     }
@@ -167,8 +170,7 @@ export default class DashboardCore extends ComponentCore {
             sortDirection: this.computed.sortDirection,
 
             status: this.computed.status,
-            totalProviders: this.computed.totalProviders,
-            totalLoadedProviders: this.computed.totalLoadedProviders
+            subventionLoading: this.computed.subventionLoading,
         };
     }
 

@@ -74,7 +74,7 @@
             </div>
         </div>
         {#if data.status != "end"}
-            <ProgressBar percent={(data.totalLoadedProviders / data.totalProviders) * 100} />
+            <ProgressBar percent={(data.subventionLoading.providerCalls / data.subventionLoading.providerAnswers) * 100} />
         {/if}
         <div class="tables">
             <div>
