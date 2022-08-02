@@ -35,8 +35,7 @@ export default class FonjepCliController extends CliController {
         }, Promise.resolve([]) as Promise<
             ({
                 success: true,
-                state: string,
-                entity: FonjepRequestEntity
+                state: string
             }
                 | RejectedRequest)[]>)
 
@@ -114,7 +113,7 @@ export default class FonjepCliController extends CliController {
     }
 
     public async rename(newTableName: string | undefined) {
-        if(!newTableName) {
+        if (!newTableName) {
             throw new Error("newTableName arguments is missing");
         }
 
