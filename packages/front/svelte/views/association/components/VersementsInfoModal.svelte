@@ -3,7 +3,6 @@
     import Table from "../../../dsfr/Table.svelte";
     import TableHead from "../../../components/TableHead.svelte";
     import TableCell from "../../../components/TableCell.svelte";
-    import { breakDateYear } from "../../../helpers/dateHelper";
     import { numberToEuro } from "../../../helpers/dataHelper";
 
     export let versements;
@@ -29,7 +28,7 @@
                             <TableCell position="center">{versement.activitee}</TableCell>
                             <TableCell position="center">{versement.centreFinancier}</TableCell>
                             <TableCell position="center">
-                                {@html breakDateYear(new Date(versement.dateOperation).toLocaleDateString())}
+                                {new Date(versement.dateOperation).toLocaleDateString().slice(0, 8)}
                             </TableCell>
                         </tr>
                     {/each}

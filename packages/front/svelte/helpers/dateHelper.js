@@ -4,8 +4,9 @@ export const sortByDateAsc = (a, b) => {
     return a.date - b.date;
 };
 
-export const breakDateYear = date => {
-    const dateArray = date.split("/");
-    const [day, month, year] = dateArray;
-    return `${day}/${month}<br>/${year}`;
-};
+export const withTwoDigitYear = (date) => {
+    if (typeof date !== "string") return date;
+    const last2Digit = date.slice(-2);
+    const dateWithoutYear = date.slice(0, 6);
+    return dateWithoutYear.concat(last2Digit);
+}
