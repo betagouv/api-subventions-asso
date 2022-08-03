@@ -1,10 +1,10 @@
-const findOneAndUpdateMock = jest.fn(async entity => ({ value : {} }));
+const findOneAndUpdateMock = jest.fn(async entity => ({ value: {} }));
 
 const mongoMock = jest.mock("../../../../shared/MongoConnection", () => ({
     __esModule: true, // this property makes it work
     default: {
         collection: () => (
-            { 
+            {
                 insertOne: jest.fn(),
                 findOneAndUpdate: findOneAndUpdateMock
             }
@@ -29,29 +29,17 @@ describe("OsirisActionRepository", () => {
     })
 
     const OSIRIS_ACTION_ID = "OSIRIS_ACTION_ID";
-    const ENTITY = { indexedInformations: { osirisActionId: OSIRIS_ACTION_ID  }, data: {}, evaluation: undefined } as OsirisActionEntity;
-    const ENTITY_WITH_ID = Object.assign({ _id: new ObjectId("6239dd8a674c33bdf741f56b")}, ENTITY);
+    const ENTITY = { indexedInformations: { osirisActionId: OSIRIS_ACTION_ID }, data: {}, evaluation: undefined } as OsirisActionEntity;
+    const ENTITY_WITH_ID = Object.assign({ _id: new ObjectId("6239dd8a674c33bdf741f56b") }, ENTITY);
     describe("add()", () => {
-        it("should insert an OsirisActionEntityDbo and return an OsirisActionEntity", async () => {
+        it("should insert an OsirisActionEntityDbo and return entity", async () => {
             // @ts-expect-error: mock
             findByOsirisIdMock.mockImplementationOnce(jest.fn(() => ({})));
             toDboMock.mockImplementationOnce(jest.fn());
-            await repository.add(ENTITY)
+            const entity = await repository.add(ENTITY)
             expect(toDboMock).toHaveBeenCalledWith(ENTITY);
-            expect(findByOsirisIdMock).toHaveBeenCalledWith(OSIRIS_ACTION_ID);
+            expect(entity).toEqual(ENTITY);
         });
-
-        it("should throw MongoCnxError if connexion is lost", async () => {
-            findByOsirisIdMock.mockImplementationOnce(jest.fn());
-            const expected = new MongoCnxError();
-            let actual;
-            try {
-                actual = await repository.add(ENTITY);
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        })
     })
 
     describe("update()", () => {
@@ -59,7 +47,7 @@ describe("OsirisActionRepository", () => {
             toDboMock.mockImplementation(entity => entity);
             toEntityMock.mockImplementation(entity => entity);
         })
-        
+
         afterEach(() => {
             findOneAndUpdateMock.mockClear();
         })
@@ -77,7 +65,7 @@ describe("OsirisActionRepository", () => {
 
         it("should throw MongoCnxError if connexion is lost", async () => {
             // @ts-expect-error: mock
-            findOneAndUpdateMock.mockImplementationOnce(() => ({value: undefined}));
+            findOneAndUpdateMock.mockImplementationOnce(() => ({ value: undefined }));
             const expected = new MongoCnxError();
             let actual;
             try {

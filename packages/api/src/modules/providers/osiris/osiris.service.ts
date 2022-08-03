@@ -83,9 +83,11 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             };
         }
 
+        await osirisActionRepository.add(action);
+
         return {
             state: "created",
-            result: await osirisActionRepository.add(action),
+            result: action,
         };
     }
 

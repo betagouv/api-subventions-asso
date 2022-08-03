@@ -7,21 +7,19 @@ import OsirisActionAdapter from './dboAdapters/osirisActionAdapter';
 import MongoCnxError from '../../../../shared/errors/MongoCnxError';
 
 export class OsirisActionRepository {
-    private readonly collection =  db.collection<OsirisActionEntityDbo>("osiris-actions");
+    private readonly collection = db.collection<OsirisActionEntityDbo>("osiris-actions");
 
     // Action Part
     public async add(osirisAction: OsirisActionEntity) {
         await this.collection.insertOne(OsirisActionAdapter.toDbo(osirisAction));
-        const dbo = await this.findByOsirisId(osirisAction.indexedInformations.osirisActionId);
-        if (!dbo) throw new MongoCnxError();
-        return dbo;
+        return osirisAction;
     }
 
     public async update(osirisAction: OsirisActionEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
-        const dbo =  (await this.collection.findOneAndUpdate(
+        const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
+        const dbo = (await this.collection.findOneAndUpdate(
             { "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId },
             { $set: actionWithoutId },
             options
@@ -32,11 +30,11 @@ export class OsirisActionRepository {
 
     public async findByOsirisId(osirisId: string) {
         const dbo = await this.collection.findOne({ "indexedInformations.osirisActionId": osirisId });
-        if(!dbo) return null;
+        if (!dbo) return null;
         return OsirisActionAdapter.toEntity(dbo);
     }
 
-    public cursorFind(query = {}){
+    public cursorFind(query = {}) {
         return this.collection.find(query);
     }
 
