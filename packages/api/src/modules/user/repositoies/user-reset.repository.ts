@@ -14,8 +14,8 @@ export class UserResetRepository {
     }
 
     public async create(reset: UserReset) {
-        const result = await this.collection.insertOne(reset);
-        return await this.collection.findOne({_id: result.insertedId});
+        await this.collection.insertOne(reset);
+        return reset;
     }
 
     public async remove(reset: UserReset) {
