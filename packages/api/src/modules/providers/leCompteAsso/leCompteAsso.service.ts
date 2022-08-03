@@ -21,7 +21,7 @@ export interface RejectedRequest {
 
 export class LeCompteAssoService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
     provider = {
-        name: "Le Compte Asso", 
+        name: "Le Compte Asso",
         type: ProviderEnum.api,
         description: "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET."
     }
@@ -42,7 +42,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         return { success: true }
     }
 
-    public async addRequest(partialEntity: ILeCompteAssoPartialRequestEntity): Promise<{state: string, result: LeCompteAssoRequestEntity} | RejectedRequest> {
+    public async addRequest(partialEntity: ILeCompteAssoPartialRequestEntity): Promise<{ state: string, result: LeCompteAssoRequestEntity } | RejectedRequest> {
         const existingEntity = await leCompteAssoRepository.findByCompteAssoId(partialEntity.providerInformations.compteAssoId);
 
         if (existingEntity) {
@@ -55,13 +55,13 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             const siret = legalInformations.siret;
             if (siret) {
                 const siren = siretToSiren(siret);
-                EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren}])
-                EventManager.call('association-name.matching', [{rna: legalInformations.rna, siren, name: legalInformations.name, provider: this.provider.name, lastUpdate: partialEntity.providerInformations.transmis_le}])
-            }            
+                EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren }])
+                EventManager.call('association-name.matching', [{ rna: legalInformations.rna, siren, name: legalInformations.name, provider: this.provider.name, lastUpdate: partialEntity.providerInformations.transmis_le }])
+            }
 
             return {
                 state: "updated",
-                result: await leCompteAssoRepository.update(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),
+                result: await leCompteAssoRepository.update(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations, partialEntity.data)),
             };
         }
 
@@ -75,13 +75,13 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                 result: {
                     message: "RNA not found",
                     code: 11,
-                    data: partialEntity.legalInformations 
+                    data: partialEntity.legalInformations
                 }
             }
         }
 
 
-        if (!LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value)){
+        if (!LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value)) {
             return {
                 state: "rejected",
                 result: {
@@ -99,9 +99,11 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             rna,
         }
 
+        const entity = new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations, partialEntity.data);
+        await leCompteAssoRepository.addRequest(entity);
         return {
             state: "created",
-            result: await leCompteAssoRepository.addRequest(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations,  partialEntity.data)),
+            result: entity,
         };
     }
 
@@ -131,21 +133,21 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
     async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
         const requests = await leCompteAssoRepository.findBySiren(siren);
         if (requests.length === 0) return null;
-        
+
         return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
     }
 
     async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
         const requests = await leCompteAssoRepository.findsBySiret(siret);
         if (requests.length === 0) return null;
-        
+
         return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
     }
 
     async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
         const requests = await leCompteAssoRepository.findsByRna(rna);
         if (requests.length === 0) return null;
-        
+
         return requests.map(r => LeCompteAssoRequestAdapter.toAssociation(r));
     }
 
@@ -154,10 +156,10 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
      * |   Etablissesement Part  |
      * |-------------------------|
      */
-    
+
     isEtablissementProvider = true;
 
-    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {   
+    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
         const requests = await this.findBySiret(siret);
 
         if (requests.length === 0) return null;
