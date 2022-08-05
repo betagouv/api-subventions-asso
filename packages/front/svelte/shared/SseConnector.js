@@ -8,7 +8,7 @@ export default class SSEConnector {
         this.callbackError = () => null;
 
         const token = axios.defaults.headers.common["x-access-token"];
-        const baseUrl = axios.defaults.baseURL
+        const baseUrl = axios.defaults.baseURL;
         this.source = new EventSource(`${baseUrl}${this.route}?token=${token}`);
 
         this.source.addEventListener("message", ev => {
