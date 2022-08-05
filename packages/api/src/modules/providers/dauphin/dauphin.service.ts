@@ -3,159 +3,208 @@ import qs from "qs";
 import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_EMAIL, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
-import ProviderValueFactory from "../../../shared/ProviderValueFactory";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
+import DauphinSubventionDto from "./dto/DauphinSubventionDto";
+import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter"
+import dauhpinCachesRepository from "./repositories/dauphinCache.repository";
+import configurationsService from "../../configurations/configurations.service";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
         name: "Dauphin",
         type: ProviderEnum.api,
-        description: "Loreipsum"
+        description: "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction."
     }
 
     isDemandesSubventionsProvider = true
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        return null;
+        console.log(siret);
+
+        const siren = siretToSiren(siret);
+        const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
+
+        const token = await this.getAuthToken();
+        const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
+        await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+    
+        return (await dauhpinCachesRepository.findBySiret(siret)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        function getAuthToken() {
-            const data = qs.stringify({
-                username: DAUPHIN_EMAIL,
-                password: DAUPHIN_PASSWORD,
-                redirectTo: "https://agent-dauphin.cget.gouv.fr/agents/#/cget/home?redirectTo=portal.home",
-                captcha: undefined
-            })
-            
-            return axios.post(
-                "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
-                data,
-                {
-                    "headers": {
-                        "accept": "application/json, text/plain, */*",
-                        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-                        "content-type": "application/x-www-form-urlencoded",
-                        "Referer": "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
-                        "Referrer-Policy": "strict-origin-when-cross-origin"
-                    }
-                }
-            ).then(reslut => {
-                return reslut.data;
-            })
+        console.log(siren);
+        const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
+
+        const token = await this.getAuthToken();
+        const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
+        await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+    
+        return (await dauhpinCachesRepository.findBySiren(siren)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
+    }
+
+    async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
+        return null;
+    }
+
+    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
+        const token = await this.getAuthToken();
+
+        try {
+            const demande = await this.getDauphinSubvention(id, token);
+            return DauphinDtoAdapter.toDemandeSubvention(demande);
+        } catch (e){
+            throw new Error("DemandeSubvention not found");
         }
 
-        function getMontantDemande(demande) {
-            return demande.planFinancement.find(pf => pf.current).recette.postes.map(p => p?.sousPostes?.map(s => s?.lignes?.map(l => l.dispositifEligible ? l.montant.ht : undefined))).flat(2).filter(a => a)[0]
-        }
-        function getMontantAccorder(demande) {
-            return demande.planFinancement.map(pf => pf.recette.postes.map(p => p?.sousPostes?.map(s => s?.lignes?.map(l => l.financement?.montantVote?.ht)))).flat(3).filter(a => a)[0];
-        }
+    }
+
+    private async getDauphinSubventions(siren: Siren, token, lastUpdate ?: Date): Promise<DauphinSubventionDto[]> {
+        const result = await axios.post(
+            "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
+            this.buildSearchQuery(siren, lastUpdate),
+            this.buildSearchHeader(token)
+        )
         
-        async function searchDemandeByTier(siren, token) {
-            const result = await axios.post(
-                "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-                {
-                    "size": 2000,
-                    "query": {
-                        "filtered": {
+        return result.data.hits.hits.map(h => h._source);
+    }
+
+    private async getDauphinSubvention(ref: string, token): Promise<DauphinSubventionDto> {
+        const result = await axios.post(
+            "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
+            this.buildFindByIdQuery(ref),
+            this.buildSearchHeader(token)
+        )
+        
+        return result.data.hits.hits.map(h => h._source)[0];
+    }
+
+    private buildSearchQuery(siren: Siren, date ?: Date) {
+        return this.buildQuery([
+            {
+                "bool": {
+                    "should":[ {
+                        "nested": {
+                            "path": "beneficiaires",
                             "filter": {
                                 "bool": {
-                                    "must": [
+                                    "should": [
                                         {
-                                            "bool": {
-                                                "should":[ {
-                                                    "nested": {
-                                                        "path": "beneficiaires",
-                                                        "filter": {
-                                                            "bool": {
-                                                                "should": [
-                                                                    {
-                                                                        "query": {
-                                                                            "query_string": {
-                                                                                "query": "beneficiaires.SIRET.SIREN:" + siren,
-                                                                                "analyze_wildcard": true
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        }
-                                                    }
-                                                }],
+                                            "query": {
+                                                "query_string": {
+                                                    "query": "beneficiaires.SIRET.SIREN:" + siren,
+                                                    "analyze_wildcard": true
+                                                }
                                             }
                                         }
                                     ]
                                 }
                             }
                         }
-                    },
-                    "_source": [],
-                    "aggs": {}
-                },
-                {
-                    "headers": {
-                        "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
-                        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-                        "authorization": "Bearer " + token,
-                        "content-type": "application/json;charset=UTF-8",
-                        "mg-authentication": "true",
-                        "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
-                        "Referrer-Policy": "strict-origin-when-cross-origin"
-                    },
+                    }],
                 }
-            )
-            
-            return result.data.hits.hits.map(h => h._source);
-        }
-        
-        const token = await getAuthToken();
-        const demandes = await searchDemandeByTier(siren, token); //await Promise.all(tiers.map(t => searchDemandeByTier(t, token)));
-    
-        const formatedDemandes = demandes.flat().map(demande => {
-            const montantDemande = getMontantDemande(demande);
-    
-            const montantAccorde = getMontantAccorder(demande);
-            return {
-                title: demande.intituleProjet,
-                description: (demande.description || { value: demande.virtualStatusLabel }).value,
-                date: new Date(demande.dateDemande),
-                year: demande.exerciceBudgetaire,
-                service: (demande?.financeursPrivilegies || [{title: ""}])[0].title || "",
-                dispositif: demande?.dispositif?.title,
-                montantDemande,
-                montantAccorde,
-                status: demande.status,
-                siret: demande.demandeur.SIRET.complet
-            }
-        });
-        return formatedDemandes.map(data => {
-            const toPV = ProviderValueFactory.buildProviderValueAdapter("Dauphin", data.date)
-
-            return {
-                siret: toPV(data.siret),
-                service_instructeur: toPV(data.service),
-                dispositif: toPV(data.dispositif || ''),
-                status: toPV(data.status),
-                date_commision: toPV(data.date),
-                annee_demande: toPV(data.year),
-                montants: {
-                    demande: data.montantDemande ? toPV(data.montantDemande) : undefined,
-                    accorde: data.montantAccorde ? toPV(data.montantAccorde) : undefined,
-                },
-                actions_proposee: [
-                    {
-                        intitule: toPV(data.title),
-                        objectifs: toPV(data.description),
+            },
+            date ? {
+                "query":{
+                    "query_string":{
+                        "query":"date:>" + this.formatDateToDauphinDate(date),
+                        "analyze_wildcard":true
                     }
-                ]
+                }
+            } : undefined
+        ])
+    }
+
+    private buildFindByIdQuery(ref: string) {
+        return this.buildQuery([{
+            "query":{
+                "query_string":{
+                    "query":"reference:" + ref,
+                    "analyze_wildcard":true
+                }
             }
+        }])
+    }
+
+    private buildQuery(searchQuery: unknown[]) {
+        return {
+            "size": 2000,
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": searchQuery
+                        }
+                    }
+                }
+            },
+            "_source": [],
+            "aggs": {}
+        }
+    }
+
+    private formatDateToDauphinDate(date: Date): string {
+        const formatIntToTwoDigits = (int: number) => ("0" + int).slice(-2);
+        const formatIntToThreeDigits = (int: number) => ("00" + int).slice(-3);
+
+        return `${date.getFullYear()}\\-${formatIntToTwoDigits(date.getMonth() + 1)}\\-${formatIntToTwoDigits(date.getDate())}T${formatIntToTwoDigits(date.getHours())}\\:${formatIntToTwoDigits(date.getMinutes())}\\:${formatIntToTwoDigits(date.getSeconds())}.${formatIntToThreeDigits(date.getMilliseconds())}Z`
+    }
+
+    private buildSearchHeader(token) {
+        return {
+            "headers": {
+                "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
+                "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                "authorization": "Bearer " + token,
+                "content-type": "application/json;charset=UTF-8",
+                "mg-authentication": "true",
+                "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
+                "Referrer-Policy": "strict-origin-when-cross-origin"
+            },
+        }
+    }
+
+    private async getAuthToken() {
+        const configToken = await configurationsService.getDauphinToken();
+        const tokenAvailableTimeConfig = await configurationsService.getDauphinTokenAvailableTime();
+        
+        if (
+            configToken 
+            && tokenAvailableTimeConfig 
+            && 
+                Date.now() - configToken.updatedAt.getTime() 
+                < tokenAvailableTimeConfig.data
+        ) return configToken.data;
+
+        const token = await this.sendAuthRequest();
+
+        await configurationsService.setDauphinToken(token);
+
+        return token;
+    }
+
+    private sendAuthRequest() {
+        const data = qs.stringify({
+            username: DAUPHIN_EMAIL,
+            password: DAUPHIN_PASSWORD,
+            redirectTo: "https://agent-dauphin.cget.gouv.fr/agents/#/cget/home?redirectTo=portal.home",
+            captcha: undefined
         })
-    }
-    async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
-        return null;
-    }
-    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
-        throw new Error("Pouet");
+        
+        return axios.post<string>(
+            "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
+            data,
+            {
+                "headers": {
+                    "accept": "application/json, text/plain, */*",
+                    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "content-type": "application/x-www-form-urlencoded",
+                    "Referer": "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
+                    "Referrer-Policy": "strict-origin-when-cross-origin"
+                }
+            }
+        ).then(reslut => {
+            return reslut.data;
+        })
     }
 }
 
