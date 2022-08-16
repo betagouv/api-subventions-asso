@@ -36,14 +36,16 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         await EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: date }]);
 
         if (existingFile) {
+            await osirisRequestRepository.update(request)
             return {
                 state: "updated",
-                result: await osirisRequestRepository.update(request),
+                result: request,
             };
         } else {
+            await osirisRequestRepository.add(request)
             return {
                 state: "created",
-                result: await osirisRequestRepository.add(request),
+                result: request,
             };
         }
     }
@@ -81,9 +83,11 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             };
         }
 
+        await osirisActionRepository.add(action);
+
         return {
             state: "created",
-            result: await osirisActionRepository.add(action),
+            result: action,
         };
     }
 
@@ -126,9 +130,11 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             };
         }
 
+        await osirisEvaluationRepository.add(entity);
+
         return {
             state: "created",
-            result: await osirisEvaluationRepository.add(entity),
+            result: entity,
         };
     }
 

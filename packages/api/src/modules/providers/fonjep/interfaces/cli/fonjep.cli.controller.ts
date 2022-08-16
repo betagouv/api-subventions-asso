@@ -35,8 +35,7 @@ export default class FonjepCliController extends CliController {
         }, Promise.resolve([]) as Promise<
             ({
                 success: true,
-                state: string,
-                entity: FonjepRequestEntity
+                state: string
             }
                 | RejectedRequest)[]>)
 

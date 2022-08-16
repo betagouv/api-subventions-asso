@@ -1,5 +1,5 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepRequestEntity from "../entities/FonjepRequestEntity";
 
@@ -7,8 +7,7 @@ export class FonjepRepository extends MigrationRepository<FonjepRequestEntity> {
     readonly collectionName = "fonjep";
 
     async create(entity: FonjepRequestEntity) {
-        const insertAction = await this.collection.insertOne(entity);
-        return await this.collection.findOne({ _id: insertAction.insertedId }) as WithId<FonjepRequestEntity>;
+        return await this.collection.insertOne(entity);
     }
 
     findBySiret(siret: Siret) {

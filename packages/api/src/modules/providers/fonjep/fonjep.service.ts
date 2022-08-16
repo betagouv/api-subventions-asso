@@ -1,5 +1,4 @@
 import { Siret, Siren, DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
-import { WithId } from "mongodb";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -26,14 +25,13 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         description: "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
     }
 
-    async createEntity(entity: FonjepRequestEntity): Promise<RejectedRequest | { success: true, entity: WithId<FonjepRequestEntity>, state: 'updated' | "created" }> {
+    async createEntity(entity: FonjepRequestEntity): Promise<RejectedRequest | { success: true, state: 'updated' | "created" }> {
         const valid = this.validateEntity(entity);
 
         if (!valid.success) return valid;
 
         return {
             success: true,
-            entity: await fonjepRepository.create(entity),
             state: "created",
         };
     }
@@ -149,7 +147,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         }
     }
 
-    async renameCollection(name:string) {
+    async renameCollection(name: string) {
         try {
             return await fonjepRepository.rename(name);
         } catch (e) {

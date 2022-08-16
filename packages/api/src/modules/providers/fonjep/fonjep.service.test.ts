@@ -116,7 +116,7 @@ describe("FonjepService", () => {
             // @ts-expect-error: mock repository
             jest.spyOn(fonjepRepository, "create").mockImplementationOnce(async () => entity);
             const entity = { ...FonjepEntity };
-            const expected = { success: true, entity, state: "created" };
+            const expected = { success: true, state: "created" };
             const actual = await fonjepService.createEntity(entity);
             expect(actual).toEqual(expected);
         })

@@ -1,4 +1,4 @@
-import { Siren, Siret ,Versement } from "@api-subventions-asso/dto";
+import { Siren, Siret, Versement } from "@api-subventions-asso/dto";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -80,15 +80,15 @@ export class ChorusService implements VersementsProvider {
     }
 
     public async addChorusLine(entity: ChorusLineEntity) {
-        if(!this.validateEntity(entity).success) {
+        if (!this.validateEntity(entity).success) {
             return {
                 state: "rejected",
                 result: this.validateEntity(entity)
             }
         }
-        const alreadyExist = await chorusLineRepository.findOneByUniqueId(entity.uniqueId);
 
-        if (alreadyExist){
+        const alreadyExist = await chorusLineRepository.findOneByUniqueId(entity.uniqueId);
+        if (alreadyExist) {
             return {
                 state: "updated",
                 result: await chorusLineRepository.update(entity),
@@ -96,7 +96,7 @@ export class ChorusService implements VersementsProvider {
         }
 
         // Check if siret belongs to an asso
-        if (entity.indexedInformations.codeBranche !== ASSO_BRANCHE && ! (await this.sirenBelongAsso(siretToSiren(entity.indexedInformations.siret)))) {
+        if (entity.indexedInformations.codeBranche !== ASSO_BRANCHE && !(await this.sirenBelongAsso(siretToSiren(entity.indexedInformations.siret)))) {
             return {
                 state: "rejected",
                 result: {
@@ -105,10 +105,21 @@ export class ChorusService implements VersementsProvider {
                 }
             }
         }
-        
-        return {
-            state: "created",
-            result: await chorusLineRepository.create(entity),
+
+        try {
+            await chorusLineRepository.create(entity);
+            return {
+                state: "created",
+                result: entity,
+            }
+        } catch (e) {
+            return {
+                state: "rejected",
+                result: {
+                    message: "Fail to create ChorusLineEntity",
+                    data: entity
+                }
+            }
         }
     }
 
@@ -117,8 +128,8 @@ export class ChorusService implements VersementsProvider {
         if (await rnaSirenService.getRna(siren, true)) return true;
 
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);
-        if (chorusLine) return true; 
-        
+        if (chorusLine) return true;
+
         return false
     }
 
@@ -127,7 +138,7 @@ export class ChorusService implements VersementsProvider {
      * |   Versement Part        |
      * |-------------------------|
      */
-    
+
     isVersementsProvider = true;
 
     async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
