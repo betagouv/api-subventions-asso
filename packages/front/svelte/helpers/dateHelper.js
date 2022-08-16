@@ -5,9 +5,10 @@ export const sortByDateAsc = (a, b) => {
 };
 
 export const withTwoDigitYear = (date) => {
-    if (date.constructor.name != "Date") return date;
-    const localeDate = date.toLocaleDateString();
-    const last2Digit = localeDate.slice(-2);
-    const dateWithoutYear = localeDate.slice(0, 6);
-    return dateWithoutYear.concat(last2Digit);
+    if (date instanceof Date) {
+        const localeDate = date.toLocaleDateString();
+        const last2Digit = localeDate.slice(-2);
+        const dateWithoutYear = localeDate.slice(0, 6);
+        return dateWithoutYear.concat(last2Digit);
+    } else return date;
 }
