@@ -5,6 +5,8 @@
     import TableCell from "../../../components/TableCell.svelte";
     import { numberToEuro } from "../../../helpers/dataHelper";
 
+    import { withTwoDigitYear } from "../../../helpers/dateHelper";
+
     export let versements;
     export let id;
 </script>
@@ -28,7 +30,7 @@
                             <TableCell position="center">{versement.activitee}</TableCell>
                             <TableCell position="center">{versement.centreFinancier}</TableCell>
                             <TableCell position="center">
-                                {new Date(versement.dateOperation).toLocaleDateString().slice(0, 8)}
+                                {withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8)}
                             </TableCell>
                         </tr>
                     {/each}

@@ -4,6 +4,7 @@
     import Button from "../../../dsfr/Button.svelte";
     import Table from "../../../dsfr/Table.svelte";
     import { valueOrHyphen, numberToEuro } from "../../../helpers/dataHelper";
+    import { withTwoDigitYear } from "../../../helpers/dateHelper";
     import helpers from "../../../../src/shared/helpers/EJSHelper";
     import SubventionInfoModal from "./SubventionInfoModal.svelte";
 
@@ -100,7 +101,7 @@
                     <TableCell>{trim(element.subvention.service_instructeur, 35)}</TableCell>
                     <TableCell position="center">
                         {#if element.subvention.date_commision}
-                            {new Date(element.subvention.date_commision).toLocaleDateString().slice(0, 8)}
+                            {withTwoDigitYear(new Date(element.subvention.date_commision))}
                         {:else}
                             {valueOrHyphen()}
                         {/if}

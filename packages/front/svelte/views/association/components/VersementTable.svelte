@@ -8,6 +8,7 @@
     import VersementsInfoModal from "./VersementsInfoModal.svelte";
 
     export let elements = [];
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     export let sort = () => {};
     export let currentSort = null;
     export let sortDirection = null;
@@ -81,7 +82,7 @@
                     </TableCell>
                     <TableCell>{element.versements[0].centreFinancier}</TableCell>
                     <TableCell>
-                        {withTwoDigitYear(getLastVersementsDate(element.versements).toLocaleDateString())}
+                        {withTwoDigitYear(getLastVersementsDate(element.versements))}
                     </TableCell>
                 </tr>
             {/if}
