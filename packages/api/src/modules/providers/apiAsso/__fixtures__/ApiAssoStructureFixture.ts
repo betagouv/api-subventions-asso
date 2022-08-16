@@ -1,5 +1,5 @@
-import StructureDto, 
-{ 
+import StructureDto,
+{
     StructureDacDocumentDto,
     StructureEtablissementDto,
     StructureRepresentantLegalDto,
@@ -67,8 +67,10 @@ export const fixtureAsso = {
         id_siren: "509221941",
         id_siret_siege: "5092219410000",
         id_forme_juridique: "9220",
-        date_modif_rna: "01-01-2022",
-        date_modif_siren: "01-01-2022",
+        date_creat: "1994-07-04",
+        date_creation_siren: "1985-02-26",
+        date_modif_rna: "2018-01-01",
+        date_modif_siren: "2010-01-01",
         regime: "Autre"
     },
     activites: {},
