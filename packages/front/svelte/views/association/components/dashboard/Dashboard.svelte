@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import Button from "../../../../dsfr/Button.svelte";
     import Select from "../../../../dsfr/Select.svelte";
     import { numberToEuro, valueOrHyphen } from "../../../../helpers/dataHelper";
@@ -22,6 +22,7 @@
 
     onMount(() => (promise = dashboardCore.mount()));
     dashboardCore.onRender(_data => (data = _data));
+    onDestroy(() => dashboardCore.destroy())
 </script>
 
 {#await promise}

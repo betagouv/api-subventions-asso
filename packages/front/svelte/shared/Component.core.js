@@ -11,6 +11,10 @@ export default class ComponentCore {
         this.renderCallback(this.buildRendererData());
     }
 
+    destroy() {
+        return;
+    }
+
     buildRendererData() {
         return {};
     }

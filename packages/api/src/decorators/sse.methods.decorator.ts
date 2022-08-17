@@ -1,48 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function Get(route: string, securityRoles: string[] = []) {
+
+function factoryDecorator(method: "POST" | "GET" | "PUT" | "DELETE", route: string, securityRoles: string[] = []) {
     return function (target: any, propertyKey: string) {
         if (!target["__methods__"]) target["__methods__"] = [];
         target["__methods__"].push({
-            method: "GET",
+            method,
             route: route,
             function: target[propertyKey] as any,
             securityRoles
         });
-    };
+    }
+} 
+
+export function Get(route: string, securityRoles: string[] = []) {
+    return factoryDecorator("GET", route, securityRoles);
 }
 
 export function Post(route: string, securityRoles: string[] = []) {
-    return function (target: any, propertyKey: string) {
-        if (!target["__methods__"]) target["__methods__"] = [];
-        target["__methods__"].push({
-            method: "POST",
-            route: route,
-            function: target[propertyKey] as any,
-            securityRoles
-        });
-    };
+    return factoryDecorator("POST", route, securityRoles);
 }
 
 export function Put(route: string, securityRoles: string[] = []) {
-    return function (target: any, propertyKey: string) {
-        if (!target["__methods__"]) target["__methods__"] = [];
-        target["__methods__"].push({
-            method: "PUT",
-            route: route,
-            function: target[propertyKey] as any,
-            securityRoles
-        });
-    };
+    return factoryDecorator("PUT", route, securityRoles);
 }
 
 export function Delete(route: string, securityRoles: string[] = []) {
-    return function (target: any, propertyKey: string) {
-        if (!target["__methods__"]) target["__methods__"] = [];
-        target["__methods__"].push({
-            method: "DELETE",
-            route: route,
-            function: target[propertyKey] as any,
-            securityRoles
-        });
-    };
+    return factoryDecorator("DELETE", route, securityRoles);
 }

@@ -6,6 +6,7 @@ export default class DashboardCore extends ComponentCore {
     constructor(association) {
         super();
         this.association = association;
+        this.unsubscribeFlux = null;
 
         // Manage Head and filter of table
         this.elements = [];
@@ -36,11 +37,15 @@ export default class DashboardCore extends ComponentCore {
         };
     }
 
+    destroy() {
+        if(this.unsubscribeFlux) this.unsubscribeFlux();
+    }
+
     async mount() {
         const subventionsFlux = associationService.connectSuventionsFlux(this.association.siren);
         const versements = await associationService.getVersements(this.association.siren);
 
-        subventionsFlux.subscribe(state => {
+        this.unsubscribeFlux = subventionsFlux.subscribe(state => {
             if (state.status === "close") this.computed.status = "end";
             this.elements = mapSubventionsAndVersements({ subventions: state.subventions, versements });
 
