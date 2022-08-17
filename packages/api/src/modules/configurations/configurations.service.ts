@@ -2,18 +2,22 @@ import { DauphinTokenAvailableTime } from "./entities/DauphinTokenAvailableTimeD
 import { DauphinTokenDataEntity } from "./entities/DauphinTokenDataEntity";
 import configurationsRepository from "./repositories/configurations.repository";
 
-export class ConfigurationsService {
+enum CONFIGURATION_NAMES {
+    DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
+    DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
+}
 
+export class ConfigurationsService {
     getDauphinToken() {
-        return configurationsRepository.getByName<DauphinTokenDataEntity>("DAUPHIN-TOKEN");
+        return configurationsRepository.getByName<DauphinTokenDataEntity>(CONFIGURATION_NAMES.DAUPHIN_TOKEN);
     }
 
     async setDauphinToken(token: string) {
-        await configurationsRepository.upsert("DAUPHIN-TOKEN", { data: token });
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, { data: token });
     }
 
     getDauphinTokenAvailableTime() {
-        return configurationsRepository.getByName<DauphinTokenAvailableTime>("DAUPHIN-TOKEN-AVAILABLE");
+        return configurationsRepository.getByName<DauphinTokenAvailableTime>(CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE);
     }
 }
 

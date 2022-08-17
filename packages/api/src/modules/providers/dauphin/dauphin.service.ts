@@ -2,13 +2,14 @@ import axios from "axios";
 import qs from "qs";
 import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { DAUPHIN_EMAIL, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
+import { DAUPHIN_USERNAME, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter"
 import dauhpinCachesRepository from "./repositories/dauphinCache.repository";
 import configurationsService from "../../configurations/configurations.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import { formatIntToThreeDigits, formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
@@ -20,8 +21,6 @@ export class DauphinService implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        console.log(siret);
-
         const siren = siretToSiren(siret);
         const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
 
@@ -32,7 +31,6 @@ export class DauphinService implements DemandesSubventionsProvider {
         return (await dauhpinCachesRepository.findBySiret(siret)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        console.log(siren);
         const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
 
         const token = await this.getAuthToken();
@@ -143,9 +141,6 @@ export class DauphinService implements DemandesSubventionsProvider {
     }
 
     private formatDateToDauphinDate(date: Date): string {
-        const formatIntToTwoDigits = (int: number) => ("0" + int).slice(-2);
-        const formatIntToThreeDigits = (int: number) => ("00" + int).slice(-3);
-
         return `${date.getFullYear()}\\-${formatIntToTwoDigits(date.getMonth() + 1)}\\-${formatIntToTwoDigits(date.getDate())}T${formatIntToTwoDigits(date.getHours())}\\:${formatIntToTwoDigits(date.getMinutes())}\\:${formatIntToTwoDigits(date.getSeconds())}.${formatIntToThreeDigits(date.getMilliseconds())}Z`
     }
 
@@ -184,7 +179,7 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     private sendAuthRequest() {
         const data = qs.stringify({
-            username: DAUPHIN_EMAIL,
+            username: DAUPHIN_USERNAME,
             password: DAUPHIN_PASSWORD,
             redirectTo: "https://agent-dauphin.cget.gouv.fr/agents/#/cget/home?redirectTo=portal.home",
             captcha: undefined

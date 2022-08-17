@@ -1,11 +1,12 @@
 import DauphinSubventionDto from "../dto/DauphinSubventionDto"
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DemandeSubvention } from "@api-subventions-asso/dto";
+import dauphinService from "../dauphin.service";
 
 export default class DauphinDtoAdapter {
     public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
         const lastUpdateDate = dto._document?.dateVersion || dto.history.events[dto.history.events.length -1]?.date || dto.history.begin.date;
-        const toPV = ProviderValueFactory.buildProviderValueAdapter("Dauphin", new Date(lastUpdateDate));
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.provider.name, new Date(lastUpdateDate));
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
         const montantAccorde = DauphinDtoAdapter.getMontantAccorder(dto);
 
