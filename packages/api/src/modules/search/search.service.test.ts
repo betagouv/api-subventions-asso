@@ -5,6 +5,8 @@ import subventionsService from '../subventions/subventions.service';
 import { Association, DemandeSubvention, Etablissement } from '@api-subventions-asso/dto';
 import versementsService from '../versements/versements.service';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
+import Flux from "../../shared/Flux";
+import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 
 const SIRET = "SIRET";
 const SIREN = "SIREN";
@@ -58,12 +60,13 @@ describe("SearchService", () => {
         const getDemandesByAssociationMock = jest.spyOn(subventionsService, "getDemandesByAssociation");
         const aggregateVersementsByAssoSearchMock = jest.spyOn(versementsService, "aggregateVersementsByAssoSearch");
         it('should returns file contains actions', async () => {
+            const FLUX = new Flux({subventions: DEMANDES_SUBVENTIONS} as unknown as SubventionsFlux).close();
             const ETABLISSEMENTS = [{ siret: SIRET, demandes_subventions: DEMANDES_SUBVENTIONS, versements: [] }];
             // @ts-expect-error: mock
             getEtablissementsBySirenMock.mockImplementationOnce(() => (ETABLISSEMENTS));
             // @ts-expect-error: mock
             getAssociationBySirenMock.mockImplementationOnce(() => ({ siren: SIREN }));
-            getDemandesByAssociationMock.mockImplementationOnce(async () => DEMANDES_SUBVENTIONS);
+            getDemandesByAssociationMock.mockImplementationOnce(async () => FLUX);
             aggregateVersementsByAssoSearchMock.mockImplementationOnce(async association => association);
 
             const expected = {

@@ -4,12 +4,15 @@ import osirisRequestRepository from '../../../src/modules/providers/osiris/repos
 import fonjepRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.repository';
 import FonjepEntityFixture from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
+import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
 
 const g = global as unknown as { app: unknown }
 
 describe("/association", () => {
     beforeEach( async () => {
+        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => [])
         await osirisRequestRepository.add(OsirisRequestEntityFixture);
+
         await fonjepRepository.create(FonjepEntityFixture);
     })
     

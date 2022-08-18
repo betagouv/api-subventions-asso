@@ -14,6 +14,8 @@ import versementsService from '../versements/versements.service';
 import documentsService from '../documents/documents.service';
 import { Document } from '@api-subventions-asso/dto/search/Document';
 import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
+import Flux from '../../shared/Flux';
+import { SubventionsFlux } from '../subventions/@types/SubventionsFlux';
 
 jest.mock('../providers/index');
 
@@ -196,7 +198,7 @@ describe("AssociationService", () => {
 
     describe("getSubventions()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
-            getDemandesByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as DemandeSubvention[]));
+            getDemandesByAssociationMock.mockImplementationOnce(async () => new Flux<SubventionsFlux>());
             await associationsService.getSubventions(SIREN);
             expect(getDemandesByAssociationMock).toHaveBeenCalledWith(SIREN);
         })

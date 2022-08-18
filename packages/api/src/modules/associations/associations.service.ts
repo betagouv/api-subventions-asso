@@ -61,8 +61,9 @@ export class AssociationsService {
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
-    async getSubventions(identifier: AssociationIdentifiers) {
-        return await subventionsService.getDemandesByAssociation(identifier);
+
+    getSubventions(identifier: AssociationIdentifiers) {
+        return subventionsService.getDemandesByAssociation(identifier);
     }
 
     async getVersements(identifier: AssociationIdentifiers) {

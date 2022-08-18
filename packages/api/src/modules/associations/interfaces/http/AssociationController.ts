@@ -1,4 +1,4 @@
-import { GetAssociationResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto, GetSubventionsResponseDto, GetVersementsResponseDto, GetDocumentsResponseDto } from '@api-subventions-asso/dto';
+import { GetAssociationResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto, GetSubventionsResponseDto, GetVersementsResponseDto, GetDocumentsResponseDto, DemandeSubvention } from '@api-subventions-asso/dto';
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
 import { AssociationIdentifiers, StructureIdentifiers } from '../../../../@types';
@@ -37,8 +37,10 @@ export class AssociationController extends Controller {
     @Response<ErrorResponse>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
         try {
-            const result = await associationService.getSubventions(identifier);
-            return { success: true, subventions: result };
+            const flux = await associationService.getSubventions(identifier);
+            const result = await flux.toPromise();
+            const subventions = result.map(fluxSub => fluxSub.subventions).filter(sub => sub).flat() as DemandeSubvention[];
+            return { success: true, subventions };
         } catch (e) {
             this.setStatus(404);
             return { success: false, message: (e as Error).message }
