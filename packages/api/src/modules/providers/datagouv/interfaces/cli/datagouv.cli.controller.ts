@@ -14,7 +14,7 @@ export default class DataGouvCliController extends CliController {
 
     protected logFileParsePath = "./logs/datagouv.parse.log.txt"
 
-    protected async _parse(file: string, logs: unknown[]) {
+    protected async _parse(file: string, logs: unknown[], exportDate: Date) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
@@ -68,5 +68,11 @@ export default class DataGouvCliController extends CliController {
         console.log("Remove duplicate in rna-siren table");
         await rnaSirenService.cleanDuplicate();
         console.log("Rna-Siren table is clean");
+
+        await dataGouvService.addNewImport({
+            filename: file,
+            dateOfFile: exportDate,
+            dateOfImport: new Date()
+        })
     }
 }
