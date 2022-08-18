@@ -26,15 +26,19 @@ export default class SSEConnector {
         this.source.addEventListener("error", ev => this.callbackError(ev));
     }
 
-    onData(callback) {
-        this.callbackData = callback;
-    }
-
-    onClose(callback) {
-        this.callbackClose = callback;
-    }
-
-    onError(callback) {
-        this.callbackError = callback;
+    on(event, callback) {
+        switch(event) {
+            case "data":
+                this.callbackData = callback
+                break;
+            case "close":
+                this.callbackClose = callback
+                break;
+            case "error":
+                this.callbackError = callback
+                break;
+            default:
+                throw new Error(`Event ${event} is not available`);
+        }
     }
 }

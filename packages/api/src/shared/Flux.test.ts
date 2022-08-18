@@ -6,7 +6,7 @@ describe("Flux", () => {
             const expected = "DATA";
             const mock = jest.fn();
             const flux = new Flux(expected);
-            flux.onData(mock);
+            flux.on("data", mock);
 
             expect(mock).toHaveBeenCalledWith(expected);
         })
@@ -30,7 +30,7 @@ describe("Flux", () => {
             const onData = jest.fn();
 
             const expected = "DATA";
-            flux.onData(onData);
+            flux.on("data", onData);
 
             flux.push(expected);
 
@@ -49,14 +49,14 @@ describe("Flux", () => {
 
     })
     
-    describe("onData", () => {
+    describe("on('data')", () => {
         it("should call onData callback with old data", () => {
             const flux = new Flux();
             const onData = jest.fn();
     
             const expected = "DATA";
             flux.push(expected);
-            flux.onData(onData);
+            flux.on("data", onData);
     
     
             expect(onData).toHaveBeenCalledWith(expected);
@@ -68,7 +68,7 @@ describe("Flux", () => {
     
             const expected = "DATA";
 
-            flux.onData(onData);
+            flux.on("data", onData);
             flux.push(expected);
     
             expect(onData).toHaveBeenCalledWith(expected);
@@ -88,7 +88,7 @@ describe("Flux", () => {
             const flux = new Flux();
             const onCloseCb = jest.fn();
 
-            flux.onClose(onCloseCb);
+            flux.on("close", onCloseCb);
 
             flux.close();
 
@@ -104,12 +104,12 @@ describe("Flux", () => {
 
     })
     
-    describe("onClose", () => {
+    describe("on('close')", () => {
         it("should directly close when flux is already close", () => {
             const flux = new Flux().close();
     
             const onCloseCb = jest.fn();
-            flux.onClose(onCloseCb);
+            flux.on("close", onCloseCb);
     
             expect(onCloseCb).toHaveBeenCalledTimes(1);
         })
@@ -118,7 +118,7 @@ describe("Flux", () => {
             const flux = new Flux();
             const onCloseCb = jest.fn();
 
-            flux.onClose(onCloseCb);
+            flux.on("close", onCloseCb);
 
             flux.close();
 

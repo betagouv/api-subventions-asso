@@ -19,7 +19,12 @@ export default class Flux<T> {
         return this;
     }
 
-    onData(cb: (data: T) => unknown) {
+    on(event: "data" | "close", cb: (data?: T) => unknown) {
+        if (event === "data") this.onData(cb);
+        if (event === "close") this.onClose(cb);
+    }
+
+    private onData(cb: (data: T) => unknown) {
         this.onDataCb = cb;
         if (this.prevData.length) {
             this.prevData.forEach((data) => {
@@ -47,11 +52,11 @@ export default class Flux<T> {
 
             const acc: T[]= [];
 
-            this.onData((data: T) => {
-                acc.push(data);
+            this.on("data", (data?: T) => {
+                acc.push(data as T);
             });
 
-            this.onClose(() => {
+            this.on("close", () => {
                 resolve(acc)
             });
         });

@@ -22,11 +22,11 @@ export class AssociationSSEController {
     ) {
         const flux = await associationService.getSubventions(req.params.identifier);
 
-        flux.onData((data) => {
+        flux.on("data", (data) => {
             res.sendSSEData(data);
         });
 
-        flux.onClose(() => {
+        flux.on("close", () => {
             res.sendSSEData({ event: "close" });
         });
     }

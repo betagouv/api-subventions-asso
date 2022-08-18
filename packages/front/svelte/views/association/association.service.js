@@ -20,15 +20,28 @@ export class AssociationService {
             }
         });
 
-        connector.onData(data => {
-            flux.update(state => ({
-                ...state,
-                subventions: state.subventions.concat(data.subventions.map(d => flatenProviderValue(d))),
-                __meta__: data.__meta__
-            }));
+        connector.on("data", data => {
+            if (data.__meta__?.totalProviders) {
+                flux.update(state => ({
+                    ...state,
+                    __meta__: {
+                        ...state.__meta__,
+                        providerCalls: data.__meta__.totalProviders,
+                    }
+                }));
+            } else if (data.subventions) {
+                flux.update(state => ({
+                    ...state,
+                    subventions: state.subventions.concat(data.subventions.map(d => flatenProviderValue(d))),
+                    __meta__: {
+                        ...state.__meta__,
+                        providerAnswers: state.__meta__.providerAnswers + 1
+                    }
+                }));
+            }
         });
 
-        connector.onClose(() => {
+        connector.on("close", () => {
             flux.update(state => {
                 return {
                     ...state,

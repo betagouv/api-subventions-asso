@@ -34,7 +34,7 @@ export class SubventionsService {
         const subventions = data.map(subFlux => subFlux.subventions).flat();
     
         if(!subventions.length) throw new Error("Establishment not found");
-        return subventions;
+        return subventions.filter(subvention => subvention) as DemandeSubvention[];
     }
 
     async getDemandeById(id: string) {
@@ -58,6 +58,12 @@ export class SubventionsService {
         const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as "getDemandeSubventionBySiret" | "getDemandeSubventionBySiren" | "getDemandeSubventionByRna";
         const subventionsFlux = new Flux<SubventionsFlux>();
         const providers = this.getDemandesSubventionsProviders();
+
+        subventionsFlux.push({
+            __meta__: {
+                totalProviders: providers.length,
+            },
+        })
         
         let countAnswers = 0;
         
@@ -65,10 +71,6 @@ export class SubventionsService {
             countAnswers++;
     
             subventionsFlux.push({
-                __meta__: {
-                    providerCalls: providers.length,
-                    providerAnswers: countAnswers
-                },
                 subventions: subventions || [],
             });
 

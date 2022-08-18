@@ -68,7 +68,7 @@ export class SearchService {
         let demandesSubventions: DemandeSubvention[] = []
         try {
             const flux = await subventionsService.getDemandesByAssociation(siren);
-            demandesSubventions = (await flux.toPromise()).map(fluxSubvention => fluxSubvention.subventions).flat();
+            demandesSubventions = (await flux.toPromise()).map(fluxSubvention => fluxSubvention.subventions || []).flat();
         } catch (e) {
             if (e instanceof Error && e.message != "Association not found") {
                 throw e;

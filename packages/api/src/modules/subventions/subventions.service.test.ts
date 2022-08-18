@@ -35,7 +35,7 @@ describe("SubventionsService", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             const expected = [{}, {}];
             const flux = await subventionsService.getDemandesByAssociation(IDENTIFIER);
-            const actual = (await flux.toPromise()).map(fs => fs.subventions).flat();
+            const actual = (await flux.toPromise()).map(fs => fs.subventions || []).flat();
             expect(actual).toEqual(expected);
         });
     });
