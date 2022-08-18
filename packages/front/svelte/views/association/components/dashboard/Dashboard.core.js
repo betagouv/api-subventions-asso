@@ -126,14 +126,14 @@ export default class DashboardCore extends ComponentCore {
             if (!element.subvention || !element.subvention.montants) return acc;
             return acc + (element.subvention.montants.accorde || 0);
         }, 0);
-
+        
         this.scoped.subventionRequestedAmount = this.scoped.elements.reduce((acc, element) => {
             if (!element.subvention || !element.subvention.montants) return acc;
             return acc + (element.subvention.montants.demande || 0);
         }, 0);
 
         this.scoped.percentSubvention = (
-            (this.scoped.subventionAmount / this.scoped.subventionRequestedAmount) * 100 || 100
+            (this.scoped.subventionAmount / this.scoped.subventionRequestedAmount) * 100 || 0
         ).toFixed(0);
 
         this.resetSort();

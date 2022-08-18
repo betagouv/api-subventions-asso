@@ -17,7 +17,7 @@
 
     let promise = associationService.getAssociation(id);
 
-    const titles = ["Tableau de bord des subventions", "Pièces administratives", "Établissements"];
+    const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
 
     const segments = [{ label: "Accueil", url: "/" }, { label: `Association (${id})` }];
 </script>

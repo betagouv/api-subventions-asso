@@ -12,7 +12,6 @@
 
     import DashboardCore from "./Dashboard.core";
     import ProviderModal from "../ProviderModal.svelte";
-    import Alert from "../../../../dsfr/Alert.svelte";
 
     export let association;
 
@@ -29,7 +28,7 @@
 {:then _null}
     {#if data.elements?.length}
         <div class="title">
-            <h2>Tableau de bord des subventions</h2>
+            <h2>Tableau de bord</h2>
             <div>
                 <Button type="secondary" ariaControls="fr-modal-providers">
                     Voir la liste des fournisseurs de données
@@ -52,19 +51,24 @@
         </div>
         <div class="totals">
             <div class="subventions">
-                <h3>Demande de subventions</h3>
+                <h3>Demandes de subventions collectées</h3>
                 <p>
-                    Montant total accordé : <b>{numberToEuro(data.subventionAmount)}</b>
-                    (sur {numberToEuro(data.subventionRequestedAmount)} demandé, soit {data.percentSubvention}%)
+                    <b>{data.percentSubvention}%</b>
+                    des demandes ont été accordées en
+                    <b>{data.selectedYear}</b>
+                    .
                     <br />
-                    d'après les données collectées à ce jour
+                    D'après les données récupérées via Osiris et Fonjep.
                 </p>
             </div>
             <div class="versements">
                 <h3>Versements réalisés</h3>
                 <p>
-                    Pour l'exercice {data.selectedYear} :
+                    Total des versements en <b>{data.selectedYear}</b>
+                    :
                     <b>{valueOrHyphen(numberToEuro(data.versementsAmount))}</b>
+                    <br />
+                    D'après les données récupérées via Chorus.
                 </p>
             </div>
         </div>
@@ -138,7 +142,8 @@
         width: 760px;
         max-width: 760px;
     }
-    .tables div:last-child {
+    .tables div:last-child,
+    .totals div:last-child {
         width: 360px;
         max-width: 360px;
     }
