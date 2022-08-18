@@ -61,7 +61,7 @@ export default class DashboardCore extends ComponentCore {
             this.computed.subventionLoading = {
                 providerCalls: state.__meta__.providerCalls,
                 providerAnswers: state.__meta__.providerAnswers
-            }
+            };
             this.applyScope();
         });
     }
@@ -175,7 +175,7 @@ export default class DashboardCore extends ComponentCore {
             sortDirection: this.computed.sortDirection,
 
             status: this.computed.status,
-            subventionLoading: this.computed.subventionLoading,
+            subventionLoading: this.computed.subventionLoading
         };
     }
 
