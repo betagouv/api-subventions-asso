@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/betagouv/datasubvention/compare/v0.13.1...v0.14.0) (2022-08-18)
+
+
+### Features
+
+* **api, dto, front:** store rna and siren values in Association ([#387](https://github.com/betagouv/datasubvention/issues/387)) ([d55b547](https://github.com/betagouv/datasubvention/commit/d55b547a73fa96122386dfa49798cf1c675802bd))
+* **front:** update dashboard from bizdev comments ([#391](https://github.com/betagouv/datasubvention/issues/391)) ([2dde3b3](https://github.com/betagouv/datasubvention/commit/2dde3b3509707e32be29ed6885f0d719cc562f0a))
+
+
+
+
+
 # [0.13.0](https://github.com/betagouv/datasubvention/compare/v0.12.3...v0.13.0) (2022-07-28)
 
 

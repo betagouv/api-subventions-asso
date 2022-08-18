@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/betagouv/api-subventions-asso/compare/v0.13.1...v0.14.0) (2022-08-18)
+
+
+### Features
+
+* **api, dto, front:** store rna and siren values in Association ([#387](https://github.com/betagouv/api-subventions-asso/issues/387)) ([d55b547](https://github.com/betagouv/api-subventions-asso/commit/d55b547a73fa96122386dfa49798cf1c675802bd))
+* **api:** add date of last import for datagouv files ([#392](https://github.com/betagouv/api-subventions-asso/issues/392)) ([12a7cf1](https://github.com/betagouv/api-subventions-asso/commit/12a7cf1f2f60d1dc9f614e71a5f4bcdf99db3e4b))
+
+
+
+
+
 ## [0.13.1](https://github.com/betagouv/api-subventions-asso/compare/v0.13.0...v0.13.1) (2022-07-28)
 
 
