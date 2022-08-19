@@ -11,7 +11,7 @@ describe("ApiAssoService", () => {
     const adapterAssoMock = jest.spyOn(ApiAssoDtoAdapter, "toAssociation").mockImplementation((r) => [{
         ...r,
         denomination_rna: [{ value: r.identite.nom, provider: "TEST" }],
-        date_modification: [{ value: new Date(Date.UTC(2022, 0, 1)) }]
+        date_modification_rna: [{ value: new Date(Date.UTC(2022, 0, 1)) }]
     }] as unknown[] as Association[]);
     const adapterEtablissementMock = jest.spyOn(ApiAssoDtoAdapter, "toEtablissement").mockImplementation((r) => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as Etablissement);
 
