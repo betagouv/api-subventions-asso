@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.1](https://github.com/betagouv/api-subventions-asso/compare/v0.14.0...v0.14.1) (2022-08-22)
+
+
+### Bug Fixes
+
+* **api:** fix error on search association ([#405](https://github.com/betagouv/api-subventions-asso/issues/405)) ([778a259](https://github.com/betagouv/api-subventions-asso/commit/778a25925192d5a524def9aae09afeae122fbb0c))
+* **front:** handle dark mode for tables ([#401](https://github.com/betagouv/api-subventions-asso/issues/401)) ([cd209fb](https://github.com/betagouv/api-subventions-asso/commit/cd209fb0f7a5bf7730cec3a8b125c52ee5ee2f65))
+
+
+
+
+
 # [0.14.0](https://github.com/betagouv/api-subventions-asso/compare/v0.13.1...v0.14.0) (2022-08-18)
 
 

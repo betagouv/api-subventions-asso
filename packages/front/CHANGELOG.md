@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.1](https://github.com/betagouv/datasubvention/compare/v0.14.0...v0.14.1) (2022-08-22)
+
+
+### Bug Fixes
+
+* **front:** handle dark mode for tables ([#401](https://github.com/betagouv/datasubvention/issues/401)) ([cd209fb](https://github.com/betagouv/datasubvention/commit/cd209fb0f7a5bf7730cec3a8b125c52ee5ee2f65))
+
+
+
+
+
 # [0.14.0](https://github.com/betagouv/datasubvention/compare/v0.13.1...v0.14.0) (2022-08-18)
 
 
