@@ -23,7 +23,7 @@
 
     onMount(() => (promise = dashboardCore.mount()));
     dashboardCore.onRender(_data => (data = _data));
-    onDestroy(() => dashboardCore.destroy())
+    onDestroy(() => dashboardCore.destroy());
 </script>
 
 {#await promise}
@@ -58,8 +58,7 @@
                 <p>
                     <b>{data.percentSubvention}%</b>
                     des demandes ont été accordées en
-                    <b>{data.selectedYear}</b>
-                    .
+                    <b>{data.selectedYear}.</b>
                     <br />
                     D'après les données récupérées via Osiris et Fonjep.
                 </p>

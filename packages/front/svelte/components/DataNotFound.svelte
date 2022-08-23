@@ -1,5 +1,5 @@
 <div class="error-no-data-found">
-    <p>Nous sommes désolés, nous n'avons trouvée aucune données sur cette association</p>
+    <p>Nous sommes désolés, nous n'avons trouvé aucune donnée sur cette association</p>
 </div>
 
 <style>
