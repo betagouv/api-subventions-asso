@@ -18,7 +18,7 @@
                 <svelte:fragment slot="head">
                     <TableHead>Montant</TableHead>
                     <TableHead>Domaine fonctionnel</TableHead>
-                    <TableHead>Activitée</TableHead>
+                    <TableHead>Activité</TableHead>
                     <TableHead>Centre financier</TableHead>
                     <TableHead>Date</TableHead>
                 </svelte:fragment>
