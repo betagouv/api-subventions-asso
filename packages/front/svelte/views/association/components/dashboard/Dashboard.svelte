@@ -6,6 +6,7 @@
     import Spinner from "../../../../components/Spinner.svelte";
     import ErrorAlert from "../../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../../components/DataNotFound.svelte";
+    import { modal } from "../../../../store/modal.store";
 
     import SubventionTable from "../SubventionTable.svelte";
     import VersementTable from "../VersementTable.svelte";
@@ -20,10 +21,11 @@
     let data = {};
     let promise = new Promise(() => null);
     const dashboardCore = new DashboardCore(association);
+    const displayModal = () => modal.update(() => ProviderModal);
 
     onMount(() => (promise = dashboardCore.mount()));
     dashboardCore.onRender(_data => (data = _data));
-    onDestroy(() => dashboardCore.destroy())
+    onDestroy(() => dashboardCore.destroy());
 </script>
 
 {#await promise}
@@ -33,7 +35,7 @@
         <div class="title">
             <h2>Tableau de bord</h2>
             <div>
-                <Button type="secondary" ariaControls="fr-modal-providers">
+                <Button type="secondary" ariaControls="fr-modal" on:click={displayModal}>
                     Voir la liste des fournisseurs de données
                 </Button>
             </div>
@@ -97,7 +99,6 @@
                     sortDirection={data.sortDirection} />
             </div>
         </div>
-        <ProviderModal id="providers" />
     {:else}
         <DataNotFound />
     {/if}

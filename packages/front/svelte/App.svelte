@@ -2,6 +2,7 @@
     import "./global.css";
     import { ENV } from "../src/shared/config";
     import Auth from "./shared/Auth.svelte";
+    import GenericModal from "./dsfr/GenericModal.svelte";
     import Router from "./shared/Router.svelte";
     import Header from "./shared/Header.svelte";
     import Footer from "./shared/Footer.svelte";
@@ -19,6 +20,7 @@
     });
 </script>
 
+<GenericModal />
 <Auth>
     <div class="app-container">
         <Header />
