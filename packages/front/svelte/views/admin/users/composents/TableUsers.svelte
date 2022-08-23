@@ -1,19 +1,33 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import TableCell from "../../../../components/TableCell.svelte";
-    import TableHead from "../../../../components/TableHead.svelte";
+    import Alert from "../../../../dsfr/Alert.svelte";
 
     import Button from "../../../../dsfr/Button.svelte";
-    import Modal from "../../../../dsfr/Modal.svelte";
-    import Table from "../../../../dsfr/Table.svelte";
     import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
+    import { action, data, modal } from "../../../../store/modal.store";
     import adminService from "../../admin.service";
+    import RemoveUserModal from "./RemoveUserModal.svelte";
 
     export let users;
+    let selectedUserId;
+
     const dispatch = createEventDispatcher();
-    const deleteUsersClicked = async user => {
-        await adminService.deleteUser(user._id);
-        dispatch("userDeleted");
+
+    const displayModal = user => {
+        selectedUserId = user._id;
+        data.update(() => user.email);
+        modal.update(() => RemoveUserModal);
+        action.update(() => deleteUser);
+    };
+
+    const deleteUser = async () => {
+        try {
+            await adminService.deleteUser(selectedUserId);
+            dispatch("userDeleted", selectedUserId);
+        } catch (e) {
+            console.log("Something went wrong! Could not delete user...");
+        }
+        selectedUserId = undefined;
     };
 </script>
 
@@ -58,7 +72,11 @@
                             <td colspan="2" />
                         {/if}
                         <td>
-                            <Button type="tertiary" icon="delete-fill" ariaControls="fr-modal-{user._id}" />
+                            <Button
+                                type="tertiary"
+                                icon="delete-fill"
+                                ariaControls="fr-modal"
+                                on:click={() => displayModal(user)} />
                         </td>
                     </tr>
                 {/each}
@@ -66,30 +84,6 @@
         </table>
     </div>
 </div>
-
-{#each users as user}
-    <Modal modalId={user._id} title="Souhaitez-vous vraiment supprimer cet utilisateur ?">
-        <svelte:fragment slot="content">
-            <p>Cette action sera définitive, il sera impossible de revenir en arrière.</p>
-        </svelte:fragment>
-        <svelte:fragment slot="footer">
-            <ul
-                class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-                <li>
-                    <Button type="primary" ariaControls="fr-modal-{user._id}">Non</Button>
-                </li>
-                <li>
-                    <Button
-                        type="secondary"
-                        on:click={deleteUsersClicked.bind(null, user)}
-                        ariaControls="fr-modal-{user._id}">
-                        Oui
-                    </Button>
-                </li>
-            </ul>
-        </svelte:fragment>
-    </Modal>
-{/each}
 
 <style>
     .fr-table {

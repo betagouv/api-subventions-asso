@@ -17,7 +17,6 @@
     const displayModal = versements => {
         data.update(() => ({ versements }));
         modal.update(() => VersementsInfoModal);
-        console.log("DISPLAY MODAL: ", modal, data);
     };
 
     const countTotal = versements => {
