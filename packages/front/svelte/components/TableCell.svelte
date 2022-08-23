@@ -25,6 +25,7 @@
     }
 
     td {
+        line-break: anywhere;
         padding: 12px;
     }
 </style>
