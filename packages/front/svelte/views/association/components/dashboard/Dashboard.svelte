@@ -98,7 +98,7 @@
                 </div>
             </div>
         {:else}
-            <DataNotFound content="Nous sommes désolés, nous n'avons trouvée aucune données pour cette établissement sur l'année {data.selectedYear}"/>
+            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {data.selectedYear}"/>
         {/if}
         <ProviderModal id="providers" />
     {:else}

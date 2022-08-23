@@ -1,5 +1,5 @@
 <script>
-    export let content = "Nous sommes désolés, nous n'avons trouvée aucune données sur cette association";
+    export let content = "Nous sommes désolés, nous n'avons trouvé aucune donnée sur cette association";
 </script>
 
 <div class="error-no-data-found">
