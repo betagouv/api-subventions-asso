@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.4](https://github.com/betagouv/api-subventions-asso/compare/v0.14.3...v0.14.4) (2022-08-24)
+
+
+### Bug Fixes
+
+* **api:** fix create fonjep entity in parser ([d3ead02](https://github.com/betagouv/api-subventions-asso/commit/d3ead02d27acadc19e83a79291af126c30be8e6c))
+
+
+
+
+
+## [0.14.3](https://github.com/betagouv/api-subventions-asso/compare/v0.14.2...v0.14.3) (2022-08-23)
+
+
+### Bug Fixes
+
+* **api:** fix migration ([c293bb6](https://github.com/betagouv/api-subventions-asso/commit/c293bb633fa4a3666a3a307fdb9d526b56af7dcc))
+
+
+
+
+
+## [0.14.2](https://github.com/betagouv/api-subventions-asso/compare/v0.14.1...v0.14.2) (2022-08-23)
+
+
+### Bug Fixes
+
+* **api:** add chorus index on siret ([#417](https://github.com/betagouv/api-subventions-asso/issues/417)) ([1c9f8cf](https://github.com/betagouv/api-subventions-asso/commit/1c9f8cff67aa5502f2b3883103270c5c5b6a0b71))
+* **front:** clean texts ([#416](https://github.com/betagouv/api-subventions-asso/issues/416)) ([b218198](https://github.com/betagouv/api-subventions-asso/commit/b21819870cdefbc2e54a9c1f9d6f4982a0c5a4bd))
+* **front:** disable breaking line for table cells ([#415](https://github.com/betagouv/api-subventions-asso/issues/415)) ([35738b0](https://github.com/betagouv/api-subventions-asso/commit/35738b012b021d0a86442baf9cbe0b2551a48fee))
+* **front:** fix bug filter on etablissements ([#418](https://github.com/betagouv/api-subventions-asso/issues/418)) ([6cf259a](https://github.com/betagouv/api-subventions-asso/commit/6cf259aa4fb84225feac7bd6afe878ae9431f024)), closes [#417](https://github.com/betagouv/api-subventions-asso/issues/417)
+
+
+
+
+
 ## [0.14.1](https://github.com/betagouv/api-subventions-asso/compare/v0.14.0...v0.14.1) (2022-08-22)
 
 
