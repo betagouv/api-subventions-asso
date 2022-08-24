@@ -1,6 +1,6 @@
 {
   "name": "tools",
-  "version": "0.12.0",
+  "version": "0.14.0",
   "description": "Tools that are not directly use by the Data.Subvention project",
   "author": "Maxime Silvère Meunier <mxmeunier@gmail.com>",
   "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/tools#readme",
@@ -22,7 +22,10 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "dotenv": "^16.0.1",
     "jsdom": "^19.0.0",
-    "node-xlsx": "^0.21.0"
+    "node-fetch": "^3.2.9",
+    "node-xlsx": "^0.21.0",
+    "qs": "^6.11.0"
   }
 }

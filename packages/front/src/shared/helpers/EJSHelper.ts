@@ -12,7 +12,7 @@ export default {
 
     toJSONFile: (data: unknown) => Buffer.from(JSON.stringify(data, null, 4)).toString("base64"),
     returnValueOrHyphen: (value: unknown) => value || "-",
-    
+
     adresse: {
         toString: AdresseHelper.providerValuesToString
     },
@@ -24,9 +24,9 @@ export default {
         formatDate: DateHelper.formatDate,
         formatDateWithHour: DateHelper.formatDateWithHour
     },
-    capitalizeFirstLetter: (str: string | undefined)=> str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str,
+    capitalizeFirstLetter: (str: string | undefined) => (str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str),
     amount: {
         providerValueToEuro: AmountHelper.providerValueToEuro,
-        numberToEuro: AmountHelper.numberToEuro,
+        numberToEuro: AmountHelper.numberToEuro
     }
-}
+};

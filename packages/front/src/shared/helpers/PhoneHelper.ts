@@ -1,4 +1,3 @@
-
 export default class PhoneHelper {
     static formatWithSpace(phone: string) {
         if (!phone) return phone;

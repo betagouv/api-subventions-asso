@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface} from "../../../../../@types";
+import { CliStaticInterface } from "../../../../../@types";
 import LeCompteAssoParser from "../../leCompteAsso.parser";
 import leCompteAssoService, { RejectedRequest } from "../../leCompteAsso.service";
 import LeCompteAssoRequestEntity from "../../entities/LeCompteAssoRequestEntity";
@@ -17,7 +17,7 @@ export default class LeCompteAssoCliController {
     private logFileParsePath = "./logs/lecompteasso.parse.log.txt"
 
     public async validate(file: string) {
-        if (typeof file !== "string" ) {
+        if (typeof file !== "string") {
             throw new Error("Validate command need file args");
         }
 
@@ -25,7 +25,7 @@ export default class LeCompteAssoCliController {
             throw new Error(`File not found ${file}`);
         }
 
-        const files = [];
+        const files: string[] = [];
 
         if (fs.lstatSync(file).isDirectory()) {
             const filesInFolder = fs
@@ -42,7 +42,7 @@ export default class LeCompteAssoCliController {
             const fileContent = fs.readFileSync(file);
 
             const entities = await LeCompteAssoParser.parse(fileContent);
-    
+
             console.info(`Check ${entities.length} entities!`);
             entities.forEach((entity) => {
                 const result = leCompteAssoService.validEntity(entity);
@@ -50,7 +50,7 @@ export default class LeCompteAssoCliController {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
-    
+
             console.info(`${COLORS.Reset}Validation done`);
         }))
     }
@@ -59,7 +59,7 @@ export default class LeCompteAssoCliController {
      * @param file path to file
      */
     public async parse(file: string) {
-        if (typeof file !== "string" ) {
+        if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
 
@@ -109,20 +109,20 @@ export default class LeCompteAssoCliController {
         const results = await entities.reduce(async (acc, entity, index) => {
             const data = await acc;
 
-            CliHelper.printProgress(index + 1 , entities.length);
+            CliHelper.printProgress(index + 1, entities.length);
 
             data.push(await leCompteAssoService.addRequest(entity));
             return data;
         }, Promise.resolve([]) as Promise<
-        ({
-            state: string, 
-            result: LeCompteAssoRequestEntity
-        } 
-        | RejectedRequest)[]>)
+            ({
+                state: string,
+                result: LeCompteAssoRequestEntity
+            }
+                | RejectedRequest)[]>)
 
-        const created = results.filter(({state}) => state === "created");
-        const updated = results.filter(({state}) => state === "updated");
-        const rejected = results.filter(({state}) => state === "rejected") as RejectedRequest[];
+        const created = results.filter(({ state }) => state === "created");
+        const updated = results.filter(({ state }) => state === "updated");
+        const rejected = results.filter(({ state }) => state === "rejected") as RejectedRequest[];
 
         console.info(`
             ${results.length}/${entities.length}

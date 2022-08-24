@@ -7,18 +7,18 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
     readonly collectionName = "lecompteasso-requests";
 
     public async addRequest(request: LeCompteAssoRequestEntity) {
-        await this.collection.insertOne(request);
-        return this.findByCompteAssoId(request.providerInformations.compteAssoId) as LeCompteAssoRequestEntity;
+        return this.collection.insertOne(request);
     }
 
     public async update(request: LeCompteAssoRequestEntity) {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {_id, ...requestWithoutId } = request;
-        return (await this.collection.findOneAndUpdate({ 
-            "providerInformations.compteAssoId": request.providerInformations.compteAssoId
-        },
-        { $set: requestWithoutId }, options)).value as LeCompteAssoRequestEntity;
+        const { _id, ...requestWithoutId } = request;
+        return (await this.collection.findOneAndUpdate(
+            { "providerInformations.compteAssoId": request.providerInformations.compteAssoId },
+            { $set: requestWithoutId },
+            options
+        )).value as LeCompteAssoRequestEntity;
     }
 
     public findByCompteAssoId(compteAssoId: string) {

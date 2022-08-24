@@ -16,6 +16,6 @@ export interface Etablissement {
     representants_legaux?: ProviderValues<Personne>[]
     contacts?: ProviderValues<Personne>[],
     information_banquaire?: ProviderValues<InformationBancaire>[],
-    headcount?: string,
+    headcount?: ProviderValues<string>,
     versements?: Versement[],
 }

@@ -3,6 +3,8 @@ import { Siren } from "@api-subventions-asso/dto";
 import Provider from '../@types/IProvider';
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
+import HistoryImportEntity from './entities/HistoryImportEntity';
+import historyImportRepository from './repositories/historyImport.repository';
 
 export class DataGouvService implements Provider {
     provider = {
@@ -21,6 +23,18 @@ export class DataGouvService implements Provider {
 
     async sirenIsEntreprise(siren: Siren) {
         return !!( await entrepriseSirenRepository.findOne(siren));
+    }
+
+    addNewImport(entity: HistoryImportEntity) {
+        return historyImportRepository.add(entity);
+    }
+
+    async getLastDateImport() {
+        const result = await historyImportRepository.findLastImport();
+        
+        if (!result) return null;
+
+        return result.dateOfFile;
     }
 }
 

@@ -1,5 +1,3 @@
-import * as versements from "./versements/index"
+import * as versements from "./versements/index";
 
-export {
-    versements 
-}
+export { versements };

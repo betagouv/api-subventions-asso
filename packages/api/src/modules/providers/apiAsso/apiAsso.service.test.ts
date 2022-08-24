@@ -1,8 +1,8 @@
 import axios from "axios";
-import {Association, Etablissement} from "@api-subventions-asso/dto"
+import { Association, Etablissement } from "@api-subventions-asso/dto"
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service"
-import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
+import { fixtureAsso, fixtureDocumentDac, fixtureDocumentRna, fixtureEtablissements } from "./__fixtures__/ApiAssoStructureFixture";
 
 jest.mock('../../../shared/EventManager');
 
@@ -10,10 +10,10 @@ describe("ApiAssoService", () => {
     const axiosMock = jest.spyOn(axios, "get");
     const adapterAssoMock = jest.spyOn(ApiAssoDtoAdapter, "toAssociation").mockImplementation((r) => [{
         ...r,
-        denomination: [{ value: r.identite.nom, provider: "TEST" }],
+        denomination_rna: [{ value: r.identite.nom, provider: "TEST" }],
         date_modification: [{ value: new Date(Date.UTC(2022, 0, 1)) }]
     }] as unknown[] as Association[]);
-    const adapterEtablissementMock = jest.spyOn(ApiAssoDtoAdapter, "toEtablissement").mockImplementation((r) => ({...r, siret: [{value: r.id_siret }]}) as unknown as Etablissement);
+    const adapterEtablissementMock = jest.spyOn(ApiAssoDtoAdapter, "toEtablissement").mockImplementation((r) => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as Etablissement);
 
     afterAll(() => {
         adapterAssoMock.mockReset();
@@ -140,14 +140,25 @@ describe("ApiAssoService", () => {
             expect(actual).toBe(expected);
         })
 
-        it("should return data with etablisements and documents", async () => {
+        it("should return data with etablisements", async () => {
+
             sirenCacheHasMock.mockImplementationOnce(() => false);
             rnaCacheHasMock.mockImplementationOnce(() => false);
-            sendRequestMock.mockImplementationOnce(() => Promise.resolve(fixtureAsso))
+            sendRequestMock.mockImplementationOnce(() => Promise.resolve(fixtureAsso));
+            const expected = fixtureEtablissements.length;
             // @ts-ignore
-            const actual = await apiAssoService.findFullScopeAssociation("ID");
+            const actual = (await apiAssoService.findFullScopeAssociation("ID"))?.etablissements.length;
+            expect(actual).toEqual(expected)
+        })
 
-            expect(actual).toMatchSnapshot();
+        it("should return data with documents", async () => {
+            sirenCacheHasMock.mockImplementationOnce(() => false);
+            rnaCacheHasMock.mockImplementationOnce(() => false);
+            sendRequestMock.mockImplementationOnce(() => Promise.resolve(fixtureAsso));
+            const expected = fixtureDocumentRna.length + fixtureDocumentDac.length;
+            // @ts-ignore
+            const actual = (await apiAssoService.findFullScopeAssociation("ID"))?.documents.length;
+            expect(actual).toEqual(expected)
         })
 
         it("should save data in rna cache", async () => {
@@ -179,7 +190,7 @@ describe("ApiAssoService", () => {
             axiosMock.mockReset();
         })
 
-        describe("getAssociationsBySiren", () =>  {
+        describe("getAssociationsBySiren", () => {
 
             beforeEach(() => {
                 axiosMock.mockImplementationOnce(() => Promise.resolve({
@@ -206,13 +217,13 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getAssociationsBySiren("00");
                 expect(actual).toBe(expected);
             })
         });
 
-        describe("getAssociationsBySiret", () =>  {
+        describe("getAssociationsBySiret", () => {
 
             beforeEach(() => {
                 axiosMock.mockImplementationOnce(() => Promise.resolve({
@@ -239,13 +250,13 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getAssociationsBySiret("00");
                 expect(actual).toBe(expected);
             })
         });
 
-        describe("getAssociationsByRna", () =>  {
+        describe("getAssociationsByRna", () => {
 
             beforeEach(() => {
                 axiosMock.mockImplementationOnce(() => Promise.resolve({
@@ -272,7 +283,7 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getAssociationsByRna("00");
                 expect(actual).toBe(expected);
             })
@@ -304,7 +315,7 @@ describe("ApiAssoService", () => {
             it('should be return one etablissement', async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getEtablissementsBySiret("50922194100000");
-    
+
                 expect(actual).toHaveLength(expected);
             })
 
@@ -312,7 +323,7 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getEtablissementsBySiret("00");
                 expect(actual).toBe(expected);
             })
@@ -323,7 +334,7 @@ describe("ApiAssoService", () => {
             it('should be return two etablissements', async () => {
                 const expected = 2;
                 const actual = await apiAssoService.getEtablissementsBySiren("509221941");
-    
+
                 expect(actual).toHaveLength(expected);
             })
 
@@ -331,7 +342,7 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getEtablissementsBySiren("00");
                 expect(actual).toBe(expected);
             })
@@ -363,7 +374,7 @@ describe("ApiAssoService", () => {
             it('should be return one document', async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getDocumentsBySiret("50922194100000");
-    
+
                 expect(actual).toHaveLength(expected);
             })
 
@@ -371,7 +382,7 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getDocumentsBySiret("00");
                 expect(actual).toBe(expected);
             })
@@ -382,7 +393,7 @@ describe("ApiAssoService", () => {
             it('should be return 2 documents', async () => {
                 const expected = 2;
                 const actual = await apiAssoService.getDocumentsBySiren("509221941");
-    
+
                 expect(actual).toHaveLength(expected);
             })
 
@@ -390,7 +401,7 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getDocumentsBySiren("00");
                 expect(actual).toBe(expected);
             })
@@ -400,7 +411,7 @@ describe("ApiAssoService", () => {
             it('should be return 2 documents', async () => {
                 const expected = 2;
                 const actual = await apiAssoService.getDocumentsByRna("W00000000");
-    
+
                 expect(actual).toHaveLength(expected);
             })
 
@@ -408,7 +419,7 @@ describe("ApiAssoService", () => {
                 const expected = null;
                 //@ts-ignore
                 jest.spyOn(apiAssoService, "findFullScopeAssociation").mockImplementationOnce(() => Promise.resolve(null))
-                
+
                 const actual = await apiAssoService.getDocumentsByRna("00");
                 expect(actual).toBe(expected);
             })

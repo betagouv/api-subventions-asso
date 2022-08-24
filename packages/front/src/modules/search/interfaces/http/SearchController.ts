@@ -1,14 +1,13 @@
-import e, { NextFunction, Request, Response } from 'express';
-import { DefaultObject } from '../../../../@types/utils';
-import Controller from '../../../../decorators/controller.decorator';
-import { Get } from '../../../../decorators/http.methods.decorator';
-import apiDatasubService from '../../../../shared/apiDatasub.service';
-import IdentifierHelper from '../../../../shared/helpers/IdentifierHelper';
-import ProviderValueHelper from '../../../../shared/helpers/ProviderValueHelper';
+import e, { NextFunction, Request, Response } from "express";
+import { DefaultObject } from "../../../../@types/utils";
+import Controller from "../../../../decorators/controller.decorator";
+import { Get } from "../../../../decorators/http.methods.decorator";
+import apiDatasubService from "../../../../shared/apiDatasub.service";
+import IdentifierHelper from "../../../../shared/helpers/IdentifierHelper";
+import ProviderValueHelper from "../../../../shared/helpers/ProviderValueHelper";
 
 @Controller("/search")
 export default class SearchController {
-
     @Get("/association")
     public async loginView(req: Request, res: Response, next: NextFunction) {
         if (!req.query["search-input"]) return res.redirect("/");

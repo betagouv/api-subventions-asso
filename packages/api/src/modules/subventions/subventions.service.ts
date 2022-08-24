@@ -7,6 +7,8 @@ import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper'
 import { Siret , DemandeSubvention } from "@api-subventions-asso/dto";
 import providers from "../providers";
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
+import { SubventionsFlux } from './@types/SubventionsFlux';
+import Flux from '../../shared/Flux';
 
 export class SubventionsService {
     async getDemandesByAssociation(id: AssociationIdentifiers) {
@@ -21,17 +23,18 @@ export class SubventionsService {
             }
         }
 
-        const data = (await this.aggregate(id, type))?.filter(asso => asso);
-        if (!data.length) throw new Error("Association not found");
-        return data;
+        return this.aggregate(id, type);
     }
-    
+
     async getDemandesByEtablissement(id: Siret) {
         const type = getIdentifierType(id);
         if (type !== StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIRET");
-        const data = await (await this.aggregateByType(id, StructureIdentifiersEnum.siret))?.filter(asso => asso) as DemandeSubvention[];
-        if(!data.length) throw new Error("Establishment not found");
-        return data;
+
+        const data = await this.aggregateByType(id, StructureIdentifiersEnum.siret).toPromise()
+        const subventions = data.map(subFlux => subFlux.subventions).flat();
+    
+        if(!subventions.length) throw new Error("Establishment not found");
+        return subventions.filter(subvention => subvention) as DemandeSubvention[];
     }
 
     async getDemandeById(id: string) {
@@ -41,23 +44,40 @@ export class SubventionsService {
         return await Promise.any(promises).catch(() => null);
     }
     
-    private async aggregate(id: StructureIdentifiers, type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]): Promise<DemandeSubvention[]> {
-        let subventions;
+    private aggregate(id: StructureIdentifiers, type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]): Flux<SubventionsFlux> {
         if (type === StructureIdentifiersEnum.siret || type === StructureIdentifiersEnum.siren) {
             if (type === StructureIdentifiersEnum.siret) id = siretToSiren(id);
-            subventions = await this.aggregateByType(id, StructureIdentifiersEnum.siren)
-            if (subventions.length > 0) return subventions;
+            return this.aggregateByType(id, StructureIdentifiersEnum.siren);
         }
         else {
-            subventions = await this.aggregateByType(id, StructureIdentifiersEnum.rna)
+            return this.aggregateByType(id, StructureIdentifiersEnum.rna);
         }
-        return subventions;
     }
     
-    private async aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Promise<DemandeSubvention[]> {
+    private aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Flux<SubventionsFlux> {
         const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as "getDemandeSubventionBySiret" | "getDemandeSubventionBySiren" | "getDemandeSubventionByRna";
-        const promises = this.getDemandesSubventionsProviders().map(p =>  p[functionName](id));
-        return [...(await Promise.all(promises)).flat()] as DemandeSubvention[];
+        const subventionsFlux = new Flux<SubventionsFlux>();
+        const providers = this.getDemandesSubventionsProviders();
+
+        subventionsFlux.push({
+            __meta__: {
+                totalProviders: providers.length,
+            },
+        })
+        
+        let countAnswers = 0;
+        
+        providers.forEach(p => p[functionName](id).then(subventions => {
+            countAnswers++;
+    
+            subventionsFlux.push({
+                subventions: subventions || [],
+            });
+
+            if (countAnswers === providers.length) subventionsFlux.close();
+        }));
+
+        return subventionsFlux;
     }
 
     private getDemandesSubventionsProviders() {

@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import qs from "qs";
 
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf"
@@ -7,14 +7,30 @@ import StructureIdentifiersError from "../../../shared/errors/StructureIdentifie
 import { isSiren, isSiret } from "../../../shared/Validators";
 import { Siren, Siret } from "@api-subventions-asso/dto";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
+import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import CacheData from "../../../shared/Cache";
+import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import ExtraitRcs from "@api-subventions-asso/dto/associations/ExtraitRcs";
 
-export class ApiEntrepriseService {
+export class ApiEntrepriseService implements EtablissementProvider {
     static API_URL = "https://entreprise.api.gouv.fr/v2/"
+
+    isEtablissementProvider = true
+
+    provider = {
+        name: "API Entreprise",
+        type: ProviderEnum.api,
+        description: "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
+    };
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
 
-    private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string) {
+    private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
+
+
+    private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string): Promise<T | null> {
         const defaultParams = {
             token: API_ENTREPRISE_TOKEN,
             context: "aides publiques",
@@ -69,7 +85,7 @@ export class ApiEntrepriseService {
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
-        return this.sendRequest(`${this.buildHeadcountUrl(subtractMonths)}/etablissement/${siret}`, {}, this.HEADCOUNT_REASON);
+        return this.sendRequest<IApiEntrepriseHeadcount>(`${this.buildHeadcountUrl(subtractMonths)}/etablissement/${siret}`, {}, this.HEADCOUNT_REASON);
     }
 
     public async getExtractRcs(siren: Siren) {
@@ -83,6 +99,22 @@ export class ApiEntrepriseService {
             throw new StructureIdentifiersError("siren");
         }
     }
+
+    async getEtablissementsBySiret(siret: Siret) {
+        try {
+            const result = await this.getHeadcount(siret);
+            if (!result) return null;
+            return [ApiEntrepriseAdapter.toEtablissement(result)];
+        } catch {
+            return null;
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async getEtablissementsBySiren(_siret: Siren) {
+        return null;
+    }
+
 }
 
 const apiEntrepriseService = new ApiEntrepriseService();

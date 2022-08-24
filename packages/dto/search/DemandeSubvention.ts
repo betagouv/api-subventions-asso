@@ -26,7 +26,7 @@ export interface DemandeSubvention {
         total?: ProviderValue<number>,
         demande?: ProviderValue<number>,
         propose?: ProviderValue<number>,
-        accorde: ProviderValue<number>,
+        accorde?: ProviderValue<number>,
     },
     versement?: {
         acompte: ProviderValue<number>,
@@ -52,7 +52,7 @@ export interface DemandeSubvention {
             noms: ProviderValue<string>,
             montant_demandes: ProviderValue<number>,
         },
-        montants_versement: {
+        montants_versement?: {
             total?: ProviderValue<number>,
             demande?: ProviderValue<number>,
             propose?: ProviderValue<number>,

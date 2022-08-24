@@ -1,4 +1,3 @@
-import { WithId } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import { SubventiaRequestEntity } from "../entities/SubventiaRequestEntity";
 
@@ -7,8 +6,7 @@ export class SubventiaRepository extends MigrationRepository<SubventiaRequestEnt
     public collectionName = "subventia"
 
     async create(entity: SubventiaRequestEntity) {
-        const insertAction = await this.collection.insertOne(entity);
-        return await this.collection.findOne({ _id: insertAction.insertedId }) as WithId<SubventiaRequestEntity>;
+        return await this.collection.insertOne(entity);
     }
 }
 

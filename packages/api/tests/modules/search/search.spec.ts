@@ -5,12 +5,17 @@ import associationNameRepository from '../../../src/modules/association-name/rep
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import AssociationNameFixture from '../association-name/__fixtures__/entity';
 import apiEntrepriseService from "../../../src/modules/providers/apiEntreprise/apiEntreprise.service";
+import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
 
 const g = global as unknown as { app: unknown }
 
 describe('/search', () => {
 
-    beforeAll(() => jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null))
+    beforeAll(() => {
+        jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null)
+        jest.spyOn(dauphinService, "getDemandeSubventionBySiret").mockImplementation(async () => [])
+        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementation(async () => [])
+    })
 
     describe("/etablissement/{siret}", () => {
         it("should return an association", async () => {

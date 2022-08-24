@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios"
-import e from "express";
 import qs from "qs";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import apiEntrepriseService from "./apiEntreprise.service";
@@ -14,7 +13,14 @@ describe("ApiEntrepriseService", () => {
     // @ts-expect-error
     const sendRequestMock = jest.spyOn(apiEntrepriseService, "sendRequest")
 
-    describe("sendRequest()", () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
+
+    beforeEach(() => {
+        // @ts-expect-error requestCache is private
+        apiEntrepriseService.requestCache.collection.clear();
+    })
+
+    describe("sendRequest()()", () => {
         const axiosGetMock = jest.spyOn(axios, "get");
         const qsMock = jest.spyOn(qs, "stringify");
 
@@ -201,6 +207,13 @@ describe("ApiEntrepriseService", () => {
             const expected = null;
             sendRequestMock.mockImplementationOnce(() => { throw new Error() })
             const actual = await apiEntrepriseService.getExtractRcs(SIREN);
+            expect(actual).toEqual(expected);
+        })
+
+        it("should minus the date month", () => {
+            const expected = "effectifs_mensuels_acoss_covid/2021/12"
+            // @ts-expect-error
+            const actual = apiEntrepriseService.buildHeadcountUrl(1);
             expect(actual).toEqual(expected);
         })
     })

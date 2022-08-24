@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/betagouv/api-subventions-asso/compare/v0.13.1...v0.14.0) (2022-08-18)
+
+
+### Features
+
+* **api, dto, front:** store rna and siren values in Association ([#387](https://github.com/betagouv/api-subventions-asso/issues/387)) ([d55b547](https://github.com/betagouv/api-subventions-asso/commit/d55b547a73fa96122386dfa49798cf1c675802bd))
+* **api:** add date of last import for datagouv files ([#392](https://github.com/betagouv/api-subventions-asso/issues/392)) ([12a7cf1](https://github.com/betagouv/api-subventions-asso/commit/12a7cf1f2f60d1dc9f614e71a5f4bcdf99db3e4b))
+
+
+
+
+
+## [0.13.1](https://github.com/betagouv/api-subventions-asso/compare/v0.13.0...v0.13.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* **api:** fix error in script ([bedf946](https://github.com/betagouv/api-subventions-asso/commit/bedf946ef7688b4a05e0d08a2fd3a9363c3389b8))
+
+
+
+
+
+# [0.13.0](https://github.com/betagouv/api-subventions-asso/compare/v0.12.3...v0.13.0) (2022-07-28)
+
+
+### Features
+
+* **api, dto:** retrieve API Entreprise etablissement headcount ([#367](https://github.com/betagouv/api-subventions-asso/issues/367)) ([82419e6](https://github.com/betagouv/api-subventions-asso/commit/82419e6a596d6a0922426c89cc6c5803205be0bf))
+* **api:** add compare command for FONJEP CLI ([7f1b82a](https://github.com/betagouv/api-subventions-asso/commit/7f1b82a2291c1a8a209f7d3832e28c2f4cd18d79))
+* **api:** add posibilities to remove user ([#364](https://github.com/betagouv/api-subventions-asso/issues/364)) ([cd562d3](https://github.com/betagouv/api-subventions-asso/commit/cd562d38bbd4d398fdab5fb8319a4f00365207aa))
+* **api:** add SendInBlue mail provider ([#370](https://github.com/betagouv/api-subventions-asso/issues/370)) ([4d15231](https://github.com/betagouv/api-subventions-asso/commit/4d15231486b748df06ff5876f8502da6565ba37e))
+* **front:** enable matomo with datasub id ([#368](https://github.com/betagouv/api-subventions-asso/issues/368)) ([e03aee0](https://github.com/betagouv/api-subventions-asso/commit/e03aee02b121a07d59a8a0339e60ce0d0018474e)), closes [#366](https://github.com/betagouv/api-subventions-asso/issues/366)
+
+
+
+
+
+## [0.12.4](https://github.com/betagouv/api-subventions-asso/compare/v0.12.3...v0.12.4) (2022-07-21)
+
+**Note:** Version bump only for package api
+
+
+
+
+
 # [0.12.0](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.12.0) (2022-07-11)
 
 

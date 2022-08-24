@@ -21,9 +21,9 @@ export default class ApiAssoDtoAdapter {
             const toRnaPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameRna, toDate(structure.identite.date_modif_rna));
             const rnaAssociation: Association = {
                 rna: toRnaPvs(structure.identite.id_rna),
-                denomination: toRnaPvs(structure.identite.nom),
-                date_creation: structure.identite.date_creat ? toRnaPvs(toDate(structure.identite.date_creat)) : undefined,
-                date_modification: toRnaPvs(toDate(structure.identite.date_modif_rna)),
+                denomination_rna: toRnaPvs(structure.identite.nom),
+                date_creation_rna: structure.identite.date_creat ? toRnaPvs(toDate(structure.identite.date_creat)) : undefined,
+                date_modification_rna: toRnaPvs(toDate(structure.identite.date_modif_rna)),
                 objet_social: toRnaPvs(structure.activites.objet),
                 code_objet_social_1: toRnaPvs(structure.activites.id_objet_social1),
                 code_objet_social_2: toRnaPvs(structure.activites.id_objet_social2),
@@ -42,11 +42,11 @@ export default class ApiAssoDtoAdapter {
             const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameSiren, toDate(structure.identite.date_modif_siren));
             const adresse = structure.coordonnees.adresse_siege_sirene || fromRNA ? undefined : structure.coordonnees.adresse_siege;
             const sirenAssociation: Association = {
-                denomination: structure.identite.nom_sirene ? toSirenPvs(structure.identite.nom_sirene) : toSirenPvs(structure.identite.nom),
+                denomination_siren: structure.identite.nom_sirene ? toSirenPvs(structure.identite.nom_sirene) : toSirenPvs(structure.identite.nom),
                 siren: toSirenPvs(structure.identite.id_siren),
                 nic_siege: toSirenPvs(siretToNIC(structure.identite.id_siret_siege)),
                 categorie_juridique: toSirenPvs(structure.identite.id_forme_juridique.toString()),
-                date_creation: structure.identite.date_creation_sirene ? toSirenPvs(toDate(structure.identite.date_creation_sirene)) : undefined,
+                date_creation_siren: structure.identite.date_creation_sirene ? toSirenPvs(toDate(structure.identite.date_creation_sirene)) : undefined,
                 date_modification_siren: toSirenPvs(toDate(structure.identite.date_modif_siren)),
                 adresse_siege: adresse ? toSirenPvs({
                     numero: adresse.num_voie,

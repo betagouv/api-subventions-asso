@@ -13,13 +13,14 @@ import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from '../../shared/Validators';
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
-import apiEntrepriseService from "../providers/apiEntreprise/apiEntreprise.service";
+import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 
 export class EtablissementsService {
 
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoAdapter.providerNameSiren]: 1,
         [EtablissementDtoAdapter.PROVIDER_NAME]: 1,
+        [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
         [FonjepEntityAdapter.PROVIDER_NAME]: 0.5
@@ -29,10 +30,7 @@ export class EtablissementsService {
         const data = await this.aggregate(siret);
         if (!data.length) return null;
         // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
-        const etablissement = FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
-        const headcount = await apiEntrepriseService.getHeadcount(siret);
-        if (headcount) etablissement.headcount = headcount.effectifs_mensuels;
-        return etablissement;
+        return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
     }
 
     async getEtablissementsBySiren(siren: Siren) {
@@ -58,7 +56,7 @@ export class EtablissementsService {
     }
 
     async getSubventions(siret: Siret) {
-        return await subventionsService.getDemandesByEtablissement(siret);
+        return subventionsService.getDemandesByEtablissement(siret);
     }
 
     async getVersements(siret: Siret) {

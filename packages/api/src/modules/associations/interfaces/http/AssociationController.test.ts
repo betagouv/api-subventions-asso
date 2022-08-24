@@ -1,3 +1,6 @@
+import { DemandeSubvention } from '@api-subventions-asso/dto';
+import Flux from '../../../../shared/Flux';
+import { SubventionsFlux } from '../../../subventions/@types/SubventionsFlux';
 import associationsService from '../../associations.service'
 import { AssociationController } from './AssociationController';
 
@@ -15,12 +18,16 @@ describe("AssociationController", () => {
         });
 
         it("should return a success object", async () => {
+            const subventions = [{}] as DemandeSubvention[];
+            const flux = new Flux({subventions})
+
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => subventions)
-            const subventions = [{}];
+            getSubventionsSpy.mockImplementationOnce(() => flux);
             const expected = { success: true, subventions }
-            const actual = await controller.getDemandeSubventions(IDENTIFIER);
-            expect(actual).toEqual(expected);
+            const promise = controller.getDemandeSubventions(IDENTIFIER);
+            flux.close();
+
+            expect(await promise).toEqual(expected);
         })
 
         it("should return an error object", async () => {

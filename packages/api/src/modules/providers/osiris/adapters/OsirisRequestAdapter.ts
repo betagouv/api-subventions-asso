@@ -1,4 +1,4 @@
-import { ProviderValues, Rna ,DemandeSubvention, ProviderValue ,Association,Etablissement} from "@api-subventions-asso/dto";
+import { ProviderValues, Rna, DemandeSubvention, ProviderValue, Association, Etablissement } from "@api-subventions-asso/dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
@@ -7,7 +7,7 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris"
 
-    static toAssociation(entity: OsirisRequestEntity, actions : OsirisActionEntity[] = []): Association {
+    static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const federation = actions.length && actions.find(action => action.indexedInformations.federation)?.indexedInformations.federation;
         const licencies = actions.length && actions.find(action => action.indexedInformations.federation)?.indexedInformations.licencies;
@@ -17,11 +17,11 @@ export default class OsirisRequestAdapter {
         return {
             siren: ProviderValueAdapter.toProviderValues(siretToSiren(entity.legalInformations.siret), OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.rna, OsirisRequestAdapter.PROVIDER_NAME, dataDate) as ProviderValues<Rna>,
-            denomination: ProviderValueAdapter.toProviderValues(entity.legalInformations.name, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+            denomination_rna: ProviderValueAdapter.toProviderValues(entity.legalInformations.name, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             etablisements_siret: ProviderValueAdapter.toProviderValues(
                 [entity.legalInformations.siret]
                 , OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            nic_siege: entity.providerInformations.etablissementSiege 
+            nic_siege: entity.providerInformations.etablissementSiege
                 ? ProviderValueAdapter.toProviderValues(siretToNIC(entity.legalInformations.siret), OsirisRequestAdapter.PROVIDER_NAME, dataDate)
                 : undefined,
             federation: federation
@@ -51,8 +51,8 @@ export default class OsirisRequestAdapter {
                 volontaires: {
                     nombre: ProviderValueAdapter.toProviderValues(actions[0].indexedInformations.volontaires, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                     ETPT: ProviderValueAdapter.toProviderValues(actions[0].indexedInformations.volontairesETPT, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                } 
-            }: {}
+                }
+            } : {}
             )
         }
     }
@@ -88,14 +88,14 @@ export default class OsirisRequestAdapter {
                     email: entity.providerInformations.representantEmail,
                 }, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
             ],
-            information_banquaire: 
-                entity.providerInformations.etablissementBIC && entity.providerInformations.etablissementIBAN 
+            information_banquaire:
+                entity.providerInformations.etablissementBIC && entity.providerInformations.etablissementIBAN
                     ? [ProviderValueAdapter.toProviderValues({
                         bic: entity.providerInformations.etablissementBIC,
                         iban: entity.providerInformations.etablissementIBAN,
                     }, OsirisRequestAdapter.PROVIDER_NAME, dataDate)]
                     : [],
-            
+
         }
     }
 
@@ -110,15 +110,15 @@ export default class OsirisRequestAdapter {
             sous_dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.sous_dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             status: ProviderValueAdapter.toProviderValue(entity.providerInformations.status, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
             pluriannualite: ProviderValueAdapter.toProviderValue(entity.providerInformations.pluriannualite, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            ej: entity.providerInformations.ej 
+            ej: entity.providerInformations.ej
                 ? ProviderValueAdapter.toProviderValue(entity.providerInformations.ej, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
                 : undefined,
-            date_commision: entity.providerInformations.dateCommission 
+            date_commision: entity.providerInformations.dateCommission
                 ? ProviderValueAdapter.toProviderValue(entity.providerInformations.dateCommission, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
                 : undefined,
             contact: {
                 email: ProviderValueAdapter.toProviderValue(entity.providerInformations.representantEmail, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                telephone: entity.providerInformations.representantPhone 
+                telephone: entity.providerInformations.representantPhone
                     ? ProviderValueAdapter.toProviderValue(entity.providerInformations.representantPhone, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
                     : undefined
             },
@@ -148,10 +148,10 @@ export default class OsirisRequestAdapter {
             })
 
             data.territoires = territoires.reduce((acc, territoire) => {
-                if (acc.some(t => 
-                    t.status.value === territoire.status.value 
+                if (acc.some(t =>
+                    t.status.value === territoire.status.value
                     && t.status.last_update === territoire.status.last_update
-                    && t.commentaire.value === territoire.commentaire.value 
+                    && t.commentaire.value === territoire.commentaire.value
                     && t.commentaire.last_update === territoire.commentaire.last_update
                 )) return acc;
 
@@ -159,7 +159,7 @@ export default class OsirisRequestAdapter {
             }, [] as { status: ProviderValue<string>, commentaire: ProviderValue<string> }[]);
 
             data.actions_proposee = entity.actions.map(action => ({
-                ej: action.indexedInformations.ej 
+                ej: action.indexedInformations.ej
                     ? ProviderValueAdapter.toProviderValue(action.indexedInformations.ej, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
                     : undefined,
                 rang: ProviderValueAdapter.toProviderValue(action.indexedInformations.rang, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
@@ -184,7 +184,7 @@ export default class OsirisRequestAdapter {
                     realise: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_realise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                     compensation: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_compensation, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                 },
-                evaluation: action.evaluation? {
+                evaluation: action.evaluation ? {
                     evaluation_resultat: ProviderValueAdapter.toProviderValue(action.evaluation.indexedInformations.evaluation_resultat, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                     cout_total_realise: ProviderValueAdapter.toProviderValue(action.evaluation.indexedInformations.cout_total_realise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
                 } : undefined

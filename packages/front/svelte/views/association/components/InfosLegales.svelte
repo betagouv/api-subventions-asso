@@ -18,7 +18,7 @@
         <TitleWithData label="SIRET du siège" data={association.siren + association.nic_siege} />
     </div>
     <div>
-        <TitleWithData label="Object social" data={association.objet_social} />
+        <TitleWithData label="Objet social" data={association.objet_social} />
     </div>
     <div>
         <TitleWithData label="Adresse siège" data={address} />

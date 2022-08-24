@@ -112,8 +112,14 @@ export default class OsirisCliController {
 
     private async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile, year);
+
+        let tictackClock = true;
         const results = await requests.reduce(async (acc, osirisRequest, index) => {
             const data = await acc;
+
+            tictackClock = !tictackClock;
+            console.log(tictackClock ? "TIC" : "TAC");
+
             let validation = osirisService.validRequest(osirisRequest);
 
             if (validation.code === 2) { // RNA NOT FOUND // TODO: use const for decribe error

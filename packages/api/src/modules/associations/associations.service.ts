@@ -37,29 +37,34 @@ export class AssociationsService {
     async getAssociation(id: StructureIdentifiers): Promise<Association | null> {
         const type = IdentifierHelper.getIdentifierType(id);
         let association;
-        if (type === StructureIdentifiersEnum.rna) {
-            association = await this.getAssociationByRna(id);
-            const siren = await rnaSirenService.getSiren(id);
-            if (association && siren) association.extrait_rcs = await this.getExtraitRcs(siren);
-            return association;
+        let siren;
+
+        console.log(type);
+
+        switch (type) {
+            case StructureIdentifiersEnum.rna:
+                association = await this.getAssociationByRna(id);
+                siren = await rnaSirenService.getSiren(id);
+                break
+            case StructureIdentifiersEnum.siren:
+                association = await this.getAssociationBySiren(id);
+                siren = id;
+                break
+            case StructureIdentifiersEnum.siret:
+                association = await this.getAssociationBySiret(id);
+                siren = siretToSiren(id);
+                break
+            default:
+                throw new StructureIdentifiersError();
         }
-        else if (type === StructureIdentifiersEnum.siren) {
-            association = await this.getAssociationBySiren(id);
-            if (association) association.extrait_rcs = await this.getExtraitRcs(id)
-            return association;
-        }
-        else if (type === StructureIdentifiersEnum.siret) {
-            association = await this.getAssociationBySiret(id);
-            if (association) association.extrait_rcs = await this.getExtraitRcs(siretToSiren(id))
-            return association;
-        }
-        else throw new StructureIdentifiersError();
+
+        if (association && siren) association.extrait_rcs = await this.getExtraitRcs(siren);
+        return association;
     }
 
     async getAssociationBySiren(siren: Siren) {
         const data = await this.aggregate(siren);
         if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
 
     }
@@ -67,7 +72,6 @@ export class AssociationsService {
     async getAssociationBySiret(siret: Siret) {
         const data = await this.aggregate(siret);
         if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
@@ -77,12 +81,12 @@ export class AssociationsService {
 
         const data = await this.aggregate(rna);
         if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown" 
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
-    async getSubventions(identifier: AssociationIdentifiers) {
-        return await subventionsService.getDemandesByAssociation(identifier);
+
+    getSubventions(identifier: AssociationIdentifiers) {
+        return subventionsService.getDemandesByAssociation(identifier);
     }
 
     async getVersements(identifier: AssociationIdentifiers) {
