@@ -37,6 +37,7 @@ describe("AssociationService", () => {
     const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
     const getEtablissementMock = jest.spyOn(etablissementService, "getEtablissement");
     const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
+    const getExtraitRcsMock = jest.spyOn(associationsService, "getExtraitRcs");
     // @ts-expect-error: mock private method
     const aggregateMock = jest.spyOn(associationsService, "aggregate");
 
@@ -58,6 +59,7 @@ describe("AssociationService", () => {
         it("should call getAssociationByRna", async () => {
             getAssociationByRnaSpy.mockImplementationOnce(jest.fn());
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => SIREN)
             await associationsService.getAssociation(RNA);
             expect(getAssociationByRnaSpy).toHaveBeenCalledWith(RNA);
         });
@@ -83,6 +85,19 @@ describe("AssociationService", () => {
                 actual = e;
             }
             expect(actual).toEqual(expected);
+        })
+        it("should call getExtraitRcs", async () => {
+            getAssociationBySirenSpy.mockImplementationOnce(async () => ({}));
+            getExtraitRcsMock.mockImplementationOnce(jest.fn())
+            await associationsService.getAssociation(SIREN);
+            expect(getExtraitRcsMock).toHaveBeenCalledTimes(1);
+        })
+        it("should not call getExtraitRcs", async () => {
+            getAssociationByRnaSpy.mockImplementationOnce(jest.fn());
+            getExtraitRcsMock.mockImplementationOnce(jest.fn())
+            rnaSirenServiceGetSirenMock.mockImplementationOnce(jest.fn());
+            await associationsService.getAssociation(RNA);
+            expect(getExtraitRcsMock).toHaveBeenCalledTimes(0);
         })
     });
 
@@ -146,7 +161,7 @@ describe("AssociationService", () => {
     describe("getAssociationBySiret()", () => {
         it('should call aggregate', async () => {
             // @ts-expect-error: mock
-            aggregateMock.mockImplementationOnce(() => []);
+            aggregateMock.mockImplementationOnce(async () => []);
             await associationsService.getAssociationBySiret(SIRET);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);

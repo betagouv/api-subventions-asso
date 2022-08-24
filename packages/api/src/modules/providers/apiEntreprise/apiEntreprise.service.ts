@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import qs from "qs";
 
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf"
@@ -41,7 +41,16 @@ export class ApiEntrepriseService implements EtablissementProvider {
         const params = qs.stringify({ ...defaultParams, ...queryParams });
         const url = new URL(route, ApiEntrepriseService.API_URL).href;
 
-        const result = await axios.get<T>(`${url}?${params}`);
+        const fullURL = `${url}?${params}`;
+
+        if (this.requestCache.has(fullURL)) {
+            return this.requestCache.get(fullURL)[0] as T | null;
+        }
+
+        const result = await axios.get<T>(fullURL);
+
+        this.requestCache.add(fullURL, result.status == 200 ? result.data : null)
+
         if (result.status == 200) return result.data;
         return null;
     }
