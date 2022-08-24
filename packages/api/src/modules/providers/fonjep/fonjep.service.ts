@@ -30,6 +30,8 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
         if (!valid.success) return valid;
 
+        await fonjepRepository.create(entity);
+
         return {
             success: true,
             state: "created",

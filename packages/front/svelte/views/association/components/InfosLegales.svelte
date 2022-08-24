@@ -21,7 +21,7 @@
         <TitleWithData label="Objet social" data={association.objet_social} />
     </div>
     <div>
-        <TitleWithData label="Adresse siège" data={address} />
+        <TitleWithData label="Adresse du siège" data={address} />
         <TitleWithData label="Date d'immatriculation" data={creationDate} />
         {#if association.date_modification}
             <TitleWithData label="Dernière modification au greffe" data={updateDate} />

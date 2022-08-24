@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.2](https://github.com/betagouv/datasubvention/compare/v0.14.1...v0.14.2) (2022-08-23)
+
+
+### Bug Fixes
+
+* **front:** clean texts ([#416](https://github.com/betagouv/datasubvention/issues/416)) ([b218198](https://github.com/betagouv/datasubvention/commit/b21819870cdefbc2e54a9c1f9d6f4982a0c5a4bd))
+* **front:** disable breaking line for table cells ([#415](https://github.com/betagouv/datasubvention/issues/415)) ([35738b0](https://github.com/betagouv/datasubvention/commit/35738b012b021d0a86442baf9cbe0b2551a48fee))
+* **front:** fix bug filter on etablissements ([#418](https://github.com/betagouv/datasubvention/issues/418)) ([6cf259a](https://github.com/betagouv/datasubvention/commit/6cf259aa4fb84225feac7bd6afe878ae9431f024)), closes [#417](https://github.com/betagouv/datasubvention/issues/417)
+
+
+
+
+
+## [0.14.1](https://github.com/betagouv/datasubvention/compare/v0.14.0...v0.14.1) (2022-08-22)
+
+
+### Bug Fixes
+
+* **front:** handle dark mode for tables ([#401](https://github.com/betagouv/datasubvention/issues/401)) ([cd209fb](https://github.com/betagouv/datasubvention/commit/cd209fb0f7a5bf7730cec3a8b125c52ee5ee2f65))
+
+
+
+
+
 # [0.14.0](https://github.com/betagouv/datasubvention/compare/v0.13.1...v0.14.0) (2022-08-18)
 
 

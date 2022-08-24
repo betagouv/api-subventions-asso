@@ -14,3 +14,17 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     height: 1px;
     overflow: hidden;
 }
+
+/* override DSFR theme for custom components */
+/* we can't use :root[data-fr-theme] selector in scoped svelte components */
+:root[data-fr-theme="light"] .bg-white {
+    background-color: #ffffff;
+}
+
+:root[data-fr-theme="light"] td.primary {
+    background-color: #f5f5fe;
+}
+
+:root[data-fr-theme="dark"] td.primary {
+    background-color: #6c6cbb;
+}
