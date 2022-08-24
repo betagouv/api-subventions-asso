@@ -108,14 +108,22 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren }])
             await asyncForEach(result.associations, async (association) => {
                 let denomination;
-                if (isDateNewer(structure.identite.date_modif_rna, structure.identite.date_modif_siren)) denomination = association.denomination_rna
-                else denomination = association.denomination_siren;
+
+                if (association.denomination_rna && association.denomination_siren) {
+                    if (isDateNewer(structure.identite.date_modif_rna, structure.identite.date_modif_siren)) denomination = association.denomination_rna
+                    else denomination = association.denomination_siren;
+                } else if (association.denomination_rna || association.denomination_siren) {
+                    denomination = association.denomination_rna || association.denomination_siren;
+                } else {
+                    return;
+                }
+
                 await EventManager.call('association-name.matching', [{
                     rna: structure.identite.id_rna,
                     siren: structure.identite.id_siren,
                     name: denomination[0].value,
                     provider: denomination[0].provider,
-                    lastUpdate: ((association.date_modification || association.date_modification_siren) as ProviderValues<Date>)[0].value
+                    lastUpdate: ((association.date_modification_rna || association.date_modification_siren) as ProviderValues<Date>)[0].value
                 }]);
             })
         }

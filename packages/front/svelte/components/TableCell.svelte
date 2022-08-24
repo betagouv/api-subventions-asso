@@ -7,7 +7,7 @@
     $: style = `--justify: ${position}; --overflow: ${overflow}`;
 </script>
 
-<td {colspan} class:primary>
+<td class="bg-white" {colspan} class:primary>
     <div {style}>
         <slot />
     </div>
@@ -25,10 +25,7 @@
     }
 
     td {
+        line-break: anywhere;
         padding: 12px;
-    }
-
-    td.primary {
-        background-color: #f5f5fe;
     }
 </style>

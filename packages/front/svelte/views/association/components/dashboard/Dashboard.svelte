@@ -31,7 +31,7 @@
 {#await promise}
     <Spinner description="Chargement des demandes de subventions en cours ..." />
 {:then _null}
-    {#if data.elements?.length}
+    {#if data.etablissements?.length}
         <div class="title">
             <h2>Tableau de bord</h2>
             <div>
@@ -54,51 +54,57 @@
                     options={data.exercices} />
             </div>
         </div>
-        <div class="totals">
-            <div class="subventions">
-                <h3>Demandes de subventions collectées</h3>
-                <p>
-                    <b>{data.percentSubvention}%</b>
-                    des demandes ont été accordées en
-                    <b>{data.selectedYear}</b>
-                    .
-                    <br />
-                    D'après les données récupérées via Osiris et Fonjep.
-                </p>
+        {#if data.elements?.length}
+            <div class="totals">
+                <div class="subventions">
+                    <h3>Demandes de subventions collectées</h3>
+                    <p>
+                        <b>{data.percentSubvention}%</b>
+                        des demandes ont été accordées en
+                        <b>{data.selectedYear}.</b>
+                        <br />
+                        D'après les données récupérées via Osiris, Dauphin et Fonjep.
+                    </p>
+                </div>
+                <div class="versements">
+                    <h3>Versements réalisés</h3>
+                    <p>
+                        Total des versements en <b>{data.selectedYear}</b>
+                        :
+                        <b>{valueOrHyphen(numberToEuro(data.versementsAmount))}</b>
+                        <br />
+                        D'après les données récupérées via Chorus.
+                    </p>
+                </div>
             </div>
-            <div class="versements">
-                <h3>Versements réalisés</h3>
-                <p>
-                    Total des versements en <b>{data.selectedYear}</b>
-                    :
-                    <b>{valueOrHyphen(numberToEuro(data.versementsAmount))}</b>
-                    <br />
-                    D'après les données récupérées via Chorus.
-                </p>
+            {#if data.status != "end"}
+                <Alert type="info" title="Récupérations en cours des subventions chez nos fourniseurs ...">
+                    <ProgressBar
+                        percent={(data.subventionLoading.providerAnswers / data.subventionLoading.providerCalls) *
+                            100} />
+                </Alert>
+            {/if}
+            <div class="tables">
+                <div>
+                    <SubventionTable
+                        elements={data.elements}
+                        sort={col => dashboardCore.sortByColumn(col)}
+                        currentSort={data.currentSort}
+                        sortDirection={data.sortDirection} />
+                </div>
+                <div>
+                    <VersementTable
+                        elements={data.elements}
+                        sort={col => dashboardCore.sortByColumn(col)}
+                        currentSort={data.currentSort}
+                        sortDirection={data.sortDirection} />
+                </div>
             </div>
-        </div>
-        {#if data.status != "end"}
-            <Alert type="info" title="Récupérations en cours des subventions chez nos fourniseurs ...">
-                <ProgressBar
-                    percent={(data.subventionLoading.providerAnswers / data.subventionLoading.providerCalls) * 100} />
-            </Alert>
+        {:else}
+            <DataNotFound
+                content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {data.selectedYear}" />
         {/if}
-        <div class="tables">
-            <div>
-                <SubventionTable
-                    elements={data.elements}
-                    sort={col => dashboardCore.sortByColumn(col)}
-                    currentSort={data.currentSort}
-                    sortDirection={data.sortDirection} />
-            </div>
-            <div>
-                <VersementTable
-                    elements={data.elements}
-                    sort={col => dashboardCore.sortByColumn(col)}
-                    currentSort={data.currentSort}
-                    sortDirection={data.sortDirection} />
-            </div>
-        </div>
+        <ProviderModal id="providers" />
     {:else}
         <DataNotFound />
     {/if}
