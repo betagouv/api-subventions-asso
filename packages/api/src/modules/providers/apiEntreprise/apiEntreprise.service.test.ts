@@ -145,6 +145,33 @@ describe("ApiEntrepriseService", () => {
         });
     })
 
+    describe("getExtraitRcs()", () => {
+        it("should return extrait rcs", async () => {
+            const expected = {};
+            // @ts-expect-error: mock
+            sendRequestMock.mockImplementationOnce(async () => expected);
+            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return null", async () => {
+            const expected = null;
+            sendRequestMock.mockImplementationOnce(() => { throw new Error() });
+            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
+            expect(actual).toEqual(expected);
+        })
+        it("should throw StructureIdentifiersError", async () => {
+            const expected = StructureIdentifiersError.name;
+            let actual;
+            try {
+                actual = await apiEntrepriseService.getExtractRcs(SIRET);
+            } catch (e) {
+                actual = (e as Error).constructor.name;
+            }
+            expect(actual).toEqual(expected)
+        })
+    })
+
     describe("getEtablissementHeadcount()", () => {
 
         it("should call sendRequest() with arguments", async () => {

@@ -15,7 +15,7 @@ import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import ExtraitRcs from "@api-subventions-asso/dto/associations/ExtraitRcs";
 
 export class ApiEntrepriseService implements EtablissementProvider {
-    static API_URL = "https://entreprise.api.gouv.fr/v2/"
+    static API_URL = "https://entreprise.api.gouv.fr/v3/"
 
     isEtablissementProvider = true
 
@@ -100,7 +100,7 @@ export class ApiEntrepriseService implements EtablissementProvider {
     public async getExtractRcs(siren: Siren) {
         if (isSiren(siren)) {
             try {
-                return await this.sendRequest(`extraits_rcs_infogreffe/${siren}`, {}, this.RCS_EXTRACT_REASON) as ExtraitRcs
+                return await this.sendRequest(`infogreffe/rcs/unites_legales/${siren}/extrait_kbis`, {}, this.RCS_EXTRACT_REASON) as ExtraitRcs
             } catch (e) {
                 return null;
             }

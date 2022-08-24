@@ -39,8 +39,6 @@ export class AssociationsService {
         let association;
         let siren;
 
-        console.log(type);
-
         switch (type) {
             case StructureIdentifiersEnum.rna:
                 association = await this.getAssociationByRna(id);
