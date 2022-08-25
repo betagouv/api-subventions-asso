@@ -5,19 +5,22 @@ import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf"
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import { isSiren, isSiret } from "../../../shared/Validators";
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Association, Siren, Siret } from "@api-subventions-asso/dto";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
-import ExtraitRcs from "@api-subventions-asso/dto/associations/ExtraitRcs";
+import AssociationsProvider from "../../associations/@types/AssociationsProvider";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import { ExtraitRcsDto } from "@api-subventions-asso/dto/associations/ExtraitRcsDto";
 
-export class ApiEntrepriseService implements EtablissementProvider {
-    static API_URL = "https://entreprise.api.gouv.fr/v3/"
+export class ApiEntrepriseService implements EtablissementProvider, AssociationsProvider {
+    static API_URL = "https://entreprise.api.gouv.fr/"
 
     isEtablissementProvider = true
+    isAssociationsProvider = true
 
     provider = {
         name: "API Entreprise",
@@ -30,9 +33,8 @@ export class ApiEntrepriseService implements EtablissementProvider {
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
 
-    private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string): Promise<T | null> {
+    private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string, isNewAPI = true): Promise<T | null> {
         const defaultParams = {
-            token: API_ENTREPRISE_TOKEN,
             context: "aides publiques",
             recipient: "12004101700035",
             object: reason,
@@ -47,8 +49,13 @@ export class ApiEntrepriseService implements EtablissementProvider {
             return this.requestCache.get(fullURL)[0] as T | null;
         }
 
-        const result = await axios.get<T>(fullURL);
-
+        let result;
+        if (isNewAPI) {
+            result = await axios.get<T>(fullURL, { headers: { "Authorization": `Bearer ${API_ENTREPRISE_TOKEN}` } });
+        }
+        else {
+            result = await axios.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`)
+        }
         this.requestCache.add(fullURL, result.status == 200 ? result.data : null)
 
         if (result.status == 200) return result.data;
@@ -84,23 +91,23 @@ export class ApiEntrepriseService implements EtablissementProvider {
         } else throw new StructureIdentifiersError()
     }
 
-    private buildHeadcountUrl(subtractMonths = 0) {
+    private buildHeadcountUrl(siret, subtractMonths = 0) {
         const today = new Date();
         if (subtractMonths != 0) today.setMonth(today.getMonth() - subtractMonths);
         const year = today.getFullYear();
         let month: string | number = today.getMonth() + 1;
         month = month < 10 ? "0" + month : month;
-        return `effectifs_mensuels_acoss_covid/${year}/${month}`;
+        return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret}`;
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
-        return this.sendRequest<IApiEntrepriseHeadcount>(`${this.buildHeadcountUrl(subtractMonths)}/etablissement/${siret}`, {}, this.HEADCOUNT_REASON);
+        return this.sendRequest<IApiEntrepriseHeadcount>(`${this.buildHeadcountUrl(siret, subtractMonths)}`, {}, this.HEADCOUNT_REASON, false);
     }
 
     public async getExtractRcs(siren: Siren) {
         if (isSiren(siren)) {
             try {
-                return await this.sendRequest(`infogreffe/rcs/unites_legales/${siren}/extrait_kbis`, {}, this.RCS_EXTRACT_REASON) as ExtraitRcs
+                return (await this.sendRequest<{ data: ExtraitRcsDto }>(`v3/infogreffe/rcs/unites_legales/${siren}/extrait_kbis`, {}, this.RCS_EXTRACT_REASON))?.data
             } catch (e) {
                 return null;
             }
@@ -121,6 +128,24 @@ export class ApiEntrepriseService implements EtablissementProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getEtablissementsBySiren(_siret: Siren) {
+        return null;
+    }
+
+    async getAssociationsBySiren(siren: string): Promise<Association[] | null> {
+        try {
+            const result = await this.getExtractRcs(siren);
+            if (!result) return null;
+            return [ApiEntrepriseAdapter.toAssociation(result)];
+        } catch (e) {
+            return null
+        }
+    }
+
+    async getAssociationsBySiret(siret: string): Promise<Association[] | null> {
+        return await this.getAssociationsBySiren(siretToSiren(siret));
+    }
+
+    async getAssociationsByRna(rna: string): Promise<Association[] | null> {
         return null;
     }
 

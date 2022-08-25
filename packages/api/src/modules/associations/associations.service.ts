@@ -21,7 +21,6 @@ import StructureIdentifiersError from '../../shared/errors/StructureIdentifierEr
 import documentsService from '../documents/documents.service';
 import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
 import apiEntrepriseService from "../providers/apiEntreprise/apiEntreprise.service";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
 
 export class AssociationsService {
 
@@ -37,26 +36,21 @@ export class AssociationsService {
     async getAssociation(id: StructureIdentifiers): Promise<Association | null> {
         const type = IdentifierHelper.getIdentifierType(id);
         let association;
-        let siren;
 
         switch (type) {
             case StructureIdentifiersEnum.rna:
                 association = await this.getAssociationByRna(id);
-                siren = await rnaSirenService.getSiren(id);
                 break
             case StructureIdentifiersEnum.siren:
                 association = await this.getAssociationBySiren(id);
-                siren = id;
                 break
             case StructureIdentifiersEnum.siret:
                 association = await this.getAssociationBySiret(id);
-                siren = siretToSiren(id);
                 break
             default:
                 throw new StructureIdentifiersError();
         }
 
-        if (association && siren) association.extrait_rcs = await this.getExtraitRcs(siren);
         return association;
     }
 

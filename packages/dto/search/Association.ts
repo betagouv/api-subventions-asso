@@ -1,4 +1,4 @@
-import ExtraitRcs from "../associations/ExtraitRcs";
+import { ExtraitRcsDto } from "../associations/ExtraitRcsDto";
 import { Adresse } from '../shared/Adresse';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
@@ -49,5 +49,5 @@ export interface Association {
     }
     versements?: Versement[],
     etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null,
-    extrait_rcs?: ExtraitRcs | null
+    extrait_rcs?: ProviderValues<ExtraitRcsDto> | null
 }
