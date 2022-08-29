@@ -146,10 +146,10 @@ describe("ApiEntrepriseService", () => {
     })
 
     describe("getExtraitRcs()", () => {
-        it("should return extrait rcs", async () => {
+        it.only("should return extrait rcs", async () => {
             const expected = {};
             // @ts-expect-error: mock
-            sendRequestMock.mockImplementationOnce(async () => expected);
+            sendRequestMock.mockImplementationOnce(async () => ({ data: expected }));
             const actual = await apiEntrepriseService.getExtractRcs(SIREN);
             expect(actual).toEqual(expected);
         });
@@ -222,7 +222,7 @@ describe("ApiEntrepriseService", () => {
         });
 
         it("should call sendRequest() with valid URL", async () => {
-            const expected = [`extraits_rcs_infogreffe/${SIREN}`, {}, RCS_EXTRACT_REASON];
+            const expected = [`v3/infogreffe/rcs/unites_legales/${SIREN}/extrait_kbis`, {}, RCS_EXTRACT_REASON];
             // @ts-expect-error
             sendRequestMock.mockImplementationOnce(async () => expected);
             await apiEntrepriseService.getExtractRcs(SIREN);
@@ -234,13 +234,6 @@ describe("ApiEntrepriseService", () => {
             const expected = null;
             sendRequestMock.mockImplementationOnce(() => { throw new Error() })
             const actual = await apiEntrepriseService.getExtractRcs(SIREN);
-            expect(actual).toEqual(expected);
-        })
-
-        it("should minus the date month", () => {
-            const expected = "effectifs_mensuels_acoss_covid/2021/12"
-            // @ts-expect-error
-            const actual = apiEntrepriseService.buildHeadcountUrl(1);
             expect(actual).toEqual(expected);
         })
     })
