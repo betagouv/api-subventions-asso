@@ -50,7 +50,6 @@ export class AssociationsService {
             default:
                 throw new StructureIdentifiersError();
         }
-
         return association;
     }
 
@@ -95,7 +94,9 @@ export class AssociationsService {
 
     async getEtablissements(identifier: AssociationIdentifiers) {
         const type = IdentifierHelper.getIdentifierType(identifier);
-        if (!type || type === StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIREN or RNA");
+        if (!type || type === StructureIdentifiersEnum.siret) {
+            throw new Error("You must provide a valid SIREN or RNA");
+        }
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);
@@ -111,7 +112,10 @@ export class AssociationsService {
     async getEtablissement(identifier: AssociationIdentifiers, nic: string) {
         const type = IdentifierHelper.getIdentifierType(identifier);
 
-        if (!type || type === StructureIdentifiersEnum.siret) throw new BadRequestError("You must provide a valid SIREN or RNA");
+        if (!type || type === StructureIdentifiersEnum.siret) {
+            console.log("THROW ERROR");
+            throw new BadRequestError("You must provide a valid SIREN or RNA");
+        }
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);
@@ -122,10 +126,6 @@ export class AssociationsService {
         }
 
         return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
-    }
-
-    public async getExtraitRcs(siren: Siren) {
-        return apiEntrepriseService.getExtractRcs(siren);
     }
 
     private async aggregate(id: StructureIdentifiers) {

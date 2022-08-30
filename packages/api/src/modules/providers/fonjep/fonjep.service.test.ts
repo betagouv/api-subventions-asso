@@ -121,6 +121,15 @@ describe("FonjepService", () => {
             expect(actual).toEqual(expected);
         })
 
+        it("should call repository", async () => {
+            validateEntityMock.mockImplementationOnce(() => ({ success: true }));
+            // @ts-expect-error: mock repository
+            const repoCreateMock = jest.spyOn(fonjepRepository, "create").mockImplementationOnce(async () => expected);
+            const expected = { ...FonjepEntity };
+            await fonjepService.createEntity(expected);
+            expect(repoCreateMock).toHaveBeenCalledWith(expected);
+        })
+
         it("should not create entity", async () => {
             const entity = { ...FonjepEntity };
             const VALIDATE = { success: false };
