@@ -1,6 +1,7 @@
-import { Siren, Siret, Rna , DemandeSubvention } from "@api-subventions-asso/dto";
+import { Siren, Siret, Rna, DemandeSubvention } from "@api-subventions-asso/dto";
+import Provider from "../../providers/@types/IProvider";
 
-export default interface DemandesSubventionsProvider {
+export default interface DemandesSubventionsProvider extends Provider {
     isDemandesSubventionsProvider: boolean,
 
     getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null>

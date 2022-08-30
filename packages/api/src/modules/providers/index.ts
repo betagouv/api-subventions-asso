@@ -8,7 +8,7 @@ import apiAssoService from "./apiAsso/apiAsso.service"
 import dataGouvService from './datagouv/datagouv.service'
 import avisSituationInseeService from './avisSituationInsee/avisSituationInsee.service'
 import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service"
-import dauphinService from "./dauphin/dauphin.service"
+// import dauphinService from "./dauphin/dauphin.service"
 
 export default {
     dataEntrepriseService,
@@ -21,5 +21,5 @@ export default {
     dataGouvService,
     avisSituationInseeService,
     apiEntrepriseService,
-    dauphinService,
+    // dauphinService,
 }
