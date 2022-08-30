@@ -28,6 +28,14 @@
         promise = admin.getUsers().then(_users => (users = _users)); // Not use then in template beacause var can be declared for bind;
     };
 
+    const removeUser = event => {
+        const id = event.detail;
+        const index = users.findIndex(user => user._id === id);
+        users.splice(index, 1);
+        // force child update by affecting a new array
+        users = [...users];
+    };
+
     loadUsers();
 
     const downloadCsv = () => {
@@ -73,7 +81,8 @@
 
             <SearchUsers bind:users />
 
-            <TableUsers {users} on:userDeleted={loadUsers} />
+            <!-- TODO: ne pas recharger les utilisateurs mais plutôt mettre à jour l'objet users pour éviter une requête -->
+            <TableUsers {users} on:userDeleted={e => removeUser(e)} />
         </div>
     </div>
 {:catch error}

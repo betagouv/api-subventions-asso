@@ -6,6 +6,7 @@
     import Spinner from "../../../../components/Spinner.svelte";
     import ErrorAlert from "../../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../../components/DataNotFound.svelte";
+    import { modal } from "../../../../store/modal.store";
 
     import SubventionTable from "../SubventionTable.svelte";
     import VersementTable from "../VersementTable.svelte";
@@ -20,6 +21,7 @@
     let data = {};
     let promise = new Promise(() => null);
     const dashboardCore = new DashboardCore(association);
+    const displayModal = () => modal.update(() => ProviderModal);
 
     onMount(() => (promise = dashboardCore.mount()));
     dashboardCore.onRender(_data => (data = _data));
@@ -33,7 +35,7 @@
         <div class="title">
             <h2>Tableau de bord</h2>
             <div>
-                <Button type="secondary" ariaControls="fr-modal-providers">
+                <Button type="secondary" ariaControls="fr-modal" on:click={displayModal}>
                     Voir la liste des fournisseurs de données
                 </Button>
             </div>
@@ -53,16 +55,16 @@
             </div>
         </div>
         {#if data.elements?.length}
-        <div class="totals">
-            <div class="subventions">
-                <h3>Demandes de subventions collectées</h3>
-                <p>
-                    <b>{data.percentSubvention}%</b>
-                    des demandes ont été accordées en
-                    <b>{data.selectedYear}.</b>
-                    <br />
-                    D'après les données récupérées via Osiris, Dauphin et Fonjep.
-                </p>
+            <div class="totals">
+                <div class="subventions">
+                    <h3>Demandes de subventions collectées</h3>
+                    <p>
+                        <b>{data.percentSubvention}%</b>
+                        des demandes ont été accordées en
+                        <b>{data.selectedYear}.</b>
+                        <br />
+                        D'après les données récupérées via Osiris, Dauphin et Fonjep.
+                    </p>
                 </div>
                 <div class="versements">
                     <h3>Versements réalisés</h3>
@@ -78,7 +80,8 @@
             {#if data.status != "end"}
                 <Alert type="info" title="Récupérations en cours des subventions chez nos fourniseurs ...">
                     <ProgressBar
-                        percent={(data.subventionLoading.providerAnswers / data.subventionLoading.providerCalls) * 100} />
+                        percent={(data.subventionLoading.providerAnswers / data.subventionLoading.providerCalls) *
+                            100} />
                 </Alert>
             {/if}
             <div class="tables">
@@ -98,7 +101,8 @@
                 </div>
             </div>
         {:else}
-            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {data.selectedYear}"/>
+            <DataNotFound
+                content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {data.selectedYear}" />
         {/if}
         <ProviderModal id="providers" />
     {:else}
