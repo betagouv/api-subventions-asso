@@ -21,12 +21,13 @@ export class AssociationService {
         });
 
         connector.on("data", data => {
-            if (data.__meta__?.totalProviders) {
+            // first message event
+            if (!data.subventions && data.__meta__?.totalProviders) {
                 flux.update(state => ({
                     ...state,
                     __meta__: {
                         ...state.__meta__,
-                        providerCalls: data.__meta__.totalProviders,
+                        providerCalls: data.__meta__.totalProviders
                     }
                 }));
             } else if (data.subventions) {
