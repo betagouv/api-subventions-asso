@@ -16,10 +16,9 @@ Object {
   },
   "AssociationBeneficiaireCode": 1234,
   "AssociationImplantationCode": 1234,
-  "Co-Financements": undefined,
-  "Co-Financeur": undefined,
   "Code": "J10540",
   "DateFinTriennalite": 43465,
+  "DispositifId": 3,
   "DoublementUniteCompte": "Non",
   "Financeur": Object {
     "Code": 1234,
@@ -42,6 +41,11 @@ Object {
   "TypePoste": Object {
     "Code": "FONJEP",
     "Libelle": "Poste FONJEP",
+  },
+  "dispositif": Object {
+    "FinanceurCode": 10008,
+    "ID": 3,
+    "Libelle": "FONJEP Politique de la ville",
   },
   "id": Any<String>,
   "updated_at": 2022-03-03T00:00:00.000Z,
