@@ -1,12 +1,21 @@
 import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
 import FonjepCliController from './fonjep.cli.controller'
-import fs from "fs";
 import FonjepParser from "../../fonjep.parser";
 import fonjepRepository from "../../repositories/fonjep.repository";
+import fonjepParserResponse from "../../__fixtures__/fonjepParserResponse.json";
+import fonjepService from "../../fonjep.service";
 jest.mock("fs");
 
 
 describe("FonjepCliController", () => {
+    const createSubventionEntityMock = jest.spyOn(fonjepService, "createSubventionEntity");
+    const createVersementEntityMock = jest.spyOn(fonjepService, "createVersementEntity");
+
+    beforeAll(() => {
+        createSubventionEntityMock.mockImplementation(async () => ({ success: true }));
+        createVersementEntityMock.mockImplementation(async () => ({ success: true }));
+    });
+
     const cli = new FonjepCliController();
     describe("_parse()", () => {
         const PATH = "path/to/test";
@@ -21,6 +30,32 @@ describe("FonjepCliController", () => {
             }
             expect(actual).toEqual(expected);
         });
+
+        it("should create entities", async () => {
+            const parseMock = jest.spyOn(FonjepParser, "parse");
+            // @ts-expect-error: mock;
+            parseMock.mockImplementationOnce(() => fonjepParserResponse);
+            // @ts-expect-error: test protected method
+            await cli._parse(PATH, [], new Date());
+            expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.length);
+            let createVersementEntityMockCalls = 0
+            fonjepParserResponse.forEach(response => createVersementEntityMockCalls = createVersementEntityMockCalls + response.versements.length);
+            expect(createVersementEntityMock).toHaveBeenCalledTimes(createVersementEntityMockCalls);
+        });
+
+        it("should not create versement entities if subvention creation has failed", async () => {
+            const parseMock = jest.spyOn(FonjepParser, "parse");
+            // @ts-expect-error: mock;
+            parseMock.mockImplementationOnce(() => fonjepParserResponse);
+            // @ts-expect-error: mock;
+            createSubventionEntityMock.mockImplementationOnce(async () => ({ success: false }));
+            // @ts-expect-error: test protected method
+            await cli._parse(PATH, [], new Date());
+            expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.length);
+            let createVersementEntityMockCalls = 0
+            fonjepParserResponse.slice(1, fonjepParserResponse.length).forEach(response => createVersementEntityMockCalls = createVersementEntityMockCalls + response.versements.length);
+            expect(createVersementEntityMock).toHaveBeenCalledTimes(createVersementEntityMockCalls);
+        });
     });
 
     describe("_compare()", () => {
@@ -28,23 +63,37 @@ describe("FonjepCliController", () => {
 
         it("should return true", async () => {
             mockParse
-                .mockImplementationOnce(() => ([{
-                    // @ts-expect-error: mock
-                    indexedInformations: { annee_demande: 2021 },
-                    data: { Code: "CODE1" }
-                }]))
                 .mockImplementationOnce(() => ([
                     {
-                        // @ts-expect-error: mock
-                        indexedInformations: { annee_demande: 2021 },
-                        data: { Code: "CODE1" }
-                    },
-                    {
-                        // @ts-expect-error: mock
-                        indexedInformations: { annee_demande: 2022 },
-                        data: { Code: "CODE2" }
+                        subvention: {
+                            // @ts-expect-error: mock
+                            indexedInformations: { annee_demande: 2021 },
+                            data: { Code: "CODE1" }
+                        },
+                        versements: []
                     }
                 ]))
+                .mockImplementationOnce(() => [
+                    {
+                        subvention:
+                        {
+                            // @ts-expect-error: mock
+                            indexedInformations: { annee_demande: 2021 },
+                            data: { Code: "CODE1" }
+                        },
+
+                        versements: []
+                    },
+                    {
+                        subvention:
+                        {
+                            // @ts-expect-error: mock
+                            indexedInformations: { annee_demande: 2022 },
+                            data: { Code: "CODE2" }
+                        },
+                        versements: []
+                    }
+                ])
             const expected = true;
             const actual = await cli._compare("file1", "file2");
             expect(actual).toEqual(expected);
@@ -52,25 +101,35 @@ describe("FonjepCliController", () => {
 
         it("should return false", async () => {
             mockParse
-                .mockImplementationOnce(() => ([{
-                    // @ts-expect-error: mock
-                    indexedInformations: { annee_demande: 2021 },
-                    data: { Code: "CODE1" }
-                }]))
-                .mockImplementationOnce(() => ([
+                .mockImplementationOnce(() => [
                     {
-                        // @ts-expect-error: mock
-                        indexedInformations: { annee_demande: 2022 },
-                        data: { Code: "CODE2" }
+                        subvention: {
+                            // @ts-expect-error: mock
+                            indexedInformations: { annee_demande: 2021 },
+                            data: { Code: "CODE1" }
+                        },
+                        versements: []
                     }
-                ]))
+                ])
+                .mockImplementationOnce(() => [
+                    {
+                        subvention:
+                        {
+                            // @ts-expect-error: mock
+                            indexedInformations: { annee_demande: 2022 },
+                            data: { Code: "CODE2" }
+                        }
+                        ,
+                        versements: []
+                    }
+                ])
             const expected = false;
             const actual = await cli._compare("file1", "file2");
             expect(actual).toEqual(expected);
         })
     })
 
-    describe.only("drop()", () => {
+    describe("drop()", () => {
         it("should call FonjepRepository.drop()", async () => {
             const mockDrop = jest.spyOn(fonjepRepository, "drop").mockImplementationOnce(jest.fn());
             const expected = 1;

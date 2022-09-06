@@ -31,7 +31,24 @@ export const DATA_WITH_HEADER = [
         }
     ],
     // TODO: add versements
-    [],
+    [
+        {
+            PosteCode: "J10540",
+            PeriodeDebut: "1/1/2017",
+            PeriodeFin: "31/3/2017",
+            DateVersement: "26/1/2017",
+            MontantAPayer: "1 777,00 €",
+            MontantPaye: "1 777,00 €"
+        },
+        {
+            PosteCode: "J10540",
+            PeriodeDebut: "1/4/2017",
+            PeriodeFin: "30/6/2017",
+            DateVersement: "27/4/2017",
+            MontantAPayer: "1 777,00 €",
+            MontantPaye: "1 777,00 €"
+        }
+    ],
     [
         { Code: 'DOUBLE', Libelle: 'UNITE DE COMPTE DOUBLEE' },
         { Code: 'FONJEP', Libelle: 'Poste FONJEP' },
@@ -104,7 +121,11 @@ export const RAW_DATA = [
         ]
     ],
     // TODO: add versements
-    [],
+    [
+        ["PosteCode", "PeriodeDebut", "PeriodeFin", "DateVersement", "MontantAPayer", "MontantPaye"],
+        ["J10540", "1/1/2017", "31/3/2017", "26/1/2017", "1 777,00 €", "1 777,00 €"],
+        ["J10540", "1/4/2017", "30/6/2017", "27/4/2017", "1 777,00 €", "1 777,00 €"]
+    ],
     [
         ['Code', 'Libelle'],
         ['DOUBLE', 'UNITE DE COMPTE DOUBLEE'],

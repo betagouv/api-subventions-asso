@@ -9,8 +9,8 @@ export default class FonjepRequestEntity {
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         siret: {
             path: ["Association", "SiretOuRidet"],
-            adapter: (value) =>  {
-                if(!value) return value;
+            adapter: (value) => {
+                if (!value) return value;
 
                 return value.replace(/ /g, "");
             }
@@ -19,10 +19,11 @@ export default class FonjepRequestEntity {
     }
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
+        code_poste: ["Code"],
         montant_paye: {
             path: ["MontantSubvention"],
             adapter: (value) => {
-                if(!value) return 0;
+                if (!value) return 0;
 
                 return !value.length ? parseFloat(value) : 0
             }
@@ -46,10 +47,6 @@ export default class FonjepRequestEntity {
             adapter: formatCP
         },
         contact: ["Association", "ContactEmail"],
-        co_financeur: ["Co-Financeur", "RaisonSociale"],
-        co_financeur_contact: ["Co-Financeur", "ContactEmail"],
-        co_financeur_siret: ["Co-Financeur", "SiretOuRidet"],
-        co_financeur_montant: ["Co-Financements", "MontantFinance"],
         plein_temps: ["PleinTemps"]
     }
 
@@ -60,5 +57,5 @@ export default class FonjepRequestEntity {
         },
         public indexedInformations: IFonjepIndexedInformations,
         public data: unknown
-    ) {}
+    ) { }
 }

@@ -3,12 +3,6 @@
 exports[`FonjepEntityAdapter toDemandeSubvention() should return a DemandeSubvention 1`] = `
 Object {
   "annee_demande": 2022,
-  "co_financement": Object {
-    "cofinanceur": "CoFinanceur",
-    "cofinanceur_email": "co.financeur@email.fr",
-    "cofinanceur_siret": "00230104",
-    "montants": 1700,
-  },
   "date_fin": 2022-01-03T00:00:00.000Z,
   "dispositif": "Fonjep",
   "montants": Object {

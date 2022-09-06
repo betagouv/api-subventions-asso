@@ -1,6 +1,7 @@
 import FonjepEntity from '../../../../../src/modules/providers/fonjep/entities/FonjepRequestEntity';
+import FonjepVersementEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepVersementEntity";
 
-export default new FonjepEntity(
+export const SubventionEntity = new FonjepEntity(
     {
         siret: "00000000000002",
         name: "FONJET_ENTITY_FIXTURE"
@@ -18,10 +19,23 @@ export default new FonjepEntity(
         ville: "Paris",
         contact: "contact@beta.gouv.fr",
         type_post: "POSTE",
-        co_financeur: "CoFinanceur",
-        co_financeur_contact: "co.financeur@email.fr",
-        co_financeur_siret: "00230104",
-        co_financeur_montant: 1700,
+        dispositif: "Dispositif"
+    },
+    {}
+)
+
+export const VersementEntity = new FonjepVersementEntity(
+    {
+        siret: "00000000000002"
+    },
+    {
+        unique_id: "unique_id",
+        updated_at: new Date(),
+        periode_debut: new Date(),
+        periode_fin: new Date(),
+        date_versement: new Date(),
+        montant_payer: "",
+        montant_a_payer: ""
     },
     {}
 )

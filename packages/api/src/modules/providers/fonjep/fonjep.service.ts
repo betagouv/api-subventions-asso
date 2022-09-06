@@ -6,6 +6,8 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepRequestEntity from "./entities/FonjepRequestEntity";
 import fonjepRepository from "./repositories/fonjep.repository";
+import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
+import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1,
@@ -18,6 +20,8 @@ export interface RejectedRequest {
     data?: unknown
 }
 
+export type CreateFonjepResponse = RejectedRequest | { success: true }
+
 export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider {
     provider = {
         name: "Extranet FONJEP",
@@ -25,7 +29,9 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         description: "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
     }
 
-    async createEntity(entity: FonjepRequestEntity): Promise<RejectedRequest | { success: true, state: 'updated' | "created" }> {
+
+
+    async createSubventionEntity(entity: FonjepRequestEntity): Promise<CreateFonjepResponse> {
         const valid = this.validateEntity(entity);
 
         if (!valid.success) return valid;
@@ -33,8 +39,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         await fonjepRepository.create(entity);
 
         return {
-            success: true,
-            state: "created",
+            success: true
         };
     }
 
@@ -79,6 +84,20 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         }
 
         return { success: true };
+    }
+
+    async createVersementEntity(entity: FonjepVersementEntity): Promise<CreateFonjepResponse> {
+        if (!isSiret(entity.legalInformations.siret)) {
+            return { success: false, message: `INVALID SIRET FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+        }
+
+        // Do not validEntity now because it is only called after Subvention validation (siret as already been validated)
+
+        await fonjepVersementRepository.create(entity);
+
+        return {
+            success: true
+        };
     }
 
 
