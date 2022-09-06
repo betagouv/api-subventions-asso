@@ -4,7 +4,7 @@ import { StaticImplements } from "../../../../../decorators/staticImplements.dec
 import { CliStaticInterface, DefaultObject } from "../../../../../@types";
 import FonjepParser, { FonjepRowData } from "../../fonjep.parser";
 import fonjepService, { CreateFonjepResponse, RejectedRequest } from "../../fonjep.service";
-import FonjepRequestEntity from "../../entities/FonjepRequestEntity";
+import FonjepSubventionEntity from "../../entities/FonjepSubventionEntity";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import CliController from '../../../../../shared/CliController';
 import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
@@ -89,7 +89,7 @@ export default class FonjepCliController extends CliController {
                 return acc;
             }
             const sortedData = data.reduce(reduceSubventionByYear, {});
-            return sortedData as DefaultObject<{ subvention: FonjepRequestEntity, versements: FonjepVersementEntity[] }[]>;
+            return sortedData as DefaultObject<{ subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[] }[]>;
         }
 
         // Check if a document is missing in new FONJEP file (assuming code + annee is a unique_id)

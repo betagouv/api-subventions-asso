@@ -23,10 +23,6 @@ Object {
       "description": "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
       "name": "API Entreprise",
     },
-    Object {
-      "description": "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
-      "name": "Dauphin",
-    },
   ],
   "raw": Array [
     Object {

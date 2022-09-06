@@ -1,12 +1,12 @@
 import { DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
 import ProviderValueFactory from '../../../../shared/ProviderValueFactory';
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
-import FonjepRequestEntity from "../entities/FonjepSubventionEntity";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep"
 
-    static toDemandeSubvention(entity: FonjepRequestEntity): DemandeSubvention {
+    static toDemandeSubvention(entity: FonjepSubventionEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;
         const toProviderValue = ProviderValueFactory.buildProviderValueAdapter(this.PROVIDER_NAME, dataDate);
         return {
@@ -25,7 +25,7 @@ export default class FonjepEntityAdapter {
         }
     }
 
-    static toEtablissement(entity: FonjepRequestEntity): Etablissement {
+    static toEtablissement(entity: FonjepSubventionEntity): Etablissement {
         const dataDate = entity.indexedInformations.updated_at;
         const toProviderValues = ProviderValueFactory.buildProviderValuesAdapter(this.PROVIDER_NAME, dataDate);
 
