@@ -63,7 +63,7 @@
                         des demandes ont été accordées en
                         <b>{data.selectedYear}.</b>
                         <br />
-                        D'après les données récupérées via Osiris, Dauphin et Fonjep.
+                        D'après les données récupérées via Osiris et Fonjep.
                     </p>
                 </div>
                 <div class="versements">
