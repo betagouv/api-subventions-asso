@@ -8,6 +8,7 @@ export const SubventionEntity = new FonjepEntity(
     },
     {
         unique_id: "unique_id",
+        code_poste: "D00000",
         montant_paye: 500,
         status: "En cours",
         plein_temps: "Oui",

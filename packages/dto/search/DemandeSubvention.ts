@@ -8,7 +8,8 @@ export interface DemandeSubvention {
     siret: ProviderValue<Siret>,
     dispositif?: ProviderValue<string>,
     sous_dispositif?: ProviderValue<string>,
-    ej?: ProviderValue<string>
+    ej?: ProviderValue<string>,
+    versementKey?: ProviderValue<string>,
     annee_demande?: ProviderValue<number>
     date_commision?: ProviderValue<Date>,
     financeur_principal?: ProviderValue<string>
