@@ -1,6 +1,7 @@
 export default interface IFonjepIndexedInformations {
     updated_at: Date,
     unique_id: string,
+    code_poste: string,
     montant_paye: number,
     status: string,
     plein_temps: string,
