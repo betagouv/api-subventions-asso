@@ -11,5 +11,5 @@ export default interface IFonjepIndexedInformations {
     ville: string,
     code_postal?: string,
     contact: string,
-    dispositif?: string
+    dispositif: string
 }
