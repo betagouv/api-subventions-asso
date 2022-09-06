@@ -1,7 +1,7 @@
 import { DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
 import ProviderValueFactory from '../../../../shared/ProviderValueFactory';
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
-import FonjepRequestEntity from "../entities/FonjepRequestEntity";
+import FonjepRequestEntity from "../entities/FonjepSubventionEntity";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep"
@@ -12,7 +12,7 @@ export default class FonjepEntityAdapter {
         return {
             siret: toProviderValue(entity.legalInformations.siret),
             service_instructeur: toProviderValue(entity.indexedInformations.service_instructeur),
-            dispositif: toProviderValue(this.PROVIDER_NAME),
+            dispositif: toProviderValue(entity.indexedInformations.dispositif),
             status: toProviderValue(entity.indexedInformations.status),
             pluriannualite: toProviderValue("Oui"),
             plein_temps: toProviderValue(entity.indexedInformations.plein_temps),

@@ -4,7 +4,7 @@ exports[`FonjepEntityAdapter toDemandeSubvention() should return a DemandeSubven
 Object {
   "annee_demande": 2022,
   "date_fin": 2022-01-03T00:00:00.000Z,
-  "dispositif": "Fonjep",
+  "dispositif": "Dispositif",
   "montants": Object {
     "accorde": 500,
     "demande": 500,
