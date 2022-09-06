@@ -2,7 +2,7 @@ import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
 import osirisRequestRepository from '../../../src/modules/providers/osiris/repositories/osiris.request.repository';
 import fonjepRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.repository';
-import FonjepEntityFixture from '../providers/fonjep/__fixtures__/entity';
+import { SubventionEntity as FonjepEntityFixture } from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import { Document } from 'mongodb';
 

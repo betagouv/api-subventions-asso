@@ -51,3 +51,19 @@ Object {
   "updated_at": 2022-03-03T00:00:00.000Z,
 }
 `;
+
+exports[`FonjepParser parse() should call createVersementFonjep with versement data 1`] = `
+Array [
+  Object {
+    "DateVersement": "27/4/2017",
+    "MontantAPayer": "1 777,00 €",
+    "MontantPaye": "1 777,00 €",
+    "PeriodeDebut": "1/4/2017",
+    "PeriodeFin": "30/6/2017",
+    "PosteCode": "J10540",
+    "id": Any<String>,
+    "siret": "00000000000000",
+    "updated_at": 2022-03-03T00:00:00.000Z,
+  },
+]
+`;

@@ -1,12 +1,14 @@
 import FonjepEntityAdapter from './adapters/FonjepEntityAdapter';
 import fonjepService, { FONJEP_SERVICE_ERRORS } from './fonjep.service';
 import fonjepRepository from "./repositories/fonjep.repository";
-import FonjepEntity from "../../../../tests/modules/providers/fonjep/__fixtures__/entity"
+import { SubventionEntity, VersementEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity"
 
 import * as Validators from "../../../shared/Validators";
+import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 
 const MONGO_ID = "ID";
-const SIRET = "00203400032010"
+const SIRET = "00203400032010";
+const WRONG_SIRET = SIRET.slice(0, 6);
 const findByIdMock: jest.SpyInstance<Promise<unknown>> = jest.spyOn(fonjepRepository, "findById");
 const toDemandeSubventionMock = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
 const isSiretMock = jest.spyOn(Validators, "isSiret");
@@ -51,14 +53,14 @@ describe("FonjepService", () => {
 
     describe("validateEntity", () => {
         it("should validate entity", () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             const expected = { success: true };
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
         });
 
         it("should not validate because siret is wrong", () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             isSiretMock.mockImplementationOnce(() => false);
             const expected = { success: false, "message": `INVALID SIRET FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
             const actual = fonjepService.validateEntity(entity)
@@ -66,27 +68,27 @@ describe("FonjepService", () => {
         });
 
         it("should not validate because name is wrong", () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             isSiretMock.mockImplementationOnce(() => true);
             isAssociationNameMock.mockImplementationOnce(() => false);
-            const expected = { success: false, message: `INVALID NAME FOR ${FonjepEntity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            const expected = { success: false, message: `INVALID NAME FOR ${SubventionEntity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
         });
 
         it("should not validate because date is wrong", () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             isSiretMock.mockImplementationOnce(() => true);
             isAssociationNameMock.mockImplementationOnce(() => true);
             isDatesMock.mockImplementationOnce(() => false);
-            const expected = { success: false, message: `INVALID DATE FOR ${FonjepEntity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            const expected = { success: false, message: `INVALID DATE FOR ${SubventionEntity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
 
         })
 
         it("should not validate because a string is wrong", () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             isSiretMock.mockImplementationOnce(() => true);
             isAssociationNameMock.mockImplementationOnce(() => true);
             isDatesMock.mockImplementationOnce(() => true);
@@ -97,7 +99,7 @@ describe("FonjepService", () => {
         });
 
         it("should not validate because a number is wrong", () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             isSiretMock.mockImplementationOnce(() => true);
             isAssociationNameMock.mockImplementationOnce(() => true);
             isDatesMock.mockImplementationOnce(() => true);
@@ -109,15 +111,15 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("createEntity", () => {
+    describe("createSubventionEntity", () => {
         const validateEntityMock = jest.spyOn(fonjepService, "validateEntity");
         it("should create entity", async () => {
             validateEntityMock.mockImplementationOnce(() => ({ success: true }));
             // @ts-expect-error: mock repository
             jest.spyOn(fonjepRepository, "create").mockImplementationOnce(async () => entity);
-            const entity = { ...FonjepEntity };
-            const expected = { success: true, state: "created" };
-            const actual = await fonjepService.createEntity(entity);
+            const entity = { ...SubventionEntity };
+            const expected = { success: true };
+            const actual = await fonjepService.createSubventionEntity(entity);
             expect(actual).toEqual(expected);
         })
 
@@ -125,19 +127,38 @@ describe("FonjepService", () => {
             validateEntityMock.mockImplementationOnce(() => ({ success: true }));
             // @ts-expect-error: mock repository
             const repoCreateMock = jest.spyOn(fonjepRepository, "create").mockImplementationOnce(async () => expected);
-            const expected = { ...FonjepEntity };
-            await fonjepService.createEntity(expected);
+            const expected = { ...SubventionEntity };
+            await fonjepService.createSubventionEntity(expected);
             expect(repoCreateMock).toHaveBeenCalledWith(expected);
         })
 
         it("should not create entity", async () => {
-            const entity = { ...FonjepEntity };
+            const entity = { ...SubventionEntity };
             const VALIDATE = { success: false };
             const expected = VALIDATE;
             // @ts-expect-error: mock
             validateEntityMock.mockImplementationOnce(() => VALIDATE);
-            const actual = await fonjepService.createEntity(entity);
+            const actual = await fonjepService.createSubventionEntity(entity);
             expect(actual).toEqual(expected);
+        })
+    });
+
+    describe("createVersementEntity", () => {
+        it("should throw error if siret invalid", async () => {
+            // copy with spread operator doesn't work for nested object (indexedInformations)
+            const entity = JSON.parse(JSON.stringify(VersementEntity));
+            entity.legalInformations.siret = WRONG_SIRET;
+            const expected = { success: false, message: `INVALID SIRET FOR ${WRONG_SIRET}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            const actual = await fonjepService.createVersementEntity(entity);
+            expect(actual).toEqual(expected);
+        });
+
+        it("creates entity", async () => {
+            const createVersementMock = jest.spyOn(fonjepVersementRepository, "create");
+            createVersementMock.mockImplementationOnce(jest.fn());
+            const entity = { ...VersementEntity };
+            await fonjepService.createVersementEntity(entity);
+            expect(createVersementMock).toHaveBeenCalledTimes(1);
         })
     })
 

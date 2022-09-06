@@ -8,8 +8,8 @@ describe("FonjepParser", () => {
         it("should return an array of FonjepRequestEntity", () => {
             const EXPORT_DATE = new Date("2022-03-03").toISOString();
             const buffer = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"));
-            const entities = FonjepParser.parse(buffer, new Date(EXPORT_DATE));
-            expect(entities).toMatchSnapshot();
+            const data = FonjepParser.parse(buffer, new Date(EXPORT_DATE));
+            expect(data).toMatchSnapshot();
         });
     });
 });
