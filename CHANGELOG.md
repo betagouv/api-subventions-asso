@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.7](https://github.com/betagouv/api-subventions-asso/compare/v0.14.6...v0.14.7) (2022-09-06)
+
+
+### Bug Fixes
+
+* **front:** remove Dauphin from provider list ([edcd979](https://github.com/betagouv/api-subventions-asso/commit/edcd979e217c1d228b329c95d91d06695ee792d0))
+
+
+
+
+
 ## [0.14.6](https://github.com/betagouv/api-subventions-asso/compare/v0.14.5...v0.14.6) (2022-08-30)
 
 
