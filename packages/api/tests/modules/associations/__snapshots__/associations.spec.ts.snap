@@ -52,32 +52,6 @@ Object {
         "type": "number",
         "value": 2022,
       },
-      "co_financement": Object {
-        "cofinanceur": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "string",
-          "value": "CoFinanceur",
-        },
-        "cofinanceur_email": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "string",
-          "value": "co.financeur@email.fr",
-        },
-        "cofinanceur_siret": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "string",
-          "value": "00230104",
-        },
-        "montants": Object {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Fonjep",
-          "type": "number",
-          "value": 1700,
-        },
-      },
       "date_fin": Object {
         "last_update": "2022-01-02T00:00:00.000Z",
         "provider": "Fonjep",
@@ -88,7 +62,7 @@ Object {
         "last_update": "2022-01-02T00:00:00.000Z",
         "provider": "Fonjep",
         "type": "string",
-        "value": "Fonjep",
+        "value": "Dispositif",
       },
       "montants": Object {
         "accorde": Object {

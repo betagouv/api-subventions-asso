@@ -3,11 +3,11 @@ import { DefaultObject } from "../../../@types";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepVersementIndexedInformations from "./@types/IFonjepVersementIndexedInformations";
-import FonjepRequestEntity from "./entities/FonjepRequestEntity";
+import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 
 export interface FonjepRowData {
-    subvention: FonjepRequestEntity, versements: FonjepVersementEntity[]
+    subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[]
 }
 
 export default class FonjepParser {
@@ -29,9 +29,9 @@ export default class FonjepParser {
     }
 
     private static createFonjepEntity(parsedData: DefaultObject<unknown>) {
-        const indexedInformations = ParserHelper.indexDataByPathObject(FonjepRequestEntity.indexedProviderInformationsPath, parsedData) as unknown as IFonjepIndexedInformations;
-        const legalInformations = ParserHelper.indexDataByPathObject(FonjepRequestEntity.indexedLegalInformationsPath, parsedData) as { siret: Siret, name: string };
-        return new FonjepRequestEntity(legalInformations, indexedInformations, parsedData);
+        const indexedInformations = ParserHelper.indexDataByPathObject(FonjepSubventionEntity.indexedProviderInformationsPath, parsedData) as unknown as IFonjepIndexedInformations;
+        const legalInformations = ParserHelper.indexDataByPathObject(FonjepSubventionEntity.indexedLegalInformationsPath, parsedData) as { siret: Siret, name: string };
+        return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
     }
 
     private static createFonjepVersementEntity(data: DefaultObject<unknown>) {
@@ -50,7 +50,7 @@ export default class FonjepParser {
         const findTypePoste = this.filterOnPropFactory(typePoste, "Code");
         const findDispositif = this.filterOnPropFactory(dispositifs, "ID");
 
-        const createEntitiesByPostes = (result: { subvention: FonjepRequestEntity, versements: FonjepVersementEntity[] }[], poste: DefaultObject<string>) => {
+        const createEntitiesByPostes = (result: { subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[] }[], poste: DefaultObject<string>) => {
             const financeur = findTiers(poste["FinanceurAttributeurCode"]);
             const typePoste = findTypePoste(poste["PstTypePosteCode"]);
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
