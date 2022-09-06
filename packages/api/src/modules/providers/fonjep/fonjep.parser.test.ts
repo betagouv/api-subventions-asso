@@ -1,9 +1,9 @@
-import FonjepRequestEntity from './entities/FonjepRequestEntity';
+import FonjepSubventionEntity from './entities/FonjepSubventionEntity';
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import FonjepParser from './fonjep.parser';
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { DATA_WITH_HEADER } from "./__fixtures__/fonjepFileModels";
-jest.mock('./entities/FonjepRequestEntity');
+jest.mock('./entities/FonjepSubventionEntity');
 jest.mock('./entities/FonjepVersementEntity');
 
 describe("FonjepParser", () => {
@@ -14,7 +14,7 @@ describe("FonjepParser", () => {
     ];
 
     // @ts-expect-error: mock
-    (FonjepRequestEntity as jest.Mock).mockImplementation((jest.fn()));
+    (FonjepSubventionEntity as jest.Mock).mockImplementation((jest.fn()));
     // @ts-expect-error: mock
     (FonjepVersementEntity as jest.Mock).mockImplementation((jest.fn()));
 
@@ -53,15 +53,15 @@ describe("FonjepParser", () => {
             // @ts-expect-error: test private method
             FonjepParser.createFonjepEntity({});
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
-            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepRequestEntity.indexedProviderInformationsPath, {});
-            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepRequestEntity.indexedLegalInformationsPath, {});
+            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepSubventionEntity.indexedProviderInformationsPath, {});
+            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepSubventionEntity.indexedLegalInformationsPath, {});
         })
-        it("should create a FonjepRequestEntity", () => {
+        it("should create a FonjepSubventionEntity", () => {
             // @ts-expect-error: test private method;
             FonjepParser.createFonjepEntity({});
             const expected = 3;
             // @ts-expect-error: mock
-            const actual = FonjepRequestEntity.mock.calls[0].length;
+            const actual = FonjepSubventionEntity.mock.calls[0].length;
             expect(actual).toEqual(expected);
         })
     });
@@ -82,7 +82,7 @@ describe("FonjepParser", () => {
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepVersementEntity.indexedLegalInformationsPath, {});
         });
 
-        it("should create a FonjepRequestEntity", () => {
+        it("should create a FonjepSubventionEntity", () => {
             // @ts-expect-error: test private method;
             FonjepParser.createFonjepVersementEntity({});
             const expected = 3;

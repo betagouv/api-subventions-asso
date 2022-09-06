@@ -1,4 +1,4 @@
-import FonjepEntity from '../../../../../src/modules/providers/fonjep/entities/FonjepRequestEntity';
+import FonjepEntity from '../../../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity';
 import FonjepVersementEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepVersementEntity";
 
 export const SubventionEntity = new FonjepEntity(

@@ -4,7 +4,7 @@ import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
 
-export default class FonjepRequestEntity {
+export default class FonjepSubventionEntity {
 
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         siret: {

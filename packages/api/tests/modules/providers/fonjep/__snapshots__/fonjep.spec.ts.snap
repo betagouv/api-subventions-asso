@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepParser parse() should return an array of FonjepRequestEntity 1`] = `
+exports[`FonjepParser parse() should return an array of FonjepSubventionEntity 1`] = `
 Array [
   Object {
-    "subvention": FonjepRequestEntity {
+    "subvention": FonjepSubventionEntity {
       "data": Object {
         "Annee": 2017,
         "Association": Object {
@@ -181,7 +181,7 @@ Array [
     ],
   },
   Object {
-    "subvention": FonjepRequestEntity {
+    "subvention": FonjepSubventionEntity {
       "data": Object {
         "Annee": 2022,
         "Association": Object {
