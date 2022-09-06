@@ -53,16 +53,16 @@
             </div>
         </div>
         {#if data.elements?.length}
-        <div class="totals">
-            <div class="subventions">
-                <h3>Demandes de subventions collectées</h3>
-                <p>
-                    <b>{data.percentSubvention}%</b>
-                    des demandes ont été accordées en
-                    <b>{data.selectedYear}.</b>
-                    <br />
-                    D'après les données récupérées via Osiris, Dauphin et Fonjep.
-                </p>
+            <div class="totals">
+                <div class="subventions">
+                    <h3>Demandes de subventions collectées</h3>
+                    <p>
+                        <b>{data.percentSubvention}%</b>
+                        des demandes ont été accordées en
+                        <b>{data.selectedYear}.</b>
+                        <br />
+                        D'après les données récupérées via Osiris et Fonjep.
+                    </p>
                 </div>
                 <div class="versements">
                     <h3>Versements réalisés</h3>
@@ -78,7 +78,8 @@
             {#if data.status != "end"}
                 <Alert type="info" title="Récupérations en cours des subventions chez nos fourniseurs ...">
                     <ProgressBar
-                        percent={(data.subventionLoading.providerAnswers / data.subventionLoading.providerCalls) * 100} />
+                        percent={(data.subventionLoading.providerAnswers / data.subventionLoading.providerCalls) *
+                            100} />
                 </Alert>
             {/if}
             <div class="tables">
@@ -98,7 +99,8 @@
                 </div>
             </div>
         {:else}
-            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {data.selectedYear}"/>
+            <DataNotFound
+                content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {data.selectedYear}" />
         {/if}
         <ProviderModal id="providers" />
     {:else}
