@@ -11,8 +11,5 @@ export default interface IFonjepIndexedInformations {
     ville: string,
     code_postal?: string,
     contact: string,
-    co_financeur?: string,
-    co_financeur_contact?: string,
-    co_financeur_siret?: string,
-    co_financeur_montant?: number,
+    dispositif?: string
 }

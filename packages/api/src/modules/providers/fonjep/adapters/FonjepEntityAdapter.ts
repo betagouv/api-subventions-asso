@@ -21,15 +21,7 @@ export default class FonjepEntityAdapter {
             montants: {
                 accorde: toProviderValue(entity.indexedInformations.montant_paye),
                 demande: toProviderValue(entity.indexedInformations.montant_paye),
-            },
-            co_financement: entity.indexedInformations.co_financeur ? {
-                cofinanceur: toProviderValue(entity.indexedInformations.co_financeur as string),
-                cofinanceur_email: toProviderValue(entity.indexedInformations.co_financeur_contact as string),
-                cofinanceur_siret: entity.indexedInformations.co_financeur_siret?.length != 0
-                    ? toProviderValue(entity.indexedInformations.co_financeur_siret as string)
-                    : undefined,
-                montants: toProviderValue(entity.indexedInformations.co_financeur_montant as number),
-            } : undefined
+            }
         }
     }
 
