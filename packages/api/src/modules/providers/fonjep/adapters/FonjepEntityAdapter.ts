@@ -1,8 +1,9 @@
-import { DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
+import { DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
 import ProviderValueFactory from '../../../../shared/ProviderValueFactory';
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import fonjepService from "../fonjep.service";
+import FonjepVersementEntity from "../entities/FonjepVersementEntity";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep"
@@ -29,20 +30,36 @@ export default class FonjepEntityAdapter {
 
     static toEtablissement(entity: FonjepSubventionEntity): Etablissement {
         const dataDate = entity.indexedInformations.updated_at;
-        const toProviderValues = ProviderValueFactory.buildProviderValuesAdapter(this.PROVIDER_NAME, dataDate);
+        const toPV = ProviderValueFactory.buildProviderValuesAdapter(fonjepService.provider.name, dataDate);
 
         return {
-            siret: toProviderValues(entity.legalInformations.siret),
-            nic: toProviderValues(siretToNIC(entity.legalInformations.siret)),
-            adresse: toProviderValues({
+            siret: toPV(entity.legalInformations.siret),
+            nic: toPV(siretToNIC(entity.legalInformations.siret)),
+            adresse: toPV({
                 code_postal: entity.indexedInformations.code_postal,
                 commune: entity.indexedInformations.ville
             }),
             contacts: [
-                toProviderValues({
+                toPV({
                     email: entity.indexedInformations.contact
                 })
             ],
+        }
+    }
+
+    static toVersement(entity: FonjepVersementEntity): VersementFonjep {
+        const dataDate = entity.indexedInformations.updated_at;
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate)
+
+        return {
+            id: entity.indexedInformations.unique_id,
+            codePoste: toPV(entity.indexedInformations.code_poste),
+            siret: toPV(entity.legalInformations.siret),
+            amount: toPV(entity.indexedInformations.montant_paye),
+            dateOperation: toPV(entity.indexedInformations.date_versement),
+            periodeDebut: toPV(entity.indexedInformations.periode_debut),
+            periodeFin: toPV(entity.indexedInformations.periode_fin),
+            montantAPayer: toPV(entity.indexedInformations.montant_a_payer)
         }
     }
 }

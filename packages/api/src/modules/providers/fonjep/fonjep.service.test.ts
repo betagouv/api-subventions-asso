@@ -2,15 +2,17 @@ import FonjepEntityAdapter from './adapters/FonjepEntityAdapter';
 import fonjepService, { FONJEP_SERVICE_ERRORS } from './fonjep.service';
 import fonjepRepository from "./repositories/fonjep.repository";
 import { SubventionEntity, VersementEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity"
-
 import * as Validators from "../../../shared/Validators";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 
+
 const MONGO_ID = "ID";
 const SIRET = "00203400032010";
+const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.slice(0, 6);
 const findByIdMock: jest.SpyInstance<Promise<unknown>> = jest.spyOn(fonjepRepository, "findById");
 const toDemandeSubventionMock = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
+const toVersementMock = jest.spyOn(FonjepEntityAdapter, "toVersement");
 const isSiretMock = jest.spyOn(Validators, "isSiret");
 const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
 const isDatesMock = jest.spyOn(Validators, "isDates");
@@ -18,7 +20,21 @@ const isStringsValidMock = jest.spyOn(Validators, "isStringsValid");
 const isNumbersValidMock = jest.spyOn(Validators, "isNumbersValid");
 const findBySiretMock = jest.spyOn(fonjepRepository, "findBySiret");
 
+const replaceDateWithFakeTimer = value => {
+    if (value instanceof Date) {
+        return new Date();
+    } else return value
+}
+
 describe("FonjepService", () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
+
+    // Mock all date in fixture with fake timer
+    // Maybe this should / could be done for all test files (in jest.config ?)
+    for (const prop in VersementEntity.indexedInformations) {
+        VersementEntity.indexedInformations[prop] = replaceDateWithFakeTimer(VersementEntity.indexedInformations[prop]);
+    }
+
     beforeAll(() => {
         // @ts-expect-error: mock
         toDemandeSubventionMock.mockImplementation(entity => entity);
@@ -187,6 +203,42 @@ describe("FonjepService", () => {
             expect(actual).toEqual(expected);
         })
     });
+
+    describe("toVersementArray()", () => {
+        fonjepService.toVersementArray([VersementEntity, VersementEntity]);
+        expect(toVersementMock).toHaveBeenCalledTimes(2)
+    })
+
+    describe("getVersementsByKey", () => {
+
+        const findByCodeMock = jest.spyOn(fonjepVersementRepository, "findByCodePoste");
+
+        it("returns VersementFonjep[]", async () => {
+            // @ts-expect-error: mock
+            findByCodeMock.mockImplementationOnce(async () => [VersementEntity])
+            const actual = await fonjepService.getVersementsByKey(CODE_POSTE)
+            expect(actual).toMatchSnapshot();
+        })
+    })
+
+    describe("getVersementsBySiret", () => {
+        const findBySiretMock = jest.spyOn(fonjepVersementRepository, "findBySiret");
+
+        it("returns VersementFonjep[]", async () => {
+            // @ts-expect-error: mock
+            findBySiretMock.mockImplementationOnce(async () => [VersementEntity])
+            const actual = await fonjepService.getVersementsBySiret(SIRET)
+            expect(actual).toMatchSnapshot();
+        })
+    })
+
+    describe("getVersementsBySiren", () => {
+        it("should return null", async () => {
+            const expected = null;
+            const actual = fonjepService.getVersementsBySiren();
+            expect(actual).toEqual(expected);
+        })
+    })
 
     describe("dropCollection()", () => {
         const mockDrop = jest.spyOn(fonjepRepository, "drop");

@@ -6,7 +6,7 @@ import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
 import { DemandeSubvention } from './DemandeSubvention';
 import { Etablissement } from './Etablissement';
-import { Versement } from "./Versement";
+import { Versement } from "../versements/Versement";
 
 export interface Association {
     siren?: ProviderValues<Siren>,

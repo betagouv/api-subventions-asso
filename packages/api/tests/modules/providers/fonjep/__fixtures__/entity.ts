@@ -31,12 +31,13 @@ export const VersementEntity = new FonjepVersementEntity(
     },
     {
         unique_id: "unique_id",
+        code_poste: "J00034",
         updated_at: new Date(),
         periode_debut: new Date(),
         periode_fin: new Date(),
         date_versement: new Date(),
-        montant_payer: "",
-        montant_a_payer: ""
+        montant_paye: 1000,
+        montant_a_payer: 1000
     },
     {}
 )

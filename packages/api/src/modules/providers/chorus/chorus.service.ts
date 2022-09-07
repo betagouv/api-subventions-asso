@@ -1,4 +1,4 @@
-import { Siren, Siret, Versement } from "@api-subventions-asso/dto";
+import { Siren, Siret, VersementChorus } from "@api-subventions-asso/dto";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -141,19 +141,19 @@ export class ChorusService implements VersementsProvider {
 
     isVersementsProvider = true;
 
-    async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
+    async getVersementsBySiret(siret: Siret) {
         const requests = await chorusLineRepository.findBySiret(siret);
 
         return requests.map(r => ChorusAdapter.toVersement(r));
     }
 
-    async getVersementsBySiren(siren: Siren): Promise<Versement[]> {
+    async getVersementsBySiren(siren: Siren) {
         const requests = await chorusLineRepository.findBySiren(siren);
 
         return requests.map(r => ChorusAdapter.toVersement(r));
     }
 
-    async getVersementsByEJ(ej: string): Promise<Versement[]> {
+    async getVersementsByKey(ej: string) {
         const requests = await chorusLineRepository.findByEJ(ej);
 
         return requests.map(r => ChorusAdapter.toVersement(r));
