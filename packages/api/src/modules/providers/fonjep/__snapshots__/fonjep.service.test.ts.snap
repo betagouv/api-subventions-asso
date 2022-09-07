@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FonjepService getVersementsByKey returns VersementFonjep[] 1`] = `
+Array [
+  Object {
+    "amount": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "number",
+      "value": 1000,
+    },
+    "codePoste": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "J00034",
+    },
+    "dateOperation": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "object",
+      "value": 2022-01-01T00:00:00.000Z,
+    },
+    "id": "unique_id",
+    "montantAPayer": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "number",
+      "value": 1000,
+    },
+    "periodeDebut": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "object",
+      "value": 2022-01-01T00:00:00.000Z,
+    },
+    "periodeFin": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "object",
+      "value": 2022-01-01T00:00:00.000Z,
+    },
+    "siret": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "00000000000002",
+    },
+  },
+]
+`;
+
+exports[`FonjepService getVersementsBySiret returns VersementFonjep[] 1`] = `
+Array [
+  Object {
+    "amount": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "number",
+      "value": 1000,
+    },
+    "codePoste": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "J00034",
+    },
+    "dateOperation": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "object",
+      "value": 2022-01-01T00:00:00.000Z,
+    },
+    "id": "unique_id",
+    "montantAPayer": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "number",
+      "value": 1000,
+    },
+    "periodeDebut": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "object",
+      "value": 2022-01-01T00:00:00.000Z,
+    },
+    "periodeFin": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "object",
+      "value": 2022-01-01T00:00:00.000Z,
+    },
+    "siret": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "00000000000002",
+    },
+  },
+]
+`;

@@ -1,4 +1,4 @@
-import { Siret, Siren, DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
 import { ProviderEnum } from '../../../@enums/ProviderEnum';
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -8,6 +8,7 @@ import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepRepository from "./repositories/fonjep.repository";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import VersementsProvider from "../../versements/@types/VersementsProvider";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1,
@@ -22,7 +23,7 @@ export interface RejectedRequest {
 
 export type CreateFonjepResponse = RejectedRequest | { success: true }
 
-export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider {
+export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider {
     provider = {
         name: "Extranet FONJEP",
         type: ProviderEnum.raw,
@@ -174,6 +175,30 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         } catch (e) {
             return false;
         }
+    }
+
+    /**
+     * |----------------------------|
+     * |  Versements Part  |
+     * |----------------------------|
+     */
+
+    toVersementArray(documents): VersementFonjep[] {
+        return documents.map(document => FonjepEntityAdapter.toVersement(document));
+    }
+
+    async getVersementsByKey(codePoste: string) {
+        return this.toVersementArray(await fonjepVersementRepository.findByCodePoste(codePoste));
+
+    }
+
+    async getVersementsBySiret(siret: Siret) {
+        return this.toVersementArray(await fonjepVersementRepository.findBySiret(siret));
+    }
+
+    // @ts-expect-error: no implement
+    getVersementsBySiren() {
+        return null;
     }
 }
 

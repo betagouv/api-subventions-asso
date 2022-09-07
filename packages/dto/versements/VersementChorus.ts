@@ -1,12 +1,7 @@
 import { ProviderValue } from "../shared/ProviderValue";
-import { Siret } from "../shared/Siret";
+import { Versement } from "./Versement";
 
-export interface Versement {
-    id: string,
-    ej: ProviderValue<string>;
-    siret: ProviderValue<Siret>;
-    amount: ProviderValue<number>;
-    dateOperation: ProviderValue<Date>;
+export interface VersementChorus extends Versement {
     centreFinancier: ProviderValue<string>
     domaineFonctionnel: ProviderValue<string>,
     numeroDemandePayment?: ProviderValue<string>;

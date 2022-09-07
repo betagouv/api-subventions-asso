@@ -1,14 +1,16 @@
 import { Association, Etablissement } from "@api-subventions-asso/dto";
 import chorusService from "../../../src/modules/providers/chorus/chorus.service";
 import ChorusLineEntity from "../../../src/modules/providers/chorus/entities/ChorusLineEntity";
+import fonjepService from "../../../src/modules/providers/fonjep/fonjep.service";
 import versementsService from "../../../src/modules/versements/versements.service";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
+import { VersementEntity } from "../providers/fonjep/__fixtures__/entity"
 
 describe("VersementService", () => {
-    const now = new Date();
-    const toPVs = <T=unknown>(value: T, provider = "Chorus") => ProviderValueAdapter.toProviderValues(value, provider, now);
+    const now = new Date("2022-01-01");
+    const toPVs = <T = unknown>(value: T, provider = "Chorus") => ProviderValueAdapter.toProviderValues(value, provider, now);
     const toPV = (value: unknown, provider = "Chorus") => ProviderValueAdapter.toProviderValue(value, provider, now);
-    
+
     describe("aggregateVersementsByAssoSearch", () => {
         const asso = {
             siren: toPVs("100000000"),
@@ -17,7 +19,12 @@ describe("VersementService", () => {
                     siret: toPVs("10000000000000"),
                     demandes_subventions: [
                         {
-                            ej: toPV("1000000000")
+                            ej: toPV("1000000000"),
+                            versementKey: toPV("1000000000")
+                        },
+                        {
+                            codePoste: toPV(VersementEntity.indexedInformations.code_poste),
+                            versementKey: toPV(VersementEntity.indexedInformations.code_poste)
                         }
                     ]
                 }
@@ -40,80 +47,29 @@ describe("VersementService", () => {
                 compte: "COMPTE",
                 typeOperation: "ZSUB"
             }, {}));
+            await fonjepService.createVersementEntity(VersementEntity);
         })
 
-        it("should be aggregate versements", () => {
-            expect(versementsService.aggregateVersementsByAssoSearch(asso)).resolves.toMatchObject({
-                siren: toPVs("100000000"),
-                versements:  [
-                    {
-                        siret: toPV("10000000000000"),
-                        ej: toPV("1000000000"),
-                        amount: toPV(1000),
-                        dateOperation: toPV(now),
-                        codeBranche: toPV("Z004"),
-                        branche: toPV("BRANCHE"),
-                        compte: toPV("COMPTE"),
-                        type: toPV("ZSUB")
-                    }
-                ],
-                etablissements: [
-                    {
-                        siret: toPVs("10000000000000"),
-                        versements: [{
-                            siret: toPV("10000000000000"),
-                            ej: toPV("1000000000"),
-                            amount: toPV(1000),
-                            dateOperation: toPV(now),
-                            codeBranche: toPV("Z004"),
-                            compte: toPV("COMPTE")
-                        }],
-                        demandes_subventions: [
-                            {
-                                ej: toPV("1000000000"),
-                                versements:  [{
-                                    siret: toPV("10000000000000"),
-                                    ej: toPV("1000000000"),
-                                    amount: toPV(1000),
-                                    dateOperation: toPV(now),
-                                    codeBranche: toPV("Z004"),
-                                    compte: toPV("COMPTE")
-                                }]
-                            }
-                        ]
-                    }
-                ]
-            })
+        it("should aggregate versements", async () => {
+            const actual = await versementsService.aggregateVersementsByAssoSearch(asso);
+            expect(actual).toMatchSnapshot()
         })
 
-        it("should be not aggregate versements", () => {
-            expect(versementsService.aggregateVersementsByAssoSearch({...asso, siren: toPVs("100000080")})).resolves.toMatchObject({
-                siren: toPVs("100000080"),
-                versements: [],
-                etablissements: [
-                    {
-                        siret: toPVs("10000000000000"),
-                        versements: [],
-                        demandes_subventions: [
-                            {
-                                ej: toPV("1000000000"),
-                                versements:  []
-                            }
-                        ]
-                    }
-                ]
-            })
+        it("should not aggregate versements", async () => {
+            const actual = await versementsService.aggregateVersementsByAssoSearch({ ...asso, siren: toPVs("100000080") });
+            expect(actual).toMatchSnapshot();
         });
     });
 
 
-     
+
     describe("aggregateVersementsByEtablissementSearch", () => {
         const etablissementDto = {
             siret: toPVs("10000000000000"),
             demandes_subventions: [
                 {
-                    ej: toPV("1000000000")
+                    ej: toPV("1000000000"),
+                    versementKey: toPV("1000000000")
                 }
             ]
         } as unknown as Etablissement;
@@ -136,44 +92,14 @@ describe("VersementService", () => {
             }, {}));
         })
 
-        it("should be aggregate versements", () => {
-            expect(versementsService.aggregateVersementsByEtablissementSearch(etablissementDto)).resolves.toMatchObject({
-                siret: toPVs("10000000000000"),
-                versements: [{
-                    siret: toPV("10000000000000"),
-                    ej: toPV("1000000000"),
-                    amount: toPV(1000),
-                    dateOperation: toPV(now),
-                    codeBranche: toPV("Z004"),
-                    compte: toPV("COMPTE")
-                }],
-                demandes_subventions: [
-                    {
-                        ej: toPV("1000000000"),
-                        versements:  [{
-                            siret: toPV("10000000000000"),
-                            ej: toPV("1000000000"),
-                            amount: toPV(1000),
-                            dateOperation: toPV(now),
-                            codeBranche: toPV("Z004"),
-                            compte: toPV("COMPTE")
-                        }]
-                    }
-                ]
-            })
+        it("should aggregate versements", async () => {
+            const actual = versementsService.aggregateVersementsByEtablissementSearch(etablissementDto);
+            expect(actual).toMatchSnapshot();
         })
 
-        it("should be not aggregate versements", () => {
-            expect(versementsService.aggregateVersementsByEtablissementSearch({...etablissementDto, siret: toPVs("10000000008000")})).resolves.toMatchObject({
-                siret: toPVs("10000000008000"),
-                versements: [],
-                demandes_subventions: [
-                    {
-                        ej: toPV("1000000000"),
-                        versements:  []
-                    }
-                ]
-            })
+        it("should not aggregate versements", async () => {
+            const actual = await versementsService.aggregateVersementsByEtablissementSearch({ ...etablissementDto, siret: toPVs("10000000008000") });
+            expect(actual).toMatchSnapshot();
         });
     });
 });

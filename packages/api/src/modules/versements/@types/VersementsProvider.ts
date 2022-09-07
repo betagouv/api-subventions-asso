@@ -5,7 +5,7 @@ export default interface VersementsProvider extends Provider {
 
     isVersementsProvider: boolean;
 
-    getVersementsByEJ(ej: string): Promise<Versement[]>;
+    getVersementsByKey(key: string): Promise<Versement[]>;
     getVersementsBySiret(siret: Siret): Promise<Versement[]>;
     getVersementsBySiren(siren: Siren): Promise<Versement[]>;
 }

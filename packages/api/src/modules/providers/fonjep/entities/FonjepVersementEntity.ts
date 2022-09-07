@@ -40,7 +40,7 @@ export default class FonjepVersementEntity {
             }
         },
         montant_a_payer: ["MontantAPayer"],
-        montant_payer: ["MontantPaye"]
+        montant_paye: ["MontantPaye"]
     }
 
     constructor(
