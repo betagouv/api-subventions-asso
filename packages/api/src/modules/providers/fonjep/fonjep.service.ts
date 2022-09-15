@@ -22,15 +22,13 @@ export interface RejectedRequest {
 }
 
 export type CreateFonjepResponse = RejectedRequest | { success: true }
-
 export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider {
+
     provider = {
         name: "Extranet FONJEP",
         type: ProviderEnum.raw,
         description: "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
     }
-
-
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
         const valid = this.validateEntity(entity);
@@ -124,6 +122,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         if (entities.length === 0) return null;
 
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
+
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -183,6 +182,8 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
      * |----------------------------|
      */
 
+    isVersementsProvider = true
+
     toVersementArray(documents): VersementFonjep[] {
         return documents.map(document => FonjepEntityAdapter.toVersement(document));
     }
@@ -196,9 +197,8 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         return this.toVersementArray(await fonjepVersementRepository.findBySiret(siret));
     }
 
-    // @ts-expect-error: no implement
-    getVersementsBySiren() {
-        return null;
+    async getVersementsBySiren(siren: Siren) {
+        return this.toVersementArray(await fonjepVersementRepository.findBySiren(siren));
     }
 }
 

@@ -7,7 +7,8 @@ import fonjepVersementRepository from "./repositories/fonjep.versement.repositor
 
 
 const MONGO_ID = "ID";
-const SIRET = "00203400032010";
+const SIREN = "002034000";
+const SIRET = `${SIREN}32010`;
 const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.slice(0, 6);
 const findByIdMock: jest.SpyInstance<Promise<unknown>> = jest.spyOn(fonjepRepository, "findById");
@@ -233,10 +234,12 @@ describe("FonjepService", () => {
     })
 
     describe("getVersementsBySiren", () => {
-        it("should return null", async () => {
-            const expected = null;
-            const actual = fonjepService.getVersementsBySiren();
-            expect(actual).toEqual(expected);
+        const findBySirenMock = jest.spyOn(fonjepVersementRepository, "findBySiren");
+        it("should return VersementFonjep[]", async () => {
+            // @ts-expect-error: mock
+            findBySirenMock.mockImplementationOnce(async () => [VersementEntity])
+            const actual = await fonjepService.getVersementsBySiren(SIREN);
+            expect(actual).toMatchSnapshot();
         })
     })
 

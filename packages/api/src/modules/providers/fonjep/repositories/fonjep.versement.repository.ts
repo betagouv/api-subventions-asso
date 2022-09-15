@@ -1,4 +1,4 @@
-import { Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "@api-subventions-asso/dto";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepVersementEntity from "../entities/FonjepVersementEntity";
 
@@ -15,6 +15,12 @@ export class FonjepVersementRepository extends MigrationRepository<FonjepVerseme
 
     findBySiret(siret: Siret) {
         return this.collection.find({ "legalInformations.siret": siret }).toArray();
+    }
+
+    public findBySiren(siren: Siren) {
+        return this.collection.find({
+            "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+        }).toArray();
     }
 }
 

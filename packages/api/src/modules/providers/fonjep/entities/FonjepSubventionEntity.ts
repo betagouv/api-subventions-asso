@@ -20,6 +20,7 @@ export default class FonjepSubventionEntity {
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         code_poste: ["Code"],
+        dispositif: ["Dispositif", "Libelle"],
         montant_paye: {
             path: ["MontantSubvention"],
             adapter: (value) => {

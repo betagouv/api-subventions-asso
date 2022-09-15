@@ -30,21 +30,20 @@ export const DATA_WITH_HEADER = [
             DoublementUniteCompte: 'Non'
         }
     ],
-    // TODO: add versements
     [
         {
             PosteCode: "J10540",
-            PeriodeDebut: "1/1/2017",
-            PeriodeFin: "31/3/2017",
-            DateVersement: "26/1/2017",
+            PeriodeDebut: "42800",
+            PeriodeFin: "43000",
+            DateVersement: "43400",
             MontantAPayer: "1 777,00 €",
             MontantPaye: "1 777,00 €"
         },
         {
             PosteCode: "J10540",
-            PeriodeDebut: "1/4/2017",
-            PeriodeFin: "30/6/2017",
-            DateVersement: "27/4/2017",
+            PeriodeDebut: "42900",
+            PeriodeFin: "43100",
+            DateVersement: "43400",
             MontantAPayer: "1 777,00 €",
             MontantPaye: "1 777,00 €"
         }

@@ -18,6 +18,11 @@ Object {
   "AssociationImplantationCode": 1234,
   "Code": "J10540",
   "DateFinTriennalite": 43465,
+  "Dispositif": Object {
+    "FinanceurCode": 10008,
+    "ID": 3,
+    "Libelle": "FONJEP Politique de la ville",
+  },
   "DispositifId": 3,
   "DoublementUniteCompte": "Non",
   "Financeur": Object {
@@ -42,11 +47,6 @@ Object {
     "Code": "FONJEP",
     "Libelle": "Poste FONJEP",
   },
-  "dispositif": Object {
-    "FinanceurCode": 10008,
-    "ID": 3,
-    "Libelle": "FONJEP Politique de la ville",
-  },
   "id": Any<String>,
   "updated_at": 2022-03-03T00:00:00.000Z,
 }
@@ -55,11 +55,11 @@ Object {
 exports[`FonjepParser parse() should call createVersementFonjep with versement data 1`] = `
 Array [
   Object {
-    "DateVersement": "27/4/2017",
+    "DateVersement": "43400",
     "MontantAPayer": "1 777,00 €",
     "MontantPaye": "1 777,00 €",
-    "PeriodeDebut": "1/4/2017",
-    "PeriodeFin": "30/6/2017",
+    "PeriodeDebut": "42900",
+    "PeriodeFin": "43100",
     "PosteCode": "J10540",
     "id": Any<String>,
     "siret": "00000000000000",

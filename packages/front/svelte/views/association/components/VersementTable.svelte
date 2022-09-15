@@ -1,5 +1,5 @@
 <script>
-    import { numberToEuro } from "../../../helpers/dataHelper";
+    import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
     import { withTwoDigitYear } from "../../../helpers/dateHelper";
     import { getLastVersementsDate } from "../association.helper";
     import TableCell from "../../../components/TableCell.svelte";
@@ -80,9 +80,9 @@
                     <TableCell primary="true" position="end">
                         {numberToEuro(countTotal(element.versements))}
                     </TableCell>
-                    <TableCell>{element.versements[0].centreFinancier}</TableCell>
+                    <TableCell>{valueOrHyphen(element.versements[0]?.centreFinancier)}</TableCell>
                     <TableCell>
-                        {withTwoDigitYear(getLastVersementsDate(element.versements))}
+                        {valueOrHyphen(withTwoDigitYear(getLastVersementsDate(element.versements)))}
                     </TableCell>
                 </tr>
             {/if}

@@ -118,7 +118,7 @@ describe("FonjepParser", () => {
             // @ts-expect-error: test
             expect(createFonjepEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
         })
-        it("should call createVersementFonjep with versement data", () => {
+        it.only("should call createVersementFonjep with versement data", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));

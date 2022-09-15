@@ -55,18 +55,19 @@ export default class FonjepParser {
             const typePoste = findTypePoste(poste["PstTypePosteCode"]);
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
             const dispositif = findDispositif(poste["DispositifId"]);
-            const subventionVersements = versements.filter(versement => versement["PosteCode"] == poste["Code"]);
+            const subventionVersements = versements.filter(versement =>
+                versement["PosteCode"] == poste["Code"] && ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"])).getFullYear() == Number(poste["Annee"])
+            );
             const uniqueSubventionId = `${poste["Code"]}-${ParserHelper.ExcelDateToJSDate(parseFloat(poste["DateFinTriennalite"])).toISOString()}`;
-
 
             const subventionParsedData = {
                 ...poste,
+                id: uniqueSubventionId,
+                updated_at: currentDate,
                 Financeur: financeur,
                 TypePoste: typePoste,
                 Association: association,
-                id: uniqueSubventionId,
-                updated_at: currentDate,
-                dispositif: dispositif
+                Dispositif: dispositif
             };
 
             const versementsParsedData = subventionVersements.map(versement => {
@@ -74,7 +75,7 @@ export default class FonjepParser {
                     ...versement,
                     siret: association ? association["SiretOuRidet"] : undefined,
                     updated_at: currentDate,
-                    id: `${uniqueSubventionId}-${new Date(versement["PeriodeDebut"]).toISOString()}`
+                    id: `${uniqueSubventionId}-${ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"])).toISOString()}`
                 }
             });
 

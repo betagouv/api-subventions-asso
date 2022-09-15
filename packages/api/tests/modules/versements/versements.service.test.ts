@@ -52,6 +52,13 @@ describe("VersementService", () => {
 
         it("should aggregate versements", async () => {
             const actual = await versementsService.aggregateVersementsByAssoSearch(asso);
+            // remove all IDs manually...
+            // @ts-expect-error
+            delete actual.versements[0].id;
+            // @ts-expect-error
+            delete actual?.etablissements[0].versements[0].id
+            // @ts-expect-error
+            delete actual?.etablissements[0].demandes_subventions[0].versements[0].id
             expect(actual).toMatchSnapshot()
         })
 
