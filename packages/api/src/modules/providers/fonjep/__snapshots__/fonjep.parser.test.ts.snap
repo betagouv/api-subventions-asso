@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepParser parse() should call createFonjepEntity with parsedData 1`] = `
+exports[`FonjepParser parse() should call createFonjepSubventionEntity with parsedData 1`] = `
 Object {
   "Annee": 2017,
   "Association": Object {

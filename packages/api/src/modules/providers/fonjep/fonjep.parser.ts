@@ -28,7 +28,7 @@ export default class FonjepParser {
         return (match: string) => array.find(item => String(item[prop]) === String(match))
     }
 
-    private static createFonjepEntity(parsedData: DefaultObject<unknown>) {
+    private static createFonjepSubventionEntity(parsedData: DefaultObject<unknown>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(FonjepSubventionEntity.indexedProviderInformationsPath, parsedData) as unknown as IFonjepIndexedInformations;
         const legalInformations = ParserHelper.indexDataByPathObject(FonjepSubventionEntity.indexedLegalInformationsPath, parsedData) as { siret: Siret, name: string };
         return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
@@ -79,7 +79,7 @@ export default class FonjepParser {
                 }
             });
 
-            const subventionEntity = this.createFonjepEntity(subventionParsedData);
+            const subventionEntity = this.createFonjepSubventionEntity(subventionParsedData);
             const versementEntities = versementsParsedData.map(versement => this.createFonjepVersementEntity(versement));
             result.push({ subvention: subventionEntity, versements: versementEntities });
             return result;

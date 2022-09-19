@@ -42,7 +42,7 @@ describe("FonjepParser", () => {
             expect(actual).toEqual(expected);
         });
     });
-    describe("createFonjepEntity()", () => {
+    describe("createFonjepSubventionEntity()", () => {
         beforeAll(() => {
             indexDataByPathObjectMock.mockImplementation(jest.fn());
         });
@@ -51,14 +51,14 @@ describe("FonjepParser", () => {
         });
         it("should call ParserHelper to build indexed and legal informations", () => {
             // @ts-expect-error: test private method
-            FonjepParser.createFonjepEntity({});
+            FonjepParser.createFonjepSubventionEntity({});
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepSubventionEntity.indexedProviderInformationsPath, {});
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(FonjepSubventionEntity.indexedLegalInformationsPath, {});
         })
         it("should create a FonjepSubventionEntity", () => {
             // @ts-expect-error: test private method;
-            FonjepParser.createFonjepEntity({});
+            FonjepParser.createFonjepSubventionEntity({});
             const expected = 3;
             // @ts-expect-error: mock
             const actual = FonjepSubventionEntity.mock.calls[0].length;
@@ -97,26 +97,26 @@ describe("FonjepParser", () => {
         // @ts-expect-error: mock private method     
         const mapHeaderToDataMock = jest.spyOn(FonjepParser, "mapHeaderToData");
         // @ts-expect-error: mock private method     
-        const createFonjepEntityMock = jest.spyOn(FonjepParser, "createFonjepEntity")
+        const createFonjepSubventionEntityMock = jest.spyOn(FonjepParser, "createFonjepSubventionEntity")
         // @ts-expect-error: mock private method     
         const createFonjepVersementEntityMock = jest.spyOn(FonjepParser, "createFonjepVersementEntity")
 
         beforeAll(() => {
-            createFonjepEntityMock.mockImplementation(jest.fn());
+            createFonjepSubventionEntityMock.mockImplementation(jest.fn());
             createFonjepVersementEntityMock.mockImplementation(jest.fn());
         })
 
         afterEach(() => {
-            createFonjepEntityMock.mockClear();
+            createFonjepSubventionEntityMock.mockClear();
             createFonjepVersementEntityMock.mockClear();
         })
 
-        it("should call createFonjepEntity with parsedData", () => {
+        it("should call createFonjepSubventionEntity with parsedData", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
             // @ts-expect-error: test
-            expect(createFonjepEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
+            expect(createFonjepSubventionEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
         })
         it.only("should call createVersementFonjep with versement data", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
