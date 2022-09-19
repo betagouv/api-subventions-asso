@@ -11,7 +11,7 @@ const g = global as unknown as { app: unknown }
 
 describe('/search', () => {
 
-    beforeAll(() =>  {
+    beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null)
         jest.spyOn(dauphinService, "getDemandeSubventionBySiret").mockImplementation(async () => [])
         jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementation(async () => [])

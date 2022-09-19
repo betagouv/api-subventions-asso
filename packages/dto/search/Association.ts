@@ -1,3 +1,4 @@
+import { ExtraitRcsDto } from "../associations/ExtraitRcsDto";
 import { Adresse } from '../shared/Adresse';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
@@ -47,5 +48,6 @@ export interface Association {
         ETPT?: ProviderValues<number>,
     }
     versements?: Versement[],
-    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null
+    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null,
+    extrait_rcs?: ProviderValues<ExtraitRcsDto> | null
 }
