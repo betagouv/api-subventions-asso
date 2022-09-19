@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.7](https://github.com/betagouv/datasubvention/compare/v0.14.6...v0.14.7) (2022-09-06)
+
+
+### Bug Fixes
+
+* **front:** remove Dauphin from provider list ([edcd979](https://github.com/betagouv/datasubvention/commit/edcd979e217c1d228b329c95d91d06695ee792d0))
+
+
+
+
+
+## [0.14.6](https://github.com/betagouv/datasubvention/compare/v0.14.5...v0.14.6) (2022-08-30)
+
+
+### Bug Fixes
+
+* **front:** fix subvention flux store refresh ([e7edc6c](https://github.com/betagouv/datasubvention/commit/e7edc6c82fb51d0f45e78b871e2567b72d16ea05))
+
+
+
+
+
 ## [0.14.2](https://github.com/betagouv/datasubvention/compare/v0.14.1...v0.14.2) (2022-08-23)
 
 
