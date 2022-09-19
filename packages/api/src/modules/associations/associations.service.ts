@@ -20,7 +20,6 @@ import { capitalizeFirstLetter } from '../../shared/helpers/StringHelper';
 import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
 import documentsService from '../documents/documents.service';
 import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
-import apiEntrepriseService from "../providers/apiEntreprise/apiEntreprise.service";
 
 export class AssociationsService {
 
@@ -113,7 +112,6 @@ export class AssociationsService {
         const type = IdentifierHelper.getIdentifierType(identifier);
 
         if (!type || type === StructureIdentifiersEnum.siret) {
-            console.log("THROW ERROR");
             throw new BadRequestError("You must provide a valid SIREN or RNA");
         }
 
