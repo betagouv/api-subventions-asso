@@ -21,7 +21,7 @@ export default class FonjepParser {
 
     private static filterOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
         if (!array) array = [];
-        return (match: string) => array.find(item => String(item[prop]) === String(match))
+        return (match: string) => array.find(item => item[prop] === match)
     }
 
     private static createFonjepSubventionEntity(parsedData: DefaultObject<unknown>) {
