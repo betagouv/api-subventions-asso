@@ -91,7 +91,6 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         }
 
         // Do not validEntity now because it is only called after Subvention validation (siret as already been validated)
-
         await fonjepVersementRepository.create(entity);
 
         return {

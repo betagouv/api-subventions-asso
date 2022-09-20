@@ -1,8 +1,8 @@
 import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
-import { Versement } from "../versements/Versement";
+import { VersementFonjep, VersementChorus } from "../versements";
 
 export interface GetVersementsSuccessResponseDto extends SuccessResponse {
-    versements: Versement[]
+    versements: (VersementChorus | VersementFonjep)[]
 }
 
 export type GetVersementsResponseDto = GetVersementsSuccessResponseDto | ErrorResponse;

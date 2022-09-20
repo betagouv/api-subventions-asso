@@ -1,11 +1,4 @@
-import { ProviderValue } from "../shared/ProviderValue";
-import { Siret } from "../shared/Siret";
+import { VersementChorus } from "./VersementChorus";
+import { VersementFonjep } from "./VersementFonjep";
 
-export interface Versement {
-    id: string,
-    ej?: ProviderValue<string>;
-    codePoste?: ProviderValue<string>;
-    siret: ProviderValue<Siret>;
-    amount: ProviderValue<number>;
-    dateOperation: ProviderValue<Date>;
-}
+export type Versement = VersementChorus | VersementFonjep

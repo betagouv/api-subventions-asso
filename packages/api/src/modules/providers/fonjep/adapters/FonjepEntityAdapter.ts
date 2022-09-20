@@ -10,7 +10,7 @@ export default class FonjepEntityAdapter {
 
     static toDemandeSubvention(entity: FonjepSubventionEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, new Date(dataDate));
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
         return {
             siret: toPV(entity.legalInformations.siret),
             versementKey: toPV(entity.indexedInformations.code_poste),

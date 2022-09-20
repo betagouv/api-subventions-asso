@@ -2,13 +2,20 @@ import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface, DefaultObject } from "../../../../../@types";
-import FonjepParser, { FonjepRowData } from "../../fonjep.parser";
+import FonjepParser from "../../fonjep.parser";
+import { FonjepRowData } from "../../@types/FonjepRawData";
 import fonjepService, { CreateFonjepResponse, RejectedRequest } from "../../fonjep.service";
 import FonjepSubventionEntity from "../../entities/FonjepSubventionEntity";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import CliController from '../../../../../shared/CliController';
 import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
 import FonjepVersementEntity from "../../entities/FonjepVersementEntity";
+import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
+
+interface reduceSubventionsType {
+    subvention: RejectedRequest | CreateFonjepResponse,
+    versements: (RejectedRequest | CreateFonjepResponse)[]
+}
 
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCliController extends CliController {
@@ -40,7 +47,7 @@ export default class FonjepCliController extends CliController {
 
             if (responses.subvention.success) {
                 subventionCreated++;
-                data.versements.forEach(async versement => {
+                await asyncForEach(data.versements, async versement => {
                     const response = await fonjepService.createVersementEntity(versement);
                     if (response.success) versementSuccess++;
                     else versementRejected.push(response);
@@ -52,11 +59,6 @@ export default class FonjepCliController extends CliController {
             return result;
         }, Promise.resolve([]) as Promise<reduceSubventionsType[]>);
 
-        interface reduceSubventionsType {
-            subvention: RejectedRequest | CreateFonjepResponse,
-            versements: (RejectedRequest | CreateFonjepResponse)[]
-        }
-
         console.info(`
             ${results.length} / ${parsedData.length}
             ${subventionCreated} subvention created with ${versementSuccess} versement created and ${versementRejected.length} not valid
@@ -67,6 +69,37 @@ export default class FonjepCliController extends CliController {
             logs.push(`\n\nThis request is not registered because: ${result.message} \n`, JSON.stringify(result.data, null, "\t"))
         });
     }
+
+    private isSameVersementsDocument(previousVersements: FonjepVersementEntity[], newVersements: FonjepVersementEntity[]) {
+        return previousVersements.every(previousVersement => {
+            return newVersements.find(newVersement => {
+                return newVersement.indexedInformations.periode_debut.getTime() === previousVersement.indexedInformations.periode_debut.getTime()
+            });
+        });
+    }
+
+    // Check if a document is missing in new FONJEP file (assuming code + annee is a unique_id)
+    private isSameDocument(previousData: FonjepRowData, newData: FonjepRowData) {
+        // @ts-expect-error: data unknown
+        const matchSubvention = previousData.subvention.data.Code === newData.subvention.data.Code;
+
+        if (!matchSubvention) return matchSubvention;
+
+        const matchVersements = this.isSameVersementsDocument(previousData.versements, newData.versements);
+        return matchVersements;
+    }
+
+    private splitEntitiesByYear(data) {
+        function reduceSubventionByYear(acc, curr) {
+            const year = curr.subvention.indexedInformations.annee_demande;
+            if (!acc[year]) acc[year] = [];
+            acc[year].push(curr);
+            return acc;
+        }
+        const sortedData = data.reduce(reduceSubventionByYear, {});
+        return sortedData as DefaultObject<{ subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[] }[]>;
+    }
+
 
     // Check if previous export documents are in new export file
     // For now user need to be sure that xls tabs are identical (currently no check of tabs content)
@@ -81,38 +114,7 @@ export default class FonjepCliController extends CliController {
         const newFileContent = fs.readFileSync(newFile);
         const newData = FonjepParser.parse(newFileContent, today);
 
-        function splitEntitiesByYear(data) {
-            function reduceSubventionByYear(acc, curr) {
-                const year = curr.subvention.indexedInformations.annee_demande;
-                if (!acc[year]) acc[year] = [];
-                acc[year].push(curr);
-                return acc;
-            }
-            const sortedData = data.reduce(reduceSubventionByYear, {});
-            return sortedData as DefaultObject<{ subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[] }[]>;
-        }
-
-        // Check if a document is missing in new FONJEP file (assuming code + annee is a unique_id)
-        function isSameDocument(previousData: FonjepRowData, newData: FonjepRowData) {
-            // @ts-expect-error: data unknow type
-            const matchSubvention = previousData.subvention.data.Code === newData.subvention.data.Code
-            if (matchSubvention) {
-                const matchVersements = isSameVersementsDocument(previousData.versements, newData.versements)
-                return matchVersements;
-            } else return matchSubvention;
-        }
-
-        function isSameVersementsDocument(previousVersements: FonjepVersementEntity[], newVersements: FonjepVersementEntity[]) {
-            return previousVersements.reduce(function reduceVersementsAreEqual(acc, curr) {
-                if (!acc) return acc;
-                const match = newVersements.find(versement => {
-                    return versement.indexedInformations.periode_debut.getTime() === curr.indexedInformations.periode_debut.getTime()
-                });
-                return !!match;
-            }, true);
-        }
-
-        const sortedNewData = splitEntitiesByYear(newData);
+        const sortedNewData = this.splitEntitiesByYear(newData);
         let loop = true;
         let counter = 0;
         let noMissingDocument = true;
@@ -125,7 +127,7 @@ export default class FonjepCliController extends CliController {
 
             const currentYear = currentData.subvention.indexedInformations.annee_demande;
 
-            const match = sortedNewData[currentYear]?.find(data => isSameDocument(currentData, data));
+            const match = sortedNewData[currentYear]?.find(data => this.isSameDocument(currentData, data));
             if (!match) {
                 noMissingDocument = false;
             }

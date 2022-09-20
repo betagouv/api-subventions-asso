@@ -1,7 +1,7 @@
 import { ProviderValue } from "../shared/ProviderValue";
-import { Versement } from "./Versement";
+import { BaseVersement } from "./BaseVersement";
 
-export interface VersementChorus extends Versement {
+export interface VersementChorus extends BaseVersement {
     centreFinancier: ProviderValue<string>
     domaineFonctionnel: ProviderValue<string>,
     numeroDemandePayment?: ProviderValue<string>;

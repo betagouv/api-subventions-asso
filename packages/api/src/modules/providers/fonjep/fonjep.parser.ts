@@ -6,10 +6,6 @@ import IFonjepVersementIndexedInformations from "./@types/IFonjepVersementIndexe
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 
-export interface FonjepRowData {
-    subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[]
-}
-
 export default class FonjepParser {
 
     private static mapHeaderToData(pages: unknown[][]) {
@@ -23,7 +19,7 @@ export default class FonjepParser {
         });
     }
 
-    private static filterOnPropFactory(array: DefaultObject<string>[], prop: string) {
+    private static filterOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
         if (!array) array = [];
         return (match: string) => array.find(item => String(item[prop]) === String(match))
     }

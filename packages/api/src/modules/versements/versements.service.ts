@@ -76,7 +76,7 @@ export class VersementsService {
         )).flat()];
     }
 
-    private async getVersementsBySiren(siren: Siren): Promise<Versement[]> {
+    private async getVersementsBySiren(siren: Siren) {
         const providers = this.getProviders()
         return [...(await Promise.all(
             providers.map(p => p.getVersementsBySiren(siren))
