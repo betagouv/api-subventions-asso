@@ -34,4 +34,8 @@
     tbody :global(td) {
         border-bottom: 1px #e5e5e5 solid;
     }
+
+    .fr-table--bordered table {
+        border: 2px solid #2e2e2e;
+    }
 </style>

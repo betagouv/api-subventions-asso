@@ -2,7 +2,7 @@
 
 exports[`ApiAssoDtoAdapter toAssociation should return rna association 1`] = `
 Object {
-  "adresse_siege": undefined,
+  "adresse_siege_rna": undefined,
   "code_objet_social_1": Array [
     Object {
       "last_update": 2018-01-01T00:00:00.000Z,
@@ -64,7 +64,7 @@ Object {
 
 exports[`ApiAssoDtoAdapter toAssociation should return rna association with adresse 1`] = `
 Object {
-  "adresse_siege": Array [
+  "adresse_siege_rna": Array [
     Object {
       "last_update": 2018-01-01T00:00:00.000Z,
       "provider": "BASE RNA <Via API ASSO>",
@@ -139,7 +139,7 @@ Object {
 
 exports[`ApiAssoDtoAdapter toAssociation should return rna association with date creation 1`] = `
 Object {
-  "adresse_siege": undefined,
+  "adresse_siege_rna": undefined,
   "code_objet_social_1": Array [
     Object {
       "last_update": 2018-01-01T00:00:00.000Z,
@@ -201,7 +201,7 @@ Object {
 
 exports[`ApiAssoDtoAdapter toAssociation should return siren association 1`] = `
 Object {
-  "adresse_siege": Array [
+  "adresse_siege_siren": Array [
     Object {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "BASE SIREN <Via API ASSO>",
@@ -272,7 +272,7 @@ Object {
 
 exports[`ApiAssoDtoAdapter toAssociation should return siren association with date creation 1`] = `
 Object {
-  "adresse_siege": Array [
+  "adresse_siege_siren": Array [
     Object {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "BASE SIREN <Via API ASSO>",
@@ -350,7 +350,7 @@ Object {
 
 exports[`ApiAssoDtoAdapter toAssociation should return siren association without nom siren 1`] = `
 Object {
-  "adresse_siege": Array [
+  "adresse_siege_siren": Array [
     Object {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "BASE SIREN <Via API ASSO>",
