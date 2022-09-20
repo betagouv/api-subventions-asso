@@ -122,7 +122,6 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         if (entities.length === 0) return null;
 
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
-
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

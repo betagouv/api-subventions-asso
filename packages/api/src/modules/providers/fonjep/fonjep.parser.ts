@@ -70,12 +70,14 @@ export default class FonjepParser {
                 Dispositif: dispositif
             };
 
+
             const versementsParsedData = subventionVersements.map(versement => {
+                const versementId = `${uniqueSubventionId}-${ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"])).toISOString()}`;
                 return {
                     ...versement,
                     siret: association ? association["SiretOuRidet"] : undefined,
                     updated_at: currentDate,
-                    id: `${uniqueSubventionId}-${ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"])).toISOString()}`
+                    id: versementId
                 }
             });
 
