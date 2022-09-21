@@ -1,0 +1,29 @@
+<script>
+    import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
+    export let searchParams;
+
+    const segments = [];
+    const error = searchParams.get("error");
+</script>
+
+<Breadcrumb {segments} />
+<div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+    <div class="fr-col fr-col-lg-8">
+        {#if error}
+            <div role="alert" class="fr-alert fr-alert--warning">
+                <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
+            </div>
+        {/if}
+        <form action="/search/association" method="GET">
+            <fieldset class="fr-fieldset fr-my-4w">
+                <legend class="fr-fieldset__legend" id='text-legend'>Je cherche des informations sur une association par RNA, Siren, Siret</legend>
+                <div class="fr-search-bar" id="search-input">
+                    <input class="fr-input" placeholder="Rechercher" type="search" id="search-input-input" name="search-input">
+                    <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">
+                            Rechercher
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
