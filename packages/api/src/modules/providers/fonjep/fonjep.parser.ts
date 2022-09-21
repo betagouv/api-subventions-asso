@@ -56,6 +56,7 @@ export default class FonjepParser {
             );
             const uniqueSubventionId = `${poste["Code"]}-${ParserHelper.ExcelDateToJSDate(parseFloat(poste["DateFinTriennalite"])).toISOString()}`;
 
+
             const subventionParsedData = {
                 ...poste,
                 id: uniqueSubventionId,
