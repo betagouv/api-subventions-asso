@@ -1,6 +1,6 @@
 <script>
     export let title = "Résumé du tableau (accessibilité)";
-    export let bordered = true;
+    export let bordered = false;
 </script>
 
 <div class="fr-table {bordered ? 'fr-table--bordered' : ''}">
