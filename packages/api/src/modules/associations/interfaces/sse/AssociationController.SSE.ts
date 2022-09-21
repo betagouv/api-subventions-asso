@@ -20,14 +20,19 @@ export class AssociationSSEController {
         req: express.Request,
         res: SSEResponse,
     ) {
-        const flux = await associationService.getSubventions(req.params.identifier);
-
-        flux.on("data", (data) => {
-            res.sendSSEData(data);
-        });
-
-        flux.on("close", () => {
+        try {
+            const flux = await associationService.getSubventions(req.params.identifier);
+    
+            flux.on("data", (data) => {
+                res.sendSSEData(data);
+            });
+    
+            flux.on("close", () => {
+                res.sendSSEData({ event: "close" });
+            });
+        } catch(e) {
+            res.sendSSEError({ success: false, message: (e as Error).message });
             res.sendSSEData({ event: "close" });
-        });
+        }
     }
 }

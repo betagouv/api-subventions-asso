@@ -23,21 +23,25 @@
     {#await promise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then Documents}
-        <h3>Pièces administratives pour cette association</h3>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            {#each Documents as document}
-                <CardDocuments
-                    title={document.label}
-                    url={document.url}
-                    size="6"
-                    footer="Déposé le {document.date.toLocaleDateString()}">
-                    {document.nom}
-                </CardDocuments>
-            {/each}
-        </div>
+        {#if Documents.length}
+            <h3>Pièces administratives pour cette association</h3>
+            <div class="fr-grid-row fr-grid-row--gutters">
+                {#each Documents as document}
+                    <CardDocuments
+                        title={document.label}
+                        url={document.url}
+                        size="6"
+                        footer="Déposé le {document.date.toLocaleDateString()}">
+                        {document.nom}
+                    </CardDocuments>
+                {/each}
+            </div>
+        {:else}
+            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucun document sur cette association" />
+        {/if}
     {:catch error}
         {#if error.request && error.request.status == 404}
-            <DataNotFound />
+            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucun document sur cette association" />
         {:else}
             <ErrorAlert message={error.message} />
         {/if}

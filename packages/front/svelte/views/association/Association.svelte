@@ -26,7 +26,7 @@
 {#await promise}
     <Spinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
-    {#if !isAssociation(association.categorie_juridique)}
+    {#if !association.rna && !isAssociation(association.categorie_juridique)}
         <Alert type="warning" title="Attention">
             Il semblerait que vous cherchiez une entreprise et non une association
         </Alert>

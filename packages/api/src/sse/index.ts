@@ -55,6 +55,7 @@ function sseHandler(req: Request, res: SSEResponse, next: NextFunction) {
     res.write("event: messages\n\n");
 
     res.sendSSEData = (data: unknown) =>  res.write(`data: ${JSON.stringify(data)}\n\n`);
+    res.sendSSEError = (data: unknown) =>  res.write(`error: ${JSON.stringify(data)}\n\n`);
     next();
 }
 
