@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.8](https://github.com/betagouv/api-subventions-asso/compare/v0.14.7...v0.14.8) (2022-09-21)
+
+
+### Bug Fixes
+
+* **api, front:** crash on search asso without siren ([9a14dfe](https://github.com/betagouv/api-subventions-asso/commit/9a14dfe9bb7b155081732f5c32b18a90b2d3b155))
+
+
+
+
+
 ## [0.14.7](https://github.com/betagouv/api-subventions-asso/compare/v0.14.6...v0.14.7) (2022-09-06)
 
 
