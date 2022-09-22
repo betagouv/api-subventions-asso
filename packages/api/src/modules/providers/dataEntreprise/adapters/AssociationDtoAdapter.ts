@@ -14,7 +14,7 @@ export default class AssociationDtoAdapter {
                 : undefined,
             date_creation_rna: ProviderValueAdapter.toProviderValues(new Date(data.association.date_creation), AssociationDtoAdapter.PROVIDER_NAME, new Date(data.association.updated_at)),
             denomination_rna: ProviderValueAdapter.toProviderValues(data.association.titre, AssociationDtoAdapter.PROVIDER_NAME, new Date(data.association.updated_at)),
-            adresse_siege: ProviderValueAdapter.toProviderValues({
+            adresse_siege_rna: ProviderValueAdapter.toProviderValues({
                 numero: data.association.adresse_numero_voie,
                 type_voie: data.association.adresse_type_voie,
                 voie: data.association.adresse_libelle_voie,

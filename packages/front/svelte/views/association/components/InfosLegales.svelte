@@ -2,16 +2,13 @@
     import { getAddress } from "../association.helper";
     import TitleWithData from "../../../components/TitleWithData.svelte";
     import DateHelper from "../../../../src/shared/helpers/DateHelper";
+    import Table from "../../../dsfr/Table.svelte";
 
     export let association;
-
-    const creationDate = DateHelper.formatDate(association.date_creation);
-    const updateDate = DateHelper.formatDate(association.date_modification);
-    const address = getAddress(association.adresse_siege);
 </script>
 
-<h1>{association.denomination}</h1>
-<div class="grid">
+<h1>{association.denomination_rna || association.denomination_siren}</h1>
+<div class="summary">
     <div>
         <TitleWithData label="RNA" data={association.rna} />
         <TitleWithData label="SIREN" data={association.siren} />
@@ -21,12 +18,41 @@
         <TitleWithData label="Objet social" data={association.objet_social} />
     </div>
     <div>
-        <TitleWithData label="Adresse du siège" data={address} />
-        <TitleWithData label="Date d'immatriculation" data={creationDate} />
-        {#if association.date_modification}
-            <TitleWithData label="Dernière modification au greffe" data={updateDate} />
-        {/if}
+        <TitleWithData
+            label="Adresse du siège"
+            data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
     </div>
+</div>
+<div class="rna-siren">
+    <Table bordered={true}>
+        <svelte:fragment slot="head">
+            <td class="two-dimension two-dimension-empty" />
+            <td>Informations provenant du RNA</td>
+            <td>Informations provenant du SIREN</td>
+        </svelte:fragment>
+        <svelte:fragment slot="body">
+            <tr>
+                <td class="two-dimension"><b>Dénomination</b></td>
+                <td>{association.denomination_rna}</td>
+                <td>{association.denomination_siren}</td>
+            </tr>
+            <tr>
+                <td class="two-dimension"><b>Adresse du siège</b></td>
+                <td>{getAddress(association.adresse_siege_rna)}</td>
+                <td>{getAddress(association.adresse_siege_siren)}</td>
+            </tr>
+            <tr>
+                <td class="two-dimension"><b>Date d'immatriculation</b></td>
+                <td>{DateHelper.formatDate(association.date_creation_rna)}</td>
+                <td>{DateHelper.formatDate(association.date_creation_siren)}</td>
+            </tr>
+            <tr>
+                <td class="two-dimension"><b>Date de modification</b></td>
+                <td>{DateHelper.formatDate(association.date_modification_rna)}</td>
+                <td>{DateHelper.formatDate(association.date_creation_siren)}</td>
+            </tr>
+        </svelte:fragment>
+    </Table>
 </div>
 
 <style>
@@ -34,11 +60,14 @@
         margin-bottom: 48px;
     }
 
-    .grid {
+    .rna-siren {
+        margin-bottom: 72px;
+    }
+
+    .summary {
         display: grid;
         grid-template-rows: auto;
         grid-template-columns: 1fr 1fr 1fr;
         column-gap: 24px;
-        margin-bottom: 72px;
     }
 </style>
