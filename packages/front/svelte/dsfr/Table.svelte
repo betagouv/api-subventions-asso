@@ -1,6 +1,6 @@
 <script>
     export let title = "Résumé du tableau (accessibilité)";
-    export let bordered = true;
+    export let bordered = false;
 </script>
 
 <div class="fr-table {bordered ? 'fr-table--bordered' : ''}">
@@ -33,5 +33,9 @@
 
     tbody :global(td) {
         border-bottom: 1px #e5e5e5 solid;
+    }
+
+    .fr-table--bordered table {
+        border: 2px solid #2e2e2e;
     }
 </style>

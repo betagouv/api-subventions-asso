@@ -16,7 +16,7 @@ export default class EntrepriseDtoAdapter {
             date_creation_siren: ProviderValueAdapter.toProviderValues(new Date(data.unite_legale.date_creation), EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
             date_modification_siren: ProviderValueAdapter.toProviderValues(new Date(data.unite_legale.updated_at), EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
             denomination_siren: ProviderValueAdapter.toProviderValues(data.unite_legale.denomination, EntrepriseDtoAdapter.PROVIDER_NAME, new Date(data.unite_legale.updated_at)),
-            adresse_siege: data.unite_legale.etablissement_siege ? ProviderValueAdapter.toProviderValues({
+            adresse_siege_siren: data.unite_legale.etablissement_siege ? ProviderValueAdapter.toProviderValues({
                 numero: data.unite_legale.etablissement_siege.numero_voie,
                 type_voie: data.unite_legale.etablissement_siege.type_voie,
                 voie: data.unite_legale.etablissement_siege.libelle_voie,
