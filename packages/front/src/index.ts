@@ -13,12 +13,11 @@ import { DefaultObject } from "./@types/utils";
 import ControllerMethod, { ControllerRouteDEF } from "./@types/ControllerMethod";
 import EJSHelper from "./shared/helpers/EJSHelper";
 import * as Components from "./modules/global_components/index";
-import User from "./@types/User";
+import { UserWithJWTDto } from "@api-subventions-asso/dto";
 
 declare module "express-session" {
     interface Session {
-        user: User;
-        roles?: string[];
+        user: UserWithJWTDto;
     }
 }
 

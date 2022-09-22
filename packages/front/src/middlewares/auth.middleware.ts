@@ -15,13 +15,13 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (!sessionData.user) {
         sessionData.user = {};
     }
-    const token = sessionData.user.token;
+    const jwt = sessionData.user.jwt;
 
-    if (!token && !routesWithoutLogin.some(route => req.path.includes(route))) return res.redirect("/auth/login");
+    if (!jwt && !routesWithoutLogin.some(route => req.path.includes(route))) return res.redirect("/auth/login");
 
     res.locals.user = sessionData.user;
 
-    if (token && req.path.includes("/auth/login")) return res.redirect("/");
+    if (jwt && req.path.includes("/auth/login")) return res.redirect("/");
     next();
 };
 

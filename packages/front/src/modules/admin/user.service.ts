@@ -1,8 +1,8 @@
-import User from "../../@types/User";
+import { UserWithJWTDto } from "@api-subventions-asso/dto";
 import apiDatasubService from "../../shared/apiDatasub.service";
 
 export class AdminService {
-    async listUsers(user: User) {
+    async listUsers(user: UserWithJWTDto) {
         try {
             const result = await apiDatasubService.listUser(user);
             return { type: "SUCCESS", data: result.data.users };
@@ -11,7 +11,7 @@ export class AdminService {
         }
     }
 
-    async createUser(email: string, user: User) {
+    async createUser(email: string, user: UserWithJWTDto) {
         try {
             const result = await apiDatasubService.createUser(email, user);
 

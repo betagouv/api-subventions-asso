@@ -2,7 +2,6 @@
     import axios from "axios";
     import { getContext } from "svelte";
 
-    import userService from "../../src/modules/user/user.service";
     import { user as userStore } from "../store/user.store";
 
     import Spinner from "../components/Spinner.svelte";
@@ -15,7 +14,7 @@
         let user;
         try {
             user = (
-                await axios.get("/auth/token", {
+                await axios.get("/auth/user", {
                     baseURL: ""
                 })
             ).data;
@@ -24,21 +23,10 @@
         }
         userStore.update(oldUser => Object.assign(oldUser, user));
         // set header token for each requests
-        axios.defaults.headers.common["x-access-token"] = user.token;
+        axios.defaults.headers.common["x-access-token"] = user.jwt.token;
     }
 
-    async function getRole(user) {
-        const roles = (await userService.getRoles(user)).data;
-        userStore.update(oldUser => Object.assign(oldUser, { roles }));
-        return roles;
-    }
-
-    async function initApp() {
-        await getUser();
-        return await getRole($userStore);
-    }
-
-    const promise = initApp();
+    const promise = getUser();
 </script>
 
 <div>
