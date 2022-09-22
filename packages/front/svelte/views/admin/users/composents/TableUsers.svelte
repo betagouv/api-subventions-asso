@@ -1,7 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import Alert from "../../../../dsfr/Alert.svelte";
-
+    import { user as userStore } from "../../../../store/user.store";
     import Button from "../../../../dsfr/Button.svelte";
     import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
     import { action, data, modal } from "../../../../store/modal.store";
@@ -73,6 +72,7 @@
                         {/if}
                         <td>
                             <Button
+                                disabled={user.email == $userStore.email}
                                 type="tertiary"
                                 icon="delete-fill"
                                 ariaControls="fr-modal"

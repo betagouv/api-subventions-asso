@@ -19,10 +19,6 @@ export class APIDatasubService {
         });
     }
 
-    getRoles(user: UserWithJWTDto) {
-        return this.sendRequest<{ success: boolean; roles: string[] }>("GET", "/user/roles", user);
-    }
-
     listUser(user: UserWithJWTDto) {
         return this.sendRequest<{ success: boolean; users: UserDto[] }>("GET", "/user/admin/list-users", user);
     }
