@@ -23,7 +23,8 @@ export interface Association {
     code_objet_social_1?: ProviderValues<string>;
     code_objet_social_2?: ProviderValues<string>;
     etablisements_siret?: ProviderValues<Siret[]>;
-    adresse_siege?: ProviderValues<Adresse>,
+    adresse_siege_rna?: ProviderValues<Adresse>,
+    adresse_siege_siren?: ProviderValues<Adresse>,
     federation?: ProviderValues<string>,
     licencies?: { // Uniquement les asso sportive
         total?: ProviderValues<number>,
