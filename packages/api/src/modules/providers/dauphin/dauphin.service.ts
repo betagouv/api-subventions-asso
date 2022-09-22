@@ -11,6 +11,7 @@ import configurationsService from "../../configurations/configurations.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { formatIntToThreeDigits, formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 
+
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
         name: "Dauphin",
@@ -36,7 +37,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         const token = await this.getAuthToken();
         const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
         await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
-    
+
         return (await dauhpinCachesRepository.findBySiren(siren)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
     }
 
@@ -61,9 +62,27 @@ export class DauphinService implements DemandesSubventionsProvider {
             "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
             this.buildSearchQuery(siren, lastUpdate),
             this.buildSearchHeader(token)
-        )
-        
-        return result.data.hits.hits.map(h => h._source);
+        );
+
+        return result.data.hits.hits.map(h => {
+            const source = h._source;
+
+            if ("demandeur" in source) {
+                delete source.demandeur.pieces;
+                delete source.demandeur.history;
+                delete source.demandeur.linkedUsers;
+            }
+
+            if ("beneficiaires" in source) {
+                source.beneficiaires.forEach(beneficiaire => {
+                    delete beneficiaire.pieces;
+                    delete beneficiaire.history;
+                    delete beneficiaire.linkedUsers;
+                })
+            }
+
+            return source;
+        });
     }
 
     private async getDauphinSubvention(ref: string, token): Promise<DauphinSubventionDto> {
@@ -117,7 +136,7 @@ export class DauphinService implements DemandesSubventionsProvider {
             "query":{
                 "query_string":{
                     "query":"reference:" + ref,
-                    "analyze_wildcard":true
+                    "analyze_wildcard": true
                 }
             }
         }])
