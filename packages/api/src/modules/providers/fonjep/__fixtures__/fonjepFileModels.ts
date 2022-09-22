@@ -1,9 +1,47 @@
+export const DEFAULT_POSTE = {
+    Code: 'D00598',
+    DispositifId: 3,
+    PstStatutPosteLibelle: 'Attribué',
+    PstRaisonStatutLibelle: 'Reconduction',
+    FinanceurPrincipalCode: '10008',
+    FinanceurAttributeurCode: '16DIV',
+    AssociationBeneficiaireCode: 'E920',
+    AssociationImplantationCode: 'E920',
+    Annee: 2017,
+    MontantSubvention: 5068,
+    DateFinTriennalite: 43100,
+    PstTypePosteCode: 'FONJEP',
+    PleinTemps: 'Oui',
+    DoublementUniteCompte: 'Non'
+}
+
+export const DEFAULT_VERSEMENT = {
+    PosteCode: 'D00598',
+    PeriodeDebut: 42917,
+    PeriodeFin: 43008,
+    DateVersement: 43070,
+    MontantAPayer: 3646,
+    MontantPaye: 3646
+}
+
 export const DATA_WITH_HEADER = [
     [
+
         {
-            Code: 1234,
-            RaisonSociale: "CENTRE D'INFO ****",
+            Code: 'E920',
+            RaisonSociale: "ASSO ERABLE ****",
             EstAssociation: 'Oui',
+            EstCoFinanceurPostes: 'Non',
+            EstFinanceurPostes: 'Non',
+            SiretOuRidet: '00000000000000',
+            CodePostal: '00000',
+            Ville: 'Paris',
+            ContactEmail: 'exemple@beta.gouv.fr'
+        },
+        {
+            Code: '16DIV',
+            RaisonSociale: "CENTRE D'INFO ****",
+            EstAssociation: 'Non',
             EstCoFinanceurPostes: 'Non',
             EstFinanceurPostes: 'Non',
             SiretOuRidet: '00000000000000',
@@ -13,15 +51,16 @@ export const DATA_WITH_HEADER = [
         }
     ],
     [
+        DEFAULT_POSTE,
         {
             Code: 'J10540',
-            DispositifId: 3,
+            DispositifId: 2,
             PstStatutPosteLibelle: 'Attribué',
             PstRaisonStatutLibelle: 'Reconduction',
-            FinanceurPrincipalCode: '1234',
-            FinanceurAttributeurCode: 1234,
-            AssociationBeneficiaireCode: 1234,
-            AssociationImplantationCode: 1234,
+            FinanceurPrincipalCode: '16DIV',
+            FinanceurAttributeurCode: '16DIV',
+            AssociationBeneficiaireCode: 'E920',
+            AssociationImplantationCode: 'E920',
             Annee: 2017,
             MontantSubvention: 6666,
             DateFinTriennalite: 43465,
@@ -31,21 +70,14 @@ export const DATA_WITH_HEADER = [
         }
     ],
     [
+        DEFAULT_VERSEMENT,
         {
-            PosteCode: "J10540",
-            PeriodeDebut: "42800",
-            PeriodeFin: "43000",
-            DateVersement: "43400",
-            MontantAPayer: "1 777,00 €",
-            MontantPaye: "1 777,00 €"
-        },
-        {
-            PosteCode: "J10540",
-            PeriodeDebut: "42900",
-            PeriodeFin: "43100",
-            DateVersement: "43400",
-            MontantAPayer: "1 777,00 €",
-            MontantPaye: "1 777,00 €"
+            PosteCode: DEFAULT_VERSEMENT.PosteCode,
+            PeriodeDebut: DEFAULT_VERSEMENT.PeriodeDebut + 50,
+            PeriodeFin: DEFAULT_VERSEMENT.PeriodeFin + 50,
+            DateVersement: DEFAULT_VERSEMENT.DateVersement,
+            MontantAPayer: DEFAULT_VERSEMENT.MontantAPayer,
+            MontantPaye: DEFAULT_VERSEMENT.MontantPaye
         }
     ],
     [

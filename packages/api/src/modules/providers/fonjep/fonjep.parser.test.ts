@@ -2,7 +2,7 @@ import FonjepSubventionEntity from './entities/FonjepSubventionEntity';
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import FonjepParser from './fonjep.parser';
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-import { DATA_WITH_HEADER } from "./__fixtures__/fonjepFileModels";
+import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__/fonjepFileModels";
 jest.mock('./entities/FonjepSubventionEntity');
 jest.mock('./entities/FonjepVersementEntity');
 
@@ -92,6 +92,40 @@ describe("FonjepParser", () => {
         });
     })
 
+    describe("getSubventionVersements()", () => {
+        const poste = DEFAULT_POSTE;
+        it("should not return versement with empty MontantPaye", () => {
+            const expected = [DEFAULT_VERSEMENT];
+            // @ts-expect-error: test private method
+            const actual = FonjepParser.getSubventionVersements(poste, [DEFAULT_VERSEMENT, {
+                PosteCode: DEFAULT_VERSEMENT.PosteCode,
+                PeriodeDebut: DEFAULT_VERSEMENT.PeriodeDebut + 50,
+                PeriodeFin: DEFAULT_VERSEMENT.PeriodeFin + 50,
+                // @ts-expect-error: don't know
+                DateVersement: undefined,
+                MontantAPayer: DEFAULT_VERSEMENT.MontantAPayer,
+                // @ts-expect-error: don't know
+                MontantPaye: undefined
+            }]);
+            expect(actual).toEqual(expected);
+        });
+
+        it("shouuld return versements", () => {
+            const SECOND_VERSEMENT = {
+                PosteCode: DEFAULT_VERSEMENT.PosteCode,
+                PeriodeDebut: DEFAULT_VERSEMENT.PeriodeDebut + 50,
+                PeriodeFin: DEFAULT_VERSEMENT.PeriodeFin + 50,
+                DateVersement: DEFAULT_VERSEMENT.DateVersement,
+                MontantAPayer: DEFAULT_VERSEMENT.MontantAPayer,
+                MontantPaye: DEFAULT_VERSEMENT.MontantPaye
+            }
+            const expected = [DEFAULT_VERSEMENT, SECOND_VERSEMENT];
+            // @ts-expect-error: test private method
+            const actual = FonjepParser.getSubventionVersements(poste, [DEFAULT_VERSEMENT, SECOND_VERSEMENT]);
+            expect(actual).toEqual(expected);
+        })
+    })
+
     describe("parse()", () => {
         const xlsParseMock = jest.spyOn(ParserHelper, "xlsParse");
         // @ts-expect-error: mock private method     
@@ -118,7 +152,7 @@ describe("FonjepParser", () => {
             // @ts-expect-error: test
             expect(createFonjepSubventionEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
         })
-        it.only("should call createVersementFonjep with versement data", () => {
+        it("should call createVersementFonjep with versement data", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
