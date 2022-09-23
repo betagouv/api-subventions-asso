@@ -1,3 +1,5 @@
+import UserDto, { UserWithJWTDto } from "../user/UserDto"
+
 export enum LoginDtoErrorCodes {
     EMAIL_OR_PASSWORD_NOT_MATCH = 1,
     USER_NOT_ACTIVE = 2,
@@ -5,15 +7,12 @@ export enum LoginDtoErrorCodes {
 }
 
 export interface LoginDtoPositiveResponse {
-    success: true, 
-    data: {
-        token: string,
-        expirateDate: Date
-    }
+    success: true,
+    data: UserWithJWTDto
 }
 
 export interface LoginDtoNegativeResponse {
-    success: false, 
+    success: false,
     data: {
         message: string,
         errorCode: LoginDtoErrorCodes

@@ -1,6 +1,4 @@
-import { IEtablissement, Siret } from "@api-subventions-asso/dto";
-import { DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
-import User from "../../@types/User";
+import { IEtablissement, Siret, DemandeSubvention, ProviderValue, UserWithJWTDto } from "@api-subventions-asso/dto";
 import { DefaultObject } from "../../@types/utils";
 import apiDatasubService from "../../shared/apiDatasub.service";
 import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
@@ -9,7 +7,7 @@ import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 export class EtablissementService {
     async getEtablissement(
         siret: Siret,
-        user: User
+        user: UserWithJWTDto
     ): Promise<{ type: "REDIRECT" | "SUCCESS" | "ERROR"; data?: unknown }> {
         const type = IdentifierHelper.findType(siret);
 
