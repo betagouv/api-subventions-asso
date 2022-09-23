@@ -58,6 +58,13 @@ const linkVersementsToSubvention = elements =>
         return acc;
     }, []);
 
+// const keepMostRecentSubvention = subventions => {
+//     return subventions.reduce((acc, curr) => {
+//         if (curr.date_fin > acc.date_fin) acc = curr;
+//         return acc;
+//     });
+// };
+
 export const mapSubventionsAndVersements = ({ subventions, versements }) => {
     const taggedSubventions = subventions.map(s => ({ ...s, isSub: true }));
     const taggedVersements = versements.map(s => ({ ...s, isVersement: true }));
@@ -67,6 +74,14 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
         codePoste: {},
         none: []
     });
+
+    // Remove duplicate FONJEP subventions for a same year
+    // Some times there is two subventions for a same year (closed and reopen) and we keep only the most recent one
+    // const codePosteElements = elementsGroupedByVersementKey.codePoste.forEach(elements => {
+    //     const subventions = elements.filter(e => e.isSub);
+    //     if (subventions.length === 1) return elements;
+    //     return elements.filter(e => e.isVersement).push(keepMostRecentSubvention(subventions));
+    // });
 
     const flatenElements = [
         ...Object.values(elementsGroupedByVersementKey.ej),
@@ -90,7 +105,23 @@ const groupByVersementKey = (acc, curr) => {
     // Fonjep
     if (fonjepKey) {
         if (!acc.codePoste[fonjepKey]) acc.codePoste[fonjepKey] = [];
-        acc.codePoste[fonjepKey].push(curr);
+        const item = acc.codePoste[fonjepKey];
+        if (curr.isSub) {
+            const previousSubIndex = item.findIndex(
+                element => element.isSub && element.annee_demande === curr.annee_demande
+            );
+            console.log(item);
+            if (previousSubIndex == -1) {
+                item.push(curr);
+            } else {
+                console.log(previousSubIndex, item[previousSubIndex].date_fin, curr.date_fin);
+                if (item[previousSubIndex].date_fin < curr.date_fin) {
+                    item.splice(previousSubIndex, 1, curr);
+                }
+            }
+        } else {
+            acc.codePoste[fonjepKey].push(curr);
+        }
     }
     // Wrap it in array for ease of use (every sub item is an array)
     else acc.none.push([curr]);

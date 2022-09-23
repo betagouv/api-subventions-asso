@@ -19,10 +19,15 @@ export default class FonjepParser {
         });
     }
 
-    private static filterOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
+    private static findOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
 
         if (!array) array = [];
         return (match: string | number | undefined) => array.find(item => item[prop] == match)
+    }
+
+    private static filterOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
+        if (!array) array = [];
+        return (match: string | number | undefined) => array.filter(item => item[prop] == match)
     }
 
     private static createFonjepSubventionEntity(parsedData: DefaultObject<unknown>) {
@@ -37,33 +42,49 @@ export default class FonjepParser {
         return new FonjepVersementEntity(legalInformations, indexedInformations, data);
     }
 
-    private static getSubventionVersements(poste: DefaultObject<string | number | undefined>, versements: DefaultObject<string | number>[]) {
-        return versements.filter(versement =>
-            (versement["PosteCode"] === poste["Code"] && ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"])).getFullYear() === Number(poste["Annee"]))
-            &&
-            Number(versement["MontantPaye"]) > 0
-        )
-    }
-
     public static parse(fileContent: Buffer, exportDate: Date) {
         const pages = ParserHelper.xlsParse(fileContent);
         const currentDate = exportDate;
 
         const [tiers, postes, versements, typePoste, dispositifs] = this.mapHeaderToData(pages);
-        const findTiers = this.filterOnPropFactory(tiers, "Code");
-        const findTypePoste = this.filterOnPropFactory(typePoste, "Code");
-        const findDispositif = this.filterOnPropFactory(dispositifs, "ID");
+        const findTiers = this.findOnPropFactory(tiers, "Code");
+        const findTypePoste = this.findOnPropFactory(typePoste, "Code");
+        const findDispositif = this.findOnPropFactory(dispositifs, "ID");
+        const findPostes = this.filterOnPropFactory(postes, "Code");
 
-        const createEntitiesByPostes = (result: { subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[] }[], poste: DefaultObject<string | number | undefined>) => {
+        const createVersements = (versements: FonjepVersementEntity[], versement) => {
+
+            const periodDebut = ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"]));
+
+            // recupère le poste
+            const postes = findPostes(versement["PosteCode"]);
+            const poste = postes.find(poste => periodDebut.getFullYear() == poste["Annee"]);
+            if (!poste) return versements;
+
+            const association = findTiers(poste["AssociationBeneficiaireCode"]);
+            console.log({ association });
+            if (!association) return versements;
+
+            const versementId = `${association["SiretOuRidet"]}-${versement["PosteCode"]}-${periodDebut.toISOString()}`;
+
+            versements.push(this.createFonjepVersementEntity({
+                ...versement,
+                siret: association ? association["SiretOuRidet"] : undefined,
+                updated_at: currentDate,
+                id: versementId
+            }))
+            return versements;
+        }
+
+        const createSubventions = (subventions: FonjepSubventionEntity[], poste: DefaultObject<string | number | undefined>) => {
             const financeur = findTiers(poste["FinanceurAttributeurCode"]);
             const typePoste = findTypePoste(poste["PstTypePosteCode"]);
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
+            if (!association) return subventions;
             const dispositif = findDispositif(poste["DispositifId"]);
-            const subventionVersements = this.getSubventionVersements(poste, versements);
-            const uniqueSubventionId = `${poste["Code"]}-${ParserHelper.ExcelDateToJSDate(Number(poste["DateFinTriennalite"])).toISOString()}`;
+            const uniqueSubventionId = `${association["SiretOuRidet"]}-${poste["Code"]}-${ParserHelper.ExcelDateToJSDate(Number(poste["DateFinTriennalite"])).toISOString()}`;
 
-
-            const subventionParsedData = {
+            subventions.push(this.createFonjepSubventionEntity({
                 ...poste,
                 id: uniqueSubventionId,
                 updated_at: currentDate,
@@ -71,25 +92,10 @@ export default class FonjepParser {
                 TypePoste: typePoste,
                 Association: association,
                 Dispositif: dispositif
-            };
-
-
-            const versementsParsedData = subventionVersements.map(versement => {
-                const versementId = `${uniqueSubventionId}-${ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"])).toISOString()}`;
-                return {
-                    ...versement,
-                    siret: association ? association["SiretOuRidet"] : undefined,
-                    updated_at: currentDate,
-                    id: versementId
-                }
-            });
-
-            const subventionEntity = this.createFonjepSubventionEntity(subventionParsedData);
-            const versementEntities = versementsParsedData.map(versement => this.createFonjepVersementEntity(versement));
-            result.push({ subvention: subventionEntity, versements: versementEntities });
-            return result;
+            }));
+            return subventions;
         };
 
-        return postes.reduce(createEntitiesByPostes, []);
+        return { subventions: postes.reduce(createSubventions, []), versements: versements.reduce(createVersements, []) };
     }
 }
