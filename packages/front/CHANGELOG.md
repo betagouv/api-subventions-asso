@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.9](https://github.com/betagouv/datasubvention/compare/v0.14.8...v0.14.9) (2022-09-23)
+
+
+### Bug Fixes
+
+* **front:** disable show provider modal on botton of subvention table ([0f07e8f](https://github.com/betagouv/datasubvention/commit/0f07e8fdc46039b3702adc013ce30a9788fc1ec0))
+
+
+
+
+
 ## [0.14.8](https://github.com/betagouv/datasubvention/compare/v0.14.7...v0.14.8) (2022-09-21)
 
 
