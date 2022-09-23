@@ -1,5 +1,4 @@
-import { Association, DemandeSubvention, Versement, ProviderValue } from "@api-subventions-asso/dto";
-import User from "../../@types/User";
+import { Association, DemandeSubvention, Versement, ProviderValue, UserWithJWTDto } from "@api-subventions-asso/dto";
 import { DefaultObject } from "../../@types/utils";
 import apiDatasubService from "../../shared/apiDatasub.service";
 import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
@@ -8,7 +7,7 @@ import ProviderValueHelper from "../../shared/helpers/ProviderValueHelper";
 export class AssociationService {
     async getAssociation(
         id: string,
-        user: User
+        user: UserWithJWTDto
     ): Promise<{
         type: "REDIRECT" | "SUCCESS" | "ERROR";
         data?: { association: Association; subventions: unknown; versements: Versement[] };

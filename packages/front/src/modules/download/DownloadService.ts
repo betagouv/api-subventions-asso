@@ -1,12 +1,11 @@
-import { Siret } from "@api-subventions-asso/dto";
-import User from "../../@types/User";
+import { Siret, UserWithJWTDto } from "@api-subventions-asso/dto";
 import apiDatasubService from "../../shared/apiDatasub.service";
 import IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 
 export class DownloadService {
     async downloadAssociation(
         id: string,
-        user: User
+        user: UserWithJWTDto
     ): Promise<{ type: "REDIRECT" | "SEND" | "ERROR"; data?: unknown }> {
         const type = IdentifierHelper.findType(id);
 
@@ -28,7 +27,7 @@ export class DownloadService {
 
     async downloadEtablissement(
         siret: Siret,
-        user: User
+        user: UserWithJWTDto
     ): Promise<{ type: "REDIRECT" | "SEND" | "ERROR"; data?: unknown }> {
         const type = IdentifierHelper.findType(siret);
 
