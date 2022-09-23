@@ -5,11 +5,9 @@
     import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
     import { data } from "../../../store/modal.store";
     import { withTwoDigitYear } from "../../../helpers/dateHelper";
-
-    const versements = $data.versements;
 </script>
 
-{#if versements}
+{#if $data.versements}
     <Table>
         <svelte:fragment slot="head">
             <TableHead>Montant</TableHead>
@@ -19,7 +17,7 @@
             <TableHead>Date</TableHead>
         </svelte:fragment>
         <svelte:fragment slot="body">
-            {#each versements as versement}
+            {#each $data.versements as versement}
                 <tr>
                     <TableCell primary="true" position="center">{numberToEuro(versement.amount)}</TableCell>
                     <TableCell position="center">{versement.domaineFonctionnel || versement.codePoste}</TableCell>
