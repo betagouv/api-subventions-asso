@@ -62,7 +62,6 @@ export default class FonjepParser {
             if (!poste) return versements;
 
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
-            console.log({ association });
             if (!association) return versements;
 
             const versementId = `${association["SiretOuRidet"]}-${versement["PosteCode"]}-${periodDebut.toISOString()}`;

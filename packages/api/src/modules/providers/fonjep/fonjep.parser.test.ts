@@ -26,6 +26,24 @@ describe("FonjepParser", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("findOnPropFactory()", () => {
+        it("should return a function", () => {
+            const expected = "function";
+            // @ts-expect-error: test private method
+            const actual = typeof FonjepParser.findOnPropFactory([], "propName");
+            expect(actual).toEqual(expected);
+        });
+        it("should return a function that find given array on property", () => {
+            const expected = { "Code": "5678" };
+            const ARRAY = [{ "Code": "1234" }, expected];
+            // @ts-expect-error: test private method
+            const find = FonjepParser.findOnPropFactory(ARRAY, "Code");
+            const actual = find(expected.Code);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("filterOnPropFactory()", () => {
         it("should return a function", () => {
             const expected = "function";
@@ -34,14 +52,17 @@ describe("FonjepParser", () => {
             expect(actual).toEqual(expected);
         });
         it("should return a function that filter given array on property", () => {
-            const expected = { "Code": "5678" };
-            const ARRAY = [{ "Code": "1234" }, expected];
+            const CODE = "5678";
+            const expected = [{ Code: CODE }, { Code: CODE }];
+            const ARRAY = [{ "Code": "1234" }].concat(expected);
             // @ts-expect-error: test private method
             const filter = FonjepParser.filterOnPropFactory(ARRAY, "Code");
-            const actual = filter(expected.Code);
+            const actual = filter(CODE);
             expect(actual).toEqual(expected);
         });
     });
+
+
     describe("createFonjepSubventionEntity()", () => {
         beforeAll(() => {
             indexDataByPathObjectMock.mockImplementation(jest.fn());
@@ -90,40 +111,6 @@ describe("FonjepParser", () => {
             const actual = (FonjepVersementEntity as jest.Mock).mock.calls[0].length;
             expect(actual).toEqual(expected);
         });
-    })
-
-    describe("getSubventionVersements()", () => {
-        const poste = DEFAULT_POSTE;
-        it("should not return versement with empty MontantPaye", () => {
-            const expected = [DEFAULT_VERSEMENT];
-            // @ts-expect-error: test private method
-            const actual = FonjepParser.getSubventionVersements(poste, [DEFAULT_VERSEMENT, {
-                PosteCode: DEFAULT_VERSEMENT.PosteCode,
-                PeriodeDebut: DEFAULT_VERSEMENT.PeriodeDebut + 50,
-                PeriodeFin: DEFAULT_VERSEMENT.PeriodeFin + 50,
-                // @ts-expect-error: don't know
-                DateVersement: undefined,
-                MontantAPayer: DEFAULT_VERSEMENT.MontantAPayer,
-                // @ts-expect-error: don't know
-                MontantPaye: undefined
-            }]);
-            expect(actual).toEqual(expected);
-        });
-
-        it("shouuld return versements", () => {
-            const SECOND_VERSEMENT = {
-                PosteCode: DEFAULT_VERSEMENT.PosteCode,
-                PeriodeDebut: DEFAULT_VERSEMENT.PeriodeDebut + 50,
-                PeriodeFin: DEFAULT_VERSEMENT.PeriodeFin + 50,
-                DateVersement: DEFAULT_VERSEMENT.DateVersement,
-                MontantAPayer: DEFAULT_VERSEMENT.MontantAPayer,
-                MontantPaye: DEFAULT_VERSEMENT.MontantPaye
-            }
-            const expected = [DEFAULT_VERSEMENT, SECOND_VERSEMENT];
-            // @ts-expect-error: test private method
-            const actual = FonjepParser.getSubventionVersements(poste, [DEFAULT_VERSEMENT, SECOND_VERSEMENT]);
-            expect(actual).toEqual(expected);
-        })
     })
 
     describe("parse()", () => {

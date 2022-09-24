@@ -37,97 +37,81 @@ describe("FonjepCliController", () => {
             parseMock.mockImplementationOnce(() => fonjepParserResponse);
             // @ts-expect-error: test protected method
             await cli._parse(PATH, [], new Date());
-            expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.length);
-            let createVersementEntityMockCalls = 0
-            fonjepParserResponse.forEach(response => createVersementEntityMockCalls = createVersementEntityMockCalls + response.versements.length);
-            expect(createVersementEntityMock).toHaveBeenCalledTimes(createVersementEntityMockCalls);
-        });
-
-        it("should not create versement entities if subvention creation has failed", async () => {
-            const parseMock = jest.spyOn(FonjepParser, "parse");
-            // @ts-expect-error: mock;
-            parseMock.mockImplementationOnce(() => fonjepParserResponse);
-            // @ts-expect-error: mock;
-            createSubventionEntityMock.mockImplementationOnce(async () => ({ success: false }));
-            // @ts-expect-error: test protected method
-            await cli._parse(PATH, [], new Date());
-            expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.length);
-            let createVersementEntityMockCalls = 0
-            fonjepParserResponse.slice(1, fonjepParserResponse.length).forEach(response => createVersementEntityMockCalls = createVersementEntityMockCalls + response.versements.length);
-            expect(createVersementEntityMock).toHaveBeenCalledTimes(createVersementEntityMockCalls);
+            expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.subventions.length);
+            expect(createVersementEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.versements.length);
         });
     });
 
-    describe("_compare()", () => {
-        const mockParse = jest.spyOn(FonjepParser, "parse");
+    // describe("_compare()", () => {
+    //     const mockParse = jest.spyOn(FonjepParser, "parse");
 
-        it("should return true", async () => {
-            mockParse
-                .mockImplementationOnce(() => ([
-                    {
-                        subvention: {
-                            // @ts-expect-error: mock
-                            indexedInformations: { annee_demande: 2021 },
-                            data: { Code: "CODE1" }
-                        },
-                        versements: []
-                    }
-                ]))
-                .mockImplementationOnce(() => [
-                    {
-                        subvention:
-                        {
-                            // @ts-expect-error: mock
-                            indexedInformations: { annee_demande: 2021 },
-                            data: { Code: "CODE1" }
-                        },
+    //     it("should return true", async () => {
+    //         mockParse
+    //             .mockImplementationOnce(() => ([
+    //                 {
+    //                     subvention: {
+    //                         // @ts-expect-error: mock
+    //                         indexedInformations: { annee_demande: 2021 },
+    //                         data: { Code: "CODE1" }
+    //                     },
+    //                     versements: []
+    //                 }
+    //             ]))
+    //             .mockImplementationOnce(() => [
+    //                 {
+    //                     subvention:
+    //                     {
+    //                         // @ts-expect-error: mock
+    //                         indexedInformations: { annee_demande: 2021 },
+    //                         data: { Code: "CODE1" }
+    //                     },
 
-                        versements: []
-                    },
-                    {
-                        subvention:
-                        {
-                            // @ts-expect-error: mock
-                            indexedInformations: { annee_demande: 2022 },
-                            data: { Code: "CODE2" }
-                        },
-                        versements: []
-                    }
-                ])
-            const expected = true;
-            const actual = await cli._compare("file1", "file2");
-            expect(actual).toEqual(expected);
-        })
+    //                     versements: []
+    //                 },
+    //                 {
+    //                     subvention:
+    //                     {
+    //                         // @ts-expect-error: mock
+    //                         indexedInformations: { annee_demande: 2022 },
+    //                         data: { Code: "CODE2" }
+    //                     },
+    //                     versements: []
+    //                 }
+    //             ])
+    //         const expected = true;
+    //         const actual = await cli._compare("file1", "file2");
+    //         expect(actual).toEqual(expected);
+    //     })
 
-        it("should return false", async () => {
-            mockParse
-                .mockImplementationOnce(() => [
-                    {
-                        subvention: {
-                            // @ts-expect-error: mock
-                            indexedInformations: { annee_demande: 2021 },
-                            data: { Code: "CODE1" }
-                        },
-                        versements: []
-                    }
-                ])
-                .mockImplementationOnce(() => [
-                    {
-                        subvention:
-                        {
-                            // @ts-expect-error: mock
-                            indexedInformations: { annee_demande: 2022 },
-                            data: { Code: "CODE2" }
-                        }
-                        ,
-                        versements: []
-                    }
-                ])
-            const expected = false;
-            const actual = await cli._compare("file1", "file2");
-            expect(actual).toEqual(expected);
-        })
-    })
+    //     it("should return false", async () => {
+    //         mockParse
+    //             .mockImplementationOnce(() => [
+    //                 {
+    //                     subvention: {
+    //                         // @ts-expect-error: mock
+    //                         indexedInformations: { annee_demande: 2021 },
+    //                         data: { Code: "CODE1" }
+    //                     },
+    //                     versements: []
+    //                 }
+    //             ])
+    //             .mockImplementationOnce(() => [
+    //                 {
+    //                     subvention:
+    //                     {
+    //                         // @ts-expect-error: mock
+    //                         indexedInformations: { annee_demande: 2022 },
+    //                         data: { Code: "CODE2" }
+    //                     }
+    //                     ,
+    //                     versements: []
+    //                 }
+    //             ])
+    //         const expected = false;
+    //         const actual = await cli._compare("file1", "file2");
+    //         expect(actual).toEqual(expected);
+    //     })
+    // })
 
     describe("drop()", () => {
         it("should call FonjepRepository.drop()", async () => {

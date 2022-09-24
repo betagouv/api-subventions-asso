@@ -5,10 +5,10 @@ describe("Fonjep CLI", () => {
 
     const cli = new FonjepCliController();
 
-    describe("_compare", () => {
-        it("should return true", () => {
-            const actual = cli._compare(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"), path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx"));
-            expect(actual).toBeTruthy();
-        })
-    })
+    // describe("_compare", () => {
+    //     it("should return true", () => {
+    //         const actual = cli._compare(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"), path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx"));
+    //         expect(actual).toBeTruthy();
+    //     })
+    // })
 })
