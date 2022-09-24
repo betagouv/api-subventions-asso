@@ -54,6 +54,8 @@ export default class FonjepParser {
 
         const createVersements = (versements: FonjepVersementEntity[], versement) => {
 
+            if (!versement["MontantPaye"] || !versement["DateVersement"]) return versements;
+
             const periodDebut = ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"]));
 
             // recupère le poste

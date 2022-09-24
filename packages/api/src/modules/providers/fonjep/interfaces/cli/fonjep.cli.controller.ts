@@ -35,7 +35,7 @@ export default class FonjepCliController extends CliController {
             const result = await acc;
             const response = await fonjepService.createSubventionEntity(subvention);
 
-            CliHelper.printProgress(index + 1, subventions.length);
+            CliHelper.printProgress(index + 1, subventions.length, "subventions");
 
             if (!response.success) { subventionRejected.push(response); return result; }
 
@@ -58,7 +58,7 @@ export default class FonjepCliController extends CliController {
             const result = await acc;
             const response = await fonjepService.createVersementEntity(versement);
 
-            CliHelper.printProgress(index + 1, versements.length);
+            CliHelper.printProgress(index + 1, versements.length, "versements");
 
             if (!response.success) { versementRejected.push(response); return result; }
             result.push(response);
