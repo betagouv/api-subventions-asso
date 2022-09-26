@@ -1,5 +1,5 @@
-export function printProgress(progress: number, total: number) {
-    printAtSameLine(`${progress} entities save of ${total}`)
+export function printProgress(progress: number, total: number, entities = "entities") {
+    printAtSameLine(`${progress} ${entities} save of ${total}`)
 }
 
 export function printAtSameLine(text: string) {

@@ -4,11 +4,13 @@ export const sortByDateAsc = (a, b) => {
     return a.date - b.date;
 };
 
-export const withTwoDigitYear = (date) => {
+export const withTwoDigitYear = date => {
     if (date instanceof Date) {
         const localeDate = date.toLocaleDateString();
         const last2Digit = localeDate.slice(-2);
         const dateWithoutYear = localeDate.slice(0, 6);
         return dateWithoutYear.concat(last2Digit);
     } else return date;
-}
+};
+
+export const isValidDate = date => date instanceof Date && !isNaN(date);

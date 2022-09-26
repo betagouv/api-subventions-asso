@@ -1,12 +1,12 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
 import { ObjectId } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
-import FonjepRequestEntity from "../entities/FonjepRequestEntity";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 
-export class FonjepRepository extends MigrationRepository<FonjepRequestEntity> {
+export class FonjepRepository extends MigrationRepository<FonjepSubventionEntity> {
     readonly collectionName = "fonjep";
 
-    async create(entity: FonjepRequestEntity) {
+    async create(entity: FonjepSubventionEntity) {
         return await this.collection.insertOne(entity);
     }
 
