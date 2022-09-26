@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.15.0](https://github.com/betagouv/datasubvention/compare/v0.14.8...v0.15.0) (2022-09-26)
+
+
+### Bug Fixes
+
+* **front:** add nojs for svelte ([#420](https://github.com/betagouv/datasubvention/issues/420)) ([06c4b65](https://github.com/betagouv/datasubvention/commit/06c4b65c38e2f2c04cf2a45541a68e9705c1e0cd))
+* **front:** fix mail to contact for no js help ([#452](https://github.com/betagouv/datasubvention/issues/452)) ([aa13a99](https://github.com/betagouv/datasubvention/commit/aa13a99101c422272e7ce5437bc06b92ce5ed815))
+
+
+### Features
+
+* **api, front, dto:** display rna-siren differences ([3b6d6ba](https://github.com/betagouv/datasubvention/commit/3b6d6ba99c51e18542eab033a79fb5611abb0a53))
+* **api:** handle new FONJEP file with versements ([5d5a762](https://github.com/betagouv/datasubvention/commit/5d5a762eabcc0ff212c4b5454ee9d57d4a389044))
+* **front:** disable own account suppression ([46096c3](https://github.com/betagouv/datasubvention/commit/46096c3e58abb3866cb754c29cc3c44eb0ef39cb))
+* **front:** move home page to svelte ([#441](https://github.com/betagouv/datasubvention/issues/441)) ([be65658](https://github.com/betagouv/datasubvention/commit/be65658c1e4831ab713b433b85d99eda6841d3b0))
+* **front:** use a unique GenericModal ([6351e5c](https://github.com/betagouv/datasubvention/commit/6351e5c95c37ee1baf0ce884f0c340138c7a4ba4))
+
+
+
+
+
 ## [0.14.8](https://github.com/betagouv/datasubvention/compare/v0.14.7...v0.14.8) (2022-09-21)
 
 
