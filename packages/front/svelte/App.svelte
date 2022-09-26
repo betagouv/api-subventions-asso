@@ -10,7 +10,7 @@
     import { setContext } from "svelte";
 
     const route = location.pathname;
-
+    const searchParams = new URLSearchParams(location.search);
     setContext("app", {
         getEnv: () => ENV,
         getName: () => "Data.Subvention",
@@ -25,7 +25,7 @@
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">
-            <Router {route} />
+            <Router {route} {searchParams} />
         </div>
         <Footer />
         <Theme />
