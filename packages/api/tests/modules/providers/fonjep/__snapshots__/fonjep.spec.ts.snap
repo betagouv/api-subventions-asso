@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepParser parse() should return an array of FonjepSubventionEntity 1`] = `
+exports[`FonjepParser parse() should return an object with subventions and versements 1`] = `
 Object {
   "subventions": Array [
     FonjepSubventionEntity {
