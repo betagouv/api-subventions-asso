@@ -1,6 +1,6 @@
 import FonjepEntityAdapter from './adapters/FonjepEntityAdapter';
 import fonjepService, { FONJEP_SERVICE_ERRORS } from './fonjep.service';
-import fonjepRepository from "./repositories/fonjep.repository";
+import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
 import { SubventionEntity, VersementEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity"
 import * as Validators from "../../../shared/Validators";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
@@ -11,7 +11,7 @@ const SIREN = "002034000";
 const SIRET = `${SIREN}32010`;
 const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.slice(0, 6);
-const findByIdMock: jest.SpyInstance<Promise<unknown>> = jest.spyOn(fonjepRepository, "findById");
+const findByIdMock: jest.SpyInstance<Promise<unknown>> = jest.spyOn(fonjepSubventionRepository, "findById");
 const toDemandeSubventionMock = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
 const toVersementMock = jest.spyOn(FonjepEntityAdapter, "toVersement");
 const isSiretMock = jest.spyOn(Validators, "isSiret");
@@ -19,7 +19,7 @@ const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
 const isDatesMock = jest.spyOn(Validators, "isDates");
 const isStringsValidMock = jest.spyOn(Validators, "isStringsValid");
 const isNumbersValidMock = jest.spyOn(Validators, "isNumbersValid");
-const findBySiretMock = jest.spyOn(fonjepRepository, "findBySiret");
+const findBySiretMock = jest.spyOn(fonjepSubventionRepository, "findBySiret");
 
 const replaceDateWithFakeTimer = value => {
     if (value instanceof Date) {
@@ -133,7 +133,7 @@ describe("FonjepService", () => {
         it("should create entity", async () => {
             validateEntityMock.mockImplementationOnce(() => ({ success: true }));
             // @ts-expect-error: mock repository
-            jest.spyOn(fonjepRepository, "create").mockImplementationOnce(async () => entity);
+            jest.spyOn(fonjepSubventionRepository, "create").mockImplementationOnce(async () => entity);
             const entity = { ...SubventionEntity };
             const expected = { success: true };
             const actual = await fonjepService.createSubventionEntity(entity);
@@ -143,7 +143,7 @@ describe("FonjepService", () => {
         it("should call repository", async () => {
             validateEntityMock.mockImplementationOnce(() => ({ success: true }));
             // @ts-expect-error: mock repository
-            const repoCreateMock = jest.spyOn(fonjepRepository, "create").mockImplementationOnce(async () => expected);
+            const repoCreateMock = jest.spyOn(fonjepSubventionRepository, "create").mockImplementationOnce(async () => expected);
             const expected = { ...SubventionEntity };
             await fonjepService.createSubventionEntity(expected);
             expect(repoCreateMock).toHaveBeenCalledWith(expected);
@@ -244,7 +244,7 @@ describe("FonjepService", () => {
     })
 
     describe("dropCollection()", () => {
-        const mockDrop = jest.spyOn(fonjepRepository, "drop");
+        const mockDrop = jest.spyOn(fonjepSubventionRepository, "drop");
         it("return true if drop() succeed", async () => {
             mockDrop.mockImplementationOnce(async () => true);
             const exepected = true;

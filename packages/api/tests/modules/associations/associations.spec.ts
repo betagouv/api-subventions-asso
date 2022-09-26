@@ -1,7 +1,7 @@
 import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
 import osirisRequestRepository from '../../../src/modules/providers/osiris/repositories/osiris.request.repository';
-import fonjepRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.repository';
+import fonjepSubventionRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository';
 import { SubventionEntity as FonjepEntityFixture } from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
@@ -13,7 +13,7 @@ describe("/association", () => {
         jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => [])
         await osirisRequestRepository.add(OsirisRequestEntityFixture);
 
-        await fonjepRepository.create(FonjepEntityFixture);
+        await fonjepSubventionRepository.create(FonjepEntityFixture);
     })
 
     describe("/{structure_identifier}/subventions", () => {
