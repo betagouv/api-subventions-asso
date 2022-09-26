@@ -1,7 +1,7 @@
 import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
 import FonjepCliController from './fonjep.cli.controller'
 import FonjepParser from "../../fonjep.parser";
-import fonjepSubventionRepository from "../../repositories/fonjep.subvention.repository";
+import fonjespSubventionRepository from "../../repositories/fonjep.subvention.repository";
 import fonjepParserResponse from "../../__fixtures__/fonjepParserResponse.json";
 import fonjepService from "../../fonjep.service";
 jest.mock("fs");
