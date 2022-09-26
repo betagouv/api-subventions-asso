@@ -86,7 +86,10 @@ export function xlsParseWithPageName(content: Buffer) {
 export function ExcelDateToJSDate(serial: number) {
     const utc_days = Math.floor(serial - 25569);
     const utc_value = utc_days * 86400;
-    const date_info = new Date(utc_value * 1000);
+    const date_info = new Date(utc_value * 1000).toISOString();
+
+    const [year, month, rest] = date_info.split("-");
+    const date = rest.substring(0, 2);
 
     const fractional_day = serial - Math.floor(serial) + 0.0000001;
 
@@ -99,5 +102,5 @@ export function ExcelDateToJSDate(serial: number) {
     const hours = Math.floor(total_seconds / (60 * 60));
     const minutes = Math.floor(total_seconds / 60) % 60;
 
-    return new Date(Date.UTC(date_info.getFullYear(), date_info.getMonth(), date_info.getDate(), hours, minutes, seconds));
+    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(date), hours, minutes, seconds));
 }

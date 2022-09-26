@@ -4,7 +4,7 @@ import { Personne } from '../shared/Personne';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Siret } from "../shared/Siret";
 import { DemandeSubvention } from "./DemandeSubvention";
-import { Versement } from "./Versement";
+import { Versement } from "../versements/Versement";
 
 export interface Etablissement {
     demandes_subventions?: DemandeSubvention[] | null

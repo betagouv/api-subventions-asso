@@ -91,13 +91,17 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
         } else throw new StructureIdentifiersError()
     }
 
-    private buildHeadcountUrl(siret, subtractMonths = 0) {
-        const today = new Date();
-        if (subtractMonths != 0) today.setMonth(today.getMonth() - subtractMonths);
-        const year = today.getFullYear();
-        let month: string | number = today.getMonth() + 1;
-        month = month < 10 ? "0" + month : month;
-        return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret}`;
+    private buildHeadcountUrl(siret: Siret, subtractMonths = 0) {
+        const today = new Date().toISOString();
+        const split = today.split("-");
+        let year = Number(split[0]);
+        let month = Number(split[1]) - subtractMonths;
+        if (month <= 0) {
+            year -= 1
+            month = 12 - month;
+        }
+        if (month < 10) return `v2/effectifs_mensuels_acoss_covid/${year}/0${month}/${siret}`;
+        else return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret}`;
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
