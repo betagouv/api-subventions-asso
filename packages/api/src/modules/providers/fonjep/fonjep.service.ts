@@ -5,7 +5,7 @@ import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubven
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import fonjepRepository from "./repositories/fonjep.repository";
+import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
@@ -35,7 +35,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
         if (!valid.success) return valid;
 
-        await fonjepRepository.create(entity);
+        await fonjepSubventionRepository.create(entity);
 
         return {
             success: true
@@ -108,7 +108,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
     isDemandesSubventionsProvider = true
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const entities = await fonjepRepository.findBySiret(siret);
+        const entities = await fonjepSubventionRepository.findBySiret(siret);
 
         if (entities.length === 0) return null;
 
@@ -116,7 +116,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
     }
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const entities = await fonjepRepository.findBySiren(siren);
+        const entities = await fonjepSubventionRepository.findBySiren(siren);
 
         if (entities.length === 0) return null;
 
@@ -129,7 +129,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
     }
 
     async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
-        const entity = await fonjepRepository.findById(id);
+        const entity = await fonjepSubventionRepository.findById(id);
         if (!entity) throw new Error("DemandeSubvention not found");
         return FonjepEntityAdapter.toDemandeSubvention(entity);
     }
@@ -143,7 +143,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
     isEtablissementProvider = true
 
     async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
-        const entities = await fonjepRepository.findBySiret(siret);
+        const entities = await fonjepSubventionRepository.findBySiret(siret);
 
         if (entities.length === 0) return null;
 
@@ -151,7 +151,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
     }
 
     async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
-        const entities = await fonjepRepository.findBySiren(siren);
+        const entities = await fonjepSubventionRepository.findBySiren(siren);
 
         if (entities.length === 0) return null;
 
@@ -160,7 +160,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     async dropCollection() {
         try {
-            return await fonjepRepository.drop();
+            return await fonjepSubventionRepository.drop();
         } catch (e) {
             return false;
         }
@@ -168,7 +168,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     async renameCollection(name: string) {
         try {
-            return await fonjepRepository.rename(name);
+            return await fonjepSubventionRepository.rename(name);
         } catch (e) {
             return false;
         }

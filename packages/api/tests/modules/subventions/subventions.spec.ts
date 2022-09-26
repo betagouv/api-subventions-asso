@@ -1,7 +1,7 @@
 import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
 import osirisRequestRepository from '../../../src/modules/providers/osiris/repositories/osiris.request.repository';
-import fonjepRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.repository';
+import fonjepSubventionRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository';
 import { SubventionEntity as FonjepEntityFixture } from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import { Document } from 'mongodb';
@@ -14,9 +14,9 @@ let fonjepDocumentId: string | undefined;
 describe("/subvention", () => {
     beforeEach(async () => {
         await osirisRequestRepository.add(OsirisRequestEntityFixture)
-        await fonjepRepository.create(FonjepEntityFixture)
+        await fonjepSubventionRepository.create(FonjepEntityFixture)
         osirisDocumentId = ((await osirisRequestRepository.findBySiret(OsirisRequestEntityFixture.legalInformations.siret))[0] as Document)._id.toString();
-        fonjepDocumentId = ((await fonjepRepository.findBySiret(FonjepEntityFixture.legalInformations.siret))[0] as Document)._id.toString();
+        fonjepDocumentId = ((await fonjepSubventionRepository.findBySiret(FonjepEntityFixture.legalInformations.siret))[0] as Document)._id.toString();
     })
 
     describe("/{id}", () => {
