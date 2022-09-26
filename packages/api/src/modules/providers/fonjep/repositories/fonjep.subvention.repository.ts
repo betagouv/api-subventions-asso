@@ -3,8 +3,8 @@ import { ObjectId } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 
-export class FonjepRepository extends MigrationRepository<FonjepSubventionEntity> {
-    readonly collectionName = "fonjep";
+export class FonjepSubventionRepository extends MigrationRepository<FonjepSubventionEntity> {
+    readonly collectionName = "fonjepSubvention";
 
     async create(entity: FonjepSubventionEntity) {
         return await this.collection.insertOne(entity);
@@ -35,6 +35,6 @@ export class FonjepRepository extends MigrationRepository<FonjepSubventionEntity
     }
 }
 
-const fonjepRepository = new FonjepRepository();
+const fonjepSubventionRepository = new FonjepSubventionRepository();
 
-export default fonjepRepository;
+export default fonjepSubventionRepository;

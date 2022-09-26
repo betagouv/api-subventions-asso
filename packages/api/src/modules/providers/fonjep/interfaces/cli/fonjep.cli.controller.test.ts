@@ -1,7 +1,7 @@
 import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
 import FonjepCliController from './fonjep.cli.controller'
 import FonjepParser from "../../fonjep.parser";
-import fonjepRepository from "../../repositories/fonjep.repository";
+import fonjepSubventionRepository from "../../repositories/fonjep.subvention.repository";
 import fonjepParserResponse from "../../__fixtures__/fonjepParserResponse.json";
 import fonjepService from "../../fonjep.service";
 jest.mock("fs");
@@ -115,7 +115,7 @@ describe("FonjepCliController", () => {
 
     describe("drop()", () => {
         it("should call FonjepRepository.drop()", async () => {
-            const mockDrop = jest.spyOn(fonjepRepository, "drop").mockImplementationOnce(jest.fn());
+            const mockDrop = jest.spyOn(fonjepSubventionRepository, "drop").mockImplementationOnce(jest.fn());
             const expected = 1;
             await cli.drop();
             const actual = mockDrop.mock.calls.length;
