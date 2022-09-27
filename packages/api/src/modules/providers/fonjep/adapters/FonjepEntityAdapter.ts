@@ -54,6 +54,7 @@ export default class FonjepEntityAdapter {
         return {
             id: entity.indexedInformations.unique_id,
             codePoste: toPV(entity.indexedInformations.code_poste),
+            versementKey: toPV(entity.indexedInformations.code_poste),
             siret: toPV(entity.legalInformations.siret),
             amount: toPV(entity.indexedInformations.montant_paye),
             dateOperation: toPV(entity.indexedInformations.date_versement),

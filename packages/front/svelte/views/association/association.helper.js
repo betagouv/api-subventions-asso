@@ -18,113 +18,62 @@ const linkVersementsToSubvention = elements =>
         const subventions = group.filter(element => element.isSub);
         const versements = group.filter(element => element.isVersement && isVersementValid(element));
 
-        // CAS 1 : plusieurs subventions par clé (uniquement FONJEP ?)
-        if (subventions.length > 1) {
-            subventions.forEach(subvention => {
-                const subventionVersements = versements.filter(
-                    versement => new Date(versement.periodeDebut).getFullYear() == subvention.annee_demande
-                );
-                const siret = subvention.siret || subventionVersements.find(v => v.siret)?.siret;
-                // ATM annee_demande est toujours renseignée dans les exports FONJEP
-                // À voir si on fait un cas particulier si il y a des subventions sans annee renseignée
-                // avec des versements qui se retrouveraient orphelins
-                if (subvention.annee_demande) {
-                    acc.push({
-                        subvention,
-                        versements: subventionVersements,
-                        siret,
-                        date: new Date(subvention.annee_demande),
-                        year: subvention.annee_demande
-                    });
-                } else {
-                    acc.push({
-                        subvention,
-                        versements: subventionVersements,
-                        siret,
-                        date: null,
-                        year: null
-                    });
-                }
-            });
-        } else if (subventions.length == 1) {
-            const subvention = subventions[0];
-            acc.push({
-                subvention,
-                versements: versements,
-                date: new Date(subvention.annee_demande),
-                year: subvention.annee_demande
-            });
-        }
+        const lastSub = subventions.reduce((lastSub, curr) => {
+            if (!lastSub) return curr;
+
+            if (lastSub.date_fin < curr.date_fin) return curr;
+            return lastSub;
+        }, null)
+
+        const siret = lastSub?.siret || versements.find(v => v.siret)?.siret;
+
+        if (!siret) throw new Error ("Gros pb victor !!!!");
+        acc.push({
+            subvention: lastSub,
+            versements: versements,
+            siret,
+            date: lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastVersementsDate(versements),
+            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastVersementsDate(versements).getFullYear(),
+        });
+        
         return acc;
     }, []);
-
-// const keepMostRecentSubvention = subventions => {
-//     return subventions.reduce((acc, curr) => {
-//         if (curr.date_fin > acc.date_fin) acc = curr;
-//         return acc;
-//     });
-// };
 
 export const mapSubventionsAndVersements = ({ subventions, versements }) => {
     const taggedSubventions = subventions.map(s => ({ ...s, isSub: true }));
     const taggedVersements = versements.map(s => ({ ...s, isVersement: true }));
 
     const elementsGroupedByVersementKey = [...taggedSubventions, ...taggedVersements].reduce(groupByVersementKey, {
-        ej: {},
-        codePoste: {},
-        none: []
+        none: [],
+        withKey: {}
     });
-
-    // Remove duplicate FONJEP subventions for a same year
-    // Some times there is two subventions for a same year (closed and reopen) and we keep only the most recent one
-    // const codePosteElements = elementsGroupedByVersementKey.codePoste.forEach(elements => {
-    //     const subventions = elements.filter(e => e.isSub);
-    //     if (subventions.length === 1) return elements;
-    //     return elements.filter(e => e.isVersement).push(keepMostRecentSubvention(subventions));
-    // });
-
     const flatenElements = [
-        ...Object.values(elementsGroupedByVersementKey.ej),
-        ...Object.values(elementsGroupedByVersementKey.codePoste),
+        ...Object.values(elementsGroupedByVersementKey.withKey),
         ...elementsGroupedByVersementKey.none
     ];
 
     const uniformizedElements = linkVersementsToSubvention(flatenElements);
-
     return uniformizedElements.sort(sortByDateAsc);
 };
 
+const getYearOfItem = (item) => {
+    if(item.isSub) return item.annee_demande;
+    if(item.periodeDebut) return new Date(item.periodeDebut).getFullYear()
+    return ""
+}
+
 const groupByVersementKey = (acc, curr) => {
-    // Osiris / Chorus
-    if (curr.ej) {
-        if (!acc.ej[curr.ej]) acc.ej[curr.ej] = [];
-        acc.ej[curr.ej].push(curr);
+    if (!curr.versementKey) { // impossible de lier car pas de clef de liaison
+        acc.none.push([curr]);
         return acc;
     }
-    const fonjepKey = curr.codePoste || curr.versementKey;
-    // Fonjep
-    if (fonjepKey) {
-        if (!acc.codePoste[fonjepKey]) acc.codePoste[fonjepKey] = [];
-        const item = acc.codePoste[fonjepKey];
-        if (curr.isSub) {
-            const previousSubIndex = item.findIndex(
-                element => element.isSub && element.annee_demande === curr.annee_demande
-            );
-            console.log(item);
-            if (previousSubIndex == -1) {
-                item.push(curr);
-            } else {
-                console.log(previousSubIndex, item[previousSubIndex].date_fin, curr.date_fin);
-                if (item[previousSubIndex].date_fin < curr.date_fin) {
-                    item.splice(previousSubIndex, 1, curr);
-                }
-            }
-        } else {
-            acc.codePoste[fonjepKey].push(curr);
-        }
-    }
-    // Wrap it in array for ease of use (every sub item is an array)
-    else acc.none.push([curr]);
+
+    const key = curr.versementKey + '-' + getYearOfItem(curr); // Discuter avec maxime pour faire cette manip cotée api
+
+    if (!acc.withKey[key]) acc.withKey[key] = [];
+
+    acc.withKey[key].push(curr);
+
     return acc;
 };
 
