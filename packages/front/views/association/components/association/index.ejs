@@ -4,8 +4,8 @@
             <button class="fr-accordion__btn" aria-expanded="true" aria-controls="fr-accordion-0-body-0">Informations administratives</button>
         </h3>
         <div class="fr-collapse" id="fr-accordion-0-body-0">
-            <% if (helper.hasValue(association.denomination)) { %>
-                <h4><%- helper.getValue(association.denomination) -%> </h4>
+            <% if (helper.hasValue(association.denomination_rna || association.denomination_siren)) { %>
+                <h4><%- helper.getValue(association.denomination_rna || association.denomination_siren) -%> </h4>
             <% } %>
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
                 <div class="fr-col fr-col-lg-6">
