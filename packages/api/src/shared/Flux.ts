@@ -34,8 +34,8 @@ export default class Flux<T> {
     }
 
     close(){
-        this.onCloseCb();
         this.isClose = true;
+        this.onCloseCb();
 
         return this;
     }
