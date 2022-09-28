@@ -149,7 +149,8 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
         return await this.getAssociationsBySiren(siretToSiren(siret));
     }
 
-    async getAssociationsByRna(rna: string): Promise<Association[] | null> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async getAssociationsByRna(_rna: string): Promise<Association[] | null> {
         return null;
     }
 
