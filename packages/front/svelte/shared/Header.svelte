@@ -9,6 +9,7 @@
     const description = getDescription();
     const contact = getContact();
     const env = getEnv();
+    console.log(user);
 </script>
 
 <header class="fr-header">
@@ -82,7 +83,7 @@
                                     </a>
                                 </li>
                             {/if}
-                            {#if user?.token}
+                            {#if user?.jwt}
                                 <li>
                                     <a
                                         class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
