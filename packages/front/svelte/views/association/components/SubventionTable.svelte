@@ -7,6 +7,7 @@
     import { withTwoDigitYear } from "../../../helpers/dateHelper";
     import helpers from "../../../../src/shared/helpers/EJSHelper";
     import SubventionInfoModal from "./SubventionInfoModal.svelte";
+    import { modal, data } from "../../../store/modal.store";
 
     export let elements = [];
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -14,7 +15,12 @@
     export let currentSort = null;
     export let sortDirection = null;
 
-    let currentSelectSub = null;
+    const displayModal = subvention => {
+        console.log(subvention);
+        data.update(() => ({ subvention }));
+        modal.update(() => SubventionInfoModal);
+    };
+
 
     const trim = (str, length) => {
         if (str.length > length) {
@@ -117,8 +123,8 @@
                         {#if element.subvention.actions_proposee?.length}
                             <Button
                                 icon="information-line"
-                                ariaControls="fr-modal-subvention-modal"
-                                on:click={() => (currentSelectSub = element.subvention)} />
+                                ariaControls="fr-modal"
+                                on:click={() => displayModal(element.subvention)} />
                         {:else}
                             <div class="tooltip-wrapper">
                                 <span class="tooltip">Nous ne disposons pas de plus d'informations</span>
@@ -141,8 +147,6 @@
         {/each}
     </svelte:fragment>
 </Table>
-
-<SubventionInfoModal subvention={currentSelectSub} id="subvention-modal" />
 
 <style>
     /* This is a quick fix and if needed a Tooltip component should be made */
