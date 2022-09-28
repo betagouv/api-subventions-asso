@@ -24,9 +24,9 @@
     </div>
 </div>
 <div class="rna-siren">
-    <Table bordered={true}>
+    <Table bordered={false}>
         <svelte:fragment slot="head">
-            <td class="two-dimension two-dimension-empty" />
+            <td class="two-dimension" />
             <td>Informations provenant du RNA</td>
             <td>Informations provenant du SIREN</td>
         </svelte:fragment>
