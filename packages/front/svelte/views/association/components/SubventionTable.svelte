@@ -16,7 +16,6 @@
     export let sortDirection = null;
 
     const displayModal = subvention => {
-        console.log(subvention);
         data.update(() => ({ subvention }));
         modal.update(() => SubventionInfoModal);
     };

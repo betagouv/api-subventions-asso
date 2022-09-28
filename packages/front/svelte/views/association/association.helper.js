@@ -26,8 +26,6 @@ const linkVersementsToSubvention = elements =>
         }, null)
 
         const siret = lastSub?.siret || versements.find(v => v.siret)?.siret;
-
-        if (!siret) throw new Error ("Gros pb victor !!!!");
         acc.push({
             subvention: lastSub,
             versements: versements,

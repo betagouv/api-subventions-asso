@@ -4,12 +4,10 @@
     import { getContext } from "svelte";
 
     const user = $userStore;
-    const { getName, getDescription, getContact, getEnv } = getContext("app");
+    const { getName, getDescription, getEnv } = getContext("app");
     const name = getName();
     const description = getDescription();
-    const contact = getContact();
     const env = getEnv();
-    console.log(user);
 </script>
 
 <header class="fr-header">
