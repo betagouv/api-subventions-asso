@@ -30,7 +30,6 @@
     let noVersements = false;
 
     const updateNoVersements = () => (noVersements = !countVersements(elements));
-
     $: elements, updateNoVersements();
 </script>
 
@@ -67,7 +66,7 @@
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each elements as element, key}
-            {#if !element.versements}
+            {#if !element.versements || element.versements.length === 0 }
                 <tr>
                     <TableCell colspan="3" />
                 </tr>
