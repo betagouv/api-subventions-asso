@@ -3,6 +3,7 @@
     import TitleWithData from "../../../components/TitleWithData.svelte";
     import DateHelper from "../../../../src/shared/helpers/DateHelper";
     import Table from "../../../dsfr/Table.svelte";
+    import { valueOrHyphen } from "../../../helpers/dataHelper";
 
     export let association;
 </script>
@@ -33,23 +34,23 @@
         <svelte:fragment slot="body">
             <tr>
                 <td class="two-dimension"><b>Dénomination</b></td>
-                <td>{association.denomination_rna}</td>
-                <td>{association.denomination_siren}</td>
+                <td>{valueOrHyphen(association.denomination_rna)}</td>
+                <td>{valueOrHyphen(association.denomination_siren)}</td>
             </tr>
             <tr>
                 <td class="two-dimension"><b>Adresse du siège</b></td>
-                <td>{getAddress(association.adresse_siege_rna)}</td>
-                <td>{getAddress(association.adresse_siege_siren)}</td>
+                <td>{valueOrHyphen(getAddress(association.adresse_siege_rna))}</td>
+                <td>{valueOrHyphen(getAddress(association.adresse_siege_siren))}</td>
             </tr>
             <tr>
                 <td class="two-dimension"><b>Date d'immatriculation</b></td>
-                <td>{DateHelper.formatDate(association.date_creation_rna)}</td>
-                <td>{DateHelper.formatDate(association.date_creation_siren)}</td>
+                <td>{association.date_creation_rna ? DateHelper.formatDate(association.date_creation_rna): '-'}</td>
+                <td>{association.date_creation_siren ? DateHelper.formatDate(association.date_creation_siren): '-'}</td>
             </tr>
             <tr>
                 <td class="two-dimension"><b>Date de modification</b></td>
-                <td>{DateHelper.formatDate(association.date_modification_rna)}</td>
-                <td>{DateHelper.formatDate(association.date_creation_siren)}</td>
+                <td>{association.date_modification_rna ? DateHelper.formatDate(association.date_modification_rna): '-'}</td>
+                <td>{association.date_creation_siren ? DateHelper.formatDate(association.date_creation_siren): '-'}</td>
             </tr>
         </svelte:fragment>
     </Table>
