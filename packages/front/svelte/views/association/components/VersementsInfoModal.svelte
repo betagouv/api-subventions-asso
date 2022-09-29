@@ -20,7 +20,7 @@
             {#each $data.versements as versement}
                 <tr>
                     <TableCell primary="true" position="center">{numberToEuro(versement.amount)}</TableCell>
-                    <TableCell position="center">{versement.domaineFonctionnel || versement.codePoste}</TableCell>
+                    <TableCell position="center">{valueOrHyphen(versement.domaineFonctionnel)}</TableCell>
                     <TableCell position="center">{valueOrHyphen(versement.activitee)}</TableCell>
                     <TableCell position="center">{valueOrHyphen(versement.centreFinancier)}</TableCell>
                     <TableCell position="center">
