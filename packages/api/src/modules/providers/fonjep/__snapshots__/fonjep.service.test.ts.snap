@@ -46,6 +46,12 @@ Array [
       "type": "string",
       "value": "00000000000002",
     },
+    "versementKey": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "J00034",
+    },
   },
 ]
 `;
@@ -96,6 +102,12 @@ Array [
       "type": "string",
       "value": "00000000000002",
     },
+    "versementKey": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "J00034",
+    },
   },
 ]
 `;
@@ -145,6 +157,12 @@ Array [
       "provider": "Extranet FONJEP",
       "type": "string",
       "value": "00000000000002",
+    },
+    "versementKey": Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "J00034",
     },
   },
 ]

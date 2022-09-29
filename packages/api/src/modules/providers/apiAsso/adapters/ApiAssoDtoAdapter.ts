@@ -17,7 +17,6 @@ export default class ApiAssoDtoAdapter {
             return new Date(Date.UTC(year, month - 1, day));
         }
 
-        console.log(structure.identite.date_modif_rna);
         if (structure.identite.date_modif_rna) {
             const toRnaPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameRna, toDate(structure.identite.date_modif_rna));
             const rnaAssociation: Association = {

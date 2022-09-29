@@ -6,8 +6,8 @@
     <div class="fr-collapse" id="fr-accordion-1-body-1">
         <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
             <div class="fr-col fr-col-lg-6">
-                <% if (helper.hasValue(association.denomination)) { %>
-                    <p><%- helper.returnValueOrHyphen(helper.getValue(association.denomination))-%> </p>
+                <% if (helper.hasValue(association.denomination_rna || association.denomination_siren)) { %>
+                    <p><%- helper.returnValueOrHyphen(helper.getValue(association.denomination_rna || association.denomination_siren))-%> </p>
                 <% } %>
             </div>
             <div class="fr-col fr-col-lg-6">

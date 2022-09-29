@@ -63,7 +63,7 @@
                         des demandes ont été accordées en
                         <b>{data.selectedYear}.</b>
                         <br />
-                        D'après les données récupérées via Osiris et Fonjep.
+                        D'après les données récupérées via Dauphin, Osiris et Fonjep.
                     </p>
                 </div>
                 <div class="versements">
@@ -73,7 +73,7 @@
                         :
                         <b>{valueOrHyphen(numberToEuro(data.versementsAmount))}</b>
                         <br />
-                        D'après les données récupérées via Chorus.
+                        D'après les données récupérées via Chorus et Fonjep.
                     </p>
                 </div>
             </div>
