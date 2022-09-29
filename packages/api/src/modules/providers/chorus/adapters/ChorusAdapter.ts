@@ -10,6 +10,7 @@ export default class ChorusAdapter {
         return {
             id: entity._id.toString(),
             ej: ProviderValueAdapter.toProviderValue(entity.indexedInformations.ej, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            versementKey: ProviderValueAdapter.toProviderValue(entity.indexedInformations.ej, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             siret: ProviderValueAdapter.toProviderValue(entity.indexedInformations.siret, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             amount: ProviderValueAdapter.toProviderValue(entity.indexedInformations.amount, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             dateOperation: ProviderValueAdapter.toProviderValue(entity.indexedInformations.dateOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),

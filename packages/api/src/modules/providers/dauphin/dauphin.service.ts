@@ -41,7 +41,8 @@ export class DauphinService implements DemandesSubventionsProvider {
         return (await dauhpinCachesRepository.findBySiren(siren)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
     }
 
-    async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return null;
     }
 

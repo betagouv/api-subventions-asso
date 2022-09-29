@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface, DefaultObject } from "../../../../../@types";
+import { CliStaticInterface } from "../../../../../@types";
 import FonjepParser from "../../fonjep.parser";
 // import { FonjepRowData } from "../../@types/FonjepRawData";
 import fonjepService, { CreateFonjepResponse, RejectedRequest } from "../../fonjep.service";

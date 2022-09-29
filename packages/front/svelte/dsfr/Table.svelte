@@ -31,6 +31,10 @@
         border-bottom: #3a3a3a solid 2px;
     }
 
+    thead {
+        box-shadow: none;
+    }
+
     tbody :global(td) {
         border-bottom: 1px #e5e5e5 solid;
     }

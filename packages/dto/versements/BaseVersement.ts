@@ -4,6 +4,7 @@ import { Siret } from "../shared/Siret";
 export interface BaseVersement {
     id: string,
     ej?: ProviderValue<string>;
+    versementKey: ProviderValue<string>;
     codePoste?: ProviderValue<string>;
     siret: ProviderValue<Siret>;
     amount: ProviderValue<number>;

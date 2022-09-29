@@ -4,10 +4,9 @@
     import { getContext } from "svelte";
 
     const user = $userStore;
-    const { getName, getDescription, getContact, getEnv } = getContext("app");
+    const { getName, getDescription, getEnv } = getContext("app");
     const name = getName();
     const description = getDescription();
-    const contact = getContact();
     const env = getEnv();
 </script>
 
@@ -82,7 +81,7 @@
                                     </a>
                                 </li>
                             {/if}
-                            {#if user?.token}
+                            {#if user?.jwt}
                                 <li>
                                     <a
                                         class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
