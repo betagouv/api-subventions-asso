@@ -52,7 +52,7 @@ app.use(function (req, res, next) {
     res.locals.appRepo = appRepo;
     res.locals.contactEmail = contactEmail;
     res.locals.page = req.url;
-
+    res.locals.env = process.env["ENV"];
     res.locals.helper = EJSHelper;
     res.locals.components = Components;
     res.locals.currentSession = req.session;

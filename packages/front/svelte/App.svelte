@@ -3,6 +3,7 @@
     import { ENV } from "../src/shared/config";
     import Auth from "./shared/Auth.svelte";
     import GenericModal from "./dsfr/GenericModal.svelte";
+    import Matomo from "./components/Matomo.svelte";
     import Router from "./shared/Router.svelte";
     import Header from "./shared/Header.svelte";
     import Footer from "./shared/Footer.svelte";
@@ -20,6 +21,9 @@
     });
 </script>
 
+{#if ENV.toLowerCase() == "prod" }
+    <Matomo/>
+{/if}
 <GenericModal />
 <Auth>
     <div class="app-container">
