@@ -80,7 +80,7 @@ export const getLastVersementsDate = versements => {
         const dateA = new Date(versementA.dateOperation);
         const dateB = new Date(versementB.dateOperation);
 
-        return dateA.getTime() - dateB.getTime();
+        return dateB.getTime() - dateA.getTime();
     });
 
     if (!orderedVersements.length) return null;
