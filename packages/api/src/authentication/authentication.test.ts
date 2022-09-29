@@ -58,56 +58,12 @@ describe("expressAuthentication", () => {
             query: {},
             headers: {}
         } as express.Request;
-        expect(expressAuthentication(req, SECURITY_NAME)).rejects.toThrowError("No token provided");
-    });
-
-    it("should throw error when token parsing failed", () => {
-        // @ts-expect-error: mock
-        verifyMock.mockImplementationOnce((_, __, cb: (err: boolean, d: unknown) => void) => { cb(true, {}) });
-
-        const REQ_WITH_WRONG_TOKEN = {
-            body: {},
-            query: {},
-            headers: {
-                "x-access-token": "WRONG_TOKEN"
-            } as unknown
-        } as express.Request;
-
-        expect(expressAuthentication(REQ_WITH_WRONG_TOKEN, SECURITY_NAME)).rejects.toThrowError("JWT parse error");
-    });
-
-    it("should throw an error when user is not found", async () => {
-        findByEmailMock.mockImplementationOnce(async () => null);
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME)).rejects.toThrowError("User not found");
-    });
-
-    it("should throw an error when JWT is not found", async () => {
-        findJwtByEmailMock.mockImplementationOnce(async () => ({ success: false } as UserServiceError));
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME)).rejects.toThrowError("JWT is not valid anymore");
-    });
-
-    it("should throw an error when JWT is not corresponding", async () => {
-        const TOKEN = "NOT_CORRESPONDING_TOKEN";
-        findJwtByEmailMock.mockImplementationOnce(() => Promise.resolve({ success: true, jwt: { token: TOKEN, expirateDate: new Date() } }))
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME)).rejects.toThrowError("JWT is not valid anymore");
-    });
-
-    it("should throw an error when JWT has expired", async () => {
-        findJwtByEmailMock.mockImplementationOnce(async () => ({ success: true, jwt: { token: DEFAULT_TOKEN, expirateDate: new Date(Date.now() - 1000 * 60 * 60 * 24) } }));
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME)).rejects.toThrowError("JWT has expired, please login try again");
+        expect(expressAuthentication(req, SECURITY_NAME)).rejects.toThrowError("User not logged");
     });
 
     it("should throw an error when user role is not allowed", async () => {
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME, ["admin"])).rejects.toThrowError("JWT does not contain required scope.");
+        const req = Object.assign({}, DEFAULT_REQ, {user: { roles: ["user"]}})
+        await expect(expressAuthentication(req, SECURITY_NAME, ["admin"])).rejects.toThrowError("JWT does not contain required scope.");
     });
 
-    it("should throw an error when user is not active", async () => {
-        findByEmailMock.mockImplementationOnce((email) => Promise.resolve({ email, roles: ["user"], active: false, _id: new ObjectId() }))
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME, ["admin"])).rejects.toThrowError("User is not active");
-    });
-
-    it("should validate user", async () => {
-        findByEmailMock.mockImplementationOnce((email) => Promise.resolve({ email, roles: ["user", "admin"], active: true, _id: new ObjectId() }))
-        await expect(expressAuthentication(DEFAULT_REQ, SECURITY_NAME, ["admin"])).resolves.toMatchObject({ email: "test@beta.gouv.fr", roles: ["user", "admin"], active: true })
-    });
 });

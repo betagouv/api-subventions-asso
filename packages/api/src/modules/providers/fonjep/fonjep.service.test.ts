@@ -27,12 +27,6 @@ const replaceDateWithFakeTimer = value => {
     } else return value
 }
 
-const replaceDateWithFakeTimer = value => {
-    if (value instanceof Date) {
-        return new Date();
-    } else return value
-}
-
 describe("FonjepService", () => {
     jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
 
