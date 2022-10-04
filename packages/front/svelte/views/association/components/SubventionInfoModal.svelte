@@ -1,39 +1,32 @@
 <script>
     import { beforeUpdate } from "svelte";
-
-    import Modal from "../../../dsfr/Modal.svelte";
+    import { data } from "../../../store/modal.store";
     import { numberToEuro } from "../../../helpers/dataHelper";
-
-    export let subvention;
-    export let id;
 
     let title = "Détails des informations pour la demande de subvention";
 
     beforeUpdate(() => {
-        if (subvention) {
-            title = `Détails des informations pour la demande ${subvention.status.toLowerCase()} auprès du service ${
-                subvention.service_instructeur
-            } pour un montant demandée de ${numberToEuro(subvention.montants.demande)}`;
+        if ($data.subvention) {
+            title = `Détails des informations pour la demande ${$data.subvention.status.toLowerCase()} auprès du service ${
+                $data.subvention.service_instructeur
+            } pour un montant demandée de ${numberToEuro($data.subvention.montants.demande)}`;
         }
     });
 </script>
 
-<Modal {title} modalId={id}>
-    <svelte:fragment slot="content">
-        {#if subvention}
-            {#each subvention.actions_proposee as action}
-                <div class="action">
-                    <h4>{action.intitule}</h4>
-                    {#each action.objectifs.split("\n") as line}
-                        {#if line.length}
-                            <p>{line}</p>
-                        {/if}
-                    {/each}
-                </div>
+
+{#if $data.subvention}
+    {#each $data.subvention.actions_proposee as action}
+        <div class="action">
+            <h4>{action.intitule}</h4>
+            {#each action.objectifs.split("\n") as line}
+                {#if line.length}
+                    <p>{line}</p>
+                {/if}
             {/each}
-        {/if}
-    </svelte:fragment>
-</Modal>
+        </div>
+    {/each}
+{/if}
 
 <style>
     .action {

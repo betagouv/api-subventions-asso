@@ -83,9 +83,14 @@ export class AuthentificationController extends Controller {
         // If you change the route please change in express.auth.hooks.ts
 
         if (req.user) { // Succesfuly logged
+
+            // Remove password from response
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { hashPassword, ...user } = (req.user as User);
+
             return {
                 success: true,
-                data: (req.user as User).jwt
+                data: user
             };
         }
 

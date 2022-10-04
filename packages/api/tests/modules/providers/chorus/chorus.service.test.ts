@@ -275,6 +275,7 @@ describe("chorus.service", () => {
                 id: entity._id.toString(),
                 siret: toPV("10000000000000"),
                 ej: toPV("1000000000"),
+                versementKey: toPV("1000000000"),
                 amount: toPV(1000),
                 dateOperation: toPV(now),
                 branche: toPV("BRANCHE"),
@@ -323,6 +324,7 @@ describe("chorus.service", () => {
                 id: entity._id.toString(),
                 siret: toPV("10000000000000"),
                 ej: toPV("1000000000"),
+                versementKey: toPV("1000000000"),
                 amount: toPV(1000),
                 dateOperation: toPV(now),
                 branche: toPV("BRANCHE"),
@@ -367,10 +369,11 @@ describe("chorus.service", () => {
         })
 
         it("should be find entity", async () => {
-            await expect(chorusService.getVersementsByEJ("1000000000")).resolves.toEqual([{
+            await expect(chorusService.getVersementsByKey("1000000000")).resolves.toEqual([{
                 id: entity._id.toString(),
                 siret: toPV("10000000000000"),
                 ej: toPV("1000000000"),
+                versementKey: toPV("1000000000"),
                 amount: toPV(1000),
                 dateOperation: toPV(now),
                 branche: toPV("BRANCHE"),
@@ -382,7 +385,7 @@ describe("chorus.service", () => {
             }]);
         })
         it("should be no find entity", async () => {
-            await expect(chorusService.getVersementsByEJ("2000000000")).resolves.toHaveLength(0);
+            await expect(chorusService.getVersementsByKey("2000000000")).resolves.toHaveLength(0);
         })
     })
 

@@ -1,4 +1,4 @@
-import { Siren, Siret, Versement, Association, Etablissement } from "@api-subventions-asso/dto";
+import { Siren, Siret, Versement, Association, Etablissement, DemandeSubvention } from "@api-subventions-asso/dto";
 import VersementsProvider from "./@types/VersementsProvider";
 import providers from "../providers";
 import { AssociationIdentifiers } from "../../@types";
@@ -10,10 +10,10 @@ import AssociationIdentifierError from "../../shared/errors/AssociationIdentifie
 export class VersementsService {
 
     async getVersementsByAssociation(identifier: AssociationIdentifiers) {
-        const type = getIdentifierType(identifier) ;
+        const type = getIdentifierType(identifier);
         if (!type || type === StructureIdentifiersEnum.siret) throw new AssociationIdentifierError();
 
-        let siren = type === StructureIdentifiersEnum.siren ? identifier : null; 
+        let siren = type === StructureIdentifiersEnum.siren ? identifier : null;
         if (!siren) {
             siren = await rnaSirenService.getSiren(identifier);
         }
@@ -34,16 +34,24 @@ export class VersementsService {
         asso.etablissements?.forEach(etablissement => {
             etablissement.versements = versements.filter(versement => versement.siret.value === etablissement.siret[0].value);
 
+            if (!etablissement.versements) return;
+
             etablissement.demandes_subventions?.forEach(demandeSubvention => {
-                const ej = demandeSubvention.ej && demandeSubvention.ej.value;
-
-                if (!ej) return;
-
-                demandeSubvention.versements = (etablissement.versements as Versement[]).filter(versement => versement.ej.value === ej);
+                if (!this.hasVersements(demandeSubvention)) return;
+                demandeSubvention.versements = this.filterVersementByKey(etablissement.versements, demandeSubvention.versementKey?.value);
             })
         })
 
         return asso;
+    }
+
+    hasVersements(demandeSubvention: DemandeSubvention) {
+        return !!(demandeSubvention.versementKey && demandeSubvention.versementKey.value);
+    }
+
+    filterVersementByKey(versements, key) {
+        if (!versements) return null;
+        return versements.filter(versement => (versement.ej?.value || versement.codePoste?.value) === key);
     }
 
     async aggregateVersementsByEtablissementSearch(etablissement: Etablissement) {
@@ -54,11 +62,8 @@ export class VersementsService {
         etablissement.versements = versements;
 
         etablissement.demandes_subventions?.forEach(demandeSubvention => {
-            const ej = demandeSubvention.ej && demandeSubvention.ej.value;
-
-            if (!ej) return;
-
-            demandeSubvention.versements = versements.filter(versement => versement.ej.value === ej);
+            if (!this.hasVersements(demandeSubvention)) return;
+            demandeSubvention.versements = this.filterVersementByKey(versements, demandeSubvention.versementKey?.value);
         })
 
         return etablissement;
@@ -71,7 +76,7 @@ export class VersementsService {
         )).flat()];
     }
 
-    private async getVersementsBySiren(siren: Siren): Promise<Versement[]> {
+    private async getVersementsBySiren(siren: Siren) {
         const providers = this.getProviders()
         return [...(await Promise.all(
             providers.map(p => p.getVersementsBySiren(siren))

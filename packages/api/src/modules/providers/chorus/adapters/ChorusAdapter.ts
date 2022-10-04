@@ -1,15 +1,16 @@
 import { WithId } from "mongodb";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
-import { Versement } from "@api-subventions-asso/dto";
+import { VersementChorus } from "@api-subventions-asso/dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus"
 
-    public static toVersement(entity: WithId<ChorusLineEntity>): Versement {
+    public static toVersement(entity: WithId<ChorusLineEntity>): VersementChorus {
         return {
             id: entity._id.toString(),
             ej: ProviderValueAdapter.toProviderValue(entity.indexedInformations.ej, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
+            versementKey: ProviderValueAdapter.toProviderValue(entity.indexedInformations.ej, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             siret: ProviderValueAdapter.toProviderValue(entity.indexedInformations.siret, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             amount: ProviderValueAdapter.toProviderValue(entity.indexedInformations.amount, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),
             dateOperation: ProviderValueAdapter.toProviderValue(entity.indexedInformations.dateOperation, ChorusAdapter.PROVIDER_NAME, entity.indexedInformations.dateOperation),

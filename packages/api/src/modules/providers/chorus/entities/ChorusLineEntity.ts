@@ -11,7 +11,6 @@ export default class ChorusLineEntity {
             path: ["N° EJ"],
         },
         siret: { path: ['Code taxe 1'] },
-        compte: { path: ['Compte général'] }, 
         codeBranche: { path: ['Branche CODE'] },
         branche: { path: ['Branche'] }, 
         activitee: { path: ["Référentiel de programmation"]},
@@ -21,7 +20,6 @@ export default class ChorusLineEntity {
         codeCentreFinancier: { path: ["Centre financier CODE"]},
         domaineFonctionnel: { path: ["Domaine fonctionnel"]},
         codeDomaineFonctionnel: { path: ["Domaine fonctionnel CODE"]},
-        typeOperation: { path: ['Type d\'opération CODE', "Grpe cptes fourniss. CODE"] }, 
         amount: { 
             path: [["EUR", "Montant payé"]],
             adapter: (value) => {
@@ -35,7 +33,7 @@ export default class ChorusLineEntity {
             adapter: (value) => {
                 if (!value) return value;
                 if (value != parseInt(value, 10).toString()) {
-                    const [day, month, year] = value.split('.').map(v => parseInt(v, 10));
+                    const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
                     return new Date(Date.UTC(year, month - 1, day));
                 }
 

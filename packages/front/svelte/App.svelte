@@ -2,6 +2,7 @@
     import "./global.css";
     import { ENV } from "../src/shared/config";
     import Auth from "./shared/Auth.svelte";
+    import GenericModal from "./dsfr/GenericModal.svelte";
     import Router from "./shared/Router.svelte";
     import Header from "./shared/Header.svelte";
     import Footer from "./shared/Footer.svelte";
@@ -9,7 +10,7 @@
     import { setContext } from "svelte";
 
     const route = location.pathname;
-
+    const searchParams = new URLSearchParams(location.search);
     setContext("app", {
         getEnv: () => ENV,
         getName: () => "Data.Subvention",
@@ -19,11 +20,12 @@
     });
 </script>
 
+<GenericModal />
 <Auth>
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">
-            <Router {route} />
+            <Router {route} {searchParams} />
         </div>
         <Footer />
         <Theme />

@@ -4,10 +4,9 @@
     import { getContext } from "svelte";
 
     const user = $userStore;
-    const { getName, getDescription, getContact, getEnv } = getContext("app");
+    const { getName, getDescription, getEnv } = getContext("app");
     const name = getName();
     const description = getDescription();
-    const contact = getContact();
     const env = getEnv();
 </script>
 
@@ -82,7 +81,7 @@
                                     </a>
                                 </li>
                             {/if}
-                            {#if user?.token}
+                            {#if user?.jwt}
                                 <li>
                                     <a
                                         class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
@@ -107,26 +106,6 @@
             <div class="fr-header__menu-links" />
         </div>
     </div>
-
-    <noscript>
-        <div class="fr-callout fr-callout--pink-tuile fr-my-2w">
-            <!-- svelte-ignore a11y-missing-content -->
-            <h4 class="fr-callout__title" />
-
-            <p class="fr-callout__text">
-                JavaScript est désactivé. Pour utiliser l'application, vous devez le réactiver.
-                <br />
-                Vous pouvez également
-                <a
-                    title="Contactez-nous"
-                    href="mailto:{contact}?subject=Javascript désactivé&body=Bonjour, %0D%0A %0D%0A Javascript est désactivé sur mon poste. Comment puis-je utiliser votre application ?&html=true"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    nous contacter.
-                </a>
-            </p>
-        </div>
-    </noscript>
 </header>
 
 <style>

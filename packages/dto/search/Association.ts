@@ -1,3 +1,4 @@
+import { ExtraitRcsDto } from "../associations/ExtraitRcsDto";
 import { Adresse } from '../shared/Adresse';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
@@ -5,7 +6,7 @@ import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
 import { DemandeSubvention } from './DemandeSubvention';
 import { Etablissement } from './Etablissement';
-import { Versement } from "./Versement";
+import { Versement } from "../versements/Versement";
 
 export interface Association {
     siren?: ProviderValues<Siren>,
@@ -22,7 +23,8 @@ export interface Association {
     code_objet_social_1?: ProviderValues<string>;
     code_objet_social_2?: ProviderValues<string>;
     etablisements_siret?: ProviderValues<Siret[]>;
-    adresse_siege?: ProviderValues<Adresse>,
+    adresse_siege_rna?: ProviderValues<Adresse>,
+    adresse_siege_siren?: ProviderValues<Adresse>,
     federation?: ProviderValues<string>,
     licencies?: { // Uniquement les asso sportive
         total?: ProviderValues<number>,
@@ -47,5 +49,6 @@ export interface Association {
         ETPT?: ProviderValues<number>,
     }
     versements?: Versement[],
-    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null
+    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null,
+    extrait_rcs?: ProviderValues<ExtraitRcsDto> | null
 }

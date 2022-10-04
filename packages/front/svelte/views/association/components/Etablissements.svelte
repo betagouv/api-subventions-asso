@@ -31,7 +31,7 @@
             <h3>Les établissements rattachés à cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each etablissements as etablissement}
-                    <Card title={association.denomination} url="/etablissement/{etablissement.siret}" target="_blank">
+                    <Card title={association.denomination_rna || association.denomination_siren} url="/etablissement/{etablissement.siret}" target="_blank">
                         {#if etablissement.siege}
                             <p>Siège de l'association</p>
                         {:else if !etablissement.ouvert}

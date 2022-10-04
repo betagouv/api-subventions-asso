@@ -8,6 +8,10 @@ export default interface UserDto {
     active: boolean
 }
 
+export interface UserWithJWTDto extends UserDto {
+    jwt: { token: string, expirateDate: Date }
+}
+
 export interface UserWithTokenDto extends UserDto {
     resetToken?: string,
     resetTokenDate?: Date

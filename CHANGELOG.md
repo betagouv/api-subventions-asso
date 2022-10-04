@@ -3,12 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.14.10](https://github.com/betagouv/api-subventions-asso/compare/v0.14.9...v0.14.10) (2022-10-04)
+## [0.15.3](https://github.com/betagouv/api-subventions-asso/compare/v0.15.2...v0.15.3) (2022-09-29)
 
 
 ### Bug Fixes
 
 * **api:** fix chorus parser ([df1745a](https://github.com/betagouv/api-subventions-asso/commit/df1745a9e1b3d249d3e9ad2b9e3de1a7439bd8be))
+* **front:** fix versement domaine foncitonel for fonjep versement ([5142146](https://github.com/betagouv/api-subventions-asso/commit/5142146a64511059fc56b6d171e22d4ab4856ab4))
 
 
 
@@ -20,6 +21,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * **front:** disable show provider modal on botton of subvention table ([0f07e8f](https://github.com/betagouv/api-subventions-asso/commit/0f07e8fdc46039b3702adc013ce30a9788fc1ec0))
+* **api:** tests ([#451](https://github.com/betagouv/api-subventions-asso/issues/451)) ([b892855](https://github.com/betagouv/api-subventions-asso/commit/b8928552345839f5ede3b688a028cf061b195792))
+* **front:** add nojs for svelte ([#420](https://github.com/betagouv/api-subventions-asso/issues/420)) ([06c4b65](https://github.com/betagouv/api-subventions-asso/commit/06c4b65c38e2f2c04cf2a45541a68e9705c1e0cd))
+* **front:** fix mail to contact for no js help ([#452](https://github.com/betagouv/api-subventions-asso/issues/452)) ([aa13a99](https://github.com/betagouv/api-subventions-asso/commit/aa13a99101c422272e7ce5437bc06b92ce5ed815))
+
+
+### Features
+
+* **api, dto:** add rcs extract for associations ([ccd18fa](https://github.com/betagouv/api-subventions-asso/commit/ccd18fa2781b432636e354f2bd9dab0ab48ddcb9))
+* **api, front, dto:** display rna-siren differences ([3b6d6ba](https://github.com/betagouv/api-subventions-asso/commit/3b6d6ba99c51e18542eab033a79fb5611abb0a53))
+* **api:** handle new FONJEP file with versements ([5d5a762](https://github.com/betagouv/api-subventions-asso/commit/5d5a762eabcc0ff212c4b5454ee9d57d4a389044))
+* **api:** rename fonjep collection to fonjepSubvention ([#461](https://github.com/betagouv/api-subventions-asso/issues/461)) ([79bea66](https://github.com/betagouv/api-subventions-asso/commit/79bea6633a1fa40106436153ab91a1bc18a5e975))
+* **api:** update parser for new data 2022 ([#423](https://github.com/betagouv/api-subventions-asso/issues/423)) ([060ea1c](https://github.com/betagouv/api-subventions-asso/commit/060ea1c0d29887e3a2683c8af924703b19a7b406))
+* **front:** disable own account suppression ([46096c3](https://github.com/betagouv/api-subventions-asso/commit/46096c3e58abb3866cb754c29cc3c44eb0ef39cb))
+* **front:** move home page to svelte ([#441](https://github.com/betagouv/api-subventions-asso/issues/441)) ([be65658](https://github.com/betagouv/api-subventions-asso/commit/be65658c1e4831ab713b433b85d99eda6841d3b0))
+* **front:** use a unique GenericModal ([6351e5c](https://github.com/betagouv/api-subventions-asso/commit/6351e5c95c37ee1baf0ce884f0c340138c7a4ba4))
 
 
 

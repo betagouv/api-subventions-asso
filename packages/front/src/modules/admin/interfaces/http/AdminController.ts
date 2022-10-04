@@ -1,7 +1,6 @@
 import path from "path";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { NextFunction, Request, Response } from "express";
-import User from "../../../../@types/User";
 import { DefaultObject } from "../../../../@types/utils";
 import Controller from "../../../../decorators/controller.decorator";
 import { Get, Post } from "../../../../decorators/http.methods.decorator";
@@ -11,7 +10,7 @@ import adminService from "../../user.service";
 export default class AdminController {
     @Get("")
     public async adminView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.roles || !req.session.roles.includes("admin")) {
+        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
             return res.redirect("/");
         }
 
@@ -22,7 +21,7 @@ export default class AdminController {
 
     @Get("/users/list")
     public async listUsersView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.roles || !req.session.roles.includes("admin")) {
+        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
             return res.redirect("/");
         }
 
@@ -31,11 +30,11 @@ export default class AdminController {
 
     @Get("/users/domain")
     public async domainUsersView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.roles || !req.session.roles.includes("admin")) {
+        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
             return res.redirect("/");
         }
 
-        const result = await adminService.listUsers(req.session.user as User);
+        const result = await adminService.listUsers(req.session.user);
 
         const users = result.data || [];
 
@@ -57,7 +56,7 @@ export default class AdminController {
 
     @Get("/users/create")
     public async createUserView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.roles || !req.session.roles.includes("admin")) {
+        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
             return res.redirect("/");
         }
 
@@ -68,7 +67,7 @@ export default class AdminController {
 
     @Post("/users/create")
     public async createUser(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.roles || !req.session.roles.includes("admin")) {
+        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
             return res.redirect("/");
         }
 

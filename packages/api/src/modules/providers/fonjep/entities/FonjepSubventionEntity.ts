@@ -4,13 +4,13 @@ import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
 
-export default class FonjepRequestEntity {
+export default class FonjepSubventionEntity {
 
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         siret: {
             path: ["Association", "SiretOuRidet"],
-            adapter: (value) =>  {
-                if(!value) return value;
+            adapter: (value) => {
+                if (!value) return value;
 
                 return value.replace(/ /g, "");
             }
@@ -19,10 +19,12 @@ export default class FonjepRequestEntity {
     }
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
+        code_poste: ["Code"],
+        dispositif: ["Dispositif", "Libelle"],
         montant_paye: {
             path: ["MontantSubvention"],
             adapter: (value) => {
-                if(!value) return 0;
+                if (!value) return 0;
 
                 return !value.length ? parseFloat(value) : 0
             }
@@ -46,10 +48,6 @@ export default class FonjepRequestEntity {
             adapter: formatCP
         },
         contact: ["Association", "ContactEmail"],
-        co_financeur: ["Co-Financeur", "RaisonSociale"],
-        co_financeur_contact: ["Co-Financeur", "ContactEmail"],
-        co_financeur_siret: ["Co-Financeur", "SiretOuRidet"],
-        co_financeur_montant: ["Co-Financements", "MontantFinance"],
         plein_temps: ["PleinTemps"]
     }
 
@@ -60,5 +58,5 @@ export default class FonjepRequestEntity {
         },
         public indexedInformations: IFonjepIndexedInformations,
         public data: unknown
-    ) {}
+    ) { }
 }

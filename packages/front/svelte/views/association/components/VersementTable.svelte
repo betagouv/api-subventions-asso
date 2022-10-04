@@ -1,11 +1,12 @@
 <script>
-    import { numberToEuro } from "../../../helpers/dataHelper";
+    import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
     import { withTwoDigitYear } from "../../../helpers/dateHelper";
     import { getLastVersementsDate } from "../association.helper";
     import TableCell from "../../../components/TableCell.svelte";
     import Table from "../../../dsfr/Table.svelte";
     import TableHead from "../../../components/TableHead.svelte";
     import VersementsInfoModal from "./VersementsInfoModal.svelte";
+    import { modal, data } from "../../../store/modal.store";
 
     export let elements = [];
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -13,14 +14,13 @@
     export let currentSort = null;
     export let sortDirection = null;
 
-    let selectedVersements = null;
+    const displayModal = versements => {
+        data.update(() => ({ versements }));
+        modal.update(() => VersementsInfoModal);
+    };
 
     const countTotal = versements => {
         return versements.reduce((acc, versement) => acc + versement.amount, 0);
-    };
-
-    const onTRClick = element => {
-        if (element.versements) selectedVersements = element.versements;
     };
 
     const countVersements = elements => {
@@ -30,7 +30,6 @@
     let noVersements = false;
 
     const updateNoVersements = () => (noVersements = !countVersements(elements));
-
     $: elements, updateNoVersements();
 </script>
 
@@ -67,30 +66,28 @@
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each elements as element, key}
-            {#if !element.versements}
+            {#if !element.versements || element.versements.length === 0 }
                 <tr>
                     <TableCell colspan="3" />
                 </tr>
             {:else}
                 <tr
-                    on:click={() => onTRClick(element)}
-                    aria-controls="fr-modal-versements-modal"
+                    on:click={() => displayModal(element.versements)}
+                    aria-controls="fr-modal"
                     data-fr-opened="false"
-                    class="clickabel">
+                    class="clickable">
                     <TableCell primary="true" position="end">
                         {numberToEuro(countTotal(element.versements))}
                     </TableCell>
-                    <TableCell>{element.versements[0].centreFinancier}</TableCell>
+                    <TableCell>{valueOrHyphen(element.versements[0]?.centreFinancier)}</TableCell>
                     <TableCell>
-                        {withTwoDigitYear(getLastVersementsDate(element.versements))}
+                        {valueOrHyphen(withTwoDigitYear(getLastVersementsDate(element.versements)))}
                     </TableCell>
                 </tr>
             {/if}
         {/each}
     </svelte:fragment>
 </Table>
-
-<VersementsInfoModal versements={selectedVersements} id="versements-modal" />
 
 <style>
     .col-100 {
@@ -103,7 +100,7 @@
         max-width: 110px;
     }
 
-    tr.clickabel {
+    tr.clickable {
         cursor: pointer;
     }
 </style>

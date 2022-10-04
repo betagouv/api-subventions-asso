@@ -27,7 +27,7 @@ export default class ApiAssoDtoAdapter {
                 objet_social: toRnaPvs(structure.activites.objet),
                 code_objet_social_1: toRnaPvs(structure.activites.id_objet_social1),
                 code_objet_social_2: toRnaPvs(structure.activites.id_objet_social2),
-                adresse_siege: fromRNA ? toRnaPvs({
+                adresse_siege_rna: fromRNA ? toRnaPvs({
                     numero: structure.coordonnees.adresse_siege.num_voie,
                     type_voie: structure.coordonnees.adresse_siege.type_voie,
                     voie: structure.coordonnees.adresse_siege.voie,
@@ -48,7 +48,7 @@ export default class ApiAssoDtoAdapter {
                 categorie_juridique: toSirenPvs(structure.identite.id_forme_juridique.toString()),
                 date_creation_siren: structure.identite.date_creation_sirene ? toSirenPvs(toDate(structure.identite.date_creation_sirene)) : undefined,
                 date_modification_siren: toSirenPvs(toDate(structure.identite.date_modif_siren)),
-                adresse_siege: adresse ? toSirenPvs({
+                adresse_siege_siren: adresse ? toSirenPvs({
                     numero: adresse.num_voie,
                     type_voie: adresse.type_voie,
                     voie: adresse.voie,

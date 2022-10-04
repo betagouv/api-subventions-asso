@@ -38,7 +38,7 @@ export default class DashboardCore extends ComponentCore {
     }
 
     destroy() {
-        if(this.unsubscribeFlux) this.unsubscribeFlux();
+        if (this.unsubscribeFlux) this.unsubscribeFlux();
     }
 
     async mount() {
@@ -47,9 +47,11 @@ export default class DashboardCore extends ComponentCore {
 
         this.unsubscribeFlux = subventionsFlux.subscribe(state => {
             if (state.status === "close") this.computed.status = "end";
-            this.elements = mapSubventionsAndVersements({ subventions: state.subventions, versements });
 
-            this.computed.years = [...new Set(this.elements.map(element => element.year))].sort((a, b) => a - b);
+            this.elements = mapSubventionsAndVersements({ subventions: state.subventions, versements });
+            const elementYears = [...new Set(this.elements.map(element => element.year))];
+
+            this.computed.years = elementYears.sort((a, b) => a - b);
             const sirets = [...new Set(this.elements.map(element => element.siret))];
 
             this.computed.exercices = this.buildExercices();
@@ -141,7 +143,7 @@ export default class DashboardCore extends ComponentCore {
             if (!element.subvention || !element.subvention.montants) return acc;
             return acc + (element.subvention.montants.accorde || 0);
         }, 0);
-        
+
         this.scoped.subventionRequestedAmount = this.scoped.elements.reduce((acc, element) => {
             if (!element.subvention || !element.subvention.montants) return acc;
             return acc + (element.subvention.montants.demande || 0);

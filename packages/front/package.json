@@ -1,6 +1,6 @@
 {
   "name": "front",
-  "version": "0.14.9",
+  "version": "0.15.3",
   "description": "> TODO: description",
   "author": "Victor Serain <victor.serain@epitech.eu>",
   "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/front#readme",
@@ -73,7 +73,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-svelte3": "^4.0.0",
     "mini-css-extract-plugin": "^2.6.0",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "prettier-plugin-svelte": "^2.7.0",
     "rollup": "^2.75.6",

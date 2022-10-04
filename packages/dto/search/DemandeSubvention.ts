@@ -1,14 +1,15 @@
 
 import { Siret } from "..";
 import { ProviderValue } from "../shared/ProviderValue";
-import { Versement } from "./Versement";
+import { Versement } from "../versements/Versement";
 
 export interface DemandeSubvention {
     service_instructeur: ProviderValue<string>,
     siret: ProviderValue<Siret>,
     dispositif?: ProviderValue<string>,
     sous_dispositif?: ProviderValue<string>,
-    ej?: ProviderValue<string>
+    ej?: ProviderValue<string>,
+    versementKey?: ProviderValue<string>,
     annee_demande?: ProviderValue<number>
     date_commision?: ProviderValue<Date>,
     financeur_principal?: ProviderValue<string>

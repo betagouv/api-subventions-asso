@@ -6,6 +6,7 @@
     import Spinner from "../../../../components/Spinner.svelte";
     import ErrorAlert from "../../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../../components/DataNotFound.svelte";
+    import { modal } from "../../../../store/modal.store";
 
     import SubventionTable from "../SubventionTable.svelte";
     import VersementTable from "../VersementTable.svelte";
@@ -20,6 +21,7 @@
     let data = {};
     let promise = new Promise(() => null);
     const dashboardCore = new DashboardCore(association);
+    const displayModal = () => modal.update(() => ProviderModal);
 
     onMount(() => (promise = dashboardCore.mount()));
     dashboardCore.onRender(_data => (data = _data));
@@ -33,7 +35,7 @@
         <div class="title">
             <h2>Tableau de bord</h2>
             <div>
-                <Button type="secondary" ariaControls="fr-modal-providers">
+                <Button type="secondary" ariaControls="fr-modal" on:click={displayModal}>
                     Voir la liste des fournisseurs de données
                 </Button>
             </div>
@@ -61,7 +63,7 @@
                         des demandes ont été accordées en
                         <b>{data.selectedYear}.</b>
                         <br />
-                        D'après les données récupérées via Osiris et Fonjep.
+                        D'après les données récupérées via Dauphin, Osiris et Fonjep.
                     </p>
                 </div>
                 <div class="versements">
@@ -71,7 +73,7 @@
                         :
                         <b>{valueOrHyphen(numberToEuro(data.versementsAmount))}</b>
                         <br />
-                        D'après les données récupérées via Chorus.
+                        D'après les données récupérées via Chorus et Fonjep.
                     </p>
                 </div>
             </div>

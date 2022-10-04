@@ -1,6 +1,7 @@
 export default interface IFonjepIndexedInformations {
     updated_at: Date,
     unique_id: string,
+    code_poste: string,
     montant_paye: number,
     status: string,
     plein_temps: string,
@@ -11,8 +12,5 @@ export default interface IFonjepIndexedInformations {
     ville: string,
     code_postal?: string,
     contact: string,
-    co_financeur?: string,
-    co_financeur_contact?: string,
-    co_financeur_siret?: string,
-    co_financeur_montant?: number,
+    dispositif: string
 }

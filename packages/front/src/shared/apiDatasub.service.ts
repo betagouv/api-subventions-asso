@@ -3,8 +3,7 @@ import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@
 import { DATASUB_URL } from "./config";
 import AssociationDtoResponse from "@api-subventions-asso/dto/search/AssociationDtoResponse";
 import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
-import User from "../@types/User";
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import UserDto, { UserWithJWTDto } from "@api-subventions-asso/dto/user/UserDto";
 
 export class APIDatasubService {
     login(email: string, password: string) {
@@ -20,15 +19,11 @@ export class APIDatasubService {
         });
     }
 
-    getRoles(user: User) {
-        return this.sendRequest<{ success: boolean; roles: string[] }>("GET", "/user/roles", user);
-    }
-
-    listUser(user: User) {
+    listUser(user: UserWithJWTDto) {
         return this.sendRequest<{ success: boolean; users: UserDto[] }>("GET", "/user/admin/list-users", user);
     }
 
-    createUser(userEmail: string, adminUser: User) {
+    createUser(userEmail: string, adminUser: UserWithJWTDto) {
         return this.sendRequest<{ success: boolean }>("POST", "/user/admin/create-user", adminUser, {
             email: userEmail
         });
@@ -47,28 +42,28 @@ export class APIDatasubService {
         });
     }
 
-    searchAssoByRna(rna: string, user: User) {
+    searchAssoByRna(rna: string, user: UserWithJWTDto) {
         return this.sendRequest<AssociationDtoResponse>("GET", `/search/association/${rna}`, user);
     }
 
-    searchAssoBySiren(siren: string, user: User) {
+    searchAssoBySiren(siren: string, user: UserWithJWTDto) {
         return this.sendRequest<AssociationDtoResponse>("GET", `/search/association/${siren}`, user);
     }
 
-    searchEtablissement(siret: string, user: User) {
+    searchEtablissement(siret: string, user: UserWithJWTDto) {
         return this.sendRequest<EtablissementDtoResponse>("GET", `/search/etablissement/${siret}`, user);
     }
 
-    private getHeaders(user?: User): AxiosRequestConfig {
-        if (!user || !user.token) return {};
+    private getHeaders(user?: UserWithJWTDto): AxiosRequestConfig {
+        if (!user || !user.jwt || !user.jwt.token) return {};
         return {
             headers: {
-                "x-access-token": user.token as string
+                "x-access-token": user.jwt.token as string
             }
         };
     }
 
-    private async sendRequest<T>(method: "POST" | "GET" | "PUT" | "DELETE", uri: string, user?: User, body?: unknown) {
+    private async sendRequest<T>(method: "POST" | "GET" | "PUT" | "DELETE", uri: string, user?: UserWithJWTDto, body?: unknown) {
         let response: AxiosResponse<T, any>;
         const url = `${DATASUB_URL}${uri}`;
         try {

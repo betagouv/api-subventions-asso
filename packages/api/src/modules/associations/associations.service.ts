@@ -34,16 +34,29 @@ export class AssociationsService {
 
     async getAssociation(id: StructureIdentifiers): Promise<Association | null> {
         const type = IdentifierHelper.getIdentifierType(id);
-        if (type === StructureIdentifiersEnum.rna) return await this.getAssociationByRna(id);
-        if (type === StructureIdentifiersEnum.siren) return await this.getAssociationBySiren(id);
-        if (type === StructureIdentifiersEnum.siret) return await this.getAssociationBySiret(id);
-        throw new StructureIdentifiersError();
+        let association;
+
+        switch (type) {
+            case StructureIdentifiersEnum.rna:
+                association = await this.getAssociationByRna(id);
+                break
+            case StructureIdentifiersEnum.siren:
+                association = await this.getAssociationBySiren(id);
+                break
+            case StructureIdentifiersEnum.siret:
+                association = await this.getAssociationBySiret(id);
+                break
+            default:
+                throw new StructureIdentifiersError();
+        }
+        return association;
     }
 
     async getAssociationBySiren(siren: Siren) {
         const data = await this.aggregate(siren);
         if (!data.length) return null;
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
+
     }
 
     async getAssociationBySiret(siret: Siret) {
@@ -80,7 +93,9 @@ export class AssociationsService {
 
     async getEtablissements(identifier: AssociationIdentifiers) {
         const type = IdentifierHelper.getIdentifierType(identifier);
-        if (!type || type === StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIREN or RNA");
+        if (!type || type === StructureIdentifiersEnum.siret) {
+            throw new Error("You must provide a valid SIREN or RNA");
+        }
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);
@@ -96,7 +111,9 @@ export class AssociationsService {
     async getEtablissement(identifier: AssociationIdentifiers, nic: string) {
         const type = IdentifierHelper.getIdentifierType(identifier);
 
-        if (!type || type === StructureIdentifiersEnum.siret) throw new BadRequestError("You must provide a valid SIREN or RNA");
+        if (!type || type === StructureIdentifiersEnum.siret) {
+            throw new BadRequestError("You must provide a valid SIREN or RNA");
+        }
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);

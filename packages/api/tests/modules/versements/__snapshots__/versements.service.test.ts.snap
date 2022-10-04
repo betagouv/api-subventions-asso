@@ -1,0 +1,368 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersementService aggregateVersementsByAssoSearch should aggregate versements 1`] = `
+Object {
+  "etablissements": Array [
+    Object {
+      "demandes_subventions": Array [
+        Object {
+          "ej": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "1000000000",
+          },
+          "versementKey": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "1000000000",
+          },
+          "versements": Array [
+            Object {
+              "activitee": undefined,
+              "amount": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "number",
+                "value": 1000,
+              },
+              "branche": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "BRANCHE",
+              },
+              "centreFinancier": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "CENTRE_FINANCIER",
+              },
+              "codeBranche": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "Z004",
+              },
+              "compte": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "COMPTE",
+              },
+              "dateOperation": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "object",
+                "value": 2022-01-01T00:00:00.000Z,
+              },
+              "domaineFonctionnel": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "DOMAINE_FONCTIONNEL",
+              },
+              "ej": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "1000000000",
+              },
+              "numeroDemandePayment": undefined,
+              "numeroTier": undefined,
+              "siret": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "10000000000000",
+              },
+              "type": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "ZSUB",
+              },
+              "versementKey": Object {
+                "last_update": 2022-01-01T00:00:00.000Z,
+                "provider": "Chorus",
+                "type": "string",
+                "value": "1000000000",
+              },
+            },
+          ],
+        },
+        Object {
+          "codePoste": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "J00034",
+          },
+          "versementKey": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "J00034",
+          },
+          "versements": Array [],
+        },
+      ],
+      "siret": Array [
+        Object {
+          "last_update": 2022-01-01T00:00:00.000Z,
+          "provider": "Chorus",
+          "type": "string",
+          "value": "10000000000000",
+        },
+      ],
+      "versements": Array [
+        Object {
+          "activitee": undefined,
+          "amount": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "number",
+            "value": 1000,
+          },
+          "branche": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "BRANCHE",
+          },
+          "centreFinancier": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "CENTRE_FINANCIER",
+          },
+          "codeBranche": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "Z004",
+          },
+          "compte": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "COMPTE",
+          },
+          "dateOperation": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "object",
+            "value": 2022-01-01T00:00:00.000Z,
+          },
+          "domaineFonctionnel": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "DOMAINE_FONCTIONNEL",
+          },
+          "ej": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "1000000000",
+          },
+          "numeroDemandePayment": undefined,
+          "numeroTier": undefined,
+          "siret": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "10000000000000",
+          },
+          "type": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "ZSUB",
+          },
+          "versementKey": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "1000000000",
+          },
+        },
+      ],
+    },
+  ],
+  "siren": Array [
+    Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "100000000",
+    },
+  ],
+  "versements": Array [
+    Object {
+      "activitee": undefined,
+      "amount": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "number",
+        "value": 1000,
+      },
+      "branche": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "BRANCHE",
+      },
+      "centreFinancier": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "CENTRE_FINANCIER",
+      },
+      "codeBranche": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "Z004",
+      },
+      "compte": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "COMPTE",
+      },
+      "dateOperation": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "object",
+        "value": 2022-01-01T00:00:00.000Z,
+      },
+      "domaineFonctionnel": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "DOMAINE_FONCTIONNEL",
+      },
+      "ej": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "1000000000",
+      },
+      "numeroDemandePayment": undefined,
+      "numeroTier": undefined,
+      "siret": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "10000000000000",
+      },
+      "type": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "ZSUB",
+      },
+      "versementKey": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "1000000000",
+      },
+    },
+  ],
+}
+`;
+
+exports[`VersementService aggregateVersementsByAssoSearch should not aggregate versements 1`] = `
+Object {
+  "etablissements": Array [
+    Object {
+      "demandes_subventions": Array [
+        Object {
+          "ej": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "1000000000",
+          },
+          "versementKey": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "1000000000",
+          },
+          "versements": Array [],
+        },
+        Object {
+          "codePoste": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "J00034",
+          },
+          "versementKey": Object {
+            "last_update": 2022-01-01T00:00:00.000Z,
+            "provider": "Chorus",
+            "type": "string",
+            "value": "J00034",
+          },
+          "versements": Array [],
+        },
+      ],
+      "siret": Array [
+        Object {
+          "last_update": 2022-01-01T00:00:00.000Z,
+          "provider": "Chorus",
+          "type": "string",
+          "value": "10000000000000",
+        },
+      ],
+      "versements": Array [],
+    },
+  ],
+  "siren": Array [
+    Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "100000080",
+    },
+  ],
+  "versements": Array [],
+}
+`;
+
+exports[`VersementService aggregateVersementsByEtablissementSearch should aggregate versements 1`] = `Promise {}`;
+
+exports[`VersementService aggregateVersementsByEtablissementSearch should not aggregate versements 1`] = `
+Object {
+  "demandes_subventions": Array [
+    Object {
+      "ej": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "1000000000",
+      },
+      "versementKey": Object {
+        "last_update": 2022-01-01T00:00:00.000Z,
+        "provider": "Chorus",
+        "type": "string",
+        "value": "1000000000",
+      },
+      "versements": Array [],
+    },
+  ],
+  "siret": Array [
+    Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "10000000008000",
+    },
+  ],
+  "versements": Array [],
+}
+`;

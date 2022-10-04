@@ -1,8 +1,10 @@
 import { ProviderValues, Rna, DemandeSubvention, ProviderValue, Association, Etablissement } from "@api-subventions-asso/dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
+import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
+import osirisService from "../osiris.service";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris"
@@ -101,40 +103,44 @@ export default class OsirisRequestAdapter {
 
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
+
+        const EJ = entity.providerInformations.ej
+            ? toPV(entity.providerInformations.ej)
+            : undefined;
 
         const data: DemandeSubvention = {
-            annee_demande: ProviderValueAdapter.toProviderValue(entity.providerInformations.extractYear, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            siret: ProviderValueAdapter.toProviderValue(entity.legalInformations.siret, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            service_instructeur: ProviderValueAdapter.toProviderValue(entity.providerInformations.service_instructeur, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            sous_dispositif: ProviderValueAdapter.toProviderValue(entity.providerInformations.sous_dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            status: ProviderValueAdapter.toProviderValue(entity.providerInformations.status, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            pluriannualite: ProviderValueAdapter.toProviderValue(entity.providerInformations.pluriannualite, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-            ej: entity.providerInformations.ej
-                ? ProviderValueAdapter.toProviderValue(entity.providerInformations.ej, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
-                : undefined,
+            annee_demande: toPV(entity.providerInformations.extractYear),
+            siret: toPV(entity.legalInformations.siret),
+            service_instructeur: toPV(entity.providerInformations.service_instructeur),
+            dispositif: toPV(entity.providerInformations.dispositif),
+            sous_dispositif: toPV(entity.providerInformations.sous_dispositif),
+            status: toPV(entity.providerInformations.status),
+            pluriannualite: toPV(entity.providerInformations.pluriannualite),
+            ej: EJ,
+            versementKey: EJ,
             date_commision: entity.providerInformations.dateCommission
-                ? ProviderValueAdapter.toProviderValue(entity.providerInformations.dateCommission, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
+                ? toPV(entity.providerInformations.dateCommission)
                 : undefined,
             contact: {
-                email: ProviderValueAdapter.toProviderValue(entity.providerInformations.representantEmail, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                email: toPV(entity.providerInformations.representantEmail),
                 telephone: entity.providerInformations.representantPhone
-                    ? ProviderValueAdapter.toProviderValue(entity.providerInformations.representantPhone, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
+                    ? toPV(entity.providerInformations.representantPhone)
                     : undefined
             },
             montants: {
-                total: ProviderValueAdapter.toProviderValue(entity.providerInformations.montantsTotal, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                demande: ProviderValueAdapter.toProviderValue(entity.providerInformations.montantsDemande, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                propose: ProviderValueAdapter.toProviderValue(entity.providerInformations.montantsPropose, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                accorde: ProviderValueAdapter.toProviderValue(entity.providerInformations.montantsAccorde, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                total: toPV(entity.providerInformations.montantsTotal),
+                demande: toPV(entity.providerInformations.montantsDemande),
+                propose: toPV(entity.providerInformations.montantsPropose),
+                accorde: toPV(entity.providerInformations.montantsAccorde),
             },
             versement: {
-                acompte: ProviderValueAdapter.toProviderValue(entity.providerInformations.versementAcompte, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                solde: ProviderValueAdapter.toProviderValue(entity.providerInformations.versementSolde, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                realise: ProviderValueAdapter.toProviderValue(entity.providerInformations.versementRealise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                acompte: toPV(entity.providerInformations.versementAcompte),
+                solde: toPV(entity.providerInformations.versementSolde),
+                realise: toPV(entity.providerInformations.versementRealise),
                 compensation: {
-                    "n-1": ProviderValueAdapter.toProviderValue(entity.providerInformations.versementCompensationN1, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    reversement: ProviderValueAdapter.toProviderValue(entity.providerInformations.versementCompensationN, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                    "n-1": toPV(entity.providerInformations.versementCompensationN1),
+                    reversement: toPV(entity.providerInformations.versementCompensationN),
                 }
             }
         }
@@ -142,8 +148,8 @@ export default class OsirisRequestAdapter {
         if (entity.actions) {
             const territoires = entity.actions.map(action => {
                 return {
-                    status: ProviderValueAdapter.toProviderValue(action.indexedInformations.territoireStatus, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    commentaire: ProviderValueAdapter.toProviderValue(action.indexedInformations.territoireCommentaire, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                    status: toPV(action.indexedInformations.territoireStatus),
+                    commentaire: toPV(action.indexedInformations.territoireCommentaire),
                 };
             })
 
@@ -160,33 +166,33 @@ export default class OsirisRequestAdapter {
 
             data.actions_proposee = entity.actions.map(action => ({
                 ej: action.indexedInformations.ej
-                    ? ProviderValueAdapter.toProviderValue(action.indexedInformations.ej, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
+                    ? toPV(action.indexedInformations.ej)
                     : undefined,
-                rang: ProviderValueAdapter.toProviderValue(action.indexedInformations.rang, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                intitule: ProviderValueAdapter.toProviderValue(action.indexedInformations.intitule, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                objectifs: ProviderValueAdapter.toProviderValue(action.indexedInformations.objectifs, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                objectifs_operationnels: ProviderValueAdapter.toProviderValue(action.indexedInformations.objectifs_operationnels, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                description: ProviderValueAdapter.toProviderValue(action.indexedInformations.description, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                nature_aide: ProviderValueAdapter.toProviderValue(action.indexedInformations.nature_aide, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                modalite_aide: ProviderValueAdapter.toProviderValue(action.indexedInformations.modalite_aide, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                modalite_ou_dispositif: ProviderValueAdapter.toProviderValue(action.indexedInformations.modalite_ou_dispositif, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                indicateurs: ProviderValueAdapter.toProviderValue(action.indexedInformations.indicateurs, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                rang: toPV(action.indexedInformations.rang),
+                intitule: toPV(action.indexedInformations.intitule),
+                objectifs: toPV(action.indexedInformations.objectifs),
+                objectifs_operationnels: toPV(action.indexedInformations.objectifs_operationnels),
+                description: toPV(action.indexedInformations.description),
+                nature_aide: toPV(action.indexedInformations.nature_aide),
+                modalite_aide: toPV(action.indexedInformations.modalite_aide),
+                modalite_ou_dispositif: toPV(action.indexedInformations.modalite_ou_dispositif),
+                indicateurs: toPV(action.indexedInformations.indicateurs),
                 cofinanceurs: {
-                    noms: ProviderValueAdapter.toProviderValue(action.indexedInformations.cofinanceurs, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    montant_demandes: ProviderValueAdapter.toProviderValue(action.indexedInformations.cofinanceurs_montant_demandes, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                    noms: toPV(action.indexedInformations.cofinanceurs),
+                    montant_demandes: toPV(action.indexedInformations.cofinanceurs_montant_demandes),
                 },
                 montants_versement: {
-                    total: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_total, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    demande: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_demande, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    propose: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_propose, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    accorde: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_accorde, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    attribue: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_attribue, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    realise: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_realise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    compensation: ProviderValueAdapter.toProviderValue(action.indexedInformations.montants_versement_compensation, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                    total: toPV(action.indexedInformations.montants_versement_total),
+                    demande: toPV(action.indexedInformations.montants_versement_demande),
+                    propose: toPV(action.indexedInformations.montants_versement_propose),
+                    accorde: toPV(action.indexedInformations.montants_versement_accorde),
+                    attribue: toPV(action.indexedInformations.montants_versement_attribue),
+                    realise: toPV(action.indexedInformations.montants_versement_realise),
+                    compensation: toPV(action.indexedInformations.montants_versement_compensation),
                 },
                 evaluation: action.evaluation ? {
-                    evaluation_resultat: ProviderValueAdapter.toProviderValue(action.evaluation.indexedInformations.evaluation_resultat, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
-                    cout_total_realise: ProviderValueAdapter.toProviderValue(action.evaluation.indexedInformations.cout_total_realise, OsirisRequestAdapter.PROVIDER_NAME, dataDate),
+                    evaluation_resultat: toPV(action.evaluation.indexedInformations.evaluation_resultat),
+                    cout_total_realise: toPV(action.evaluation.indexedInformations.cout_total_realise),
                 } : undefined
             }))
         }
