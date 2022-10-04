@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.10](https://github.com/betagouv/api-subventions-asso/compare/v0.14.9...v0.14.10) (2022-10-04)
+
+
+### Bug Fixes
+
+* **api:** fix chorus parser ([df1745a](https://github.com/betagouv/api-subventions-asso/commit/df1745a9e1b3d249d3e9ad2b9e3de1a7439bd8be))
+
+
+
+
+
 ## [0.14.8](https://github.com/betagouv/api-subventions-asso/compare/v0.14.7...v0.14.8) (2022-09-21)
 
 
