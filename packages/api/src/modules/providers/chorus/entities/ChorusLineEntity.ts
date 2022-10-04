@@ -23,7 +23,7 @@ export default class ChorusLineEntity {
         codeDomaineFonctionnel: { path: ["Domaine fonctionnel CODE"]},
         typeOperation: { path: ['Type d\'opération CODE', "Grpe cptes fourniss. CODE"] }, 
         amount: { 
-            path: ["EUR"],
+            path: [["EUR", "Montant payé"]],
             adapter: (value) => {
                 if (!value || typeof value === "number") return value;
                 
