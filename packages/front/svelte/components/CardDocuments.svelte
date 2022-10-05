@@ -18,9 +18,10 @@
                         <p>{footer}</p>
                     </div>
                     <div class="fr-col-6 fr-col-md-6 card--document-column">
-                        <button
-                            class="fr-btn fr-fi-download-line fr-btn--tertiary-no-outline"
-                            title="Télécharger le fichier" />
+                        <span
+                            class="fr-fi-download-line"
+                            aria-hidden="true">
+                        </span>
                     </div>
                 </div>
             </div>
