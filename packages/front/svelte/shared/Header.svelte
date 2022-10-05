@@ -39,7 +39,7 @@
                             <p class="fr-header__service-title">
                                 {name} - V{version}
                             </p>
-                            {#if env}
+                            {#if env != "prod"}
                                 <p class="stage">{env}</p>
                             {/if}
                         </a>

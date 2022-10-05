@@ -87,3 +87,7 @@ html { scroll-behavior: smooth; }
 .cgu-iframe {
   height: 100vh;
 }
+
+.stage {
+  color: hsl(143deg 63.5% 33.8%);
+}
