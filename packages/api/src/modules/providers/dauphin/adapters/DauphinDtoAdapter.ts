@@ -2,6 +2,7 @@ import DauphinSubventionDto from "../dto/DauphinSubventionDto"
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DemandeSubvention } from "@api-subventions-asso/dto";
 import dauphinService from "../dauphin.service";
+import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 
 export default class DauphinDtoAdapter {
     public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
@@ -9,12 +10,25 @@ export default class DauphinDtoAdapter {
         const toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.provider.name, new Date(lastUpdateDate));
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
         const montantAccorde = DauphinDtoAdapter.getMontantAccorder(dto);
+        let dispositif = 'Politique de la ville';
+        if (dto.thematique?.title) dispositif = dto.thematique?.title + " - " + dispositif;
 
+        let serviceInstructeur = dto.financeursPrivilegies?.[0].title || "";
+        if (serviceInstructeur.match(/^\d{2}-ETAT-POLITIQUE-VILLE/)) {
+            const part = serviceInstructeur.split('-');
+            serviceInstructeur = `Politique de la ville (Dept ${part[0]})`;
+        } else if (serviceInstructeur.match(/^POLITIQUE-VILLE-\d{2,3}/)){
+            const part = serviceInstructeur.split('-');
+            serviceInstructeur = `Politique de la ville (Dept ${part[2]})`;
+        } else {
+            serviceInstructeur = capitalizeFirstLetter(serviceInstructeur.toLowerCase().replace(/-/g, " "));
+        }
+        
         return {
             siret: toPV(dto.demandeur.SIRET.complet),
-            service_instructeur: toPV(dto.financeursPrivilegies?.[0].title || ""),
-            dispositif: toPV(dto.dispositif?.title || ''),
-            status: toPV(dto.status),
+            service_instructeur: toPV(serviceInstructeur),
+            dispositif: toPV(dispositif),
+            status: toPV(dto.virtualStatusLabel),
             annee_demande: toPV(dto.exerciceBudgetaire),
             montants: {
                 demande: montantDemande ? toPV(montantDemande) : undefined,
