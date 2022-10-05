@@ -5,6 +5,7 @@ export default class User {
         public email: string,
         public hashPassword: string,
         public roles: string[],
+        public signupAt: Date,
         public jwt: { token: string, expirateDate: Date },
         public active: boolean,
         public stats: {

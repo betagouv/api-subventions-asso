@@ -39,6 +39,7 @@
                     <th>Roles</th>
                     <th>Actif</th>
                     <th>Nombre de recherches</th>
+                    <th>Date d'inscription</th>
                     <th>Lien d'activation</th>
                     <th>Date du token de reset</th>
                     <th>Action</th>
@@ -58,6 +59,9 @@
                         </td>
                         <td>
                             {user.stats.searchCount}
+                        </td>
+                        <td>
+                            {new Date(user.signupAt).toLocaleDateString()}
                         </td>
                         {#if user.resetToken}
                             <td>
