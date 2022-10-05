@@ -68,7 +68,7 @@ export class UserService {
 
         if (Date.now() > jwtParams.expirateDate.getTime()) { // Generate new JTW Token
             const now = new Date();
-            const token = jwt.sign({ ...user, now }, `${JWT_SECRET}`);
+            const token = jwt.sign({ ...user, now }, JWT_SECRET);
 
             const jwtUserParams = {
                 token,

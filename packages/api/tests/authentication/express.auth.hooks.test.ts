@@ -42,7 +42,7 @@ describe("express.auth.hooks", () => {
                 })
             });
 
-            authMocks({ post: jest.fn() } as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
         it("Should be not logged user", (done) => {
@@ -63,7 +63,7 @@ describe("express.auth.hooks", () => {
                     done();
                 })
             });
-            authMocks({ post: jest.fn()} as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn()} as unknown as Express);
         });
     })
 
@@ -87,7 +87,7 @@ describe("express.auth.hooks", () => {
                 })
             });
 
-            authMocks({ post: jest.fn()} as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn()} as unknown as Express);
         });
 
         it("Should be not logged user", (done) => {
@@ -106,7 +106,7 @@ describe("express.auth.hooks", () => {
                     done();
                 })
             });
-            authMocks({ post: jest.fn()} as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn()} as unknown as Express);
         });
     })
 })
