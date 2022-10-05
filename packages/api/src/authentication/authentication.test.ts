@@ -33,10 +33,10 @@ describe("expressAuthentication", () => {
     let warn: jest.SpyInstance;
     beforeAll(() => {
         warn = jest.spyOn(console, 'warn').mockImplementation();
-        findByEmailMock.mockImplementation((email) => Promise.resolve({ email, roles: ["user"], active: true, _id: new ObjectId() }))
+        findByEmailMock.mockImplementation((email) => Promise.resolve({ email, roles: ["user"], active: true, stats: { searchCount: 0 } , _id: new ObjectId()}));
         findJwtByEmailMock.mockImplementation(() => Promise.resolve({ success: true, jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() } }))
         findJwtMock.mockImplementation(() => Promise.resolve({ token: DEFAULT_TOKEN, expirateDate: new Date() }))
-        updateMock.mockImplementation((user) => Promise.resolve({ email: user.email, roles: ["user", "admin"], active: true, _id: new ObjectId() }))
+        updateMock.mockImplementation((user) => Promise.resolve({ email: user.email, roles: ["user", "admin"], active: true , stats: { searchCount: 0 } , _id: new ObjectId() }))
         // @ts-expect-error: mock
         verifyMock.mockImplementation(VERIFY_DEFAULT_MOCK);
     });

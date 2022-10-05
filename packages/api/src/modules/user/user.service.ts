@@ -124,7 +124,11 @@ export class UserService {
             expirateDate: new Date(Date.now() + JWT_EXPIRES_TIME)
         };
 
-        const user = new User(partialUser.email, partialUser.password, partialUser.roles, jwtParams, false);
+        const stats = {
+            searchCount: 0,
+        }
+
+        const user = new User(partialUser.email, partialUser.password, partialUser.roles, jwtParams, false, stats);
 
         const createdUser = await userRepository.create(user);
 

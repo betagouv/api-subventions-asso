@@ -72,6 +72,8 @@ export function authMocks(app: Express) {
 
     app.post("/auth/login", (req, res, next) => {
         passport.authenticate("login", (error, user, info: IVerifyOptions) => {
+
+            console.log(error);
             if (error) return next(error)
             if (user) {
                 req.user = user;

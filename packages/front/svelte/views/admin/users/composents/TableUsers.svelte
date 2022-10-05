@@ -38,6 +38,7 @@
                     <th>Email</th>
                     <th>Roles</th>
                     <th>Actif</th>
+                    <th>Nombre de recherches</th>
                     <th>Lien d'activation</th>
                     <th>Date du token de reset</th>
                     <th>Action</th>
@@ -54,6 +55,9 @@
                         </td>
                         <td>
                             {user.active ? " Oui" : "Non"}
+                        </td>
+                        <td>
+                            {user.stats.searchCount}
                         </td>
                         {#if user.resetToken}
                             <td>
