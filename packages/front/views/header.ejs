@@ -78,6 +78,9 @@
                 <p class="fr-header__service-title">
                   <%= appName %> - V<%= appVersion %>
                 </p>
+                <% if (locals.env.toLowerCase() != "prod") { %>
+                  <p class="stage"><%= locals.env %></p>
+                <% } %>
               </a>
               <p class="fr-header__service-tagline">
                 <%= appDescription %>
