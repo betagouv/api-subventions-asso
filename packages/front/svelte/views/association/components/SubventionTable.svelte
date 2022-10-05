@@ -15,6 +15,8 @@
     export let currentSort = null;
     export let sortDirection = null;
 
+    const MAX_CHAR_SIZE = 53;
+
     const displayModal = subvention => {
         data.update(() => ({ subvention }));
         modal.update(() => SubventionInfoModal);
@@ -37,7 +39,7 @@
         // Remove duplicates
         names = [...new Set(names)].join("-");
 
-        names = trim(names, 53);
+        names = trim(names, MAX_CHAR_SIZE);
 
         return names;
     };
@@ -96,9 +98,9 @@
                     </TableCell>
                     <TableCell primary={true} position="end">?</TableCell>
                 {:else}
-                    <TableCell>{trim(element.subvention.service_instructeur, 53)}</TableCell>
+                    <TableCell>{trim(element.subvention.service_instructeur, MAX_CHAR_SIZE)}</TableCell>
                     <TableCell>
-                        {valueOrHyphen(trim(element.subvention.dispositif, 53))}
+                        {valueOrHyphen(trim(element.subvention.dispositif, MAX_CHAR_SIZE))}
                     </TableCell>
                     <TableCell
                         position={valueOrHyphen(getProjectName(element.subvention)) === "-" ? "center" : "start"}>
