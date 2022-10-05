@@ -12,6 +12,7 @@ import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMi
 import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
 import RegisterSSERoutes from "./sse"
+import StatsSearchMiddleware, { StatsSearchRoutesRegex } from "./middlewares/StatsSearchMiddleware";
 
 const appName = 'api-subventions-asso';
 
@@ -32,6 +33,8 @@ export async function startServer(port = '8080', isTest = false) {
     app.use(passport.initialize());
 
     authMocks(app); // Passport Part
+
+    StatsSearchRoutesRegex.forEach(route => app.use(route, StatsSearchMiddleware));
 
     RegisterRoutes(app); // TSOA Part
 

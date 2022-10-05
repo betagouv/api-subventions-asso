@@ -27,7 +27,7 @@ describe("UserRepository", () => {
         });
 
         it("create", async () => {
-            await expect(userRepository.create(new User("test2@beta.gouv.fr", "", ["user"], { token: "", expirateDate: new Date()}, false)))
+            await expect(userRepository.create(new User("test2@beta.gouv.fr", "", ["user"], { token: "", expirateDate: new Date()}, false, { searchCount: 0 })))
                 .resolves
                 .toMatchObject(
                     expect.not.objectContaining({ hashPassword: expect.any(String), jwt: { token: expect.any(String), expirateDate: expect.any(Date)}})
@@ -37,7 +37,7 @@ describe("UserRepository", () => {
 
     describe('removeSecrets', () => {
         it("should remove all secret in user", () => {
-            const user = new User("test@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false);
+            const user = new User("test@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()} , false, { searchCount: 0 });
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -61,7 +61,7 @@ describe("UserRepository", () => {
         })
 
         it("should return null", async () => {
-            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false);
+            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false, { searchCount: 0 });
 
             await expect(userRepository.findPassword(user as UserWithoutSecret)).resolves.toBe(null);
         })
@@ -79,7 +79,7 @@ describe("UserRepository", () => {
         })
 
         it("should return null", async () => {
-            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false, new ObjectId());
+            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], { token: "TOKEN", expirateDate: new Date()}, false, { searchCount: 0 }, new ObjectId());
 
             await expect(userRepository.findJwt(user as UserWithoutSecret)).resolves.toBe(null);
         })

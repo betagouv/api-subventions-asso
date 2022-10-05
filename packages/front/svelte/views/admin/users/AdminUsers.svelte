@@ -46,10 +46,11 @@
                 user.roles.join(" - "),
                 user.active ? "Oui" : "Non",
                 user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
-                user.resetTokenDate
+                user.resetTokenDate || "",
+                user.stats.searchCount
             ].join(delimiter)
         );
-        const header = ["Email", "Roles", "Actif", "Lien d'activation", "Date du token de reset"].join(delimiter);
+        const header = ["Email", "Roles", "Actif", "Lien d'activation", "Date du token de reset", "Nombres de recherches"].join(delimiter);
 
         const csvContent = [header, ...userCSV].join("\n");
 

@@ -7,6 +7,9 @@ export default class User {
         public roles: string[],
         public jwt: { token: string, expirateDate: Date },
         public active: boolean,
+        public stats: {
+            searchCount: number
+        },
         public _id?: ObjectId
     ){}
 }
