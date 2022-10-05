@@ -52,8 +52,15 @@ export class UserController extends Controller {
     @Response(204, "Retourne true si l'opération s'est bien exécutée", { success: true })
     @Response(500, "Retourne false si une erreur est survenue pendant l'exécution", { success: false })
     public async deleteUser(
+        @Request() req: ExRequest,
         @Path() id: string
     ): Promise<{success: boolean }> {
+        
+        if ((req.user as UserWithoutSecret | undefined)?._id.toString() === id) {
+            this.setStatus(500);
+            return { success: false };
+        }
+
         const result = await userService.delete({_id: new ObjectId(id)});
 
         if (!result.success) {
