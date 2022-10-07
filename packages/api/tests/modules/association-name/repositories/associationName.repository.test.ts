@@ -10,7 +10,7 @@ const AssociationNameArray = [
     {rna: "W000000003", siren: "00000003", name: "007 Fan Collection", provider: "", lastUpdate: new Date()}
 ];
 
-const AssociationEntityArray = AssociationNameArray.map(item => new AssociationNameEntity(item.rna, item.siren, item.name, item.provider, item.lastUpdate));
+const AssociationEntityArray = AssociationNameArray.map(item => new AssociationNameEntity(item.rna, item.name, item.provider, item.lastUpdate, item.siren));
 
 describe("AssociationNameRepository", () => {
     beforeEach( async () => {
