@@ -4,6 +4,15 @@ import userRepository from "../../../../src/modules/user/repositoies/user.reposi
 import userService from "../../../../src/modules/user/user.service"
 
 describe("UserRepository", () => {
+    const defaultUser = {
+        email: "test22@beta.gouv.fr",
+        hashPassword: "PASSWORD",
+        roles: ["user"],
+        signupAt: new Date(),
+        jwt: { token: "TOKEN", expirateDate: new Date()},
+        active: false,
+        stats: { searchCount: 0 }
+    };
     describe('The methods must not return any secret', () => {
         beforeEach(async () => {
             await userService.createUser("test@beta.gouv.fr");
@@ -27,7 +36,7 @@ describe("UserRepository", () => {
         });
 
         it("create", async () => {
-            await expect(userRepository.create(new User("test2@beta.gouv.fr", "", ["user"], new Date(), { token: "", expirateDate: new Date()}, false, { searchCount: 0 })))
+            await expect(userRepository.create(new User(defaultUser)))
                 .resolves
                 .toMatchObject(
                     expect.not.objectContaining({ hashPassword: expect.any(String), jwt: { token: expect.any(String), expirateDate: expect.any(Date)}})
@@ -37,7 +46,7 @@ describe("UserRepository", () => {
 
     describe('removeSecrets', () => {
         it("should remove all secret in user", () => {
-            const user = new User("test@beta.gouv.fr", "PASSWORD", ["user"], new Date(), { token: "TOKEN", expirateDate: new Date()} , false, { searchCount: 0 });
+            const user = new User(defaultUser);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -61,7 +70,7 @@ describe("UserRepository", () => {
         })
 
         it("should return null", async () => {
-            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], new Date(), { token: "TOKEN", expirateDate: new Date()}, false, { searchCount: 0 });
+            const user = new User(defaultUser);
 
             await expect(userRepository.findPassword(user as UserWithoutSecret)).resolves.toBe(null);
         })
@@ -79,7 +88,7 @@ describe("UserRepository", () => {
         })
 
         it("should return null", async () => {
-            const user = new User("test22@beta.gouv.fr", "PASSWORD", ["user"], new Date(), { token: "TOKEN", expirateDate: new Date()}, false, { searchCount: 0 }, new ObjectId());
+            const user = new User(defaultUser, new ObjectId());
 
             await expect(userRepository.findJwt(user as UserWithoutSecret)).resolves.toBe(null);
         })
