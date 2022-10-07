@@ -9,7 +9,7 @@
         if ($data.subvention) {
             title = `Détails des informations pour la demande ${$data.subvention.status.toLowerCase()} auprès du service ${
                 $data.subvention.service_instructeur
-            } pour un montant demandée de ${numberToEuro($data.subvention.montants.demande)}`;
+            }` + $data.subvention.montants.demande ? ` pour un montant demandée de ${numberToEuro($data.subvention.montants.demande)}` : '';
         }
     });
 </script>

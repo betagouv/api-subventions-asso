@@ -15,6 +15,8 @@
     export let currentSort = null;
     export let sortDirection = null;
 
+    const MAX_CHAR_SIZE = 53;
+
     const displayModal = subvention => {
         data.update(() => ({ subvention }));
         modal.update(() => SubventionInfoModal);
@@ -37,7 +39,7 @@
         // Remove duplicates
         names = [...new Set(names)].join("-");
 
-        names = trim(names, 43);
+        names = trim(names, MAX_CHAR_SIZE);
 
         return names;
     };
@@ -47,9 +49,8 @@
     <svelte:fragment slot="colgroup">
         <colgroup>
             <col class="col-120" />
-            <col />
-            <col class="col-100" />
-            <col />
+            <col class="col-120" />
+            <col class="col-140" />
             <col class="col-80" />
             <col class="col-100" />
             <col class="col-100" />
@@ -61,12 +62,6 @@
             actionActive={currentSort === "subvention.service_instructeur"}
             actionDirection={sortDirection}>
             Service instructeur
-        </TableHead>
-        <TableHead
-            action={() => sort("subvention.date_commision")}
-            actionActive={currentSort === "subvention.date_commision"}
-            actionDirection={sortDirection}>
-            <p>Date de commission</p>
         </TableHead>
         <TableHead
             action={() => sort("subvention.dispositif")}
@@ -98,21 +93,14 @@
         {#each elements as element}
             <tr>
                 {#if !element.subvention}
-                    <TableCell colspan="6" position="center">
+                    <TableCell colspan="5" position="center">
                         Nous ne disposons pas encore de cette information
                     </TableCell>
                     <TableCell primary={true} position="end">?</TableCell>
                 {:else}
-                    <TableCell>{trim(element.subvention.service_instructeur, 35)}</TableCell>
-                    <TableCell position="center">
-                        {#if element.subvention.date_commision}
-                            {withTwoDigitYear(new Date(element.subvention.date_commision))}
-                        {:else}
-                            {valueOrHyphen()}
-                        {/if}
-                    </TableCell>
+                    <TableCell>{trim(element.subvention.service_instructeur, MAX_CHAR_SIZE)}</TableCell>
                     <TableCell>
-                        {valueOrHyphen(element.subvention.dispositif)}
+                        {valueOrHyphen(trim(element.subvention.dispositif, MAX_CHAR_SIZE))}
                     </TableCell>
                     <TableCell
                         position={valueOrHyphen(getProjectName(element.subvention)) === "-" ? "center" : "start"}>
@@ -181,6 +169,11 @@
 
     .tooltip-wrapper:hover > span.tooltip {
         display: block;
+    }
+
+    .col-140 {
+        width: 140px;
+        max-width: 140px;
     }
 
     .col-120 {

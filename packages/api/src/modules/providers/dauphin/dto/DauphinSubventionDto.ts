@@ -22,7 +22,7 @@ export default interface DauphinSubventionDto {
     financeursPrivilegies ?: [{
         title: string
     }]
-    dispositif?: {
+    thematique?: {
         title ?: string
     }
     status: string
