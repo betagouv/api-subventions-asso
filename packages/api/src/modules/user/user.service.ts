@@ -65,8 +65,8 @@ export class UserService {
             return { success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH }
         }
 
-
-        if (Date.now() > jwtParams.expirateDate.getTime()) { // Generate new JTW Token
+        const token = jwt.verify(jwtParams.token, JWT_SECRET) as jwt.JwtPayload;
+        if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) { // Generate new JTW Token
             const now = new Date();
             const token = jwt.sign({ ...user, now }, JWT_SECRET);
 

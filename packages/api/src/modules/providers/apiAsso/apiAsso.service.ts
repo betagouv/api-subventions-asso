@@ -102,10 +102,12 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             documents
         };
 
-        if (structure.identite.id_rna && structure.identite.id_siren) {
+        if (structure.identite.id_rna || structure.identite.id_siren) {
 
+            if (structure.identite.id_rna && structure.identite.id_siren) {
+                EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren }])
+            }
 
-            EventManager.call('rna-siren.matching', [{ rna: structure.identite.id_rna, siren: structure.identite.id_siren }])
             await asyncForEach(result.associations, async (association) => {
                 let denomination;
 
