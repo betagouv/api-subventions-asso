@@ -27,15 +27,15 @@ export default class SSEConnector {
     }
 
     on(event, callback) {
-        switch(event) {
+        switch (event) {
             case "data":
-                this.callbackData = callback
+                this.callbackData = callback;
                 break;
             case "close":
-                this.callbackClose = callback
+                this.callbackClose = callback;
                 break;
             case "error":
-                this.callbackError = callback
+                this.callbackError = callback;
                 break;
             default:
                 throw new Error(`Event ${event} is not available`);

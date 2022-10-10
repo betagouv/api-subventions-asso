@@ -31,7 +31,10 @@
             <h3>Les établissements rattachés à cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each etablissements as etablissement}
-                    <Card title={association.denomination_rna || association.denomination_siren} url="/etablissement/{etablissement.siret}" target="_blank">
+                    <Card
+                        title={association.denomination_rna || association.denomination_siren}
+                        url="/etablissement/{etablissement.siret}"
+                        target="_blank">
                         {#if etablissement.siege}
                             <p>Siège de l'association</p>
                         {:else if !etablissement.ouvert}
@@ -45,11 +48,13 @@
                 {/each}
             </div>
         {:else}
-            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association"/>
+            <DataNotFound
+                content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association" />
         {/if}
     {:catch error}
         {#if error.request && error.request.status == 404}
-            <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association"/>
+            <DataNotFound
+                content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association" />
         {:else}
             <ErrorAlert message={error.message} />
         {/if}

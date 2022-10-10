@@ -1,4 +1,6 @@
+import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { JWT_SECRET } from "../../../src/configurations/jwt.conf";
 import { UserWithoutSecret } from "../../../src/modules/user/entities/User";
 import UserReset from "../../../src/modules/user/entities/UserReset";
 import userResetRepository from "../../../src/modules/user/repositoies/user-reset.repository";
@@ -37,8 +39,8 @@ describe("user.service.ts", () => {
         it("should be update token", async () => {
             await userService.activeUser("test@beta.gouv.fr");
 
-            const jwt = { token: "", expirateDate: new Date(Date.now() - 1000* 60*60*24)};
-            jest.spyOn(userRepository, "findJwt").mockImplementationOnce(() => Promise.resolve(jwt))
+            const jwtData = { token: jwt.sign({ email: "test@beta.gouv.fr"}, JWT_SECRET), expirateDate: new Date(Date.now() - 1000* 60*60*24)};
+            jest.spyOn(userRepository, "findJwt").mockImplementationOnce(() => Promise.resolve(jwtData))
             const mock = jest.spyOn(userRepository, "update");
 
             await expect(userService.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({ success: true, user: { email: "test@beta.gouv.fr", active: true}});

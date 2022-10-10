@@ -1,5 +1,7 @@
 import { WithId } from 'mongodb';
+import { siretToSiren } from '../../../shared/helpers/SirenHelper';
 import db from "../../../shared/MongoConnection";
+import { isStartOfSiret } from '../../../shared/Validators';
 import IAssociationName from '../@types/IAssociationName';
 import AssociationNameEntity  from "../entities/AssociationNameEntity";
 
@@ -7,11 +9,12 @@ export class AssociationNameRepository {
     private readonly collection = db.collection<AssociationNameEntity>("association-name");
 
     private toEntity(document: WithId<AssociationNameEntity> | IAssociationName) {
-        return new AssociationNameEntity(document.rna, document.siren, document.name, document.provider, document.lastUpdate);
+        return new AssociationNameEntity(document.rna, document.name, document.provider, document.lastUpdate, document.siren);
     }
 
     async findAllStartingWith(value: string) {
-        return  (await this.collection.find({ $or: [ {siren: { $regex: `^${value}` }}, {rna: { $regex: `^${value}` }}, {name: { $regex: `^${value}` }}] }).toArray()).map(document => this.toEntity(document));
+        if (isStartOfSiret(value)) value = siretToSiren(value); // Check if value is a start of siret
+        return  (await this.collection.find({ $or: [ {siren: { $regex: value, $options: "i" }}, {rna: { $regex: value, $options: "i" }}, {name: { $regex: value, $options: "i" }}] }).toArray()).map(document => this.toEntity(document));
     }
 
     async findOneByEntity(entity: AssociationNameEntity) {

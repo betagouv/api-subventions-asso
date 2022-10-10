@@ -1,5 +1,5 @@
 <script>
-    export let title;
+    export let title = "";
     export let type = "warning";
     export let small = false;
 </script>

@@ -48,8 +48,8 @@ describe("DataEntrepriseService", () => {
             jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
             await dataEntrepriseService.findAssociationByRna(RNA);
             expect(spyEventManager).toHaveBeenCalledTimes(2);
-            expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: DATA.association.siret }]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [{rna: RNA, siren:DATA.association.siret, name: DATA.association.titre, provider: dataEntrepriseService.provider.name, lastUpdate: DATA.association.updated_at}]);
+            expect(spyEventManager).toHaveBeenNthCalledWith(1, "association-name.matching", [{rna: RNA, siren:DATA.association.siret, name: DATA.association.titre, provider: dataEntrepriseService.provider.name, lastUpdate: DATA.association.updated_at}]);
+            expect(spyEventManager).toHaveBeenNthCalledWith(2, "rna-siren.matching", [{ rna: RNA, siren: DATA.association.siret }]);
         })
     });
 

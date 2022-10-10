@@ -7,13 +7,15 @@
 
     beforeUpdate(() => {
         if ($data.subvention) {
-            title = `Détails des informations pour la demande ${$data.subvention.status.toLowerCase()} auprès du service ${
-                $data.subvention.service_instructeur
-            }` + $data.subvention.montants.demande ? ` pour un montant demandée de ${numberToEuro($data.subvention.montants.demande)}` : '';
+            title =
+                `Détails des informations pour la demande ${$data.subvention.status.toLowerCase()} auprès du service ${
+                    $data.subvention.service_instructeur
+                }` + $data.subvention.montants.demande
+                    ? ` pour un montant demandée de ${numberToEuro($data.subvention.montants.demande)}`
+                    : "";
         }
     });
 </script>
-
 
 {#if $data.subvention}
     {#each $data.subvention.actions_proposee as action}

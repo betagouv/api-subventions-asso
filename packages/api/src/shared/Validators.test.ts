@@ -1,4 +1,4 @@
-import * as validators from "../../src/shared/Validators";
+import * as validators from "./Validators";
 
 const RNA = "W123456789";
 const SIRET = "12345678901234";
@@ -50,6 +50,27 @@ describe("Validators", () => {
         it("should return false with SIRET", () => {
             const actual = isSiren(SIRET);
             expect(actual).toBeFalsy();
+        })
+    });
+
+    describe("isStartOfSiret", () => {
+        const isStartOfSiret = validators.isStartOfSiret;
+        it("should return true with valid SIREN", () => {
+            const actual = isStartOfSiret(SIREN);
+            expect(actual).toBeTruthy();
+        })
+        it("should return false with RNA", () => {
+            const actual = isStartOfSiret(RNA);
+            expect(actual).toBeFalsy();
+        })
+        it("should return true with SIRET", () => {
+            const actual = isStartOfSiret(SIRET);
+            expect(actual).toBeTruthy();
+        })
+
+        it("should return true with part of SIRET", () => {
+            const actual = isStartOfSiret(SIRET.slice(0,12));
+            expect(actual).toBeTruthy();
         })
     });
 });

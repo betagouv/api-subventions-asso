@@ -59,7 +59,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (rna) {
             EventManager.call('rna-siren.matching', [{ rna, siren: siret }]);
             const name = association.denomination;
-            if (name) EventManager.call('association-name.matching', [{ rna, siren: siret, name, provider: this.provider.name, lastUpdate: data.etablissement.updated_at }]);
+            if (name) await EventManager.call('association-name.matching', [{ rna, siren: siretToSiren(siret), name, provider: this.provider.name, lastUpdate: data.etablissement.updated_at }]);
         }
 
         const etablissement = EtablissementDtoAdapter.toEtablissement(data.etablissement);
@@ -77,7 +77,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (rna) {
             const name = association.denomination;
             EventManager.call('rna-siren.matching', [{ rna, siren }]);
-            EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at }]);
+            await EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at }]);
         }
 
         if (data.unite_legale.etablissements) {
@@ -95,11 +95,19 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         if (!data) return null;
 
         const association = data.association;
+        const name = association.titre;
+
+        await EventManager.call('association-name.matching', [{ 
+            rna,
+            siren: association.siret ? siretToSiren(association.siret): null,
+            name,
+            provider: this.provider.name,
+            lastUpdate: association.updated_at
+        }]);
+
         if (association.siret) {
             const siren = siretToSiren(association.siret);
-            const name = association.titre;
             EventManager.call('rna-siren.matching', [{ rna, siren }])
-            EventManager.call('association-name.matching', [{ rna, siren, name, provider: this.provider.name, lastUpdate: association.updated_at }]);
         }
 
         return AssociationDtoAdapter.toAssociation(data);

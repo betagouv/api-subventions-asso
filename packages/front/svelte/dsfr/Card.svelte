@@ -1,6 +1,6 @@
 <script>
     export let size = 4;
-    export let title;
+    export let title = "";
     export let url;
     export let img = false;
     export let target = "";

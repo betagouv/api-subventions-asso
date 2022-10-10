@@ -56,7 +56,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             if (siret) {
                 const siren = siretToSiren(siret);
                 EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren }])
-                EventManager.call('association-name.matching', [{ rna: legalInformations.rna, siren, name: legalInformations.name, provider: this.provider.name, lastUpdate: partialEntity.providerInformations.transmis_le }])
+                await EventManager.call('association-name.matching', [{ rna: legalInformations.rna, siren, name: legalInformations.name, provider: this.provider.name, lastUpdate: partialEntity.providerInformations.transmis_le }])
             }
 
             return {
