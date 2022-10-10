@@ -4,7 +4,7 @@ import { siretToSiren } from "../../helpers/sirenHelper";
 import { flatenProviderValue } from "../../helpers/dataHelper";
 
 export class HomeService {
-    async getAssoData(id) {
+    async _searchByRnaOrSiren(id) {
         if (isStartOfSiret(id)) id = siretToSiren(id);
 
         const path = `/association/${id}`;
@@ -18,20 +18,24 @@ export class HomeService {
         });
     }
 
+    async _searchByAssociationKey(associationKey) {
+        const path = `/search/associations/${associationKey}`;
+        return axios.get(path).then(result => {
+            if (!result.data.success) throw new Error(result.data.message);
+            return result.data.result;
+        });
+    }
+
     async search(searchedText) {
-        const path = `/search/associations/${searchedText}`;
-        return axios
-            .get(path)
-            .then(result => {
-                if (!result.data.success) throw new Error(result.data.message);
-                return result.data.result;
-            })
-            .catch(async e => {
-                if (isRna(searchedText) || isStartOfSiret(searchedText)) {
-                    return [await this.getAssoData(searchedText)];
-                }
-                throw e;
-            });
+        try {
+            return await this._searchByAssociationKey(searchedText);
+        } catch (error) {
+            if (isRna(searchedText) || isStartOfSiret(searchedText)) {
+                // If no data found in association name collection we search by rna or siren, because association name is not exostive.
+                return [await this._searchByRnaOrSiren(searchedText)];
+            }
+            throw error;
+        }
     }
 }
 
