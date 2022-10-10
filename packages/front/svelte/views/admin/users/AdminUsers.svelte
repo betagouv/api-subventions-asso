@@ -45,12 +45,13 @@
                 user.email,
                 user.roles.join(" - "),
                 user.active ? "Oui" : "Non",
+                new Date(user.signupAt).toLocaleDateString(),
                 user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
                 user.resetTokenDate || "",
                 user.stats.searchCount
             ].join(delimiter)
         );
-        const header = ["Email", "Roles", "Actif", "Lien d'activation", "Date du token de reset", "Nombres de recherches"].join(delimiter);
+        const header = ["Email", "Roles", "Actif", "Date d'inscription", "Lien d'activation", "Date du token de reset", "Nombres de recherches"].join(delimiter);
 
         const csvContent = [header, ...userCSV].join("\n");
 

@@ -115,7 +115,8 @@ export class UserService {
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
-            password: await bcrypt.hash(password, 10),
+            hashPassword: await bcrypt.hash(password, 10),
+            signupAt: new Date(),
             roles: ["user"]
         };
 
@@ -128,7 +129,12 @@ export class UserService {
             searchCount: 0,
         }
 
-        const user = new User(partialUser.email, partialUser.password, partialUser.roles, jwtParams, false, stats);
+        const user = new User({
+            ...partialUser,
+            jwt: jwtParams,
+            active: false,
+            stats
+        });
 
         const createdUser = await userRepository.create(user);
 
