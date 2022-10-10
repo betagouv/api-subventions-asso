@@ -44,13 +44,19 @@
             </tr>
             <tr>
                 <td class="two-dimension"><b>Date d'immatriculation</b></td>
-                <td>{association.date_creation_rna ? DateHelper.formatDate(association.date_creation_rna): '-'}</td>
-                <td>{association.date_creation_siren ? DateHelper.formatDate(association.date_creation_siren): '-'}</td>
+                <td>{association.date_creation_rna ? DateHelper.formatDate(association.date_creation_rna) : "-"}</td>
+                <td>
+                    {association.date_creation_siren ? DateHelper.formatDate(association.date_creation_siren) : "-"}
+                </td>
             </tr>
             <tr>
                 <td class="two-dimension"><b>Date de modification</b></td>
-                <td>{association.date_modification_rna ? DateHelper.formatDate(association.date_modification_rna): '-'}</td>
-                <td>{association.date_creation_siren ? DateHelper.formatDate(association.date_creation_siren): '-'}</td>
+                <td>
+                    {association.date_modification_rna ? DateHelper.formatDate(association.date_modification_rna) : "-"}
+                </td>
+                <td>
+                    {association.date_creation_siren ? DateHelper.formatDate(association.date_creation_siren) : "-"}
+                </td>
             </tr>
         </svelte:fragment>
     </Table>
