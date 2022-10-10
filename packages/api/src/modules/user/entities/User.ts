@@ -9,6 +9,7 @@ export default class User {
     public active: boolean;
     public stats: {
         searchCount: number;
+        lastSearchDate: Date | null;
     }
 
     constructor(
