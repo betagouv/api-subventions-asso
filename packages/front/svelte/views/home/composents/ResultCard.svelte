@@ -42,7 +42,7 @@
         font-size: 1.5rem;
         font-weight: bold;
     }
-    
+
     .grey-text {
         color: grey;
     }

@@ -51,7 +51,15 @@
                 user.stats.searchCount
             ].join(delimiter)
         );
-        const header = ["Email", "Roles", "Actif", "Date d'inscription", "Lien d'activation", "Date du token de reset", "Nombres de recherches"].join(delimiter);
+        const header = [
+            "Email",
+            "Roles",
+            "Actif",
+            "Date d'inscription",
+            "Lien d'activation",
+            "Date du token de reset",
+            "Nombres de recherches"
+        ].join(delimiter);
 
         const csvContent = [header, ...userCSV].join("\n");
 

@@ -21,8 +21,8 @@
     });
 </script>
 
-{#if ENV.toLowerCase() == "prod" }
-    <Matomo/>
+{#if ENV.toLowerCase() == "prod"}
+    <Matomo />
 {/if}
 <GenericModal />
 <Auth>

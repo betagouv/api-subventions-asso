@@ -1,4 +1,3 @@
-
 export function isSiret(siret) {
     return typeof siret === "string" && /^\d{14}/.test(siret);
 }

@@ -14,7 +14,6 @@
     });
 </script>
 
-
 {#if $data.subvention}
     {#each $data.subvention.actions_proposee as action}
         <div class="action">

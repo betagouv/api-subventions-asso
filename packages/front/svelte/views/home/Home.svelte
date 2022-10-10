@@ -18,7 +18,7 @@
     let searchResult = [];
     let input = "";
 
-    const searchAssociation = async (text) => {
+    const searchAssociation = async text => {
         error = false;
         searchResult.length = 0;
 
@@ -32,12 +32,12 @@
             error = true;
         }
         loadingSearch = false;
-    }
+    };
 
     const submitHandler = () => {
         if (searchResult.length === 0) return;
         location.href = `/association/${searchResult[0].rna || searchResult[0].siren}`;
-    }
+    };
 
     const debounce = debounceFactory(200);
 
@@ -50,10 +50,14 @@
         <form on:submit|preventDefault={submitHandler}>
             <fieldset class="fr-fieldset fr-my-4w">
                 <div class="fr-search-bar fr-search-bar--lg" id="search-input">
-                    <input class="fr-input" placeholder="Rechercher un nom d’association, un SIREN, un SIRET, un RNA, un NOM…" type="search" id="search-input-input" name="search-input" bind:value={input} >
-                    <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">
-                            Rechercher
-                    </button>
+                    <input
+                        class="fr-input"
+                        placeholder="Rechercher un nom d’association, un SIREN, un SIRET, un RNA, un NOM…"
+                        type="search"
+                        id="search-input-input"
+                        name="search-input"
+                        bind:value={input} />
+                    <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">Rechercher</button>
                 </div>
             </fieldset>
         </form>
@@ -65,10 +69,10 @@
         <div class="fr-col-12 fr-col-md-12">
             <div class="fr-card fr-card--no-arrow">
                 <div class="fr-card__body">
-                    <Spinner description="Recherche en cours"></Spinner>
+                    <Spinner description="Recherche en cours" />
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
 {/if}
 
@@ -88,7 +92,7 @@
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
     {#each searchResult as association}
-        <ResultCard association={association} searchValue="{input}"></ResultCard>
+        <ResultCard {association} searchValue={input} />
     {/each}
 </div>
 

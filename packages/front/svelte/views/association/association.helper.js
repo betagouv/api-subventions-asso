@@ -23,7 +23,7 @@ const linkVersementsToSubvention = elements =>
 
             if (lastSub.date_fin < curr.date_fin) return curr;
             return lastSub;
-        }, null)
+        }, null);
 
         const siret = lastSub?.siret || versements.find(v => v.siret)?.siret;
         acc.push({
@@ -31,9 +31,9 @@ const linkVersementsToSubvention = elements =>
             versements: versements,
             siret,
             date: lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastVersementsDate(versements),
-            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastVersementsDate(versements).getFullYear(),
+            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastVersementsDate(versements).getFullYear()
         });
-        
+
         return acc;
     }, []);
 
@@ -54,19 +54,20 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
     return uniformizedElements.sort(sortByDateAsc);
 };
 
-const getYearOfItem = (item) => {
-    if(item.isSub) return item.annee_demande;
-    if(item.periodeDebut) return new Date(item.periodeDebut).getFullYear()
-    return ""
-}
+const getYearOfItem = item => {
+    if (item.isSub) return item.annee_demande;
+    if (item.periodeDebut) return new Date(item.periodeDebut).getFullYear();
+    return "";
+};
 
 const groupByVersementKey = (acc, curr) => {
-    if (!curr.versementKey) { // impossible de lier car pas de clef de liaison
+    if (!curr.versementKey) {
+        // impossible de lier car pas de clef de liaison
         acc.none.push([curr]);
         return acc;
     }
 
-    const key = curr.versementKey + '-' + getYearOfItem(curr); // Discuter avec maxime pour faire cette manip cotée api
+    const key = curr.versementKey + "-" + getYearOfItem(curr); // Discuter avec maxime pour faire cette manip cotée api
 
     if (!acc.withKey[key]) acc.withKey[key] = [];
 
