@@ -9,6 +9,7 @@ export default class User {
     public active: boolean;
     public stats: {
         searchCount: number;
+        lastSearchDate: Date | null;
     }
 
     constructor(
@@ -20,7 +21,8 @@ export default class User {
             jwt: { token: string, expirateDate: Date },
             active: boolean,
             stats: {
-                searchCount: number
+                searchCount: number,
+                lastSearchDate: Date | null,
             },
         },
         public _id?: ObjectId

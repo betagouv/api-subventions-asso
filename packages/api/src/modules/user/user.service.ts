@@ -127,6 +127,7 @@ export class UserService {
 
         const stats = {
             searchCount: 0,
+            lastSearchDate :null,
         }
 
         const user = new User({
