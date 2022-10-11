@@ -109,7 +109,7 @@
         {#each searchHistory as search }
             <Card url={'/association/' + search.rna } title={search.name} size="6" direction="horizontal">
                 <div class="card-description">
-                    {truncate(search.objectSocial, 100)}
+                    {truncate(search.objectSocial, 150)}
                 </div>
             </Card>
         {/each}
