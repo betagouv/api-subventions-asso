@@ -1,6 +1,7 @@
 import axios from "axios";
 import { writable } from "svelte/store";
 
+import { updateSearchHistory } from "../../services/storage.service";
 import { flatenProviderValue } from "../../helpers/dataHelper";
 import SSEConnector from "../../shared/SseConnector";
 import { toAssociationView, toEtablissementComponent, toDocumentComponent } from "./association.adapter";
@@ -57,7 +58,14 @@ export class AssociationService {
     async getAssociation(id) {
         const path = `/association/${id}`;
         return axios.get(path).then(result => {
-            return toAssociationView(result.data.association);
+            const association = toAssociationView(result.data.association);
+            updateSearchHistory({
+                rna: association.rna,
+                siren: association.siren,
+                name: association.denomination_rna || association.denomination_siren,
+                objectSocial: association.objet_social || ""
+            });
+            return association;
         });
     }
 

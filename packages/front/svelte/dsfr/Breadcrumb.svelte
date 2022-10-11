@@ -8,21 +8,27 @@
     </button>
     <div class="fr-collapse" id="breadcrumb-1">
         <ol class="fr-breadcrumb__list">
-            {#each segments as segment, index}
-                {#if index == 0}
-                    <li>
-                        <a class="fr-breadcrumb__link" href="/">Accueil</a>
-                    </li>
-                {:else if index < segments.length - 1}
-                    <li>
-                        <a class="fr-breadcrumb__link" href={segment.url}>{segment.label}</a>
-                    </li>
-                {:else}
-                    <li>
-                        <span class="fr-breadcrumb__link" aria-current="page">{segment.label}</span>
-                    </li>
-                {/if}
-            {/each}
+            {#if segments.lenght}
+                {#each segments as segment, index}
+                    {#if index == 0}
+                        <li>
+                            <a class="fr-breadcrumb__link" href="/">Accueil</a>
+                        </li>
+                    {:else if index < segments.length - 1}
+                        <li>
+                            <a class="fr-breadcrumb__link" href={segment.url}>{segment.label}</a>
+                        </li>
+                    {:else}
+                        <li>
+                            <span class="fr-breadcrumb__link" aria-current="page">{segment.label}</span>
+                        </li>
+                    {/if}
+                {/each}
+            {:else}
+                <li>
+                    <a class="fr-breadcrumb__link" href="/">Accueil</a>
+                </li>
+            {/if}
         </ol>
     </div>
 </nav>
