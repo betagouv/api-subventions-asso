@@ -1,10 +1,14 @@
 <script>
+    import { onMount } from "svelte";
     import homeService from "./home.service";
 
     import debounceFactory from "../../helpers/timeHelper";
+    import { getSearchHistory } from "../../services/storage.service";
+    import { truncate } from "../../helpers/textHelper";
 
     import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
     import Alert from "../../dsfr/Alert.svelte";
+    import Card from "../../dsfr/Card.svelte";
 
     import Spinner from "../../components/Spinner.svelte";
     import ResultCard from "./composents/ResultCard.svelte";
@@ -14,8 +18,9 @@
     const segments = [];
 
     let error = searchParams.get("error");
-    let loadingSearch = false;
+    let isLoading = false;
     let searchResult = [];
+    let searchHistory = [];
     let input = "";
 
     const searchAssociation = async text => {
@@ -25,13 +30,13 @@
         if (text.length < 2) return;
 
         try {
-            loadingSearch = true;
+            isLoading = true;
             const result = await homeService.search(text);
             searchResult = result;
         } catch {
             error = true;
         }
-        loadingSearch = false;
+        isLoading = false;
     };
 
     const submitHandler = () => {
@@ -41,6 +46,8 @@
 
     const debounce = debounceFactory(200);
 
+    onMount(() => searchHistory = getSearchHistory())
+
     $: input, debounce(() => searchAssociation(input));
 </script>
 
@@ -48,23 +55,21 @@
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
         <form on:submit|preventDefault={submitHandler}>
-            <fieldset class="fr-fieldset fr-my-4w">
-                <div class="fr-search-bar fr-search-bar--lg" id="search-input">
-                    <input
-                        class="fr-input"
-                        placeholder="Rechercher un nom d’association, un SIREN, un SIRET, un RNA, un NOM…"
-                        type="search"
-                        id="search-input-input"
-                        name="search-input"
-                        bind:value={input} />
-                    <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">Rechercher</button>
-                </div>
-            </fieldset>
+            <div class="fr-search-bar fr-search-bar--lg" id="search-input">
+                <input
+                    class="fr-input"
+                    placeholder="Rechercher un nom d’association, un SIREN, un SIRET, un RNA, un NOM…"
+                    type="search"
+                    id="search-input-input"
+                    name="search-input"
+                    bind:value={input} />
+                <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">Rechercher</button>
+            </div>
         </form>
     </div>
 </div>
 
-{#if loadingSearch}
+{#if isLoading}
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col-12 fr-col-md-12">
             <div class="fr-card fr-card--no-arrow">
@@ -74,9 +79,9 @@
             </div>
         </div>
     </div>
-{/if}
 
-{#if error}
+
+{:else if error}
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col-12 fr-col-md-12">
             <div class="fr-card fr-card--no-arrow">
@@ -88,17 +93,46 @@
             </div>
         </div>
     </div>
+
+{:else if searchResult }
+    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
+        {#each searchResult as association}
+        <ResultCard {association} searchValue={input} />
+        {/each}
+    </div>
 {/if}
 
-<div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
-    {#each searchResult as association}
-        <ResultCard {association} searchValue={input} />
-    {/each}
+{#if !searchResult.length && !isLoading && searchHistory.length }
+<div class="history">
+    <h4>Vos dernières recherches</h4>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {#each searchHistory as search }
+            <Card url={'/association/' + search.rna } title={search.name} size="6" direction="horizontal">
+                <div class="card-description">
+                    {truncate(search.objectSocial, 100)}
+                </div>
+            </Card>
+        {/each}
+    </div>
 </div>
+{/if}
 
 <style>
     .search-result {
         max-height: 50vh;
         overflow: auto;
+    }
+
+    .card-description {
+        min-height: 3rem;
+    }
+
+    .history {
+        padding-top: 40px;
+    }
+
+    .history > h4 {
+        padding-top: 24px;
+        padding-bottom: 24px;
     }
 </style>

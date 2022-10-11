@@ -5,3 +5,5 @@ export const updateSearchHistory = ({ rna, siren, name, objectSocial }) => {
     if (history.length > 4) history = history.slice(1);
     localStorage.setItem("search-history", JSON.stringify(history));
 };
+
+export const getSearchHistory = () => JSON.parse(localStorage.getItem("search-history"));
