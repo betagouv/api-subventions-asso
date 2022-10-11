@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.4](https://github.com/betagouv/api-subventions-asso/compare/v0.14.9...v0.15.4) (2022-10-11)
+
+
+### Bug Fixes
+
+* **api:** fix chorus parser ([df1745a](https://github.com/betagouv/api-subventions-asso/commit/df1745a9e1b3d249d3e9ad2b9e3de1a7439bd8be))
+* **api:** fix import fonjep script ([#464](https://github.com/betagouv/api-subventions-asso/issues/464)) ([65118c7](https://github.com/betagouv/api-subventions-asso/commit/65118c7a921e84db81c11266eaf67fd74b99e6d3))
+* **api:** log log log ([#457](https://github.com/betagouv/api-subventions-asso/issues/457)) ([e73a10e](https://github.com/betagouv/api-subventions-asso/commit/e73a10ef8f24962633df56e05801654feb0aee5d))
+* **api:** tests ([#451](https://github.com/betagouv/api-subventions-asso/issues/451)) ([16f5320](https://github.com/betagouv/api-subventions-asso/commit/16f53201730cc5df36631499e846f04c1e706206))
+
+
+### Features
+
+* **api, dto:** add rcs extract for associations ([7f9e286](https://github.com/betagouv/api-subventions-asso/commit/7f9e28688384212bc87f03201513007c24a00137))
+* **api, front, dto:** display rna-siren differences ([9f1b24b](https://github.com/betagouv/api-subventions-asso/commit/9f1b24bb9267102f85139c4d2ce9f045ea21c67c))
+* **api:** handle new FONJEP file with versements ([1f202c0](https://github.com/betagouv/api-subventions-asso/commit/1f202c0e46417f7c94d3ae10b9205797cacee427))
+* **api:** rename fonjep collection to fonjepSubvention ([#461](https://github.com/betagouv/api-subventions-asso/issues/461)) ([9231625](https://github.com/betagouv/api-subventions-asso/commit/92316252ea5ea0232860f180c2eec9827b54a1ea))
+* **api:** update parser for new data 2022 ([#423](https://github.com/betagouv/api-subventions-asso/issues/423)) ([c82b48c](https://github.com/betagouv/api-subventions-asso/commit/c82b48c37a3a8fc83c7ca9c076fb5458708041cd))
+* **front:** disable own account suppression ([c197511](https://github.com/betagouv/api-subventions-asso/commit/c1975112055bd2f2046a58a649a5091b73c33110))
+
+
+
+
+
 ## [0.15.2](https://github.com/betagouv/api-subventions-asso/compare/v0.15.1...v0.15.2) (2022-09-29)
 
 
