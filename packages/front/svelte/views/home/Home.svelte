@@ -107,7 +107,7 @@
     <h4>Vos dernières recherches</h4>
     <div class="fr-grid-row fr-grid-row--gutters">
         {#each searchHistory as search }
-            <Card url={'/association/' + search.rna } title={search.name} size="6" direction="horizontal">
+            <Card url={'/association/' + (search.rna || search.siren) } title={search.name} size="6" direction="horizontal">
                 <div class="card-description">
                     {truncate(search.objectSocial, 150)}
                 </div>

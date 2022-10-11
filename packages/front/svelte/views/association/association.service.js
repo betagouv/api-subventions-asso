@@ -62,8 +62,8 @@ export class AssociationService {
             updateSearchHistory({
                 rna: association.rna,
                 siren: association.siren,
-                name: association.denomination_rna,
-                objectSocial: association.objet_social
+                name: association.denomination_rna || association.denomination_siren,
+                objectSocial: association.objet_social || ""
             });
             return association;
         });
