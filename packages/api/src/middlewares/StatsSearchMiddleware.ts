@@ -7,6 +7,7 @@ export default async function StatsSearchMiddleware(req: Request, res: Response,
     const user = req.user as UserWithoutSecret;
 
     user.stats.searchCount++;
+    user.stats.lastSearchDate = new Date();
     await userService.update(user);
 
     next();

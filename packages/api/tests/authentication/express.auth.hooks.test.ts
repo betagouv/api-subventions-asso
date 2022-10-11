@@ -31,7 +31,7 @@ describe("express.auth.hooks", () => {
             } 
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({success: true, user: { email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date()}, stats: { searchCount: 0 }}}) )
+            jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({success: true, user: { email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date()}, stats: { searchCount: 0, lastSearchDate: null }}}) )
             
             passportMock.mockImplementation((name) => {
                 if (name != "login") return;
@@ -76,7 +76,7 @@ describe("express.auth.hooks", () => {
             } 
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, 'findByEmail').mockImplementationOnce((email) => Promise.resolve({ email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date()}, stats: { searchCount: 0 }, _id: new ObjectId()}) )
+            jest.spyOn(userService, 'findByEmail').mockImplementationOnce((email) => Promise.resolve({ email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date()}, stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId()}) )
             
             passportMock.mockImplementation((name) => {
                 if (name === "login") return;
