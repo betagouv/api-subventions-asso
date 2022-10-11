@@ -6,4 +6,4 @@ export const updateSearchHistory = ({ rna, siren, name, objectSocial }) => {
     localStorage.setItem("search-history", JSON.stringify(history));
 };
 
-export const getSearchHistory = () => JSON.parse(localStorage.getItem("search-history"));
+export const getSearchHistory = () => JSON.parse(localStorage.getItem("search-history")) || [];
