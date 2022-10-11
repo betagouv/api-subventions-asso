@@ -18,9 +18,10 @@
   <link rel="icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.svg" type="image/svg+xml">
   <link rel="shortcut icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
   <script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
   <script src="/static/js/build.js" defer></script>
-  <script>window.pipedriveLeadboosterConfig = { base: 'leadbooster-chat.pipedrive.com', companyId: 10768636, playbookUuid: 'e92e6057-cbcf-46ae-a987-8dd76d860540', version: 2 }; (function () { var w = window; if (w.LeadBooster) { console.warn('LeadBooster already exists'); } else { w.LeadBooster = { q: [], on: function (n, h) { this.q.push({ t: 'o', n: n, h: h }); }, trigger: function (n) { this.q.push({ t: 't', n: n }); }, }; } })();</script>
+  <script>window.pipedriveLeadboosterConfig = { base: 'leadbooster-chat.pipedrive.com', companyId: 10768636, playbookUuid: 'b6f560d1-9d89-4015-9435-443709c510bd', version: 2 }; (function () { var w = window; if (w.LeadBooster) { console.warn('LeadBooster already exists'); } else { w.LeadBooster = { q: [], on: function (n, h) { this.q.push({ t: 'o', n: n, h: h }); }, trigger: function (n) { this.q.push({ t: 't', n: n }); }, }; } })();</script>
   <script src="https://leadbooster-chat.pipedrive.com/assets/loader.js" async></script>
 </head>
 
@@ -99,8 +100,8 @@
                   <button class="fr-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal"
                     data-fr-opened="false">Paramètres d'affichage</button>
                 </li>
-                <% if (typeof user !="undefined" && typeof user.roles !="undefined" &&
-                  user.roles.includes("admin") ) { %>
+                <% if (typeof user !="undefined" && typeof user.roles !="undefined" && user.roles.includes("admin") ) {
+                  %>
                   <li>
                     <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin"
                       rel="noopener">Admin</a>

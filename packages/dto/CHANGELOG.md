@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.4](https://github.com/betagouv/datasubvention/compare/v0.14.9...v0.15.4) (2022-10-11)
+
+
+### Features
+
+* **api, dto:** add rcs extract for associations ([7f9e286](https://github.com/betagouv/datasubvention/commit/7f9e28688384212bc87f03201513007c24a00137))
+* **api, front, dto:** display rna-siren differences ([9f1b24b](https://github.com/betagouv/datasubvention/commit/9f1b24bb9267102f85139c4d2ce9f045ea21c67c))
+* **api:** handle new FONJEP file with versements ([1f202c0](https://github.com/betagouv/datasubvention/commit/1f202c0e46417f7c94d3ae10b9205797cacee427))
+* **front:** disable own account suppression ([c197511](https://github.com/betagouv/datasubvention/commit/c1975112055bd2f2046a58a649a5091b73c33110))
+
+
+
+
+
 ## [0.15.2](https://github.com/betagouv/datasubvention/compare/v0.15.1...v0.15.2) (2022-09-29)
 
 **Note:** Version bump only for package dto

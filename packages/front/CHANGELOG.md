@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.4](https://github.com/betagouv/datasubvention/compare/v0.14.9...v0.15.4) (2022-10-11)
+
+
+### Bug Fixes
+
+* **front:** add nojs for svelte ([#420](https://github.com/betagouv/datasubvention/issues/420)) ([897d781](https://github.com/betagouv/datasubvention/commit/897d781473c9f88e552850dca2c1c918ef5b12e4))
+* **front:** fix mail to contact for no js help ([#452](https://github.com/betagouv/datasubvention/issues/452)) ([d50c323](https://github.com/betagouv/datasubvention/commit/d50c3238fd137cd762d034f6a606a38fffbb75e8))
+* **front:** fix versement domaine foncitonel for fonjep versement ([ed12393](https://github.com/betagouv/datasubvention/commit/ed1239373365c180d942c2fb492fb1edf30070f1))
+
+
+### Features
+
+* **api, front, dto:** display rna-siren differences ([9f1b24b](https://github.com/betagouv/datasubvention/commit/9f1b24bb9267102f85139c4d2ce9f045ea21c67c))
+* **api:** handle new FONJEP file with versements ([1f202c0](https://github.com/betagouv/datasubvention/commit/1f202c0e46417f7c94d3ae10b9205797cacee427))
+* **front:** change pipedrive chat playbook ([a8d3f8d](https://github.com/betagouv/datasubvention/commit/a8d3f8d422672ac6cd600877c83e535b1d6f6ca5))
+* **front:** disable own account suppression ([c197511](https://github.com/betagouv/datasubvention/commit/c1975112055bd2f2046a58a649a5091b73c33110))
+* **front:** move home page to svelte ([#441](https://github.com/betagouv/datasubvention/issues/441)) ([3764a58](https://github.com/betagouv/datasubvention/commit/3764a58e18c77238434928b8623d455ab4178a3b))
+* **front:** use a unique GenericModal ([a82b002](https://github.com/betagouv/datasubvention/commit/a82b002530a087f936ce1164d0159e588773f542))
+
+
+
+
+
 ## [0.15.3](https://github.com/betagouv/datasubvention/compare/v0.15.2...v0.15.3) (2022-09-29)
 
 
