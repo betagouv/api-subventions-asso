@@ -8,7 +8,7 @@
 <div class="fr-col-{size} fr-col-md-{size}">
     <div class="fr-card fr-card--no-arrow fr-enlarge-link">
         <div class="fr-card__body">
-            <h2 class="fr-card__title"><a href={url} class="fr-card__link" target="_blank" download>{title}</a></h2>
+            <h2 class="fr-card__title"><a href={url} class="fr-card__link" download>{title}</a></h2>
             <p class="fr-card__desc">
                 <slot />
             </p>

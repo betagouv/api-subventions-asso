@@ -5,7 +5,7 @@ export interface StructureEtablissementDto {
     actif: boolean,
     date_actif: string,
     est_siege: boolean,
-    nom ?: string,
+    nom?: string,
     telephone?: string,
     courriel?: string,
     note?: string,
@@ -40,7 +40,7 @@ export interface StructureRibDto {
     bic: string,
     deleted: boolean,
     id_siret: string,
-    url ?: string,
+    url?: string,
 }
 
 export interface StructureRepresentantLegalDto {
@@ -60,10 +60,10 @@ export interface StructureRepresentantLegalDto {
 export interface StructureRnaDocumentDto {
     id: string,
     type: string,
-    "sous-type": string,
-    "lib_sous-type": string,
-    annee: number,
-    time: number,
+    "sous_type": string,
+    "lib_sous_type": string,
+    annee?: number,
+    time?: number,
     url: string,
 }
 
@@ -80,6 +80,17 @@ export interface StructureDacDocumentDto {
         type: string,
         id_siret: string,
         etat: string
+    }
+}
+
+export interface DocumentDto {
+    asso: {
+        "documents": {
+            "nbDocDac": number,
+            "nbDocRna": number,
+            "document_dac": StructureDacDocumentDto[],
+            "document_rna": StructureRnaDocumentDto[]
+        }
     }
 }
 
@@ -197,7 +208,7 @@ export default interface StructureDto {
         nb_licencies_h: number
         nb_licencies_f: number
         numero: string,
-        url: string|number,
+        url: string | number,
     }[],
     composition_reseau: {
         nom: string,
@@ -248,7 +259,7 @@ export default interface StructureDto {
     }[],
     etablissement: StructureEtablissementDto[],
     rib: StructureRibDto[],
-    commentaire ?: {
+    commentaire?: {
         note: string
     },
 

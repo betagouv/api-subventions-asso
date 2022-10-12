@@ -25,3 +25,5 @@ export const frenchToEnglishMonthsMap = {
 export const getMonthFromFrenchStr = (month: string) => {
     return frenchToEnglishMonthsMap[month];
 }
+
+export const isValidDate = (date) => date instanceof Date && !isNaN(date as unknown as number);

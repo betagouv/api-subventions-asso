@@ -3,6 +3,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { Etablissement, Association } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import StructureDto, { StructureDacDocumentDto, StructureEtablissementDto, StructureRepresentantLegalDto, StructureRibDto, StructureRnaDocumentDto } from "../dto/StructureDto";
+import { isValidDate } from "../../../../shared/helpers/DateHelper";
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "BASE RNA <Via API ASSO>";
@@ -103,36 +104,18 @@ export default class ApiAssoDtoAdapter {
         }
     }
 
-    static toDocuments(structure: StructureDto): Document[] {
-        if (!structure.identite.date_modif_rna) return [];
-
-        const toDate = (stringDate: string) => {
-            const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
-            return new Date(Date.UTC(year, month - 1, day));
-        }
-
-        const dataDate = toDate(structure.identite.date_modif_rna);
-        const rnaDocuments = structure.document_rna?.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)) || [];
-        const dacDocuments = structure.document_dac?.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)) || [];
-        const ribDocuments = structure.rib?.map(rib => ApiAssoDtoAdapter.ribDocumentToDocument(rib, dataDate)) || [];
-
-        return [
-            ...rnaDocuments,
-            ...dacDocuments,
-            ...ribDocuments.filter(r => r) as Document[]
-        ]
-    }
-
     static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): Document {
-        const date = new Date(Date.UTC(rnaDocument.annee, 0));
+        let date = new Date(Date.UTC(rnaDocument.annee as number, 0));
+        // DTO expect date so we use 1970 as a hack to know that the date is not defined
+        if (!isValidDate(date)) date = new Date(Date.UTC(1970, 0));
+        else if (rnaDocument.time) date.setTime(date.getTime() + rnaDocument.time);
 
-        date.setTime(date.getTime() + rnaDocument.time);
 
         const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
 
         return {
             nom: toRnaPv(rnaDocument.id),
-            type: toRnaPv(rnaDocument.type),
+            type: toRnaPv(rnaDocument.sous_type),
             url: toRnaPv(rnaDocument.url),
             __meta__: {}
         }

@@ -18,7 +18,7 @@
                     {#if index == 0}
                         <Dashboard {association} />
                     {:else if index == 1}
-                        <Documents {associationIdentifier} />
+                        <Documents {association} />
                     {:else}
                         <Etablissements {associationIdentifier} {association} />
                     {/if}
