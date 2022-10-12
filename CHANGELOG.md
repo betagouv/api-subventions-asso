@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/betagouv/api-subventions-asso/compare/v0.15.4...v0.16.0) (2022-10-12)
+
+
+### Bug Fixes
+
+* **front, api:** clean dauphin and subvention table ([#472](https://github.com/betagouv/api-subventions-asso/issues/472)) ([e2644fe](https://github.com/betagouv/api-subventions-asso/commit/e2644fe73749b893c72c588bc815a8083cb34fe9))
+* **front:** fix search history display when no history ([315977e](https://github.com/betagouv/api-subventions-asso/commit/315977e334ec8d7f2db32d915380773b0373d8c0))
+
+
+### Features
+
+* **api:** add stats to user ([#470](https://github.com/betagouv/api-subventions-asso/issues/470)) ([798b51e](https://github.com/betagouv/api-subventions-asso/commit/798b51ea90fe1df5b46c5387fc6f46e8ab87524b))
+* **api:** handle new FONJEP file with versements ([729d59f](https://github.com/betagouv/api-subventions-asso/commit/729d59f736a02ecec5fa013a30bc4f50a65ccf51))
+* **api:** manage user in current request ([#468](https://github.com/betagouv/api-subventions-asso/issues/468)) ([397cfcd](https://github.com/betagouv/api-subventions-asso/commit/397cfcd4fecba36725b85d6822905b9e2517fd35))
+* **front,api:** add signup date to user ([#473](https://github.com/betagouv/api-subventions-asso/issues/473)) ([180c855](https://github.com/betagouv/api-subventions-asso/commit/180c855cec6dd8500ba035cc7f9d8c3f9241d2ca))
+* **front:** disable matomo ([#469](https://github.com/betagouv/api-subventions-asso/issues/469)) ([e243201](https://github.com/betagouv/api-subventions-asso/commit/e2432011067e00e7b1a2a10e28993e4c17156da3))
+* **front:** make click on icon of CardDocument active ([#466](https://github.com/betagouv/api-subventions-asso/issues/466)) ([3949016](https://github.com/betagouv/api-subventions-asso/commit/3949016c9b0e6903520c8d75b55aad156e521c11))
+
+
+
+
+
 ## [0.15.4](https://github.com/betagouv/api-subventions-asso/compare/v0.14.9...v0.15.4) (2022-10-11)
 
 
