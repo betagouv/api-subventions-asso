@@ -76,22 +76,22 @@ export class AssociationService {
         });
     }
 
-    async getDocuments(associationIdentifier) {
-        const path = `/association/${associationIdentifier}/documents`;
+    async getDocuments(identifier) {
+        const path = `/association/${identifier}/documents`;
         const documentLabels = {
             RIB: "Télécharger le RIB",
             "Avis Situation Insee": "Télécharger l'avis de situation (INSEE)",
-            MD: "Télécharger le 'Récépissé de modification'",
+            MD: "Télécharger le Récépissé de modification",
             LDC: "Télécharger la liste des dirigeants",
-            PV: "Télécharger le `Procès verbal`",
-            STC: "Télécharger les `Statuts`",
-            RAR: "Télécharger le `Rapport d'activité`",
-            RAF: "Télécharger le `Rapport financier`",
-            BPA: "Télécharger le `Budget prévisionnel annuel`",
-            RCA: "Télécharger le `Rapport du commissaire aux compte`",
-            "Education nationale": "Télécharger `L'agrément Education Nationale`",
-            "Jeunesse et Education Populaire (JEP)": "Télécharger `L'agrément jeunesse et éducation populaire`",
-            Formation: "Télécharger `L'habilitation d'organisme de formation`"
+            PV: "Télécharger le Procès verbal",
+            STC: "Télécharger les Statuts",
+            RAR: "Télécharger le Rapport d'activité",
+            RAF: "Télécharger le Rapport financier",
+            BPA: "Télécharger le Budget prévisionnel annuel",
+            RCA: "Télécharger le Rapport du commissaire aux compte",
+            "Education nationale": `Télécharger "L'agrément Education Nationale"`,
+            "Jeunesse et Education Populaire (JEP)": `Télécharger "L'agrément jeunesse et éducation populaire"`,
+            Formation: `Télécharger "L'habilitation d'organisme de formation"`
         };
         const result = await axios.get(path);
         const documents = result.data.documents.map(document => toDocumentComponent(document));

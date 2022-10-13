@@ -21,7 +21,7 @@ export const fixtureEtablissements = [
 export const fixtureDocumentRna = [{
     url: "/fake/url",
     type: "PV",
-    'sous-type': "PV",
+    'sous_type': "PV",
     id: "ididididid",
     time: 1622557171,
     annee: 2021,
