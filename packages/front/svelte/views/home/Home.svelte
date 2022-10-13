@@ -12,6 +12,7 @@
 
     import Spinner from "../../components/Spinner.svelte";
     import ResultCard from "./composents/ResultCard.svelte";
+    import InteruptSearchError from "./error/InteruptSearchError";
 
     export let searchParams;
 
@@ -27,13 +28,15 @@
         error = false;
         searchResult.length = 0;
 
-        if (text.length < 2) return;
+        if (text.length < 3) return;
 
         try {
             isLoading = true;
             const result = await homeService.search(text);
             searchResult = result;
-        } catch {
+        } catch (e) {
+            if (e instanceof InteruptSearchError) return;
+
             error = true;
         }
         isLoading = false;
