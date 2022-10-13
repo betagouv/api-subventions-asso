@@ -10,8 +10,8 @@
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "allowJs": true
     },
-    "exclude": [
-    ]
+    "exclude": []
 }

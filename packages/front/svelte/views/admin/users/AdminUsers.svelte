@@ -1,6 +1,6 @@
 <script>
     import admin from "../admin.service.js";
-    import { user as userStore } from "../../../store/user.store";
+    import { user, user as userStore } from "../../../store/user.store";
 
     import Breadcrumb from "../../../dsfr/Breadcrumb.svelte";
     import Spinner from "../../../components/Spinner.svelte";
@@ -9,6 +9,7 @@
     import SearchUsers from "./composents/SearchUsers.svelte";
     import TableUsers from "./composents/TableUsers.svelte";
     import Button from "../../../dsfr/Button.svelte";
+    import { createCsvFromArray, downloadCsv } from "../../../helpers/dataHelper.js";
 
     const segments = [
         { label: "Accueil", url: "/" },
@@ -38,21 +39,19 @@
 
     loadUsers();
 
-    const downloadCsv = () => {
-        const delimiter = ";";
-        const userCSV = users.map(user =>
-            [
-                user.email,
-                user.roles.join(" - "),
-                user.active ? "Oui" : "Non",
-                new Date(user.signupAt).toLocaleDateString(),
-                user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
-                user.resetTokenDate || "",
-                user.stats.searchCount,
-                user.stats.lastSearchDate
-            ].join(delimiter)
-        );
-        const header = [
+    const downloadUsersCsv = () => {
+        const csvRows = users.map(user => [
+            user.email,
+            user.roles.join(" - "),
+            user.active ? "Oui" : "Non",
+            new Date(user.signupAt).toLocaleDateString(),
+            user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
+            user.resetTokenDate ? new Date(user.resetTokenDate).toLocaleString() : "",
+            user.stats.searchCount,
+            new Date(user.stats.lastSearchDate).toLocaleString()
+        ]);
+    
+        const csvHeader = [
             "Email",
             "Roles",
             "Actif",
@@ -61,17 +60,12 @@
             "Date du token de reset",
             "Nombres de recherches",
             "Date dernière recherche"
-        ].join(delimiter);
+        ]
 
-        const csvContent = [header, ...userCSV].join("\n");
+        const csvContent = createCsvFromArray(csvHeader, csvRows, ";");
+        downloadCsv(csvContent, `users-${new Date().toLocaleDateString()}`)
+    }
 
-        const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `users-${new Date().toLocaleDateString()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-    };
 </script>
 
 <Breadcrumb {segments} />
@@ -79,7 +73,7 @@
     <Spinner description="Chargement des utilisateurs en cours ..." />
 {:then}
     <div class="fr-grid-row">
-        <Button on:click={downloadCsv}>Téléchager la liste en CSV</Button>
+        <Button on:click={downloadUsersCsv}>Téléchager la liste en CSV</Button>
     </div>
     <div>
         <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters admin_list-users_stats">
