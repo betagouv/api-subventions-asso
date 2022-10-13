@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.1](https://github.com/betagouv/api-subventions-asso/compare/v0.16.0...v0.16.1) (2022-10-13)
+
+
+### Features
+
+* **api, front:** find asso documents from API ASSO ([#500](https://github.com/betagouv/api-subventions-asso/issues/500)) ([6538650](https://github.com/betagouv/api-subventions-asso/commit/6538650041b2cbea78fec238e50ae6fabc751b7a))
+
+
+
+
+
 # [0.16.0](https://github.com/betagouv/api-subventions-asso/compare/v0.15.4...v0.16.0) (2022-10-12)
 
 
