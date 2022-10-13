@@ -1,6 +1,8 @@
 import ApiAssoDtoAdapter from "./ApiAssoDtoAdapter";
 import { StructureRepresentantLegalDto } from "../dto/StructureDto";
 import { fixtureAsso, fixtureEtablissements, fixtureRepresentantLegal, fixtureRib } from "../__fixtures__/ApiAssoStructureFixture";
+import { DacDtoDocument, RnaDtoDocument } from "../__fixtures__/DtoDocumentFixture";
+import { ApiAssoDocumentFixture } from "../__fixtures__/ApiAssoDocumentFixture";
 
 describe("ApiAssoDtoAdapter", () => {
     describe("toAssociation", () => {
@@ -98,42 +100,31 @@ describe("ApiAssoDtoAdapter", () => {
         })
     })
 
-    describe("toDocuments", () => {
-        it("should return documents", () => {
-            const actual = ApiAssoDtoAdapter.toDocuments(fixtureAsso);
+    describe("rnaDocumentToDocument", () => {
+        it("should return StructureRnaDocumentDto", () => {
+            const expected = RnaDtoDocument;
+            const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(ApiAssoDocumentFixture.asso.documents.document_rna[0]);
+            expect(actual).toEqual(expected);
+        })
 
+        it("should set date to 01/01/1970 if year is not define", () => {
+            const document_rna = { ...ApiAssoDocumentFixture.asso.documents.document_rna[0], annee: undefined }
+            const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
             expect(actual).toMatchSnapshot();
         })
 
-        it("should return rna documents", () => {
-            const actual = ApiAssoDtoAdapter.toDocuments({
-                ...fixtureAsso,
-                document_dac: [],
-                rib: []
-            });
-
+        it("should set date to 01/01 of year if time is not define", () => {
+            const document_rna = { ...ApiAssoDocumentFixture.asso.documents.document_rna[0], time: undefined }
+            const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
             expect(actual).toMatchSnapshot();
         })
+    })
 
-        it("should return dac documents", () => {
-            const actual = ApiAssoDtoAdapter.toDocuments({
-                ...fixtureAsso,
-                document_rna: [],
-                rib: []
-            });
-
-            expect(actual).toMatchSnapshot();
+    describe("dacDocumentToDocument", () => {
+        it("should return StructureDacDocumentDto", () => {
+            const expected = DacDtoDocument;
+            const actual = ApiAssoDtoAdapter.dacDocumentToDocument(ApiAssoDocumentFixture.asso.documents.document_dac[0]);
+            expect(actual).toEqual(expected);
         })
-        
-        it("should return rib documents", () => {
-            const actual = ApiAssoDtoAdapter.toDocuments({
-                ...fixtureAsso,
-                document_rna: [],
-                document_dac: []
-            });
-
-            expect(actual).toMatchSnapshot();
-        })
-
     })
 });

@@ -8,30 +8,36 @@
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
 
-    export let associationIdentifier;
+    export let association;
 
     let element;
     let promise = new Promise(() => null);
 
+    const getDateString = date => { 
+        if (date.getTime() === 0) return "Date de dépôt non disponible";
+        return `Déposé le ${date.toLocaleDateString()}`;
+    }
+
     onMount(async () => {
         await waitElementIsVisible(element);
-        promise = associationService.getDocuments(associationIdentifier);
+        const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
+        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == (association.siren + association.nic_siege) ))
     });
 </script>
 
 <div bind:this={element}>
     {#await promise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
-    {:then Documents}
-        {#if Documents.length}
+    {:then documents}
+        {#if documents.length}
             <h3>Pièces administratives pour cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
-                {#each Documents as document}
+                {#each documents as document}
                     <CardDocuments
                         title={document.label}
                         url={document.url}
                         size="6"
-                        footer="Déposé le {document.date.toLocaleDateString()}">
+                        footer={getDateString(document.date)}>
                         {document.nom}
                     </CardDocuments>
                 {/each}
