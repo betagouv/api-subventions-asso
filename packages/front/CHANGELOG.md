@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.1](https://github.com/betagouv/datasubvention/compare/v0.16.0...v0.16.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* **front:** fix stack overflow on search ([57e7e08](https://github.com/betagouv/datasubvention/commit/57e7e08e89e36ea72fe3a1bfc0429a4e92054c57))
+
+
+### Features
+
+* **api, front:** find asso documents from API ASSO ([#500](https://github.com/betagouv/datasubvention/issues/500)) ([6538650](https://github.com/betagouv/datasubvention/commit/6538650041b2cbea78fec238e50ae6fabc751b7a))
+
+
+
+
+
 # [0.16.0](https://github.com/betagouv/datasubvention/compare/v0.15.4...v0.16.0) (2022-10-12)
 
 
