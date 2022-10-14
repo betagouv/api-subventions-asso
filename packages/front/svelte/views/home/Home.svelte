@@ -2,8 +2,9 @@
     import { onMount } from "svelte";
     import homeService from "./home.service";
 
-    import debounceFactory from "../../helpers/timeHelper";
+    import { isRna, isSiren, isSiret, isStartOfSiret } from "../../helpers/validatorHelper";
     import { getSearchHistory } from "../../services/storage.service";
+    import debounceFactory from "../../helpers/timeHelper";
     import { truncate } from "../../helpers/textHelper";
 
     import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
@@ -43,8 +44,13 @@
     };
 
     const submitHandler = () => {
-        if (searchResult.length === 0) return;
-        location.href = `/association/${searchResult[0].rna || searchResult[0].siren}`;
+        if (isRna(input) || isSiren(input)) {
+            location.href = `/association/${input}`;
+        } else if (isSiret(input)) {
+            location.href = `/etablissement/${input}`;
+        } else if (searchResult.length !== 0) {
+            location.href = `/association/${searchResult[0].rna || searchResult[0].siren}`;
+        }
     };
 
     const debounce = debounceFactory(200);
