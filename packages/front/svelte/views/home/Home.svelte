@@ -61,7 +61,7 @@
             <div class="fr-search-bar fr-search-bar--lg" id="search-input">
                 <input
                     class="fr-input"
-                    placeholder="Rechercher un nom d’association, un SIREN, un SIRET, un RNA, un NOM…"
+                    placeholder="Recherche une association par nom ou par identifiant RNA, SIREN ou SIRET…"
                     type="search"
                     id="search-input-input"
                     name="search-input"
