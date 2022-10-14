@@ -10,23 +10,24 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
-      "ecmaVersion": 2020,
-      "sourceType": "module",
-      "extraFileExtensions": [".svelte"]
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "extraFileExtensions": [".svelte"]
     },
     "env": {
-      "es6": true,
-      "browser": true
+        "es6": true,
+        "browser": true,
+        "jest": true
     },
     "overrides": [
-      {
-        "files": ["*.svelte"],
-        "processor": "svelte3/svelte3"
-      }
+        {
+            "files": ["*.svelte"],
+            "processor": "svelte3/svelte3"
+        }
     ],
     "settings": {
-      "svelte3/typescript": true
+        "svelte3/typescript": true
     },
     "plugins": ["svelte3", "@typescript-eslint"],
     "ignorePatterns": ["node_modules", "webpack.*", "views/index.js"]
-  }
+}
