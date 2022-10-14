@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.2](https://github.com/betagouv/api-subventions-asso/compare/v0.16.1...v0.16.2) (2022-10-14)
+
+
+### Bug Fixes
+
+* **api:** fix send wrong error on error in /auth/login ([#503](https://github.com/betagouv/api-subventions-asso/issues/503)) ([20a3e0e](https://github.com/betagouv/api-subventions-asso/commit/20a3e0e71e457d8a3b76b0040da9f08efc5f68b9))
+* **api:** group associations names by rna or siren ([#504](https://github.com/betagouv/api-subventions-asso/issues/504)) ([faae9c5](https://github.com/betagouv/api-subventions-asso/commit/faae9c5e4a2177922d7e50ff06f875c39837a571))
+* **front:** fix breadcrumb ([#502](https://github.com/betagouv/api-subventions-asso/issues/502)) ([147b483](https://github.com/betagouv/api-subventions-asso/commit/147b4838a107cf065b9f099d02be14b6d28c43f0))
+* **front:** search by siret ([#505](https://github.com/betagouv/api-subventions-asso/issues/505)) ([5495181](https://github.com/betagouv/api-subventions-asso/commit/5495181992283d37dc63a1280f19359a37bdae63))
+
+
+### Features
+
+* **front:** add alert on document status ([#507](https://github.com/betagouv/api-subventions-asso/issues/507)) ([f751555](https://github.com/betagouv/api-subventions-asso/commit/f75155574a63decd94073494aa173d8d899fd21a))
+* **front:** update search placeholder ([#506](https://github.com/betagouv/api-subventions-asso/issues/506)) ([843af17](https://github.com/betagouv/api-subventions-asso/commit/843af17aa1b7270ab1531f2d9aebc2b773a6ced9))
+
+
+
+
+
 ## [0.16.1](https://github.com/betagouv/api-subventions-asso/compare/v0.16.0...v0.16.1) (2022-10-13)
 
 
