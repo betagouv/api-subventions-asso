@@ -7,6 +7,7 @@
     import CardDocuments from "../../../components/CardDocuments.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
+    import Alert from "../../../dsfr/Alert.svelte";
 
     export let association;
 
@@ -30,6 +31,9 @@
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
         {#if documents.length}
+            <Alert type="info" title="État des fichiers">
+                Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos fournisseurs de données.
+            </Alert>
             <h3>Pièces administratives pour cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each documents as document}
