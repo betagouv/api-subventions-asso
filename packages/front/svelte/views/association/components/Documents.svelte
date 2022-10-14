@@ -22,7 +22,7 @@
     onMount(async () => {
         await waitElementIsVisible(element);
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == (association.siren + association.nic_siege) ))
+        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == (association.siren + association.nic_siege)));
     });
 </script>
 
@@ -42,7 +42,13 @@
                         url={document.url}
                         size="6"
                         footer={getDateString(document.date)}>
-                        {document.nom}
+                        <p>
+                            {document.nom}
+                        </p>
+
+                        <p class="card-document_fournisseur">
+                            Fournisseur du fichier: <b>{document.provider}</b>
+                        </p>
                     </CardDocuments>
                 {/each}
             </div>
@@ -59,4 +65,7 @@
 </div>
 
 <style>
+    .card-document_fournisseur {
+        font-size: 0.9em;
+    }
 </style>
