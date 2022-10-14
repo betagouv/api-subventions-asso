@@ -7,6 +7,7 @@
     import CardDocuments from "../../../components/CardDocuments.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
+    import Alert from "../../../dsfr/Alert.svelte";
 
     export let association;
 
@@ -21,7 +22,7 @@
     onMount(async () => {
         await waitElementIsVisible(element);
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == (association.siren + association.nic_siege) ))
+        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == (association.siren + association.nic_siege)));
     });
 </script>
 
@@ -30,6 +31,9 @@
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
         {#if documents.length}
+            <Alert type="info" title="État des fichiers">
+                Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos fournisseurs de données.
+            </Alert>
             <h3>Pièces administratives pour cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each documents as document}
@@ -38,7 +42,13 @@
                         url={document.url}
                         size="6"
                         footer={getDateString(document.date)}>
-                        {document.nom}
+                        <p>
+                            {document.nom}
+                        </p>
+
+                        <p class="card-document_fournisseur">
+                            Fournisseur du fichier: <b>{document.provider}</b>
+                        </p>
                     </CardDocuments>
                 {/each}
             </div>
@@ -55,4 +65,7 @@
 </div>
 
 <style>
+    .card-document_fournisseur {
+        font-size: 0.9em;
+    }
 </style>
