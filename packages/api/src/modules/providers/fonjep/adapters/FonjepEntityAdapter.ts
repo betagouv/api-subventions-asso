@@ -17,6 +17,7 @@ export default class FonjepEntityAdapter {
             service_instructeur: toPV(entity.indexedInformations.service_instructeur),
             dispositif: toPV(entity.indexedInformations.dispositif),
             status: toPV(entity.indexedInformations.status),
+            raison: toPV(entity.indexedInformations.raison),
             pluriannualite: toPV("Oui"),
             plein_temps: toPV(entity.indexedInformations.plein_temps),
             annee_demande: toPV(entity.indexedInformations.annee_demande),

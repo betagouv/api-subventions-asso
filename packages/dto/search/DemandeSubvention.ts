@@ -23,6 +23,7 @@ export interface DemandeSubvention {
         telephone?: ProviderValue<string>,
     }
     status: ProviderValue<string>,
+    raison?: ProviderValue<string>,
     montants?: {
         total?: ProviderValue<number>,
         demande?: ProviderValue<number>,
