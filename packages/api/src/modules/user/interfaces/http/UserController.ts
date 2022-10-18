@@ -1,8 +1,6 @@
-import UserDto from '@api-subventions-asso/dto/user/UserDto';
-import { Request as ExRequest } from 'express';
-import { ObjectId } from 'mongodb';
+import { ChangePasswordDtoResponse, GetRolesDtoResponse } from "@api-subventions-asso/dto";
 import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from 'tsoa';
-import User, { UserWithoutSecret } from '../../entities/User';
+import { IdentifiedRequest } from "../../../../@types/ApiRequests";
 import userService from '../../user.service';
 
 @Route("user")
@@ -25,7 +23,7 @@ export class UserController extends Controller {
 
     @Get("/admin/list-users")
     @Security("jwt", ['admin'])
-    public async listUsers(): Promise<{success: boolean , users: UserDto[]}> {
+    public async listUsers() {
         const result = await userService.listUsers();
 
         if (!result.success) {
@@ -38,7 +36,7 @@ export class UserController extends Controller {
     @Security("jwt", ['admin'])
     public async createUser(
         @Body() body: { email: string },
-    ): Promise<{success: boolean , email: string}> {
+    ): Promise<{ success: boolean, email: string }> {
         const result = await userService.createUsersByList([body.email]);
 
         if (!result[0].success) {
@@ -52,16 +50,16 @@ export class UserController extends Controller {
     @Response(204, "Retourne true si l'opération s'est bien exécutée", { success: true })
     @Response(500, "Retourne false si une erreur est survenue pendant l'exécution", { success: false })
     public async deleteUser(
-        @Request() req: ExRequest,
+        @Request() req: IdentifiedRequest,
         @Path() id: string
-    ): Promise<{success: boolean }> {
-        
-        if ((req.user as UserWithoutSecret | undefined)?._id.toString() === id) {
+    ): Promise<{ success: boolean }> {
+
+        if (!req.user || req.user?._id.toString() === id) {
             this.setStatus(500);
             return { success: false };
         }
 
-        const result = await userService.delete({_id: new ObjectId(id)});
+        const result = await userService.delete(req.user);
 
         if (!result.success) {
             this.setStatus(500);
@@ -71,14 +69,23 @@ export class UserController extends Controller {
         }
         return result;
     }
-    
+
 
     @Get("/roles")
     @Security("jwt", ['user'])
+    @Response(200, "Retourne un tableau de rôles")
     public async getRoles(
-        @Request() request: Express.Request
-    ): Promise<{success: boolean , roles: string[]}> {
-        const roles = userService.getRoles(request.user as unknown as User);
+        @Request() req: IdentifiedRequest
+    ): Promise<GetRolesDtoResponse> {
+        const roles = userService.getRoles(req.user);
+
+        if (!roles) {
+            this.setStatus(500);
+            return {
+                success: false,
+                message: "Une erreur est survenue lors de l'accès à la base de donnée"
+            }
+        }
 
         return {
             success: true,
@@ -88,15 +95,15 @@ export class UserController extends Controller {
 
     @Put("/password")
     public async changePassword(
-        @Request() req: ExRequest,
+        @Request() req: IdentifiedRequest,
         @Body() body: { password: string }
-    ) {
-        const user = req.user as UserWithoutSecret;
-        const result = await userService.updatePassword(user, body.password);
+    ): Promise<ChangePasswordDtoResponse> {
+        const result = await userService.updatePassword(req.user, body.password);
 
         if (!result.success) {
             this.setStatus(500);
         }
+
         return result;
     }
 }

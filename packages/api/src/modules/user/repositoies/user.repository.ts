@@ -1,6 +1,8 @@
-import { Filter, ObjectId, WithId } from "mongodb";
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
-import User, { UserWithoutSecret } from "../entities/User";
+import User from "../entities/UserNotPersisted";
+import UserDbo from "./dbo/UserDbo";
 
 export enum UserRepositoryErrors {
     UPDATE_FAIL = 1
@@ -10,7 +12,7 @@ export class UserRepository {
     private readonly collection = db.collection<User>("users");
 
     async findByEmail(email: string) {
-        return this.removeSecrets(await this.collection.findOne({ email: email }));
+        return this.removeSecrets(await this.collection.findOne({ email: email }) as UserDbo);
     }
 
     async find(query: Filter<User> = {}) {
@@ -19,40 +21,34 @@ export class UserRepository {
     }
 
     async findById(userId: ObjectId) {
-        return this.removeSecrets(await this.collection.findOne({ _id: userId }));
+        return this.removeSecrets(await this.collection.findOne({ _id: userId }) as UserDbo);
     }
 
-    async update(user: User | UserWithoutSecret): Promise<UserWithoutSecret> {
+    async update(user: UserDbo | UserDto): Promise<UserDto> {
         if (user._id) await this.collection.updateOne({ _id: user._id }, { $set: user });
         else await this.collection.updateOne({ email: user.email }, { $set: user });
-
-        return this.findByEmail(user.email) as unknown as UserWithoutSecret;
+        return user;
     }
 
-    async delete(user: UserWithoutSecret | { _id: ObjectId }): Promise<boolean> {
+    async delete(user: UserDto): Promise<boolean> {
         const result = await this.collection.deleteOne({ _id: user._id });
         return result.acknowledged;
     }
 
     async create(user: User) {
-        await this.collection.insertOne(user);
-        // @ts-expect-error: insertOne add _id to the initial object user
-        return this.removeSecrets(user);
+        const result = await this.collection.insertOne(user);
+        return this.removeSecrets({ ...user, _id: result.insertedId });
     }
 
-    async findPassword(userWithoutSecret: UserWithoutSecret) {
-        const user = await this.collection.findOne({ email: userWithoutSecret.email });
-
-        return user ? user.hashPassword : null;
+    async getUserWithSecretsByEmail(email: string): Promise<UserDbo | null> {
+        return this.collection.findOne({ email });
     }
 
-    async findJwt(userWithoutSecret: UserWithoutSecret) {
-        const user = await this.collection.findOne({ _id: userWithoutSecret._id });
-
-        return user ? user.jwt : null;
+    async getUserWithSecretsById(id: ObjectId): Promise<UserDbo | null> {
+        return this.collection.findOne({ _id: id });
     }
 
-    private removeSecrets(user: WithId<User> | null): WithId<UserWithoutSecret> | null {
+    private removeSecrets(user: UserDbo): UserDto | null {
         if (!user) return null;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -16,8 +16,8 @@ export class AssociationNameService {
 
     async getAllStartingWith(value: string) {
         const associations = await associationNameRepository.findAllStartingWith(value);
-        const rnaAndSirenMaps = { rnaMap: new Map<Rna, AssociationNameEntity[]>(), sirenMap: new Map<Siren, AssociationNameEntity[]>()};
-        
+        const rnaAndSirenMaps = { rnaMap: new Map<Rna, AssociationNameEntity[]>(), sirenMap: new Map<Siren, AssociationNameEntity[]>() };
+
         function getAssociationArray(association, maps) {
             return maps.rnaMap.get(association.rna) || maps.sirenMap.get(association.siren || '') || [];
         }
@@ -30,11 +30,11 @@ export class AssociationNameService {
             return entities.sort((a, b) => new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime())[0]
         }
 
-        function toRnaAndSirenMaps(acc: typeof rnaAndSirenMaps , association: AssociationNameEntity) {
+        function toRnaAndSirenMaps(acc: typeof rnaAndSirenMaps, association: AssociationNameEntity) {
             const associationArray = getAssociationArray(association, acc);
-            
+
             associationArray.push(association);
-            
+
             if (association.rna && !isIdInMap(association.rna, acc.rnaMap)) {
                 // Same reference (associationArray) for both map value
                 acc.rnaMap.set(association.rna, associationArray);
@@ -58,6 +58,8 @@ export class AssociationNameService {
 
         // Above reduce creates duplicates. Removes then by creating a Set
         const uniqueMapsValues = new Set(flattenMapsValues);
+
+        console.log({ uniqueMapsValues })
 
         return [...uniqueMapsValues].map(getMostRecentEntity);
     }

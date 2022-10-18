@@ -25,9 +25,9 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getAdminToken())
                 .set('Accept', 'application/json')
-                
+
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({success: true, user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"]}})
+            expect(response.body).toMatchObject({ success: true, user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"] } })
         })
 
         it("should add role", async () => {
@@ -41,9 +41,9 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getAdminToken())
                 .set('Accept', 'application/json')
-                
+
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({ success: true, user: { email: "futur-admin@beta.gouv.fr", roles: ["user", "admin"]}})
+            expect(response.body).toMatchObject({ success: true, user: { email: "futur-admin@beta.gouv.fr", roles: ["user", "admin"] } })
         })
 
         it("should add reject because role not exist", async () => {
@@ -57,9 +57,9 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getAdminToken())
                 .set('Accept', 'application/json')
-                
+
             expect(response.statusCode).toBe(500);
-            expect(response.body).toMatchObject({ success: false, message: "The role \"test\" does not exist"})
+            expect(response.body).toMatchObject({ success: false, message: "The role \"test\" does not exist" })
         })
 
         it("should return 401 because user dont have rigth", async () => {
@@ -71,7 +71,7 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json')
-    
+
             expect(response.statusCode).toBe(401);
         })
 
@@ -83,7 +83,7 @@ describe('UserController, /user', () => {
                     roles: ["admin"]
                 })
                 .set('Accept', 'application/json')
-    
+
             expect(response.statusCode).toBe(401);
         })
     })
@@ -97,9 +97,9 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json')
-                
+
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({success: true, user: { email: "user@beta.gouv.fr", roles: ["user"]}})
+            expect(response.body).toMatchObject({ success: true, user: { email: "user@beta.gouv.fr", roles: ["user"] } })
         })
 
         it("should be change password", async () => {
@@ -116,7 +116,7 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json')
-                
+
             expect(response.statusCode).toBe(200);
             const userUpdated = await userService.findByEmail("user@beta.gouv.fr");
 
@@ -131,16 +131,9 @@ describe('UserController, /user', () => {
                 })
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json')
-            
+
             expect(response.statusCode).toBe(500);
-            expect(response.body).toMatchObject({success: false, message: 'Password is not hard, please use this rules:\n' +
-            '    At least one digit [0-9]\n' +
-            '    At least one lowercase character [a-z]\n' +
-            '    At least one uppercase character [A-Z]\n' +
-            '    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]\n' +
-            '    At least 8 characters in length, but no more than 32.\n' +
-            '                    ',
-            code: UserServiceErrors.FORMAT_PASSWORD_INVALID })
+            expect(response.body).toMatchSnapshot();
         })
 
 
@@ -151,7 +144,7 @@ describe('UserController, /user', () => {
                     password: "Test::11",
                 })
                 .set('Accept', 'application/json')
-    
+
             expect(response.statusCode).toBe(401);
         })
     })
