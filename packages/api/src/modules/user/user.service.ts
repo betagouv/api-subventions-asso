@@ -9,10 +9,10 @@ import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ROLES } from "./entities/Roles";
 import User, { UserWithoutSecret } from "./entities/User";
 import UserReset from "./entities/UserReset";
-import { UserUpdateError } from "./repositoies/errors/UserUpdateError";
-import userResetRepository from "./repositoies/user-reset.repository";
+import { UserUpdateError } from "./repositories/errors/UserUpdateError";
+import userResetRepository from "./repositories/user-reset.repository";
 
-import userRepository from "./repositoies/user.repository";
+import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 
 export enum UserServiceErrors {
@@ -127,7 +127,7 @@ export class UserService {
 
         const stats = {
             searchCount: 0,
-            lastSearchDate :null,
+            lastSearchDate: null,
         }
 
         const user = new User({

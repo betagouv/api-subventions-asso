@@ -4,7 +4,7 @@ import * as express from "express";
 import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
 import userService, { UserServiceError } from "../../src/modules/user/user.service";
-import userRepository from "../../src/modules/user/repositoies/user.repository";
+import userRepository from "../modules/user/repositories/user.repository";
 import { ObjectId } from "mongodb";
 
 describe("expressAuthentication", () => {
@@ -33,10 +33,10 @@ describe("expressAuthentication", () => {
     let warn: jest.SpyInstance;
     beforeAll(() => {
         warn = jest.spyOn(console, 'warn').mockImplementation();
-        findByEmailMock.mockImplementation((email) => Promise.resolve({ email, roles: ["user"], active: true, signupAt: new Date(), stats: { searchCount: 0, lastSearchDate: null } , _id: new ObjectId()}));
+        findByEmailMock.mockImplementation((email) => Promise.resolve({ email, roles: ["user"], active: true, signupAt: new Date(), stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId() }));
         findJwtByEmailMock.mockImplementation(() => Promise.resolve({ success: true, jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() } }))
         findJwtMock.mockImplementation(() => Promise.resolve({ token: DEFAULT_TOKEN, expirateDate: new Date() }))
-        updateMock.mockImplementation((user) => Promise.resolve({ email: user.email, roles: ["user", "admin"], active: true, signupAt: new Date(), stats: { searchCount: 0, lastSearchDate: null } , _id: new ObjectId() }))
+        updateMock.mockImplementation((user) => Promise.resolve({ email: user.email, roles: ["user", "admin"], active: true, signupAt: new Date(), stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId() }))
         // @ts-expect-error: mock
         verifyMock.mockImplementation(VERIFY_DEFAULT_MOCK);
     });
@@ -62,7 +62,7 @@ describe("expressAuthentication", () => {
     });
 
     it("should throw an error when user role is not allowed", async () => {
-        const req = Object.assign({}, DEFAULT_REQ, {user: { roles: ["user"]}})
+        const req = Object.assign({}, DEFAULT_REQ, { user: { roles: ["user"] } })
         await expect(expressAuthentication(req, SECURITY_NAME, ["admin"])).rejects.toThrowError("JWT does not contain required scope.");
     });
 });
