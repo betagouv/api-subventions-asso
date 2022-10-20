@@ -47,12 +47,6 @@ Object {
       "type": "string",
       "value": "Oui",
     },
-    "raison": Object {
-      "last_update": "2022-01-02T00:00:00.000Z",
-      "provider": "Extranet FONJEP",
-      "type": "string",
-      "value": "Reconduction",
-    },
     "service_instructeur": Object {
       "last_update": "2022-01-02T00:00:00.000Z",
       "provider": "Extranet FONJEP",
@@ -69,7 +63,7 @@ Object {
       "last_update": "2022-01-02T00:00:00.000Z",
       "provider": "Extranet FONJEP",
       "type": "string",
-      "value": "Attribué",
+      "value": "Attribué - Reconduction",
     },
     "versementKey": Object {
       "last_update": "2022-01-02T00:00:00.000Z",
