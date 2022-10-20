@@ -6,9 +6,11 @@ import { DefaultObject } from "../../@types";
 import { ACCEPTED_EMAIL_DOMAIN } from "../../configurations/auth.conf";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
+import { ConsumerToken } from "./entities/ConsumerToken";
 import { ROLES } from "./entities/Roles";
 import User, { UserWithoutSecret } from "./entities/User";
 import UserReset from "./entities/UserReset";
+import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
 
@@ -29,6 +31,7 @@ export enum UserServiceErrors {
     RESET_TOKEN_EXPIRED = 11,
     CREATE_RESET_PASSWORD_WRONG = 12,
     CREATE_EMAIL_GOUV = 13,
+    CREATE_CONSUMER_TOKEN = 14
 }
 
 export interface UserServiceError {
@@ -108,7 +111,20 @@ export class UserService {
         return userRepository.find(query)
     }
 
-    async createUser(email: string, password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+    async createConsumer(email: string) {
+        const createResult = await this.createUser(email)
+        if (!createResult?.success) return createResult;
+        const user = createResult.user;
+        const token = jwt.sign({ user: createResult.user, isConsumerToken: true }, JWT_SECRET);
+        try {
+            await consumerTokenRepository.create(new ConsumerToken(user._id, token));
+            return { success: true, user };
+        } catch (e) {
+            return { success: false, message: "Could not create consumer token", code: UserServiceErrors.CREATE_CONSUMER_TOKEN }
+        }
+    }
+
+    async createUser(email: string, password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: WithId<UserWithoutSecret> }> {
         const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
 
         if (!validUser.success) return validUser;

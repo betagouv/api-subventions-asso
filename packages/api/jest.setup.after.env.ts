@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-jest.spyOn(console, 'info').mockImplementation(() => {});
+jest.spyOn(console, 'info').mockImplementation(() => { });
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require('crypto').randomBytes(256).toString('base64');
@@ -15,8 +15,8 @@ const g = global as unknown as { app?: Server };
 
 beforeAll(async () => {
     await connectDB();
-
-    if (!existsSync("./logs")){ // Create folders for logs
+    console.log("db connected...");
+    if (!existsSync("./logs")) { // Create folders for logs
         mkdirSync("./logs");
     }
 
