@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserRepository getUserWithSecretsByEmail should return user 1`] = `
+Object {
+  "_id": Any<ObjectId>,
+  "active": false,
+  "email": "test@beta.gouv.fr",
+  "hashPassword": Any<String>,
+  "jwt": Object {
+    "expirateDate": Any<Date>,
+    "token": Any<String>,
+  },
+  "roles": Array [
+    "user",
+  ],
+  "signupAt": Any<Date>,
+  "stats": Object {
+    "lastSearchDate": null,
+    "searchCount": 0,
+  },
+}
+`;

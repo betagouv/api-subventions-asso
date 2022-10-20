@@ -1,8 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UserController, /user POST /admin/roles should add reject because role not exist 1`] = `
+Object {
+  "errorCode": 3,
+  "message": "Role Not Valid",
+  "success": false,
+}
+`;
+
 exports[`UserController, /user Put /password should add reject because password is not hard 1`] = `
 Object {
-  "code": 7,
+  "errorCode": 4,
   "message": "Password is not hard, please use this rules:
         At least one digit [0-9]
         At least one lowercase character [a-z]

@@ -59,8 +59,6 @@ export class AssociationNameService {
         // Above reduce creates duplicates. Removes then by creating a Set
         const uniqueMapsValues = new Set(flattenMapsValues);
 
-        console.log({ uniqueMapsValues })
-
         return [...uniqueMapsValues].map(getMostRecentEntity);
     }
 

@@ -6,14 +6,6 @@ import userService, { UserServiceErrors } from "../../../../../src/modules/user/
 const g = global as unknown as { app: unknown }
 
 describe('UserController, /user', () => {
-    let log: jest.SpyInstance;
-    beforeEach(() => {
-        log = jest.spyOn(console, 'log').mockImplementation();
-    });
-
-    afterEach(() => {
-        log.mockClear();
-    })
 
     describe("POST /admin/roles", () => {
         it("should return 200", async () => {
@@ -58,8 +50,8 @@ describe('UserController, /user', () => {
                 .set("x-access-token", await getAdminToken())
                 .set('Accept', 'application/json')
 
-            expect(response.statusCode).toBe(500);
-            expect(response.body).toMatchObject({ success: false, message: "The role \"test\" does not exist" })
+            expect(response.statusCode).toBe(400);
+            expect(response.body).toMatchSnapshot();
         })
 
         it("should return 401 because user dont have rigth", async () => {
@@ -132,7 +124,7 @@ describe('UserController, /user', () => {
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json')
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(400);
             expect(response.body).toMatchSnapshot();
         })
 

@@ -6,7 +6,7 @@ export interface UserDtoSuccessResponse extends SuccessResponse {
 }
 
 export interface UserDtoErrorResponse extends ErrorResponse {
-    code: string
+    errorCode: number
 }
 
 export type UserDtoResponse = UserDtoSuccessResponse | UserDtoErrorResponse;

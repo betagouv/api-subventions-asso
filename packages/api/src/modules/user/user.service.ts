@@ -1,4 +1,5 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { CreateUserDtoSuccess, UserDtoSuccessResponse, UserListDtoSuccess } from "@api-subventions-asso/dto";
+import UserDto, { UserWithTokenDto } from "@api-subventions-asso/dto/user/UserDto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
@@ -50,19 +51,16 @@ export class UserService {
 
     async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<UserDbo, 'hashPassword'> }> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
-        console.log(user);
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
         }
 
         if (!user.active || !user.jwt) {
-            console.log("user not active or no jwt")
             return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE }
         }
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
 
-        console.log("pwd invalid")
         if (!validPassword) {
             return { success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH }
         }
@@ -192,10 +190,10 @@ export class UserService {
             const data = await acc;
             const result = await this.signup(email.toLocaleLowerCase());
             return Promise.resolve([...data, { email, ...result }]);
-        }, Promise.resolve([]) as Promise<{ email: string, success: boolean, message?: string }[]>)
+        }, Promise.resolve([]) as Promise<(CreateUserDtoSuccess | UserServiceError)[]>)
     }
 
-    public async signup(email: string): Promise<UserServiceError | { success: true, email: string }> {
+    public async signup(email: string): Promise<UserServiceError | CreateUserDtoSuccess> {
         const result = await this.createUser(email.toLocaleLowerCase());
 
         if (!result.success) return { success: false, message: result.message, code: result.code };
@@ -209,7 +207,7 @@ export class UserService {
         return { email, success: true };
     }
 
-    async addRolesToUser(user: UserDto | string, roles: string[]): Promise<UserServiceError | { success: true, user: UserDto }> {
+    async addRolesToUser(user: UserDto | string, roles: string[]): Promise<UserDtoSuccessResponse | UserServiceError> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
@@ -355,7 +353,7 @@ export class UserService {
         return user.roles;
     }
 
-    public async listUsers() {
+    public async listUsers(): Promise<UserListDtoSuccess> {
         const users = (await userRepository.find()).filter(user => user) as UserDto[];
         return {
             success: true,
@@ -366,7 +364,7 @@ export class UserService {
                     _id: user._id.toString(),
                     resetToken: reset?.token,
                     resetTokenDate: reset?.createdAt
-                }
+                } as UserWithTokenDto
             }))
         }
     }

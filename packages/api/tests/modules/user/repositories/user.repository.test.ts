@@ -66,7 +66,7 @@ describe("UserRepository", () => {
 
         it("should return user", async () => {
             const actual = await userRepository.getUserWithSecretsByEmail("test@beta.gouv.fr");
-            expect(actual).toMatchSnapshot({ _id: expect.any(String), signupAt: expect.any(Date), hashPassword: expect.any(String), jwt: { expirateDate: expect.any(Date), token: expect.any(String) } });
+            expect(actual).toMatchSnapshot({ _id: expect.any(ObjectId), signupAt: expect.any(Date), hashPassword: expect.any(String), jwt: { expirateDate: expect.any(Date), token: expect.any(String) } });
         })
 
         it("should return null", async () => {
