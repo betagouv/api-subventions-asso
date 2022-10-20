@@ -1,4 +1,3 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { IVerifyOptions } from "passport-local";
 import { LoginRequest } from "../@types";
 import userService from "../modules/user/user.service";

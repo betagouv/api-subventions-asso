@@ -80,7 +80,7 @@ export class AuthentificationController extends Controller {
         // If you change the route please change in express.auth.hooks.ts
 
         if (req.user) { // Succesfuly logged
-
+            this.setStatus(201);
             return {
                 success: true,
                 data: req.user

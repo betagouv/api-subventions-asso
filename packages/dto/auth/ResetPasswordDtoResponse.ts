@@ -1,4 +1,4 @@
-import { UserWithTokenDto } from "../user";
+import { UserWithResetTokenDto } from "../user";
 
 export enum ResetPasswordErrorCodes {
     RESET_TOKEN_NOT_FOUND = 1,
@@ -11,7 +11,7 @@ export enum ResetPasswordErrorCodes {
 export interface ResetPasswordDtoPositiveResponse {
     success: true,
     data: {
-        user: UserWithTokenDto
+        user: UserWithResetTokenDto
     }
 }
 

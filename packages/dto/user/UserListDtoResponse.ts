@@ -1,9 +1,9 @@
 import { SuccessResponse } from "../shared/ResponseStatus";
-import { UserWithTokenDto } from "./UserDto";
+import { UserWithResetTokenDto } from "./UserDto";
 import { UserDtoErrorResponse } from "./UserDtoResponse";
 
 export interface UserListDtoSuccess extends SuccessResponse {
-    users: UserWithTokenDto[]
+    users: UserWithResetTokenDto[]
 }
 
 export type UserListDtoResponse = UserListDtoSuccess | UserDtoErrorResponse

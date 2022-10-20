@@ -1,5 +1,5 @@
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import userService from "../modules/user/user.service";
 
 export default async function StatsSearchMiddleware(req: Request, res: Response, next: NextFunction) {

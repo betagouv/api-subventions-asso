@@ -3,7 +3,7 @@ import * as express from "express";
 
 import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
-import userService, { UserServiceError } from "../../src/modules/user/user.service";
+import userService from "../../src/modules/user/user.service";
 import userRepository from "../../src/modules/user/repositoies/user.repository";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";

@@ -1,4 +1,4 @@
-import { CreateUserDtoResponse, GetRolesDtoResponse, UserDtoErrorResponse, UserDtoResponse, UserErrorCodes, UserListDtoResponse, LoginDtoErrorCodes } from "@api-subventions-asso/dto";
+import { CreateUserDtoResponse, GetRolesDtoResponse, UserDtoErrorResponse, UserDtoResponse, UserErrorCodes, UserListDtoResponse } from "@api-subventions-asso/dto";
 import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from 'tsoa';
 import { IdentifiedRequest } from "../../../../@types/ApiRequests";
 import userService, { UserServiceErrors } from '../../user.service';
@@ -8,11 +8,11 @@ import userService, { UserServiceErrors } from '../../user.service';
 const USER_INTERNAL_SERVER_ERROR: UserDtoErrorResponse = {
     success: false,
     message: "Internal Server Error",
-    errorCode: 0
+    errorCode: UserErrorCodes.INTERNAL_ERROR
 }
 
 // TODO: make this a class or something generic for all Controller ?
-const USER_BAD_REQUEST: UserDtoErrorResponse = { success: false, message: "Bad Request", errorCode: 1 }
+const USER_BAD_REQUEST: UserDtoErrorResponse = { success: false, message: "Bad Request", errorCode: UserErrorCodes.BAD_REQUEST }
 
 @Route("user")
 @Tags("User Controller")
@@ -21,11 +21,12 @@ export class UserController extends Controller {
 
     /**
      * Update user roles
+     * @summary Update user's roles
      */
     @Post("/admin/roles")
     @Security("jwt", ['admin'])
-    @Response<UserDtoErrorResponse>(400, "Role Not Valid", { success: false, message: "Role Not Valid", errorCode: 3 })
-    @Response<UserDtoErrorResponse>(422, "User Not Found", { success: false, message: "User Not Found", errorCode: 2 })
+    @Response<UserDtoErrorResponse>(400, "Role Not Valid", { success: false, message: "Role Not Valid", errorCode: UserErrorCodes.INVALID_ROLE })
+    @Response<UserDtoErrorResponse>(422, "User Not Found", { success: false, message: "User Not Found", errorCode: UserErrorCodes.USER_NOT_F0UND })
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     public async upgradeUserRoles(
         @Body() body: { email: string, roles: string[] },
@@ -53,9 +54,11 @@ export class UserController extends Controller {
 
     /**
      * Return the list of all users
+     * @summary List all users
      */
     @Get("/admin/list-users")
     @Security("jwt", ['admin'])
+
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     public async listUsers(): Promise<UserListDtoResponse> {
         const result = await userService.listUsers();
@@ -69,6 +72,7 @@ export class UserController extends Controller {
 
     /**
      * Create a new user and send a mail to create a new password
+     * @summary Create user
      */
     @Post("/admin/create-user")
     @Security("jwt", ['admin'])
@@ -87,6 +91,7 @@ export class UserController extends Controller {
 
     /**
      * Remove a user
+     * @summary Remove user
      */
     @Delete("/admin/user/:id")
     @Security("jwt", ['admin'])
@@ -113,6 +118,7 @@ export class UserController extends Controller {
 
     /**
      * Return user roles
+     * @summary List user's roles
      */
     @Get("/roles")
     @Security("jwt", ['user'])
@@ -136,13 +142,14 @@ export class UserController extends Controller {
 
     /**
      * Update user password
+     * @summary Update password
      */
     @Put("/password")
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     @Response<UserDtoErrorResponse>(400, "Validator Error", {
         success: false,
         message: "Password is not hard, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
-        errorCode: 4
+        errorCode: UserErrorCodes.INVALID_PASSWORD
     })
     public async changePassword(
         @Request() req: IdentifiedRequest,

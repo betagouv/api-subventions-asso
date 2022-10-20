@@ -1,5 +1,5 @@
 import { CreateUserDtoSuccess, UserDtoSuccessResponse, UserListDtoSuccess } from "@api-subventions-asso/dto";
-import UserDto, { UserWithTokenDto } from "@api-subventions-asso/dto/user/UserDto";
+import UserDto, { UserWithResetTokenDto } from "@api-subventions-asso/dto/user/UserDto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
@@ -364,7 +364,7 @@ export class UserService {
                     _id: user._id.toString(),
                     resetToken: reset?.token,
                     resetTokenDate: reset?.createdAt
-                } as UserWithTokenDto
+                } as UserWithResetTokenDto
             }))
         }
     }

@@ -17,7 +17,7 @@ export interface UserWithJWTDto extends UserDto {
     jwt: { token: string, expirateDate: Date }
 }
 
-export interface UserWithTokenDto {
+export interface UserWithResetTokenDto {
     _id: string,
     email: string,
     roles: string[],

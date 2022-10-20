@@ -68,7 +68,7 @@ describe("user.service.ts", () => {
             await expect(userService.createUser("test@beta.gouv.fr")).resolves.toMatchObject({ success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST });
         });
         it("should be reject because password is not valid", async () => {
-            const actual = await expect(userService.createUser("test@beta.gouv.fr", "aa"));
+            const actual = await userService.createUser("test@beta.gouv.fr", "aa");
             expect(actual).toMatchSnapshot();
         });
 
