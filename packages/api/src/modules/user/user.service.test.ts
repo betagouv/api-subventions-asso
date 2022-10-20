@@ -17,7 +17,7 @@ describe("User Service", () => {
         signupAt: new Date(),
         active: true
     } as WithId<UserWithoutSecret>
-    const JWT_PAYLOAD = { ...USER_WITHOUT_SECRET, isConsumerToken: true }
+    const JWT_PAYLOAD = { user: USER_WITHOUT_SECRET, isConsumerToken: true }
     const JWT_TOKEN = jwt.sign(JWT_PAYLOAD, JWT_SECRET)
 
     describe("createConsumer", () => {
