@@ -1,4 +1,4 @@
-import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
+import { Route, Get, Controller, Tags, Security, Response, Deprecated } from 'tsoa';
 import { Siret, Association, Etablissement, GetEtablissementResponseDto, SearchEtablissementSuccessResponseDto, GetAssociationResponseDto } from '@api-subventions-asso/dto';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
@@ -12,8 +12,11 @@ import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 export class SearchController extends Controller {
     /**
      * Recherche des demandes de subventions via le siret de l'établissment
+     * 
+     * @summary Cette route va bientôt disparaitre, ne pas l'utiliser
      * @param siret Identifiant Siret
      */
+    @Deprecated()
     @Get("/etablissement/{siret}")
     @Response<SearchEtablissementSuccessResponseDto>("200")
     @Response<ErrorResponse>("404")
@@ -31,8 +34,11 @@ export class SearchController extends Controller {
 
     /**
      * Recherche des demandes de subventions via l'identifiant de l'association
+     * 
+     * @summary Cette route va bientôt disparaitre, ne pas l'utiliser
      * @param rna_or_siren Identifiant RNA ou Siren
      */
+    @Deprecated()
     @Get("/association/{id}")
     @Response<ErrorResponse>("404", "Aucune demande de subvention retrouvée", { success: false, message: "Could not match any subvention for this association" })
     public async findAssociation(
@@ -56,7 +62,8 @@ export class SearchController extends Controller {
     }
 
     /**
-     * Recherche des informations liées à une association via son rna, siren et nom partiel ou complet
+     * Recherche une association via son rna, siren et nom partiel ou complet
+     * @summary Recherche une association via son rna, siren et nom partiel ou complet
      * @param rna_or_siren Identifiant RNA ou Identifiant Siren
      */
     @Get("/associations/{input}")
