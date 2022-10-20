@@ -11,10 +11,9 @@ Object {
   },
   "plein_temps": "Oui",
   "pluriannualite": "Oui",
-  "raison": "Reconduction",
   "service_instructeur": "XXX",
   "siret": "00000000000002",
-  "status": "Attribué",
+  "status": "Attribué - Reconduction",
   "versementKey": "D00000",
 }
 `;
