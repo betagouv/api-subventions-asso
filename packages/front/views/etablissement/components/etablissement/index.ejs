@@ -31,7 +31,7 @@
                 <%}%>
                 <% if (etablissement.contacts && etablissement.contacts.length) { %>
                     <%-
-                        include("./contacts.ejs", { etablissement })
+                        include("./contacts.ejs", { etablissement, contactDownloadLink })
                     -%>
                 <% } %>
             </div>
