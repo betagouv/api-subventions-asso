@@ -1,5 +1,6 @@
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { ObjectId } from "mongodb";
-import User, { UserWithoutSecret } from "../../../../src/modules/user/entities/User";
+import UserNotPersisted from "../../../../src/modules/user/entities/UserNotPersisted";
 import userRepository from "../../../../src/modules/user/repositories/user.repository";
 import userService from "../../../../src/modules/user/user.service"
 
@@ -28,7 +29,7 @@ describe("UserRepository", () => {
         });
 
         it("update", async () => {
-            const user = await userRepository.findByEmail("test@beta.gouv.fr") as UserWithoutSecret;
+            const user = await userRepository.findByEmail("test@beta.gouv.fr") as UserDto;
             await expect(userRepository.update({ ...user, active: true }))
                 .resolves
                 .toMatchObject(
@@ -37,7 +38,7 @@ describe("UserRepository", () => {
         });
 
         it("create", async () => {
-            await expect(userRepository.create(new User(defaultUser)))
+            await expect(userRepository.create(new UserNotPersisted(defaultUser)))
                 .resolves
                 .toMatchObject(
                     expect.not.objectContaining({ hashPassword: expect.any(String), jwt: { token: expect.any(String), expirateDate: expect.any(Date) } })
@@ -47,7 +48,7 @@ describe("UserRepository", () => {
 
     describe('removeSecrets', () => {
         it("should remove all secret in user", () => {
-            const user = new User(defaultUser);
+            const user = new UserNotPersisted(defaultUser);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -59,39 +60,18 @@ describe("UserRepository", () => {
         })
     });
 
-    describe("findPassword", () => {
+    describe("getUserWithSecretsByEmail", () => {
         beforeEach(async () => {
             await userService.createUser("test@beta.gouv.fr");
         });
 
-        it("should return password", async () => {
-            const user = await userRepository.findByEmail("test@beta.gouv.fr") as UserWithoutSecret;
-
-            await expect(typeof await userRepository.findPassword(user)).toBe("string");
+        it("should return user", async () => {
+            const actual = await userRepository.getUserWithSecretsByEmail("test@beta.gouv.fr");
+            expect(actual).toMatchSnapshot({ _id: expect.any(ObjectId), signupAt: expect.any(Date), hashPassword: expect.any(String), jwt: { expirateDate: expect.any(Date), token: expect.any(String) } });
         })
 
         it("should return null", async () => {
-            const user = new User(defaultUser);
-
-            await expect(userRepository.findPassword(user as UserWithoutSecret)).resolves.toBe(null);
-        })
-    })
-
-    describe("findJwt", () => {
-        beforeEach(async () => {
-            await userService.createUser("test@beta.gouv.fr");
-        });
-
-        it("should return jwt", async () => {
-            const user = await userRepository.findByEmail("test@beta.gouv.fr") as UserWithoutSecret;
-
-            await expect(userRepository.findJwt(user)).resolves.toMatchObject({ token: expect.any(String), expirateDate: expect.any(Date) });
-        })
-
-        it("should return null", async () => {
-            const user = new User(defaultUser, new ObjectId());
-
-            await expect(userRepository.findJwt(user as UserWithoutSecret)).resolves.toBe(null);
+            await expect(userRepository.getUserWithSecretsByEmail("")).resolves.toBe(null);
         })
     })
 })

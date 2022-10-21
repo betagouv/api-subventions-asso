@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`user.service.ts createUser should be reject because password is not valid 1`] = `
+Object {
+  "code": 7,
+  "message": "Password is not hard, please use this rules:
+        At least one digit [0-9]
+        At least one lowercase character [a-z]
+        At least one uppercase character [A-Z]
+        At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\\\]
+        At least 8 characters in length, but no more than 32.",
+  "success": false,
+}
+`;

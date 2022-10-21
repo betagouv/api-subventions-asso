@@ -1,6 +1,8 @@
+import { CreateUserDtoSuccess, UserDtoSuccessResponse, UserListDtoSuccess } from "@api-subventions-asso/dto";
+import UserDto, { UserWithResetTokenDto } from "@api-subventions-asso/dto/user/UserDto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -8,11 +10,12 @@ import { ACCEPTED_EMAIL_DOMAIN } from "../../configurations/auth.conf";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ConsumerToken } from "./entities/ConsumerToken";
-import User, { UserWithoutSecret } from "./entities/User";
-import UserReset from "./entities/UserReset";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
+import UserNotPersisted from "./entities/UserNotPersisted";
+import UserReset from "./entities/UserReset";
+import UserDbo from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
@@ -43,64 +46,66 @@ export class UserService {
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
     public static PASSWORD_VALIDATOR_MESSAGE =
         `Password is not hard, please use this rules:
-    At least one digit [0-9]
-    At least one lowercase character [a-z]
-    At least one uppercase character [A-Z]
-    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-    At least 8 characters in length, but no more than 32.
-                    `
+        At least one digit [0-9]
+        At least one lowercase character [a-z]
+        At least one uppercase character [A-Z]
+        At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
+        At least 8 characters in length, but no more than 32.`
 
-    async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<User, 'hashPassword'> }> {
-        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
-
+    async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<UserDbo, 'hashPassword'> }> {
+        const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
         }
 
-        let jwtParams = await userRepository.findJwt(user);
-        if (!user.active || !jwtParams) {
+        if (!user.active || !user.jwt) {
             return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE }
         }
 
-        const validPassword = await bcrypt.compare(password, await userRepository.findPassword(user) as string);
+        const validPassword = await bcrypt.compare(password, user.hashPassword);
 
         if (!validPassword) {
             return { success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH }
         }
 
-        const token = jwt.verify(jwtParams.token, JWT_SECRET) as jwt.JwtPayload;
+        const token = jwt.verify(user.jwt.token, JWT_SECRET) as jwt.JwtPayload;
         if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) { // Generate new JTW Token
             const now = new Date();
             const token = jwt.sign({ ...user, now }, JWT_SECRET);
 
-            const jwtUserParams = {
+            const updatedJwt = {
                 token,
                 expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME)
             }
 
             try {
-                await userRepository.update({ ...user, jwt: jwtUserParams });
-                jwtParams = jwtUserParams;
+                user.jwt = updatedJwt;
+                await userRepository.update(user);
             } catch (e) {
+
                 return { success: false, message: UserUpdateError.message, code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL };
             }
         }
 
-        return { success: true, user: { ...user, jwt: jwtParams } }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { hashPassword, ...userWithoutPassword } = user;
+
+        return { success: true, user: userWithoutPassword }
     }
 
-    public async logout(user: UserWithoutSecret) {
-        const jwtParams = await userRepository.findJwt(user);
-        if (!jwtParams) { // No jwt, so user is already disconected
+    public async logout(user: UserDto) {
+        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email.toLocaleLowerCase());
+
+        if (!userWithSecrets?.jwt) { // No jwt, so user is already disconected
             return user;
         }
 
-        const jwtUserParams = {
-            token: jwtParams.token,
+        const jwt = {
+            token: userWithSecrets.jwt.token,
             expirateDate: new Date('01/01/1970')
         }
 
-        return userRepository.update({ ...user, jwt: jwtUserParams });
+        return userRepository.update({ ...user, jwt });
     }
 
     async findByEmail(email: string) {
@@ -124,7 +129,7 @@ export class UserService {
         }
     }
 
-    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: WithId<UserWithoutSecret> }> {
+    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: UserDto }> {
         const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
 
         if (!validUser.success) return validUser;
@@ -152,7 +157,7 @@ export class UserService {
             lastSearchDate: null,
         }
 
-        const user = new User({
+        const user = new UserNotPersisted({
             ...partialUser,
             jwt: jwtParams,
             active: false,
@@ -168,7 +173,7 @@ export class UserService {
         return { success: true, user: createdUser };
     }
 
-    public async updatePassword(currentUser: UserWithoutSecret, password: string): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+    public async updatePassword(user: UserDto, password: string): Promise<UserServiceError | { success: true, user: UserDto }> {
         if (!this.passwordValidator(password)) {
             return {
                 success: false,
@@ -177,19 +182,19 @@ export class UserService {
             }
         }
 
-        return { success: true, user: await userRepository.update({ ...currentUser, hashPassword: await bcrypt.hash(password, 10), active: true }) };
+        return { success: true, user: await userRepository.update({ ...user, hashPassword: await bcrypt.hash(password, 10), active: true }) };
     }
 
-    public async update(currentUser: UserWithoutSecret): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
-        const emailIsValid = this.validEmail(currentUser.email);
+    public async update(user: UserDto): Promise<UserServiceError | { success: true, user: UserDto }> {
+        const emailIsValid = this.validEmail(user.email);
         if (!emailIsValid.success) {
             return emailIsValid;
         }
-        return { success: true, user: await userRepository.update(currentUser) };
+        return { success: true, user: await userRepository.update(user) };
     }
 
-    public async delete(currentUser: UserWithoutSecret | { _id: ObjectId }): Promise<{ success: boolean }> {
-        return { success: await userRepository.delete(currentUser) };
+    public async delete(user: UserDto): Promise<{ success: boolean }> {
+        return { success: await userRepository.delete(user) };
     }
 
     public async addUsersByCsv(content: Buffer) {
@@ -207,10 +212,10 @@ export class UserService {
             const data = await acc;
             const result = await this.signup(email.toLocaleLowerCase());
             return Promise.resolve([...data, { email, ...result }]);
-        }, Promise.resolve([]) as Promise<{ email: string, success: boolean, message?: string }[]>)
+        }, Promise.resolve([]) as Promise<(CreateUserDtoSuccess | UserServiceError)[]>)
     }
 
-    public async signup(email: string): Promise<UserServiceError | { success: true, email: string }> {
+    public async signup(email: string): Promise<UserServiceError | CreateUserDtoSuccess> {
         const result = await this.createUser(email.toLocaleLowerCase());
 
         if (!result.success) return { success: false, message: result.message, code: result.code };
@@ -224,7 +229,7 @@ export class UserService {
         return { email, success: true };
     }
 
-    async addRolesToUser(user: UserWithoutSecret | string, roles: RoleEnum[]): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<UserDtoSuccessResponse | UserServiceError> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
@@ -241,7 +246,7 @@ export class UserService {
         return { success: true, user: await userRepository.update(user) };
     }
 
-    async activeUser(user: UserWithoutSecret | string): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+    async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true, user: UserDto }> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
@@ -255,18 +260,18 @@ export class UserService {
         return { success: true, user: await userRepository.update(user) };
     }
 
-    async refrechExpirationToken(user: UserWithoutSecret) {
-        const jwtParams = await userRepository.findJwt(user);
-        if (!jwtParams) {
+    async refrechExpirationToken(user: UserDto) {
+        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
+        if (!userWithSecrets?.jwt) {
             return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
         }
 
-        jwtParams.expirateDate = new Date(Date.now() + JWT_EXPIRES_TIME);
+        userWithSecrets.jwt.expirateDate = new Date(Date.now() + JWT_EXPIRES_TIME);
 
-        return await userRepository.update({ ...user, jwt: jwtParams });
+        return await userRepository.update(userWithSecrets);
     }
 
-    async resetPassword(password: string, resetToken: string): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+    async resetPassword(password: string, resetToken: string): Promise<UserServiceError | { success: true, user: UserDto }> {
         const reset = await userResetRepository.findByToken(resetToken);
 
         if (!reset) {
@@ -320,7 +325,7 @@ export class UserService {
         return resetResult;
     }
 
-    async resetUser(user: UserWithoutSecret): Promise<UserServiceError | { success: true, reset: UserReset }> {
+    async resetUser(user: UserDto): Promise<UserServiceError | { success: true, reset: UserReset }> {
         await userResetRepository.removeAllByUserId(user._id);
 
         const token = RandToken.generate(32)
@@ -339,23 +344,23 @@ export class UserService {
         return { success: true, reset: createdReset };
     }
 
+    // Only used in tests
     async findJwtByEmail(email: string): Promise<UserServiceError | { success: true, jwt: { token: string; expirateDate: Date } }> {
-        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
-        if (!user) {
+        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
+        if (!userWithSecrets) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
         }
 
-        const jwt = await userRepository.findJwt(user);
-
-        if (!jwt) {
+        if (!userWithSecrets.jwt) {
             return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
         }
 
-        return { success: true, jwt };
+        return { success: true, jwt: userWithSecrets.jwt };
     }
 
-    async findJwtByUser(user: UserWithoutSecret) {
-        return userRepository.findJwt(user);
+    async findJwtByUser(user: UserDto) {
+        const userDbo = await userRepository.getUserWithSecretsById(user._id);
+        return userDbo?.jwt;
     }
 
     async findUserResetByUserId(userId: ObjectId) {
@@ -366,12 +371,12 @@ export class UserService {
         return REGEX_PASSWORD.test(password);
     }
 
-    public getRoles(user: User) {
-        return user.roles
+    public getRoles(user: UserDto) {
+        return user.roles;
     }
 
-    public async listUsers() {
-        const users = (await userRepository.find()).filter(user => user) as WithId<UserWithoutSecret>[];
+    public async listUsers(): Promise<UserListDtoSuccess> {
+        const users = (await userRepository.find()).filter(user => user) as UserDto[];
         return {
             success: true,
             users: await Promise.all(users.map(async user => {
@@ -381,7 +386,7 @@ export class UserService {
                     _id: user._id.toString(),
                     resetToken: reset?.token,
                     resetTokenDate: reset?.createdAt
-                }
+                } as UserWithResetTokenDto
             }))
         }
     }
@@ -391,7 +396,7 @@ export class UserService {
 
         if (!emailValid.success) return emailValid;
 
-        if (await userRepository.findByEmail(email)) {
+        if (await userRepository.findByEmail(email.toLocaleLowerCase())) {
             return { success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST }
         }
 

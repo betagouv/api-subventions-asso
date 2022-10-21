@@ -1,10 +1,10 @@
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../../../../src/configurations/jwt.conf";
-import { UserWithoutSecret } from "../../../../../src/modules/user/entities/User";
 import ConsumerCliController from "../../../../../src/modules/user/interfaces/cli/consumer.cli.controller"
 import consumerTokenRepository from "../../../../../src/modules/user/repositories/consumer-token.repository";
 import userRepository from "../../../../../src/modules/user/repositories/user.repository";
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
 
 describe("ConsumerCliController", () => {
     const cli = new ConsumerCliController()
@@ -18,7 +18,7 @@ describe("ConsumerCliController", () => {
 
         it("should create a consumer token with user info", async () => {
             await cli.create(EMAIL);
-            const user = await userRepository.findByEmail(EMAIL) as WithId<UserWithoutSecret>;
+            const user = await userRepository.findByEmail(EMAIL) as UserDto;
             const token = await consumerTokenRepository.findToken(user._id) as string;
             const actual = jwt.verify(token, JWT_SECRET);
             expect(actual).toMatchSnapshot({

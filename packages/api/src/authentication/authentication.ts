@@ -1,11 +1,10 @@
-import * as express from "express";
 import { IVerifyOptions } from "passport-local";
-import { UserWithoutSecret } from "../modules/user/entities/User";
+import { LoginRequest } from "../@types";
 import userService from "../modules/user/user.service";
 import UserJWTError from "./errors/UserJWTError";
 
 export function expressAuthentication(
-    request: express.Request,
+    req: LoginRequest,
     securityName = "jwt",
     scopes: string[] = []
 ) {
@@ -16,11 +15,11 @@ export function expressAuthentication(
 
     return new Promise((resolve, reject) => {
 
-        const user = request.user as UserWithoutSecret | undefined;
+        const user = req.user;
 
         if (!user) {
             let errorMessage = "User not logged"
-            if (request.authInfo) errorMessage = (request.authInfo as IVerifyOptions).message;
+            if (req.authInfo) errorMessage = (req.authInfo as IVerifyOptions).message;
             return reject(new UserJWTError(errorMessage));
         }
 

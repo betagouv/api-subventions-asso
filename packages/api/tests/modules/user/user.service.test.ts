@@ -1,7 +1,7 @@
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
-import { JWT_SECRET } from "../../../src/configurations/jwt.conf";
-import { UserWithoutSecret } from "../../../src/modules/user/entities/User";
+import { RoleEnum } from "../../../src/@enums/Roles";
 import UserReset from "../../../src/modules/user/entities/UserReset";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
@@ -26,9 +26,9 @@ describe("user.service.ts", () => {
             await expect(userService.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({ success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE });
         });
 
-        it("should be reject because user dont have jwt", async () => {
-            jest.spyOn(userRepository, "findJwt").mockImplementationOnce(() => Promise.resolve(null))
-            await expect(userService.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({ success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE });
+        it("should be rejected because user is not found", async () => {
+            jest.spyOn(userRepository, "getUserWithSecretsByEmail").mockImplementationOnce(() => Promise.resolve(null))
+            await expect(userService.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({ success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND });
         });
 
         it("should be retrun user", async () => {
@@ -36,11 +36,9 @@ describe("user.service.ts", () => {
             await expect(userService.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({ success: true, user: { email: "test@beta.gouv.fr", active: true } });
         });
 
-        it("should be update token", async () => {
+        it("should update token", async () => {
             await userService.activeUser("test@beta.gouv.fr");
 
-            const jwtData = { token: jwt.sign({ email: "test@beta.gouv.fr" }, JWT_SECRET), expirateDate: new Date(Date.now() - 1000 * 60 * 60 * 24) };
-            jest.spyOn(userRepository, "findJwt").mockImplementationOnce(() => Promise.resolve(jwtData))
             const mock = jest.spyOn(userRepository, "update");
 
             await expect(userService.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({ success: true, user: { email: "test@beta.gouv.fr", active: true } });
@@ -71,20 +69,8 @@ describe("user.service.ts", () => {
             await expect(userService.createUser("test@beta.gouv.fr")).resolves.toMatchObject({ success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST });
         });
         it("should be reject because password is not valid", async () => {
-            await expect(userService.createUser("test@beta.gouv.fr", "aa")).resolves.toMatchObject(
-                {
-                    success: false,
-                    message:
-                        `Password is not hard, please use this rules:
-    At least one digit [0-9]
-    At least one lowercase character [a-z]
-    At least one uppercase character [A-Z]
-    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-    At least 8 characters in length, but no more than 32.
-                    `,
-                    code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-                }
-            );
+            const actual = await userService.createUser("test@beta.gouv.fr", [RoleEnum.user], "aa");
+            expect(actual).toMatchSnapshot();
         });
 
         it("should be return created user", async () => {
@@ -137,20 +123,21 @@ describe("user.service.ts", () => {
         });
 
         it("should be reject because user email not found", async () => {
-            await expect(userService.addRolesToUser("wrong@email.fr", ["admin"])).resolves.toMatchObject({ success: false, message: "User email does not correspond to a user", code: UserServiceErrors.USER_NOT_FOUND })
+            await expect(userService.addRolesToUser("wrong@email.fr", [RoleEnum.admin])).resolves.toMatchObject({ success: false, message: "User email does not correspond to a user", code: UserServiceErrors.USER_NOT_FOUND })
         })
 
         it("should be reject because role not found", async () => {
+            // @ts-expect-error: test 
             await expect(userService.addRolesToUser("test@beta.gouv.fr", ["CHEF"])).resolves.toMatchObject({ success: false, message: `The role "CHEF" does not exist`, code: UserServiceErrors.ROLE_NOT_FOUND })
         })
 
         it("should be update user (called with email)", async () => {
-            await expect(userService.addRolesToUser("test@beta.gouv.fr", ["admin"])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
+            await expect(userService.addRolesToUser("test@beta.gouv.fr", [RoleEnum.admin])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
         })
 
         it("should be update user (called with user)", async () => {
-            const user = await userService.findByEmail("test@beta.gouv.fr") as UserWithoutSecret;
-            await expect(userService.addRolesToUser(user, ["admin"])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
+            const user = await userService.findByEmail("test@beta.gouv.fr") as UserDto;
+            await expect(userService.addRolesToUser(user, [RoleEnum.admin])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
         })
     })
 
@@ -168,7 +155,7 @@ describe("user.service.ts", () => {
         })
 
         it("should be update user (called with user)", async () => {
-            const user = await userService.findByEmail("test@beta.gouv.fr") as UserWithoutSecret;
+            const user = await userService.findByEmail("test@beta.gouv.fr") as UserDto;
             await expect(userService.activeUser(user)).resolves.toMatchObject({ success: true, user: { active: true } });
         })
     })
@@ -179,7 +166,7 @@ describe("user.service.ts", () => {
         });
 
         it("should be update user (called with user)", async () => {
-            const user = await userService.findByEmail("test@beta.gouv.fr") as UserWithoutSecret;
+            const user = await userService.findByEmail("test@beta.gouv.fr") as UserDto;
             const mock = jest.spyOn(userRepository, "update")
             await userService.refrechExpirationToken(user);
 
@@ -267,7 +254,7 @@ describe("user.service.ts", () => {
     })
 
     describe("resetUser", () => {
-        let user: UserWithoutSecret;
+        let user: UserDto;
         beforeEach(async () => {
             const result = await userService.createUser("test@beta.gouv.fr");
             if (!result.success) throw new Error("USER is not created");
@@ -291,15 +278,11 @@ describe("user.service.ts", () => {
             await userService.createUser("test@beta.gouv.fr")
         });
 
-        it("should be reject because user email not found", async () => {
+        it("should be rejected because user not found", async () => {
             await expect(userService.findJwtByEmail("wrong@email.fr")).resolves.toMatchObject({ success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND })
-        })
-        it("should be reject because jwt not found", async () => {
-            jest.spyOn(userRepository, "findJwt").mockImplementationOnce(() => Promise.resolve(null))
-            await expect(userService.findJwtByEmail("test@beta.gouv.fr")).resolves.toMatchObject({ success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE });
-        })
+        });
 
-        it("should be return jwt", async () => {
+        it("should return jwt", async () => {
             await expect(userService.findJwtByEmail("test@beta.gouv.fr")).resolves.toMatchObject({ success: true, jwt: { token: expect.stringContaining(''), expirateDate: expect.any(Date) } })
         });
     });

@@ -1,10 +1,7 @@
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, } from 'tsoa';
-import { Request as ExRequest } from "express";
 import userService, { UserServiceErrors } from '../../user.service';
-import User, { UserWithoutSecret } from '../../entities/User';
 import { LoginDtoErrorCodes, LoginDtoNegativeResponse, LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
-import { DefaultObject } from '../../../../@types';
-import { IVerifyOptions } from 'passport-local';
+import { DefaultObject, IdentifiedRequest, LoginRequest } from '../../../../@types';
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -78,23 +75,19 @@ export class AuthentificationController extends Controller {
     public login(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Body() body: { email: string, password: string }, // Just for docs
-        @Request() req: ExRequest
+        @Request() req: LoginRequest
     ): LoginDtoResponse {
         // If you change the route please change in express.auth.hooks.ts
 
         if (req.user) { // Succesfuly logged
-
-            // Remove password from response
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { hashPassword, ...user } = (req.user as User);
-
+            this.setStatus(201);
             return {
                 success: true,
-                data: user
+                data: req.user
             };
         }
 
-        const errorCode = parseInt((req.authInfo as IVerifyOptions).message, 10);
+        const errorCode = parseInt(req.authInfo.message, 10);
 
         const errors: DefaultObject<{
             errorCode: LoginDtoErrorCodes,
@@ -174,9 +167,11 @@ export class AuthentificationController extends Controller {
     @Get("/logout")
     @Security("jwt")
     public async logout(
-        @Request() req: ExRequest
+        @Request() req: IdentifiedRequest
     ) {
-        await userService.logout(req.user as UserWithoutSecret);
+        if (!req.user) return { success: false };
+
+        await userService.logout(req.user);
 
         return { success: true };
     }

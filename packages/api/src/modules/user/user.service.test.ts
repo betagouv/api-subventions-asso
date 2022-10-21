@@ -1,10 +1,10 @@
-import { UserWithoutSecret } from "./entities/User";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceError } from "./user.service";
 import jwt from "jsonwebtoken";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { JWT_SECRET } from "../../configurations/jwt.conf";
 import { RoleEnum } from "../../@enums/Roles";
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
 
 describe("User Service", () => {
     const createUserMock = jest.spyOn(userService, "createUser");
@@ -17,7 +17,7 @@ describe("User Service", () => {
         roles: ["user"],
         signupAt: new Date(),
         active: true
-    } as WithId<UserWithoutSecret>
+    } as UserDto
     const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] }
     const JWT_PAYLOAD = { user: USER_WITHOUT_SECRET, isConsumerToken: true }
     const JWT_TOKEN = jwt.sign(JWT_PAYLOAD, JWT_SECRET)
@@ -49,7 +49,7 @@ describe("User Service", () => {
         })
 
         it("should call consumerTokenRepository.create", async () => {
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserWithoutSecret }))
+            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }))
             await userService.createConsumer(EMAIL);
             expect(createMock).toBeCalledTimes(1);
         });

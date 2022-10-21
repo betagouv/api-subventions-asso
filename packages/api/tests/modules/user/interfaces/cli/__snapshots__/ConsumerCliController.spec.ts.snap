@@ -10,6 +10,7 @@ Object {
     "email": "test@datasubvention.gouv.fr",
     "roles": Array [
       "user",
+      "consumer",
     ],
     "signupAt": Any<String>,
     "stats": Object {
@@ -27,6 +28,7 @@ Object {
   "email": "test@datasubvention.gouv.fr",
   "roles": Array [
     "user",
+    "consumer",
   ],
   "signupAt": Any<Date>,
   "stats": Object {
