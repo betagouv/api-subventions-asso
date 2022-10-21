@@ -1,14 +1,13 @@
 <script>
     export let segments;
 </script>
-
 <nav class="fr-breadcrumb" aria-label="vous êtes ici :">
     <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
         Voir le fil d’Ariane
     </button>
     <div class="fr-collapse" id="breadcrumb-1">
         <ol class="fr-breadcrumb__list">
-            {#if segments.lenght}
+            {#if segments.length}
                 {#each segments as segment, index}
                     {#if index == 0}
                         <li>
