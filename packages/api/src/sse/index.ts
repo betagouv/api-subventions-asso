@@ -1,6 +1,6 @@
 import { Express, NextFunction, Request, Response } from "express";
 import { expressAuthentication } from "../authentication/authentication"
-import { DefaultObject, ControllerRouteDEF, ControllerMethod } from "../@types";
+import { DefaultObject, ControllerRouteDEF, ControllerMethod, LoginRequest } from "../@types";
 import SSEResponse from "./@types/SSEResponse";
 
 import controllers from "../modules/controllers.sse";
@@ -10,11 +10,11 @@ export default function RegisterSSERoutes(app: Express) {
         const controller = new controllerClass() as unknown as DefaultObject<ControllerMethod>;
         const basePath = (controller as unknown as DefaultObject<string>).basePath;
         const option = (controller as unknown as DefaultObject<DefaultObject<string>>).option;
-    
+
         (controller.__methods__ as unknown as ControllerRouteDEF[]).forEach((method: ControllerRouteDEF) => {
             const describe = method;
             const route = `${basePath}/${describe.route}`.replace("//", "/");
-    
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const handlers: any[] = [sseHandler, describe.function.bind(controller)]
 
@@ -54,11 +54,11 @@ function sseHandler(req: Request, res: SSEResponse, next: NextFunction) {
 
     res.write("event: messages\n\n");
 
-    res.sendSSEData = (data: unknown) =>  res.write(`data: ${JSON.stringify(data)}\n\n`);
-    res.sendSSEError = (data: unknown) =>  res.write(`error: ${JSON.stringify(data)}\n\n`);
+    res.sendSSEData = (data: unknown) => res.write(`data: ${JSON.stringify(data)}\n\n`);
+    res.sendSSEError = (data: unknown) => res.write(`error: ${JSON.stringify(data)}\n\n`);
     next();
 }
 
 function securityHandler(security: string, roles: string[]) {
-    return (req: Request, res: Response, next: NextFunction) => expressAuthentication(req, security, roles).then(() => next()).catch(e => next(e));
+    return (req: LoginRequest, res: Response, next: NextFunction) => expressAuthentication(req, security, roles).then(() => next()).catch(e => next(e));
 }

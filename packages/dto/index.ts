@@ -1,4 +1,5 @@
 export * from "./versements/index"
+export * from "./user/index"
 export * from "./auth/LoginDtoResponse"
 export * from "./auth/ResetPasswordDtoResponse"
 export * from "./auth/SignupDtoResponse"

@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import { UserWithoutSecret } from "../modules/user/entities/User";
+import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { NextFunction, Response, Request } from "express";
 import userService from "../modules/user/user.service";
 
 export default async function StatsSearchMiddleware(req: Request, res: Response, next: NextFunction) {
     if (!req.user) return next();
-    const user = req.user as UserWithoutSecret;
+    const user = req.user as UserDto;
 
     user.stats.searchCount++;
     user.stats.lastSearchDate = new Date();

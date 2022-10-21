@@ -32,7 +32,7 @@ export function authMocks(app: Express) {
                     let token = null;
                     if (req) {
                         token =
-                            req.body.token 
+                            req.body.token
                             || req.query.token
                             || req.headers["x-access-token"];
                     }
@@ -84,7 +84,7 @@ export function authMocks(app: Express) {
 
     app.use((req, res, next) => {
         if (req.authInfo) return next(); // if authInfo is not empty then the auhtentication is already check
-        passport.authenticate("jwt", (error, user, info: IVerifyOptions) => {
+        passport.authenticate("jwt", (error, user: UserDto, info: IVerifyOptions) => {
             if (error) return next(error)
             if (user) {
                 req.user = user;
