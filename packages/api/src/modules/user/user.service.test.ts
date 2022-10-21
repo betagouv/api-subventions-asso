@@ -4,6 +4,7 @@ import userService, { UserServiceError } from "./user.service";
 import jwt from "jsonwebtoken";
 import { ObjectId, WithId } from "mongodb";
 import { JWT_SECRET } from "../../configurations/jwt.conf";
+import { RoleEnum } from "../../@enums/Roles";
 
 describe("User Service", () => {
     const createUserMock = jest.spyOn(userService, "createUser");
@@ -13,10 +14,11 @@ describe("User Service", () => {
     const USER_WITHOUT_SECRET = {
         _id: new ObjectId("635132a527c9bfb8fc7c758e"),
         email: EMAIL,
-        roles: ["User"],
+        roles: ["user"],
         signupAt: new Date(),
         active: true
     } as WithId<UserWithoutSecret>
+    const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] }
     const JWT_PAYLOAD = { user: USER_WITHOUT_SECRET, isConsumerToken: true }
     const JWT_TOKEN = jwt.sign(JWT_PAYLOAD, JWT_SECRET)
 
@@ -53,10 +55,44 @@ describe("User Service", () => {
         });
 
         it("should return UserDtoSuccessResponse", async () => {
-            const expected = { success: true as true, user: USER_WITHOUT_SECRET };
+            const expected = { success: true as true, user: CONSUMER_USER };
             createUserMock.mockImplementationOnce(async () => expected)
             createMock.mockImplementationOnce(async () => true)
             const actual = await userService.createConsumer(EMAIL);
+            expect(actual).toEqual(expected);
+        })
+    })
+
+    describe("isRoleValid", () => {
+        it("should return true", () => {
+            const expected = true;
+            const role = RoleEnum.consumer;
+            const actual = userService.isRoleValid(role);
+            expect(actual).toEqual(expected);
+        })
+
+        it("should return false", () => {
+            const expected = false;
+            // @ts-expect-error: test
+            const actual = userService.isRoleValid("not-a-role");
+            expect(actual).toEqual(expected);
+        })
+    });
+
+    describe("validRoles", () => {
+        it("should return true", () => {
+            const roles = [RoleEnum.admin, RoleEnum.user];
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = userService.validRoles(roles);
+            expect(actual).toEqual(expected);
+        })
+
+        it("should return false", () => {
+            const roles = ["foo", RoleEnum.user];
+            const expected = false;
+            // @ts-expect-error: test private method
+            const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
         })
     })

@@ -15,7 +15,6 @@ const g = global as unknown as { app?: Server };
 
 beforeAll(async () => {
     await connectDB();
-    console.log("db connected...");
     if (!existsSync("./logs")) { // Create folders for logs
         mkdirSync("./logs");
     }

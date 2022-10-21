@@ -2,12 +2,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId, WithId } from "mongodb";
 import * as RandToken from "rand-token";
+import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { ACCEPTED_EMAIL_DOMAIN } from "../../configurations/auth.conf";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ConsumerToken } from "./entities/ConsumerToken";
-import { ROLES } from "./entities/Roles";
 import User, { UserWithoutSecret } from "./entities/User";
 import UserReset from "./entities/UserReset";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
@@ -112,7 +112,7 @@ export class UserService {
     }
 
     async createConsumer(email: string) {
-        const createResult = await this.createUser(email)
+        const createResult = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer])
         if (!createResult?.success) return createResult;
         const user = createResult.user;
         const token = jwt.sign({ user: createResult.user, isConsumerToken: true }, JWT_SECRET);
@@ -124,7 +124,7 @@ export class UserService {
         }
     }
 
-    async createUser(email: string, password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: WithId<UserWithoutSecret> }> {
+    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: WithId<UserWithoutSecret> }> {
         const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
 
         if (!validUser.success) return validUser;
@@ -133,8 +133,14 @@ export class UserService {
             email: email.toLocaleLowerCase(),
             hashPassword: await bcrypt.hash(password, 10),
             signupAt: new Date(),
-            roles: ["user"]
+            roles
         };
+
+        if (!this.validRoles(roles)) return {
+            success: false,
+            message: "Given user role does not exist",
+            code: UserServiceErrors.ROLE_NOT_FOUND
+        }
 
         const jwtParams = {
             token: jwt.sign(partialUser, JWT_SECRET, { expiresIn: JWT_EXPIRES_TIME }),
@@ -218,7 +224,7 @@ export class UserService {
         return { email, success: true };
     }
 
-    async addRolesToUser(user: UserWithoutSecret | string, roles: string[]): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
+    async addRolesToUser(user: UserWithoutSecret | string, roles: RoleEnum[]): Promise<UserServiceError | { success: true, user: UserWithoutSecret }> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
@@ -227,8 +233,8 @@ export class UserService {
             user = findedUser;
         }
 
-        if (!roles.every(role => ROLES.includes(role))) {
-            return { success: false, message: `The role "${roles.find(role => !ROLES.includes(role))}" does not exist`, code: UserServiceErrors.ROLE_NOT_FOUND };
+        if (!roles.every(role => Object.values(RoleEnum).includes(role))) {
+            return { success: false, message: `The role "${roles.find(role => !Object.values(RoleEnum).includes(role))}" does not exist`, code: UserServiceErrors.ROLE_NOT_FOUND };
         }
 
         user.roles = [...new Set([...user.roles, ...roles])];
@@ -398,6 +404,14 @@ export class UserService {
         }
 
         return { success: true }
+    }
+
+    public isRoleValid(role: RoleEnum) {
+        return Object.values(RoleEnum).includes(role);
+    }
+
+    private validRoles(roles: RoleEnum[]) {
+        return roles.every(role => this.isRoleValid(role));
     }
 
     private validEmail(email: string): UserServiceError | { success: true } {
