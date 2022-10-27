@@ -11,12 +11,19 @@ export default class FonjepEntityAdapter {
     static toDemandeSubvention(entity: FonjepSubventionEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;
         const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
+        const getSubventionStatus = () => {
+            let status = entity.indexedInformations.status;
+            const raison = entity.indexedInformations.raison;
+            if (raison) status += ` - ${raison}`;
+            return status;
+        }
+
         return {
             siret: toPV(entity.legalInformations.siret),
             versementKey: toPV(entity.indexedInformations.code_poste),
             service_instructeur: toPV(entity.indexedInformations.service_instructeur),
             dispositif: toPV(entity.indexedInformations.dispositif),
-            status: toPV(entity.indexedInformations.status),
+            status: toPV(getSubventionStatus()),
             pluriannualite: toPV("Oui"),
             plein_temps: toPV(entity.indexedInformations.plein_temps),
             annee_demande: toPV(entity.indexedInformations.annee_demande),

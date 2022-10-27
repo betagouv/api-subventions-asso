@@ -4,6 +4,7 @@ export default interface IFonjepIndexedInformations {
     code_poste: string,
     montant_paye: number,
     status: string,
+    raison: string,
     plein_temps: string,
     service_instructeur: string,
     annee_demande: number,
