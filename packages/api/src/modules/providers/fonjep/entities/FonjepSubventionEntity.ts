@@ -30,6 +30,7 @@ export default class FonjepSubventionEntity {
             }
         },
         status: ["PstStatutPosteLibelle"],
+        raison: ["PstRaisonStatutLibelle"],
         service_instructeur: ["Financeur", "RaisonSociale"],
         annee_demande: ["Annee"],
         date_fin_triennale: {
