@@ -1,9 +1,10 @@
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { RoleEnum } from "../../../src/@enums/Roles";
 import UserReset from "../../../src/modules/user/entities/UserReset";
-import userResetRepository from "../../../src/modules/user/repositoies/user-reset.repository";
-import userRepository from "../../../src/modules/user/repositoies/user.repository";
+import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
+import userRepository from "../../../src/modules/user/repositories/user.repository";
 import userService, { UserServiceErrors } from "../../../src/modules/user/user.service";
 
 describe("user.service.ts", () => {
@@ -68,7 +69,7 @@ describe("user.service.ts", () => {
             await expect(userService.createUser("test@beta.gouv.fr")).resolves.toMatchObject({ success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST });
         });
         it("should be reject because password is not valid", async () => {
-            const actual = await userService.createUser("test@beta.gouv.fr", "aa");
+            const actual = await userService.createUser("test@beta.gouv.fr", [RoleEnum.user], "aa");
             expect(actual).toMatchSnapshot();
         });
 
@@ -122,20 +123,21 @@ describe("user.service.ts", () => {
         });
 
         it("should be reject because user email not found", async () => {
-            await expect(userService.addRolesToUser("wrong@email.fr", ["admin"])).resolves.toMatchObject({ success: false, message: "User email does not correspond to a user", code: UserServiceErrors.USER_NOT_FOUND })
+            await expect(userService.addRolesToUser("wrong@email.fr", [RoleEnum.admin])).resolves.toMatchObject({ success: false, message: "User email does not correspond to a user", code: UserServiceErrors.USER_NOT_FOUND })
         })
 
         it("should be reject because role not found", async () => {
+            // @ts-expect-error: test 
             await expect(userService.addRolesToUser("test@beta.gouv.fr", ["CHEF"])).resolves.toMatchObject({ success: false, message: `The role "CHEF" does not exist`, code: UserServiceErrors.ROLE_NOT_FOUND })
         })
 
         it("should be update user (called with email)", async () => {
-            await expect(userService.addRolesToUser("test@beta.gouv.fr", ["admin"])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
+            await expect(userService.addRolesToUser("test@beta.gouv.fr", [RoleEnum.admin])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
         })
 
         it("should be update user (called with user)", async () => {
             const user = await userService.findByEmail("test@beta.gouv.fr") as UserDto;
-            await expect(userService.addRolesToUser(user, ["admin"])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
+            await expect(userService.addRolesToUser(user, [RoleEnum.admin])).resolves.toMatchObject({ success: true, user: { roles: ['user', "admin"] } });
         })
     })
 

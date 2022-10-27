@@ -2,6 +2,7 @@ import request from "supertest"
 import getUserToken from "../../../../__helpers__/getUserToken";
 import getAdminToken from "../../../../__helpers__/getAdminToken";
 import userService, { UserServiceErrors } from "../../../../../src/modules/user/user.service";
+import { RoleEnum } from "../../../../../src/@enums/Roles";
 
 const g = global as unknown as { app: unknown }
 
@@ -13,7 +14,7 @@ describe('UserController, /user', () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
-                    roles: ["admin"]
+                    roles: [RoleEnum.admin]
                 })
                 .set("x-access-token", await getAdminToken())
                 .set('Accept', 'application/json')
@@ -29,13 +30,13 @@ describe('UserController, /user', () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "futur-admin@beta.gouv.fr",
-                    roles: ["admin"]
+                    roles: [RoleEnum.admin]
                 })
                 .set("x-access-token", await getAdminToken())
                 .set('Accept', 'application/json')
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({ success: true, user: { email: "futur-admin@beta.gouv.fr", roles: ["user", "admin"] } })
+            expect(response.body).toMatchObject({ success: true, user: { email: "futur-admin@beta.gouv.fr", roles: ["user", RoleEnum.admin] } })
         })
 
         it("should add reject because role not exist", async () => {
@@ -59,7 +60,7 @@ describe('UserController, /user', () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
-                    roles: ["admin"]
+                    roles: [RoleEnum.admin]
                 })
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json')
@@ -72,7 +73,7 @@ describe('UserController, /user', () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
-                    roles: ["admin"]
+                    roles: [RoleEnum.admin]
                 })
                 .set('Accept', 'application/json')
 

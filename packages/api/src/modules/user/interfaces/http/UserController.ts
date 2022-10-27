@@ -1,5 +1,7 @@
 import { CreateUserDtoResponse, GetRolesDtoResponse, UserDtoErrorResponse, UserDtoResponse, UserErrorCodes, UserListDtoResponse } from "@api-subventions-asso/dto";
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from 'tsoa';
+import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response, ValidateError } from 'tsoa';
+import { RoleEnum } from "../../../../@enums/Roles";
+import { ValidateErrorJSON } from "../../../../@types";
 import { IdentifiedRequest } from "../../../../@types/ApiRequests";
 import userService, { UserServiceErrors } from '../../user.service';
 
@@ -25,11 +27,11 @@ export class UserController extends Controller {
      */
     @Post("/admin/roles")
     @Security("jwt", ['admin'])
-    @Response<UserDtoErrorResponse>(400, "Role Not Valid", { success: false, message: "Role Not Valid", errorCode: UserErrorCodes.INVALID_ROLE })
+    @Response<ValidateErrorJSON>(400, "Role Not Valid")
     @Response<UserDtoErrorResponse>(422, "User Not Found", { success: false, message: "User Not Found", errorCode: UserErrorCodes.USER_NOT_F0UND })
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     public async upgradeUserRoles(
-        @Body() body: { email: string, roles: string[] },
+        @Body() body: { email: string, roles: RoleEnum[] },
     ): Promise<UserDtoResponse> {
         const result = await userService.addRolesToUser(body.email, body.roles);
 
@@ -39,11 +41,6 @@ export class UserController extends Controller {
                 this.setStatus(422);
                 error.message = "User Not Found";
                 error.errorCode = UserErrorCodes.USER_NOT_F0UND;
-            }
-            else if (result.code === UserServiceErrors.ROLE_NOT_FOUND) {
-                this.setStatus(400);
-                error.message = "Role Not Valid";
-                error.errorCode = UserErrorCodes.INVALID_ROLE;
             }
             else this.setStatus(500);
             return error;
@@ -58,7 +55,6 @@ export class UserController extends Controller {
      */
     @Get("/admin/list-users")
     @Security("jwt", ['admin'])
-
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     public async listUsers(): Promise<UserListDtoResponse> {
         const result = await userService.listUsers();

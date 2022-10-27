@@ -4,9 +4,10 @@ import * as express from "express";
 import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
 import userService from "../../src/modules/user/user.service";
-import userRepository from "../../src/modules/user/repositoies/user.repository";
+import userRepository from "../modules/user/repositories/user.repository";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
+import { RoleEnum } from "../@enums/Roles";
 
 describe("expressAuthentication", () => {
 
@@ -63,7 +64,7 @@ describe("expressAuthentication", () => {
     });
 
     it("should throw an error when user role is not allowed", async () => {
-        const req = Object.assign({}, DEFAULT_REQ, { user: { roles: ["user"] } }) as LoginRequest
-        await expect(expressAuthentication(req, SECURITY_NAME, ["admin"])).rejects.toThrowError("JWT does not contain required scope.");
+        const req = Object.assign({}, DEFAULT_REQ, { user: { roles: [RoleEnum.user] } }) as LoginRequest
+        await expect(expressAuthentication(req, SECURITY_NAME, [RoleEnum.admin])).rejects.toThrowError("JWT does not contain required scope.");
     });
 });

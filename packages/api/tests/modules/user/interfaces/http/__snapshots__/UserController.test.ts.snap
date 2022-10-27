@@ -2,8 +2,13 @@
 
 exports[`UserController, /user POST /admin/roles should add reject because role not exist 1`] = `
 Object {
-  "errorCode": 3,
-  "message": "Role Not Valid",
+  "details": Object {
+    "roles.$0": Object {
+      "message": "should be one of the following; ['admin','user','consumer']",
+      "value": "test",
+    },
+  },
+  "message": "Validation Failed",
   "success": false,
 }
 `;

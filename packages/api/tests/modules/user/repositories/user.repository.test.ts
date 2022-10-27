@@ -1,10 +1,11 @@
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { ObjectId } from "mongodb";
 import UserNotPersisted from "../../../../src/modules/user/entities/UserNotPersisted";
-import userRepository from "../../../../src/modules/user/repositoies/user.repository";
+import userRepository from "../../../../src/modules/user/repositories/user.repository";
 import userService from "../../../../src/modules/user/user.service"
 
 describe("UserRepository", () => {
+
     const defaultUser = {
         email: "test22@beta.gouv.fr",
         hashPassword: "PASSWORD",
