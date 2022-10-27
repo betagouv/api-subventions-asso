@@ -215,8 +215,14 @@ export class UserService {
         }, Promise.resolve([]) as Promise<(CreateUserDtoSuccess | UserServiceError)[]>)
     }
 
-    public async signup(email: string): Promise<UserServiceError | CreateUserDtoSuccess> {
-        const result = await this.createUser(email.toLocaleLowerCase());
+    public async signup(email: string, role = RoleEnum.user): Promise<UserServiceError | CreateUserDtoSuccess> {
+        let result;
+        const lowerCaseEmail = email.toLocaleLowerCase();
+        if (role == RoleEnum.consumer) {
+            result = await this.createConsumer(lowerCaseEmail)
+        } else {
+            result = await this.createUser(lowerCaseEmail);
+        }
 
         if (!result.success) return { success: false, message: result.message, code: result.code };
 
@@ -224,7 +230,7 @@ export class UserService {
 
         if (!resetResult.success) return { success: false, message: resetResult.message, code: resetResult.code };
 
-        await mailNotifierService.sendCreationMail(email.toLocaleLowerCase(), resetResult.reset.token);
+        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.reset.token);
 
         return { email, success: true };
     }
