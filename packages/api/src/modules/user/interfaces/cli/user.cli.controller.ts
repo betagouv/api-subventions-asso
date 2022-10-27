@@ -2,6 +2,7 @@ import fs from "fs";
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
+import { RoleEnum } from "../../../../@enums/Roles";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
@@ -18,7 +19,7 @@ export default class UserCliController {
         console.info("User has been created");
     }
 
-    async setRoles(email: string, ...roles: string[]) {
+    async setRoles(email: string, ...roles: RoleEnum[]) {
         const result = await userService.addRolesToUser(email, roles);
 
         if (!result.success) {
@@ -41,7 +42,7 @@ export default class UserCliController {
     }
 
     async addList(file: string) {
-        if (typeof file !== "string" ) {
+        if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
 
