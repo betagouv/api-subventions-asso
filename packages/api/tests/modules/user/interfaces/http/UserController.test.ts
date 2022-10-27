@@ -39,7 +39,7 @@ describe('UserController, /user', () => {
             expect(response.body).toMatchObject({ success: true, user: { email: "futur-admin@beta.gouv.fr", roles: ["user", RoleEnum.admin] } })
         })
 
-        it.only("should add reject because role not exist", async () => {
+        it("should add reject because role not exist", async () => {
             await userService.createUser("futur-admin@beta.gouv.fr");
 
             const response = await request(g.app)
