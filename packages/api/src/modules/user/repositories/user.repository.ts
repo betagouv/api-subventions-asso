@@ -9,10 +9,12 @@ export enum UserRepositoryErrors {
 }
 
 export class UserRepository {
-    private readonly collection = db.collection<User>("users");
+    private readonly collection = db.collection<UserDbo>("users");
 
     async findByEmail(email: string) {
-        return this.removeSecrets(await this.collection.findOne({ email: email }) as UserDbo);
+        const user = await this.collection.findOne({ email: email });
+        if (!user) return null;
+        return this.removeSecrets(user);
     }
 
     async find(query: Filter<User> = {}) {
@@ -21,7 +23,9 @@ export class UserRepository {
     }
 
     async findById(userId: ObjectId) {
-        return this.removeSecrets(await this.collection.findOne({ _id: userId }) as UserDbo);
+        const user = await this.collection.findOne({ _id: userId });
+        if (!user) return null;
+        return this.removeSecrets(user);
     }
 
     async update(user: UserDbo | UserDto): Promise<UserDto> {
@@ -36,7 +40,8 @@ export class UserRepository {
     }
 
     async create(user: User) {
-        const result = await this.collection.insertOne(user);
+        const userDbo = { ...user, _id: new ObjectId() }
+        const result = await this.collection.insertOne(userDbo);
         return this.removeSecrets({ ...user, _id: result.insertedId });
     }
 
