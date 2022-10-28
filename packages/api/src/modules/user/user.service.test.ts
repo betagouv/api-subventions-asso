@@ -26,7 +26,6 @@ describe("User Service", () => {
         active: true
     } as UserDto
     const USER_JWT_PLAYLOAD = { user: USER_WITHOUT_SECRET };
-    // const USER_JWT_TOKEN = jwt.sign(USER_JWT_PLAYLOAD, JWT_SECRET);
     const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
     const CONSUMER_JWT_PAYLOAD = { ...USER_JWT_PLAYLOAD, isConsumerToken: true };
     const CONSUMER_JWT_TOKEN = jwt.sign(CONSUMER_JWT_PAYLOAD, JWT_SECRET);
