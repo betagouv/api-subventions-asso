@@ -108,12 +108,16 @@ export class UserService {
         return userRepository.update({ ...user, jwt });
     }
 
-    async findByEmail(email: string) {
+    findByEmail(email: string) {
         return userRepository.findByEmail(email.toLocaleLowerCase());
     }
 
-    async find(query: DefaultObject = {}) {
-        return userRepository.find(query)
+    findConsumerToken(userId: ObjectId) {
+        return consumerTokenRepository.findToken(userId);
+    }
+
+    find(query: DefaultObject = {}) {
+        return userRepository.find(query);
     }
 
     async createConsumer(email: string) {
