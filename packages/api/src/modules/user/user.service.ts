@@ -21,20 +21,21 @@ import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 
 export enum UserServiceErrors {
-    LOGIN_WRONG_PASSWORD_MATCH = 1,
-    LOGIN_UPDATE_JWT_FAIL = 2,
-    USER_NOT_ACTIVE = 3,
-    CREATE_INVALID_EMAIL = 4,
-    CREATE_USER_ALREADY_EXIST = 5,
-    CREATE_USER_WRONG = 6,
-    FORMAT_PASSWORD_INVALID = 7,
-    USER_NOT_FOUND = 8,
-    ROLE_NOT_FOUND = 9,
-    RESET_TOKEN_NOT_FOUND = 10,
-    RESET_TOKEN_EXPIRED = 11,
-    CREATE_RESET_PASSWORD_WRONG = 12,
-    CREATE_EMAIL_GOUV = 13,
-    CREATE_CONSUMER_TOKEN = 14
+    LOGIN_WRONG_PASSWORD_MATCH,
+    LOGIN_UPDATE_JWT_FAIL,
+    USER_NOT_ACTIVE,
+    CREATE_INVALID_EMAIL,
+    CREATE_USER_ALREADY_EXIST,
+    CREATE_USER_WRONG,
+    FORMAT_PASSWORD_INVALID,
+    USER_NOT_FOUND,
+    ROLE_NOT_FOUND,
+    RESET_TOKEN_NOT_FOUND,
+    RESET_TOKEN_EXPIRED,
+    CREATE_RESET_PASSWORD_WRONG,
+    CREATE_EMAIL_GOUV,
+    CREATE_CONSUMER_TOKEN,
+    USER_TOKEN_EXPIRED
 }
 
 export interface UserServiceError {
@@ -51,6 +52,28 @@ export class UserService {
         At least one uppercase character [A-Z]
         At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
         At least 8 characters in length, but no more than 32.`
+
+    private static CONSUMER_TOKEN_PROP = "isConsumerToken"
+
+    async authenticate(token): Promise<UserServiceError | UserDtoSuccessResponse> {
+        // Find the user associated with the email provided by the user
+        const user = await userService.findByEmail(token.email);
+        if (!user) {
+            return { success: false, message: 'User not found', code: UserServiceErrors.USER_NOT_FOUND };
+        }
+
+        if (!token[UserService.CONSUMER_TOKEN_PROP]) {
+
+            if (!user.active) {
+                return { success: false, message: 'User is not active', code: UserServiceErrors.USER_NOT_ACTIVE };
+            }
+            if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
+                return { success: false, message: 'JWT has expired, please login try again', code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL };
+            }
+        }
+
+        return { success: true, user }
+    }
 
     async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<UserDbo, 'hashPassword'> }> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
@@ -120,7 +143,7 @@ export class UserService {
         const createResult = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer])
         if (!createResult?.success) return createResult;
         const user = createResult.user;
-        const token = jwt.sign({ user: createResult.user, isConsumerToken: true }, JWT_SECRET);
+        const token = jwt.sign({ user: createResult.user, [UserService.CONSUMER_TOKEN_PROP]: true }, JWT_SECRET);
         try {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
             return { success: true, user };

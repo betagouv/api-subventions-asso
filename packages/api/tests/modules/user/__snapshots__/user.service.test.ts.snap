@@ -2,7 +2,7 @@
 
 exports[`user.service.ts createUser should be reject because password is not valid 1`] = `
 Object {
-  "code": 7,
+  "code": 6,
   "message": "Password is not hard, please use this rules:
         At least one digit [0-9]
         At least one lowercase character [a-z]

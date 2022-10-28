@@ -1,5 +1,5 @@
 import consumerTokenRepository from "./repositories/consumer-token.repository";
-import userService, { UserServiceError } from "./user.service";
+import userService, { UserServiceError, UserServiceErrors } from "./user.service";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { JWT_SECRET } from "../../configurations/jwt.conf";
@@ -14,6 +14,7 @@ describe("User Service", () => {
     const resetUserMock = jest.spyOn(userService, "resetUser");
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
+    const findByEmailMock = jest.spyOn(userService, "findByEmail");
 
 
     const EMAIL = "test@datasubvention.gouv.fr";
@@ -24,9 +25,10 @@ describe("User Service", () => {
         signupAt: new Date(),
         active: true
     } as UserDto
-    const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] }
-    const JWT_PAYLOAD = { user: USER_WITHOUT_SECRET, isConsumerToken: true }
-    const JWT_TOKEN = jwt.sign(JWT_PAYLOAD, JWT_SECRET)
+    const USER_JWT_PLAYLOAD = { user: USER_WITHOUT_SECRET };
+    const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
+    const CONSUMER_JWT_PAYLOAD = { ...USER_JWT_PLAYLOAD, isConsumerToken: true };
+    const CONSUMER_JWT_TOKEN = jwt.sign(CONSUMER_JWT_PAYLOAD, JWT_SECRET);
 
     describe("signup", () => {
         it("should create a consumer", async () => {
@@ -59,12 +61,53 @@ describe("User Service", () => {
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} } as UserDtoSuccessResponse));
             const actual = await userService.signup(EMAIL);
             expect(actual).toEqual(expected);
+
+        });
+
+    });
+
+    describe("authenticate", () => {
+        const DECODED_TOKEN = { USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date) }
+        it("should return UserServiceError if user does not exist", async () => {
+            findByEmailMock.mockImplementationOnce(jest.fn());
+            const expected = { success: false, message: 'User not found', code: UserServiceErrors.USER_NOT_FOUND };
+            const actual = await userService.authenticate(DECODED_TOKEN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return UserDtoSuccessResponse consumer token", async () => {
+            findByEmailMock.mockImplementationOnce(async () => CONSUMER_USER)
+            const expected = { success: true, user: CONSUMER_USER };
+            const actual = await userService.authenticate(DECODED_TOKEN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return UserDtoSuccessResponse user token", async () => {
+            findByEmailMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET)
+            const expected = { success: true, user: USER_WITHOUT_SECRET };
+            const actual = await userService.authenticate(DECODED_TOKEN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return UserServiceError if user not active", async () => {
+            findByEmailMock.mockImplementationOnce(async () => ({ ...USER_WITHOUT_SECRET, active: false }))
+            const expected = { success: false, message: 'User is not active', code: UserServiceErrors.USER_NOT_ACTIVE };
+            const actual = await userService.authenticate(DECODED_TOKEN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return UserServiceError if token has expired", async () => {
+            findByEmailMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET)
+            const expected = { success: false, message: 'JWT has expired, please login try again', code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL }
+            const actual = await userService.authenticate({ ...DECODED_TOKEN, now: (d => new Date(d.setDate(d.getDate() - 3)))(new Date) });
+            expect(actual).toEqual(expected);
+
         })
     })
 
     describe("createConsumer", () => {
         const createMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
-        const signMock = jest.spyOn(jwt, "sign").mockImplementation(() => JWT_TOKEN)
+        const signMock = jest.spyOn(jwt, "sign").mockImplementation(() => CONSUMER_JWT_TOKEN)
         it("should call userRepository.createUser", async () => {
             createUserMock.mockImplementationOnce(jest.fn());
             await userService.createConsumer(EMAIL)
