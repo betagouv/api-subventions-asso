@@ -16,11 +16,12 @@ jobs:
   codecov:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - run: npm ci
       - run: npm run generate
-      - uses: ArtiomTr/jest-coverage-report-action@v2.0-rc.6
+      - uses: ArtiomTr/jest-coverage-report-action@v2
         with:
+          output: report-markdown
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: npm run test:cov
           working-directory: packages/api
