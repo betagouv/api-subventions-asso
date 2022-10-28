@@ -10,6 +10,7 @@ export class StatsController extends Controller {
     /**
      * Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X requêtes sur une période données
      * 
+     * @summary Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X requêtes sur une période données
      * @param start Timestamp starting date for the period
      * @param end Timestamp ending date for the period
      * @param nbReq Number minimal number of requests that user must have done in the defined period
@@ -37,8 +38,9 @@ export class StatsController extends Controller {
     }
 
     /**
-     * Permet de récupérer le nombre médian de requêtes sur un période donné
+     * Permet de récupérer le nombre médian de requêtes sur un période donnée
      * 
+     * @summary Permet de récupérer le nombre médian de requêtes sur un période donnée
      * @param start Timestamp starting date for the period
      * @param end Timestamp ending date for the period
      * @param {string=} [includesAdmin = "false"] true if we include admin in stats, false for exlude admin (All value other of "true" will be considered as false)
