@@ -193,13 +193,11 @@ describe("User Service", () => {
         beforeEach(() => {
             signMock = jest.spyOn(jwt, "sign").mockImplementationOnce(() => CONSUMER_JWT_TOKEN);
         })
-        
+
         it("should set expiresIn", () => {
             const expected = {
                 expiresIn: JWT_EXPIRES_TIME
             };
-            // @ts-expect-error buildJWTToken is private
-            console.log(userService.buildJWTToken);
             // @ts-expect-error buildJWTToken is private
             userService.buildJWTToken({}, { expiration: true });
 

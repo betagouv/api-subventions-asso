@@ -23,10 +23,9 @@ describe("ConsumerCliController", () => {
             const actual = jwt.verify(token, JWT_SECRET);
             expect(actual).toMatchSnapshot({
                 iat: expect.any(Number),
-                user: {
-                    _id: expect.any(String),
-                    signupAt: expect.any(String)
-                }
+                _id: expect.any(String),
+                signupAt: expect.any(String),
+                now: expect.any(String)
             });
         })
     })
