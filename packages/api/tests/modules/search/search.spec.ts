@@ -30,19 +30,6 @@ describe('/search', () => {
         })
     })
 
-    describe("/association/{rna}", () => {
-        it("should return an association", async () => {
-            await osirisRequestRepository.add(OsirisRequestEntityFixture);
-            const response = await request(g.app)
-                .get(`/search/association/${OsirisRequestEntityFixture.legalInformations.rna}`)
-                .set("x-access-token", await getUserToken())
-                .set('Accept', 'application/json')
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot();
-        })
-    })
-
     describe("/associations/{input}", () => {
         beforeEach(() => {
             associationNameRepository.create(AssociationNameFixture);

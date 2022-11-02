@@ -33,35 +33,6 @@ export class SearchController extends Controller {
     }
 
     /**
-     * Recherche des demandes de subventions via l'identifiant de l'association
-     * 
-     * @summary Cette route va bientôt disparaitre, ne pas l'utiliser
-     * @param rna_or_siren Identifiant RNA ou Siren
-     */
-    @Deprecated()
-    @Get("/association/{id}")
-    @Response<ErrorResponse>("404", "Aucune demande de subvention retrouvée", { success: false, message: "Could not match any subvention for this association" })
-    public async findAssociation(
-        id: AssociationIdentifiers,
-    ): Promise<GetAssociationResponseDto> {
-        let result: Association | null = null;
-
-        try {
-            result = await searchService.getAssociation(id);
-        } catch (e) {
-            this.setStatus(404);
-            return { success: false, message: (e as Error).message }
-        }
-
-        if (!result) {
-            this.setStatus(404);
-            return { success: false, message: "Could not match any subvention for this association" }
-        }
-
-        return { success: true, association: result };
-    }
-
-    /**
      * Recherche une association via son rna, siren et nom partiel ou complet
      * @summary Recherche une association via son rna, siren et nom partiel ou complet
      * @param rna_or_siren Identifiant RNA ou Identifiant Siren
