@@ -1,6 +1,4 @@
-import { ObjectId, WithId } from "mongodb";
-
-export default class User {
+export default class UserNotPersisted {
     public email: string;
     public hashPassword: string;
     public roles: string[];
@@ -24,9 +22,8 @@ export default class User {
                 searchCount: number,
                 lastSearchDate: Date | null,
             },
-        },
-        public _id?: ObjectId
-    ){
+        }
+    ) {
         this.email = params.email;
         this.hashPassword = params.hashPassword;
         this.roles = params.roles;
@@ -36,5 +33,3 @@ export default class User {
         this.stats = params.stats;
     }
 }
-
-export type UserWithoutSecret = Omit<Omit<WithId<User>, 'hashPassword'>, "jwt">;

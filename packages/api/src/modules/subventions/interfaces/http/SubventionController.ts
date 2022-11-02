@@ -7,6 +7,13 @@ import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 @Security("jwt")
 @Tags("Subvention Controller")
 export class SubventionController extends Controller {
+
+    /**
+     * Permet de récupérer les informations sur une subvention grâce à son identifiant unique
+     * 
+     * @summary Permet de récupérer les informations sur une subvention grâce à son identifiant unique
+     * @param id L'identifiant unique de la subvention
+     */
     @Get("/{id}")
     @Response<ErrorResponse>("404", "Demande de subvention non trouvée")
     async getDemandeSubventionById(id: string): Promise<GetSubventionResponseDto> {

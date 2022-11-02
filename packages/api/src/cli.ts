@@ -10,6 +10,7 @@ import ChorusCliController from "./modules/providers/chorus/interfaces/cli/choru
 import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
 import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
 import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
+import ConsumerCliController from "./modules/user/interfaces/cli/consumer.cli.controller";
 import { connectDB } from "./shared/MongoConnection";
 
 import { CliStaticInterface } from "./@types";
@@ -33,7 +34,8 @@ async function main() {
         FonjepCliController,
         DataGouvCliController,
         GisproCliController,
-        SubventiaCliController
+        SubventiaCliController,
+        ConsumerCliController
     ];
 
     const args = process.argv.slice(2);

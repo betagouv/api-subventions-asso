@@ -29,6 +29,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 # [0.16.0](https://github.com/betagouv/api-subventions-asso/compare/v0.15.4...v0.16.0) (2022-10-12)
 
 
+### Bug Fixes
+
 * **front, api:** clean dauphin and subvention table ([#472](https://github.com/betagouv/api-subventions-asso/issues/472)) ([e2644fe](https://github.com/betagouv/api-subventions-asso/commit/e2644fe73749b893c72c588bc815a8083cb34fe9))
 
 
@@ -45,6 +47,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * **api:** error on dauphin is hs ([bf98860](https://github.com/betagouv/api-subventions-asso/commit/bf9886056d6fabe1d161e8959cbd2983c71355ee))
+
+
 
 ## [0.15.4](https://github.com/betagouv/api-subventions-asso/compare/v0.14.9...v0.15.4) (2022-10-11)
 

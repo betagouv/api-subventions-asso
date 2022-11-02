@@ -4,7 +4,6 @@ import HttpError from "../shared/errors/httpErrors/HttpError";
 
 
 export function errorHandler(isTest: boolean) {
-
     return function (
         err: unknown,
         req: Request,
@@ -13,7 +12,7 @@ export function errorHandler(isTest: boolean) {
     ): Response | void {
         if (err instanceof ValidateError) {
             console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
-            return res.status(422).json({
+            return res.status(400).json({
                 success: false,
                 message: "Validation Failed",
                 details: err?.fields,

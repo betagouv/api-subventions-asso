@@ -1,4 +1,4 @@
-import UserDto, { UserWithJWTDto } from "../user/UserDto"
+import { UserWithJWTDto } from "../user/UserDto"
 
 export enum LoginDtoErrorCodes {
     EMAIL_OR_PASSWORD_NOT_MATCH = 1,

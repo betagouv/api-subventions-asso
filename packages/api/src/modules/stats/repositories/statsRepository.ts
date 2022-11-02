@@ -1,3 +1,4 @@
+import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from '../../../@types';
 import db from '../../../shared/MongoConnection';
 
@@ -5,21 +6,21 @@ export class StatsRepository {
     private readonly collection = db.collection("log");
 
     public async countUsersByRequestNbOnPeriod(start: Date, end: Date, nbReq: number, includesAdmin: boolean): Promise<number> {
-        const matchQuery: { $match: DefaultObject } = { 
+        const matchQuery: { $match: DefaultObject } = {
             $match: {
                 timestamp: {
                     $gte: start,
-                    $lte: end 
+                    $lte: end
                 }
             }
         };
         if (!includesAdmin) {
-            matchQuery.$match['meta.req.user.roles'] = { $nin: ["admin"] };
+            matchQuery.$match['meta.req.user.roles'] = { $nin: [RoleEnum.admin] };
         }
 
         return (await this.collection.aggregate([
             matchQuery,
-            { $group : { _id : '$meta.req.user.email', nbOfRequest : { $sum : 1 } } },
+            { $group: { _id: '$meta.req.user.email', nbOfRequest: { $sum: 1 } } },
             { $match: { "nbOfRequest": { $gte: nbReq } } },
             { $count: "nbOfUsers" }
         ]).next())?.nbOfUsers || 0; // If no stats found nbOfUsers is null but whant retrun an number
@@ -27,22 +28,22 @@ export class StatsRepository {
 
     public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean): Promise<number> {
         const buildQuery = () => {
-            const matchQuery: { $match: DefaultObject } = { 
+            const matchQuery: { $match: DefaultObject } = {
                 $match: {
                     timestamp: {
                         $gte: start,
-                        $lte: end 
+                        $lte: end
                     },
                     "meta.req.user.email": { $ne: null }
                 }
             };
             if (!includesAdmin) {
-                matchQuery.$match['meta.req.user.roles'] = { $nin: ["admin"] };
+                matchQuery.$match['meta.req.user.roles'] = { $nin: [RoleEnum.admin] };
             }
 
             return [
                 matchQuery,
-                { $group : { _id : '$meta.req.user.email', nbOfRequest : { $sum : 1 } } },
+                { $group: { _id: '$meta.req.user.email', nbOfRequest: { $sum: 1 } } },
                 { $sort: { nbOfRequest: 1 } }
             ]
         }
@@ -56,7 +57,7 @@ export class StatsRepository {
         if (result.length % 2 === 0) {
             return (result[middle - 1].nbOfRequest + result[middle].nbOfRequest) / 2;
         }
-        
+
         return result[middle].nbOfRequest;
     }
 }
