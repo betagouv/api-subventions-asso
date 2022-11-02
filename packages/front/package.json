@@ -1,6 +1,6 @@
 {
     "name": "front",
-    "version": "0.17.0",
+    "version": "0.17.1",
     "description": "> TODO: description",
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/front#readme",
@@ -30,7 +30,7 @@
         "prebuild": "npx webpack && npx webpack --config ./webpack.svelte.config.js",
         "build": "npx tsc --project ./",
         "postbuild": "npm run copy-files",
-        "copy-files": "cp -r views build/views && cp -r static build/static && cp -r node_modules build/node_modules",
+        "copy-files": "cp -r views build && cp -r static build && cp -r node_modules build",
         "test": "npm run test:unit",
         "test:unit": "jest -c jest.config.unit.js --runInBand",
         "test:cov": "npm run test:unit -- --coverage",

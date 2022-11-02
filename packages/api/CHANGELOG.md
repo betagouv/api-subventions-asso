@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.1](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.1) (2022-11-02)
+
+
+### Bug Fixes
+
+* **api:** consumer cli controller integ test ([f665f26](https://github.com/betagouv/api-subventions-asso/commit/f665f26be01204b7a61bae37f3d93bc1b3a6e6bc))
+
+
+
+
+
 # [0.17.0](https://github.com/betagouv/api-subventions-asso/compare/v0.15.5...v0.17.0) (2022-11-02)
 
 
