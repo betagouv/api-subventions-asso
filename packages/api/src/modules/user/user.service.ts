@@ -94,7 +94,7 @@ export class UserService {
         const token = jwt.verify(user.jwt.token, JWT_SECRET) as jwt.JwtPayload;
         if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) { // Generate new JTW Token
             const now = new Date();
-            const token = jwt.sign({ ...user, now }, JWT_SECRET);
+            const token = this.buildJWTToken(user as unknown as DefaultObject);
 
             const updatedJwt = {
                 token,
@@ -105,7 +105,6 @@ export class UserService {
                 user.jwt = updatedJwt;
                 await userRepository.update(user);
             } catch (e) {
-
                 return { success: false, message: UserUpdateError.message, code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL };
             }
         }
@@ -144,10 +143,10 @@ export class UserService {
     }
 
     async createConsumer(email: string) {
-        const createResult = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer])
+        const createResult = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
         if (!createResult?.success) return createResult;
         const user = createResult.user;
-        const token = jwt.sign({ user: createResult.user, [UserService.CONSUMER_TOKEN_PROP]: true }, JWT_SECRET);
+        const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
         try {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
             return { success: true, user };
@@ -174,9 +173,10 @@ export class UserService {
             code: UserServiceErrors.ROLE_NOT_FOUND
         }
 
+        const now = new Date();
         const jwtParams = {
-            token: jwt.sign(partialUser, JWT_SECRET, { expiresIn: JWT_EXPIRES_TIME }),
-            expirateDate: new Date(Date.now() + JWT_EXPIRES_TIME)
+            token: this.buildJWTToken(partialUser),
+            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME)
         };
 
         const stats = {
@@ -462,6 +462,17 @@ export class UserService {
         }
 
         return { success: true }
+    }
+
+    private buildJWTToken(user: DefaultObject, options: { expiration : boolean } = { expiration: true }) {
+        const jwtContent = { ...user, now: new Date() };
+        const jwtOption: jwt.SignOptions = {};
+
+        if (options.expiration) {
+            jwtOption.expiresIn = JWT_EXPIRES_TIME;
+        }
+
+        return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
     }
 }
 
