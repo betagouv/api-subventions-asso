@@ -3,6 +3,82 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.17.0](https://github.com/betagouv/datasubvention/compare/v0.15.5...v0.17.0) (2022-11-02)
+
+
+### Bug Fixes
+
+* **front, api:** clean dauphin and subvention table ([#472](https://github.com/betagouv/datasubvention/issues/472)) ([3c92975](https://github.com/betagouv/datasubvention/commit/3c929753278cc575715b4e9b2f3088c834478fab))
+* **front:** fix breadcrumb ([#502](https://github.com/betagouv/datasubvention/issues/502)) ([9166e28](https://github.com/betagouv/datasubvention/commit/9166e2862c58870340c5682f45583c21c1f6c767))
+* **front:** fix search history display when no history ([58ec176](https://github.com/betagouv/datasubvention/commit/58ec1768997bad26cffc7b449f2f1200dcf49a7c))
+* **front:** fix stack overflow on search ([fb01006](https://github.com/betagouv/datasubvention/commit/fb01006d0e9227d71b48554ed59ba7600f70a550))
+* **front:** search by siret ([#505](https://github.com/betagouv/datasubvention/issues/505)) ([4132de6](https://github.com/betagouv/datasubvention/commit/4132de6840beb5fda5069b9360e62c676d2e6fa7))
+
+
+### Features
+
+* **api, front:** find asso documents from API ASSO ([#500](https://github.com/betagouv/datasubvention/issues/500)) ([720eb8d](https://github.com/betagouv/datasubvention/commit/720eb8dff34031e0196078d8b86aa0d5cfcc80af))
+* **api:** add stats to user ([#470](https://github.com/betagouv/datasubvention/issues/470)) ([884513a](https://github.com/betagouv/datasubvention/commit/884513ae2aee670d637ca5c844132e0ee469ac41))
+* **front,api:** add signup date to user ([#473](https://github.com/betagouv/datasubvention/issues/473)) ([af97192](https://github.com/betagouv/datasubvention/commit/af971926102b2c78b2685d93777a2ffad1e1bc32))
+* **front:** add alert on document status ([#507](https://github.com/betagouv/datasubvention/issues/507)) ([aec43a6](https://github.com/betagouv/datasubvention/commit/aec43a65b6e4d31d56c5f25bf80e10e19f9f33df))
+* **front:** add contacts csv download ([#501](https://github.com/betagouv/datasubvention/issues/501)) ([3850082](https://github.com/betagouv/datasubvention/commit/3850082543111158d59d6f5196de751ebe967ec5))
+* **front:** disable matomo ([#469](https://github.com/betagouv/datasubvention/issues/469)) ([44ebb9c](https://github.com/betagouv/datasubvention/commit/44ebb9cfa0652418b42ec4c9b2e5f9fc38b0c6cf))
+* **front:** init front unit tests ([#508](https://github.com/betagouv/datasubvention/issues/508)) ([8031677](https://github.com/betagouv/datasubvention/commit/8031677944889048ed9f904f8e8d0b5fbcdd4e20))
+* **front:** make click on icon of CardDocument active ([#466](https://github.com/betagouv/datasubvention/issues/466)) ([2714c91](https://github.com/betagouv/datasubvention/commit/2714c91c0581a22e354265dbbe1a01d05babf80f))
+* **front:** update search placeholder ([#506](https://github.com/betagouv/datasubvention/issues/506)) ([831785a](https://github.com/betagouv/datasubvention/commit/831785a7ae26a04ba41d12f8944ac5f1dcea1736))
+
+
+
+## [0.16.2](https://github.com/betagouv/datasubvention/compare/v0.16.1...v0.16.2) (2022-10-14)
+
+
+### Bug Fixes
+
+* **front:** fix breadcrumb ([#502](https://github.com/betagouv/datasubvention/issues/502)) ([147b483](https://github.com/betagouv/datasubvention/commit/147b4838a107cf065b9f099d02be14b6d28c43f0))
+* **front:** search by siret ([#505](https://github.com/betagouv/datasubvention/issues/505)) ([5495181](https://github.com/betagouv/datasubvention/commit/5495181992283d37dc63a1280f19359a37bdae63))
+
+
+### Features
+
+* **front:** add alert on document status ([#507](https://github.com/betagouv/datasubvention/issues/507)) ([f751555](https://github.com/betagouv/datasubvention/commit/f75155574a63decd94073494aa173d8d899fd21a))
+* **front:** update search placeholder ([#506](https://github.com/betagouv/datasubvention/issues/506)) ([843af17](https://github.com/betagouv/datasubvention/commit/843af17aa1b7270ab1531f2d9aebc2b773a6ced9))
+
+
+
+## [0.16.1](https://github.com/betagouv/datasubvention/compare/v0.16.0...v0.16.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* **front:** fix stack overflow on search ([57e7e08](https://github.com/betagouv/datasubvention/commit/57e7e08e89e36ea72fe3a1bfc0429a4e92054c57))
+
+
+### Features
+
+* **api, front:** find asso documents from API ASSO ([#500](https://github.com/betagouv/datasubvention/issues/500)) ([6538650](https://github.com/betagouv/datasubvention/commit/6538650041b2cbea78fec238e50ae6fabc751b7a))
+
+
+
+# [0.16.0](https://github.com/betagouv/datasubvention/compare/v0.15.4...v0.16.0) (2022-10-12)
+
+
+### Bug Fixes
+
+* **front, api:** clean dauphin and subvention table ([#472](https://github.com/betagouv/datasubvention/issues/472)) ([e2644fe](https://github.com/betagouv/datasubvention/commit/e2644fe73749b893c72c588bc815a8083cb34fe9))
+* **front:** fix search history display when no history ([315977e](https://github.com/betagouv/datasubvention/commit/315977e334ec8d7f2db32d915380773b0373d8c0))
+
+
+### Features
+
+* **api:** add stats to user ([#470](https://github.com/betagouv/datasubvention/issues/470)) ([798b51e](https://github.com/betagouv/datasubvention/commit/798b51ea90fe1df5b46c5387fc6f46e8ab87524b))
+* **front,api:** add signup date to user ([#473](https://github.com/betagouv/datasubvention/issues/473)) ([180c855](https://github.com/betagouv/datasubvention/commit/180c855cec6dd8500ba035cc7f9d8c3f9241d2ca))
+* **front:** disable matomo ([#469](https://github.com/betagouv/datasubvention/issues/469)) ([e243201](https://github.com/betagouv/datasubvention/commit/e2432011067e00e7b1a2a10e28993e4c17156da3))
+* **front:** make click on icon of CardDocument active ([#466](https://github.com/betagouv/datasubvention/issues/466)) ([3949016](https://github.com/betagouv/datasubvention/commit/3949016c9b0e6903520c8d75b55aad156e521c11))
+
+
+
+
+
 ## [0.16.2](https://github.com/betagouv/datasubvention/compare/v0.16.1...v0.16.2) (2022-10-14)
 
 

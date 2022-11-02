@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.17.0](https://github.com/betagouv/api-subventions-asso/compare/v0.15.5...v0.17.0) (2022-11-02)
+
+
+### Bug Fixes
+
+* **api:** fix send wrong error on error in /auth/login ([#503](https://github.com/betagouv/api-subventions-asso/issues/503)) ([6a5ecc4](https://github.com/betagouv/api-subventions-asso/commit/6a5ecc42166618af549ba33a07a40981334105ce))
+* **api:** group associations names by rna or siren ([#504](https://github.com/betagouv/api-subventions-asso/issues/504)) ([7f8d501](https://github.com/betagouv/api-subventions-asso/commit/7f8d50118ccf4fa9f272ab89223f476a05404c47))
+* **api:** uniformize creation jwt token ([ea13507](https://github.com/betagouv/api-subventions-asso/commit/ea1350700cb8b927f9a96717447abf7b63c14d33))
+* **api:** update associationName ([dfc7c56](https://github.com/betagouv/api-subventions-asso/commit/dfc7c561b493e58c6691dd7fe5aeba712b1bc84a))
+* **front, api:** clean dauphin and subvention table ([#472](https://github.com/betagouv/api-subventions-asso/issues/472)) ([3c92975](https://github.com/betagouv/api-subventions-asso/commit/3c929753278cc575715b4e9b2f3088c834478fab))
+
+
+### Features
+
+* **api, dto:** merge fonjep subvention raison with status ([957d627](https://github.com/betagouv/api-subventions-asso/commit/957d627d2db4ae2eaa63a49f53124c0780f973dd))
+* **api, front:** find asso documents from API ASSO ([#500](https://github.com/betagouv/api-subventions-asso/issues/500)) ([720eb8d](https://github.com/betagouv/api-subventions-asso/commit/720eb8dff34031e0196078d8b86aa0d5cfcc80af))
+* **api:** add authentication for consumer user [#512](https://github.com/betagouv/api-subventions-asso/issues/512) ([9e6d97b](https://github.com/betagouv/api-subventions-asso/commit/9e6d97be354f37e4394aac4acdfaf6bd3f37be2f))
+* **api:** add stats to user ([#470](https://github.com/betagouv/api-subventions-asso/issues/470)) ([884513a](https://github.com/betagouv/api-subventions-asso/commit/884513ae2aee670d637ca5c844132e0ee469ac41))
+* **api:** create consumer user ([1048339](https://github.com/betagouv/api-subventions-asso/commit/1048339c26abfc460b62a7f2df1d98645ad69524))
+* **api:** handle new FONJEP file with versements ([e9dead6](https://github.com/betagouv/api-subventions-asso/commit/e9dead6c40cdb4bdc58213df157d1ac47b4d63ff))
+* **api:** manage user in current request ([#468](https://github.com/betagouv/api-subventions-asso/issues/468)) ([47772b1](https://github.com/betagouv/api-subventions-asso/commit/47772b12c4c0f0b870fab712342ccd04d6454deb))
+* **api:** use UserDbo in UserRepository collection type ([#524](https://github.com/betagouv/api-subventions-asso/issues/524)) ([7d4f52d](https://github.com/betagouv/api-subventions-asso/commit/7d4f52d3bf53580ba65184cce773f5310b1c22bb))
+* **front,api:** add signup date to user ([#473](https://github.com/betagouv/api-subventions-asso/issues/473)) ([af97192](https://github.com/betagouv/api-subventions-asso/commit/af971926102b2c78b2685d93777a2ffad1e1bc32))
+
+
+
+## [0.16.2](https://github.com/betagouv/api-subventions-asso/compare/v0.16.1...v0.16.2) (2022-10-14)
+
+
+### Bug Fixes
+
+* **api:** fix send wrong error on error in /auth/login ([#503](https://github.com/betagouv/api-subventions-asso/issues/503)) ([20a3e0e](https://github.com/betagouv/api-subventions-asso/commit/20a3e0e71e457d8a3b76b0040da9f08efc5f68b9))
+* **api:** group associations names by rna or siren ([#504](https://github.com/betagouv/api-subventions-asso/issues/504)) ([faae9c5](https://github.com/betagouv/api-subventions-asso/commit/faae9c5e4a2177922d7e50ff06f875c39837a571))
+
+
+
+## [0.16.1](https://github.com/betagouv/api-subventions-asso/compare/v0.16.0...v0.16.1) (2022-10-13)
+
+
+### Features
+
+* **api, front:** find asso documents from API ASSO ([#500](https://github.com/betagouv/api-subventions-asso/issues/500)) ([6538650](https://github.com/betagouv/api-subventions-asso/commit/6538650041b2cbea78fec238e50ae6fabc751b7a))
+
+
+
+# [0.16.0](https://github.com/betagouv/api-subventions-asso/compare/v0.15.4...v0.16.0) (2022-10-12)
+
+
+### Bug Fixes
+
+* **front, api:** clean dauphin and subvention table ([#472](https://github.com/betagouv/api-subventions-asso/issues/472)) ([e2644fe](https://github.com/betagouv/api-subventions-asso/commit/e2644fe73749b893c72c588bc815a8083cb34fe9))
+
+
+### Features
+
+* **api:** add stats to user ([#470](https://github.com/betagouv/api-subventions-asso/issues/470)) ([798b51e](https://github.com/betagouv/api-subventions-asso/commit/798b51ea90fe1df5b46c5387fc6f46e8ab87524b))
+* **api:** handle new FONJEP file with versements ([729d59f](https://github.com/betagouv/api-subventions-asso/commit/729d59f736a02ecec5fa013a30bc4f50a65ccf51))
+* **api:** manage user in current request ([#468](https://github.com/betagouv/api-subventions-asso/issues/468)) ([397cfcd](https://github.com/betagouv/api-subventions-asso/commit/397cfcd4fecba36725b85d6822905b9e2517fd35))
+* **front,api:** add signup date to user ([#473](https://github.com/betagouv/api-subventions-asso/issues/473)) ([180c855](https://github.com/betagouv/api-subventions-asso/commit/180c855cec6dd8500ba035cc7f9d8c3f9241d2ca))
+
+
+
+
+
 ## [0.16.2](https://github.com/betagouv/api-subventions-asso/compare/v0.16.1...v0.16.2) (2022-10-14)
 
 
