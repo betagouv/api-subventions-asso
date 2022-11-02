@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.1](https://github.com/betagouv/datasubvention/compare/v0.17.0...v0.17.1) (2022-11-02)
+
+
+### Bug Fixes
+
+* **front:** fix import js on ts ([26d3e88](https://github.com/betagouv/datasubvention/commit/26d3e8842033b15b515fd67ffe6f18edf6cb82ad))
+
+
+
+
+
 # [0.17.0](https://github.com/betagouv/datasubvention/compare/v0.15.5...v0.17.0) (2022-11-02)
 
 
