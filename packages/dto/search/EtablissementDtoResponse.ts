@@ -1,5 +1,5 @@
 import { Etablissement } from "./Etablissement";
-import { Association } from "./Association";
+import { Association } from "../associations/Association";
 import { DemandeSubvention } from "./DemandeSubvention";
 
 export interface IEtablissement extends Etablissement {

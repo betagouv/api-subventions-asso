@@ -1,9 +1,8 @@
 import { Route, Get, Controller, Tags, Security, Response, Deprecated } from 'tsoa';
-import { Siret, Association, Etablissement, GetEtablissementResponseDto, SearchEtablissementSuccessResponseDto, GetAssociationResponseDto } from '@api-subventions-asso/dto';
+import { Siret, Etablissement, GetEtablissementResponseDto, SearchEtablissementSuccessResponseDto } from '@api-subventions-asso/dto';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
-import { AssociationIdentifiers } from '../../../../@types';
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 
 @Route("search")
@@ -30,35 +29,6 @@ export class SearchController extends Controller {
         } else {
             return { success: true, etablissement: result };
         }
-    }
-
-    /**
-     * Recherche des demandes de subventions via l'identifiant de l'association
-     * 
-     * @summary Cette route va bientôt disparaitre, ne pas l'utiliser
-     * @param rna_or_siren Identifiant RNA ou Siren
-     */
-    @Deprecated()
-    @Get("/association/{id}")
-    @Response<ErrorResponse>("404", "Aucune demande de subvention retrouvée", { success: false, message: "Could not match any subvention for this association" })
-    public async findAssociation(
-        id: AssociationIdentifiers,
-    ): Promise<GetAssociationResponseDto> {
-        let result: Association | null = null;
-
-        try {
-            result = await searchService.getAssociation(id);
-        } catch (e) {
-            this.setStatus(404);
-            return { success: false, message: (e as Error).message }
-        }
-
-        if (!result) {
-            this.setStatus(404);
-            return { success: false, message: "Could not match any subvention for this association" }
-        }
-
-        return { success: true, association: result };
     }
 
     /**

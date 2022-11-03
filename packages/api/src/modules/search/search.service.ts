@@ -5,16 +5,8 @@ import { Siret, Rna, Siren, DemandeSubvention, Etablissement } from "@api-subven
 import subventionsService from "../subventions/subventions.service";
 import versementsService from "../versements/versements.service";
 import associationNameService from "../association-name/associationName.service"
-import { AssociationIdentifiers } from '../../@types';
-import { isRna, isSiren } from '../../shared/Validators';
 import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
 export class SearchService {
-
-    public async getAssociation(id: AssociationIdentifiers) {
-        if (isRna(id)) return await this.getByRna(id);
-        else if (isSiren(id)) return await this.getBySiren(id);
-        throw new Error("You must give a valid RNA or Siren");
-    }
 
     public async getBySiret(siret: Siret) {
         const etablissement = await etablissementService.getEtablissement(siret);

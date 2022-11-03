@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Controller from "../../../../decorators/controller.decorator";
 import { Get } from "../../../../decorators/http.methods.decorator";
-import apiDatasubService from "../../../../shared/apiDatasub.service";
-import IdentifierHelper from "../../../../shared/helpers/IdentifierHelper";
 import downloadService from "../../DownloadService";
 
 @Controller("/download")
