@@ -5,7 +5,6 @@ import userRepository from "../../../../src/modules/user/repositories/user.repos
 import userService from "../../../../src/modules/user/user.service"
 
 describe("UserRepository", () => {
-
     const defaultUser = {
         email: "test22@beta.gouv.fr",
         hashPassword: "PASSWORD",

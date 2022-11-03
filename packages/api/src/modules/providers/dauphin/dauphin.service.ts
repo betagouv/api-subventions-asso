@@ -25,18 +25,26 @@ export class DauphinService implements DemandesSubventionsProvider {
         const siren = siretToSiren(siret);
         const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
 
-        const token = await this.getAuthToken();
-        const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
-        await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
-    
+        try {
+            const token = await this.getAuthToken();
+            const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
+            await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+        } catch(e) {
+            console.error(e);
+        }
+
         return (await dauhpinCachesRepository.findBySiret(siret)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
 
-        const token = await this.getAuthToken();
-        const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
-        await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+        try {
+            const token = await this.getAuthToken();
+            const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
+            await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+        } catch(e) {
+            console.error(e);
+        }
 
         return (await dauhpinCachesRepository.findBySiren(siren)).map((dto => DauphinDtoAdapter.toDemandeSubvention(dto)));
     }
@@ -55,35 +63,39 @@ export class DauphinService implements DemandesSubventionsProvider {
         } catch (e){
             throw new Error("DemandeSubvention not found");
         }
-
     }
 
     private async getDauphinSubventions(siren: Siren, token, lastUpdate ?: Date): Promise<DauphinSubventionDto[]> {
-        const result = await axios.post(
-            "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-            this.buildSearchQuery(siren, lastUpdate),
-            this.buildSearchHeader(token)
-        );
-
-        return result.data.hits.hits.map(h => {
-            const source = h._source;
-
-            if ("demandeur" in source) {
-                delete source.demandeur.pieces;
-                delete source.demandeur.history;
-                delete source.demandeur.linkedUsers;
-            }
-
-            if ("beneficiaires" in source) {
-                source.beneficiaires.forEach(beneficiaire => {
-                    delete beneficiaire.pieces;
-                    delete beneficiaire.history;
-                    delete beneficiaire.linkedUsers;
-                })
-            }
-
-            return source;
-        });
+        try {
+            const result = await axios.post(
+                "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
+                this.buildSearchQuery(siren, lastUpdate),
+                this.buildSearchHeader(token)
+            );
+    
+            return result.data.hits.hits.map(h => {
+                const source = h._source;
+    
+                if ("demandeur" in source) {
+                    delete source.demandeur.pieces;
+                    delete source.demandeur.history;
+                    delete source.demandeur.linkedUsers;
+                }
+    
+                if ("beneficiaires" in source) {
+                    source.beneficiaires.forEach(beneficiaire => {
+                        delete beneficiaire.pieces;
+                        delete beneficiaire.history;
+                        delete beneficiaire.linkedUsers;
+                    })
+                }
+    
+                return source;
+            });
+        } catch(e) {
+            console.error(e);
+            return [];
+        }
     }
 
     private async getDauphinSubvention(ref: string, token): Promise<DauphinSubventionDto> {

@@ -2,21 +2,20 @@
 
 exports[`ConsumerCliController create should create a consumer token with user info 1`] = `
 Object {
+  "_id": Any<String>,
+  "active": false,
+  "email": "test@datasubvention.gouv.fr",
   "iat": Any<Number>,
   "isConsumerToken": true,
-  "user": Object {
-    "_id": Any<String>,
-    "active": false,
-    "email": "test@datasubvention.gouv.fr",
-    "roles": Array [
-      "user",
-      "consumer",
-    ],
-    "signupAt": Any<String>,
-    "stats": Object {
-      "lastSearchDate": null,
-      "searchCount": 0,
-    },
+  "now": Any<String>,
+  "roles": Array [
+    "user",
+    "consumer",
+  ],
+  "signupAt": Any<String>,
+  "stats": Object {
+    "lastSearchDate": null,
+    "searchCount": 0,
   },
 }
 `;

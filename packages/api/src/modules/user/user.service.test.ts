@@ -2,7 +2,7 @@ import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceError, UserServiceErrors } from "./user.service";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
-import { JWT_SECRET } from "../../configurations/jwt.conf";
+import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { UserDtoSuccessResponse } from "@api-subventions-asso/dto";
@@ -11,11 +11,11 @@ import UserReset from "./entities/UserReset";
 
 describe("User Service", () => {
     const sendCreationMailMock = jest.spyOn(mailNotifierService, "sendCreationMail").mockImplementationOnce(jest.fn());
+    const createMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
     const resetUserMock = jest.spyOn(userService, "resetUser");
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
     const findByEmailMock = jest.spyOn(userService, "findByEmail");
-
 
     const EMAIL = "test@datasubvention.gouv.fr";
     const USER_WITHOUT_SECRET = {
@@ -25,9 +25,8 @@ describe("User Service", () => {
         signupAt: new Date(),
         active: true
     } as UserDto
-    const USER_JWT_PLAYLOAD = { user: USER_WITHOUT_SECRET };
     const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
-    const CONSUMER_JWT_PAYLOAD = { ...USER_JWT_PLAYLOAD, isConsumerToken: true };
+    const CONSUMER_JWT_PAYLOAD = { ...USER_WITHOUT_SECRET, isConsumerToken: true };
     const CONSUMER_JWT_TOKEN = jwt.sign(CONSUMER_JWT_PAYLOAD, JWT_SECRET);
 
     describe("signup", () => {
@@ -106,8 +105,17 @@ describe("User Service", () => {
     })
 
     describe("createConsumer", () => {
-        const createMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
-        const signMock = jest.spyOn(jwt, "sign").mockImplementation(() => CONSUMER_JWT_TOKEN)
+
+        let buildJwtMock: jest.SpyInstance;
+        beforeAll(() => {
+            // @ts-expect-error buildJWTToken is private
+            buildJwtMock = jest.spyOn(userService, "buildJWTToken").mockImplementation(() => CONSUMER_JWT_TOKEN)
+        })
+
+        afterAll(() => {
+            buildJwtMock.mockRestore();
+        })
+
         it("should call userRepository.createUser", async () => {
             createUserMock.mockImplementationOnce(jest.fn());
             await userService.createConsumer(EMAIL)
@@ -121,13 +129,12 @@ describe("User Service", () => {
         });
 
         it("should create a token ", async () => {
-            const expected = USER_WITHOUT_SECRET;
+            const expected = CONSUMER_JWT_PAYLOAD;
 
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: USER_WITHOUT_SECRET }))
-            signMock.mockImplementationOnce(jest.fn());
+            buildJwtMock.mockImplementationOnce(jest.fn());
             await userService.createConsumer(EMAIL);
-            // @ts-expect-error: mock
-            const actual = signMock.mock.calls[0][0].user;
+            const actual = buildJwtMock.mock.calls[0][0];
             expect(actual).toEqual(expected);
         })
 
@@ -177,6 +184,33 @@ describe("User Service", () => {
             // @ts-expect-error: test private method
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
+        })
+    })
+
+    describe("buildJWTToken", () => {
+        let signMock: jest.SpyInstance
+
+        beforeEach(() => {
+            signMock = jest.spyOn(jwt, "sign").mockImplementationOnce(() => CONSUMER_JWT_TOKEN);
+        })
+
+        it("should set expiresIn", () => {
+            const expected = {
+                expiresIn: JWT_EXPIRES_TIME
+            };
+            // @ts-expect-error buildJWTToken is private
+            userService.buildJWTToken({}, { expiration: true });
+
+            expect(signMock.mock.calls[0][2]).toEqual(expected);
+        })
+
+
+        it("should not set expiresIn", () => {
+            const expected = {};
+            // @ts-expect-error buildJWTToken is private
+            userService.buildJWTToken({}, { expiration: false });
+
+            expect(signMock.mock.calls[0][2]).toEqual(expected);
         })
     })
 })

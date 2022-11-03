@@ -1,6 +1,6 @@
 <script>
     import admin from "../admin.service.js";
-    import { user, user as userStore } from "../../../store/user.store";
+    import { user as userStore } from "../../../store/user.store";
 
     import Breadcrumb from "../../../dsfr/Breadcrumb.svelte";
     import Spinner from "../../../components/Spinner.svelte";
