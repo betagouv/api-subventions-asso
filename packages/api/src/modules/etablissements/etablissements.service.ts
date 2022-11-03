@@ -1,4 +1,4 @@
-import { ProviderValues, Siren, Siret, Etablissement } from "@api-subventions-asso/dto";
+import { ProviderValues, Siren, Siret, Etablissement, LightEtablissement } from "@api-subventions-asso/dto";
 
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablissementDtoAdapter";
@@ -52,7 +52,13 @@ export class EtablissementsService {
         const etablissements = Object.values(groupBySiret).map(etablissements => FormaterHelper.formatData(etablissements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
 
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
-        return etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
+        const sortedEtablissement = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
+        return sortedEtablissement.map(etablissement => this.toLightEtablissement(etablissement))
+    }
+
+    public toLightEtablissement(etablissement: Etablissement) {
+        const { siret, nic, siege, ouvert, adresse, headcount } = etablissement;
+        return { siret, nic, siege, ouvert, adresse, headcount } as LightEtablissement;
     }
 
     async getSubventions(siret: Siret) {

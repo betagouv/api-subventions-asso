@@ -92,7 +92,9 @@ export class AssociationsService {
     }
 
     async getEtablissements(identifier: AssociationIdentifiers) {
+        console.log(identifier);
         const type = IdentifierHelper.getIdentifierType(identifier);
+        console.log(type)
         if (!type || type === StructureIdentifiersEnum.siret) {
             throw new Error("You must provide a valid SIREN or RNA");
         }

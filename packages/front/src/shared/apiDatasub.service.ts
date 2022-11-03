@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { GetAssociationResponseDto, LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@api-subventions-asso/dto";
+import { GetAssociationResponseDto, LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse, EtablissementDtoResponse } from "@api-subventions-asso/dto";
 import { DATASUB_URL } from "./config";
-import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
 import UserDto, { UserWithJWTDto } from "@api-subventions-asso/dto/user/UserDto";
 
 export class APIDatasubService {

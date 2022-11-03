@@ -42,6 +42,76 @@ Object {
 }
 `;
 
+exports[`/association /{structure_identifier}/etablissements should return LightEtablissement[] 1`] = `
+Object {
+  "etablissements": Array [
+    Object {
+      "adresse": Array [
+        Object {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "Osiris",
+          "type": "object",
+          "value": Object {},
+        },
+      ],
+      "nic": Array [
+        Object {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "Osiris",
+          "type": "string",
+          "value": "00001",
+        },
+      ],
+      "siege": Array [
+        Object {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "Osiris",
+          "type": "undefined",
+        },
+      ],
+      "siret": Array [
+        Object {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "Osiris",
+          "type": "string",
+          "value": "00000000000001",
+        },
+      ],
+    },
+    Object {
+      "adresse": Array [
+        Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Extranet FONJEP",
+          "type": "object",
+          "value": Object {
+            "code_postal": "75000",
+            "commune": "Paris",
+          },
+        },
+      ],
+      "nic": Array [
+        Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Extranet FONJEP",
+          "type": "string",
+          "value": "00002",
+        },
+      ],
+      "siret": Array [
+        Object {
+          "last_update": "2022-01-02T00:00:00.000Z",
+          "provider": "Extranet FONJEP",
+          "type": "string",
+          "value": "00000000000002",
+        },
+      ],
+    },
+  ],
+  "success": true,
+}
+`;
+
 exports[`/association /{structure_identifier}/subventions should return a list of subventions 1`] = `
 Object {
   "subventions": Array [
