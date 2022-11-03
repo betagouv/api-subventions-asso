@@ -1,11 +1,11 @@
-import { ExtraitRcsDto } from "../associations/ExtraitRcsDto";
+import { ExtraitRcsDto } from "./ExtraitRcsDto";
 import { Adresse } from '../shared/Adresse';
 import { ProviderValues } from "../shared/ProviderValue";
 import { Rna } from "../shared/Rna";
 import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
-import { DemandeSubvention } from './DemandeSubvention';
-import { Etablissement } from './Etablissement';
+import { DemandeSubvention } from '../search/DemandeSubvention';
+import { Etablissement } from '../search/Etablissement';
 import { Versement } from "../versements/Versement";
 
 export interface Association {
