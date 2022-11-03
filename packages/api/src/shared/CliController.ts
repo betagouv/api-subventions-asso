@@ -21,7 +21,7 @@ export default class CliController {
     /**
      * 
      * @param file Path to the file
-     * @param exportDate Explicite date of import (any valid date string, like "YYYY-DD-MM")
+     * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
      * @returns 
      */
     public async parse(file: string, exportDate?: string): Promise<unknown> {
