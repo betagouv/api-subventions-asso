@@ -1,9 +1,8 @@
 import { Route, Get, Controller, Tags, Security, Response, Deprecated } from 'tsoa';
-import { Siret, Association, Etablissement, GetEtablissementResponseDto, SearchEtablissementSuccessResponseDto, GetAssociationResponseDto } from '@api-subventions-asso/dto';
+import { Siret, Etablissement, GetEtablissementResponseDto, SearchEtablissementSuccessResponseDto } from '@api-subventions-asso/dto';
 import AssociationNameEntity from '../../../association-name/entities/AssociationNameEntity';
 
 import searchService from "../../search.service";
-import { AssociationIdentifiers } from '../../../../@types';
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 
 @Route("search")
