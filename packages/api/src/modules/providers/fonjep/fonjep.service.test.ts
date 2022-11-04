@@ -45,29 +45,6 @@ describe("FonjepService", () => {
         toDemandeSubventionMock.mockRestore();
     });
 
-    describe("getDemandeSubventionById", () => {
-        it("should return null if given ID does not match any document", async () => {
-            findByIdMock.mockImplementationOnce(async () => null);
-            const expected = new Error("DemandeSubvention not found");
-            let actual;
-            try {
-                actual = await fonjepService.getDemandeSubventionById(MONGO_ID);
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call FonjepEntityAdapter.toDemandeSubvention", async () => {
-            const entity = { siret: "000000001" };
-            findByIdMock.mockImplementationOnce(() => Promise.resolve(entity));
-
-            await fonjepService.getDemandeSubventionById(MONGO_ID);
-
-            expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledWith(entity);
-        })
-    });
-
     describe("validateEntity", () => {
         it("should validate entity", () => {
             const entity = { ...SubventionEntity };

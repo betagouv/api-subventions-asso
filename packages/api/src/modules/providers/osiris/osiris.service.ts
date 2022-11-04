@@ -279,12 +279,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
         return null;
     }
-
-    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
-        const request = await osirisRequestRepository.findByMongoId(id);
-        if (!request) throw new Error("DemandeSubvention not found");
-        return OsirisRequestAdapter.toDemandeSubvention(request);
-    }
 }
 
 const osirisService: OsirisService = new OsirisService();
