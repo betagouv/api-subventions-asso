@@ -128,12 +128,6 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         return null;
     }
 
-    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
-        const entity = await fonjepSubventionRepository.findById(id);
-        if (!entity) throw new Error("DemandeSubvention not found");
-        return FonjepEntityAdapter.toDemandeSubvention(entity);
-    }
-
     /**
      * |----------------------|
      * |  Etablissement Part  |

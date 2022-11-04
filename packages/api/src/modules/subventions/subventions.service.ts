@@ -37,13 +37,6 @@ export class SubventionsService {
         return subventions.filter(subvention => subvention) as DemandeSubvention[];
     }
 
-    async getDemandeById(id: string) {
-        const rejectIfNull = (demande: DemandeSubvention) => demande ? demande : Promise.reject();
-        const providers = this.getDemandesSubventionsProviders();
-        const promises = providers.map(p => p.getDemandeSubventionById(id).then(rejectIfNull));
-        return await Promise.any(promises).catch(() => null);
-    }
-
     private aggregate(id: StructureIdentifiers, type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]): Flux<SubventionsFlux> {
         if (type === StructureIdentifiersEnum.siret || type === StructureIdentifiersEnum.siren) {
             if (type === StructureIdentifiersEnum.siret) id = siretToSiren(id);

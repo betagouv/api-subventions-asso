@@ -29,7 +29,7 @@ export class DauphinService implements DemandesSubventionsProvider {
             const token = await this.getAuthToken();
             const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
             await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
 
@@ -42,7 +42,7 @@ export class DauphinService implements DemandesSubventionsProvider {
             const token = await this.getAuthToken();
             const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
             await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
 
@@ -54,34 +54,23 @@ export class DauphinService implements DemandesSubventionsProvider {
         return null;
     }
 
-    async getDemandeSubventionById(id: string): Promise<DemandeSubvention> {
-        const token = await this.getAuthToken();
-
-        try {
-            const demande = await this.getDauphinSubvention(id, token);
-            return DauphinDtoAdapter.toDemandeSubvention(demande);
-        } catch (e){
-            throw new Error("DemandeSubvention not found");
-        }
-    }
-
-    private async getDauphinSubventions(siren: Siren, token, lastUpdate ?: Date): Promise<DauphinSubventionDto[]> {
+    private async getDauphinSubventions(siren: Siren, token, lastUpdate?: Date): Promise<DauphinSubventionDto[]> {
         try {
             const result = await axios.post(
                 "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
                 this.buildSearchQuery(siren, lastUpdate),
                 this.buildSearchHeader(token)
             );
-    
+
             return result.data.hits.hits.map(h => {
                 const source = h._source;
-    
+
                 if ("demandeur" in source) {
                     delete source.demandeur.pieces;
                     delete source.demandeur.history;
                     delete source.demandeur.linkedUsers;
                 }
-    
+
                 if ("beneficiaires" in source) {
                     source.beneficiaires.forEach(beneficiaire => {
                         delete beneficiaire.pieces;
@@ -89,30 +78,20 @@ export class DauphinService implements DemandesSubventionsProvider {
                         delete beneficiaire.linkedUsers;
                     })
                 }
-    
+
                 return source;
             });
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             return [];
         }
     }
 
-    private async getDauphinSubvention(ref: string, token): Promise<DauphinSubventionDto> {
-        const result = await axios.post(
-            "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-            this.buildFindByIdQuery(ref),
-            this.buildSearchHeader(token)
-        )
-        
-        return result.data.hits.hits.map(h => h._source)[0];
-    }
-
-    private buildSearchQuery(siren: Siren, date ?: Date) {
+    private buildSearchQuery(siren: Siren, date?: Date) {
         return this.buildQuery([
             {
                 "bool": {
-                    "should":[ {
+                    "should": [{
                         "nested": {
                             "path": "beneficiaires",
                             "filter": {
@@ -134,10 +113,10 @@ export class DauphinService implements DemandesSubventionsProvider {
                 }
             },
             date ? {
-                "query":{
-                    "query_string":{
-                        "query":"date:>" + this.formatDateToDauphinDate(date),
-                        "analyze_wildcard":true
+                "query": {
+                    "query_string": {
+                        "query": "date:>" + this.formatDateToDauphinDate(date),
+                        "analyze_wildcard": true
                     }
                 }
             } : undefined
@@ -146,9 +125,9 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     private buildFindByIdQuery(ref: string) {
         return this.buildQuery([{
-            "query":{
-                "query_string":{
-                    "query":"reference:" + ref,
+            "query": {
+                "query_string": {
+                    "query": "reference:" + ref,
                     "analyze_wildcard": true
                 }
             }
@@ -193,13 +172,13 @@ export class DauphinService implements DemandesSubventionsProvider {
     private async getAuthToken() {
         const configToken = await configurationsService.getDauphinToken();
         const tokenAvailableTimeConfig = await configurationsService.getDauphinTokenAvailableTime();
-        
+
         if (
-            configToken 
-            && tokenAvailableTimeConfig 
-            && 
-                Date.now() - configToken.updatedAt.getTime() 
-                < tokenAvailableTimeConfig.data
+            configToken
+            && tokenAvailableTimeConfig
+            &&
+            Date.now() - configToken.updatedAt.getTime()
+            < tokenAvailableTimeConfig.data
         ) return configToken.data;
 
         const token = await this.sendAuthRequest();
@@ -216,7 +195,7 @@ export class DauphinService implements DemandesSubventionsProvider {
             redirectTo: "https://agent-dauphin.cget.gouv.fr/agents/#/cget/home?redirectTo=portal.home",
             captcha: undefined
         })
-        
+
         return axios.post<string>(
             "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
             data,
