@@ -4,7 +4,7 @@
         "module": "commonjs",
         "types": ["reflect-metadata"],
         "rootDir": "./",
-        "outDir": "./build",
+        "outDir": "build",
         "esModuleInterop": true,
         "strict": true,
         "moduleResolution": "node",
@@ -13,5 +13,5 @@
         "resolveJsonModule": true,
         "allowJs": true
     },
-    "exclude": []
+    "exclude": ["node_modules, build/**/*"]
 }

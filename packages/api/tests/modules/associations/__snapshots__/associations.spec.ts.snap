@@ -42,7 +42,7 @@ Object {
 }
 `;
 
-exports[`/association /{structure_identifier}/etablissements should return LightEtablissement[] 1`] = `
+exports[`/association /{structure_identifier}/etablissements should return SimplifiedEtablissement[] 1`] = `
 Object {
   "etablissements": Array [
     Object {

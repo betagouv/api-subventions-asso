@@ -1,8 +1,8 @@
-import { Etablissement, LightEtablissement } from "@api-subventions-asso/dto";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import documentsService from "../documents/documents.service";
 import subventionsService from "../subventions/subventions.service";
 import versementsService from "../versements/versements.service";
+import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
 
 const SIREN = "000000000"
@@ -20,9 +20,8 @@ const ETABLISSEMENT_2 = {
     demandes_subventions: {}
 }
 
-
 describe("EtablissementsService", () => {
-    const toLightEtablissementMock = jest.spyOn(etablissementService, "toLightEtablissement");
+    const toSimplifiedEtablissementMock = jest.spyOn(EtablissementAdapter, "toSimplifiedEtablissement");
     //@ts-expect-error: mock private method
     const aggregateMock = jest.spyOn(etablissementService, "aggregate");
     //@ts-expect-error: mock private method
@@ -69,22 +68,13 @@ describe("EtablissementsService", () => {
         })
     });
 
-    describe("toLightEtablissement", () => {
-        it("return a LightEtablissement", () => {
-            const expected = { siret: ETABLISSEMENT_1.siret, nic: ETABLISSEMENT_1.nic };
-            // @ts-expect-error: private method
-            const actual = etablissementService.toLightEtablissement(ETABLISSEMENT_1);
-            expect(actual).toEqual(expected);
-        })
-    })
-
     describe("getEtablissementsBySiren", () => {
-        it("should call toLightEtablissement", async () => {
+        it("should call toSimplifiedEtablissement", async () => {
             // @ts-expect-error: mock private method
             aggregateMock.mockImplementationOnce(async () => [ETABLISSEMENT_1, ETABLISSEMENT_2]);
-            toLightEtablissementMock.mockImplementationOnce(etablissement => etablissement)
+            toSimplifiedEtablissementMock.mockImplementationOnce(etablissement => etablissement)
             await etablissementService.getEtablissementsBySiren(SIREN);
-            expect(toLightEtablissementMock).toHaveBeenCalledTimes(2);
+            expect(toSimplifiedEtablissementMock).toHaveBeenCalledTimes(2);
         })
     })
 })

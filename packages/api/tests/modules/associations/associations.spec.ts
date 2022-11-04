@@ -40,7 +40,7 @@ describe("/association", () => {
     });
 
     describe("/{structure_identifier}/etablissements", () => {
-        it("should return LightEtablissement[]", async () => {
+        it("should return SimplifiedEtablissement[]", async () => {
             const response = await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.rna}/etablissements`)
                 .set("x-access-token", await getUserToken())

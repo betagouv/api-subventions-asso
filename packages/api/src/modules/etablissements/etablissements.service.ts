@@ -1,4 +1,4 @@
-import { ProviderValues, Siren, Siret, Etablissement, LightEtablissement } from "@api-subventions-asso/dto";
+import { ProviderValues, Siren, Siret, Etablissement } from "@api-subventions-asso/dto";
 
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablissementDtoAdapter";
@@ -14,6 +14,7 @@ import { isSiren } from '../../shared/Validators';
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
+import { EtablissementAdapter } from "./EtablissementAdapter";
 
 export class EtablissementsService {
 
@@ -53,12 +54,7 @@ export class EtablissementsService {
 
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
         const sortedEtablissement = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
-        return sortedEtablissement.map(etablissement => this.toLightEtablissement(etablissement))
-    }
-
-    public toLightEtablissement(etablissement: Etablissement) {
-        const { siret, nic, siege, ouvert, adresse, headcount } = etablissement;
-        return { siret, nic, siege, ouvert, adresse, headcount } as LightEtablissement;
+        return sortedEtablissement.map(etablissement => EtablissementAdapter.toSimplifiedEtablissement(etablissement))
     }
 
     async getSubventions(siret: Siret) {
