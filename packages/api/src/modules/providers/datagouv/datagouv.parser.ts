@@ -1,22 +1,18 @@
 import fs from "fs";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import * as CliHelper from "../../../shared/helpers/CliHelper";
 
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
-import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
-import { formatBytes } from "../../../shared/helpers/LogHelper";
-import RnaSiren from "../../open-data/rna-siren/entities/RnaSirenEntity";
-import { isRna, isSiren } from "../../../shared/Validators";
-import { UniteLegalRaw, IStreamAction} from "./@types";
+import { isSiren } from "../../../shared/Validators";
+import { IStreamAction} from "./@types";
+import { UniteLegalHistoryRaw } from "./@types/UniteLegalHistoryRaw";
+import { isValidDate } from "../../../shared/helpers/DateHelper";
 
-export default class DataGouvParser {
-    static parseUniteLegal(file: string, save: (entity: EntrepriseSirenEntity | RnaSiren, streamPause: IStreamAction, streamResume: IStreamAction) => Promise<void>): Promise<void> {
+export interface SaveCallback {
+    (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>
+}
+export default class DataGouvParser {   
+    static parseUniteLegalHistory(file: string, save: SaveCallback, lastImportDate: Date | null = null): Promise<void> {
         return new Promise((resolve, reject) => {
-            const stats = fs.statSync(file)
-            const fileSize = formatBytes(stats.size);
-
-            let totalByteReads = 0;
             let totalEntities = 0;
             let header: null | string[] = null;
     
@@ -24,12 +20,14 @@ export default class DataGouvParser {
 
             const streamPause = () => stream.pause();
             const streamResume = () => stream.resume();
+            const isEmptyRaw = (raw: string[]) => !raw.map(column => column.trim()).filter(c => c).length;
+
+            const now = new Date();
 
             let logNumber = 1;
             let logTime = new Date();
                 
             stream.on("data", async (chunk) => {
-                totalByteReads += Buffer.byteLength(chunk);
                 let parsedChunk = ParseHelper.csvParse(chunk as Buffer);
 
                 if (totalEntities > 500000 * logNumber) {
@@ -44,27 +42,21 @@ export default class DataGouvParser {
                 }
 
                 await asyncForEach(parsedChunk, async raw => {
-                    if (!raw.map(column => column.trim()).filter(c => c).length) return;
+                    if (isEmptyRaw(raw)) return;
+
                     totalEntities++;
-                    const parsedData = ParseHelper.linkHeaderToData(header as string[], raw) as unknown as UniteLegalRaw;
-
-                    CliHelper.printAtSameLine(`${totalEntities} entities parsed (${formatBytes(totalByteReads)} / ${fileSize})`);
-
+                    const parsedData = ParseHelper.linkHeaderToData(header as string[], raw) as unknown as UniteLegalHistoryRaw;
                     if (!parsedData.siren || !isSiren(parsedData.siren)) return;
 
-                    if (!LEGAL_CATEGORIES_ACCEPTED.includes(parsedData.categorieJuridiqueUniteLegale)) {
-                        await save(
-                            new EntrepriseSirenEntity(parsedData.siren),
-                            streamPause,
-                            streamResume
-                        );
-                    } else if (parsedData.identifiantAssociationUniteLegale.length > 0 && isRna(parsedData.identifiantAssociationUniteLegale)) {
-                        await save(
-                            new RnaSiren(parsedData.identifiantAssociationUniteLegale, parsedData.siren),
-                            streamPause,
-                            streamResume
-                        );
-                    }
+                    const periodStartDate = new Date(parsedData.dateDebut);
+                    
+                    if (
+                        (!isValidDate(periodStartDate)) ||
+                        (lastImportDate && lastImportDate > periodStartDate) ||
+                        (now < periodStartDate)
+                    ) return;
+
+                    await save(parsedData, streamPause, streamResume);
                 });
             });
     
@@ -73,7 +65,6 @@ export default class DataGouvParser {
             stream.on("end", () => {
                 resolve();
             })
-
         }) 
     }
     
