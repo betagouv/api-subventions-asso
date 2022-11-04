@@ -1,8 +1,7 @@
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface} from "../../../../../@types/Cli.interface";
-import DataGouvParser from "../../datagouv.parser";
+import DataGouvParser, { SaveCallback } from "../../datagouv.parser";
 import dataGouvService from "../../datagouv.service";
-import { IStreamAction } from "../../@types";
 import CliController from '../../../../../shared/CliController';
 import { UniteLegalHistoryRaw } from "../../@types/UniteLegalHistoryRaw";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
@@ -43,7 +42,7 @@ export default class DataGouvCliController extends CliController {
         const stackEntreprise: UniteLegalHistoryRaw[] = [];
         const stackAssociation: UniteLegalHistoryRaw[] = [];
 
-        const saveEntity = async (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction) => {
+        const saveEntity: SaveCallback = async (entity, streamPause, streamResume) => {
             if (isAssociation(entity)) {
                 // Add association rules
                 // IsNew && ChangeName ...
@@ -75,7 +74,7 @@ export default class DataGouvCliController extends CliController {
         };
 
 
-        await DataGouvParser.parseUniteLegalHistory(file, lastImportDate, saveEntity);
+        await DataGouvParser.parseUniteLegalHistory(file, saveEntity, lastImportDate);
 
         if (stackEntreprise.length) {
             await saveEntreprises(stackEntreprise);

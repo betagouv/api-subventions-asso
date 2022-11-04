@@ -7,10 +7,12 @@ import { IStreamAction} from "./@types";
 import { UniteLegalHistoryRaw } from "./@types/UniteLegalHistoryRaw";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 
+export interface SaveCallback {
+    (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>
+}
 export default class DataGouvParser {   
-    static parseUniteLegalHistory(file: string, lastImportDate: Date | null, save: (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction) => Promise<void>): Promise<void> {
+    static parseUniteLegalHistory(file: string, save: SaveCallback, lastImportDate: Date | null = null): Promise<void> {
         return new Promise((resolve, reject) => {
-
             let totalEntities = 0;
             let header: null | string[] = null;
     
@@ -18,6 +20,7 @@ export default class DataGouvParser {
 
             const streamPause = () => stream.pause();
             const streamResume = () => stream.resume();
+            const isEmptyRaw = (raw: string[]) => !raw.map(column => column.trim()).filter(c => c).length;
 
             const now = new Date();
 
@@ -39,7 +42,8 @@ export default class DataGouvParser {
                 }
 
                 await asyncForEach(parsedChunk, async raw => {
-                    if (!raw.map(column => column.trim()).filter(c => c).length) return;
+                    if (isEmptyRaw(raw)) return;
+
                     totalEntities++;
                     const parsedData = ParseHelper.linkHeaderToData(header as string[], raw) as unknown as UniteLegalHistoryRaw;
                     if (!parsedData.siren || !isSiren(parsedData.siren)) return;

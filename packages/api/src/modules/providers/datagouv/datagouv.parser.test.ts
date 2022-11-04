@@ -51,7 +51,7 @@ describe("DataGouvParser", () => {
             spys.forEach(s => s.mockClear())
         });
 
-        it("should be parse one entity", async () => {
+        it("should parse one entity", async () => {
             const buffer = buildFileContent([{
                 siren: "000000001",
                 dateDebut: "1970-01-01",
@@ -61,7 +61,7 @@ describe("DataGouvParser", () => {
 
             const mock = jest.fn();
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", null, mock);
+            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock);
 
             expect(mock).toBeCalledTimes(1);
             expect(mock).toBeCalledWith(
@@ -71,7 +71,7 @@ describe("DataGouvParser", () => {
             );
         })
 
-        it("should be parse 1000 entries", async () => {
+        it("should parse 1000 entries", async () => {
             const data: any[] = [];
             for (let i = 0; i < 10000; i++) {
                 data.push({
@@ -86,7 +86,7 @@ describe("DataGouvParser", () => {
 
             const mock = jest.fn();
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", null, mock);
+            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock);
 
             expect(mock).toBeCalledTimes(10000);
         })
@@ -99,7 +99,7 @@ describe("DataGouvParser", () => {
 
             const mocks = buildStreamMock(buffer);
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", null, async (_, streamPause, streamResume) => {
+            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", async (_, streamPause, streamResume) => {
                 streamPause();
                 streamResume();
             });
@@ -108,7 +108,7 @@ describe("DataGouvParser", () => {
             expect(mocks.mockResume).toBeCalledTimes(1);
         })
 
-        it("should not save entity beacause import date > date debut", async () => {
+        it("should not save entity because import date > date debut", async () => {
             const buffer = buildFileContent([{
                 siren: "000000001",
                 dateDebut: "1970-01-01",
@@ -118,12 +118,12 @@ describe("DataGouvParser", () => {
 
             const mock = jest.fn();
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", new Date('1990-01-01'), mock);
+            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock,  new Date('1990-01-01'));
 
             expect(mock).toBeCalledTimes(0);
         })
 
-        it("should not save entity beacause date debut > now", async () => {
+        it("should not save entity because date debut > now", async () => {
             const buffer = buildFileContent([{
                 siren: "000000001",
                 dateDebut: "2999-01-01",
@@ -133,7 +133,7 @@ describe("DataGouvParser", () => {
 
             const mock = jest.fn();
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", new Date('1990-01-01'), mock);
+            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock, new Date('1990-01-01'));
 
             expect(mock).toBeCalledTimes(0);
         })
