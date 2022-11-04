@@ -18,12 +18,12 @@ describe("Dauphin Service", () => {
         const toDemandeSubventionMock: jest.SpyInstance<unknown> = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
 
         it("should return subventions", async () => {
-            const expected = [{ fake: "data"}];
+            const expected = [{ fake: "data" }];
 
             getLastUpdateMock.mockImplementationOnce(async () => undefined);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => []);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => expected);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -34,12 +34,12 @@ describe("Dauphin Service", () => {
 
 
         it("should set subventions in cache", async () => {
-            const expected = { fake: "data"};
+            const expected = { fake: "data" };
 
             getLastUpdateMock.mockImplementationOnce(async () => undefined);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => [expected]);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => [expected]);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -54,7 +54,7 @@ describe("Dauphin Service", () => {
             getLastUpdateMock.mockImplementationOnce(async () => expected);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => []);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => []);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -69,7 +69,7 @@ describe("Dauphin Service", () => {
             getLastUpdateMock.mockImplementationOnce(async () => undefined);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => []);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => []);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -91,12 +91,12 @@ describe("Dauphin Service", () => {
         const toDemandeSubventionMock: jest.SpyInstance<unknown> = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
 
         it("should return subventions", async () => {
-            const expected = [{ fake: "data"}];
+            const expected = [{ fake: "data" }];
 
             getLastUpdateMock.mockImplementationOnce(async () => undefined);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => []);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => expected);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -107,12 +107,12 @@ describe("Dauphin Service", () => {
 
 
         it("should set subventions in cache", async () => {
-            const expected = { fake: "data"};
+            const expected = { fake: "data" };
 
             getLastUpdateMock.mockImplementationOnce(async () => undefined);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => [expected]);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => [expected]);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -127,7 +127,7 @@ describe("Dauphin Service", () => {
             getLastUpdateMock.mockImplementationOnce(async () => expected);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => []);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => []);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -142,7 +142,7 @@ describe("Dauphin Service", () => {
             getLastUpdateMock.mockImplementationOnce(async () => undefined);
             getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
             getDauphinSubventionsMock.mockImplementationOnce(async () => []);
-            upsertMock.mockImplementationOnce( async () => null);
+            upsertMock.mockImplementationOnce(async () => null);
             findBySirenMock.mockImplementationOnce(async () => []);
             toDemandeSubventionMock.mockImplementationOnce((data) => data);
 
@@ -161,51 +161,20 @@ describe("Dauphin Service", () => {
         })
     })
 
-    describe("getDemandeSubventionById", () => {
-        // @ts-expect-error getAuthToken is private methode
-        const getAuthTokenMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "getAuthToken")
-        // @ts-expect-error getDauphinSubventions is private methode
-        const getDauphinSubventionMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "getDauphinSubvention")
-
-        const toDemandeSubventionMock: jest.SpyInstance<unknown> = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
-
-        it("should return subvention", async () => {
-            const expected = { fake: "data"};
-
-            getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
-            getDauphinSubventionMock.mockImplementationOnce(async () => expected);
-            toDemandeSubventionMock.mockImplementationOnce((data) => data);
-
-            const actual = await dauphinService.getDemandeSubventionById("FAKE_ID");
-
-            expect(actual).toEqual(expected)
-        })
-
-        it("should throw error", async () => {
-
-            getAuthTokenMock.mockImplementationOnce(async () => TOKEN);
-            getDauphinSubventionMock.mockImplementationOnce(async () => {
-                throw new Error("FAKE ERROR")
-            });
-
-            await expect(() => dauphinService.getDemandeSubventionById("FAKE_ID")).rejects.toThrowError("DemandeSubvention not found");
-        })
-    })
-
     describe("getDauphinSubventions", () => {
         const axiosPostMock: jest.SpyInstance<unknown> = jest.spyOn(axios, "post");
         // @ts-expect-error buildSearchQuery is private
-        const buildSearchQueryMock :jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "buildSearchQuery")
+        const buildSearchQueryMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "buildSearchQuery")
         // @ts-expect-error buildSearchQuery is private
-        const buildSearchHeaderMock :jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "buildSearchHeader")
+        const buildSearchHeaderMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "buildSearchHeader")
 
         it("should return data", async () => {
-            const expected = [ {a: true}, {b: true} ];
+            const expected = [{ a: true }, { b: true }];
 
             axiosPostMock.mockImplementationOnce(async () => ({
                 data: {
                     hits: {
-                        hits: expected.map(data => ({_source: data}))
+                        hits: expected.map(data => ({ _source: data }))
                     }
                 }
             }));
@@ -251,65 +220,6 @@ describe("Dauphin Service", () => {
         })
     })
 
-    describe("getDauphinSubvention", () => {
-        const axiosPostMock: jest.SpyInstance<unknown> = jest.spyOn(axios, "post");
-        // @ts-expect-error buildSearchQuery is private
-        const buildFindByIdQueryMock :jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "buildFindByIdQuery")
-        // @ts-expect-error buildSearchQuery is private
-        const buildSearchHeaderMock :jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "buildSearchHeader")
-
-        it("should return data", async () => {
-            const expected = [ {a: true}, {b: true} ];
-
-            axiosPostMock.mockImplementationOnce(async () => ({
-                data: {
-                    hits: {
-                        hits: expected.map(data => ({_source: data}))
-                    }
-                }
-            }));
-
-            // @ts-expect-error getDauphinSubvention is private
-            const actual = await dauphinService.getDauphinSubvention("ref", TOKEN);
-
-            expect(actual).toEqual(expected[0]);
-        })
-
-        it("should keep token", async () => {
-            const expected = TOKEN;
-
-            axiosPostMock.mockImplementationOnce(async () => ({
-                data: {
-                    hits: {
-                        hits: []
-                    }
-                }
-            }));
-
-            // @ts-expect-error getDauphinSubvention is private
-            await dauphinService.getDauphinSubvention("FAKE_SIREN", TOKEN);
-
-            expect(buildSearchHeaderMock).toHaveBeenCalledWith(expected);
-        })
-
-        it("should keep siren and lastupdate", async () => {
-            const expected = "REF";
-
-            axiosPostMock.mockImplementationOnce(async () => ({
-                data: {
-                    hits: {
-                        hits: []
-                    }
-                }
-            }));
-
-            // @ts-expect-error getDauphinSubvention is private
-            await dauphinService.getDauphinSubvention(expected, TOKEN);
-
-            expect(buildFindByIdQueryMock).toHaveBeenCalledWith(expected);
-        })
-    })
-
     describe("buildSearchQuery", () => {
         it('should send siren', () => {
             // @ts-expect-error buildSearchQuery is private
@@ -334,7 +244,7 @@ describe("Dauphin Service", () => {
     describe("buildQuery", () => {
         it('should build query', () => {
             // @ts-expect-error buildQuery is private
-            expect(dauphinService.buildQuery({ obj : true })).toMatchSnapshot()
+            expect(dauphinService.buildQuery({ obj: true })).toMatchSnapshot()
         })
     })
 
@@ -359,10 +269,10 @@ describe("Dauphin Service", () => {
         const setDauphinTokenMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsService, 'setDauphinToken');
         // @ts-expect-error sendAuthRequest is private
         const sendAuthRequestMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, 'sendAuthRequest');
-    
+
         it('should return cached token', async () => {
             getDauphinTokenMock.mockImplementationOnce(() => ({ updatedAt: new Date(), data: TOKEN }))
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({data: Infinity}));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: Infinity }));
 
             // @ts-expect-error getAuthToken is private
             const actual = await dauphinService.getAuthToken();
@@ -372,7 +282,7 @@ describe("Dauphin Service", () => {
 
         it('should return new token', async () => {
             getDauphinTokenMock.mockImplementationOnce(() => ({ updatedAt: new Date(), data: "WRONG_TOKEN" }))
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({data: -Infinity}));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: -Infinity }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
             // @ts-expect-error getAuthToken is private
@@ -384,7 +294,7 @@ describe("Dauphin Service", () => {
 
         it('should return new token because no old token', async () => {
             getDauphinTokenMock.mockImplementationOnce(() => null)
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({data: -Infinity}));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: -Infinity }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
             // @ts-expect-error getAuthToken is private
@@ -395,10 +305,10 @@ describe("Dauphin Service", () => {
 
         it('should save the new token', async () => {
             getDauphinTokenMock.mockImplementationOnce(() => ({ updatedAt: new Date(), data: "WRONG_TOKEN" }))
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({data: -Infinity}));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: -Infinity }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
-    
+
             // @ts-expect-error getAuthToken is private
             const actual = await dauphinService.getAuthToken();
 
@@ -410,8 +320,8 @@ describe("Dauphin Service", () => {
         const axiosPostMock: jest.SpyInstance<unknown> = jest.spyOn(axios, "post");
 
         it("should call axios.post with good data", async () => {
-            axiosPostMock.mockImplementationOnce(async () => ({data: null}));
-            
+            axiosPostMock.mockImplementationOnce(async () => ({ data: null }));
+
             // @ts-expect-error sendAuthRequest is private
             await dauphinService.sendAuthRequest();
 
@@ -420,7 +330,7 @@ describe("Dauphin Service", () => {
 
         it("should return data", async () => {
             const expected = { hello: "world" }
-            axiosPostMock.mockImplementationOnce(async () => ({data: expected}));
+            axiosPostMock.mockImplementationOnce(async () => ({ data: expected }));
 
             // @ts-expect-error sendAuthRequest is private
             const actual = await dauphinService.sendAuthRequest();
