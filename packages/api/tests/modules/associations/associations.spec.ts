@@ -38,4 +38,15 @@ describe("/association", () => {
             expect(response.body).toMatchSnapshot();
         });
     });
+
+    describe("/{structure_identifier}/etablissements", () => {
+        it("should return SimplifiedEtablissement[]", async () => {
+            const response = await request(g.app)
+                .get(`/association/${OsirisRequestEntityFixture.legalInformations.rna}/etablissements`)
+                .set("x-access-token", await getUserToken())
+                .set('Accept', 'application/json');
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
 })
