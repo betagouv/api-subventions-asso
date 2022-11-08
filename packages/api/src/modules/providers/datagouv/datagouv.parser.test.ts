@@ -2,12 +2,44 @@ import fs from "fs"
 import DataGouvParser from "./datagouv.parser";
 
 describe("DataGouvParser", () => {
+    const now = new Date();
+    describe("isDatesValid", () => {
+        it("should return false if periodStart is not valid", () => {
+            // @ts-expect-error
+            const actual = DataGouvParser.isDatesValid({ periodStart: "2022-0a-02", importDate: new Date("2022-10-01"), now });
+            expect(actual).toBeFalsy();
+        });
+
+        it("should return false because periodStart is not effective yet", () => {
+            // today + one year
+            const periodStart = (date => { date.setFullYear(date.getFullYear() + 1); return date })(new Date());
+            // @ts-expect-error
+            const actual = DataGouvParser.isDatesValid({ periodStart, importDate: null, now });
+            expect(actual).toBeFalsy();
+        });
+
+        it("should return false because periodStart < importDate", () => {
+            // @ts-expect-error
+            const actual = DataGouvParser.isDatesValid({ periodStart: new Date("2022-11-01"), importDate: new Date("2022-12-01"), now });
+            expect(actual).toBeFalsy();
+        });
+
+        it("should return true", () => {
+            // today - 10 days
+            const periodStart = (date => { date.setDate(date.getDate() - 10); return date })(new Date());
+            const importDate = (date => { date.setMonth(date.getMonth() - 1); return date })(new Date());
+            // @ts-expect-error
+            const actual = DataGouvParser.isDatesValid({ periodStart, importDate, now });
+            expect(actual).toBeTruthy();
+        })
+    })
+
     describe("parseUniteLegalHistory", () => {
         const spys: jest.SpyInstance[] = [];
         const buildStreamMock = (buffer: Buffer) => {
             let streamPromise: Promise<void> = Promise.resolve();
             const stream = {
-                on: (status: string, callback: (_?: Buffer) => Promise<void> ) => {
+                on: (status: string, callback: (_?: Buffer) => Promise<void>) => {
                     if (status === "data") {
                         streamPromise = new Promise((resolve) => {
                             callback(buffer).then(() => {
@@ -20,7 +52,7 @@ describe("DataGouvParser", () => {
                     }
                 },
                 pause: jest.fn(),
-                resume:  jest.fn()
+                resume: jest.fn()
             } as unknown as fs.ReadStream;
 
             spys.push(
@@ -33,8 +65,8 @@ describe("DataGouvParser", () => {
             }
         }
 
-        const buildFileContent = (data: {siren: string, dateDebut: string}[]) => {
-            const textContent =  data.reduce((acc, data) => {
+        const buildFileContent = (data: { siren: string, dateDebut: string }[]) => {
+            const textContent = data.reduce((acc, data) => {
                 return `${acc}\n${data.siren};${data.dateDebut};`
             }, "siren;dateDebut");
 
@@ -65,7 +97,7 @@ describe("DataGouvParser", () => {
 
             expect(mock).toBeCalledTimes(1);
             expect(mock).toBeCalledWith(
-                expect.objectContaining({ siren: "000000001"}),
+                expect.objectContaining({ siren: "000000001" }),
                 expect.any(Function),
                 expect.any(Function),
             );
@@ -106,36 +138,6 @@ describe("DataGouvParser", () => {
 
             expect(mocks.mockPause).toBeCalledTimes(1);
             expect(mocks.mockResume).toBeCalledTimes(1);
-        })
-
-        it("should not save entity because import date > date debut", async () => {
-            const buffer = buildFileContent([{
-                siren: "000000001",
-                dateDebut: "1970-01-01",
-            }]);
-
-            buildStreamMock(buffer);
-
-            const mock = jest.fn();
-
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock,  new Date('1990-01-01'));
-
-            expect(mock).toBeCalledTimes(0);
-        })
-
-        it("should not save entity because date debut > now", async () => {
-            const buffer = buildFileContent([{
-                siren: "000000001",
-                dateDebut: "2999-01-01",
-            }]);
-
-            buildStreamMock(buffer);
-
-            const mock = jest.fn();
-
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock, new Date('1990-01-01'));
-
-            expect(mock).toBeCalledTimes(0);
         })
     })
 })

@@ -8,21 +8,17 @@ import historyImportRepository from './repositories/historyImport.repository';
 
 export class DataGouvService implements Provider {
     provider = {
-        name: "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
+        name: "Base Sirene - DataGouv",
         type: ProviderEnum.raw,
         description: "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire)."
     }
 
-    insertManyEntrepriseSiren(entities: EntrepriseSirenEntity[], dropedDb = false) {
-        return entrepriseSirenRepository.insertMany(entities, dropedDb);
-    }
-
-    replaceEntrepriseSirenCollection() {
-        return entrepriseSirenRepository.replaceCollection();
+    async addEntrepriseSiren(entity: EntrepriseSirenEntity) {
+        return entrepriseSirenRepository.upsert(entity);
     }
 
     async sirenIsEntreprise(siren: Siren) {
-        return !!( await entrepriseSirenRepository.findOne(siren));
+        return !!(await entrepriseSirenRepository.findOne(siren));
     }
 
     addNewImport(entity: HistoryImportEntity) {
@@ -31,7 +27,7 @@ export class DataGouvService implements Provider {
 
     async getLastDateImport() {
         const result = await historyImportRepository.findLastImport();
-        
+
         if (!result) return null;
 
         return result.dateOfFile;
