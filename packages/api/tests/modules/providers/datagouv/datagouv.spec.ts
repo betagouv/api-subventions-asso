@@ -5,7 +5,7 @@ import entrepriseSirenRepository from "../../../../src/modules/providers/datagou
 
 describe("datagouv", () => {
     const upsertAssociationNameMock = jest.spyOn(associationNameRepository, "upsert");
-    const upsertEntrepriseSirenMock = jest.spyOn(entrepriseSirenRepository, "upsert");
+    const upsertEntrepriseSirenMock = jest.spyOn(entrepriseSirenRepository, "insertMany");
     const controller = new DataGouvCliController();
     describe("parse", () => {
         it("should save associationNames", async () => {
