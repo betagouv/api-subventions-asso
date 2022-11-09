@@ -4,11 +4,11 @@ import entrepriseSirenRepository from "./repositories/entreprise_siren.repositor
 import historyImportRepository from "./repositories/historyImport.repository"
 
 describe("DataGouvService", () => {
-    describe("addEntrepriseSiren", () => {
+    describe("insertManyEntrepriseSiren", () => {
         it("should call repository", async () => {
-            const createEntrepriseSirenMock = jest.spyOn(entrepriseSirenRepository, "upsert").mockImplementationOnce(jest.fn());
-            await dataGouvService.addEntrepriseSiren({} as EntrepriseSirenEntity);
-            expect(createEntrepriseSirenMock).toHaveBeenCalledTimes(1);
+            const insertManyEntrepriseSirenMock = jest.spyOn(entrepriseSirenRepository, "insertMany").mockImplementationOnce(jest.fn());
+            await dataGouvService.insertManyEntrepriseSiren([{}] as EntrepriseSirenEntity[]);
+            expect(insertManyEntrepriseSirenMock).toHaveBeenCalledTimes(1);
         })
     })
     describe("addNewImport", () => {

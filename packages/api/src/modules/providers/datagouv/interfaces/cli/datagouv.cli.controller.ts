@@ -6,9 +6,8 @@ import CliController from '../../../../../shared/CliController';
 import { UniteLegalHistoryRaw } from "../../@types/UniteLegalHistoryRaw";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
-import AssociationNameEntity from "../../../../association-name/entities/AssociationNameEntity";
 import associationNameService from "../../../../association-name/associationName.service";
-import EntrepriseSirenEntity from "../../entities/EntrepriseSirenEntity";
+import { UniteLegaleHistoriqueAdapter } from "../../adapter/UniteLegaleHistoriqueAdapter";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataGouvCliController extends CliController {
@@ -22,7 +21,7 @@ export default class DataGouvCliController extends CliController {
     }
 
     private shouldAssoBeSaved(entity: UniteLegalHistoryRaw) {
-        return (entity.changementDenominationUniteLegale === "true" || this.isUniteLegaleNew(entity));
+        return entity.changementDenominationUniteLegale === "true" || this.isUniteLegaleNew(entity);
     }
 
     private isUniteLegaleNew(entity) {
@@ -40,30 +39,21 @@ export default class DataGouvCliController extends CliController {
             "changementCaractereEmployeurUniteLegale"
         ];
 
-        return !props.find(prop => entity[prop] === "true");
-    }
-
-    private rawToAssociationName(raw: UniteLegalHistoryRaw) {
-        return new AssociationNameEntity(null, raw.denominationUniteLegale, dataGouvService.provider.name, new Date(raw.dateDebut), raw.siren)
-    }
-
-    private rawToEntrepriseSiren(raw: UniteLegalHistoryRaw) {
-        return new EntrepriseSirenEntity(raw.siren);
+        return props.every(prop => entity[prop] === "false");
     }
 
     private saveAssociations(raws: UniteLegalHistoryRaw[]) {
         return Promise.all(
             raws
-                .map(this.rawToAssociationName)
+                .map(UniteLegaleHistoriqueAdapter.rawToAssociationName)
                 .map(associationName => associationNameService.upsert(associationName))
         )
     }
 
     private saveEntreprises(raws: UniteLegalHistoryRaw[]) {
-        return Promise.all(
+        return dataGouvService.insertManyEntrepriseSiren(
             raws
-                .map(this.rawToEntrepriseSiren)
-                .map(entrepriseSiren => dataGouvService.addEntrepriseSiren(entrepriseSiren))
+                .map(UniteLegaleHistoriqueAdapter.rawToEntrepriseSiren)
         )
     }
 

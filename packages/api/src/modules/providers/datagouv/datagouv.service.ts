@@ -13,8 +13,8 @@ export class DataGouvService implements Provider {
         description: "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire)."
     }
 
-    async addEntrepriseSiren(entity: EntrepriseSirenEntity) {
-        return entrepriseSirenRepository.upsert(entity);
+    async insertManyEntrepriseSiren(entities: EntrepriseSirenEntity[]) {
+        return entrepriseSirenRepository.insertMany(entities);
     }
 
     async sirenIsEntreprise(siren: Siren) {

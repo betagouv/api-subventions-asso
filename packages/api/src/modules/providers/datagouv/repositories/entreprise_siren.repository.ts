@@ -20,18 +20,6 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
         return this.collection.insertOne(entity);
     }
 
-    async upsert(entity: EntrepriseSirenEntity) {
-        return this.collection.updateOne(
-            {
-                _id: entity._id
-            },
-            {
-                $setOnInsert: { _id: entity._id }
-            },
-            { upsert: true }
-        )
-    }
-
     public async replaceCollection() {
         const oldCollectionExist = (await this.db.listCollections().toArray())
             .find(c => c.name === this.collectionName);
