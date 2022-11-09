@@ -2,10 +2,15 @@
 
 mkdir /tmp/files
 
-wget -O /tmp/files/unite_legal.zip $TMP_LAST_FILE_DATGOUV
+if [ -z "$EXPORT_DATE" ]
+then 
+    EXPORT_DATE=`date +%Y-%m-%d` # Use on case of crontask run upload
+fi
 
-unzip /tmp/files/unite_legal.zip -d /tmp/files/
+wget -O /tmp/files/StockUniteLegaleHistorique_utf8.zip https://files.data.gouv.fr/insee-sirene/StockUniteLegaleHistorique_utf8.zip
 
-node ./build/src/cli.js datagouv parse_unite_legal /tmp/files/StockUniteLegale_utf8.csv
+unzip /tmp/files/StockUniteLegaleHistorique_utf8.zip -d /tmp/files/
+
+node ./build/src/cli.js datagouv parse /tmp/files/StockUniteLegaleHistorique_utf8.csv $EXPORT_DATE
 
 exit
