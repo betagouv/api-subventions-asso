@@ -1,0 +1,10 @@
+siren;dateFin;dateDebut;etatAdministratifUniteLegale;changementEtatAdministratifUniteLegale;nomUniteLegale;changementNomUniteLegale;nomUsageUniteLegale;changementNomUsageUniteLegale;denominationUniteLegale;changementDenominationUniteLegale;denominationUsuelle1UniteLegale;denominationUsuelle2UniteLegale;denominationUsuelle3UniteLegale;changementDenominationUsuelleUniteLegale;categorieJuridiqueUniteLegale;changementCategorieJuridiqueUniteLegale;activitePrincipaleUniteLegale;nomenclatureActivitePrincipaleUniteLegale;changementActivitePrincipaleUniteLegale;nicSiegeUniteLegale;changementNicSiegeUniteLegale;economieSocialeSolidaireUniteLegale;changementEconomieSocialeSolidaireUniteLegale;societeMissionUniteLegale;changementSocieteMissionUniteLegale;caractereEmployeurUniteLegale;changementCaractereEmployeurUniteLegale
+000325175;;2018-02-07;B;false;;false;;false;NOM_2;false;;;;false;9240;false;37.12Z;NAFRev3;true;65;false;;false;;false;N;false
+000325175;2018-02-06;2014-01-07;B;false;;false;;false;NOM_2;true;;;;false;9240;false;32.12Z;NAFRev2;false;65;false;;false;;false;N;false
+000325175;2014-01-06;2011-10-21;B;false;;false;;false;NOM_1;false;;;;false;9240;true;32.12Z;NAFRev2;false;65;false;;false;;false;N;false
+000325175;2011-10-20;2009-05-27;B;false;;false;;false;NOM_1;false;;;;false;9210;false;32.12Z;NAFRev2;false;65;false;;false;;false;N;false
+000325175;2009-05-26;2008-01-01;B;true;;false;;false;NOM_1;false;;;;false;9210;false;32.12Z;NAFRev2;false;65;false;;false;;false;N;false
+000325175;2007-12-31;2000-09-26;A;false;;false;;false;NOM_1;false;;;;false;9210;false;32.12Z;NAFRev2;false;65;false;;false;;false;N;false
+001807254;;2014-12-31;C;true;;false;;false;NOM_3;false;;;;false;1000;false;85.59A;NAFRev2;false;22;false;;false;;false;N;false
+001807254;2014-12-30;2009-10-01;A;true;;false;;false;NOM_3;false;;;;false;1000;false;85.59A;NAFRev2;false;14;true;;false;;false;N;false
+001807254;2009-09-30;2008-01-01;C;false;;false;;false;NOM_3;false;;;;false;1000;false;95.24Z;NAFRev2;false;14;false;;false;;false;N;false

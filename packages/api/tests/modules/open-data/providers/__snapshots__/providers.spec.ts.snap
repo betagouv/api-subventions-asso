@@ -43,7 +43,7 @@ Object {
     },
     Object {
       "description": "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire).",
-      "name": "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
+      "name": "Base Sirene - DataGouv",
     },
   ],
 }
