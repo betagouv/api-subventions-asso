@@ -95,17 +95,4 @@ export class AssociationController extends Controller {
             return { success: false, message: (e as Error).message }
         }
     }
-
-    /**
-     * Remonte les informations d'un établissement liée à l'association
-     * @param identifier Identifiant Siren ou Rna
-     * @param nic Code nic de l'établissement
-     */
-    @Get("/{identifier}/etablissement/{nic}")
-    @Response<ErrorResponse>("400", "Identifiant incorrect", { success: false, message: "You must provide a valid SIREN or RNA" })
-    @Response<ErrorResponse>("404", "Pas de correspondance SIREN-RNA", { success: false, message: "We haven't found a corresponding SIREN to the given RNA {identifier}" })
-    public async getEtablissement(identifier: AssociationIdentifiers, nic: string): Promise<GetEtablissementResponseDto> {
-        const etablissement = await associationService.getEtablissement(identifier, nic);
-        return { success: true, etablissement };
-    }
 }
