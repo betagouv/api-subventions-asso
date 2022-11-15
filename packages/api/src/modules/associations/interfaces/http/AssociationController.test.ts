@@ -159,23 +159,4 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         })
     })
-
-    describe("getEtablissement", () => {
-        const NIC = "00035";
-        const getEtablissementSpy = jest.spyOn(associationsService, "getEtablissement");
-        it("should call service with args", async () => {
-            getEtablissementSpy.mockImplementationOnce(jest.fn());
-            await controller.getEtablissement(IDENTIFIER, NIC);
-            expect(getEtablissementSpy).toHaveBeenCalledWith(IDENTIFIER, NIC);
-        });
-
-        it("should return a success object", async () => {
-            // @ts-expect-error: mock
-            getEtablissementSpy.mockImplementationOnce(() => etablissement)
-            const etablissement = {};
-            const expected = { success: true, etablissement }
-            const actual = await controller.getEtablissement(IDENTIFIER, NIC);
-            expect(actual).toEqual(expected);
-        })
-    })
 })

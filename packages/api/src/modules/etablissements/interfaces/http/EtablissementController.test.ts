@@ -1,3 +1,4 @@
+import { Etablissement } from '@api-subventions-asso/dto';
 import { NotFoundError } from '../../../../shared/errors/httpErrors/NotFoundError';
 import etablissementsService from '../../etablissements.service'
 import { EtablissementController } from './EtablissementController';
@@ -81,6 +82,24 @@ describe("EtablissementController", () => {
             getDocumentsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)))
             const expected = { success: false, message: ERROR_MESSAGE }
             const actual = await controller.getDocuments(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        })
+    })
+
+    describe("getEtablissement", () => {
+        const getEtablissementSpy = jest.spyOn(etablissementsService, "getEtablissement");
+        it("should call service with args", async () => {
+            getEtablissementSpy.mockImplementationOnce(async () => ({ siret: IDENTIFIER } as unknown as Etablissement));
+            await controller.getEtablissement(IDENTIFIER);
+            expect(getEtablissementSpy).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("should return a success object", async () => {
+            // @ts-expect-error: mock
+            getEtablissementSpy.mockImplementationOnce(() => etablissement)
+            const etablissement = {};
+            const expected = { success: true, etablissement }
+            const actual = await controller.getEtablissement(IDENTIFIER);
             expect(actual).toEqual(expected);
         })
     })
