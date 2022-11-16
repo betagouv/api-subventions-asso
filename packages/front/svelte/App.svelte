@@ -10,7 +10,6 @@
     import Theme from "./shared/Theme.svelte";
     import { setContext } from "svelte";
 
-    const route = location.pathname;
     const searchParams = new URLSearchParams(location.search);
     setContext("app", {
         getEnv: () => ENV,
@@ -29,7 +28,7 @@
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">
-            <Router {route} {searchParams} />
+            <Router {searchParams} />
         </div>
         <Footer />
         <Theme />
