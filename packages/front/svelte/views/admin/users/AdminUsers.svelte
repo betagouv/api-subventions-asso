@@ -2,7 +2,6 @@
     import admin from "../admin.service.js";
     import { user as userStore } from "../../../store/user.store";
 
-    import Breadcrumb from "../../../dsfr/Breadcrumb.svelte";
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import StatsUsers from "./composents/StatsUsers.svelte";
@@ -10,12 +9,6 @@
     import TableUsers from "./composents/TableUsers.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import { createCsvFromArray, downloadCsv } from "../../../helpers/dataHelper.js";
-
-    const segments = [
-        { label: "Accueil", url: "/" },
-        { label: "Admin", url: "/admin" },
-        { label: `Liste des utilisateurs` }
-    ];
 
     let users = [];
     const currentAdminUser = $userStore;
@@ -67,8 +60,6 @@
     }
 
 </script>
-
-<Breadcrumb {segments} />
 {#await promise}
     <Spinner description="Chargement des utilisateurs en cours ..." />
 {:then}

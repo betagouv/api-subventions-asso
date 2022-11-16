@@ -2,12 +2,11 @@
     import { onMount } from "svelte";
     import homeService from "./home.service";
 
-    import { isRna, isSiren, isSiret, isStartOfSiret } from "../../helpers/validatorHelper";
+    import { isRna, isSiren, isSiret } from "../../helpers/validatorHelper";
     import { getSearchHistory } from "../../services/storage.service";
     import debounceFactory from "../../helpers/timeHelper";
     import { truncate } from "../../helpers/textHelper";
 
-    import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
     import Alert from "../../dsfr/Alert.svelte";
     import Card from "../../dsfr/Card.svelte";
 
@@ -16,8 +15,6 @@
     import InteruptSearchError from "./error/InteruptSearchError";
 
     export let searchParams;
-
-    const segments = [];
 
     let error = searchParams.get("error");
     let isLoading = false;
@@ -60,7 +57,6 @@
     $: input, debounce(() => searchAssociation(input));
 </script>
 
-<Breadcrumb {segments} />
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
         <form on:submit|preventDefault={submitHandler}>
