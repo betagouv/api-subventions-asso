@@ -98,12 +98,12 @@ export class UserController extends Controller {
         @Path() id: string
     ): Promise<{ success: boolean } | UserDtoErrorResponse> {
 
-        if (!id) {
+        if (!id || req.user._id.toString() === id) {
             this.setStatus(400);
             return USER_BAD_REQUEST;
         }
 
-        const result = await userService.delete(req.user);
+        const result = await userService.delete(id);
 
         if (!result.success) {
             this.setStatus(500);

@@ -22,8 +22,8 @@ export class UserRepository {
         return dbos.map(dbo => this.removeSecrets(dbo));
     }
 
-    async findById(userId: ObjectId) {
-        const user = await this.collection.findOne({ _id: userId });
+    async findById(userId: ObjectId | string) {
+        const user = await this.collection.findOne({ _id: new ObjectId(userId) });
         if (!user) return null;
         return this.removeSecrets(user);
     }
