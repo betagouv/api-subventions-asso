@@ -9,8 +9,8 @@
     import Footer from "./shared/Footer.svelte";
     import Theme from "./shared/Theme.svelte";
     import { setContext } from "svelte";
+    import routes from "./routes"
 
-    const searchParams = new URLSearchParams(location.search);
     setContext("app", {
         getEnv: () => ENV,
         getName: () => "Data.Subvention",
@@ -28,7 +28,7 @@
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">
-            <Router {searchParams} />
+            <Router {routes} />
         </div>
         <Footer />
         <Theme />
