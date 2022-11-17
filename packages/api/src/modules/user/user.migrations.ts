@@ -19,7 +19,7 @@ export default class UserMigrations {
 
         await asyncForEach(usersAction, async userAction => {
             if (userAction.action === EmailToLowerCaseAction.UPDATE) await userService.update(userAction.user);
-            else if (userAction.action === EmailToLowerCaseAction.DELETE) await userService.delete(userAction.user);
+            else if (userAction.action === EmailToLowerCaseAction.DELETE) await userService.delete(userAction.user._id.toString());
         });
     }
 

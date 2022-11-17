@@ -43,6 +43,9 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
         return undefined;
     }
 
+    /**
+     * @deprecated
+     */
     async getLastUpdateBySiret(siret: Siret): Promise<Date | undefined> {
         const result = await this.collection.aggregate([
             { $match: {
