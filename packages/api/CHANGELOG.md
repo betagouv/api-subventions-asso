@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.2](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.2) (2022-11-17)
+
+
+### Bug Fixes
+
+* **api:** consumer cli controller integ test ([f665f26](https://github.com/betagouv/api-subventions-asso/commit/f665f26be01204b7a61bae37f3d93bc1b3a6e6bc))
+* **api:** create index on dauphin caches ([06487ad](https://github.com/betagouv/api-subventions-asso/commit/06487ada7e7ead8aed76c1b28a3bd995c5f82f07))
+* **api:** fix delete user ([1a95470](https://github.com/betagouv/api-subventions-asso/commit/1a95470332d8dd25df2c36c112468b8442dd9aaf))
+* **front:** fix import js on ts ([f0a1c56](https://github.com/betagouv/api-subventions-asso/commit/f0a1c568d109d4572f2ac3a31481e07d9d0efa1b))
+
+
+
+
+
 ## [0.17.1](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.1) (2022-11-02)
 
 

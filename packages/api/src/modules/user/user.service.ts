@@ -220,7 +220,11 @@ export class UserService {
         return { success: true, user: await userRepository.update(user) };
     }
 
-    public async delete(user: UserDto): Promise<{ success: boolean }> {
+    public async delete(userId: string): Promise<{ success: boolean }> {
+        const user = await userRepository.findById(userId);
+
+        if (!user) return { success: false };
+
         return { success: await userRepository.delete(user) };
     }
 

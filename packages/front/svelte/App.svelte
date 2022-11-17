@@ -20,11 +20,11 @@
     });
 </script>
 
-{#if ENV.toLowerCase() == "prod"}
-    <Matomo />
-{/if}
 <GenericModal />
 <Auth>
+    {#if ENV.toLowerCase() == "prod"}
+        <Matomo />
+    {/if}
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">

@@ -7,11 +7,21 @@
 </script>
 <script type="module" src="/~/@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js"></script>
 <script type="text/javascript" nomodule src="/~/@gouvfr/dsfr/dist/dsfr/dsfr.nomodule.min.js"></script>
-
 <% if (locals.env.toLowerCase() == "prod") { %>
   <!-- Matomo -->
   <script>
     var _paq = window._paq = window._paq || [];
+  </script>
+
+  <% if (user && user._id) { %>
+    <%-`
+      <script>
+        _paq.push(['setUserId', "${user._id}"]);
+      </script>
+    `%>
+  <% } %>
+
+  <script>
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);

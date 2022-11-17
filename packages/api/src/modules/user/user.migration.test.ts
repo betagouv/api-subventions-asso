@@ -1,5 +1,5 @@
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import UserReset from "./entities/UserReset";
 import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
@@ -39,9 +39,10 @@ describe("UserMigration", () => {
         })
 
         it("should delete user", async () => {
+            const user = { email: "test@datasubvention.beta.gou.fr", _id: new ObjectId() } as unknown as WithId<UserDto>;
             userServiceDeleteMock.mockImplementationOnce((user) => Promise.resolve({ user, success: true }))
             findUsersActionMock.mockImplementationOnce(async (users) => users.map((user: UserDto) => ({ action: EmailToLowerCaseAction.DELETE, user })))
-            usersFindMock.mockImplementationOnce(async () => [{ email: "test@datasubvention.beta.gou.fr" } as unknown as WithId<UserDto>]);
+            usersFindMock.mockImplementationOnce(async () => [user]);
             toLowerCaseUsersMock.mockImplementationOnce((a: UserDto[]) => a);
             groupUsersByEmailMock.mockImplementationOnce((users) => {
                 return {
@@ -51,9 +52,7 @@ describe("UserMigration", () => {
 
             await userMigration.migrationUserEmailToLowerCase();
 
-            const expected = "test@datasubvention.beta.gou.fr";
-
-            expect(userServiceDeleteMock).toBeCalledWith(expect.objectContaining({ email: expected }))
+            expect(userServiceDeleteMock).toBeCalledWith(user._id.toString());
         })
     })
 
