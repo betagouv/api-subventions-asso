@@ -9,11 +9,9 @@
     import DataNotFound from "../../components/DataNotFound.svelte";
     import { segments } from "../../store/url.store"
 
+    const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
     const id = $segments.at(-1);
     let promise = associationService.getAssociation(id);
-
-    const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
-
 </script>
 
 {#await promise}
