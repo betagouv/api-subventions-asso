@@ -1,8 +1,6 @@
 # Data.Subvention - Front
 
-Vous pouvez voir ce site en ligne là : https://template.incubateur.net
-
-Ce site a pour but d'être un point de départ pour utiliser le Design System de l'Etat. N'hésitez pas à le copier!
+Vous pouvez voir ce site en ligne ici : https://datasubvention.beta.gouv.fr.
 
 ## Lancer en prod
 

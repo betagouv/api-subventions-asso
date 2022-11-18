@@ -7,10 +7,10 @@
     import InfosLegales from "./components/InfosLegales.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
-    import { segments } from "../../store/url.store"
+
+    export let id;
 
     const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
-    const id = $segments.at(-1);
     let promise = associationService.getAssociation(id);
 </script>
 
