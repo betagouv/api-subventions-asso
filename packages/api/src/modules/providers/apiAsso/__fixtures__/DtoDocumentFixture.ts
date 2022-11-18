@@ -1,20 +1,22 @@
+import ApiAssoDtoAdapter from "../adapters/ApiAssoDtoAdapter";
+
 export const RnaDtoDocument = {
     "__meta__": {},
     "nom": {
         "last_update": new Date("2021-01-19T18:42:37.171Z"),
-        "provider": "BASE RNA <Via API ASSO>",
+        "provider": ApiAssoDtoAdapter.providerNameRna,
         "type": "string",
         "value": "ididididid",
     },
     "type": {
         "last_update": new Date("2021-01-19T18:42:37.171Z"),
-        "provider": "BASE RNA <Via API ASSO>",
+        "provider": ApiAssoDtoAdapter.providerNameRna,
         "type": "string",
         "value": "PV",
     },
     "url": {
         "last_update": new Date("2021-01-19T18:42:37.171Z"),
-        "provider": "BASE RNA <Via API ASSO>",
+        "provider": ApiAssoDtoAdapter.providerNameRna,
         "type": "string",
         "value": "/fake/url",
     },
@@ -28,19 +30,19 @@ export const DacDtoDocument = {
     },
     "nom": {
         "last_update": new Date("2021-06-18T12:02:00.000Z"),
-        "provider": "Document déposer dans le comtpe asso <Via API ASSO>",
+        "provider": ApiAssoDtoAdapter.providerNameLcaDocument,
         "type": "string",
         "value": "nom fake",
     },
     "type": {
         "last_update": new Date("2021-06-18T12:02:00.000Z"),
-        "provider": "Document déposer dans le comtpe asso <Via API ASSO>",
+        "provider": ApiAssoDtoAdapter.providerNameLcaDocument,
         "type": "string",
         "value": "BPA",
     },
     "url": {
         "last_update": new Date("2021-06-18T12:02:00.000Z"),
-        "provider": "Document déposer dans le comtpe asso <Via API ASSO>",
+        "provider": ApiAssoDtoAdapter.providerNameLcaDocument,
         "type": "string",
         "value": "/fake/url",
     },
