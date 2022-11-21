@@ -1,10 +1,13 @@
 import request from "supertest"
 import getUserToken from "../../__helpers__/getUserToken";
 import osirisRequestRepository from '../../../src/modules/providers/osiris/repositories/osiris.request.repository';
+import osirisService from '../../../src/modules/providers/osiris/osiris.service';
 import fonjepSubventionRepository from '../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository';
+import fonjepService from '../../../src/modules/providers/fonjep/fonjep.service';
 import { SubventionEntity as FonjepEntityFixture } from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
+import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 
 const g = global as unknown as { app: unknown }
 
@@ -18,12 +21,18 @@ describe("/association", () => {
 
     describe("/{structure_identifier}/subventions", () => {
         it("should return a list of subventions", async () => {
+
+            const expected = JSON.parse(JSON.stringify([
+                ... (await osirisService.getDemandeSubventionBySiren(siretToSiren(OsirisRequestEntityFixture.legalInformations.siret)) || []),
+                ... (await fonjepService.getDemandeSubventionBySiren(siretToSiren(OsirisRequestEntityFixture.legalInformations.siret)) || []),
+            ]));
+
             const response = await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}/subventions`)
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json');
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot();
+            expect(response.body.subventions).toEqual(expect.arrayContaining(expected));
         })
     })
 
