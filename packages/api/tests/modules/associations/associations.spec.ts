@@ -5,6 +5,7 @@ import fonjepSubventionRepository from '../../../src/modules/providers/fonjep/re
 import { SubventionEntity as FonjepEntityFixture } from '../providers/fonjep/__fixtures__/entity';
 import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
 import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
+import osirisService from "../../../src/modules/providers/osiris/osiris.service";
 
 const g = global as unknown as { app: unknown }
 
@@ -23,7 +24,15 @@ describe("/association", () => {
                 .set("x-access-token", await getUserToken())
                 .set('Accept', 'application/json');
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot();
+
+            const subventions = response.body.subventions;
+            // Sort subventions (OSIRS first) to avoid race test failure
+            subventions.sort(sub => {
+                if (sub.siret.provider === osirisService.provider.name) return 1;
+                else return -1;
+            });
+
+            expect(subventions).toMatchSnapshot();
         })
     })
 
