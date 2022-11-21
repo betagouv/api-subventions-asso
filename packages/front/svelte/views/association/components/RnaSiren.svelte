@@ -1,29 +1,17 @@
 <script>
-    import { getAddress } from "../association.helper";
-    import TitleWithData from "../../../components/TitleWithData.svelte";
     import DateHelper from "../../../../src/shared/helpers/DateHelper";
     import Table from "../../../dsfr/Table.svelte";
-    import { valueOrHyphen } from "../../../helpers/dataHelper";
-
+    import { valueOrHyphen } from "../../../helpers/dataHelper"
+    import { getAddress } from "../association.helper";
     export let association;
 </script>
 
-<h1>{association.denomination_rna || association.denomination_siren}</h1>
-<div class="summary">
-    <div>
-        <TitleWithData label="RNA" data={association.rna} />
-        <TitleWithData label="SIREN" data={association.siren} />
-        <TitleWithData label="SIRET du siège" data={association.siren + association.nic_siege} />
-    </div>
-    <div>
-        <TitleWithData label="Objet social" data={association.objet_social} />
-    </div>
-    <div>
-        <TitleWithData
-            label="Adresse du siège"
-            data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
-    </div>
-</div>
+<style>
+    .rna-siren {
+        margin-bottom: 72px;
+    }
+</style>
+
 <div class="rna-siren">
     <Table bordered={false}>
         <svelte:fragment slot="head">
@@ -61,20 +49,3 @@
         </svelte:fragment>
     </Table>
 </div>
-
-<style>
-    h1 {
-        margin-bottom: 48px;
-    }
-
-    .rna-siren {
-        margin-bottom: 72px;
-    }
-
-    .summary {
-        display: grid;
-        grid-template-rows: auto;
-        grid-template-columns: 1fr 1fr 1fr;
-        column-gap: 24px;
-    }
-</style>
