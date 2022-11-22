@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.3](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.3) (2022-11-22)
+
+
+### Bug Fixes
+
+* **api:** consumer cli controller integ test ([f665f26](https://github.com/betagouv/api-subventions-asso/commit/f665f26be01204b7a61bae37f3d93bc1b3a6e6bc))
+* **api:** fix migration duplicate unique id ([031cd12](https://github.com/betagouv/api-subventions-asso/commit/031cd129d31411f86b7b135ad618f4b73b7a2d22))
+* **front:** fix import js on ts ([f0a1c56](https://github.com/betagouv/api-subventions-asso/commit/f0a1c568d109d4572f2ac3a31481e07d9d0efa1b))
+
+
+
+
+
 ## [0.17.2](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.2) (2022-11-17)
 
 
