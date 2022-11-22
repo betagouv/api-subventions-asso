@@ -14,3 +14,23 @@ export async function asyncForEach<T>(array: T[], callback: (value: T, index: nu
         return acc;
     }, Promise.resolve() as Promise<void>);
 }
+
+export const compareByValueBuilder = value => (a, b) => {
+    if (!value.includes(".")) return compare(a[value], b[value]);
+    const getDeepValueFromPath = getDeepValueFromArray(value.split("."));
+    return compare(getDeepValueFromPath(a), getDeepValueFromPath(b));
+}
+
+export const getDeepValueFromArray = arr => obj => arr.reduce(reduceToDeepValue, obj);
+
+export const reduceToDeepValue = (deepObject, deepValue) => deepObject[deepValue]
+
+export const compare = (a, b) => {
+    if (a < b) {
+        return -1;
+    }
+    if (a > b) {
+        return 1;
+    }
+    return 0;
+}
