@@ -13,7 +13,7 @@ Object {
   "pluriannualite": "Oui",
   "service_instructeur": "XXX",
   "siret": "00000000000002",
-  "status": "En cours",
+  "status": "Attribué - Reconduction",
   "versementKey": "D00000",
 }
 `;

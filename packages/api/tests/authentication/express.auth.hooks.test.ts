@@ -13,9 +13,9 @@ describe("express.auth.hooks", () => {
         passportMock = jest.spyOn(passport, "use");
         jest.resetModules();
 
-        Object.keys(require.cache).forEach(function(key) {
+        Object.keys(require.cache).forEach(function (key) {
             delete require.cache[key];
-        }); 
+        });
     });
 
     afterEach(() => {
@@ -24,20 +24,20 @@ describe("express.auth.hooks", () => {
 
     describe("local", () => {
         it("Should be logged user", (done) => {
-            const obj:  {[key: string]: unknown} = {}
-            function strat(data:unknown, call: unknown){
+            const obj: { [key: string]: unknown } = {}
+            function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
-            } 
+            }
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({success: true, user: { email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date()}, stats: { searchCount: 0, lastSearchDate: null }}}) )
-            
+            jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({ success: true, user: { _id: new ObjectId(), email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date() }, stats: { searchCount: 0, lastSearchDate: null } } }))
+
             passportMock.mockImplementation((name) => {
                 if (name != "login") return;
 
                 (obj.callback as (...args: unknown[]) => void)("test@beta.gouv.fr", "AAA", (...args: unknown[]) => {
-                    expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr"});
+                    expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr" });
                     done();
                 })
             });
@@ -46,67 +46,67 @@ describe("express.auth.hooks", () => {
         });
 
         it("Should be not logged user", (done) => {
-            const obj:  {[key: string]: unknown} = {}
-            function strat(data:unknown, call: unknown){
+            const obj: { [key: string]: unknown } = {}
+            function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
-            } 
+            }
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({success: false, message: "ERROR", code: 1}) )
-            
+            jest.spyOn(userService, 'login').mockImplementation((email) => Promise.resolve({ success: false, message: "ERROR", code: 1 }))
+
             passportMock.mockImplementation((name) => {
                 if (name !== "login") return;
                 (obj.callback as (...args: unknown[]) => void)("test@beta.gouv.fr", "AAA", (...args: unknown[]) => {
-                    expect(args[2]).toMatchObject({ message: "1"});
+                    expect(args[2]).toMatchObject({ message: "1" });
                     done();
                 })
             });
-            authMocks({ post: jest.fn(), use: jest.fn()} as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
     })
 
     describe("jwt", () => {
         it("Should be logged user", (done) => {
-            const obj:  {[key: string]: unknown} = {}
-            function strat(data:unknown, call: unknown){
+            const obj: { [key: string]: unknown } = {}
+            function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
-            } 
+            }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, 'findByEmail').mockImplementationOnce((email) => Promise.resolve({ email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date()}, stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId()}) )
-            
+            jest.spyOn(userService, 'findByEmail').mockImplementationOnce((email) => Promise.resolve({ email, roles: [], active: true, signupAt: new Date(), jwt: { token: "", expirateDate: new Date() }, stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId() }))
+
             passportMock.mockImplementation((name) => {
                 if (name === "login") return;
 
-                (obj.callback as (...args: unknown[]) => void)({email: "test@beta.gouv.fr"}, (...args: unknown[]) => {
-                    expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr"});
+                (obj.callback as (...args: unknown[]) => void)({ email: "test@beta.gouv.fr" }, (...args: unknown[]) => {
+                    expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr" });
                     done();
                 })
             });
 
-            authMocks({ post: jest.fn(), use: jest.fn()} as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
         it("Should be not logged user", (done) => {
-            const obj:  {[key: string]: unknown} = {}
-            function strat(data:unknown, call: unknown){
+            const obj: { [key: string]: unknown } = {}
+            function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
-            } 
+            }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            
+
             passportMock.mockImplementation((name) => {
                 if (name === "login") return;
-                (obj.callback as (...args: unknown[]) => void)({email: "test@beta.gouv.fr"}, (...args: unknown[]) => {
-                    expect(args[2]).toMatchObject({ message: 'User not found'});
+                (obj.callback as (...args: unknown[]) => void)({ email: "test@beta.gouv.fr" }, (...args: unknown[]) => {
+                    expect(args[2]).toMatchObject({ message: 'User not found' });
                     done();
                 })
             });
-            authMocks({ post: jest.fn(), use: jest.fn()} as unknown as Express);
+            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
     })
 })

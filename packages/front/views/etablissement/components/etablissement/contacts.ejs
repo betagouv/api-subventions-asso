@@ -1,30 +1,49 @@
-<div class="fr-col fr-col-lg-12">
-    <div class="fr-table">
-        <table class="custom-table-center-text">
-            <caption>Contacts</caption>
-            <thead>
-                <tr>
-                    <th scope="col"> Civilité </th>
-                    <th scope="col"> Nom </th>
-                    <th scope="col"> Prénom </th>
-                    <th scope="col"> Téléphone </th>
-                    <th scope="col"> Email </th>
-                    <th scope="col"> Rôle </th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for( let index = 0; index < etablissement.contacts.length; index++ ) { %>
-                    <% let contact = helper.getValue(etablissement.contacts[index])%>
+<div class="fr-grid-row fr-grid-row--center">
+    <div class="fr-col fr-col-lg-12 fr-grid-row--center">
+        <div class="fr-table">
+            <table class="custom-table-center-text">
+                <caption>Contacts</caption>
+                <thead>
                     <tr>
-                        <td><%- helper.returnValueOrHyphen(contact.civilite)%></td>
-                        <td><%- helper.returnValueOrHyphen(contact.nom) %></td>
-                        <td><%- helper.returnValueOrHyphen(contact.prenom)%></td>
-                        <td><%- helper.returnValueOrHyphen(helper.phone.format(contact.telephone))%></td>
-                        <td><%- helper.returnValueOrHyphen(contact.email)%></td>
-                        <td><%- helper.returnValueOrHyphen(contact.role)%></td>
+                        <th scope="col"> Civilité </th>
+                        <th scope="col"> Nom </th>
+                        <th scope="col"> Prénom </th>
+                        <th scope="col"> Téléphone </th>
+                        <th scope="col"> Email </th>
+                        <th scope="col"> Rôle </th>
                     </tr>
-                <% } %>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <% for( let index=0; index < etablissement.contacts.length; index++ ) { %>
+                        <% let contact=helper.getValue(etablissement.contacts[index])%>
+                            <tr>
+                                <td>
+                                    <%- helper.returnValueOrHyphen(contact.civilite)%>
+                                </td>
+                                <td>
+                                    <%- helper.returnValueOrHyphen(contact.nom) %>
+                                </td>
+                                <td>
+                                    <%- helper.returnValueOrHyphen(contact.prenom)%>
+                                </td>
+                                <td>
+                                    <%- helper.returnValueOrHyphen(helper.phone.format(contact.telephone))%>
+                                </td>
+                                <td>
+                                    <%- helper.returnValueOrHyphen(contact.email)%>
+                                </td>
+                                <td>
+                                    <%- helper.returnValueOrHyphen(contact.role)%>
+                                </td>
+                            </tr>
+                            <% } %>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div> 
+    <a href="<%= contactDownloadLink %>" download="contacts.csv">
+        <button class="fr-btn">
+            Télécharger la liste des contacts
+        </button>
+    </a>
+</div>

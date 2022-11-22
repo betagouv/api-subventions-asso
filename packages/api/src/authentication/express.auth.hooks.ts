@@ -2,8 +2,8 @@ import passport from 'passport';
 import { Express } from "express"
 import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JwtStrategy } from 'passport-jwt';
-import userService from '../modules/user/user.service';
-import { JWT_EXPIRES_TIME, JWT_SECRET } from '../configurations/jwt.conf';
+import userService, { UserServiceError } from '../modules/user/user.service';
+import { JWT_SECRET } from '../configurations/jwt.conf';
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 export function authMocks(app: Express) {
     // A passport middleware to handle User login
@@ -32,7 +32,7 @@ export function authMocks(app: Express) {
                     let token = null;
                     if (req) {
                         token =
-                            req.body.token 
+                            req.body.token
                             || req.query.token
                             || req.headers["x-access-token"];
                     }
@@ -41,23 +41,9 @@ export function authMocks(app: Express) {
                 },
             },
             async (token, done) => {
-                // Find the user associated with the email provided by the user
-                const user = await userService.findByEmail(token.email);
-                if (!user) {
-                    // If the user isn't found in the database, return a message
-                    return done(null, false, { message: 'User not found' });
-                }
-
-                if (!user.active) {
-                    return done(null, false, { message: 'User is not active' });
-                }
-
-                if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
-                    return done(null, false, { message: 'JWT has expired, please login try again' });
-                }
-
-                // Send the user information to the next middleware
-                return done(null, user, { message: 'Logged in Successfully' });
+                const result = await userService.authenticate(token);
+                if (result.success && result.user) return done(null, result.user, { message: 'Logged in Successfully' });
+                else return done(null, false, { message: (result as UserServiceError).message })
             }
         )
     );
@@ -84,7 +70,7 @@ export function authMocks(app: Express) {
 
     app.use((req, res, next) => {
         if (req.authInfo) return next(); // if authInfo is not empty then the auhtentication is already check
-        passport.authenticate("jwt", (error, user, info: IVerifyOptions) => {
+        passport.authenticate("jwt", (error, user: UserDto, info: IVerifyOptions) => {
             if (error) return next(error)
             if (user) {
                 req.user = user;

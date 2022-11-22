@@ -6,14 +6,6 @@ import db from "../../../../../src/shared/MongoConnection";
 const g = global as unknown as { app: unknown }
 
 describe('AuthentificationController, /auth', () => {
-    let log: jest.SpyInstance;
-    beforeEach(() => {
-        log = jest.spyOn(console, 'log').mockImplementation();
-    });
-
-    afterEach(() => {
-        log.mockClear();
-    })
 
     describe("POST /forget-password", () => {
         beforeEach(async () => {
@@ -154,7 +146,7 @@ describe('AuthentificationController, /auth', () => {
                 })
                 .set('Accept', 'application/json');
 
-            expect(response.statusCode).toBe(200);
+            expect(response.statusCode).toBe(201);
             expect(response.body).toMatchObject({
                 success: true,
                 data: {
@@ -167,6 +159,23 @@ describe('AuthentificationController, /auth', () => {
                     }
                 }
             })
+        });
+
+        it("should not return password", async () => {
+            const EMAIL = "test-login@beta.gouv.fr"
+            await userService.createUser(EMAIL);
+            await userService.activeUser(EMAIL);
+
+            const response = await request(g.app)
+                .post("/auth/login")
+                .send({
+                    password: "TMP_PASSWOrd;12345678",
+                    email: "test-login@beta.gouv.fr"
+                })
+                .set('Accept', 'application/json');
+            const expected = undefined;
+            const actual = response.body.data.hashPassword;
+            expect(actual).toEqual(expected);
         });
 
         it("should not log user", async () => {

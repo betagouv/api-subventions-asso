@@ -1,3 +1,4 @@
+import { RoleEnum } from "../../src/@enums/Roles";
 import userService from "../../src/modules/user/user.service";
 
 export default async function getAdminToken() {
@@ -5,7 +6,7 @@ export default async function getAdminToken() {
 
     if (!user) {
         const result = await userService.createUser("admin@beta.gouv.fr");
-        
+
         if (!result.success) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -14,9 +15,9 @@ export default async function getAdminToken() {
 
         user = result.user
     }
-    
+
     await userService.activeUser(user);
-    await userService.addRolesToUser(user, ["admin"]);
+    await userService.addRolesToUser(user, [RoleEnum.admin]);
     const jwtData = await userService.findJwtByEmail(user.email);
 
     if (!jwtData.success) {

@@ -1,5 +1,4 @@
-import { WithId } from "mongodb"
-import { UserWithTokenDto } from "../user/UserDto"
+import { UserWithResetTokenDto } from "../user";
 
 export enum ResetPasswordErrorCodes {
     RESET_TOKEN_NOT_FOUND = 1,
@@ -12,7 +11,7 @@ export enum ResetPasswordErrorCodes {
 export interface ResetPasswordDtoPositiveResponse {
     success: true,
     data: {
-        user: WithId<UserWithTokenDto>
+        user: UserWithResetTokenDto
     }
 }
 

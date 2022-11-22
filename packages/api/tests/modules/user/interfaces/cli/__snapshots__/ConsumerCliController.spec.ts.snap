@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConsumerCliController create should create a consumer token with user info 1`] = `
+Object {
+  "_id": Any<String>,
+  "active": false,
+  "email": "test@datasubvention.gouv.fr",
+  "iat": Any<Number>,
+  "isConsumerToken": true,
+  "now": Any<String>,
+  "roles": Array [
+    "user",
+    "consumer",
+  ],
+  "signupAt": Any<String>,
+  "stats": Object {
+    "lastSearchDate": null,
+    "searchCount": 0,
+  },
+}
+`;
+
+exports[`ConsumerCliController create should create a user 1`] = `
+Object {
+  "_id": Any<ObjectId>,
+  "active": false,
+  "email": "test@datasubvention.gouv.fr",
+  "roles": Array [
+    "user",
+    "consumer",
+  ],
+  "signupAt": Any<Date>,
+  "stats": Object {
+    "lastSearchDate": null,
+    "searchCount": 0,
+  },
+}
+`;

@@ -34,3 +34,17 @@ export const numberToEuro = value => {
         maximumFractionDigits: value % 1 ? 2 : 0
     });
 };
+
+export const createCsvFromArray = (header, rows, delimiter = ";") => {
+    return [header.join(delimiter), ...rows.map(row => row.join(delimiter))].join("\n");
+};
+
+export const downloadCsv = (content, filename) => {
+    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + content);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${filename}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
