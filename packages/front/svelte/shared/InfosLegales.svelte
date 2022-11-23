@@ -36,18 +36,10 @@
         justify-content: space-between;
         align-items: flex-start;
     }
-
-    /* .title h1 {
-        flex-basis: 75%;
-    } */
-
+    
     .title ::slotted(*:last-child) {
         flex-shrink: 0;
     }   
-
-    /* .title > .action {
-        align-self: flex-start;
-    } */
 
     h1 {
         margin-bottom: 48px;
