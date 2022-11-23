@@ -27,9 +27,3 @@
         </svelte:fragment>
     </Tabs>
 </div>
-
-<style>
-    .tabs-asso :global(.fr-tabs > .fr-tabs__list) {
-        justify-content: center;
-    }
-</style>
