@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.18.0](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.18.0) (2022-11-22)
+
+
+### Bug Fixes
+
+* **api:** consumer cli controller integ test ([f665f26](https://github.com/betagouv/api-subventions-asso/commit/f665f26be01204b7a61bae37f3d93bc1b3a6e6bc))
+* **front:** fix import js on ts ([f0a1c56](https://github.com/betagouv/api-subventions-asso/commit/f0a1c568d109d4572f2ac3a31481e07d9d0efa1b))
+
+
+### Features
+
+* **api:** drop collection entreprise siren ([#559](https://github.com/betagouv/api-subventions-asso/issues/559)) ([e019b5b](https://github.com/betagouv/api-subventions-asso/commit/e019b5bd4d2d11cf6c6e40fa5e73b04ccc25f2a4))
+* **api:** move end point to etablissemnt services ([#579](https://github.com/betagouv/api-subventions-asso/issues/579)) ([521f1c2](https://github.com/betagouv/api-subventions-asso/commit/521f1c2076d0b8defbbf5f19c063a860f755d7b1))
+* **api:** save association and etablissement in datagouv CLI parsing ([#563](https://github.com/betagouv/api-subventions-asso/issues/563)) ([bbf01b6](https://github.com/betagouv/api-subventions-asso/commit/bbf01b6ce94f86440335dec802b7849e33d3d685))
+* **api:** update datagouv parser for reading history file ([#556](https://github.com/betagouv/api-subventions-asso/issues/556)) ([5258f19](https://github.com/betagouv/api-subventions-asso/commit/5258f19722af80eabf292f83d83faf6d4695399c))
+* **api:** update script parsage datagouv ([#560](https://github.com/betagouv/api-subventions-asso/issues/560)) ([9b9132d](https://github.com/betagouv/api-subventions-asso/commit/9b9132d061f9c0e3ed05711e0ab09f8e2be2cdfd))
+
+
+
+
+
 ## [0.17.2](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.2) (2022-11-17)
 
 
