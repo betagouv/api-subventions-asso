@@ -8,3 +8,41 @@ export const buildBreadcrumbs = path => {
     }
     return crumbs;
 };
+
+export const mapSegments = path =>
+    path
+        .replace(/^\/+|\/+$/g, "")
+        .split("/")
+        .map(segment => ({
+            name: segment.replace(":", ""),
+            variable: segment.startsWith(":")
+        }));
+
+export const getRouteSegments = routes =>
+    Object.entries(routes).map(([path, component]) => ({
+        path,
+        component,
+        segments: mapSegments(path)
+    }));
+
+export const getSegments = path => path.replace(/^\/+|\/+$/g, "").split("/");
+
+export const getRoute = (routes, path) => {
+    const segments = path.replace(/^\/+|\/+$/g, "").split("/");
+    return getRouteSegments(routes).find(route => {
+        if (route.segments.length !== segments.length) return false;
+        return segments.every((s, i) => route.segments[i].name === s || route.segments[i].variable);
+    });
+};
+
+export const getProps = (path, routeSegments) => {
+    let props = {};
+    getSegments(path).forEach((s, i) => routeSegments[i].variable && (props[routeSegments[i].name] = s));
+    return props;
+};
+
+// À utiliser lorsqu'on passera en 100% svelte (plus de redirection directe d'URL)
+export const navigate = (path, fn) => {
+    window.history.pushState(null, null, path);
+    fn(path);
+};
