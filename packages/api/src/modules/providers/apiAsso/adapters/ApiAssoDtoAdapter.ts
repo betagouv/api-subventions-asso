@@ -7,7 +7,7 @@ import { isValidDate } from "../../../../shared/helpers/DateHelper";
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "BASE RNA <Via API ASSO>";
-    static providerNameLcaDocument = "Document déposer dans le comtpe asso <Via API ASSO>";
+    static providerNameLcaDocument = "Document déposé dans le compte asso <Via API ASSO>";
     static providerNameSiren = "BASE SIREN <Via API ASSO>";
 
     static toAssociation(structure: StructureDto): Association[] {
