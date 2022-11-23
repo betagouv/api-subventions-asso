@@ -60,9 +60,11 @@ export default class AdminController {
             return res.redirect("/");
         }
 
-        return res.render("admin/create-user", {
-            pageTitle: "Admin - Création d'utilisateur"
-        });
+        // return res.render("admin/create-user", {
+        //     pageTitle: "Admin - Création d'utilisateur"
+        // });
+
+        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Post("/users/create")

@@ -14,3 +14,5 @@ export function isRna(rna) {
     if (!rna) return false;
     return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
 }
+
+export const isBoolean = value => typeof value === "boolean";
