@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.18.0](https://github.com/betagouv/datasubvention/compare/v0.17.0...v0.18.0) (2022-11-22)
+
+
+### Bug Fixes
+
+* **front:** fix import js on ts ([f0a1c56](https://github.com/betagouv/datasubvention/commit/f0a1c568d109d4572f2ac3a31481e07d9d0efa1b))
+* **front:** tsconfig error ([#564](https://github.com/betagouv/datasubvention/issues/564)) ([07248a5](https://github.com/betagouv/datasubvention/commit/07248a54bb05257ede63e23c743606365b4d1920))
+
+
+### Features
+
+* **front:** add management of user id to matomo ([#575](https://github.com/betagouv/datasubvention/issues/575)) ([8de65cb](https://github.com/betagouv/datasubvention/commit/8de65cb53cd7dc6100755d09839067edf7355410))
+* **front:** enhance Router with dynamics routes ([#612](https://github.com/betagouv/datasubvention/issues/612)) ([e5745db](https://github.com/betagouv/datasubvention/commit/e5745dbecaa6c7d89c19d2ca7dab69614383c2c4))
+* **front:** move Breadcrumbs uses in Router ([#608](https://github.com/betagouv/datasubvention/issues/608)) ([25ee182](https://github.com/betagouv/datasubvention/commit/25ee182899dfcc01c0d11e2927b4bdf4b17bb734))
+
+
+
+
+
 ## [0.17.2](https://github.com/betagouv/datasubvention/compare/v0.17.0...v0.17.2) (2022-11-17)
 
 
