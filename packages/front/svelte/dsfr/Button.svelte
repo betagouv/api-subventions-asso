@@ -15,7 +15,7 @@
 
     const classBySize = {
         small: "fr-btn--sm",
-        medium: "",
+        medium: "fr-bn--md",
         large: "fr-bn--lg"
     };
 
@@ -57,3 +57,9 @@
     data-fr-opened={ariaControls.length ? "false" : ""}>
     <slot />
 </button>
+
+<style>
+    button {
+        flex-shrink: 0;
+    }
+</style>

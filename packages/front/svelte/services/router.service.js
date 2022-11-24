@@ -40,9 +40,3 @@ export const getProps = (path, routeSegments) => {
     getSegments(path).forEach((s, i) => routeSegments[i].variable && (props[routeSegments[i].name] = s));
     return props;
 };
-
-// À utiliser lorsqu'on passera en 100% svelte (plus de redirection directe d'URL)
-export const navigate = (path, fn) => {
-    window.history.pushState(null, null, path);
-    fn(path);
-};
