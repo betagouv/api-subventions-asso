@@ -27,15 +27,15 @@
         "checkHTMLLocal": "site-validator --verbose --local --url http://localhost:1234",
         "dev": "nodemon",
         "start": "node ./build/src/index.js",
-        "prebuild": "npx webpack && npx webpack --config ./webpack.svelte.config.js",
-        "build": "npx tsc --project ./",
+        "prebuild": "webpack && webpack --config ./webpack.svelte.config.js",
+        "build": "tsc --project ./",
         "postbuild": "npm run copy-files",
         "copy-files": "cp -r views build && cp -r static build && cp -r node_modules build",
         "test": "npm run test:unit",
         "test:unit": "jest -c jest.config.unit.js --runInBand",
         "test:cov": "npm run test:unit -- --coverage",
         "dev:svelte": "webpack --config webpack.svelte.config.js",
-        "prettier": "npx prettier -w ./svelte"
+        "prettier": "prettier -w ./svelte"
     },
     "bugs": {
         "url": "https://github.com/betagouv/datasubvention/issues"
