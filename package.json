@@ -18,7 +18,8 @@
     "migration:apply": "lerna run migration:apply",
     "postinstall": "lerna bootstrap && husky install",
     "release": "lerna version --conventional-commits",
-    "start": "node ./packages/api/build/src/index.js"
+    "start": "node ./packages/api/build/src/index.js",
+    "prettier": "lerna run prettier"
   },
   "repository": {
     "type": "git",
