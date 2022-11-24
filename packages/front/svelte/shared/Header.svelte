@@ -51,10 +51,10 @@
 
                 <div class="fr-header__tools">
                     <div class="fr-header__tools-links">
-                        <ul class="fr-links-group">
+                        <ul class="fr-btns-group">
                             <li>
                                 <a
-                                    class="fr-link fr-fi-external-link-line fr-link--icon-right"
+                                    class="fr-btn fr-link--icon-right"
                                     href="https://github.com/betagouv/api-subventions-asso"
                                     title="code source - nouvelle fenêtre"
                                     target="_blank"
@@ -64,7 +64,7 @@
                             </li>
                             <li>
                                 <button
-                                    class="fr-link fr-fi-sun-fill-line fr-link--icon-left"
+                                    class="fr-btn fr-link--icon-left"
                                     aria-controls="fr-theme-modal"
                                     data-fr-opened="false">
                                     Paramètres d'affichage
@@ -73,7 +73,7 @@
                             {#if user?.roles?.includes("admin")}
                                 <li>
                                     <a
-                                        class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
+                                        class="fr-btn fr-link--icon-right"
                                         href="/admin"
                                         title="admin"
                                         rel="noopener">
@@ -84,7 +84,7 @@
                             {#if user?.jwt}
                                 <li>
                                     <a
-                                        class="fr-link fr-fi-sun-fill-line fr-link--icon-right"
+                                        class="fr-btn fr-link--icon-right"
                                         href="/auth/logout"
                                         title="se déconnecter"
                                         rel="noopener">
