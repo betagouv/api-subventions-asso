@@ -9,7 +9,7 @@
     const crumbs = buildBreadcrumbs(location.pathname);
     export let routes = {};
     
-    const LoadRoute = async () => {
+    const loadRoute = async () => {
         const path = location.pathname;
         const current = RouterService.getRoute(routes, path);
         props = RouterService.getProps(path, current.segments);
@@ -17,8 +17,8 @@
     };
 
     onMount(() => {
-        LoadRoute(location.pathname);
-        window.onpopstate = () => LoadRoute();
+        loadRoute(location.pathname);
+        // window.onpopstate = () => loadRoute();
     });
 </script>
 

@@ -8,6 +8,7 @@
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
     import Alert from "../../../dsfr/Alert.svelte";
+    import { getSiegeSiret } from "../association.helper.js";
 
     export let association;
 
@@ -22,7 +23,7 @@
     onMount(async () => {
         await waitElementIsVisible(element);
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == (association.siren + association.nic_siege)));
+        promise = Promise.resolve(associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret == getSiegeSiret(association)));
     });
 </script>
 

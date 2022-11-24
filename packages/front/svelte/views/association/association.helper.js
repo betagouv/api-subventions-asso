@@ -9,6 +9,8 @@ export const getAddress = address => {
     }`;
 };
 
+export const getSiegeSiret = association => association.siren + association.nic_siege;
+
 const isVersementValid = versement => {
     return isValidDate(new Date(versement.dateOperation)) && typeof versement.amount == "number";
 };

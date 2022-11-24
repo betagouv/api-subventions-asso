@@ -1,6 +1,6 @@
 import associationService from "../../association.service";
 import ComponentCore from "../../../../shared/Component.core";
-import { mapSubventionsAndVersements, sortByColumn } from "../../association.helper";
+import { getSiegeSiret, mapSubventionsAndVersements, sortByColumn } from "../../association.helper";
 
 export default class DashboardCore extends ComponentCore {
     constructor(association) {
@@ -18,7 +18,7 @@ export default class DashboardCore extends ComponentCore {
             etablissements: [],
             selectedEtablissement: 0,
             selectedExerciceIndex: null,
-            siretSiege: this.association.siren + this.association.nic_siege,
+            siretSiege: getSiegeSiret(this.association),
             currentSortColumn: null,
             sortDirection: "asc",
             status: "loading",
