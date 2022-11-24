@@ -34,7 +34,8 @@
         "test": "npm run test:unit",
         "test:unit": "jest -c jest.config.unit.js --runInBand",
         "test:cov": "npm run test:unit -- --coverage",
-        "dev:svelte": "webpack --config webpack.svelte.config.js"
+        "dev:svelte": "webpack --config webpack.svelte.config.js",
+        "prettier": "npx prettier -w ./svelte"
     },
     "bugs": {
         "url": "https://github.com/betagouv/datasubvention/issues"
