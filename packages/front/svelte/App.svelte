@@ -9,7 +9,7 @@
     import Footer from "./shared/Footer.svelte";
     import Theme from "./shared/Theme.svelte";
     import { setContext } from "svelte";
-    import routes from "./routes"
+    import routes from "./routes";
 
     setContext("app", {
         getEnv: () => ENV,

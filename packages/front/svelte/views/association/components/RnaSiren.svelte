@@ -1,16 +1,10 @@
 <script>
     import DateHelper from "../../../../src/shared/helpers/DateHelper";
     import Table from "../../../dsfr/Table.svelte";
-    import { valueOrHyphen } from "../../../helpers/dataHelper"
+    import { valueOrHyphen } from "../../../helpers/dataHelper";
     import { getAddress } from "../association.helper";
     export let association;
 </script>
-
-<style>
-    .rna-siren {
-        margin-bottom: 72px;
-    }
-</style>
 
 <div class="rna-siren">
     <Table bordered={false}>
@@ -49,3 +43,9 @@
         </svelte:fragment>
     </Table>
 </div>
+
+<style>
+    .rna-siren {
+        margin-bottom: 72px;
+    }
+</style>

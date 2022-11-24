@@ -9,9 +9,7 @@
     <Tabs {titles}>
         <svelte:fragment slot="tab-content">
             {#each titles as _title, index}
-                <TabContent selected={index == 0} {index}>
-                    
-                </TabContent>
+                <TabContent selected={index == 0} {index} />
             {/each}
         </svelte:fragment>
     </Tabs>

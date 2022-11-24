@@ -72,11 +72,7 @@
                             </li>
                             {#if user?.roles?.includes("admin")}
                                 <li>
-                                    <a
-                                        class="fr-btn fr-link--icon-right"
-                                        href="/admin"
-                                        title="admin"
-                                        rel="noopener">
+                                    <a class="fr-btn fr-link--icon-right" href="/admin" title="admin" rel="noopener">
                                         Admin
                                     </a>
                                 </li>

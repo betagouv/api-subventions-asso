@@ -13,19 +13,20 @@
     export let id;
 
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
-    const associationPromise = associationService.getAssociation(siretToSiren(id));   
+    const associationPromise = associationService.getAssociation(siretToSiren(id));
     const etablissementPromise = etablissementService.getById(id);
 </script>
 
 {#await associationPromise}
-
-<Spinner description="Chargement de l'établissement {id} en cours ..." />
+    <Spinner description="Chargement de l'établissement {id} en cours ..." />
 {:then association}
-    <InfosLegales {association} >
-        <Button on:click={() => window.location.assign(`/association/${association.siren}`)} slot="action">Voir l'association</Button>
+    <InfosLegales {association}>
+        <Button on:click={() => window.location.assign(`/association/${association.siren}`)} slot="action">
+            Voir l'association
+        </Button>
         <svelte:fragment slot="subtitle">
-            {#if getSiegeSiret(association) === id }
-                <h2>Établissement siège de l'association</h2> 
+            {#if getSiegeSiret(association) === id}
+                <h2>Établissement siège de l'association</h2>
             {/if}
         </svelte:fragment>
     </InfosLegales>
