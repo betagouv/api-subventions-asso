@@ -13,8 +13,9 @@
     let users = [];
     const currentAdminUser = $userStore;
 
-    if (!currentAdminUser || !currentAdminUser.roles || !currentAdminUser.roles.includes("admin"))
+    if (!currentAdminUser || !currentAdminUser.roles || !currentAdminUser.roles.includes("admin")) {
         document.location.href = "/";
+    }
 
     let promise = new Promise(() => null);
 

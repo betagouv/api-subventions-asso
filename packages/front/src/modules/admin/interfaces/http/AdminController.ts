@@ -14,9 +14,7 @@ export default class AdminController {
             return res.redirect("/");
         }
 
-        res.render("admin/index", {
-            pageTitle: "Admin"
-        });
+        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Get("/users/list")
