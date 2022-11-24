@@ -5,7 +5,6 @@ import { flatenProviderValue } from "../../helpers/dataHelper";
 import InteruptSearchError from "./error/InteruptSearchError";
 
 export class HomeService {
-
     constructor() {
         this.searchCache = new Map();
     }
@@ -45,16 +44,16 @@ export class HomeService {
             this.currentSearchPromise = {
                 text: searchedText,
                 promise,
-                reject,
-            }
+                reject
+            };
 
-            const {result, error} = await this._search(searchedText);
+            const { result, error } = await this._search(searchedText);
 
             if (!this.currentSearchPromise || this.currentSearchPromise.text != searchedText) return;
             if (!result) reject(error);
             else resolve(result);
             this.currentSearchPromise = null;
-        })
+        });
         return promise;
     }
 
@@ -69,7 +68,7 @@ export class HomeService {
         } catch (catchedError) {
             if (isRna(searchedText) || isStartOfSiret(searchedText)) {
                 // If no data found in association name collection we search by rna or siren, because association name is not exostive.
-                result = [await this._searchByRnaOrSiren(""+searchedText)];
+                result = [await this._searchByRnaOrSiren("" + searchedText)];
             }
             error = catchedError;
         }

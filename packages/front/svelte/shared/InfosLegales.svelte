@@ -1,16 +1,16 @@
 <script>
     import { getAddress, getSiegeSiret } from "../views/association/association.helper";
     import TitleWithData from "../components/TitleWithData.svelte";
-    
+
     export let association;
 </script>
 
 <div class="title">
     <h1>{association.denomination_rna || association.denomination_siren}</h1>
-    <slot name="action"></slot>
+    <slot name="action" />
 </div>
 <div>
-    <slot name="subtitle"></slot>
+    <slot name="subtitle" />
 </div>
 <div class="summary">
     <div>
@@ -27,19 +27,19 @@
             data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
     </div>
 </div>
-<slot></slot>
+<slot />
 
 <style>
     .title {
-        display:flex;
+        display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: flex-start;
     }
-    
+
     .title ::slotted(*:last-child) {
         flex-shrink: 0;
-    }   
+    }
 
     h1 {
         margin-bottom: 48px;
