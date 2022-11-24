@@ -78,9 +78,11 @@
                 <p class="fr-header__service-title">
                   <%= appName %> - V<%= appVersion %>
                 </p>
-                <% if (locals.env.toLowerCase() != "prod") { %>
-                  <p class="stage"><%= locals.env %></p>
-                <% } %>
+                <% if (locals.env.toLowerCase() !="prod" ) { %>
+                  <p class="stage">
+                    <%= locals.env %>
+                  </p>
+                  <% } %>
               </a>
               <p class="fr-header__service-tagline">
                 <%= appDescription %>
@@ -92,25 +94,23 @@
             <div class="fr-header__tools-links">
               <ul class="fr-links-group">
                 <li>
-                  <a class="fr-link fr-fi-external-link-line fr-link--icon-right"
-                    href="https://github.com/betagouv/api-subventions-asso" title="code source - nouvelle fenêtre"
-                    target="_blank" rel="noopener">Code source</a>
+                  <a class="fr-btn fr-link--icon-right" href="https://github.com/betagouv/api-subventions-asso"
+                    title="code source - nouvelle fenêtre" target="_blank" rel="noopener">Code source</a>
                 </li>
                 <li>
-                  <button class="fr-link fr-fi-sun-fill-line fr-link--icon-left" aria-controls="fr-theme-modal"
+                  <button class="fr-btn fr-link--icon-left" aria-controls="fr-theme-modal"
                     data-fr-opened="false">Paramètres d'affichage</button>
                 </li>
                 <% if (typeof user !="undefined" && typeof user.roles !="undefined" && user.roles.includes("admin") ) {
                   %>
                   <li>
-                    <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/admin" title="admin"
-                      rel="noopener">Admin</a>
+                    <a class="fr-btn fr-link--icon-right" href="/admin" title="admin" rel="noopener">Admin</a>
                   </li>
                   <% } %>
                     <% if (typeof user !="undefined" && user.jwt) { %>
                       <li>
-                        <a class="fr-link fr-fi-sun-fill-line fr-link--icon-right" href="/auth/logout"
-                          title="se déconnecter" rel="noopener">Se déconnecter</a>
+                        <a class="fr-btn fr-link--icon-right" href="/auth/logout" title="se déconnecter"
+                          rel="noopener">Se déconnecter</a>
                       </li>
                       <% } %>
               </ul>
