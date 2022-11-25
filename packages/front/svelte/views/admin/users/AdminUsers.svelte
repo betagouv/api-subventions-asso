@@ -44,7 +44,7 @@
             user.stats.searchCount,
             new Date(user.stats.lastSearchDate).toLocaleString()
         ]);
-    
+
         const csvHeader = [
             "Email",
             "Roles",
@@ -54,13 +54,13 @@
             "Date du token de reset",
             "Nombres de recherches",
             "Date dernière recherche"
-        ]
+        ];
 
         const csvContent = createCsvFromArray(csvHeader, csvRows, ";");
-        downloadCsv(csvContent, `users-${new Date().toLocaleDateString()}`)
-    }
-
+        downloadCsv(csvContent, `users-${new Date().toLocaleDateString()}`);
+    };
 </script>
+
 {#await promise}
     <Spinner description="Chargement des utilisateurs en cours ..." />
 {:then}
