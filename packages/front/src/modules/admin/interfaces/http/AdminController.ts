@@ -32,24 +32,7 @@ export default class AdminController {
             return res.redirect("/");
         }
 
-        const result = await adminService.listUsers(req.session.user);
-
-        const users = result.data || [];
-
-        const usersByDomainName = users.reduce((acc, user) => {
-            const domaine = user.email.match(/@.+/)?.toString();
-
-            if (!domaine) return acc;
-
-            if (!acc[domaine]) acc[domaine] = [];
-            acc[domaine].push(user);
-            return acc;
-        }, {} as DefaultObject<UserDto[]>);
-
-        res.render("admin/domain", {
-            pageTitle: "Admin - Nom de domaines",
-            usersByDomainName
-        });
+        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Get("/users/create")
