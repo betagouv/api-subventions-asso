@@ -15,7 +15,7 @@
     import InteruptSearchError from "./error/InteruptSearchError";
 
     let error;
-    if ((new URLSearchParams(location.search)).get('error')) error = true;
+    if (new URLSearchParams(location.search).get("error")) error = true;
     let isLoading = false;
     let searchResult = [];
     let searchHistory = [];
@@ -51,7 +51,7 @@
 
     const debounce = debounceFactory(200);
 
-    onMount(() => searchHistory = getSearchHistory())
+    onMount(() => (searchHistory = getSearchHistory()));
 
     // Only triggers searchAssociation if input is defined and whenever it changes
     $: input && debounce(() => searchAssociation(input));
@@ -84,15 +84,16 @@
             </div>
         </div>
     </div>
-
-
 {:else if error}
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col-12 fr-col-md-12">
             <div class="fr-card fr-card--no-arrow">
                 <div class="fr-card__body">
                     <Alert type="info" small={true}>
-                        <p>Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA, SIREN ou SIRET</p>
+                        <p>
+                            Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA, SIREN ou
+                            SIRET
+                        </p>
                     </Alert>
                     <Alert small={true}>
                         <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
@@ -101,28 +102,31 @@
             </div>
         </div>
     </div>
-
-{:else if searchResult }
+{:else if searchResult}
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
         {#each searchResult as association}
-        <ResultCard {association} searchValue={input} />
+            <ResultCard {association} searchValue={input} />
         {/each}
     </div>
 {/if}
 
-{#if !searchResult.length && !isLoading && searchHistory.length }
-<div class="history">
-    <h4>Vos dernières recherches</h4>
-    <div class="fr-grid-row fr-grid-row--gutters">
-        {#each searchHistory as search }
-            <Card url={'/association/' + (search.rna || search.siren) } title={search.name} size="6" direction="horizontal">
-                <div class="card-description">
-                    {truncate(search.objectSocial, 150)}
-                </div>
-            </Card>
-        {/each}
+{#if !searchResult.length && !isLoading && searchHistory.length}
+    <div class="history">
+        <h4>Vos dernières recherches</h4>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            {#each searchHistory as search}
+                <Card
+                    url={"/association/" + (search.rna || search.siren)}
+                    title={search.name}
+                    size="6"
+                    direction="horizontal">
+                    <div class="card-description">
+                        {truncate(search.objectSocial, 150)}
+                    </div>
+                </Card>
+            {/each}
+        </div>
     </div>
-</div>
 {/if}
 
 <style>

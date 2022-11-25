@@ -21,6 +21,34 @@ export class AdminService {
             return result.status == 201;
         });
     }
+
+    async getUserDomaines() {
+        const getDomainName = user => user.email.match(/@.+/)?.toString();
+        const createDomain = (domainsMap, name) => domainsMap.set(name, { name: name, users: [], totalActive: 0 });
+        const sortDomainsByUserNumber = (domainA, domaineB) => domaineB.users.length - domainA.users.length;
+        const getDomain = (domainsMap, name) => {
+            if (!domainsMap.has(name)) createDomain(domainsMap, name);
+            return domainsMap.get(name);
+        };
+
+        const insertUserInDomain = (domain, user) => {
+            if (user.active) domain.totalActive++;
+            domain.users.push(user);
+        };
+
+        const aggregateUsersByDomain = (domainsMap, user) => {
+            const domainName = getDomainName(user);
+            if (!domainName) return domainsMap;
+
+            const domain = getDomain(domainsMap, domainName);
+            insertUserInDomain(domain, user);
+
+            return domainsMap;
+        };
+
+        const users = await this.getUsers();
+        return [...users.reduce(aggregateUsersByDomain, new Map()).values()].sort(sortDomainsByUserNumber);
+    }
 }
 
 const adminService = new AdminService();
