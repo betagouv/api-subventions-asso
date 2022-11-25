@@ -15,6 +15,13 @@ export class AdminService {
         });
     }
 
+    async create(email) {
+        const path = `/user/admin/create-user`;
+        return axios.post(path, { email }).then(result => {
+            return result.status == 201;
+        });
+    }
+
     async getUserDomaines() {
         const getDomainName = user => user.email.match(/@.+/)?.toString();
         const createDomain = (domainsMap, name) => domainsMap.set(name, { name: name, users: [], totalActive: 0 });
