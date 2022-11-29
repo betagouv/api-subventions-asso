@@ -15,25 +15,25 @@ export class SearchController extends Controller {
    */
   @Get("/associations/{input}")
   @Response<ErrorResponse>("404", "Aucune association retrouvée", {
-    success: false,
-    message: "Could match any association with given input : ${input}",
+      success: false,
+      message: "Could match any association with given input : ${input}",
   })
-  public async findAssociations(
-    input: string
-  ): Promise<{
+    public async findAssociations(
+        input: string
+    ): Promise<{
     success: boolean;
     result?: AssociationNameEntity[];
     message?: string;
   }> {
-    const result = await searchService.getAssociationsKeys(input);
-    if (!result || (Array.isArray(result) && result.length == 0)) {
-      this.setStatus(404);
-      return {
-        success: false,
-        message: `Could match any association with given input : ${input}`,
-      };
+        const result = await searchService.getAssociationsKeys(input);
+        if (!result || (Array.isArray(result) && result.length == 0)) {
+            this.setStatus(404);
+            return {
+                success: false,
+                message: `Could match any association with given input : ${input}`,
+            };
+        }
+        this.setStatus(200);
+        return { success: true, result };
     }
-    this.setStatus(200);
-    return { success: true, result };
-  }
 }
