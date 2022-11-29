@@ -30,6 +30,7 @@ export const ACCEPTED_EMAIL_DOMAIN = [
     "ac-toulouse.fr",
     "ac-versailles.fr",
     "agencedusport.fr",
+    "caissedesdepots.fr",
     "fonjep.org",
     "gouv.fr",
     "gouv.nc",
@@ -43,4 +44,4 @@ export const ACCEPTED_EMAIL_DOMAIN = [
     "region-academique-ocitanie.fr",
     "region-academique-paca.fr",
     "stjs.wf"
-]
+];
