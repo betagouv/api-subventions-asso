@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/betagouv/api-subventions-asso/compare/v0.18.0...v0.18.1) (2022-11-29)
+
+
+### Bug Fixes
+
+* **api:** datagouv import tools ([349137d](https://github.com/betagouv/api-subventions-asso/commit/349137dc8682c4231d28000e97a348e3bd2f513b))
+
+
+
+
+
 # [0.18.0](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.18.0) (2022-11-22)
 
 
