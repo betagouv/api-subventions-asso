@@ -30,6 +30,7 @@ export const AGENT_ETAT_DOMAIN = [
     "ac-toulouse.fr",
     "ac-versailles.fr",
     "agencedusport.fr",
+    "caissedesdepots.fr",
     "fonjep.org",
     "gouv.fr",
     "gouv.nc",
