@@ -11,6 +11,6 @@ wget -O /tmp/files/StockUniteLegaleHistorique_utf8.zip https://files.data.gouv.f
 
 unzip /tmp/files/StockUniteLegaleHistorique_utf8.zip -d /tmp/files/
 
-node ./build/src/cli.js datagouv parse /tmp/files/StockUniteLegaleHistorique_utf8.csv $EXPORT_DATE
+node ./packages/api/build/src/cli.js datagouv parse /tmp/files/StockUniteLegaleHistorique_utf8.csv $EXPORT_DATE
 
 exit
