@@ -13,7 +13,7 @@
         <svelte:fragment slot="tab-content">
             {#each titles as _title, index}
                 <TabContent selected={index === 0} {index}>
-                    {#if index == 0}
+                    {#if index === 0}
                         <!-- <Dashboard {association} /> -->
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} />
