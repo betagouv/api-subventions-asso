@@ -8,7 +8,7 @@
     import SearchUsers from "./composents/SearchUsers.svelte";
     import TableUsers from "./composents/TableUsers.svelte";
     import Button from "../../../dsfr/Button.svelte";
-    import { createCsvFromArray, downloadCsv } from "../../../helpers/dataHelper.js";
+    import { buildCsv, downloadCsv } from "../../../helpers/csvHelper";
 
     let users = [];
     const currentAdminUser = $userStore;
@@ -20,7 +20,7 @@
     let promise = new Promise(() => null);
 
     const loadUsers = () => {
-        promise = admin.getUsers().then(_users => (users = _users)); // Not use then in template beacause var can be declared for bind;
+        promise = admin.getUsers().then(_users => (users = _users)); // Not use then in template because var can be declared for bind;
     };
 
     const removeUser = event => {
@@ -56,8 +56,9 @@
             "Date dernière recherche"
         ];
 
-        const csvContent = createCsvFromArray(csvHeader, csvRows, ";");
-        downloadCsv(csvContent, `users-${new Date().toLocaleDateString()}`);
+        const csvString = buildCsv(csvHeader, csvRows);
+
+        downloadCsv(csvString, `users-${new Date().toLocaleDateString()}`);
     };
 </script>
 

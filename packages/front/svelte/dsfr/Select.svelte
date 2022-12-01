@@ -1,16 +1,15 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    const dispatch = createEventDispatcher();
-
+    export let options;
     export let selected = undefined;
+    export let label = undefined;
+
+    const dispatch = createEventDispatcher();
 
     function onChange(e) {
         dispatch("change", e.target.selectedIndex - 1);
     }
-
-    export let options;
-    export let label = undefined;
 </script>
 
 <div class="fr-select-group">

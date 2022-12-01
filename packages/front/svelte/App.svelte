@@ -28,7 +28,9 @@
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">
-            <Router {routes} />
+            <main id="content">
+                <Router {routes} />
+            </main>
         </div>
         <Footer />
         <Theme />

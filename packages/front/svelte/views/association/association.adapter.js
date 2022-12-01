@@ -1,5 +1,4 @@
-import ProviderValueHelper from "../../../src/shared/helpers/ProviderValueHelper";
-import { flatenProviderValue } from "../../helpers/dataHelper";
+import { getDate, getProvider, flatenProviderValue } from "../../helpers/providerValueHelper";
 
 export const toAssociationView = association => flatenProviderValue(association);
 
@@ -10,7 +9,7 @@ export const toEtablissementComponent = etablissement => {
 export const toDocumentComponent = document => {
     return {
         ...flatenProviderValue(document),
-        provider: ProviderValueHelper.getProvider(document.nom),
-        date: new Date(ProviderValueHelper.getDate(document.nom))
+        provider: getProvider(document.nom),
+        date: new Date(getDate(document.nom))
     };
 };
