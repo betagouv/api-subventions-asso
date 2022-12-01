@@ -4,7 +4,8 @@ import { writable } from "svelte/store";
 import { updateSearchHistory } from "../../services/storage.service";
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
 import SSEConnector from "../../shared/SseConnector";
-import { toAssociationView, toEtablissementComponent, toDocumentComponent } from "./association.adapter";
+import { toAssociationView, toEtablissementComponent } from "./association.adapter";
+import documentService from "../../services/document.service";
 
 export class AssociationService {
     basePath = "/association/";
@@ -77,45 +78,7 @@ export class AssociationService {
     }
 
     async getDocuments(identifier) {
-        const path = `/association/${identifier}/documents`;
-        const documentLabels = {
-            RIB: "Télécharger le RIB",
-            "Avis Situation Insee": "Télécharger l'avis de situation (INSEE)",
-            MD: "Télécharger le Récépissé de modification",
-            LDC: "Télécharger la liste des dirigeants",
-            PV: "Télécharger le Procès verbal",
-            STC: "Télécharger les Statuts",
-            RAR: "Télécharger le Rapport d'activité",
-            RAF: "Télécharger le Rapport financier",
-            BPA: "Télécharger le Budget prévisionnel annuel",
-            RCA: "Télécharger le Rapport du commissaire aux compte",
-            "Education nationale": `Télécharger "L'agrément Education Nationale"`,
-            "Jeunesse et Education Populaire (JEP)": `Télécharger "L'agrément jeunesse et éducation populaire"`,
-            Formation: `Télécharger "L'habilitation d'organisme de formation"`
-        };
-        const result = await axios.get(path);
-        const documents = result.data.documents.map(document => toDocumentComponent(document));
-
-        const documentsByType = documents.reduce((acc, document) => {
-            if (!acc[document.type]) acc[document.type] = [];
-
-            acc[document.type].push({
-                ...document,
-                label: documentLabels[document.type] || document.type
-            });
-
-            return acc;
-        }, {});
-
-        return (
-            Object.entries(documentsByType)
-                .sort(([keyA], [keyB]) => (keyA > keyB ? 1 : -1)) // Sort by type
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                .map(
-                    ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()) // In same type sort by date
-                )
-                .flat()
-        );
+        return documentService.getDocuments(`/association/${identifier}/documents`);
     }
 
     async getSubventions(associationIdentifier) {
