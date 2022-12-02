@@ -18,7 +18,6 @@
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} />
                     {:else if index === 3}
-                        <h2>Informations bancaires</h2>
                         <InfosBancairesEtab elements={etablissement.information_banquaire} />
                     {:else}
                         <!-- <Etablissements {associationIdentifier} {association} /> -->

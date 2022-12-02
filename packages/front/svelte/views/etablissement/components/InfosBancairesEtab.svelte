@@ -8,6 +8,8 @@
     const { infosBancaires } = controller;
 </script>
 
+<h2>Informations bancaires</h2>
+
 <Table title="Informations bancaires">
     <svelte:fragment slot="head">
         <td>BIC</td>
