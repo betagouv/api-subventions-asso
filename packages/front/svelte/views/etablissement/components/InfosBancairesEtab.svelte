@@ -11,6 +11,14 @@
 <h2>Informations bancaires</h2>
 
 <Table title="Informations bancaires">
+    <svelte:fragment slot="colgroup">
+        <colgroup>
+            <col class="col-8" />
+            <col class="col-15" />
+            <col class="col-10" />
+            <col class="col-10" />
+        </colgroup>
+    </svelte:fragment>
     <svelte:fragment slot="head">
         <td>BIC</td>
         <td>IBAN</td>
@@ -28,3 +36,17 @@
         {/each}
     </svelte:fragment>
 </Table>
+
+<style>
+    .col-8 {
+        width: 8em;
+    }
+
+    .col-15 {
+        width: 15em;
+    }
+
+    .col-10 {
+        width: 10em;
+    }
+</style>
