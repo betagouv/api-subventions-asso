@@ -10,6 +10,7 @@ jest.mock("../../../../helpers/dataHelper.js", () => ({
 describe("ContactEtabController", () => {
     const CONTACTS = [
         {
+            civilite: "Madame",
             nom: "DOE",
             prenom: "Jane",
             telephone: "06 01 02 03 04",
@@ -123,7 +124,7 @@ describe("ContactEtabController", () => {
             expect(actual).toEqual(expected);
         });
         it("should replace empty value with hyphen", () => {
-            const expected = 5;
+            const expected = 6;
             controller._format(CONTACTS[0]);
             const actual = valueOrHyphen.mock.calls.length;
             expect(actual).toEqual(expected);

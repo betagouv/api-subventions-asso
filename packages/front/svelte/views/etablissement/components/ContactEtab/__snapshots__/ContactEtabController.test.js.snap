@@ -3,6 +3,7 @@
 exports[`ContactEtabController _filter() should filter contacts on name 1`] = `
 [
   {
+    "civilite": "Madame",
     "email": "coordination@foo.bar",
     "nom": "DOE",
     "prenom": "Jane",
@@ -10,6 +11,7 @@ exports[`ContactEtabController _filter() should filter contacts on name 1`] = `
     "telephone": "06 01 02 03 04",
   },
   {
+    "civilite": undefined,
     "email": "coordination@foo.bar",
     "nom": "DOE",
     "prenom": "Jane",
@@ -22,6 +24,7 @@ exports[`ContactEtabController _filter() should filter contacts on name 1`] = `
 exports[`ContactEtabController _filter() should filter contacts on role 1`] = `
 [
   {
+    "civilite": "Madame",
     "email": "coordination@foo.bar",
     "nom": "DOE",
     "prenom": "Jane",
@@ -29,6 +32,7 @@ exports[`ContactEtabController _filter() should filter contacts on role 1`] = `
     "telephone": "06 01 02 03 04",
   },
   {
+    "civilite": undefined,
     "email": "coordination@foo.bar",
     "nom": "DOE",
     "prenom": "Jane",
@@ -36,6 +40,7 @@ exports[`ContactEtabController _filter() should filter contacts on role 1`] = `
     "telephone": "06 01 02 03 04",
   },
   {
+    "civilite": undefined,
     "email": "coordination@foo.bar",
     "nom": "BLACK",
     "prenom": "Jeff",

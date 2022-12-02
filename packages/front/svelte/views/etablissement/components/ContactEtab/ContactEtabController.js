@@ -23,12 +23,12 @@ export default class ContactEtabController {
 
     set inputName(v) {
         this._inputName = v;
-        this.filter();
+        this._filter();
     }
 
     filterByRole(index) {
         this.selectedRole = this.roles[index];
-        this.filter();
+        this._filter();
     }
 
     reset() {
@@ -45,12 +45,14 @@ export default class ContactEtabController {
     }
 
     _format(contact) {
-        const _contact = { ...contact };
-        _contact.telephone = formatPhoneNumber(_contact.telephone);
-        for (const property in _contact) {
-            _contact[property] = valueOrHyphen(_contact[property]);
-        }
-        return _contact;
+        return {
+            civilite: valueOrHyphen(contact.civilite),
+            nom: valueOrHyphen(contact.nom),
+            prenom: valueOrHyphen(contact.prenom),
+            telephone: valueOrHyphen(formatPhoneNumber(contact.telephone)),
+            email: valueOrHyphen(contact.email),
+            role: valueOrHyphen(contact.role)
+        };
     }
 
     _filter() {
