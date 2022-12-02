@@ -7,4 +7,4 @@
 </script>
 
 <label class="fr-label" for={name}>{label}</label>
-<input class="fr-input" type="text" id={name} name={name} bind:value>
+<input class="fr-input" type="text" id={name} {name} bind:value />
