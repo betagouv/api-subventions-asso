@@ -1,10 +1,9 @@
-import { writable } from "svelte/store";
 import DateHelper from "../../../../src/shared/helpers/DateHelper";
 import { getDate, getProvider, getValue } from "../../../helpers/providerValueHelper";
 
 export class InfosBancairesEtabController {
     constructor(informationBancaireEtab) {
-        this.infosBancaires = writable(this._formatBankElement(informationBancaireEtab));
+        this.infosBancaires = this._formatBankElement(informationBancaireEtab);
         this.headers = ["BIC", "IBAN", "Date de dépôt", "Source de dépôt"];
     }
 

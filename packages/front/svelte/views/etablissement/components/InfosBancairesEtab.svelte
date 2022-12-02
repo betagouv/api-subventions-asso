@@ -25,7 +25,7 @@
         {/each}
     </svelte:fragment>
     <svelte:fragment slot="body">
-        {#each $infosBancaires as element}
+        {#each infosBancaires as element}
             <tr>
                 <td>{element.bic}</td>
                 <td>{element.iban}</td>
