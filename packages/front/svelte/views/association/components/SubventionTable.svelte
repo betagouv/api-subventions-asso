@@ -4,7 +4,6 @@
     import Button from "../../../dsfr/Button.svelte";
     import Table from "../../../dsfr/Table.svelte";
     import { valueOrHyphen, numberToEuro } from "../../../helpers/dataHelper";
-    import { withTwoDigitYear } from "../../../helpers/dateHelper";
     import helpers from "../../../../src/shared/helpers/EJSHelper";
     import SubventionInfoModal from "./SubventionInfoModal.svelte";
     import { modal, data } from "../../../store/modal.store";

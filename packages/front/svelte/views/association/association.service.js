@@ -2,7 +2,7 @@ import axios from "axios";
 import { writable } from "svelte/store";
 
 import { updateSearchHistory } from "../../services/storage.service";
-import { flatenProviderValue } from "../../helpers/dataHelper";
+import { flatenProviderValue } from "../../helpers/providerValueHelper";
 import SSEConnector from "../../shared/SseConnector";
 import { toAssociationView, toEtablissementComponent, toDocumentComponent } from "./association.adapter";
 

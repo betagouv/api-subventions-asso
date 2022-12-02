@@ -1,28 +1,4 @@
-import ProviderValueHelper from "../../src/shared/helpers/ProviderValueHelper";
-
 export const valueOrHyphen = value => value || "-";
-
-export const flatenProviderValue = providerValueObject => {
-    const reduceProviderValues = (acc, prop) => {
-        return {
-            ...acc,
-            [prop]:
-                ProviderValueHelper.isProviderValues(providerValueObject[prop]) ||
-                ProviderValueHelper.isProviderValue(providerValueObject[prop])
-                    ? ProviderValueHelper.getValue(providerValueObject[prop])
-                    : flatenProviderValue(providerValueObject[prop])
-        };
-    };
-
-    if (["number", "string"].includes(typeof providerValueObject) | !providerValueObject) return providerValueObject;
-
-    if (Array.isArray(providerValueObject)) {
-        return providerValueObject.map(ob => flatenProviderValue(ob));
-    }
-
-    const providerValueObjectProps = Object.keys(providerValueObject);
-    return providerValueObjectProps.reduce(reduceProviderValues, {});
-};
 
 export const numberToEuro = value => {
     if (isNaN(value)) return;
@@ -35,16 +11,8 @@ export const numberToEuro = value => {
     });
 };
 
-export const createCsvFromArray = (header, rows, delimiter = ";") => {
-    return [header.join(delimiter), ...rows.map(row => row.join(delimiter))].join("\n");
-};
-
-export const downloadCsv = (content, filename) => {
-    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + content);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${filename}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+export const formatPhoneNumber = phoneNumber => {
+    if (!phoneNumber) return phoneNumber;
+    const normalizedNumber = phoneNumber.replace(/\D/g, "");
+    return normalizedNumber.match(/.{1,2}/g)?.join(" ");
 };

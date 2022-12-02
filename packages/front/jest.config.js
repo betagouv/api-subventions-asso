@@ -2,7 +2,11 @@
 module.exports = {
     // Automatically clear mock calls, instances and results before every test
     clearMocks: true,
-    transform: { "\\.[jt]sx?$": "babel-jest" },
+    transform: {
+        "^.+\\.ts?$": "ts-jest",
+        "\\.jsx?$": "babel-jest"
+    },
     modulePathIgnorePatterns: ["./build"],
+    moduleFileExtensions: ["ts", "js"],
     testEnvironment: "jsdom"
 };
