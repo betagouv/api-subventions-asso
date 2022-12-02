@@ -4,10 +4,9 @@ import { writable } from "svelte/store";
 
 export default class ContactEtabController {
     constructor(contacts) {
-        this._contacts = contacts.map(this.formatContact);
+        this._contacts = contacts.map(this._format);
         this._filteredContacts = writable(this._contacts);
-        this._roles = this.getContactRoles();
-        this._filter = "";
+        this.roles = this._getRoles();
         this.selectedRole = "";
         this._inputName = "";
     }
@@ -18,71 +17,62 @@ export default class ContactEtabController {
         return this._filteredContacts;
     }
 
-    get roles() {
-        return this._roles;
-    }
-
     get inputName() {
         return this._inputName;
     }
 
     set inputName(v) {
         this._inputName = v;
-        this.filterContacts();
+        this.filter();
     }
 
-    set filter(f) {
-        this._filter = f;
+    filterByRole(index) {
+        this.selectedRole = this.roles[index];
+        this.filter();
     }
 
-    get filter() {
-        return this._filter;
+    reset() {
+        this._filteredContacts.set(this._contacts);
     }
 
-    formatContact = contact => {
+    download() {
+        downloadCsv(
+            buildCsv(
+                this.getHeaders(),
+                this._contacts.map(contact => Object.values(contact))
+            )
+        );
+    }
+
+    _format(contact) {
         const _contact = { ...contact };
         _contact.telephone = formatPhoneNumber(_contact.telephone);
         for (const property in _contact) {
             _contact[property] = valueOrHyphen(_contact[property]);
         }
         return _contact;
-    };
+    }
 
-    filterByRole = index => {
-        this.selectedRole = this.roles[index];
-        this.filterContacts();
-    };
-
-    resetContacts = () => {
-        this._filteredContacts.update(() => this._contacts);
-    };
-
-    filterContacts = () => {
-        if (this.selectedRole === "" && this._inputName === "") this.resetContacts();
+    _filter() {
+        if (this.selectedRole === "" && this._inputName === "") this.reset();
         else
-            this._filteredContacts.update(() =>
-                this._contacts.filter(contact => this.containRole(contact) && this.containName(contact))
+            this._filteredContacts.set(
+                this._contacts.filter(contact => this._containsRole(contact) && this._containsName(contact))
             );
-    };
+    }
 
-    containRole = contact => !this.selectedRole || contact.role === this.selectedRole;
+    _containsRole(contact) {
+        return !this.selectedRole || contact.role === this.selectedRole;
+    }
 
-    containName = contact =>
-        contact.nom.toLowerCase().includes(this._inputName) || contact.prenom.toLowerCase().includes(this._inputName);
-
-    getContactRoles = () =>
-        this._contacts.reduce(
-            (acc, curr) => {
-                if (acc.includes(curr.role)) return acc;
-                acc.push(curr.role);
-                return acc;
-            },
-            [""]
+    _containsName(contact) {
+        return (
+            contact.nom.toLowerCase().includes(this._inputName) ||
+            contact.prenom.toLowerCase().includes(this._inputName)
         );
+    }
 
-    contactToArray = contact => Object.values(contact);
-
-    download = () => {
-        downloadCsv(buildCsv(this.getHeaders(), this._contacts.map(this.contactToArray)));
-    };
+    _getRoles() {
+        return ["", ...new Set(this._contacts.map(contact => contact.role))];
+    }
 }

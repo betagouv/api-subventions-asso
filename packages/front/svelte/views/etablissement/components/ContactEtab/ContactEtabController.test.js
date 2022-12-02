@@ -46,62 +46,62 @@ describe("ContactEtabController", () => {
         jest.clearAllMocks();
     });
 
-    describe("containRole()", () => {
+    describe("_containsRole()", () => {
         it("should return true with role undefined", () => {
             const expected = true;
-            const actual = controller.containRole(CONTACTS[0]);
+            const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
 
         it("should return true with role selected", () => {
             const expected = true;
             controller.selectedRole = "Coordinatrice";
-            const actual = controller.containRole(CONTACTS[0]);
+            const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
             const expected = false;
             controller.selectedRole = "Président";
-            const actual = controller.containRole(CONTACTS[0]);
+            const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("getContactRoles()", () => {
+    describe("_getRoles()", () => {
         it("should return an array of roles", () => {
             const expected = ["", "Coordinatrice", "Président"];
-            const actual = controller.getContactRoles();
+            const actual = controller._getRoles();
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("containName()", () => {
+    describe("_containsName()", () => {
         it("should return true with empty inputName", () => {
             const expected = true;
-            controller.inputName = "";
-            const actual = controller.containName(CONTACTS[0]);
+            controller._inputName = "";
+            const actual = controller._containsName(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
         it("should return true", () => {
             const expected = true;
-            controller.inputName = "doe";
-            const actual = controller.containName(CONTACTS[0]);
+            controller._inputName = "doe";
+            const actual = controller._containsName(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
         it("should return false", () => {
             const expected = false;
-            controller.inputName = "jeff";
-            const actual = controller.containName(CONTACTS[0]);
+            controller._inputName = "jeff";
+            const actual = controller._containsName(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("filterContacts", () => {
+    describe("_filter()", () => {
         it("should filter contacts on name", () => {
             let actual;
             controller._inputName = "doe";
-            controller.filterContacts();
+            controller._filter();
             controller.contacts.subscribe(value => (actual = value));
             expect(actual).toMatchSnapshot();
         });
@@ -109,23 +109,22 @@ describe("ContactEtabController", () => {
         it("should filter contacts on role", () => {
             let actual;
             controller.selectedRole = "Coordinatrice";
-            controller.filterContacts();
+            controller._filter();
             controller.contacts.subscribe(value => (actual = value));
             expect(actual).toMatchSnapshot();
         });
     });
 
-    describe("formatContact()", () => {
+    describe("_format()", () => {
         it("should return format telephone", () => {
             const expected = 1;
-
-            controller.formatContact(CONTACTS[0]);
+            controller._format(CONTACTS[0]);
             const actual = formatPhoneNumber.mock.calls.length;
             expect(actual).toEqual(expected);
         });
         it("should replace empty value with hyphen", () => {
             const expected = 5;
-            controller.formatContact(CONTACTS[0]);
+            controller._format(CONTACTS[0]);
             const actual = valueOrHyphen.mock.calls.length;
             expect(actual).toEqual(expected);
         });

@@ -1,6 +1,6 @@
 <script>
     export let label;
-    export let value = "";
+    export let value;
     export let id = "0";
 
     const name = `input-text-${id}`;

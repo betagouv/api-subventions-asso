@@ -3,7 +3,6 @@
     import Input from "../../../../dsfr/Input.svelte";
     import Select from "../../../../dsfr/Select.svelte";
     import Table from "../../../../dsfr/Table.svelte";
-    import { valueOrHyphen } from "../../../../helpers/dataHelper";
     import ContactEtabController from "./ContactEtabController";
 
     export let contacts = [];
@@ -46,22 +45,22 @@
         {#each $_contacts as contact}
             <tr>
                 <td>
-                    {valueOrHyphen(contact.civilite)}
+                    {contact.civilite}
                 </td>
                 <td>
-                    {valueOrHyphen(contact.nom)}
+                    {contact.nom}
                 </td>
                 <td>
-                    {valueOrHyphen(contact.prenom)}
+                    {contact.prenom}
                 </td>
                 <td>
-                    {valueOrHyphen(contact.telephone)}
+                    {contact.telephone}
                 </td>
                 <td>
-                    {valueOrHyphen(contact.email)}
+                    {contact.email}
                 </td>
                 <td>
-                    {valueOrHyphen(contact.role)}
+                    {contact.role}
                 </td>
             </tr>
         {/each}

@@ -1,14 +1,12 @@
 import * as CsvHelper from "./csvHelper";
 
-// const CSV_HELPER_ORIGINAL = jest.requireActual("./csvHelper");
-
 describe("csvHelper", () => {
     const CSV_ROW_HEADER = ["Name", "Date", "Adresse"];
     const CSV_ROW_ARRAY = ["foo", "bar", "baz"];
     describe("csvToString()", () => {
         it("should join array with \\n", () => {
             const expected = "foo\nbar\nbaz";
-            const actual = CsvHelper.csvToString(CSV_ROW_ARRAY);
+            const actual = CsvHelper.linesToCsv(CSV_ROW_ARRAY);
             expect(actual).toEqual(expected);
         });
     });
@@ -16,7 +14,7 @@ describe("csvHelper", () => {
     describe("arrayToCsv()", () => {
         it("should join array with ;", () => {
             const expected = "foo;bar;baz";
-            const actual = CsvHelper.arrayToCsv(CSV_ROW_ARRAY);
+            const actual = CsvHelper.arrayToLine(CSV_ROW_ARRAY);
             expect(actual).toEqual(expected);
         });
     });
