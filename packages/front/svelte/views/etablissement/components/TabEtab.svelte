@@ -32,13 +32,4 @@
     .tabs-etab :global(.fr-tabs > .fr-tabs__list) {
         justify-content: center;
     }
-
-    .tabs-etab :global(.fr-tabs__panel > .fr-table) {
-        padding-top: 0;
-        margin-bottom: 0;
-    }
-
-    .tabs-etab :global(.fr-tabs__panel > h2) {
-        margin: 3rem 0;
-    }
 </style>
