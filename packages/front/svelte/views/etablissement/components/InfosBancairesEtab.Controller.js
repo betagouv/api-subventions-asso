@@ -6,11 +6,13 @@ function formatBankElement(informationBancaireEtab) {
     return informationBancaireEtab.flat().map(infoBancaireSourced => ({
         ...getValue(infoBancaireSourced),
         date: DateHelper.formatDate(getDate(infoBancaireSourced)),
+        provider: getProvider(infoBancaireSourced)
     }));
 }
 
 export class InfosBancairesEtabController {
     constructor(informationBancaireEtab) {
         this.infosBancaires = writable(formatBankElement(informationBancaireEtab));
+        this.headers = ["BIC", "IBAN", "Date de dépôt", "Source de dépôt"];
     }
 }
