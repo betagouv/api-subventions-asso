@@ -1,11 +1,11 @@
 import { writable } from "svelte/store";
-import helper from "../../../../src/shared/helpers/ProviderValueHelper";
 import DateHelper from "../../../../src/shared/helpers/DateHelper";
+import { getDate, getProvider, getValue } from "../../../helpers/providerValueHelper";
 
 function formatBankElement(informationBancaireEtab) {
     return informationBancaireEtab.flat().map(infoBancaireSourced => ({
-        ...helper.getValue(infoBancaireSourced),
-        date: DateHelper.formatDate(helper.getDate(infoBancaireSourced))
+        ...getValue(infoBancaireSourced),
+        date: DateHelper.formatDate(getDate(infoBancaireSourced)),
     }));
 }
 
