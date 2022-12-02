@@ -5,7 +5,7 @@
     export let elements = []; // informations_bancaires
 
     const controller = new InfosBancairesEtabController(elements);
-    const { infosBancaires } = controller;
+    const { infosBancaires, headers } = controller;
 </script>
 
 <h2>Informations bancaires</h2>
@@ -20,10 +20,9 @@
         </colgroup>
     </svelte:fragment>
     <svelte:fragment slot="head">
-        <td>BIC</td>
-        <td>IBAN</td>
-        <td>Date de dépôt</td>
-        <td>Source de dépôt</td>
+        {#each headers as title}
+            <td>{title}</td>
+        {/each}
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each $infosBancaires as element}
