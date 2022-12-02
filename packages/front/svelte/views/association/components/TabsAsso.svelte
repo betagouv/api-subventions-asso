@@ -3,7 +3,8 @@
     import TabContent from "../../../dsfr/TabContent.svelte";
     import Etablissements from "./Etablissements.svelte";
     import Documents from "../../../components/Documents/Documents.svelte";
-    import Dashboard from "./dashboard/Dashboard.svelte";
+    import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+
 
     export let titles;
     export let association;
@@ -16,7 +17,7 @@
             {#each titles as _title, index}
                 <TabContent selected={index === 0} {index}>
                     {#if index === 0}
-                        <Dashboard {association} />
+                        <SubventionsVersementsDashboard identifier={associationIdentifier} />
                     {:else if index === 1}
                         <Documents resource={association} />
                     {:else}
