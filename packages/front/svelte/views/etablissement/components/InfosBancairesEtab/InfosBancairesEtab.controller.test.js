@@ -1,4 +1,4 @@
-import { InfosBancairesEtabController } from "./InfosBancairesEtab.Controller";
+import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
 
 /* jest.mock("../../../../helpers/dataHelper.js", () => ({
     ...jest.requireActual("../../../../helpers/dataHelper.js"),
@@ -68,16 +68,21 @@ describe("InfosBancairesEtabController", () => {
         jest.clearAllMocks();
     });
 
+    const testFlatten = (raw, expected) => {
+        const actual = controller._formatBankElement(raw);
+        expect(actual).toStrictEqual(expected);
+    };
+
     describe("_formatBankElement()", () => {
-        it.each`
-            raw                   | expected
-            ${infosBanquairesRaw} | ${flatSourcedInfosBancaires}
-            ${[]}                 | ${[]}
-            ${null}               | ${[]}
-            ${undefined}          | ${[]}
-        `("should work", ({ raw, expected }) => {
-            const actual = controller._formatBankElement(raw);
-            expect(actual).toStrictEqual(expected);
+        it("should format bank element", () => {
+            testFlatten(infosBanquairesRaw, flatSourcedInfosBancaires);
         });
+
+        it.each`
+            raw
+            ${[]}
+            ${null}
+            ${undefined}
+        `("should return empty array", ({ raw }) => testFlatten(raw, []));
     });
 });

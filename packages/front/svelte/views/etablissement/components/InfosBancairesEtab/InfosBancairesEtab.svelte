@@ -1,8 +1,8 @@
 <script>
-    import { InfosBancairesEtabController } from "./InfosBancairesEtab.Controller";
-    import Table from "../../../dsfr/Table.svelte";
+    import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
+    import Table from "../../../../dsfr/Table.svelte";
 
-    export let elements = []; // informations_bancaires
+    export let elements; // informations_bancaires
 
     const controller = new InfosBancairesEtabController(elements);
     const { infosBancaires, headers } = controller;

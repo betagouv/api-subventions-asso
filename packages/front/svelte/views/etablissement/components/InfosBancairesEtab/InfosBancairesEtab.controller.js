@@ -1,5 +1,5 @@
-import DateHelper from "../../../../src/shared/helpers/DateHelper";
-import { getDate, getProvider, getValue } from "../../../helpers/providerValueHelper";
+import DateHelper from "../../../../../src/shared/helpers/DateHelper";
+import { getDate, getProvider, getValue } from "../../../../helpers/providerValueHelper";
 
 export class InfosBancairesEtabController {
     constructor(informationBancaireEtab) {
