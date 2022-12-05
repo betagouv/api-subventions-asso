@@ -2,6 +2,7 @@
     import Tabs from "../../../dsfr/Tabs.svelte";
     import TabContent from "../../../dsfr/TabContent.svelte";
     import ContactEtab from "./ContactEtab/ContactEtab.svelte";
+    import Documents from "../../../components/Documents/Documents.svelte";
     import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
 
     export let etablissement;
@@ -17,6 +18,8 @@
                         <!-- <Dashboard {association} /> -->
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} />
+                    {:else if index === 2}
+                        <Documents resource={etablissement} resourceType="etablissement" />
                     {:else if index === 3}
                         <InfosBancairesEtab elements={etablissement.information_banquaire} />
                     {:else}
