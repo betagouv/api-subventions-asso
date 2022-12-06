@@ -106,11 +106,8 @@ export class UserService {
             // Generate new JTW Token
             const now = new Date();
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { jwt, ...userWithoutToken } = user;
-
             const updatedJwt = {
-                token: this.buildJWTToken(userWithoutToken as unknown as DefaultObject),
+                token: this.buildJWTToken(user as unknown as DefaultObject),
                 expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME)
             };
 
@@ -551,7 +548,9 @@ export class UserService {
     }
 
     private buildJWTToken(user: DefaultObject, options: { expiration: boolean } = { expiration: true }) {
-        const jwtContent = { ...user, now: new Date() };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { jwt: jwtSubObject, ...userWithoutToken } = user;
+        const jwtContent = { ...userWithoutToken, now: new Date() };
         const jwtOption: jwt.SignOptions = {};
 
         if (options.expiration) {
