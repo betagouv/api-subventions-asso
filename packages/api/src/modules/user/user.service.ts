@@ -39,93 +39,108 @@ export enum UserServiceErrors {
 }
 
 export interface UserServiceError {
-    success: false, message: string, code: number
+    success: false;
+    message: string;
+    code: number;
 }
 
 export class UserService {
-
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
-    public static PASSWORD_VALIDATOR_MESSAGE =
-        `Password is not hard, please use this rules:
+    public static PASSWORD_VALIDATOR_MESSAGE = `Password is not hard, please use this rules:
         At least one digit [0-9]
         At least one lowercase character [a-z]
         At least one uppercase character [A-Z]
         At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-        At least 8 characters in length, but no more than 32.`
+        At least 8 characters in length, but no more than 32.`;
 
-    private static CONSUMER_TOKEN_PROP = "isConsumerToken"
+    private static CONSUMER_TOKEN_PROP = "isConsumerToken";
 
     async authenticate(token): Promise<UserServiceError | UserDtoSuccessResponse> {
         // Find the user associated with the email provided by the user
         const user = await userService.findByEmail(token.email);
         if (!user) {
-            return { success: false, message: 'User not found', code: UserServiceErrors.USER_NOT_FOUND };
+            return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
         }
 
         if (!token[UserService.CONSUMER_TOKEN_PROP]) {
-
             if (!user.active) {
-                return { success: false, message: 'User is not active', code: UserServiceErrors.USER_NOT_ACTIVE };
+                return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
             }
             if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
-                return { success: false, message: 'JWT has expired, please login try again', code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL };
+                return {
+                    success: false,
+                    message: "JWT has expired, please login try again",
+                    code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                };
             }
         }
 
-        return { success: true, user }
+        return { success: true, user };
     }
 
-    async login(email: string, password: string): Promise<UserServiceError | { success: true, user: Omit<UserDbo, 'hashPassword'> }> {
+    async login(
+        email: string,
+        password: string
+    ): Promise<UserServiceError | { success: true; user: Omit<UserDbo, "hashPassword"> }> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
         }
 
         if (!user.active || !user.jwt) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE }
+            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
         }
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
 
         if (!validPassword) {
-            return { success: false, message: "Password does not match", code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH }
+            return {
+                success: false,
+                message: "Password does not match",
+                code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH
+            };
         }
 
         const token = jwt.verify(user.jwt.token, JWT_SECRET) as jwt.JwtPayload;
-        if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) { // Generate new JTW Token
+        if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
+            // Generate new JTW Token
             const now = new Date();
-            const token = this.buildJWTToken(user as unknown as DefaultObject);
 
             const updatedJwt = {
-                token,
+                token: this.buildJWTToken(user as unknown as DefaultObject),
                 expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME)
-            }
+            };
 
             try {
                 user.jwt = updatedJwt;
                 await userRepository.update(user);
             } catch (e) {
-                return { success: false, message: UserUpdateError.message, code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL };
+                return {
+                    success: false,
+                    message: UserUpdateError.message,
+                    code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                };
             }
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, ...userWithoutPassword } = user;
 
-        return { success: true, user: userWithoutPassword }
+        return { success: true, user: userWithoutPassword };
     }
 
     public async logout(user: UserDto) {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email.toLocaleLowerCase());
 
-        if (!userWithSecrets?.jwt) { // No jwt, so user is already disconected
+        if (!userWithSecrets?.jwt) {
+            // No jwt, so user is already disconected
             return user;
         }
 
         const jwt = {
             token: userWithSecrets.jwt.token,
-            expirateDate: new Date('01/01/1970')
-        }
+            expirateDate: new Date("01/01/1970")
+        };
 
         return userRepository.update({ ...user, jwt });
     }
@@ -151,11 +166,19 @@ export class UserService {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
             return { success: true, user };
         } catch (e) {
-            return { success: false, message: "Could not create consumer token", code: UserServiceErrors.CREATE_CONSUMER_TOKEN }
+            return {
+                success: false,
+                message: "Could not create consumer token",
+                code: UserServiceErrors.CREATE_CONSUMER_TOKEN
+            };
         }
     }
 
-    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = "TMP_PASSWOrd;12345678"): Promise<UserServiceError | { success: true, user: UserDto }> {
+    async createUser(
+        email: string,
+        roles: RoleEnum[] = [RoleEnum.user],
+        password = "TMP_PASSWOrd;12345678"
+    ): Promise<UserServiceError | { success: true; user: UserDto }> {
         const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
 
         if (!validUser.success) return validUser;
@@ -167,11 +190,12 @@ export class UserService {
             roles
         };
 
-        if (!this.validRoles(roles)) return {
-            success: false,
-            message: "Given user role does not exist",
-            code: UserServiceErrors.ROLE_NOT_FOUND
-        }
+        if (!this.validRoles(roles))
+            return {
+                success: false,
+                message: "Given user role does not exist",
+                code: UserServiceErrors.ROLE_NOT_FOUND
+            };
 
         const now = new Date();
         const jwtParams = {
@@ -181,8 +205,8 @@ export class UserService {
 
         const stats = {
             searchCount: 0,
-            lastSearchDate: null,
-        }
+            lastSearchDate: null
+        };
 
         const user = new UserNotPersisted({
             ...partialUser,
@@ -194,25 +218,35 @@ export class UserService {
         const createdUser = await userRepository.create(user);
 
         if (!createdUser) {
-            return { success: false, message: "The user could not be created", code: UserServiceErrors.CREATE_USER_WRONG };
+            return {
+                success: false,
+                message: "The user could not be created",
+                code: UserServiceErrors.CREATE_USER_WRONG
+            };
         }
 
         return { success: true, user: createdUser };
     }
 
-    public async updatePassword(user: UserDto, password: string): Promise<UserServiceError | { success: true, user: UserDto }> {
+    public async updatePassword(
+        user: UserDto,
+        password: string
+    ): Promise<UserServiceError | { success: true; user: UserDto }> {
         if (!this.passwordValidator(password)) {
             return {
                 success: false,
                 message: UserService.PASSWORD_VALIDATOR_MESSAGE,
                 code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            }
+            };
         }
 
-        return { success: true, user: await userRepository.update({ ...user, hashPassword: await bcrypt.hash(password, 10), active: true }) };
+        return {
+            success: true,
+            user: await userRepository.update({ ...user, hashPassword: await bcrypt.hash(password, 10), active: true })
+        };
     }
 
-    public async update(user: UserDto): Promise<UserServiceError | { success: true, user: UserDto }> {
+    public async update(user: UserDto): Promise<UserServiceError | { success: true; user: UserDto }> {
         const emailIsValid = this.validEmail(user.email);
         if (!emailIsValid.success) {
             return emailIsValid;
@@ -232,7 +266,12 @@ export class UserService {
         const data = content
             .toString()
             .split("\n") // Select line by line
-            .map(raw => raw.split(";").map(r => r.split("\t")).flat()) // Parse column
+            .map(raw =>
+                raw
+                    .split(";")
+                    .map(r => r.split("\t"))
+                    .flat()
+            ); // Parse column
         const emails = data.map(line => line[0]).filter(email => email.length);
 
         return this.createUsersByList(emails);
@@ -243,14 +282,14 @@ export class UserService {
             const data = await acc;
             const result = await this.signup(email.toLocaleLowerCase());
             return Promise.resolve([...data, { email, ...result }]);
-        }, Promise.resolve([]) as Promise<(CreateUserDtoSuccess | UserServiceError)[]>)
+        }, Promise.resolve([]) as Promise<(CreateUserDtoSuccess | UserServiceError)[]>);
     }
 
     public async signup(email: string, role = RoleEnum.user): Promise<UserServiceError | CreateUserDtoSuccess> {
         let result;
         const lowerCaseEmail = email.toLocaleLowerCase();
         if (role == RoleEnum.consumer) {
-            result = await this.createConsumer(lowerCaseEmail)
+            result = await this.createConsumer(lowerCaseEmail);
         } else {
             result = await this.createUser(lowerCaseEmail);
         }
@@ -266,28 +305,43 @@ export class UserService {
         return { email, success: true };
     }
 
-    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<UserDtoSuccessResponse | UserServiceError> {
+    async addRolesToUser(
+        user: UserDto | string,
+        roles: RoleEnum[]
+    ): Promise<UserDtoSuccessResponse | UserServiceError> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
-                return { success: false, message: "User email does not correspond to a user", code: UserServiceErrors.USER_NOT_FOUND };
+                return {
+                    success: false,
+                    message: "User email does not correspond to a user",
+                    code: UserServiceErrors.USER_NOT_FOUND
+                };
             }
             user = findedUser;
         }
 
         if (!roles.every(role => Object.values(RoleEnum).includes(role))) {
-            return { success: false, message: `The role "${roles.find(role => !Object.values(RoleEnum).includes(role))}" does not exist`, code: UserServiceErrors.ROLE_NOT_FOUND };
+            return {
+                success: false,
+                message: `The role "${roles.find(role => !Object.values(RoleEnum).includes(role))}" does not exist`,
+                code: UserServiceErrors.ROLE_NOT_FOUND
+            };
         }
 
         user.roles = [...new Set([...user.roles, ...roles])];
         return { success: true, user: await userRepository.update(user) };
     }
 
-    async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true, user: UserDto }> {
+    async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true; user: UserDto }> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
-                return { success: false, message: "User email does not correspond to a user", code: UserServiceErrors.USER_NOT_FOUND };
+                return {
+                    success: false,
+                    message: "User email does not correspond to a user",
+                    code: UserServiceErrors.USER_NOT_FOUND
+                };
             }
             user = findedUser;
         }
@@ -308,15 +362,22 @@ export class UserService {
         return await userRepository.update(userWithSecrets);
     }
 
-    async resetPassword(password: string, resetToken: string): Promise<UserServiceError | { success: true, user: UserDto }> {
+    async resetPassword(
+        password: string,
+        resetToken: string
+    ): Promise<UserServiceError | { success: true; user: UserDto }> {
         const reset = await userResetRepository.findByToken(resetToken);
 
         if (!reset) {
-            return { success: false, message: "Reset token not found", code: UserServiceErrors.RESET_TOKEN_NOT_FOUND }
+            return { success: false, message: "Reset token not found", code: UserServiceErrors.RESET_TOKEN_NOT_FOUND };
         }
 
-        if ((reset.createdAt.getTime() + UserService.RESET_TIMEOUT) < Date.now()) {
-            return { success: false, message: "Reset token has expired, please retry forget password", code: UserServiceErrors.RESET_TOKEN_EXPIRED }
+        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now()) {
+            return {
+                success: false,
+                message: "Reset token has expired, please retry forget password",
+                code: UserServiceErrors.RESET_TOKEN_EXPIRED
+            };
         }
 
         const user = await userRepository.findById(reset.userId);
@@ -328,8 +389,7 @@ export class UserService {
         if (!this.passwordValidator(password)) {
             return {
                 success: false,
-                message:
-                    `Password is not hard, please use this rules:
+                message: `Password is not hard, please use this rules:
                         At least one digit [0-9]
                         At least one lowercase character [a-z]
                         At least one uppercase character [A-Z]
@@ -337,7 +397,7 @@ export class UserService {
                         At least 8 characters in length, but no more than 32.
                     `,
                 code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            }
+            };
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -347,7 +407,7 @@ export class UserService {
         return { success: true, user: await userRepository.update({ ...user, hashPassword, active: true }) };
     }
 
-    async forgetPassword(email: string): Promise<UserServiceError | { success: true, reset: UserReset }> {
+    async forgetPassword(email: string): Promise<UserServiceError | { success: true; reset: UserReset }> {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
@@ -362,16 +422,20 @@ export class UserService {
         return resetResult;
     }
 
-    async resetUser(user: UserDto): Promise<UserServiceError | { success: true, reset: UserReset }> {
+    async resetUser(user: UserDto): Promise<UserServiceError | { success: true; reset: UserReset }> {
         await userResetRepository.removeAllByUserId(user._id);
 
-        const token = RandToken.generate(32)
+        const token = RandToken.generate(32);
         const reset = new UserReset(user._id, token, new Date());
 
         const createdReset = await userResetRepository.create(reset);
 
         if (!createdReset) {
-            return { success: false, message: "The user reset password could not be created", code: UserServiceErrors.CREATE_RESET_PASSWORD_WRONG }
+            return {
+                success: false,
+                message: "The user reset password could not be created",
+                code: UserServiceErrors.CREATE_RESET_PASSWORD_WRONG
+            };
         }
 
         user.active = false;
@@ -382,7 +446,9 @@ export class UserService {
     }
 
     // Only used in tests
-    async findJwtByEmail(email: string): Promise<UserServiceError | { success: true, jwt: { token: string; expirateDate: Date } }> {
+    async findJwtByEmail(
+        email: string
+    ): Promise<UserServiceError | { success: true; jwt: { token: string; expirateDate: Date } }> {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
         if (!userWithSecrets) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
@@ -401,7 +467,7 @@ export class UserService {
     }
 
     async findUserResetByUserId(userId: ObjectId) {
-        return userResetRepository.findByUserId(userId)
+        return userResetRepository.findByUserId(userId);
     }
 
     private passwordValidator(password: string): boolean {
@@ -416,25 +482,34 @@ export class UserService {
         const users = (await userRepository.find()).filter(user => user) as UserDto[];
         return {
             success: true,
-            users: await Promise.all(users.map(async user => {
-                const reset = await userResetRepository.findByUserId(user._id);
-                return {
-                    ...user,
-                    _id: user._id.toString(),
-                    resetToken: reset?.token,
-                    resetTokenDate: reset?.createdAt
-                } as UserWithResetTokenDto
-            }))
-        }
+            users: await Promise.all(
+                users.map(async user => {
+                    const reset = await userResetRepository.findByUserId(user._id);
+                    return {
+                        ...user,
+                        _id: user._id.toString(),
+                        resetToken: reset?.token,
+                        resetTokenDate: reset?.createdAt
+                    } as UserWithResetTokenDto;
+                })
+            )
+        };
     }
 
-    private async validEmailAndPassword(email: string, password: string): Promise<UserServiceError | { success: true }> {
+    private async validEmailAndPassword(
+        email: string,
+        password: string
+    ): Promise<UserServiceError | { success: true }> {
         const emailValid = this.validEmail(email);
 
         if (!emailValid.success) return emailValid;
 
         if (await userRepository.findByEmail(email.toLocaleLowerCase())) {
-            return { success: false, message: "User is already exist", code: UserServiceErrors.CREATE_USER_ALREADY_EXIST }
+            return {
+                success: false,
+                message: "User is already exist",
+                code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
+            };
         }
 
         if (!this.passwordValidator(password)) {
@@ -442,10 +517,10 @@ export class UserService {
                 success: false,
                 message: UserService.PASSWORD_VALIDATOR_MESSAGE,
                 code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            }
+            };
         }
 
-        return { success: true }
+        return { success: true };
     }
 
     public isRoleValid(role: RoleEnum) {
@@ -458,18 +533,24 @@ export class UserService {
 
     private validEmail(email: string): UserServiceError | { success: true } {
         if (!REGEX_MAIL.test(email)) {
-            return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL }
+            return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL };
         }
 
         if (!ACCEPTED_EMAIL_DOMAIN.some(domain => email.endsWith(domain))) {
-            return { success: false, message: `Email must be end by ${ACCEPTED_EMAIL_DOMAIN.join(",")}`, code: UserServiceErrors.CREATE_EMAIL_GOUV }
+            return {
+                success: false,
+                message: `Email must be end by ${ACCEPTED_EMAIL_DOMAIN.join(",")}`,
+                code: UserServiceErrors.CREATE_EMAIL_GOUV
+            };
         }
 
-        return { success: true }
+        return { success: true };
     }
 
-    private buildJWTToken(user: DefaultObject, options: { expiration : boolean } = { expiration: true }) {
-        const jwtContent = { ...user, now: new Date() };
+    private buildJWTToken(user: DefaultObject, options: { expiration: boolean } = { expiration: true }) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { jwt: jwtSubObject, ...userWithoutToken } = user;
+        const jwtContent = { ...userWithoutToken, now: new Date() };
         const jwtOption: jwt.SignOptions = {};
 
         if (options.expiration) {
