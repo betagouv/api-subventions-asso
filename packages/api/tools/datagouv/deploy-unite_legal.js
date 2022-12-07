@@ -14,7 +14,7 @@ const main = () => {
     
     console.log(`Start deploy ${appName} ...\n`);
     
-    asyncAppAction("run" ,`--size 2XL --env EXPORT_DATE=${exportDate} bash ./tools/betagouv/download_parser_unite_legal.sh`).then(() => {
+    asyncAppAction("run" ,`--size 2XL --env EXPORT_DATE=${exportDate} bash ./packages/api/tools/datagouv/download_parser_unite_legal.sh`, appName).then(() => {
         console.log("Extract end !");
     
         console.log("Have a good day !");
