@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.2](https://github.com/betagouv/api-subventions-asso/compare/v0.18.1...v0.18.2) (2022-12-07)
+
+
+### Bug Fixes
+
+* **api:** do not save user token within JWT on update ([#712](https://github.com/betagouv/api-subventions-asso/issues/712)) ([e8c4f47](https://github.com/betagouv/api-subventions-asso/commit/e8c4f47916cef3fcbfd4c2d7c8e9a73f770b961d))
+
+
+
+
+
 ## [0.18.1](https://github.com/betagouv/api-subventions-asso/compare/v0.18.0...v0.18.1) (2022-11-29)
 
 
