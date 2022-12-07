@@ -9,7 +9,7 @@ export class InfosBancairesEtabController {
 
     _formatBankElement(informationBancaireEtab) {
         return (
-            informationBancaireEtab?.flat()?.map(infoBancaireSourced => ({
+            informationBancaireEtab?.map(infoBancaireSourced => ({
                 ...getValue(infoBancaireSourced),
                 date: DateHelper.formatDate(getDate(infoBancaireSourced)),
                 provider: getProvider(infoBancaireSourced)

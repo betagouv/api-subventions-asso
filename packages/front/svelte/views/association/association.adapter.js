@@ -3,7 +3,8 @@ import { getDate, getProvider, flatenProviderValue } from "../../helpers/provide
 export const toAssociationView = association => flatenProviderValue(association);
 
 export const toEtablissementComponent = etablissement => {
-    return flatenProviderValue(etablissement);
+    const { information_banquaire, ...etablissementWithoutInfoBancaire } = etablissement;
+    return { information_banquaire, ...flatenProviderValue(etablissementWithoutInfoBancaire) };
 };
 
 export const toDocumentComponent = document => {
