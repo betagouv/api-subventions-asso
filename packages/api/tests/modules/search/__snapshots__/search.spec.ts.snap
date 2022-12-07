@@ -93,14 +93,12 @@ Object {
       ],
     },
     "contacts": Array [
-      Array [
-        Object {
-          "last_update": "2022-01-01T00:00:00.000Z",
-          "provider": "Osiris",
-          "type": "object",
-          "value": Object {},
-        },
-      ],
+      Object {
+        "last_update": "2022-01-01T00:00:00.000Z",
+        "provider": "Osiris",
+        "type": "object",
+        "value": Object {},
+      },
     ],
     "demandes_subventions": Array [
       Object {
@@ -232,14 +230,12 @@ Object {
       },
     ],
     "representants_legaux": Array [
-      Array [
-        Object {
-          "last_update": "2022-01-01T00:00:00.000Z",
-          "provider": "Osiris",
-          "type": "object",
-          "value": Object {},
-        },
-      ],
+      Object {
+        "last_update": "2022-01-01T00:00:00.000Z",
+        "provider": "Osiris",
+        "type": "object",
+        "value": Object {},
+      },
     ],
     "siege": Array [
       Object {
