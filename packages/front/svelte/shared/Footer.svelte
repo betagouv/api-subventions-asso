@@ -50,11 +50,14 @@
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
+                    <a class="fr-footer__bottom-link" href="/cgu">Conditions générales d’utilisation</a>
+                </li>
+                <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <button
-                        class="fr-footer__bottom-link fr-fi-sun-fill-line fr-link--icon-left"
+                        class="fr-footer__bottom-link fr-icon-sun-line fr-link--icon-left"
                         aria-controls="fr-theme-modal"
                         data-fr-opened="false">
                         Paramètres d'affichage
