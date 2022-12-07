@@ -28,7 +28,6 @@ export class DocumentsController {
 
     get getterByType() {
         return {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             etablissement: this.getEtablissementDocuments,
             association: this.getAssociationDocuments
         };
@@ -36,12 +35,12 @@ export class DocumentsController {
 
     async getAssociationDocuments(association) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        return Promise.resolve(
-            associationDocuments.filter(doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association))
+        return associationDocuments.filter(
+            doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association)
         );
     }
 
-    async getEtablissementDocuments(etablissement) {
+    getEtablissementDocuments(etablissement) {
         return etablissementService.getDocuments(etablissement.siret);
     }
 
@@ -49,6 +48,5 @@ export class DocumentsController {
         await waitElementIsVisible(this.element);
         const promise = this.getterByType[this.resourceType](this.resource);
         this.documentsPromise.set(promise);
-        promise.then(v => console.log(v));
     }
 }

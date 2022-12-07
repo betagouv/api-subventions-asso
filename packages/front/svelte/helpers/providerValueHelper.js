@@ -22,8 +22,7 @@ export const flatenProviderValue = providerValueObject => {
 };
 
 export const getObjectWithMetadata = providerValueObject => {
-    if (typeof providerValueObject !== "object" || Array.isArray(providerValueObject))
-        throw new Error("cannot aggregate metadata on non-object values");
+    if (typeof providerValueObject !== "object" || Array.isArray(providerValueObject)) return providerValueObject;
     return {
         ...flatenProviderValue(providerValueObject),
         provider: getProvider(providerValueObject.nom),
