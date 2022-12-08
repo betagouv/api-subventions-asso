@@ -35,7 +35,7 @@
     {#await etablissementPromise then etablissement}
         <TabEtab {etablissement} {titles} />
     {:catch error}
-        {#if error.request && error.request.status == 404}
+        {#if error.request && error.request.status === 404}
             <DataNotFound />
         {:else}
             <ErrorAlert message={error.message} />
