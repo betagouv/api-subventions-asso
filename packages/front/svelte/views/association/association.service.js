@@ -10,7 +10,7 @@ import documentService from "../../services/document.service";
 export class AssociationService {
     basePath = "/association/";
 
-    connectSuventionsFlux(associationIdentifier) {
+    connectSubventionsFlux(associationIdentifier) {
         const path = `/sse${this.basePath}${associationIdentifier}/subventions`;
         const connector = new SSEConnector(path);
         const flux = writable({

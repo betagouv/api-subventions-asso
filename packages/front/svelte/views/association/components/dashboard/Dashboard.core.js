@@ -42,7 +42,7 @@ export default class DashboardCore extends ComponentCore {
     }
 
     async mount() {
-        const subventionsFlux = associationService.connectSuventionsFlux(
+        const subventionsFlux = associationService.connectSubventionsFlux(
             this.association.siren || this.association.rna
         );
         const versements = await associationService.getVersements(this.association.siren || this.association.rna);
