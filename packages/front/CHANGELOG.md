@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.3](https://github.com/betagouv/datasubvention/compare/v0.18.2...v0.18.3) (2022-12-08)
+
+
+### Bug Fixes
+
+* **front:** link chorus versements to requests ([68d4caa](https://github.com/betagouv/datasubvention/commit/68d4caae00b764718a8b94beda2970ea7eeedf8a))
+
+
+
+
+
 # [0.18.0](https://github.com/betagouv/datasubvention/compare/v0.17.0...v0.18.0) (2022-11-22)
 
 
