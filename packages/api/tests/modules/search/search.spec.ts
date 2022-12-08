@@ -1,34 +1,20 @@
-import request from "supertest"
+import request from "supertest";
 import getUserToken from "../../__helpers__/getUserToken";
-import { osirisRequestRepository } from '../../../src/modules/providers/osiris/repositories';
-import associationNameRepository from '../../../src/modules/association-name/repositories/associationName.repository';
-import OsirisRequestEntityFixture from '../providers/osiris/__fixtures__/entity';
-import AssociationNameFixture from '../association-name/__fixtures__/entity';
+import { osirisRequestRepository } from "../../../src/modules/providers/osiris/repositories";
+import associationNameRepository from "../../../src/modules/association-name/repositories/associationName.repository";
+import OsirisRequestEntityFixture from "../providers/osiris/__fixtures__/entity";
+import AssociationNameFixture from "../association-name/__fixtures__/entity";
 import apiEntrepriseService from "../../../src/modules/providers/apiEntreprise/apiEntreprise.service";
 import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
 
-const g = global as unknown as { app: unknown }
+const g = global as unknown as { app: unknown };
 
-describe('/search', () => {
-
+describe("/search", () => {
     beforeAll(() => {
-        jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null)
-        jest.spyOn(dauphinService, "getDemandeSubventionBySiret").mockImplementation(async () => [])
-        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementation(async () => [])
-    })
-
-    describe("/etablissement/{siret}", () => {
-        it("should return an association", async () => {
-            await osirisRequestRepository.add(OsirisRequestEntityFixture);
-            const response = await request(g.app)
-                .get(`/search/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("x-access-token", await getUserToken())
-                .set('Accept', 'application/json')
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot();
-        })
-    })
+        jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
+        jest.spyOn(dauphinService, "getDemandeSubventionBySiret").mockImplementation(async () => []);
+        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementation(async () => []);
+    });
 
     describe("/associations/{input}", () => {
         beforeEach(() => {
@@ -39,7 +25,7 @@ describe('/search', () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture.rna}`)
                 .set("x-access-token", await getUserToken())
-                .set('Accept', 'application/json');
+                .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({ result: [{ lastUpdate: expect.any(String) }] });
@@ -48,7 +34,7 @@ describe('/search', () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture.siren}`)
                 .set("x-access-token", await getUserToken())
-                .set('Accept', 'application/json');
+                .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({ result: [{ lastUpdate: expect.any(String) }] });
@@ -57,10 +43,10 @@ describe('/search', () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture.name}`)
                 .set("x-access-token", await getUserToken())
-                .set('Accept', 'application/json');
+                .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({ result: [{ lastUpdate: expect.any(String) }] });
         });
-    })
+    });
 });
