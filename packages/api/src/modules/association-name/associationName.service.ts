@@ -67,6 +67,10 @@ export class AssociationNameService {
 
         return await associationNameRepository.create(entity);
     }
+
+    async upsert(entity: AssociationNameEntity) {
+        return await associationNameRepository.upsert(entity);
+    }
 }
 
 const assocationNameService = new AssociationNameService();

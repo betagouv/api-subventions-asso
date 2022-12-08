@@ -2,12 +2,11 @@
     import { onMount } from "svelte";
     import homeService from "./home.service";
 
-    import { isRna, isSiren, isSiret, isStartOfSiret } from "../../helpers/validatorHelper";
+    import { isRna, isSiren, isSiret } from "../../helpers/validatorHelper";
     import { getSearchHistory } from "../../services/storage.service";
     import debounceFactory from "../../helpers/timeHelper";
     import { truncate } from "../../helpers/textHelper";
 
-    import Breadcrumb from "../../dsfr/Breadcrumb.svelte";
     import Alert from "../../dsfr/Alert.svelte";
     import Card from "../../dsfr/Card.svelte";
 
@@ -15,11 +14,8 @@
     import ResultCard from "./composents/ResultCard.svelte";
     import InteruptSearchError from "./error/InteruptSearchError";
 
-    export let searchParams;
-
-    const segments = [];
-
-    let error = searchParams.get("error");
+    let error;
+    if ((new URLSearchParams(location.search)).get('error')) error = true;
     let isLoading = false;
     let searchResult = [];
     let searchHistory = [];
@@ -57,10 +53,10 @@
 
     onMount(() => searchHistory = getSearchHistory())
 
-    $: input, debounce(() => searchAssociation(input));
+    // Only triggers searchAssociation if input is defined and whenever it changes
+    $: input && debounce(() => searchAssociation(input));
 </script>
 
-<Breadcrumb {segments} />
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
         <form on:submit|preventDefault={submitHandler}>
@@ -95,6 +91,9 @@
         <div class="fr-col-12 fr-col-md-12">
             <div class="fr-card fr-card--no-arrow">
                 <div class="fr-card__body">
+                    <Alert type="info" small={true}>
+                        <p>Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA, SIREN ou SIRET</p>
+                    </Alert>
                     <Alert small={true}>
                         <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
                     </Alert>

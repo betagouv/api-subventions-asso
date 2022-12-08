@@ -52,7 +52,7 @@ describe("SubventionsService", () => {
             }
             expect(actual).toEqual(expected);
         });
-        
+
         it("should throw an error if given a RNA", async () => {
             const expected = "You must provide a valid SIRET";
             let actual;
@@ -72,22 +72,4 @@ describe("SubventionsService", () => {
             expect(actual).toEqual(expected);
         });
     });
-
-    describe("getDemandeById", () => {
-        const MONGO_ID = "ID";
-        it("should return a DemandeSubvention", async () => {
-            const expected = {};
-            const actual = await subventionsService.getDemandeById(MONGO_ID);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return null if none of the providers return a DemandeSubvention", async () => {
-            // @ts-expect-error: mock
-            // eslint-disable-next-line import/namespace
-            providers.default = Object.assign(PROVIDERS_DEFAULT, { serviceA: {getDemandeSubventionById: () => Promise.reject(new Error())}});
-            const expected = null;
-            const actual = await subventionsService.getDemandeById(MONGO_ID);
-            expect(actual).toEqual(expected);
-        });
-    })
 })

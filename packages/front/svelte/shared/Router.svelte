@@ -1,16 +1,26 @@
 <script>
-    import AdminUsers from "../views/admin/users/AdminUsers.svelte";
-    import Association from "../views/association/Association.svelte";
-    import Home from "../views/home/Home.svelte";
+    import Breadcrumb from "../dsfr/Breadcrumb.svelte";
+    import { buildBreadcrumbs } from "../services/router.service";
+    import {onMount} from "svelte";
+    import * as RouterService from "../services/router.service";
 
-    export let route;
-    export let searchParams;
+    let component;
+    let props;
+    const crumbs = buildBreadcrumbs(location.pathname);
+    export let routes = {};
+    
+    const LoadRoute = async () => {
+        const path = location.pathname;
+        const current = RouterService.getRoute(routes, path);
+        props = RouterService.getProps(path, current.segments);
+        component = await current.component();
+    };
+
+    onMount(() => {
+        LoadRoute(location.pathname);
+        window.onpopstate = () => LoadRoute();
+    });
 </script>
 
-{#if route.includes("association")}
-    <Association {route} />
-{:else if route.includes("/admin/users/list")}
-    <AdminUsers />
-{:else}
-    <Home {searchParams} />
-{/if}
+<Breadcrumb {crumbs} />
+<svelte:component this={component} {...props} />

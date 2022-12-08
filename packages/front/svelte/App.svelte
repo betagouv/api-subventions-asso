@@ -9,9 +9,8 @@
     import Footer from "./shared/Footer.svelte";
     import Theme from "./shared/Theme.svelte";
     import { setContext } from "svelte";
+    import routes from "./routes"
 
-    const route = location.pathname;
-    const searchParams = new URLSearchParams(location.search);
     setContext("app", {
         getEnv: () => ENV,
         getName: () => "Data.Subvention",
@@ -21,15 +20,15 @@
     });
 </script>
 
-{#if ENV.toLowerCase() == "prod"}
-    <Matomo />
-{/if}
 <GenericModal />
 <Auth>
+    {#if ENV.toLowerCase() == "prod"}
+        <Matomo />
+    {/if}
     <div class="app-container">
         <Header />
         <div class="fr-container fr-mb-8w">
-            <Router {route} {searchParams} />
+            <Router {routes} />
         </div>
         <Footer />
         <Theme />

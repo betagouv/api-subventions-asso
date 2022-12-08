@@ -1,8 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@api-subventions-asso/dto";
+import { GetAssociationResponseDto, LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse, EtablissementDtoResponse } from "@api-subventions-asso/dto";
 import { DATASUB_URL } from "./config";
-import AssociationDtoResponse from "@api-subventions-asso/dto/search/AssociationDtoResponse";
-import EtablissementDtoResponse from "@api-subventions-asso/dto/search/EtablissementDtoResponse";
 import UserDto, { UserWithJWTDto } from "@api-subventions-asso/dto/user/UserDto";
 
 export class APIDatasubService {
@@ -43,11 +41,11 @@ export class APIDatasubService {
     }
 
     searchAssoByRna(rna: string, user: UserWithJWTDto) {
-        return this.sendRequest<AssociationDtoResponse>("GET", `/search/association/${rna}`, user);
+        return this.sendRequest<GetAssociationResponseDto>("GET", `/association/${rna}`, user);
     }
 
     searchAssoBySiren(siren: string, user: UserWithJWTDto) {
-        return this.sendRequest<AssociationDtoResponse>("GET", `/search/association/${siren}`, user);
+        return this.sendRequest<GetAssociationResponseDto>("GET", `/association/${siren}`, user);
     }
 
     searchEtablissement(siret: string, user: UserWithJWTDto) {

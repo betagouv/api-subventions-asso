@@ -1,8 +1,16 @@
-import exp from "constants";
 import dataGouvService from "./datagouv.service";
+import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
+import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
 import historyImportRepository from "./repositories/historyImport.repository"
 
 describe("DataGouvService", () => {
+    describe("insertManyEntrepriseSiren", () => {
+        it("should call repository", async () => {
+            const insertManyEntrepriseSirenMock = jest.spyOn(entrepriseSirenRepository, "insertMany").mockImplementationOnce(jest.fn());
+            await dataGouvService.insertManyEntrepriseSiren([{}] as EntrepriseSirenEntity[]);
+            expect(insertManyEntrepriseSirenMock).toHaveBeenCalledTimes(1);
+        })
+    })
     describe("addNewImport", () => {
         const addEntityMock: jest.SpyInstance<unknown> = jest.spyOn(historyImportRepository, "add");
 
@@ -36,7 +44,7 @@ describe("DataGouvService", () => {
         });
 
         it("should return date", async () => {
-            const expected = new Date(2022, 8,9);
+            const expected = new Date(2022, 8, 9);
             findLastImportMock.mockImplementationOnce(() => ({
                 filename: "TEST",
                 dateOfFile: expected,

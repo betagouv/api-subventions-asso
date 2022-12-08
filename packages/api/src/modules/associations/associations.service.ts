@@ -93,6 +93,7 @@ export class AssociationsService {
 
     async getEtablissements(identifier: AssociationIdentifiers) {
         const type = IdentifierHelper.getIdentifierType(identifier);
+
         if (!type || type === StructureIdentifiersEnum.siret) {
             throw new Error("You must provide a valid SIREN or RNA");
         }
@@ -106,24 +107,6 @@ export class AssociationsService {
         }
 
         return await etablissementService.getEtablissementsBySiren(identifier) || [];
-    }
-
-    async getEtablissement(identifier: AssociationIdentifiers, nic: string) {
-        const type = IdentifierHelper.getIdentifierType(identifier);
-
-        if (!type || type === StructureIdentifiersEnum.siret) {
-            throw new BadRequestError("You must provide a valid SIREN or RNA");
-        }
-
-        if (type === StructureIdentifiersEnum.rna) {
-            const siren = await rnaSirenService.getSiren(identifier);
-
-            if (!siren) throw new NotFoundError(`We haven't found a corresponding SIREN to the given RNA ${identifier}`);
-
-            identifier = siren;
-        }
-
-        return await etablissementService.getEtablissement(identifier + nic) || (() => { throw new NotFoundError("Etablissement not found") })();
     }
 
     private async aggregate(id: StructureIdentifiers) {

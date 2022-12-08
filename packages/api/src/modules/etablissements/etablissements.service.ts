@@ -14,6 +14,7 @@ import { isSiren } from '../../shared/Validators';
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
+import { EtablissementAdapter } from "./EtablissementAdapter";
 
 export class EtablissementsService {
 
@@ -52,7 +53,8 @@ export class EtablissementsService {
         const etablissements = Object.values(groupBySiret).map(etablissements => FormaterHelper.formatData(etablissements as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement)
 
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) => this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
-        return etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege", the secondary is open, the secondary is closed.
+        const sortedEtablissement = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
+        return sortedEtablissement.map(etablissement => EtablissementAdapter.toSimplifiedEtablissement(etablissement))
     }
 
     async getSubventions(siret: Siret) {

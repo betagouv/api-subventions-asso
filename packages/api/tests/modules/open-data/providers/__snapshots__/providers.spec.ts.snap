@@ -42,12 +42,8 @@ Object {
       "name": "Chorus",
     },
     Object {
-      "description": "Gispro est un système d'information permettant d'effectuer l'instruction et la mise en paiement des dossiers de subvention recevables transmis via Dauphin.",
-      "name": "GISPRO",
-    },
-    Object {
       "description": "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire).",
-      "name": "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
+      "name": "Base Sirene - DataGouv",
     },
   ],
 }
