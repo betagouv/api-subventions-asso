@@ -4,9 +4,11 @@
     import ContactEtab from "./ContactEtab/ContactEtab.svelte";
     import Documents from "../../../components/Documents/Documents.svelte";
     import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
+    import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
 
     export let etablissement;
     export let titles;
+    export let identifier;
 </script>
 
 <div class="tabs-etab">
@@ -15,7 +17,8 @@
             {#each titles as _title, index}
                 <TabContent selected={index === 0} {index}>
                     {#if index === 0}
-                        <!-- <Dashboard {association} /> -->
+                        <SubventionsVersementsDashboard {identifier} />
+
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} />
                     {:else if index === 2}
