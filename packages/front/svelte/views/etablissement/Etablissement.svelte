@@ -33,7 +33,7 @@
         </InfosLegales>
     {/await}
     {#await etablissementPromise then etablissement}
-        <TabEtab {etablissement} {titles} />
+        <TabEtab {etablissement} {titles} identifier={id} />
     {:catch error}
         {#if error.request && error.request.status === 404}
             <DataNotFound />

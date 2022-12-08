@@ -1,67 +1,81 @@
-import request from "supertest"
+import request from "supertest";
 import getUserToken from "../../../../__helpers__/getUserToken";
-import etablissementService from "../../../../../src/modules/etablissements/etablissements.service"
+import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
 
-const g = global as unknown as { app: unknown }
+const g = global as unknown as { app: unknown };
 
-const ETABLISSEMENT_SIRET = "12345678901234"
+const ETABLISSEMENT_SIRET = "12345678901234";
 
 describe("EtablissementController", () => {
-
     beforeEach(() => {
-        jest.spyOn(etablissementService, 'getSubventions')
-    })
+        jest.spyOn(etablissementService, "getSubventions");
+    });
 
     describe("GET /etablissement/{SIRET_NUMBER}/subventions", () => {
         describe("on error", () => {
             const ERROR_MESSAGE = "This is an error message";
 
             it("should return 404 when an error occur", async () => {
-                (etablissementService.getSubventions as jest.Mock).mockImplementation(() => { throw new Error()});
-                const actual = (await request(g.app)
-                    .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                    .set("x-access-token", await getUserToken())
-                    .set('Accept', 'application/json')).statusCode
-                
+                (etablissementService.getSubventions as jest.Mock).mockImplementationOnce(() => {
+                    throw new Error();
+                });
+                const actual = (
+                    await request(g.app)
+                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
+                        .set("x-access-token", await getUserToken())
+                        .set("Accept", "application/json")
+                ).statusCode;
+
                 expect(actual).toBe(404);
-            })
+            });
 
             it("should return an object when an error occur", async () => {
-                (etablissementService.getSubventions as jest.Mock).mockImplementation(() => { throw new Error(ERROR_MESSAGE) });
-                const expected = { success: false, message: ERROR_MESSAGE}
-                const actual = (await request(g.app)
-                    .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                    .set("x-access-token", await getUserToken())
-                    .set('Accept', 'application/json')).body;
-                
-                expect(actual).toEqual(expected);
-            })
-        })
+                (etablissementService.getSubventions as jest.Mock).mockImplementationOnce(() => {
+                    throw new Error(ERROR_MESSAGE);
+                });
+                const expected = { success: false, message: ERROR_MESSAGE };
+                const actual = (
+                    await request(g.app)
+                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
+                        .set("x-access-token", await getUserToken())
+                        .set("Accept", "application/json")
+                ).body;
 
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        // TODO: make it a real intergation test and mock calls to providers instead
         describe("on success", () => {
             const SUBVENTIONS = ["subventions"];
-            beforeAll(() => {
-                (etablissementService.getSubventions as jest.Mock).mockImplementation(() => SUBVENTIONS);
-            })
+            const SUBVENTION_FLUX = [{ subventions: SUBVENTIONS }];
+            beforeEach(() => {
+                (etablissementService.getSubventions as jest.Mock).mockImplementationOnce(() => ({
+                    toPromise: async () => SUBVENTION_FLUX
+                }));
+            });
             it("should return 200", async () => {
-                const actual = (await request(g.app)
-                    .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                    .set("x-access-token", await getUserToken())
-                    .set('Accept', 'application/json')).statusCode
-    
-                expect(actual).toBe(200)
+                const actual = (
+                    await request(g.app)
+                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
+                        .set("x-access-token", await getUserToken())
+                        .set("Accept", "application/json")
+                ).statusCode;
+
+                expect(actual).toBe(200);
             });
 
             it("should return an object with subventions", async () => {
-                const expected = { success: true, subventions: SUBVENTIONS};
-                const actual = (await request(g.app)
-                    .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                    .set("x-access-token", await getUserToken())
-                    .set('Accept', 'application/json')).body
+                const expected = { success: true, subventions: SUBVENTIONS };
+                const actual = (
+                    await request(g.app)
+                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
+                        .set("x-access-token", await getUserToken())
+                        .set("Accept", "application/json")
+                ).body;
 
                 expect(actual).toEqual(expected);
-            })
-        })
-        
-    })
-})
+            });
+        });
+    });
+});

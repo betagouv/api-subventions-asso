@@ -1,20 +1,5 @@
 <script>
-    import { beforeUpdate } from "svelte";
     import { data } from "../../../store/modal.store";
-    import { numberToEuro } from "../../../helpers/dataHelper";
-
-    let title = "Détails des informations pour la demande de subvention";
-
-    beforeUpdate(() => {
-        if ($data.subvention) {
-            title =
-                `Détails des informations pour la demande ${$data.subvention.status.toLowerCase()} auprès du service ${
-                    $data.subvention.service_instructeur
-                }` + $data.subvention.montants.demande
-                    ? ` pour un montant demandée de ${numberToEuro($data.subvention.montants.demande)}`
-                    : "";
-        }
-    });
 </script>
 
 {#if $data.subvention}
