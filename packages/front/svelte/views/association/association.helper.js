@@ -56,7 +56,10 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
 
 const getYearOfItem = item => {
     if (item.isSub) return item.annee_demande;
+    // VersementFonjep
     if (item.periodeDebut) return new Date(item.periodeDebut).getFullYear();
+    // VersementChorus
+    if (item.dateOperation) return new Date(item.dateOperation).getFullYear();
     return "";
 };
 
