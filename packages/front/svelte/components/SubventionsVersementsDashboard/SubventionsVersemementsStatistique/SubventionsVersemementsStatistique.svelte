@@ -11,8 +11,8 @@
     $: elements, controller.updateElements(elements);
 </script>
 
-<div class="totals">
-    <div class="subventions">
+<div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-8">
         <h3>Demandes de subventions collectées</h3>
         <p>
             <b>{$subventionsPercent}%</b>
@@ -22,7 +22,7 @@
             D'après les données récupérées via Dauphin, Osiris et Fonjep.
         </p>
     </div>
-    <div class="versements">
+    <div class="fr-col-4">
         <h3>Versements réalisés</h3>
         <p>
             Total des versements en <b>{year}</b>
@@ -33,22 +33,3 @@
         </p>
     </div>
 </div>
-
-<style>
-    .totals {
-        display: flex;
-    }
-
-    .totals > .subventions {
-        flex-grow: 3;
-    }
-
-    .totals > .versements {
-        flex-grow: 1;
-    }
-
-    .totals div:last-child {
-        width: 360px;
-        max-width: 360px;
-    }
-</style>

@@ -53,16 +53,15 @@
                 <ProgressBar percent={$loaderStateStore.percent} />
             </Alert>
         {/if}
-
-        <div class="tables">
-            <div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-8">
                 <SubventionTable
                     elements={$elements}
                     sort={column => controller.sort(column)}
                     currentSort={$sortColumn}
                     sortDirection={$sortDirection} />
             </div>
-            <div>
+            <div class="fr-col-4">
                 <VersementTable
                     elements={$elements}
                     sort={column => controller.sort(column)}
@@ -101,19 +100,5 @@
 
     .select-wrapper {
         flex: 1 1 0px;
-    }
-
-    .tables {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .tables div:first-child {
-        width: 760px;
-        max-width: 760px;
-    }
-    .tables div:last-child {
-        width: 360px;
-        max-width: 360px;
     }
 </style>
