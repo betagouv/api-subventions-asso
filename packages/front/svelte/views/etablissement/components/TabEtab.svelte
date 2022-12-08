@@ -2,6 +2,7 @@
     import Tabs from "../../../dsfr/Tabs.svelte";
     import TabContent from "../../../dsfr/TabContent.svelte";
     import ContactEtab from "./ContactEtab/ContactEtab.svelte";
+    import Documents from "../../../components/Documents/Documents.svelte";
     import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
 
     export let etablissement;
@@ -13,14 +14,14 @@
         <svelte:fragment slot="tab-content">
             {#each titles as _title, index}
                 <TabContent selected={index === 0} {index}>
-                    {#if index == 0}
+                    {#if index === 0}
                         <!-- <Dashboard {association} /> -->
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} />
-                    {:else if index === 3}
-                        <InfosBancairesEtab elements={etablissement.information_banquaire} />
+                    {:else if index === 2}
+                        <Documents resource={etablissement} resourceType="etablissement" />
                     {:else}
-                        <!-- <Etablissements {associationIdentifier} {association} /> -->
+                        <InfosBancairesEtab elements={etablissement.information_banquaire} />
                     {/if}
                 </TabContent>
             {/each}
