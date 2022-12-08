@@ -54,10 +54,17 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
     return uniformizedElements.sort(sortByDateAsc);
 };
 
-const getYearOfItem = item => {
-    if (item.isSub) return item.annee_demande;
-    if (item.periodeDebut) return new Date(item.periodeDebut).getFullYear();
-    return "";
+// Return year of subvention or versement as a string
+export const getYearOfElement = element => {
+    if (element.isSub) return getSubventionYear(element);
+    if (element.isVersement) return getVersementYear(element);
+};
+
+export const getSubventionYear = subvention => subvention.annee_demande;
+
+export const getVersementYear = versement => {
+    if (versement.periodeDebut) return new Date(versement.periodeDebut).getFullYear();
+    if (versement.dateOperation) return new Date(versement.dateOperation).getFullYear();
 };
 
 const groupByVersementKey = (acc, curr) => {
@@ -67,7 +74,9 @@ const groupByVersementKey = (acc, curr) => {
         return acc;
     }
 
-    const key = curr.versementKey + "-" + getYearOfItem(curr); // Discuter avec maxime pour faire cette manip cotée api
+    const year = getYearOfElement(curr);
+    const yearStr = year ? String(year) : "";
+    const key = `${curr.versementKey}-${yearStr}`; // Discuter avec maxime pour faire cette manip cotée api
 
     if (!acc.withKey[key]) acc.withKey[key] = [];
 
