@@ -74,7 +74,11 @@ export default class FormaterHelper {
                     );
                 }
             } else {
-                acc[key] = a[key] || b[key];
+                if (Array.isArray(a[key]) || Array.isArray(b[key])) {
+                    acc[key] = a[key]?.flat() || b[key]?.flat();
+                } else {
+                    acc[key] = a[key] || b[key];
+                }
             }
             return acc;
         }, {} as DefaultObject<unknown>) as DefaultObject<unknown[]>;
