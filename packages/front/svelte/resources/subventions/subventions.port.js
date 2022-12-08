@@ -1,4 +1,5 @@
-import { flatenProviderValue } from "../../helpers/dataHelper"; // Voir si il ne vaux mieux pas passer ça en adapteur
+// Voir si il ne vaux mieux pas passer ça en adapteur
+import { flatenProviderValue } from "../../helpers/providerValueHelper";
 import SSEConnector from "../../shared/SseConnector";
 import Store from "../../shared/Store";
 

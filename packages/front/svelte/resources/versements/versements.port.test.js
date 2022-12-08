@@ -1,6 +1,6 @@
 import axios from "axios";
 import versementsPort from "./versements.port";
-import * as dataHelper from "../../helpers/dataHelper";
+import * as providerValueHelper from "../../helpers/providerValueHelper";
 
 describe("VersementsPort", () => {
     describe("getEtablissementVersements", () => {
@@ -81,7 +81,7 @@ describe("VersementsPort", () => {
 
         beforeAll(() => {
             axiosGetMock = jest.spyOn(axios, "get");
-            flatenProviderValueMock = jest.spyOn(dataHelper, "flatenProviderValue");
+            flatenProviderValueMock = jest.spyOn(providerValueHelper, "flatenProviderValue");
         });
 
         afterAll(() => {
