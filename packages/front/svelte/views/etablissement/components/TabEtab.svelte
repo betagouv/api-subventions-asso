@@ -20,10 +20,8 @@
                         <ContactEtab contacts={etablissement.contacts} />
                     {:else if index === 2}
                         <Documents resource={etablissement} resourceType="etablissement" />
-                    {:else if index === 3}
-                        <InfosBancairesEtab elements={etablissement.information_banquaire} />
                     {:else}
-                        <!-- <Etablissements {associationIdentifier} {association} /> -->
+                        <InfosBancairesEtab elements={etablissement.information_banquaire} />
                     {/if}
                 </TabContent>
             {/each}
