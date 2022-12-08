@@ -1,31 +1,31 @@
 {
-  "name": "tools",
-  "version": "0.18.5",
-  "description": "Tools that are not directly use by the Data.Subvention project",
-  "author": "Maxime Silvère Meunier <mxmeunier@gmail.com>",
-  "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/tools#readme",
-  "license": "MIT",
-  "main": "lib/tools.js",
-  "engines": {
-    "node": "16",
-    "npm": "8"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/betagouv/api-subventions-asso.git"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\""
-  },
-  "bugs": {
-    "url": "https://github.com/betagouv/api-subventions-asso/issues"
-  },
-  "dependencies": {
-    "axios": "^0.26.1",
-    "dotenv": "^16.0.1",
-    "jsdom": "^19.0.0",
-    "node-fetch": "^3.2.10",
-    "node-xlsx": "^0.21.0",
-    "qs": "^6.11.0"
-  }
+    "name": "tools",
+    "version": "0.19.0",
+    "description": "Tools that are not directly use by the Data.Subvention project",
+    "author": "Maxime Silvère Meunier <mxmeunier@gmail.com>",
+    "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/tools#readme",
+    "license": "MIT",
+    "main": "lib/tools.js",
+    "engines": {
+        "node": "16",
+        "npm": "8"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/betagouv/api-subventions-asso.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: run tests from root\""
+    },
+    "bugs": {
+        "url": "https://github.com/betagouv/api-subventions-asso/issues"
+    },
+    "dependencies": {
+        "axios": "^0.26.1",
+        "dotenv": "^16.0.1",
+        "jsdom": "^19.0.0",
+        "node-fetch": "^3.2.10",
+        "node-xlsx": "^0.21.0",
+        "qs": "^6.11.0"
+    }
 }

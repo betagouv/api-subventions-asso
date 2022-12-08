@@ -3,28 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+# [0.19.0](https://github.com/betagouv/datasubvention/compare/v0.18.3...v0.19.0) (2022-12-08)
+
+### Bug Fixes
+
+-   **front:** realign login form ([b1d69c9](https://github.com/betagouv/datasubvention/commit/b1d69c927043647158d948c521e98ba2f64445d6))
+-   **front:** run prettier ([8e1ce0b](https://github.com/betagouv/datasubvention/commit/8e1ce0b75d5760b1d62e1de239e822c66620634e))
+
+### Features
+
+-   **api:** apply PR review comments ([12c7bef](https://github.com/betagouv/datasubvention/commit/12c7befd7c925a8ef1cd7e1bf395d0a93e53d270))
+-   **front, api:** add etablissement dashboard ([#709](https://github.com/betagouv/datasubvention/issues/709)) ([b3c3cc3](https://github.com/betagouv/datasubvention/commit/b3c3cc3b74259e0a1d5761002b98d32ff108fe34))
+-   **front:** add etablissment tab bank data ([a74bd75](https://github.com/betagouv/datasubvention/commit/a74bd75ac35e36f7695c6ada7f6e73bdf7ba645d))
+-   **front:** align left tabs ([418da43](https://github.com/betagouv/datasubvention/commit/418da43415292801a6f3ad5816ccb370721e8566))
+-   **front:** include dsfr icons ([#704](https://github.com/betagouv/datasubvention/issues/704)) ([97fa87d](https://github.com/betagouv/datasubvention/commit/97fa87d73b13923fc56ac817b855244568de6e11))
+-   **front:** migratate admin/user/create in Svelte ([#671](https://github.com/betagouv/datasubvention/issues/671)) ([2ca42b2](https://github.com/betagouv/datasubvention/commit/2ca42b2e235c768d3136752473a1f61f06d5ba90))
+-   **front:** new etablissement page ([#626](https://github.com/betagouv/datasubvention/issues/626)) ([1c20193](https://github.com/betagouv/datasubvention/commit/1c201935259fac247b47ae09d5d56ab6963249e8))
+-   **front:** remplace ejs admin view in svelte view ([7b8e82d](https://github.com/betagouv/datasubvention/commit/7b8e82d0ab5d2cc33821cd2aba3839f1f3a2b6f2))
+-   **front:** remplace ejs domain admin view in svelte view ([#673](https://github.com/betagouv/datasubvention/issues/673)) ([bc2f329](https://github.com/betagouv/datasubvention/commit/bc2f329780b0673a4e75db22cde05842c7ed46fd))
+-   **front:** restore cgu in svelte front ([d1cb769](https://github.com/betagouv/datasubvention/commit/d1cb76911a5aacd2e021d8e0a958dd466c667fb6))
+-   **front:** use Documents in etablissement page ([2e1a47d](https://github.com/betagouv/datasubvention/commit/2e1a47d003430014eddf99043deca88bb33e9927))
+-   **front:** use safe equality operand ([7bb0808](https://github.com/betagouv/datasubvention/commit/7bb0808c4d06cc704596cf06034257bab6e9ff23))
 ## [0.18.5](https://github.com/betagouv/datasubvention/compare/v0.18.3...v0.18.5) (2022-12-12)
 
 
 
-## [0.17.3](https://github.com/betagouv/datasubvention/compare/v0.18.0...v0.17.3) (2022-11-22)
-
-**Note:** Version bump only for package front
-
-
-
-
-
 ## [0.18.4](https://github.com/betagouv/datasubvention/compare/v0.18.3...v0.18.4) (2022-12-12)
-
-
-
-## [0.17.3](https://github.com/betagouv/datasubvention/compare/v0.18.0...v0.17.3) (2022-11-22)
-
-**Note:** Version bump only for package front
-
-
-
 
 
 ## [0.18.3](https://github.com/betagouv/datasubvention/compare/v0.18.2...v0.18.3) (2022-12-08)
@@ -48,6 +53,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** enhance Router with dynamics routes ([#612](https://github.com/betagouv/datasubvention/issues/612)) ([e5745db](https://github.com/betagouv/datasubvention/commit/e5745dbecaa6c7d89c19d2ca7dab69614383c2c4))
 -   **front:** move Breadcrumbs uses in Router ([#608](https://github.com/betagouv/datasubvention/issues/608)) ([25ee182](https://github.com/betagouv/datasubvention/commit/25ee182899dfcc01c0d11e2927b4bdf4b17bb734))
     > > > > > > > main
+
+
+
+## [0.17.3](https://github.com/betagouv/datasubvention/compare/v0.18.0...v0.17.3) (2022-11-22)
+
+**Note:** Version bump only for package front
+
 
 ## [0.17.2](https://github.com/betagouv/datasubvention/compare/v0.17.0...v0.17.2) (2022-11-17)
 
