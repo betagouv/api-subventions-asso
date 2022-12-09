@@ -95,14 +95,18 @@ export class StatsRepository {
                 matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
             }
             const annotateQuery = { $addFields: { month: { $month: "$timestamp" } } };
+            const groupQueries = [
+                { $group: { _id: { user: "$meta.req.user.email", month: "$month" }, nbOfRequests: { $count: {} } } },
+                { $group: { _id: "$_id.month", nbOfRequests: { $avg: "$nbOfRequests" } } }
+            ];
 
-            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
+            return [matchQuery, annotateQuery, ...groupQueries];
         };
 
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
         const resultByMonth0Index = {};
-        for (const { _id, nbOfRequest } of queryResult) {
-            resultByMonth0Index[_id - 1] = nbOfRequest;
+        for (const { _id, nbOfRequests } of queryResult) {
+            resultByMonth0Index[_id - 1] = nbOfRequests;
         }
         return Object.values(frenchToEnglishMonthsMap).reduce((acc, monthLowercase, index) => {
             acc[capitalizeFirstLetter(monthLowercase)] = resultByMonth0Index[index] || 0;
