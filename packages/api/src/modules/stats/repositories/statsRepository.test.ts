@@ -16,9 +16,10 @@ describe("StatsRepository", () => {
         const END = dateFactory(1);
 
         it("should call mongo with admin filters", async () => {
-            // @ts-expect-error statsRepository.collection is private attribute
             const mock = jest
+                // @ts-expect-error statsRepository.collection is private attribute
                 .spyOn(statsRepository.collection, "aggregate")
+                // @ts-expect-error type error due to mocking documents
                 .mockImplementationOnce(() => ({ next: () => ({}) }));
 
             await statsRepository.countUsersByRequestNbOnPeriod(START, END, NB_REQUESTS, false);
@@ -27,9 +28,10 @@ describe("StatsRepository", () => {
         });
 
         it("should call mongo without admin filters", async () => {
-            // @ts-expect-error statsRepository.collection is private attribute
             const mock = jest
+                // @ts-expect-error statsRepository.collection is private attribute
                 .spyOn(statsRepository.collection, "aggregate")
+                // @ts-expect-error type error due to mocking documents
                 .mockImplementationOnce(() => ({ next: () => ({}) }));
 
             await statsRepository.countUsersByRequestNbOnPeriod(START, END, NB_REQUESTS, true);
@@ -43,9 +45,10 @@ describe("StatsRepository", () => {
         const END = dateFactory(1);
 
         it("should call mongo with admin filters", async () => {
-            // @ts-expect-error statsRepository.collection is private attribute
             const mock = jest
+                // @ts-expect-error statsRepository.collection is private attribute
                 .spyOn(statsRepository.collection, "aggregate")
+                // @ts-expect-error type error due to mocking documents
                 .mockImplementationOnce(() => ({ toArray: () => [] }));
 
             await statsRepository.countMedianRequestsOnPeriod(START, END, false);
@@ -54,9 +57,10 @@ describe("StatsRepository", () => {
         });
 
         it("should call mongo without admin filters", async () => {
-            // @ts-expect-error statsRepository.collection is private attribute
             const mock = jest
+                // @ts-expect-error statsRepository.collection is private attribute
                 .spyOn(statsRepository.collection, "aggregate")
+                // @ts-expect-error type error due to mocking documents
                 .mockImplementationOnce(() => ({ toArray: () => [] }));
 
             await statsRepository.countMedianRequestsOnPeriod(START, END, true);
@@ -67,6 +71,7 @@ describe("StatsRepository", () => {
         it("should return median (odd)", async () => {
             // @ts-expect-error statsRepository.collection is private attribute
             jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({
+                // @ts-expect-error type error due to mocking documents
                 toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }]
             }));
             const expected = 2;
@@ -78,6 +83,7 @@ describe("StatsRepository", () => {
         it("should return median (pair)", async () => {
             // @ts-expect-error statsRepository.collection is private attribute
             jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({
+                // @ts-expect-error type error due to mocking documents
                 toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }, { nbOfRequest: 4 }]
             }));
             const expected = 2.5;
