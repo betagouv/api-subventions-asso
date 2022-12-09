@@ -1,4 +1,8 @@
-import { StatsRequestDtoResponse, StatsRequestsMedianDtoResponse } from "@api-subventions-asso/dto";
+import {
+    StatsRequestDtoResponse,
+    StatsRequestsMedianDtoResponse,
+    MonthlyAvgRequestDtoResponse
+} from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
 import statsService from "../../stats.service";
@@ -83,7 +87,7 @@ export class StatsController extends Controller {
     async getTotalRequestOnPeriod(
         // year: string,
         @Query() includesAdmin = "false"
-    ): Promise<StatsRequestsMedianDtoResponse> {
+    ): Promise<MonthlyAvgRequestDtoResponse> {
         try {
             const result = await statsService.getTotalRequestsByMonthPerYear(Number("2022"), includesAdmin === "true");
             return { success: true, data: result };

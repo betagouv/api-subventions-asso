@@ -3,6 +3,7 @@ import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
 import { frenchToEnglishMonthsMap } from "../../../shared/helpers/DateHelper";
 import { capitalizeFirstLetter } from "../../../shared/helpers/StringHelper";
+import { MonthlyAvgRequest } from "@api-subventions-asso/dto";
 
 export class StatsRepository {
     private readonly collection = db.collection("log");
@@ -74,30 +75,28 @@ export class StatsRepository {
         return result[middle].nbOfRequest;
     }
 
-    public async countTotalRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<any> {
+    /**
+     * To ensure a meaningful response, start must be the first day of a month and end the last day of a month
+     */
+    public async countTotalRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<MonthlyAvgRequest> {
+        const start = new Date(year, 0, 1);
+        const end = new Date(year + 1, 0, 0);
         const buildQuery = () => {
-            const projectQueries = [
-                {
-                    $project: {
-                        month: { $month: "$timestamp" },
-                        year: { $year: "$timestamp" },
-                        "meta.req.user.roles": true,
-                        "meta.req.user.email": true
-                    }
-                }
-            ];
-
             const matchQuery: { $match: DefaultObject } = {
                 $match: {
-                    year,
+                    timestamp: {
+                        $gte: start,
+                        $lte: end
+                    },
                     "meta.req.user.email": { $ne: null }
                 }
             };
             if (!includesAdmin) {
                 matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
             }
+            const annotateQuery = { $addFields: { month: { $month: "$timestamp" } } };
 
-            return [...projectQueries, matchQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
+            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
         };
 
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
