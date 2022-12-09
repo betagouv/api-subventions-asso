@@ -1,11 +1,18 @@
 import { RoleEnum } from "../../../@enums/Roles";
-import { DefaultObject } from '../../../@types';
-import db from '../../../shared/MongoConnection';
+import { DefaultObject } from "../../../@types";
+import db from "../../../shared/MongoConnection";
+import { frenchToEnglishMonthsMap } from "../../../shared/helpers/DateHelper";
+import { capitalizeFirstLetter } from "../../../shared/helpers/StringHelper";
 
 export class StatsRepository {
     private readonly collection = db.collection("log");
 
-    public async countUsersByRequestNbOnPeriod(start: Date, end: Date, nbReq: number, includesAdmin: boolean): Promise<number> {
+    public async countUsersByRequestNbOnPeriod(
+        start: Date,
+        end: Date,
+        nbReq: number,
+        includesAdmin: boolean
+    ): Promise<number> {
         const matchQuery: { $match: DefaultObject } = {
             $match: {
                 timestamp: {
@@ -15,15 +22,21 @@ export class StatsRepository {
             }
         };
         if (!includesAdmin) {
-            matchQuery.$match['meta.req.user.roles'] = { $nin: [RoleEnum.admin] };
+            matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
         }
 
-        return (await this.collection.aggregate([
-            matchQuery,
-            { $group: { _id: '$meta.req.user.email', nbOfRequest: { $sum: 1 } } },
-            { $match: { "nbOfRequest": { $gte: nbReq } } },
-            { $count: "nbOfUsers" }
-        ]).next())?.nbOfUsers || 0; // If no stats found nbOfUsers is null but whant retrun an number
+        return (
+            (
+                await this.collection
+                    .aggregate([
+                        matchQuery,
+                        { $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } } },
+                        { $match: { nbOfRequest: { $gte: nbReq } } },
+                        { $count: "nbOfUsers" }
+                    ])
+                    .next()
+            )?.nbOfUsers || 0
+        ); // If no stats found nbOfUsers is null but whant retrun an number
     }
 
     public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean): Promise<number> {
@@ -38,15 +51,15 @@ export class StatsRepository {
                 }
             };
             if (!includesAdmin) {
-                matchQuery.$match['meta.req.user.roles'] = { $nin: [RoleEnum.admin] };
+                matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
             }
 
             return [
                 matchQuery,
-                { $group: { _id: '$meta.req.user.email', nbOfRequest: { $sum: 1 } } },
+                { $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } } },
                 { $sort: { nbOfRequest: 1 } }
-            ]
-        }
+            ];
+        };
 
         const result = await this.collection.aggregate(buildQuery()).toArray();
 
@@ -60,6 +73,51 @@ export class StatsRepository {
 
         return result[middle].nbOfRequest;
     }
+
+    public async countTotalRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<any> {
+        const buildQuery = () => {
+            const projectQueries = [
+                {
+                    $project: {
+                        month: { $month: "$timestamp" },
+                        year: { $year: "$timestamp" },
+                        "meta.req.user.roles": true,
+                        "meta.req.user.email": true
+                    }
+                }
+            ];
+
+            const matchQuery: { $match: DefaultObject } = {
+                $match: {
+                    year,
+                    "meta.req.user.email": { $ne: null }
+                }
+            };
+            if (!includesAdmin) {
+                matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
+            }
+
+            return [...projectQueries, matchQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
+        };
+
+        const queryResult = await this.collection.aggregate(buildQuery()).toArray();
+        const resultByMonth0Index = {};
+        for (const { _id, nbOfRequest } of queryResult) {
+            resultByMonth0Index[_id - 1] = nbOfRequest;
+        }
+        return Object.values(frenchToEnglishMonthsMap).reduce((acc, monthLowercase, index) => {
+            acc[capitalizeFirstLetter(monthLowercase)] = resultByMonth0Index[index] || 0;
+            return acc;
+        }, {});
+    }
+
+    /*
+    * stat controller
+
+request-mediane
+
+écrire request-
+passer période mais défaut 1 an*/
 }
 
 const statsRepository = new StatsRepository();
