@@ -83,14 +83,14 @@ export class StatsController extends Controller {
      * @param {string=} [includesAdmin = "false"] true if we include admin in stats, false for exclude admin (All value other of "true" will be considered as false)
      * @returns
      */
-    @Get("/requests/totals/{year}")
+    @Get("/requests/monthly/{year}")
     @Response<ErrorResponse>("500")
-    async getTotalRequestOnPeriod(
+    async getMonthlyAvgRequestsPerYear(
         year: string,
         @Query() includesAdmin = "false"
     ): Promise<MonthlyAvgRequestDtoResponse> {
         try {
-            const result = await statsService.getTotalRequestsByMonthPerYear(Number(year), includesAdmin === "true");
+            const result = await statsService.getMonthlyAvgRequestsPerYear(Number(year), includesAdmin === "true");
             return { success: true, data: result };
         } catch (e) {
             this.setStatus(500);

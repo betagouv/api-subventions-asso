@@ -78,7 +78,7 @@ export class StatsRepository {
     /**
      * To ensure a meaningful response, start must be the first day of a month and end the last day of a month
      */
-    public async countTotalRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<MonthlyAvgRequest> {
+    public async monthlyAvgRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<MonthlyAvgRequest> {
         const start = new Date(year, 0, 1);
         const end = new Date(year + 1, 0, 0);
         const buildQuery = () => {

@@ -93,11 +93,11 @@ describe("StatsRepository", () => {
         });
     });
 
-    describe("countTotalRequestsOnPeriod()", () => {
+    describe("monthlyAvgRequestsOnPeriod()", () => {
         async function checkMonthlyAvgStatFormat(aggregateOutput, expected) {
             // @ts-expect-error statsRepository.collection is private attribute and mock typing errors
             jest.spyOn(statsRepository.collection, "aggregate").mockReturnValueOnce({ toArray: () => aggregateOutput });
-            const actual = await statsRepository.countTotalRequestsOnPeriod(YEAR, false);
+            const actual = await statsRepository.monthlyAvgRequestsOnPeriod(YEAR, false);
             expect(actual).toStrictEqual(expected);
         }
 
