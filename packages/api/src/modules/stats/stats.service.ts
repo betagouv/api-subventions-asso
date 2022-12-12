@@ -12,6 +12,10 @@ class StatsService {
     async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
         return await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
     }
+
+    getTopAssociations(limit: number) {
+        return statsRepository.selectMostRequestsAssos(limit);
+    }
 }
 
 const statsService = new StatsService();
