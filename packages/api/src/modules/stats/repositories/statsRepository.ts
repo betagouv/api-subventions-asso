@@ -105,6 +105,22 @@ export class StatsRepository {
             return acc;
         }, {});
     }
+
+    public async selectMostRequestsAssos(limit: number): Promise<any> {
+        /* TODO
+         *   - ensure efficiency of migration query
+         *   - define and use types
+         *   - controller
+         *       - query collection
+         *   - define repo controller tests
+         *   - define service: call repo and specify default value
+         *   - define service test
+         *   - define route
+         *       - query param to customize limit
+         *   - add support for includesAdmin param ?
+         *   - add tracking in association GET routes
+         * */
+    }
 }
 
 const statsRepository = new StatsRepository();

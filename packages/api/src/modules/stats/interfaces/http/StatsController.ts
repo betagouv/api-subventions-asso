@@ -97,4 +97,23 @@ export class StatsController extends Controller {
             return { success: false, message: (e as Error).message };
         }
     }
+
+    /**
+     * Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
+     *
+     * @summary Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
+     * @param limit Number of returned associations
+     * @returns
+     */
+    @Get("/requests/top-associations")
+    @Response<ErrorResponse>("500")
+    async getTopAssociations(@Query() limit = "5"): Promise<any> {
+        try {
+            const result = await statsService.getTopAssociations(Number(limit));
+            return { success: true, data: result };
+        } catch (e) {
+            this.setStatus(500);
+            return { success: false, message: (e as Error).message };
+        }
+    }
 }
