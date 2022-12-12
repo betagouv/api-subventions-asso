@@ -1,8 +1,7 @@
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
-import { frenchToEnglishMonthsMap } from "../../../shared/helpers/DateHelper";
-import { capitalizeFirstLetter } from "../../../shared/helpers/StringHelper";
+import { englishMonthNames } from "../../../shared/helpers/DateHelper";
 import { NbRequestsPerMonthRequest } from "@api-subventions-asso/dto";
 
 export class StatsRepository {
@@ -101,8 +100,8 @@ export class StatsRepository {
         for (const { _id, nbOfRequests } of queryResult) {
             resultByMonth0Index[_id - 1] = nbOfRequests;
         }
-        return Object.values(frenchToEnglishMonthsMap).reduce((acc, monthLowercase, index) => {
-            acc[capitalizeFirstLetter(monthLowercase)] = resultByMonth0Index[index] || 0;
+        return englishMonthNames.reduce((acc, month, index) => {
+            acc[month] = resultByMonth0Index[index] || 0;
             return acc;
         }, {});
     }

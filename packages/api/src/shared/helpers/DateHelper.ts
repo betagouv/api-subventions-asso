@@ -1,3 +1,5 @@
+import { capitalizeFirstLetter } from "./StringHelper";
+
 export const isDateNewer = (a: string | Date, b: string | Date) => {
     const dateA = new Date(a);
     const dateB = new Date(b);
@@ -21,6 +23,10 @@ export const frenchToEnglishMonthsMap = {
     NOVEMBRE: "november",
     DECEMBRE: "december"
 };
+
+export const englishMonthNames = Object.values(frenchToEnglishMonthsMap).map(monthLowercase =>
+    capitalizeFirstLetter(monthLowercase)
+);
 
 export const getMonthFromFrenchStr = (month: string) => {
     return frenchToEnglishMonthsMap[month];
