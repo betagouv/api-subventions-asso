@@ -75,9 +75,6 @@ export class StatsRepository {
         return result[middle].nbOfRequest;
     }
 
-    /**
-     * To ensure a meaningful response, start must be the first day of a month and end the last day of a month
-     */
     public async monthlyAvgRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<MonthlyAvgRequest> {
         const start = new Date(year, 0, 1);
         const end = new Date(year + 1, 0, 0);
@@ -95,12 +92,8 @@ export class StatsRepository {
                 matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
             }
             const annotateQuery = { $addFields: { month: { $month: "$timestamp" } } };
-            const groupQueries = [
-                { $group: { _id: { user: "$meta.req.user.email", month: "$month" }, nbOfRequests: { $count: {} } } },
-                { $group: { _id: "$_id.month", nbOfRequests: { $avg: "$nbOfRequests" } } }
-            ];
 
-            return [matchQuery, annotateQuery, ...groupQueries];
+            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
         };
 
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
@@ -113,14 +106,6 @@ export class StatsRepository {
             return acc;
         }, {});
     }
-
-    /*
-    * stat controller
-
-request-mediane
-
-écrire request-
-passer période mais défaut 1 an*/
 }
 
 const statsRepository = new StatsRepository();
