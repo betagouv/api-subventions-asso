@@ -1,4 +1,4 @@
-export const ACCEPTED_EMAIL_DOMAIN = [
+export const AGENT_ETAT_DOMAIN = [
     "ac-aix-marseille.fr",
     "ac-amiens.fr",
     "ac-besancon.fr",
@@ -45,3 +45,7 @@ export const ACCEPTED_EMAIL_DOMAIN = [
     "region-academique-paca.fr",
     "stjs.wf"
 ];
+
+export const COLLECTIVITE_DOMAIN = ["rhone.fr"];
+
+export const ACCEPTED_EMAIL_DOMAIN = [...AGENT_ETAT_DOMAIN, ...COLLECTIVITE_DOMAIN];
