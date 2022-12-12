@@ -1,9 +1,9 @@
 import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
 
-export type MonthlyAvgRequest = { [month: string]: number };
+export type NbRequestsPerMonthRequest = { [month: string]: number };
 
-export interface MonthlyAvgRequestDtoSuccessResponse extends SuccessResponse {
-    data: MonthlyAvgRequest;
+export interface NbRequestsPerMonthRequestDtoSuccessResponse extends SuccessResponse {
+    data: NbRequestsPerMonthRequest;
 }
 
-export type MonthlyAvgRequestDtoResponse = MonthlyAvgRequestDtoSuccessResponse | ErrorResponse;
+export type MonthlyAvgRequestDtoResponse = NbRequestsPerMonthRequestDtoSuccessResponse | ErrorResponse;

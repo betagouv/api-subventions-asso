@@ -73,8 +73,8 @@ describe("StatsService", () => {
         });
     });
 
-    describe("getMonthlyAvgRequestsPerYear()", () => {
-        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsRepository, "monthlyAvgRequestsOnPeriod");
+    describe("getRequestsPerMonthByYear()", () => {
+        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsRepository, "countRequestsPerMonthByYear");
 
         const YEAR = 2022;
         const mockedValue = {
@@ -98,21 +98,21 @@ describe("StatsService", () => {
 
         it("should call repository", async () => {
             const expected = [YEAR, false];
-            const actual = statsRepository.monthlyAvgRequestsOnPeriod;
-            await statsService.getMonthlyAvgRequestsPerYear(YEAR, false);
+            const actual = statsRepository.countRequestsPerMonthByYear;
+            await statsService.getRequestsPerMonthByYear(YEAR, false);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
         it("should call repository with includesAdmin", async () => {
             const expected = [YEAR, true];
-            const actual = statsRepository.monthlyAvgRequestsOnPeriod;
-            await statsService.getMonthlyAvgRequestsPerYear(YEAR, true);
+            const actual = statsRepository.countRequestsPerMonthByYear;
+            await statsService.getRequestsPerMonthByYear(YEAR, true);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
         it("should call repository", async () => {
             const expected = mockedValue;
-            const actual = await statsService.getMonthlyAvgRequestsPerYear(YEAR, false);
+            const actual = await statsService.getRequestsPerMonthByYear(YEAR, false);
             expect(actual).toStrictEqual(expected);
         });
     });

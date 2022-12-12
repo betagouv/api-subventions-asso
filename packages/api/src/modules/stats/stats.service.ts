@@ -9,8 +9,8 @@ class StatsService {
         return await statsRepository.countMedianRequestsOnPeriod(start, end, includesAdmin);
     }
 
-    async getMonthlyAvgRequestsPerYear(year: number, includesAdmin: boolean) {
-        return await statsRepository.monthlyAvgRequestsOnPeriod(year, includesAdmin);
+    async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
+        return await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
     }
 }
 

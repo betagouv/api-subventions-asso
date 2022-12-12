@@ -3,7 +3,7 @@ import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
 import { frenchToEnglishMonthsMap } from "../../../shared/helpers/DateHelper";
 import { capitalizeFirstLetter } from "../../../shared/helpers/StringHelper";
-import { MonthlyAvgRequest } from "@api-subventions-asso/dto";
+import { NbRequestsPerMonthRequest } from "@api-subventions-asso/dto";
 
 export class StatsRepository {
     private readonly collection = db.collection("log");
@@ -75,7 +75,7 @@ export class StatsRepository {
         return result[middle].nbOfRequest;
     }
 
-    public async monthlyAvgRequestsOnPeriod(year: number, includesAdmin: boolean): Promise<MonthlyAvgRequest> {
+    public async countRequestsPerMonthByYear(year: number, includesAdmin: boolean): Promise<NbRequestsPerMonthRequest> {
         const start = new Date(year, 0, 1);
         const end = new Date(year + 1, 0, 0);
         const buildQuery = () => {

@@ -4,8 +4,8 @@ import { StatsController } from "./StatsController";
 const controller = new StatsController();
 
 describe("StatsController", () => {
-    describe("getMonthlyAvgRequestsPerYear", () => {
-        const getStatSpy = jest.spyOn(statsService, "getMonthlyAvgRequestsPerYear");
+    describe("getRequestsPerMonthByYear", () => {
+        const getStatSpy = jest.spyOn(statsService, "getRequestsPerMonthByYear");
         const YEAR_STR = "2022";
         const YEAR_NB = 2022;
         const mockedValue = {
@@ -25,20 +25,20 @@ describe("StatsController", () => {
 
         it("should call service with args default", async () => {
             getStatSpy.mockImplementationOnce(jest.fn());
-            await controller.getMonthlyAvgRequestsPerYear(YEAR_STR);
+            await controller.getRequestsPerMonthByYear(YEAR_STR);
             expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB, false);
         });
 
         it("should call service with args with includeAdmin", async () => {
             getStatSpy.mockImplementationOnce(jest.fn());
-            await controller.getMonthlyAvgRequestsPerYear(YEAR_STR, "true");
+            await controller.getRequestsPerMonthByYear(YEAR_STR, "true");
             expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB, true);
         });
 
         it("should return a success object", async () => {
             getStatSpy.mockResolvedValueOnce(mockedValue);
             const expected = { success: true, data: mockedValue };
-            const actual = await controller.getMonthlyAvgRequestsPerYear(YEAR_STR);
+            const actual = await controller.getRequestsPerMonthByYear(YEAR_STR);
             expect(actual).toStrictEqual(expected);
         });
 
@@ -46,7 +46,7 @@ describe("StatsController", () => {
             const ERROR_MESSAGE = "Error";
             getStatSpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE));
             const expected = { success: false, message: ERROR_MESSAGE };
-            const actual = await controller.getMonthlyAvgRequestsPerYear("blabla");
+            const actual = await controller.getRequestsPerMonthByYear("blabla");
             expect(actual).toStrictEqual(expected);
         });
     });

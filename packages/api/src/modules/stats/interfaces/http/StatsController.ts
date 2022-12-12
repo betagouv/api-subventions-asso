@@ -85,12 +85,12 @@ export class StatsController extends Controller {
      */
     @Get("/requests/monthly/{year}")
     @Response<ErrorResponse>("500")
-    async getMonthlyAvgRequestsPerYear(
+    async getRequestsPerMonthByYear(
         year: string,
         @Query() includesAdmin = "false"
     ): Promise<MonthlyAvgRequestDtoResponse> {
         try {
-            const result = await statsService.getMonthlyAvgRequestsPerYear(Number(year), includesAdmin === "true");
+            const result = await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
             return { success: true, data: result };
         } catch (e) {
             this.setStatus(500);
