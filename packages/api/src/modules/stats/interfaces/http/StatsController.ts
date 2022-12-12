@@ -80,7 +80,7 @@ export class StatsController extends Controller {
      *
      * @summary Permet de récupérer le nombre total de requêtes sur un période donnée
      * @param year
-     * @param {string=} [includesAdmin = "false"] true if we include admin in stats, false for exclude admin (All value other of "true" will be considered as false)
+     * @param {string=} [includesAdmin = "false"] true to include admin in stats, false for exclude admin (All value other of "true" will be considered as false)
      * @returns
      */
     @Get("/requests/monthly/{year}")
