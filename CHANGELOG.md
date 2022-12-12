@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.5](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.5) (2022-12-12)
+
+
+### Features
+
+* **api:** add collectivite domain ([@rhone](https://github.com/rhone).fr) ([6cc7d7f](https://github.com/betagouv/api-subventions-asso/commit/6cc7d7f31133de3cdbbb0a5ce60ad2aa2863a353))
+
+
+
+## [0.17.3](https://github.com/betagouv/api-subventions-asso/compare/v0.18.0...v0.17.3) (2022-11-22)
+
+
+### Bug Fixes
+
+* **api:** fix migration duplicate unique id ([031cd12](https://github.com/betagouv/api-subventions-asso/commit/031cd129d31411f86b7b135ad618f4b73b7a2d22))
+
+
+
+
+
 ## [0.18.4](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.4) (2022-12-12)
 
 
