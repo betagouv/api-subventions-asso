@@ -92,7 +92,7 @@ export class StatsRepository {
             }
             const annotateQuery = { $addFields: { month: { $month: "$timestamp" } } };
 
-            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
+            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequests: { $sum: 1 } } }];
         };
 
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
