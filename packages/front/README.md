@@ -8,27 +8,6 @@ Vous pouvez voir ce site en ligne ici : https://datasubvention.beta.gouv.fr.
 npm start
 ```
 
-Ce repo contient tout ce qu'il faut pour tourner sur Scalingo. Il suffit de déployer la branche main sur votre instance Scalingo.
-
-## Tester que le HTML d'un site est valide
-
-```
-npm run checkHTML --  <url du site à tester>
-```
-
-Si on veut checker pour une PR donnée, utiliser l'url de la review app de la PR (voir les checks dans la PR).
-
-## Lancer ce site localement
-
-Vous devez avoir npm installé sur votre machine.
-
-```
-git clone https://github.com/betagouv/template-design-system-de-l-etat
-cd template-design-system-de-l-etat
-npm install
-npm run dev
-```
-
 ## Mettre à jour le Design System
 
 -   Modifier la version de `@gouvfr/dsfr` dans `package.json`
@@ -40,11 +19,41 @@ npm install
 
 -   Modifier les templates selon la note de version
 
-## Voir la documentation locale du DSFR
+## Architecture Svelte
+
+En plus de la documentation qui suit, le point d'entrée de l'application est `./static/svelte-index.html`.
+
+Le package Front est divisé comme suit :
 
 ```
-cd node_modules/@gouvfr/dsfr && npx http-server -o
-```
+svelte
+│   main.js                             // Point d'entrée de l'application
+│   routes.js                           // Définition des routes (nom et composant)
+│   App.svelte                          // Point d'entrée Svelte
+│   global.css                          // Fichier CSS global
+│
+└───components                          // Contient tous les composants Svelte métier
+│   │
+│   │
+│   └───Foo                             // Il existe autant de sous répertoire que de composants "intelligent"
+│       │   Foo.svelte                  // Composant graphique Svelte (dumb)
+│       │   Foo.controller.js           // Contrôleur qui s'occupe de récupérer/calculer la donnée renvoyée au composant graphique
+│       │   ...
+│
+└───core                                // Contient quelques fichiers "essentiels", comme le connecteur SSE
+│
+└───dsfr                                // Contient tous les composants Svelte liés au composant du DSFR
+│
+└───helpers                             // Contient des helpers spécifiques à un champ particulier (string, date, etc)
+│
+└───resources                           // Contient les connecteurs (ports) HTTP
+│
+└───services                            // Contient des services métiers qui ne sont pas liés à un composant
+│
+└───store                               // Contient une liste de stores globaux
+│
+└───views                               // Contient les composants liés aux vues principales
+
 
 ## Gestion des routes (svelte)
 
@@ -54,3 +63,4 @@ Le routing Svelte est géré par deux parties :
 -   Le fichier routes.js qui définie les composants principaux pour chaque route
 
 Pour ajouter une nouvelle route, il suffit de rajouter sa définition dans le fichier routes.js avec le bon composant à afficher.
+```

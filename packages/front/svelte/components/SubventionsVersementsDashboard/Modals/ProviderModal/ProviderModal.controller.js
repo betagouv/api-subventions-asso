@@ -1,5 +1,5 @@
 import providersService from "../../../../resources/providers/providers.service";
-import Store from "../../../../shared/Store";
+import Store from "../../../../core/Store";
 
 export default class ProviderModalController {
     constructor() {

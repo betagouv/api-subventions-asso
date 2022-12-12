@@ -1,13 +1,13 @@
 <script>
     import "./global.css";
     import { ENV } from "../src/shared/config";
-    import Auth from "./shared/Auth.svelte";
+    import Auth from "./components/Auth.svelte";
     import GenericModal from "./dsfr/GenericModal.svelte";
     import Matomo from "./components/Matomo.svelte";
-    import Router from "./shared/Router.svelte";
-    import Header from "./shared/Header.svelte";
-    import Footer from "./shared/Footer.svelte";
-    import Theme from "./shared/Theme.svelte";
+    import Router from "./components/Router.svelte";
+    import Header from "./components/Header.svelte";
+    import Footer from "./components/Footer.svelte";
+    import Theme from "./components/Theme.svelte";
     import { setContext } from "svelte";
     import routes from "./routes";
 

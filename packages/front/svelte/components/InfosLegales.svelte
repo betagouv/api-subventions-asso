@@ -1,6 +1,6 @@
 <script>
     import { getAddress, getSiegeSiret } from "../views/association/association.helper";
-    import TitleWithData from "../components/TitleWithData.svelte";
+    import TitleWithData from "./TitleWithData.svelte";
 
     export let association;
 </script>
