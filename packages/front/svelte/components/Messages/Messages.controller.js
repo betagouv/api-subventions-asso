@@ -1,4 +1,4 @@
-import Store from "../../shared/Store";
+import Store from "../../core/Store";
 import messagesService from "../../resources/messages/messages.service";
 
 export default class MessagesController {

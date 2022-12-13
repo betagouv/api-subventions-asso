@@ -4,4 +4,4 @@ import App from "./App.svelte";
 
 axios.defaults.baseURL = DATASUB_URL;
 
-export const auth = new App({ target: document.getElementById("svelte-body") });
+new App({ target: document.getElementById("svelte-body") });
