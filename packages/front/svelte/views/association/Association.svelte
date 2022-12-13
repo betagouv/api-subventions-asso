@@ -4,7 +4,7 @@
     import Alert from "../../dsfr/Alert.svelte";
     import Spinner from "../../components/Spinner.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
-    import InfosLegales from "../../shared/InfosLegales.svelte";
+    import InfosLegales from "../../components/InfosLegales.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import RnaSiren from "./components/RnaSiren.svelte";

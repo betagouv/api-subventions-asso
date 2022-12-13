@@ -4,8 +4,8 @@
 
     import { user as userStore } from "../store/user.store";
 
-    import Spinner from "../components/Spinner.svelte";
-    import ErrorAlert from "../components/ErrorAlert.svelte";
+    import Spinner from "./Spinner.svelte";
+    import ErrorAlert from "./ErrorAlert.svelte";
 
     const { getName } = getContext("app");
     const name = getName();
