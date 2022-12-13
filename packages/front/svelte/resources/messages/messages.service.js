@@ -1,4 +1,4 @@
-import Store from "../../shared/Store";
+import Store from "../../core/Store";
 
 export class MessagesService {
     constructor() {

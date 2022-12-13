@@ -4,7 +4,7 @@ import subventionsService from "../../resources/subventions/subventions.service"
 import versementsService from "../../resources/versements/versements.service";
 
 import { mapSubventionsAndVersements, sortByPath } from "./helper";
-import Store from "../../shared/Store";
+import Store from "../../core/Store";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {
