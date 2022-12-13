@@ -1,4 +1,4 @@
-import Store from "../../shared/Store";
+import Store from "../../core/Store";
 import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
 import * as helper from "./helper";
 import subventionsService from "../../resources/subventions/subventions.service";
