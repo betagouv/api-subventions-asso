@@ -106,7 +106,7 @@ export class StatsController extends Controller {
      * @param limit Number of returned associations
      * @returns
      */
-    @Get("/requests/top-associations")
+    @Get("/associations")
     @Response<ErrorResponse>("500")
     async getTopAssociations(@Query() limit = "5"): Promise<TopAssociationsDtoResponse> {
         try {
