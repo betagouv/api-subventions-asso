@@ -22,7 +22,7 @@ import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
-import assoVisitsRepository from "../stats/repositories/associationVisits.repository";
+import assoVisitsRepository from "../association-visits/repositories/associationVisits.repository";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {

@@ -2,7 +2,7 @@ import {
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
     MonthlyAvgRequestDtoResponse,
-    TopAssociationsDtoResponse
+    AssociationTopDtoResponse
 } from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
@@ -108,7 +108,7 @@ export class StatsController extends Controller {
      */
     @Get("/associations")
     @Response<ErrorResponse>("500")
-    async getTopAssociations(@Query() limit = "5"): Promise<TopAssociationsDtoResponse> {
+    async getTopAssociations(@Query() limit = "5"): Promise<AssociationTopDtoResponse> {
         try {
             const result = await statsService.getTopAssociations(Number(limit));
             return { success: true, data: result };

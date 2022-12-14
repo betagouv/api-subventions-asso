@@ -1,10 +1,10 @@
 import db from "../../../shared/MongoConnection";
-import { TopAssociations } from "@api-subventions-asso/dto";
+import { AssociationTop } from "@api-subventions-asso/dto";
 
 export class AssociationVisitsRepository {
-    private readonly collection = db.collection("association-visits");
+    private readonly collection = db.collection<AssociationTop>("association-visits");
 
-    public async selectMostRequestsAssos(limit: number): Promise<TopAssociations> {
+    public async selectMostRequestsAssos(limit: number): Promise<AssociationTop[]> {
         /* TODO
          *   - define repo controller tests
          *   - define service test
