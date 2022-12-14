@@ -5,16 +5,7 @@ export class AssociationVisitsRepository {
     private readonly collection = db.collection<AssociationTop>("association-visits");
 
     public async selectMostRequestsAssos(limit: number): Promise<AssociationTop[]> {
-        /* TODO
-         *   - define repo controller tests
-         *   - define service test
-         *   - fix field names
-         *   - add tracking in association GET routes
-         * */
-        const res = await this.collection
-            .find({}, { limit, sort: { nbRequests: -1 }, projection: { _id: 0 } })
-            .toArray();
-        return res as unknown as Promise<TopAssociations>;
+        return await this.collection.find({}, { limit, sort: { nbRequests: -1 }, projection: { _id: 0 } }).toArray();
     }
 
     public updateAssoVisitCountByIncrement(name: string) {

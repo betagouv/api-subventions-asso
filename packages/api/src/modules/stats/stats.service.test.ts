@@ -1,7 +1,5 @@
 import statsService from "./stats.service";
 import statsRepository from "./repositories/statsRepository";
-import assoVisitsRepository from "../association-visits/repositories/associationVisits.repository";
-import associationVisitsService from "../association-visits/associationVisits.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
