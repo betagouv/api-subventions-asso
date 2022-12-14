@@ -10,8 +10,8 @@ describe("AssociationVisitsService", () => {
         const ASSO_NO_NAME = {};
         const SIREN_NAME = "NOM_SIREN";
         const RNA_NAME = "NOM_RNA";
-        const ASSO_SIREN_NAME = { denomination_siren: { value: SIREN_NAME } };
-        const ASSO_RNA_NAME = { denomination_rna: { value: RNA_NAME } };
+        const ASSO_SIREN_NAME = { denomination_siren: [{ value: SIREN_NAME }] };
+        const ASSO_RNA_NAME = { denomination_rna: [{ value: RNA_NAME }] };
         const ASSO_2_NAMES = { ...ASSO_RNA_NAME, ASSO_SIREN_NAME };
 
         async function checkArgs(asso, expectedName) {
@@ -56,16 +56,13 @@ describe("AssociationVisitsService", () => {
         });
 
         it("should call repository", async () => {
-            const expected = [LIMIT];
-            const actual = assoVisitsRepository.selectMostRequestsAssos(LIMIT);
             await associationVisitsService.getTopAssociations(LIMIT);
-            expect(actual).toHaveBeenCalledWith(...expected);
+            expect(repoMock).toHaveBeenCalledWith(LIMIT);
         });
 
         it("should return result of service function", async () => {
-            const expected = mockedValue;
-            const actual = assoVisitsRepository.selectMostRequestsAssos(LIMIT);
-            expect(actual).toStrictEqual(expected);
+            const actual = await associationVisitsService.getTopAssociations(LIMIT);
+            expect(actual).toStrictEqual(mockedValue);
         });
     });
 });
