@@ -7,6 +7,7 @@ import {
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
 import statsService from "../../stats.service";
+import associationsVisitsService from "../../../association-visits/associationVisits.service";
 
 @Route("stats")
 @Security("jwt", ["admin"])
@@ -110,7 +111,7 @@ export class StatsController extends Controller {
     @Response<ErrorResponse>("500")
     async getTopAssociations(@Query() limit = "5"): Promise<AssociationTopDtoResponse> {
         try {
-            const result = await statsService.getTopAssociations(Number(limit));
+            const result = await associationsVisitsService.getTopAssociations(Number(limit));
             return { success: true, data: result };
         } catch (e) {
             this.setStatus(500);

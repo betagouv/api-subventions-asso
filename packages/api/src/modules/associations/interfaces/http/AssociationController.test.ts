@@ -2,7 +2,7 @@ import { DemandeSubvention } from "@api-subventions-asso/dto";
 import Flux from "../../../../shared/Flux";
 import associationsService from "../../associations.service";
 import { AssociationController } from "./AssociationController";
-import associationVisitsService from "../../../association-visits/associationsVisits.service";
+import associationVisitsService from "../../../association-visits/associationVisits.service";
 
 const controller = new AssociationController();
 

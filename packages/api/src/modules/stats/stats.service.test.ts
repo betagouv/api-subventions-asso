@@ -1,6 +1,7 @@
 import statsService from "./stats.service";
 import statsRepository from "./repositories/statsRepository";
 import assoVisitsRepository from "../association-visits/repositories/associationVisits.repository";
+import associationVisitsService from "../association-visits/associationVisits.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -114,36 +115,6 @@ describe("StatsService", () => {
         it("should call repository", async () => {
             const expected = mockedValue;
             const actual = await statsService.getRequestsPerMonthByYear(YEAR, false);
-            expect(actual).toStrictEqual(expected);
-        });
-    });
-
-    describe("getTopAssociations()", () => {
-        const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestsAssos");
-
-        const LIMIT = 5;
-        const mockedValue = [
-            { name: "Asso 1", nbRequests: 42 },
-            { name: "Asso 2", nbRequests: 41 },
-            { name: "Asso 3", nbRequests: 40 },
-            { name: "Asso 4", nbRequests: 39 },
-            { name: "Asso 5", nbRequests: 38 }
-        ];
-
-        beforeEach(() => {
-            repoMock.mockResolvedValueOnce(mockedValue);
-        });
-
-        it("should call repository", async () => {
-            const expected = [LIMIT];
-            const actual = assoVisitsRepository.selectMostRequestsAssos(LIMIT);
-            await statsService.getTopAssociations(LIMIT);
-            expect(actual).toHaveBeenCalledWith(...expected);
-        });
-
-        it("should return result of service function", async () => {
-            const expected = mockedValue;
-            const actual = assoVisitsRepository.selectMostRequestsAssos(LIMIT);
             expect(actual).toStrictEqual(expected);
         });
     });
