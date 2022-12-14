@@ -53,7 +53,7 @@ module.exports = {
             { $out: "association-visits" }
         ];
         await logs.aggregate(mainPipeline).toArray();
-        visits.createIndex({ name: 1 });
+        visits.createIndex({ name: 1 }, { unique: true });
         visits.createIndex({ nbRequests: -1 });
     },
 
