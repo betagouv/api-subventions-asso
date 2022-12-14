@@ -1,7 +1,7 @@
 import db from "../../../shared/MongoConnection";
 import { TopAssociations } from "@api-subventions-asso/dto";
 
-export class AssoVisitsRepository {
+export class AssociationVisitsRepository {
     private readonly collection = db.collection("association-visits");
 
     public async selectMostRequestsAssos(limit: number): Promise<TopAssociations> {
@@ -16,7 +16,11 @@ export class AssoVisitsRepository {
             .toArray();
         return res as unknown as Promise<TopAssociations>;
     }
+
+    public updateAssoVisitCountByIncrement(name: string) {
+        return this.collection.findOneAndUpdate({ name }, { $inc: { nbRequests: 1 } }, { upsert: true });
+    }
 }
 
-const assoVisitsRepository = new AssoVisitsRepository();
+const assoVisitsRepository = new AssociationVisitsRepository();
 export default assoVisitsRepository;
