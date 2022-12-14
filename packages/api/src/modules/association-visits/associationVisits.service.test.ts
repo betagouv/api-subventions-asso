@@ -1,8 +1,8 @@
 import assoVisitsRepository from "../association-visits/repositories/associationVisits.repository";
-import associationVisitsService from "./associationsVisits.service";
+import associationVisitsService from "./associationVisits.service";
 
-describe("StatsService", () => {
-    describe("getNbUsersByRequestsOnPeriod()", () => {
+describe("AssociationVisitsService", () => {
+    describe("registerRequest()", () => {
         const assoVisitRepoMock = jest
             .spyOn(assoVisitsRepository, "updateAssoVisitCountByIncrement")
             .mockImplementation(jest.fn());
@@ -36,6 +36,36 @@ describe("StatsService", () => {
 
         it("should use rna's name if both available", async () => {
             await checkArgs(ASSO_2_NAMES, RNA_NAME);
+        });
+    });
+
+    describe("getTopAssociations()", () => {
+        const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestsAssos");
+
+        const LIMIT = 5;
+        const mockedValue = [
+            { name: "Asso 1", nbRequests: 42 },
+            { name: "Asso 2", nbRequests: 41 },
+            { name: "Asso 3", nbRequests: 40 },
+            { name: "Asso 4", nbRequests: 39 },
+            { name: "Asso 5", nbRequests: 38 }
+        ];
+
+        beforeEach(() => {
+            repoMock.mockResolvedValueOnce(mockedValue);
+        });
+
+        it("should call repository", async () => {
+            const expected = [LIMIT];
+            const actual = assoVisitsRepository.selectMostRequestsAssos(LIMIT);
+            await associationVisitsService.getTopAssociations(LIMIT);
+            expect(actual).toHaveBeenCalledWith(...expected);
+        });
+
+        it("should return result of service function", async () => {
+            const expected = mockedValue;
+            const actual = assoVisitsRepository.selectMostRequestsAssos(LIMIT);
+            expect(actual).toStrictEqual(expected);
         });
     });
 });

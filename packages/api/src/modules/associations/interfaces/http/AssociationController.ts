@@ -11,7 +11,7 @@ import { Route, Get, Controller, Tags, Security, Response, Request, Path } from 
 import { AssociationIdentifiers, IdentifiedRequest, StructureIdentifiers } from "../../../../@types";
 
 import associationService from "../../associations.service";
-import associationVisitsService from "../../../association-visits/associationsVisits.service";
+import associationVisitsService from "../../../association-visits/associationVisits.service";
 
 @Route("association")
 @Security("jwt")

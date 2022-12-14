@@ -9,6 +9,10 @@ export class AssociationVisitsService {
             return console.warn("no association name, so the request is not counted in association top visits stats");
         return assoVisitsRepository.updateAssoVisitCountByIncrement(name);
     }
+
+    getTopAssociations(limit: number) {
+        return assoVisitsRepository.selectMostRequestsAssos(limit);
+    }
 }
 
 const associationVisitsService = new AssociationVisitsService();
