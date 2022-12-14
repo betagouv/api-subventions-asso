@@ -19,30 +19,16 @@ module.exports = {
         ]; // extracts the identifier from the route
 
         const nameLookupPipeline = [
-            { $match: { $expr: { $in: ["$$identifier", ["$siren", "$rna"]] } } },
             { $addFields: { bothIdentifiers: { $and: [{ $lte: ["$rna", null] }, { $lte: ["$siren", null] }] } } },
+            { $match: { $expr: { $or: [{ $eq: ["$siren", "$$identifier"] }, { $eq: ["$rna", "$$identifier"] }] } } },
             { $sort: { bothIdentifier: -1, lastUpdate: -1 } },
             { $limit: 1 },
-            { $project: { name: "$name", _id: "$_id" } }
+            { $project: { name: "$name" } }
         ]; // selects best matching row from association-name
 
         const mainPipeline = [
             // filter corresponding logs
-            {
-                $match: {
-                    $or: [
-                        { $expr: { $regexMatch: { input: "$meta.req.url", regex: /association\/[A-Za-z0-9]+\/?$/ } } },
-                        {
-                            $expr: {
-                                $regexMatch: {
-                                    input: "$meta.req.url",
-                                    regex: /\/search\/association\/[A-Za-z0-9]+\/?$/
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
+            { $match: { "meta.req.url": { $regex: /(search\/)?association\/[A-Za-z0-9]+\/?$/ } } },
 
             ...projectIdentifierPipeline,
 
