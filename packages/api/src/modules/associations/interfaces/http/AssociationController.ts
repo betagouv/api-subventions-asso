@@ -7,10 +7,11 @@ import {
     DemandeSubvention
 } from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
-import { Route, Get, Controller, Tags, Security, Response, Request } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Request, Path } from "tsoa";
 import { AssociationIdentifiers, IdentifiedRequest, StructureIdentifiers } from "../../../../@types";
 
 import associationService from "../../associations.service";
+import associationVisitsService from "../../../association-visits/associationsVisits.service";
 
 @Route("association")
 @Security("jwt")
@@ -25,12 +26,12 @@ export class AssociationController extends Controller {
     @Response<ErrorResponse>("404")
     public async getAssociation(
         @Request() req: IdentifiedRequest,
-        identifier: StructureIdentifiers
+        @Path() identifier: StructureIdentifiers
     ): Promise<GetAssociationResponseDto> {
         try {
             const association = await associationService.getAssociation(identifier);
             if (association) {
-                if (!req?.user?.roles?.includes("admin")) await associationService.registerRequest(association);
+                if (!req?.user?.roles?.includes("admin")) await associationVisitsService.registerRequest(association);
                 return { success: true, association };
             }
             this.setStatus(404);
