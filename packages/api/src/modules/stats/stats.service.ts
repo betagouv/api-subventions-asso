@@ -1,5 +1,5 @@
 import statsRepository from "./repositories/statsRepository";
-import assoVisitsRepository from "./repositories/assoVisitsRepository";
+import assoVisitsRepository from "./repositories/associationVisits.repository";
 
 class StatsService {
     async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
