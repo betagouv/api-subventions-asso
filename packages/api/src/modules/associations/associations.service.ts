@@ -130,13 +130,6 @@ export class AssociationsService {
         return (provider as AssociationsProvider).isAssociationsProvider;
     }
 
-    public registerRequest(association: Association) {
-        const name = association?.denomination_rna?.[0]?.value || association?.denomination_siren?.[0]?.value;
-        if (!name)
-            return console.warn("no association name, so the request is not counted in association top visits stats");
-        return assoVisitsRepository.updateAssoVisitCountByIncrement(name);
-    }
-
     private getAssociationProviders() {
         return Object.values(providers).filter(p => this.isAssociationsProvider(p)) as AssociationsProvider[];
     }
