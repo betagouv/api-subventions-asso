@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.6](https://github.com/betagouv/api-subventions-asso/compare/v0.18.5...v0.18.6) (2022-12-15)
+
+
+### Bug Fixes
+
+* **api:** update LCA document description text ([508e5c6](https://github.com/betagouv/api-subventions-asso/commit/508e5c62f76e73edf3444bce9abae1d505aff131))
+
+
+
+
+
 ## [0.18.5](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.5) (2022-12-12)
 
 
