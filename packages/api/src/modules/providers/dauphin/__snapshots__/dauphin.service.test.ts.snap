@@ -158,7 +158,7 @@ exports[`Dauphin Service sendAuthRequest should call axios.post with good data 1
 Array [
   Array [
     "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
-    "redirectTo=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fagents%2F%23%2Fcget%2Fhome%3FredirectTo%3Dportal.home",
+    "username=DAUPHIN_USERNAME&password=DAUPHIN_PASSWORD&redirectTo=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fagents%2F%23%2Fcget%2Fhome%3FredirectTo%3Dportal.home",
     Object {
       "headers": Object {
         "Referer": "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
