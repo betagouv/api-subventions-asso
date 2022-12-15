@@ -40,7 +40,7 @@ describe("AssociationVisitsService", () => {
     });
 
     describe("getTopAssociations()", () => {
-        const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestsAssos");
+        const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestedAssos");
 
         const LIMIT = 5;
         const mockedValue = [

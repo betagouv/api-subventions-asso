@@ -10,8 +10,8 @@ export class AssociationVisitsService {
         return assoVisitsRepository.updateAssoVisitCountByIncrement(name);
     }
 
-    getTopAssociations(limit: number) {
-        return assoVisitsRepository.selectMostRequestsAssos(limit);
+    public getTopAssociations(limit: number) {
+        return assoVisitsRepository.selectMostRequestedAssos(limit);
     }
 }
 
