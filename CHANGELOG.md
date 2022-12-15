@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.7](https://github.com/betagouv/api-subventions-asso/compare/v0.18.6...v0.18.7) (2022-12-15)
+
+
+### Bug Fixes
+
+* **api:** mock dauphin env var ([7e4667c](https://github.com/betagouv/api-subventions-asso/commit/7e4667cfe301a81f3817eec2356e1389988ad36e))
+
+
+
+
+
 ## [0.18.6](https://github.com/betagouv/api-subventions-asso/compare/v0.18.5...v0.18.6) (2022-12-15)
 
 
