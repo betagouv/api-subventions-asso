@@ -4,7 +4,7 @@ import { AssociationTop } from "@api-subventions-asso/dto";
 export class AssociationVisitsRepository {
     private readonly collection = db.collection<AssociationTop>("association-visits");
 
-    public async selectMostRequestsAssos(limit: number): Promise<AssociationTop[]> {
+    public async selectMostRequestedAssos(limit: number): Promise<AssociationTop[]> {
         return await this.collection.find({}, { limit, sort: { nbRequests: -1 }, projection: { _id: 0 } }).toArray();
     }
 
