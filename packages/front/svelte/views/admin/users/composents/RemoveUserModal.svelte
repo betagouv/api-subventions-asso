@@ -5,7 +5,7 @@
 
 <div class="fr-modal__content">
     <h1 id="fr-modal-title" class="fr-modal__title">
-        <span class="fr-fi-arrow-right-line fr-fi--lg" aria-hidden="true" />
+        <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true" />
         Suppression d'un utilisateur
     </h1>
     <p>
