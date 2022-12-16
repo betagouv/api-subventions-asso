@@ -1,5 +1,5 @@
 import db from "../../../shared/MongoConnection";
-import { AssociationTop } from "@api-subventions-asso/dto";
+import { AssociationTop } from "packages/dto";
 
 export class AssociationVisitsRepository {
     private readonly collection = db.collection<AssociationTop>("association-visits");

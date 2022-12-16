@@ -14,8 +14,7 @@ module.exports = {
                     identifier: { $regexFind: { input: "$meta.req.url", regex: /association\/([A-Za-z0-9]+)\/?$/ } }
                 }
             },
-            { $project: { identifier: { $arrayElemAt: ["$identifier.captures", 0] } } },
-            { $group: { _id: "$identifier", nbRequests: { $count: {} } } }
+            { $project: { identifier: { $arrayElemAt: ["$identifier.captures", 0] } } }
         ]; // extracts the identifier from the route
 
         const nameLookupPipeline = [
@@ -31,6 +30,9 @@ module.exports = {
             { $match: { "meta.req.url": { $regex: /(search\/)?association\/[A-Za-z0-9]+\/?$/ } } },
 
             ...projectIdentifierPipeline,
+
+            // first groupement and count by association identifier
+            { $group: { _id: "$identifier", nbRequests: { $count: {} } } },
 
             // cross data from routes and association names
             {
