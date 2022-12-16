@@ -2,7 +2,7 @@ import { DemandeSubvention } from "@api-subventions-asso/dto";
 import Flux from "../../../../shared/Flux";
 import associationsService from "../../associations.service";
 import { AssociationController } from "./AssociationController";
-import associationVisitsService from "../../../association-visits/associationVisits.service";
+import statsService from "../../../stats/stats.service";
 
 const controller = new AssociationController();
 
@@ -121,9 +121,7 @@ describe("AssociationController", () => {
         });
 
         describe("registering visits", () => {
-            const registerVisitSpy = jest
-                .spyOn(associationVisitsService, "registerRequest")
-                .mockImplementation(jest.fn());
+            const registerVisitSpy = jest.spyOn(statsService, "registerRequest").mockImplementation(jest.fn());
             function makeRequest(isUserAdmin = false) {
                 const req = { user: { roles: ["user"] } };
                 if (isUserAdmin) req.user.roles.push("admin");

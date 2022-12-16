@@ -11,7 +11,7 @@ import { Route, Get, Controller, Tags, Security, Response, Request, Path } from 
 import { AssociationIdentifiers, IdentifiedRequest, StructureIdentifiers } from "../../../../@types";
 
 import associationService from "../../associations.service";
-import associationVisitsService from "../../../association-visits/associationVisits.service";
+import statsService from "../../../stats/stats.service";
 
 @Route("association")
 @Security("jwt")
@@ -31,7 +31,7 @@ export class AssociationController extends Controller {
         try {
             const association = await associationService.getAssociation(identifier);
             if (association) {
-                if (!req?.user?.roles?.includes("admin")) await associationVisitsService.registerRequest(association);
+                if (!req?.user?.roles?.includes("admin")) await statsService.registerRequest(association);
                 return { success: true, association };
             }
             this.setStatus(404);
