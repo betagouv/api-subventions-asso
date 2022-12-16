@@ -121,8 +121,8 @@ describe("StatsService", () => {
     describe("Association visits", () => {
         const TODAY = new Date();
         const THIS_MONTH = new Date(Date.UTC(TODAY.getFullYear(), TODAY.getMonth(), 1));
-        const START = THIS_MONTH;
-        const END = new Date(Date.UTC(THIS_MONTH.getFullYear() - 1, THIS_MONTH.getMonth() + 1, 1));
+        const END = THIS_MONTH;
+        const START = new Date(Date.UTC(THIS_MONTH.getFullYear() - 1, THIS_MONTH.getMonth() + 1, 1));
 
         describe("registerRequest()", () => {
             const assoVisitRepoMock = jest
@@ -136,10 +136,10 @@ describe("StatsService", () => {
             const ASSO_RNA_NAME = { denomination_rna: [{ value: RNA_NAME }] };
             const ASSO_2_NAMES = { ...ASSO_RNA_NAME, ASSO_SIREN_NAME };
 
-            async function checkArgs(asso, expectedName) {
+            async function checkArgs(asso, expectedName, expectedDate = expect.anything()) {
                 const repo = assoVisitsRepository.updateAssoVisitCountByIncrement;
                 await statsService.registerRequest(asso);
-                expect(repo).toHaveBeenCalledWith(expectedName, expect.anything());
+                expect(repo).toHaveBeenCalledWith(expectedName, expectedDate);
             }
 
             it("fails if no name", async () => {
@@ -148,17 +148,12 @@ describe("StatsService", () => {
                 expect(repo).toHaveBeenCalledTimes(0);
             });
 
-            it("can use rna name", async () => {
-                await checkArgs(ASSO_RNA_NAME, RNA_NAME);
-            });
+            it("can use rna name", () => checkArgs(ASSO_RNA_NAME, RNA_NAME));
 
-            it("can use siren name", async () => {
-                await checkArgs(ASSO_SIREN_NAME, SIREN_NAME);
-            });
+            it("can use siren name", () => checkArgs(ASSO_SIREN_NAME, SIREN_NAME));
 
-            it("should use rna's name if both available", async () => {
-                await checkArgs(ASSO_2_NAMES, RNA_NAME);
-            });
+            it("should use rna's name if both available", () => checkArgs(ASSO_2_NAMES, RNA_NAME));
+
         });
 
         describe("getTopAssociations()", () => {
