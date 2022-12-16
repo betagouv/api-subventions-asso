@@ -120,9 +120,9 @@ describe("StatsService", () => {
 
     describe("Association visits", () => {
         const TODAY = new Date();
-        const THIS_MONTH = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+        const THIS_MONTH = new Date(Date.UTC(TODAY.getFullYear(), TODAY.getMonth(), 1));
         const START = THIS_MONTH;
-        const END = new Date(THIS_MONTH.getFullYear() - 1, THIS_MONTH.getMonth() + 1, 1);
+        const END = new Date(Date.UTC(THIS_MONTH.getFullYear() - 1, THIS_MONTH.getMonth() + 1, 1));
 
         describe("registerRequest()", () => {
             const assoVisitRepoMock = jest

@@ -1,6 +1,7 @@
 import statsRepository from "./repositories/statsRepository";
 import assoVisitsRepository from "./repositories/associationVisits.repository";
 import { Association } from "@api-subventions-asso/dto";
+import { dateToUTCMonthYear } from "../../shared/helpers/DateHelper";
 
 class StatsService {
     getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
@@ -19,15 +20,16 @@ class StatsService {
         const name = association?.denomination_rna?.[0]?.value || association?.denomination_siren?.[0]?.value;
         if (!name)
             return console.warn("no association name, so the request is not counted in association top visits stats");
-        const NOW = new Date();
-        const monthYear = new Date(NOW.getFullYear(), NOW.getMonth(), 1);
+        const monthYear = dateToUTCMonthYear(new Date());
         return assoVisitsRepository.updateAssoVisitCountByIncrement(name, monthYear);
     }
 
-    getTopAssociationsByPeriod(limit: number, start: Date | undefined, end: Date | undefined) {
+    getTopAssociationsByPeriod(limit = 5, start: Date | undefined = undefined, end: Date | undefined = undefined) {
         const TODAY = new Date();
-        if (!end) end = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
-        if (!start) start = new Date(end.getFullYear() - 1, end.getMonth() + 1, 1);
+        if (!end) end = TODAY;
+        end = dateToUTCMonthYear(end);
+        if (!start) start = new Date(Date.UTC(end.getFullYear() - 1, end.getMonth() + 1, 1));
+        start = dateToUTCMonthYear(start);
         return assoVisitsRepository.selectMostRequestedAssosByPeriod(limit, start, end);
     }
 }
