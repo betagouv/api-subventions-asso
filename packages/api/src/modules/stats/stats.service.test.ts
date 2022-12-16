@@ -154,12 +154,14 @@ describe("StatsService", () => {
 
             it("should use rna's name if both available", () => checkArgs(ASSO_2_NAMES, RNA_NAME));
 
+            it("should register visit to this month utc", () =>
+                checkArgs(ASSO_RNA_NAME, expect.anything(), THIS_MONTH));
         });
 
         describe("getTopAssociations()", () => {
             const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestedAssosByPeriod");
 
-            const LIMIT = 5;
+            const DEFAULT_LIMIT = 5;
             const mockedValue = [
                 { name: "Asso 1", nbRequests: 42 },
                 { name: "Asso 2", nbRequests: 41 },
@@ -172,14 +174,33 @@ describe("StatsService", () => {
                 repoMock.mockResolvedValueOnce(mockedValue);
             });
 
-            it("should call repository", async () => {
-                await statsService.getTopAssociationsByPeriod(LIMIT, START, END);
-                expect(repoMock).toHaveBeenCalledWith(LIMIT, START, END);
+            it("should call repository with proper default values", async () => {
+                await statsService.getTopAssociationsByPeriod();
+                expect(repoMock).toHaveBeenCalledWith(DEFAULT_LIMIT, START, END);
             });
 
             it("should return result of service function", async () => {
-                const actual = await statsService.getTopAssociationsByPeriod(LIMIT, START, END);
+                const actual = await statsService.getTopAssociationsByPeriod();
                 expect(actual).toStrictEqual(mockedValue);
+            });
+
+            const some_date = new Date(2022, 1, 20, 17, 25, 45, 98);
+            const utc_month = new Date(Date.UTC(2022, 1));
+            const utc_month_earlier = new Date(Date.UTC(2021, 2));
+
+            it("should set start date to first of month", async () => {
+                const actual = await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, some_date);
+                expect(repoMock).toHaveBeenCalledWith(expect.anything(), utc_month, expect.anything());
+            });
+
+            it("should set end date to first of month", async () => {
+                const actual = await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, START, some_date);
+                expect(repoMock).toHaveBeenCalledWith(expect.anything(), expect.anything(), utc_month);
+            });
+
+            it("should compute start date from end date if undefined", async () => {
+                const actual = await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, undefined, some_date);
+                expect(repoMock).toHaveBeenCalledWith(expect.anything(), utc_month_earlier, utc_month);
             });
         });
     });
