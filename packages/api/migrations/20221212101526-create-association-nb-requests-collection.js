@@ -14,7 +14,12 @@ module.exports = {
                     identifier: { $regexFind: { input: "$meta.req.url", regex: /association\/([A-Za-z0-9]+)\/?$/ } }
                 }
             },
-            { $project: { identifier: { $arrayElemAt: ["$identifier.captures", 0] } } }
+            {
+                $project: {
+                    identifier: { $arrayElemAt: ["$identifier.captures", 0] },
+                    monthYear: { $dateTrunc: { date: "$timestamp", unit: "month" } }
+                }
+            }
         ]; // extracts the identifier from the route
 
         const nameLookupPipeline = [
@@ -32,13 +37,13 @@ module.exports = {
             ...projectIdentifierPipeline,
 
             // first groupement and count by association identifier
-            { $group: { _id: "$identifier", nbRequests: { $count: {} } } },
+            { $group: { _id: { identifier: "$identifier", monthYear: "$monthYear" }, nbRequests: { $count: {} } } },
 
             // cross data from routes and association names
             {
                 $lookup: {
                     from: "association-name",
-                    let: { identifier: "$_id" }, // association identifier
+                    let: { identifier: "$_id.identifier" }, // association identifier
                     pipeline: nameLookupPipeline,
                     as: "nameMatches"
                 }
@@ -46,17 +51,21 @@ module.exports = {
             { $unwind: { path: "$nameMatches" } },
 
             // sum request of same association name called with different identifier
-            { $group: { _id: "$nameMatches.name", nbRequests: { $sum: "$nbRequests" } } },
+            {
+                $group: {
+                    _id: { name: "$nameMatches.name", monthYear: "$_id.monthYear" },
+                    nbRequests: { $sum: "$nbRequests" }
+                }
+            },
 
             // project to expected field names
-            { $project: { name: "$_id", nbRequests: "$nbRequests" } },
+            { $project: { name: "$_id.name", monthYear: "$_id.monthYear", nbRequests: "$nbRequests" } },
 
             // outputs to new collection
             { $out: "association-visits" }
         ];
         await logs.aggregate(mainPipeline).toArray();
-        visits.createIndex({ name: 1 }, { unique: true });
-        visits.createIndex({ nbRequests: -1 });
+        visits.createIndex({ name: 1, monthYear: -1 }, { unique: true });
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

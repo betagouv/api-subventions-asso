@@ -119,6 +119,11 @@ describe("StatsService", () => {
     });
 
     describe("Association visits", () => {
+        const TODAY = new Date();
+        const THIS_MONTH = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+        const START = THIS_MONTH;
+        const END = new Date(THIS_MONTH.getFullYear() - 1, THIS_MONTH.getMonth() + 1, 1);
+
         describe("registerRequest()", () => {
             const assoVisitRepoMock = jest
                 .spyOn(assoVisitsRepository, "updateAssoVisitCountByIncrement")
@@ -134,7 +139,7 @@ describe("StatsService", () => {
             async function checkArgs(asso, expectedName) {
                 const repo = assoVisitsRepository.updateAssoVisitCountByIncrement;
                 await statsService.registerRequest(asso);
-                expect(repo).toHaveBeenCalledWith(expectedName);
+                expect(repo).toHaveBeenCalledWith(expectedName, expect.anything());
             }
 
             it("fails if no name", async () => {
@@ -157,7 +162,7 @@ describe("StatsService", () => {
         });
 
         describe("getTopAssociations()", () => {
-            const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestedAssos");
+            const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestedAssosByPeriod");
 
             const LIMIT = 5;
             const mockedValue = [
@@ -173,12 +178,12 @@ describe("StatsService", () => {
             });
 
             it("should call repository", async () => {
-                await statsService.getTopAssociations(LIMIT);
-                expect(repoMock).toHaveBeenCalledWith(LIMIT);
+                await statsService.getTopAssociationsByPeriod(LIMIT, START, END);
+                expect(repoMock).toHaveBeenCalledWith(LIMIT, START, END);
             });
 
             it("should return result of service function", async () => {
-                const actual = await statsService.getTopAssociations(LIMIT);
+                const actual = await statsService.getTopAssociationsByPeriod(LIMIT, START, END);
                 expect(actual).toStrictEqual(mockedValue);
             });
         });

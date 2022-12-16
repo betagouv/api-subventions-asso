@@ -104,13 +104,23 @@ export class StatsController extends Controller {
      *
      * @summary Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
      * @param limit Number of returned associations
+     * @param start
+     * @param end
      * @returns
      */
     @Get("/associations")
     @Response<ErrorResponse>("500")
-    async getTopAssociations(@Query() limit = "5"): Promise<AssociationTopDtoResponse> {
+    async getTopAssociations(
+        @Query() limit = "5",
+        @Query() start = "",
+        @Query() end = ""
+    ): Promise<AssociationTopDtoResponse> {
         try {
-            const result = await statsService.getTopAssociations(Number(limit));
+            const result = await statsService.getTopAssociationsByPeriod(
+                Number(limit),
+                start ? new Date(start) : undefined,
+                end ? new Date(end) : undefined
+            );
             return { success: true, data: result };
         } catch (e) {
             this.setStatus(500);
