@@ -137,15 +137,13 @@ describe("StatsService", () => {
             const ASSO_2_NAMES = { ...ASSO_RNA_NAME, ASSO_SIREN_NAME };
 
             async function checkArgs(asso, expectedName, expectedDate = expect.anything()) {
-                const repo = assoVisitsRepository.updateAssoVisitCountByIncrement;
                 await statsService.registerRequest(asso);
-                expect(repo).toHaveBeenCalledWith(expectedName, expectedDate);
+                expect(assoVisitRepoMock).toHaveBeenCalledWith(expectedName, expectedDate);
             }
 
             it("fails if no name", async () => {
-                const repo = assoVisitsRepository.updateAssoVisitCountByIncrement;
                 await statsService.registerRequest(ASSO_NO_NAME);
-                expect(repo).toHaveBeenCalledTimes(0);
+                expect(assoVisitRepoMock).toHaveBeenCalledTimes(0);
             });
 
             it("can use rna name", () => checkArgs(ASSO_RNA_NAME, RNA_NAME));
@@ -189,17 +187,17 @@ describe("StatsService", () => {
             const utc_month_earlier = new Date(Date.UTC(2021, 2));
 
             it("should set start date to first of month", async () => {
-                const actual = await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, some_date);
+                await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, some_date);
                 expect(repoMock).toHaveBeenCalledWith(expect.anything(), utc_month, expect.anything());
             });
 
             it("should set end date to first of month", async () => {
-                const actual = await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, START, some_date);
+                await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, START, some_date);
                 expect(repoMock).toHaveBeenCalledWith(expect.anything(), expect.anything(), utc_month);
             });
 
             it("should compute start date from end date if undefined", async () => {
-                const actual = await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, undefined, some_date);
+                await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, undefined, some_date);
                 expect(repoMock).toHaveBeenCalledWith(expect.anything(), utc_month_earlier, utc_month);
             });
         });
