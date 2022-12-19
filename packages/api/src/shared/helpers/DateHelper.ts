@@ -30,11 +30,10 @@ export const englishMonthNames = Object.values(frenchToEnglishMonthsMap).map(mon
 
 export function getMonthlyDataObject(dbData, index1Key, dataKey) {
     const resultByMonth0Index = {};
-    let index1, value;
+    let index1;
     for (const document of dbData) {
         index1 = document[index1Key];
-        value = document[dataKey];
-        resultByMonth0Index[index1 - 1] = value;
+        resultByMonth0Index[index1 - 1] = document[dataKey];
     }
     return englishMonthNames.reduce((acc, month, index) => {
         acc[month] = resultByMonth0Index[index] || 0;
