@@ -18,7 +18,7 @@
                         <p>{footer}</p>
                     </div>
                     <div class="fr-col-6 fr-col-md-6 card--document-column">
-                        <span class="fr-fi-download-line" aria-hidden="true" />
+                        <span class="fr-icon-download-line" aria-hidden="true" />
                     </div>
                 </div>
             </div>

@@ -29,7 +29,7 @@
                     </div>
                     <div class="fr-modal__content">
                         <h1 id="fr-modal-title-{modalId}" class="fr-modal__title">
-                            <span class="fr-fi-arrow-right-line fr-fi--lg" aria-hidden="true" />
+                            <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true" />
                             {title}
                         </h1>
                         <div>
