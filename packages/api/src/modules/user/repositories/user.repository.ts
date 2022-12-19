@@ -75,6 +75,12 @@ export class UserRepository {
                 }
             },
             {
+                $densify: {
+                    field: "_id",
+                    range: { step: 1, unit: "month", bounds: [firstDayOfPeriod(year), nextDayAfterPeriod(year)] }
+                }
+            },
+            {
                 $setWindowFields: {
                     sortBy: { _id: 1 },
                     output: {
