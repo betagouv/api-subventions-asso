@@ -8,40 +8,32 @@ import adminService from "../../user.service";
 
 @Controller("/admin")
 export default class AdminController {
-    @Get("")
-    public async adminView(req: Request, res: Response, next: NextFunction) {
+    private checkRoleAndUseSvelte(req: Request, res: Response) {
         if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
             return res.redirect("/");
         }
 
         res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
+    }
+
+    @Get("")
+    public adminView(req: Request, res: Response, next: NextFunction) {
+        return this.checkRoleAndUseSvelte(req, res);
     }
 
     @Get("/users/list")
-    public async listUsersView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
-            return res.redirect("/");
-        }
-
-        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
+    public listUsersView(req: Request, res: Response, next: NextFunction) {
+        return this.checkRoleAndUseSvelte(req, res);
     }
 
     @Get("/users/domain")
-    public async domainUsersView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
-            return res.redirect("/");
-        }
-
-        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
+    public domainUsersView(req: Request, res: Response, next: NextFunction) {
+        return this.checkRoleAndUseSvelte(req, res);
     }
 
     @Get("/users/create")
-    public async createUserView(req: Request, res: Response, next: NextFunction) {
-        if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
-            return res.redirect("/");
-        }
-
-        res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
+    public createUserView(req: Request, res: Response, next: NextFunction) {
+        return this.checkRoleAndUseSvelte(req, res);
     }
 
     @Post("/users/create")
