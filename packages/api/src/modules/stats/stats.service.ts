@@ -1,4 +1,5 @@
 import statsRepository from "./repositories/statsRepository";
+import userRepository from "../user/repositories/user.repository";
 
 class StatsService {
     async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
@@ -11,6 +12,10 @@ class StatsService {
 
     async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
         return await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
+    }
+
+    async getMonthlyUserNbByYear(year: number) {
+        return await userRepository.getMonthlyNbByYear(year);
     }
 }
 

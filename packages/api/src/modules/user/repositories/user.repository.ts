@@ -3,6 +3,7 @@ import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User from "../entities/UserNotPersisted";
 import UserDbo from "./dbo/UserDbo";
+import { getMonthlyDataObject } from "../../../shared/helpers/DateHelper";
 
 export enum UserRepositoryErrors {
     UPDATE_FAIL = 1
@@ -40,7 +41,7 @@ export class UserRepository {
     }
 
     async create(user: User) {
-        const userDbo = { ...user, _id: new ObjectId() }
+        const userDbo = { ...user, _id: new ObjectId() };
         const result = await this.collection.insertOne(userDbo);
         return this.removeSecrets({ ...user, _id: result.insertedId });
     }
@@ -58,7 +59,39 @@ export class UserRepository {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, jwt, ...userWithoutSecret } = user;
-        return userWithoutSecret
+        return userWithoutSecret;
+    }
+
+    async getMonthlyNbByYear(year: number) {
+        const firstDayOfYear = new Date(Date.UTC(year, 0, 1));
+        const lastDayOfYear = new Date(Date.UTC(year + 1, 0, 0));
+        const pipeline = [
+            { $project: { signupAt: 1 } },
+            // TODO: do something about inactive users ? admins ?
+            {
+                $group: {
+                    _id: { $dateTrunc: { date: "$signupAt", unit: "month" } },
+                    nbNewUsers: { $count: {} }
+                }
+            },
+            {
+                $setWindowFields: {
+                    sortBy: { _id: 1 },
+                    output: {
+                        cumulativeNbUsers: {
+                            $sum: "$nbNewUsers",
+                            window: { documents: ["unbounded", "current"] }
+                        }
+                    }
+                }
+            },
+            { $match: { _id: { $gte: firstDayOfYear, $lte: lastDayOfYear } } },
+            { $project: { monthId: { $month: "$_id" }, cumulativeNbUsers: 1 } }
+        ];
+        const queryResult = await this.collection
+            .aggregate<{ _id: ObjectId; monthId: number; cumulativeNbUsers: number }>(pipeline)
+            .toArray();
+        return getMonthlyDataObject(queryResult, "monthId", "cumulativeNbUsers");
     }
 }
 

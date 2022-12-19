@@ -97,4 +97,23 @@ export class StatsController extends Controller {
             return { success: false, message: (e as Error).message };
         }
     }
+
+    /**
+     * Permet de récupérer le nombre d'utilisateurs cumulés par mois pour une année donnée
+     *
+     * @summary Permet de récupérer le nombre d'utilisateurs cumulés par mois pour une année donnée
+     * @param year
+     * @returns
+     */
+    @Get("/users/monthly/{year}")
+    @Response<ErrorResponse>("500")
+    async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
+        try {
+            const result = await statsService.getMonthlyUserNbByYear(Number(year));
+            return { success: true, data: result };
+        } catch (e) {
+            this.setStatus(500);
+            return { success: false, message: (e as Error).message };
+        }
+    }
 }
