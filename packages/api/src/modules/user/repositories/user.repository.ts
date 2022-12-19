@@ -3,7 +3,7 @@ import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User from "../entities/UserNotPersisted";
 import UserDbo from "./dbo/UserDbo";
-import { getMonthlyDataObject } from "../../../shared/helpers/DateHelper";
+import { firstDayOfPeriod, getMonthlyDataObject, nextDayAfterPeriod } from "../../../shared/helpers/DateHelper";
 
 export enum UserRepositoryErrors {
     UPDATE_FAIL = 1
@@ -63,10 +63,8 @@ export class UserRepository {
     }
 
     async getMonthlyNbByYear(year: number) {
-        const firstDayOfYear = new Date(Date.UTC(year, 0, 1));
-        const lastDayOfYear = new Date(Date.UTC(year + 1, 0, 0));
         const pipeline = [
-            { $match: { roles: ["user"] } },
+            { $match: { roles: ["user"], signupAt: { $lt: nextDayAfterPeriod(year) } } },
             { $project: { signupAt: 1 } },
             {
                 $group: {
@@ -91,7 +89,7 @@ export class UserRepository {
                     }
                 }
             },
-            { $match: { _id: { $gte: firstDayOfYear, $lte: lastDayOfYear } } },
+            { $match: { _id: { $gte: firstDayOfPeriod(year) } } },
             { $project: { monthId: { $month: "$_id" }, cumulativeNbUsers: 1 } }
         ];
         const queryResult = await this.collection

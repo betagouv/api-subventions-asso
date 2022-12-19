@@ -1,6 +1,7 @@
 import statsRepository from "./statsRepository";
+import { firstDayOfPeriod } from "../../../shared/helpers/DateHelper";
 
-const FIRST_DAY_YEAR = new Date(Date.UTC(2022, 0, 1));
+const FIRST_DAY_YEAR = firstDayOfPeriod(2022);
 const YEAR = 2022;
 
 const dateFactory = (diff: number) => {
