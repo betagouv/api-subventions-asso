@@ -33,3 +33,5 @@ export const getMonthFromFrenchStr = (month: string) => {
 };
 
 export const isValidDate = date => date instanceof Date && !isNaN(date as unknown as number);
+
+export const dateToUTCMonthYear = date => new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
