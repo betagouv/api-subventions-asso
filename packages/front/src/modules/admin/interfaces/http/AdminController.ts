@@ -36,6 +36,11 @@ export default class AdminController {
         return this.checkRoleAndUseSvelte(req, res);
     }
 
+    @Get("/stats")
+    public statsView(req: Request, res: Response, next: NextFunction) {
+        return this.checkRoleAndUseSvelte(req, res);
+    }
+
     @Post("/users/create")
     public async createUser(req: Request, res: Response, next: NextFunction) {
         if (!req.session.user.roles || !req.session.user.roles.includes("admin")) {
