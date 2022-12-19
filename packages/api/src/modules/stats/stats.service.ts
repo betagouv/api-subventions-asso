@@ -1,4 +1,5 @@
 import statsRepository from "./repositories/statsRepository";
+import userRepository from "../user/repositories/user.repository";
 import assoVisitsRepository from "./repositories/associationVisits.repository";
 import { Association } from "@api-subventions-asso/dto";
 import { dateToUTCMonthYear } from "../../shared/helpers/DateHelper";
@@ -31,6 +32,10 @@ class StatsService {
         if (!start) start = new Date(Date.UTC(end.getFullYear() - 1, end.getMonth() + 1, 1));
         start = dateToUTCMonthYear(start);
         return assoVisitsRepository.selectMostRequestedAssosByPeriod(limit, start, end);
+    }
+
+    async getMonthlyUserNbByYear(year: number) {
+        return await userRepository.getMonthlyNbByYear(year);
     }
 }
 
