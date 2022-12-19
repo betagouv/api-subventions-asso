@@ -96,7 +96,7 @@ export class StatsRepository {
         };
 
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
-        return getMonthlyDataObject(queryResult, "_id", "nbOfRequests");
+        return getMonthlyDataObject(queryResult, "_id", "nbOfRequest");
     }
 }
 

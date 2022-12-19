@@ -104,18 +104,18 @@ describe("StatsRepository", () => {
         it("should format the result properly", async () => {
             await checkMonthlyAvgStatFormat(
                 [
-                    { _id: 1, nbOfRequests: 201 },
-                    { _id: 2, nbOfRequests: 21 },
-                    { _id: 3, nbOfRequests: 20 },
-                    { _id: 4, nbOfRequests: 201 },
-                    { _id: 5, nbOfRequests: 13 },
-                    { _id: 6, nbOfRequests: 201 },
-                    { _id: 7, nbOfRequests: 201 },
-                    { _id: 8, nbOfRequests: 15 },
-                    { _id: 9, nbOfRequests: 201 },
-                    { _id: 10, nbOfRequests: 300 },
-                    { _id: 11, nbOfRequests: 201 },
-                    { _id: 12, nbOfRequests: 1 }
+                    { _id: 1, nbOfRequest: 201 },
+                    { _id: 2, nbOfRequest: 21 },
+                    { _id: 3, nbOfRequest: 20 },
+                    { _id: 4, nbOfRequest: 201 },
+                    { _id: 5, nbOfRequest: 13 },
+                    { _id: 6, nbOfRequest: 201 },
+                    { _id: 7, nbOfRequest: 201 },
+                    { _id: 8, nbOfRequest: 15 },
+                    { _id: 9, nbOfRequest: 201 },
+                    { _id: 10, nbOfRequest: 300 },
+                    { _id: 11, nbOfRequest: 201 },
+                    { _id: 12, nbOfRequest: 1 }
                 ],
                 {
                     January: 201,
@@ -137,10 +137,10 @@ describe("StatsRepository", () => {
         it("should fill in empty months", async () => {
             await checkMonthlyAvgStatFormat(
                 [
-                    { _id: 1, nbOfRequests: 201 },
-                    { _id: 2, nbOfRequests: 21 },
-                    { _id: 10, nbOfRequests: 300 },
-                    { _id: 12, nbOfRequests: 1 }
+                    { _id: 1, nbOfRequest: 201 },
+                    { _id: 2, nbOfRequest: 21 },
+                    { _id: 10, nbOfRequest: 300 },
+                    { _id: 12, nbOfRequest: 1 }
                 ],
                 {
                     January: 201,
