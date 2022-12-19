@@ -11,7 +11,7 @@
 
     const dispatch = createEventDispatcher();
 
-    const iconClass = !icon.length || icon.startsWith("fr-fi-") ? icon : `fr-fi-${icon}`;
+    const iconClass = !icon.length || icon.startsWith("fr-icon-") ? icon : `fr-icon-${icon}`;
 
     const classBySize = {
         small: "fr-btn--sm",
