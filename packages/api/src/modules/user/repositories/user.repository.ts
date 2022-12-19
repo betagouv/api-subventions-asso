@@ -66,8 +66,8 @@ export class UserRepository {
         const firstDayOfYear = new Date(Date.UTC(year, 0, 1));
         const lastDayOfYear = new Date(Date.UTC(year + 1, 0, 0));
         const pipeline = [
+            { $match: { roles: ["user"] } },
             { $project: { signupAt: 1 } },
-            // TODO: do something about inactive users ? admins ?
             {
                 $group: {
                     _id: { $dateTrunc: { date: "$signupAt", unit: "month" } },
