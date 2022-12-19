@@ -104,8 +104,8 @@ export class StatsController extends Controller {
      *
      * @summary Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
      * @param limit Number of returned associations
-     * @param start
-     * @param end
+     * @param start Timestamp starting date for the period: only year and month will be used
+     * @param end Timestamp ending date for the period: only year and month will be used
      * @returns
      */
     @Get("/associations")
