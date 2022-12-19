@@ -26,7 +26,7 @@
         "dev": "nodemon",
         "start": "node ./build/src/index.js",
         "prebuild": "webpack && webpack --config ./webpack.svelte.config.js",
-        "build": "tsc --project ./",
+        "build": "tsc --project tsconfig.build.json",
         "postbuild": "npm run copy-files",
         "copy-files": "cp -r views build && cp -r static build && cp -r node_modules build",
         "test": "npm run test:unit",
