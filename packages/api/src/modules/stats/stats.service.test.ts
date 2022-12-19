@@ -1,5 +1,6 @@
 import statsService from "./stats.service";
 import statsRepository from "./repositories/statsRepository";
+import userRepository from "../user/repositories/user.repository";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -114,6 +115,38 @@ describe("StatsService", () => {
             const expected = mockedValue;
             const actual = await statsService.getRequestsPerMonthByYear(YEAR, false);
             expect(actual).toStrictEqual(expected);
+        });
+    });
+
+    describe("getMonthlyUserNbByYear()", () => {
+        const mock = jest.spyOn(userRepository, "getMonthlyNbByYear");
+
+        const YEAR = 2022;
+        const mockedValue = {
+            January: 201,
+            February: 21,
+            March: 20,
+            April: 201,
+            May: 13,
+            June: 201,
+            July: 201,
+            August: 15,
+            September: 201,
+            October: 300,
+            November: 201,
+            December: 1
+        };
+
+        beforeEach(() => mock.mockResolvedValueOnce(mockedValue));
+
+        it("should call repository", async () => {
+            await statsService.getMonthlyUserNbByYear(YEAR);
+            expect(mock).toHaveBeenCalledWith(YEAR);
+        });
+
+        it("should return repo's return value", async () => {
+            const actual = await statsService.getMonthlyUserNbByYear(YEAR);
+            expect(actual).toStrictEqual(mockedValue);
         });
     });
 });
