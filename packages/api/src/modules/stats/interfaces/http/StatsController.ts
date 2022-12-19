@@ -1,7 +1,8 @@
 import {
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
-    MonthlyAvgRequestDtoResponse
+    MonthlyAvgRequestDtoResponse,
+    AssociationTopDtoResponse
 } from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
@@ -91,6 +92,35 @@ export class StatsController extends Controller {
     ): Promise<MonthlyAvgRequestDtoResponse> {
         try {
             const result = await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
+            return { success: true, data: result };
+        } catch (e) {
+            this.setStatus(500);
+            return { success: false, message: (e as Error).message };
+        }
+    }
+
+    /**
+     * Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
+     *
+     * @summary Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
+     * @param limit Number of returned associations
+     * @param start Timestamp starting date for the period: only year and month will be used
+     * @param end Timestamp ending date for the period: only year and month will be used
+     * @returns
+     */
+    @Get("/associations")
+    @Response<ErrorResponse>("500")
+    async getTopAssociations(
+        @Query() limit = "5",
+        @Query() start = "",
+        @Query() end = ""
+    ): Promise<AssociationTopDtoResponse> {
+        try {
+            const result = await statsService.getTopAssociationsByPeriod(
+                Number(limit),
+                start ? new Date(start) : undefined,
+                end ? new Date(end) : undefined
+            );
             return { success: true, data: result };
         } catch (e) {
             this.setStatus(500);
