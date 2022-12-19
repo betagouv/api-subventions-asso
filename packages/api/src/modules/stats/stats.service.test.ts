@@ -2,6 +2,7 @@ import statsService from "./stats.service";
 import statsRepository from "./repositories/statsRepository";
 import assoVisitsRepository from "./repositories/associationVisits.repository";
 import userRepository from "../user/repositories/user.repository";
+import { dateToUTCMonthYear, firstDayOfPeriod } from "../../shared/helpers/DateHelper";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -121,7 +122,7 @@ describe("StatsService", () => {
 
     describe("Association visits", () => {
         const TODAY = new Date();
-        const THIS_MONTH = new Date(Date.UTC(TODAY.getFullYear(), TODAY.getMonth(), 1));
+        const THIS_MONTH = dateToUTCMonthYear(TODAY);
         const END = THIS_MONTH;
         const START = new Date(Date.UTC(THIS_MONTH.getFullYear() - 1, THIS_MONTH.getMonth() + 1, 1));
 
@@ -184,8 +185,8 @@ describe("StatsService", () => {
             });
 
             const some_date = new Date(2022, 1, 20, 17, 25, 45, 98);
-            const utc_month = new Date(Date.UTC(2022, 1));
-            const utc_month_earlier = new Date(Date.UTC(2021, 2));
+            const utc_month = firstDayOfPeriod(2022, 1);
+            const utc_month_earlier = firstDayOfPeriod(2021, 2);
 
             it("should set start date to first of month", async () => {
                 await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, some_date);
