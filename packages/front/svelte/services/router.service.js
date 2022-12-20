@@ -6,6 +6,7 @@ export const buildBreadcrumbs = path => {
     else if (path.includes("admin")) {
         crumbs.push({ label: "Admin", url: "/admin" });
         if (path.includes("users/list")) crumbs.push({ label: "Liste des utilisateurs" });
+        if (path.includes("stats")) crumbs.push({ label: "Statistiques d'usage" });
     }
     return crumbs;
 };
