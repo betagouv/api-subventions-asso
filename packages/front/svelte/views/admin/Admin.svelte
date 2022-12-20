@@ -19,15 +19,19 @@
             </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
-            <Card title="Liste des utilisateurs" url="/admin/users/list" size="6">(ancienne page Admin)</Card>
+            <Card title="Noms de domaine" url="/admin/users/domain" size="6">
+                Donne une vision sur les noms de domaine et les utilisateurs inscrits via ceux-ci
+            </Card>
+
+            <Card title="Statistiques d'usage" url="/admin/stats" size="6">
+                Donne une vision sur les usages des utilisateurs inscrits
+            </Card>
 
             <Card title="Création d'un utilisateur" url="/admin/users/create" size="6">
                 Vous permet de créer un utilisateur
             </Card>
 
-            <Card title="Noms de domaine" url="/admin/users/domain" size="6">
-                Donne une vision sur les noms de domaine et les utilisateurs inscrits via ceux-ci
-            </Card>
+            <Card title="Liste des utilisateurs" url="/admin/users/list" size="6">(ancienne page Admin)</Card>
         </div>
     </div>
 </div>
