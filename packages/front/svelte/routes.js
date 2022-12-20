@@ -5,6 +5,7 @@ import AdminCreate from "./views/admin/users/AdminCreate.svelte";
 import Home from "./views/home/Home.svelte";
 import AdminDomains from "./views/admin/domains/AdminDomains.svelte";
 import Admin from "./views/admin/Admin.svelte";
+import AdminStats from "./views/admin/stats/AdminStats.svelte";
 
 export default {
     "association/:id": () => Association,
@@ -12,6 +13,7 @@ export default {
     "admin/users/list": () => AdminUsers,
     "admin/users/create": () => AdminCreate,
     "admin/users/domain": () => AdminDomains,
+    "admin/stats": () => AdminStats,
     admin: () => Admin,
     "/": () => Home
 };
