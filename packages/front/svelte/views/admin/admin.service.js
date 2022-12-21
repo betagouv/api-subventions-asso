@@ -49,6 +49,13 @@ export class AdminService {
         const users = await this.getUsers();
         return [...users.reduce(aggregateUsersByDomain, new Map()).values()].sort(sortDomainsByUserNumber);
     }
+
+    async addDomain(domain) {
+        const path = `/user/admin/domain`;
+        return axios.post(path, { domain }).then(result => {
+            return result.status == 201;
+        });
+    }
 }
 
 const adminService = new AdminService();

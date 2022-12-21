@@ -13,7 +13,6 @@ export const AGENT_ETAT_DOMAIN = [
     "ac-limoges.fr",
     "ac-lyon.fr",
     "ac-martinique.fr",
-    "ac-martinique.fr",
     "ac-mayotte.fr",
     "ac-montpellier.fr",
     "ac-nancy-metz.fr",

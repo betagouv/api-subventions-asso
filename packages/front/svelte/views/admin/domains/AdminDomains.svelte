@@ -1,10 +1,40 @@
 <script>
+    import ActionGroup from "../../../components/ActionGroup.svelte";
     import Spinner from "../../../components/Spinner.svelte";
+    import Alert from "../../../dsfr/Alert.svelte";
+    import Button from "../../../dsfr/Button.svelte";
+    import Input from "../../../dsfr/Input.svelte";
     import adminService from "../admin.service";
+    let domain = "";
+    let domainError;
+
+    const addDomain = async () => {
+        try {
+            await adminService.addDomain(domain);
+            domainError = false;
+        } catch (e) {
+            domainError = true;
+        }
+    };
 
     const promise = adminService.getUserDomaines();
 </script>
 
+{#if domainError === false}
+    <Alert title="Domaine ajouté!" type="success" />
+{:else if domainError === true}
+    <Alert title="L'ajout du nom de domaine a échoué" />
+{/if}
+<div class="action-group-layout">
+    <ActionGroup>
+        <svelte:fragment slot="content">
+            <Input bind:value={domain} label="Ajouter un nom de domaine" />
+        </svelte:fragment>
+        <svelte:fragment slot="action">
+            <Button on:click={addDomain}>Ajouter</Button>
+        </svelte:fragment>
+    </ActionGroup>
+</div>
 {#await promise}
     <Spinner description="Chargement en cours ..." />
 {:then domains}
@@ -52,3 +82,9 @@
         {/each}
     </div>
 {/await}
+
+<style>
+    .action-group-layout {
+        margin-bottom: 1em;
+    }
+</style>

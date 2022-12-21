@@ -28,3 +28,4 @@ export * from "./stats/MonthlyAvgRequestDtoResponse";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
 export * from "./email-domains/AddEmailDomainDto";
+export * from "./errors/HttpErrorResponseDto";

@@ -7,11 +7,13 @@ jest.mock("../../../shared/MongoConnection");
 describe("emailDomainsRepository", () => {
     const repository = new EmailDomainsRepository();
     const insertOneSpy = jest.fn();
+    const findSpy = jest.fn(() => ({ toArray: jest.fn() }));
 
     beforeAll(() => {
         //@ts-expect-error mocking
         repository.collection = {
-            insertOne: insertOneSpy
+            insertOne: insertOneSpy,
+            find: findSpy
         };
     });
 
@@ -20,6 +22,13 @@ describe("emailDomainsRepository", () => {
         it("should call insertOne() on collection", () => {
             repository.add(DOMAIN);
             expect(insertOneSpy).toHaveBeenCalledWith({ domain: DOMAIN });
+        });
+    });
+
+    describe("findAll", () => {
+        it("should call find with empty object", () => {
+            repository.findAll();
+            expect(findSpy).toHaveBeenCalledWith({});
         });
     });
 });

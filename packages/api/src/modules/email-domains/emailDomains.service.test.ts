@@ -10,4 +10,11 @@ describe("EmailDomainsService", () => {
             expect(repositoryAddSpy).toHaveBeenCalledWith(DOMAIN);
         });
     });
+    describe("getAll", () => {
+        const repositoryFindAllSpy = jest.spyOn(emailDomainsRepository, "findAll").mockImplementation(jest.fn());
+        it("should call repository", async () => {
+            await emailDomainsService.getAll();
+            expect(repositoryFindAllSpy).toHaveBeenCalledTimes(1);
+        });
+    });
 });

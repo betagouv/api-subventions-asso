@@ -4,9 +4,13 @@ import EmailDomain from "../@types/EmailDomain";
 export class EmailDomainsRepository {
     private readonly collection = db.collection<EmailDomain>("email-domains");
 
-    public async add(domain) {
+    public async add(domain: string) {
         await this.collection.insertOne({ domain });
         return domain;
+    }
+
+    public findAll() {
+        return this.collection.find({}).toArray();
     }
 }
 

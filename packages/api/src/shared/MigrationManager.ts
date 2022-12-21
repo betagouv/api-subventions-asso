@@ -2,7 +2,6 @@ import MigrationRepository from "./MigrationRepository";
 import db from "./MongoConnection";
 
 export class MigrationManager {
-
     private migrationsRepositories: MigrationRepository<unknown>[] = [];
 
     public inMigration = false;
@@ -18,10 +17,12 @@ export class MigrationManager {
     public async endMigration() {
         this.inMigration = false;
 
-        if ((await db.listCollections().toArray()).length === 0) return;
-        
+        const listCollections = await db.listCollections().toArray();
+        const collectionsName = listCollections.map(collection => collection.name);
+
         await this.migrationsRepositories.reduce(async (awaiter, repo) => {
             await awaiter;
+            if (!collectionsName.includes(repo.collectionName)) return awaiter;
             await db.collection(repo.collectionName).rename(repo.collectionName + "-old");
             await db.collection(repo.collectionName + "-MIGRATION-DATABASE").rename(repo.collectionName);
             return db.collection(repo.collectionName + "-old").drop() as unknown as Promise<void>;
@@ -37,10 +38,9 @@ export class MigrationManager {
         const target = db.collection(`${tableName}-MIGRATION-DATABASE`);
         let batch = target.initializeOrderedBulkOp();
         let counter = 0;
-        
         const source = db.collection(tableName);
         const cursor = source.find();
-        while(await cursor.hasNext()) {
+        while (await cursor.hasNext()) {
             const doc = await cursor.next();
             if (!doc) continue;
             batch.insert(doc);
@@ -50,7 +50,6 @@ export class MigrationManager {
                 batch = target.initializeOrderedBulkOp();
             }
         }
-
         if (counter % 1000 != 0) await batch.execute();
 
         console.info("Duplication of", tableName, "Done");

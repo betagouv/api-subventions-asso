@@ -7,20 +7,20 @@ describe("EmailDomainsController", () => {
         controller = new EmailDomainsController();
     });
     describe("addDomain()", () => {
-        const addDomainSpy = jest.spyOn(emailDomainsService, "add");
+        const BODY = { domain: "rhones.fr" };
+        const addDomainMock = jest.spyOn(emailDomainsService, "add");
         it("should return ErrorResponse", async () => {
-            addDomainSpy.mockImplementationOnce(() => {
+            addDomainMock.mockImplementationOnce(async () => {
                 throw new Error();
             });
             const expected = { success: false, message: "Internal Server Error" };
-            const actual = await controller.addDomain();
+            const actual = await controller.addDomain(BODY);
             expect(actual).toEqual(expected);
         });
         it("should return SuccessResponse", async () => {
-            addDomainSpy.mockImplementationOnce(domain => domain);
-            const DOMAIN = "DOMAIN";
-            const expected = { success: true, domain: DOMAIN };
-            const actual = await controller.addDomain(DOMAIN);
+            addDomainMock.mockImplementationOnce(async domain => domain);
+            const expected = { success: true, domain: BODY.domain };
+            const actual = await controller.addDomain(BODY);
             expect(actual).toEqual(expected);
         });
     });
