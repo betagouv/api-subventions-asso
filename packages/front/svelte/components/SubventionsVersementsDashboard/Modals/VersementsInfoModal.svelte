@@ -1,9 +1,9 @@
 <script>
     import Table from "../../../dsfr/Table.svelte";
     import TableHead from "../../Tables/TableHead.svelte";
+    import StringTableCell from "../../Tables/StringTableCell.svelte";
 
     import { data } from "../../../store/modal.store";
-    import StringTableCell from "../../Tables/StringTableCell.svelte";
 </script>
 
 {#if $data.versements}
@@ -22,7 +22,7 @@
                     <StringTableCell value={versement.domaineFonctionnel} />
                     <StringTableCell value={versement.activitee} />
                     <StringTableCell value={versement.centreFinancier} />
-                    <StringTableCell value={versement.dateOperation} />
+                    <StringTableCell value={versement.date} />
                 </tr>
             {/each}
         </svelte:fragment>
