@@ -32,8 +32,9 @@ export class VersementTableController {
 
     updateElements(elements) {
         this.elements = elements;
+
         const elementsDataViews = this.elements.map(element => {
-            if (!element.versements) return null;
+            if (!element || element.versements.length === 0) return null;
 
             return {
                 versements: element.versements,
