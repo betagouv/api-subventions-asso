@@ -65,7 +65,7 @@ export default class SubventionsVersementsDashboardController {
         this.loaderStateStore.set(this._buildLoadState(state));
         this._fullElements = mapSubventionsAndVersements({
             subventions: state.subventions,
-            versements: this._versements
+            versements: this._versements || []
         });
 
         const computedExercices = [...new Set(this._fullElements.map(element => element.year))].sort((a, b) => a - b);
