@@ -1,5 +1,5 @@
 <script>
-    import Button from "../dsfr/Button.svelte";
+    import Button from "../../dsfr/Button.svelte";
 
     export let action = undefined;
     export let actionActive = false;

@@ -54,7 +54,7 @@ export class VersementTableController {
             domaineFonctionnel: valueOrHyphen(versement.domaineFonctionnel),
             activitee: valueOrHyphen(versement.activitee),
             centreFinancier: valueOrHyphen(versement.centreFinancier),
-            date: withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8)
+            dateOperation: withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8)
         };
     }
 
