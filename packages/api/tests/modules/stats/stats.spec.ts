@@ -105,4 +105,38 @@ describe("/stats", () => {
             expect(actual.body).toEqual(expected);
         });
     });
+
+    /*
+    describe("getCumulatedUsersPerMonthByYear", () => {
+        const YEAR = 2022
+        const collection = db.collection<UserDbo>("users");
+        beforeEach(() => {
+            collection.insertMany(userFixture)
+        });
+
+        it("should return data with HTTP status code 200", async () => {
+            const DATA = {
+                January: 1,
+                February: 1,
+                March: 1,
+                April: 2,
+                May: 2,
+                June: 2,
+                July: 2,
+                August: 2,
+                September: 2,
+                October: 2,
+                November: 3,
+                December: 3
+            };
+            const expected = { success: true, data: DATA };
+            const actual = await request(g.app)
+                .get(`/stats/users/monthly/${YEAR}`)
+                .set("x-access-token", await getAdminToken())
+                .set("Accept", "application/json")
+                .expect(200)
+            expect(actual.body).toEqual(expected);
+        });
+    });
+*/
 });
