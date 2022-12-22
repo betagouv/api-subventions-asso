@@ -92,7 +92,6 @@ export class UserService {
         }
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
-
         if (!validPassword) {
             return {
                 success: false,
@@ -125,6 +124,7 @@ export class UserService {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, ...userWithoutPassword } = user;
+        console.log(userWithoutPassword.jwt.expirateDate);
         return { success: true, user: userWithoutPassword };
     }
 

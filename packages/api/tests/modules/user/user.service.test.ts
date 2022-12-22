@@ -12,65 +12,6 @@ describe("user.service.ts", () => {
     beforeEach(async () => {
         service = new UserService();
     });
-    describe("login", () => {
-        beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
-        });
-
-        it("should be reject because user not found", async () => {
-            await expect(service.login("testAA@beta.gouv.fr", "")).resolves.toMatchObject({
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            });
-        });
-
-        it("should be reject because password dont match", async () => {
-            await service.activeUser("test@beta.gouv.fr");
-            await expect(service.login("test@beta.gouv.fr", "")).resolves.toMatchObject({
-                success: false,
-                message: "Password does not match",
-                code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH
-            });
-        });
-
-        it("should be reject because user is not active", async () => {
-            await expect(service.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({
-                success: false,
-                message: "User is not active",
-                code: UserServiceErrors.USER_NOT_ACTIVE
-            });
-        });
-
-        it("should be rejected because user is not found", async () => {
-            jest.spyOn(userRepository, "getUserWithSecretsByEmail").mockImplementationOnce(() => Promise.resolve(null));
-            await expect(service.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            });
-        });
-
-        it("should be retrun user", async () => {
-            await service.activeUser("test@beta.gouv.fr");
-            await expect(service.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({
-                success: true,
-                user: { email: "test@beta.gouv.fr", active: true }
-            });
-        });
-
-        it("should update token", async () => {
-            await service.activeUser("test@beta.gouv.fr");
-
-            const mock = jest.spyOn(userRepository, "update");
-
-            await expect(service.login("test@beta.gouv.fr", "TMP_PASSWOrd;12345678")).resolves.toMatchObject({
-                success: true,
-                user: { email: "test@beta.gouv.fr", active: true }
-            });
-            expect(mock).not.toHaveBeenCalledWith(expect.objectContaining({ jwt }));
-        });
-    });
 
     describe("findByEmail", () => {
         beforeEach(async () => {
