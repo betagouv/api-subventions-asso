@@ -32,6 +32,8 @@ import UserReset from "./entities/UserReset";
 import emailDomainsService from "../email-domains/emailDomains.service";
 import userRepository from "./repositories/user.repository";
 
+jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
+
 describe("User Service", () => {
     const sendCreationMailMock = jest.spyOn(mailNotifierService, "sendCreationMail").mockImplementationOnce(jest.fn());
     const createMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
@@ -40,13 +42,13 @@ describe("User Service", () => {
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
     const findByEmailMock = jest.spyOn(userService, "findByEmail");
     //@ts-expect-error: mock private method
-    const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken").mockImplementation(() => SIGNED_TOKEN);
+    const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken");
     const getUserWithSecretsByEmailMock = jest
         .spyOn(userRepository, "getUserWithSecretsByEmail")
         .mockImplementation(async () => USER_DBO);
     const updateMock = jest.spyOn(userRepository, "update").mockImplementation(async () => USER_DBO);
 
-    const EMAIL = "test@datasubvention.gouv.fr";
+    const EMAIL = "test@beta.gouv.fr";
     const USER_WITHOUT_SECRET = {
         _id: new ObjectId("635132a527c9bfb8fc7c758e"),
         email: EMAIL,
@@ -65,6 +67,8 @@ describe("User Service", () => {
     const CONSUMER_JWT_PAYLOAD = { ...USER_WITHOUT_SECRET, isConsumerToken: true };
 
     beforeEach(() => {
+        // @ts-expect-error: taggle
+        buildJWTTokenMock.mockImplementation(() => "SIGNED_TOKEN");
         jwtVerifyMock.mockImplementation(() => ({ token: "TOKEN", now: new Date() }));
     });
 
@@ -107,7 +111,7 @@ describe("User Service", () => {
         });
     });
 
-    describe.only("login", () => {
+    describe("login", () => {
         it("should throw an Error if user not found", async () => {
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => null);
             const expected = { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
@@ -152,9 +156,10 @@ describe("User Service", () => {
         });
 
         it("should return user", async () => {
+            const TWO_DAY_AFTER = new Date(Date.now() + JWT_EXPIRES_TIME);
             const expected = {
                 success: true,
-                user: { ...USER_WITHOUT_PASSWORD, jwt: { token: SIGNED_TOKEN, expirateDate: new Date() } }
+                user: { ...USER_WITHOUT_PASSWORD, jwt: { token: SIGNED_TOKEN, expirateDate: TWO_DAY_AFTER } }
             };
             const actual = await userService.login(USER_DBO.email, "PASSWORD");
             expect(actual).toEqual(expected);
@@ -223,7 +228,7 @@ describe("User Service", () => {
             const expected = CONSUMER_JWT_PAYLOAD;
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: USER_WITHOUT_SECRET }));
             await userService.createConsumer(EMAIL);
-            expect(buildJWTTokenMock).toHaveBeenCalledWith(expected);
+            expect(buildJWTTokenMock).toHaveBeenCalledWith(expected, { expiration: false });
         });
 
         it("should call consumerTokenRepository.create", async () => {
@@ -320,19 +325,29 @@ describe("User Service", () => {
 
     describe("buildJWTToken", () => {
         it("should set expiresIn", () => {
+            buildJWTTokenMock.mockRestore();
             const expected = {
                 expiresIn: JWT_EXPIRES_TIME
             };
             // @ts-expect-error buildJWTToken is private
-            userService.buildJWTToken({}, { expiration: true });
-            expect(jwtSignMock).toHaveBeenCalledWith(expect.any, expect.any, expected);
+            userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: true });
+            expect(jwtSignMock).toHaveBeenCalledWith(
+                { ...USER_WITHOUT_SECRET, now: new Date() },
+                expect.any(String),
+                expected
+            );
         });
 
         it("should not set expiresIn", () => {
+            buildJWTTokenMock.mockRestore();
             const expected = {};
             // @ts-expect-error buildJWTToken is private
-            userService.buildJWTToken({}, { expiration: false });
-            expect(jwtSignMock).toHaveBeenCalledWith(expect.any, expect.any, expected);
+            userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: false });
+            expect(jwtSignMock).toHaveBeenCalledWith(
+                { ...USER_WITHOUT_SECRET, now: new Date() },
+                expect.any(String),
+                expected
+            );
         });
     });
 });

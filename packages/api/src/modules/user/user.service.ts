@@ -161,6 +161,7 @@ export class UserService {
         if (!createResult?.success) return createResult;
         const user = createResult.user;
         const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
+        console.log(token);
         try {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
             return { success: true, user };
