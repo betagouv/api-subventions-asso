@@ -1,11 +1,13 @@
 <script>
-    import TableCell from "../../TableCell.svelte";
-    import TableHead from "../../TableHead.svelte";
+    import TableCell from "../../Tables/TableCell.svelte";
+    import TableHead from "../../Tables/TableHead.svelte";
     import Table from "../../../dsfr/Table.svelte";
 
     import { modal, data } from "../../../store/modal.store";
     import { VersementTableController } from "./VersementTable.controller";
     import VersementsInfoModal from "../Modals/VersementsInfoModal.svelte";
+    import StringTableCell from "../../Tables/StringTableCell.svelte";
+    import NumberTableCell from "../../Tables/NumberTableCell.svelte";
 
     export let sort;
     export let elements = [];
@@ -56,13 +58,9 @@
                     aria-controls="fr-modal"
                     data-fr-opened="false"
                     class="clickable">
-                    <TableCell primary="true" position="end">
-                        {element.totalAmount}
-                    </TableCell>
-                    <TableCell>{element.centreFinancier}</TableCell>
-                    <TableCell>
-                        {element.lastVersementDate}
-                    </TableCell>
+                    <NumberTableCell primary="true" value={element.totalAmount} />
+                    <StringTableCell value={element.centreFinancier} />
+                    <StringTableCell value={element.lastVersementDate} />
                 </tr>
             {/if}
         {/each}
