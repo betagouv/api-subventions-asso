@@ -30,29 +30,3 @@ export class EmailDomainsController extends Controller {
         }
     }
 }
-
-// import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
-// import { Route, Post, Controller, Tags, Security, Response } from 'tsoa';
-
-// @Route("domain")
-// @Security("jwt", ["admin"])
-// @Tags("EmailDomain Controller")
-// export class AssociationController extends Controller {
-//     /**
-//      * Remonte les informations d'une association
-//      * @param identifier Siret, Siren ou Rna
-//      */
-//     @Post("/test")
-//     @Response<ErrorResponse>("404")
-//     public async getAssociation(): Promise<GetAssociationResponseDto> {
-//         try {
-//             const association = await associationService.getAssociation(identifier);
-//             if (association) return { success: true, association };
-//             this.setStatus(404);
-//             return { success: false, message: "Association not found" };
-//         } catch (e: unknown) {
-//             this.setStatus(404);
-//             return { success: false, message: (e as Error).message }
-//         }
-//     }
-// }
