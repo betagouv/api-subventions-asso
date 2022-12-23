@@ -9,6 +9,10 @@ export class EmailDomainsRepository {
         return domain;
     }
 
+    public findOne(domain) {
+        return this.collection.findOne({ domain });
+    }
+
     public findAll() {
         return this.collection.find({}).toArray();
     }

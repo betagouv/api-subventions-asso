@@ -281,15 +281,14 @@ describe("User Service", () => {
     });
 
     describe("validEmail()", () => {
-        const getDomainsMock = jest
-            .spyOn(emailDomainsService, "getAll")
-            //@ts-expect-error: mock
-            .mockImplementation(async () => [{ domain: "ac-pentos.ws" }]);
+        const isDomainAcceptedMock = jest
+            .spyOn(emailDomainsService, "isDomainAccepted")
+            .mockImplementation(async () => true);
         const EMAIL = "daemon.targaryen@ac-pentos.ws";
-        it("should retrieve emailDomains", async () => {
+        it("should verify domain", async () => {
             //@ts-expect-error: private method
             await userService.validEmail(EMAIL);
-            expect(getDomainsMock).toHaveBeenCalledTimes(1);
+            expect(isDomainAcceptedMock).toHaveBeenCalledWith(EMAIL);
         });
 
         it("should return SuccessResponse", async () => {
@@ -310,8 +309,8 @@ describe("User Service", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return UserServiceError if not in domains list", async () => {
-            getDomainsMock.mockImplementationOnce(async () => []);
+        it("should return UserServiceError if domain not accepted", async () => {
+            isDomainAcceptedMock.mockImplementationOnce(async () => false);
             const expected = {
                 success: false,
                 message: "Email domain is not accepted",

@@ -136,23 +136,34 @@ describe("user.service.ts", () => {
         });
 
         it("should be reject because user email not found", async () => {
-            await expect(service.activeUser("wrong@email.fr")).resolves.toMatchObject({
+            const expected = {
                 success: false,
                 message: "User email does not correspond to a user",
                 code: UserServiceErrors.USER_NOT_FOUND
-            });
+            };
+            let actual;
+            try {
+                actual = await service.activeUser("wrong@email.fr");
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
         });
 
-        it("should be update user (called with email)", async () => {
-            await expect(service.activeUser("test@beta.gouv.fr")).resolves.toMatchObject({
+        it("should update user (called with email)", async () => {
+            const expected = {
                 success: true,
                 user: { active: true }
-            });
+            };
+            const actual = await service.activeUser("test@beta.gouv.fr");
+            expect(actual).toMatchObject(expected);
         });
 
-        it("should be update user (called with user)", async () => {
+        it("should update user (called with user)", async () => {
+            const expected = { success: true, user: { active: true } };
             const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
-            await expect(service.activeUser(user)).resolves.toMatchObject({ success: true, user: { active: true } });
+            const actual = await service.activeUser(user);
+            expect(actual).toMatchObject(expected);
         });
     });
 
@@ -296,18 +307,27 @@ describe("user.service.ts", () => {
         });
 
         it("should be rejected because user not found", async () => {
-            await expect(service.findJwtByEmail("wrong@email.fr")).resolves.toMatchObject({
+            const expected = {
                 success: false,
                 message: "User not found",
                 code: UserServiceErrors.USER_NOT_FOUND
-            });
+            };
+            let actual;
+            try {
+                actual = await service.findJwtByEmail("wrong@email.fr");
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
         });
 
         it("should return jwt", async () => {
-            await expect(service.findJwtByEmail("test@beta.gouv.fr")).resolves.toMatchObject({
+            const expected = {
                 success: true,
                 jwt: { token: expect.stringContaining(""), expirateDate: expect.any(Date) }
-            });
+            };
+            const actual = await service.findJwtByEmail("test@beta.gouv.fr");
+            expect(actual).toEqual(expected);
         });
     });
 

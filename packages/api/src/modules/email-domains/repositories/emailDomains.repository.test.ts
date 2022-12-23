@@ -5,23 +5,32 @@ import { EmailDomainsRepository } from "./emailDomains.repository";
 jest.mock("../../../shared/MongoConnection");
 
 describe("emailDomainsRepository", () => {
+    const DOMAIN = "@kalimdor.zog";
     const repository = new EmailDomainsRepository();
     const insertOneSpy = jest.fn();
     const findSpy = jest.fn(() => ({ toArray: jest.fn() }));
+    const findOneSpy = jest.fn(() => DOMAIN);
 
     beforeAll(() => {
         //@ts-expect-error mocking
         repository.collection = {
             insertOne: insertOneSpy,
-            find: findSpy
+            find: findSpy,
+            findOne: findOneSpy
         };
     });
 
-    const DOMAIN = "@kalimdor.zog";
     describe("add", () => {
         it("should call insertOne() on collection", () => {
             repository.add(DOMAIN);
             expect(insertOneSpy).toHaveBeenCalledWith({ domain: DOMAIN });
+        });
+    });
+
+    describe("findOne", () => {
+        it("should call find with given domain", () => {
+            repository.findOne(DOMAIN);
+            expect(findOneSpy).toHaveBeenCalledWith({ domain: DOMAIN });
         });
     });
 

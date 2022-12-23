@@ -536,8 +536,7 @@ export class UserService {
             return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL };
         }
 
-        const emailDomains = await emailDomainsService.getAll();
-        if (!emailDomains.some(emailDomain => email.endsWith(emailDomain.domain))) {
+        if (!(await emailDomainsService.isDomainAccepted(email))) {
             return {
                 success: false,
                 message: "Email domain is not accepted",

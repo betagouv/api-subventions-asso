@@ -4,6 +4,7 @@ import emailDomainsRepository from "./repositories/emailDomains.repository";
 
 class EmailDomainsService {
     public async add(domain: string) {
+        console.log(!REGEX_MAIL_DOMAIN.test(domain));
         if (!REGEX_MAIL_DOMAIN.test(domain)) {
             throw new BadRequestError();
         }
@@ -16,6 +17,11 @@ class EmailDomainsService {
 
     public getAll() {
         return emailDomainsRepository.findAll();
+    }
+
+    public async isDomainAccepted(domainOrEmail: string) {
+        const domain = domainOrEmail.split("@")[1];
+        return !!(await emailDomainsRepository.findOne(domain));
     }
 }
 

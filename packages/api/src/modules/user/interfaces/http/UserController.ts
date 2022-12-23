@@ -70,21 +70,9 @@ export class UserController extends Controller {
     @Post("/admin/domain")
     @Security("jwt", ["admin"])
     public async addDomain(@Body() body: { domain: string }): Promise<{ success: true } | HttpErrorResponse> {
-        let result;
-        try {
-            await emailDomainsService.add(body.domain);
-            this.setStatus(201);
-            result = { success: true };
-        } catch (error) {
-            if (error instanceof HttpError) {
-                this.setStatus(error.status);
-                result = { success: false, status: error.status, message: error.message };
-            } else {
-                this.setStatus(500);
-                result = { success: false, status: InternalServerErrorCode, message: InternalServerErrorMessage };
-            }
-        }
-        return result;
+        await emailDomainsService.add(body.domain);
+        this.setStatus(201);
+        return { success: true };
     }
 
     /**

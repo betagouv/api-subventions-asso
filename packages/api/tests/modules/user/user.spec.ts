@@ -33,7 +33,7 @@ describe("/user", () => {
                         .send({ domain: INVALID_DOMAIN })
                         .set("x-access-token", await getAdminToken())
                         .expect(400)
-                        .expect({ ...ERROR_RESPONSE, message: BadRequestErrorMessage, status: BadRequestErrorCode });
+                        .expect({ ...ERROR_RESPONSE, message: BadRequestErrorMessage });
                 });
 
                 it("should return 500 Internal Server Error", async () => {
@@ -47,8 +47,7 @@ describe("/user", () => {
                         .expect(500)
                         .expect({
                             ...ERROR_RESPONSE,
-                            message: InternalServerErrorMessage,
-                            status: InternalServerErrorCode
+                            message: InternalServerErrorMessage
                         });
                 });
             });
