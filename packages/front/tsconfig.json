@@ -13,5 +13,6 @@
         "resolveJsonModule": true,
         "allowJs": true
     },
-    "exclude": ["node_modules", "build/**/*", "jest.config.js", "jest.config.unit.js"]
+    "include": ["src/**/*", "svelte/**/*", "views/**/*", "static/**/*"],
+    "exclude": ["node_modules", "jest.config.js", "jest.config.unit.js"]
 }
