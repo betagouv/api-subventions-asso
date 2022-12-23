@@ -15,7 +15,7 @@
         "generate:routes": "tsoa routes",
         "generate": "npm run generate:routes && npm run generate:docs",
         "prebuild": "npm run generate",
-        "build": "tsc --project ./",
+        "build": "tsc --project tsconfig.build.json",
         "prelint": "npm run generate",
         "lint": "eslint . --ext .ts",
         "test": "npm run test:unit && npm run test:integ",
