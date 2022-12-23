@@ -1,6 +1,6 @@
 <script>
-    import TableCell from "../../TableCell.svelte";
-    import TableHead from "../../TableHead.svelte";
+    import TableCell from "../../Tables/TableCell.svelte";
+    import TableHead from "../../Tables/TableHead.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import Table from "../../../dsfr/Table.svelte";
 

@@ -29,50 +29,53 @@
 {#await promise}
     <Spinner description="Chargement des demandes de subventions en cours ..." />
 {:then _null}
-    <div class="title">
-        <h2>Tableau de bord</h2>
-        <div>
+    <div class="fr-grid-row fr-mt-3w fr-py-2w">
+        <div class="fr-col-8">
+            <h2>Tableau de bord</h2>
+        </div>
+        <div class="fr-col-4">
             <Button type="secondary" ariaControls="fr-modal" on:click={displayModal}>
                 Voir la liste des fournisseurs de données
             </Button>
         </div>
     </div>
-    <div class="filters">
-        <div class="select-wrapper">
+    <div class="fr-grid-row fr-py-4w">
+        <div class="fr-col-3 ">
             <Select
                 on:change={event => controller.updateSelectedExercice(event.detail)}
                 selected={$selectedExercice}
                 options={$exercicesOptions} />
         </div>
     </div>
-    {#if $elements?.length}
-        <SubventionsVersemementsStatistique elements={$elements} year={$selectedYear} />
-
-        {#if $loaderStateStore.status != "end"}
-            <Alert type="info" title="Récupérations en cours des subventions chez nos fourniseurs ...">
-                <ProgressBar percent={$loaderStateStore.percent} />
-            </Alert>
+    <div class="fr-py-3w">
+        {#if $elements?.length}
+            <SubventionsVersemementsStatistique elements={$elements} year={$selectedYear} />
+            {#if $loaderStateStore.status != "end"}
+                <Alert type="info" title="Récupérations en cours des subventions chez nos fourniseurs ...">
+                    <ProgressBar percent={$loaderStateStore.percent} />
+                </Alert>
+            {/if}
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-8">
+                    <SubventionTable
+                        elements={$elements}
+                        sort={column => controller.sort(column)}
+                        currentSort={$sortColumn}
+                        sortDirection={$sortDirection} />
+                </div>
+                <div class="fr-col-4">
+                    <VersementTable
+                        elements={$elements}
+                        sort={column => controller.sort(column)}
+                        currentSort={$sortColumn}
+                        sortDirection={$sortDirection} />
+                </div>
+            </div>
+        {:else}
+            <DataNotFound
+                content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {$selectedYear}" />
         {/if}
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-8">
-                <SubventionTable
-                    elements={$elements}
-                    sort={column => controller.sort(column)}
-                    currentSort={$sortColumn}
-                    sortDirection={$sortDirection} />
-            </div>
-            <div class="fr-col-4">
-                <VersementTable
-                    elements={$elements}
-                    sort={column => controller.sort(column)}
-                    currentSort={$sortColumn}
-                    sortDirection={$sortDirection} />
-            </div>
-        </div>
-    {:else}
-        <DataNotFound
-            content="Nous sommes désolés, nous n'avons trouvé aucune donnée pour cette établissement sur l'année {$selectedYear}" />
-    {/if}
+    </div>
 {:catch error}
     {#if error.request && error.request.status == 404}
         <DataNotFound />
@@ -82,23 +85,4 @@
 {/await}
 
 <style>
-    .title {
-        display: flex;
-        justify-content: space-between;
-        padding-bottom: 15px;
-    }
-
-    .title > div {
-        align-self: baseline;
-    }
-
-    .filters {
-        display: flex;
-        padding-bottom: 96px;
-        gap: 24px;
-    }
-
-    .select-wrapper {
-        flex: 1 1 0px;
-    }
 </style>

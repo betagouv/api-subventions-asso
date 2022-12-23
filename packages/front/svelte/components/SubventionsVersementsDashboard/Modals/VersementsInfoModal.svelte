@@ -1,7 +1,7 @@
 <script>
     import Table from "../../../dsfr/Table.svelte";
-    import TableHead from "../../TableHead.svelte";
-    import TableCell from "../../TableCell.svelte";
+    import TableHead from "../../Tables/TableHead.svelte";
+    import StringTableCell from "../../Tables/StringTableCell.svelte";
 
     import { data } from "../../../store/modal.store";
 </script>
@@ -18,13 +18,11 @@
         <svelte:fragment slot="body">
             {#each $data.versements as versement}
                 <tr>
-                    <TableCell primary="true" position="center">{versement.amount}</TableCell>
-                    <TableCell position="center">{versement.domaineFonctionnel}</TableCell>
-                    <TableCell position="center">{versement.activitee}</TableCell>
-                    <TableCell position="center">{versement.centreFinancier}</TableCell>
-                    <TableCell position="center">
-                        {versement.dateOperation}
-                    </TableCell>
+                    <StringTableCell primary="true" value={versement.amount} />
+                    <StringTableCell value={versement.domaineFonctionnel} />
+                    <StringTableCell value={versement.activitee} />
+                    <StringTableCell value={versement.centreFinancier} />
+                    <StringTableCell value={versement.date} />
                 </tr>
             {/each}
         </svelte:fragment>
