@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.1](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.19.1) (2022-12-26)
+
+### Bug Fixes
+
+-   **api:** format data with array containing one element ([2c52324](https://github.com/betagouv/api-subventions-asso/commit/2c52324b0a22c639d5c67ce5d8b9285e96543515))
+-   **api:** sort getSubventions result to avoid race failure ([e6439bb](https://github.com/betagouv/api-subventions-asso/commit/e6439bbdeb59cbe866942f5d6916922c18531db3))
+-   **api:** update LCA document description text ([a5be48c](https://github.com/betagouv/api-subventions-asso/commit/a5be48c454249e2c6e1b7fa22efd476dd227b611))
+-   **api:** update snapshot ([5e29d8a](https://github.com/betagouv/api-subventions-asso/commit/5e29d8a7abb7bf97d02a44f20cf7fc6881cc1ad8))
+-   **api:** use real compare method to fix the test ([70b4554](https://github.com/betagouv/api-subventions-asso/commit/70b4554f74249518011f2e17a5ad87124239d0bf))
+-   **front:** realign login form ([b1d69c9](https://github.com/betagouv/api-subventions-asso/commit/b1d69c927043647158d948c521e98ba2f64445d6))
+-   **front:** run prettier ([8e1ce0b](https://github.com/betagouv/api-subventions-asso/commit/8e1ce0b75d5760b1d62e1de239e822c66620634e))
+-   **front:** v0.19.0 bugs ([1542e62](https://github.com/betagouv/api-subventions-asso/commit/1542e62de7350c42cf4333ee1728865a0f9a1f9f)), closes [#758](https://github.com/betagouv/api-subventions-asso/issues/758) [#757](https://github.com/betagouv/api-subventions-asso/issues/757) [#756](https://github.com/betagouv/api-subventions-asso/issues/756) [#755](https://github.com/betagouv/api-subventions-asso/issues/755)
+
+### Features
+
+-   **api:** accept caissedesdepots.fr email domain ([ed9aaa5](https://github.com/betagouv/api-subventions-asso/commit/ed9aaa508a522eea8fffdf282c18cf3ba5fb5145))
+-   **api:** add collectivite domain ([@rhone](https://github.com/rhone).fr) ([98d1bf3](https://github.com/betagouv/api-subventions-asso/commit/98d1bf31ec1bc070697672308bc4e7bd0b6f4ada))
+-   **api:** add migration for osiris requests indexes ([#623](https://github.com/betagouv/api-subventions-asso/issues/623)) ([7de5708](https://github.com/betagouv/api-subventions-asso/commit/7de570817837945459a0af01aac1c49c84aa46b9))
+-   **api:** apply PR review comments ([12c7bef](https://github.com/betagouv/api-subventions-asso/commit/12c7befd7c925a8ef1cd7e1bf395d0a93e53d270))
+-   **front, api:** add etablissement dashboard ([#709](https://github.com/betagouv/api-subventions-asso/issues/709)) ([b3c3cc3](https://github.com/betagouv/api-subventions-asso/commit/b3c3cc3b74259e0a1d5761002b98d32ff108fe34))
+-   **front:** add etablissment tab bank data ([a74bd75](https://github.com/betagouv/api-subventions-asso/commit/a74bd75ac35e36f7695c6ada7f6e73bdf7ba645d))
+-   **front:** align left tabs ([418da43](https://github.com/betagouv/api-subventions-asso/commit/418da43415292801a6f3ad5816ccb370721e8566))
+-   **front:** include dsfr icons ([#704](https://github.com/betagouv/api-subventions-asso/issues/704)) ([97fa87d](https://github.com/betagouv/api-subventions-asso/commit/97fa87d73b13923fc56ac817b855244568de6e11))
+-   **front:** migratate admin/user/create in Svelte ([#671](https://github.com/betagouv/api-subventions-asso/issues/671)) ([2ca42b2](https://github.com/betagouv/api-subventions-asso/commit/2ca42b2e235c768d3136752473a1f61f06d5ba90))
+-   **front:** new etablissement page ([#626](https://github.com/betagouv/api-subventions-asso/issues/626)) ([1c20193](https://github.com/betagouv/api-subventions-asso/commit/1c201935259fac247b47ae09d5d56ab6963249e8))
+-   **front:** remplace ejs admin view in svelte view ([7b8e82d](https://github.com/betagouv/api-subventions-asso/commit/7b8e82d0ab5d2cc33821cd2aba3839f1f3a2b6f2))
+-   **front:** remplace ejs domain admin view in svelte view ([#673](https://github.com/betagouv/api-subventions-asso/issues/673)) ([bc2f329](https://github.com/betagouv/api-subventions-asso/commit/bc2f329780b0673a4e75db22cde05842c7ed46fd))
+-   **front:** restore cgu in svelte front ([d1cb769](https://github.com/betagouv/api-subventions-asso/commit/d1cb76911a5aacd2e021d8e0a958dd466c667fb6))
+-   **front:** use Documents in etablissement page ([2e1a47d](https://github.com/betagouv/api-subventions-asso/commit/2e1a47d003430014eddf99043deca88bb33e9927))
+-   **front:** use safe equality operand ([7bb0808](https://github.com/betagouv/api-subventions-asso/commit/7bb0808c4d06cc704596cf06034257bab6e9ff23))
+
 # [0.19.0](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.19.0) (2022-12-08)
 
 ### Bug Fixes
