@@ -1,14 +1,23 @@
 <script>
-    export let title;
+    export let title = "";
 </script>
 
-<div class="widget fr-p-4w">
-    <h2 class="fr-h2">{title}</h2>
-    <slot />
+<div class="widget">
+    <h2 class="widget__title">{title}</h2>
+    <div>
+        <slot />
+    </div>
 </div>
 
 <style>
     .widget {
-        border: 1px solid var(--border-disabled-grey);
+        display: flex;
+        border: 1px solid #e5e5e5;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .widget__title {
+        margin-bottom: 24px;
     }
 </style>
