@@ -4,10 +4,10 @@
 
 Le projet uttilisent la stack technique suivante:
 
-- NodeJs
-- Typescript
-- Express
-- MongoDB
+-   NodeJs
+-   Typescript
+-   Express
+-   MongoDB
 
 L'architecture utilisée est une inspiration libre de la clean architecture (Voir aussi architecture Oignon et Hexagonal). Le concept n'est pas poussé à fond, pour une question de rapidité de mise en place et pour garder un maximum de souplesse en cas de changement radical du produit.
 
@@ -27,11 +27,11 @@ Vous devez ensuite installer les dépendances avec `npm install`.
 
 Ensuite, il vous faudra créer un fichier .env à la racine du projet, avec au moins les variables d'environements suivantes:
 
-- JWT_SECRET
-- MAIL_HOST
-- MAIL_PORT
-- MAIL_USER
-- MAIL_PASSWORD
+-   JWT_SECRET
+-   MAIL_HOST
+-   MAIL_PORT
+-   MAIL_USER
+-   MAIL_PASSWORD
 
 Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.  
 Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
