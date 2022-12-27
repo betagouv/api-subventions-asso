@@ -20,10 +20,10 @@ export default class AssociationDtoAdapter {
             ),
             siren: data.association.siret
                 ? ProviderValueAdapter.toProviderValues(
-                      siretToSiren(data.association.siret),
-                      AssociationDtoAdapter.PROVIDER_NAME,
-                      new Date(data.association.updated_at)
-                  )
+                    siretToSiren(data.association.siret),
+                    AssociationDtoAdapter.PROVIDER_NAME,
+                    new Date(data.association.updated_at)
+                )
                 : undefined,
             date_creation_rna: ProviderValueAdapter.toProviderValues(
                 new Date(data.association.date_creation),
