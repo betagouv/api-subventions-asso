@@ -13,7 +13,11 @@ module.exports = {
     },
     resolve: {
         alias: {
-            svelte: path.dirname(require.resolve("svelte/package.json"))
+            svelte: path.dirname(require.resolve("svelte/package.json")),
+            "@resources": path.resolve(__dirname, "svelte/resources"),
+            "@components": path.resolve(__dirname, "svelte/components"),
+            "@dsfr": path.resolve(__dirname, "svelte/dsfr"),
+            "@core": path.resolve(__dirname, "svelte/core")
         },
         extensions: [".mjs", ".js", ".svelte", ".ts"],
         mainFields: ["svelte", "module", "main"]
