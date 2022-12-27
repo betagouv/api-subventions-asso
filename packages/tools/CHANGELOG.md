@@ -2,25 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
-# [0.19.0](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.19.0) (2022-12-08)
+
+## [0.19.2](https://github.com/betagouv/api-subventions-asso/compare/v0.18.7...v0.19.2) (2022-12-27)
 
 **Note:** Version bump only for package tools
 
+[0.19.0](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.19.0) (2022-12-08)
+
+**Note:** Version bump only for package tools
 
 ## [0.18.5](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.5) (2022-12-12)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 ## [0.18.4](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.4) (2022-12-12)
 
 **Note:** Version bump only for package tools
-
-
-
 
 # [0.18.0](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.18.0) (2022-11-22)
 

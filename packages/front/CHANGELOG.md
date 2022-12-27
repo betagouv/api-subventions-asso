@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.2](https://github.com/betagouv/datasubvention/compare/v0.18.7...v0.19.2) (2022-12-27)
+
+### Bug Fixes
+
+-   **front:** realign login form ([ccc2913](https://github.com/betagouv/datasubvention/commit/ccc2913a38eb391e05ef140ee6f653c941fda282))
+-   **front:** run prettier ([2d21508](https://github.com/betagouv/datasubvention/commit/2d21508b21dd8cd4c9ab14be939f4fefb2f8a719))
+-   **front:** v0.19.0 bugs ([5e2589a](https://github.com/betagouv/datasubvention/commit/5e2589a052911e9927b968417331f20ae7e1a682)), closes [#758](https://github.com/betagouv/datasubvention/issues/758) [#757](https://github.com/betagouv/datasubvention/issues/757) [#756](https://github.com/betagouv/datasubvention/issues/756) [#755](https://github.com/betagouv/datasubvention/issues/755)
+
+### Features
+
+-   **api:** apply PR review comments ([f159972](https://github.com/betagouv/datasubvention/commit/f1599727659f320f35726cdac106054e7faf6373))
+-   **front, api:** add etablissement dashboard ([#709](https://github.com/betagouv/datasubvention/issues/709)) ([4e85991](https://github.com/betagouv/datasubvention/commit/4e85991bfec399f44fea558004fa09ad53a3182a))
+-   **front:** add etablissment tab bank data ([c8142d1](https://github.com/betagouv/datasubvention/commit/c8142d1a35a25a217fc9f41e31d2dd472263f181))
+-   **front:** align left tabs ([d571689](https://github.com/betagouv/datasubvention/commit/d57168939ff38791701b952f32c427e6e34ad98f))
+-   **front:** include dsfr icons ([#704](https://github.com/betagouv/datasubvention/issues/704)) ([51640a6](https://github.com/betagouv/datasubvention/commit/51640a680a035db0e5016a47fc231c7d40b7dea8))
+-   **front:** migratate admin/user/create in Svelte ([#671](https://github.com/betagouv/datasubvention/issues/671)) ([c2ccc66](https://github.com/betagouv/datasubvention/commit/c2ccc660da3c203d61e2299d57cd77eb6d712cbc))
+-   **front:** new etablissement page ([#626](https://github.com/betagouv/datasubvention/issues/626)) ([f8cd049](https://github.com/betagouv/datasubvention/commit/f8cd049ac9220009163cbf66ba12abbdf9fcee8a))
+-   **front:** remplace ejs admin view in svelte view ([b894500](https://github.com/betagouv/datasubvention/commit/b894500e37d74691c02d6def0f2e533e7df131d5))
+-   **front:** remplace ejs domain admin view in svelte view ([#673](https://github.com/betagouv/datasubvention/issues/673)) ([fe6f310](https://github.com/betagouv/datasubvention/commit/fe6f31097a29ee7d8d407e6f201e1be4cb0a69b1))
+-   **front:** restore cgu in svelte front ([51a5c60](https://github.com/betagouv/datasubvention/commit/51a5c6008afc6d9c051282f3b36474ddfcbc0b08))
+-   **front:** use Documents in etablissement page ([fa5c2e7](https://github.com/betagouv/datasubvention/commit/fa5c2e7af011a9d15a0f7c95be9afc24e11a00c6))
+-   **front:** use safe equality operand ([e9947bc](https://github.com/betagouv/datasubvention/commit/e9947bc6075463d16fa503cb396d8ff8679bdf26))
 
 # [0.19.0](https://github.com/betagouv/datasubvention/compare/v0.18.3...v0.19.0) (2022-12-08)
 
@@ -25,12 +47,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** restore cgu in svelte front ([d1cb769](https://github.com/betagouv/datasubvention/commit/d1cb76911a5aacd2e021d8e0a958dd466c667fb6))
 -   **front:** use Documents in etablissement page ([2e1a47d](https://github.com/betagouv/datasubvention/commit/2e1a47d003430014eddf99043deca88bb33e9927))
 -   **front:** use safe equality operand ([7bb0808](https://github.com/betagouv/datasubvention/commit/7bb0808c4d06cc704596cf06034257bab6e9ff23))
+
 ## [0.18.5](https://github.com/betagouv/datasubvention/compare/v0.18.3...v0.18.5) (2022-12-12)
 
-
-
 ## [0.18.4](https://github.com/betagouv/datasubvention/compare/v0.18.3...v0.18.4) (2022-12-12)
-
 
 ## [0.18.3](https://github.com/betagouv/datasubvention/compare/v0.18.2...v0.18.3) (2022-12-08)
 
@@ -54,12 +74,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** move Breadcrumbs uses in Router ([#608](https://github.com/betagouv/datasubvention/issues/608)) ([25ee182](https://github.com/betagouv/datasubvention/commit/25ee182899dfcc01c0d11e2927b4bdf4b17bb734))
     > > > > > > > main
 
-
-
 ## [0.17.3](https://github.com/betagouv/datasubvention/compare/v0.18.0...v0.17.3) (2022-11-22)
 
 **Note:** Version bump only for package front
-
 
 ## [0.17.2](https://github.com/betagouv/datasubvention/compare/v0.17.0...v0.17.2) (2022-11-17)
 

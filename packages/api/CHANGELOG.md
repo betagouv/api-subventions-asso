@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.2](https://github.com/betagouv/api-subventions-asso/compare/v0.18.7...v0.19.2) (2022-12-27)
+
+### Bug Fixes
+
+-   **api:** format data with array containing one element ([d445296](https://github.com/betagouv/api-subventions-asso/commit/d4452964ea6d3e63aa87b8eeb48bb6190f8f23ae))
+-   **api:** sort getSubventions result to avoid race failure ([8d4df00](https://github.com/betagouv/api-subventions-asso/commit/8d4df00038a201e9f5ee8a1ab96f6996aff79a3f))
+-   **api:** update snapshot ([562d651](https://github.com/betagouv/api-subventions-asso/commit/562d65106ce4b44ca5e8d3116ebe8d4dd7a8ea7f))
+-   **api:** use async foreach instead of promise all ([1460340](https://github.com/betagouv/api-subventions-asso/commit/1460340e69f5a26558f341e78ed566488624cf28))
+-   **api:** use real compare method to fix the test ([dd2c12a](https://github.com/betagouv/api-subventions-asso/commit/dd2c12a726645c95a385c1763096a336ff213188))
+
+### Features
+
+-   **api:** accept caissedesdepots.fr email domain ([b3a9199](https://github.com/betagouv/api-subventions-asso/commit/b3a919945b1590ea9863fdc2d32a4f6fc6536624))
+-   **api:** add migration for osiris requests indexes ([#623](https://github.com/betagouv/api-subventions-asso/issues/623)) ([87d8338](https://github.com/betagouv/api-subventions-asso/commit/87d8338ca253c36b3ca4011ff5c29869227138af))
+-   **front, api:** add etablissement dashboard ([#709](https://github.com/betagouv/api-subventions-asso/issues/709)) ([4e85991](https://github.com/betagouv/api-subventions-asso/commit/4e85991bfec399f44fea558004fa09ad53a3182a))
+-   **front:** add etablissment tab bank data ([c8142d1](https://github.com/betagouv/api-subventions-asso/commit/c8142d1a35a25a217fc9f41e31d2dd472263f181))
+
 ## [0.19.1](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.19.1) (2022-12-26)
 
 ### Bug Fixes
@@ -25,42 +42,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.18.7](https://github.com/betagouv/api-subventions-asso/compare/v0.18.6...v0.18.7) (2022-12-15)
 
-
 ### Bug Fixes
 
-* **api:** mock dauphin env var ([7e4667c](https://github.com/betagouv/api-subventions-asso/commit/7e4667cfe301a81f3817eec2356e1389988ad36e))
-
-
-
-
+-   **api:** mock dauphin env var ([7e4667c](https://github.com/betagouv/api-subventions-asso/commit/7e4667cfe301a81f3817eec2356e1389988ad36e))
 
 ## [0.18.6](https://github.com/betagouv/api-subventions-asso/compare/v0.18.5...v0.18.6) (2022-12-15)
 
-
 ### Bug Fixes
 
-* **api:** update LCA document description text ([508e5c6](https://github.com/betagouv/api-subventions-asso/commit/508e5c62f76e73edf3444bce9abae1d505aff131))
-
-
-
-
+-   **api:** update LCA document description text ([508e5c6](https://github.com/betagouv/api-subventions-asso/commit/508e5c62f76e73edf3444bce9abae1d505aff131))
 
 ## [0.18.5](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.5) (2022-12-12)
 
-
 ### Features
 
-* **api:** add collectivite domain ([@rhone](https://github.com/rhone).fr) ([6cc7d7f](https://github.com/betagouv/api-subventions-asso/commit/6cc7d7f31133de3cdbbb0a5ce60ad2aa2863a353))
-
-
+-   **api:** add collectivite domain ([@rhone](https://github.com/rhone).fr) ([6cc7d7f](https://github.com/betagouv/api-subventions-asso/commit/6cc7d7f31133de3cdbbb0a5ce60ad2aa2863a353))
 
 ## [0.18.4](https://github.com/betagouv/api-subventions-asso/compare/v0.18.3...v0.18.4) (2022-12-12)
 
-
 ### Features
 
-* **api:** add collectivite domain ([@rhone](https://github.com/rhone).fr) ([6cc7d7f](https://github.com/betagouv/api-subventions-asso/commit/6cc7d7f31133de3cdbbb0a5ce60ad2aa2863a353))
-
+-   **api:** add collectivite domain ([@rhone](https://github.com/rhone).fr) ([6cc7d7f](https://github.com/betagouv/api-subventions-asso/commit/6cc7d7f31133de3cdbbb0a5ce60ad2aa2863a353))
 
 ## [0.18.2](https://github.com/betagouv/api-subventions-asso/compare/v0.18.1...v0.18.2) (2022-12-07)
 
@@ -88,13 +90,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** save association and etablissement in datagouv CLI parsing ([#563](https://github.com/betagouv/api-subventions-asso/issues/563)) ([bbf01b6](https://github.com/betagouv/api-subventions-asso/commit/bbf01b6ce94f86440335dec802b7849e33d3d685))
 -   **api:** update datagouv parser for reading history file ([#556](https://github.com/betagouv/api-subventions-asso/issues/556)) ([5258f19](https://github.com/betagouv/api-subventions-asso/commit/5258f19722af80eabf292f83d83faf6d4695399c))
 -   **api:** update script parsage datagouv ([#560](https://github.com/betagouv/api-subventions-asso/issues/560)) ([9b9132d](https://github.com/betagouv/api-subventions-asso/commit/9b9132d061f9c0e3ed05711e0ab09f8e2be2cdfd))
-## [0.17.3](https://github.com/betagouv/api-subventions-asso/compare/v0.18.0...v0.17.3) (2022-11-22)
 
+## [0.17.3](https://github.com/betagouv/api-subventions-asso/compare/v0.18.0...v0.17.3) (2022-11-22)
 
 ### Bug Fixes
 
-* **api:** fix migration duplicate unique id ([031cd12](https://github.com/betagouv/api-subventions-asso/commit/031cd129d31411f86b7b135ad618f4b73b7a2d22))
-
+-   **api:** fix migration duplicate unique id ([031cd12](https://github.com/betagouv/api-subventions-asso/commit/031cd129d31411f86b7b135ad618f4b73b7a2d22))
 
 ### Bug Fixes
 
@@ -110,8 +111,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** add migration for osiris requests indexes ([#623](https://github.com/betagouv/api-subventions-asso/issues/623)) ([7de5708](https://github.com/betagouv/api-subventions-asso/commit/7de570817837945459a0af01aac1c49c84aa46b9))
 -   **front, api:** add etablissement dashboard ([#709](https://github.com/betagouv/api-subventions-asso/issues/709)) ([b3c3cc3](https://github.com/betagouv/api-subventions-asso/commit/b3c3cc3b74259e0a1d5761002b98d32ff108fe34))
 -   **front:** add etablissment tab bank data ([a74bd75](https://github.com/betagouv/api-subventions-asso/commit/a74bd75ac35e36f7695c6ada7f6e73bdf7ba645d))
-
-
 
 ## [0.17.2](https://github.com/betagouv/api-subventions-asso/compare/v0.17.0...v0.17.2) (2022-11-17)
 
