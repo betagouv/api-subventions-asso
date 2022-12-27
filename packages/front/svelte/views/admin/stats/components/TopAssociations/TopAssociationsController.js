@@ -1,11 +1,12 @@
 import Store from "@core/Store";
 import statisticsService from "@resources/statistics/statistics.service";
+import { computeSameDateInPreviousYear } from "@helpers/dateHelper";
 
 export default class TopAssociationsController {
     constructor(endDate = new Date(), limit = 5) {
         this.topAssociations = new Store([]);
 
-        this._startDate = this._buildStartDate(endDate);
+        this._startDate = computeSameDateInPreviousYear(endDate);
         this._endDate = endDate;
         this._limit = limit;
 
@@ -20,11 +21,5 @@ export default class TopAssociationsController {
     async _updateTopAssociations() {
         const topAssociations = await statisticsService.getTopAssociations(this._limit, this._startDate, this.endDate);
         this.topAssociations.set(topAssociations);
-    }
-
-    _buildStartDate(endDate) {
-        const date = new Date(endDate);
-        date.setFullYear(endDate.getFullYear() - 1);
-        return date;
     }
 }

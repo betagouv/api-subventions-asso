@@ -17,7 +17,8 @@ module.exports = {
             "@resources": path.resolve(__dirname, "svelte/resources"),
             "@components": path.resolve(__dirname, "svelte/components"),
             "@dsfr": path.resolve(__dirname, "svelte/dsfr"),
-            "@core": path.resolve(__dirname, "svelte/core")
+            "@core": path.resolve(__dirname, "svelte/core"),
+            "@helpers": path.resolve(__dirname, "svelte/helpers")
         },
         extensions: [".mjs", ".js", ".svelte", ".ts"],
         mainFields: ["svelte", "module", "main"]

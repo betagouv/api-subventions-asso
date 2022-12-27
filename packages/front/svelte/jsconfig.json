@@ -11,7 +11,8 @@
             "@resources/*": ["./resources/*"],
             "@components/*": ["./components/*"],
             "@core/*": ["./core/*"],
-            "@dsfr/*": ["./dsfr/*"]
+            "@dsfr/*": ["./dsfr/*"],
+            "@helpers/*": ["./helpers/*"]
         }
     }
 }

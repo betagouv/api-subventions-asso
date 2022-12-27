@@ -33,7 +33,8 @@
                     ["@resources", "./svelte/resources"],
                     ["@components", "./svelte/components"],
                     ["@dsfr", "./svelte/dsfr"],
-                    ["@core", "./svelte/core"]
+                    ["@core", "./svelte/core"],
+                    ["@helpers", "./svelte/helpers"]
                 ],
                 "extensions": [".js", ".svelte"]
             }
