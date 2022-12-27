@@ -2,18 +2,19 @@ import { StaticImplements } from "../../../../../decorators/staticImplements.dec
 import { CliStaticInterface } from "../../../../../@types/Cli.interface";
 import DataGouvParser, { SaveCallback } from "../../datagouv.parser";
 import dataGouvService from "../../datagouv.service";
-import CliController from '../../../../../shared/CliController';
+import CliController from "../../../../../shared/CliController";
 import { UniteLegalHistoryRaw } from "../../@types/UniteLegalHistoryRaw";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
 import associationNameService from "../../../../association-name/associationName.service";
 import { UniteLegaleHistoriqueAdapter } from "../../adapter/UniteLegaleHistoriqueAdapter";
+import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataGouvCliController extends CliController {
     static cmdName = "datagouv";
 
-    protected logFileParsePath = "./logs/datagouv.parse.log.txt"
+    protected logFileParsePath = "./logs/datagouv.parse.log.txt";
 
     private isAssociation(entity: UniteLegalHistoryRaw) {
         if (LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale))) return true;
@@ -43,18 +44,14 @@ export default class DataGouvCliController extends CliController {
     }
 
     private saveAssociations(raws: UniteLegalHistoryRaw[]) {
-        return Promise.all(
-            raws
-                .map(UniteLegaleHistoriqueAdapter.rawToAssociationName)
-                .map(associationName => associationNameService.upsert(associationName))
-        )
+        return asyncForEach(raws, async raw => {
+            const entity = UniteLegaleHistoriqueAdapter.rawToAssociationName(raw);
+            await associationNameService.upsert(entity);
+        });
     }
 
     private saveEntreprises(raws: UniteLegalHistoryRaw[]) {
-        return dataGouvService.insertManyEntrepriseSiren(
-            raws
-                .map(UniteLegaleHistoriqueAdapter.rawToEntrepriseSiren)
-        )
+        return dataGouvService.insertManyEntrepriseSiren(raws.map(UniteLegaleHistoriqueAdapter.rawToEntrepriseSiren));
     }
 
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
@@ -100,7 +97,6 @@ export default class DataGouvCliController extends CliController {
             }
         };
 
-
         await DataGouvParser.parseUniteLegalHistory(file, saveEntity, lastImportDate);
         if (stackEntreprise.length) {
             await this.saveEntreprises(stackEntreprise);
@@ -114,6 +110,6 @@ export default class DataGouvCliController extends CliController {
             filename: file,
             dateOfFile: exportDate,
             dateOfImport: new Date()
-        })
+        });
     }
 }

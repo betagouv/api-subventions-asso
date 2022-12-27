@@ -6,9 +6,10 @@ const osirisFile = process.argv[3];
 const yearOfFile = process.argv[4];
 const nessesaryMongoPlan = "mongo-business-2048";
 
-
 if (process.argv.length < 5) {
-    console.error("Please use command: node deploy-unite_legal.js [YOUR_APP_NAME] [LINK_TO_DATA_OSIRIS] [YEAR_OF_EXTRACT_FILE]");
+    console.error(
+        "Please use command: node deploy-unite_legal.js [YOUR_APP_NAME] [LINK_TO_DATA_OSIRIS] [YEAR_OF_EXTRACT_FILE]"
+    );
     process.exit();
 }
 
@@ -17,23 +18,25 @@ function scalingoAppAction(action, value) {
 }
 
 function scalingAsyncAppAction(action, value) {
-    const child = child_process.spawn(`scalingo`, ['--app', appName, action, ...value.split(" ")], { env: process.env});
+    const child = child_process.spawn(`scalingo`, ["--app", appName, action, ...value.split(" ")], {
+        env: process.env
+    });
 
     return new Promise(resolve => {
         console.log("RUN", `scalingo --app ${appName} ${action} ${value}`);
 
-        child.stdout.on('data', (data) => {
+        child.stdout.on("data", data => {
             console.log(`stdout: ${data}`);
         });
-        
-        child.stderr.on('data', (data) => {
+
+        child.stderr.on("data", data => {
             console.error(`stderr: ${data}`);
         });
-        
-        child.on('close', () => {
-            resolve()
+
+        child.on("close", () => {
+            resolve();
         });
-    })
+    });
 }
 
 console.log("Welcome to automation deploy osiris files !\n");
@@ -51,26 +54,28 @@ console.log(`Current plan : ${oldPlan}`);
 
 console.log(`Upgrade Plan of mongodb ${oldPlan} to ${nessesaryMongoPlan} ...`);
 
-console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${nessesaryMongoPlan}`).toString());
+// console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${nessesaryMongoPlan}`).toString());
 
 console.log(`Upgrade Plan of mongodb ${oldPlan} to ${nessesaryMongoPlan} DONE !`);
 
 console.log(`Start deploy ${appName} ...\n`);
 
-
-scalingAsyncAppAction("run" ,`--size 2XL --file ${osirisFile} --env TMP_YEAR_OF_FILE=${yearOfFile} bash ./packages/api/tools/osiris/deploy-files-container.sh`).then(() => {
+scalingAsyncAppAction(
+    "run",
+    `--size 2XL --file ${osirisFile} --env TMP_YEAR_OF_FILE=${yearOfFile} bash ./packages/api/tools/osiris/deploy-files-container.sh`
+).then(() => {
     console.log("Extract end !");
 
-    console.log("Downgrade mongodb plan ...")
+    console.log("Downgrade mongodb plan ...");
 
-    console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${oldPlan}`).toString());
+    // console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${oldPlan}`).toString());
 
-    console.log("Downgrade mongodb plan DONE !")
+    console.log("Downgrade mongodb plan DONE !");
 
     console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);
 
     console.log("PLEASE CHECK IF PLAN OF MONGODB AS BEEN DOWNGRADED");
-    
+
     console.log("Have a good day !");
 
     process.exit();
