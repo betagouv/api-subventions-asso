@@ -33,12 +33,12 @@ Ensuite, il vous faudra créer un fichier .env à la racine du projet, avec au m
 -   MAIL_USER
 -   MAIL_PASSWORD
 
-Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.  
+Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB v4.0 .  
 Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
 Il est possible de paramétrer ces informations dans le fichier .env. Le nom des variables se trouve dans `configurations/mongo.conf.ts`.
 
 Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
-`sudo docker pull mongo`  
+`sudo docker pull mongo:4.0.3`  
 `sudo docker run -d -p 27017:27017 mongo`
 
 ## Démarrer l'api en local
