@@ -24,7 +24,7 @@
     $: search, updateSearch();
 </script>
 
-<div class="fr-col fr-col-lg-12 search-container">
+<div class="fr-col fr-col-lg-12">
     <div class="fr-search-bar" role="search">
         <label class="fr-label" for="admin-search-input">Recherche</label>
         <input
@@ -38,12 +38,7 @@
 </div>
 
 <style>
-    .search-container {
-        display: flex;
-        justify-content: center;
-    }
-
     .fr-search-bar {
-        width: 60%;
+        width: 90%;
     }
 </style>

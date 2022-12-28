@@ -1,93 +1,88 @@
 .rf-centered {
-  text-align: center;
+    text-align: center;
 }
 
-.rf-bg--alt, .rf-bg--alt h2 {
-  background-color: var(--bf500);
-  color: var(--g100);
+.rf-bg--alt,
+.rf-bg--alt h2 {
+    background-color: var(--bf500);
+    color: var(--g100);
 }
 p.rf-hint-text {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 .tofill {
-  background-color: #fffacd;
-  font-weight: lighter;
-  padding: .1em .2em;
+    background-color: #fffacd;
+    font-weight: lighter;
+    padding: 0.1em 0.2em;
 }
 span.tofill::after {
-  content: "]";
+    content: "]";
 }
 span.tofill::before {
-  content: "[";
-} 
+    content: "[";
+}
 
 @keyframes spinner {
-  to {transform: rotate(360deg);}
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .ds-loader {
-  display: none;
-  position: fixed;
-  top: 5px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: white;
-  z-index: 999;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+    display: none;
+    position: fixed;
+    top: 5px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .ds-loader-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .ds-loader-container-logo {
-  width: 70px;
-  animation: spinner 1.8s ease infinite;
+    width: 70px;
+    animation: spinner 1.8s ease infinite;
 }
 
 .ds-loader-container-text {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 .fr-callout__text > a {
-  color: #3558A2
+    color: #3558a2;
 }
 
 .custom-table-center-text td {
-  text-align: center;
+    text-align: center;
 }
 
 .custom-table-center-text th {
-  text-align: center;
+    text-align: center;
 }
 
-html { scroll-behavior: smooth; } 
+html {
+    scroll-behavior: smooth;
+}
 
 .admin-domain-ul {
-  columns: 2;
-  -webkit-columns: 2;
-  -moz-columns: 2;
-}
-
-.admin_list-users_table {
-  width: 100%;
-  height: 70vh;
-}
-
-.admin_list-users_stats {
-  margin-top: 20px;
-  margin-bottom: 50px;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
 }
 
 .cgu-iframe {
-  height: 100vh;
+    height: 100vh;
 }
 
 .stage {
-  color: hsl(143deg 63.5% 33.8%);
+    color: hsl(143deg 63.5% 33.8%);
 }

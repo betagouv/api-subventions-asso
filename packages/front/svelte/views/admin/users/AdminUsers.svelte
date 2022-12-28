@@ -65,20 +65,30 @@
 {#await promise}
     <Spinner description="Chargement des utilisateurs en cours ..." />
 {:then}
-    <div class="fr-grid-row">
-        <Button on:click={downloadUsersCsv}>Téléchager la liste en CSV</Button>
-    </div>
     <div>
-        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters admin_list-users_stats">
+        <div class="fr-grid-row fr-grid-row--center admin_list-users_stats admin_list-widget">
             <StatsUsers {users} />
         </div>
 
-        <div class="fr-grid-row">
-            <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
+        <div class="fr-grid-row admin_list-widget">
+            <!--TODO replace by Widget component-->
+            <div class="fr-col fr-col-md-6">
                 <h2>Liste des utilisateurs :</h2>
             </div>
-
-            <SearchUsers bind:users />
+            <div class="fr-col fr-col-md-12 admin_list-table-head">
+                <div class="fr-grid-row">
+                    <div class="fr-col fr-col-md-6">
+                        <div class="fr-grid-row fr-grid-row--left">
+                            <SearchUsers bind:users />
+                        </div>
+                    </div>
+                    <div class="fr-col fr-col-md-6">
+                        <div class="fr-grid-row fr-grid-row--right">
+                            <Button on:click={downloadUsersCsv}>Téléchager la liste en CSV</Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- TODO: ne pas recharger les utilisateurs mais plutôt mettre à jour l'objet users pour éviter une requête -->
             <TableUsers {users} on:userDeleted={e => removeUser(e)} />
@@ -92,5 +102,14 @@
     .admin_list-users_stats {
         margin-top: 20px;
         margin-bottom: 50px;
+    }
+    .admin_list-table-head {
+        margin-bottom: 50px;
+        margin-top: 50px;
+    }
+
+    .admin_list-widget {
+        border: 1px solid #e5e5e5;
+        padding: 20px;
     }
 </style>
