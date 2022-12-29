@@ -25,7 +25,7 @@
 </script>
 
 <div class="fr-col fr-col-lg-12">
-    <div class="fr-search-bar" role="search">
+    <div class="fr-search-bar fr-mr-4w" role="search">
         <label class="fr-label" for="admin-search-input">Recherche</label>
         <input
             type="text"
@@ -36,9 +36,3 @@
         <button class="fr-btn" title="Rechercher">Rechercher</button>
     </div>
 </div>
-
-<style>
-    .fr-search-bar {
-        width: 90%;
-    }
-</style>

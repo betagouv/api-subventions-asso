@@ -66,16 +66,16 @@
     <Spinner description="Chargement des utilisateurs en cours ..." />
 {:then}
     <div>
-        <div class="fr-grid-row fr-grid-row--center admin_list-users_stats admin_list-widget">
+        <div class="fr-grid-row fr-grid-row--center fr-mt-5v fr-mb-6w fr-p-5v widget">
             <StatsUsers {users} />
         </div>
 
-        <div class="fr-grid-row admin_list-widget">
+        <div class="fr-grid-row fr-p-5v widget">
             <!--TODO replace by Widget component-->
             <div class="fr-col fr-col-md-6">
                 <h2>Liste des utilisateurs :</h2>
             </div>
-            <div class="fr-col fr-col-md-12 admin_list-table-head">
+            <div class="fr-col fr-col-md-12 fr-my-6w">
                 <div class="fr-grid-row">
                     <div class="fr-col fr-col-md-6">
                         <div class="fr-grid-row fr-grid-row--left">
@@ -97,19 +97,3 @@
 {:catch error}
     <ErrorAlert message={error.message} />
 {/await}
-
-<style>
-    .admin_list-users_stats {
-        margin-top: 20px;
-        margin-bottom: 50px;
-    }
-    .admin_list-table-head {
-        margin-bottom: 50px;
-        margin-top: 50px;
-    }
-
-    .admin_list-widget {
-        border: 1px solid #e5e5e5;
-        padding: 20px;
-    }
-</style>
