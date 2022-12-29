@@ -9,9 +9,10 @@
 
     import Alert from "../../dsfr/Alert.svelte";
     import Card from "../../dsfr/Card.svelte";
-
     import Spinner from "../../components/Spinner.svelte";
     import ResultCard from "./composents/ResultCard.svelte";
+    import Messages from "../../components/Messages/Messages.svelte";
+
     import InteruptSearchError from "./error/InteruptSearchError";
 
     let error;
@@ -56,6 +57,8 @@
     // Only triggers searchAssociation if input is defined and whenever it changes
     $: input && debounce(() => searchAssociation(input));
 </script>
+
+<Messages />
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
