@@ -17,9 +17,9 @@
     <div class="fr-col-6">
         <Widget title="Pages les plus consultées - Total depuis {startDateMonth} {startDateYear}">
             {#each $topAssociations as association}
-                <div class="top-associations_content">
-                    <span>{association.name}</span>
-                    <span>{association.nbRequests}</span>
+                <div class="top-associations_content fr-mb-2w">
+                    <p class="fr-text fr-m-0">{association.name}</p>
+                    <p class="fr-text fr-m-0">{association.nbRequests}</p>
                 </div>
             {/each}
         </Widget>
@@ -31,7 +31,5 @@
         display: flex;
         justify-content: space-between;
         font-weight: 500;
-        margin-bottom: 16px;
-        font-size: 16px;
     }
 </style>
