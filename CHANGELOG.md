@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.3](https://github.com/betagouv/api-subventions-asso/compare/v0.19.2...v0.19.3) (2022-12-29)
+
+### Bug Fixes
+
+-   **front:** add messages on home page ([2692b4e](https://github.com/betagouv/api-subventions-asso/commit/2692b4e8ef985d4ca8b14ca0953e36870a7300f2))
+
 ## [0.19.2](https://github.com/betagouv/api-subventions-asso/compare/v0.18.7...v0.19.2) (2022-12-27)
 
 ### Bug Fixes
