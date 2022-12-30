@@ -10,14 +10,25 @@ module.exports = {
 
         const projectIdentifierPipeline = [
             {
-                $addFields: {
-                    identifier: { $regexFind: { input: "$meta.req.url", regex: /association\/([A-Za-z0-9]+)\/?$/ } }
-                }
-            },
-            {
                 $project: {
-                    identifier: { $arrayElemAt: ["$identifier.captures", 0] },
-                    monthYear: { $dateTrunc: { date: "$timestamp", unit: "month" } }
+                    identifier: {
+                        $arrayElemAt: [
+                            {
+                                $filter: {
+                                    input: { $split: ["$meta.req.url", "/"] },
+                                    as: "pathPart",
+                                    cond: { $ne: ["", "$$pathPart"] }
+                                }
+                            },
+                            -1
+                        ]
+                    },
+                    monthYear: {
+                        $dateFromParts: {
+                            month: { $month: "$timestamp" },
+                            year: { $year: "$timestamp" }
+                        }
+                    }
                 }
             }
         ]; // extracts the identifier from the route
@@ -37,7 +48,7 @@ module.exports = {
             ...projectIdentifierPipeline,
 
             // first groupement and count by association identifier
-            { $group: { _id: { identifier: "$identifier", monthYear: "$monthYear" }, nbRequests: { $count: {} } } },
+            { $group: { _id: { identifier: "$identifier", monthYear: "$monthYear" }, nbRequests: { $sum: 1 } } },
 
             // cross data from routes and association names
             {
