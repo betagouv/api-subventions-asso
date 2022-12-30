@@ -1,11 +1,14 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import { user as userStore } from "../../../../store/user.store";
-    import Button from "../../../../dsfr/Button.svelte";
+
     import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
+    import userService from "../../../../resources/users/users.service";
+    import { user as userStore } from "../../../../store/user.store";
     import { action, data, modal } from "../../../../store/modal.store";
     import adminService from "../../admin.service";
+
     import RemoveUserModal from "./RemoveUserModal.svelte";
+    import Button from "../../../../dsfr/Button.svelte";
 
     export let users;
     let selectedUserId;
@@ -56,7 +59,19 @@
                             {user.roles.map(r => capitalizeFirstLetter(r)).join(", ")}
                         </td>
                         <td>
-                            {user.active ? " Oui" : "Non"}
+                            {#if !user.active}
+                                Compte à activer
+                            {:else if userService.isUserActif(user)}
+                                Oui
+                            {:else}
+                                <div class="tooltip-wrapper">
+                                    <span class="tooltip">
+                                        L’utilisateur n’a pas effectué de recherche depuis plus de 7 jours
+                                    </span>
+                                    Inactif
+                                    <span class="fr-icon-question-line tooltip-icon fr-icon--sm" aria-hidden="true" />
+                                </div>
+                            {/if}
                         </td>
                         <td>
                             {user.stats.searchCount}
@@ -101,5 +116,43 @@
     .fr-table {
         height: 60vh;
         overflow: auto;
+    }
+    /* This is a quick fix and if needed a Tooltip component should be made */
+    .tooltip-wrapper {
+        position: relative;
+    }
+
+    .tooltip-wrapper .tooltip {
+        top: -40px;
+        left: -165px;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        color: #fff;
+        background-color: #555;
+        padding: 5px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip-wrapper:hover > span.tooltip {
+        display: block;
+    }
+
+    .tooltip-icon {
+        color: var(--text-active-blue-france);
     }
 </style>

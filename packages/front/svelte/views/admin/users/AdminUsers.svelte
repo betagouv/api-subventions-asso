@@ -1,5 +1,6 @@
 <script>
     import admin from "../admin.service.js";
+    import userService from "../../../resources/users/users.service.js";
     import { user as userStore } from "../../../store/user.store";
 
     import Spinner from "../../../components/Spinner.svelte";
@@ -37,7 +38,7 @@
         const csvRows = users.map(user => [
             user.email,
             user.roles.join(" - "),
-            user.active ? "Oui" : "Non",
+            !user.active ? "Compte à activer" : userService.isUserActif(user) ? "Oui" : "Inactif",
             new Date(user.signupAt).toLocaleDateString(),
             user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
             user.resetTokenDate ? new Date(user.resetTokenDate).toLocaleString() : "",
