@@ -12,7 +12,7 @@ describe("DateHelper", () => {
 
     describe("computeSameDateInPreviousYear", () => {
         it("should return start date", async () => {
-            const expected = new Date(2021, 10, 12);
+            const expected = new Date(2021, 10, 13);
 
             const endDate = new Date(2022, 10, 12);
 

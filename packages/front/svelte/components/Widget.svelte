@@ -2,8 +2,8 @@
     export let title = "";
 </script>
 
-<div class="widget">
-    <h2 class="widget__title">{title}</h2>
+<div class="widget fr-p-5v">
+    <h2 class="fr-mb-3w">{title}</h2>
     <div>
         <slot />
     </div>
@@ -11,13 +11,6 @@
 
 <style>
     .widget {
-        display: flex;
-        border: 1px solid #e5e5e5;
-        flex-direction: column;
-        padding: 20px;
-    }
-
-    .widget__title {
-        margin-bottom: 24px;
+        border: 1px solid var(--border-default-grey);
     }
 </style>

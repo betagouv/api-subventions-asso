@@ -27,5 +27,6 @@ export const isValidDate = date => date instanceof Date && !isNaN(date);
 export const computeSameDateInPreviousYear = date => {
     const prevDate = new Date(date);
     prevDate.setFullYear(date.getFullYear() - 1);
+    prevDate.setDate(date.getDate() + 1);
     return prevDate;
 };
