@@ -1,6 +1,7 @@
 import statsService from "./stats.service";
 import statsRepository from "./repositories/statsRepository";
 import assoVisitsRepository from "./repositories/associationVisits.repository";
+import associationNameService from "../association-name/associationName.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -158,28 +159,30 @@ describe("StatsService", () => {
 
         describe("getTopAssociations()", () => {
             const repoMock = jest.spyOn(assoVisitsRepository, "selectMostRequestedAssosByPeriod");
+            const assoNameMock = jest.spyOn(associationNameService, "getNameFromIdentifier");
 
             const DEFAULT_LIMIT = 5;
             const mockedValue = [
-                { name: "Asso 1", nbRequests: 42 },
-                { name: "Asso 2", nbRequests: 41 },
-                { name: "Asso 3", nbRequests: 40 },
-                { name: "Asso 4", nbRequests: 39 },
-                { name: "Asso 5", nbRequests: 38 }
+                { _id: { siren: "siren-2", rna: "rna-2" }, nbRequests: 41 },
+                { _id: { siren: "siren-3", rna: "rna-3" }, nbRequests: 40 },
+                { _id: { siren: "siren-4", rna: "rna-4" }, nbRequests: 39 },
+                { _id: { siren: "siren-5", rna: "rna-5" }, nbRequests: 38 },
+                { _id: { siren: "siren-1", rna: "rna-1" }, nbRequests: 42 }
             ];
 
+            beforeAll(() => {
+                repoMock.mockResolvedValue(mockedValue);
+                assoNameMock.mockImplementation(identifier => new Promise(r => r(`name-${identifier}`)));
+            });
             beforeEach(() => {
-                repoMock.mockResolvedValueOnce(mockedValue);
+                repoMock.mockClear();
+                assoNameMock.mockClear();
             });
 
+            // repo call
             it("should call repository with proper default values", async () => {
                 await statsService.getTopAssociationsByPeriod();
                 expect(repoMock).toHaveBeenCalledWith(DEFAULT_LIMIT, START, END);
-            });
-
-            it("should return result of service function", async () => {
-                const actual = await statsService.getTopAssociationsByPeriod();
-                expect(actual).toStrictEqual(mockedValue);
             });
 
             const some_date = new Date(2022, 1, 20, 17, 25, 45, 98);
@@ -199,6 +202,47 @@ describe("StatsService", () => {
             it("should compute start date from end date if undefined", async () => {
                 await statsService.getTopAssociationsByPeriod(DEFAULT_LIMIT, undefined, some_date);
                 expect(repoMock).toHaveBeenCalledWith(expect.anything(), utc_month_earlier, utc_month);
+            });
+
+            // asso name service call
+            it("should call name service as many times as needed", async () => {
+                await statsService.getTopAssociationsByPeriod();
+                expect(assoNameMock).toHaveBeenCalledTimes(mockedValue.length);
+            });
+
+            it("should call name service with rna if available", async () => {
+                const IDENTIFIER = "rna";
+                repoMock.mockResolvedValueOnce([{ _id: { siren: "AZERTY", rna: IDENTIFIER }, nbRequests: 42 }]);
+                await statsService.getTopAssociationsByPeriod();
+                expect(assoNameMock).toBeCalledWith(IDENTIFIER);
+            });
+
+            it("should call name service with siren if available but not rna", async () => {
+                const IDENTIFIER = "siren";
+                repoMock.mockResolvedValueOnce([{ _id: { siren: IDENTIFIER }, nbRequests: 42 }]);
+                await statsService.getTopAssociationsByPeriod();
+                expect(assoNameMock).toBeCalledWith(IDENTIFIER);
+            });
+
+            it("should use found name if any", async () => {
+                const NAME = "found";
+                repoMock.mockResolvedValueOnce([{ _id: { siren: "any" }, nbRequests: 42 }]);
+                assoNameMock.mockResolvedValueOnce(NAME);
+                const actual = (await statsService.getTopAssociationsByPeriod())?.[0]?.name;
+                expect(actual).toEqual(NAME);
+            });
+
+            // final
+            it("should return proper result", async () => {
+                const expected = [
+                    { name: "name-rna-1", nbRequests: 42 },
+                    { name: "name-rna-2", nbRequests: 41 },
+                    { name: "name-rna-3", nbRequests: 40 },
+                    { name: "name-rna-4", nbRequests: 39 },
+                    { name: "name-rna-5", nbRequests: 38 }
+                ];
+                const actual = await statsService.getTopAssociationsByPeriod();
+                expect(actual).toEqual(expected);
             });
         });
     });

@@ -1,22 +1,22 @@
 import db from "../../../shared/MongoConnection";
-import { AssociationTop } from "@api-subventions-asso/dto";
 
 export class AssociationVisitsRepository {
     private readonly collection = db.collection("association-visits");
 
-    public async selectMostRequestedAssosByPeriod(limit: number, start: Date, end: Date): Promise<AssociationTop[]> {
+    public async selectMostRequestedAssosByPeriod(limit: number, start: Date, end: Date) {
         return await this.collection
-            .aggregate<AssociationTop>([
-                { $match: { monthYear: { $gte: start, $lte: end } } },
-                { $group: { _id: "$name", nbRequests: { $sum: "$nbRequests" } } },
+            .aggregate([
+                { $match: { monthYear: { $gte: start, $lt: end } } },
+                { $group: { _id: { rna: "$rna", siren: "$siren" }, nbRequests: { $sum: "$nbRequests" } } },
                 { $sort: { nbRequests: -1 } },
-                { $limit: limit },
-                { $project: { name: "$_id", nbRequests: 1, _id: 0 } }
+                { $limit: limit }
             ])
             .toArray();
     }
 
     public updateAssoVisitCountByIncrement(name: string, monthYear: Date) {
+        // TODO get by identifier and update if more data is known, set to new identifier values
+        //  (tested: it does not remove data to $set with undefined but it does with null)
         return this.collection.findOneAndUpdate({ name, monthYear }, { $inc: { nbRequests: 1 } }, { upsert: true });
     }
 }
