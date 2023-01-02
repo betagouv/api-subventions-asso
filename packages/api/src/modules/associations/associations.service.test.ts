@@ -1,23 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { StructureIdentifiersEnum } from '../../@enums/StructureIdentifiersEnum';
-import FormaterHelper from '../../shared/helpers/FormaterHelper';
-import * as IdentifierHelper from '../../shared/helpers/IdentifierHelper';
-import * as StringHelper from '../../shared/helpers/StringHelper';
+import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import FormaterHelper from "../../shared/helpers/FormaterHelper";
+import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+import * as StringHelper from "../../shared/helpers/StringHelper";
 import associationsService from "./associations.service";
-import { Etablissement, Versement } from '@api-subventions-asso/dto';
-import subventionService from '../subventions/subventions.service';
-import * as providers from '../providers';
-import etablissementService from '../etablissements/etablissements.service';
-import rnaSirenService from '../open-data/rna-siren/rnaSiren.service';
-import StructureIdentifiersError from '../../shared/errors/StructureIdentifierError';
-import versementsService from '../versements/versements.service';
-import documentsService from '../documents/documents.service';
-import { Document } from '@api-subventions-asso/dto/search/Document';
-import AssociationIdentifierError from '../../shared/errors/AssociationIdentifierError';
-import Flux from '../../shared/Flux';
-import { SubventionsFlux } from '../subventions/@types/SubventionsFlux';
+import { Etablissement, Versement } from "@api-subventions-asso/dto";
+import subventionService from "../subventions/subventions.service";
+import * as providers from "../providers";
+import etablissementService from "../etablissements/etablissements.service";
+import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
+import versementsService from "../versements/versements.service";
+import documentsService from "../documents/documents.service";
+import { Document } from "@api-subventions-asso/dto/search/Document";
+import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import Flux from "../../shared/Flux";
+import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
+import statsService from "../stats/stats.service";
 
-jest.mock('../providers/index');
+jest.mock("../providers/index");
 
 const DEFAULT_PROVIDERS = providers.default;
 
@@ -43,16 +44,16 @@ describe("AssociationService", () => {
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {
         formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as any);
-    })
+    });
 
     afterAll(() => {
         formatDataMock.mockRestore();
-    })
+    });
 
     // Could not find a way to restore manual mock (from __mocks__) after being changed in a single test (cf: getAssociationBySiren)
     // @ts-expect-error: mock
     // eslint-disable-next-line import/namespace
-    afterEach(() => providers.default = DEFAULT_PROVIDERS)
+    afterEach(() => (providers.default = DEFAULT_PROVIDERS));
 
     describe("getAssociation()", () => {
         it("should call getAssociationByRna", async () => {
@@ -62,7 +63,7 @@ describe("AssociationService", () => {
             expect(getAssociationByRnaSpy).toHaveBeenCalledWith(RNA);
         });
         it("should call getAssociationBySiren", async () => {
-            getAssociationBySirenSpy.mockImplementationOnce((jest.fn()));
+            getAssociationBySirenSpy.mockImplementationOnce(jest.fn());
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             await associationsService.getAssociation(SIREN);
             expect(getAssociationBySirenSpy).toHaveBeenCalledWith(SIREN);
@@ -83,23 +84,22 @@ describe("AssociationService", () => {
                 actual = e;
             }
             expect(actual).toEqual(expected);
-        })
+        });
     });
 
     describe("isAssociationsProvider()", () => {
         it("should return true", () => {
             const actual = associationsService.isAssociationsProvider({ isAssociationsProvider: true });
             expect(actual).toBeTruthy();
-        })
+        });
         it("should return false", () => {
             const actual = associationsService.isAssociationsProvider({ isAssociationsProvider: false });
             expect(actual).toBeFalsy();
-        })
-    })
+        });
+    });
 
     describe("aggregate", () => {
-
-        it('should throw StructureIdentifierError with invalid StructueIdentifier', async () => {
+        it("should throw StructureIdentifierError with invalid StructueIdentifier", async () => {
             const expected = new StructureIdentifiersError();
             let actual;
             try {
@@ -117,18 +117,18 @@ describe("AssociationService", () => {
             // @ts-expect-error: mock
             associationsService.aggregate(RNA);
             expect(capitalizeFirstLetterSpy).toHaveBeenCalled();
-        })
-    })
+        });
+    });
 
     describe("getAssociationBySiren()", () => {
-        it('should call aggregate', async () => {
+        it("should call aggregate", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             await associationsService.getAssociationBySiren(SIREN);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
-        it('should return null if aggregates return an empty array', async () => {
+        it("should return null if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             const expected = null;
@@ -143,17 +143,17 @@ describe("AssociationService", () => {
             const actual = formatDataMock.mock.calls.length;
             expect(actual).toEqual(expected);
         });
-    })
+    });
 
     describe("getAssociationBySiret()", () => {
-        it('should call aggregate', async () => {
+        it("should call aggregate", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(async () => []);
             await associationsService.getAssociationBySiret(SIRET);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
-        it('should return null if aggregates return an empty array', async () => {
+        it("should return null if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             const expected = null;
@@ -168,10 +168,10 @@ describe("AssociationService", () => {
             const actual = formatDataMock.mock.calls.length;
             expect(actual).toEqual(expected);
         });
-    })
+    });
 
     describe("getAssociationByRna()", () => {
-        it('should call aggregate', async () => {
+        it("should call aggregate", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
@@ -179,7 +179,7 @@ describe("AssociationService", () => {
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
-        it('should return null if aggregates return an empty array', async () => {
+        it("should return null if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
@@ -196,23 +196,23 @@ describe("AssociationService", () => {
             const actual = formatDataMock.mock.calls.length;
             expect(actual).toEqual(expected);
         });
-    })
+    });
 
     describe("getSubventions()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
             getDemandesByAssociationMock.mockImplementationOnce(async () => new Flux<SubventionsFlux>());
             await associationsService.getSubventions(SIREN);
             expect(getDemandesByAssociationMock).toHaveBeenCalledWith(SIREN);
-        })
-    })
+        });
+    });
 
     describe("getVersements()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
             getVersementsByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as Versement[]));
             await associationsService.getVersements(SIREN);
             expect(getVersementsByAssociationMock).toHaveBeenCalledWith(SIREN);
-        })
-    })
+        });
+    });
 
     describe("getDocuments()", () => {
         it("should call documentService.getDocumentBySiren()", async () => {
@@ -220,29 +220,31 @@ describe("AssociationService", () => {
             getDocumentBySirenMock.mockImplementationOnce(() => Promise.resolve([{}] as Document[]));
             await associationsService.getDocuments(SIREN);
             expect(getDocumentBySirenMock).toHaveBeenCalledWith(SIREN);
-        })
+        });
 
         it("should call documentService.getDocumentByRna()", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getDocumentByRnaMock.mockImplementationOnce(() => Promise.resolve([{}] as Document[]));
             await associationsService.getDocuments(RNA);
             expect(getDocumentByRnaMock).toHaveBeenCalledWith(RNA);
-        })
+        });
 
         it("should throw error because id is not rna or siren", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
 
             expect(() => associationsService.getDocuments(RNA)).rejects.toThrowError(AssociationIdentifierError);
-        })
-    })
+        });
+    });
 
     describe("getEtablissements()", () => {
         it("should call etablissementService.getEtablissementsBySiren()", async () => {
-            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve([{ etablissement: true } as unknown as Etablissement]));
+            getEtablissementsBySirenMock.mockImplementationOnce(() =>
+                Promise.resolve([{ etablissement: true } as unknown as Etablissement])
+            );
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             await associationsService.getEtablissements(SIRET);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(SIRET);
-        })
+        });
 
         it("should call search siren match with rna", async () => {
             const expected = SIREN;
@@ -251,7 +253,7 @@ describe("AssociationService", () => {
             rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(expected));
             await associationsService.getEtablissements(RNA);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(expected);
-        })
+        });
 
         it("should return empty array (siren not matching with rna)", async () => {
             const expected = 0;
@@ -259,7 +261,7 @@ describe("AssociationService", () => {
             rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
             const actual = await associationsService.getEtablissements(RNA);
             expect(actual).toHaveLength(expected);
-        })
+        });
 
         it("should return empty array (EtablissementService return null)", async () => {
             const expected = 0;
@@ -268,30 +270,46 @@ describe("AssociationService", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             const actual = await associationsService.getEtablissements(SIRET);
             expect(actual).toHaveLength(expected);
-        })
+        });
 
         it("should throw error (identifiers type not accepted)", async () => {
             const expected = "You must provide a valid SIREN or RNA";
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
             let actual;
             try {
-                actual = await associationsService.getEtablissements(SIRET)
+                actual = await associationsService.getEtablissements(SIRET);
             } catch (e) {
                 actual = (e as Error).message;
             }
-            expect(actual).toEqual(expected)
-        })
+            expect(actual).toEqual(expected);
+        });
 
         it("should throw error (identifiers type not fund)", async () => {
             const expected = "You must provide a valid SIREN or RNA";
             getIdentifierTypeMock.mockImplementationOnce(() => null);
             let actual;
             try {
-                actual = await associationsService.getEtablissements(INVALID_IDENTIFIER)
+                actual = await associationsService.getEtablissements(INVALID_IDENTIFIER);
             } catch (e) {
                 actual = (e as Error).message;
             }
-            expect(actual).toEqual(expected)
-        })
-    })
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("registerRequest()", () => {
+        const ASSO = { rna: [{ value: "RNA" }], siren: [{ value: "SIREN" }] };
+        const IDENTIFIERS = { rna: "RNA", siren: "SIREN" };
+        const statMock = jest.spyOn(statsService, "registerRequest");
+
+        beforeEach(() => {
+            statMock.mockImplementationOnce(jest.fn());
+        });
+
+        it("calls stat service with proper identifier", async () => {
+            // @ts-expect-error mock
+            await associationsService.registerRequest(ASSO);
+            expect(statMock).toBeCalledWith(IDENTIFIERS);
+        });
+    });
 });

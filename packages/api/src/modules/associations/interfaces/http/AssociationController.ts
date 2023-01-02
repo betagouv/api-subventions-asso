@@ -31,7 +31,7 @@ export class AssociationController extends Controller {
         try {
             const association = await associationService.getAssociation(identifier);
             if (association) {
-                if (!req?.user?.roles?.includes("admin")) await statsService.registerRequest(association);
+                if (!req?.user?.roles?.includes("admin")) await associationService.registerRequest(association);
                 return { success: true, association };
             }
             this.setStatus(404);

@@ -1,6 +1,6 @@
 import statsRepository from "./repositories/statsRepository";
 import assoVisitsRepository from "./repositories/associationVisits.repository";
-import { Association, AssociationTop } from "@api-subventions-asso/dto";
+import { AssociationTop } from "@api-subventions-asso/dto";
 import { dateToUTCMonthYear } from "../../shared/helpers/DateHelper";
 import associationNameService from "../association-name/associationName.service";
 
@@ -17,10 +17,8 @@ class StatsService {
         return statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
     }
 
-    registerRequest(association: Association) {
-        const identifier = { rna: association.rna?.[0]?.value, siren: association?.siren?.[0]?.value };
-        const monthYear = dateToUTCMonthYear(new Date());
-        return assoVisitsRepository.updateAssoVisitCountByIncrement(identifier, monthYear);
+    registerRequest(identifier) {
+        return assoVisitsRepository.updateAssoVisitCountByIncrement(identifier, dateToUTCMonthYear(new Date()));
     }
 
     async getTopAssociationsByPeriod(

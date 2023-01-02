@@ -22,6 +22,7 @@ import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
+import statsService from "../stats/stats.service";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {
@@ -131,6 +132,11 @@ export class AssociationsService {
 
     private getAssociationProviders() {
         return Object.values(providers).filter(p => this.isAssociationsProvider(p)) as AssociationsProvider[];
+    }
+
+    public registerRequest(association: Association) {
+        const identifier = { rna: association.rna?.[0]?.value, siren: association?.siren?.[0]?.value };
+        return statsService.registerRequest(identifier);
     }
 }
 

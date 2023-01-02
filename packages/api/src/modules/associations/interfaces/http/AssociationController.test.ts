@@ -121,7 +121,7 @@ describe("AssociationController", () => {
         });
 
         describe("registering visits", () => {
-            const registerVisitSpy = jest.spyOn(statsService, "registerRequest").mockImplementation(jest.fn());
+            const registerMock = jest.spyOn(associationsService, "registerRequest").mockImplementation(jest.fn());
             function makeRequest(isUserAdmin = false) {
                 const req = { user: { roles: ["user"] } };
                 if (isUserAdmin) req.user.roles.push("admin");
@@ -132,10 +132,9 @@ describe("AssociationController", () => {
                 // @ts-expect-error: mock
                 getAssociationSpy.mockResolvedValueOnce(() => association);
                 const association = {};
-                const expected = { success: true, association: association };
                 // @ts-expect-error: mock
                 await controller.getAssociation(makeRequest(isUserAdmin), IDENTIFIER);
-                expect(registerVisitSpy).toHaveBeenCalledTimes(isCalled ? 1 : 0);
+                expect(registerMock).toHaveBeenCalledTimes(isCalled ? 1 : 0);
             }
 
             it("should register visit for regular user request", async () => {
