@@ -4,6 +4,7 @@ import db from "../../../shared/MongoConnection";
 import { isStartOfSiret } from "../../../shared/Validators";
 import IAssociationName from "../@types/IAssociationName";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
+import { Rna, Siren } from "@api-subventions-asso/dto";
 
 export class AssociationNameRepository {
     private readonly collection = db.collection<AssociationNameEntity>("association-name");
@@ -42,6 +43,10 @@ export class AssociationNameRepository {
         const result = await this.collection.findOne({ rna: entity.rna, siren: entity.siren, name: entity.name });
         if (result) return this.toEntity(result);
         return null;
+    }
+
+    findAllByIdentifier(identifier: Siren | Rna) {
+        return this.collection.find({ $or: [{ rna: identifier }, { siren: identifier }] }).toArray();
     }
 
     async create(entity: AssociationNameEntity) {
