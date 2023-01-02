@@ -15,6 +15,7 @@ import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 import { EtablissementAdapter } from "./EtablissementAdapter";
+import associationsService from "../associations/associations.service";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {
@@ -105,6 +106,12 @@ export class EtablissementsService {
         if (etablisement.ouvert && etablisement.ouvert[0].value) score += 1;
         if (etablisement.siege && etablisement.siege[0].value) score += 10;
         return score;
+    }
+
+    async registerRequest(etablissement: Etablissement) {
+        const association = await associationsService.getAssociationBySiret(etablissement?.siret?.[0]?.value);
+        if (!association) return;
+        return associationsService.registerRequest(association);
     }
 }
 

@@ -6,7 +6,8 @@ import subventionsService from "../subventions/subventions.service";
 import versementsService from "../versements/versements.service";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
-import { DefaultObject } from "../../@types";
+import statsService from "../stats/stats.service";
+import associationsService from "../associations/associations.service";
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
 
@@ -95,6 +96,43 @@ describe("EtablissementsService", () => {
             toSimplifiedEtablissementMock.mockImplementationOnce(etablissement => etablissement);
             await etablissementService.getEtablissementsBySiren(SIREN);
             expect(toSimplifiedEtablissementMock).toHaveBeenCalledTimes(2);
+        });
+    });
+
+    describe("registerRequest()", () => {
+        const SIRET = "SIRET";
+        const ETAB = { siret: [{ value: SIRET }] };
+        const ASSO = { rna: "RNA", siren: "SIREN" };
+        const registerAssoMock = jest.spyOn(associationsService, "registerRequest");
+        const findAssoMock = jest.spyOn(associationsService, "getAssociationBySiret");
+
+        beforeAll(() => {
+            registerAssoMock.mockImplementation(jest.fn());
+            // @ts-expect-error mock
+            findAssoMock.mockResolvedValue(ASSO);
+        });
+        afterAll(() => {
+            registerAssoMock.mockRestore();
+            findAssoMock.mockRestore();
+        });
+
+        it("searches for asso from siret", async () => {
+            // @ts-expect-error mock
+            await etablissementService.registerRequest(ETAB);
+            expect(findAssoMock).toBeCalledWith(SIRET);
+        });
+
+        it("returns if no association found", async () => {
+            findAssoMock.mockResolvedValueOnce(null);
+            // @ts-expect-error mock
+            const actual = await etablissementService.registerRequest(ETAB);
+            expect(actual).toBeUndefined();
+        });
+
+        it("calls asso register service with received association", async () => {
+            // @ts-expect-error mock
+            const actual = await etablissementService.registerRequest(ETAB);
+            expect(registerAssoMock).toBeCalledWith(ASSO);
         });
     });
 });

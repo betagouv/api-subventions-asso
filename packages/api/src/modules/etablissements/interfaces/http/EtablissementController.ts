@@ -6,13 +6,14 @@ import {
     GetVersementsResponseDto,
     Siret
 } from "@api-subventions-asso/dto";
-import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Request, Path } from "tsoa";
 import etablissementService from "../../etablissements.service";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { NotFoundError } from "../../../../shared/errors/httpErrors/NotFoundError";
 import { StructureIdentifiersEnum } from "../../../../@enums/StructureIdentifiersEnum";
 import { BadRequestError } from "../../../../shared/errors/httpErrors/BadRequestError";
 import * as IdentifierHelper from "../../../../shared/helpers/IdentifierHelper";
+import { IdentifiedRequest } from "../../../../@types";
 
 @Route("etablissement")
 @Security("jwt")
@@ -21,6 +22,7 @@ export class EtablissementController extends Controller {
     /**
      * Remonte les informations d'un établissement
      * @param siret Identifiant Siret
+     * @param req
      */
     @Get("/{siret}")
     @Response<ErrorResponse>("400", "Identifiant incorrect", {
@@ -31,7 +33,10 @@ export class EtablissementController extends Controller {
         success: false,
         message: "Etablissement not found"
     })
-    public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
+    public async getEtablissement(
+        @Path() siret: Siret,
+        @Request() req: IdentifiedRequest
+    ): Promise<GetEtablissementResponseDto> {
         const type = IdentifierHelper.getIdentifierType(siret);
 
         if (!type || type !== StructureIdentifiersEnum.siret) {
@@ -42,6 +47,7 @@ export class EtablissementController extends Controller {
         if (!etablissement) {
             throw new NotFoundError("Etablissement not found");
         }
+        if (!req?.user?.roles?.includes("admin")) await etablissementService.registerRequest(etablissement);
         return { success: true, etablissement };
     }
 
