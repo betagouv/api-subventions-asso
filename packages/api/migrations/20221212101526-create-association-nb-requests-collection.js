@@ -34,11 +34,8 @@ module.exports = {
         ]; // extracts the identifier from the route
 
         const nameLookupPipeline = [
-            { $addFields: { bothIdentifiers: { $and: [{ $lte: ["$rna", null] }, { $lte: ["$siren", null] }] } } },
             { $match: { $expr: { $or: [{ $eq: ["$siren", "$$identifier"] }, { $eq: ["$rna", "$$identifier"] }] } } },
-            { $sort: { bothIdentifier: -1, lastUpdate: -1 } },
-            { $limit: 1 },
-            { $project: { name: "$name" } }
+            { $sort: { lastUpdate: -1 } }
         ]; // selects best matching row from association-name
 
         const mainPipeline = [
@@ -62,21 +59,30 @@ module.exports = {
             { $unwind: { path: "$nameMatches" } },
 
             // sum request of same association name called with different identifier
+            { $sort: { "nameMatches.lastUpdate": 1 } },
             {
                 $group: {
                     _id: { name: "$nameMatches.name", monthYear: "$_id.monthYear" },
-                    nbRequests: { $sum: "$nbRequests" }
+                    nbRequests: { $sum: "$nbRequests" },
+                    identifiers: { $mergeObjects: { siren: "$nameMatches.siren", rna: "$nameMatches.rna" } }
                 }
             },
-
-            // project to expected field names
-            { $project: { name: "$_id.name", monthYear: "$_id.monthYear", nbRequests: "$nbRequests" } },
+            {
+                $project: {
+                    siren: "$identifiers.siren",
+                    rna: "$identifiers.rna",
+                    monthYear: "$_id.monthYear",
+                    nbRequests: "$nbRequests",
+                    name: "$_id.name"
+                }
+            },
 
             // outputs to new collection
             { $out: "association-visits" }
         ];
         await logs.aggregate(mainPipeline).toArray();
-        visits.createIndex({ name: 1, monthYear: -1 }, { unique: true });
+        visits.createIndex({ siren: 1, monthYear: -1 }, { unique: true });
+        visits.createIndex({ rna: 1, monthYear: -1 }, { unique: true });
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
