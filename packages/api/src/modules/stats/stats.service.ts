@@ -18,12 +18,9 @@ class StatsService {
     }
 
     registerRequest(association: Association) {
-        const name = association?.denomination_rna?.[0]?.value || association?.denomination_siren?.[0]?.value;
-        // TODO remove by name and call repo with {rna, siren}
-        if (!name)
-            return console.warn("no association name, so the request is not counted in association top visits stats");
+        const identifier = { rna: association.rna?.[0]?.value, siren: association?.siren?.[0]?.value };
         const monthYear = dateToUTCMonthYear(new Date());
-        return assoVisitsRepository.updateAssoVisitCountByIncrement(name, monthYear);
+        return assoVisitsRepository.updateAssoVisitCountByIncrement(identifier, monthYear);
     }
 
     async getTopAssociationsByPeriod(

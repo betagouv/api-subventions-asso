@@ -130,31 +130,17 @@ describe("StatsService", () => {
                 .spyOn(assoVisitsRepository, "updateAssoVisitCountByIncrement")
                 .mockImplementation(jest.fn());
 
-            const ASSO_NO_NAME = {};
-            const SIREN_NAME = "NOM_SIREN";
-            const RNA_NAME = "NOM_RNA";
-            const ASSO_SIREN_NAME = { denomination_siren: [{ value: SIREN_NAME }] };
-            const ASSO_RNA_NAME = { denomination_rna: [{ value: RNA_NAME }] };
-            const ASSO_2_NAMES = { ...ASSO_RNA_NAME, ASSO_SIREN_NAME };
+            const ASSO = { rna: [{ value: "RNA" }], siren: [{ value: "SIREN" }] };
+            const IDENTIFIER = { rna: "RNA", siren: "SIREN" };
 
-            async function checkArgs(asso, expectedName, expectedDate = expect.anything()) {
+            async function checkArgs(asso, expectedIdentifier, expectedDate = expect.anything()) {
                 await statsService.registerRequest(asso);
-                expect(assoVisitRepoMock).toHaveBeenCalledWith(expectedName, expectedDate);
+                expect(assoVisitRepoMock).toHaveBeenCalledWith(expectedIdentifier, expectedDate);
             }
 
-            it("fails if no name", async () => {
-                await statsService.registerRequest(ASSO_NO_NAME);
-                expect(assoVisitRepoMock).toHaveBeenCalledTimes(0);
-            });
+            it("should register visit to this month utc", () => checkArgs(ASSO, expect.anything(), THIS_MONTH));
 
-            it("can use rna name", () => checkArgs(ASSO_RNA_NAME, RNA_NAME));
-
-            it("can use siren name", () => checkArgs(ASSO_SIREN_NAME, SIREN_NAME));
-
-            it("should use rna's name if both available", () => checkArgs(ASSO_2_NAMES, RNA_NAME));
-
-            it("should register visit to this month utc", () =>
-                checkArgs(ASSO_RNA_NAME, expect.anything(), THIS_MONTH));
+            it("should register visit to this month utc", () => checkArgs(ASSO, IDENTIFIER, expect.anything()));
         });
 
         describe("getTopAssociations()", () => {
@@ -163,11 +149,11 @@ describe("StatsService", () => {
 
             const DEFAULT_LIMIT = 5;
             const mockedValue = [
+                { _id: { siren: "siren-1", rna: "rna-1" }, nbRequests: 42 },
                 { _id: { siren: "siren-2", rna: "rna-2" }, nbRequests: 41 },
                 { _id: { siren: "siren-3", rna: "rna-3" }, nbRequests: 40 },
                 { _id: { siren: "siren-4", rna: "rna-4" }, nbRequests: 39 },
-                { _id: { siren: "siren-5", rna: "rna-5" }, nbRequests: 38 },
-                { _id: { siren: "siren-1", rna: "rna-1" }, nbRequests: 42 }
+                { _id: { siren: "siren-5", rna: "rna-5" }, nbRequests: 38 }
             ];
 
             beforeAll(() => {

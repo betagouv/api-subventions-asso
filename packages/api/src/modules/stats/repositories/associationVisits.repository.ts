@@ -1,4 +1,5 @@
 import db from "../../../shared/MongoConnection";
+import { Rna, Siren } from "@api-subventions-asso/dto";
 
 export class AssociationVisitsRepository {
     private readonly collection = db.collection("association-visits");
@@ -14,10 +15,21 @@ export class AssociationVisitsRepository {
             .toArray();
     }
 
-    public updateAssoVisitCountByIncrement(name: string, monthYear: Date) {
-        // TODO get by identifier and update if more data is known, set to new identifier values
-        //  (tested: it does not remove data to $set with undefined but it does with null)
-        return this.collection.findOneAndUpdate({ name, monthYear }, { $inc: { nbRequests: 1 } }, { upsert: true });
+    public updateAssoVisitCountByIncrement(
+        identifiers: { rna: Rna | undefined; siren: Siren | undefined },
+        monthYear: Date
+    ) {
+        return this.collection.findOneAndUpdate(
+            {
+                monthYear,
+                $or: [{ rna: identifiers.rna }, { siren: identifiers.rna }]
+            },
+            {
+                $inc: { nbRequests: 1 },
+                $set: { rna: identifiers.rna, siren: identifiers.siren }
+            },
+            { upsert: true }
+        );
     }
 }
 
