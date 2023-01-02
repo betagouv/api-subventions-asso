@@ -30,6 +30,18 @@ module.exports = {
                         }
                     }
                 }
+            },
+            {
+                $project: {
+                    identifier: {
+                        $cond: {
+                            if: { $eq: [{ $strLenCP: "$identifier" }, 14] },
+                            then: { $substr: ["$identifier", 0, 9] },
+                            else: "$identifier"
+                        }
+                    },
+                    monthYear: "$monthYear"
+                }
             }
         ]; // extracts the identifier from the route
 
@@ -40,7 +52,7 @@ module.exports = {
 
         const mainPipeline = [
             // filter corresponding logs
-            { $match: { "meta.req.url": { $regex: /(search\/)?association\/[A-Za-z0-9]+\/?$/ } } },
+            { $match: { "meta.req.url": { $regex: /(search\/)?(association|etablissement)s?\/[A-Za-z0-9]+\/?$/ } } },
 
             ...projectIdentifierPipeline,
 
@@ -68,12 +80,17 @@ module.exports = {
                 }
             },
             {
+                $group: {
+                    _id: { identifiers: "$identifiers", monthYear: "$_id.monthYear" },
+                    nbRequests: { $sum: "$nbRequests" }
+                }
+            },
+            {
                 $project: {
-                    siren: "$identifiers.siren",
-                    rna: "$identifiers.rna",
+                    siren: "$_id.identifiers.siren",
+                    rna: "$_id.identifiers.rna",
                     monthYear: "$_id.monthYear",
-                    nbRequests: "$nbRequests",
-                    name: "$_id.name"
+                    nbRequests: "$nbRequests"
                 }
             },
 
@@ -81,8 +98,7 @@ module.exports = {
             { $out: "association-visits" }
         ];
         await logs.aggregate(mainPipeline).toArray();
-        visits.createIndex({ siren: 1, monthYear: -1 }, { unique: true });
-        visits.createIndex({ rna: 1, monthYear: -1 }, { unique: true });
+        visits.createIndex({ siren: 1, rna: 1, monthYear: -1 }, { unique: true });
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
