@@ -20,13 +20,8 @@ export class EmailDomainsController extends Controller {
         message: "Internal Server Error"
     })
     public async addDomain(@Body() body: { domain: string }): Promise<AddEmailDomainDto> {
-        try {
-            const persistedDomain = await emailDomainsService.add(body.domain);
-            this.setStatus(201);
-            return { success: true, domain: persistedDomain };
-        } catch (e) {
-            this.setStatus(500);
-            return { success: false, message: "Internal Server Error" };
-        }
+        const persistedDomain = await emailDomainsService.add(body.domain);
+        this.setStatus(201);
+        return { success: true, domain: persistedDomain };
     }
 }

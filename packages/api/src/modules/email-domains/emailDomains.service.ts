@@ -4,7 +4,6 @@ import emailDomainsRepository from "./repositories/emailDomains.repository";
 
 class EmailDomainsService {
     public async add(domain: string) {
-        console.log(!REGEX_MAIL_DOMAIN.test(domain));
         if (!REGEX_MAIL_DOMAIN.test(domain)) {
             throw new BadRequestError();
         }
