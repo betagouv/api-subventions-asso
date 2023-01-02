@@ -30,9 +30,7 @@ class StatsService {
     ): Promise<AssociationTop[]> {
         const TODAY = new Date();
         if (!end) end = TODAY;
-        end = dateToUTCMonthYear(end);
         if (!start) start = new Date(Date.UTC(end.getFullYear() - 1, end.getMonth() + 1, 1));
-        start = dateToUTCMonthYear(start);
         const queryResult = await assoVisitsRepository.selectMostRequestedAssosByPeriod(limit, start, end);
         const promises = queryResult.map(async logCount => ({
             name: await associationNameService.getNameFromIdentifier(logCount._id?.rna || logCount._id?.siren),

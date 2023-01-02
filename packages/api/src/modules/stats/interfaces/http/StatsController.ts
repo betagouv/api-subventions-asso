@@ -103,9 +103,9 @@ export class StatsController extends Controller {
      * Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
      *
      * @summary Permet de récupérer les associations les plus visitées et le nombre de requêtes associées
-     * @param limit Number of returned associations
-     * @param start Timestamp starting date for the period: only year and month will be used
-     * @param end Timestamp ending date for the period: only year and month will be used
+     * @param limit Number of returned associations. Default is 5
+     * @param start Timestamp starting date for the period. Default is first day of twelve month from end
+     * @param end Timestamp ending date for the period. Default is today
      * @returns
      */
     @Get("/associations")
@@ -115,16 +115,11 @@ export class StatsController extends Controller {
         @Query() start = "",
         @Query() end = ""
     ): Promise<AssociationTopDtoResponse> {
-        try {
-            const result = await statsService.getTopAssociationsByPeriod(
-                Number(limit),
-                start ? new Date(start) : undefined,
-                end ? new Date(end) : undefined
-            );
-            return { success: true, data: result };
-        } catch (e) {
-            this.setStatus(500);
-            return { success: false, message: (e as Error).message };
-        }
+        const result = await statsService.getTopAssociationsByPeriod(
+            Number(limit),
+            start ? new Date(start) : undefined,
+            end ? new Date(end) : undefined
+        );
+        return { success: true, data: result };
     }
 }
