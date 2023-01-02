@@ -2,9 +2,10 @@ import { DauphinTokenAvailableTime } from "./entities/DauphinTokenAvailableTimeD
 import { DauphinTokenDataEntity } from "./entities/DauphinTokenDataEntity";
 import configurationsRepository from "./repositories/configurations.repository";
 
-enum CONFIGURATION_NAMES {
+export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
+    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS"
 }
 
 export class ConfigurationsService {
@@ -17,7 +18,9 @@ export class ConfigurationsService {
     }
 
     getDauphinTokenAvailableTime() {
-        return configurationsRepository.getByName<DauphinTokenAvailableTime>(CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE);
+        return configurationsRepository.getByName<DauphinTokenAvailableTime>(
+            CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE
+        );
     }
 }
 
