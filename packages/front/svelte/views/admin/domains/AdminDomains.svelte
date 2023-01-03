@@ -25,7 +25,7 @@
 {:else if domainError === true}
     <Alert title="L'ajout du nom de domaine a échoué" />
 {/if}
-<div class="action-group-layout">
+<div class="fr-mb-2w">
     <ActionGroup>
         <svelte:fragment slot="content">
             <Input bind:value={domain} label="Ajouter un nom de domaine" />
@@ -82,9 +82,3 @@
         {/each}
     </div>
 {/await}
-
-<style>
-    .action-group-layout {
-        margin-bottom: 1em;
-    }
-</style>
