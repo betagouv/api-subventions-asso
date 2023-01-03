@@ -23,8 +23,6 @@ module.exports = {
                 continue;
             }
         }
-
-        throw "";
     },
 
     async down(db, client) {
