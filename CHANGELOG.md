@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.1](https://github.com/betagouv/api-subventions-asso/compare/v0.20.0...v0.20.1) (2023-01-03)
+
+### Bug Fixes
+
+-   **api:** remove throw in ecode api rna title migrations ([0854550](https://github.com/betagouv/api-subventions-asso/commit/08545503548f23c9640fede3ebaa743f8a5799f7))
+
 # [0.20.0](https://github.com/betagouv/api-subventions-asso/compare/v0.19.3...v0.20.0) (2023-01-03)
 
 ### Features
