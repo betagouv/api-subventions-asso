@@ -3,18 +3,22 @@ jest.spyOn(console, "info").mockImplementation(() => {});
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
+process.env.DEFAULT_EMAIL_DOMAIN = "beta.gouv.fr";
 
 import { existsSync, mkdirSync } from "fs";
 
 import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { startServer } from "./src/server";
 import { Server } from "http";
-import emailDomainsRepository from "./src/modules/email-domains/repositories/emailDomains.repository";
+import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
+import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 
 const g = global as unknown as { app?: Server };
 
-const addBetaGouvEmailDomain = () => {
-    emailDomainsRepository.add("beta.gouv.fr");
+const addBetaGouvEmailDomain = async () => {
+    await configurationsRepository.upsert(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
+        data: [process.env.DEFAULT_EMAIL_DOMAIN]
+    });
 };
 
 beforeAll(async () => {

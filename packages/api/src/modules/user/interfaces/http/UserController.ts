@@ -11,9 +11,7 @@ import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delet
 import { RoleEnum } from "../../../../@enums/Roles";
 import { ValidateErrorJSON } from "../../../../@types";
 import { IdentifiedRequest } from "../../../../@types/ApiRequests";
-import { InternalServerErrorCode, InternalServerErrorMessage } from "../../../../shared/errors/httpErrors";
-import HttpError from "../../../../shared/errors/httpErrors/HttpError";
-import emailDomainsService from "../../../email-domains/emailDomains.service";
+import configurationsService from "../../../configurations/configurations.service";
 import userService, { UserServiceErrors } from "../../user.service";
 
 // TODO: make this a class or something generic for all Controller ?
@@ -61,18 +59,6 @@ export class UserController extends Controller {
         }
 
         return result;
-    }
-
-    /**
-     * Update user roles
-     * @summary Update user's roles
-     */
-    @Post("/admin/domain")
-    @Security("jwt", ["admin"])
-    public async addDomain(@Body() body: { domain: string }): Promise<{ success: true } | HttpErrorResponse> {
-        await emailDomainsService.add(body.domain);
-        this.setStatus(201);
-        return { success: true };
     }
 
     /**

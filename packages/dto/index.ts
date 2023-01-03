@@ -1,3 +1,4 @@
+export * from "./configurations";
 export * from "./etablissements/index";
 export * from "./versements/index";
 export * from "./user/index";
@@ -27,5 +28,4 @@ export * from "./stats/StatsRequestsMedianDto";
 export * from "./stats/MonthlyAvgRequestDtoResponse";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
-export * from "./email-domains/AddEmailDomainDto";
 export * from "./errors/HttpErrorResponseDto";

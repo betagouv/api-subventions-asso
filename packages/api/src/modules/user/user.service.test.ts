@@ -29,8 +29,8 @@ import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { UserDtoSuccessResponse } from "@api-subventions-asso/dto";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import UserReset from "./entities/UserReset";
-import emailDomainsService from "../email-domains/emailDomains.service";
 import userRepository from "./repositories/user.repository";
+import configurationsService from "../configurations/configurations.service";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -282,7 +282,7 @@ describe("User Service", () => {
 
     describe("validEmail()", () => {
         const isDomainAcceptedMock = jest
-            .spyOn(emailDomainsService, "isDomainAccepted")
+            .spyOn(configurationsService, "isDomainAccepted")
             .mockImplementation(async () => true);
         const EMAIL = "daemon.targaryen@ac-pentos.ws";
         it("should verify domain", async () => {

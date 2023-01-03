@@ -7,9 +7,9 @@ const { CONFIGURATION_NAMES } = require("../build/src/modules/configurations/con
 
 module.exports = {
     async up(db, client) {
-        console.log("ACCEPTED_EMAIL_DOMAINS", ACCEPTED_EMAIL_DOMAINS);
         await connectDB();
         const collection = db.collection("configurations");
+        collection.createIndex({ name: 1 });
         collection.insertOne({
             name: CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
             data: ACCEPTED_EMAIL_DOMAINS,

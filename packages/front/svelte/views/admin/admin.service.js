@@ -51,7 +51,7 @@ export class AdminService {
     }
 
     async addDomain(domain) {
-        const path = `/user/admin/domain`;
+        const path = `/config/domain`;
         return axios.post(path, { domain }).then(result => {
             return result.status == 201;
         });

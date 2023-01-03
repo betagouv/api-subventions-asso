@@ -18,7 +18,7 @@ import UserDbo from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
-import emailDomainsService from "../email-domains/emailDomains.service";
+import configurationsService from "../configurations/configurations.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -124,7 +124,6 @@ export class UserService {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, ...userWithoutPassword } = user;
-        console.log(userWithoutPassword.jwt.expirateDate);
         return { success: true, user: userWithoutPassword };
     }
 
@@ -161,7 +160,6 @@ export class UserService {
         if (!createResult?.success) return createResult;
         const user = createResult.user;
         const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
-        console.log(token);
         try {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
             return { success: true, user };
@@ -536,7 +534,7 @@ export class UserService {
             return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL };
         }
 
-        if (!(await emailDomainsService.isDomainAccepted(email))) {
+        if (!(await configurationsService.isDomainAccepted(email))) {
             return {
                 success: false,
                 message: "Email domain is not accepted",

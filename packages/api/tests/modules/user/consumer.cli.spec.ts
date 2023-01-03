@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../../../../../src/configurations/jwt.conf";
-import ConsumerCliController from "../../../../../src/modules/user/interfaces/cli/consumer.cli.controller";
-import consumerTokenRepository from "../../../../../src/modules/user/repositories/consumer-token.repository";
-import userRepository from "../../../../../src/modules/user/repositories/user.repository";
+import { JWT_SECRET } from "../../../src/configurations/jwt.conf";
+import ConsumerCliController from "../../../src/modules/user/interfaces/cli/consumer.cli.controller";
+import consumerTokenRepository from "../../../src/modules/user/repositories/consumer-token.repository";
+import userRepository from "../../../src/modules/user/repositories/user.repository";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 
 describe("ConsumerCliController", () => {

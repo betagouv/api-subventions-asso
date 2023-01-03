@@ -1,3 +1,6 @@
+import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
+import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
+import ConfigurationEntity from "./entities/ConfigurationEntity";
 import { DauphinTokenAvailableTime } from "./entities/DauphinTokenAvailableTimeDataEntity";
 import { DauphinTokenDataEntity } from "./entities/DauphinTokenDataEntity";
 import configurationsRepository from "./repositories/configurations.repository";
@@ -21,6 +24,43 @@ export class ConfigurationsService {
         return configurationsRepository.getByName<DauphinTokenAvailableTime>(
             CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE
         );
+    }
+
+    /**
+     * |---------------------|
+     * |  Email Domain Part  |
+     * |---------------------|
+     */
+
+    static conflictErrorMessage = "Domain already exist";
+
+    isDomainValid(domain) {
+        return REGEX_MAIL_DOMAIN.test(domain);
+    }
+
+    async addEmailDomain(domain: string) {
+        if (!this.isDomainValid(domain)) throw new BadRequestError();
+        const document = (await configurationsRepository.getByName(
+            CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS
+        )) as ConfigurationEntity<string[]>;
+        if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
+        document.data.push(domain);
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, document);
+        return domain;
+    }
+
+    async getEmailDomains(): Promise<string[]> {
+        return (
+            ((await configurationsRepository.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
+                ?.data as string[]) || []
+        );
+    }
+
+    async isDomainAccepted(domainOrEmail: string) {
+        const domain = domainOrEmail.split("@")[1];
+        const persistedDomains = (await configurationsRepository.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
+            ?.data as string[];
+        return !!persistedDomains.includes(domain);
     }
 }
 
