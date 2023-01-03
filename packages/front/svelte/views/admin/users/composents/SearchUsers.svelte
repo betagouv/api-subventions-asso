@@ -24,8 +24,8 @@
     $: search, updateSearch();
 </script>
 
-<div class="fr-col fr-col-lg-12 search-container">
-    <div class="fr-search-bar" role="search">
+<div class="fr-col fr-col-lg-12">
+    <div class="fr-search-bar fr-mr-4w" role="search">
         <label class="fr-label" for="admin-search-input">Recherche</label>
         <input
             type="text"
@@ -36,14 +36,3 @@
         <button class="fr-btn" title="Rechercher">Rechercher</button>
     </div>
 </div>
-
-<style>
-    .search-container {
-        display: flex;
-        justify-content: center;
-    }
-
-    .fr-search-bar {
-        width: 60%;
-    }
-</style>
