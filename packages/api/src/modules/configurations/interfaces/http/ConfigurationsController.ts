@@ -11,7 +11,7 @@ export class ConfigurationsController extends Controller {
      * @param domain String nom du domaine (ex @rhone.fr ou rhone.fr)
      * @returns {AddEmailDomainDto}
      */
-    @Post("/domain")
+    @Post("/domains")
     @SuccessResponse("201", "Created")
     @Response<ErrorResponse>(500, "Internal Server Error", {
         success: false,

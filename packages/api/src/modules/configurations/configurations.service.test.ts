@@ -82,8 +82,16 @@ describe("ConfigurationService", () => {
         const PERSISTED_DOMAINS = ["rhone.fr"];
         const NEW_DOMAIN = "ille-et-vilaine.fr";
         const INVALID_DOMAIN = "ille-e";
-        getByNameMock.mockImplementation(async name => ({ data: [...PERSISTED_DOMAINS] }));
-        upsertMock.mockImplementation(jest.fn());
+
+        beforeAll(() => {
+            getByNameMock.mockImplementation(async name => ({ data: [...PERSISTED_DOMAINS] }));
+            upsertMock.mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            getByNameMock.mockRestore();
+            upsertMock.mockRestore();
+        });
 
         describe("addEmailDomain()", () => {
             it("should get all persisted domains", async () => {

@@ -15,12 +15,12 @@ describe("/config", () => {
                     .expect(200, { success: true, domains: [process.env.BETA_GOUV_DOMAIN] });
             });
         });
-        describe("POST /domain", () => {
+        describe("POST /domains", () => {
             const VALID_DOMAIN = "@rhone.fr";
             const INVALID_DOMAIN = "@invalid.f";
             it("should return SuccessResponse", async () => {
                 await request(g.app)
-                    .post("/config/domain")
+                    .post("/config/domains")
                     .send({ domain: VALID_DOMAIN })
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
@@ -28,7 +28,7 @@ describe("/config", () => {
             });
             it("should return BadRequestError", async () => {
                 await request(g.app)
-                    .post("/config/domain")
+                    .post("/config/domains")
                     .send({ domain: INVALID_DOMAIN })
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
