@@ -12,7 +12,7 @@ describe("/config", () => {
                     .get("/config/domains")
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
-                    .expect(200, { success: true, domains: [process.env.DEFAULT_EMAIL_DOMAIN] });
+                    .expect(200, { success: true, domains: [process.env.BETA_GOUV_DOMAIN] });
             });
         });
         describe("POST /domain", () => {
