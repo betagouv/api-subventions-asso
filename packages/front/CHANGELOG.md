@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/betagouv/datasubvention/compare/v0.19.4...v0.20.2) (2023-01-05)
+
+### Bug Fixes
+
+-   **front:** fix download list contact csv ([9ab9505](https://github.com/betagouv/datasubvention/commit/9ab9505063b5203828606bda006dd4c973c29441))
+
+### Features
+
+-   **front:** [#691](https://github.com/betagouv/datasubvention/issues/691) update icon class names ([#739](https://github.com/betagouv/datasubvention/issues/739)) ([87356f5](https://github.com/betagouv/datasubvention/commit/87356f5bc1848cb3dce3ecabcd4efcd599b4d454))
+-   **front:** 656 base page for admin stats page ([#743](https://github.com/betagouv/datasubvention/issues/743)) ([7066716](https://github.com/betagouv/datasubvention/commit/7066716aaa3d053319603e996856cff4cbbad4cf))
+-   **front:** add method is user actif ([#782](https://github.com/betagouv/datasubvention/issues/782)) ([f63156a](https://github.com/betagouv/datasubvention/commit/f63156a03c777fe55dce4dbbcddf0caab94dd780))
+-   **front:** add user actif on admin view list ([#784](https://github.com/betagouv/datasubvention/issues/784)) ([d7a54b6](https://github.com/betagouv/datasubvention/commit/d7a54b6748c2c2b52c3ac7f936e0781086628ec4))
+
 # [0.20.0](https://github.com/betagouv/datasubvention/compare/v0.19.3...v0.20.0) (2023-01-03)
 
 ### Features
