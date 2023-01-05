@@ -5,7 +5,6 @@
     import Documents from "../../../components/Documents/Documents.svelte";
     import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
 
-
     export let titles;
     export let association;
     export let associationIdentifier;

@@ -15,20 +15,17 @@
             <h2>Bienvenue sur l'interface administrateur</h2>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
+            <Card title="Données utilisateurs" url="/admin/users/metrics" size="6">
+                Vision globale sur les profils existants
+            </Card>
             <Card title="Statistiques d'usage" url="/admin/stats" size="6">
-                Donne une vision sur les usages des utilisateurs inscrits
+                Donne une vision détaillée sur les usages des utilisateurs inscrits
             </Card>
-
             <Card title="Gestion des comptes utilisateurs" url="/admin/users/list" size="6">
-                Vous permet de consulter la liste des utilisateurs
+                Vous permet de consulter les noms de domaines et gérer les utilisateurs
             </Card>
-
             <Card title="Créer un compte utilisateur" url="/admin/users/create" size="6">
-                Vous permet de créer un utilisateur
-            </Card>
-
-            <Card title="Noms de domaine" url="/admin/users/domain" size="6">
-                Donne une vision sur les noms de domaine et les utilisateurs inscrits via ceux-ci
+                Vous permet d’ajouter un nouvel utilisateur
             </Card>
         </div>
     </div>

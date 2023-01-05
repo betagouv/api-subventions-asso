@@ -1,3 +1,4 @@
+import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../views/admin/admin.constant";
 import * as RouterService from "./router.service";
 
 describe("Router Service", () => {
@@ -9,7 +10,7 @@ describe("Router Service", () => {
         });
 
         it("should return admin breadcrumbs", () => {
-            const expected = [{ label: "Admin", url: "/admin" }, { label: "Liste des utilisateurs" }];
+            const expected = [{ label: "Admin", url: "/admin" }, { label: PAGE_ADMIN_USERS_ACCOUNT_NAME }];
             const actual = RouterService.buildBreadcrumbs("/admin/users/list");
             expect(actual).toEqual(expected);
         });
