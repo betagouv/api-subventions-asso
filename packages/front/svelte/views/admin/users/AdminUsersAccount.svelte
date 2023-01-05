@@ -9,6 +9,7 @@
     import TableUsers from "./composents/TableUsers.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import { buildCsv, downloadCsv } from "../../../helpers/csvHelper";
+    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../admin.constant.js";
 
     let users,
         domains = [];
@@ -67,7 +68,7 @@
 {#await promises}
     <Spinner description="Chargement des utilisateurs en cours ..." />
 {:then _promises}
-    <h2 class="fr-h2 fr-mb-6w">Gestion des comptes utilisateurs</h2>
+    <h2 class="fr-h2 fr-mb-6w">{PAGE_ADMIN_USERS_ACCOUNT_NAME}</h2>
     <div class="fr-grid-row fr-mb-6w">
         <div class="fr-col-md-12">
             <Widget title="Noms de domaines :">

@@ -2,6 +2,7 @@
     import Alert from "../../../dsfr/Alert.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import Input from "../../../dsfr/Input.svelte";
+    import { PAGE_ADMIN_USERS_CREATE_NAME } from "../admin.constant";
 
     import adminService from "../admin.service";
 
@@ -18,7 +19,7 @@
     <Alert title="L'adresse n'est pas valide ou est déjà liée à un compte utilisateur" />
 {/if}
 
-<h2>Création d'un utilisateur</h2>
+<h2>{PAGE_ADMIN_USERS_CREATE_NAME}</h2>
 <div class="input-layout">
     <Input label="Email" bind:value={email} />
 </div>
