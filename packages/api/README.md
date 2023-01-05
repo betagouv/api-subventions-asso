@@ -62,9 +62,9 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 
 ### MERGE vs REBASE
 
-`rebase` tout le temps si la branche parent à été modifiée.
+`rebase` la branche fille depuis la branche mère si cette dernière a été modifiée.
 `merge` uniquement pour fusionner develop dans main et main dans PROD.
-Les `hotfix` sont à `rebase` sur la branche fille et à `merge` dans la branche parent
+Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent ensuite se `rebase` depuis leur branche mère pour récupérer la modification.
 
 ### Hooks
 

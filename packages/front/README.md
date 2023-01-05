@@ -23,9 +23,9 @@ npm install
 
 ### MERGE vs REBASE
 
-`rebase` tout le temps si la branche parent à été modifiée.
+`rebase` la branche fille depuis la branche mère si cette dernière a été modifiée.
 `merge` uniquement pour fusionner develop dans main et main dans PROD.
-Les `hotfix` sont à `rebase` sur la branche fille et à `merge` dans la branche parent
+Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent ensuite se `rebase` depuis leur branche mère pour récupérer la modification.
 
 ## Architecture Svelte
 
@@ -76,7 +76,7 @@ Pour ajouter une nouvelle route, il suffit de rajouter sa définition dans le fi
 
 Utiliser le moins possible de CSS dans les composants Svelte. Le DSFR met à disposition des classes pour le positionnement et l'espacement. Si ces dernières ne répondent pas au besoin et qu'il est redondant, il faut alors créer une classe générique dans `svelte/global.css`. Si c'est un besoin vraiment spécifique au composant il faut d'abord s'assurer avec l'équipe design si ce n'est pas réalisable avec le DSFR en modifiant légèrement le composant. Dans le cas ou il n'y a pas le choix, il faudra nommer la classe CSS le plus proche possible de l'effet désiré.
 
-## Intéractions entre composants et contrôleurs
+## Interactions entre composants et contrôleurs
 
 Le composant ne doit faire qu'afficher la donnée. Tous traitements et récupérations de données doit se faire à l'aide du contrôleur associé qui délèguera si nécessaire à des services.
 Si besoin, le composant doit s'initialiser en appelant `controller.init()`.
