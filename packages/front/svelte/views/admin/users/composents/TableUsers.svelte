@@ -114,7 +114,6 @@
 
 <style>
     .fr-table {
-        height: 60vh;
         overflow: auto;
     }
     /* This is a quick fix and if needed a Tooltip component should be made */

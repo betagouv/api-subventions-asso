@@ -1,3 +1,10 @@
+import {
+    PAGE_ADMIN_USERS_METRICS_NAME,
+    PAGE_ADMIN_USERS_ACCOUNT_NAME,
+    PAGE_ADMIN_USERS_CREATE_NAME,
+    PAGE_ADMIN_STATS_NAME
+} from "../views/admin/admin.constant";
+
 // TODO: rendre dynamique (via une librairie de routing ?)
 export const buildBreadcrumbs = path => {
     const crumbs = [];
@@ -5,8 +12,10 @@ export const buildBreadcrumbs = path => {
     if (path.includes("etablissement")) crumbs.push({ label: `Etablissement (${path.split("/").at(-1)})` });
     else if (path.includes("admin")) {
         crumbs.push({ label: "Admin", url: "/admin" });
-        if (path.includes("users/list")) crumbs.push({ label: "Liste des utilisateurs" });
-        if (path.includes("stats")) crumbs.push({ label: "Statistiques d'usage" });
+        if (path.includes("users/list")) crumbs.push({ label: PAGE_ADMIN_USERS_ACCOUNT_NAME });
+        if (path.includes("users/metrics")) crumbs.push({ label: PAGE_ADMIN_USERS_METRICS_NAME });
+        if (path.includes("users/create")) crumbs.push({ label: PAGE_ADMIN_USERS_CREATE_NAME });
+        if (path.includes("stats")) crumbs.push({ label: PAGE_ADMIN_STATS_NAME });
     }
     return crumbs;
 };
