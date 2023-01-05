@@ -9,6 +9,6 @@
 
 <style>
     .widget {
-        border: 1px solid #e5e5e5;
+        border: 1px solid var(--border-disabled-grey);
     }
 </style>
