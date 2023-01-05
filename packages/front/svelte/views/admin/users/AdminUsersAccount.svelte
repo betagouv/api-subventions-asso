@@ -1,28 +1,29 @@
 <script>
-    import admin from "../admin.service.js";
+    import adminService from "../admin.service.js";
     import userService from "../../../resources/users/users.service.js";
-    import { user as userStore } from "../../../store/user.store";
 
+    import Widget from "../../../components/Widget.svelte";
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
-    import StatsUsers from "./composents/StatsUsers.svelte";
     import SearchUsers from "./composents/SearchUsers.svelte";
     import TableUsers from "./composents/TableUsers.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import { buildCsv, downloadCsv } from "../../../helpers/csvHelper";
 
-    let users = [];
-    const currentAdminUser = $userStore;
+    let users,
+        domains = [];
 
-    if (!currentAdminUser || !currentAdminUser.roles || !currentAdminUser.roles.includes("admin")) {
-        document.location.href = "/";
-    }
+    // const loadUsers = () => {
+    //     usersPromise = adminService.getUsers().then(_users => (users = _users)); // Template bind cannot come from await block (c.f svelt(invalid-binding))
+    // };
 
-    let promise = new Promise(() => null);
-
-    const loadUsers = () => {
-        promise = admin.getUsers().then(_users => (users = _users)); // Not use then in template because var can be declared for bind;
-    };
+    const usersPromise = adminService.getUsers();
+    const domainsPromise = adminService.getUserDomaines();
+    const promises = Promise.all([usersPromise, domainsPromise]).then(results => {
+        console.log(results);
+        users = results[0];
+        domains = results[1];
+    });
 
     const removeUser = event => {
         const id = event.detail;
@@ -32,7 +33,7 @@
         users = [...users];
     };
 
-    loadUsers();
+    // loadUsers();
 
     const downloadUsersCsv = () => {
         const csvRows = users.map(user => [
@@ -63,21 +64,30 @@
     };
 </script>
 
-{#await promise}
+{#await promises}
     <Spinner description="Chargement des utilisateurs en cours ..." />
-{:then}
-    <div>
-        <div class="fr-grid-row fr-grid-row--center fr-mt-5v fr-mb-6w fr-p-5v widget">
-            <StatsUsers {users} />
+{:then _promises}
+    <h2 class="fr-h2 fr-mb-6w">Gestion des comptes utilisateurs</h2>
+    <div class="fr-grid-row fr-mb-6w">
+        <div class="fr-col-md-12">
+            <Widget title="Noms de domaines :">
+                <ul class="admin-domain-ul">
+                    {#each domains as domain}
+                        <li>
+                            <a href="#{domain.name}">
+                                {domain.name.replace("@", "")}
+                                {domain.users.length} utilisateurs
+                            </a>
+                        </li>
+                    {/each}
+                </ul>
+            </Widget>
         </div>
-
-        <div class="fr-grid-row fr-p-5v widget">
-            <!--TODO replace by Widget component-->
-            <div class="fr-col fr-col-md-6">
-                <h2>Liste des utilisateurs :</h2>
-            </div>
-            <div class="fr-col fr-col-md-12 fr-my-6w">
-                <div class="fr-grid-row">
+    </div>
+    <div class="fr-grid-row fr-mb-6w">
+        <div class="fr-col-md-12">
+            <Widget title="Liste des utilisateurs :">
+                <div class="fr-grid-row fr-pb-7w">
                     <div class="fr-col fr-col-md-6">
                         <div class="fr-grid-row fr-grid-row--left">
                             <SearchUsers bind:users />
@@ -89,10 +99,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- TODO: ne pas recharger les utilisateurs mais plutôt mettre à jour l'objet users pour éviter une requête -->
-            <TableUsers {users} on:userDeleted={e => removeUser(e)} />
+                <!-- TODO: ne pas recharger les utilisateurs mais plutôt mettre à jour l'objet users pour éviter une requête -->
+                <TableUsers {users} on:userDeleted={e => removeUser(e)} />
+            </Widget>
         </div>
     </div>
 {:catch error}

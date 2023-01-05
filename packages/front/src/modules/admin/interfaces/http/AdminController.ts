@@ -26,7 +26,7 @@ export default class AdminController {
         return this.checkRoleAndUseSvelte(req, res);
     }
 
-    @Get("/users/domain")
+    @Get("/users/metrics")
     public domainUsersView(req: Request, res: Response, next: NextFunction) {
         return this.checkRoleAndUseSvelte(req, res);
     }

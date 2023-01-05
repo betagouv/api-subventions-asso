@@ -18,7 +18,6 @@
                 <TabContent selected={index === 0} {index}>
                     {#if index === 0}
                         <SubventionsVersementsDashboard {identifier} />
-
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} />
                     {:else if index === 2}
