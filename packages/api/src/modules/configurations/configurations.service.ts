@@ -1,6 +1,5 @@
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
-import ConfigurationEntity from "./entities/ConfigurationEntity";
 import { DauphinTokenAvailableTime } from "./entities/DauphinTokenAvailableTimeDataEntity";
 import { DauphinTokenDataEntity } from "./entities/DauphinTokenDataEntity";
 import configurationsRepository from "./repositories/configurations.repository";
@@ -12,6 +11,18 @@ export enum CONFIGURATION_NAMES {
 }
 
 export class ConfigurationsService {
+    createEmptyConfigEntity(name, defaultData) {
+        return {
+            name,
+            data: defaultData,
+            updatedAt: new Date()
+        };
+    }
+
+    updateConfigEntity(entity, data) {
+        return { ...entity, data, updatedAt: new Date() };
+    }
+
     getDauphinToken() {
         return configurationsRepository.getByName<DauphinTokenDataEntity>(CONFIGURATION_NAMES.DAUPHIN_TOKEN);
     }
@@ -40,19 +51,25 @@ export class ConfigurationsService {
 
     async addEmailDomain(domain: string) {
         if (!this.isDomainValid(domain)) throw new BadRequestError();
-        const document = (await configurationsRepository.getByName(
-            CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS
-        )) as ConfigurationEntity<string[]>;
+        const document = await configurationsRepository.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS);
+        if (!document) {
+            await configurationsRepository.upsert(
+                CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
+                this.createEmptyConfigEntity(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, [domain])
+            );
+            return domain;
+        }
         if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
-        document.data.push(domain);
-        await configurationsRepository.upsert(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, document);
+        await configurationsRepository.upsert(
+            CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
+            this.updateConfigEntity(document, [...document.data, domain])
+        );
         return domain;
     }
 
-    async getEmailDomains(): Promise<string[]> {
+    async getEmailDomains() {
         return (
-            ((await configurationsRepository.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
-                ?.data as string[]) || []
+            (await configurationsRepository.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))?.data || []
         );
     }
 

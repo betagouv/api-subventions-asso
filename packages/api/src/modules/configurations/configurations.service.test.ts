@@ -4,8 +4,29 @@ import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } fro
 import configurationsRepository from "./repositories/configurations.repository";
 
 describe("ConfigurationService", () => {
+    jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
     const getByNameMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsRepository, "getByName");
     const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsRepository, "upsert");
+
+    const CONFIG_NAME = "name";
+    const DEFAULT_DATA = [];
+    const EMPTY_ENTITY = { name: CONFIG_NAME, data: DEFAULT_DATA, updatedAt: new Date() };
+    describe("createEmptyConfigEntity()", () => {
+        it("should return entity", () => {
+            const expected = EMPTY_ENTITY;
+            const actual = configurationsService.createEmptyConfigEntity(CONFIG_NAME, DEFAULT_DATA);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("updateConfigEntity()", () => {
+        it("should return entity", () => {
+            const UPDATED_DATA = ["DATA"];
+            const expected = { ...EMPTY_ENTITY, data: UPDATED_DATA };
+            const actual = configurationsService.updateConfigEntity(EMPTY_ENTITY, UPDATED_DATA);
+            expect(actual).toEqual(expected);
+        });
+    });
 
     describe("Dauphin Configuration Part", () => {
         describe("getDauphinToken", () => {
@@ -102,7 +123,18 @@ describe("ConfigurationService", () => {
             it("should upsert domains", async () => {
                 await configurationsService.addEmailDomain(NEW_DOMAIN);
                 expect(upsertMock).toHaveBeenCalledWith(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
-                    data: [...PERSISTED_DOMAINS, NEW_DOMAIN]
+                    data: [...PERSISTED_DOMAINS, NEW_DOMAIN],
+                    updatedAt: new Date()
+                });
+            });
+
+            it("should upsert new document", async () => {
+                getByNameMock.mockImplementationOnce(async () => null);
+                await configurationsService.addEmailDomain(NEW_DOMAIN);
+                expect(upsertMock).toHaveBeenCalledWith(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
+                    name: CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
+                    data: [NEW_DOMAIN],
+                    updatedAt: new Date()
                 });
             });
 
