@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.4](https://github.com/betagouv/api-subventions-asso/compare/v0.19.3...v0.19.4) (2023-01-05)
+
+### Bug Fixes
+
+-   **api:** change sort order on api asso documents ([33c6c18](https://github.com/betagouv/api-subventions-asso/commit/33c6c1814de5672d6b71bb11d7fe509222a463b6))
+
 ## [0.19.3](https://github.com/betagouv/api-subventions-asso/compare/v0.19.2...v0.19.3) (2022-12-29)
 
 ### Bug Fixes
