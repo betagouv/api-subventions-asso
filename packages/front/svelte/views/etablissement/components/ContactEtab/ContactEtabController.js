@@ -1,11 +1,12 @@
 import { buildCsv, downloadCsv } from "../../../../helpers/csvHelper";
 import { formatPhoneNumber, valueOrHyphen } from "../../../../helpers/dataHelper";
-import { writable } from "svelte/store";
+import Store from "../../../../core/Store";
 
 export default class ContactEtabController {
-    constructor(contacts) {
+    constructor(contacts, siret) {
         this._contacts = contacts.map(this._format);
-        this._filteredContacts = writable(this._contacts);
+        this._siret = siret;
+        this._filteredContacts = new Store(this._contacts);
         this.roles = this._getRoles();
         this.selectedRole = "";
         this._inputName = "";
@@ -40,7 +41,8 @@ export default class ContactEtabController {
             buildCsv(
                 this.getHeaders(),
                 this._contacts.map(contact => Object.values(contact))
-            )
+            ),
+            this._buildCsvName()
         );
     }
 
@@ -76,5 +78,9 @@ export default class ContactEtabController {
 
     _getRoles() {
         return ["", ...new Set(this._contacts.map(contact => contact.role))];
+    }
+
+    _buildCsvName() {
+        return "Liste des contacts - SIRET " + this._siret;
     }
 }

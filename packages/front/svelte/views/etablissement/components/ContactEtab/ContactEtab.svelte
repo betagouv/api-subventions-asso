@@ -6,8 +6,9 @@
     import ContactEtabController from "./ContactEtabController";
 
     export let contacts = [];
+    export let siret;
 
-    const controller = new ContactEtabController(contacts);
+    const controller = new ContactEtabController(contacts, siret);
     const { contacts: _contacts } = controller;
 </script>
 
@@ -17,7 +18,7 @@
     </div>
     <div class="fr-col-4 align-right">
         <span>
-            <Button on:click={controller.download} type="secondary">Télécharger au format CSV</Button>
+            <Button on:click={() => controller.download()} type="secondary">Télécharger au format CSV</Button>
         </span>
     </div>
 </div>
