@@ -13,7 +13,6 @@ export const AGENT_ETAT_DOMAIN = [
     "ac-limoges.fr",
     "ac-lyon.fr",
     "ac-martinique.fr",
-    "ac-martinique.fr",
     "ac-mayotte.fr",
     "ac-montpellier.fr",
     "ac-nancy-metz.fr",
@@ -44,10 +43,8 @@ export const AGENT_ETAT_DOMAIN = [
     "region-academique-ocitanie.fr",
     "region-academique-paca.fr",
     "stjs.wf"
-]
+];
 
-export const COLLECTIVITE_DOMAIN = [
-    "rhone.fr"
-]
+export const COLLECTIVITE_DOMAIN = ["rhone.fr"];
 
-export const ACCEPTED_EMAIL_DOMAIN = [...AGENT_ETAT_DOMAIN, ...COLLECTIVITE_DOMAIN]
+export const ACCEPTED_EMAIL_DOMAINS = [...AGENT_ETAT_DOMAIN, ...COLLECTIVITE_DOMAIN];

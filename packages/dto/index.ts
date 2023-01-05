@@ -1,3 +1,4 @@
+export * from "./configurations";
 export * from "./etablissements/index";
 export * from "./versements/index";
 export * from "./user/index";
@@ -20,9 +21,11 @@ export * from "./shared/Siret";
 export * from "./shared/Adresse";
 export * from "./shared/Personne";
 export * from "./shared/InformationBancaire";
+export * from "./shared/ResponseStatus";
 export * from "./user/UserDto";
 export * from "./stats/RequestsDtoResponse";
 export * from "./stats/StatsRequestsMedianDto";
 export * from "./stats/MonthlyAvgRequestDtoResponse";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
+export * from "./errors/HttpErrorResponseDto";

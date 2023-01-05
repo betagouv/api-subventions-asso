@@ -1,7 +1,7 @@
 export interface HttpErrorInterface {
-    status: number
+    status: number;
 }
 
-export default abstract class HttpError extends Error implements HttpErrorInterface  {
-    abstract status: number
+export default abstract class HttpError extends Error implements HttpErrorInterface {
+    abstract status: number;
 }

@@ -6,7 +6,6 @@ import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
-import { ACCEPTED_EMAIL_DOMAIN } from "../../configurations/auth.conf";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import { ConsumerToken } from "./entities/ConsumerToken";
@@ -19,6 +18,7 @@ import UserDbo from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
+import configurationsService from "../configurations/configurations.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -83,16 +83,15 @@ export class UserService {
         password: string
     ): Promise<UserServiceError | { success: true; user: Omit<UserDbo, "hashPassword"> }> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
+
         if (!user) {
             return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
         }
-
         if (!user.active || !user.jwt) {
             return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
         }
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
-
         if (!validPassword) {
             return {
                 success: false,
@@ -125,7 +124,6 @@ export class UserService {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, ...userWithoutPassword } = user;
-
         return { success: true, user: userWithoutPassword };
     }
 
@@ -247,7 +245,7 @@ export class UserService {
     }
 
     public async update(user: UserDto): Promise<UserServiceError | { success: true; user: UserDto }> {
-        const emailIsValid = this.validEmail(user.email);
+        const emailIsValid = await this.validEmail(user.email);
         if (!emailIsValid.success) {
             return emailIsValid;
         }
@@ -500,7 +498,7 @@ export class UserService {
         email: string,
         password: string
     ): Promise<UserServiceError | { success: true }> {
-        const emailValid = this.validEmail(email);
+        const emailValid = await this.validEmail(email);
 
         if (!emailValid.success) return emailValid;
 
@@ -531,15 +529,15 @@ export class UserService {
         return roles.every(role => this.isRoleValid(role));
     }
 
-    private validEmail(email: string): UserServiceError | { success: true } {
+    private async validEmail(email: string): Promise<UserServiceError | { success: true }> {
         if (!REGEX_MAIL.test(email)) {
             return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL };
         }
 
-        if (!ACCEPTED_EMAIL_DOMAIN.some(domain => email.endsWith(domain))) {
+        if (!(await configurationsService.isDomainAccepted(email))) {
             return {
                 success: false,
-                message: `Email must be end by ${ACCEPTED_EMAIL_DOMAIN.join(",")}`,
+                message: "Email domain is not accepted",
                 code: UserServiceErrors.CREATE_EMAIL_GOUV
             };
         }
