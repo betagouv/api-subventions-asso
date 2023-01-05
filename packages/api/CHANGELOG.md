@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/betagouv/api-subventions-asso/compare/v0.19.4...v0.20.2) (2023-01-05)
+
+### Bug Fixes
+
+-   **api:** remove throw in ecode api rna title migrations ([9c7b0da](https://github.com/betagouv/api-subventions-asso/commit/9c7b0dae3183a0f9aa7392f396e458b15bd85179))
+
+### Features
+
+-   **api:** 669 montly nb requests by year stat route ([#726](https://github.com/betagouv/api-subventions-asso/issues/726)) ([df4dce7](https://github.com/betagouv/api-subventions-asso/commit/df4dce7341ab1d15626365258fd6dd2cf0a2ee37))
+
 ## [0.20.1](https://github.com/betagouv/api-subventions-asso/compare/v0.20.0...v0.20.1) (2023-01-03)
 
 ### Bug Fixes

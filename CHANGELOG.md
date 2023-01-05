@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/betagouv/api-subventions-asso/compare/v0.19.4...v0.20.2) (2023-01-05)
+
+### Bug Fixes
+
+-   **api:** remove throw in ecode api rna title migrations ([9c7b0da](https://github.com/betagouv/api-subventions-asso/commit/9c7b0dae3183a0f9aa7392f396e458b15bd85179))
+-   **front:** fix download list contact csv ([9ab9505](https://github.com/betagouv/api-subventions-asso/commit/9ab9505063b5203828606bda006dd4c973c29441))
+
+### Features
+
+-   **api:** 669 montly nb requests by year stat route ([#726](https://github.com/betagouv/api-subventions-asso/issues/726)) ([df4dce7](https://github.com/betagouv/api-subventions-asso/commit/df4dce7341ab1d15626365258fd6dd2cf0a2ee37))
+-   **front:** [#691](https://github.com/betagouv/api-subventions-asso/issues/691) update icon class names ([#739](https://github.com/betagouv/api-subventions-asso/issues/739)) ([87356f5](https://github.com/betagouv/api-subventions-asso/commit/87356f5bc1848cb3dce3ecabcd4efcd599b4d454))
+-   **front:** 656 base page for admin stats page ([#743](https://github.com/betagouv/api-subventions-asso/issues/743)) ([7066716](https://github.com/betagouv/api-subventions-asso/commit/7066716aaa3d053319603e996856cff4cbbad4cf))
+-   **front:** add method is user actif ([#782](https://github.com/betagouv/api-subventions-asso/issues/782)) ([f63156a](https://github.com/betagouv/api-subventions-asso/commit/f63156a03c777fe55dce4dbbcddf0caab94dd780))
+-   **front:** add user actif on admin view list ([#784](https://github.com/betagouv/api-subventions-asso/issues/784)) ([d7a54b6](https://github.com/betagouv/api-subventions-asso/commit/d7a54b6748c2c2b52c3ac7f936e0781086628ec4))
+
 ## [0.20.1](https://github.com/betagouv/api-subventions-asso/compare/v0.20.0...v0.20.1) (2023-01-03)
 
 ### Bug Fixes
@@ -24,6 +39,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 -   **api:** change sort order on api asso documents ([33c6c18](https://github.com/betagouv/api-subventions-asso/commit/33c6c1814de5672d6b71bb11d7fe509222a463b6))
+
 ## [0.19.3](https://github.com/betagouv/api-subventions-asso/compare/v0.19.2...v0.19.3) (2022-12-29)
 
 ### Bug Fixes

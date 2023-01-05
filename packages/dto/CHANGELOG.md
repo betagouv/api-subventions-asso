@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/betagouv/datasubvention/compare/v0.19.4...v0.20.2) (2023-01-05)
+
+### Features
+
+-   **api:** 669 montly nb requests by year stat route ([#726](https://github.com/betagouv/datasubvention/issues/726)) ([df4dce7](https://github.com/betagouv/datasubvention/commit/df4dce7341ab1d15626365258fd6dd2cf0a2ee37))
+
 # [0.20.0](https://github.com/betagouv/datasubvention/compare/v0.19.3...v0.20.0) (2023-01-03)
 
 ### Features
