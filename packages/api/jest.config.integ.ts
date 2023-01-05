@@ -1,4 +1,4 @@
-import baseConfig from './jest.config';
+import baseConfig from "./jest.config";
 
 /*
  * For a detailed explanation regarding each configuration property and type check, visit:
@@ -26,7 +26,7 @@ export default Object.assign(baseConfig, {
 
     // The directory where Jest should output its coverage files
     // coverageDirectory: "coverage",
-    
+
     // Indicates which provider should be used to instrument code for coverage
     // coverageProvider: "v8",
     // collectCoverageFrom: [],
@@ -94,7 +94,7 @@ export default Object.assign(baseConfig, {
 
     // A preset that is used as a base for Jest's configuration
     // preset: undefined,
-    preset: '@shelf/jest-mongodb',
+    preset: "@shelf/jest-mongodb",
 
     // Run tests from one or more projects
     // projects: undefined,
@@ -129,9 +129,7 @@ export default Object.assign(baseConfig, {
     // setupFiles: [],
 
     // A list of paths to modules that run some code to configure or set up the testing framework before each test
-    setupFilesAfterEnv: [
-        "./jest.setup.after.env.ts"
-    ],
+    setupFilesAfterEnv: ["./jest.config.integ.env.ts"],
 
     // The number of seconds after which a test is considered as slow and reported as such in the results.
     // slowTestThreshold: 5,
@@ -149,7 +147,7 @@ export default Object.assign(baseConfig, {
     // testLocationInResults: false,
 
     // The glob patterns Jest uses to detect test files
-    testMatch: ['<rootDir>/tests/**/*.(spec|test).ts'],
+    testMatch: ["<rootDir>/tests/**/*.(spec|test).ts"]
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
     // testPathIgnorePatterns: [

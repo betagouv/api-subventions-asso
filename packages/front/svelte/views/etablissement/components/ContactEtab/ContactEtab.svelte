@@ -1,4 +1,5 @@
 <script>
+    import ActionGroup from "../../../../components/ActionGroup.svelte";
     import Button from "../../../../dsfr/Button.svelte";
     import Input from "../../../../dsfr/Input.svelte";
     import Select from "../../../../dsfr/Select.svelte";
@@ -12,16 +13,14 @@
     const { contacts: _contacts } = controller;
 </script>
 
-<div class="fr-grid-row">
-    <div class="fr-col-8">
+<ActionGroup>
+    <svelte:fragment slot="content">
         <h2>Contacts et représentants légaux</h2>
-    </div>
-    <div class="fr-col-4 align-right">
-        <span>
-            <Button on:click={() => controller.download()} type="secondary">Télécharger au format CSV</Button>
-        </span>
-    </div>
-</div>
+    </svelte:fragment>
+    <svelte:fragment slot="action">
+        <Button on:click={() => controller.download()} type="secondary">Télécharger au format CSV</Button>
+    </svelte:fragment>
+</ActionGroup>
 <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-6">
         <Input label="Rechercher un nom, un prénom" bind:value={controller.inputName} />
@@ -79,14 +78,5 @@
 
     .large {
         width: calc(100% / 3);
-    }
-
-    .align-right {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .align-right > span {
-        align-self: flex-start;
     }
 </style>

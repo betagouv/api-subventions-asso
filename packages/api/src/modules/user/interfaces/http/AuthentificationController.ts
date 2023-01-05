@@ -1,18 +1,22 @@
-import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, } from 'tsoa';
-import userService, { UserServiceErrors } from '../../user.service';
-import { LoginDtoErrorCodes, LoginDtoNegativeResponse, LoginDtoResponse, ResetPasswordDtoResponse, ResetPasswordErrorCodes, SignupDtoResponse, SignupErrorCodes } from "@api-subventions-asso/dto"
-import { DefaultObject, IdentifiedRequest, LoginRequest } from '../../../../@types';
+import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
+import userService, { UserServiceErrors } from "../../user.service";
+import {
+    LoginDtoErrorCodes,
+    LoginDtoNegativeResponse,
+    LoginDtoResponse,
+    ResetPasswordDtoResponse,
+    ResetPasswordErrorCodes,
+    SignupDtoResponse,
+    SignupErrorCodes
+} from "@api-subventions-asso/dto";
+import { DefaultObject, IdentifiedRequest, LoginRequest } from "../../../../@types";
 
 @Route("/auth")
 @Tags("Authentification Controller")
 export class AuthentificationController extends Controller {
-
     @Post("/forget-password")
-    public async forgetPassword(
-        @Body() body: { email: string }
-    ) {
+    public async forgetPassword(@Body() body: { email: string }) {
         const result = await userService.forgetPassword(body.email);
-
         if (result.success) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { token: _token, ...reset } = result.reset;
@@ -21,16 +25,11 @@ export class AuthentificationController extends Controller {
 
         this.setStatus(500);
 
-        return result
+        return result;
     }
 
     @Post("/reset-password")
-    public async resetPassword(
-        @Body() body: {
-            password: string,
-            token: string,
-        }
-    ): Promise<ResetPasswordDtoResponse> {
+    public async resetPassword(@Body() body: { password: string; token: string }): Promise<ResetPasswordDtoResponse> {
         const result = await userService.resetPassword(body.password, body.token);
 
         if (!result.success) {
@@ -40,16 +39,16 @@ export class AuthentificationController extends Controller {
 
             switch (result.code) {
                 case UserServiceErrors.RESET_TOKEN_NOT_FOUND:
-                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
+                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND;
                     break;
                 case UserServiceErrors.RESET_TOKEN_EXPIRED:
-                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED;
                     break;
                 case UserServiceErrors.USER_NOT_FOUND:
-                    errorCode = ResetPasswordErrorCodes.USER_NOT_FOUND
+                    errorCode = ResetPasswordErrorCodes.USER_NOT_FOUND;
                     break;
                 case UserServiceErrors.FORMAT_PASSWORD_INVALID:
-                    errorCode = ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+                    errorCode = ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID;
                     break;
             }
 
@@ -59,7 +58,7 @@ export class AuthentificationController extends Controller {
                     message: result.message,
                     code: errorCode
                 }
-            }
+            };
         }
 
         return {
@@ -67,19 +66,20 @@ export class AuthentificationController extends Controller {
             data: {
                 user: { ...result.user, _id: result.user._id.toString() }
             }
-        }
+        };
     }
 
     @Post("/login")
     @SuccessResponse("201", "Login successfully")
     public login(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        @Body() body: { email: string, password: string }, // Just for docs
+        @Body() body: { email: string; password: string }, // Just for docs
         @Request() req: LoginRequest
     ): LoginDtoResponse {
         // If you change the route please change in express.auth.hooks.ts
 
-        if (req.user) { // Succesfuly logged
+        if (req.user) {
+            // Succesfuly logged
             this.setStatus(201);
             return {
                 success: true,
@@ -90,8 +90,8 @@ export class AuthentificationController extends Controller {
         const errorCode = parseInt(req.authInfo.message, 10);
 
         const errors: DefaultObject<{
-            errorCode: LoginDtoErrorCodes,
-            message: string
+            errorCode: LoginDtoErrorCodes;
+            message: string;
         }> = {
             [UserServiceErrors.USER_NOT_FOUND]: {
                 errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
@@ -109,7 +109,7 @@ export class AuthentificationController extends Controller {
                 errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
                 message: "Internal error, please try later"
             }
-        }
+        };
 
         const result: LoginDtoNegativeResponse = {
             success: false,
@@ -117,7 +117,7 @@ export class AuthentificationController extends Controller {
                 errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
                 message: "Internal error, please try later"
             }
-        }
+        };
 
         this.setStatus(401);
         return result;
@@ -125,9 +125,7 @@ export class AuthentificationController extends Controller {
 
     @Post("/signup")
     @SuccessResponse("201", "Signup successfully")
-    public async signup(
-        @Body() body: { email: string },
-    ): Promise<SignupDtoResponse> {
+    public async signup(@Body() body: { email: string }): Promise<SignupDtoResponse> {
         const result = await userService.signup(body.email);
 
         if (result.success) {
@@ -137,9 +135,8 @@ export class AuthentificationController extends Controller {
                 data: {
                     message: `The user ${body.email}, is succefully created`
                 }
-            }
+            };
         }
-
 
         const internalServerError = [SignupErrorCodes.CREATION_ERROR, SignupErrorCodes.CREATION_RESET_ERROR];
 
@@ -148,7 +145,7 @@ export class AuthentificationController extends Controller {
             [UserServiceErrors.CREATE_USER_ALREADY_EXIST]: SignupErrorCodes.USER_ALREADY_EXIST,
             [UserServiceErrors.CREATE_USER_WRONG]: SignupErrorCodes.CREATION_ERROR,
             [UserServiceErrors.CREATE_RESET_PASSWORD_WRONG]: SignupErrorCodes.CREATION_RESET_ERROR,
-            [UserServiceErrors.CREATE_EMAIL_GOUV]: SignupErrorCodes.EMAIL_MUST_BE_END_GOUV,
+            [UserServiceErrors.CREATE_EMAIL_GOUV]: SignupErrorCodes.EMAIL_MUST_BE_END_GOUV
         };
 
         const errorCode: SignupErrorCodes = errorMatch[result.code] || SignupErrorCodes.CREATION_ERROR;
@@ -161,14 +158,12 @@ export class AuthentificationController extends Controller {
                 errorCode,
                 message: result.message
             }
-        }
+        };
     }
 
     @Get("/logout")
     @Security("jwt")
-    public async logout(
-        @Request() req: IdentifiedRequest
-    ) {
+    public async logout(@Request() req: IdentifiedRequest) {
         if (!req.user) return { success: false };
 
         await userService.logout(req.user);

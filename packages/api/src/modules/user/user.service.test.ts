@@ -1,13 +1,38 @@
+const bcryptCompareMock = jest.fn(async () => true);
+jest.mock("bcrypt", () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        compare: bcryptCompareMock
+    }
+}));
+import bcrypt from "bcrypt";
+
+const SIGNED_TOKEN = "SIGNED_TOKEN";
+const jwtVerifyMock = jest.fn();
+const jwtSignMock = jest.fn(() => SIGNED_TOKEN);
+jest.mock("jsonwebtoken", () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        verify: jwtVerifyMock,
+        sign: jwtSignMock
+    }
+}));
+
+import jwt from "jsonwebtoken";
+
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceError, UserServiceErrors } from "./user.service";
-import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
-import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
+import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { UserDtoSuccessResponse } from "@api-subventions-asso/dto";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import UserReset from "./entities/UserReset";
+import userRepository from "./repositories/user.repository";
+import configurationsService from "../configurations/configurations.service";
+
+jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
 describe("User Service", () => {
     const sendCreationMailMock = jest.spyOn(mailNotifierService, "sendCreationMail").mockImplementationOnce(jest.fn());
@@ -16,29 +41,52 @@ describe("User Service", () => {
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
     const findByEmailMock = jest.spyOn(userService, "findByEmail");
+    //@ts-expect-error: mock private method
+    const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken");
+    const getUserWithSecretsByEmailMock = jest
+        .spyOn(userRepository, "getUserWithSecretsByEmail")
+        .mockImplementation(async () => USER_DBO);
+    const updateMock = jest.spyOn(userRepository, "update").mockImplementation(async () => USER_DBO);
 
-    const EMAIL = "test@datasubvention.gouv.fr";
+    const EMAIL = "test@beta.gouv.fr";
     const USER_WITHOUT_SECRET = {
         _id: new ObjectId("635132a527c9bfb8fc7c758e"),
         email: EMAIL,
         roles: ["user"],
         signupAt: new Date(),
-        active: true
-    } as UserDto
+        active: true,
+        stats: {}
+    } as UserDto;
+    const USER_SECRETS = {
+        jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
+        hashPassword: "HASH_PASSWORD"
+    };
+    const USER_DBO = { ...USER_WITHOUT_SECRET, ...USER_SECRETS };
+    const USER_WITHOUT_PASSWORD = { ...USER_WITHOUT_SECRET, jwt: USER_SECRETS.jwt };
     const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
     const CONSUMER_JWT_PAYLOAD = { ...USER_WITHOUT_SECRET, isConsumerToken: true };
-    const CONSUMER_JWT_TOKEN = jwt.sign(CONSUMER_JWT_PAYLOAD, JWT_SECRET);
+
+    beforeEach(() => {
+        // @ts-expect-error: taggle
+        buildJWTTokenMock.mockImplementation(() => "SIGNED_TOKEN");
+        jwtVerifyMock.mockImplementation(() => ({ token: "TOKEN", now: new Date() }));
+    });
+
+    afterEach(() => {
+        jwtVerifyMock.mockReset();
+    });
 
     describe("signup", () => {
         it("should create a consumer", async () => {
             resetUserMock.mockImplementationOnce(async () => ({ success: true, reset: {} as UserReset }));
-            createConsumerMock.mockImplementationOnce(async () => ({ success: true, user: {} } as UserDtoSuccessResponse));
+            createConsumerMock.mockImplementationOnce(
+                async () => ({ success: true, user: {} } as UserDtoSuccessResponse)
+            );
             await userService.signup(EMAIL, RoleEnum.consumer);
             expect(createConsumerMock).toHaveBeenCalled();
         });
 
-        it("should create a user", async () => {
-        });
+        it("should create a user", async () => {});
 
         it("should create a reset token", async () => {
             resetUserMock.mockImplementationOnce(async () => ({ success: true, reset: {} as UserReset }));
@@ -55,103 +103,148 @@ describe("User Service", () => {
         });
 
         it("should return success response with email", async () => {
-            const expected = { email: EMAIL, success: true }
+            const expected = { email: EMAIL, success: true };
             resetUserMock.mockImplementationOnce(async () => ({ success: true, reset: {} as UserReset }));
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} } as UserDtoSuccessResponse));
             const actual = await userService.signup(EMAIL);
             expect(actual).toEqual(expected);
+        });
+    });
 
+    describe("login", () => {
+        it("should throw an Error if user not found", async () => {
+            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => null);
+            const expected = { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            const actual = await userService.login(USER_DBO.email, "PASSWORD");
+            expect(actual).toEqual(expected);
         });
 
+        it("should throw an Error if user is not active", async () => {
+            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => ({ ...USER_DBO, active: false }));
+            const expected = { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            const actual = await userService.login(USER_DBO.email, "PASSWORD");
+            expect(actual).toEqual(expected);
+        });
+
+        it("should throw an Error if user has no JWT", async () => {
+            // @ts-expect-error: mock
+            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => ({ ...USER_DBO, jwt: undefined }));
+            const expected = { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            const actual = await userService.login(USER_DBO.email, "");
+            expect(actual).toEqual(expected);
+        });
+
+        it("should throw an Error if password do not match", async () => {
+            bcryptCompareMock.mockImplementationOnce(async () => false);
+            const expected = {
+                success: false,
+                message: "Password does not match",
+                code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH
+            };
+            const actual = await userService.login(USER_DBO.email, "PASSWORD");
+            expect(actual).toEqual(expected);
+            bcryptCompareMock.mockImplementationOnce(async () => true);
+        });
+
+        it("should generate new token and update user", async () => {
+            // minus two days
+            const oldDate = new Date(Date.now() - 172800001);
+            jwtVerifyMock.mockImplementation(() => ({ token: "TOKEN", now: oldDate }));
+            await userService.login(USER_DBO.email, "PASSWORD");
+            expect(buildJWTTokenMock).toHaveBeenCalledTimes(1);
+            expect(updateMock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return user", async () => {
+            const TWO_DAY_AFTER = new Date(Date.now() + JWT_EXPIRES_TIME);
+            const expected = {
+                success: true,
+                user: { ...USER_WITHOUT_PASSWORD, jwt: { token: SIGNED_TOKEN, expirateDate: TWO_DAY_AFTER } }
+            };
+            const actual = await userService.login(USER_DBO.email, "PASSWORD");
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("authenticate", () => {
-        const DECODED_TOKEN = { USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date) }
+        const DECODED_TOKEN = { USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
         it("should return UserServiceError if user does not exist", async () => {
             findByEmailMock.mockImplementationOnce(jest.fn());
-            const expected = { success: false, message: 'User not found', code: UserServiceErrors.USER_NOT_FOUND };
+            const expected = { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
             const actual = await userService.authenticate(DECODED_TOKEN);
             expect(actual).toEqual(expected);
         });
 
         it("should return UserDtoSuccessResponse consumer token", async () => {
-            findByEmailMock.mockImplementationOnce(async () => CONSUMER_USER)
+            findByEmailMock.mockImplementationOnce(async () => CONSUMER_USER);
             const expected = { success: true, user: CONSUMER_USER };
             const actual = await userService.authenticate(DECODED_TOKEN);
             expect(actual).toEqual(expected);
         });
 
         it("should return UserDtoSuccessResponse user token", async () => {
-            findByEmailMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET)
+            findByEmailMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
             const expected = { success: true, user: USER_WITHOUT_SECRET };
             const actual = await userService.authenticate(DECODED_TOKEN);
             expect(actual).toEqual(expected);
         });
 
         it("should return UserServiceError if user not active", async () => {
-            findByEmailMock.mockImplementationOnce(async () => ({ ...USER_WITHOUT_SECRET, active: false }))
-            const expected = { success: false, message: 'User is not active', code: UserServiceErrors.USER_NOT_ACTIVE };
+            findByEmailMock.mockImplementationOnce(async () => ({ ...USER_WITHOUT_SECRET, active: false }));
+            const expected = { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
             const actual = await userService.authenticate(DECODED_TOKEN);
             expect(actual).toEqual(expected);
         });
 
         it("should return UserServiceError if token has expired", async () => {
-            findByEmailMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET)
-            const expected = { success: false, message: 'JWT has expired, please login try again', code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL }
-            const actual = await userService.authenticate({ ...DECODED_TOKEN, now: (d => new Date(d.setDate(d.getDate() - 3)))(new Date) });
+            findByEmailMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
+            const expected = {
+                success: false,
+                message: "JWT has expired, please login try again",
+                code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+            };
+            const actual = await userService.authenticate({
+                ...DECODED_TOKEN,
+                now: (d => new Date(d.setDate(d.getDate() - 3)))(new Date())
+            });
             expect(actual).toEqual(expected);
-
-        })
-    })
+        });
+    });
 
     describe("createConsumer", () => {
-
-        let buildJwtMock: jest.SpyInstance;
-        beforeAll(() => {
-            // @ts-expect-error buildJWTToken is private
-            buildJwtMock = jest.spyOn(userService, "buildJWTToken").mockImplementation(() => CONSUMER_JWT_TOKEN)
-        })
-
-        afterAll(() => {
-            buildJwtMock.mockRestore();
-        })
-
         it("should call userRepository.createUser", async () => {
             createUserMock.mockImplementationOnce(jest.fn());
-            await userService.createConsumer(EMAIL)
+            await userService.createConsumer(EMAIL);
             expect(createUserMock).toBeCalledTimes(1);
         });
 
         it("should not create consumer token if user creation failed", async () => {
             createUserMock.mockImplementationOnce(async email => ({ success: false } as UserServiceError));
-            await userService.createConsumer(EMAIL)
+            await userService.createConsumer(EMAIL);
             expect(createUserMock).toBeCalledTimes(1);
         });
 
         it("should create a token ", async () => {
             const expected = CONSUMER_JWT_PAYLOAD;
-
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: USER_WITHOUT_SECRET }))
-            buildJwtMock.mockImplementationOnce(jest.fn());
+            createUserMock.mockImplementationOnce(async () => ({ success: true, user: USER_WITHOUT_SECRET }));
             await userService.createConsumer(EMAIL);
-            const actual = buildJwtMock.mock.calls[0][0];
-            expect(actual).toEqual(expected);
-        })
+            expect(buildJWTTokenMock).toHaveBeenCalledWith(expected, { expiration: false });
+        });
 
         it("should call consumerTokenRepository.create", async () => {
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }))
+            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.createConsumer(EMAIL);
             expect(createMock).toBeCalledTimes(1);
         });
 
         it("should return UserDtoSuccessResponse", async () => {
             const expected = { success: true as true, user: CONSUMER_USER };
-            createUserMock.mockImplementationOnce(async () => expected)
-            createMock.mockImplementationOnce(async () => true)
+            createUserMock.mockImplementationOnce(async () => expected);
+            createMock.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer(EMAIL);
             expect(actual).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("isRoleValid", () => {
         it("should return true", () => {
@@ -159,14 +252,14 @@ describe("User Service", () => {
             const role = RoleEnum.consumer;
             const actual = userService.isRoleValid(role);
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should return false", () => {
             const expected = false;
             // @ts-expect-error: test
             const actual = userService.isRoleValid("not-a-role");
             expect(actual).toEqual(expected);
-        })
+        });
     });
 
     describe("validRoles", () => {
@@ -176,7 +269,7 @@ describe("User Service", () => {
             // @ts-expect-error: test private method
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should return false", () => {
             const roles = ["foo", RoleEnum.user];
@@ -184,33 +277,76 @@ describe("User Service", () => {
             // @ts-expect-error: test private method
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
-        })
-    })
+        });
+    });
+
+    describe("validEmail()", () => {
+        const isDomainAcceptedMock = jest
+            .spyOn(configurationsService, "isDomainAccepted")
+            .mockImplementation(async () => true);
+        const EMAIL = "daemon.targaryen@ac-pentos.ws";
+        it("should verify domain", async () => {
+            //@ts-expect-error: private method
+            await userService.validEmail(EMAIL);
+            expect(isDomainAcceptedMock).toHaveBeenCalledWith(EMAIL);
+        });
+
+        it("should return SuccessResponse", async () => {
+            const expected = { success: true };
+            //@ts-expect-error: private method
+            const actual = await userService.validEmail(EMAIL);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return UserServiceError if not well formatted", async () => {
+            const expected = {
+                success: false,
+                message: "Email is not valid",
+                code: UserServiceErrors.CREATE_INVALID_EMAIL
+            };
+            //@ts-expect-error: private method
+            const actual = await userService.validEmail();
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return UserServiceError if domain not accepted", async () => {
+            isDomainAcceptedMock.mockImplementationOnce(async () => false);
+            const expected = {
+                success: false,
+                message: "Email domain is not accepted",
+                code: UserServiceErrors.CREATE_EMAIL_GOUV
+            };
+            //@ts-expect-error: private method
+            const actual = await userService.validEmail(EMAIL);
+            expect(actual).toEqual(expected);
+        });
+    });
 
     describe("buildJWTToken", () => {
-        let signMock: jest.SpyInstance
-
-        beforeEach(() => {
-            signMock = jest.spyOn(jwt, "sign").mockImplementationOnce(() => CONSUMER_JWT_TOKEN);
-        })
-
         it("should set expiresIn", () => {
+            buildJWTTokenMock.mockRestore();
             const expected = {
                 expiresIn: JWT_EXPIRES_TIME
             };
             // @ts-expect-error buildJWTToken is private
-            userService.buildJWTToken({}, { expiration: true });
-
-            expect(signMock.mock.calls[0][2]).toEqual(expected);
-        })
-
+            userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: true });
+            expect(jwtSignMock).toHaveBeenCalledWith(
+                { ...USER_WITHOUT_SECRET, now: new Date() },
+                expect.any(String),
+                expected
+            );
+        });
 
         it("should not set expiresIn", () => {
+            buildJWTTokenMock.mockRestore();
             const expected = {};
             // @ts-expect-error buildJWTToken is private
-            userService.buildJWTToken({}, { expiration: false });
-
-            expect(signMock.mock.calls[0][2]).toEqual(expected);
-        })
-    })
-})
+            userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: false });
+            expect(jwtSignMock).toHaveBeenCalledWith(
+                { ...USER_WITHOUT_SECRET, now: new Date() },
+                expect.any(String),
+                expected
+            );
+        });
+    });
+});
