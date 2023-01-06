@@ -43,3 +43,11 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
 .flex {
     display: flex;
 }
+
+.main-view {
+    background-image: linear-gradient(
+        to bottom,
+        var(--background-action-low-blue-france) 0 378px,
+        var(--background-raised-grey) 378px 100%
+    );
+}
