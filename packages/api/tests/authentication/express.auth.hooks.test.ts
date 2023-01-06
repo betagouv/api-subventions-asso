@@ -91,25 +91,30 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, "findByEmail").mockImplementationOnce(email =>
-                Promise.resolve({
-                    email,
+            jest.spyOn(userService, "authenticate").mockImplementation(async user => ({
+                success: true,
+                user: {
+                    email: user.email,
                     roles: [],
                     active: true,
                     signupAt: new Date(),
                     jwt: { token: "", expirateDate: new Date() },
                     stats: { searchCount: 0, lastSearchDate: null },
                     _id: new ObjectId()
-                })
-            );
+                }
+            }));
 
             passportMock.mockImplementation(name => {
                 if (name === "login") return;
 
-                (obj.callback as (...args: unknown[]) => void)({ email: "test@beta.gouv.fr" }, (...args: unknown[]) => {
-                    expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr" });
-                    done();
-                });
+                (obj.callback as (...args: unknown[]) => void)(
+                    { headers: { "x-access-token": "TOKEN" } },
+                    { email: "test@beta.gouv.fr" },
+                    (...args: unknown[]) => {
+                        expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr" });
+                        done();
+                    }
+                );
             });
 
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
@@ -123,13 +128,22 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
+            jest.spyOn(userService, "authenticate").mockImplementation(async () => ({
+                success: false,
+                code: 42,
+                message: "User not found"
+            }));
 
             passportMock.mockImplementation(name => {
                 if (name === "login") return;
-                (obj.callback as (...args: unknown[]) => void)({ email: "test@beta.gouv.fr" }, (...args: unknown[]) => {
-                    expect(args[2]).toMatchObject({ message: "User not found" });
-                    done();
-                });
+                (obj.callback as (...args: unknown[]) => void)(
+                    { headers: { "x-access-token": "TOKEN" } },
+                    { email: "test@beta.gouv.fr" },
+                    (...args: unknown[]) => {
+                        expect(args[2]).toMatchObject({ message: "User not found" });
+                        done();
+                    }
+                );
             });
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
