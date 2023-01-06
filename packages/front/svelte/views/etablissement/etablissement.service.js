@@ -24,6 +24,12 @@ export class EtablissementService {
     async getDocuments(siret) {
         return documentService.getDocuments(`/etablissement/${siret}/documents`);
     }
+
+    getEtablissementType(etab) {
+        if (etab.siege) return "Établissement siège";
+        if (!etab.ouvert) return "-- Établissement fermé --";
+        return "Établissement secondaire";
+    }
 }
 
 const etablissementService = new EtablissementService();
