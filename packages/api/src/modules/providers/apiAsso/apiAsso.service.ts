@@ -171,10 +171,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return documents.filter(document => document.meta.etat === "courant");
     }
 
-    private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[] | null> {
+    private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[]> {
         const response = await this.sendRequest<DocumentDto>(`/proxy_db_asso/documents/${identifier}`);
 
-        if (!response) return null;
+        if (!response) return [];
 
         const filtredRnaDocument = this.filterRnaDocuments(response.asso.documents.document_rna || []);
         const activeDacDocuments = this.filterActiveDacDocuments(response.asso.documents.document_dac || []);
