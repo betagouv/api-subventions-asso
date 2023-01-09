@@ -25,7 +25,7 @@ export class EtablissementService {
         return documentService.getDocuments(`/etablissement/${siret}/documents`);
     }
 
-    getEtablissementType(etab) {
+    getEtablissementStatus(etab) {
         if (etab.siege) return "Établissement siège";
         if (!etab.ouvert) return "-- Établissement fermé --";
         return "Établissement secondaire";

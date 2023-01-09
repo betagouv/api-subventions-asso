@@ -37,7 +37,7 @@
                         url="/etablissement/{etablissement.siret}"
                         target="_blank">
                         <p>
-                            {etablissementService.getEtablissementType(etablissement)}
+                            {etablissementService.getEtablissementStatus(etablissement)}
                             <br />
                             SIRET : {valueOrHyphen(etablissement.siret)}
                             <br />
@@ -66,10 +66,6 @@
 </div>
 
 <style>
-    .flex {
-        display: flex;
-    }
-
     .color {
         color: var(--blue-france-sun-113-625);
     }
