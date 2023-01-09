@@ -3,7 +3,6 @@ import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User from "../entities/UserNotPersisted";
 import UserDbo from "./dbo/UserDbo";
-import { firstDayOfPeriod, getMonthlyDataObject, nextDayAfterPeriod } from "../../../shared/helpers/DateHelper";
 
 export enum UserRepositoryErrors {
     UPDATE_FAIL = 1
@@ -69,40 +68,6 @@ export class UserRepository {
         return userWithoutSecret;
     }
 
-    async getMonthlyNbByYear(year: number) {
-        const pipeline = [
-            { $match: { roles: ["user"], signupAt: { $lt: nextDayAfterPeriod(year) } } },
-            { $project: { signupAt: 1 } },
-            {
-                $group: {
-                    _id: { $dateTrunc: { date: "$signupAt", unit: "month" } },
-                    nbNewUsers: { $count: {} }
-                }
-            },
-            {
-                $densify: {
-                    field: "_id",
-                    range: { step: 1, unit: "month", bounds: [firstDayOfPeriod(year), nextDayAfterPeriod(year)] }
-                }
-            },
-            {
-                $setWindowFields: {
-                    sortBy: { _id: 1 },
-                    output: {
-                        cumulativeNbUsers: {
-                            $sum: "$nbNewUsers",
-                            window: { documents: ["unbounded", "current"] }
-                        }
-                    }
-                }
-            },
-            { $match: { _id: { $gte: firstDayOfPeriod(year) } } },
-            { $project: { monthId: { $month: "$_id" }, cumulativeNbUsers: 1 } }
-        ];
-        const queryResult = await this.collection
-            .aggregate<{ _id: ObjectId; monthId: number; cumulativeNbUsers: number }>(pipeline)
-            .toArray();
-        return getMonthlyDataObject(queryResult, "monthId", "cumulativeNbUsers");
     countBeforeDate(date, withAdmin: boolean) {
         const query: Filter<User> = { signupAt: { $lt: date } };
         if (!withAdmin) query.roles = { $ne: "admin" };
