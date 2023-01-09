@@ -1,7 +1,7 @@
 <script>
     import { isAssociation } from "../../helpers/entrepriseHelper";
     import associationService from "./association.service.js";
-    import { toggleBlueBanner } from "../../store/context.store";
+    import { activeBlueBanner } from "../../store/context.store";
 
     import Alert from "../../dsfr/Alert.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
@@ -13,7 +13,7 @@
 
     export let id;
 
-    toggleBlueBanner();
+    activeBlueBanner();
 
     const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
     let promise = associationService.getAssociation(id);

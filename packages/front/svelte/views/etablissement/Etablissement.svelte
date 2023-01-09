@@ -8,12 +8,12 @@
     import associationService from "../association/association.service";
     import { siretToSiren } from "../../helpers/sirenHelper";
     import { getSiegeSiret } from "../association/association.helper";
-    import { toggleBlueBanner } from "../../store/context.store";
+    import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
 
     export let id;
 
-    toggleBlueBanner();
+    activeBlueBanner();
 
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     const associationPromise = associationService.getAssociation(siretToSiren(id));
