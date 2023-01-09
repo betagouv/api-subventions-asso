@@ -3,7 +3,7 @@
     import "./global.css";
     import routes from "./routes";
     import { ENV } from "../src/shared/config";
-    import { path } from "./store/url.store";
+    import { displayBlueBanner } from "./store/context.store";
 
     import Auth from "./components/Auth.svelte";
     import GenericModal from "./dsfr/GenericModal.svelte";
@@ -12,15 +12,6 @@
     import Header from "./components/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import Theme from "./components/Theme.svelte";
-
-    let isMainView = false;
-
-    function setIsMainView() {
-        if (["association", "etablissement"].some(segment => $path.includes(segment))) return true;
-        return false;
-    }
-
-    $: isMainView = setIsMainView($path);
 
     setContext("app", {
         getEnv: () => ENV,
@@ -36,7 +27,7 @@
     {#if ENV.toLowerCase() == "prod"}
         <Matomo />
     {/if}
-    <div class="app-container" class:main-view={isMainView}>
+    <div class="app-container" class:main-view={$displayBlueBanner}>
         <Header />
         <div class="fr-container fr-mb-8w">
             <main id="content">

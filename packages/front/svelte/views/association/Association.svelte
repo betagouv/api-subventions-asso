@@ -1,22 +1,26 @@
 <script>
     import { isAssociation } from "../../helpers/entrepriseHelper";
     import associationService from "./association.service.js";
+    import { toggleBlueBanner } from "../../store/context.store";
+
     import Alert from "../../dsfr/Alert.svelte";
-    import Spinner from "../../components/Spinner.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import RnaSiren from "./components/RnaSiren.svelte";
+    import FullPageSpinner from "../../components/FullPageSpinner.svelte";
 
     export let id;
+
+    toggleBlueBanner();
 
     const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
     let promise = associationService.getAssociation(id);
 </script>
 
 {#await promise}
-    <Spinner description="Chargement de l'association {id} en cours ..." />
+    <FullPageSpinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
     {#if !association.rna && !isAssociation(association.categorie_juridique)}
         <Alert type="warning" title="Attention">
