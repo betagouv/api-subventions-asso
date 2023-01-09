@@ -22,7 +22,6 @@
 
     onMount(() => {
         loadRoute(location.pathname);
-        // window.onpopstate = () => loadRoute();
     });
 </script>
 

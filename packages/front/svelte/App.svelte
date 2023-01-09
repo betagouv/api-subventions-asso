@@ -1,6 +1,10 @@
 <script>
+    import { setContext } from "svelte";
     import "./global.css";
+    import routes from "./routes";
     import { ENV } from "../src/shared/config";
+    import { displayBlueBanner } from "./store/context.store";
+
     import Auth from "./components/Auth.svelte";
     import GenericModal from "./dsfr/GenericModal.svelte";
     import Matomo from "./components/Matomo.svelte";
@@ -8,8 +12,6 @@
     import Header from "./components/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import Theme from "./components/Theme.svelte";
-    import { setContext } from "svelte";
-    import routes from "./routes";
 
     setContext("app", {
         getEnv: () => ENV,
@@ -25,7 +27,7 @@
     {#if ENV.toLowerCase() == "prod"}
         <Matomo />
     {/if}
-    <div class="app-container">
+    <div class="app-container" class:main-view={$displayBlueBanner}>
         <Header />
         <div class="fr-container fr-mb-8w">
             <main id="content">
