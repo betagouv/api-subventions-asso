@@ -34,8 +34,7 @@
                 {#each etablissements as etablissement}
                     <Card
                         title={association.denomination_rna || association.denomination_siren}
-                        url="/etablissement/{etablissement.siret}"
-                        target="_blank">
+                        url="/etablissement/{etablissement.siret}">
                         <p>
                             {etablissementService.getEtablissementStatus(etablissement)}
                             <br />
