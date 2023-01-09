@@ -1,5 +1,11 @@
 import statsRepository from "./repositories/statsRepository";
-import userRepository from "../user/repositories/user.repository";
+import {
+    dateToUTCMonthYear,
+    englishMonthNames,
+    firstDayOfPeriod,
+    nextDayAfterPeriod
+} from "../../shared/helpers/DateHelper";
+import userService from "../user/user.service";
 
 class StatsService {
     async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
@@ -15,7 +21,24 @@ class StatsService {
     }
 
     async getMonthlyUserNbByYear(year: number) {
-        return await userRepository.getMonthlyNbByYear(year);
+        const start = firstDayOfPeriod(year);
+        let count = await userService.countBeforeDate(start);
+        const users = await userService.findAndSortByPeriod(start, nextDayAfterPeriod(year));
+        const monthlyCount = {};
+        let month = 0;
+        for (const user of users) {
+            if (!user) continue;
+            while (month != (user.signupAt as Date).getMonth()) {
+                monthlyCount[englishMonthNames[month]] = count;
+                month += 1;
+            }
+            count += 1;
+        }
+        while (month < 12) {
+            monthlyCount[englishMonthNames[month]] = count;
+            month += 1;
+        }
+        return monthlyCount;
     }
 }
 

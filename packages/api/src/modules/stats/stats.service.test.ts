@@ -1,6 +1,8 @@
 import statsService from "./stats.service";
 import statsRepository from "./repositories/statsRepository";
-import userRepository from "../user/repositories/user.repository";
+import { firstDayOfPeriod } from "../../shared/helpers/DateHelper";
+import userService from "../user/user.service";
+import * as DateHelper from "../../shared/helpers/DateHelper";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -119,34 +121,81 @@ describe("StatsService", () => {
     });
 
     describe("getMonthlyUserNbByYear()", () => {
-        const mock = jest.spyOn(userRepository, "getMonthlyNbByYear");
+        const initCountMock = jest.spyOn(userService, "countBeforeDate");
+        const getUsersMock = jest.spyOn(userService, "findAndSortByPeriod");
+        const firstDayMock = jest.spyOn(DateHelper, "firstDayOfPeriod");
+        const nextDayMock = jest.spyOn(DateHelper, "nextDayAfterPeriod");
 
         const YEAR = 2022;
-        const mockedValue = {
-            January: 201,
-            February: 21,
-            March: 20,
-            April: 201,
-            May: 13,
-            June: 201,
-            July: 201,
-            August: 15,
-            September: 201,
-            October: 300,
-            November: 201,
-            December: 1
+        const FINAL_DATA = {
+            January: 3,
+            February: 3,
+            March: 4,
+            April: 4,
+            May: 4,
+            June: 4,
+            July: 4,
+            August: 4,
+            September: 5,
+            October: 5,
+            November: 5,
+            December: 5
         };
+        const USER_DATA = [
+            { signupAt: new Date(YEAR, 0, 23) },
+            { signupAt: new Date(YEAR, 2, 3) },
+            { signupAt: new Date(YEAR, 8, 16) }
+        ];
+        const INIT_COUNT = 2;
+        const FIRST_DAY_PERIOD = new Date(YEAR, 0, 1);
+        const NEXT_DAY_PERIOD = new Date(YEAR + 1, 0, 0);
 
-        beforeEach(() => mock.mockResolvedValueOnce(mockedValue));
-
-        it("should call repository", async () => {
-            await statsService.getMonthlyUserNbByYear(YEAR);
-            expect(mock).toHaveBeenCalledWith(YEAR);
+        beforeAll(() => {
+            initCountMock.mockResolvedValue(INIT_COUNT);
+            getUsersMock.mockResolvedValue(USER_DATA);
+            firstDayMock.mockReturnValue(FIRST_DAY_PERIOD);
+            nextDayMock.mockReturnValue(NEXT_DAY_PERIOD);
+        });
+        afterAll(() => {
+            initCountMock.mockRestore();
+            getUsersMock.mockRestore();
+            firstDayMock.mockRestore();
+            nextDayMock.mockRestore();
         });
 
-        it("should return repo's return value", async () => {
+        it("should call date Helpers", async () => {
+            await statsService.getMonthlyUserNbByYear(YEAR);
+            expect(firstDayMock).toBeCalledWith(YEAR);
+            expect(nextDayMock).toBeCalledWith(YEAR);
+        });
+
+        it("should call init count with proper date", async () => {
+            await statsService.getMonthlyUserNbByYear(YEAR);
+            expect(initCountMock).toBeCalledWith(FIRST_DAY_PERIOD);
+        });
+
+        it("should get users from proper period", async () => {
+            await statsService.getMonthlyUserNbByYear(YEAR);
+            expect(getUsersMock).toBeCalledWith(FIRST_DAY_PERIOD, NEXT_DAY_PERIOD);
+        });
+
+        it("should return proper result", async () => {
             const actual = await statsService.getMonthlyUserNbByYear(YEAR);
-            expect(actual).toStrictEqual(mockedValue);
+            const expected = FINAL_DATA;
+            expect(actual).toEqual(expected);
+        });
+
+        it("should not forget init count", async () => {
+            const INIT_COUNT_ALT = 12;
+            const diff = -INIT_COUNT + INIT_COUNT_ALT;
+            initCountMock.mockResolvedValueOnce(INIT_COUNT_ALT);
+            const FINAL_DATA_ALT = {};
+            for (const [month, count] of Object.entries(FINAL_DATA)) {
+                FINAL_DATA_ALT[month] = count + diff;
+            }
+            const actual = await statsService.getMonthlyUserNbByYear(YEAR);
+            const expected = FINAL_DATA_ALT;
+            expect(actual).toEqual(expected);
         });
     });
 });
