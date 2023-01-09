@@ -3,11 +3,11 @@
     import { modal } from "../../store/modal.store";
     import Button from "../../dsfr/Button.svelte";
     import TitleWithData from "../TitleWithData.svelte";
-    import MoreInfoLegalesModal from "./MoreInfoLegalesModal.svelte";
+    import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 
     export let association;
 
-    const displayModal = () => modal.update(() => MoreInfoLegalesModal);
+    const displayModal = () => modal.set(MoreInfosLegalesModal);
 </script>
 
 <div class="title">
@@ -30,8 +30,8 @@
         <TitleWithData
             label="Adresse du siège"
             data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
+        <Button ariaControls="fr-modal" on:click={displayModal}>Plus de détails</Button>
     </div>
-    <Button on:click={displayModal}>Plus de détails</Button>
 </div>
 <slot />
 

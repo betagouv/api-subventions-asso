@@ -1,7 +1,7 @@
 <script>
     export let title = "Résumé du tableau (accessibilité)";
     export let bordered = false;
-    export let color;
+    export let color = undefined;
 </script>
 
 <div class="fr-table {color ? `.fr-highlight--${color}` : ''}" class:fr-table--bordered={bordered}>

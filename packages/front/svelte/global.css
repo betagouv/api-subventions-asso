@@ -40,6 +40,8 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     background-color: #6c6cbb;
 }
 
+/* POSITIONNING / LAYOUT */
+
 .flex {
     display: flex;
 }
@@ -50,4 +52,9 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
         var(--background-action-low-blue-france) 0 25em,
         var(--background-raised-grey) 25em 100%
     );
+}
+
+.flex-right {
+    display: flex;
+    justify-content: flex-end;
 }
