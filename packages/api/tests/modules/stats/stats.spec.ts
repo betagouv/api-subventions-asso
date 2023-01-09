@@ -2,6 +2,9 @@ import request from "supertest";
 import statsService from "../../../src/modules/stats/stats.service";
 import getAdminToken from "../../__helpers__/getAdminToken";
 import getUserToken from "../../__helpers__/getUserToken";
+import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
+import userFixture from "../user/__fixtures__/entity";
+import db from "../../../src/shared/MongoConnection";
 
 const g = global as unknown as { app: unknown };
 
@@ -106,12 +109,11 @@ describe("/stats", () => {
         });
     });
 
-    /*
     describe("getCumulatedUsersPerMonthByYear", () => {
-        const YEAR = 2022
+        const YEAR = 2022;
         const collection = db.collection<UserDbo>("users");
         beforeEach(() => {
-            collection.insertMany(userFixture)
+            collection.insertMany(userFixture);
         });
 
         it("should return data with HTTP status code 200", async () => {
@@ -134,9 +136,8 @@ describe("/stats", () => {
                 .get(`/stats/users/monthly/${YEAR}`)
                 .set("x-access-token", await getAdminToken())
                 .set("Accept", "application/json")
-                .expect(200)
+                .expect(200);
             expect(actual.body).toEqual(expected);
         });
     });
-*/
 });
