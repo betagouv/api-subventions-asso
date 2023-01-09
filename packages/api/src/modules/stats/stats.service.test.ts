@@ -152,6 +152,7 @@ describe("StatsService", () => {
 
         beforeAll(() => {
             initCountMock.mockResolvedValue(INIT_COUNT);
+            // @ts-expect-error mock
             getUsersMock.mockResolvedValue(USER_DATA);
             firstDayMock.mockReturnValue(FIRST_DAY_PERIOD);
             nextDayMock.mockReturnValue(NEXT_DAY_PERIOD);

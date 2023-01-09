@@ -1,10 +1,5 @@
 import statsRepository from "./repositories/statsRepository";
-import {
-    dateToUTCMonthYear,
-    englishMonthNames,
-    firstDayOfPeriod,
-    nextDayAfterPeriod
-} from "../../shared/helpers/DateHelper";
+import { englishMonthNames, firstDayOfPeriod, nextDayAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 
 class StatsService {
