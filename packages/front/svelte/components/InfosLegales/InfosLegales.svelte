@@ -1,13 +1,12 @@
 <script>
     import { getAddress, getSiegeSiret } from "../../views/association/association.helper";
-    import { modal } from "../../store/modal.store";
     import Button from "../../dsfr/Button.svelte";
     import TitleWithData from "../TitleWithData.svelte";
-    import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
+    import InfosLegalesController from "./InfosLegales.controller";
 
     export let association;
 
-    const displayModal = () => modal.set(MoreInfosLegalesModal);
+    const { displayModal } = new InfosLegalesController();
 </script>
 
 <div class="title">
