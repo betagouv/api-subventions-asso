@@ -1,8 +1,13 @@
 <script>
-    import { getAddress, getSiegeSiret } from "../views/association/association.helper";
-    import TitleWithData from "./TitleWithData.svelte";
+    import { getAddress, getSiegeSiret } from "../../views/association/association.helper";
+    import { modal } from "../../store/modal.store";
+    import Button from "../../dsfr/Button.svelte";
+    import TitleWithData from "../TitleWithData.svelte";
+    import MoreInfoLegalesModal from "./MoreInfoLegalesModal.svelte";
 
     export let association;
+
+    const displayModal = () => modal.update(() => MoreInfoLegalesModal);
 </script>
 
 <div class="title">
@@ -26,6 +31,7 @@
             label="Adresse du siège"
             data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
     </div>
+    <Button on:click={displayModal}>Plus de détails</Button>
 </div>
 <slot />
 

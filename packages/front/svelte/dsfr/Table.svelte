@@ -1,9 +1,10 @@
 <script>
     export let title = "Résumé du tableau (accessibilité)";
     export let bordered = false;
+    export let color;
 </script>
 
-<div class="fr-table {bordered ? 'fr-table--bordered' : ''}">
+<div class="fr-table {color ? `.fr-highlight--${color}` : ''}" class:fr-table--bordered={bordered}>
     <table>
         <slot name="colgroup" />
         <caption class="sr-only">{title}</caption>

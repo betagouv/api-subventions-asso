@@ -5,10 +5,9 @@
 
     import Alert from "../../dsfr/Alert.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
-    import InfosLegales from "../../components/InfosLegales.svelte";
+    import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
-    import RnaSiren from "./components/RnaSiren.svelte";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
 
     export let id;
@@ -27,9 +26,7 @@
             Il semblerait que vous cherchiez une entreprise et non une association
         </Alert>
     {/if}
-    <InfosLegales {association}>
-        <RnaSiren {association} />
-    </InfosLegales>
+    <InfosLegales {association} />
     <TabsAsso {titles} associationIdentifier={id} {association} />
 {:catch error}
     {#if error.request && error.request.status == 404}
