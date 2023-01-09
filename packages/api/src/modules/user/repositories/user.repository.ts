@@ -29,6 +29,13 @@ export class UserRepository {
         return this.removeSecrets(user);
     }
 
+    async findAndSortByPeriod(begin: Date, end: Date, withAdmin) {
+        const query: Filter<User> = { signupAt: { $gte: begin, $lt: end } };
+        if (!withAdmin) query.roles = { $ne: "admin" };
+        const dbos = await this.collection.find(query).sort({ signupAt: 1 }).toArray();
+        return dbos.map(dbo => this.removeSecrets(dbo));
+    }
+
     async update(user: UserDbo | UserDto): Promise<UserDto> {
         if (user._id) await this.collection.updateOne({ _id: user._id }, { $set: user });
         else await this.collection.updateOne({ email: user.email }, { $set: user });
@@ -96,6 +103,10 @@ export class UserRepository {
             .aggregate<{ _id: ObjectId; monthId: number; cumulativeNbUsers: number }>(pipeline)
             .toArray();
         return getMonthlyDataObject(queryResult, "monthId", "cumulativeNbUsers");
+    countBeforeDate(date, withAdmin: boolean) {
+        const query: Filter<User> = { signupAt: { $lt: date } };
+        if (!withAdmin) query.roles = { $ne: "admin" };
+        return this.collection.find(query).count();
     }
 }
 

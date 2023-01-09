@@ -557,6 +557,14 @@ export class UserService {
 
         return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
     }
+
+    public findAndSortByPeriod(begin: Date, end: Date, withAdmin = false) {
+        return userRepository.findAndSortByPeriod(begin, end, withAdmin);
+    }
+
+    public countBeforeDate(date, withAdmin = false) {
+        return userRepository.countBeforeDate(date, withAdmin);
+    }
 }
 
 const userService = new UserService();
