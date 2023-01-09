@@ -39,3 +39,7 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
 :root[data-fr-theme="dark"] td.primary {
     background-color: #6c6cbb;
 }
+
+.flex {
+    display: flex;
+}

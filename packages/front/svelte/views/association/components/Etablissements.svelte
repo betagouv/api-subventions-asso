@@ -8,6 +8,7 @@
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
 
+    import etablissementService from "../../etablissement/etablissement.service";
     import { valueOrHyphen } from "../../../helpers/dataHelper";
     import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
 
@@ -35,15 +36,18 @@
                         title={association.denomination_rna || association.denomination_siren}
                         url="/etablissement/{etablissement.siret}"
                         target="_blank">
-                        {#if etablissement.siege}
-                            <p>Siège de l'association</p>
-                        {:else if !etablissement.ouvert}
-                            <p>-- Établissement fermé --</p>
-                        {:else}
-                            <p>Établissement secondaire</p>
-                        {/if}
-                        <p>SIRET: {valueOrHyphen(etablissement.siret)}</p>
-                        <p>{valueOrHyphen(getAddress(etablissement.adresse))}</p>
+                        <p>
+                            {etablissementService.getEtablissementStatus(etablissement)}
+                            <br />
+                            SIRET : {valueOrHyphen(etablissement.siret)}
+                            <br />
+                        </p>
+                        <div class="flex">
+                            <span class="fr-col-md-1 fr-mr-1w fr-icon-map-pin-2-line color" />
+                            <span class="fr-col-md-11 fr-text--bold">
+                                {valueOrHyphen(getAddress(etablissement.adresse))}
+                            </span>
+                        </div>
                     </Card>
                 {/each}
             </div>
@@ -62,4 +66,7 @@
 </div>
 
 <style>
+    .color {
+        color: var(--blue-france-sun-113-625);
+    }
 </style>
