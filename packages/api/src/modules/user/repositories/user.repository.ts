@@ -68,7 +68,7 @@ export class UserRepository {
         return userWithoutSecret;
     }
 
-    countNewUsersBeforeDate(date, withAdmin: boolean) {
+    countTotalUsersOnDate(date, withAdmin: boolean) {
         const query: Filter<User> = { signupAt: { $lt: date } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.collection.find(query).count();

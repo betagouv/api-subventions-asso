@@ -378,8 +378,8 @@ describe("User Service", () => {
         });
     });
 
-    describe("countNewUsersBeforeDate()", () => {
-        const repoMock = jest.spyOn(userRepository, "countNewUsersBeforeDate");
+    describe("countTotalUsersOnDate()", () => {
+        const repoMock = jest.spyOn(userRepository, "countTotalUsersOnDate");
         const REPO_RETURN = 5;
         const DATE = new Date();
         const WITH_ADMIN = true;
@@ -388,18 +388,18 @@ describe("User Service", () => {
         afterAll(() => repoMock.mockRestore());
 
         it("should call repo with given args", async () => {
-            await userService.countNewUsersBeforeDate(DATE, WITH_ADMIN);
+            await userService.countTotalUsersOnDate(DATE, WITH_ADMIN);
             expect(repoMock).toBeCalledWith(DATE, WITH_ADMIN);
         });
 
         it("should call repo with default", async () => {
-            await userService.countNewUsersBeforeDate(DATE);
+            await userService.countTotalUsersOnDate(DATE);
             expect(repoMock).toBeCalledWith(DATE, false);
         });
 
         it("should return repo's return value", async () => {
             const expected = REPO_RETURN;
-            const actual = await userService.countNewUsersBeforeDate(DATE);
+            const actual = await userService.countTotalUsersOnDate(DATE);
             expect(actual).toBe(expected);
         });
     });
