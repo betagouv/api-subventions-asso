@@ -562,8 +562,8 @@ export class UserService {
         return userRepository.findAndSortByPeriod(begin, end, withAdmin);
     }
 
-    public countBeforeDate(date, withAdmin = false) {
-        return userRepository.countBeforeDate(date, withAdmin);
+    public countNewUsersBeforeDate(date, withAdmin = false) {
+        return userRepository.countNewUsersBeforeDate(date, withAdmin);
     }
 }
 
