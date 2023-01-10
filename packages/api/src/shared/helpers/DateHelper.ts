@@ -50,7 +50,7 @@ export const isValidDate = date => date instanceof Date && !isNaN(date as unknow
 export const dateToUTCMonthYear = date => new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
 
 export const firstDayOfPeriod = (year: number, month = 0) => new Date(Date.UTC(year, month, 1));
-export const nextDayAfterPeriod = (year: number, month = undefined) => {
+export const oneYearAfterPeriod = (year: number, month = undefined) => {
     if (month === undefined) return new Date(Date.UTC(year + 1, 0, 1));
     return new Date(Date.UTC(year, month + 1, 1));
 };

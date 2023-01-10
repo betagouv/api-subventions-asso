@@ -124,7 +124,7 @@ describe("StatsService", () => {
         const initCountMock = jest.spyOn(userService, "countBeforeDate");
         const getUsersMock = jest.spyOn(userService, "findAndSortByPeriod");
         const firstDayMock = jest.spyOn(DateHelper, "firstDayOfPeriod");
-        const nextDayMock = jest.spyOn(DateHelper, "nextDayAfterPeriod");
+        const oneYearLaterMock = jest.spyOn(DateHelper, "oneYearAfterPeriod");
 
         const YEAR = 2022;
         const FINAL_DATA = {
@@ -155,19 +155,19 @@ describe("StatsService", () => {
             // @ts-expect-error mock
             getUsersMock.mockResolvedValue(USER_DATA);
             firstDayMock.mockReturnValue(FIRST_DAY_PERIOD);
-            nextDayMock.mockReturnValue(NEXT_DAY_PERIOD);
+            oneYearLaterMock.mockReturnValue(NEXT_DAY_PERIOD);
         });
         afterAll(() => {
             initCountMock.mockRestore();
             getUsersMock.mockRestore();
             firstDayMock.mockRestore();
-            nextDayMock.mockRestore();
+            oneYearLaterMock.mockRestore();
         });
 
         it("should call date Helpers", async () => {
             await statsService.getMonthlyUserNbByYear(YEAR);
             expect(firstDayMock).toBeCalledWith(YEAR);
-            expect(nextDayMock).toBeCalledWith(YEAR);
+            expect(oneYearLaterMock).toBeCalledWith(YEAR);
         });
 
         it("should call init count with proper date", async () => {

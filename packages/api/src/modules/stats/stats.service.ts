@@ -1,5 +1,5 @@
 import statsRepository from "./repositories/statsRepository";
-import { englishMonthNames, firstDayOfPeriod, nextDayAfterPeriod } from "../../shared/helpers/DateHelper";
+import { englishMonthNames, firstDayOfPeriod, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 
 class StatsService {
@@ -18,7 +18,7 @@ class StatsService {
     async getMonthlyUserNbByYear(year: number) {
         const start = firstDayOfPeriod(year);
         let count = await userService.countBeforeDate(start);
-        const users = await userService.findAndSortByPeriod(start, nextDayAfterPeriod(year));
+        const users = await userService.findAndSortByPeriod(start, oneYearAfterPeriod(year));
         const monthlyCount = {};
         let month = 0;
         for (const user of users) {
