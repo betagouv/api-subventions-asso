@@ -1,5 +1,6 @@
 import statsService from "../../stats.service";
 import { StatsController } from "./StatsController";
+import { BadRequestError } from "../../../../shared/errors/httpErrors";
 
 const controller = new StatsController();
 
@@ -42,12 +43,10 @@ describe("StatsController", () => {
             expect(actual).toStrictEqual(expected);
         });
 
-        it("should return an an error object", async () => {
-            const ERROR_MESSAGE = "Error";
-            getStatSpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE));
-            const expected = { success: false, message: ERROR_MESSAGE };
-            const actual = await controller.getRequestsPerMonthByYear("blabla");
-            expect(actual).toStrictEqual(expected);
+        it("should require a number as date", async () => {
+            const expected = new BadRequestError("'date' must be a number");
+            const test = () => controller.getRequestsPerMonthByYear("not a number");
+            await expect(test).rejects.toThrowError(expected);
         });
     });
 
@@ -83,12 +82,10 @@ describe("StatsController", () => {
             expect(actual).toStrictEqual(expected);
         });
 
-        it("should return an an error object", async () => {
-            const ERROR_MESSAGE = "Error";
-            getStatSpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE));
-            const expected = { success: false, message: ERROR_MESSAGE };
-            const actual = await controller.getCumulatedUsersPerMonthByYear("blabla");
-            expect(actual).toStrictEqual(expected);
+        it("should require a number as date", async () => {
+            const expected = new BadRequestError("'date' must be a number");
+            const test = () => controller.getCumulatedUsersPerMonthByYear("not a number");
+            await expect(test).rejects.toThrowError(expected);
         });
     });
 });
