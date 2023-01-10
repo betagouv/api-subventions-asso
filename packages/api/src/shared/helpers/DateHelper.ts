@@ -29,6 +29,18 @@ export const englishMonthNames = Object.values(frenchToEnglishMonthsMap).map(mon
 );
 
 export function getMonthlyDataObject(dbData, index1Key, dataKey) {
+    /*
+    format object from [
+        { index1Key: 1, dataKey: dataJanuary },
+        ... ,
+        { index1Key: 12, dataKey: dataDecember }
+    ]
+    to {
+        January: dataJanuary,
+        ... ,
+        December: dataDecember,
+    }
+     */
     const resultByMonth0Index = {};
     let index1;
     for (const document of dbData) {
@@ -50,7 +62,7 @@ export const isValidDate = date => date instanceof Date && !isNaN(date as unknow
 export const dateToUTCMonthYear = date => new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
 
 export const firstDayOfPeriod = (year: number, month = 0) => new Date(Date.UTC(year, month, 1));
-export const oneYearAfterPeriod = (year: number, month = undefined) => {
+export const oneYearAfterPeriod = (year: number, month: number | undefined = undefined) => {
     if (month === undefined) return new Date(Date.UTC(year + 1, 0, 1));
     return new Date(Date.UTC(year, month + 1, 1));
 };
