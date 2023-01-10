@@ -102,10 +102,8 @@ describe("/stats", () => {
                 .get("/stats/requests/median")
                 .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
                 .set("x-access-token", await getUserToken())
-                .set("Accept", "application/json");
-
-            expect(actual.statusCode).toBe(401);
-            expect(actual.body).toEqual(expected);
+                .set("Accept", "application/json")
+                .expect(401, expected);
         });
     });
 
@@ -136,8 +134,7 @@ describe("/stats", () => {
                 .get(`/stats/users/monthly/${YEAR}`)
                 .set("x-access-token", await getAdminToken())
                 .set("Accept", "application/json")
-                .expect(200);
-            expect(actual.body).toEqual(expected);
+                .expect(200, expected);
         });
     });
 });
