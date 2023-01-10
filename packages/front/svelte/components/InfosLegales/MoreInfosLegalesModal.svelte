@@ -1,23 +1,27 @@
 <script>
+    import { data } from "../../store/modal.store";
+
     import Alert from "../../dsfr/Alert.svelte";
     import ModalContent from "../../dsfr/ModalContent.svelte";
     import Table from "../../dsfr/Table.svelte";
 </script>
 
 <ModalContent title="Détail des informations recueillies">
-    <Alert>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
-    <Table color="green-emeraude">
+    <Alert small={true}>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
+    <Table color="blue-cumulus">
         <svelte:fragment slot="head">
-            <th>Test</th>
-            <th>Test</th>
-            <th>Test</th>
+            {#each $data.headers as header}
+                <th>{header}</th>
+            {/each}
         </svelte:fragment>
         <svelte:fragment slot="body">
-            <tr>
-                <td>Test</td>
-                <td>Test</td>
-                <td>Test</td>
-            </tr>
+            {#each $data.raws as raw}
+                <tr>
+                    {#each raw as cell}
+                        <td>{cell}</td>
+                    {/each}
+                </tr>
+            {/each}
         </svelte:fragment>
     </Table>
 </ModalContent>

@@ -6,7 +6,7 @@
 
     export let association;
 
-    const { displayModal } = new InfosLegalesController();
+    const controller = new InfosLegalesController(association);
 </script>
 
 <div class="title">
@@ -29,7 +29,7 @@
         <TitleWithData
             label="Adresse du siège"
             data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
-        <Button ariaControls="fr-modal" on:click={displayModal}>Plus de détails</Button>
+        <Button ariaControls="fr-modal" on:click={() => controller.displayModal()}>Plus de détails</Button>
     </div>
 </div>
 <slot />

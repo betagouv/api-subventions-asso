@@ -4,7 +4,7 @@
     export let color = undefined;
 </script>
 
-<div class="fr-table {color ? `.fr-highlight--${color}` : ''}" class:fr-table--bordered={bordered}>
+<div class="fr-table {color ? `fr-table--${color}` : ''}" class:fr-table--bordered={bordered}>
     <table>
         <slot name="colgroup" />
         <caption class="sr-only">{title}</caption>
