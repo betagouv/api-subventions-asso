@@ -17,23 +17,22 @@ class StatsService {
 
     async getMonthlyUserNbByYear(year: number) {
         const start = firstDayOfPeriod(year);
-        let count = await userService.countBeforeDate(start);
+        let count = await userService.countNewUsersBeforeDate(start);
         const users = await userService.findAndSortByPeriod(start, oneYearAfterPeriod(year));
-        const monthlyCount = {};
-        let month = 0;
+
+        const countNewByMonth = new Array(12).fill(0);
         for (const user of users) {
             if (!user) continue;
-            while (month != (user.signupAt as Date).getMonth()) {
-                monthlyCount[englishMonthNames[month]] = count;
-                month += 1;
-            }
-            count += 1;
+            countNewByMonth[(user.signupAt as Date).getMonth()] += 1;
         }
-        while (month < 12) {
-            monthlyCount[englishMonthNames[month]] = count;
-            month += 1;
+
+        const formattedCumulatedCount = {};
+        for (let month = 0; month < 12; month++) {
+            count += countNewByMonth[month];
+            formattedCumulatedCount[englishMonthNames[month]] = count;
         }
-        return monthlyCount;
+
+        return formattedCumulatedCount;
     }
 }
 
