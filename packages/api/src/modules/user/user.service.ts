@@ -558,8 +558,8 @@ export class UserService {
         return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
     }
 
-    public findAndSortByPeriod(begin: Date, end: Date, withAdmin = false) {
-        return userRepository.findAndSortByPeriod(begin, end, withAdmin);
+    public findByPeriod(begin: Date, end: Date, withAdmin = false) {
+        return userRepository.findByPeriod(begin, end, withAdmin);
     }
 
     public countTotalUsersOnDate(date, withAdmin = false) {

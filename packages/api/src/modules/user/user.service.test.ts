@@ -351,7 +351,7 @@ describe("User Service", () => {
     });
 
     describe("findAndSortByPeriod()", () => {
-        const repoMock = jest.spyOn(userRepository, "findAndSortByPeriod");
+        const repoMock = jest.spyOn(userRepository, "findByPeriod");
         const REPO_RETURN = {};
         const END = new Date();
         const BEGIN = new Date(END.getFullYear() - 1, END.getMonth(), END.getDay() + 1);
@@ -362,18 +362,18 @@ describe("User Service", () => {
         afterAll(() => repoMock.mockRestore());
 
         it("should call repo with given args", async () => {
-            await userService.findAndSortByPeriod(BEGIN, END, WITH_ADMIN);
+            await userService.findByPeriod(BEGIN, END, WITH_ADMIN);
             expect(repoMock).toBeCalledWith(BEGIN, END, WITH_ADMIN);
         });
 
         it("should call repo with default", async () => {
-            await userService.findAndSortByPeriod(BEGIN, END);
+            await userService.findByPeriod(BEGIN, END);
             expect(repoMock).toBeCalledWith(BEGIN, END, false);
         });
 
         it("should return repo's return value", async () => {
             const expected = REPO_RETURN;
-            const actual = await userService.findAndSortByPeriod(BEGIN, END);
+            const actual = await userService.findByPeriod(BEGIN, END);
             expect(actual).toBe(expected);
         });
     });

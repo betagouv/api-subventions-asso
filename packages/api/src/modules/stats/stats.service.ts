@@ -18,7 +18,7 @@ class StatsService {
     async getMonthlyUserNbByYear(year: number) {
         const start = firstDayOfPeriod(year);
         let count = await userService.countTotalUsersOnDate(start);
-        const users = await userService.findAndSortByPeriod(start, oneYearAfterPeriod(year));
+        const users = await userService.findByPeriod(start, oneYearAfterPeriod(year));
 
         const countNewByMonth = new Array(12).fill(0);
         for (const user of users) {

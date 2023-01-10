@@ -28,11 +28,10 @@ export class UserRepository {
         return this.removeSecrets(user);
     }
 
-    async findAndSortByPeriod(begin: Date, end: Date, withAdmin) {
+    async findByPeriod(begin: Date, end: Date, withAdmin) {
         const query: Filter<User> = { signupAt: { $gte: begin, $lt: end } };
         if (!withAdmin) query.roles = { $ne: "admin" };
-        const dbos = await this.collection.find(query).sort({ signupAt: 1 }).toArray();
-        return dbos.map(dbo => this.removeSecrets(dbo));
+        return this.find(query);
     }
 
     async update(user: UserDbo | UserDto): Promise<UserDto> {

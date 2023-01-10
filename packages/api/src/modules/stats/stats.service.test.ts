@@ -122,7 +122,7 @@ describe("StatsService", () => {
 
     describe("getMonthlyUserNbByYear()", () => {
         const initCountMock = jest.spyOn(userService, "countTotalUsersOnDate");
-        const getUsersMock = jest.spyOn(userService, "findAndSortByPeriod");
+        const getUsersMock = jest.spyOn(userService, "findByPeriod");
         const firstDayMock = jest.spyOn(DateHelper, "firstDayOfPeriod");
         const oneYearLaterMock = jest.spyOn(DateHelper, "oneYearAfterPeriod");
 
