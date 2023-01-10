@@ -77,7 +77,7 @@ export class ConfigurationsService {
         const domain = domainOrEmail.split("@")[1];
         const persistedDomains = (await configurationsRepository.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
             ?.data as string[];
-        return !!persistedDomains.includes(domain);
+        return persistedDomains.some(presistedDomain => domain.endsWith(presistedDomain));
     }
 }
 
