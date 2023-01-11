@@ -1,3 +1,4 @@
+import DEFAULT_ASSOCIATION from "./__fixtures__/Association";
 import * as AssociationHelper from "./association.helper";
 
 const TODAY = new Date();
@@ -6,9 +7,6 @@ const YESTERDAY = (function (date) {
     today.setDate(today.getDate() - 1);
     return today;
 })(TODAY);
-
-console.log(TODAY);
-console.log(YESTERDAY);
 
 const SUBVENTION = {
     isSub: true,
@@ -70,6 +68,37 @@ describe("Association Helper", () => {
                 dateOperation: undefined
             });
             expect(actual).toEqual(undefined);
+        });
+    });
+
+    describe("getAddress", () => {
+        it("should return address from RNA", () => {
+            const expected = "15 RUE DE BREST 35000 RENNES";
+            const actual = AssociationHelper.getAddress(DEFAULT_ASSOCIATION);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return address from RNA", () => {
+            const ASSOCIATION = { ...DEFAULT_ASSOCIATION };
+            ASSOCIATION.adresse_siege_rna = null;
+            const expected = "51 BD JEANNE D'ARC 35700 RENNES";
+            const actual = AssociationHelper.getAddress(ASSOCIATION);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return null", () => {
+            const expected = null;
+            const actual = AssociationHelper.getAddress({});
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("addressToString", () => {
+        it("should return concatened address", () => {
+            const ADDRESS = DEFAULT_ASSOCIATION.adresse_siege_rna;
+            const expected = "15 RUE DE BREST 35000 RENNES";
+            const actual = AssociationHelper.addressToString(ADDRESS);
+            expect(actual).toEqual(expected);
         });
     });
 });

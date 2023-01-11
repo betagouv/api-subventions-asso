@@ -4,9 +4,16 @@ import { sortByDateAsc, isValidDate } from "../../helpers/dateHelper";
 export const addressToString = address => {
     if (!address) return address;
     const { numero, type_voie, voie, code_postal, commune } = address;
-    return `${numero || ""} ${type_voie?.toUpperCase() || ""} ${voie?.toUpperCase() || ""} ${code_postal || ""} ${
-        commune.toUpperCase() || ""
-    }`;
+    return [numero, type_voie, voie, code_postal, commune]
+        .filter(str => str)
+        .map(str => str.toUpperCase())
+        .join(" ");
+};
+
+export const getAddress = association => {
+    if (association.adresse_siege_rna) return addressToString(association.adresse_siege_rna);
+    if (association.adresse_siege_siren) return addressToString(association.adresse_siege_siren);
+    return null;
 };
 
 export const getSiegeSiret = association => association.siren + association.nic_siege;
