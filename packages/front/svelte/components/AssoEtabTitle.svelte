@@ -1,0 +1,30 @@
+<script>
+    import { AssoEtabTitleController } from "./AssoEtabTitle.controller";
+    import Button from "../dsfr/Button.svelte";
+
+    export let association;
+    export let etablissementId = undefined;
+
+    const controller = new AssoEtabTitleController(association, etablissementId);
+</script>
+
+<div class="fr-grid-row">
+    <div class:fr-col-10={controller.hasActionButton}>
+        <h1>{controller.title}</h1>
+        {#if controller.hasSubtitle}
+            <div class="fr-h4">{controller.subtitle}</div>
+        {/if}
+        <div class="fr-text--lg">
+            RNA : <span class="fr-text--bold">{controller.rna}</span>
+            - SIREN :
+            <span class="fr-text--bold">{controller.siren}</span>
+        </div>
+    </div>
+    {#if controller.hasActionButton}
+        <div class="fr-col-2">
+            <Button on:click={() => window.location.assign(`/association/${association.siren}`)} classes="fr-mt-1w">
+                Voir l'association
+            </Button>
+        </div>
+    {/if}
+</div>
