@@ -3,16 +3,13 @@
     import DataNotFound from "../../../DataNotFound.svelte";
     import ErrorAlert from "../../../ErrorAlert.svelte";
     import ProviderModalController from "./ProviderModal.controller";
+    import ModalContent from "../../../../dsfr/ModalContent.svelte";
 
     const controller = new ProviderModalController();
     const { loading, providers, error } = controller;
 </script>
 
-<div class="fr-modal__content">
-    <h1 id="fr-modal-title" class="fr-modal__title">
-        <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true" />
-        Liste des fournisseurs de données
-    </h1>
+<ModalContent title="Liste des fournisseurs de données">
     {#if $loading}
         <Spinner />
     {:else if $error}
@@ -29,11 +26,4 @@
             </div>
         {/each}
     {/if}
-</div>
-
-<style>
-    h1 {
-        display: flex;
-        gap: 12px;
-    }
-</style>
+</ModalContent>
