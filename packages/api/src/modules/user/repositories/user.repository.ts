@@ -28,6 +28,12 @@ export class UserRepository {
         return this.removeSecrets(user);
     }
 
+    async findByPeriod(begin: Date, end: Date, withAdmin) {
+        const query: Filter<User> = { signupAt: { $gte: begin, $lt: end } };
+        if (!withAdmin) query.roles = { $ne: "admin" };
+        return this.find(query);
+    }
+
     async update(user: UserDbo | UserDto): Promise<UserDto> {
         if (user._id) await this.collection.updateOne({ _id: user._id }, { $set: user });
         else await this.collection.updateOne({ email: user.email }, { $set: user });
@@ -40,7 +46,7 @@ export class UserRepository {
     }
 
     async create(user: User) {
-        const userDbo = { ...user, _id: new ObjectId() }
+        const userDbo = { ...user, _id: new ObjectId() };
         const result = await this.collection.insertOne(userDbo);
         return this.removeSecrets({ ...user, _id: result.insertedId });
     }
@@ -58,7 +64,13 @@ export class UserRepository {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, jwt, ...userWithoutSecret } = user;
-        return userWithoutSecret
+        return userWithoutSecret;
+    }
+
+    countTotalUsersOnDate(date, withAdmin: boolean) {
+        const query: Filter<User> = { signupAt: { $lt: date } };
+        if (!withAdmin) query.roles = { $ne: "admin" };
+        return this.collection.find(query).count();
     }
 }
 

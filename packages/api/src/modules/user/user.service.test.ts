@@ -349,4 +349,58 @@ describe("User Service", () => {
             );
         });
     });
+
+    describe("findAndSortByPeriod()", () => {
+        const repoMock = jest.spyOn(userRepository, "findByPeriod");
+        const REPO_RETURN = {};
+        const END = new Date();
+        const BEGIN = new Date(END.getFullYear() - 1, END.getMonth(), END.getDay() + 1);
+        const WITH_ADMIN = true;
+
+        // @ts-expect-error mock
+        beforeAll(() => repoMock.mockResolvedValue(REPO_RETURN));
+        afterAll(() => repoMock.mockRestore());
+
+        it("should call repo with given args", async () => {
+            await userService.findByPeriod(BEGIN, END, WITH_ADMIN);
+            expect(repoMock).toBeCalledWith(BEGIN, END, WITH_ADMIN);
+        });
+
+        it("should call repo with default", async () => {
+            await userService.findByPeriod(BEGIN, END);
+            expect(repoMock).toBeCalledWith(BEGIN, END, false);
+        });
+
+        it("should return repo's return value", async () => {
+            const expected = REPO_RETURN;
+            const actual = await userService.findByPeriod(BEGIN, END);
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("countTotalUsersOnDate()", () => {
+        const repoMock = jest.spyOn(userRepository, "countTotalUsersOnDate");
+        const REPO_RETURN = 5;
+        const DATE = new Date();
+        const WITH_ADMIN = true;
+
+        beforeAll(() => repoMock.mockResolvedValue(REPO_RETURN));
+        afterAll(() => repoMock.mockRestore());
+
+        it("should call repo with given args", async () => {
+            await userService.countTotalUsersOnDate(DATE, WITH_ADMIN);
+            expect(repoMock).toBeCalledWith(DATE, WITH_ADMIN);
+        });
+
+        it("should call repo with default", async () => {
+            await userService.countTotalUsersOnDate(DATE);
+            expect(repoMock).toBeCalledWith(DATE, false);
+        });
+
+        it("should return repo's return value", async () => {
+            const expected = REPO_RETURN;
+            const actual = await userService.countTotalUsersOnDate(DATE);
+            expect(actual).toBe(expected);
+        });
+    });
 });
