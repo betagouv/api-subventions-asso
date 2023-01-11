@@ -1,5 +1,5 @@
 <script>
-    import { getAddress, getSiegeSiret } from "../../views/association/association.helper";
+    import { addressToString, getSiegeSiret } from "../../views/association/association.helper";
     import Button from "../../dsfr/Button.svelte";
     import TitleWithData from "../TitleWithData.svelte";
     import InfosLegalesController from "./InfosLegales.controller";
@@ -19,7 +19,7 @@
     <div>
         <TitleWithData
             label="Adresse du siège"
-            data={getAddress(association.adresse_siege_rna || association.adresse_siege_siren)} />
+            data={addressToString(association.adresse_siege_rna || association.adresse_siege_siren)} />
         <Button ariaControls="fr-modal" on:click={() => controller.displayModal()}>Plus de détails</Button>
     </div>
 </div>

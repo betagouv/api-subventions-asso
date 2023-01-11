@@ -1,6 +1,6 @@
 import { valueOrHyphen } from "../../helpers/dataHelper";
 import { modal, data } from "../../store/modal.store";
-import { getAddress } from "../../views/association/association.helper";
+import { addressToString } from "../../views/association/association.helper";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 
 export default class InfosLegalesController {
@@ -19,8 +19,8 @@ export default class InfosLegalesController {
         const objectRows = {
             Dénomination: [this.association.denomination_rna, this.association.denomination_siren],
             "Adresse du siège": [
-                getAddress(this.association.adresse_siege_rna),
-                getAddress(this.association.adresse_siege_siren)
+                addressToString(this.association.adresse_siege_rna),
+                addressToString(this.association.adresse_siege_siren)
             ],
             "Date d'immatriculation": [this.association.date_creation_rna, this.association.date_creation_siren],
             "Date de modification": [this.association.date_modification_rna, this.association.date_modification_siren]

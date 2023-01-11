@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { getAddress } from "../association.helper";
+    import { addressToString } from "../association.helper";
     import associationService from "../association.service.js";
 
     import Card from "../../../dsfr/Card.svelte";
@@ -44,7 +44,7 @@
                         <div class="flex">
                             <span class="fr-col-md-1 fr-mr-1w fr-icon-map-pin-2-line color" />
                             <span class="fr-col-md-11 fr-text--bold">
-                                {valueOrHyphen(getAddress(etablissement.adresse))}
+                                {valueOrHyphen(addressToString(etablissement.adresse))}
                             </span>
                         </div>
                     </Card>

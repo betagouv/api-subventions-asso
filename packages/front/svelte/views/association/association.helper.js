@@ -1,7 +1,7 @@
 import lodash from "lodash";
 import { sortByDateAsc, isValidDate } from "../../helpers/dateHelper";
 
-export const getAddress = address => {
+export const addressToString = address => {
     if (!address) return address;
     const { numero, type_voie, voie, code_postal, commune } = address;
     return `${numero || ""} ${type_voie?.toUpperCase() || ""} ${voie?.toUpperCase() || ""} ${code_postal || ""} ${
