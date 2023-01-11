@@ -15,9 +15,9 @@
             {/each}
         </svelte:fragment>
         <svelte:fragment slot="body">
-            {#each $data.raws as raw}
+            {#each $data.rows as row}
                 <tr>
-                    {#each raw as cell}
+                    {#each row as cell}
                         <td>{cell}</td>
                     {/each}
                 </tr>

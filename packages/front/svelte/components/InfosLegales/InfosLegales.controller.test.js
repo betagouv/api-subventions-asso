@@ -25,7 +25,7 @@ describe("InfosLegales Controller", () => {
         it("should return data", () => {
             const expected = {
                 headers: ["Titre", "Informations provenant du RNA", "Informations provenant du SIREN"],
-                raws: [
+                rows: [
                     ["Dénomination", DEFAULT_ASSOCIATION.denomination_rna, DEFAULT_ASSOCIATION.denomination_siren],
                     [
                         "Adresse du siège",

@@ -16,7 +16,7 @@ export default class InfosLegalesController {
 
     _buildModalData() {
         const headers = ["Titre", "Informations provenant du RNA", "Informations provenant du SIREN"];
-        const objectRaws = {
+        const objectRows = {
             Dénomination: [this.association.denomination_rna, this.association.denomination_siren],
             "Adresse du siège": [
                 getAddress(this.association.adresse_siege_rna),
@@ -25,12 +25,12 @@ export default class InfosLegalesController {
             "Date d'immatriculation": [this.association.date_creation_rna, this.association.date_creation_siren],
             "Date de modification": [this.association.date_modification_rna, this.association.date_modification_siren]
         };
-        const raws = Object.entries(objectRaws).map(([header, values]) => {
+        const rows = Object.entries(objectRows).map(([header, values]) => {
             return [header, ...values.map(value => valueOrHyphen(value))];
         });
         return {
             headers,
-            raws
+            rows
         };
     }
 }
