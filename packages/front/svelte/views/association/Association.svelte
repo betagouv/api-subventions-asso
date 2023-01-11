@@ -9,6 +9,7 @@
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
+    import AssoEtabTitle from "../../components/AssoEtabTitle.svelte";
 
     export let id;
 
@@ -26,6 +27,7 @@
             Il semblerait que vous cherchiez une entreprise et non une association
         </Alert>
     {/if}
+    <AssoEtabTitle {association} />
     <InfosLegales {association} />
     <TabsAsso {titles} associationIdentifier={id} {association} />
 {:catch error}

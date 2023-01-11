@@ -10,6 +10,7 @@
     import { getSiegeSiret } from "../association/association.helper";
     import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
+    import AssoEtabTitle from "../../components/AssoEtabTitle.svelte";
 
     export let id;
 
@@ -24,16 +25,8 @@
     {#await associationPromise}
         <FullPageSpinner description="Chargement de l'établissement {id} en cours ..." />
     {:then association}
-        <InfosLegales {association}>
-            <Button on:click={() => window.location.assign(`/association/${association.siren}`)} slot="action">
-                Voir l'association
-            </Button>
-            <svelte:fragment slot="subtitle">
-                {#if getSiegeSiret(association) === id}
-                    <h2>Établissement siège de l'association</h2>
-                {/if}
-            </svelte:fragment>
-        </InfosLegales>
+        <AssoEtabTitle {association} etablissementId="id" />
+        <InfosLegales {association} />
         {#await etablissementPromise then etablissement}
             <TabEtab {etablissement} {titles} identifier={id} />
         {:catch error}

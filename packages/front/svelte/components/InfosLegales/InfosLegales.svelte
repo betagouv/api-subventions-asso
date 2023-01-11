@@ -9,17 +9,8 @@
     const controller = new InfosLegalesController(association);
 </script>
 
-<div class="title">
-    <h1>{association.denomination_rna || association.denomination_siren}</h1>
-    <slot name="action" />
-</div>
-<div>
-    <slot name="subtitle" />
-</div>
 <div class="summary">
     <div>
-        <TitleWithData label="RNA" data={association.rna} />
-        <TitleWithData label="SIREN" data={association.siren} />
         <TitleWithData label="SIRET du siège" data={getSiegeSiret(association)} />
     </div>
     <div>
