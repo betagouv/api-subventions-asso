@@ -6,6 +6,7 @@ import {
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
 import statsService from "../../stats.service";
+import { BadRequestError } from "../../../../shared/errors/httpErrors";
 
 @Route("stats")
 @Security("jwt", ["admin"])
@@ -32,18 +33,13 @@ export class StatsController extends Controller {
         @Query() nbReq: string,
         @Query() includesAdmin = "false"
     ): Promise<StatsRequestDtoResponse> {
-        try {
-            const result = await statsService.getNbUsersByRequestsOnPeriod(
-                new Date(start),
-                new Date(end),
-                Number(nbReq),
-                includesAdmin === "true"
-            );
-            return { success: true, data: result };
-        } catch (e) {
-            this.setStatus(500);
-            return { success: false, message: (e as Error).message };
-        }
+        const result = await statsService.getNbUsersByRequestsOnPeriod(
+            new Date(start),
+            new Date(end),
+            Number(nbReq),
+            includesAdmin === "true"
+        );
+        return { success: true, data: result };
     }
 
     /**
@@ -62,17 +58,12 @@ export class StatsController extends Controller {
         @Query() end: string,
         @Query() includesAdmin = "false"
     ): Promise<StatsRequestsMedianDtoResponse> {
-        try {
-            const result = await statsService.getMedianRequestsOnPeriod(
-                new Date(start),
-                new Date(end),
-                includesAdmin === "true"
-            );
-            return { success: true, data: result };
-        } catch (e) {
-            this.setStatus(500);
-            return { success: false, message: (e as Error).message };
-        }
+        const result = await statsService.getMedianRequestsOnPeriod(
+            new Date(start),
+            new Date(end),
+            includesAdmin === "true"
+        );
+        return { success: true, data: result };
     }
 
     /**
@@ -89,12 +80,23 @@ export class StatsController extends Controller {
         year: string,
         @Query() includesAdmin = "false"
     ): Promise<MonthlyAvgRequestDtoResponse> {
-        try {
-            const result = await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
-            return { success: true, data: result };
-        } catch (e) {
-            this.setStatus(500);
-            return { success: false, message: (e as Error).message };
-        }
+        if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
+        const result = await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
+        return { success: true, data: result };
+    }
+
+    /**
+     * Permet de récupérer le nombre d'utilisateurs cumulés par mois pour une année donnée
+     *
+     * @summary Permet de récupérer le nombre d'utilisateurs cumulés par mois pour une année donnée
+     * @param year
+     * @returns
+     */
+    @Get("/users/monthly/{year}")
+    @Response<ErrorResponse>("500")
+    async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
+        if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
+        const result = await statsService.getMonthlyUserNbByYear(Number(year));
+        return { success: true, data: result };
     }
 }
