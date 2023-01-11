@@ -2,9 +2,10 @@
     import { createEventDispatcher } from "svelte";
 
     export let type = "primary";
-    export let outline = true;
     export let size = "medium";
+    export let outline = true;
     export let disabled = false;
+    export let title = "";
     export let icon = "";
     export let iconPosition = "";
     export let ariaControls = "";
@@ -53,6 +54,7 @@
     on:click={() => dispatch("click")}
     class={classes}
     {disabled}
+    {title}
     aria-controls={ariaControls}
     data-fr-opened={ariaControls.length ? "false" : ""}>
     <slot />
