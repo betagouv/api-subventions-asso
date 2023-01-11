@@ -1,7 +1,7 @@
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
-import { englishMonthNames } from "../../../shared/helpers/DateHelper";
+import { getMonthlyDataObject } from "../../../shared/helpers/DateHelper";
 import { NbRequestsPerMonthRequest } from "@api-subventions-asso/dto";
 
 export class StatsRepository {
@@ -92,18 +92,11 @@ export class StatsRepository {
             }
             const annotateQuery = { $addFields: { month: { $month: "$timestamp" } } };
 
-            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $count: {} } } }];
+            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $sum: 1 } } }];
         };
 
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
-        const resultByMonth0Index = {};
-        for (const { _id, nbOfRequests } of queryResult) {
-            resultByMonth0Index[_id - 1] = nbOfRequests;
-        }
-        return englishMonthNames.reduce((acc, month, index) => {
-            acc[month] = resultByMonth0Index[index] || 0;
-            return acc;
-        }, {});
+        return getMonthlyDataObject(queryResult, "_id", "nbOfRequest");
     }
 }
 
