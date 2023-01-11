@@ -13,7 +13,7 @@ import { Document } from "@api-subventions-asso/dto/search/Document";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
-import StructureDto, { DocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
+import StructureDto, { DocumentDto, StructureDacDocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
 import { isDateNewer } from "../../../shared/helpers/DateHelper";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
@@ -120,67 +120,72 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return result;
     }
 
-    private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[] | null> {
-        const documents: Document[] = [];
+    private filterRnaDocuments(documents: StructureRnaDocumentDto[]) {
+        const acceptedType = ["MD", "LDC", "PV", "STC"];
 
-        const response = await this.sendRequest<DocumentDto>(`/proxy_db_asso/documents/${identifier}`);
-
-        if (!response) return response;
-
-        const structure = {
-            document_rna: response.asso.documents.document_rna,
-            document_dac: response.asso.documents.document_dac
+        const sortByYearAndTimeAsc = (a: StructureRnaDocumentDto, b: StructureRnaDocumentDto) => {
+            return parseFloat(`${a.annee}.${a.time}`) - parseFloat(`${b.annee}.${b.time}`);
         };
 
-        if (structure.document_rna?.length) {
-            const acceptedType = ["MD", "LDC", "PV", "STC"];
+        return acceptedType
+            .map(type =>
+                documents
+                    .filter(document => document["sous_type"].toLocaleUpperCase() === type)
+                    .sort(sortByYearAndTimeAsc)
+                    // Get most recent document
+                    .pop()
+            )
+            .filter(document => document) as StructureRnaDocumentDto[];
+    }
 
-            const sortRnaDocuments = (a: StructureRnaDocumentDto, b: StructureRnaDocumentDto) => {
-                return parseFloat(`${b.annee}.${b.time}`) - parseFloat(`${a.annee}.${a.time}`);
-            };
+    private filterDacDocuments(documents: StructureDacDocumentDto[]) {
+        const acceptedType = [
+            "RFA",
+            "BPA",
+            "RCA",
+            "RAR",
+            "CAP",
+            "Jeunesse et Education Populaire (JEP)",
+            "Education nationale",
+            "Formation"
+        ];
 
-            const filtredRnaDocument = acceptedType
-                .map(
-                    type =>
-                        structure.document_rna
-                            .filter(document => document["sous_type"].toLocaleUpperCase() === type)
-                            .sort(sortRnaDocuments)[0]
-                )
-                .filter(a => a);
+        const sortByTimeDepotAsc = (a: StructureDacDocumentDto, b: StructureDacDocumentDto) =>
+            new Date(a.time_depot).getTime() - new Date(b.time_depot).getTime();
 
-            documents.push(...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)));
-        }
+        return acceptedType
+            .map(type =>
+                documents
+                    .filter(document => document.meta.type.toLocaleUpperCase() === type.toLocaleUpperCase())
+                    .sort(sortByTimeDepotAsc)
+                    // Get most recent document
+                    .pop()
+            )
+            .filter(document => document) as StructureDacDocumentDto[];
+    }
+    private filterRibsInDacDocuments(documents: StructureDacDocumentDto[]) {
+        return documents.filter(document => document.meta.type.toLocaleUpperCase() === "RIB");
+    }
 
-        if (structure.document_dac?.length) {
-            const acceptedType = [
-                "RFA",
-                "BPA",
-                "RCA",
-                "RAR",
-                "CAP",
-                "Jeunesse et Education Populaire (JEP)",
-                "Education nationale",
-                "Formation"
-            ];
-            const currentStats = structure.document_dac.filter(document => document.meta.etat === "courant");
+    private filterActiveDacDocuments(documents: StructureDacDocumentDto[]) {
+        return documents.filter(document => document.meta.etat === "courant");
+    }
 
-            const filtredDacDocument = acceptedType
-                .map(
-                    type =>
-                        currentStats
-                            .filter(document => document.meta.type.toLocaleUpperCase() === type.toLocaleUpperCase())
-                            .sort((a, b) => new Date(b.time_depot).getTime() - new Date(a.time_depot).getTime())[0]
-                )
-                .filter(a => a);
+    private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[]> {
+        const response = await this.sendRequest<DocumentDto>(`/proxy_db_asso/documents/${identifier}`);
 
-            documents.push(...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
+        if (!response) return [];
 
-            const ribs = currentStats.filter(document => document.meta.type.toLocaleUpperCase() === "RIB");
+        const filtredRnaDocument = this.filterRnaDocuments(response.asso.documents.document_rna || []);
+        const activeDacDocuments = this.filterActiveDacDocuments(response.asso.documents.document_dac || []);
+        const filtredDacDocument = this.filterDacDocuments(activeDacDocuments);
+        const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
 
-            documents.push(...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)));
-        }
-
-        return documents;
+        return [
+            ...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)),
+            ...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)),
+            ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document))
+        ];
     }
 
     /**
