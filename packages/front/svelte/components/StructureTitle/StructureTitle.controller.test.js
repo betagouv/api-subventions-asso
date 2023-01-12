@@ -72,4 +72,16 @@ describe("StructureTitleController", () => {
         const expected = "Établissement secondaire de l'association";
         expect(actual).toBe(expected);
     });
+
+    // LINK TO ASSO
+    it("is empty for associations", () => {
+        const actual = controllerAsso.linkToAsso;
+        expect(actual).toBeUndefined();
+    });
+
+    it("is correct for establishments", () => {
+        const actual = controllerEtab.linkToAsso;
+        const expected = "/association/100000000";
+        expect(actual).toBe(expected);
+    });
 });

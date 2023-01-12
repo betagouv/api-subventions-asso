@@ -9,6 +9,7 @@ export class StructureTitleController {
                     ? "Établissement siège de l'association"
                     : "Établissement secondaire de l'association";
             this.subtitle = associationName;
+            this.linkToAsso = `/association/${association.siren}`;
         } else this.title = `Association : ${associationName}`;
         this.rna = association.rna;
         this.siren = association.siren;

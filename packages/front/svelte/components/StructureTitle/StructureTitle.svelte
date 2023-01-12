@@ -22,9 +22,9 @@
     </div>
     {#if controller.hasActionButton}
         <div class="fr-col-2">
-            <Button on:click={() => window.location.assign(`/association/${association.siren}`)} moreClasses="fr-mt-1w">
-                Voir l'association
-            </Button>
+            <a href="controller.linkToAsso" tabindex="-1">
+                <Button moreClasses="fr-mt-1w">Voir l'association</Button>
+            </a>
         </div>
     {/if}
 </div>
