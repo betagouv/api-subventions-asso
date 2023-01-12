@@ -1,11 +1,11 @@
 <script>
-    import { AssoEtabTitleController } from "./AssoEtabTitle.controller";
-    import Button from "../dsfr/Button.svelte";
+    import { StructureTitleController } from "./StructureTitle.controller";
+    import Button from "../../dsfr/Button.svelte";
 
     export let association;
     export let etablissementId = undefined;
 
-    const controller = new AssoEtabTitleController(association, etablissementId);
+    const controller = new StructureTitleController(association, etablissementId);
 </script>
 
 <div class="fr-grid-row">

@@ -10,7 +10,7 @@
     import { getSiegeSiret } from "../association/association.helper";
     import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
-    import AssoEtabTitle from "../../components/AssoEtabTitle.svelte";
+    import AssoEtabTitle from "../../components/StructureTitle/StructureTitle.svelte";
 
     export let id;
 

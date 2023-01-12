@@ -1,6 +1,6 @@
-import { getSiegeSiret } from "../views/association/association.helper";
+import { getSiegeSiret } from "../../views/association/association.helper";
 
-export class AssoEtabTitleController {
+export class StructureTitleController {
     constructor(association, etablissementId = undefined) {
         const associationName = association.denomination_rna || association.denomination_siren;
         if (etablissementId) {

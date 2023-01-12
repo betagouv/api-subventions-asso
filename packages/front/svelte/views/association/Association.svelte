@@ -9,7 +9,7 @@
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
-    import AssoEtabTitle from "../../components/AssoEtabTitle.svelte";
+    import AssoEtabTitle from "../../components/StructureTitle/StructureTitle.svelte";
 
     export let id;
 

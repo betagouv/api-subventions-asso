@@ -1,7 +1,7 @@
-import * as associationHelper from "../views/association/association.helper";
-import { AssoEtabTitleController } from "./AssoEtabTitle.controller";
+import * as associationHelper from "../../views/association/association.helper";
+import { StructureTitleController } from "./StructureTitle.controller";
 
-describe("AssoEtabTitleController", () => {
+describe("StructureTitleController", () => {
     const ASSO = {
         rna: "W000000000",
         siren: "100000000",
@@ -10,8 +10,8 @@ describe("AssoEtabTitleController", () => {
         nic_siege: "00000"
     };
     const ETAB_SIRET = "10000000000000";
-    const controllerAsso = new AssoEtabTitleController(ASSO);
-    const controllerEtab = new AssoEtabTitleController(ASSO, ETAB_SIRET);
+    const controllerAsso = new StructureTitleController(ASSO);
+    const controllerEtab = new StructureTitleController(ASSO, ETAB_SIRET);
     const mockBuildSiret = jest.spyOn(associationHelper, "getSiegeSiret");
 
     beforeAll(() => mockBuildSiret.mockReturnValue(ETAB_SIRET));
@@ -67,7 +67,7 @@ describe("AssoEtabTitleController", () => {
 
     it("title shows secondary etablissement", () => {
         mockBuildSiret.mockReturnValueOnce(false);
-        const controller = new AssoEtabTitleController(ASSO, ETAB_SIRET);
+        const controller = new StructureTitleController(ASSO, ETAB_SIRET);
         const actual = controller.title;
         const expected = "Établissement secondaire de l'association";
         expect(actual).toBe(expected);
