@@ -46,7 +46,7 @@
         else return classByType[type][1];
     }
 
-    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${iconClass} 
+    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${iconClass}
      ${getSpecificIconClass()}`;
 </script>
 
