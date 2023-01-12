@@ -27,7 +27,7 @@
     {#if ENV.toLowerCase() == "prod"}
         <Matomo />
     {/if}
-    <div class="app-container" class:main-view={$displayBlueBanner}>
+    <div class:main-view={$displayBlueBanner}>
         <Header />
         <div class="fr-container fr-mb-8w">
             <main id="content">
@@ -41,8 +41,6 @@
 
 <style>
     .app-container {
-        height: 100vh;
-
         /* grid container settings */
         display: grid;
         grid-template-columns: 1fr;

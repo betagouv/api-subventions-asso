@@ -13,4 +13,10 @@ export const withTwoDigitYear = date => {
     } else return date;
 };
 
+export const MMDDYYYDate = date => {
+    // can be date or string
+    const localDate = new Date(date);
+    return localDate.toLocaleString().split(",")[0];
+};
+
 export const isValidDate = date => date instanceof Date && !isNaN(date);

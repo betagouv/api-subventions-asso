@@ -16,6 +16,14 @@ export const getAddress = association => {
     return null;
 };
 
+export const getImmatriculation = association => {
+    return association.date_creation_rna || association.date_creation_siren || null;
+};
+
+export const getModification = association => {
+    return association.date_modification_rna || association.date_modification_siren || null;
+};
+
 export const getSiegeSiret = association => association.siren + association.nic_siege;
 
 const isVersementValid = versement => {

@@ -50,11 +50,17 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     background-image: linear-gradient(
         to bottom,
         var(--background-action-low-blue-france) 0 25em,
-        var(--background-raised-grey) 25em 100%
+        var(--background-alt-grey) 25em
     );
 }
 
 .flex-right {
     display: flex;
     justify-content: flex-end;
+}
+
+/* COLORS */
+
+.background-default {
+    background-color: var(--background-default-grey);
 }

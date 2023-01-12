@@ -2,7 +2,11 @@ import InfosLegalesController from "./InfosLegales.controller";
 import DEFAULT_ASSOCIATION from "../../views/association/__fixtures__/Association";
 import * as AssociationHelper from "../../views/association/association.helper";
 jest.mock("../../views/association/association.helper", () => ({
-    addressToString: address => address
+    addressToString: address => address,
+    getSiegeSiret: jest.fn(),
+    getAddress: jest.fn(),
+    getImmatriculation: jest.fn(),
+    getModification: jest.fn()
 }));
 
 function buildPartialAssociation() {

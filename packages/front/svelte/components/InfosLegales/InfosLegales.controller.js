@@ -1,12 +1,45 @@
 import { valueOrHyphen } from "../../helpers/dataHelper";
+import {
+    addressToString,
+    getAddress,
+    getImmatriculation,
+    getModification,
+    getSiegeSiret
+} from "../../views/association/association.helper";
 import { modal, data } from "../../store/modal.store";
-import { addressToString } from "../../views/association/association.helper";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
+import { MMDDYYYDate } from "../../helpers/dateHelper";
 
 export default class InfosLegalesController {
     constructor(association) {
-        this.association = association;
+        this.association = { ...association };
+        this._siret = getSiegeSiret(this.association);
+        this._address = getAddress(this.association);
+        this._immatriculation = getImmatriculation(this.association);
+        this._modification = getModification(this.association);
         this._modalData = this._buildModalData();
+    }
+
+    get siret() {
+        return this._siret;
+    }
+
+    get addressWithoutCity() {
+        const addressArray = this._address.split(" ");
+        addressArray.pop();
+        return addressArray.join(" ");
+    }
+
+    get city() {
+        return this._address.split(" ").pop();
+    }
+
+    get immatriculation() {
+        return MMDDYYYDate(this._immatriculation);
+    }
+
+    get modification() {
+        return MMDDYYYDate(this._modification);
     }
 
     displayModal() {
