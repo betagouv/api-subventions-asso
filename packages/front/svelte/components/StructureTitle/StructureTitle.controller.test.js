@@ -27,12 +27,6 @@ describe("StructureTitleController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("hasSubtitle relays whether etab case or not", () => {
-            const expected = isEtab;
-            const actual = controller.hasSubtitle;
-            expect(actual).toEqual(expected);
-        });
-
         it("hasActionButton relays whether etab case or not", () => {
             const expected = isEtab;
             const actual = controller.hasActionButton;

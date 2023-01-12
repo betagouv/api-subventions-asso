@@ -16,10 +16,6 @@ export class StructureTitleController {
         this.siren = valueOrHyphen(association.siren);
     }
 
-    get hasSubtitle() {
-        return !!this.subtitle;
-    }
-
     get hasActionButton() {
         return !!this.subtitle;
     }

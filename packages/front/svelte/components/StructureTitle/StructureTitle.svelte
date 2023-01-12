@@ -11,7 +11,7 @@
 <div class="fr-grid-row">
     <div class:fr-col-10={controller.hasActionButton}>
         <h1>{controller.title}</h1>
-        {#if controller.hasSubtitle}
+        {#if controller.subtitle}
             <div class="fr-h4">{controller.subtitle}</div>
         {/if}
         <div class="fr-text--lg">
