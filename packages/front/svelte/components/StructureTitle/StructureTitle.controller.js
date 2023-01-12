@@ -1,4 +1,5 @@
 import { getSiegeSiret } from "../../views/association/association.helper";
+import { valueOrHyphen } from "../../helpers/dataHelper";
 
 export class StructureTitleController {
     constructor(association, etablissementId = undefined) {
@@ -11,8 +12,8 @@ export class StructureTitleController {
             this.subtitle = associationName;
             this.linkToAsso = `/association/${association.siren}`;
         } else this.title = `Association : ${associationName}`;
-        this.rna = association.rna;
-        this.siren = association.siren;
+        this.rna = valueOrHyphen(association.rna);
+        this.siren = valueOrHyphen(association.siren);
     }
 
     get hasSubtitle() {

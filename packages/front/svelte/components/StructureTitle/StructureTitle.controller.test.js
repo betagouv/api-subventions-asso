@@ -73,6 +73,14 @@ describe("StructureTitleController", () => {
         expect(actual).toBe(expected);
     });
 
+    // IDENTIFIERS
+    it("hyphens unknown identifiers", () => {
+        const controller = new StructureTitleController({ denomination_rna: "nom" });
+        const expected = { rna: "-", siren: "-" };
+        const actual = { rna: controller.rna, siren: controller.siren };
+        expect(actual).toEqual(expected);
+    });
+
     // LINK TO ASSO
     it("is empty for associations", () => {
         const actual = controllerAsso.linkToAsso;
