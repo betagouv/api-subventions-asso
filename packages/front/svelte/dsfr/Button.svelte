@@ -10,8 +10,6 @@
     export let iconPosition = "";
     export let ariaControls = "";
 
-    export let moreClasses = "";
-
     const dispatch = createEventDispatcher();
 
     const iconClass = !icon.length || icon.startsWith("fr-icon-") ? icon : `fr-icon-${icon}`;
@@ -49,7 +47,7 @@
     }
 
     const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${iconClass}
-     ${getSpecificIconClass()} ${moreClasses}`;
+     ${getSpecificIconClass()}`;
 </script>
 
 <button
