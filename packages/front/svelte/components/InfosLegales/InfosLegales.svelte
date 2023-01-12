@@ -15,28 +15,28 @@
     <div class="fr-col fr-col-md-6 fr-pl-2w">
         <table class="fr-mb-1v">
             <tr>
-                <td class="fr-pb-1w fr-text--lg fr-text--bold fr-pr-2w">SIRET du siège</td>
-                <td class="fr-pb-1w fr-text--sm">
+                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">SIRET du siège</td>
+                <td class="fr-pb-2w fr-text--sm">
                     {controller.siret}
                 </td>
             </tr>
             <tr>
-                <td class="fr-pb-1w fr-text--lg fr-text--bold fr-pr-2w">Adresse du siège</td>
-                <td class="fr-pb-1w fr-text--sm">
+                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">Adresse du siège</td>
+                <td class="fr-pb-2w fr-text--sm">
                     {controller.addressWithoutCity}
                     <br />
                     {controller.city}
                 </td>
             </tr>
             <tr>
-                <td class="fr-pb-1w fr-text--lg fr-text--bold fr-pr-2w">Date d'immatriculation</td>
-                <td class="fr-pb-1w fr-text--sm">
+                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">Date d'immatriculation</td>
+                <td class="fr-pb-2w fr-text--sm">
                     {controller.immatriculation}
                 </td>
             </tr>
             <tr>
-                <td class="fr-pb-1w fr-text--lg fr-text--bold fr-pr-2w">Date de modification</td>
-                <td class="fr-pb-1w fr-text--sm">
+                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">Date de modification</td>
+                <td class="fr-pb-2w fr-text--sm">
                     {controller.modification}
                 </td>
             </tr>

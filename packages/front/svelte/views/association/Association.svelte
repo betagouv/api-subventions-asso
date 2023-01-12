@@ -29,7 +29,9 @@
             </Alert>
         </div>
     {/if}
-    <AssoEtabTitle {association} />
+    <div class="fr-mb-3w">
+        <AssoEtabTitle {association} />
+    </div>
     <div class="fr-mb-6w">
         <InfosLegales {association} />
     </div>

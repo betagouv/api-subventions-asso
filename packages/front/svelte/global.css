@@ -49,8 +49,8 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
 .main-view {
     background-image: linear-gradient(
         to bottom,
-        var(--background-action-low-blue-france) 0 25em,
-        var(--background-alt-grey) 25em
+        var(--background-action-low-blue-france) 0 30em,
+        var(--background-alt-grey) 30em
     );
 }
 
