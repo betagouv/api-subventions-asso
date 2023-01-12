@@ -27,13 +27,13 @@ describe("AssoEtabTitleController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("hasSubtitle relays weather etab case or not", () => {
+        it("hasSubtitle relays whether etab case or not", () => {
             const expected = isEtab;
             const actual = controller.hasSubtitle;
             expect(actual).toEqual(expected);
         });
 
-        it("hasActionButton relays weather etab case or not", () => {
+        it("hasActionButton relays whether etab case or not", () => {
             const expected = isEtab;
             const actual = controller.hasActionButton;
             expect(actual).toEqual(expected);
