@@ -222,9 +222,7 @@ describe("StatsService", () => {
 
         afterAll(() => {
             keepOneVisitByUserAndDateMock.mockRestore();
-            findGroupedByAssociationIdentifierOnPeriodMock.mockRestore();
             getNameFromIdentifierMock.mockRestore();
-            groupAssociationVisitsByAssociationMock.mockRestore();
         });
 
         it("should throw error, start date is invalid", async () => {

@@ -8,6 +8,7 @@ import db from "../../../src/shared/MongoConnection";
 import visitsFixture, { PREVIOUS_MONTH, THIS_MONTH, TODAY } from "../association-visits/__fixtures__/entity";
 import nameFixture from "../association-name/__fixtures__/entity";
 import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
+import { DefaultObject } from "../../../src/@types";
 
 const g = global as unknown as { app: unknown };
 
@@ -154,18 +155,19 @@ describe("/stats", () => {
             start: undefined | Date = undefined,
             end: undefined | Date = undefined
         ) {
-            let query = "?";
+            const queryObj: DefaultObject<string | number> = {};
 
-            if (limit) query += `limit=${limit}`;
+            if (limit) queryObj.limit = limit;
             if (start) {
-                query += `&startYear=${start.getFullYear()}`;
-                query += `&startMonth=${start.getMonth()}`;
+                queryObj.startYear = start.getFullYear();
+                queryObj.startMonth = start.getMonth();
             }
             if (end) {
-                query += `&endYear=${end.getFullYear()}`;
-                query += `&endMonth=${end.getMonth()}`;
+                queryObj.endYear = end.getFullYear();
+                queryObj.endMonth = end.getMonth();
             }
 
+            const query = "?" + new URLSearchParams(queryObj as unknown as URLSearchParams).toString();
             return makeRequest(query);
         }
 
