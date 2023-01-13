@@ -3,9 +3,9 @@
     import Button from "../../dsfr/Button.svelte";
 
     export let association;
-    export let etablissementId = undefined;
+    export let siret = undefined;
 
-    const controller = new StructureTitleController(association, etablissementId);
+    const controller = new StructureTitleController(association, siret);
 </script>
 
 <div class="fr-grid-row">
@@ -14,11 +14,11 @@
         {#if controller.subtitle}
             <div class="fr-h4">{controller.subtitle}</div>
         {/if}
-        <div class="fr-text--lg">
+        <p class="fr-text--lg">
             RNA : <span class="fr-text--bold">{controller.rna}</span>
             - SIREN :
             <span class="fr-text--bold">{controller.siren}</span>
-        </div>
+        </p>
     </div>
     {#if controller.hasActionButton}
         <div class="fr-col-2 fr-pt-1w">

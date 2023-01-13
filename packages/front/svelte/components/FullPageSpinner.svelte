@@ -11,6 +11,6 @@
 <style>
     /* used to avoid footer overlaspsing the blue banner */
     .fill-space {
-        min-height: 30vh;
+        min-height: 30rem;
     }
 </style>

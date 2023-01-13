@@ -1,51 +1,97 @@
 import InfosLegalesController from "./InfosLegales.controller";
-import * as AssociationHelper from "../../views/association/association.helper";
-jest.mock("../../views/association/association.helper", () => ({
-    getAddress: address => address
-}));
+import DEFAULT_ASSOCIATION from "../../views/association/__fixtures__/Association";
+import DEFAULT_ETABLISSEMENT from "../../views/etablissement/__fixtures__/Etablissement";
 
-const DEFAULT_ASSOCIATION = {
-    denomination_rna: "DENOMINATION_RNA",
-    denomination_siren: "DENOMINATION_SIREN",
-    adresse_siege_rna: "Adresse RNA",
-    adresse_siege_siren: "Adresse SIREN",
-    date_creation_rna: new Date("2000-01-01"),
-    date_creation_siren: new Date("2012-01-01"),
-    date_modification_rna: new Date("2021-01-01"),
-    date_modification_siren: new Date("2016-01-01")
-};
+jest.mock("../../views/association/association.helper", () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const ASSOCIATION = require("../../views/association/__fixtures__/Association");
+    return {
+        __esModule: true, // this property makes it work
+        addressToString: address => address,
+        getSiegeSiret: () => ASSOCIATION.default.siren + ASSOCIATION.default.nic_siege,
+        getAddress: () => ASSOCIATION.default.adresse_siege_rna,
+        getImmatriculation: jest.fn(),
+        getModification: jest.fn()
+    };
+});
+
+import * as AssociationHelper from "../../views/association/association.helper";
 
 function buildPartialAssociation() {
     return { ...DEFAULT_ASSOCIATION };
 }
 
+function buildPartialEtablissement() {
+    return { ...DEFAULT_ETABLISSEMENT };
+}
+
 describe("InfosLegales Controller", () => {
-    const controller = new InfosLegalesController(buildPartialAssociation());
-    describe("_buildModalData", () => {
-        it("should return data", () => {
-            const expected = {
-                headers: ["Titre", "Informations provenant du RNA", "Informations provenant du SIREN"],
-                rows: [
-                    ["Dénomination", DEFAULT_ASSOCIATION.denomination_rna, DEFAULT_ASSOCIATION.denomination_siren],
-                    [
-                        "Adresse du siège",
-                        DEFAULT_ASSOCIATION.adresse_siege_rna,
-                        DEFAULT_ASSOCIATION.adresse_siege_siren
-                    ],
-                    [
-                        "Date d'immatriculation",
-                        DEFAULT_ASSOCIATION.date_creation_rna,
-                        DEFAULT_ASSOCIATION.date_creation_siren
-                    ],
-                    [
-                        "Date de modification",
-                        DEFAULT_ASSOCIATION.date_modification_rna,
-                        DEFAULT_ASSOCIATION.date_modification_siren
+    describe("Association view", () => {
+        const controller = new InfosLegalesController(buildPartialAssociation(), undefined);
+
+        describe("_buildModalData", () => {
+            it("should return data", () => {
+                const expected = {
+                    headers: ["Titre", "Informations provenant du RNA", "Informations provenant du SIREN"],
+                    rows: [
+                        ["Dénomination", DEFAULT_ASSOCIATION.denomination_rna, DEFAULT_ASSOCIATION.denomination_siren],
+                        [
+                            "Adresse du siège",
+                            DEFAULT_ASSOCIATION.adresse_siege_rna,
+                            DEFAULT_ASSOCIATION.adresse_siege_siren
+                        ],
+                        [
+                            "Date d'immatriculation",
+                            DEFAULT_ASSOCIATION.date_creation_rna,
+                            DEFAULT_ASSOCIATION.date_creation_siren
+                        ],
+                        [
+                            "Date de modification",
+                            DEFAULT_ASSOCIATION.date_modification_rna,
+                            DEFAULT_ASSOCIATION.date_modification_siren
+                        ]
                     ]
-                ]
-            };
-            const actual = controller._buildModalData();
-            expect(actual).toEqual(expected);
+                };
+                const actual = controller._buildModalData();
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("getter siret()", () => {
+            it("should return headquarters siret object", () => {
+                const expected = {
+                    title: "SIRET du siège",
+                    value: DEFAULT_ASSOCIATION.siren + DEFAULT_ASSOCIATION.nic_siege
+                };
+                const actual = controller.siret;
+                expect(actual).toEqual(expected);
+            });
+        });
+        describe("getter address()", () => {
+            it("should return headquarters address object", () => {
+                const expected = { title: "Adresse du siège", value: DEFAULT_ASSOCIATION.adresse_siege_rna };
+                const actual = controller.address;
+                expect(actual).toEqual(expected);
+            });
+        });
+    });
+
+    describe("Etablissement view", () => {
+        const controller = new InfosLegalesController(buildPartialAssociation(), buildPartialEtablissement());
+
+        describe("getter siret()", () => {
+            it("should return etablissement siret object", () => {
+                const expected = { title: "SIRET établissement", value: DEFAULT_ETABLISSEMENT.siret };
+                const actual = controller.siret;
+                expect(actual).toEqual(expected);
+            });
+        });
+        describe("getter address()", () => {
+            it("should return etablissement address object", () => {
+                const expected = { title: "Adresse établissement", value: DEFAULT_ETABLISSEMENT.adresse };
+                const actual = controller.address;
+                expect(actual).toEqual(expected);
+            });
         });
     });
 });
