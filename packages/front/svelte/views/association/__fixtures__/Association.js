@@ -1,4 +1,6 @@
 export default {
+    siren: "000000001",
+    nic_siege: "00234",
     denomination_rna: "DENOMINATION_RNA",
     denomination_siren: "DENOMINATION_SIREN",
     adresse_siege_rna: {

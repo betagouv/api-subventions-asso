@@ -3,8 +3,9 @@
     import Button from "../../dsfr/Button.svelte";
 
     export let association;
+    export let etablissement = undefined;
 
-    const controller = new InfosLegalesController(association);
+    const controller = new InfosLegalesController(association, etablissement);
 </script>
 
 <div class="fr-grid-row fr-p-4w background-default">
@@ -15,17 +16,15 @@
     <div class="fr-col fr-col-md-6 fr-pl-2w">
         <table class="fr-mb-1v">
             <tr>
-                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">SIRET du siège</td>
+                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">{controller.siret.title}</td>
                 <td class="fr-pb-2w fr-text--sm">
-                    {controller.siret}
+                    {controller.siret.value}
                 </td>
             </tr>
             <tr>
-                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">Adresse du siège</td>
+                <td class="fr-pb-2w fr-text--lg fr-text--bold fr-pr-2w">{controller.address.title}</td>
                 <td class="fr-pb-2w fr-text--sm">
-                    {controller.addressWithoutCity}
-                    <br />
-                    {controller.city}
+                    {controller.address.value}
                 </td>
             </tr>
             <tr>
@@ -41,15 +40,17 @@
                 </td>
             </tr>
         </table>
-        <Button
-            type="tertiary"
-            size="small"
-            icon="information-line"
-            iconPosition="left"
-            outline={false}
-            ariaControls="fr-modal"
-            on:click={() => controller.displayModal()}>
-            Plus de détails
-        </Button>
+        {#if !etablissement}
+            <Button
+                type="tertiary"
+                size="small"
+                icon="information-line"
+                iconPosition="left"
+                outline={false}
+                ariaControls="fr-modal"
+                on:click={() => controller.displayModal()}>
+                Plus de détails
+            </Button>
+        {/if}
     </div>
 </div>

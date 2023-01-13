@@ -11,27 +11,36 @@ import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import { MMDDYYYDate } from "../../helpers/dateHelper";
 
 export default class InfosLegalesController {
-    constructor(association) {
+    constructor(association, etablissement = undefined) {
         this.association = { ...association };
-        this._siret = getSiegeSiret(this.association);
-        this._address = getAddress(this.association);
+        this.etablissement = etablissement ? { ...etablissement } : undefined;
         this._immatriculation = getImmatriculation(this.association);
         this._modification = getModification(this.association);
         this._modalData = this._buildModalData();
     }
 
     get siret() {
-        return this._siret;
+        let title, value;
+        if (this.etablissement) {
+            title = "SIRET établissement";
+            value = this.etablissement.siret;
+        } else {
+            title = "SIRET du siège";
+            value = getSiegeSiret(this.association);
+        }
+        return { title, value };
     }
 
-    get addressWithoutCity() {
-        const addressArray = this._address.split(" ");
-        addressArray.pop();
-        return addressArray.join(" ");
-    }
-
-    get city() {
-        return this._address.split(" ").pop();
+    get address() {
+        let title, value;
+        if (this.etablissement) {
+            title = "Adresse établissement";
+            value = addressToString(this.etablissement.adresse);
+        } else {
+            title = "Adresse du siège";
+            value = getAddress(this.association);
+        }
+        return { title, value };
     }
 
     get immatriculation() {

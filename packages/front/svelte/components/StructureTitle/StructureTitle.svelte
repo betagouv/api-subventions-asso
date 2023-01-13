@@ -3,9 +3,9 @@
     import Button from "../../dsfr/Button.svelte";
 
     export let association;
-    export let etablissementId = undefined;
+    export let siret = undefined;
 
-    const controller = new StructureTitleController(association, etablissementId);
+    const controller = new StructureTitleController(association, siret);
 </script>
 
 <div class="fr-grid-row">

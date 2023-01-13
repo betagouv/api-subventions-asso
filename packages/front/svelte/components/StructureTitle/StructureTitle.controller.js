@@ -2,11 +2,11 @@ import { getSiegeSiret } from "../../views/association/association.helper";
 import { valueOrHyphen } from "../../helpers/dataHelper";
 
 export class StructureTitleController {
-    constructor(association, etablissementId = undefined) {
+    constructor(association, siret = undefined) {
         const associationName = association.denomination_rna || association.denomination_siren;
-        if (etablissementId) {
+        if (siret) {
             this.title =
-                getSiegeSiret(association) === etablissementId
+                getSiegeSiret(association) === siret
                     ? "Établissement siège de l'association"
                     : "Établissement secondaire de l'association";
             this.subtitle = associationName;

@@ -9,7 +9,7 @@
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
-    import AssoEtabTitle from "../../components/StructureTitle/StructureTitle.svelte";
+    import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
 
     export let id;
 
@@ -30,7 +30,7 @@
         </div>
     {/if}
     <div class="fr-mb-3w">
-        <AssoEtabTitle {association} />
+        <StructureTitle {association} />
     </div>
     <div class="fr-mb-6w">
         <InfosLegales {association} />
