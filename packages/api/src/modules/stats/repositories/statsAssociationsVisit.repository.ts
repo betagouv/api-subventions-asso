@@ -12,7 +12,7 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
 
     async createIndexes() {
         await this.collection.createIndex({ date: 1 });
-        await this.collection.createIndex({ associationIndentifier: 1 });
+        await this.collection.createIndex({ associationIdentifier: 1 });
     }
 
     findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
@@ -28,7 +28,7 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
                 },
                 {
                     $group: {
-                        _id: "$associationIndentifier",
+                        _id: "$associationIdentifier",
                         visits: { $addToSet: "$$ROOT" }
                     }
                 }

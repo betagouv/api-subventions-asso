@@ -13,7 +13,7 @@ export default async function StatsAssoVisitMiddleware(req: IdentifiedRequest, r
     if (!regexResult || !regexResult[2]) return;
 
     const id = isSiret(regexResult[2]) ? siretToSiren(regexResult[2]) : regexResult[2];
-    await statsService.addAssociationVisit({ userId: req.user._id, associationIndentifier: id, date: new Date() });
+    await statsService.addAssociationVisit({ userId: req.user._id, associationIdentifier: id, date: new Date() });
 }
 
 export const StatsAssoVisitRoutesRegex = [regexPath];

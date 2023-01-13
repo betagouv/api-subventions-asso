@@ -232,14 +232,14 @@ describe("StatsService", () => {
             const invalidDate = new Date("");
 
             await expect(async () => statsService.getTopAssociationsByPeriod(5, invalidDate, END)).rejects.toThrowError(
-                "'start' must be a valid date"
+                "Invalid Date"
             );
         });
 
         it("should throw error, start date is undefined", async () => {
             await expect(async () =>
                 statsService.getTopAssociationsByPeriod(5, undefined as unknown as Date, END)
-            ).rejects.toThrowError("'start' must be a valid date");
+            ).rejects.toThrowError("Invalid Date");
         });
 
         it("should throw error, end date is invalid", async () => {
@@ -247,13 +247,13 @@ describe("StatsService", () => {
 
             await expect(async () =>
                 statsService.getTopAssociationsByPeriod(5, START, invalidDate)
-            ).rejects.toThrowError("'end' must be a valid date");
+            ).rejects.toThrowError("Invalid Date");
         });
 
         it("should throw error, end date is undefined", async () => {
             await expect(async () =>
                 statsService.getTopAssociationsByPeriod(5, START, undefined as unknown as Date)
-            ).rejects.toThrowError("'end' must be a valid date");
+            ).rejects.toThrowError("Invalid Date");
         });
 
         it("should call repository with arguments", async () => {
@@ -582,7 +582,7 @@ describe("StatsService", () => {
             expect(actual).toHaveLength(1);
         });
 
-        it("should return one visit", () => {
+        it("should return two visits", () => {
             const expected = [
                 {
                     userId: "USER_ID",

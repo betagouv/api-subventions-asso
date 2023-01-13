@@ -15,19 +15,19 @@ describe("StatsAssoVisitsMiddleware", () => {
         addAssociationVisitMock.mockRestore();
     });
 
-    it("should don't call addAssociationVisit because req don't have user", async () => {
+    it("should not call addAssociationVisit if request does not have user", async () => {
         const req = {} as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, {} as Response);
         expect(addAssociationVisitMock).not.toBeCalled();
     });
 
-    it("should don't call addAssociationVisit because res status is not 200", async () => {
+    it("should not call addAssociationVisit because res status is not 200", async () => {
         const req = {} as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 500 } as Response);
         expect(addAssociationVisitMock).not.toBeCalled();
     });
 
-    it("should don't call addAssociationVisit because user is admin", async () => {
+    it("should not call addAssociationVisit because user is admin", async () => {
         const req = {
             user: {
                 roles: ["admin"]
@@ -38,7 +38,7 @@ describe("StatsAssoVisitsMiddleware", () => {
         expect(addAssociationVisitMock).not.toBeCalled();
     });
 
-    it("should don't call addAssociationVisit because regex don't found result", async () => {
+    it("should not call addAssociationVisit if regex doesn't found", async () => {
         const req = {
             user: {},
             originalUrl: ""
@@ -48,7 +48,7 @@ describe("StatsAssoVisitsMiddleware", () => {
         expect(addAssociationVisitMock).not.toBeCalled();
     });
 
-    it("should don't call addAssociationVisit because regex don't found identifier", async () => {
+    it("should not call addAssociationVisit because regex doesn't find identifier", async () => {
         const req = {
             user: {},
             originalUrl: "/association/TOTO"
@@ -72,7 +72,7 @@ describe("StatsAssoVisitsMiddleware", () => {
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
-        const expected = { userId: USER_ID, associationIndentifier: RNA, date: expect.any(Date) };
+        const expected = { userId: USER_ID, associationIdentifier: RNA, date: expect.any(Date) };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
     });
@@ -91,7 +91,7 @@ describe("StatsAssoVisitsMiddleware", () => {
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
-        const expected = { userId: USER_ID, associationIndentifier: SIREN, date: expect.any(Date) };
+        const expected = { userId: USER_ID, associationIdentifier: SIREN, date: expect.any(Date) };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
     });
@@ -111,7 +111,7 @@ describe("StatsAssoVisitsMiddleware", () => {
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
-        const expected = { userId: USER_ID, associationIndentifier: SIREN, date: expect.any(Date) };
+        const expected = { userId: USER_ID, associationIdentifier: SIREN, date: expect.any(Date) };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
     });

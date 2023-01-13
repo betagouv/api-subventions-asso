@@ -79,8 +79,7 @@ class StatsService {
     }
 
     async getTopAssociationsByPeriod(limit: number, start: Date, end: Date) {
-        if (!start || !isValidDate(start)) throw new BadRequestError("'start' must be a valid date");
-        if (!end || !isValidDate(end)) throw new BadRequestError("'end' must be a valid date");
+        if (!start || !isValidDate(start) || !end || !isValidDate(end)) throw new BadRequestError("Invalid Date");
 
         const visitsGroupedByAssociationIdentifier =
             await statsAssociationsVisitRepository.findGroupedByAssociationIdentifierOnPeriod(start, end);

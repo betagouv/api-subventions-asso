@@ -10,81 +10,81 @@ export default [
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "W931006748" // ASSOCIATION AURORE
+        associationIdentifier: "W931006748" // ASSOCIATION AURORE
     },
     {
         userId: "USER_2" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "W931006748" // ASSOCIATION AURORE
+        associationIdentifier: "W931006748" // ASSOCIATION AURORE
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "775724842" // AVENIR ET JOIE - JOC
+        associationIdentifier: "775724842" // AVENIR ET JOIE - JOC
     },
     {
         userId: "USER_2" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "775724842" // AVENIR ET JOIE - JOC
+        associationIdentifier: "775724842" // AVENIR ET JOIE - JOC
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "352535967"
+        associationIdentifier: "352535967"
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "W912001498"
+        associationIdentifier: "W912001498"
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "W893006723" // LA CASERNE BASCULE
+        associationIdentifier: "W893006723" // LA CASERNE BASCULE
     },
     {
         userId: "USER_2" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "W893006723" // LA CASERNE BASCULE
+        associationIdentifier: "W893006723" // LA CASERNE BASCULE
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "W893006723" // LA CASERNE BASCULE
+        associationIdentifier: "W893006723" // LA CASERNE BASCULE
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: THIS_MONTH,
-        associationIndentifier: "W921009414" // ORIN ÀBAJADE
+        associationIdentifier: "W921009414" // ORIN ÀBAJADE
     },
     {
         userId: "USER_2" as unknown as ObjectId,
         date: THIS_MONTH,
-        associationIndentifier: "W921009414" // ORIN ÀBAJADE
+        associationIdentifier: "W921009414" // ORIN ÀBAJADE
     },
     {
         userId: "USER_2" as unknown as ObjectId,
         date: TODAY,
-        associationIndentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
+        associationIdentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
+        associationIdentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: PREVIOUS_MONTH,
-        associationIndentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
+        associationIdentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: THIS_MONTH,
-        associationIndentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
+        associationIdentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
     },
     {
         userId: "USER_1" as unknown as ObjectId,
         date: TODAY,
-        associationIndentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
+        associationIdentifier: "502722978" // GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS
     }
 ] as AssociationVisitEntity[];

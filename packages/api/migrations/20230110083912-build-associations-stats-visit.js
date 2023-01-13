@@ -33,19 +33,17 @@ module.exports = {
 
             const typeIdentifier = getIdentifierType(identifier);
             if (typeIdentifier === null) {
-                console.log(log.meta.req.url);
                 return;
             }
 
             const user = await userRepository.findByEmail(log.meta.req.user.email);
 
             if (!user || user.roles.includes("admin")) {
-                console.log("Rejected user:", log.meta.req.user.email);
                 return;
             }
 
             await statsAssociationsVisitRepository.add({
-                associationIndentifier: typeIdentifier === "SIRET" ? siretToSiren(identifier) : identifier,
+                associationIdentifier: typeIdentifier === "SIRET" ? siretToSiren(identifier) : identifier,
                 userId: user._id,
                 date: log.timestamp
             });
@@ -53,8 +51,7 @@ module.exports = {
     },
 
     async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+        await connectDB();
+        db.collection(statsAssociationsVisitRepository.collectionName).drop();
     }
 };
