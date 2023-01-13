@@ -72,6 +72,13 @@ export class AssociationNameRepository {
     async insertMany(entities: AssociationNameEntity[]) {
         return this.collection.insertMany(entities, { ordered: false });
     }
+
+    async findByRna(rna: Rna) {
+        return this.collection.find({ rna }).toArray();
+    }
+    async findBySiren(siren: Siren) {
+        return this.collection.find({ siren }).toArray();
+    }
 }
 
 const associationNameRepository = new AssociationNameRepository();

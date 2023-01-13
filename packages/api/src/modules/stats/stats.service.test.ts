@@ -5,7 +5,6 @@ import associationNameService from "../association-name/associationName.service"
 import statsRepository from "./repositories/stats.repository";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -332,7 +331,7 @@ describe("StatsService", () => {
             expect(actual.length).toBe(expected);
         });
 
-        it("should return ordoned result", async () => {
+        it("should return sorted result", async () => {
             const expected = [
                 {
                     name: "ID2",
@@ -436,7 +435,7 @@ describe("StatsService", () => {
         const RNA = "W123456789";
         const SIREN = "123456789";
 
-        const getGroupedIdentifiersMock = jest.spyOn(rnaSirenService, "getGroupedIdentifiers");
+        const getGroupedIdentifiersMock = jest.spyOn(associationNameService, "getGroupedIdentifiers");
 
         it("should add visits on rnaMap because is already available", async () => {
             const rnaMap = new Map([[RNA, { id: RNA, visits: [] }]]);

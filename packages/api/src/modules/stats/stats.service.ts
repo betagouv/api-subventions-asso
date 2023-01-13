@@ -5,7 +5,6 @@ import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError"
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import { AssociationIdentifiers } from "../../@types";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
 
@@ -48,7 +47,7 @@ class StatsService {
             mapVisits?.visits.push(...group.visits);
             return;
         }
-        const identifiers = await rnaSirenService.getGroupedIdentifiers(group._id);
+        const identifiers = await associationNameService.getGroupedIdentifiers(group._id);
         const associationVisits = { id: group._id, visits: [] as AssociationVisitEntity[] };
 
         associationVisits.visits.push(...group.visits);

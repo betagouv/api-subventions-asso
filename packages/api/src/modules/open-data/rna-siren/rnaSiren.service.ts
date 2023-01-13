@@ -9,9 +9,6 @@ import dataEntrepriseService from "../../providers/dataEntreprise/dataEntreprise
 import RequestEntity from "../../search/entities/RequestEntity";
 import EventManager from "../../../shared/EventManager";
 import { WithId } from "mongodb";
-import { getIdentifierType } from "../../../shared/helpers/IdentifierHelper";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../../@types";
-import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
 
 export interface EventRnaSirenMatching {
     rna: Rna;
@@ -39,29 +36,6 @@ export class RnaSirenService {
         if (rna) await this.add(rna, siren);
 
         return rna;
-    }
-
-    async getGroupedIdentifiers(
-        identifier: StructureIdentifiers
-    ): Promise<{ rna: undefined | Rna; siren: undefined | Siren }> {
-        const typeIdentifier = getIdentifierType(identifier);
-
-        if (typeIdentifier === StructureIdentifiersEnum.rna) {
-            return {
-                rna: identifier,
-                siren: (await rnaSirenRepository.findByRna(identifier))?.siren || undefined
-            };
-        } else if (
-            typeIdentifier === StructureIdentifiersEnum.siren ||
-            typeIdentifier === StructureIdentifiersEnum.siret
-        ) {
-            return {
-                siren: siretToSiren(identifier),
-                rna: (await rnaSirenRepository.findBySiren(identifier))?.rna || undefined
-            };
-        }
-
-        throw new Error("identifier type is not supported");
     }
 
     // Used to remove _id to avoid typescript manipulation...

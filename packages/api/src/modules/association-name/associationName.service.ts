@@ -1,5 +1,9 @@
 import { Rna, Siren } from "@api-subventions-asso/dto";
+import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import { StructureIdentifiers } from "../../@types";
 import EventManager from "../../shared/EventManager";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import IAssociationName from "./@types/IAssociationName";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 import associationNameRepository from "./repositories/associationName.repository";
@@ -12,6 +16,33 @@ export class AssociationNameService {
             await this.add(data as IAssociationName);
             cbStop(); // HOTFIX permet d'attendre que le add soit fait avant d'envoyer un add
         });
+    }
+
+    async getGroupedIdentifiers(
+        identifier: StructureIdentifiers
+    ): Promise<{ rna: undefined | Rna; siren: undefined | Siren }> {
+        const typeIdentifier = getIdentifierType(identifier);
+
+        if (typeIdentifier === StructureIdentifiersEnum.rna) {
+            const associationNames = await associationNameRepository.findByRna(identifier);
+            return {
+                rna: identifier,
+                siren: associationNames.find(entity => entity.siren)?.siren || undefined
+            };
+        } else if (
+            typeIdentifier === StructureIdentifiersEnum.siren ||
+            typeIdentifier === StructureIdentifiersEnum.siret
+        ) {
+            const siren = siretToSiren(identifier);
+            const associationNames = await associationNameRepository.findBySiren(siren);
+
+            return {
+                siren,
+                rna: associationNames.find(entity => entity.rna)?.rna || undefined
+            };
+        }
+
+        throw new Error("identifier type is not supported");
     }
 
     private _getMostRecentEntity(entities: AssociationNameEntity[]) {
