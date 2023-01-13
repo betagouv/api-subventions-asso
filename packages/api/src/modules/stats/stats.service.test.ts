@@ -1,9 +1,11 @@
 import statsService from "./stats.service";
-import statsRepository from "./repositories/statsRepository";
-import { firstDayOfPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
+import associationNameService from "../association-name/associationName.service";
 import statsRepository from "./repositories/stats.repository";
+import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
+import AssociationVisitEntity from "./entities/AssociationVisitEntity";
+import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -198,6 +200,409 @@ describe("StatsService", () => {
             const actual = await statsService.getMonthlyUserNbByYear(YEAR);
             const expected = FINAL_DATA_ALT;
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getTopAssociationsByPeriod()", () => {
+        const TODAY = new Date();
+        const END = new Date(Date.UTC(TODAY.getFullYear(), TODAY.getMonth(), 1));
+        const START = new Date(Date.UTC(END.getFullYear() - 1, END.getMonth() + 1, 1));
+
+        const findGroupedByAssociationIdentifierOnPeriodMock: jest.SpyInstance = jest.spyOn(
+            statsAssociationsVisitRepository,
+            "findGroupedByAssociationIdentifierOnPeriod"
+        );
+        const getNameFromIdentifierMock = jest.spyOn(associationNameService, "getNameFromIdentifier");
+        const groupAssociationVisitsByAssociationMock: jest.SpyInstance = jest.spyOn(
+            statsService,
+            // @ts-expect-error groupAssociationVisitsByAssociation is private method
+            "groupAssociationVisitsByAssociation"
+        );
+        // @ts-expect-error groupAssociationVisitsByAssociation is private method
+        const keepOneVisitByUserAndDateMock: jest.SpyInstance = jest.spyOn(statsService, "keepOneVisitByUserAndDate");
+
+        afterAll(() => {
+            keepOneVisitByUserAndDateMock.mockRestore();
+            findGroupedByAssociationIdentifierOnPeriodMock.mockRestore();
+            getNameFromIdentifierMock.mockRestore();
+            groupAssociationVisitsByAssociationMock.mockRestore();
+        });
+
+        it("should throw error, start date is invalid", async () => {
+            const invalidDate = new Date("");
+
+            await expect(async () => statsService.getTopAssociationsByPeriod(5, invalidDate, END)).rejects.toThrowError(
+                "'start' must be a valid date"
+            );
+        });
+
+        it("should throw error, start date is undefined", async () => {
+            await expect(async () =>
+                statsService.getTopAssociationsByPeriod(5, undefined as unknown as Date, END)
+            ).rejects.toThrowError("'start' must be a valid date");
+        });
+
+        it("should throw error, end date is invalid", async () => {
+            const invalidDate = new Date("");
+
+            await expect(async () =>
+                statsService.getTopAssociationsByPeriod(5, START, invalidDate)
+            ).rejects.toThrowError("'end' must be a valid date");
+        });
+
+        it("should throw error, end date is undefined", async () => {
+            await expect(async () =>
+                statsService.getTopAssociationsByPeriod(5, START, undefined as unknown as Date)
+            ).rejects.toThrowError("'end' must be a valid date");
+        });
+
+        it("should call repository with arguments", async () => {
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
+            await statsService.getTopAssociationsByPeriod(5, START, END);
+
+            expect(findGroupedByAssociationIdentifierOnPeriodMock).toHaveBeenCalledWith(START, END);
+        });
+
+        it("should call groupAssociationVisitsByAssociation with database data", async () => {
+            const expected = [
+                {
+                    fake: "data"
+                }
+            ];
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => expected);
+            groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => []);
+
+            await statsService.getTopAssociationsByPeriod(5, START, END);
+
+            expect(groupAssociationVisitsByAssociationMock).toHaveBeenCalledWith(expected);
+        });
+
+        it("should call keepOneVisitByUserAndDate with visits", async () => {
+            const expected = ["Visit1", "Visit2"];
+            const DATA = [
+                {
+                    id: "",
+                    visits: expected
+                }
+            ];
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
+            groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
+            keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
+            getNameFromIdentifierMock.mockImplementationOnce(async () => undefined);
+            await statsService.getTopAssociationsByPeriod(5, START, END);
+
+            expect(keepOneVisitByUserAndDateMock).toHaveBeenCalledWith(expected);
+        });
+
+        it("should call keepOneVisitByUserAndDate with id", async () => {
+            const expected = "W123456789";
+            const DATA = [
+                {
+                    id: expected,
+                    visits: "Visits"
+                }
+            ];
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
+            groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
+            keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
+            getNameFromIdentifierMock.mockImplementationOnce(async () => undefined);
+            await statsService.getTopAssociationsByPeriod(5, START, END);
+
+            expect(getNameFromIdentifierMock).toHaveBeenCalledWith(expected);
+        });
+
+        it("should return result with length 1", async () => {
+            const expected = 1;
+            const DATA = [
+                {
+                    id: "ID2",
+                    visits: "Visits"
+                },
+                {
+                    id: "ID1",
+                    visits: "Visits"
+                }
+            ];
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
+            groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
+            keepOneVisitByUserAndDateMock.mockImplementation(data => data);
+            getNameFromIdentifierMock.mockImplementation(async () => undefined);
+            const actual = await statsService.getTopAssociationsByPeriod(1, START, END);
+
+            expect(actual.length).toBe(expected);
+        });
+
+        it("should return ordoned result", async () => {
+            const expected = [
+                {
+                    name: "ID2",
+                    visits: 42
+                },
+                {
+                    name: "ID1",
+                    visits: 1
+                }
+            ];
+            const DATA = [
+                {
+                    id: "ID1",
+                    visits: { length: 1 }
+                },
+                {
+                    id: "ID2",
+                    visits: { length: 42 }
+                }
+            ];
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
+            groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
+            keepOneVisitByUserAndDateMock.mockImplementation(data => data);
+            getNameFromIdentifierMock.mockImplementation(async () => undefined);
+            const actual = await statsService.getTopAssociationsByPeriod(2, START, END);
+
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return named result", async () => {
+            const expected = {
+                name: "Association 1",
+                visits: 42
+            };
+            const DATA = [
+                {
+                    id: "ID",
+                    visits: { length: 42 }
+                }
+            ];
+            findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
+            groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
+            keepOneVisitByUserAndDateMock.mockImplementation(data => data);
+            getNameFromIdentifierMock.mockImplementationOnce(async () => expected.name);
+            const actual = await statsService.getTopAssociationsByPeriod(2, START, END);
+
+            expect(actual).toEqual([expected]);
+        });
+    });
+
+    describe("groupAssociationVisitsByAssociation", () => {
+        // @ts-expect-error groupVisitsOnMaps is private method
+        const groupVisitsOnMapsMock: jest.SpyInstance = jest.spyOn(statsService, "groupVisitsOnMaps");
+
+        const RNA = "W123456789";
+        const SIREN = "123456789";
+
+        afterAll(() => {
+            groupVisitsOnMapsMock.mockRestore();
+        });
+
+        it("should call groupVisitsOnMap", async () => {
+            groupVisitsOnMapsMock.mockImplementationOnce(async () => {});
+
+            // @ts-expect-error groupAssociationVisitsByAssociation is private method
+            await statsService.groupAssociationVisitsByAssociation([{ _id: RNA, visits: [] }]);
+            expect(groupVisitsOnMapsMock).toBeCalledTimes(1);
+        });
+
+        it("should call groupVisitsOnMap", async () => {
+            groupVisitsOnMapsMock.mockImplementation(async () => {});
+            const expected = [
+                { _id: RNA, visits: ["AA"] },
+                { _id: SIREN, visits: ["BB"] }
+            ];
+            // @ts-expect-error groupAssociationVisitsByAssociation is private method
+            await statsService.groupAssociationVisitsByAssociation(expected);
+            expect(groupVisitsOnMapsMock).toBeCalledWith(expected[0], expect.any(Map), expect.any(Map));
+            expect(groupVisitsOnMapsMock).toBeCalledWith(expected[1], expect.any(Map), expect.any(Map));
+        });
+
+        it("should return just unique values", async () => {
+            const expected = { test: true };
+            groupVisitsOnMapsMock.mockImplementationOnce(async (t, rnaMap, sirenMap) => {
+                rnaMap.set(RNA, expected);
+                sirenMap.set(SIREN, expected);
+            });
+
+            // @ts-expect-error groupAssociationVisitsByAssociation is private method
+            const actual = await statsService.groupAssociationVisitsByAssociation([
+                { _id: RNA, visits: ["AA"] as unknown as AssociationVisitEntity[] },
+                { _id: SIREN, visits: ["BB"] as unknown as AssociationVisitEntity[] }
+            ]);
+
+            expect(actual).toHaveLength(1);
+            expect(actual).toEqual([expected]);
+        });
+    });
+
+    describe("groupVisitsOnMaps", () => {
+        const RNA = "W123456789";
+        const SIREN = "123456789";
+
+        const getGroupedIdentifiersMock = jest.spyOn(rnaSirenService, "getGroupedIdentifiers");
+
+        it("should add visits on rnaMap because is already available", async () => {
+            const rnaMap = new Map([[RNA, { id: RNA, visits: [] }]]);
+            const sirenMap = new Map();
+            const expected = [
+                {
+                    visits: 1
+                }
+            ];
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps({ _id: RNA, visits: expected }, rnaMap, sirenMap);
+
+            expect(rnaMap.get(RNA)).toEqual({ id: RNA, visits: expected });
+        });
+        it("should add visits on rnaMap because is already available", async () => {
+            const sirenMap = new Map([[SIREN, { id: SIREN, visits: [] }]]);
+            const rnaMap = new Map();
+            const expected = [
+                {
+                    visits: 1
+                }
+            ];
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps({ _id: SIREN, visits: expected }, rnaMap, sirenMap);
+
+            expect(sirenMap.get(SIREN)).toEqual({ id: SIREN, visits: expected });
+        });
+
+        it("should add visits on rnaMap and siren because is already available", async () => {
+            const expected = { id: SIREN, visits: [] };
+            const sirenMap = new Map([[SIREN, expected]]);
+            const rnaMap = new Map([[RNA, expected]]);
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps(
+                {
+                    _id: SIREN,
+                    visits: [
+                        {
+                            visits: 1
+                        }
+                    ]
+                },
+                rnaMap,
+                sirenMap
+            );
+            expect(sirenMap.get(SIREN)).toBe(expected);
+            expect(rnaMap.get(RNA)).toBe(expected);
+        });
+
+        it("should getting all identifers of association", async () => {
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: RNA, siren: SIREN }));
+            const sirenMap = new Map();
+            const rnaMap = new Map();
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps(
+                {
+                    _id: SIREN,
+                    visits: [
+                        {
+                            visits: 1
+                        }
+                    ]
+                },
+                rnaMap,
+                sirenMap
+            );
+
+            expect(getGroupedIdentifiersMock).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("should add visits on all maps", async () => {
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: RNA, siren: SIREN }));
+            const sirenMap = new Map();
+            const rnaMap = new Map();
+            const expected = {
+                id: SIREN,
+                visits: [
+                    {
+                        visits: 1
+                    }
+                ]
+            };
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps({ _id: SIREN, visits: expected.visits }, rnaMap, sirenMap);
+
+            expect(sirenMap.get(SIREN)).toEqual(expected);
+            expect(rnaMap.get(RNA)).toEqual(expected);
+
+            expect(rnaMap.get(RNA)).toBe(sirenMap.get(SIREN));
+        });
+
+        it("should add visits on sirenMap", async () => {
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: undefined, siren: SIREN }));
+            const sirenMap = new Map();
+            const rnaMap = new Map();
+            const expected = {
+                id: SIREN,
+                visits: [
+                    {
+                        visits: 1
+                    }
+                ]
+            };
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps({ _id: SIREN, visits: expected.visits }, rnaMap, sirenMap);
+
+            expect(sirenMap.get(SIREN)).toEqual(expected);
+        });
+
+        it("should add visits on rnaMap", async () => {
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: RNA, siren: undefined }));
+            const sirenMap = new Map();
+            const rnaMap = new Map();
+            const expected = {
+                id: RNA,
+                visits: [
+                    {
+                        visits: 1
+                    }
+                ]
+            };
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            await statsService.groupVisitsOnMaps({ _id: RNA, visits: expected.visits }, rnaMap, sirenMap);
+
+            expect(rnaMap.get(RNA)).toEqual(expected);
+        });
+    });
+
+    describe("keepOneVisitByUserAndDate", () => {
+        const TEN_MINUTE_MS = 1000 * 60 * 10;
+
+        it("should return one visit", () => {
+            const expected = {
+                userId: "USER_ID",
+                date: new Date()
+            };
+
+            const visits = [{ userId: "USER_ID", date: new Date(expected.date.getTime() + TEN_MINUTE_MS) }, expected];
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            const actual = statsService.keepOneVisitByUserAndDate(visits);
+
+            expect(actual).toEqual([expected]);
+            expect(actual).toHaveLength(1);
+        });
+
+        it("should return one visit", () => {
+            const expected = [
+                {
+                    userId: "USER_ID",
+                    date: new Date()
+                },
+                {
+                    userId: "USER_ID_2",
+                    date: new Date()
+                }
+            ];
+
+            const visits = [
+                { userId: "USER_ID", date: new Date(expected[0].date.getTime() + TEN_MINUTE_MS) },
+                ...expected
+            ];
+            // @ts-expect-error groupVisitsOnMaps is private methode
+            const actual = statsService.keepOneVisitByUserAndDate(visits);
+
+            expect(actual).toEqual(expected);
+            expect(actual).toHaveLength(2);
         });
     });
 });

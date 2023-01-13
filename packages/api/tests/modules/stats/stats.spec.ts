@@ -5,6 +5,9 @@ import getUserToken from "../../__helpers__/getUserToken";
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import userFixture from "../user/__fixtures__/entity";
 import db from "../../../src/shared/MongoConnection";
+import visitsFixture, { PREVIOUS_MONTH, THIS_MONTH, TODAY } from "../association-visits/__fixtures__/entity";
+import nameFixture from "../association-name/__fixtures__/entity";
+import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
 
 const g = global as unknown as { app: unknown };
 
@@ -135,6 +138,144 @@ describe("/stats", () => {
                 .set("x-access-token", await getAdminToken())
                 .set("Accept", "application/json")
                 .expect(200, expected);
+        });
+    });
+
+    describe("getTopAssociationsByPeriod()", () => {
+        async function makeRequest(query) {
+            return request(g.app)
+                .get(`/stats/associations${query}`)
+                .set("x-access-token", await getAdminToken())
+                .set("Accept", "application/json");
+        }
+
+        function makeRequestWithParams(
+            limit: undefined | number = undefined,
+            start: undefined | Date = undefined,
+            end: undefined | Date = undefined
+        ) {
+            let query = "?";
+
+            if (limit) query += `limit=${limit}`;
+            if (start) {
+                query += `&startYear=${start.getFullYear()}`;
+                query += `&startMonth=${start.getMonth()}`;
+            }
+            if (end) {
+                query += `&endYear=${end.getFullYear()}`;
+                query += `&endMonth=${end.getMonth()}`;
+            }
+
+            return makeRequest(query);
+        }
+
+        const collection = db.collection(statsAssociationsVisitRepository.collectionName);
+        const nameCollection = db.collection("association-name");
+        const serviceSpy = jest.spyOn(statsService, "getTopAssociationsByPeriod");
+
+        beforeEach(async () => {
+            await collection.insertMany(visitsFixture);
+            await nameCollection.insertMany(nameFixture);
+        });
+
+        describe("should return data with HTTP status code 200", () => {
+            it("should accept no args", async () => {
+                const data = [
+                    {
+                        name: "GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS",
+                        visits: 4
+                    },
+                    {
+                        name: "ORIN ÀBAJADE",
+                        visits: 2
+                    },
+                    {
+                        name: "LA CASERNE BASCULE",
+                        visits: 2
+                    },
+                    {
+                        name: "ASSOCIATION AURORE",
+                        visits: 2
+                    },
+                    {
+                        name: "AVENIR ET JOIE - JOC",
+                        visits: 2
+                    }
+                ];
+
+                const response = await makeRequestWithParams();
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toMatchObject({ success: true, data: expect.arrayContaining(data) });
+            });
+
+            it("should use args", async () => {
+                const data = [
+                    {
+                        name: "GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS",
+                        visits: 3
+                    },
+                    {
+                        name: "ORIN ÀBAJADE",
+                        visits: 2
+                    }
+                ];
+                const limit = 2;
+                const start = THIS_MONTH;
+                const end = TODAY;
+                const response = await makeRequestWithParams(limit, start, end);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toMatchObject({ success: true, data });
+            });
+        });
+
+        it("should reject wrong limit with HTTP status code 400", async () => {
+            const ERROR_MESSAGE = "'limit' must be a number";
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await makeRequestWithParams("zerty" as unknown as number);
+            expect(actual.statusCode).toBe(400);
+            expect(actual.body).toEqual(expected);
+        });
+
+        it("should reject wrong end year with HTTP status code 400", async () => {
+            const ERROR_MESSAGE = "'endYear' must be a number";
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await makeRequest("?endYear=zerty");
+            expect(actual.statusCode).toBe(400);
+            expect(actual.body).toEqual(expected);
+        });
+
+        it("should reject wrong end month with HTTP status code 400", async () => {
+            const ERROR_MESSAGE = "'endMonth' must be a number";
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await makeRequest("?endMonth=zerty");
+            expect(actual.statusCode).toBe(400);
+            expect(actual.body).toEqual(expected);
+        });
+
+        it("should reject wrong start year with HTTP status code 400", async () => {
+            const ERROR_MESSAGE = "'startYear' must be a number";
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await makeRequest("?startYear=zerty");
+            expect(actual.statusCode).toBe(400);
+            expect(actual.body).toEqual(expected);
+        });
+
+        it("should reject wrong start month with HTTP status code 400", async () => {
+            const ERROR_MESSAGE = "'startMonth' must be a number";
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await makeRequest("?startMonth=zerty");
+            expect(actual.statusCode).toBe(400);
+            expect(actual.body).toEqual(expected);
+        });
+
+        it("should send 500 if random error thrown", async () => {
+            const ERROR_MESSAGE = "Something went wrong";
+            serviceSpy.mockRejectedValueOnce(Error(ERROR_MESSAGE));
+            const expected = { success: false, message: ERROR_MESSAGE };
+            const actual = await makeRequestWithParams();
+            expect(actual.statusCode).toBe(500);
+            expect(actual.body).toEqual(expected);
         });
     });
 });

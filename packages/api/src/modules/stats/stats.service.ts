@@ -1,19 +1,25 @@
-import statsRepository from "./repositories/statsRepository";
-import { englishMonthNames, firstDayOfPeriod, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
+import { englishMonthNames, firstDayOfPeriod, oneYearAfterPeriod, isValidDate } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 import statsRepository from "./repositories/stats.repository";
+import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
+import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
+import { AssociationIdentifiers } from "../../@types";
+import AssociationVisitEntity from "./entities/AssociationVisitEntity";
+import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import { asyncForEach } from "../../shared/helpers/ArrayHelper";
+import associationNameService from "../association-name/associationName.service";
 
 class StatsService {
-    async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
-        return await statsRepository.countUsersByRequestNbOnPeriod(start, end, minReq, includesAdmin);
+    getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
+        return statsRepository.countUsersByRequestNbOnPeriod(start, end, minReq, includesAdmin);
     }
 
-    async getMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean) {
-        return await statsRepository.countMedianRequestsOnPeriod(start, end, includesAdmin);
+    getMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean) {
+        return statsRepository.countMedianRequestsOnPeriod(start, end, includesAdmin);
     }
 
-    async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
-        return await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
+    getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
+        return statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
     }
 
     async getMonthlyUserNbByYear(year: number) {
@@ -34,6 +40,77 @@ class StatsService {
         }
 
         return formattedCumulatedCount;
+    }
+
+    private async groupVisitsOnMaps(group, rnaMap, sirenMap) {
+        if (rnaMap.has(group._id) || sirenMap.has(group._id)) {
+            const mapVisits = rnaMap.get(group._id) || sirenMap.get(group._id);
+            mapVisits?.visits.push(...group.visits);
+            return;
+        }
+        const identifiers = await rnaSirenService.getGroupedIdentifiers(group._id);
+        const associationVisits = { id: group._id, visits: [] as AssociationVisitEntity[] };
+
+        associationVisits.visits.push(...group.visits);
+
+        if (identifiers.rna) rnaMap.set(identifiers.rna, associationVisits);
+        if (identifiers.siren) sirenMap.set(identifiers.siren, associationVisits);
+    }
+
+    private async groupAssociationVisitsByAssociation(visits: { _id: string; visits: AssociationVisitEntity[] }[]) {
+        // Group by association, same association but different identifier
+        const rnaMap: Map<AssociationIdentifiers, { id: AssociationIdentifiers; visits: AssociationVisitEntity[] }> =
+            new Map();
+        const sirenMap: Map<AssociationIdentifiers, { id: AssociationIdentifiers; visits: AssociationVisitEntity[] }> =
+            new Map();
+
+        await asyncForEach(visits, async group => this.groupVisitsOnMaps(group, rnaMap, sirenMap));
+
+        return [...new Set([...rnaMap.values(), ...sirenMap.values()])];
+    }
+
+    private keepOneVisitByUserAndDate(visits) {
+        const sortedVisitsMap = visits.reduce((acc, visit) => {
+            const id = `${visit.userId}-${visit.date.getFullYear()}-${visit.date.getMonth()}-${visit.date.getDate()}`;
+            return acc.set(id, visit);
+        }, new Map());
+
+        return [...sortedVisitsMap.values()];
+    }
+
+    async getTopAssociationsByPeriod(limit: number, start: Date, end: Date) {
+        if (!start || !isValidDate(start)) throw new BadRequestError("'start' must be a valid date");
+        if (!end || !isValidDate(end)) throw new BadRequestError("'end' must be a valid date");
+
+        const visitsGroupedByAssociationIdentifier =
+            await statsAssociationsVisitRepository.findGroupedByAssociationIdentifierOnPeriod(start, end);
+        const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(
+            visitsGroupedByAssociationIdentifier
+        );
+
+        const countVisitByAssociationDesc = visitsGroupedByAssociation
+            .map(associationVisit => ({
+                id: associationVisit.id,
+                visits: this.keepOneVisitByUserAndDate(associationVisit.visits).length
+            }))
+            .sort((a, b) => b.visits - a.visits);
+
+        const topAssociationsAsc = countVisitByAssociationDesc.slice(0, limit);
+
+        const getAssociationName = async id => (await associationNameService.getNameFromIdentifier(id)) || id;
+        const namedTopAssociations = topAssociationsAsc.reduce(async (acc, topAssociation) => {
+            const result = await acc;
+            return result.concat({
+                name: await getAssociationName(topAssociation.id),
+                visits: topAssociation.visits
+            });
+        }, Promise.resolve([]) as Promise<{ name: string; visits: number }[]>);
+
+        return namedTopAssociations;
+    }
+
+    addAssociationVisit(visit: AssociationVisitEntity) {
+        return statsAssociationsVisitRepository.add(visit);
     }
 }
 
