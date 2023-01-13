@@ -1,6 +1,7 @@
 import statsRepository from "./repositories/statsRepository";
 import { englishMonthNames, firstDayOfPeriod, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
+import statsRepository from "./repositories/stats.repository";
 
 class StatsService {
     async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {

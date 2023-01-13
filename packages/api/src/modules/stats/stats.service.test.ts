@@ -3,6 +3,7 @@ import statsRepository from "./repositories/statsRepository";
 import { firstDayOfPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
+import statsRepository from "./repositories/stats.repository";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {

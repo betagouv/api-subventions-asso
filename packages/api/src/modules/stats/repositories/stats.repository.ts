@@ -98,6 +98,14 @@ export class StatsRepository {
         const queryResult = await this.collection.aggregate(buildQuery()).toArray();
         return getMonthlyDataObject(queryResult, "_id", "nbOfRequest");
     }
+
+    public getLogsWithRegexUrl(regex: RegExp) {
+        return this.collection
+            .find({
+                "meta.req.url": regex
+            })
+            .toArray();
+    }
 }
 
 const statsRepository = new StatsRepository();
