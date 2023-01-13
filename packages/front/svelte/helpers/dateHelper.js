@@ -13,4 +13,13 @@ export const withTwoDigitYear = date => {
     } else return date;
 };
 
+export const dateToDDMMYYYY = _date => {
+    const date = new Date(_date);
+    return `${getDayWithZero(date.getDate())}/${getMonthWithZero(date.getMonth() + 1)}/${date.getFullYear()}`;
+};
+
+export const getDayWithZero = day => ("0" + day).slice(-2);
+
+export const getMonthWithZero = day => ("0" + day).slice(-2);
+
 export const isValidDate = date => date instanceof Date && !isNaN(date);

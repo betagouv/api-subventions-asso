@@ -1,5 +1,4 @@
 <script>
-    import Button from "../../dsfr/Button.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
@@ -7,10 +6,9 @@
     import etablissementService from "./etablissement.service";
     import associationService from "../association/association.service";
     import { siretToSiren } from "../../helpers/sirenHelper";
-    import { getSiegeSiret } from "../association/association.helper";
     import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
-    import AssoEtabTitle from "../../components/StructureTitle/StructureTitle.svelte";
+    import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
 
     export let id;
 
@@ -25,10 +23,16 @@
     {#await associationPromise}
         <FullPageSpinner description="Chargement de l'établissement {id} en cours ..." />
     {:then association}
-        <AssoEtabTitle {association} etablissementId="id" />
-        <InfosLegales {association} />
+        <div class="fr-mb-3w">
+            <StructureTitle {association} siret={id} />
+        </div>
         {#await etablissementPromise then etablissement}
-            <TabEtab {etablissement} {titles} identifier={id} />
+            <div class="fr-mb-6w">
+                <InfosLegales {association} {etablissement} />
+            </div>
+            <div class="fr-mb-6w">
+                <TabEtab {etablissement} {titles} identifier={id} />
+            </div>
         {:catch error}
             {#if error.request && error.request.status === 404}
                 <DataNotFound />

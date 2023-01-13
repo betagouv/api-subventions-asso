@@ -5,7 +5,7 @@
 
 <div
     id={`tabpanel-${index}-panel`}
-    class={`fr-tabs__panel fr-tabs__panel--${selected ? "selected" : ""}`}
+    class={`fr-tabs__panel fr-tabs__panel--${selected ? "selected" : ""} background-default`}
     role="tabpanel"
     aria-labelledby={`tabpanel-${index}`}
     tabindex="0">

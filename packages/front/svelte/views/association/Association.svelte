@@ -9,7 +9,7 @@
     import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
-    import AssoEtabTitle from "../../components/StructureTitle/StructureTitle.svelte";
+    import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
 
     export let id;
 
@@ -23,13 +23,21 @@
     <FullPageSpinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
     {#if !association.rna && !isAssociation(association.categorie_juridique)}
-        <Alert type="warning" title="Attention">
-            Il semblerait que vous cherchiez une entreprise et non une association
-        </Alert>
+        <div class="fr-mb-3w">
+            <Alert type="warning" title="Attention">
+                Il semblerait que vous cherchiez une entreprise et non une association
+            </Alert>
+        </div>
     {/if}
-    <AssoEtabTitle {association} />
-    <InfosLegales {association} />
-    <TabsAsso {titles} associationIdentifier={id} {association} />
+    <div class="fr-mb-3w">
+        <StructureTitle {association} />
+    </div>
+    <div class="fr-mb-6w">
+        <InfosLegales {association} />
+    </div>
+    <div class="fr-mb-6w">
+        <TabsAsso {titles} associationIdentifier={id} {association} />
+    </div>
 {:catch error}
     {#if error.request && error.request.status == 404}
         <DataNotFound />
