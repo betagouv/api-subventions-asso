@@ -18,5 +18,4 @@ export class StatsService {
 }
 
 const statsService = new StatsService();
-
 export default statsService;
