@@ -45,7 +45,7 @@ export class MonthlyUserCountByYearController {
         if (!canvas) return;
 
         const ctx = canvas.getContext("2d");
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        const gradient = ctx.createLinearGradient(0, 0, 0, 288);
         gradient.addColorStop(0, "#ADBFFC");
         gradient.addColorStop(1, "white");
 
