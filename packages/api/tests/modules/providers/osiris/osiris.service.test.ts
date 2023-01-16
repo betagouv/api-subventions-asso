@@ -57,8 +57,8 @@ describe("OsirisService", () => {
                 const eventManagerMock = jest
                     .spyOn(EventManager, "call")
                     .mockImplementation((name, value) => Promise.resolve({ name, value }));
-                // @ts-expect-error: Jest mock
                 jest.spyOn(osirisRequestRepository, "findByOsirisId").mockImplementationOnce(() =>
+                    // @ts-expect-error: Jest mock
                     Promise.resolve(null)
                 );
                 const LAST_UPDATE = new Date();

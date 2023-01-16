@@ -217,8 +217,8 @@ describe("leCompteAssoService", () => {
         });
 
         it("should call EventManager", async () => {
-            // @ts-expect-error: Jest mock
             jest.spyOn(leCompteAssoRepository, "findByCompteAssoId").mockImplementationOnce(() =>
+                // @ts-expect-error: Jest mock
                 Promise.resolve({ legalInformations: { rna: RNA } })
             );
             const LAST_UPDATE = new Date();
