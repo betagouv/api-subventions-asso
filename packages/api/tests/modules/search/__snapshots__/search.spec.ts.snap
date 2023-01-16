@@ -5,10 +5,10 @@ Object {
   "result": Array [
     Object {
       "lastUpdate": Any<String>,
-      "name": "Association Name",
-      "provider": "Provider Name",
-      "rna": "W000000000",
-      "siren": "000000001",
+      "name": "ASSOCIATION AURORE",
+      "provider": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
+      "rna": "W931006748",
+      "siren": "775684970",
     },
   ],
   "success": true,
@@ -20,10 +20,10 @@ Object {
   "result": Array [
     Object {
       "lastUpdate": Any<String>,
-      "name": "Association Name",
-      "provider": "Provider Name",
-      "rna": "W000000000",
-      "siren": "000000001",
+      "name": "ASSOCIATION AURORE",
+      "provider": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
+      "rna": "W931006748",
+      "siren": "775684970",
     },
   ],
   "success": true,
@@ -35,10 +35,10 @@ Object {
   "result": Array [
     Object {
       "lastUpdate": Any<String>,
-      "name": "Association Name",
-      "provider": "Provider Name",
-      "rna": "W000000000",
-      "siren": "000000001",
+      "name": "ASSOCIATION AURORE",
+      "provider": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
+      "rna": "W931006748",
+      "siren": "775684970",
     },
   ],
   "success": true,

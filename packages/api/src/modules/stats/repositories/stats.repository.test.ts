@@ -1,4 +1,4 @@
-import statsRepository from "./statsRepository";
+import statsRepository from "./stats.repository";
 import { firstDayOfPeriod } from "../../../shared/helpers/DateHelper";
 
 const FIRST_DAY_YEAR = firstDayOfPeriod(2022);

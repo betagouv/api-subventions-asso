@@ -1,7 +1,8 @@
 import {
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
-    MonthlyAvgRequestDtoResponse
+    MonthlyAvgRequestDtoResponse,
+    AssociationTopDtoResponse
 } from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
@@ -97,6 +98,49 @@ export class StatsController extends Controller {
     async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         const result = await statsService.getMonthlyUserNbByYear(Number(year));
+        return { success: true, data: result };
+    }
+
+    /**
+     * Permet de récupérer les associations les plus visitées et le nombre de requêtes associées par périodes (Une période correspond forcément à un mois)
+     *
+     * @summary Permet de récupérer les associations les plus visitées et le nombre de requêtes associées par périodes (Une période correspond forcément à un mois)
+     * @param limit Number of returned associations. Default is 5
+     * @param startYear The full number year of the start period. Default as one year before the current year
+     * @param startMonth Number of the start period month (January as 0). Default as 0. For exemple startYear = 2023 and startMonth = 0, the start period has 01/01/2023
+     * @param endYear The full number year of the end period. Default is current year
+     * @param endMonth Number of the end period month (January as 0). Default as 0. For exemple endYear = 2023 and endMonth = 0, the end period has 31/01/2023
+     */
+    @Get("/associations")
+    @Response<ErrorResponse>("500")
+    async getTopAssociations(
+        @Query() limit = "5",
+        @Query() startYear: string | null = null,
+        @Query() startMonth: string | null = null,
+        @Query() endYear: string | null = null,
+        @Query() endMonth: string | null = null
+    ): Promise<AssociationTopDtoResponse> {
+        if (isNaN(Number(limit))) throw new BadRequestError("'limit' must be a number");
+        if (startYear !== null && isNaN(Number(startYear))) throw new BadRequestError("'startYear' must be a number");
+        if (startMonth !== null && isNaN(Number(startMonth)))
+            throw new BadRequestError("'startMonth' must be a number");
+        if (endYear !== null && isNaN(Number(endYear))) throw new BadRequestError("'endYear' must be a number");
+        if (endMonth !== null && isNaN(Number(endMonth))) throw new BadRequestError("'endMonth' must be a number");
+
+        const now = new Date();
+
+        const endMonthNumber =
+            endMonth != null && !isNaN(Number(endMonth)) ? Number(endMonth) + 1 : endYear ? 0 : now.getMonth() + 1;
+
+        const startMonthNumber =
+            startMonth != null && !isNaN(Number(startMonth)) ? Number(startMonth) : startYear ? 0 : now.getMonth();
+
+        const endYearNumber = endYear ? Number(endYear) : now.getFullYear();
+        const startYearNumber = startYear ? Number(startYear) : now.getFullYear() - 1;
+
+        const end = new Date(Date.UTC(endYearNumber, endMonthNumber));
+        const start = new Date(Date.UTC(startYearNumber, startMonthNumber));
+        const result = await statsService.getTopAssociationsByPeriod(Number(limit), start, end);
         return { success: true, data: result };
     }
 }
