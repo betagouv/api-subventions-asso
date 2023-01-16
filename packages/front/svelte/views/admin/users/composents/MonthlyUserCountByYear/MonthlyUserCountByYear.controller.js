@@ -27,7 +27,7 @@ export class MonthlyUserCountByYearController {
         this.dataPromise.set(statsService.getMonthlyUserCount(YEAR_CHOICES[newYearIndex]));
         this._data = await this.dataPromise.value;
         this.progress.set(this.getProgress());
-        this.chartData = this._data;
+        this.chartData = Object.values(this._data);
         this.chart.update();
     }
 
@@ -61,10 +61,14 @@ export class MonthlyUserCountByYearController {
                 }
             },
             data: {
+                labels: Object.keys(this._data).map(fullMonth =>
+                    new Date(Date.parse(fullMonth + " 1, 2022")).toLocaleDateString(`fr`, { month: `narrow` })
+                ),
                 datasets: [
                     {
                         label: "Utilisateurs",
-                        data: this._data,
+                        // TODO update with api improvement
+                        data: Object.values(this._data),
                         borderColor: "#3F49E3",
                         backgroundColor: gradient,
                         fill: true,
