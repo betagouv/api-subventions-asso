@@ -13,7 +13,10 @@ describe("ConsumerCliController", () => {
         it("should create a user", async () => {
             await cli.create(EMAIL);
             const actual = await userRepository.findByEmail(EMAIL);
-            expect(actual).toMatchSnapshot({ _id: expect.any(ObjectId), signupAt: expect.any(Date) });
+            expect(actual).toMatchSnapshot({
+                _id: expect.any(ObjectId),
+                signupAt: expect.any(Date)
+            });
         });
 
         it("should create a consumer token with user info", async () => {

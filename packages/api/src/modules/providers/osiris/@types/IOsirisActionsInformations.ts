@@ -1,50 +1,50 @@
 import { Siret } from "@api-subventions-asso/dto";
 
 export default interface IOsirisActionsInformations {
-    osirisActionId: string,
-    compteAssoId: string,
-    licencies: number,
-    licenciesHommes: number,
-    licenciesFemmes: number,
-    benevoles: number,
-    benevolesETPT: number,
-    salaries: number,
-    salariesETPT: number,
-    salariesCDI: number,
-    salariesCDIETPT: number,
-    salariesCDD: number,
-    salariesCDDETPT: number,
-    emploiesAides: number,
-    emploiesAidesETPT: number,
-    volontaires: number
-    volontairesETPT: number
-    federation?: string,
+    osirisActionId: string;
+    compteAssoId: string;
+    licencies: number;
+    licenciesHommes: number;
+    licenciesFemmes: number;
+    benevoles: number;
+    benevolesETPT: number;
+    salaries: number;
+    salariesETPT: number;
+    salariesCDI: number;
+    salariesCDIETPT: number;
+    salariesCDD: number;
+    salariesCDDETPT: number;
+    emploiesAides: number;
+    emploiesAidesETPT: number;
+    volontaires: number;
+    volontairesETPT: number;
+    federation?: string;
 
-    territoireStatus: string
-    territoireCommentaire: string
+    territoireStatus: string;
+    territoireCommentaire: string;
 
-    ej: string,
-    siret: Siret,
-    rang: number,
-    intitule: string,
-    objectifs: string,
-    objectifs_operationnels: string,
-    description: string,
-    nature_aide: string,
-    modalite_aide: string,
-    modalite_ou_dispositif: string,
-    indicateurs: string,
-    
-    cofinanceurs: string,
-    cofinanceurs_montant_demandes: number,
+    ej: string;
+    siret: Siret;
+    rang: number;
+    intitule: string;
+    objectifs: string;
+    objectifs_operationnels: string;
+    description: string;
+    nature_aide: string;
+    modalite_aide: string;
+    modalite_ou_dispositif: string;
+    indicateurs: string;
 
-    montants_versement_total: number,
-    montants_versement_demande: number,
-    montants_versement_propose: number,
-    montants_versement_accorde: number,
-    montants_versement_attribue: number,
-    montants_versement_realise: number,
-    montants_versement_compensation: number
+    cofinanceurs: string;
+    cofinanceurs_montant_demandes: number;
 
-    extractYear: number
+    montants_versement_total: number;
+    montants_versement_demande: number;
+    montants_versement_propose: number;
+    montants_versement_accorde: number;
+    montants_versement_attribue: number;
+    montants_versement_realise: number;
+    montants_versement_compensation: number;
+
+    extractYear: number;
 }

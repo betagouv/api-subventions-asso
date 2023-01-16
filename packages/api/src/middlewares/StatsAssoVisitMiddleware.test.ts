@@ -72,7 +72,11 @@ describe("StatsAssoVisitsMiddleware", () => {
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
-        const expected = { userId: USER_ID, associationIdentifier: RNA, date: expect.any(Date) };
+        const expected = {
+            userId: USER_ID,
+            associationIdentifier: RNA,
+            date: expect.any(Date)
+        };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
     });
@@ -91,7 +95,11 @@ describe("StatsAssoVisitsMiddleware", () => {
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
-        const expected = { userId: USER_ID, associationIdentifier: SIREN, date: expect.any(Date) };
+        const expected = {
+            userId: USER_ID,
+            associationIdentifier: SIREN,
+            date: expect.any(Date)
+        };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
     });
@@ -111,7 +119,11 @@ describe("StatsAssoVisitsMiddleware", () => {
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
-        const expected = { userId: USER_ID, associationIdentifier: SIREN, date: expect.any(Date) };
+        const expected = {
+            userId: USER_ID,
+            associationIdentifier: SIREN,
+            date: expect.any(Date)
+        };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
     });

@@ -1,13 +1,15 @@
 import { ObjectId } from "mongodb";
 import { ParserInfo, ParserPath, Falsy } from "../../../../@types";
 import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
-import OsirisActionEntityDbo from './OsirisActionEntityDbo';
-import OsirisEvaluationEntity from './OsirisEvaluationEntity';
+import OsirisActionEntityDbo from "./OsirisActionEntityDbo";
+import OsirisEvaluationEntity from "./OsirisEvaluationEntity";
 
 export default class OsirisActionEntity extends OsirisActionEntityDbo {
     public static defaultMainCategory = "Dossier/action";
 
-    public static indexedInformationsPath: {[key: string]: ParserPath | ParserInfo }= {
+    public static indexedInformationsPath: {
+        [key: string]: ParserPath | ParserInfo;
+    } = {
         osirisActionId: ["Dossier/action", "Numero Action Osiris"],
         compteAssoId: ["Dossier/action", "N° Dossier Compte Asso"],
         federation: ["Fédération d'affiliation", "Fédération"],
@@ -40,7 +42,7 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         modalite_aide: ["Caractéristiques actions", "Modalité de l'aide"],
         modalite_ou_dispositif: ["Caractéristiques actions", "Modalité ou dispositif"],
         indicateurs: ["Evaluation", "Indicateurs"],
-        
+
         cofinanceurs: ["Cofinanceurs", "Noms"],
         cofinanceurs_montant_demandes: ["Cofinanceurs", "Montants demandés"],
 
@@ -50,15 +52,15 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         montants_versement_accorde: ["Montants et versements", "Accordé"],
         montants_versement_attribue: ["Montants et versements", "Montant Total Attribué"],
         montants_versement_realise: ["Montants et versements", "Réalisé"],
-        montants_versement_compensation: ["Montants et versements", "Compensation"],
-    }
+        montants_versement_compensation: ["Montants et versements", "Compensation"]
+    };
 
     constructor(
         public indexedInformations: IOsirisActionsInformations,
         public data: unknown,
         public _id?: ObjectId,
-        public evaluation?: Falsy<OsirisEvaluationEntity>,
+        public evaluation?: Falsy<OsirisEvaluationEntity>
     ) {
-        super(indexedInformations, data, _id)
+        super(indexedInformations, data, _id);
     }
 }

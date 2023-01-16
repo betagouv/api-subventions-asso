@@ -1,33 +1,45 @@
-import { ProviderEnum } from '../../../@enums/ProviderEnum';
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 export default {
     // RAW service AssociationProvider + DemandeSubventionProvider
     serviceA: {
-        provider: { name: "serviceA", type: ProviderEnum.raw, description: "descriptionA" },
+        provider: {
+            name: "serviceA",
+            type: ProviderEnum.raw,
+            description: "descriptionA"
+        },
         isAssociationsProvider: true,
         isDemandesSubventionsProvider: true,
         getAssociationsBySiren: () => [{}],
         getAssociationsBySiret: () => [{}],
         getAssociationsByRna: () => [{}],
-        getDemandeSubventionBySiret: async () => ([{}]),
-        getDemandeSubventionBySiren: async () => ([{}]),
-        getDemandeSubventionByRna: async () => ([{}]),
+        getDemandeSubventionBySiret: async () => [{}],
+        getDemandeSubventionBySiren: async () => [{}],
+        getDemandeSubventionByRna: async () => [{}]
     },
     // API service AssociationProvider + DemandeSubventionProvider
     serviceB: {
-        provider: { name: "serviceB", type: ProviderEnum.api, description: "descriptionB" },
+        provider: {
+            name: "serviceB",
+            type: ProviderEnum.api,
+            description: "descriptionB"
+        },
         isAssociationsProvider: true,
         isDemandesSubventionsProvider: true,
         getAssociationsBySiren: () => [{}],
         getAssociationsBySiret: () => [{}],
         getAssociationsByRna: () => [{}],
-        getDemandeSubventionBySiret: async () => ([{}]),
-        getDemandeSubventionBySiren: async () => ([{}]),
-        getDemandeSubventionByRna: async () => ([{}]),
+        getDemandeSubventionBySiret: async () => [{}],
+        getDemandeSubventionBySiren: async () => [{}],
+        getDemandeSubventionByRna: async () => [{}]
     },
     // API service AssociationProvider that returns null for all getAssociations()
     serviceC: {
-        provider: { name: "serviceC", type: ProviderEnum.api, description: "descriptionC" },
+        provider: {
+            name: "serviceC",
+            type: ProviderEnum.api,
+            description: "descriptionC"
+        },
         isAssociationsProvider: true,
         isDemandesSubventionsProvider: false,
         getAssociationsBySiren: async () => null,
@@ -36,20 +48,28 @@ export default {
     },
     // API service that is not either an AssociationProvider or DemandesSubventionsProvider
     serviceD: {
-        provider: { name: "serviceD", type: ProviderEnum.api, description: "descriptionD" },
+        provider: {
+            name: "serviceD",
+            type: ProviderEnum.api,
+            description: "descriptionD"
+        },
         isAssociationsProvider: false,
         isDemandesSubventionsProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}]
     },
-    // RAW sercice that is not either an AssociationProvider or DemandesSubventionsProvider 
+    // RAW sercice that is not either an AssociationProvider or DemandesSubventionsProvider
     serviceE: {
-        provider: { name: "serviceE", type: ProviderEnum.raw, description: "descriptionE" },
+        provider: {
+            name: "serviceE",
+            type: ProviderEnum.raw,
+            description: "descriptionE"
+        },
         isAssociationsProvider: false,
         isDemandesSubventionsProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}]
     }
-}
+};

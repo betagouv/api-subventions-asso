@@ -6,6 +6,6 @@ describe("StringHelper", () => {
             const expected = "Lorem";
             const actual = StringHelper.capitalizeFirstLetter("lOReM");
             expect(actual).toEqual(expected);
-        })
-    } )
-})
+        });
+    });
+});

@@ -48,7 +48,10 @@ class StatsService {
             return;
         }
         const identifiers = await associationNameService.getGroupedIdentifiers(group._id);
-        const associationVisits = { id: group._id, visits: [] as AssociationVisitEntity[] };
+        const associationVisits = {
+            id: group._id,
+            visits: [] as AssociationVisitEntity[]
+        };
 
         associationVisits.visits.push(...group.visits);
 

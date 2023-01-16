@@ -23,12 +23,14 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         description:
             "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
     };
-    private dataSirenCache = new CacheData<{ associations: Association[]; etablissements: Etablissement[] }>(
-        CACHE_TIMES.ONE_DAY
-    );
-    private dataRnaCache = new CacheData<{ associations: Association[]; etablissements: Etablissement[] }>(
-        CACHE_TIMES.ONE_DAY
-    );
+    private dataSirenCache = new CacheData<{
+        associations: Association[];
+        etablissements: Etablissement[];
+    }>(CACHE_TIMES.ONE_DAY);
+    private dataRnaCache = new CacheData<{
+        associations: Association[];
+        etablissements: Etablissement[];
+    }>(CACHE_TIMES.ONE_DAY);
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
     private async sendRequest<T>(route: string): Promise<T | null> {
@@ -52,9 +54,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         }
     }
 
-    private async findFullScopeAssociation(
-        identifier: AssociationIdentifiers
-    ): Promise<{ associations: Association[]; etablissements: Etablissement[] } | null> {
+    private async findFullScopeAssociation(identifier: AssociationIdentifiers): Promise<{
+        associations: Association[];
+        etablissements: Etablissement[];
+    } | null> {
         if (this.dataSirenCache.has(identifier)) return this.dataSirenCache.get(identifier)[0];
         if (this.dataRnaCache.has(identifier)) return this.dataRnaCache.get(identifier)[0];
 
@@ -82,7 +85,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (structure.identite.id_rna || structure.identite.id_siren) {
             if (structure.identite.id_rna && structure.identite.id_siren) {
                 EventManager.call("rna-siren.matching", [
-                    { rna: structure.identite.id_rna, siren: structure.identite.id_siren }
+                    {
+                        rna: structure.identite.id_rna,
+                        siren: structure.identite.id_siren
+                    }
                 ]);
             }
 

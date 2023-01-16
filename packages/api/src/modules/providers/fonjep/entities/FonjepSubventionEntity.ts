@@ -1,32 +1,31 @@
 import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
-import { Siret } from "@api-subventions-asso/dto"
+import { Siret } from "@api-subventions-asso/dto";
 import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
 
 export default class FonjepSubventionEntity {
-
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         siret: {
             path: ["Association", "SiretOuRidet"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return value;
 
                 return value.replace(/ /g, "");
             }
         },
-        name: ["Association", "RaisonSociale"],
-    }
+        name: ["Association", "RaisonSociale"]
+    };
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         code_poste: ["Code"],
         dispositif: ["Dispositif", "Libelle"],
         montant_paye: {
             path: ["MontantSubvention"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return 0;
 
-                return !value.length ? parseFloat(value) : 0
+                return !value.length ? parseFloat(value) : 0;
             }
         },
         status: ["PstStatutPosteLibelle"],
@@ -35,7 +34,7 @@ export default class FonjepSubventionEntity {
         annee_demande: ["Annee"],
         date_fin_triennale: {
             path: ["DateFinTriennalite"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
             }
@@ -50,14 +49,14 @@ export default class FonjepSubventionEntity {
         },
         contact: ["Association", "ContactEmail"],
         plein_temps: ["PleinTemps"]
-    }
+    };
 
     constructor(
         public legalInformations: {
-            siret: Siret,
-            name: string,
+            siret: Siret;
+            name: string;
         },
         public indexedInformations: IFonjepIndexedInformations,
         public data: unknown
-    ) { }
+    ) {}
 }

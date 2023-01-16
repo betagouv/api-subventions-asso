@@ -1,5 +1,5 @@
 import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
-import { ProviderEnum } from '../../../@enums/ProviderEnum';
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
@@ -11,24 +11,24 @@ import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 
 export enum FONJEP_SERVICE_ERRORS {
-    INVALID_ENTITY = 1,
+    INVALID_ENTITY = 1
 }
 
 export interface RejectedRequest {
-    success: false,
-    message: string,
-    code: FONJEP_SERVICE_ERRORS,
-    data?: unknown
+    success: false;
+    message: string;
+    code: FONJEP_SERVICE_ERRORS;
+    data?: unknown;
 }
 
-export type CreateFonjepResponse = RejectedRequest | { success: true }
+export type CreateFonjepResponse = RejectedRequest | { success: true };
 export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider {
-
     provider = {
         name: "Extranet FONJEP",
         type: ProviderEnum.raw,
-        description: "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
-    }
+        description:
+            "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
+    };
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
         const valid = this.validateEntity(entity);
@@ -44,19 +44,32 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     validateEntity(entity: FonjepSubventionEntity): { success: true } | RejectedRequest {
         if (!isSiret(entity.legalInformations.siret)) {
-            return { success: false, message: `INVALID SIRET FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            return {
+                success: false,
+                message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY
+            };
         }
 
         if (!isAssociationName(entity.legalInformations.name)) {
-            return { success: false, message: `INVALID NAME FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            return {
+                success: false,
+                message: `INVALID NAME FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY
+            };
         }
 
-        const dates = [
-            entity.indexedInformations.date_fin_triennale,
-        ]
+        const dates = [entity.indexedInformations.date_fin_triennale];
 
         if (!isDates(dates)) {
-            return { success: false, message: `INVALID DATE FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            return {
+                success: false,
+                message: `INVALID DATE FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY
+            };
         }
 
         const strings = [
@@ -66,20 +79,27 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             entity.indexedInformations.type_post,
             entity.indexedInformations.ville,
             entity.indexedInformations.code_postal,
-            entity.indexedInformations.contact,
-        ]
+            entity.indexedInformations.contact
+        ];
 
         if (!isStringsValid(strings)) {
-            return { success: false, message: `INVALID STRING FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            return {
+                success: false,
+                message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY
+            };
         }
 
-        const numbers = [
-            entity.indexedInformations.montant_paye,
-            entity.indexedInformations.annee_demande
-        ]
+        const numbers = [entity.indexedInformations.montant_paye, entity.indexedInformations.annee_demande];
 
         if (!isNumbersValid(numbers)) {
-            return { success: false, message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            return {
+                success: false,
+                message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY
+            };
         }
 
         return { success: true };
@@ -87,7 +107,12 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     async createVersementEntity(entity: FonjepVersementEntity): Promise<CreateFonjepResponse> {
         if (!isSiret(entity.legalInformations.siret)) {
-            return { success: false, message: `INVALID SIRET FOR ${entity.legalInformations.siret}`, data: entity, code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY };
+            return {
+                success: false,
+                message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: FONJEP_SERVICE_ERRORS.INVALID_ENTITY
+            };
         }
 
         // Do not validEntity now because it is only called after Subvention validation (siret as already been validated)
@@ -98,14 +123,13 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         };
     }
 
-
     /**
      * |----------------------------|
      * |  DemandesSubventions Part  |
      * |----------------------------|
      */
 
-    isDemandesSubventionsProvider = true
+    isDemandesSubventionsProvider = true;
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const entities = await fonjepSubventionRepository.findBySiret(siret);
@@ -134,7 +158,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
      * |----------------------|
      */
 
-    isEtablissementProvider = true
+    isEtablissementProvider = true;
 
     async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
         const entities = await fonjepSubventionRepository.findBySiret(siret);
@@ -174,7 +198,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
      * |----------------------------|
      */
 
-    isVersementsProvider = true
+    isVersementsProvider = true;
 
     toVersementArray(documents): VersementFonjep[] {
         return documents.map(document => FonjepEntityAdapter.toVersement(document));
@@ -182,7 +206,6 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     async getVersementsByKey(codePoste: string) {
         return this.toVersementArray(await fonjepVersementRepository.findByCodePoste(codePoste));
-
     }
 
     async getVersementsBySiret(siret: Siret) {

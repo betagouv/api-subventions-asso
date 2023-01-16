@@ -5,7 +5,13 @@ import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
 
 export class UniteLegaleHistoriqueAdapter {
     static rawToAssociationName(raw: UniteLegalHistoryRaw) {
-        return new AssociationNameEntity(null, raw.denominationUniteLegale, dataGouvService.provider.name, new Date(raw.dateDebut), raw.siren)
+        return new AssociationNameEntity(
+            null,
+            raw.denominationUniteLegale,
+            dataGouvService.provider.name,
+            new Date(raw.dateDebut),
+            raw.siren
+        );
     }
 
     static rawToEntrepriseSiren(raw: UniteLegalHistoryRaw) {

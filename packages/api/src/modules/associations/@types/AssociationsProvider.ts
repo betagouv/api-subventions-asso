@@ -1,8 +1,8 @@
-import { Siret, Rna, Siren ,Association} from "@api-subventions-asso/dto";
-import Provider from '../../providers/@types/IProvider';
+import { Siret, Rna, Siren, Association } from "@api-subventions-asso/dto";
+import Provider from "../../providers/@types/IProvider";
 
 export default interface AssociationsProvider extends Provider {
-    isAssociationsProvider: boolean,
+    isAssociationsProvider: boolean;
 
     getAssociationsBySiren(siren: Siren): Promise<Association[] | null>;
     getAssociationsBySiret(siret: Siret): Promise<Association[] | null>;

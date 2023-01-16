@@ -17,5 +17,4 @@ const entity = new SubventiaRequestEntity(
     {}
 );
 
-
 export default entity;

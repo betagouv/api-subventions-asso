@@ -1,7 +1,7 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
 
 export function siretToSiren(siret: Siret): Siren {
-    return siret.slice(0,9);
+    return siret.slice(0, 9);
 }
 
 export function siretToNIC(siret: Siret) {

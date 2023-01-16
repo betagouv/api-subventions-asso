@@ -1,38 +1,64 @@
-import fs from "fs"
+import fs from "fs";
 import DataGouvParser from "./datagouv.parser";
 
 describe("DataGouvParser", () => {
     const now = new Date();
     describe("isDatesValid", () => {
         it("should return false if periodStart is not valid", () => {
-            // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({ periodStart: "2022-0a-02", importDate: new Date("2022-10-01"), now });
+            // @ts-expect-error: private method
+            const actual = DataGouvParser.isDatesValid({
+                // @ts-expect-error: invalid date
+                periodStart: "2022-0a-02",
+                importDate: new Date("2022-10-01"),
+                now
+            });
             expect(actual).toBeFalsy();
         });
 
         it("should return false because periodStart is not effective yet", () => {
             // today + one year
-            const periodStart = (date => { date.setFullYear(date.getFullYear() + 1); return date })(new Date());
+            const periodStart = (date => {
+                date.setFullYear(date.getFullYear() + 1);
+                return date;
+            })(new Date());
             // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({ periodStart, importDate: null, now });
+            const actual = DataGouvParser.isDatesValid({
+                periodStart,
+                importDate: null,
+                now
+            });
             expect(actual).toBeFalsy();
         });
 
         it("should return false because periodStart < importDate", () => {
             // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({ periodStart: new Date("2022-11-01"), importDate: new Date("2022-12-01"), now });
+            const actual = DataGouvParser.isDatesValid({
+                periodStart: new Date("2022-11-01"),
+                importDate: new Date("2022-12-01"),
+                now
+            });
             expect(actual).toBeFalsy();
         });
 
         it("should return true", () => {
             // today - 10 days
-            const periodStart = (date => { date.setDate(date.getDate() - 10); return date })(new Date());
-            const importDate = (date => { date.setMonth(date.getMonth() - 1); return date })(new Date());
+            const periodStart = (date => {
+                date.setDate(date.getDate() - 10);
+                return date;
+            })(new Date());
+            const importDate = (date => {
+                date.setMonth(date.getMonth() - 1);
+                return date;
+            })(new Date());
             // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({ periodStart, importDate, now });
+            const actual = DataGouvParser.isDatesValid({
+                periodStart,
+                importDate,
+                now
+            });
             expect(actual).toBeTruthy();
-        })
-    })
+        });
+    });
 
     describe("parseUniteLegalHistory", () => {
         const spys: jest.SpyInstance[] = [];
@@ -41,53 +67,50 @@ describe("DataGouvParser", () => {
             const stream = {
                 on: (status: string, callback: (_?: Buffer) => Promise<void>) => {
                     if (status === "data") {
-                        streamPromise = new Promise((resolve) => {
+                        streamPromise = new Promise(resolve => {
                             callback(buffer).then(() => {
                                 resolve();
                             });
-                        })
-
+                        });
                     } else if (status === "end") {
-                        streamPromise.then(() => callback())
+                        streamPromise.then(() => callback());
                     }
                 },
                 pause: jest.fn(),
                 resume: jest.fn()
             } as unknown as fs.ReadStream;
 
-            spys.push(
-                jest.spyOn(fs, "createReadStream").mockImplementationOnce(() => stream),
-            )
+            spys.push(jest.spyOn(fs, "createReadStream").mockImplementationOnce(() => stream));
 
             return {
                 mockPause: stream.pause,
-                mockResume: stream.resume,
-            }
-        }
+                mockResume: stream.resume
+            };
+        };
 
-        const buildFileContent = (data: { siren: string, dateDebut: string }[]) => {
+        const buildFileContent = (data: { siren: string; dateDebut: string }[]) => {
             const textContent = data.reduce((acc, data) => {
-                return `${acc}\n${data.siren};${data.dateDebut};`
+                return `${acc}\n${data.siren};${data.dateDebut};`;
             }, "siren;dateDebut");
 
             return Buffer.from(textContent, "utf-8");
-        }
+        };
 
         beforeEach(() => {
-            spys.push(
-                jest.spyOn(fs, "statSync").mockImplementationOnce(() => ({ size: 1000 * 1000 }) as fs.Stats),
-            )
-        })
+            spys.push(jest.spyOn(fs, "statSync").mockImplementationOnce(() => ({ size: 1000 * 1000 } as fs.Stats)));
+        });
 
         afterEach(() => {
-            spys.forEach(s => s.mockClear())
+            spys.forEach(s => s.mockClear());
         });
 
         it("should parse one entity", async () => {
-            const buffer = buildFileContent([{
-                siren: "000000001",
-                dateDebut: "1970-01-01",
-            }]);
+            const buffer = buildFileContent([
+                {
+                    siren: "000000001",
+                    dateDebut: "1970-01-01"
+                }
+            ]);
 
             buildStreamMock(buffer);
 
@@ -99,17 +122,17 @@ describe("DataGouvParser", () => {
             expect(mock).toBeCalledWith(
                 expect.objectContaining({ siren: "000000001" }),
                 expect.any(Function),
-                expect.any(Function),
+                expect.any(Function)
             );
-        })
+        });
 
         it("should parse 1000 entries", async () => {
             const data: any[] = [];
             for (let i = 0; i < 10000; i++) {
                 data.push({
                     siren: ("000000000" + i).slice(-9),
-                    dateDebut: "1970-01-01",
-                })
+                    dateDebut: "1970-01-01"
+                });
             }
 
             const buffer = buildFileContent(data);
@@ -121,13 +144,15 @@ describe("DataGouvParser", () => {
             await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock);
 
             expect(mock).toBeCalledTimes(10000);
-        })
+        });
 
         it("should call pause stream and resume stream", async () => {
-            const buffer = buildFileContent([{
-                siren: "000000001",
-                dateDebut: "1970-01-01",
-            }]);
+            const buffer = buildFileContent([
+                {
+                    siren: "000000001",
+                    dateDebut: "1970-01-01"
+                }
+            ]);
 
             const mocks = buildStreamMock(buffer);
 
@@ -138,6 +163,6 @@ describe("DataGouvParser", () => {
 
             expect(mocks.mockPause).toBeCalledTimes(1);
             expect(mocks.mockResume).toBeCalledTimes(1);
-        })
-    })
-})
+        });
+    });
+});

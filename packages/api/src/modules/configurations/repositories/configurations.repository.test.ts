@@ -7,7 +7,7 @@ describe("Configuration Repository", () => {
     describe("upsert", () => {
         it("should be call updateOne of collection", async () => {
             const fn = jest.fn();
-            collectionMock.mockImplementationOnce(() => ({updateOne: fn}));
+            collectionMock.mockImplementationOnce(() => ({ updateOne: fn }));
 
             const expected = [
                 {
@@ -19,12 +19,15 @@ describe("Configuration Repository", () => {
                 {
                     upsert: true
                 }
-            ]
+            ];
 
-            configurationsRepository.upsert('TEST', { data: "test-data", name: "TEST" });
+            configurationsRepository.upsert("TEST", {
+                data: "test-data",
+                name: "TEST"
+            });
 
             expect(fn).toHaveBeenCalledWith(...expected);
-        })
+        });
     });
 
     describe("getByName", () => {
@@ -35,12 +38,12 @@ describe("Configuration Repository", () => {
             const expected = [
                 {
                     name: "TEST"
-                },
+                }
             ];
 
-            configurationsRepository.getByName('TEST');
+            configurationsRepository.getByName("TEST");
 
             expect(fn).toHaveBeenCalledWith(...expected);
-        })
+        });
     });
-})
+});

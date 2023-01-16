@@ -1,9 +1,9 @@
-import { Siren, Siret ,Etablissement} from "@api-subventions-asso/dto";
-import Provider from '../../providers/@types/IProvider';
+import { Siren, Siret, Etablissement } from "@api-subventions-asso/dto";
+import Provider from "../../providers/@types/IProvider";
 
 export default interface EtablissementProvider extends Provider {
-    isEtablissementProvider: boolean,
+    isEtablissementProvider: boolean;
 
-    getEtablissementsBySiret(siret: Siret, wait?: boolean): Promise<Etablissement[] | null>
-    getEtablissementsBySiren(siret: Siren, wait?: boolean): Promise<Etablissement[] | null>
+    getEtablissementsBySiret(siret: Siret, wait?: boolean): Promise<Etablissement[] | null>;
+    getEtablissementsBySiren(siret: Siren, wait?: boolean): Promise<Etablissement[] | null>;
 }

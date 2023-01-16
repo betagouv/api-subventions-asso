@@ -1,5 +1,5 @@
-import ProviderValueFactory from '../../../../shared/ProviderValueFactory';
-import OsirisRequestAdapter from './OsirisRequestAdapter';
+import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
+import OsirisRequestAdapter from "./OsirisRequestAdapter";
 import OsirisEntity from "../../../../../tests/modules/providers/osiris/__fixtures__/entity";
 
 describe("OsirisRequestAdapter", () => {
@@ -16,4 +16,4 @@ describe("OsirisRequestAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
     });
-})
+});

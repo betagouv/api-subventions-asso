@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import path from "path";
-import GisproCliController from "../../../../../../src/modules/providers/gispro/interfaces/cli/gispro.cli.controller"
+import GisproCliController from "../../../../../../src/modules/providers/gispro/interfaces/cli/gispro.cli.controller";
 import GisproParser from "../../../../../../src/modules/providers/gispro/gispro.parser";
 
 const filePath = path.resolve(__dirname, "../../__fixtures__/gispro-test.xltx");
@@ -10,32 +10,30 @@ describe("GisproCliController", () => {
     let controller: GisproCliController;
     const spys: jest.SpyInstance<unknown>[] = [];
     beforeAll(() => {
-        spys.push(
-            jest.spyOn(GisproParser, 'parseActions'),
-        )
+        spys.push(jest.spyOn(GisproParser, "parseActions"));
     });
 
     afterAll(() => {
         spys.forEach(spy => spy.mockReset());
     });
 
-    describe('validate()', () => {
+    describe("validate()", () => {
         beforeEach(() => {
-            controller = new GisproCliController;
-        })
+            controller = new GisproCliController();
+        });
 
-        it('should throw an error with wrong first param', () => {
+        it("should throw an error with wrong first param", () => {
             const expected = "Validate command need type and file args";
             let actual = "";
             try {
-                controller.validate(1234, '');
+                controller.validate(1234, "");
             } catch (e) {
                 actual = e.message;
             }
             expect(actual).toEqual(expected);
-        })
+        });
 
-        it('should throw an error with wrong second param', () => {
+        it("should throw an error with wrong second param", () => {
             const expected = "Validate command need type and file args";
             let actual = "";
             try {
@@ -44,20 +42,20 @@ describe("GisproCliController", () => {
                 actual = e.message;
             }
             expect(actual).toEqual(expected);
-        })
+        });
 
-        it('should throw an error if the file does not exists', () => {
+        it("should throw an error if the file does not exists", () => {
             const expected = "File not found ./myFile";
             let actual = "";
             try {
-                controller.validate("requests", './myFile');
+                controller.validate("requests", "./myFile");
             } catch (e) {
                 actual = e.message;
             }
             expect(actual).toEqual(expected);
         });
 
-        it('should throw an error if the action type is not found', () => {
+        it("should throw an error if the action type is not found", () => {
             const expected = "The type request is not found";
             let actual = "";
             try {
@@ -66,27 +64,27 @@ describe("GisproCliController", () => {
                 actual = e.message;
             }
             expect(actual).toEqual(expected);
-        })
+        });
     });
 
-    describe('parse()', () => {
+    describe("parse()", () => {
         beforeEach(() => {
-            controller = new GisproCliController;
-        })
+            controller = new GisproCliController();
+        });
 
-        describe('params error handling', () => {
-            it('should throw an error with wrong first param', async () => {
+        describe("params error handling", () => {
+            it("should throw an error with wrong first param", async () => {
                 const expected = "Parse command need type and file args";
                 let actual = "";
                 try {
-                    await controller.parse(1234, '');
+                    await controller.parse(1234, "");
                 } catch (e) {
                     actual = e.message;
                 }
                 expect(actual).toEqual(expected);
-            })
-    
-            it('should throw an error with wrong second param', async () => {
+            });
+
+            it("should throw an error with wrong second param", async () => {
                 const expected = "Parse command need type and file args";
                 let actual = "";
                 try {
@@ -95,20 +93,20 @@ describe("GisproCliController", () => {
                     actual = e.message;
                 }
                 expect(actual).toEqual(expected);
-            })
-    
-            it('should throw an error if the file does not exists', async () => {
+            });
+
+            it("should throw an error if the file does not exists", async () => {
                 const expected = "File not found ./myFile";
                 let actual = "";
                 try {
-                    await controller.parse("actions", './myFile');
+                    await controller.parse("actions", "./myFile");
                 } catch (e) {
                     actual = e.message;
                 }
                 expect(actual).toEqual(expected);
             });
 
-            it('should throw an error if type is not handled', async () => {
+            it("should throw an error if type is not handled", async () => {
                 const expected = "The type requet is not taken into account";
                 let actual = "";
                 try {
@@ -117,10 +115,10 @@ describe("GisproCliController", () => {
                     actual = e.message;
                 }
                 expect(actual).toEqual(expected);
-            } )
-        })
+            });
+        });
 
-        it('should call parseActions()', async () => {
+        it("should call parseActions()", async () => {
             await controller.parse("actions", filePath);
             expect(GisproParser.parseActions).toHaveBeenCalled();
         });

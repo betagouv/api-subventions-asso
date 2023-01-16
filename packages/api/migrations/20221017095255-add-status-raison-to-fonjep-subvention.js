@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { connectDB } = require('../build/src/shared/MongoConnection');
-const { ObjectId } = require('mongodb');
-const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach
+const { connectDB } = require("../build/src/shared/MongoConnection");
+const { ObjectId } = require("mongodb");
+const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {
     async up(db, client) {
@@ -10,21 +10,24 @@ module.exports = {
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
         await connectDB();
-        const fonjepSubventionCollection = await db.collection('fonjepSubvention');
-        const subventions = await fonjepSubventionCollection.find({}).toArray()
+        const fonjepSubventionCollection = await db.collection("fonjepSubvention");
+        const subventions = await fonjepSubventionCollection.find({}).toArray();
         console.log(`subventions length ${subventions.length}`);
-        let updatePromises = []
+        let updatePromises = [];
 
         let batchCount = 0;
 
         await asyncForEach(subventions, async subventionEntity => {
             const pstRaisonStatutLibelle = subventionEntity.data["PstRaisonStatutLibelle"];
             subventionEntity.indexedInformations.raison = pstRaisonStatutLibelle;
-            const updatePromise = fonjepSubventionCollection.updateOne({ _id: ObjectId(subventionEntity._id) }, { $set: subventionEntity });
+            const updatePromise = fonjepSubventionCollection.updateOne(
+                { _id: ObjectId(subventionEntity._id) },
+                { $set: subventionEntity }
+            );
             updatePromises.push(updatePromise);
-            batchCount++
-            if (batchCount == 1000) { 
-                console.log("await 1000 updates...")
+            batchCount++;
+            if (batchCount == 1000) {
+                console.log("await 1000 updates...");
                 await Promise.all(updatePromises);
                 console.log("updates done. reset updatePromises...");
                 batchCount = 0;
@@ -33,9 +36,9 @@ module.exports = {
         });
     },
 
-  async down(db, client) {
-    // TODO write the statements to rollback your migration (if possible)
-    // Example:
-    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-  }
+    async down(db, client) {
+        // TODO write the statements to rollback your migration (if possible)
+        // Example:
+        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+    }
 };

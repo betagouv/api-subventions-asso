@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser"
+import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser";
 
 describe("FonjepParser", () => {
     describe("parse()", () => {

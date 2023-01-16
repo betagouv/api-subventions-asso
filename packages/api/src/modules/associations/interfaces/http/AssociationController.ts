@@ -1,7 +1,14 @@
-import { GetAssociationResponseDto, GetEtablissementResponseDto, GetEtablissementsResponseDto, GetSubventionsResponseDto, GetVersementsResponseDto, GetDocumentsResponseDto, DemandeSubvention } from '@api-subventions-asso/dto';
+import {
+    GetAssociationResponseDto,
+    GetEtablissementsResponseDto,
+    GetSubventionsResponseDto,
+    GetVersementsResponseDto,
+    GetDocumentsResponseDto,
+    DemandeSubvention
+} from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
-import { Route, Get, Controller, Tags, Security, Response } from 'tsoa';
-import { AssociationIdentifiers, StructureIdentifiers } from '../../../../@types';
+import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { AssociationIdentifiers, StructureIdentifiers } from "../../../../@types";
 
 import associationService from "../../associations.service";
 
@@ -23,13 +30,13 @@ export class AssociationController extends Controller {
             return { success: false, message: "Association not found" };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message }
+            return { success: false, message: (e as Error).message };
         }
     }
 
     /**
      * Recherche les demandes de subventions liées à une association
-     * 
+     *
      * @summary Recherche les demandes de subventions liées à une association
      * @param identifier Identifiant Siren ou Rna
      */
@@ -39,17 +46,20 @@ export class AssociationController extends Controller {
         try {
             const flux = await associationService.getSubventions(identifier);
             const result = await flux.toPromise();
-            const subventions = result.map(fluxSub => fluxSub.subventions).filter(sub => sub).flat() as DemandeSubvention[];
+            const subventions = result
+                .map(fluxSub => fluxSub.subventions)
+                .filter(sub => sub)
+                .flat() as DemandeSubvention[];
             return { success: true, subventions };
         } catch (e) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message }
+            return { success: false, message: (e as Error).message };
         }
     }
 
     /**
      * Recherche les versements liées à une association
-     * 
+     *
      * @summary Recherche les versements liées à une association
      * @param identifier Identifiant Siren ou Rna
      */
@@ -60,13 +70,13 @@ export class AssociationController extends Controller {
             return { success: true, versements: result };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message }
+            return { success: false, message: (e as Error).message };
         }
     }
 
     /**
      * Recherche les documents liées à une association
-     * 
+     *
      * @summary Recherche les documents liées à une association
      * @param identifier Identifiant Siren ou Rna
      */
@@ -77,7 +87,7 @@ export class AssociationController extends Controller {
             return { success: true, documents: result };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message }
+            return { success: false, message: (e as Error).message };
         }
     }
 
@@ -92,7 +102,7 @@ export class AssociationController extends Controller {
             return { success: true, etablissements };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message }
+            return { success: false, message: (e as Error).message };
         }
     }
 }

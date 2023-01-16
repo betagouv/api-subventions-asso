@@ -10,7 +10,6 @@ import { LoginRequest } from "../@types";
 import { RoleEnum } from "../@enums/Roles";
 
 describe("expressAuthentication", () => {
-
     // Spys
     const verifyMock = jest.spyOn(jwt, "verify");
     const refrechExpirationTokenMock = jest.spyOn(userService, "refrechExpirationToken");
@@ -28,26 +27,48 @@ describe("expressAuthentication", () => {
     } as express.Request;
     const SECURITY_NAME = "jwt";
     const VERIFY_DEFAULT_MOCK = (_, __, cb: (err: null, d: unknown) => void) => {
-        cb(null, { email: "test@beta.gouv.fr" })
+        cb(null, { email: "test@beta.gouv.fr" });
     };
     const DEFAULT_TOKEN = DEFAULT_REQ.headers["x-access-token"] as string;
 
     let warn: jest.SpyInstance;
     beforeAll(() => {
-        warn = jest.spyOn(console, 'warn').mockImplementation();
+        warn = jest.spyOn(console, "warn").mockImplementation();
         refrechExpirationTokenMock.mockImplementation(jest.fn());
-        findByEmailMock.mockImplementation((email) => Promise.resolve({ email, roles: ["user"], active: true, signupAt: new Date(), stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId() }));
-        findJwtByEmailMock.mockImplementation(() => Promise.resolve({ success: true, jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() } }))
-        updateMock.mockImplementation((user) => Promise.resolve({ email: user.email, roles: ["user", "admin"], active: true, signupAt: new Date(), stats: { searchCount: 0, lastSearchDate: null }, _id: new ObjectId() }))
+        findByEmailMock.mockImplementation(email =>
+            Promise.resolve({
+                email,
+                roles: ["user"],
+                active: true,
+                signupAt: new Date(),
+                stats: { searchCount: 0, lastSearchDate: null },
+                _id: new ObjectId()
+            })
+        );
+        findJwtByEmailMock.mockImplementation(() =>
+            Promise.resolve({
+                success: true,
+                jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() }
+            })
+        );
+        updateMock.mockImplementation(user =>
+            Promise.resolve({
+                email: user.email,
+                roles: ["user", "admin"],
+                active: true,
+                signupAt: new Date(),
+                stats: { searchCount: 0, lastSearchDate: null },
+                _id: new ObjectId()
+            })
+        );
         // @ts-expect-error: mock
         verifyMock.mockImplementation(VERIFY_DEFAULT_MOCK);
     });
 
-
     afterAll(() => {
         warn.mockRestore();
         SPYS.forEach(spy => spy.mockRestore());
-    })
+    });
 
     it("should throw an error when security do not use JWT", () => {
         const req = {} as LoginRequest;
@@ -64,7 +85,11 @@ describe("expressAuthentication", () => {
     });
 
     it("should throw an error when user role is not allowed", async () => {
-        const req = Object.assign({}, DEFAULT_REQ, { user: { roles: [RoleEnum.user] } }) as LoginRequest
-        await expect(expressAuthentication(req, SECURITY_NAME, [RoleEnum.admin])).rejects.toThrowError("JWT does not contain required scope.");
+        const req = Object.assign({}, DEFAULT_REQ, {
+            user: { roles: [RoleEnum.user] }
+        }) as LoginRequest;
+        await expect(expressAuthentication(req, SECURITY_NAME, [RoleEnum.admin])).rejects.toThrowError(
+            "JWT does not contain required scope."
+        );
     });
 });
