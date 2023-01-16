@@ -5,5 +5,5 @@ export const AssociationRaw = {
     siren: "000000001",
     denominationUniteLegale: "DENOMINATION",
     categorieJuridiqueUniteLegale: Number(LEGAL_CATEGORIES_ACCEPTED[0]),
-    dateDebut: (new Date()).toISOString()
-} as UniteLegalHistoryRaw
+    dateDebut: new Date().toISOString()
+} as UniteLegalHistoryRaw;

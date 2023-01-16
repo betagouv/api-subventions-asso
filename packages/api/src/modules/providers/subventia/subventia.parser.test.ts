@@ -2,22 +2,16 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
 import SubventiaParser from "./subventia.parser";
 
-
 describe("SubventiaParser", () => {
     describe("parse", () => {
-        const header = [
-            "A", "B", "C"
-        ];
+        const header = ["A", "B", "C"];
         const data = [
-            [1,2,3],
-            [4,5,6],
-            [7,8,9]
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
         ];
 
-        const fileContentData = [[
-            header,
-            ...data
-        ]];
+        const fileContentData = [[header, ...data]];
 
         const buffer = Buffer.from("TEST-BUFFER");
 
@@ -33,17 +27,17 @@ describe("SubventiaParser", () => {
             SubventiaParser.parse(expected);
 
             expect(xlsParseMock).toHaveBeenCalledWith(expected);
-        })
+        });
 
         it("should not retrun data (empty file)", () => {
             xlsParseMock.mockImplementationOnce(() => [[header]]);
 
-            const expected = 0
+            const expected = 0;
 
             const actual = SubventiaParser.parse(buffer);
 
             expect(actual).toHaveLength(expected);
-        })
+        });
 
         it("should call linkHeaderToData with headers and data", () => {
             xlsParseMock.mockImplementationOnce(() => fileContentData);
@@ -53,8 +47,8 @@ describe("SubventiaParser", () => {
             const expected = [
                 [header, data[0]],
                 [header, data[1]],
-                [header, data[2]],
-            ]
+                [header, data[2]]
+            ];
 
             SubventiaParser.parse(buffer);
 
@@ -63,27 +57,31 @@ describe("SubventiaParser", () => {
             expect(actual).toEqual(expected);
 
             indexDataByPathObjectMock.mockReset();
-        })
+        });
 
         it("should call indexDataByPathObject with parsed data", () => {
             xlsParseMock.mockImplementationOnce(() => fileContentData);
             const expected = {
-                A:1,
-                B:2,
-                C:3
-            }
+                A: 1,
+                B: 2,
+                C: 3
+            };
             linkHeaderToDataMock.mockImplementationOnce(() => expected);
             indexDataByPathObjectMock.mockImplementation(() => ({}));
 
-
             SubventiaParser.parse(buffer);
 
-
-            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(SubventiaRequestEntity.indexedProviderInformationsPath, expected);
-            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(SubventiaRequestEntity.indexedLegalInformationsPath, expected);
+            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
+                SubventiaRequestEntity.indexedProviderInformationsPath,
+                expected
+            );
+            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
+                SubventiaRequestEntity.indexedLegalInformationsPath,
+                expected
+            );
 
             indexDataByPathObjectMock.mockReset();
-        })
+        });
 
         it("should return entities", () => {
             xlsParseMock.mockImplementationOnce(() => fileContentData);
@@ -93,10 +91,9 @@ describe("SubventiaParser", () => {
             const expected = 3;
             const actual = SubventiaParser.parse(buffer);
 
-
             expect(actual).toHaveLength(expected);
 
             indexDataByPathObjectMock.mockReset();
-        })
-    })
+        });
+    });
 });

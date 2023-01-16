@@ -1,4 +1,4 @@
-import * as config from "../../src/configurations/mongo.conf"
+import * as config from "../../src/configurations/mongo.conf";
 
 describe("MongoDb Configuration", () => {
     it("should export mongo url", () => {

@@ -7,5 +7,5 @@ export default class AssociationNameEntity {
         public provider: string,
         public lastUpdate: Date,
         public siren: Siren | null = null
-    ) { }
+    ) {}
 }

@@ -1,13 +1,13 @@
-import dataEntrepriseService from "./dataEntreprise/dataEntreprise.service"
-import leCompteAssoService from "./leCompteAsso/leCompteAsso.service"
-import osirisService from "./osiris/osiris.service"
-import fonjepService from "./fonjep/fonjep.service"
-import chorusService from "./chorus/chorus.service"
-import apiAssoService from "./apiAsso/apiAsso.service"
-import dataGouvService from './datagouv/datagouv.service'
-import avisSituationInseeService from './avisSituationInsee/avisSituationInsee.service'
-import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service"
-import dauphinService from "./dauphin/dauphin.service"
+import dataEntrepriseService from "./dataEntreprise/dataEntreprise.service";
+import leCompteAssoService from "./leCompteAsso/leCompteAsso.service";
+import osirisService from "./osiris/osiris.service";
+import fonjepService from "./fonjep/fonjep.service";
+import chorusService from "./chorus/chorus.service";
+import apiAssoService from "./apiAsso/apiAsso.service";
+import dataGouvService from "./datagouv/datagouv.service";
+import avisSituationInseeService from "./avisSituationInsee/avisSituationInsee.service";
+import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service";
+import dauphinService from "./dauphin/dauphin.service";
 
 export default {
     dataEntrepriseService,
@@ -19,5 +19,5 @@ export default {
     dataGouvService,
     avisSituationInseeService,
     apiEntrepriseService,
-    dauphinService,
-}
+    dauphinService
+};

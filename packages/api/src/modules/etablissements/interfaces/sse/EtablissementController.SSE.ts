@@ -5,23 +5,21 @@ import SSEResponse from "../../../../sse/@types/SSEResponse";
 import etablissementService from "../../etablissements.service";
 
 @ControllerSSE("/sse/etablissement", {
-    security: "jwt",
+    security: "jwt"
 })
 export class EtablissementSSEController {
-  /**
-   * Recherche les demandes de subventions liées à un etablissement
-   *
-   * @summary Recherche les demandes de subventions liées à un etablissement
-   * @param identifier Identifiant Siren ou Rna
-   */
-  @Get("/:identifier/subventions")
+    /**
+     * Recherche les demandes de subventions liées à un etablissement
+     *
+     * @summary Recherche les demandes de subventions liées à un etablissement
+     * @param identifier Identifiant Siren ou Rna
+     */
+    @Get("/:identifier/subventions")
     public async getDemandeSubventions(req: express.Request, res: SSEResponse) {
         try {
-            const flux = await etablissementService.getSubventions(
-                req.params.identifier
-            );
+            const flux = await etablissementService.getSubventions(req.params.identifier);
 
-            flux.on("data", (data) => {
+            flux.on("data", data => {
                 res.sendSSEData(data);
             });
 

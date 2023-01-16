@@ -1,11 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { connectDB } = require('../build/src/shared/MongoConnection');
+const { connectDB } = require("../build/src/shared/MongoConnection");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const migrationManager = require("../build/src/shared/MigrationManager").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const osirisActionRepository = require("../build/src/modules/providers/osiris/repositories/osiris.action.repository").default;
+const osirisActionRepository =
+    require("../build/src/modules/providers/osiris/repositories/osiris.action.repository").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const enity = require("../build/src/modules/providers/osiris/entities/OsirisActionEntity").default;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -20,7 +21,7 @@ module.exports = {
         const cursor = osirisActionRepository.cursorFind();
 
         let counter = 0;
-        while(await cursor.hasNext()) {
+        while (await cursor.hasNext()) {
             const doc = await cursor.next();
             if (!doc) continue;
             const data = doc.data;

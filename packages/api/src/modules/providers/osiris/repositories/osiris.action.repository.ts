@@ -2,9 +2,9 @@ import db from "../../../../shared/MongoConnection";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import { Siren } from "@api-subventions-asso/dto";
-import OsirisActionEntityDbo from '../entities/OsirisActionEntityDbo';
-import OsirisActionAdapter from './dboAdapters/osirisActionAdapter';
-import MongoCnxError from '../../../../shared/errors/MongoCnxError';
+import OsirisActionEntityDbo from "../entities/OsirisActionEntityDbo";
+import OsirisActionAdapter from "./dboAdapters/osirisActionAdapter";
+import MongoCnxError from "../../../../shared/errors/MongoCnxError";
 
 export class OsirisActionRepository {
     private readonly collection = db.collection<OsirisActionEntityDbo>("osiris-actions");
@@ -19,17 +19,23 @@ export class OsirisActionRepository {
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
-        const dbo = (await this.collection.findOneAndUpdate(
-            { "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId },
-            { $set: actionWithoutId },
-            options
-        )).value;
+        const dbo = (
+            await this.collection.findOneAndUpdate(
+                {
+                    "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId
+                },
+                { $set: actionWithoutId },
+                options
+            )
+        ).value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
     }
 
     public async findByOsirisId(osirisId: string) {
-        const dbo = await this.collection.findOne({ "indexedInformations.osirisActionId": osirisId });
+        const dbo = await this.collection.findOne({
+            "indexedInformations.osirisActionId": osirisId
+        });
         if (!dbo) return null;
         return OsirisActionAdapter.toEntity(dbo);
     }
@@ -44,7 +50,9 @@ export class OsirisActionRepository {
     }
 
     public async findBySiren(siren: Siren) {
-        const dbos = await this.collection.find({ "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`) }).toArray();
+        const dbos = await this.collection
+            .find({ "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`) })
+            .toArray();
         return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
     }
 }

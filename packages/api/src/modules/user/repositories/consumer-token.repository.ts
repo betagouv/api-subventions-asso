@@ -5,7 +5,7 @@ class ConsumerTokenRepository {
     private readonly collection = db.collection<ConsumerToken>("consumer-token");
 
     async findToken(userId) {
-        return (await this.collection.findOne({ userId }))?.token
+        return (await this.collection.findOne({ userId }))?.token;
     }
 
     async create(entity: ConsumerToken) {

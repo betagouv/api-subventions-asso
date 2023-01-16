@@ -10,9 +10,8 @@ import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import rnaSirenService from "../../../../open-data/rna-siren/rnaSiren.service";
-import OsirisEvaluationEntity from '../../entities/OsirisEvaluationEntity';
-import { findFiles } from '../../../../../shared/helpers/ParserHelper';
-
+import OsirisEvaluationEntity from "../../entities/OsirisEvaluationEntity";
+import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCliController {
@@ -43,7 +42,7 @@ export default class OsirisCliController {
             const requests = OsirisParser.parseRequests(fileContent, parseInt(extractYear, 10));
 
             console.info(`Check ${requests.length} entities!`);
-            requests.forEach((entity) => {
+            requests.forEach(entity => {
                 const result = osirisService.validRequest(entity);
                 if (!result.success) {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
@@ -51,11 +50,10 @@ export default class OsirisCliController {
             });
 
             console.info(`${COLORS.Reset}Validation done`);
-        }
-        else if (type === "actions") {
+        } else if (type === "actions") {
             const actions = OsirisParser.parseActions(fileContent, parseInt(extractYear, 10));
             console.info(`Check ${actions.length} entities!`);
-            actions.forEach((entity) => {
+            actions.forEach(entity => {
                 const result = osirisService.validAction(entity);
                 if (!result.success) {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
@@ -68,7 +66,11 @@ export default class OsirisCliController {
         }
     }
 
-    public async parse(type: "requests" | "actions" | "evaluations", file: string, extractYear: string): Promise<unknown> {
+    public async parse(
+        type: "requests" | "actions" | "evaluations",
+        file: string,
+        extractYear: string
+    ): Promise<unknown> {
         if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
             throw new Error("Parse command need type, extractYear and file args");
         }
@@ -87,10 +89,16 @@ export default class OsirisCliController {
         console.info(`${files.length} files in the parse queue`);
         console.info(`You can read log in ${this.logFileParsePath}`);
 
-        return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(type, filePath, parseInt(extractYear, 10), logs));
-        }, Promise.resolve())
-            .then(() => fs.writeFileSync(this.logFileParsePath[type], logs.join(''), { flag: "w", encoding: "utf-8" }));
+        return files
+            .reduce((acc, filePath) => {
+                return acc.then(() => this._parse(type, filePath, parseInt(extractYear, 10), logs));
+            }, Promise.resolve())
+            .then(() =>
+                fs.writeFileSync(this.logFileParsePath[type], logs.join(""), {
+                    flag: "w",
+                    encoding: "utf-8"
+                })
+            );
     }
 
     protected async _parse(type: string, file: string, year: number, logs: unknown[]) {
@@ -122,11 +130,15 @@ export default class OsirisCliController {
 
             let validation = osirisService.validRequest(osirisRequest);
 
-            if (validation.code === 2) { // RNA NOT FOUND // TODO: use const for decribe error
+            if (validation.code === 2) {
+                // RNA NOT FOUND // TODO: use const for decribe error
                 const rna = await rnaSirenService.getRna(osirisRequest.legalInformations.siret, true);
 
                 if (typeof rna !== "string") {
-                    logs.push(`\n\nThis request is not registered because: RNA not found\n`, JSON.stringify(osirisRequest.legalInformations, null, "\t"))
+                    logs.push(
+                        `\n\nThis request is not registered because: RNA not found\n`,
+                        JSON.stringify(osirisRequest.legalInformations, null, "\t")
+                    );
                     return data;
                 }
 
@@ -137,11 +149,14 @@ export default class OsirisCliController {
             CliHelper.printProgress(index + 1, requests.length);
 
             if (!validation.success && validation.code != 2) {
-                logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
+                logs.push(
+                    `\n\nThis request is not registered because: ${validation.message}\n`,
+                    JSON.stringify(validation.data, null, "\t")
+                );
             } else data.push(await osirisService.addRequest(osirisRequest));
 
             return data;
-        }, Promise.resolve([]) as Promise<{ state: string, result: OsirisRequestEntity }[]>);
+        }, Promise.resolve([]) as Promise<{ state: string; result: OsirisRequestEntity }[]>);
 
         const created = results.filter(({ state }) => state === "created");
         console.info(`
@@ -153,22 +168,29 @@ export default class OsirisCliController {
 
     private async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
         const actions = OsirisParser.parseActions(contentFile, year);
-        const results = await actions.reduce(async (acc, osirisAction, index) => {
-            const data = await acc;
-            const validation = osirisService.validAction(osirisAction);
+        const results = await actions.reduce(
+            async (acc, osirisAction, index) => {
+                const data = await acc;
+                const validation = osirisService.validAction(osirisAction);
 
-            CliHelper.printProgress(index + 1, actions.length);
+                CliHelper.printProgress(index + 1, actions.length);
 
-            if (!validation.success) {
-                logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
-            } else data.push(await osirisService.addAction(osirisAction));
+                if (!validation.success) {
+                    logs.push(
+                        `\n\nThis request is not registered because: ${validation.message}\n`,
+                        JSON.stringify(validation.data, null, "\t")
+                    );
+                } else data.push(await osirisService.addAction(osirisAction));
 
-            return data;
-        }, Promise.resolve([]) as Promise<{
-            state: string;
-            result: OsirisActionEntity;
-        }[]>)
-
+                return data;
+            },
+            Promise.resolve([]) as Promise<
+                {
+                    state: string;
+                    result: OsirisActionEntity;
+                }[]
+            >
+        );
 
         const created = results.filter(({ state }) => state === "created");
         console.info(`
@@ -179,25 +201,31 @@ export default class OsirisCliController {
     }
 
     private async _parseEvaluation(contentFile: Buffer, year: number, logs: unknown[]) {
-
         const evaluations = OsirisParser.parseEvaluations(contentFile, year);
 
-        const results = await evaluations.reduce(async (acc, entity, index) => {
-            const data = await acc;
-            const validation = osirisService.validEvaluation(entity);
+        const results = await evaluations.reduce(
+            async (acc, entity, index) => {
+                const data = await acc;
+                const validation = osirisService.validEvaluation(entity);
 
-            CliHelper.printProgress(index + 1, evaluations.length);
+                CliHelper.printProgress(index + 1, evaluations.length);
 
-            if (!validation.success) {
-                logs.push(`\n\nThis request is not registered because: ${validation.message}\n`, JSON.stringify(validation.data, null, "\t"));
-            } else data.push(await osirisService.addEvaluation(entity));
+                if (!validation.success) {
+                    logs.push(
+                        `\n\nThis request is not registered because: ${validation.message}\n`,
+                        JSON.stringify(validation.data, null, "\t")
+                    );
+                } else data.push(await osirisService.addEvaluation(entity));
 
-            return data;
-        }, Promise.resolve([]) as Promise<{
-            state: string;
-            result: OsirisEvaluationEntity;
-        }[]>)
-
+                return data;
+            },
+            Promise.resolve([]) as Promise<
+                {
+                    state: string;
+                    result: OsirisEvaluationEntity;
+                }[]
+            >
+        );
 
         const created = results.filter(({ state }) => state === "created");
         console.info(`
@@ -214,7 +242,6 @@ export default class OsirisCliController {
 
         const file = await osirisService.findBySiret(siret);
 
-
         if (format === "json") {
             console.info(JSON.stringify(file));
         } else {
@@ -228,7 +255,6 @@ export default class OsirisCliController {
         }
 
         const requests = await osirisService.findByRna(rna);
-
 
         if (format === "json") {
             console.info(JSON.stringify(requests));

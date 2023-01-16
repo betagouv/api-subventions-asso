@@ -9,7 +9,7 @@ describe("Flux", () => {
             flux.on("data", mock);
 
             expect(mock).toHaveBeenCalledWith(expected);
-        })
+        });
     });
 
     describe("push", () => {
@@ -35,7 +35,7 @@ describe("Flux", () => {
             flux.push(expected);
 
             expect(onData).toHaveBeenCalledWith(expected);
-        })
+        });
 
         it("should add data on prevData", () => {
             const flux = new Flux();
@@ -45,37 +45,33 @@ describe("Flux", () => {
 
             // @ts-expect-error prevData is private attribute
             expect(flux.prevData).toEqual([expected]);
-        })
+        });
+    });
 
-    })
-    
     describe("on('data')", () => {
         it("should call onData callback with old data", () => {
             const flux = new Flux();
             const onData = jest.fn();
-    
+
             const expected = "DATA";
             flux.push(expected);
             flux.on("data", onData);
-    
-    
+
             expect(onData).toHaveBeenCalledWith(expected);
-        })
+        });
 
         it("should call with pushed data", () => {
             const flux = new Flux();
             const onData = jest.fn();
-    
+
             const expected = "DATA";
 
             flux.on("data", onData);
             flux.push(expected);
-    
+
             expect(onData).toHaveBeenCalledWith(expected);
-        })
-
-
-    })
+        });
+    });
 
     describe("close", () => {
         it("should return flux", () => {
@@ -93,26 +89,25 @@ describe("Flux", () => {
             flux.close();
 
             expect(onCloseCb).toHaveBeenCalledTimes(1);
-        })
+        });
 
         it("should set isClose to true", () => {
             const flux = new Flux().close();
 
             // @ts-expect-error isClose is private attribute
             expect(flux.isClose).toBe(true);
-        })
+        });
+    });
 
-    })
-    
     describe("on('close')", () => {
         it("should directly close when flux is already close", () => {
             const flux = new Flux().close();
-    
+
             const onCloseCb = jest.fn();
             flux.on("close", onCloseCb);
-    
+
             expect(onCloseCb).toHaveBeenCalledTimes(1);
-        })
+        });
 
         it("should be call cb when flux is close", () => {
             const flux = new Flux();
@@ -123,8 +118,8 @@ describe("Flux", () => {
             flux.close();
 
             expect(onCloseCb).toHaveBeenCalledTimes(1);
-        })
-    })
+        });
+    });
 
     describe("toPromise", () => {
         it("should resolve promise if flux is already close", async () => {
@@ -133,23 +128,23 @@ describe("Flux", () => {
             flux.close();
 
             await expect(flux.toPromise()).resolves.toEqual(expect.arrayContaining([]));
-        })
+        });
 
         it("should resolve promise with old data", async () => {
-            const expected = "DATA"
+            const expected = "DATA";
             const flux = new Flux(expected);
 
             flux.close();
 
             await expect(flux.toPromise()).resolves.toEqual([expected]);
-        })
+        });
 
         it("should resolve promise with all data", async () => {
             const flux = new Flux();
-            const A = 'DATA_A';
-            const B = 'DATA_B';
-            const C = 'DATA_C';
-            const expected = [A,B,C];
+            const A = "DATA_A";
+            const B = "DATA_B";
+            const C = "DATA_C";
+            const expected = [A, B, C];
 
             flux.push(A);
             flux.push(B);
@@ -159,6 +154,6 @@ describe("Flux", () => {
             flux.close();
 
             await expect(promise).resolves.toEqual(expected);
-        })
-    })
+        });
+    });
 });

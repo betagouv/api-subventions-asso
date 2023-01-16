@@ -10,5 +10,5 @@ describe("ApiEntrepriseAdapter", () => {
                 expect(actual).toEqual(expected);
             });
         });
-    })
-})
+    });
+});

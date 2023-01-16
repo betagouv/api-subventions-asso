@@ -5,7 +5,7 @@ import userService from "../../user.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class ConsumerCliController {
-    static cmdName = "consumer"
+    static cmdName = "consumer";
 
     async create(email: string) {
         const result = await userService.signup(email, RoleEnum.consumer);

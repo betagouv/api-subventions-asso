@@ -30,7 +30,9 @@ export class StatsRepository {
                 await this.collection
                     .aggregate([
                         matchQuery,
-                        { $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } } },
+                        {
+                            $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } }
+                        },
                         { $match: { nbOfRequest: { $gte: nbReq } } },
                         { $count: "nbOfUsers" }
                     ])

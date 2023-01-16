@@ -3,7 +3,6 @@ import subventiaService, { RejectedRequest, SUBVENTIA_SERVICE_ERROR } from "./su
 import entity from "./__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
 
-
 describe("SubventiaService", () => {
     describe("createEntity", () => {
         const validationMock = jest.spyOn(subventiaService, "validateEntity");
@@ -12,10 +11,13 @@ describe("SubventiaService", () => {
         afterAll(() => {
             validationMock.mockClear();
             repoCreateMock.mockClear();
-        })
+        });
 
         it("should reject entity (validation fail)", async () => {
-            const expected = { success: false, message: "I'm a test" } as unknown as RejectedRequest;
+            const expected = {
+                success: false,
+                message: "I'm a test"
+            } as unknown as RejectedRequest;
             validationMock.mockImplementationOnce(() => expected);
 
             const actual = await subventiaService.createEntity(entity);
@@ -25,17 +27,16 @@ describe("SubventiaService", () => {
 
         it("should create entity", async () => {
             validationMock.mockImplementationOnce(() => ({ success: true }));
-            repoCreateMock.mockImplementation(jest.fn())
+            repoCreateMock.mockImplementation(jest.fn());
             const expected = {
                 success: true,
-                state: "created",
-            }
+                state: "created"
+            };
             const actual = await subventiaService.createEntity(entity);
 
             expect(actual).toEqual(expected);
         });
-    })
-
+    });
 
     describe("validateEntity", () => {
         const repoCreateMock = jest.spyOn(subventiaRepository, "create");
@@ -43,35 +44,50 @@ describe("SubventiaService", () => {
         it("should be reject because siret is not valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => false);
 
-            const expected = { success: false, message: `INVALID SIRET FOR ${entity.legalInformations.siret}`, data: entity, code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY };
+            const expected = {
+                success: false,
+                message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+            };
 
             const actual = subventiaService.validateEntity(entity);
 
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should be reject because name is not valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isAssociationName").mockImplementationOnce(() => false);
 
-            const expected = { success: false, message: `INVALID NAME FOR ${entity.legalInformations.siret}`, data: entity, code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY };
+            const expected = {
+                success: false,
+                message: `INVALID NAME FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+            };
 
             const actual = subventiaService.validateEntity(entity);
 
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should be reject because string is not valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isAssociationName").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isStringsValid").mockImplementationOnce(() => false);
 
-            const expected = { success: false, message: `INVALID STRING FOR ${entity.legalInformations.siret}`, data: entity, code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY };
+            const expected = {
+                success: false,
+                message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+            };
 
             const actual = subventiaService.validateEntity(entity);
 
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should be reject because number is not valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
@@ -79,12 +95,17 @@ describe("SubventiaService", () => {
             jest.spyOn(Validators, "isStringsValid").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isNumbersValid").mockImplementationOnce(() => false);
 
-            const expected = { success: false, message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`, data: entity, code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY };
+            const expected = {
+                success: false,
+                message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
+                data: entity,
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+            };
 
             const actual = subventiaService.validateEntity(entity);
 
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should be valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
@@ -97,6 +118,6 @@ describe("SubventiaService", () => {
             const actual = subventiaService.validateEntity(entity);
 
             expect(actual).toEqual(expected);
-        })
-    })
+        });
+    });
 });

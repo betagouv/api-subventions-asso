@@ -55,7 +55,12 @@ describe("/association", () => {
                 .set("x-access-token", await getUserToken())
                 .set("Accept", "application/json");
             const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
-            const expected = [{ name: siretToSiren(OsirisRequestEntityFixture.legalInformations.siret), visits: 1 }];
+            const expected = [
+                {
+                    name: siretToSiren(OsirisRequestEntityFixture.legalInformations.siret),
+                    visits: 1
+                }
+            ];
 
             expect(actual).toEqual(expected);
         });

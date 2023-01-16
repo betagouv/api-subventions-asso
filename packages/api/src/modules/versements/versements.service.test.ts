@@ -4,9 +4,8 @@ import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import versementsService from "./versements.service";
 
-
 describe("VersementsService", () => {
-    const VERSEMENT_KEY = "J00034"
+    const VERSEMENT_KEY = "J00034";
     describe("getVersementsByAssociation", () => {
         const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
         const getSirenMock = jest.spyOn(rnaSirenService, "getSiren");
@@ -16,7 +15,9 @@ describe("VersementsService", () => {
         it("should throw error because indentifier is not valid", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
 
-            await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(new AssociationIdentifierError());
+            await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
+                new AssociationIdentifierError()
+            );
         });
 
         it("should call rnaSirenService", async () => {
@@ -24,7 +25,7 @@ describe("VersementsService", () => {
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getVersementsMock.mockImplementationOnce(async () => []);
-            getSirenMock.mockImplementationOnce(async () => "FAKE_SIREN")
+            getSirenMock.mockImplementationOnce(async () => "FAKE_SIREN");
 
             await versementsService.getVersementsByAssociation("test");
 
@@ -36,7 +37,7 @@ describe("VersementsService", () => {
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getVersementsMock.mockImplementationOnce(async () => []);
-            getSirenMock.mockImplementationOnce(async () => expected)
+            getSirenMock.mockImplementationOnce(async () => expected);
 
             await versementsService.getVersementsByAssociation("test");
 
@@ -58,15 +59,19 @@ describe("VersementsService", () => {
     describe("hasVersements()", () => {
         it("should return false", () => {
             const expected = false;
-            // @ts-expect-error: test
-            const actual = versementsService.hasVersements({ versementKey: { value: undefined } })
+            const actual = versementsService.hasVersements({
+                // @ts-expect-error: test
+                versementKey: { value: undefined }
+            });
             expect(actual).toEqual(expected);
         });
 
         it("should return true", () => {
             const expected = true;
-            // @ts-expect-error: test
-            const actual = versementsService.hasVersements({ versementKey: { value: VERSEMENT_KEY } })
+            const actual = versementsService.hasVersements({
+                // @ts-expect-error: test
+                versementKey: { value: VERSEMENT_KEY }
+            });
             expect(actual).toEqual(expected);
         });
     });
@@ -74,22 +79,24 @@ describe("VersementsService", () => {
     describe("filterVersementByKey()", () => {
         it("should return null if versement undefined", () => {
             const expected = null;
-            const actual = versementsService.filterVersementByKey(undefined, { value: VERSEMENT_KEY })
+            const actual = versementsService.filterVersementByKey(undefined, {
+                value: VERSEMENT_KEY
+            });
             expect(actual).toEqual(expected);
         });
 
         it("should filter versements with EJ", () => {
-            const versements = [{ ej: { value: VERSEMENT_KEY } }, { ej: { value: "J00001" } }]
+            const versements = [{ ej: { value: VERSEMENT_KEY } }, { ej: { value: "J00001" } }];
             const expected = [versements[0]];
             const actual = versementsService.filterVersementByKey(versements, VERSEMENT_KEY);
             expect(actual).toEqual(expected);
         });
 
         it("should filter versements with CodePoste", () => {
-            const versements = [{ codePoste: { value: VERSEMENT_KEY } }, { codePoste: { value: "J00001" } }]
+            const versements = [{ codePoste: { value: VERSEMENT_KEY } }, { codePoste: { value: "J00001" } }];
             const expected = [versements[0]];
             const actual = versementsService.filterVersementByKey(versements, VERSEMENT_KEY);
             expect(actual).toEqual(expected);
         });
-    })
+    });
 });

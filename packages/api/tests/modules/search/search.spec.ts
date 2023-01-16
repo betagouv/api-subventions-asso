@@ -28,7 +28,9 @@ describe("/search", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot({ result: [{ lastUpdate: expect.any(String) }] });
+            expect(response.body).toMatchSnapshot({
+                result: [{ lastUpdate: expect.any(String) }]
+            });
         });
         it("should return an Association from its Siren", async () => {
             const response = await request(g.app)
@@ -37,7 +39,9 @@ describe("/search", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot({ result: [{ lastUpdate: expect.any(String) }] });
+            expect(response.body).toMatchSnapshot({
+                result: [{ lastUpdate: expect.any(String) }]
+            });
         });
         it("should return an AssociationNameEntity from its name", async () => {
             const response = await request(g.app)
@@ -46,7 +50,9 @@ describe("/search", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot({ result: [{ lastUpdate: expect.any(String) }] });
+            expect(response.body).toMatchSnapshot({
+                result: [{ lastUpdate: expect.any(String) }]
+            });
         });
     });
 });

@@ -10,6 +10,6 @@ const PartialUniteLegalRaw = {
     changementEconomieSocialeSolidaireUniteLegale: "false",
     changementSocieteMissionUniteLegale: "false",
     changementCaractereEmployeurUniteLegale: "false"
-}
+};
 
 export default PartialUniteLegalRaw;
