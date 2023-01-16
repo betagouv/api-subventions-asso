@@ -24,7 +24,7 @@ describe("SubventiaCliController", () => {
             logMock.mockClear();
             readFileMock.mockReset();
             logICMock.mockClear();
-        })
+        });
 
         afterAll(() => {
             printProgressMock.mockReset();
@@ -33,17 +33,19 @@ describe("SubventiaCliController", () => {
             readFileMock.mockReset();
         });
 
-        it('should call logger', async () => {
+        it("should call logger", async () => {
             readFileMock.mockImplementation(() => "Fake content file");
             parseMock.mockImplementationOnce(() => []);
 
             await _parse("FILE");
 
-            expect(logMock).toHaveBeenCalledWith(`\n\n--------------------------------\nFILE\n--------------------------------\n\n`);
+            expect(logMock).toHaveBeenCalledWith(
+                `\n\n--------------------------------\nFILE\n--------------------------------\n\n`
+            );
             expect(logICMock).toHaveBeenCalledWith("\nStart parse file: ", "FILE");
-        })
+        });
 
-        it('should call fs', async () => {
+        it("should call fs", async () => {
             const expected = "FILE";
             readFileMock.mockImplementation(() => "Fake content file");
             parseMock.mockImplementationOnce(() => []);
@@ -51,9 +53,9 @@ describe("SubventiaCliController", () => {
             await _parse(expected);
 
             expect(readFileMock).toHaveBeenCalledWith(expected);
-        })
+        });
 
-        it('should call parser', async () => {
+        it("should call parser", async () => {
             const expected = "Fake content file";
             readFileMock.mockImplementation(() => expected);
             parseMock.mockImplementationOnce(() => []);
@@ -61,34 +63,36 @@ describe("SubventiaCliController", () => {
             await _parse("FILE");
 
             expect(parseMock).toHaveBeenCalledWith(expected);
-        })
+        });
 
-        it('should save entity', async () => {
-            const expected = { fake: "entity"} as unknown as SubventiaRequestEntity;
+        it("should save entity", async () => {
+            const expected = { fake: "entity" } as unknown as SubventiaRequestEntity;
             readFileMock.mockImplementation(() => "");
-            parseMock.mockImplementationOnce(() => [
-                expected
-            ]);
+            parseMock.mockImplementationOnce(() => [expected]);
 
-            createEntityMock.mockImplementationOnce(async () => ({success: true} as unknown as AcceptedRequest))
+            createEntityMock.mockImplementationOnce(async () => ({ success: true } as unknown as AcceptedRequest));
 
             await _parse("FILE");
 
             expect(createEntityMock).toHaveBeenCalledWith(expected);
-        })
+        });
 
-        it('should show log', async () => {
+        it("should show log", async () => {
             const expected = "MESSAGE";
             readFileMock.mockImplementation(() => "");
-            parseMock.mockImplementationOnce(() => [
-                { fake: "entity"} as unknown as SubventiaRequestEntity
-            ]);
+            parseMock.mockImplementationOnce(() => [{ fake: "entity" } as unknown as SubventiaRequestEntity]);
 
-            createEntityMock.mockImplementationOnce(async () => ({success: false, message: expected} as unknown as RejectedRequest))
+            createEntityMock.mockImplementationOnce(
+                async () => ({ success: false, message: expected } as unknown as RejectedRequest)
+            );
 
             await _parse("FILE");
 
-            expect(logMock.mock.calls).toEqual(expect.arrayContaining([expect.arrayContaining([`\n\nThis request is not registered because: ${expected}\n`])]));
-        })
-    })
+            expect(logMock.mock.calls).toEqual(
+                expect.arrayContaining([
+                    expect.arrayContaining([`\n\nThis request is not registered because: ${expected}\n`])
+                ])
+            );
+        });
+    });
 });

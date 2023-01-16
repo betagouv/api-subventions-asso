@@ -3,7 +3,7 @@ import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepVersementEntity from "../entities/FonjepVersementEntity";
 
 export class FonjepVersementRepository extends MigrationRepository<FonjepVersementEntity> {
-    readonly collectionName = "fonjepVersement"
+    readonly collectionName = "fonjepVersement";
 
     create(entity: FonjepVersementEntity) {
         return this.collection.insertOne(entity);
@@ -18,9 +18,11 @@ export class FonjepVersementRepository extends MigrationRepository<FonjepVerseme
     }
 
     public findBySiren(siren: Siren) {
-        return this.collection.find({
-            "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
-        }).toArray();
+        return this.collection
+            .find({
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+            })
+            .toArray();
     }
 }
 

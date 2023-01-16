@@ -7,37 +7,36 @@ export default interface IOsirisRequestInformations extends IProviderInformation
     amountAwarded: number;
     dateCommission?: Date;
     exerciceDebut: Date;
-    etablissementSiege: boolean
-    etablissementVoie: string
-    etablissementCodePostal: string
-    etablissementCommune: string
-    etablissementIBAN: string
-    etablissementBIC: string
+    etablissementSiege: boolean;
+    etablissementVoie: string;
+    etablissementCodePostal: string;
+    etablissementCommune: string;
+    etablissementIBAN: string;
+    etablissementBIC: string;
 
-    representantNom: string
-    representantPrenom: string
-    representantRole: string
-    representantCivilite: string
-    representantEmail: string
-    representantPhone: string,
+    representantNom: string;
+    representantPrenom: string;
+    representantRole: string;
+    representantCivilite: string;
+    representantEmail: string;
+    representantPhone: string;
 
+    service_instructeur: string;
+    dispositif: string;
+    sous_dispositif: string;
+    status: string;
+    pluriannualite: string;
 
-    service_instructeur: string,
-    dispositif: string,
-    sous_dispositif: string,
-    status: string,
-    pluriannualite: string,
+    montantsTotal: number;
+    montantsDemande: number;
+    montantsPropose: number;
+    montantsAccorde: number;
 
-    montantsTotal: number,
-    montantsDemande: number,
-    montantsPropose: number,
-    montantsAccorde: number,
+    versementAcompte: number;
+    versementSolde: number;
+    versementRealise: number;
+    versementCompensationN1: number;
+    versementCompensationN: number;
 
-    versementAcompte: number,
-    versementSolde: number,
-    versementRealise: number,
-    versementCompensationN1: number,
-    versementCompensationN: number,
-
-    extractYear: number
+    extractYear: number;
 }

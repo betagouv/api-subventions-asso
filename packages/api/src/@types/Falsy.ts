@@ -1,1 +1,1 @@
-export  type Falsy<T> = T | null | undefined;
+export type Falsy<T> = T | null | undefined;

@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { connectDB } = require('../build/src/shared/MongoConnection');
+const { connectDB } = require("../build/src/shared/MongoConnection");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -23,7 +23,7 @@ module.exports = {
 
         const cursor = repo.cursorFind();
         let counter = 0;
-        while(await cursor.hasNext()) {
+        while (await cursor.hasNext()) {
             const doc = await cursor.next();
             if (!doc) continue;
             const data = doc.data;

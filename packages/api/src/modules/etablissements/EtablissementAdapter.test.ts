@@ -1,12 +1,12 @@
 import { EtablissementAdapter } from "./EtablissementAdapter";
 
-const SIRET = '000000000000001';
+const SIRET = "000000000000001";
 const ETABLISSEMENT = {
     siret: [{ value: SIRET }],
     nic: [{}],
     versements: {},
     demandes_subventions: {}
-}
+};
 
 describe("EtablissementAdapter", () => {
     describe("toSimplifiedEtablissement", () => {
@@ -15,6 +15,6 @@ describe("EtablissementAdapter", () => {
             // @ts-expect-error: private method
             const actual = EtablissementAdapter.toSimplifiedEtablissement(ETABLISSEMENT);
             expect(actual).toEqual(expected);
-        })
-    })
-})
+        });
+    });
+});

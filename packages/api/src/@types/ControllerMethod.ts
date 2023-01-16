@@ -5,7 +5,7 @@ export interface ControllerRouteDEF {
     method: "GET" | "POST" | "PUT" | "DELETE";
     route: string;
     function: (req: Request, res: SSEResponse, next: NextFunction) => unknown;
-    securityRoles: string[]
+    securityRoles: string[];
 }
 
 export interface ControllerMethod {

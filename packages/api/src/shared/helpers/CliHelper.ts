@@ -1,9 +1,10 @@
 export function printProgress(progress: number, total: number, entities = "entities") {
-    printAtSameLine(`${progress} ${entities} save of ${total}`)
+    printAtSameLine(`${progress} ${entities} save of ${total}`);
 }
 
 export function printAtSameLine(text: string) {
-    if (process && process.stdout && process.stdout.clearLine) { // If false we are on github actions
+    if (process && process.stdout && process.stdout.clearLine) {
+        // If false we are on github actions
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         process.stdout.clearLine();

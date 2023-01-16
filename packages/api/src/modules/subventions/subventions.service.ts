@@ -28,8 +28,7 @@ export class SubventionsService {
 
     getDemandesByEtablissement(id: Siret) {
         const type = getIdentifierType(id);
-        if (type !== StructureIdentifiersEnum.siret)
-            throw new Error("You must provide a valid SIRET");
+        if (type !== StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIRET");
 
         return this.aggregateByType(id, StructureIdentifiersEnum.siret);
     }
@@ -38,10 +37,7 @@ export class SubventionsService {
         id: StructureIdentifiers,
         type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]
     ): Flux<SubventionsFlux> {
-        if (
-            type === StructureIdentifiersEnum.siret ||
-      type === StructureIdentifiersEnum.siren
-        ) {
+        if (type === StructureIdentifiersEnum.siret || type === StructureIdentifiersEnum.siren) {
             if (type === StructureIdentifiersEnum.siret) id = siretToSiren(id);
             return this.aggregateByType(id, StructureIdentifiersEnum.siren);
         } else {
@@ -49,36 +45,31 @@ export class SubventionsService {
         }
     }
 
-    private aggregateByType(
-        id: StructureIdentifiers,
-        type: StructureIdentifiersEnum
-    ): Flux<SubventionsFlux> {
-        const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(
-            type
-        )}` as
-      | "getDemandeSubventionBySiret"
-      | "getDemandeSubventionBySiren"
-      | "getDemandeSubventionByRna";
+    private aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Flux<SubventionsFlux> {
+        const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as
+            | "getDemandeSubventionBySiret"
+            | "getDemandeSubventionBySiren"
+            | "getDemandeSubventionByRna";
         const subventionsFlux = new Flux<SubventionsFlux>();
         const providers = this.getDemandesSubventionsProviders();
 
         const defaultMeta = {
-            totalProviders: providers.length,
+            totalProviders: providers.length
         };
 
         subventionsFlux.push({
-            __meta__: defaultMeta,
+            __meta__: defaultMeta
         });
 
         let countAnswers = 0;
 
-        providers.forEach((p) =>
-            p[functionName](id).then((subventions) => {
+        providers.forEach(p =>
+            p[functionName](id).then(subventions => {
                 countAnswers++;
 
                 subventionsFlux.push({
                     __meta__: { ...defaultMeta, provider: p.provider.name },
-                    subventions: subventions || [],
+                    subventions: subventions || []
                 });
 
                 if (countAnswers === providers.length) subventionsFlux.close();
@@ -90,9 +81,7 @@ export class SubventionsService {
 
     private getDemandesSubventionsProviders() {
         return Object.values(providers).filter(
-            (p) =>
-                (p as unknown as DemandesSubventionsProvider)
-                    .isDemandesSubventionsProvider
+            p => (p as unknown as DemandesSubventionsProvider).isDemandesSubventionsProvider
         ) as unknown as DemandesSubventionsProvider[];
     }
 }

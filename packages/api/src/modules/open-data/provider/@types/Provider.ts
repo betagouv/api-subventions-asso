@@ -1,4 +1,4 @@
 export interface Provider {
-    name: string,
-    description: string
+    name: string;
+    description: string;
 }

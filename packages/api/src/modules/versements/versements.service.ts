@@ -8,7 +8,6 @@ import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
 export class VersementsService {
-
     async getVersementsByAssociation(identifier: AssociationIdentifiers) {
         const type = getIdentifierType(identifier);
         if (!type || type === StructureIdentifiersEnum.siret) throw new AssociationIdentifierError();
@@ -32,15 +31,20 @@ export class VersementsService {
         asso.versements = versements;
 
         asso.etablissements?.forEach(etablissement => {
-            etablissement.versements = versements.filter(versement => versement.siret.value === etablissement.siret[0].value);
+            etablissement.versements = versements.filter(
+                versement => versement.siret.value === etablissement.siret[0].value
+            );
 
             if (!etablissement.versements) return;
 
             etablissement.demandes_subventions?.forEach(demandeSubvention => {
                 if (!this.hasVersements(demandeSubvention)) return;
-                demandeSubvention.versements = this.filterVersementByKey(etablissement.versements, demandeSubvention.versementKey?.value);
-            })
-        })
+                demandeSubvention.versements = this.filterVersementByKey(
+                    etablissement.versements,
+                    demandeSubvention.versementKey?.value
+                );
+            });
+        });
 
         return asso;
     }
@@ -64,31 +68,27 @@ export class VersementsService {
         etablissement.demandes_subventions?.forEach(demandeSubvention => {
             if (!this.hasVersements(demandeSubvention)) return;
             demandeSubvention.versements = this.filterVersementByKey(versements, demandeSubvention.versementKey?.value);
-        })
+        });
 
         return etablissement;
     }
 
     async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
-        const providers = this.getProviders()
-        return [...(await Promise.all(
-            providers.map(p => p.getVersementsBySiret(siret))
-        )).flat()];
+        const providers = this.getProviders();
+        return [...(await Promise.all(providers.map(p => p.getVersementsBySiret(siret)))).flat()];
     }
 
     private async getVersementsBySiren(siren: Siren) {
-        const providers = this.getProviders()
-        return [...(await Promise.all(
-            providers.map(p => p.getVersementsBySiren(siren))
-        )).flat()];
+        const providers = this.getProviders();
+        return [...(await Promise.all(providers.map(p => p.getVersementsBySiren(siren)))).flat()];
     }
 
     private getProviders(): VersementsProvider[] {
-        return Object.values(providers).filter((p) => this.isVersementsProvider(p)) as unknown as VersementsProvider[];
+        return Object.values(providers).filter(p => this.isVersementsProvider(p)) as unknown as VersementsProvider[];
     }
 
     private isVersementsProvider(data: unknown): data is VersementsProvider {
-        return (data as VersementsProvider).isVersementsProvider
+        return (data as VersementsProvider).isVersementsProvider;
     }
 }
 

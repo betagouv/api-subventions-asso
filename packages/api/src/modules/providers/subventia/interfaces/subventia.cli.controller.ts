@@ -24,19 +24,23 @@ export default class SubventiaCliController extends CliController {
 
         const entities = SubventiaParser.parse(fileContent);
 
-        this.logger.logIC("Start register in database ...")
+        this.logger.logIC("Start register in database ...");
 
-        const saveEntities = async (acc: Promise<(RejectedRequest | AcceptedRequest)[]> , entity: SubventiaRequestEntity, index: number) => {
+        const saveEntities = async (
+            acc: Promise<(RejectedRequest | AcceptedRequest)[]>,
+            entity: SubventiaRequestEntity,
+            index: number
+        ) => {
             const data = await acc;
-            CliHelper.printProgress(index + 1 , entities.length);
+            CliHelper.printProgress(index + 1, entities.length);
             data.push(await subventiaService.createEntity(entity));
             return data;
-        }
-        
+        };
+
         const results = await entities.reduce(saveEntities, Promise.resolve([]));
 
-        const created = results.filter((result) => result.success) as AcceptedRequest[];
-        const rejected = results.filter((result) => !result.success) as RejectedRequest[];
+        const created = results.filter(result => result.success) as AcceptedRequest[];
+        const rejected = results.filter(result => !result.success) as RejectedRequest[];
 
         this.logger.logIC(`
             ${results.length}/${entities.length}
@@ -44,8 +48,11 @@ export default class SubventiaCliController extends CliController {
             ${rejected.length} requests not valid
         `);
 
-        rejected.forEach((result) => {
-            this.logger.log(`\n\nThis request is not registered because: ${result.message}\n`, JSON.stringify(result.data, null, "\t"))
+        rejected.forEach(result => {
+            this.logger.log(
+                `\n\nThis request is not registered because: ${result.message}\n`,
+                JSON.stringify(result.data, null, "\t")
+            );
         });
     }
 }

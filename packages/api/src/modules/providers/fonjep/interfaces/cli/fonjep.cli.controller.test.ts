@@ -1,19 +1,22 @@
-import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
-import FonjepCliController from './fonjep.cli.controller'
+import ExportDateError from "../../../../../shared/errors/cliErrors/ExportDateError";
+import FonjepCliController from "./fonjep.cli.controller";
 import FonjepParser from "../../fonjep.parser";
 import fonjepSubventionRepository from "../../repositories/fonjep.subvention.repository";
 import fonjepParserResponse from "../../__fixtures__/fonjepParserResponse.json";
 import fonjepService from "../../fonjep.service";
 jest.mock("fs");
 
-
 describe("FonjepCliController", () => {
     const createSubventionEntityMock = jest.spyOn(fonjepService, "createSubventionEntity");
     const createVersementEntityMock = jest.spyOn(fonjepService, "createVersementEntity");
 
     beforeAll(() => {
-        createSubventionEntityMock.mockImplementation(async () => ({ success: true }));
-        createVersementEntityMock.mockImplementation(async () => ({ success: true }));
+        createSubventionEntityMock.mockImplementation(async () => ({
+            success: true
+        }));
+        createVersementEntityMock.mockImplementation(async () => ({
+            success: true
+        }));
     });
 
     const cli = new FonjepCliController();
@@ -26,7 +29,7 @@ describe("FonjepCliController", () => {
                 // @ts-expect-error: protected method
                 actual = await cli._parse(PATH);
             } catch (e) {
-                actual = e
+                actual = e;
             }
             expect(actual).toEqual(expected);
         });
@@ -120,6 +123,6 @@ describe("FonjepCliController", () => {
             await cli.drop();
             const actual = mockDrop.mock.calls.length;
             expect(actual).toEqual(expected);
-        })
-    })
+        });
+    });
 });

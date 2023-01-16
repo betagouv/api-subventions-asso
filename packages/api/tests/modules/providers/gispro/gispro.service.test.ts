@@ -1,9 +1,8 @@
-import IGisproActionInformations from '../../../../src/modules/providers/gispro/@types/IGisproActionInformations'
-import GisproActionEntity from '../../../../src/modules/providers/gispro/entities/GisproActionEntity'
-import gisproService from '../../../../src/modules/providers/gispro/gispro.service'
+import IGisproActionInformations from "../../../../src/modules/providers/gispro/@types/IGisproActionInformations";
+import GisproActionEntity from "../../../../src/modules/providers/gispro/entities/GisproActionEntity";
+import gisproService from "../../../../src/modules/providers/gispro/gispro.service";
 
-
-const ValidGisproRequestInformation: IGisproActionInformations  = {
+const ValidGisproRequestInformation: IGisproActionInformations = {
     siret: "12345678901234",
     montant: 12345,
     codeTier: "FAKE_CODE_TIER",
@@ -14,36 +13,40 @@ const ValidGisproRequestInformation: IGisproActionInformations  = {
     codeAction: "FAKE_CODE_ACTION",
     direction: "FAKE_CODE_DIRECTION",
     pnOrOs: "FAKE_CODE_PNOS",
-    importedDate: new Date(),
-}
+    importedDate: new Date()
+};
 
 describe("GisproService", () => {
     describe("validEntity()", () => {
         it("return success if valid", () => {
-            const request = new GisproActionEntity(ValidGisproRequestInformation, {})
+            const request = new GisproActionEntity(ValidGisproRequestInformation, {});
             const actual = gisproService.validEntity(request);
-            const expected = { success: true }
+            const expected = { success: true };
             expect(actual).toEqual(expected);
-        })
-        
-        it("return error if SIRET invalid", () => {
-            const invalidGisproRequestInformation = Object.assign({...ValidGisproRequestInformation,  siret: "FAKE_SIRET"});
-            const request = new GisproActionEntity(invalidGisproRequestInformation, {})
-            const actual = gisproService.validEntity(request);
-            const expected = { 
-                "code": 1,
-                "data":  { ...invalidGisproRequestInformation },
-                "message": `INVALID SIRET FOR ${invalidGisproRequestInformation.siret}`,
-                "success": false }
-            expect(actual).toEqual(expected);
-        })
-    })
+        });
 
-    describe('findBySiret', () => {
-        it('should return a request', async () => {
+        it("return error if SIRET invalid", () => {
+            const invalidGisproRequestInformation = Object.assign({
+                ...ValidGisproRequestInformation,
+                siret: "FAKE_SIRET"
+            });
+            const request = new GisproActionEntity(invalidGisproRequestInformation, {});
+            const actual = gisproService.validEntity(request);
+            const expected = {
+                code: 1,
+                data: { ...invalidGisproRequestInformation },
+                message: `INVALID SIRET FOR ${invalidGisproRequestInformation.siret}`,
+                success: false
+            };
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("findBySiret", () => {
+        it("should return a request", async () => {
             const entity = new GisproActionEntity(ValidGisproRequestInformation as IGisproActionInformations, {});
             await gisproService.add(entity);
             expect(await gisproService.findBySiret("12345678901234")).toMatchObject([entity]);
         });
     });
-})
+});

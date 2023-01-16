@@ -59,12 +59,20 @@ export class UserService {
         // Find the user associated with the email provided by the user
         const user = await userService.findByEmail(token.email);
         if (!user) {
-            return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            return {
+                success: false,
+                message: "User not found",
+                code: UserServiceErrors.USER_NOT_FOUND
+            };
         }
 
         if (!token[UserService.CONSUMER_TOKEN_PROP]) {
             if (!user.active) {
-                return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+                return {
+                    success: false,
+                    message: "User is not active",
+                    code: UserServiceErrors.USER_NOT_ACTIVE
+                };
             }
             if (new Date(token.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
                 return {
@@ -85,10 +93,18 @@ export class UserService {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
 
         if (!user) {
-            return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            return {
+                success: false,
+                message: "User not found",
+                code: UserServiceErrors.USER_NOT_FOUND
+            };
         }
         if (!user.active || !user.jwt) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            return {
+                success: false,
+                message: "User is not active",
+                code: UserServiceErrors.USER_NOT_ACTIVE
+            };
         }
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
@@ -240,7 +256,11 @@ export class UserService {
 
         return {
             success: true,
-            user: await userRepository.update({ ...user, hashPassword: await bcrypt.hash(password, 10), active: true })
+            user: await userRepository.update({
+                ...user,
+                hashPassword: await bcrypt.hash(password, 10),
+                active: true
+            })
         };
     }
 
@@ -296,7 +316,12 @@ export class UserService {
 
         const resetResult = await this.resetUser(result.user);
 
-        if (!resetResult.success) return { success: false, message: resetResult.message, code: resetResult.code };
+        if (!resetResult.success)
+            return {
+                success: false,
+                message: resetResult.message,
+                code: resetResult.code
+            };
 
         await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.reset.token);
 
@@ -352,7 +377,11 @@ export class UserService {
     async refrechExpirationToken(user: UserDto) {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            return {
+                success: false,
+                message: "User is not active",
+                code: UserServiceErrors.USER_NOT_ACTIVE
+            };
         }
 
         userWithSecrets.jwt.expirateDate = new Date(Date.now() + JWT_EXPIRES_TIME);
@@ -367,7 +396,11 @@ export class UserService {
         const reset = await userResetRepository.findByToken(resetToken);
 
         if (!reset) {
-            return { success: false, message: "Reset token not found", code: UserServiceErrors.RESET_TOKEN_NOT_FOUND };
+            return {
+                success: false,
+                message: "Reset token not found",
+                code: UserServiceErrors.RESET_TOKEN_NOT_FOUND
+            };
         }
 
         if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now()) {
@@ -381,7 +414,11 @@ export class UserService {
         const user = await userRepository.findById(reset.userId);
 
         if (!user) {
-            return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            return {
+                success: false,
+                message: "User not found",
+                code: UserServiceErrors.USER_NOT_FOUND
+            };
         }
 
         if (!this.passwordValidator(password)) {
@@ -402,13 +439,24 @@ export class UserService {
 
         await userResetRepository.remove(reset);
 
-        return { success: true, user: await userRepository.update({ ...user, hashPassword, active: true }) };
+        return {
+            success: true,
+            user: await userRepository.update({
+                ...user,
+                hashPassword,
+                active: true
+            })
+        };
     }
 
     async forgetPassword(email: string): Promise<UserServiceError | { success: true; reset: UserReset }> {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
         if (!user) {
-            return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            return {
+                success: false,
+                message: "User not found",
+                code: UserServiceErrors.USER_NOT_FOUND
+            };
         }
 
         const resetResult = await this.resetUser(user);
@@ -449,11 +497,19 @@ export class UserService {
     ): Promise<UserServiceError | { success: true; jwt: { token: string; expirateDate: Date } }> {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
         if (!userWithSecrets) {
-            return { success: false, message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            return {
+                success: false,
+                message: "User not found",
+                code: UserServiceErrors.USER_NOT_FOUND
+            };
         }
 
         if (!userWithSecrets.jwt) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            return {
+                success: false,
+                message: "User is not active",
+                code: UserServiceErrors.USER_NOT_ACTIVE
+            };
         }
 
         return { success: true, jwt: userWithSecrets.jwt };
@@ -531,7 +587,11 @@ export class UserService {
 
     private async validEmail(email: string): Promise<UserServiceError | { success: true }> {
         if (!REGEX_MAIL.test(email)) {
-            return { success: false, message: "Email is not valid", code: UserServiceErrors.CREATE_INVALID_EMAIL };
+            return {
+                success: false,
+                message: "Email is not valid",
+                code: UserServiceErrors.CREATE_INVALID_EMAIL
+            };
         }
 
         if (!(await configurationsService.isDomainAccepted(email))) {

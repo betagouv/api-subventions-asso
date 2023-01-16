@@ -3,6 +3,13 @@ import { Etablissement, SimplifiedEtablissement } from "@api-subventions-asso/dt
 export class EtablissementAdapter {
     static toSimplifiedEtablissement(etablissement: Etablissement) {
         const { siret, nic, siege, ouvert, adresse, headcount } = etablissement;
-        return { siret, nic, siege, ouvert, adresse, headcount } as SimplifiedEtablissement;
+        return {
+            siret,
+            nic,
+            siege,
+            ouvert,
+            adresse,
+            headcount
+        } as SimplifiedEtablissement;
     }
 }

@@ -9,11 +9,17 @@ export default class SubventiaParser {
         const headers = data[0] as string[];
         const raws = data.slice(1) as unknown[][];
 
-        return raws.map((raw) => {
+        return raws.map(raw => {
             const parsedData = ParseHelper.linkHeaderToData(headers, raw);
-            const indexedInformations = ParseHelper.indexDataByPathObject(SubventiaRequestEntity.indexedProviderInformationsPath, parsedData) as unknown as ISubventiaIndexedInformation;
-            const legalInformations = ParseHelper.indexDataByPathObject(SubventiaRequestEntity.indexedLegalInformationsPath, parsedData) as unknown as ILegalInformations;
-            
+            const indexedInformations = ParseHelper.indexDataByPathObject(
+                SubventiaRequestEntity.indexedProviderInformationsPath,
+                parsedData
+            ) as unknown as ISubventiaIndexedInformation;
+            const legalInformations = ParseHelper.indexDataByPathObject(
+                SubventiaRequestEntity.indexedLegalInformationsPath,
+                parsedData
+            ) as unknown as ILegalInformations;
+
             return new SubventiaRequestEntity(legalInformations, indexedInformations, parsedData);
         });
     }

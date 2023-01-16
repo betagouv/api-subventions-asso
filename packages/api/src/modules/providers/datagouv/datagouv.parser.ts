@@ -8,14 +8,21 @@ import { UniteLegalHistoryRaw } from "./@types/UniteLegalHistoryRaw";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 
 export interface SaveCallback {
-    (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>
+    (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>;
 }
 export default class DataGouvParser {
-
-    private static isDatesValid({ periodStart, importDate, now }: { periodStart: Date, importDate: Date | null, now: Date }) {
+    private static isDatesValid({
+        periodStart,
+        importDate,
+        now
+    }: {
+        periodStart: Date;
+        importDate: Date | null;
+        now: Date;
+    }) {
         // date de début invalide
         if (!isValidDate(periodStart)) return false;
-        // modification non effective 
+        // modification non effective
         if (periodStart > now) return false;
         // entrée déjà persistée
         if (importDate && periodStart < importDate) return false;
@@ -37,7 +44,7 @@ export default class DataGouvParser {
             let logNumber = 1;
             let logTime = new Date();
 
-            stream.on("data", async (chunk) => {
+            stream.on("data", async chunk => {
                 let parsedChunk = ParseHelper.csvParse(chunk as Buffer);
 
                 if (totalEntities > 500000 * logNumber) {
@@ -55,23 +62,32 @@ export default class DataGouvParser {
                     if (isEmptyRaw(raw)) return;
 
                     totalEntities++;
-                    const parsedData = ParseHelper.linkHeaderToData(header as string[], raw) as unknown as UniteLegalHistoryRaw;
+                    const parsedData = ParseHelper.linkHeaderToData(
+                        header as string[],
+                        raw
+                    ) as unknown as UniteLegalHistoryRaw;
                     if (!parsedData.siren || !isSiren(parsedData.siren)) return;
 
                     const periodStartDate = new Date(parsedData.dateDebut);
 
-                    if (!this.isDatesValid({ periodStart: periodStartDate, importDate: lastImportDate, now })) return;
+                    if (
+                        !this.isDatesValid({
+                            periodStart: periodStartDate,
+                            importDate: lastImportDate,
+                            now
+                        })
+                    )
+                        return;
 
                     await save(parsedData, streamPause, streamResume);
                 });
             });
 
-            stream.on("error", (err) => reject(err));
+            stream.on("error", err => reject(err));
 
             stream.on("end", () => {
                 resolve();
-            })
-        })
+            });
+        });
     }
-
 }

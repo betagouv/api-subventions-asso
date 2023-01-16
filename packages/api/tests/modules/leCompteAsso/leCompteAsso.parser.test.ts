@@ -10,7 +10,7 @@ describe("leCompteAsso.parser", () => {
 
         expect(entities).toHaveLength(1);
         expect(entities[0]).toMatchObject({
-            "data":  {
+            data: {
                 "Compte du créateur": "Lorem@ipsum-dolor.sit",
                 "Créé le": "01/01/1970",
                 "Dossier supprimé?": "Non",
@@ -18,7 +18,7 @@ describe("leCompteAsso.parser", () => {
                 "Etat du dossier CRF": "Non débuté",
                 "Exercice de début": "2021",
                 "Exercice de fin": "2021",
-                "Identifiant technique": "\"\"\"00aa00aa000aaa00aaa000aaa00a\"\"\"",
+                "Identifiant technique": '"""00aa00aa000aaa00aaa000aaa00a"""',
                 "Nom association": "Lorem ipsum dolor sit",
                 "Nom du dispositif": "AAAA",
                 "Nom du sous-dispositif": "Lorem ipsum dolor sit",
@@ -27,16 +27,16 @@ describe("leCompteAsso.parser", () => {
                 "Numéro dossier LCA": "21-000000",
                 "Pluriannuel?": "Non",
                 "Service(s) instructeur(s)": "DR-AAA",
-                "Transmis le": "01/01/1970 12:00",
+                "Transmis le": "01/01/1970 12:00"
             },
-            "legalInformations":  {
-                "name": "Lorem ipsum dolor sit",
-                "rna": null,
-                "siret": "0",
+            legalInformations: {
+                name: "Lorem ipsum dolor sit",
+                rna: null,
+                siret: "0"
             },
-            "providerInformations":  {
-                "compteAssoId": "21-000000",
-            },
+            providerInformations: {
+                compteAssoId: "21-000000"
+            }
         });
-    })
+    });
 });

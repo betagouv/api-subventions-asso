@@ -1,6 +1,6 @@
 import fs from "fs";
 import CliLogger from "./CliLogger";
-import { findFiles } from './helpers/ParserHelper';
+import { findFiles } from "./helpers/ParserHelper";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -9,20 +9,20 @@ export default class CliController {
     private validParseFile(file: string): boolean {
         if (typeof file != "string") {
             throw new Error("Parse command needs file path args");
-        } else return true
+        } else return true;
     }
 
     private validFileExists(file: string): boolean {
         if (!fs.existsSync(file)) {
             throw new Error(`File not found ${file}`);
-        } else return true
+        } else return true;
     }
 
     /**
-     * 
+     *
      * @param file Path to the file
      * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
-     * @returns 
+     * @returns
      */
     public async parse(file: string, exportDate?: string): Promise<unknown> {
         this.validParseFile(file);
@@ -33,11 +33,21 @@ export default class CliController {
         this.logger.logIC(`${files.length} files in the parse queue`);
         this.logger.logIC(`You can read log in ${this.logFileParsePath}`);
 
-        return files.reduce((acc, filePath) => {
-            return acc.then(() => exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs));
-        }, Promise.resolve())
-            // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
-            .then(() => fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), { flag: "w", encoding: "utf-8" }));
+        return (
+            files
+                .reduce((acc, filePath) => {
+                    return acc.then(() =>
+                        exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs)
+                    );
+                }, Promise.resolve())
+                // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
+                .then(() =>
+                    fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
+                        flag: "w",
+                        encoding: "utf-8"
+                    })
+                )
+        );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,7 +61,7 @@ export default class CliController {
         this.validFileExists(previousFile);
         this.validFileExists(newFile);
 
-        this._compare(previousFile, newFile)
+        this._compare(previousFile, newFile);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -243,7 +243,9 @@ describe("Dauphin Service", () => {
         });
 
         it("should send siren and date", () => {
-            const dateString = new Date("1970-01-01").toLocaleString("en-US", { timeZone: "Europe/Paris" });
+            const dateString = new Date("1970-01-01").toLocaleString("en-US", {
+                timeZone: "Europe/Paris"
+            });
 
             // @ts-expect-error buildSearchQuery is private
             expect(dauphinService.buildSearchQuery("FAKE_SIREN", new Date(dateString))).toMatchSnapshot();
@@ -273,7 +275,9 @@ describe("Dauphin Service", () => {
 
     describe("formatDateToDauphinDate", () => {
         it("should format date", () => {
-            const dateString = new Date("1970-01-01").toLocaleString("en-US", { timeZone: "Europe/Paris" });
+            const dateString = new Date("1970-01-01").toLocaleString("en-US", {
+                timeZone: "Europe/Paris"
+            });
             // @ts-expect-error formatDateToDauphinDate is private
             expect(dauphinService.formatDateToDauphinDate(new Date(dateString))).toEqual(
                 "1970\\-01\\-01T01\\:00\\:00.000Z"
@@ -292,8 +296,13 @@ describe("Dauphin Service", () => {
         const sendAuthRequestMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "sendAuthRequest");
 
         it("should return cached token", async () => {
-            getDauphinTokenMock.mockImplementationOnce(() => ({ updatedAt: new Date(), data: TOKEN }));
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: Infinity }));
+            getDauphinTokenMock.mockImplementationOnce(() => ({
+                updatedAt: new Date(),
+                data: TOKEN
+            }));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
+                data: Infinity
+            }));
 
             // @ts-expect-error getAuthToken is private
             const actual = await dauphinService.getAuthToken();
@@ -302,8 +311,13 @@ describe("Dauphin Service", () => {
         });
 
         it("should return new token", async () => {
-            getDauphinTokenMock.mockImplementationOnce(() => ({ updatedAt: new Date(), data: "WRONG_TOKEN" }));
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: -Infinity }));
+            getDauphinTokenMock.mockImplementationOnce(() => ({
+                updatedAt: new Date(),
+                data: "WRONG_TOKEN"
+            }));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
+                data: -Infinity
+            }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
             // @ts-expect-error getAuthToken is private
@@ -314,7 +328,9 @@ describe("Dauphin Service", () => {
 
         it("should return new token because no old token", async () => {
             getDauphinTokenMock.mockImplementationOnce(() => null);
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: -Infinity }));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
+                data: -Infinity
+            }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
             // @ts-expect-error getAuthToken is private
@@ -324,8 +340,13 @@ describe("Dauphin Service", () => {
         });
 
         it("should save the new token", async () => {
-            getDauphinTokenMock.mockImplementationOnce(() => ({ updatedAt: new Date(), data: "WRONG_TOKEN" }));
-            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({ data: -Infinity }));
+            getDauphinTokenMock.mockImplementationOnce(() => ({
+                updatedAt: new Date(),
+                data: "WRONG_TOKEN"
+            }));
+            getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
+                data: -Infinity
+            }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
 

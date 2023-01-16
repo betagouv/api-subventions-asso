@@ -3,14 +3,15 @@ import MigrationRepository from "../../../../shared/MigrationRepository";
 import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
 
 export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSirenEntity> {
-
     readonly collectionName = "datagouv-entreprise-siren";
 
-    readonly collectionImportName = "datagouv-entreprise-siren-IMPORT"
+    readonly collectionImportName = "datagouv-entreprise-siren-IMPORT";
 
     async insertMany(entities: EntrepriseSirenEntity[], dropedDb = false) {
         if (dropedDb) {
-            return this.db.collection<EntrepriseSirenEntity>(this.collectionImportName).insertMany(entities, { ordered: false });
+            return this.db
+                .collection<EntrepriseSirenEntity>(this.collectionImportName)
+                .insertMany(entities, { ordered: false });
         }
 
         return this.collection.insertMany(entities, { ordered: false });
@@ -21,10 +22,12 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
     }
 
     public async replaceCollection() {
-        const oldCollectionExist = (await this.db.listCollections().toArray())
-            .find(c => c.name === this.collectionName);
-        const newCollectionExist = (await this.db.listCollections().toArray())
-            .find(c => c.name === this.collectionImportName);
+        const oldCollectionExist = (await this.db.listCollections().toArray()).find(
+            c => c.name === this.collectionName
+        );
+        const newCollectionExist = (await this.db.listCollections().toArray()).find(
+            c => c.name === this.collectionImportName
+        );
 
         if (oldCollectionExist) await this.collection.rename(this.collectionName + "-OLD");
 

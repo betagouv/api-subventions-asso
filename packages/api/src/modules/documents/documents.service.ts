@@ -40,9 +40,11 @@ export class DocumentsService {
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
         const method =
-            type === StructureIdentifiersEnum.rna ? "getDocumentsByRna" 
-                : type === StructureIdentifiersEnum.siren ? "getDocumentsBySiren"
-                    : "getDocumentsBySiret";
+            type === StructureIdentifiersEnum.rna
+                ? "getDocumentsByRna"
+                : type === StructureIdentifiersEnum.siren
+                ? "getDocumentsBySiren"
+                : "getDocumentsBySiret";
 
         const result = await Promise.all(
             documentProviders.map(provider =>

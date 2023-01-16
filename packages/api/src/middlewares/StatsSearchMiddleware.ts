@@ -17,4 +17,4 @@ export const StatsSearchRoutesRegex = [
     new RegExp("/association/[Ww0-9]{9,10}$"),
     new RegExp("/etablissement"),
     new RegExp("/search")
-]
+];

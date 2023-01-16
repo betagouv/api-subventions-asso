@@ -484,7 +484,10 @@ describe("StatsService", () => {
         });
 
         it("should getting all identifers of association", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: RNA, siren: SIREN }));
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
+                rna: RNA,
+                siren: SIREN
+            }));
             const sirenMap = new Map();
             const rnaMap = new Map();
             // @ts-expect-error groupVisitsOnMaps is private methode
@@ -505,7 +508,10 @@ describe("StatsService", () => {
         });
 
         it("should add visits on all maps", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: RNA, siren: SIREN }));
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
+                rna: RNA,
+                siren: SIREN
+            }));
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
@@ -526,7 +532,10 @@ describe("StatsService", () => {
         });
 
         it("should add visits on sirenMap", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: undefined, siren: SIREN }));
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
+                rna: undefined,
+                siren: SIREN
+            }));
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
@@ -544,7 +553,10 @@ describe("StatsService", () => {
         });
 
         it("should add visits on rnaMap", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({ rna: RNA, siren: undefined }));
+            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
+                rna: RNA,
+                siren: undefined
+            }));
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
@@ -571,7 +583,13 @@ describe("StatsService", () => {
                 date: new Date()
             };
 
-            const visits = [{ userId: "USER_ID", date: new Date(expected.date.getTime() + TEN_MINUTE_MS) }, expected];
+            const visits = [
+                {
+                    userId: "USER_ID",
+                    date: new Date(expected.date.getTime() + TEN_MINUTE_MS)
+                },
+                expected
+            ];
             // @ts-expect-error groupVisitsOnMaps is private methode
             const actual = statsService.keepOneVisitByUserAndDate(visits);
 
@@ -592,7 +610,10 @@ describe("StatsService", () => {
             ];
 
             const visits = [
-                { userId: "USER_ID", date: new Date(expected[0].date.getTime() + TEN_MINUTE_MS) },
+                {
+                    userId: "USER_ID",
+                    date: new Date(expected[0].date.getTime() + TEN_MINUTE_MS)
+                },
                 ...expected
             ];
             // @ts-expect-error groupVisitsOnMaps is private methode

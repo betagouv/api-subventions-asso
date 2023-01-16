@@ -5,16 +5,16 @@ export default async function getUserToken() {
 
     if (!user) {
         const result = await userService.createUser("user@beta.gouv.fr");
-        
+
         if (!result.success) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             throw new Error(result.message);
         }
 
-        user = result.user
+        user = result.user;
     }
-    
+
     await userService.activeUser(user);
     const jwtData = await userService.findJwtByEmail(user.email);
 
@@ -24,5 +24,5 @@ export default async function getUserToken() {
         throw new Error(jwtData.message);
     }
 
-    return jwtData.jwt.token
+    return jwtData.jwt.token;
 }

@@ -1,8 +1,6 @@
-
 export function isSiret(siret: string): boolean {
     return typeof siret === "string" && /^\d{14}/.test(siret);
 }
-
 
 export function isStartOfSiret(siret) {
     return typeof siret === "string" && /^\d{9,14}/.test(siret);
@@ -18,10 +16,10 @@ export function isRna(rna: string | undefined): boolean {
 }
 
 export function isAssociationName(name: string): boolean {
-    return typeof name === "string" && name.length != 0
+    return typeof name === "string" && name.length != 0;
 }
 
-// Osiris && LeCompteAsso Part 
+// Osiris && LeCompteAsso Part
 
 export function isCompteAssoId(compteAssoId: string): boolean {
     return typeof compteAssoId === "string" && compteAssoId.length === 9 && /\d{2}-\d{6}/.test(compteAssoId);

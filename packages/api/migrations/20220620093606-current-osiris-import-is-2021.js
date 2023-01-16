@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { connectDB } = require('../build/src/shared/MongoConnection');
+const { connectDB } = require("../build/src/shared/MongoConnection");
 const OsirisMigration = require("../build/src/modules/providers/osiris/osiris.migrations").default;
 
 module.exports = {
@@ -8,9 +8,8 @@ module.exports = {
         const migration = new OsirisMigration();
 
         await migration.setExtractYearOnOsirisEntities(2021);
-        
     },
-  
+
     async down(db, client) {
         // TODO write the statements to rollback your migration (if possible)
         // Example:

@@ -1,13 +1,11 @@
-
-import axios from 'axios';
-import { StructureIdentifiersEnum } from '../../../@enums/StructureIdentifiersEnum';
-import ProviderValueAdapter from '../../../shared/adapters/ProviderValueAdapter';
-import * as IdentifierHelper from '../../../shared/helpers/IdentifierHelper';
-import rnaSirenService from '../../open-data/rna-siren/rnaSiren.service';
-import avisSituationInseeService from './avisSituationInsee.service';
+import axios from "axios";
+import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
+import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
+import * as IdentifierHelper from "../../../shared/helpers/IdentifierHelper";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import avisSituationInseeService from "./avisSituationInsee.service";
 
 describe("AvisSituationInseeService", () => {
-
     describe("getInseeEtablissements", () => {
         const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
         const axiosGetMock = jest.spyOn(axios, "get");
@@ -21,7 +19,7 @@ describe("AvisSituationInseeService", () => {
         beforeEach(() => {
             // @ts-expect-error requestCache is private attribute
             avisSituationInseeService.requestCache.collection.clear();
-        })
+        });
 
         it("should return false because type is not valid", async () => {
             const expected = false;
@@ -30,8 +28,8 @@ describe("AvisSituationInseeService", () => {
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
 
-            expect(actual).toBe(expected)
-        })
+            expect(actual).toBe(expected);
+        });
 
         it("should return false because value is save in cache", async () => {
             const expected = false;
@@ -41,8 +39,8 @@ describe("AvisSituationInseeService", () => {
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
 
-            expect(actual).toBe(expected)
-        })
+            expect(actual).toBe(expected);
+        });
 
         it("should return object because value is save in cache", async () => {
             const expected = { 42: "youpi" };
@@ -52,19 +50,21 @@ describe("AvisSituationInseeService", () => {
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
 
-            expect(actual).toBe(expected)
-        })
+            expect(actual).toBe(expected);
+        });
 
         it("should return false because axios throw error", async () => {
             const expected = false;
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheHasMock.mockImplementationOnce(() => false);
-            axiosGetMock.mockImplementationOnce(() => { throw new Error() })
+            axiosGetMock.mockImplementationOnce(() => {
+                throw new Error();
+            });
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
 
             expect(actual).toBe(expected);
-        })
+        });
 
         it("should return object returned by axios", async () => {
             const expected = { 42: "youpi" };
@@ -73,13 +73,12 @@ describe("AvisSituationInseeService", () => {
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
                 data: expected
-            }))
+            }));
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
 
             expect(actual).toBe(expected);
-        })
-
+        });
 
         it("should save object in cache", async () => {
             const expected = { 42: "youpi" };
@@ -88,12 +87,12 @@ describe("AvisSituationInseeService", () => {
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
                 data: expected
-            }))
+            }));
             // @ts-expect-error getInseeEtablissements is private method
             await avisSituationInseeService.getInseeEtablissements("SIREN");
 
             expect(cacheAddMock).toHaveBeenCalledWith("SIREN", expected);
-        })
+        });
 
         it("should return false returned by axios", async () => {
             const expected = false;
@@ -102,13 +101,12 @@ describe("AvisSituationInseeService", () => {
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 404,
                 data: false
-            }))
+            }));
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
 
             expect(actual).toBe(expected);
-        })
-
+        });
 
         it("should save false in cache", async () => {
             const expected = false;
@@ -117,22 +115,28 @@ describe("AvisSituationInseeService", () => {
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 404,
                 data: expected
-            }))
+            }));
             // @ts-expect-error getInseeEtablissements is private method
             await avisSituationInseeService.getInseeEtablissements("SIREN");
 
             expect(cacheAddMock).toHaveBeenCalledWith("SIREN", expected);
-        })
-    })
+        });
+    });
 
     describe("getDocumentsBySiren", () => {
-        // @ts-expect-error getInseeEtablissements is private method
-        const getInseeEtablissementsMock = jest.spyOn<any, Promise<{
-            etablissements: {
-                nic: string,
-                etablissementSiege: boolean
-            }[]
-        } | false>>(avisSituationInseeService, "getInseeEtablissements");
+        const getInseeEtablissementsMock = jest.spyOn<
+            any,
+            // @ts-expect-error getInseeEtablissements is private method
+            Promise<
+                | {
+                      etablissements: {
+                          nic: string;
+                          etablissementSiege: boolean;
+                      }[];
+                  }
+                | false
+            >
+        >(avisSituationInseeService, "getInseeEtablissements");
 
         it("should return null because file not found in insee", async () => {
             getInseeEtablissementsMock.mockImplementationOnce(async () => false);
@@ -146,10 +150,12 @@ describe("AvisSituationInseeService", () => {
 
         it("should return null because nic not found", async () => {
             getInseeEtablissementsMock.mockImplementationOnce(async () => ({
-                etablissements: [{
-                    etablissementSiege: false,
-                    nic: "11111"
-                }]
+                etablissements: [
+                    {
+                        etablissementSiege: false,
+                        nic: "11111"
+                    }
+                ]
             }));
 
             const expected = null;
@@ -157,39 +163,61 @@ describe("AvisSituationInseeService", () => {
             const actual = await avisSituationInseeService.getDocumentsBySiren("");
 
             expect(actual).toBe(expected);
-        })
+        });
 
         it("should return null because nic not found", async () => {
             getInseeEtablissementsMock.mockImplementationOnce(async () => ({
-                etablissements: [{
-                    etablissementSiege: true,
-                    nic: "11111"
-                }]
+                etablissements: [
+                    {
+                        etablissementSiege: true,
+                        nic: "11111"
+                    }
+                ]
             }));
 
-            const expected = [{
-                type: ProviderValueAdapter.toProviderValue('Avis Situation Insee', avisSituationInseeService.provider.name, expect.any(Date)),
-                url: ProviderValueAdapter.toProviderValue(`https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`, avisSituationInseeService.provider.name, expect.any(Date)),
-                nom: ProviderValueAdapter.toProviderValue(`Avis Situation Insee (00000000011111)`, avisSituationInseeService.provider.name, expect.any(Date)),
-                __meta__: {
-                    siret: "00000000011111"
+            const expected = [
+                {
+                    type: ProviderValueAdapter.toProviderValue(
+                        "Avis Situation Insee",
+                        avisSituationInseeService.provider.name,
+                        expect.any(Date)
+                    ),
+                    url: ProviderValueAdapter.toProviderValue(
+                        `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        avisSituationInseeService.provider.name,
+                        expect.any(Date)
+                    ),
+                    nom: ProviderValueAdapter.toProviderValue(
+                        `Avis Situation Insee (00000000011111)`,
+                        avisSituationInseeService.provider.name,
+                        expect.any(Date)
+                    ),
+                    __meta__: {
+                        siret: "00000000011111"
+                    }
                 }
-            }];
+            ];
 
             const actual = await avisSituationInseeService.getDocumentsBySiren("000000000");
 
             expect(actual).toEqual(expected);
-        })
+        });
     });
 
     describe("getDocumentsBySiret", () => {
-        // @ts-expect-error getInseeEtablissements is private method
-        const getInseeEtablissementsMock = jest.spyOn<any, Promise<{
-            etablissements: {
-                nic: string,
-                etablissementSiege: boolean
-            }[]
-        } | false>>(avisSituationInseeService, "getInseeEtablissements");
+        const getInseeEtablissementsMock = jest.spyOn<
+            any,
+            // @ts-expect-error getInseeEtablissements is private method
+            Promise<
+                | {
+                      etablissements: {
+                          nic: string;
+                          etablissementSiege: boolean;
+                      }[];
+                  }
+                | false
+            >
+        >(avisSituationInseeService, "getInseeEtablissements");
 
         it("should return null because file not found in insee", async () => {
             getInseeEtablissementsMock.mockImplementationOnce(async () => false);
@@ -203,25 +231,41 @@ describe("AvisSituationInseeService", () => {
 
         it("should return null because nic not found", async () => {
             getInseeEtablissementsMock.mockImplementationOnce(async () => ({
-                etablissements: [{
-                    etablissementSiege: true,
-                    nic: "11111"
-                }]
+                etablissements: [
+                    {
+                        etablissementSiege: true,
+                        nic: "11111"
+                    }
+                ]
             }));
 
-            const expected = [{
-                type: ProviderValueAdapter.toProviderValue('Avis Situation Insee', avisSituationInseeService.provider.name, expect.any(Date)),
-                url: ProviderValueAdapter.toProviderValue(`https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`, avisSituationInseeService.provider.name, expect.any(Date)),
-                nom: ProviderValueAdapter.toProviderValue(`Avis Situation Insee (00000000011111)`, avisSituationInseeService.provider.name, expect.any(Date)),
-                __meta__: {
-                    siret: "00000000011111"
+            const expected = [
+                {
+                    type: ProviderValueAdapter.toProviderValue(
+                        "Avis Situation Insee",
+                        avisSituationInseeService.provider.name,
+                        expect.any(Date)
+                    ),
+                    url: ProviderValueAdapter.toProviderValue(
+                        `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        avisSituationInseeService.provider.name,
+                        expect.any(Date)
+                    ),
+                    nom: ProviderValueAdapter.toProviderValue(
+                        `Avis Situation Insee (00000000011111)`,
+                        avisSituationInseeService.provider.name,
+                        expect.any(Date)
+                    ),
+                    __meta__: {
+                        siret: "00000000011111"
+                    }
                 }
-            }];
+            ];
 
             const actual = await avisSituationInseeService.getDocumentsBySiret("00000000011111");
 
             expect(actual).toEqual(expected);
-        })
+        });
     });
 
     describe("getDocumentByRna", () => {
@@ -235,26 +279,26 @@ describe("AvisSituationInseeService", () => {
             const actual = await avisSituationInseeService.getDocumentsByRna("");
 
             expect(actual).toBe(expected);
-        })
+        });
 
         it("should call getDocumentsBySiren with founded siren", async () => {
             getSirenMock.mockImplementationOnce(async () => expected);
-            getDocumentsBySirenMock.mockImplementation(async () => ({} as any))
+            getDocumentsBySirenMock.mockImplementation(async () => ({} as any));
 
             const expected = "000000000";
             await avisSituationInseeService.getDocumentsByRna("");
 
             expect(avisSituationInseeService.getDocumentsBySiren).toHaveBeenCalledWith(expected);
-        })
+        });
 
         it("should return getDocumentsBySiren anwser", async () => {
             getSirenMock.mockImplementationOnce(async () => "000000000");
-            getDocumentsBySirenMock.mockImplementation(async () => (expected as any))
+            getDocumentsBySirenMock.mockImplementation(async () => expected as any);
 
             const expected = { imTest: true };
             const actual = await avisSituationInseeService.getDocumentsByRna("");
 
             expect(actual).toBe(expected);
-        })
-    })
+        });
+    });
 });

@@ -5,19 +5,19 @@ describe("ArrayHelper", () => {
         it("should return -1", () => {
             const expected = -1;
             const actual = ArrayHelper.compare("a", "b");
-            expect(actual).toEqual(expected)
+            expect(actual).toEqual(expected);
         });
 
         it("should return 1", () => {
             const expected = 1;
             const actual = ArrayHelper.compare("b", "a");
-            expect(actual).toEqual(expected)
+            expect(actual).toEqual(expected);
         });
 
         it("should return 0", () => {
             const expected = 0;
             const actual = ArrayHelper.compare("a", "a");
-            expect(actual).toEqual(expected)
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -26,7 +26,7 @@ describe("ArrayHelper", () => {
             const expected = "function";
             const actual = typeof ArrayHelper.compareByValueBuilder("provider");
             expect(actual).toEqual(expected);
-        })
+        });
 
         it("should compare on value", () => {
             const objA = { provider: "ABC" };
@@ -42,6 +42,6 @@ describe("ArrayHelper", () => {
             const expected = [objA, objB];
             const actual = [objB, objA].sort(ArrayHelper.compareByValueBuilder("siret.provider"));
             expect(actual).toEqual(expected);
-        })
+        });
     });
 });
