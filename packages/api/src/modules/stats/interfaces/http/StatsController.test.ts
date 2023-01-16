@@ -88,4 +88,58 @@ describe("StatsController", () => {
             await expect(test).rejects.toThrowError(expected);
         });
     });
+
+    describe("getTopAssociations", () => {
+        const serviceSpy = jest.spyOn(statsService, "getTopAssociationsByPeriod");
+        const DATA = [
+            { name: "MOUVEMENT ATD QUART MONDE", visits: 346 },
+            { name: "UNIS CITE", visits: 145 },
+            { name: "L'ARCHE DE SIENA", visits: 76 },
+            { name: "ASSOCIATION DE LA FONDATION ETUDIANTE POUR LA VILLE AFEV", visits: 61 },
+            { name: "AURORE (DAWN)", visits: 52 }
+        ];
+
+        beforeAll(() => serviceSpy.mockResolvedValue(DATA));
+        afterAll(() => serviceSpy.mockRestore());
+
+        it("should throw error if limit is not a number", () => {
+            expect(() => controller.getTopAssociations("erztye")).rejects.toThrowError(
+                new BadRequestError("'limit' must be a number")
+            );
+        });
+
+        it("should call service with default args", async () => {
+            await controller.getTopAssociations();
+            const now = new Date();
+            const expected = [
+                5,
+                new Date(Date.UTC(now.getFullYear() - 1, now.getMonth())),
+                new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1))
+            ];
+
+            expect(serviceSpy).toBeCalledWith(...expected);
+        });
+
+        it("should call service with given formatted args", async () => {
+            const start = new Date(Date.UTC(2021, 2));
+            const end = new Date(Date.UTC(2022, 2));
+            await controller.getTopAssociations(
+                "7",
+                start.getFullYear().toString(),
+                start.getMonth().toString(),
+                end.getFullYear().toString(),
+                end.getMonth().toString()
+            );
+
+            const expected = [7, start, new Date(Date.UTC(2022, 3))];
+
+            expect(serviceSpy).toHaveBeenCalledWith(...expected);
+        });
+
+        it("should return formatted service response", async () => {
+            const expected = { success: true, data: DATA };
+            const actual = await controller.getTopAssociations();
+            expect(actual).toEqual(expected);
+        });
+    });
 });

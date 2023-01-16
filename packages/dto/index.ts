@@ -26,6 +26,7 @@ export * from "./user/UserDto";
 export * from "./stats/RequestsDtoResponse";
 export * from "./stats/StatsRequestsMedianDto";
 export * from "./stats/MonthlyAvgRequestDtoResponse";
+export * from "./stats/AssociationTopDtoResponse";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
 export * from "./errors/HttpErrorResponseDto";

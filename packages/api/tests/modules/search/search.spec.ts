@@ -17,13 +17,13 @@ describe("/search", () => {
     });
 
     describe("/associations/{input}", () => {
-        beforeEach(() => {
-            associationNameRepository.create(AssociationNameFixture);
+        beforeEach(async () => {
+            Promise.all(AssociationNameFixture.map(fixture => associationNameRepository.create(fixture)));
         });
 
         it("should return an Association from its RNA", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${AssociationNameFixture.rna}`)
+                .get(`/search/associations/${AssociationNameFixture[0].rna}`)
                 .set("x-access-token", await getUserToken())
                 .set("Accept", "application/json");
 
@@ -32,7 +32,7 @@ describe("/search", () => {
         });
         it("should return an Association from its Siren", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${AssociationNameFixture.siren}`)
+                .get(`/search/associations/${AssociationNameFixture[0].siren}`)
                 .set("x-access-token", await getUserToken())
                 .set("Accept", "application/json");
 
@@ -41,7 +41,7 @@ describe("/search", () => {
         });
         it("should return an AssociationNameEntity from its name", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${AssociationNameFixture.name}`)
+                .get(`/search/associations/${AssociationNameFixture[0].name}`)
                 .set("x-access-token", await getUserToken())
                 .set("Accept", "application/json");
 
