@@ -22,7 +22,7 @@
                 <Select
                     on:change={e => ctrl.updateYear(e.detail)}
                     label="Année"
-                    options={ctrl.years}
+                    options={ctrl.yearOptions}
                     bind:selected={$year} />
                 <div class="chart-container">
                     <canvas bind:this={canvas} />

@@ -6,7 +6,7 @@ import Store from "../../../../../core/Store";
 export class MonthlyUserCountByYearController {
     constructor() {
         this._data = [];
-        this.years = YEAR_CHOICES.map(year => ({ value: year, label: year }));
+        this.yearOptions = YEAR_CHOICES.map(year => ({ value: year, label: year }));
 
         this.year = new Store(new Date().getFullYear());
         this.progress = new Store();
