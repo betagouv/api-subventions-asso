@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import express from "express";
+import express, { NextFunction, Response } from "express";
 import passport from "passport";
 
 import cors from "cors";
@@ -11,18 +11,32 @@ import { AssetsMiddleware } from "./middlewares/AssetsMiddleware";
 import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMiddleware";
 import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
-import RegisterSSERoutes from "./sse"
+import RegisterSSERoutes from "./sse";
 import StatsSearchMiddleware, { StatsSearchRoutesRegex } from "./middlewares/StatsSearchMiddleware";
+import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
+import { IdentifiedRequest } from "./@types";
 
-const appName = 'api-subventions-asso';
+const appName = "api-subventions-asso";
 
-export async function startServer(port = '8080', isTest = false) {
+async function factoryEndMiddleware(
+    req: IdentifiedRequest,
+    res: Response,
+    next: NextFunction,
+    middleware: (req: IdentifiedRequest, res: Response) => void
+) {
+    res.on("finish", () => middleware(req, res));
+    next();
+}
+
+export async function startServer(port = "8080", isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
-    app.use(cors({
-        origin: "*"
-    }));
+    app.use(
+        cors({
+            origin: "*"
+        })
+    );
 
     if (!isTest) app.use(expressLogger());
 
@@ -35,12 +49,17 @@ export async function startServer(port = '8080', isTest = false) {
     authMocks(app); // Passport Part
 
     StatsSearchRoutesRegex.forEach(route => app.use(route, StatsSearchMiddleware));
+    StatsAssoVisitRoutesRegex.forEach(route =>
+        app.use(route, (req, res, next) =>
+            factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware)
+        )
+    );
 
     RegisterRoutes(app); // TSOA Part
 
     RegisterSSERoutes(app); // SSE Part
 
-    app.use('/docs', ...(await docsMiddlewares()));
+    app.use("/docs", ...(await docsMiddlewares()));
 
     app.use(errorHandler(isTest));
 
