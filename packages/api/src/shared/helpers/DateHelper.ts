@@ -1,5 +1,7 @@
 import { capitalizeFirstLetter } from "./StringHelper";
 
+export const ONE_DAY_MS = 1000 * 60 * 60 * 24;
+
 export const isDateNewer = (a: string | Date, b: string | Date) => {
     const dateA = new Date(a);
     const dateB = new Date(b);

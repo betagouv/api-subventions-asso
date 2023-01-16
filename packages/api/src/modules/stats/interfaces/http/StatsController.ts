@@ -2,7 +2,8 @@ import {
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
     MonthlyAvgRequestDtoResponse,
-    AssociationTopDtoResponse
+    AssociationTopDtoResponse,
+    UsersByStatusResponseDto
 } from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
@@ -101,8 +102,15 @@ export class StatsController extends Controller {
         return { success: true, data: result };
     }
 
+    /**
+     * Permet de récupérer le nombre d'utilisateur par status
+     * 4 status sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte9)
+     *
+     * @summary Permet de récupérer le nombre d'utilisateur par status
+     */
     @Get("/users/status")
-    async getUsersByStatus() {
+    @Response<ErrorResponse>("500")
+    async getUsersByStatus(): Promise<UsersByStatusResponseDto> {
         const result = await statsService.getUsersByStatus();
         return { success: true, data: result };
     }

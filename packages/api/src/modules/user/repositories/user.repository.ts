@@ -11,6 +11,10 @@ export enum UserRepositoryErrors {
 export class UserRepository {
     private readonly collection = db.collection<UserDbo>("users");
 
+    async findAll() {
+        return this.collection.find({}).toArray();
+    }
+
     async findByEmail(email: string) {
         const user = await this.collection.findOne({ email: email });
         if (!user) return null;
