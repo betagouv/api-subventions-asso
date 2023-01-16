@@ -4,9 +4,9 @@ import { DefaultObject } from "../../../../@types";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
-export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
+export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
-    readonly collectionImportName = "chorus-line-IMPORT"
+    readonly collectionImportName = "chorus-line-IMPORT";
 
     public async findOneByEJ(ej: string) {
         return this.collection.findOne({ "indexedInformations.ej": ej });
@@ -17,11 +17,13 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
     }
 
     public async findOneBySiren(siren: Siren) {
-        return this.collection.findOne({ "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`) });
+        return this.collection.findOne({
+            "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
+        });
     }
 
     public async findOneByUniqueId(uniqueId: string) {
-        return this.collection.findOne({ "uniqueId": uniqueId });
+        return this.collection.findOne({ uniqueId: uniqueId });
     }
 
     public async create(entity: ChorusLineEntity) {
@@ -30,7 +32,9 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
 
     public async insertMany(entities: ChorusLineEntity[], dropDB = false) {
         if (dropDB) {
-            return this.db.collection<ChorusLineEntity>(this.collectionImportName).insertMany(entities, { ordered: false });
+            return this.db
+                .collection<ChorusLineEntity>(this.collectionImportName)
+                .insertMany(entities, { ordered: false });
         }
 
         return this.collection.insertMany(entities, { ordered: false });
@@ -40,18 +44,18 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...entityWithoutId } = entity;
 
-        await this.collection.updateOne({ "uniqueId": entity.uniqueId }, { $set: entityWithoutId });
+        await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entityWithoutId });
 
-        return this.collection.findOne({ "uniqueId": entity.uniqueId }) as Promise<WithId<ChorusLineEntity>>;
+        return this.collection.findOne({ uniqueId: entity.uniqueId }) as Promise<WithId<ChorusLineEntity>>;
     }
 
     public async updateById(id: ObjectId, entity: ChorusLineEntity) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...entityWithoutId } = entity;
 
-        await this.collection.updateOne({ "_id": id }, { $set: entityWithoutId });
+        await this.collection.updateOne({ _id: id }, { $set: entityWithoutId });
 
-        return this.collection.findOne({ "_id": id }) as Promise<WithId<ChorusLineEntity>>;
+        return this.collection.findOne({ _id: id }) as Promise<WithId<ChorusLineEntity>>;
     }
 
     public findBySiret(siret: Siret) {
@@ -63,9 +67,11 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
     }
 
     public findBySiren(siren: Siren) {
-        return this.collection.find({
-            "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
-        }).toArray();
+        return this.collection
+            .find({
+                "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
+            })
+            .toArray();
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}) {
@@ -73,8 +79,7 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity>{
     }
 
     public async switchCollection() {
-        const collectionExist = (await this.db.listCollections().toArray())
-            .find(c => c.name === this.collectionName);
+        const collectionExist = (await this.db.listCollections().toArray()).find(c => c.name === this.collectionName);
 
         if (collectionExist) await this.collection.rename(this.collectionName + "-OLD");
 

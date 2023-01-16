@@ -4,21 +4,20 @@ import { LOG_MAIL, MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../../
 import INotifier from "./@types/INotifier";
 
 export default class NodeMailerProvider implements INotifier {
-
     transport = nodemailer.createTransport({
         host: MAIL_HOST,
         port: MAIL_PORT,
         requireTLS: true,
         auth: {
             user: MAIL_USER,
-            pass: MAIL_PASSWORD,
-        },
+            pass: MAIL_PASSWORD
+        }
     } as unknown as SMTPTransport.Options);
 
     async sendMail(email: string, subject: string, html: string, text: string): Promise<boolean> {
         try {
             await this.transport.verify();
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             return false;
         }

@@ -13,61 +13,94 @@ import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
-import { ProviderEnum } from '../../../@enums/ProviderEnum';
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 export interface RejectedRequest {
-    state: "rejected", result: { message: string, code: number, data: unknown }
+    state: "rejected";
+    result: { message: string; code: number; data: unknown };
 }
 
 export class LeCompteAssoService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
     provider = {
         name: "Le Compte Asso",
         type: ProviderEnum.api,
-        description: "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET."
-    }
+        description:
+            "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET."
+    };
 
     public validEntity(partialEntity: ILeCompteAssoPartialRequestEntity) {
         if (!isSiret(partialEntity.legalInformations.siret)) {
-            return { success: false, message: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`, data: partialEntity.legalInformations };
+            return {
+                success: false,
+                message: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`,
+                data: partialEntity.legalInformations
+            };
         }
 
         if (!isAssociationName(partialEntity.legalInformations.name)) {
-            return { success: false, message: `INVALID NAME FOR ${partialEntity.legalInformations.name}`, data: partialEntity.legalInformations };
+            return {
+                success: false,
+                message: `INVALID NAME FOR ${partialEntity.legalInformations.name}`,
+                data: partialEntity.legalInformations
+            };
         }
 
         if (!isCompteAssoId(partialEntity.providerInformations.compteAssoId)) {
-            return { success: false, message: `INVALID COMPTE ASSO ID FOR ${partialEntity.legalInformations.name}`, data: partialEntity.providerInformations };
+            return {
+                success: false,
+                message: `INVALID COMPTE ASSO ID FOR ${partialEntity.legalInformations.name}`,
+                data: partialEntity.providerInformations
+            };
         }
 
-        return { success: true }
+        return { success: true };
     }
 
-    public async addRequest(partialEntity: ILeCompteAssoPartialRequestEntity): Promise<{ state: string, result: LeCompteAssoRequestEntity } | RejectedRequest> {
-        const existingEntity = await leCompteAssoRepository.findByCompteAssoId(partialEntity.providerInformations.compteAssoId);
+    public async addRequest(
+        partialEntity: ILeCompteAssoPartialRequestEntity
+    ): Promise<{ state: string; result: LeCompteAssoRequestEntity } | RejectedRequest> {
+        const existingEntity = await leCompteAssoRepository.findByCompteAssoId(
+            partialEntity.providerInformations.compteAssoId
+        );
 
         if (existingEntity) {
-
             const legalInformations: ILegalInformations = {
                 ...existingEntity.legalInformations,
                 ...partialEntity.legalInformations,
                 rna: existingEntity.legalInformations.rna
-            }
+            };
             const siret = legalInformations.siret;
             if (siret) {
                 const siren = siretToSiren(siret);
-                EventManager.call('rna-siren.matching', [{ rna: legalInformations.rna, siren }])
-                await EventManager.call('association-name.matching', [{ rna: legalInformations.rna, siren, name: legalInformations.name, provider: this.provider.name, lastUpdate: partialEntity.providerInformations.transmis_le }])
+                EventManager.call("rna-siren.matching", [{ rna: legalInformations.rna, siren }]);
+                await EventManager.call("association-name.matching", [
+                    {
+                        rna: legalInformations.rna,
+                        siren,
+                        name: legalInformations.name,
+                        provider: this.provider.name,
+                        lastUpdate: partialEntity.providerInformations.transmis_le
+                    }
+                ]);
             }
 
             return {
                 state: "updated",
-                result: await leCompteAssoRepository.update(new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations, partialEntity.data)),
+                result: await leCompteAssoRepository.update(
+                    new LeCompteAssoRequestEntity(
+                        legalInformations,
+                        partialEntity.providerInformations,
+                        partialEntity.data
+                    )
+                )
             };
         }
 
         // Rna is not exported in CompteAsso so we search in api
         const rna = await rnaSirenService.getRna(partialEntity.legalInformations.siret, true);
-        const asso = await dataEntrepriseService.findAssociationBySiren(siretToSiren(partialEntity.legalInformations.siret));
+        const asso = await dataEntrepriseService.findAssociationBySiren(
+            siretToSiren(partialEntity.legalInformations.siret)
+        );
 
         if (!rna || !asso || !asso.categorie_juridique?.length) {
             return {
@@ -77,9 +110,8 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                     code: 11,
                     data: partialEntity.legalInformations
                 }
-            }
+            };
         }
-
 
         if (!LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value)) {
             return {
@@ -88,25 +120,28 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                     message: "The company is not in legal cateries accepted",
                     code: 10,
                     data: {
-                        ...partialEntity.legalInformations,
+                        ...partialEntity.legalInformations
                     }
                 }
-            }
+            };
         }
 
         const legalInformations: ILegalInformations = {
             ...partialEntity.legalInformations,
-            rna,
-        }
+            rna
+        };
 
-        const entity = new LeCompteAssoRequestEntity(legalInformations, partialEntity.providerInformations, partialEntity.data);
+        const entity = new LeCompteAssoRequestEntity(
+            legalInformations,
+            partialEntity.providerInformations,
+            partialEntity.data
+        );
         await leCompteAssoRepository.addRequest(entity);
         return {
             state: "created",
-            result: entity,
+            result: entity
         };
     }
-
 
     public async findBySiret(siret: Siret) {
         return await leCompteAssoRepository.findsBySiret(siret);
@@ -118,9 +153,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
 
     public async findByRna(rna: Rna) {
         return await leCompteAssoRepository.findsByRna(rna);
-
     }
-
 
     /**
      * |-------------------------|

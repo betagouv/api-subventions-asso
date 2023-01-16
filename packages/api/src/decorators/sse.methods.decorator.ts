@@ -9,8 +9,8 @@ function factoryDecorator(method: "POST" | "GET" | "PUT" | "DELETE", route: stri
             function: target[propertyKey] as any,
             securityRoles
         });
-    }
-} 
+    };
+}
 
 export function Get(route: string, securityRoles: string[] = []) {
     return factoryDecorator("GET", route, securityRoles);

@@ -95,7 +95,10 @@ describe("StatsController", () => {
             { name: "MOUVEMENT ATD QUART MONDE", visits: 346 },
             { name: "UNIS CITE", visits: 145 },
             { name: "L'ARCHE DE SIENA", visits: 76 },
-            { name: "ASSOCIATION DE LA FONDATION ETUDIANTE POUR LA VILLE AFEV", visits: 61 },
+            {
+                name: "ASSOCIATION DE LA FONDATION ETUDIANTE POUR LA VILLE AFEV",
+                visits: 61
+            },
             { name: "AURORE (DAWN)", visits: 52 }
         ];
 

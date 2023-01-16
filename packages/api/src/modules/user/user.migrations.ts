@@ -13,13 +13,16 @@ export enum EmailToLowerCaseAction {
 export default class UserMigrations {
     public async migrationUserEmailToLowerCase() {
         const users = await userService.find();
-        const lowerCaseUsers = this.toLowerCaseUsers(users.filter(u => u) as UserDto[])
-        const groupedUser = this.groupUsersByEmail(lowerCaseUsers)
-        const usersAction = (await Promise.all(Object.values(groupedUser).map((users => this.findUsersAction(users))))).flat();
+        const lowerCaseUsers = this.toLowerCaseUsers(users.filter(u => u) as UserDto[]);
+        const groupedUser = this.groupUsersByEmail(lowerCaseUsers);
+        const usersAction = (
+            await Promise.all(Object.values(groupedUser).map(users => this.findUsersAction(users)))
+        ).flat();
 
         await asyncForEach(usersAction, async userAction => {
             if (userAction.action === EmailToLowerCaseAction.UPDATE) await userService.update(userAction.user);
-            else if (userAction.action === EmailToLowerCaseAction.DELETE) await userService.delete(userAction.user._id.toString());
+            else if (userAction.action === EmailToLowerCaseAction.DELETE)
+                await userService.delete(userAction.user._id.toString());
         });
     }
 
@@ -29,66 +32,92 @@ export default class UserMigrations {
             usersBase[user.email].push(user);
 
             return usersBase;
-        }, {} as DefaultObject<UserDto[]>)
+        }, {} as DefaultObject<UserDto[]>);
     }
 
     private groupUsersByStatus(users: UserDto[]) {
-        return users.reduce((acc, user: UserDto) => {
-            acc[user.active ? "actived" : "unactived"].push(user);
+        return users.reduce(
+            (acc, user: UserDto) => {
+                acc[user.active ? "actived" : "unactived"].push(user);
 
-            return acc;
-        }, { actived: [] as UserDto[], unactived: [] as UserDto[] })
+                return acc;
+            },
+            { actived: [] as UserDto[], unactived: [] as UserDto[] }
+        );
     }
 
     private toLowerCaseUsers(users: UserDto[]) {
-        return users.map((user: UserDto) => ({ ...user, email: user.email.toLowerCase() }));
+        return users.map((user: UserDto) => ({
+            ...user,
+            email: user.email.toLowerCase()
+        }));
     }
 
     private async findUsersAction(users: UserDto[]) {
-        if (users.length === 1) return [{
-            action: EmailToLowerCaseAction.UPDATE,
-            user: users[0]
-        }];
+        if (users.length === 1)
+            return [
+                {
+                    action: EmailToLowerCaseAction.UPDATE,
+                    user: users[0]
+                }
+            ];
 
         const usersToRemove: UserDto[] = [];
         const { actived, unactived } = this.groupUsersByStatus(users);
 
         if (actived.length > 0) usersToRemove.push(...unactived);
-        else { // No users actived so we search last created user
+        else {
+            // No users actived so we search last created user
             const lastCreated = await this.findLastCreatedUser(unactived);
             return [
                 {
                     action: EmailToLowerCaseAction.UPDATE,
                     user: lastCreated
                 },
-                ...unactived.filter(user => user != lastCreated).map(user => ({ action: EmailToLowerCaseAction.DELETE, user }))
-            ]
+                ...unactived
+                    .filter(user => user != lastCreated)
+                    .map(user => ({ action: EmailToLowerCaseAction.DELETE, user }))
+            ];
         }
 
         // We search last connected user
         const lastConnectedUser = await this.findLastConnectedUser(actived);
 
-        usersToRemove.push(...actived.filter(user => user != lastConnectedUser))
+        usersToRemove.push(...actived.filter(user => user != lastConnectedUser));
 
         return [
             {
                 action: EmailToLowerCaseAction.UPDATE,
                 user: lastConnectedUser
             },
-            ...usersToRemove.map(user => ({ action: EmailToLowerCaseAction.DELETE, user }))
-        ]
+            ...usersToRemove.map(user => ({
+                action: EmailToLowerCaseAction.DELETE,
+                user
+            }))
+        ];
     }
 
     private async findLastCreatedUser(users: UserDto[]) {
-        const resetUsers = await Promise.all(users.map(user => userService.findUserResetByUserId(user._id as ObjectId)));
-        const ordered = (resetUsers.filter(reset => reset) as UserReset[])
-            .sort((resetA, resetB) => resetB.createdAt.getTime() - resetA.createdAt.getTime());
+        const resetUsers = await Promise.all(
+            users.map(user => userService.findUserResetByUserId(user._id as ObjectId))
+        );
+        const ordered = (resetUsers.filter(reset => reset) as UserReset[]).sort(
+            (resetA, resetB) => resetB.createdAt.getTime() - resetA.createdAt.getTime()
+        );
 
         return users.find(user => user._id === ordered[0].userId) as UserDto;
     }
 
     private async findLastConnectedUser(users: UserDto[]) {
-        const jwtUsers = await Promise.all(users.map(async user => ({ user, jwt: await userService.findJwtByUser(user) as { token: string, expirateDate: Date } })));
+        const jwtUsers = await Promise.all(
+            users.map(async user => ({
+                user,
+                jwt: (await userService.findJwtByUser(user)) as {
+                    token: string;
+                    expirateDate: Date;
+                }
+            }))
+        );
 
         const sortedJwt = jwtUsers.sort((a, b) => b.jwt.expirateDate.getTime() - a.jwt.expirateDate.getTime());
 

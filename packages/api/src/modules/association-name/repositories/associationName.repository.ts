@@ -40,7 +40,11 @@ export class AssociationNameRepository {
     }
 
     async findOneByEntity(entity: AssociationNameEntity) {
-        const result = await this.collection.findOne({ rna: entity.rna, siren: entity.siren, name: entity.name });
+        const result = await this.collection.findOne({
+            rna: entity.rna,
+            siren: entity.siren,
+            name: entity.name
+        });
         if (result) return this.toEntity(result);
         return null;
     }

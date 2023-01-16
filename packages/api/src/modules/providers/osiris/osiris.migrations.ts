@@ -7,7 +7,7 @@ export default class OsirisMigration {
         const requestsCursor = osirisRequestRepository.cursorFindRequests({});
 
         let counter = 0;
-        while(await requestsCursor.hasNext()) {
+        while (await requestsCursor.hasNext()) {
             const doc = await requestsCursor.next();
             if (!doc) continue;
             doc.providerInformations.extractYear = year;
@@ -20,7 +20,7 @@ export default class OsirisMigration {
         const actionsCursor = osirisActionRepository.cursorFind({});
 
         counter = 0;
-        while(await actionsCursor.hasNext()) {
+        while (await actionsCursor.hasNext()) {
             const doc = await actionsCursor.next();
             if (!doc) continue;
             doc.indexedInformations.extractYear = year;
@@ -33,7 +33,7 @@ export default class OsirisMigration {
         const evaluationsCursor = osirisEvaluationRepository.cursorFind({});
 
         counter = 0;
-        while(await evaluationsCursor.hasNext()) {
+        while (await evaluationsCursor.hasNext()) {
             const doc = await evaluationsCursor.next();
             if (!doc) continue;
             doc.indexedInformations.extractYear = year;
@@ -42,7 +42,6 @@ export default class OsirisMigration {
             printAtSameLine(counter.toString());
         }
 
-
-        console.log("Migration ended")
+        console.log("Migration ended");
     }
 }

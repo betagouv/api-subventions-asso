@@ -1,14 +1,13 @@
-import FonjepEntityAdapter from './FonjepEntityAdapter';
+import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import { SubventionEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
-import ProviderValueFactory from '../../../../shared/ProviderValueFactory';
-
+import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 
 describe("FonjepEntityAdapter", () => {
     describe("toDemandeSubvention()", () => {
         const buildProviderValueAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
         it("should return a DemandeSubvention", () => {
             // @ts-expect-error: mock
-            buildProviderValueAdapterMock.mockImplementationOnce(() => value => value)
+            buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
             const actual = FonjepEntityAdapter.toDemandeSubvention(SubventionEntity);
             expect(actual).toMatchSnapshot();
         });

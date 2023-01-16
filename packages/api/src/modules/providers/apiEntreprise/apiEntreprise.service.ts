@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import qs from "qs";
 
-import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf"
+import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import { isSiren, isSiret } from "../../../shared/Validators";
@@ -17,27 +17,32 @@ import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { ExtraitRcsDto } from "@api-subventions-asso/dto/associations/ExtraitRcsDto";
 
 export class ApiEntrepriseService implements EtablissementProvider, AssociationsProvider {
-    static API_URL = "https://entreprise.api.gouv.fr/"
+    static API_URL = "https://entreprise.api.gouv.fr/";
 
-    isEtablissementProvider = true
-    isAssociationsProvider = true
+    isEtablissementProvider = true;
+    isAssociationsProvider = true;
 
     provider = {
         name: "API Entreprise",
         type: ProviderEnum.api,
-        description: "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
+        description:
+            "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...)."
     };
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
 
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
-
-    private async sendRequest<T>(route: string, queryParams: DefaultObject<string>, reason: string, isNewAPI = true): Promise<T | null> {
+    private async sendRequest<T>(
+        route: string,
+        queryParams: DefaultObject<string>,
+        reason: string,
+        isNewAPI = true
+    ): Promise<T | null> {
         const defaultParams = {
             context: "aides publiques",
             recipient: "12004101700035",
-            object: reason,
+            object: reason
         };
 
         const params = qs.stringify({ ...defaultParams, ...queryParams });
@@ -51,12 +56,13 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
 
         let result;
         if (isNewAPI) {
-            result = await axios.get<T>(fullURL, { headers: { "Authorization": `Bearer ${API_ENTREPRISE_TOKEN}` } });
+            result = await axios.get<T>(fullURL, {
+                headers: { Authorization: `Bearer ${API_ENTREPRISE_TOKEN}` }
+            });
+        } else {
+            result = await axios.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`);
         }
-        else {
-            result = await axios.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`)
-        }
-        this.requestCache.add(fullURL, result.status == 200 ? result.data : null)
+        this.requestCache.add(fullURL, result.status == 200 ? result.data : null);
 
         if (result.status == 200) return result.data;
         return null;
@@ -76,19 +82,18 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
             // We retry a maximum of 5 times, going back from one month each time trying to find the last headcount saved
             while (retries < 5) {
                 try {
-                    headcount = await this.getEtablissementHeadcount(id, retries) as IApiEntrepriseHeadcount;
+                    headcount = (await this.getEtablissementHeadcount(id, retries)) as IApiEntrepriseHeadcount;
                     retries = 5;
                 } catch (e) {
                     retries++;
-                    error = e
+                    error = e;
                     if ((e as AxiosError)?.response?.status != 404) retries = 5;
                 }
             }
             if (headcount) return headcount;
             else if (error) throw error;
             else return null;
-
-        } else throw new StructureIdentifiersError()
+        } else throw new StructureIdentifiersError();
     }
 
     private buildHeadcountUrl(siret: Siret, subtractMonths = 0) {
@@ -97,7 +102,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
         let year = Number(split[0]);
         let month = Number(split[1]) - subtractMonths;
         if (month <= 0) {
-            year -= 1
+            year -= 1;
             month = 12 - month;
         }
         if (month < 10) return `v2/effectifs_mensuels_acoss_covid/${year}/0${month}/${siret}`;
@@ -105,13 +110,24 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
-        return this.sendRequest<IApiEntrepriseHeadcount>(`${this.buildHeadcountUrl(siret, subtractMonths)}`, {}, this.HEADCOUNT_REASON, false);
+        return this.sendRequest<IApiEntrepriseHeadcount>(
+            `${this.buildHeadcountUrl(siret, subtractMonths)}`,
+            {},
+            this.HEADCOUNT_REASON,
+            false
+        );
     }
 
     public async getExtractRcs(siren: Siren) {
         if (isSiren(siren)) {
             try {
-                return (await this.sendRequest<{ data: ExtraitRcsDto }>(`v3/infogreffe/rcs/unites_legales/${siren}/extrait_kbis`, {}, this.RCS_EXTRACT_REASON))?.data
+                return (
+                    await this.sendRequest<{ data: ExtraitRcsDto }>(
+                        `v3/infogreffe/rcs/unites_legales/${siren}/extrait_kbis`,
+                        {},
+                        this.RCS_EXTRACT_REASON
+                    )
+                )?.data;
             } catch (e) {
                 return null;
             }
@@ -141,7 +157,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
             if (!result) return null;
             return [ApiEntrepriseAdapter.toAssociation(result)];
         } catch (e) {
-            return null
+            return null;
         }
     }
 
@@ -153,7 +169,6 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
     async getAssociationsByRna(_rna: string): Promise<Association[] | null> {
         return null;
     }
-
 }
 
 const apiEntrepriseService = new ApiEntrepriseService();

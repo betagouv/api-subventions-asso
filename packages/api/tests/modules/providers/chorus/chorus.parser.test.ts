@@ -9,28 +9,27 @@ describe("chorus.parser.ts", () => {
         const entities = ChorusPaser.parse(buffer);
 
         expect(entities).toHaveLength(1);
-        expect(entities[0]).toMatchObject( {
-            "_id": undefined,
-            "data":  {
+        expect(entities[0]).toMatchObject({
+            _id: undefined,
+            data: {
                 "Code taxe 1": "10000000000000",
                 "Compte budgétaire": "Dépenses de fonction",
                 "Compte général": "AUTRES PREST SERVICE",
                 "Date de dernière opération sur la DP": "01.01.1970",
-                "EUR": "1,00",
+                EUR: "1,00",
                 "Fournisseur payé (DP)": "CAISSE DES DEPOTS ET CONSIGNATIONS",
                 "N° DP": "100000000",
                 "N° EJ": "2100000000",
                 "Référentiel de programmation": "Cpte engagmt citoyen",
-                "Type d'opération": "Subventions",
+                "Type d'opération": "Subventions"
             },
-            "indexedInformations":  {
-                "amount": 1,
-                "dateOperation": new Date(Date.UTC(1970, 0, 1)),
-                "ej": "2100000000",
-                "siret": "10000000000000",
+            indexedInformations: {
+                amount: 1,
+                dateOperation: new Date(Date.UTC(1970, 0, 1)),
+                ej: "2100000000",
+                siret: "10000000000000"
             },
-            "provider": "Chorus",
-        }
-        );
-    })
+            provider: "Chorus"
+        });
+    });
 });

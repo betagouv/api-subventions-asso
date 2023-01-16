@@ -1,33 +1,33 @@
 import bcrypt from "bcrypt";
 
 interface EventOption {
-    layer: number
-    filter?: (...args: Array<unknown>) => boolean
+    layer: number;
+    filter?: (...args: Array<unknown>) => boolean;
 }
 
-interface CallbackFunction  {
-    (callbackStop: (data ?:unknown) => void, ...args: Array<unknown>) : void | Promise<void>;
+interface CallbackFunction {
+    (callbackStop: (data?: unknown) => void, ...args: Array<unknown>): void | Promise<void>;
 }
 
 interface CallbackObject {
-    callback: CallbackFunction,
-    id: string,
-    option: EventOption,
+    callback: CallbackFunction;
+    id: string;
+    option: EventOption;
 }
 
 interface Event {
-    name: string,
-    callbacks: Array<CallbackObject>
+    name: string;
+    callbacks: Array<CallbackObject>;
 }
 
 interface StackEvent extends Array<Event> {
-    [index: number]: Event
+    [index: number]: Event;
 }
 
 interface CallbackStored {
-    callbackObject: CallbackObject,
-    event: Event,
-    id: string
+    callbackObject: CallbackObject;
+    event: Event;
+    id: string;
 }
 
 class EventManager {
@@ -36,7 +36,7 @@ class EventManager {
 
     /**
      * Register event
-     * 
+     *
      * @param eventName is the name of event
      */
     public add(eventName: string): Event {
@@ -50,26 +50,26 @@ class EventManager {
 
         this.events.push(event);
 
-        return event
+        return event;
     }
 
     /**
      * Register events
-     * 
+     *
      * @param eventNames is the names of events
      */
     public addMultiple(...eventNames: Array<string>) {
         eventNames.forEach(eventName => this.add(eventName));
-    } 
+    }
 
     /**
      * Attach callback when event
-     * 
+     *
      * @param eventName is the name of event
      * @param option is for defined function filter or layer
      * @param callback the callback attached to event
      */
-    public on(eventName: string, option: { name?: string, layer?: number}, callback: CallbackFunction) {
+    public on(eventName: string, option: { name?: string; layer?: number }, callback: CallbackFunction) {
         const event = this.getEventByName(eventName, true);
 
         if (!option.layer) option.layer = Infinity; // If not layer call this callback in last
@@ -78,14 +78,13 @@ class EventManager {
         const position = event.callbacks.findIndex(cbObject => cbObject.option.layer > (option.layer as number));
         const callbackObject = {
             callback,
-            id: option.name as string ||  bcrypt.hashSync("DEFAULT_ID", Math.random() * 10 + 1),
+            id: (option.name as string) || bcrypt.hashSync("DEFAULT_ID", Math.random() * 10 + 1),
             option: option as EventOption
-        }
+        };
 
         if (position != -1) {
             event.callbacks.splice(position, 0, callbackObject);
-        }
-        else {
+        } else {
             event.callbacks.push(callbackObject);
         }
 
@@ -100,7 +99,7 @@ class EventManager {
 
     /**
      * Call callbacks linked to the event
-     * 
+     *
      * @param eventName is the name of event
      * @param args argument send to callbacks
      */
@@ -108,30 +107,29 @@ class EventManager {
         return new Promise(resolve => {
             const event = this.getEventByName(eventName);
             let stopCallback = false;
-    
+
             const callbackStop = (data?: unknown) => {
                 stopCallback = true;
                 resolve(data);
-            }
-    
-            event.callbacks.forEach((callback) => {
+            };
+
+            event.callbacks.forEach(callback => {
                 if (stopCallback) return;
-    
+
                 if (callback.option.filter) {
                     if (callback.option.filter(...args)) {
                         callback.callback(callbackStop, ...args);
                     }
-                }
-                else {
+                } else {
                     callback.callback(callbackStop, ...args);
                 }
             });
-        })
+        });
     }
 
     /**
      * Find event by name.
-     * 
+     *
      * @param eventName the event name finded
      * @param force if is true and event is not found this function create the event
      */
@@ -142,13 +140,13 @@ class EventManager {
             if (!force) throw new Error(`The event ${eventName} is not found, please check if as been declared`);
             event = this.add(eventName);
         }
-    
+
         return event;
     }
 
     /**
      * Remove callback on event
-     * 
+     *
      * @param callbackId The id or name of the removed callback
      */
     removeCallback(callbackId: string) {
@@ -157,7 +155,7 @@ class EventManager {
 
         const indexInEvent = callback.event.callbacks.findIndex(cb => cb.id === callbackId);
         if (indexInEvent === -1) return;
-        callback.event.callbacks.splice(indexInEvent,1);
+        callback.event.callbacks.splice(indexInEvent, 1);
     }
 }
 

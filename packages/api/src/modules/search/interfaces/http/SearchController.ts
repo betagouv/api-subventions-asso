@@ -8,29 +8,27 @@ import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 @Security("jwt")
 @Tags("Search Controller")
 export class SearchController extends Controller {
-  /**
-   * Recherche une association via son rna, siren et nom partiel ou complet
-   * @summary Recherche une association via son rna, siren et nom partiel ou complet
-   * @param rna_or_siren Identifiant RNA ou Identifiant Siren
-   */
-  @Get("/associations/{input}")
-  @Response<ErrorResponse>("404", "Aucune association retrouvée", {
-      success: false,
-      message: "Could match any association with given input : ${input}",
-  })
-    public async findAssociations(
-        input: string
-    ): Promise<{
-    success: boolean;
-    result?: AssociationNameEntity[];
-    message?: string;
-  }> {
+    /**
+     * Recherche une association via son rna, siren et nom partiel ou complet
+     * @summary Recherche une association via son rna, siren et nom partiel ou complet
+     * @param rna_or_siren Identifiant RNA ou Identifiant Siren
+     */
+    @Get("/associations/{input}")
+    @Response<ErrorResponse>("404", "Aucune association retrouvée", {
+        success: false,
+        message: "Could match any association with given input : ${input}"
+    })
+    public async findAssociations(input: string): Promise<{
+        success: boolean;
+        result?: AssociationNameEntity[];
+        message?: string;
+    }> {
         const result = await searchService.getAssociationsKeys(input);
         if (!result || (Array.isArray(result) && result.length == 0)) {
             this.setStatus(404);
             return {
                 success: false,
-                message: `Could match any association with given input : ${input}`,
+                message: `Could match any association with given input : ${input}`
             };
         }
         this.setStatus(200);

@@ -37,7 +37,10 @@ describe("AuthentificationController, /auth", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(500);
-            expect(response.body).toMatchObject({ success: false, message: "User not found" });
+            expect(response.body).toMatchObject({
+                success: false,
+                message: "User not found"
+            });
         });
     });
 

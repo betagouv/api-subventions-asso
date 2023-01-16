@@ -3,5 +3,5 @@ describe("Example of unitary test", () => {
         const expected = true;
         const actual = true;
         expect(actual).toEqual(expected);
-    })
+    });
 });

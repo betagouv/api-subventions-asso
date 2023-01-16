@@ -7,12 +7,12 @@ export default class FonjepVersementEntity {
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         siret: {
             path: ["siret"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return value;
                 return value.replace(/ /g, "");
             }
         }
-    }
+    };
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         unique_id: ["id"],
@@ -20,35 +20,34 @@ export default class FonjepVersementEntity {
         code_poste: ["PosteCode"],
         periode_debut: {
             path: ["PeriodeDebut"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
             }
         },
         periode_fin: {
             path: ["PeriodeFin"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
             }
         },
         date_versement: {
             path: ["DateVersement"],
-            adapter: (value) => {
+            adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
             }
         },
         montant_a_payer: ["MontantAPayer"],
         montant_paye: ["MontantPaye"]
-    }
+    };
 
     constructor(
         public legalInformations: {
-            siret: Siret
+            siret: Siret;
         },
         public indexedInformations: IFonjepVersementIndexedInformations,
         public data: unknown
-    ) { }
-
+    ) {}
 }

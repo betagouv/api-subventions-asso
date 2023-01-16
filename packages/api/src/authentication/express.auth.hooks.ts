@@ -1,22 +1,22 @@
-import passport from 'passport';
-import { Express } from "express"
-import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
-import { Strategy as JwtStrategy } from 'passport-jwt';
-import userService, { UserServiceError } from '../modules/user/user.service';
-import { JWT_SECRET } from '../configurations/jwt.conf';
+import passport from "passport";
+import { Express } from "express";
+import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
+import { Strategy as JwtStrategy } from "passport-jwt";
+import userService, { UserServiceError } from "../modules/user/user.service";
+import { JWT_SECRET } from "../configurations/jwt.conf";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 export function authMocks(app: Express) {
     // A passport middleware to handle User login
     passport.use(
-        'login',
+        "login",
         new LocalStrategy(
             {
-                usernameField: 'email',
-                passwordField: 'password',
+                usernameField: "email",
+                passwordField: "password"
             },
             async (email, password, done) => {
                 const result = await userService.login(email, password);
-                if (result.success) return done(null, result.user, { message: 'Logged in Successfully' });
+                if (result.success) return done(null, result.user, { message: "Logged in Successfully" });
 
                 return done(null, false, { message: result.code.toString() }); // It's hack because message accept just string
             }
@@ -28,22 +28,23 @@ export function authMocks(app: Express) {
         new JwtStrategy(
             {
                 secretOrKey: JWT_SECRET,
-                jwtFromRequest: (req) => {
+                jwtFromRequest: req => {
                     let token = null;
                     if (req) {
-                        token =
-                            req.body.token
-                            || req.query.token
-                            || req.headers["x-access-token"];
+                        token = req.body.token || req.query.token || req.headers["x-access-token"];
                     }
 
                     return token;
-                },
+                }
             },
             async (token, done) => {
                 const result = await userService.authenticate(token);
-                if (result.success && result.user) return done(null, result.user, { message: 'Logged in Successfully' });
-                else return done(null, false, { message: (result as UserServiceError).message })
+                if (result.success && result.user)
+                    return done(null, result.user, { message: "Logged in Successfully" });
+                else
+                    return done(null, false, {
+                        message: (result as UserServiceError).message
+                    });
             }
         )
     );
@@ -58,7 +59,7 @@ export function authMocks(app: Express) {
 
     app.post("/auth/login", (req, res, next) => {
         passport.authenticate("login", (error, user, info: IVerifyOptions) => {
-            if (error) return next(error)
+            if (error) return next(error);
             if (user) {
                 req.user = user;
             }
@@ -71,7 +72,7 @@ export function authMocks(app: Express) {
     app.use((req, res, next) => {
         if (req.authInfo) return next(); // if authInfo is not empty then the auhtentication is already check
         passport.authenticate("jwt", (error, user: UserDto, info: IVerifyOptions) => {
-            if (error) return next(error)
+            if (error) return next(error);
             if (user) {
                 req.user = user;
             }
@@ -79,5 +80,5 @@ export function authMocks(app: Express) {
 
             next();
         })(req, res, next);
-    })
+    });
 }

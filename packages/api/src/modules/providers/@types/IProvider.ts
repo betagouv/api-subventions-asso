@@ -1,9 +1,9 @@
-import { ProviderEnum } from '../../../@enums/ProviderEnum'
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 export default interface Provider {
     provider: {
-        name: string,
-        type: ProviderEnum,
-        description: string
-    }
+        name: string;
+        type: ProviderEnum;
+        description: string;
+    };
 }

@@ -1,6 +1,6 @@
-import { Controller, Get, Route, Tags } from 'tsoa';
-import ProvidersInfos from '../../entities/ProvidersInfos';
-import providerService from '../../provider.service';
+import { Controller, Get, Route, Tags } from "tsoa";
+import ProvidersInfos from "../../entities/ProvidersInfos";
+import providerService from "../../provider.service";
 
 @Route("open-data/providers")
 @Tags("Open Data")

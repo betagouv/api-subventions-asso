@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import 'dotenv/config' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import "dotenv/config"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 import { mkdirSync, existsSync } from "fs";
 import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
@@ -40,7 +40,6 @@ async function main() {
 
     const args = process.argv.slice(2);
 
-
     const Controller = contollers.find(controller => controller.cmdName === args[0]);
 
     if (!Controller) {
@@ -58,7 +57,7 @@ async function main() {
     const result = instance[args[1]].call(instance, ...args.slice(2));
 
     if (result instanceof Promise) {
-        result.catch(console.error).finally(() => process.exit())
+        result.catch(console.error).finally(() => process.exit());
     }
 }
 

@@ -1,32 +1,43 @@
-import GisproActionEntity from './entities/GisproActionEntity';
-import gisproRepository from './repositories/gispro.repository';
+import GisproActionEntity from "./entities/GisproActionEntity";
+import gisproRepository from "./repositories/gispro.repository";
 import { isSiret, isAssociationName } from "../../../shared/Validators";
-import { DefaultObject } from '../../../@types';
-import GisproRequestAdapter from './adapters/GisproRequestAdapter';
-import { DemandeSubvention, Rna, Siren, Siret } from '@api-subventions-asso/dto';
+import { DefaultObject } from "../../../@types";
+import GisproRequestAdapter from "./adapters/GisproRequestAdapter";
+import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import IProvider from '../../providers/@types/IProvider';
-import { ProviderEnum } from '../../../@enums/ProviderEnum';
+import IProvider from "../../providers/@types/IProvider";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 export const VALID_REQUEST_ERROR_CODE = {
     INVALID_SIRET: 1,
     INVALID_NAME: 2
-}
+};
 
 export class GisproService implements DemandesSubventionsProvider, IProvider {
     provider = {
         name: "GISPRO",
         type: ProviderEnum.raw,
-        description: "Gispro est un système d'information permettant d'effectuer l'instruction et la mise en paiement des dossiers de subvention recevables transmis via Dauphin."
-    }
+        description:
+            "Gispro est un système d'information permettant d'effectuer l'instruction et la mise en paiement des dossiers de subvention recevables transmis via Dauphin."
+    };
 
     public validEntity(entity: GisproActionEntity) {
         if (!isSiret(entity.providerInformations.siret)) {
-            return { success: false, message: `INVALID SIRET FOR ${entity.providerInformations.siret}`, data: entity.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET };
+            return {
+                success: false,
+                message: `INVALID SIRET FOR ${entity.providerInformations.siret}`,
+                data: entity.providerInformations,
+                code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET
+            };
         }
 
         if (!isAssociationName(entity.providerInformations.tier)) {
-            return { success: false, message: `INVALID NAME FOR ${entity.providerInformations.tier}`, data: entity.providerInformations, code: VALID_REQUEST_ERROR_CODE.INVALID_NAME };
+            return {
+                success: false,
+                message: `INVALID NAME FOR ${entity.providerInformations.tier}`,
+                data: entity.providerInformations,
+                code: VALID_REQUEST_ERROR_CODE.INVALID_NAME
+            };
         }
 
         return { success: true };
@@ -40,19 +51,19 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
         return await gisproRepository.insertMany(requests);
     }
 
-    public async add(entity: GisproActionEntity): Promise<{ state: string, result: GisproActionEntity }> {
+    public async add(entity: GisproActionEntity): Promise<{ state: string; result: GisproActionEntity }> {
         const existingFile = await gisproRepository.findByActionCode(entity.providerInformations.codeAction);
 
         if (existingFile) {
             return {
                 state: "updated",
-                result: await gisproRepository.update(entity),
+                result: await gisproRepository.update(entity)
             };
         }
-        await gisproRepository.add(entity)
+        await gisproRepository.add(entity);
         return {
             state: "created",
-            result: entity,
+            result: entity
         };
     }
 
@@ -71,7 +82,7 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
             if (!acc[entity.providerInformations.codeRequest]) acc[entity.providerInformations.codeRequest] = [];
             acc[entity.providerInformations.codeRequest].push(entity);
             return acc;
-        }, {} as DefaultObject<GisproActionEntity[]>)
+        }, {} as DefaultObject<GisproActionEntity[]>);
 
         return Object.values(entitiesByCode);
     }

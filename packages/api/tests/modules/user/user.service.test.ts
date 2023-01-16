@@ -325,7 +325,10 @@ describe("user.service.ts", () => {
         it("should return jwt", async () => {
             const expected = {
                 success: true,
-                jwt: { token: expect.stringContaining(""), expirateDate: expect.any(Date) }
+                jwt: {
+                    token: expect.stringContaining(""),
+                    expirateDate: expect.any(Date)
+                }
             };
             const actual = await service.findJwtByEmail("test@beta.gouv.fr");
             expect(actual).toEqual(expected);

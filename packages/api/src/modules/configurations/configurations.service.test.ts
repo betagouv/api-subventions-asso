@@ -10,7 +10,11 @@ describe("ConfigurationService", () => {
 
     const CONFIG_NAME = "name";
     const DEFAULT_DATA = [];
-    const EMPTY_ENTITY = { name: CONFIG_NAME, data: DEFAULT_DATA, updatedAt: new Date() };
+    const EMPTY_ENTITY = {
+        name: CONFIG_NAME,
+        data: DEFAULT_DATA,
+        updatedAt: new Date()
+    };
     describe("createEmptyConfigEntity()", () => {
         it("should return entity", () => {
             const expected = EMPTY_ENTITY;
@@ -65,7 +69,9 @@ describe("ConfigurationService", () => {
 
                 await configurationsService.setDauphinToken(expected);
 
-                expect(upsertMock).toHaveBeenCalledWith("DAUPHIN-TOKEN", { data: expected });
+                expect(upsertMock).toHaveBeenCalledWith("DAUPHIN-TOKEN", {
+                    data: expected
+                });
             });
         });
 
@@ -105,7 +111,9 @@ describe("ConfigurationService", () => {
         const INVALID_DOMAIN = "ille-e";
 
         beforeAll(() => {
-            getByNameMock.mockImplementation(async name => ({ data: [...PERSISTED_DOMAINS] }));
+            getByNameMock.mockImplementation(async name => ({
+                data: [...PERSISTED_DOMAINS]
+            }));
             upsertMock.mockImplementation(jest.fn());
         });
 

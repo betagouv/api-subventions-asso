@@ -1,5 +1,5 @@
 import { Express, NextFunction, Request, Response } from "express";
-import { expressAuthentication } from "../authentication/authentication"
+import { expressAuthentication } from "../authentication/authentication";
 import { DefaultObject, ControllerRouteDEF, ControllerMethod, LoginRequest } from "../@types";
 import SSEResponse from "./@types/SSEResponse";
 
@@ -16,7 +16,7 @@ export default function RegisterSSERoutes(app: Express) {
             const route = `${basePath}/${describe.route}`.replace("//", "/");
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const handlers: any[] = [sseHandler, describe.function.bind(controller)]
+            const handlers: any[] = [sseHandler, describe.function.bind(controller)];
 
             if (option.security) {
                 handlers.unshift(securityHandler(option.security, describe.securityRoles));
@@ -43,14 +43,14 @@ export default function RegisterSSERoutes(app: Express) {
 
 function sseHandler(req: Request, res: SSEResponse, next: NextFunction) {
     res.set({
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'text/event-stream',
-        'Connection': 'keep-alive'
+        "Cache-Control": "no-cache",
+        "Content-Type": "text/event-stream",
+        Connection: "keep-alive"
     });
     res.flushHeaders();
 
     // Tell the client to retry every 10 seconds if connectivity is lost
-    res.write('retry: 10000\n\n');
+    res.write("retry: 10000\n\n");
 
     res.write("event: messages\n\n");
 
@@ -60,5 +60,8 @@ function sseHandler(req: Request, res: SSEResponse, next: NextFunction) {
 }
 
 function securityHandler(security: string, roles: string[]) {
-    return (req: LoginRequest, res: Response, next: NextFunction) => expressAuthentication(req, security, roles).then(() => next()).catch(e => next(e));
+    return (req: LoginRequest, res: Response, next: NextFunction) =>
+        expressAuthentication(req, security, roles)
+            .then(() => next())
+            .catch(e => next(e));
 }

@@ -1,1 +1,1 @@
-export type IStreamAction = () => void 
+export type IStreamAction = () => void;

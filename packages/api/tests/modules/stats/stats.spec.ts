@@ -26,7 +26,11 @@ describe("/stats", () => {
             const expected = { success: true, data: DATA };
             const actual = await request(g.app)
                 .get("/stats/requests")
-                .query({ nbReq: MIN_REQUESTS, start: YESTERDAY.toString(), end: TODAY.toString() })
+                .query({
+                    nbReq: MIN_REQUESTS,
+                    start: YESTERDAY.toString(),
+                    end: TODAY.toString()
+                })
                 .set("x-access-token", await getAdminToken())
                 .set("Accept", "application/json");
             expect(actual.statusCode).toEqual(200);
@@ -41,7 +45,11 @@ describe("/stats", () => {
             const expected = { success: false, message: ERROR_MESSAGE };
             const actual = await request(g.app)
                 .get("/stats/requests")
-                .query({ nbReq: MIN_REQUESTS, start: YESTERDAY.toString(), end: TODAY.toString() })
+                .query({
+                    nbReq: MIN_REQUESTS,
+                    start: YESTERDAY.toString(),
+                    end: TODAY.toString()
+                })
                 .set("x-access-token", await getAdminToken())
                 .set("Accept", "application/json");
 
@@ -54,10 +62,17 @@ describe("/stats", () => {
             spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () =>
                 Promise.reject(new Error(ERROR_MESSAGE))
             );
-            const expected = { success: false, message: "JWT does not contain required scope." };
+            const expected = {
+                success: false,
+                message: "JWT does not contain required scope."
+            };
             const actual = await request(g.app)
                 .get("/stats/requests")
-                .query({ nbReq: MIN_REQUESTS, start: YESTERDAY.toString(), end: TODAY.toString() })
+                .query({
+                    nbReq: MIN_REQUESTS,
+                    start: YESTERDAY.toString(),
+                    end: TODAY.toString()
+                })
                 .set("x-access-token", await getUserToken())
                 .set("Accept", "application/json");
 
@@ -101,7 +116,10 @@ describe("/stats", () => {
         it("should return error with HTTP status code 401", async () => {
             const ERROR_MESSAGE = "Something went wrong";
             spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { success: false, message: "JWT does not contain required scope." };
+            const expected = {
+                success: false,
+                message: "JWT does not contain required scope."
+            };
             const actual = await request(g.app)
                 .get("/stats/requests/median")
                 .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
@@ -207,7 +225,10 @@ describe("/stats", () => {
 
                 const response = await makeRequestWithParams();
                 expect(response.statusCode).toBe(200);
-                expect(response.body).toMatchObject({ success: true, data: expect.arrayContaining(data) });
+                expect(response.body).toMatchObject({
+                    success: true,
+                    data: expect.arrayContaining(data)
+                });
             });
 
             it("should use args", async () => {

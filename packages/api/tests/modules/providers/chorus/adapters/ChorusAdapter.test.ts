@@ -1,10 +1,9 @@
-import ChorusLineEntity from "../../../../../src/modules/providers/chorus/entities/ChorusLineEntity"
-import ChorusAdapter from "../../../../../src/modules/providers/chorus/adapters/ChorusAdapter"
+import ChorusLineEntity from "../../../../../src/modules/providers/chorus/entities/ChorusLineEntity";
+import ChorusAdapter from "../../../../../src/modules/providers/chorus/adapters/ChorusAdapter";
 import { ObjectId, WithId } from "mongodb";
 import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderValueAdapter";
 
 describe("ChorusAdapter", () => {
-
     const now = new Date();
     const toPV = (value: unknown, provider = "Chorus") => ProviderValueAdapter.toProviderValue(value, provider, now);
 
@@ -27,7 +26,9 @@ describe("ChorusAdapter", () => {
                 ej: "FAKE",
                 amount: 0,
                 dateOperation: now
-            }, {}, "" as unknown as ObjectId
+            },
+            {},
+            "" as unknown as ObjectId
         );
 
         const actual = ChorusAdapter.toVersement(entity as WithId<ChorusLineEntity>);
@@ -44,10 +45,10 @@ describe("ChorusAdapter", () => {
             ej: toPV("FAKE"),
             amount: toPV(0),
             dateOperation: toPV(now)
-        }
+        };
 
         expect(actual).toMatchObject(expected);
-    })
+    });
 
     it("should return partial entity", () => {
         const entity = new ChorusLineEntity(
@@ -63,7 +64,9 @@ describe("ChorusAdapter", () => {
                 ej: "FAKE",
                 amount: 0,
                 dateOperation: now
-            }, {}, "" as unknown as ObjectId
+            },
+            {},
+            "" as unknown as ObjectId
         );
 
         const actual = ChorusAdapter.toVersement(entity as WithId<ChorusLineEntity>);
@@ -76,8 +79,8 @@ describe("ChorusAdapter", () => {
             ej: toPV("FAKE"),
             amount: toPV(0),
             dateOperation: toPV(now)
-        }
+        };
 
         expect(actual).toMatchObject(expected);
-    })
-})
+    });
+});

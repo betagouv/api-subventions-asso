@@ -1,9 +1,9 @@
-import { DemandeSubvention } from "@api-subventions-asso/dto"
+import { DemandeSubvention } from "@api-subventions-asso/dto";
 
 export interface SubventionsFlux {
-    subventions?: DemandeSubvention[],
+    subventions?: DemandeSubvention[];
     __meta__?: {
-        totalProviders: number,
-        provider?: string
-    }
+        totalProviders: number;
+        provider?: string;
+    };
 }

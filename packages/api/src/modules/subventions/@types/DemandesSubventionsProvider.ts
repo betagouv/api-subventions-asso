@@ -2,9 +2,9 @@ import { Siren, Siret, Rna, DemandeSubvention } from "@api-subventions-asso/dto"
 import Provider from "../../providers/@types/IProvider";
 
 export default interface DemandesSubventionsProvider extends Provider {
-    isDemandesSubventionsProvider: boolean,
+    isDemandesSubventionsProvider: boolean;
 
-    getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null>
-    getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null>
-    getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null>
+    getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null>;
+    getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null>;
+    getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null>;
 }

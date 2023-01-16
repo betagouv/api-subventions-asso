@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { connectDB } = require('../build/src/shared/MongoConnection');
+const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 
 module.exports = {
     async up(db, client) {
@@ -17,9 +17,9 @@ module.exports = {
             const iso = new Date("2022-03-14").toISOString();
             await fonjepCollection.updateOne(
                 { _id: ObjectId(doc._id) },
-                { $set: 
-                    { 
-                        "indexedInformations.updated_at": new Date(iso), 
+                {
+                    $set: {
+                        "indexedInformations.updated_at": new Date(iso),
                         "indexedInformations.plein_temps": doc.data.PleinTemps
                     }
                 }
@@ -30,8 +30,8 @@ module.exports = {
     },
 
     async down(db, client) {
-    // TODO write the statements to rollback your migration (if possible)
-    // Example:
-    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+        // TODO write the statements to rollback your migration (if possible)
+        // Example:
+        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     }
 };

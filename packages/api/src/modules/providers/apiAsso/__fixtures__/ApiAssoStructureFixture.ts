@@ -1,42 +1,45 @@
-import StructureDto,
-{
+import StructureDto, {
     StructureDacDocumentDto,
     StructureEtablissementDto,
     StructureRepresentantLegalDto,
     StructureRibDto,
     StructureRnaDocumentDto
-} from "../dto/StructureDto"
+} from "../dto/StructureDto";
 
 export const fixtureEtablissements = [
     {
         id_siret: "50922194100000",
-        adresse: {},
+        adresse: {}
     },
     {
         id_siret: "50922194100001",
-        adresse: {},
+        adresse: {}
     }
-] as StructureEtablissementDto[]
+] as StructureEtablissementDto[];
 
-export const fixtureDocumentRna = [{
-    url: "/fake/url",
-    type: "PV",
-    'sous_type': "PV",
-    id: "ididididid",
-    time: 1622557171,
-    annee: 2021,
-}] as StructureRnaDocumentDto[]
+export const fixtureDocumentRna = [
+    {
+        url: "/fake/url",
+        type: "PV",
+        sous_type: "PV",
+        id: "ididididid",
+        time: 1622557171,
+        annee: 2021
+    }
+] as StructureRnaDocumentDto[];
 
-export const fixtureDocumentDac = [{
-    url: "/fake/url",
-    nom: "nom fake",
-    meta: {
-        type: "BPA",
-        id_siret: "50922194100000",
-        etat: "courant"
-    },
-    time_depot: "2021-06-18 12:02:53"
-}] as StructureDacDocumentDto[]
+export const fixtureDocumentDac = [
+    {
+        url: "/fake/url",
+        nom: "nom fake",
+        meta: {
+            type: "BPA",
+            id_siret: "50922194100000",
+            etat: "courant"
+        },
+        time_depot: "2021-06-18 12:02:53"
+    }
+] as StructureDacDocumentDto[];
 
 export const fixtureRib = [
     {
@@ -52,12 +55,14 @@ export const fixtureRib = [
     }
 ] as StructureRibDto[];
 
-export const fixtureRepresentantLegal = [{
-    nom: "Jedusor",
-    prenom: "Tom",
-    role: "Mage pas simpa",
-    id_siret: "50922194100000"
-}] as unknown as StructureRepresentantLegalDto[]
+export const fixtureRepresentantLegal = [
+    {
+        nom: "Jedusor",
+        prenom: "Tom",
+        role: "Mage pas simpa",
+        id_siret: "50922194100000"
+    }
+] as unknown as StructureRepresentantLegalDto[];
 
 export const fixtureAsso = {
     identite: {
@@ -83,4 +88,4 @@ export const fixtureAsso = {
     etablissement: fixtureEtablissements,
     document_rna: fixtureDocumentRna,
     document_dac: fixtureDocumentDac
-} as unknown as StructureDto
+} as unknown as StructureDto;

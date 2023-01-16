@@ -14,33 +14,45 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
         const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...requestWithoutId } = request;
-        return (await this.collection.findOneAndUpdate(
-            { "providerInformations.compteAssoId": request.providerInformations.compteAssoId },
-            { $set: requestWithoutId },
-            options
-        )).value as LeCompteAssoRequestEntity;
+        return (
+            await this.collection.findOneAndUpdate(
+                {
+                    "providerInformations.compteAssoId": request.providerInformations.compteAssoId
+                },
+                { $set: requestWithoutId },
+                options
+            )
+        ).value as LeCompteAssoRequestEntity;
     }
 
     public findByCompteAssoId(compteAssoId: string) {
-        return this.collection.findOne({ "providerInformations.compteAssoId": compteAssoId }) as unknown as (LeCompteAssoRequestEntity | null);
+        return this.collection.findOne({
+            "providerInformations.compteAssoId": compteAssoId
+        }) as unknown as LeCompteAssoRequestEntity | null;
     }
 
     public findsBySiret(siret: Siret) {
-        return this.collection.find({
-            "legalInformations.siret": siret
-        }).toArray();
+        return this.collection
+            .find({
+                "legalInformations.siret": siret
+            })
+            .toArray();
     }
 
     public findBySiren(siren: Siren) {
-        return this.collection.find({
-            "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
-        }).toArray();
+        return this.collection
+            .find({
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+            })
+            .toArray();
     }
 
     public findsByRna(rna: Rna) {
-        return this.collection.find({
-            "legalInformations.rna": rna
-        }).toArray();
+        return this.collection
+            .find({
+                "legalInformations.rna": rna
+            })
+            .toArray();
     }
 }
 

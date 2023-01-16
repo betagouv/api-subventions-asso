@@ -28,7 +28,9 @@ export class ConfigurationsService {
     }
 
     async setDauphinToken(token: string) {
-        await configurationsRepository.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, { data: token });
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, {
+            data: token
+        });
     }
 
     getDauphinTokenAvailableTime() {

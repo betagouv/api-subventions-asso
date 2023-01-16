@@ -6,7 +6,7 @@ import { CliStaticInterface } from "../../../../../@types";
 import LeCompteAssoParser from "../../leCompteAsso.parser";
 import leCompteAssoService, { RejectedRequest } from "../../leCompteAsso.service";
 import LeCompteAssoRequestEntity from "../../entities/LeCompteAssoRequestEntity";
-import { COLORS } from "../../../../../shared/LogOptions"
+import { COLORS } from "../../../../../shared/LogOptions";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 
@@ -14,7 +14,7 @@ import { findFiles } from "../../../../../shared/helpers/ParserHelper";
 export default class LeCompteAssoCliController {
     static cmdName = "leCompteAsso";
 
-    private logFileParsePath = "./logs/lecompteasso.parse.log.txt"
+    private logFileParsePath = "./logs/lecompteasso.parse.log.txt";
 
     public async validate(file: string) {
         if (typeof file !== "string") {
@@ -31,28 +31,30 @@ export default class LeCompteAssoCliController {
             const filesInFolder = fs
                 .readdirSync(file)
                 .filter(fileName => !fileName.startsWith(".") && !fs.lstatSync(path.join(file, fileName)).isDirectory())
-                .map((fileName => path.join(file, fileName)));
+                .map(fileName => path.join(file, fileName));
 
             files.push(...filesInFolder);
         } else files.push(file);
 
-        await Promise.all(files.map(async file => {
-            console.info("\nStart validation file: ", file);
+        await Promise.all(
+            files.map(async file => {
+                console.info("\nStart validation file: ", file);
 
-            const fileContent = fs.readFileSync(file);
+                const fileContent = fs.readFileSync(file);
 
-            const entities = await LeCompteAssoParser.parse(fileContent);
+                const entities = await LeCompteAssoParser.parse(fileContent);
 
-            console.info(`Check ${entities.length} entities!`);
-            entities.forEach((entity) => {
-                const result = leCompteAssoService.validEntity(entity);
-                if (!result.success) {
-                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
-                }
-            });
+                console.info(`Check ${entities.length} entities!`);
+                entities.forEach(entity => {
+                    const result = leCompteAssoService.validEntity(entity);
+                    if (!result.success) {
+                        console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
+                    }
+                });
 
-            console.info(`${COLORS.Reset}Validation done`);
-        }))
+                console.info(`${COLORS.Reset}Validation done`);
+            })
+        );
     }
 
     /**
@@ -73,12 +75,17 @@ export default class LeCompteAssoCliController {
         console.info(`You can read log in ${this.logFileParsePath}`);
         const logs: unknown[] = [];
 
-        return files.reduce((acc, filePath) => {
-            return acc.then(() => this._parse(filePath, logs));
-        }, Promise.resolve())
-            .then(() => fs.writeFileSync(this.logFileParsePath, logs.join(''), { flag: "w", encoding: "utf-8" }));
+        return files
+            .reduce((acc, filePath) => {
+                return acc.then(() => this._parse(filePath, logs));
+            }, Promise.resolve())
+            .then(() =>
+                fs.writeFileSync(this.logFileParsePath, logs.join(""), {
+                    flag: "w",
+                    encoding: "utf-8"
+                })
+            );
     }
-
 
     private async _parse(file: string, logs: unknown[]) {
         console.info("\nStart parse file: ", file);
@@ -91,34 +98,42 @@ export default class LeCompteAssoCliController {
         let parsageError = false;
         console.info(`${entities.length} entities found in file.`);
 
-        entities.forEach((entity) => {
+        entities.forEach(entity => {
             const result = leCompteAssoService.validEntity(entity);
-            if (result.success) return
+            if (result.success) return;
             parsageError = true;
         });
 
         if (parsageError) {
             console.error(`${COLORS.FgRed}An error occurred while parsing the file ${file}${COLORS.Reset}`);
             logs.push(`An error occurred while parsing the file ${file}`);
-            console.info("Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE");
+            console.info(
+                "Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE"
+            );
             return;
         }
 
-        console.info("All entities is valid !\nStart register in database ...")
+        console.info("All entities is valid !\nStart register in database ...");
 
-        const results = await entities.reduce(async (acc, entity, index) => {
-            const data = await acc;
+        const results = await entities.reduce(
+            async (acc, entity, index) => {
+                const data = await acc;
 
-            CliHelper.printProgress(index + 1, entities.length);
+                CliHelper.printProgress(index + 1, entities.length);
 
-            data.push(await leCompteAssoService.addRequest(entity));
-            return data;
-        }, Promise.resolve([]) as Promise<
-            ({
-                state: string,
-                result: LeCompteAssoRequestEntity
-            }
-                | RejectedRequest)[]>)
+                data.push(await leCompteAssoService.addRequest(entity));
+                return data;
+            },
+            Promise.resolve([]) as Promise<
+                (
+                    | {
+                          state: string;
+                          result: LeCompteAssoRequestEntity;
+                      }
+                    | RejectedRequest
+                )[]
+            >
+        );
 
         const created = results.filter(({ state }) => state === "created");
         const updated = results.filter(({ state }) => state === "updated");
@@ -130,8 +145,11 @@ export default class LeCompteAssoCliController {
             ${rejected.length} requests not valid
         `);
 
-        rejected.forEach((request) => {
-            logs.push(`\n\nThis request is not registered because: ${request.result.message}\n`, JSON.stringify(request.result.data, null, "\t"))
+        rejected.forEach(request => {
+            logs.push(
+                `\n\nThis request is not registered because: ${request.result.message}\n`,
+                JSON.stringify(request.result.data, null, "\t")
+            );
         });
     }
 }

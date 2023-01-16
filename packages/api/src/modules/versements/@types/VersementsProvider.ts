@@ -1,8 +1,7 @@
 import { Versement, Siren, Siret } from "@api-subventions-asso/dto";
-import Provider from '../../providers/@types/IProvider';
+import Provider from "../../providers/@types/IProvider";
 
 export default interface VersementsProvider extends Provider {
-
     isVersementsProvider: boolean;
 
     getVersementsByKey(key: string): Promise<Versement[]>;

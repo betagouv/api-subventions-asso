@@ -7,8 +7,8 @@ import FonjepParser from "../../fonjep.parser";
 import fonjepService, { CreateFonjepResponse, RejectedRequest } from "../../fonjep.service";
 // import FonjepSubventionEntity from "../../entities/FonjepSubventionEntity";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
-import CliController from '../../../../../shared/CliController';
-import ExportDateError from '../../../../../shared/errors/cliErrors/ExportDateError';
+import CliController from "../../../../../shared/CliController";
+import ExportDateError from "../../../../../shared/errors/cliErrors/ExportDateError";
 // import FonjepVersementEntity from "../../entities/FonjepVersementEntity";
 
 @StaticImplements<CliStaticInterface>()
@@ -27,7 +27,7 @@ export default class FonjepCliController extends CliController {
 
         const { subventions, versements } = FonjepParser.parse(fileContent, exportDate);
 
-        console.info("Start register in database ...")
+        console.info("Start register in database ...");
 
         const subventionRejected = [] as RejectedRequest[];
 
@@ -37,7 +37,10 @@ export default class FonjepCliController extends CliController {
 
             CliHelper.printProgress(index + 1, subventions.length, "subventions");
 
-            if (!response.success) { subventionRejected.push(response); return result; }
+            if (!response.success) {
+                subventionRejected.push(response);
+                return result;
+            }
 
             result.push(response);
             return result;
@@ -48,8 +51,11 @@ export default class FonjepCliController extends CliController {
             ${subventionRejected.length} subventions not valid
         `);
 
-        subventionRejected.forEach((result) => {
-            logs.push(`\n\nThis subvention is not registered because: ${result.message} \n`, JSON.stringify(result.data, null, "\t"))
+        subventionRejected.forEach(result => {
+            logs.push(
+                `\n\nThis subvention is not registered because: ${result.message} \n`,
+                JSON.stringify(result.data, null, "\t")
+            );
         });
 
         const versementRejected = [] as RejectedRequest[];
@@ -60,7 +66,10 @@ export default class FonjepCliController extends CliController {
 
             CliHelper.printProgress(index + 1, versements.length, "versements");
 
-            if (!response.success) { versementRejected.push(response); return result; }
+            if (!response.success) {
+                versementRejected.push(response);
+                return result;
+            }
             result.push(response);
             return result;
         }, Promise.resolve([]) as Promise<(RejectedRequest | CreateFonjepResponse)[]>);
@@ -70,8 +79,11 @@ export default class FonjepCliController extends CliController {
             ${versementRejected.length} versements not valid
         `);
 
-        versementRejected.forEach((result) => {
-            logs.push(`\n\nThis versement is not registered because: ${result.message} \n`, JSON.stringify(result.data, null, "\t"))
+        versementRejected.forEach(result => {
+            logs.push(
+                `\n\nThis versement is not registered because: ${result.message} \n`,
+                JSON.stringify(result.data, null, "\t")
+            );
         });
     }
 
@@ -104,7 +116,6 @@ export default class FonjepCliController extends CliController {
     //     const sortedData = data.reduce(reduceSubventionByYear, {});
     //     return sortedData as DefaultObject<{ subvention: FonjepSubventionEntity, versements: FonjepVersementEntity[] }[]>;
     // }
-
 
     // Check if previous export documents are in new export file
     // For now user need to be sure that xls tabs are identical (currently no check of tabs content)
