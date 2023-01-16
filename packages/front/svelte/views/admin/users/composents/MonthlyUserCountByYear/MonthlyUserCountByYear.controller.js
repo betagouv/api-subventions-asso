@@ -1,28 +1,33 @@
 import Chart from "chart.js/auto";
 import statsService from "../../../../../resources/stats/stats.service";
 import { YEAR_CHOICES } from "../../../../../helpers/dateHelper";
+import Store from "../../../../../core/Store";
 
 export class MonthlyUserCountByYearController {
     constructor() {
-        this.data = [];
+        this._data = [];
         this.years = YEAR_CHOICES.map(year => ({ value: year, label: year }));
-        this.defaultYear = new Date().getFullYear();
+
+        this.year = new Store(new Date().getFullYear());
+        this.progress = new Store();
     }
 
     async init() {
-        this.dataPromise = statsService.getMonthlyUserCount(this.defaultYear);
-        this.data = await this.dataPromise;
+        this.dataPromise = new Store(statsService.getMonthlyUserCount(this.year));
+        this._data = await this.dataPromise.value;
+        this.progress.set(this.getProgress());
     }
 
-    async onMount(canvas) {
-        await this.dataPromise;
+    async onCanvasMount(canvas) {
+        await this.dataPromise.value;
         this.chart = this._buildChart(canvas);
     }
 
     async updateYear(newYearIndex) {
-        this.dataPromise = statsService.getMonthlyUserCount(YEAR_CHOICES[newYearIndex]);
-        this.data = await this.dataPromise;
-        this.chartData = this.data;
+        this.dataPromise.set(statsService.getMonthlyUserCount(YEAR_CHOICES[newYearIndex]));
+        this._data = await this.dataPromise.value;
+        this.progress.set(this.getProgress());
+        this.chartData = this._data;
         this.chart.update();
     }
 
@@ -31,12 +36,14 @@ export class MonthlyUserCountByYearController {
     }
 
     // TODO update with api improvement
-    get progress() {
-        if (!this.data.December || !this.data.January) return undefined;
-        return this.data.December - this.data.January;
+    getProgress() {
+        if ([this._data.December, this._data.January].includes(undefined)) return "";
+        return this._data.December - this._data.January;
     }
 
     _buildChart(canvas) {
+        if (!canvas) return;
+
         const ctx = canvas.getContext("2d");
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, "#ADBFFC");
@@ -57,7 +64,7 @@ export class MonthlyUserCountByYearController {
                 datasets: [
                     {
                         label: "Utilisateurs",
-                        data: this.data,
+                        data: this._data,
                         borderColor: "#3F49E3",
                         backgroundColor: gradient,
                         fill: true,
