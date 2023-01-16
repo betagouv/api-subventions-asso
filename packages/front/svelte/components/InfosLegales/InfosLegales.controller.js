@@ -8,7 +8,7 @@ import {
 } from "../../views/association/association.helper";
 import { modal, data } from "../../store/modal.store";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
-import { MMDDYYYDate } from "../../helpers/dateHelper";
+import { dateToDDMMYYYY } from "../../helpers/dateHelper";
 
 export default class InfosLegalesController {
     constructor(association, etablissement = undefined) {
@@ -44,11 +44,11 @@ export default class InfosLegalesController {
     }
 
     get immatriculation() {
-        return MMDDYYYDate(this._immatriculation);
+        return dateToDDMMYYYY(this._immatriculation);
     }
 
     get modification() {
-        return MMDDYYYDate(this._modification);
+        return dateToDDMMYYYY(this._modification);
     }
 
     displayModal() {
