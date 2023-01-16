@@ -4,11 +4,13 @@ import getAdminToken from "../../__helpers__/getAdminToken";
 import getUserToken from "../../__helpers__/getUserToken";
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import userFixture from "../user/__fixtures__/entity";
-import db from "../../../src/shared/MongoConnection";
-import visitsFixture, { PREVIOUS_MONTH, THIS_MONTH, TODAY } from "../association-visits/__fixtures__/entity";
+import db, { connectDB } from "../../../src/shared/MongoConnection";
+import visitsFixture, { THIS_MONTH, TODAY } from "../association-visits/__fixtures__/entity";
 import nameFixture from "../association-name/__fixtures__/entity";
 import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
 import { DefaultObject } from "../../../src/@types";
+import { createAndActiveUser, createUser } from "../../__helpers__/userHelper";
+import userRepository from "../../../src/modules/user/repositories/user.repository";
 
 const g = global as unknown as { app: unknown };
 
@@ -313,10 +315,18 @@ describe("/stats", () => {
         });
 
         describe("/status", () => {
-            it("should return users by status", async () => {
-                const expected = { admin: 12, active: 56, idle: 64, inactive: 19 };
+            it("should return UsersByStatusSuccessResponse", async () => {
+                const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
+                await createAndActiveUser(ACTIVE_USER_EMAIL);
+                await createAndActiveUser("idle.user@beta.gouv.fr");
+                await createUser("inactive.user@beta.gouv.fr");
+                const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+                ACTIVE_USER.stats.lastSearchDate = new Date();
+                await userRepository.update(ACTIVE_USER);
+                const expected = { success: true, data: { admin: 1, active: 1, idle: 1, inactive: 1 } };
                 await request(g.app)
                     .get(`/stats/users/status`)
+                    // getAdminToken() creates an admin user
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
                     .expect(200, expected);

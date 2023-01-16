@@ -5,9 +5,9 @@ export const ADMIN_EMAIL = "admin@beta.gouv.fr";
 export const USER_EMAIL = "user@beta.gouv.fr";
 export const DEFAULT_PASSWORD = "TMP_PASSWOrd;12345678";
 
-export async function createAndActiveUser() {
-    await createUser();
-    await userService.activeUser(USER_EMAIL);
+export async function createAndActiveUser(email = USER_EMAIL) {
+    await createUser(email);
+    await userService.activeUser(email);
 }
 
 export async function createAndActiveAdminUser() {
@@ -15,8 +15,8 @@ export async function createAndActiveAdminUser() {
     await userService.activeUser(ADMIN_EMAIL);
 }
 
-export async function createUser() {
-    await userService.createUser(USER_EMAIL, [RoleEnum.user], DEFAULT_PASSWORD);
+export async function createUser(email = USER_EMAIL) {
+    await userService.createUser(email, [RoleEnum.user], DEFAULT_PASSWORD);
 }
 
 export async function createAdminUser() {

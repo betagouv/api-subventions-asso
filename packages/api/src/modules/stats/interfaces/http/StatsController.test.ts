@@ -92,9 +92,18 @@ describe("StatsController", () => {
     });
 
     describe("getUsersByStatus", () => {
+        const USERS_BY_STATUS = { admin: 0, active: 0, idle: 0, inactive: 0 };
+
         it("should call statsService.getUsersByStatus()", async () => {
             await controller.getUsersByStatus();
             expect(mockGetUsersByStatus).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return result", async () => {
+            mockGetUsersByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
+            const expected = { success: true, data: USERS_BY_STATUS };
+            const actual = await controller.getUsersByStatus();
+            expect(actual).toEqual(expected);
         });
     });
 
