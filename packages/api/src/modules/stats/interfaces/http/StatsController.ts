@@ -101,6 +101,12 @@ export class StatsController extends Controller {
         return { success: true, data: result };
     }
 
+    @Get("/users/status")
+    async getUsersByStatus() {
+        const result = await statsService.getUsersByStatus();
+        return { success: true, data: result };
+    }
+
     /**
      * Permet de récupérer les associations les plus visitées et le nombre de requêtes associées par périodes (Une période correspond forcément à un mois)
      *

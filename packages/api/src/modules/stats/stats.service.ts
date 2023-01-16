@@ -113,6 +113,10 @@ class StatsService {
     addAssociationVisit(visit: AssociationVisitEntity) {
         return statsAssociationsVisitRepository.add(visit);
     }
+
+    getUsersByStatus() {
+        return null;
+    }
 }
 
 const statsService = new StatsService();
