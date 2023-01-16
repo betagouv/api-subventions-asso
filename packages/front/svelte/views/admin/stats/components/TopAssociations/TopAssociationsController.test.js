@@ -17,7 +17,7 @@ describe("TopAssociationsController", () => {
 
         it("should call getTopAssociations", async () => {
             serviceGetTopAssociationsMock.mockImplementationOnce(() => []);
-            await controller.load();
+            await controller.init();
 
             expect(serviceGetTopAssociationsMock).toHaveBeenCalledTimes(1);
         });

@@ -14,22 +14,23 @@
 {#await promise}
     <Spinner />
 {:then _}
-    <div class="fr-col-6">
-        <Widget title="Pages les plus consultées - Total depuis {startDateMonth} {startDateYear}">
-            {#each $topAssociations as association}
-                <div class="top-associations_content fr-mb-2w">
-                    <p class="fr-text fr-m-0">{association.name}</p>
-                    <p class="fr-text fr-m-0">{association.visits}</p>
-                </div>
-            {/each}
-        </Widget>
-    </div>
+    <Widget>
+        <h4 class="fr-mb-3w fr-mx-2w">
+            Pages les plus consultées - <br />
+            Total depuis {startDateMonth}
+            {startDateYear}
+        </h4>
+        {#each $topAssociations as association}
+            <div class="flex justify-space-between fr-mb-2w fr-mx-2w">
+                <p class="fr-text fr-m-0">{association.name}</p>
+                <p class="fr-text fr-m-0">{association.visits}</p>
+            </div>
+        {/each}
+    </Widget>
 {/await}
 
 <style>
-    .top-associations_content {
-        display: flex;
+    .justify-space-between {
         justify-content: space-between;
-        font-weight: 500;
     }
 </style>

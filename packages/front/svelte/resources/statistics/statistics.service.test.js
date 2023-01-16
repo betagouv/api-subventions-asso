@@ -27,7 +27,7 @@ describe("statisticsService", () => {
         it("should call statistics port with arguments", async () => {
             portGetTopAssociationsMock.mockImplementationOnce(() => []);
 
-            const expected = [15, new Date(2012), new Date()];
+            const expected = [15];
             await statisticsService.getTopAssociations(...expected);
 
             const actual = portGetTopAssociationsMock.mock.calls[0];
