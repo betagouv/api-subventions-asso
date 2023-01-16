@@ -1,8 +1,8 @@
 import statisticsPort from "./statistics.port";
 
 export class StatisticsService {
-    getTopAssociations(limit, startDate, endDate) {
-        return statisticsPort.getTopAssociations(limit, startDate, endDate);
+    getTopAssociations(limit) {
+        return statisticsPort.getTopAssociations(limit);
     }
 }
 

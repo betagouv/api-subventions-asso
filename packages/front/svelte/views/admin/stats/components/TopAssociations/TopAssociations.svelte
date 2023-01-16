@@ -6,7 +6,7 @@
 
     const controller = new TopAssociationsController();
 
-    const promise = controller.load();
+    const promise = controller.init();
 
     const { topAssociations, startDateYear, startDateMonth } = controller;
 </script>
@@ -19,7 +19,7 @@
             {#each $topAssociations as association}
                 <div class="top-associations_content fr-mb-2w">
                     <p class="fr-text fr-m-0">{association.name}</p>
-                    <p class="fr-text fr-m-0">{association.nbRequests}</p>
+                    <p class="fr-text fr-m-0">{association.visits}</p>
                 </div>
             {/each}
         </Widget>

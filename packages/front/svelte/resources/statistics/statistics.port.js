@@ -2,8 +2,8 @@ import axios from "axios";
 
 class StatisticsPort {
     BASE_PATH = "/stats";
-    getTopAssociations(limit, start, end) {
-        const query = { limit, start, end };
+    getTopAssociations(limit) {
+        const query = { limit };
 
         const path = `${this.BASE_PATH}/associations`;
         return axios
