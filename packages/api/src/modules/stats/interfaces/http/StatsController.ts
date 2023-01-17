@@ -103,10 +103,10 @@ export class StatsController extends Controller {
     }
 
     /**
-     * Permet de récupérer le nombre d'utilisateur par status
-     * 4 status sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte9)
+     * Permet de récupérer le nombre d'utilisateur par statut
+     * 4 statuts sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte9)
      *
-     * @summary Permet de récupérer le nombre d'utilisateur par status
+     * @summary Permet de récupérer le nombre d'utilisateur par statut
      */
     @Get("/users/status")
     @Response<ErrorResponse>("500")
