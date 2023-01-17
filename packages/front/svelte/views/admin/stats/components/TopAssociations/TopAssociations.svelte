@@ -21,7 +21,7 @@
             {startDateYear}
         </h4>
         {#each $topAssociations as association}
-            <div class="flex justify-space-between fr-mb-2w fr-mx-2w">
+            <div class="flex space-between fr-mb-2w fr-mx-2w">
                 <p class="fr-text fr-m-0">{association.name}</p>
                 <p class="fr-text fr-m-0">{association.visits}</p>
             </div>
