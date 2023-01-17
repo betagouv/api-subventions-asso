@@ -3,19 +3,25 @@ import statsService from "../../../../../resources/stats/stats.service";
 import { YEAR_CHOICES } from "../../../../../helpers/dateHelper";
 import Store from "../../../../../core/Store";
 
+const TODAY = new Date();
+
 export class MonthlyUserCountByYearController {
     constructor() {
         this._data = [];
         this.yearOptions = YEAR_CHOICES.map(year => ({ value: year, label: year }));
 
-        this.year = new Store(new Date().getFullYear());
+        this.year = new Store(TODAY.getFullYear());
         this.progress = new Store();
     }
 
-    async init() {
-        this.dataPromise = new Store(statsService.getMonthlyUserCount(this.year));
+    init() {
+        return this._load(this.year.value);
+    }
+
+    async _load(year) {
+        this.dataPromise = new Store(statsService.getMonthlyUserCount(year));
         this._data = await this.dataPromise.value;
-        this.progress.set(this.getProgress());
+        this.updateProgress();
     }
 
     async onCanvasMount(canvas) {
@@ -24,9 +30,7 @@ export class MonthlyUserCountByYearController {
     }
 
     async updateYear(newYearIndex) {
-        this.dataPromise.set(statsService.getMonthlyUserCount(YEAR_CHOICES[newYearIndex]));
-        this._data = await this.dataPromise.value;
-        this.progress.set(this.getProgress());
+        await this._load(YEAR_CHOICES[newYearIndex]);
         this.chartData = Object.values(this._data);
         this.chart.update();
     }
@@ -36,9 +40,9 @@ export class MonthlyUserCountByYearController {
     }
 
     // TODO update with api improvement
-    getProgress() {
+    updateProgress() {
         if ([this._data.December, this._data.January].includes(undefined)) return "";
-        return this._data.December - this._data.January;
+        this.progress.set(this._data.December - this._data.January);
     }
 
     _buildChart(canvas) {
