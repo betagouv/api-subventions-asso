@@ -6,6 +6,7 @@ Array [
     Array [
       Object {
         "$match": Object {
+          "meta.req.url": /\\\\/\\(association\\|etablissement\\)\\\\/\\.\\{9,14\\}\\$/,
           "meta.req.user.email": Object {
             "$ne": null,
           },
@@ -44,6 +45,7 @@ Array [
     Array [
       Object {
         "$match": Object {
+          "meta.req.url": /\\\\/\\(association\\|etablissement\\)\\\\/\\.\\{9,14\\}\\$/,
           "meta.req.user.email": Object {
             "$ne": null,
           },
@@ -77,6 +79,7 @@ Array [
     Array [
       Object {
         "$match": Object {
+          "meta.req.url": /\\\\/\\(association\\|etablissement\\)\\\\/\\.\\{9,14\\}\\$/,
           "meta.req.user.roles": Object {
             "$nin": Array [
               "admin",
@@ -117,6 +120,7 @@ Array [
     Array [
       Object {
         "$match": Object {
+          "meta.req.url": /\\\\/\\(association\\|etablissement\\)\\\\/\\.\\{9,14\\}\\$/,
           "timestamp": Object {
             "$gte": 2021-12-31T00:00:00.000Z,
             "$lte": 2022-01-02T00:00:00.000Z,
