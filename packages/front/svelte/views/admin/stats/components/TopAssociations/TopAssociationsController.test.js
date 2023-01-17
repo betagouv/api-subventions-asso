@@ -2,7 +2,7 @@ import statisticsService from "@resources/statistics/statistics.service";
 import TopAssociationsController from "./TopAssociationsController";
 
 describe("TopAssociationsController", () => {
-    describe("load", () => {
+    describe("init", () => {
         let serviceGetTopAssociationsMock;
         let controller;
 

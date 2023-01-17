@@ -1,12 +1,12 @@
 import Store from "@core/Store";
 import statisticsService from "@resources/statistics/statistics.service";
-import { computeSameDateInPreviousYear } from "@helpers/dateHelper";
+import { getOneYearBeforeDate } from "@helpers/dateHelper";
 
 export default class TopAssociationsController {
     constructor(limit = 5) {
         this.topAssociations = new Store([]);
 
-        this._startDate = computeSameDateInPreviousYear(new Date());
+        this._startDate = getOneYearBeforeDate(new Date());
         this._limit = limit;
 
         this.startDateYear = this._startDate.getFullYear();

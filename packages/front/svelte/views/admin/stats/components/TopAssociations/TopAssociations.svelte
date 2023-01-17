@@ -28,9 +28,3 @@
         {/each}
     </Widget>
 {/await}
-
-<style>
-    .justify-space-between {
-        justify-content: space-between;
-    }
-</style>
