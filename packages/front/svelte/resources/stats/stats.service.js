@@ -1,12 +1,18 @@
 import statsPort from "./stats.port";
+import { monthCapitalizedFromId } from "../../helpers/dateHelper";
 
 export class StatsService {
     getTopAssociations(limit) {
         return statsPort.getTopAssociations(limit);
     }
 
-    getMonthlyUserCount(year) {
-        return statsPort.getMonthlyUserCount(year);
+    async getMonthlyUserCount(year) {
+        const TODAY = new Date();
+        const data = await statsPort.getMonthlyUserCount(year);
+        if (year === TODAY.getFullYear()) {
+            for (let month = TODAY.getMonth() + 1; month < 12; month++) data[monthCapitalizedFromId(month)] = null;
+        }
+        return data;
     }
 }
 
