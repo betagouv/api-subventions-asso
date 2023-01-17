@@ -1,3 +1,5 @@
+import { capitalizeFirstLetter } from "./textHelper";
+
 export const sortByDateAsc = (a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
@@ -35,3 +37,8 @@ export const YEAR_START_LOGS = 2021;
 
 export const YEAR_CHOICES = [];
 for (let year = YEAR_START_LOGS; year <= new Date().getFullYear(); year++) YEAR_CHOICES.push(year);
+
+export function monthCapitalizedFromId(monthId) {
+    const monthStr = new Date(Date.parse(monthId + 1 + " 1, 2022")).toLocaleDateString(`en`, { month: "long" });
+    return capitalizeFirstLetter(monthStr);
+}
