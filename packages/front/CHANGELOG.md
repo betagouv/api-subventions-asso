@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/betagouv/datasubvention/compare/v0.20.2...v0.21.0) (2023-01-17)
+
+### Bug Fixes
+
+-   **front:** rename MMDDYYYDate to dateToDDMMYYYY ([#887](https://github.com/betagouv/datasubvention/issues/887)) ([60e2e15](https://github.com/betagouv/datasubvention/commit/60e2e15e5580f6e6b7dc3fab67385ee9cdc06cd9))
+
+### Features
+
+-   **api, front:** update README ([#816](https://github.com/betagouv/datasubvention/issues/816)) ([12a0684](https://github.com/betagouv/datasubvention/commit/12a0684c5ea1f9ae853c41073bdb5be1c818c071))
+-   **api,dto,front:** add email domains in db and allow admin to update it ([#753](https://github.com/betagouv/datasubvention/issues/753)) ([e349963](https://github.com/betagouv/datasubvention/commit/e349963263a7199035178623fd6e497dd6eb68ba))
+-   **front:** [#800](https://github.com/betagouv/datasubvention/issues/800) title and identifiers out of InfosLegales ([#861](https://github.com/betagouv/datasubvention/issues/861)) ([542206e](https://github.com/betagouv/datasubvention/commit/542206eb94e60da62483cbaa2b005e870c485cbd))
+-   **front:** add blue banner for asso and etab view ([#841](https://github.com/betagouv/datasubvention/issues/841)) ([a453a1c](https://github.com/betagouv/datasubvention/commit/a453a1c343f494620119100a4fbdbf0cfc97b4c9))
+-   **front:** fix rebase ([#847](https://github.com/betagouv/datasubvention/issues/847)) ([3f0ddd6](https://github.com/betagouv/datasubvention/commit/3f0ddd6412e2732b6a7d0ee908592cd63fc2d7f3))
+-   **front:** force document download in a new tab ([#842](https://github.com/betagouv/datasubvention/issues/842)) ([fe9980f](https://github.com/betagouv/datasubvention/commit/fe9980f0ff4e01a1d631c66004e076f7b2a8891e))
+-   **front:** update asso etab card ([#839](https://github.com/betagouv/datasubvention/issues/839)) ([1265c3c](https://github.com/betagouv/datasubvention/commit/1265c3c6946f78302d4c8293e4f3b1e160d0e61e))
+
 ## [0.20.2](https://github.com/betagouv/datasubvention/compare/v0.19.4...v0.20.2) (2023-01-05)
 
 ### Bug Fixes
