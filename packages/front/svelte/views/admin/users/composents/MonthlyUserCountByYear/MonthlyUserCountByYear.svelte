@@ -8,7 +8,7 @@
 
     const ctrl = new MonthlyUserCountByYearController();
     ctrl.init();
-    const { year, progress, dataPromise } = ctrl;
+    const { year, progress, dataPromise, message } = ctrl;
 
     $: ctrl.onCanvasMount(canvas);
 </script>
@@ -31,7 +31,7 @@
             <div class="fr-col-3">
                 <div class="fr-mb-5w">
                     <div class="fr-text--bold fr-text--xl fr-mb-0">+{$progress}</div>
-                    <div class="fr-text--xs">Nouveaux utilisateurs depuis janvier {$year}</div>
+                    <div class="fr-text--xs">Nouveaux utilisateurs {$message}</div>
                 </div>
             </div>
         </div>

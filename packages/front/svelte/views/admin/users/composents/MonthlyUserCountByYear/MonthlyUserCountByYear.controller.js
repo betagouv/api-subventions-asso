@@ -1,6 +1,6 @@
 import Chart from "chart.js/auto";
 import statsService from "../../../../../resources/stats/stats.service";
-import { YEAR_CHOICES } from "../../../../../helpers/dateHelper";
+import { monthCapitalizedFromId, YEAR_CHOICES } from "../../../../../helpers/dateHelper";
 import Store from "../../../../../core/Store";
 
 const TODAY = new Date();
@@ -12,6 +12,7 @@ export class MonthlyUserCountByYearController {
 
         this.year = new Store(TODAY.getFullYear());
         this.progress = new Store();
+        this.message = new Store("");
     }
 
     init() {
@@ -41,8 +42,15 @@ export class MonthlyUserCountByYearController {
 
     // TODO update with api improvement
     updateProgress() {
-        if ([this._data.December, this._data.January].includes(undefined)) return "";
+        if ([this._data.December, this._data.January].includes(undefined)) return;
+
+        if (this.year.value === TODAY.getFullYear()) {
+            this.progress.set(this._data[monthCapitalizedFromId(TODAY.getMonth())] - this._data.January);
+            this.message.set(`depuis janvier ${this.year.value}`);
+            return;
+        }
         this.progress.set(this._data.December - this._data.January);
+        this.message.set(`en ${this.year.value}`);
     }
 
     _buildChart(canvas) {
