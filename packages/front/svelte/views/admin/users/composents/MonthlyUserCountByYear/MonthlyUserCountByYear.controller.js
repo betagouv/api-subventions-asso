@@ -42,7 +42,7 @@ export class MonthlyUserCountByYearController {
 
     // TODO update with api improvement
     updateProgress() {
-        if ([this._data.December, this._data.January].includes(undefined)) return;
+        if (!this._data) return;
 
         if (this.year.value === TODAY.getFullYear()) {
             this.progress.set(this._data[monthCapitalizedFromId(TODAY.getMonth())] - this._data.January);
