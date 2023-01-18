@@ -34,7 +34,7 @@ export const fixtureDocumentDac = [
         nom: "nom fake",
         meta: {
             type: "BPA",
-            id_siret: "50922194100000",
+            id_siret: 50922194100000,
             etat: "courant"
         },
         time_depot: "2021-06-18 12:02:53"

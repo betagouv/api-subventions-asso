@@ -1,7 +1,7 @@
 import { ProviderValues, Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
 import axios from "axios";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { AssociationIdentifiers } from "../../../@types";
+import { AssociationIdentifiers, DefaultObject } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
@@ -170,7 +170,20 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             .filter(document => document) as StructureDacDocumentDto[];
     }
     private filterRibsInDacDocuments(documents: StructureDacDocumentDto[]) {
-        return documents.filter(document => document.meta.type.toLocaleUpperCase() === "RIB");
+        const ribs = documents.filter(
+            document =>
+                document.meta.type.toLocaleUpperCase() === "RIB" && document.url && document.meta.iban !== "null"
+        );
+
+        const uniquesRibs = ribs.reduce((acc, rib) => {
+            const ribName = rib.meta.iban || rib.nom;
+            if (!acc[ribName] || new Date(rib.time_depot).getTime() > new Date(acc[ribName].time_depot).getTime()) {
+                acc[ribName] = rib;
+            }
+            return acc;
+        }, {} as DefaultObject<StructureDacDocumentDto>);
+
+        return Object.values(uniquesRibs);
     }
 
     private filterActiveDacDocuments(documents: StructureDacDocumentDto[]) {
@@ -190,7 +203,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return [
             ...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)),
             ...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)),
-            ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document))
+            ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToRib(document))
         ];
     }
 
