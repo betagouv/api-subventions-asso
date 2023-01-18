@@ -1,10 +1,13 @@
 import passport from "passport";
-import { Express } from "express";
-import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
+import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
-import userService, { UserServiceError } from "../modules/user/user.service";
-import { JWT_SECRET } from "../configurations/jwt.conf";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
+
+import { JWT_SECRET } from "../configurations/jwt.conf";
+import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
+import userService, { UserServiceError } from "../modules/user/user.service";
+
 export function authMocks(app: Express) {
     // A passport middleware to handle User login
     passport.use(
@@ -28,23 +31,14 @@ export function authMocks(app: Express) {
         new JwtStrategy(
             {
                 secretOrKey: JWT_SECRET,
-                jwtFromRequest: req => {
-                    let token = null;
-                    if (req) {
-                        token = req.body.token || req.query.token || req.headers["x-access-token"];
-                    }
-
-                    return token;
-                }
+                jwtFromRequest: getJtwTokenFromRequest,
+                passReqToCallback: true
             },
-            async (token, done) => {
-                const result = await userService.authenticate(token);
+            async (req: Request, tokenPayload, done) => {
+                const result = await userService.authenticate(tokenPayload, getJtwTokenFromRequest(req));
                 if (result.success && result.user)
                     return done(null, result.user, { message: "Logged in Successfully" });
-                else
-                    return done(null, false, {
-                        message: (result as UserServiceError).message
-                    });
+                else return done(null, false, { message: (result as UserServiceError).message });
             }
         )
     );

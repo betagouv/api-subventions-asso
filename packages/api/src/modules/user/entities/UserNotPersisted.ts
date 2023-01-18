@@ -3,7 +3,7 @@ export default class UserNotPersisted {
     public hashPassword: string;
     public roles: string[];
     public signupAt: Date;
-    public jwt: { token: string; expirateDate: Date };
+    public jwt: { token: string; expirateDate: Date } | null;
     public active: boolean;
     public stats: {
         searchCount: number;
@@ -15,7 +15,7 @@ export default class UserNotPersisted {
         hashPassword: string;
         roles: string[];
         signupAt: Date;
-        jwt: { token: string; expirateDate: Date };
+        jwt: { token: string; expirateDate: Date } | null;
         active: boolean;
         stats: {
             searchCount: number;
