@@ -9,5 +9,12 @@ module.exports = {
     },
     modulePathIgnorePatterns: ["./build"],
     moduleFileExtensions: ["ts", "js", "svelte"],
-    testEnvironment: "jsdom"
+    testEnvironment: "jsdom",
+    moduleNameMapper: {
+        "@resources/(.*)$": "<rootDir>/svelte/resources/$1",
+        "@components/(.*)$": "<rootDir>/svelte/components/$1",
+        "@core/(.*)$": "<rootDir>/svelte/core/$1",
+        "@dsfr/(.*)$": "<rootDir>/svelte/dsfr/$1",
+        "@helpers/(.*)$": "<rootDir>/svelte/helpers/$1"
+    }
 };

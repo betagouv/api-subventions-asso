@@ -1,14 +1,18 @@
 <script>
-    export let title;
+    export let title = null;
 </script>
 
 <div class="widget fr-p-4w">
-    <h2 class="fr-h2">{title}</h2>
-    <slot />
+    {#if title}
+        <h4 class="fr-h4 fr-mb-3w">{title}</h4>
+    {/if}
+    <div>
+        <slot />
+    </div>
 </div>
 
 <style>
     .widget {
-        border: 1px solid var(--border-disabled-grey);
+        border: 1px solid var(--border-default-grey);
     }
 </style>

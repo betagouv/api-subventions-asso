@@ -1,8 +1,8 @@
-import { writable } from "svelte/store";
 import { waitElementIsVisible } from "../../helpers/visibilityHelper";
 import associationService from "../../views/association/association.service";
 import { getSiegeSiret } from "../../views/association/association.helper";
 import etablissementService from "../../views/etablissement/etablissement.service";
+import Store from "../../core/Store";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
@@ -12,8 +12,8 @@ const resourceNameWithDemonstrativeByType = {
 export class DocumentsController {
     constructor(resourceType, resource) {
         this.resourceType = resourceType;
-        this.element = writable(null);
-        this.documentsPromise = writable(new Promise(() => null));
+        this.element = new Store(null);
+        this.documentsPromise = new Store(new Promise(() => null));
         this.resource = resource;
     }
 

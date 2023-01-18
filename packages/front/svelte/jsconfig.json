@@ -4,5 +4,15 @@
 {
     "typeAcquisition": {
         "include": ["jest"]
+    },
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@resources/*": ["./resources/*"],
+            "@components/*": ["./components/*"],
+            "@core/*": ["./core/*"],
+            "@dsfr/*": ["./dsfr/*"],
+            "@helpers/*": ["./helpers/*"]
+        }
     }
 }

@@ -26,7 +26,19 @@
         }
     ],
     "settings": {
-        "svelte3/typescript": true
+        "svelte3/typescript": true,
+        "import/resolver": {
+            "alias": {
+                "map": [
+                    ["@resources", "./svelte/resources"],
+                    ["@components", "./svelte/components"],
+                    ["@dsfr", "./svelte/dsfr"],
+                    ["@core", "./svelte/core"],
+                    ["@helpers", "./svelte/helpers"]
+                ],
+                "extensions": [".js", ".svelte"]
+            }
+        }
     },
     "plugins": ["svelte3", "@typescript-eslint"],
     "ignorePatterns": ["node_modules", "webpack.*", "views/index.js"]

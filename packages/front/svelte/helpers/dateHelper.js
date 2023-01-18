@@ -23,3 +23,10 @@ export const getDayWithZero = day => ("0" + day).slice(-2);
 export const getMonthWithZero = day => ("0" + day).slice(-2);
 
 export const isValidDate = date => date instanceof Date && !isNaN(date);
+
+export const getOneYearBeforeDate = date => {
+    const prevDate = new Date(date);
+    prevDate.setFullYear(date.getFullYear() - 1);
+    prevDate.setDate(date.getDate() + 1);
+    return prevDate;
+};
