@@ -7,6 +7,12 @@ import { AssociationIdentifiers } from "../../@types";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
+import userRepository from "../user/repositories/user.repository";
+import { RoleEnum } from "../../@enums/Roles";
+import UserDbo from "../user/repositories/dbo/UserDbo";
+import { WithId } from "mongodb";
+import { UserCountByStatus } from "@api-subventions-asso/dto";
+import { isUserActif } from "../../shared/helpers/UserHelper";
 
 class StatsService {
     getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
@@ -112,6 +118,24 @@ class StatsService {
 
     addAssociationVisit(visit: AssociationVisitEntity) {
         return statsAssociationsVisitRepository.add(visit);
+    }
+
+    private reduceUsersToUsersByStatus(usersByStatus: UserCountByStatus, user: WithId<UserDbo>) {
+        if (user.roles.includes(RoleEnum.admin)) usersByStatus.admin++;
+        else if (isUserActif(user)) usersByStatus.active++;
+        else if (user.active) usersByStatus.idle++;
+        else usersByStatus.inactive++;
+        return usersByStatus;
+    }
+
+    async getUserCountByStatus() {
+        const users = await userRepository.findAll();
+        return users.reduce(this.reduceUsersToUsersByStatus, {
+            admin: 0,
+            active: 0,
+            idle: 0,
+            inactive: 0
+        });
     }
 }
 

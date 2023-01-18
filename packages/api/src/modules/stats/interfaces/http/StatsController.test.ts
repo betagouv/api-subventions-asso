@@ -5,6 +5,8 @@ import { BadRequestError } from "../../../../shared/errors/httpErrors";
 const controller = new StatsController();
 
 describe("StatsController", () => {
+    const mockgetUserCountByStatus = jest.spyOn(statsService, "getUserCountByStatus").mockImplementation(jest.fn());
+
     describe("getRequestsPerMonthByYear", () => {
         const getStatSpy = jest.spyOn(statsService, "getRequestsPerMonthByYear");
         const YEAR_STR = "2022";
@@ -86,6 +88,22 @@ describe("StatsController", () => {
             const expected = new BadRequestError("'date' must be a number");
             const test = () => controller.getCumulatedUsersPerMonthByYear("not a number");
             await expect(test).rejects.toThrowError(expected);
+        });
+    });
+
+    describe("getUserCountByStatus", () => {
+        const USERS_BY_STATUS = { admin: 0, active: 0, idle: 0, inactive: 0 };
+
+        it("should call statsService.getUserCountByStatus()", async () => {
+            await controller.getUserCountByStatus();
+            expect(mockgetUserCountByStatus).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return result", async () => {
+            mockgetUserCountByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
+            const expected = { success: true, data: USERS_BY_STATUS };
+            const actual = await controller.getUserCountByStatus();
+            expect(actual).toEqual(expected);
         });
     });
 

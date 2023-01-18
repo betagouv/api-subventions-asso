@@ -2,7 +2,8 @@ import {
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
     MonthlyAvgRequestDtoResponse,
-    AssociationTopDtoResponse
+    AssociationTopDtoResponse,
+    UsersByStatusResponseDto
 } from "@api-subventions-asso/dto";
 import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
@@ -98,6 +99,19 @@ export class StatsController extends Controller {
     async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         const result = await statsService.getMonthlyUserNbByYear(Number(year));
+        return { success: true, data: result };
+    }
+
+    /**
+     * Permet de récupérer le nombre d'utilisateur par statut
+     * 4 statuts sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte)
+     *
+     * @summary Permet de récupérer le nombre d'utilisateur par statut
+     */
+    @Get("/users/status")
+    @Response<ErrorResponse>("500")
+    async getUserCountByStatus(): Promise<UsersByStatusResponseDto> {
+        const result = await statsService.getUserCountByStatus();
         return { success: true, data: result };
     }
 
