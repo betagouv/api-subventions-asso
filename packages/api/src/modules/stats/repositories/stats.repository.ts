@@ -18,7 +18,8 @@ export class StatsRepository {
                 timestamp: {
                     $gte: start,
                     $lte: end
-                }
+                },
+                "meta.req.url": /\/(association|etablissement)\/.{9,14}$/
             }
         };
         if (!includesAdmin) {
@@ -49,7 +50,8 @@ export class StatsRepository {
                         $gte: start,
                         $lte: end
                     },
-                    "meta.req.user.email": { $ne: null }
+                    "meta.req.user.email": { $ne: null },
+                    "meta.req.url": /\/(association|etablissement)\/.{9,14}$/
                 }
             };
             if (!includesAdmin) {
