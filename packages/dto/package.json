@@ -1,11 +1,12 @@
 {
     "name": "dto",
-    "version": "0.21.0",
+    "version": "0.21.2",
     "description": "> TODO: description",
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/dto#readme",
     "license": "ISC",
     "types": "./index.ts",
+    "main": "./build/index.js",
     "directories": {
         "lib": "lib",
         "test": "__tests__"
