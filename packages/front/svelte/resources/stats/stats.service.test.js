@@ -1,34 +1,34 @@
-import statisticsPort from "./statistics.port";
-import statisticsService from "./statistics.service";
+import statsPort from "./stats.port";
+import statsService from "./stats.service";
 
-describe("statisticsService", () => {
+describe("statsService", () => {
     describe("getTopAssociations", () => {
         let portGetTopAssociationsMock;
 
         beforeAll(() => {
-            portGetTopAssociationsMock = jest.spyOn(statisticsPort, "getTopAssociations");
+            portGetTopAssociationsMock = jest.spyOn(statsPort, "getTopAssociations");
         });
 
         afterAll(() => {
             portGetTopAssociationsMock.mockRestore();
         });
 
-        it("should call statistics port", async () => {
+        it("should call stats port", async () => {
             portGetTopAssociationsMock.mockImplementationOnce(() => []);
 
             const expected = 1;
-            await statisticsService.getTopAssociations();
+            await statsService.getTopAssociations();
 
             const actual = portGetTopAssociationsMock.mock.calls.length;
 
             expect(actual).toBe(expected);
         });
 
-        it("should call statistics port with arguments", async () => {
+        it("should call stats port with arguments", async () => {
             portGetTopAssociationsMock.mockImplementationOnce(() => []);
 
             const expected = [15];
-            await statisticsService.getTopAssociations(...expected);
+            await statsService.getTopAssociations(...expected);
 
             const actual = portGetTopAssociationsMock.mock.calls[0];
 

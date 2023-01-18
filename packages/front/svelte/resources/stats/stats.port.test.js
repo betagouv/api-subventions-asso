@@ -1,7 +1,7 @@
 import axios from "axios";
-import statisticsPort from "./statistics.port";
+import statsPort from "./stats.port";
 
-describe("StatisticsPort", () => {
+describe("StatsPort", () => {
     describe("getTopAssociations", () => {
         let axiosGetMock;
 
@@ -18,7 +18,7 @@ describe("StatisticsPort", () => {
 
             axiosGetMock.mockImplementationOnce(async () => ({ data: { success: true, data: expected } }));
 
-            const actual = await statisticsPort.getTopAssociations();
+            const actual = await statsPort.getTopAssociations();
             expect(actual).toEqual(expected);
         });
     });

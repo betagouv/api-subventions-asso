@@ -1,4 +1,4 @@
-import statisticsService from "@resources/statistics/statistics.service";
+import statsService from "@resources/stats/stats.service";
 import TopAssociationsController from "./TopAssociationsController";
 
 describe("TopAssociationsController", () => {
@@ -7,7 +7,7 @@ describe("TopAssociationsController", () => {
         let controller;
 
         beforeAll(() => {
-            serviceGetTopAssociationsMock = jest.spyOn(statisticsService, "getTopAssociations");
+            serviceGetTopAssociationsMock = jest.spyOn(statsService, "getTopAssociations");
             controller = new TopAssociationsController();
         });
 

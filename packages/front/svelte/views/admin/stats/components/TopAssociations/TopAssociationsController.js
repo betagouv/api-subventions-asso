@@ -1,5 +1,5 @@
 import Store from "@core/Store";
-import statisticsService from "@resources/statistics/statistics.service";
+import statsService from "@resources/stats/stats.service";
 import { getOneYearBeforeDate } from "@helpers/dateHelper";
 
 export default class TopAssociationsController {
@@ -18,7 +18,7 @@ export default class TopAssociationsController {
     }
 
     async _updateTopAssociations() {
-        const topAssociations = await statisticsService.getTopAssociations(this._limit);
+        const topAssociations = await statsService.getTopAssociations(this._limit);
         this.topAssociations.set(topAssociations);
     }
 }

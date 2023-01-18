@@ -1,6 +1,6 @@
 import axios from "axios";
 
-class StatisticsPort {
+class StatsPort {
     BASE_PATH = "/stats";
     getTopAssociations(limit) {
         const query = { limit };
@@ -17,5 +17,5 @@ class StatisticsPort {
     }
 }
 
-const statisticsPort = new StatisticsPort();
-export default statisticsPort;
+const statsPort = new StatsPort();
+export default statsPort;
