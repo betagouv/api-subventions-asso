@@ -1,3 +1,7 @@
+import { DefaultObject } from "../../../../@types";
+
 export default interface INotifier {
-    sendMail(email: string, subject: string, html: string, text: string): Promise<boolean>;
+    sendTestMail(email: string, params: DefaultObject, templateId: number): Promise<boolean>;
+    sendCreationMail(email: string, params: DefaultObject): Promise<boolean>;
+    sendForgetPasswordMail(email: string, params: DefaultObject): Promise<boolean>;
 }
