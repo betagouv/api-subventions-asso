@@ -8,4 +8,16 @@ describe("DateHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getOneYearBeforeDate", () => {
+        it("should return start date", async () => {
+            const expected = new Date(2021, 10, 13);
+
+            const endDate = new Date(2022, 10, 12);
+
+            const actual = DateHelper.getOneYearBeforeDate(endDate);
+
+            expect(actual).toEqual(expected);
+        });
+    });
 });
