@@ -5,7 +5,7 @@ import { BadRequestError } from "../../../../shared/errors/httpErrors";
 const controller = new StatsController();
 
 describe("StatsController", () => {
-    const mockGetUsersByStatus = jest.spyOn(statsService, "getUsersByStatus").mockImplementation(jest.fn());
+    const mockgetUserCountByStatus = jest.spyOn(statsService, "getUserCountByStatus").mockImplementation(jest.fn());
 
     describe("getRequestsPerMonthByYear", () => {
         const getStatSpy = jest.spyOn(statsService, "getRequestsPerMonthByYear");
@@ -91,18 +91,18 @@ describe("StatsController", () => {
         });
     });
 
-    describe("getUsersByStatus", () => {
+    describe("getUserCountByStatus", () => {
         const USERS_BY_STATUS = { admin: 0, active: 0, idle: 0, inactive: 0 };
 
-        it("should call statsService.getUsersByStatus()", async () => {
-            await controller.getUsersByStatus();
-            expect(mockGetUsersByStatus).toHaveBeenCalledTimes(1);
+        it("should call statsService.getUserCountByStatus()", async () => {
+            await controller.getUserCountByStatus();
+            expect(mockgetUserCountByStatus).toHaveBeenCalledTimes(1);
         });
 
         it("should return result", async () => {
-            mockGetUsersByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
+            mockgetUserCountByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
             const expected = { success: true, data: USERS_BY_STATUS };
-            const actual = await controller.getUsersByStatus();
+            const actual = await controller.getUserCountByStatus();
             expect(actual).toEqual(expected);
         });
     });

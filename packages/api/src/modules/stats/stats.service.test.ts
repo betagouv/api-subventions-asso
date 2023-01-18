@@ -1,9 +1,9 @@
-const mockTest = jest.fn();
+const mockIsUserActif = jest.fn();
 
 jest.mock("../../shared/helpers/UserHelper", () => {
     return {
         __esModule: true, // this property makes it work
-        isUserActif: mockTest
+        isUserActif: mockIsUserActif
     };
 });
 
@@ -656,7 +656,7 @@ describe("StatsService", () => {
         });
 
         it("should increment active", () => {
-            mockTest.mockImplementationOnce(() => true);
+            mockIsUserActif.mockImplementationOnce(() => true);
             const expected = DEFAULT_USERS_BY_STATUS.active + 1;
             // @ts-expect-error: private method
             const actual = statsService.reduceUsersToUsersByStatus(
@@ -668,7 +668,7 @@ describe("StatsService", () => {
         });
 
         it("should increment idle", () => {
-            mockTest.mockImplementationOnce(() => false);
+            mockIsUserActif.mockImplementationOnce(() => false);
             const expected = DEFAULT_USERS_BY_STATUS.idle + 1;
             // @ts-expect-error: private method
             const actual = statsService.reduceUsersToUsersByStatus(
@@ -680,7 +680,7 @@ describe("StatsService", () => {
         });
 
         it("should increment inactive", () => {
-            mockTest.mockImplementationOnce(() => false);
+            mockIsUserActif.mockImplementationOnce(() => false);
             const expected = DEFAULT_USERS_BY_STATUS.inactive + 1;
             // @ts-expect-error: private method
             const actual = statsService.reduceUsersToUsersByStatus(
@@ -692,11 +692,11 @@ describe("StatsService", () => {
         });
     });
 
-    describe("getUsersByStatus()", () => {
+    describe("getUserCountByStatus()", () => {
         it("should return UsersByStatus with empty users", async () => {
             jest.spyOn(userRepository, "findAll").mockImplementationOnce(async () => []);
             const expected = { admin: 0, active: 0, idle: 0, inactive: 0 };
-            const actual = await statsService.getUsersByStatus();
+            const actual = await statsService.getUserCountByStatus();
             expect(actual).toEqual(expected);
         });
 
@@ -706,7 +706,7 @@ describe("StatsService", () => {
             const expected = USERS_BY_STATUS;
             // @ts-expect-error: private method
             jest.spyOn(statsService, "reduceUsersToUsersByStatus").mockImplementationOnce(acc => USERS_BY_STATUS);
-            const actual = await statsService.getUsersByStatus();
+            const actual = await statsService.getUserCountByStatus();
             expect(actual).toEqual(expected);
         });
     });

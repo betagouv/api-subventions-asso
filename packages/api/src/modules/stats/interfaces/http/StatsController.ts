@@ -104,14 +104,14 @@ export class StatsController extends Controller {
 
     /**
      * Permet de récupérer le nombre d'utilisateur par statut
-     * 4 statuts sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte9)
+     * 4 statuts sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte)
      *
      * @summary Permet de récupérer le nombre d'utilisateur par statut
      */
     @Get("/users/status")
     @Response<ErrorResponse>("500")
-    async getUsersByStatus(): Promise<UsersByStatusResponseDto> {
-        const result = await statsService.getUsersByStatus();
+    async getUserCountByStatus(): Promise<UsersByStatusResponseDto> {
+        const result = await statsService.getUserCountByStatus();
         return { success: true, data: result };
     }
 

@@ -3,7 +3,7 @@ import userService from "../user/user.service";
 import statsRepository from "./repositories/stats.repository";
 import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
-import { AssociationIdentifiers, DefaultObject } from "../../@types";
+import { AssociationIdentifiers } from "../../@types";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
@@ -11,7 +11,7 @@ import userRepository from "../user/repositories/user.repository";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDbo from "../user/repositories/dbo/UserDbo";
 import { WithId } from "mongodb";
-import { UsersByStatus } from "@api-subventions-asso/dto";
+import { UserCountByStatus } from "@api-subventions-asso/dto";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 
 class StatsService {
@@ -120,7 +120,7 @@ class StatsService {
         return statsAssociationsVisitRepository.add(visit);
     }
 
-    private reduceUsersToUsersByStatus(usersByStatus: UsersByStatus, user: WithId<UserDbo>) {
+    private reduceUsersToUsersByStatus(usersByStatus: UserCountByStatus, user: WithId<UserDbo>) {
         if (user.roles.includes(RoleEnum.admin)) usersByStatus.admin++;
         else if (isUserActif(user)) usersByStatus.active++;
         else if (user.active) usersByStatus.idle++;
@@ -128,7 +128,7 @@ class StatsService {
         return usersByStatus;
     }
 
-    async getUsersByStatus() {
+    async getUserCountByStatus() {
         const users = await userRepository.findAll();
         return users.reduce(this.reduceUsersToUsersByStatus, {
             admin: 0,
