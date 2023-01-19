@@ -1,8 +1,8 @@
 import { DemandeSubvention } from "../search/DemandeSubvention";
-import ErreurReponse from "../shared/ErreurReponse";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export interface GetSubventionSuccessResponseDto {
     subvention: DemandeSubvention;
 }
 
-export type GetSubventionResponseDto = GetSubventionSuccessResponseDto | ErreurReponse;
+export type GetSubventionResponseDto = GetSubventionSuccessResponseDto | ErrorResponse;

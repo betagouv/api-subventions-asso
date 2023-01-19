@@ -1,4 +1,4 @@
-import { ErreurReponse } from "@api-subventions-asso/dto";
+import { ErrorResponse } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import AssociationNameEntity from "../../../association-name/entities/AssociationNameEntity";
 
@@ -14,10 +14,10 @@ export class SearchController extends Controller {
      * @param rna_or_siren Identifiant RNA ou Identifiant Siren
      */
     @Get("/associations/{input}")
-    @Response<ErreurReponse>("404", "Aucune association retrouvée", {
+    @Response<ErrorResponse>("404", "Aucune association retrouvée", {
         message: "Could match any association with given input : ${input}"
     })
-    public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] } | ErreurReponse> {
+    public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] } | ErrorResponse> {
         const result = await searchService.getAssociationsKeys(input);
         if (!result || (Array.isArray(result) && result.length == 0)) {
             this.setStatus(404);

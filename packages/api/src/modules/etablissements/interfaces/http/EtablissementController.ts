@@ -5,7 +5,7 @@ import {
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
     Siret,
-    ErreurReponse
+    ErrorResponse
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
@@ -23,10 +23,10 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}")
-    @Response<ErreurReponse>("400", "Identifiant incorrect", {
+    @Response<ErrorResponse>("400", "Identifiant incorrect", {
         message: "You must provide a valid SIRET"
     })
-    @Response<ErreurReponse>("404", "L'établissement n'a pas été trouvé", {
+    @Response<ErrorResponse>("404", "L'établissement n'a pas été trouvé", {
         message: "Etablissement not found"
     })
     public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
@@ -50,7 +50,7 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/subventions")
-    @Response<ErreurReponse>("404")
+    @Response<ErrorResponse>("404")
     public async getDemandeSubventions(siret: Siret): Promise<GetSubventionsResponseDto> {
         try {
             const data = await etablissementService.getSubventions(siret).toPromise();
@@ -72,7 +72,7 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/versements")
-    @Response<ErreurReponse>("404")
+    @Response<ErrorResponse>("404")
     public async getVersements(siret: Siret): Promise<GetVersementsResponseDto> {
         try {
             const versements = await etablissementService.getVersements(siret);
@@ -90,7 +90,7 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/documents")
-    @Response<ErreurReponse>("404")
+    @Response<ErrorResponse>("404")
     public async getDocuments(siret: Siret): Promise<GetDocumentsResponseDto> {
         try {
             const documents = await etablissementService.getDocuments(siret);

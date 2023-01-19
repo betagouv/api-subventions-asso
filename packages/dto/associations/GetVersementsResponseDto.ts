@@ -1,8 +1,8 @@
-import ErreurReponse from "../shared/ErreurReponse";
+import { ErrorResponse } from "../shared/ErrorResponse";
 import { VersementFonjep, VersementChorus } from "../versements";
 
 export interface GetVersementsSuccessResponseDto {
     versements: (VersementChorus | VersementFonjep)[];
 }
 
-export type GetVersementsResponseDto = GetVersementsSuccessResponseDto | ErreurReponse;
+export type GetVersementsResponseDto = GetVersementsSuccessResponseDto | ErrorResponse;

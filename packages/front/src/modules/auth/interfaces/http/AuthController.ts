@@ -36,8 +36,6 @@ export default class AuthController {
 
         const result = await authService.login(req.body.email, req.body.password);
 
-        console.log(result);
-
         if (result.type === "ERROR") {
             res.statusCode = 422;
             return res.render("auth/login/login", {
