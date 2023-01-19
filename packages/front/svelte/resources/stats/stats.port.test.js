@@ -23,12 +23,13 @@ describe("StatsPort", () => {
         });
     });
 
-
     describe("getMonthlyUserCount", () => {
-        const spyAxios = jest.spyOn(axios, "get");
+        let spyAxios;
         const YEAR = 2022;
         const AXIOS_DATA = {};
-        beforeAll(() => spyAxios.mockReturnValue({ data: { data: AXIOS_DATA } }));
+        beforeAll(
+            () => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: { data: AXIOS_DATA, success: true } }))
+        );
         afterAll(() => spyAxios.mockRestore());
 
         it("should call axios with proper path", async () => {

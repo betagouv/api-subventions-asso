@@ -16,9 +16,12 @@ class StatsPort {
             });
     }
 
-    async getMonthlyUserCount(year) {
+    getMonthlyUserCount(year) {
         const path = `${this.BASE_PATH}/users/monthly/${year}`;
-        return (await axios.get(path)).data.data;
+        return axios.get(path).then(result => {
+            if (!result.data.success) throw new Error(result.data.message);
+            return result.data.data;
+        });
         // TODO update with new api output #867
     }
 }
