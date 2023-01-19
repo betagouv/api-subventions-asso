@@ -13,7 +13,6 @@ describe("AuthentificationController, /auth", () => {
         });
         it("should return SuccessResponse", async () => {
             const expected = {
-                success: true,
                 reset: {
                     _id: expect.any(String),
                     userId: expect.any(String),
@@ -38,7 +37,6 @@ describe("AuthentificationController, /auth", () => {
 
             expect(response.statusCode).toBe(500);
             expect(response.body).toMatchObject({
-                success: false,
                 message: "User not found"
             });
         });
@@ -61,8 +59,7 @@ describe("AuthentificationController, /auth", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                success: true,
-                data: { user: { email: "test-reset@beta.gouv.fr", active: true } }
+                user: { email: "test-reset@beta.gouv.fr", active: true }
             });
         });
 
@@ -81,8 +78,7 @@ describe("AuthentificationController, /auth", () => {
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(500);
             expect(response.body).toMatchObject({
-                success: false,
-                data: { code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID }
+                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
             });
         });
 
@@ -97,8 +93,7 @@ describe("AuthentificationController, /auth", () => {
 
             expect(response.statusCode).toBe(500);
             expect(response.body).toMatchObject({
-                success: false,
-                data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND }
+                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
             });
         });
 
@@ -121,8 +116,7 @@ describe("AuthentificationController, /auth", () => {
 
             expect(response.statusCode).toBe(500);
             expect(response.body).toMatchObject({
-                success: false,
-                data: { code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED }
+                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
             });
 
             UserService.RESET_TIMEOUT = oldResetTimout;
@@ -146,8 +140,7 @@ describe("AuthentificationController, /auth", () => {
 
             expect(response.statusCode).toBe(500);
             expect(response.body).toMatchObject({
-                success: false,
-                data: { code: ResetPasswordErrorCodes.USER_NOT_FOUND }
+                code: ResetPasswordErrorCodes.USER_NOT_FOUND
             });
         });
     });
@@ -160,15 +153,12 @@ describe("AuthentificationController, /auth", () => {
 
             it("should log user", async () => {
                 const expected = {
-                    success: true,
-                    data: {
-                        email: USER_EMAIL,
-                        roles: ["user"],
-                        active: true,
-                        jwt: {
-                            token: expect.any(String),
-                            expirateDate: expect.any(String)
-                        }
+                    email: USER_EMAIL,
+                    roles: ["user"],
+                    active: true,
+                    jwt: {
+                        token: expect.any(String),
+                        expirateDate: expect.any(String)
                     }
                 };
 
@@ -180,7 +170,7 @@ describe("AuthentificationController, /auth", () => {
                     })
                     .set("Accept", "application/json")
                     .expect(201)
-                    .expect(res => expect(res.body).toMatchObject(expected));
+                    .expect(res => expect(res.body.user).toMatchObject(expected));
             });
 
             it("should not return password", async () => {
@@ -191,7 +181,7 @@ describe("AuthentificationController, /auth", () => {
                         email: USER_EMAIL
                     })
                     .set("Accept", "application/json")
-                    .expect(res => expect(res.body.data.hashPassword).toEqual(undefined));
+                    .expect(res => expect(res.body.user.hashPassword).toEqual(undefined));
             });
 
             it("should not log user", async () => {

@@ -22,7 +22,7 @@ export * from "./shared/Siret";
 export * from "./shared/Adresse";
 export * from "./shared/Personne";
 export * from "./shared/InformationBancaire";
-export * from "./shared/ResponseStatus";
+export { default as ErreurReponse } from "./shared/ErreurReponse";
 export * from "./user/UserDto";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";

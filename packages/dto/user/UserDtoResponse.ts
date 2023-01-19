@@ -1,12 +1,12 @@
-import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
-import UserDto from "./UserDto"
+import ErreurReponse from "../shared/ErreurReponse";
+import UserDto from "./UserDto";
 
-export interface UserDtoSuccessResponse extends SuccessResponse {
-    user: UserDto
+export interface UserDtoSuccessResponse {
+    user: UserDto;
 }
 
-export interface UserDtoErrorResponse extends ErrorResponse {
-    errorCode: number
+export interface UserDtoErrorResponse extends ErreurReponse {
+    errorCode: number;
 }
 
 export type UserDtoResponse = UserDtoSuccessResponse | UserDtoErrorResponse;

@@ -1,15 +1,17 @@
-import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
+import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Response } from "tsoa";
 import userService, { UserServiceErrors } from "../../user.service";
 import {
     LoginDtoErrorCodes,
     LoginDtoNegativeResponse,
     LoginDtoResponse,
+    ResetPasswordDtoNegativeResponse,
     ResetPasswordDtoResponse,
     ResetPasswordErrorCodes,
     SignupDtoResponse,
     SignupErrorCodes
 } from "@api-subventions-asso/dto";
 import { DefaultObject, IdentifiedRequest, LoginRequest } from "../../../../@types";
+import { BadRequestError } from "../../../../shared/errors/httpErrors";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -20,7 +22,7 @@ export class AuthentificationController extends Controller {
         if (result.success) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { token: _token, ...reset } = result.reset;
-            return { success: true, reset };
+            return { reset };
         }
 
         this.setStatus(500);
@@ -29,6 +31,7 @@ export class AuthentificationController extends Controller {
     }
 
     @Post("/reset-password")
+    @Response<ResetPasswordDtoNegativeResponse>("500")
     public async resetPassword(@Body() body: { password: string; token: string }): Promise<ResetPasswordDtoResponse> {
         const result = await userService.resetPassword(body.password, body.token);
 
@@ -53,19 +56,13 @@ export class AuthentificationController extends Controller {
             }
 
             return {
-                success: false,
-                data: {
-                    message: result.message,
-                    code: errorCode
-                }
+                message: result.message,
+                code: errorCode
             };
         }
 
         return {
-            success: result.success,
-            data: {
-                user: { ...result.user, _id: result.user._id.toString() }
-            }
+            user: { ...result.user, _id: result.user._id.toString() }
         };
     }
 
@@ -82,8 +79,7 @@ export class AuthentificationController extends Controller {
             // Succesfuly logged
             this.setStatus(201);
             return {
-                success: true,
-                data: req.user
+                user: req.user
             };
         }
 
@@ -111,12 +107,9 @@ export class AuthentificationController extends Controller {
             }
         };
 
-        const result: LoginDtoNegativeResponse = {
-            success: false,
-            data: errors[errorCode] || {
-                errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
-                message: "Internal error, please try later"
-            }
+        const result: LoginDtoNegativeResponse = errors[errorCode] || {
+            errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
+            message: "Internal error, please try later"
         };
 
         this.setStatus(401);
@@ -131,10 +124,7 @@ export class AuthentificationController extends Controller {
         if (result.success) {
             this.setStatus(201);
             return {
-                success: true,
-                data: {
-                    message: `The user ${body.email}, is succefully created`
-                }
+                email: result.email
             };
         }
 
@@ -153,21 +143,15 @@ export class AuthentificationController extends Controller {
         this.setStatus(internalServerError.includes(errorCode) ? 500 : 422);
 
         return {
-            success: false,
-            data: {
-                errorCode,
-                message: result.message
-            }
+            errorCode,
+            message: result.message
         };
     }
 
     @Get("/logout")
     @Security("jwt")
     public async logout(@Request() req: IdentifiedRequest) {
-        if (!req.user) return { success: false };
-
+        if (!req.user) throw new BadRequestError();
         await userService.logout(req.user);
-
-        return { success: true };
     }
 }

@@ -13,7 +13,6 @@ describe("/config", () => {
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
                     .expect(200, {
-                        success: true,
                         domains: [process.env.BETA_GOUV_DOMAIN]
                     });
             });
@@ -27,7 +26,7 @@ describe("/config", () => {
                     .send({ domain: VALID_DOMAIN })
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
-                    .expect(201, { success: true, domain: VALID_DOMAIN });
+                    .expect(201, { domain: VALID_DOMAIN });
             });
             it("should return BadRequestError", async () => {
                 await request(g.app)

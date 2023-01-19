@@ -1,8 +1,8 @@
-import { SuccessResponse, ErrorResponse } from "../shared/ResponseStatus";
+import ErreurReponse from "../shared/ErreurReponse";
 import { Association } from "./Association";
 
-export interface GetAssociationSuccessResponse extends SuccessResponse {
-    association: Association,
+export interface GetAssociationSuccessResponse {
+    association: Association;
 }
 
-export type GetAssociationResponseDto = GetAssociationSuccessResponse | ErrorResponse;
+export type GetAssociationResponseDto = GetAssociationSuccessResponse | ErreurReponse;

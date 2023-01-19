@@ -7,18 +7,12 @@ export enum SignupErrorCodes {
 }
 
 export interface SignupDtoPositiveResponse {
-    success: true,
-    data: {
-        message: string
-    }
+    email: string;
 }
 
 export interface SignupDtoNegativeResponse {
-    success: false,
-    data: {
-        errorCode: SignupErrorCodes,
-        message: string
-    }
+    errorCode: SignupErrorCodes;
+    message: string;
 }
 
 export type SignupDtoResponse = SignupDtoNegativeResponse | SignupDtoPositiveResponse;

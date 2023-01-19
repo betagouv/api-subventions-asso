@@ -92,9 +92,7 @@ describe("User Service", () => {
                 success: true,
                 reset: {} as UserReset
             }));
-            createConsumerMock.mockImplementationOnce(
-                async () => ({ success: true, user: {} } as UserDtoSuccessResponse)
-            );
+            createConsumerMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.signup(EMAIL, RoleEnum.consumer);
             expect(createConsumerMock).toHaveBeenCalled();
         });
@@ -106,7 +104,7 @@ describe("User Service", () => {
                 success: true,
                 reset: {} as UserReset
             }));
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} } as UserDtoSuccessResponse));
+            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.signup(EMAIL);
             expect(resetUserMock).toHaveBeenCalled();
         });
@@ -116,7 +114,7 @@ describe("User Service", () => {
                 success: true,
                 reset: {} as UserReset
             }));
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} } as UserDtoSuccessResponse));
+            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.signup(EMAIL);
             expect(sendCreationMailMock).toHaveBeenCalled();
         });
@@ -127,7 +125,7 @@ describe("User Service", () => {
                 success: true,
                 reset: {} as UserReset
             }));
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} } as UserDtoSuccessResponse));
+            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             const actual = await userService.signup(EMAIL);
             expect(actual).toEqual(expected);
         });

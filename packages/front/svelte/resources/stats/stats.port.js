@@ -11,7 +11,7 @@ class StatsPort {
                 params: query
             })
             .then(result => {
-                if (!result.data.success) throw new Error(result.data.message);
+                if (!result.data.data) throw new Error(result.data.message);
                 return result.data.data;
             });
     }

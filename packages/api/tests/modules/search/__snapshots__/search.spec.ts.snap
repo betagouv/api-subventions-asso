@@ -11,7 +11,6 @@ Object {
       "siren": "775684970",
     },
   ],
-  "success": true,
 }
 `;
 
@@ -26,7 +25,6 @@ Object {
       "siren": "775684970",
     },
   ],
-  "success": true,
 }
 `;
 
@@ -41,6 +39,5 @@ Object {
       "siren": "775684970",
     },
   ],
-  "success": true,
 }
 `;
