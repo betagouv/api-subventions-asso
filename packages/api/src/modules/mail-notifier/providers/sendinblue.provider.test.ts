@@ -1,4 +1,4 @@
-import SendInBlueProvider from "./sendinblue.provider";
+import SendInBlueProvider, { TemplateEnum } from "./sendinblue.provider";
 import { TransactionalEmailsApi } from "sib-api-v3-typescript";
 
 jest.mock("sib-api-v3-typescript");
@@ -15,8 +15,8 @@ describe("sendinblue.provider", () => {
 
     describe.each`
         method                      | templateId
-        ${"sendCreationMail"}       | ${2}
-        ${"sendForgetPasswordMail"} | ${3}
+        ${"sendCreationMail"}       | ${TemplateEnum.creation}
+        ${"sendForgetPasswordMail"} | ${TemplateEnum.forgetPassword}
     `("SendInBlueProvider custom template methods", ({ method, templateId }) => {
         beforeEach(() => (provider.sendMail = mockSendMail));
 
