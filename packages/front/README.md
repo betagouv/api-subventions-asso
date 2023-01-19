@@ -19,6 +19,24 @@ npm install
 
 -   Modifier les templates selon la note de version
 
+## Conventions de Code
+
+### API
+
+Le format des attributs de l'API est le snake_case.
+
+L'API retourne des données identifiées en français. Les attributs JSON seront donc écrits en français pour faciliter la compréhension des utilisateurs. Il en va de même pour le nom des ressources HTTP.
+
+On préférera donc `/utilisateur` à `/user` et `{ etablissement: [] }` à `establishment: []`.
+
+### Code Source
+
+Le format camelCase doit être utilisé pour toute définition de variable dans le code.
+
+La totalité du code source doit être en anglais. La création de variables à partir de retour de l'API devra se traduire en anglais.
+
+Exemple : `const establishment = association.etablissement // retour API en français mais variable en anglais`
+
 ## Git
 
 ### MERGE vs REBASE
