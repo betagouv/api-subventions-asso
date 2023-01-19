@@ -17,7 +17,7 @@ export default class UserDistributionController {
         this.admin.set(result.admin);
         this.active.set(result.active);
         this.idle.set(result.idle);
-        this.inactive.set(result.admin);
+        this.inactive.set(result.inactive);
     }
 
     set canvas(canvas) {
