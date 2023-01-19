@@ -1,6 +1,5 @@
 <script>
     import { PAGE_ADMIN_USERS_METRICS_NAME } from "../admin.constant";
-    import Widget from "../../../components/Widget.svelte";
     import MonthlyUserCountByYear from "./composents/MonthlyUserCountByYear/MonthlyUserCountByYear.svelte";
 </script>
 
@@ -10,8 +9,6 @@
 </div>
 <div class="fr-grid-row">
     <div class="fr-col">
-        <Widget title="Nombre d'utilisateurs">
-            <MonthlyUserCountByYear />
-        </Widget>
+        <MonthlyUserCountByYear />
     </div>
 </div>
