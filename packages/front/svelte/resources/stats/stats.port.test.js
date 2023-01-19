@@ -28,7 +28,7 @@ describe("StatsPort", () => {
         const spyAxios = jest.spyOn(axios, "get");
         const YEAR = 2022;
         const AXIOS_DATA = {};
-        beforeAll(() => spyAxios.mockReturnValueOnce({ data: { data: AXIOS_DATA } }));
+        beforeAll(() => spyAxios.mockReturnValue({ data: { data: AXIOS_DATA } }));
         afterAll(() => spyAxios.mockRestore());
 
         it("should call axios with proper path", async () => {
