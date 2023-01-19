@@ -1,4 +1,4 @@
-import { UserWithJWTDto } from "../user/UserDto"
+import { UserWithJWTDto } from "../user/UserDto";
 
 export enum LoginDtoErrorCodes {
     EMAIL_OR_PASSWORD_NOT_MATCH = 1,
@@ -7,16 +7,12 @@ export enum LoginDtoErrorCodes {
 }
 
 export interface LoginDtoPositiveResponse {
-    success: true,
-    data: UserWithJWTDto
+    user: UserWithJWTDto;
 }
 
 export interface LoginDtoNegativeResponse {
-    success: false,
-    data: {
-        message: string,
-        errorCode: LoginDtoErrorCodes
-    }
+    message: string;
+    errorCode: LoginDtoErrorCodes;
 }
 
 export type LoginDtoResponse = LoginDtoPositiveResponse | LoginDtoNegativeResponse;

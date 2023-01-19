@@ -1,9 +1,7 @@
-import { SuccessResponse } from "../shared/ResponseStatus";
 import { UserDtoErrorResponse } from "./UserDtoResponse";
 
-interface GetRolesSuccessResponse extends SuccessResponse {
-    roles: string[]
+interface GetRolesSuccessResponse {
+    roles: string[];
 }
 
 export type GetRolesDtoResponse = GetRolesSuccessResponse | UserDtoErrorResponse;
-

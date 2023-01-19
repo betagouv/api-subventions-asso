@@ -38,9 +38,9 @@ describe("StatsController", () => {
             expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB, true);
         });
 
-        it("should return a success object", async () => {
+        it("should return data", async () => {
             getStatSpy.mockResolvedValueOnce(mockedValue);
-            const expected = { success: true, data: mockedValue };
+            const expected = { data: mockedValue };
             const actual = await controller.getRequestsPerMonthByYear(YEAR_STR);
             expect(actual).toStrictEqual(expected);
         });
@@ -77,9 +77,9 @@ describe("StatsController", () => {
             expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB);
         });
 
-        it("should return a success object", async () => {
+        it("should return data", async () => {
             getStatSpy.mockResolvedValueOnce(mockedValue);
-            const expected = { success: true, data: mockedValue };
+            const expected = { data: mockedValue };
             const actual = await controller.getCumulatedUsersPerMonthByYear(YEAR_STR);
             expect(actual).toStrictEqual(expected);
         });
@@ -99,9 +99,9 @@ describe("StatsController", () => {
             expect(mockgetUserCountByStatus).toHaveBeenCalledTimes(1);
         });
 
-        it("should return result", async () => {
+        it("should return data", async () => {
             mockgetUserCountByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
-            const expected = { success: true, data: USERS_BY_STATUS };
+            const expected = { data: USERS_BY_STATUS };
             const actual = await controller.getUserCountByStatus();
             expect(actual).toEqual(expected);
         });
@@ -157,8 +157,8 @@ describe("StatsController", () => {
             expect(serviceSpy).toHaveBeenCalledWith(...expected);
         });
 
-        it("should return formatted service response", async () => {
-            const expected = { success: true, data: DATA };
+        it("should return data", async () => {
+            const expected = { data: DATA };
             const actual = await controller.getTopAssociations();
             expect(actual).toEqual(expected);
         });

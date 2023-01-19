@@ -1,6 +1,6 @@
-import { ErrorResponse } from "../shared/ResponseStatus";
+import ErreurReponse from "../shared/ErreurReponse";
 
-export interface HttpErrorResponse extends ErrorResponse {
+export interface HttpErrorResponse extends ErreurReponse {
     message: string;
     code: number;
 }

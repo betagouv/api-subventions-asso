@@ -26,7 +26,7 @@ describe("/stats", () => {
             it("should return data with HTTP status code 200", async () => {
                 const DATA = 5;
                 spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => DATA);
-                const expected = { success: true, data: DATA };
+                const expected = { data: DATA };
                 const actual = await request(g.app)
                     .get("/stats/requests")
                     .query({
@@ -45,7 +45,7 @@ describe("/stats", () => {
                 spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () =>
                     Promise.reject(new Error(ERROR_MESSAGE))
                 );
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await request(g.app)
                     .get("/stats/requests")
                     .query({
@@ -66,7 +66,6 @@ describe("/stats", () => {
                     Promise.reject(new Error(ERROR_MESSAGE))
                 );
                 const expected = {
-                    success: false,
                     message: "JWT does not contain required scope."
                 };
                 const actual = await request(g.app)
@@ -92,7 +91,7 @@ describe("/stats", () => {
             it("should return data with HTTP status code 200", async () => {
                 const DATA = 2;
                 spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () => DATA);
-                const expected = { success: true, data: DATA };
+                const expected = { data: DATA };
                 const actual = await request(g.app)
                     .get("/stats/requests/median")
                     .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
@@ -107,7 +106,7 @@ describe("/stats", () => {
                 spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () =>
                     Promise.reject(new Error(ERROR_MESSAGE))
                 );
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await request(g.app)
                     .get("/stats/requests/median")
                     .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
@@ -124,7 +123,6 @@ describe("/stats", () => {
                     Promise.reject(new Error(ERROR_MESSAGE))
                 );
                 const expected = {
-                    success: false,
                     message: "JWT does not contain required scope."
                 };
                 const actual = await request(g.app)
@@ -204,7 +202,6 @@ describe("/stats", () => {
                     const response = await makeRequestWithParams();
                     expect(response.statusCode).toBe(200);
                     expect(response.body).toMatchObject({
-                        success: true,
                         data: expect.arrayContaining(data)
                     });
                 });
@@ -226,13 +223,13 @@ describe("/stats", () => {
                     const response = await makeRequestWithParams(limit, start, end);
 
                     expect(response.statusCode).toBe(200);
-                    expect(response.body).toMatchObject({ success: true, data });
+                    expect(response.body).toMatchObject({ data });
                 });
             });
 
             it("should reject wrong limit with HTTP status code 400", async () => {
                 const ERROR_MESSAGE = "'limit' must be a number";
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await makeRequestWithParams("zerty" as unknown as number);
                 expect(actual.statusCode).toBe(400);
                 expect(actual.body).toEqual(expected);
@@ -240,7 +237,7 @@ describe("/stats", () => {
 
             it("should reject wrong end year with HTTP status code 400", async () => {
                 const ERROR_MESSAGE = "'endYear' must be a number";
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await makeRequest("?endYear=zerty");
                 expect(actual.statusCode).toBe(400);
                 expect(actual.body).toEqual(expected);
@@ -248,7 +245,7 @@ describe("/stats", () => {
 
             it("should reject wrong end month with HTTP status code 400", async () => {
                 const ERROR_MESSAGE = "'endMonth' must be a number";
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await makeRequest("?endMonth=zerty");
                 expect(actual.statusCode).toBe(400);
 
@@ -257,7 +254,7 @@ describe("/stats", () => {
 
             it("should reject wrong start year with HTTP status code 400", async () => {
                 const ERROR_MESSAGE = "'startYear' must be a number";
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await makeRequest("?startYear=zerty");
                 expect(actual.statusCode).toBe(400);
                 expect(actual.body).toEqual(expected);
@@ -265,7 +262,7 @@ describe("/stats", () => {
 
             it("should reject wrong start month with HTTP status code 400", async () => {
                 const ERROR_MESSAGE = "'startMonth' must be a number";
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await makeRequest("?startMonth=zerty");
                 expect(actual.statusCode).toBe(400);
                 expect(actual.body).toEqual(expected);
@@ -274,7 +271,7 @@ describe("/stats", () => {
             it("should send 500 if random error thrown", async () => {
                 const ERROR_MESSAGE = "Something went wrong";
                 serviceSpy.mockRejectedValueOnce(Error(ERROR_MESSAGE));
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = await makeRequestWithParams();
                 expect(actual.statusCode).toBe(500);
                 expect(actual.body).toEqual(expected);
@@ -305,7 +302,7 @@ describe("/stats", () => {
                     November: 3,
                     December: 3
                 };
-                const expected = { success: true, data: DATA };
+                const expected = { data: DATA };
                 await request(g.app)
                     .get(`/stats/users/monthly/${YEAR}`)
                     .set("x-access-token", await getAdminToken())
@@ -323,7 +320,7 @@ describe("/stats", () => {
                 const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
                 ACTIVE_USER.stats.lastSearchDate = new Date();
                 await userRepository.update(ACTIVE_USER);
-                const expected = { success: true, data: { admin: 1, active: 1, idle: 1, inactive: 1 } };
+                const expected = { data: { admin: 1, active: 1, idle: 1, inactive: 1 } };
                 await request(g.app)
                     .get(`/stats/users/status`)
                     // getAdminToken() creates an admin user

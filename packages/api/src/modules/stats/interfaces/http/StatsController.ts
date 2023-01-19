@@ -3,9 +3,9 @@ import {
     StatsRequestsMedianDtoResponse,
     MonthlyAvgRequestDtoResponse,
     AssociationTopDtoResponse,
-    UsersByStatusResponseDto
+    UsersByStatusResponseDto,
+    ErreurReponse
 } from "@api-subventions-asso/dto";
-import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
 import statsService from "../../stats.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
@@ -25,8 +25,7 @@ export class StatsController extends Controller {
      * @returns {StatsRequestDtoResponse}
      */
     @Get("/requests")
-    @Response<ErrorResponse>(500, "Error", {
-        success: false,
+    @Response<ErreurReponse>(500, "Error", {
         message: "An Error message"
     })
     async getNbUsersByRequestsOnPeriod(
@@ -41,7 +40,7 @@ export class StatsController extends Controller {
             Number(nbReq),
             includesAdmin === "true"
         );
-        return { success: true, data: result };
+        return { data: result };
     }
 
     /**
@@ -54,7 +53,7 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/requests/median")
-    @Response<ErrorResponse>("500")
+    @Response<ErreurReponse>("500")
     async getMedianRequestOnPeriod(
         @Query() start: string,
         @Query() end: string,
@@ -65,7 +64,7 @@ export class StatsController extends Controller {
             new Date(end),
             includesAdmin === "true"
         );
-        return { success: true, data: result };
+        return { data: result };
     }
 
     /**
@@ -77,14 +76,14 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/requests/monthly/{year}")
-    @Response<ErrorResponse>("500")
+    @Response<ErreurReponse>("500")
     async getRequestsPerMonthByYear(
         year: string,
         @Query() includesAdmin = "false"
     ): Promise<MonthlyAvgRequestDtoResponse> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         const result = await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
-        return { success: true, data: result };
+        return { data: result };
     }
 
     /**
@@ -95,11 +94,11 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/users/monthly/{year}")
-    @Response<ErrorResponse>("500")
+    @Response<ErreurReponse>("500")
     async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         const result = await statsService.getMonthlyUserNbByYear(Number(year));
-        return { success: true, data: result };
+        return { data: result };
     }
 
     /**
@@ -109,10 +108,10 @@ export class StatsController extends Controller {
      * @summary Permet de récupérer le nombre d'utilisateur par statut
      */
     @Get("/users/status")
-    @Response<ErrorResponse>("500")
+    @Response<ErreurReponse>("500")
     async getUserCountByStatus(): Promise<UsersByStatusResponseDto> {
         const result = await statsService.getUserCountByStatus();
-        return { success: true, data: result };
+        return { data: result };
     }
 
     /**
@@ -126,7 +125,7 @@ export class StatsController extends Controller {
      * @param endMonth Number of the end period month (January as 0). Default as 0. For exemple endYear = 2023 and endMonth = 0, the end period has 31/01/2023
      */
     @Get("/associations")
-    @Response<ErrorResponse>("500")
+    @Response<ErreurReponse>("500")
     async getTopAssociations(
         @Query() limit = "5",
         @Query() startYear: string | null = null,
@@ -155,6 +154,6 @@ export class StatsController extends Controller {
         const end = new Date(Date.UTC(endYearNumber, endMonthNumber));
         const start = new Date(Date.UTC(startYearNumber, startMonthNumber));
         const result = await statsService.getTopAssociationsByPeriod(Number(limit), start, end);
-        return { success: true, data: result };
+        return { data: result };
     }
 }

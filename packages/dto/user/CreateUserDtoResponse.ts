@@ -1,8 +1,7 @@
-import { SuccessResponse } from "../shared/ResponseStatus";
 import { UserDtoErrorResponse } from "./UserDtoResponse";
 
-export interface CreateUserDtoSuccess extends SuccessResponse {
-    email: string
+export interface CreateUserDtoSuccess {
+    email: string;
 }
 
-export type CreateUserDtoResponse = CreateUserDtoSuccess | UserDtoErrorResponse
+export type CreateUserDtoResponse = CreateUserDtoSuccess | UserDtoErrorResponse;

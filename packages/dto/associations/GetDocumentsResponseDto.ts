@@ -1,8 +1,8 @@
-import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
+import ErreurReponse from "../shared/ErreurReponse";
 import { Document } from "../search/Document";
 
-export interface GetDocumentsSuccessResponseDto extends SuccessResponse {
-    documents: Document[]
+export interface GetDocumentsSuccessResponseDto {
+    documents: Document[];
 }
 
-export type GetDocumentsResponseDto = GetDocumentsSuccessResponseDto | ErrorResponse;
+export type GetDocumentsResponseDto = GetDocumentsSuccessResponseDto | ErreurReponse;

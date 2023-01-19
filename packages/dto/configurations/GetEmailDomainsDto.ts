@@ -1,7 +1,7 @@
-import { SuccessResponse, ErrorResponse } from "../shared/ResponseStatus";
+import ErreurReponse from "../shared/ErreurReponse";
 
-export interface GetEmailDomainsSuccessResponse extends SuccessResponse {
+export interface GetEmailDomainsSuccessResponse {
     domains: string[];
 }
 
-export type GetEmailDomainsDto = GetEmailDomainsSuccessResponse | ErrorResponse;
+export type GetEmailDomainsDto = GetEmailDomainsSuccessResponse | ErreurReponse;

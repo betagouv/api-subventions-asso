@@ -1,7 +1,7 @@
-import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
+import ErreurReponse from "../shared/ErreurReponse";
 
-export interface StatsRequestDtoSuccessResponse extends SuccessResponse {
-    data: number
+export interface StatsRequestDtoSuccessResponse {
+    data: number;
 }
 
-export type StatsRequestDtoResponse = StatsRequestDtoSuccessResponse | ErrorResponse;
+export type StatsRequestDtoResponse = StatsRequestDtoSuccessResponse | ErreurReponse;
