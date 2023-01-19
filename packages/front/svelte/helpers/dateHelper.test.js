@@ -1,4 +1,3 @@
-import * as textHelper from "./textHelper";
 import * as dateHelper from "./dateHelper";
 
 describe("DateHelper", () => {
@@ -25,16 +24,8 @@ describe("DateHelper", () => {
 
 describe("dateHelper", () => {
     const MONTH_ID = 6;
-    const CAPITALIZED = "Juillet";
-    const LOWERCASE = "juillet";
-    const capitalizeMock = jest.spyOn(textHelper, "capitalizeFirstLetter").mockReturnValue(CAPITALIZED);
+    const CAPITALIZED = "July";
     describe("monthIdCapitalized", () => {
-        it("calls capitalization with lowercase month", () => {
-            const expected = LOWERCASE;
-            dateHelper.monthCapitalizedFromId(MONTH_ID);
-            expect(capitalizeMock).toBeCalledWith(expected);
-        });
-
         it("returns capitalized month", () => {
             const actual = dateHelper.monthCapitalizedFromId(MONTH_ID);
             const expected = CAPITALIZED;
