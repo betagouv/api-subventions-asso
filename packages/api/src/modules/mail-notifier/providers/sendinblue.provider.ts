@@ -4,6 +4,11 @@ import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
 import { API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject } from "../../../@types";
 
+export enum TemplateEnum {
+    creation = 55,
+    forgetPassword = 74
+}
+
 export default class SendInBlueProvider implements INotifier {
     private apiInstance: TransactionalEmailsApi;
 
@@ -17,11 +22,11 @@ export default class SendInBlueProvider implements INotifier {
     }
 
     async sendCreationMail(email: string, params: DefaultObject) {
-        return this.sendMail(email, params, 2);
+        return this.sendMail(email, params, TemplateEnum.creation);
     }
 
     async sendForgetPasswordMail(email: string, params: DefaultObject) {
-        return this.sendMail(email, params, 3);
+        return this.sendMail(email, params, TemplateEnum.forgetPassword);
     }
 
     async sendMail(email: string, params: DefaultObject, templateId: number): Promise<boolean> {
