@@ -59,6 +59,14 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     justify-content: flex-end;
 }
 
+.column {
+    flex-direction: column;
+}
+
+.align-center {
+    align-items: center;
+}
+
 .space-between {
     justify-content: space-between;
 }
