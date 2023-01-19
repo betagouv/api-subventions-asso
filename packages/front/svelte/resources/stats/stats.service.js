@@ -15,6 +15,10 @@ export class StatsService {
         }
         return data;
     }
+
+    getUsersDistribution() {
+        return statsPort.getUsersDistribution();
+    }
 }
 
 const statsService = new StatsService();
