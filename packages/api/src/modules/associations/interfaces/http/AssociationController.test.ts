@@ -99,7 +99,7 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return an ErreurReponse if no association found", async () => {
+        it("should return an ErrorResponse if no association found", async () => {
             // @ts-expect-error: mock
             getAssociationSpy.mockImplementationOnce(() => null);
             const expected = { message: "Association not found" };

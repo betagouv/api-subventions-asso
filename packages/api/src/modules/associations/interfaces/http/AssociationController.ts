@@ -5,7 +5,7 @@ import {
     GetVersementsResponseDto,
     GetDocumentsResponseDto,
     DemandeSubvention,
-    ErreurReponse
+    ErrorResponse
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../../../@types";
@@ -21,7 +21,7 @@ export class AssociationController extends Controller {
      * @param identifier Siret, Siren ou Rna
      */
     @Get("/{identifier}")
-    @Response<ErreurReponse>("404")
+    @Response<ErrorResponse>("404")
     public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
         try {
             const association = await associationService.getAssociation(identifier);
@@ -41,7 +41,7 @@ export class AssociationController extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/subventions")
-    @Response<ErreurReponse>("404")
+    @Response<ErrorResponse>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
         try {
             const flux = await associationService.getSubventions(identifier);

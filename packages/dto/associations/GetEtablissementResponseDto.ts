@@ -1,5 +1,5 @@
 import { Etablissement } from "../etablissements/Etablissement";
-import ErreurReponse from "../shared/ErreurReponse";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export interface GetEtablissementSuccessResponseDto {
     etablissement: Omit<Omit<Etablissement, "demandes_subventions">, "versements">;
@@ -12,4 +12,4 @@ export interface SearchEtablissementSuccessResponseDto {
 export type GetEtablissementResponseDto =
     | GetEtablissementSuccessResponseDto
     | SearchEtablissementSuccessResponseDto
-    | ErreurReponse;
+    | ErrorResponse;

@@ -35,7 +35,6 @@ describe("/config", () => {
                     .set("x-access-token", await getAdminToken())
                     .set("Accept", "application/json")
                     .expect(BadRequestErrorCode, {
-                        success: false,
                         message: BadRequestErrorMessage
                     });
             });

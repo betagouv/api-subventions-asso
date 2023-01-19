@@ -1,8 +1,8 @@
 import { Etablissement } from "../etablissements/Etablissement";
-import ErreurReponse from "../shared/ErreurReponse";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export interface GetEtablissementsSuccessResponseDto {
     etablissements: Etablissement[];
 }
 
-export type GetEtablissementsResponseDto = GetEtablissementsSuccessResponseDto | ErreurReponse;
+export type GetEtablissementsResponseDto = GetEtablissementsSuccessResponseDto | ErrorResponse;

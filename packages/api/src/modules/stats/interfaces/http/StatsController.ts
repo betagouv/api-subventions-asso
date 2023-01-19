@@ -4,7 +4,7 @@ import {
     MonthlyAvgRequestDtoResponse,
     AssociationTopDtoResponse,
     UsersByStatusResponseDto,
-    ErreurReponse
+    ErrorResponse
 } from "@api-subventions-asso/dto";
 import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
 import statsService from "../../stats.service";
@@ -25,7 +25,7 @@ export class StatsController extends Controller {
      * @returns {StatsRequestDtoResponse}
      */
     @Get("/requests")
-    @Response<ErreurReponse>(500, "Error", {
+    @Response<ErrorResponse>(500, "Error", {
         message: "An Error message"
     })
     async getNbUsersByRequestsOnPeriod(
@@ -53,7 +53,7 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/requests/median")
-    @Response<ErreurReponse>("500")
+    @Response<ErrorResponse>("500")
     async getMedianRequestOnPeriod(
         @Query() start: string,
         @Query() end: string,
@@ -76,7 +76,7 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/requests/monthly/{year}")
-    @Response<ErreurReponse>("500")
+    @Response<ErrorResponse>("500")
     async getRequestsPerMonthByYear(
         year: string,
         @Query() includesAdmin = "false"
@@ -94,7 +94,7 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/users/monthly/{year}")
-    @Response<ErreurReponse>("500")
+    @Response<ErrorResponse>("500")
     async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         const result = await statsService.getMonthlyUserNbByYear(Number(year));
@@ -108,7 +108,7 @@ export class StatsController extends Controller {
      * @summary Permet de récupérer le nombre d'utilisateur par statut
      */
     @Get("/users/status")
-    @Response<ErreurReponse>("500")
+    @Response<ErrorResponse>("500")
     async getUserCountByStatus(): Promise<UsersByStatusResponseDto> {
         const result = await statsService.getUserCountByStatus();
         return { data: result };
@@ -125,7 +125,7 @@ export class StatsController extends Controller {
      * @param endMonth Number of the end period month (January as 0). Default as 0. For exemple endYear = 2023 and endMonth = 0, the end period has 31/01/2023
      */
     @Get("/associations")
-    @Response<ErreurReponse>("500")
+    @Response<ErrorResponse>("500")
     async getTopAssociations(
         @Query() limit = "5",
         @Query() startYear: string | null = null,

@@ -1,7 +1,7 @@
-import ErreurReponse from "../shared/ErreurReponse";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export interface AddEmailDomainSuccessResponse {
     domain: string;
 }
 
-export type AddEmailDomainDto = AddEmailDomainSuccessResponse | ErreurReponse;
+export type AddEmailDomainDto = AddEmailDomainSuccessResponse | ErrorResponse;

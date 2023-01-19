@@ -27,7 +27,7 @@ export class AssociationSSEController {
                 res.sendSSEData({ event: "close" });
             });
         } catch (e) {
-            res.sendSSEError({ success: false, message: (e as Error).message });
+            res.sendSSEError({ message: (e as Error).message });
             res.sendSSEData({ event: "close" });
         }
     }
