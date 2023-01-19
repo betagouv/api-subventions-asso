@@ -1,6 +1,6 @@
 import Chart from "chart.js/auto";
 import statsService from "../../../../../resources/stats/stats.service";
-import { monthCapitalizedFromId, YEAR_CHOICES } from "../../../../../helpers/dateHelper";
+import { monthCapitalizedFromId, STATS_YEAR_CHOICES } from "../../../../../helpers/dateHelper";
 import Store from "../../../../../core/Store";
 
 const TODAY = new Date();
@@ -8,10 +8,10 @@ const TODAY = new Date();
 export class MonthlyUserCountByYearController {
     constructor() {
         this._data = [];
-        this.yearOptions = YEAR_CHOICES.map(year => ({ value: year, label: year }));
+        this.yearOptions = STATS_YEAR_CHOICES.map(year => ({ value: year, label: year }));
 
         this.year = new Store(TODAY.getFullYear());
-        this.progress = new Store();
+        this.progress = new Store(0);
         this.message = new Store("");
     }
 
@@ -31,7 +31,7 @@ export class MonthlyUserCountByYearController {
     }
 
     async updateYear(newYearIndex) {
-        await this._load(YEAR_CHOICES[newYearIndex]);
+        await this._load(STATS_YEAR_CHOICES[newYearIndex]);
         this.chartData = Object.values(this._data);
         this.chart.update();
     }
@@ -40,7 +40,7 @@ export class MonthlyUserCountByYearController {
         this.chart.data.datasets[0].data = newData;
     }
 
-    // TODO update with api improvement
+    // TODO update with api improvement #867
     updateProgress() {
         if (!this._data) return;
 
@@ -73,6 +73,7 @@ export class MonthlyUserCountByYearController {
                 }
             },
             data: {
+                // TODO change with api format #908
                 labels: Object.keys(this._data).map(fullMonth =>
                     new Date(Date.parse(fullMonth + " 1, 2022")).toLocaleDateString(`fr`, { month: `narrow` })
                 ),

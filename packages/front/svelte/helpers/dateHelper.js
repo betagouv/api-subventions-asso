@@ -33,8 +33,8 @@ export const getOneYearBeforeDate = date => {
 
 export const YEAR_START_LOGS = 2021;
 
-export const YEAR_CHOICES = [];
-for (let year = YEAR_START_LOGS; year <= new Date().getFullYear(); year++) YEAR_CHOICES.push(year);
+export const STATS_YEAR_CHOICES = [];
+for (let year = YEAR_START_LOGS; year <= new Date().getFullYear(); year++) STATS_YEAR_CHOICES.push(year);
 
 export function monthCapitalizedFromId(monthId) {
     return new Date(2022, monthId, 1).toLocaleDateString(`en`, { month: "long" });

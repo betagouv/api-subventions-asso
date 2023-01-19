@@ -2,7 +2,7 @@ jest.mock("../../../../../helpers/dateHelper", () => {
     return {
         __esModule: true, // this property makes it work
         monthCapitalizedFromId: jest.fn(() => "March"),
-        YEAR_CHOICES: [2023, 2022]
+        STATS_YEAR_CHOICES: [2023, 2022]
     };
 });
 jest.mock("chart.js/auto", () =>
