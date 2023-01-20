@@ -22,4 +22,26 @@ describe("StatsPort", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getMonthlyUserCount", () => {
+        let spyAxios;
+        const YEAR = 2022;
+        const AXIOS_DATA = {};
+        beforeAll(
+            () => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: { data: AXIOS_DATA, success: true } }))
+        );
+        afterAll(() => spyAxios.mockRestore());
+
+        it("should call axios with proper path", async () => {
+            const path = `/stats/users/monthly/2022`;
+            await statsPort.getMonthlyUserCount(YEAR);
+            expect(spyAxios).toHaveBeenCalledWith(path);
+        });
+
+        it("should return data from axios result", async () => {
+            const expected = AXIOS_DATA;
+            const actual = await statsPort.getMonthlyUserCount(YEAR);
+            expect(actual).toBe(expected);
+        });
+    });
 });

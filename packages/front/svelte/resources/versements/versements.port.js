@@ -1,5 +1,5 @@
 import axios from "axios";
-// Voir si il ne vaux mieux pas passer ça en adapteur
+// Voir s'il ne vaut mieux pas passer ça en adapter
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
 
 class VersementsPort {

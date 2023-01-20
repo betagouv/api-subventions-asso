@@ -30,3 +30,12 @@ export const getOneYearBeforeDate = date => {
     prevDate.setDate(date.getDate() + 1);
     return prevDate;
 };
+
+export const YEAR_START_LOGS = 2022;
+
+export const STATS_YEAR_CHOICES = [];
+for (let year = YEAR_START_LOGS; year <= new Date().getFullYear(); year++) STATS_YEAR_CHOICES.push(year);
+
+export function monthCapitalizedFromId(monthId) {
+    return new Date(2022, monthId, 1).toLocaleDateString(`en`, { month: "long" });
+}
