@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.3](https://github.com/betagouv/api-subventions-asso/compare/v0.20.2...v0.20.3) (2023-01-20)
+
+### Features
+
+-   **api:** add message on api index route ([4d5f64f](https://github.com/betagouv/api-subventions-asso/commit/4d5f64fa4d020c26c30c6e8ee0763c74c12d91e8))
+
 ## [0.20.2](https://github.com/betagouv/api-subventions-asso/compare/v0.19.4...v0.20.2) (2023-01-05)
 
 ### Bug Fixes
