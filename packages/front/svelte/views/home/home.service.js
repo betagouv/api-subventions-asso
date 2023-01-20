@@ -26,7 +26,7 @@ export class HomeService {
     async _searchByAssociationKey(associationKey) {
         const path = `/search/associations/${associationKey}`;
         return axios.get(path).then(result => {
-            if (!result.data.success) throw new Error(result.data.message);
+            if (!result.data.result) throw new Error(result.data.message);
             return result.data.result;
         });
     }

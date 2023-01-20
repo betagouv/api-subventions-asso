@@ -1,6 +1,6 @@
-import { SuccessResponse, ErrorResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
-export interface AddEmailDomainSuccessResponse extends SuccessResponse {
+export interface AddEmailDomainSuccessResponse {
     domain: string;
 }
 

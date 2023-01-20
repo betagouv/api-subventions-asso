@@ -47,7 +47,7 @@ export default class AuthController {
         }
 
         const sessionData = req.session as unknown as DefaultObject;
-        sessionData.user = result.data;
+        sessionData.user = result.data.user;
 
         res.redirect("/");
     }

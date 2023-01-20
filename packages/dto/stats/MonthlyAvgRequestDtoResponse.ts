@@ -1,8 +1,8 @@
-import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export type NbRequestsPerMonthRequest = { [month: string]: number };
 
-export interface NbRequestsPerMonthRequestDtoSuccessResponse extends SuccessResponse {
+export interface NbRequestsPerMonthRequestDtoSuccessResponse {
     data: NbRequestsPerMonthRequest;
 }
 

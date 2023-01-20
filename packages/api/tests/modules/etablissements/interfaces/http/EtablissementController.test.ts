@@ -42,7 +42,7 @@ describe("EtablissementController", () => {
                 getSubventionsMock.mockImplementationOnce(() => {
                     throw new Error(ERROR_MESSAGE);
                 });
-                const expected = { success: false, message: ERROR_MESSAGE };
+                const expected = { message: ERROR_MESSAGE };
                 const actual = (
                     await request(g.app)
                         .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
@@ -75,7 +75,7 @@ describe("EtablissementController", () => {
             });
 
             it("should return an object with subventions", async () => {
-                const expected = { success: true, subventions: SUBVENTIONS };
+                const expected = { subventions: SUBVENTIONS };
                 const actual = (
                     await request(g.app)
                         .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)

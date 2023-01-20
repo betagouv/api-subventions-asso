@@ -4,9 +4,9 @@ import {
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
     GetDocumentsResponseDto,
-    DemandeSubvention
+    DemandeSubvention,
+    ErrorResponse
 } from "@api-subventions-asso/dto";
-import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../../../@types";
 
@@ -25,12 +25,12 @@ export class AssociationController extends Controller {
     public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
         try {
             const association = await associationService.getAssociation(identifier);
-            if (association) return { success: true, association };
+            if (association) return { association };
             this.setStatus(404);
-            return { success: false, message: "Association not found" };
+            return { message: "Association not found" };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 
@@ -50,10 +50,10 @@ export class AssociationController extends Controller {
                 .map(fluxSub => fluxSub.subventions)
                 .filter(sub => sub)
                 .flat() as DemandeSubvention[];
-            return { success: true, subventions };
+            return { subventions };
         } catch (e) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 
@@ -67,10 +67,10 @@ export class AssociationController extends Controller {
     public async getVersements(identifier: AssociationIdentifiers): Promise<GetVersementsResponseDto> {
         try {
             const result = await associationService.getVersements(identifier);
-            return { success: true, versements: result };
+            return { versements: result };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 
@@ -84,10 +84,10 @@ export class AssociationController extends Controller {
     public async getDocuments(identifier: AssociationIdentifiers): Promise<GetDocumentsResponseDto> {
         try {
             const result = await associationService.getDocuments(identifier);
-            return { success: true, documents: result };
+            return { documents: result };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 
@@ -99,10 +99,10 @@ export class AssociationController extends Controller {
     public async getEtablissements(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
         try {
             const etablissements = await associationService.getEtablissements(identifier);
-            return { success: true, etablissements };
+            return { etablissements };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 }

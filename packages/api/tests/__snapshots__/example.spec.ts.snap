@@ -3,6 +3,5 @@
 exports[`Example of specification / integration test should return something 1`] = `
 Object {
   "result": "Integration test example",
-  "success": true,
 }
 `;

@@ -1,8 +1,8 @@
-import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export type AssociationTop = { name: string; visits: number };
 
-export interface AssociationTopDtoSuccessResponse extends SuccessResponse {
+export interface AssociationTopDtoSuccessResponse {
     data: AssociationTop[];
 }
 

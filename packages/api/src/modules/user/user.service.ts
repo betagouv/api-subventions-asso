@@ -1,4 +1,3 @@
-import { CreateUserDtoSuccess, UserDtoSuccessResponse, UserListDtoSuccess } from "@api-subventions-asso/dto";
 import UserDto, { UserWithResetTokenDto } from "@api-subventions-asso/dto/user/UserDto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -55,7 +54,7 @@ export class UserService {
 
     private static CONSUMER_TOKEN_PROP = "isConsumerToken";
 
-    async authenticate(tokenPayload, token): Promise<UserServiceError | UserDtoSuccessResponse> {
+    async authenticate(tokenPayload, token): Promise<UserServiceError | { success: true; user: UserDto }> {
         // Find the user associated with the email provided by the user
         const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email.toLocaleLowerCase());
         if (!user) {
@@ -304,10 +303,13 @@ export class UserService {
             const data = await acc;
             const result = await this.signup(email.toLocaleLowerCase());
             return Promise.resolve([...data, { email, ...result }]);
-        }, Promise.resolve([]) as Promise<(CreateUserDtoSuccess | UserServiceError)[]>);
+        }, Promise.resolve([]) as Promise<({ success: true; email: string } | UserServiceError)[]>);
     }
 
-    public async signup(email: string, role = RoleEnum.user): Promise<UserServiceError | CreateUserDtoSuccess> {
+    public async signup(
+        email: string,
+        role = RoleEnum.user
+    ): Promise<UserServiceError | { success: true; email: string }> {
         let result;
         const lowerCaseEmail = email.toLocaleLowerCase();
         if (role == RoleEnum.consumer) {
@@ -335,7 +337,7 @@ export class UserService {
     async addRolesToUser(
         user: UserDto | string,
         roles: RoleEnum[]
-    ): Promise<UserDtoSuccessResponse | UserServiceError> {
+    ): Promise<{ success: true; user: UserDto } | UserServiceError> {
         if (typeof user === "string") {
             const findedUser = await userRepository.findByEmail(user);
             if (!findedUser) {
@@ -536,7 +538,7 @@ export class UserService {
         return user.roles;
     }
 
-    public async listUsers(): Promise<UserListDtoSuccess> {
+    public async listUsers(): Promise<{ success: true; users: UserWithResetTokenDto[] }> {
         const users = (await userRepository.find()).filter(user => user) as UserDto[];
         return {
             success: true,
