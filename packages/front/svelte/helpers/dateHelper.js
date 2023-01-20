@@ -31,7 +31,7 @@ export const getOneYearBeforeDate = date => {
     return prevDate;
 };
 
-export const YEAR_START_LOGS = 2021;
+export const YEAR_START_LOGS = 2022;
 
 export const STATS_YEAR_CHOICES = [];
 for (let year = YEAR_START_LOGS; year <= new Date().getFullYear(); year++) STATS_YEAR_CHOICES.push(year);
