@@ -11,7 +11,7 @@ class StatsPort {
                 params: query
             })
             .then(result => {
-                if (!result.data.data) throw new Error(result.data.message);
+                if (result.data.message) throw new Error(result.data.message);
                 return result.data.data;
             });
     }
@@ -19,7 +19,7 @@ class StatsPort {
     getMonthlyUserCount(year) {
         const path = `${this.BASE_PATH}/users/monthly/${year}`;
         return axios.get(path).then(result => {
-            if (!result.data.success) throw new Error(result.data.message);
+            if (result.data.message) throw new Error(result.data.message);
             return result.data.data;
         });
         // TODO update with new api output #867
