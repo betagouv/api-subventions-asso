@@ -57,18 +57,21 @@ describe("StatsController", () => {
         const YEAR_STR = "2022";
         const YEAR_NB = 2022;
         const mockedValue = {
-            January: 201,
-            February: 21,
-            March: 20,
-            April: 201,
-            May: 13,
-            June: 201,
-            July: 201,
-            August: 15,
-            September: 201,
-            October: 300,
-            November: 201,
-            December: 1
+            nb_users_before_year: 201,
+            evol_nb_users_by_month: {
+                January: 201,
+                February: 21,
+                March: 20,
+                April: 201,
+                May: 13,
+                June: 201,
+                July: 201,
+                August: 15,
+                September: 201,
+                October: 300,
+                November: 201,
+                December: 1
+            }
         };
 
         it("should call service with args default", async () => {

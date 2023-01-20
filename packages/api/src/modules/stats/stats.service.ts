@@ -33,18 +33,22 @@ class StatsService {
         const users = await userService.findByPeriod(start, oneYearAfterPeriod(year));
 
         const countNewByMonth = new Array(12).fill(0);
+
         for (const user of users) {
             if (!user) continue;
             countNewByMonth[(user.signupAt as Date).getMonth()] += 1;
         }
 
-        const formattedCumulatedCount = {};
+        const result = {
+            nb_users_before_year: count,
+            evol_nb_users_by_month: {}
+        };
+
         for (let month = 0; month < 12; month++) {
             count += countNewByMonth[month];
-            formattedCumulatedCount[englishMonthNames[month]] = count;
+            result.evol_nb_users_by_month[englishMonthNames[month]] = count;
         }
-
-        return formattedCumulatedCount;
+        return result;
     }
 
     private async groupVisitsOnMaps(group, rnaMap, sirenMap) {
