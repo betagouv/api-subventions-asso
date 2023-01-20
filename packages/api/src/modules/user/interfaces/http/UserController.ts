@@ -1,7 +1,6 @@
 import {
     CreateUserDtoResponse,
     GetRolesDtoResponse,
-    HttpErrorResponse,
     UserDtoErrorResponse,
     UserDtoResponse,
     UserErrorCodes,
@@ -11,19 +10,16 @@ import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delet
 import { RoleEnum } from "../../../../@enums/Roles";
 import { ValidateErrorJSON } from "../../../../@types";
 import { IdentifiedRequest } from "../../../../@types/ApiRequests";
-import configurationsService from "../../../configurations/configurations.service";
 import userService, { UserServiceErrors } from "../../user.service";
 
 // TODO: make this a class or something generic for all Controller ?
 const USER_INTERNAL_SERVER_ERROR: UserDtoErrorResponse = {
-    success: false,
     message: "Internal Server Error",
     errorCode: UserErrorCodes.INTERNAL_ERROR
 };
 
 // TODO: make this a class or something generic for all Controller ?
 const USER_BAD_REQUEST: UserDtoErrorResponse = {
-    success: false,
     message: "Bad Request",
     errorCode: UserErrorCodes.BAD_REQUEST
 };
@@ -40,7 +36,6 @@ export class UserController extends Controller {
     @Security("jwt", ["admin"])
     @Response<ValidateErrorJSON>(400, "Role Not Valid")
     @Response<UserDtoErrorResponse>(422, "User Not Found", {
-        success: false,
         message: "User Not Found",
         errorCode: UserErrorCodes.USER_NOT_F0UND
     })
@@ -92,7 +87,7 @@ export class UserController extends Controller {
             this.setStatus(500);
             return USER_INTERNAL_SERVER_ERROR;
         }
-        return result[0];
+        return { email: result[0].email };
     }
 
     /**
@@ -138,7 +133,6 @@ export class UserController extends Controller {
         }
 
         return {
-            success: true,
             roles
         };
     }
@@ -150,7 +144,6 @@ export class UserController extends Controller {
     @Put("/password")
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     @Response<UserDtoErrorResponse>(400, "Validator Error", {
-        success: false,
         message:
             "Password is not hard, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
         errorCode: UserErrorCodes.INVALID_PASSWORD
@@ -165,7 +158,6 @@ export class UserController extends Controller {
             if (result.code === UserServiceErrors.FORMAT_PASSWORD_INVALID) {
                 this.setStatus(400);
                 return {
-                    success: false,
                     message: result.message,
                     errorCode: UserErrorCodes.INVALID_PASSWORD
                 };

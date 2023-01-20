@@ -15,7 +15,7 @@ export class AdminService {
         try {
             const result = await apiDatasubService.createUser(email, user);
 
-            if (result.data.success) {
+            if (result.data.email) {
                 return { type: "SUCCESS" };
             }
             return { type: "ERROR" };

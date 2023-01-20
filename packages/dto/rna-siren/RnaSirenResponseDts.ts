@@ -1,17 +1,14 @@
-import { SuccessResponse } from "../shared/ResponseStatus"
-import { Rna } from "../shared/Rna"
-import { Siren } from "../shared/Siren"
-import { ErrorResponse } from "../shared/ResponseStatus"
+import { Rna } from "../shared/Rna";
+import { Siren } from "../shared/Siren";
 
-export interface GetRnaSirenSuccessResponse extends SuccessResponse {
-    siren: Siren,
-    rna: Rna
+export interface GetRnaSirenSuccessResponse {
+    siren: Siren;
+    rna: Rna;
 }
 
 export interface GetRnaSirenErrorResponse {
-    success: false,
-    siren: Siren | null,
-    rna: Rna | null
+    siren: Siren | null;
+    rna: Rna | null;
 }
 
-export type RnaSirenResponseDto = GetRnaSirenSuccessResponse | GetRnaSirenErrorResponse
+export type RnaSirenResponseDto = GetRnaSirenSuccessResponse | GetRnaSirenErrorResponse;

@@ -4,11 +4,11 @@ import {
     GetEtablissementResponseDto,
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
-    Siret
+    Siret,
+    ErrorResponse
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
-import { ErrorResponse } from "@api-subventions-asso/dto/shared/ResponseStatus";
 import { NotFoundError } from "../../../../shared/errors/httpErrors/NotFoundError";
 import { StructureIdentifiersEnum } from "../../../../@enums/StructureIdentifiersEnum";
 import { BadRequestError } from "../../../../shared/errors/httpErrors/BadRequestError";
@@ -24,11 +24,9 @@ export class EtablissementController extends Controller {
      */
     @Get("/{siret}")
     @Response<ErrorResponse>("400", "Identifiant incorrect", {
-        success: false,
         message: "You must provide a valid SIRET"
     })
     @Response<ErrorResponse>("404", "L'établissement n'a pas été trouvé", {
-        success: false,
         message: "Etablissement not found"
     })
     public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
@@ -42,7 +40,7 @@ export class EtablissementController extends Controller {
         if (!etablissement) {
             throw new NotFoundError("Etablissement not found");
         }
-        return { success: true, etablissement };
+        return { etablissement };
     }
 
     /**
@@ -60,10 +58,10 @@ export class EtablissementController extends Controller {
                 .map(subFlux => subFlux.subventions)
                 .flat()
                 .filter(subvention => subvention) as DemandeSubvention[];
-            return { success: true, subventions };
+            return { subventions };
         } catch (e) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 
@@ -78,10 +76,10 @@ export class EtablissementController extends Controller {
     public async getVersements(siret: Siret): Promise<GetVersementsResponseDto> {
         try {
             const versements = await etablissementService.getVersements(siret);
-            return { success: true, versements };
+            return { versements };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 
@@ -96,10 +94,10 @@ export class EtablissementController extends Controller {
     public async getDocuments(siret: Siret): Promise<GetDocumentsResponseDto> {
         try {
             const documents = await etablissementService.getDocuments(siret);
-            return { success: true, documents };
+            return { documents };
         } catch (e: unknown) {
             this.setStatus(404);
-            return { success: false, message: (e as Error).message };
+            return { message: (e as Error).message };
         }
     }
 }

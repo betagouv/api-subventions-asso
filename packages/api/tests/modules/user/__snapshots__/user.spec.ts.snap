@@ -9,7 +9,6 @@ Object {
     },
   },
   "message": "Validation Failed",
-  "success": false,
 }
 `;
 
@@ -22,6 +21,5 @@ Object {
         At least one uppercase character [A-Z]
         At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\\\]
         At least 8 characters in length, but no more than 32.",
-  "success": false,
 }
 `;

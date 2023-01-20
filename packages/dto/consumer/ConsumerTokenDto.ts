@@ -1,9 +1,9 @@
-import { SuccessResponse, ErrorResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
-export interface ConsumerTokenDtoPositiveResponse extends SuccessResponse {
-    token: string
+export interface ConsumerTokenDtoPositiveResponse {
+    token: string;
 }
 
-export type ConsumerTokenDtoNegativeResponse = ErrorResponse
+export type ConsumerTokenDtoNegativeResponse = ErrorResponse;
 
 export type ConsumerTokenDtoResponse = ConsumerTokenDtoPositiveResponse | ConsumerTokenDtoNegativeResponse;

@@ -15,7 +15,6 @@ export class RnaSirenController extends Controller {
      */
     @Get("{rna_or_siren_or_siret}")
     @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren", {
-        success: false,
         rna: null,
         siren: null
     })
@@ -35,16 +34,11 @@ export class RnaSirenController extends Controller {
 
         if (!match) {
             this.setStatus(404);
-            return {
-                siren,
-                rna,
-                success: false
-            };
+            return { siren, rna };
         } else {
             return {
                 siren: siren as Siren,
-                rna: rna as Rna,
-                success: true
+                rna: rna as Rna
             };
         }
     }

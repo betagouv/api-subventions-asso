@@ -1,12 +1,15 @@
 import { Etablissement } from "../etablissements/Etablissement";
-import { ErrorResponse, SuccessResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
-export interface GetEtablissementSuccessResponseDto extends SuccessResponse {
-    etablissement: Omit<Omit<Etablissement, "demandes_subventions">, "versements">
+export interface GetEtablissementSuccessResponseDto {
+    etablissement: Omit<Omit<Etablissement, "demandes_subventions">, "versements">;
 }
 
-export interface SearchEtablissementSuccessResponseDto extends SuccessResponse {
-    etablissement: Etablissement
+export interface SearchEtablissementSuccessResponseDto {
+    etablissement: Etablissement;
 }
 
-export type GetEtablissementResponseDto = GetEtablissementSuccessResponseDto | SearchEtablissementSuccessResponseDto | ErrorResponse;
+export type GetEtablissementResponseDto =
+    | GetEtablissementSuccessResponseDto
+    | SearchEtablissementSuccessResponseDto
+    | ErrorResponse;

@@ -1,8 +1,7 @@
-import { ErrorResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export interface StatsRequestsMedianDtoSuccessResponse {
-    success: true,
-    data: number
+    data: number;
 }
 
 export type StatsRequestsMedianDtoResponse = StatsRequestsMedianDtoSuccessResponse | ErrorResponse;

@@ -1,4 +1,4 @@
-import { ErrorResponse } from "../shared/ResponseStatus";
+import { ErrorResponse } from "../shared/ErrorResponse";
 
 export interface HttpErrorResponse extends ErrorResponse {
     message: string;

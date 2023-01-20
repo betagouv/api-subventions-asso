@@ -17,7 +17,7 @@ describe("RnaSirenController", () => {
         describe("on success", () => {
             it("should return an object", async () => {
                 (rnaSirenService.getSiren as jest.Mock).mockImplementation(async () => SIREN);
-                const expected = { siren: SIREN, rna: RNA, success: true };
+                const expected = { siren: SIREN, rna: RNA };
                 const actual = (
                     await request(g.app)
                         .get(`/open-data/rna-siren/${RNA}`)
@@ -34,7 +34,7 @@ describe("RnaSirenController", () => {
         describe("on success", () => {
             it("should return an object", async () => {
                 (rnaSirenService.getRna as jest.Mock).mockImplementation(async () => RNA);
-                const expected = { siren: SIREN, rna: RNA, success: true };
+                const expected = { siren: SIREN, rna: RNA };
                 const actual = (
                     await request(g.app)
                         .get(`/open-data/rna-siren/${SIREN}`)
