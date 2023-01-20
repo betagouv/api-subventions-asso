@@ -7,7 +7,8 @@ const TODAY = new Date();
 
 export class MonthlyUserCountByYearController {
     constructor() {
-        this._data = [];
+        this._monthData = [];
+        this._lastYearNbUser = 0;
         this.yearOptions = STATS_YEAR_CHOICES.map(year => ({ value: year, label: year }));
 
         this.year = new Store(TODAY.getFullYear());
@@ -21,18 +22,19 @@ export class MonthlyUserCountByYearController {
 
     async _load(year) {
         this.dataPromise = new Store(statsService.getMonthlyUserCount(year));
-        this._data = await this.dataPromise.value;
+        const data = await this.dataPromise.value;
+        this._monthData = data.evol_nb_users_by_month;
+        this._lastYearNbUser = data.nb_users_before_year;
         this.updateProgress();
     }
 
     async onCanvasMount(canvas) {
-        await this.dataPromise.value;
         this.chart = this._buildChart(canvas);
     }
 
     async updateYear(newYearIndex) {
         await this._load(STATS_YEAR_CHOICES[newYearIndex]);
-        this.chartData = Object.values(this._data);
+        this.chartData = Object.values(this._monthData);
         this.chart.update();
     }
 
@@ -40,16 +42,15 @@ export class MonthlyUserCountByYearController {
         this.chart.data.datasets[0].data = newData;
     }
 
-    // TODO update with api improvement #867
     updateProgress() {
-        if (!this._data) return;
+        if (!this._monthData) return;
 
         if (this.year.value === TODAY.getFullYear()) {
-            this.progress.set(this._data[monthCapitalizedFromId(TODAY.getMonth())] - this._data.January);
+            this.progress.set(this._monthData[monthCapitalizedFromId(TODAY.getMonth())] - this._lastYearNbUser);
             this.message.set(`depuis janvier ${this.year.value}`);
             return;
         }
-        this.progress.set(this._data.December - this._data.January);
+        this.progress.set(this._monthData.December - this._lastYearNbUser);
         this.message.set(`en ${this.year.value}`);
     }
 
@@ -74,14 +75,13 @@ export class MonthlyUserCountByYearController {
             },
             data: {
                 // TODO change with api format #908
-                labels: Object.keys(this._data).map(fullMonth =>
+                labels: Object.keys(this._monthData).map(fullMonth =>
                     new Date(Date.parse(fullMonth + " 1, 2022")).toLocaleDateString(`fr`, { month: `narrow` })
                 ),
                 datasets: [
                     {
                         label: "Utilisateurs",
-                        // TODO update with api improvement
-                        data: Object.values(this._data),
+                        data: Object.values(this._monthData),
                         borderColor: "#3F49E3",
                         backgroundColor: gradient,
                         fill: true,

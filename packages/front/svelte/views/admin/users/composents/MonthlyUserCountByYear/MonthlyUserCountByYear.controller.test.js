@@ -19,9 +19,10 @@ import Chart from "chart.js/auto";
 describe("MonthlyUserCountByYearController", () => {
     describe("constructor", () => {
         it.each`
-            parameterName    | expected
-            ${"_data"}       | ${[]}
-            ${"yearOptions"} | ${[{ value: 2023, label: 2023 }, { value: 2022, label: 2022 }]}
+            parameterName        | expected
+            ${"_monthData"}      | ${[]}
+            ${"_lastYearNbUser"} | ${0}
+            ${"yearOptions"}     | ${[{ value: 2023, label: 2023 }, { value: 2022, label: 2022 }]}
         `("initializes correctly $parameterName", ({ parameterName, expected }) => {
             const ctrl = new MonthlyUserCountByYearController();
             expect(ctrl[parameterName]).toEqual(expected);
@@ -50,7 +51,10 @@ describe("MonthlyUserCountByYearController", () => {
 
     describe("_load", () => {
         const spyService = jest.spyOn(statsService, "getMonthlyUserCount");
-        const DATA = {};
+        const DATA = {
+            evol_nb_users_by_month: {},
+            nb_users_before_year: 1
+        };
         const YEAR = 2022;
         let ctrl;
         let updateProgressSpy;
@@ -69,16 +73,23 @@ describe("MonthlyUserCountByYearController", () => {
 
         it("updates data promise with result from service", async () => {
             const expected = {};
-            spyService.mockReturnValue(expected);
+            spyService.mockReturnValueOnce(expected);
             await ctrl._load(YEAR);
             const actual = ctrl.dataPromise.value;
             expect(actual).toBe(expected);
         });
 
-        it("updates private data with result from service", async () => {
-            const expected = DATA;
+        it("updates private _monthData with result from service", async () => {
+            const expected = DATA.evol_nb_users_by_month;
             await ctrl._load(YEAR);
-            const actual = ctrl._data;
+            const actual = ctrl._monthData;
+            expect(actual).toStrictEqual(expected);
+        });
+
+        it("updates private _lastYearNbUser with result from service", async () => {
+            const expected = DATA.nb_users_before_year;
+            await ctrl._load(YEAR);
+            const actual = ctrl._lastYearNbUser;
             expect(actual).toStrictEqual(expected);
         });
 
@@ -93,7 +104,7 @@ describe("MonthlyUserCountByYearController", () => {
         const CHART = {};
         const ctrl = new MonthlyUserCountByYearController();
         let buildChartSpy = jest.spyOn(ctrl, "_buildChart").mockImplementation(() => (ctrl.chart = CHART));
-        ctrl.dataPromise = new Promise(r => r());
+        ctrl.dataPromise = Promise.resolve();
 
         // it("waits for data ??", () => {}); // TODO howto
 
@@ -137,7 +148,9 @@ describe("MonthlyUserCountByYearController", () => {
         });
 
         it("updates chart data with _data values", async () => {
-            loadSpy.mockImplementationOnce(() => new Promise(r => r((ctrl._data = DATA))));
+            loadSpy.mockImplementationOnce(async () => {
+                ctrl._monthData = DATA;
+            });
             const expected = [22, 30];
             await ctrl.updateYear(YEAR_INDEX);
             expect(setterSpy).toBeCalledWith(expected);
@@ -165,7 +178,8 @@ describe("MonthlyUserCountByYearController", () => {
 
     describe("updateProgress", () => {
         const ctrl = new MonthlyUserCountByYearController();
-        const DATA = { January: 2, March: 4, December: 12 };
+        const MONTHDATA = { January: 2, March: 4, December: 12 };
+        const LASTYEARDATA = 2;
         const setSpies = {};
 
         for (const propertyName of ["message", "progress"]) {
@@ -176,14 +190,17 @@ describe("MonthlyUserCountByYearController", () => {
             setSpies[propertyName] = jest.spyOn(ctrl[propertyName], "set");
         }
 
-        beforeEach(() => (ctrl._data = DATA));
+        beforeEach(() => {
+            ctrl._monthData = MONTHDATA;
+            ctrl._lastYearNbUser = LASTYEARDATA;
+        });
 
         it.each`
             propertyName
             ${"progress"}
             ${"message"}
         `("does not update $propertyName if data is not set", ({ propertyName }) => {
-            ctrl._data = undefined;
+            ctrl._monthData = undefined;
             ctrl.updateProgress();
             expect(setSpies[propertyName]).not.toBeCalled();
         });
