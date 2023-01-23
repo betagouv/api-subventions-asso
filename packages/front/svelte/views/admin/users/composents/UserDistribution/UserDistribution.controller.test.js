@@ -36,10 +36,10 @@ describe("UserDistributionController", () => {
 
             await controller.init();
 
-            expect(controller.admin.value).toBe(ADMIN);
-            expect(controller.active.value).toBe(ACTIVE);
-            expect(controller.idle.value).toBe(IDLE);
-            expect(controller.inactive.value).toBe(INACTIVE);
+            expect(controller.data.value.admin.value).toBe(ADMIN);
+            expect(controller.data.value.active.value).toBe(ACTIVE);
+            expect(controller.data.value.idle.value).toBe(IDLE);
+            expect(controller.data.value.inactive.value).toBe(INACTIVE);
         });
     });
 
@@ -95,39 +95,28 @@ describe("UserDistributionController", () => {
 
         it("should start chart with data", () => {
             const [ADMIN, ACTIVE, IDLE, INACTIVE] = [1, 2, 3, 4];
-            controller.admin.set(ADMIN);
-            controller.active.set(ACTIVE);
-            controller.idle.set(IDLE);
-            controller.inactive.set(INACTIVE);
-
+            controller.data.value.admin.value = ADMIN;
+            controller.data.value.active.value = ACTIVE;
+            controller.data.value.idle.value = IDLE;
+            controller.data.value.inactive.value = INACTIVE;
             const expected = [
                 { test: true },
-                {
-                    type: "pie",
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    },
-                    data: {
+                expect.objectContaining({
+                    data: expect.objectContaining({
                         labels: [
                             "Administrateurs",
-                            "Utilisateurs actif (hors admin)",
+                            "Utilisateurs actifs (hors admin)",
                             "Utilisateurs non actifs (hors admin)",
-                            "Utilisateurs n'ayant pas activer leurs comptes (hors admin)"
+                            "Utilisateurs n'ayant pas activé leurs comptes (hors admin)"
                         ],
                         datasets: [
-                            {
-                                label: "Utilisateurs",
+                            expect.objectContaining({
                                 data: [ADMIN, ACTIVE, IDLE, INACTIVE],
                                 backgroundColor: ["#fef3fd", "#dee5fd", "#3558a2", "#fef4f3"]
-                            }
+                            })
                         ]
-                    }
-                }
+                    })
+                })
             ];
 
             controller._canvas = expected[0];

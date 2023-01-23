@@ -6,24 +6,46 @@ export default class UserDistributionController {
     constructor() {
         this._canvas = null;
         this._chart = null;
-        this.admin = new Store(0);
-        this.idle = new Store(0);
-        this.active = new Store(0);
-        this.inactive = new Store(0);
+        this.data = new Store(this._buildDataDefaultValue());
     }
 
     async init() {
         const result = await statsService.getUsersDistribution();
-        this.admin.set(result.admin);
-        this.active.set(result.active);
-        this.idle.set(result.idle);
-        this.inactive.set(result.inactive);
+        this.data.value.admin.value = result.admin;
+        this.data.value.active.value = result.active;
+        this.data.value.idle.value = result.idle;
+        this.data.value.inactive.value = result.inactive;
     }
 
     set canvas(canvas) {
         if (!canvas) return;
         this._canvas = canvas;
         this._update();
+    }
+
+    _buildDataDefaultValue() {
+        return {
+            admin: {
+                value: 0,
+                label: "Administrateurs",
+                color: "#fef3fd" // --background-alt-purple-glycine
+            },
+            active: {
+                value: 0,
+                label: "Utilisateurs actifs (hors admin)",
+                color: "#dee5fd" // --background-action-low-blue-ecume
+            },
+            idle: {
+                value: 0,
+                label: "Utilisateurs non actifs (hors admin)",
+                color: "#3558a2" // --background-action-high-blue-cumulus
+            },
+            inactive: {
+                value: 0,
+                label: "Utilisateurs n'ayant pas activé leurs comptes (hors admin)",
+                color: "#fef4f3" // --background-alt-pink-tuile
+            }
+        };
     }
 
     _update() {
@@ -39,16 +61,26 @@ export default class UserDistributionController {
             },
             data: {
                 labels: [
-                    "Administrateurs",
-                    "Utilisateurs actif (hors admin)",
-                    "Utilisateurs non actifs (hors admin)",
-                    "Utilisateurs n'ayant pas activer leurs comptes (hors admin)"
+                    this.data.value.admin.label,
+                    this.data.value.active.label,
+                    this.data.value.idle.label,
+                    this.data.value.inactive.label
                 ],
                 datasets: [
                     {
                         label: "Utilisateurs",
-                        data: [this.admin.value, this.active.value, this.idle.value, this.inactive.value],
-                        backgroundColor: ["#fef3fd", "#dee5fd", "#3558a2", "#fef4f3"]
+                        data: [
+                            this.data.value.admin.value,
+                            this.data.value.active.value,
+                            this.data.value.idle.value,
+                            this.data.value.inactive.value
+                        ],
+                        backgroundColor: [
+                            this.data.value.admin.color,
+                            this.data.value.active.color,
+                            this.data.value.idle.color,
+                            this.data.value.inactive.color
+                        ]
                     }
                 ]
             }

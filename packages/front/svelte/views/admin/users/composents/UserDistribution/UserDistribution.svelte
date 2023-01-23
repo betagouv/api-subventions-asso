@@ -7,7 +7,7 @@
     const controller = new UserDistributionController();
     const promise = controller.init();
 
-    const { admin, idle, active, inactive } = controller;
+    const { data } = controller;
 
     $: controller.canvas = canvas;
 </script>
@@ -21,20 +21,20 @@
         </div>
         <div class="fr-mt-5v">
             <div class="flex column">
-                <span class="rectangle flex active fr-text--bold align-center fr-mt-3v">{$active}</span>
-                <span class="fr-mt-3v">Utilisateurs actif (hors admin)</span>
+                <span class="rectangle flex active fr-text--bold align-center fr-mt-3v">{$data.active.value}</span>
+                <span class="fr-mt-3v">{$data.active.label}</span>
             </div>
             <div class="flex column">
-                <span class="rectangle flex idle fr-text--bold align-center fr-mt-3v">{$idle}</span>
-                <span class="fr-mt-3v">Utilisateurs non actifs (hors admin)</span>
+                <span class="rectangle flex idle fr-text--bold align-center fr-mt-3v">{$data.idle.value}</span>
+                <span class="fr-mt-3v">{$data.idle.label}</span>
             </div>
             <div class="flex column">
-                <span class="rectangle flex inactive fr-text--bold align-center fr-mt-3v">{$inactive}</span>
-                <span class="fr-mt-3v">Utilisateurs n'ayant pas activer leurs comptes (hors admin)</span>
+                <span class="rectangle flex inactive fr-text--bold align-center fr-mt-3v">{$data.inactive.value}</span>
+                <span class="fr-mt-3v">{$data.inactive.label}</span>
             </div>
             <div class="flex column">
-                <span class="rectangle flex admin fr-text--bold align-center fr-mt-3v">{$admin}</span>
-                <span class="fr-mt-3v">Administrateurs</span>
+                <span class="rectangle flex admin fr-text--bold align-center fr-mt-3v">{$data.admin.value}</span>
+                <span class="fr-mt-3v">{$data.admin.label}</span>
             </div>
         </div>
     {/await}
