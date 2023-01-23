@@ -10,7 +10,7 @@ export const ApiAssoDocumentFixture = {
                     nom: "nom fake",
                     meta: {
                         type: "BPA",
-                        id_siret: "50922194100000",
+                        id_siret: 50922194100000,
                         etat: "courant"
                     },
                     time_depot: "2021-06-18 12:02:53"
@@ -23,6 +23,7 @@ export const ApiAssoDocumentFixture = {
                     type: "PV",
                     sous_type: "PV",
                     id: "ididididid",
+                    lib_sous_type: "PV",
                     time: 1622557171,
                     annee: 2021
                 }

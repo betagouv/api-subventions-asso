@@ -6,7 +6,7 @@ export const RnaDtoDocument = {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
         provider: ApiAssoDtoAdapter.providerNameRna,
         type: "string",
-        value: "ididididid"
+        value: "PV - ididididid"
     },
     type: {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
