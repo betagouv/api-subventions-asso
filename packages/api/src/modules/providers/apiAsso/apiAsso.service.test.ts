@@ -524,8 +524,10 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            type: "RIB"
-                        }
+                            type: "RIB",
+                            iban: ""
+                        },
+                        url: "FAKE_URL"
                     }
                 ];
 
@@ -607,6 +609,10 @@ describe("ApiAssoService", () => {
                 "dacDocumentToDocument"
             ) as jest.SpyInstance<any | null>;
 
+            const dacDocumentToRibMock = jest.spyOn(ApiAssoDtoAdapter, "dacDocumentToRib") as jest.SpyInstance<
+                any | null
+            >;
+
             afterAll(() => {
                 filterRnaDocumentsMock.mockReset();
                 filterActiveDacDocumentsMock.mockReset();
@@ -614,6 +620,7 @@ describe("ApiAssoService", () => {
                 filterRibsInDacDocumentsMock.mockReset();
                 rnaDocumentToDocumentMock.mockReset();
                 dacDocumentToDocumentMock.mockReset();
+                dacDocumentToRibMock.mockReset();
             });
 
             it("should return null if sendRequest return null", async () => {
@@ -845,11 +852,12 @@ describe("ApiAssoService", () => {
                 filterRibsInDacDocumentsMock.mockImplementationOnce(data => data);
                 filterDacDocumentsMock.mockImplementationOnce(() => []);
                 dacDocumentToDocumentMock.mockImplementationOnce(data => data);
+                dacDocumentToRibMock.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(dacDocumentToDocumentMock).toHaveBeenCalledWith(expected);
+                expect(dacDocumentToRibMock).toHaveBeenCalledWith(expected);
             });
         });
 

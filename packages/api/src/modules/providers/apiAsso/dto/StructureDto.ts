@@ -78,8 +78,9 @@ export interface StructureDacDocumentDto {
     etat: string;
     meta: {
         type: string;
-        id_siret: string;
+        id_siret: number;
         etat: string;
+        iban?: string;
     };
 }
 

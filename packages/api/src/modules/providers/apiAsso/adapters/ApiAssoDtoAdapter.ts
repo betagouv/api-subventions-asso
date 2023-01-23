@@ -12,9 +12,9 @@ import StructureDto, {
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 
 export default class ApiAssoDtoAdapter {
-    static providerNameRna = "BASE RNA <Via API ASSO>";
-    static providerNameLcaDocument = "Document déposé dans le compte asso <Via API ASSO>";
-    static providerNameSiren = "BASE SIREN <Via API ASSO>";
+    static providerNameRna = "RNA";
+    static providerNameLcaDocument = "Le Compte Asso";
+    static providerNameSiren = "SIREN";
 
     static toAssociation(structure: StructureDto): Association[] {
         const associations: Association[] = [];
@@ -144,9 +144,8 @@ export default class ApiAssoDtoAdapter {
         else if (rnaDocument.time) date.setTime(date.getTime() + rnaDocument.time);
 
         const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
-
         return {
-            nom: toRnaPv(rnaDocument.id),
+            nom: toRnaPv(`${rnaDocument.lib_sous_type} - ${rnaDocument.id}`),
             type: toRnaPv(rnaDocument.sous_type),
             url: toRnaPv(rnaDocument.url),
             __meta__: {}
@@ -173,22 +172,21 @@ export default class ApiAssoDtoAdapter {
             type: toLCAPv(dacDocument.meta.type),
             url: toLCAPv(dacDocument.url),
             __meta__: {
-                siret: dacDocument.meta.id_siret
+                siret: String(dacDocument.meta.id_siret)
             }
         };
     }
 
-    static ribDocumentToDocument(rib: StructureRibDto, date: Date): Document | null {
-        if (!rib.url) return null;
+    static dacDocumentToRib(rib: StructureDacDocumentDto): Document {
+        const isoDate = new Date(rib.time_depot);
 
-        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, date);
-
+        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, isoDate);
         return {
-            nom: toRnaPv(rib.iban),
+            nom: toRnaPv(rib.meta.iban || rib.nom),
             type: toRnaPv("RIB"),
             url: toRnaPv(rib.url),
             __meta__: {
-                siret: rib.id_siret
+                siret: String(rib.meta.id_siret)
             }
         };
     }
