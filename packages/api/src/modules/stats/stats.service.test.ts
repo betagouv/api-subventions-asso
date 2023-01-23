@@ -143,8 +143,8 @@ describe("StatsService", () => {
         const YEAR = 2022;
         const INIT_COUNT = 2;
         const FINAL_DATA = {
-            nb_users_before_year: INIT_COUNT,
-            evol_nb_users_by_month: {
+            nombres_utilisateurs_avant_annee: INIT_COUNT,
+            evolution_nombres_utilisateurs: {
                 January: 3,
                 February: 3,
                 March: 4,
@@ -208,11 +208,14 @@ describe("StatsService", () => {
             const diff = -INIT_COUNT + INIT_COUNT_ALT;
             initCountMock.mockResolvedValueOnce(INIT_COUNT_ALT);
             const FINAL_DATA_ALT = {};
-            for (const [month, count] of Object.entries(FINAL_DATA.evol_nb_users_by_month)) {
+            for (const [month, count] of Object.entries(FINAL_DATA.evolution_nombres_utilisateurs)) {
                 FINAL_DATA_ALT[month] = count + diff;
             }
             const actual = await statsService.getMonthlyUserNbByYear(YEAR);
-            const expected = { evol_nb_users_by_month: FINAL_DATA_ALT, nb_users_before_year: INIT_COUNT_ALT };
+            const expected = {
+                evolution_nombres_utilisateurs: FINAL_DATA_ALT,
+                nombres_utilisateurs_avant_annee: INIT_COUNT_ALT
+            };
             expect(actual).toEqual(expected);
         });
     });

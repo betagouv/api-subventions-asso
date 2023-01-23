@@ -1,9 +1,7 @@
 import Chart from "chart.js/auto";
 import statsService from "../../../../../resources/stats/stats.service";
-import { monthCapitalizedFromId, STATS_YEAR_CHOICES } from "../../../../../helpers/dateHelper";
+import { STATS_YEAR_CHOICES } from "../../../../../helpers/dateHelper";
 import Store from "../../../../../core/Store";
-
-const TODAY = new Date();
 
 export class MonthlyUserCountByYearController {
     constructor() {
@@ -11,7 +9,7 @@ export class MonthlyUserCountByYearController {
         this._lastYearNbUser = 0;
         this.yearOptions = STATS_YEAR_CHOICES.map(year => ({ value: year, label: year }));
 
-        this.year = new Store(TODAY.getFullYear());
+        this.year = new Store(new Date().getFullYear());
         this.progress = new Store(0);
         this.message = new Store("");
     }
@@ -23,8 +21,8 @@ export class MonthlyUserCountByYearController {
     async _load(year) {
         this.dataPromise = new Store(statsService.getMonthlyUserCount(year));
         const data = await this.dataPromise.value;
-        this._monthData = data.evol_nb_users_by_month;
-        this._lastYearNbUser = data.nb_users_before_year;
+        this._monthData = data.evolution_nombres_utilisateurs;
+        this._lastYearNbUser = data.nombres_utilisateurs_avant_annee;
         this.updateProgress();
     }
 
@@ -34,7 +32,7 @@ export class MonthlyUserCountByYearController {
 
     async updateYear(newYearIndex) {
         await this._load(STATS_YEAR_CHOICES[newYearIndex]);
-        this.chartData = Object.values(this._monthData);
+        this.chartData = this._monthData;
         this.chart.update();
     }
 
@@ -45,12 +43,14 @@ export class MonthlyUserCountByYearController {
     updateProgress() {
         if (!this._monthData) return;
 
+        const TODAY = new Date();
         if (this.year.value === TODAY.getFullYear()) {
-            this.progress.set(this._monthData[monthCapitalizedFromId(TODAY.getMonth())] - this._lastYearNbUser);
+            console.log(this._monthData[TODAY.getMonth()] - this._lastYearNbUser);
+            this.progress.set(this._monthData[TODAY.getMonth()] - this._lastYearNbUser);
             this.message.set(`depuis janvier ${this.year.value}`);
             return;
         }
-        this.progress.set(this._monthData.December - this._lastYearNbUser);
+        this.progress.set(this._monthData[this._monthData.length - 1] - this._lastYearNbUser);
         this.message.set(`en ${this.year.value}`);
     }
 
@@ -75,13 +75,13 @@ export class MonthlyUserCountByYearController {
             },
             data: {
                 // TODO change with api format #908
-                labels: Object.keys(this._monthData).map(fullMonth =>
-                    new Date(Date.parse(fullMonth + " 1, 2022")).toLocaleDateString(`fr`, { month: `narrow` })
+                labels: this._monthData.map((month, key) =>
+                    new Date(2022, key, 1).toLocaleDateString(`fr`, { month: `narrow` })
                 ),
                 datasets: [
                     {
                         label: "Utilisateurs",
-                        data: Object.values(this._monthData),
+                        data: this._monthData,
                         borderColor: "#3F49E3",
                         backgroundColor: gradient,
                         fill: true,

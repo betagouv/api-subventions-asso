@@ -1,7 +1,6 @@
 jest.mock("../../../../../helpers/dateHelper", () => {
     return {
         __esModule: true, // this property makes it work
-        monthCapitalizedFromId: jest.fn(() => "March"),
         STATS_YEAR_CHOICES: [2023, 2022]
     };
 });
@@ -52,8 +51,8 @@ describe("MonthlyUserCountByYearController", () => {
     describe("_load", () => {
         const spyService = jest.spyOn(statsService, "getMonthlyUserCount");
         const DATA = {
-            evol_nb_users_by_month: {},
-            nb_users_before_year: 1
+            evolution_nombres_utilisateurs: {},
+            nombres_utilisateurs_avant_annee: 1
         };
         const YEAR = 2022;
         let ctrl;
@@ -80,14 +79,14 @@ describe("MonthlyUserCountByYearController", () => {
         });
 
         it("updates private _monthData with result from service", async () => {
-            const expected = DATA.evol_nb_users_by_month;
+            const expected = DATA.evolution_nombres_utilisateurs;
             await ctrl._load(YEAR);
             const actual = ctrl._monthData;
             expect(actual).toStrictEqual(expected);
         });
 
         it("updates private _lastYearNbUser with result from service", async () => {
-            const expected = DATA.nb_users_before_year;
+            const expected = DATA.nombres_utilisateurs_avant_annee;
             await ctrl._load(YEAR);
             const actual = ctrl._lastYearNbUser;
             expect(actual).toStrictEqual(expected);
@@ -134,7 +133,7 @@ describe("MonthlyUserCountByYearController", () => {
 
         const YEAR_INDEX = 0;
         const YEAR = 2023;
-        const DATA = { a: 22, b: 30 };
+        const DATA = [22, 30];
 
         beforeAll(() => {
             setterSpy.mockImplementation(jest.fn());
@@ -178,7 +177,7 @@ describe("MonthlyUserCountByYearController", () => {
 
     describe("updateProgress", () => {
         const ctrl = new MonthlyUserCountByYearController();
-        const MONTHDATA = { January: 2, March: 4, December: 12 };
+        const MONTHDATA = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 12];
         const LASTYEARDATA = 2;
         const setSpies = {};
 
@@ -209,11 +208,6 @@ describe("MonthlyUserCountByYearController", () => {
             const NOW = new Date();
             const THIS_YEAR = NOW.getFullYear();
             beforeEach(() => ctrl.year.set(THIS_YEAR));
-
-            it("calls month capitalization with current month", () => {
-                ctrl.updateProgress();
-                expect(monthCapitalizedFromId).toBeCalledWith(NOW.getMonth());
-            });
 
             it.each`
                 propertyName  | expected
