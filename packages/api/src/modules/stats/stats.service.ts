@@ -39,16 +39,14 @@ class StatsService {
             countNewByMonth[(user.signupAt as Date).getMonth()] += 1;
         }
 
-        const result = {
-            nb_users_before_year: count,
-            evol_nb_users_by_month: {}
+        return {
+            nombres_utilisateurs_avant_annee: count,
+            evolution_nombres_utilisateurs: countNewByMonth.reduce((acc, month, index) => {
+                const totalUsersOnMonth = month + (acc[index - 1] || count);
+                acc[index] = totalUsersOnMonth;
+                return acc;
+            }, [])
         };
-
-        for (let month = 0; month < 12; month++) {
-            count += countNewByMonth[month];
-            result.evol_nb_users_by_month[englishMonthNames[month]] = count;
-        }
-        return result;
     }
 
     private async groupVisitsOnMaps(group, rnaMap, sirenMap) {

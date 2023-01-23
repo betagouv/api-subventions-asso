@@ -57,8 +57,8 @@ describe("StatsController", () => {
         const YEAR_STR = "2022";
         const YEAR_NB = 2022;
         const mockedValue = {
-            nb_users_before_year: 201,
-            evol_nb_users_by_month: {
+            nombres_utilisateurs_avant_annee: 201,
+            evolution_nombres_utilisateurs: {
                 January: 201,
                 February: 21,
                 March: 20,
