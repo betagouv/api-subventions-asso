@@ -261,7 +261,7 @@ describe("Documents Service", () => {
         })
 
         it("should call getDocumentsByRna", async () => {
-            const mock = jest.fn(() => true);
+            const mock = jest.fn(async () => true);
             const expected = "W00000000";
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
@@ -279,7 +279,7 @@ describe("Documents Service", () => {
         })
 
         it("should call getDocumentsBySiren", async () => {
-            const mock = jest.fn(() => true);
+            const mock = jest.fn(async () => true);
             const expected = "123456789";
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
@@ -297,7 +297,7 @@ describe("Documents Service", () => {
         })
 
         it("should call getDocumentsBySiret", async () => {
-            const mock = jest.fn(() => true);
+            const mock = jest.fn(async () => true);
             const expected = "12345678912345";
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
@@ -333,7 +333,7 @@ describe("Documents Service", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
-                    getDocumentsBySiret: () => expected
+                    getDocumentsBySiret: async () => expected
                 } as unknown as Provider
             ]);
 

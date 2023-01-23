@@ -7,31 +7,30 @@ import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 
 export class DocumentsService {
-
     public async getDocumentBySiren(siren: Siren) {
         const result = await this.aggregate(siren);
 
-        return result.filter(d => d) as Document[]
+        return result.filter(d => d) as Document[];
     }
 
     public async getDocumentByRna(rna: Rna) {
         const result = await this.aggregate(rna);
 
-        return result.filter(d => d) as Document[]
+        return result.filter(d => d) as Document[];
     }
 
     public async getDocumentBySiret(siret: Siret) {
         const result = await this.aggregate(siret);
 
-        return result.filter(d => d) as Document[]
+        return result.filter(d => d) as Document[];
     }
 
     private isDocumentProvider(data: unknown): data is DocumentProvider {
-        return !!(data as DocumentProvider).isDocumentProvider
+        return !!(data as DocumentProvider).isDocumentProvider;
     }
 
     private getDocumentProviders() {
-        return Object.values(providers).filter((p) => this.isDocumentProvider(p)) as DocumentProvider[];
+        return Object.values(providers).filter(p => this.isDocumentProvider(p)) as DocumentProvider[];
     }
 
     private async aggregate(id: StructureIdentifiers): Promise<(Document | null)[]> {
@@ -40,11 +39,19 @@ export class DocumentsService {
         const type = getIdentifierType(id);
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
-        const method = type === StructureIdentifiersEnum.rna ? 'getDocumentsByRna'
-            : type === StructureIdentifiersEnum.siren ? 'getDocumentsBySiren'
-                : "getDocumentsBySiret"
+        const method =
+            type === StructureIdentifiersEnum.rna ? "getDocumentsByRna" 
+                : type === StructureIdentifiersEnum.siren ? "getDocumentsBySiren"
+                    : "getDocumentsBySiret";
 
-        const result = await Promise.all(documentProviders.map(provider => provider[method].call(provider, id)));
+        const result = await Promise.all(
+            documentProviders.map(provider =>
+                provider[method].call(provider, id).catch(e => {
+                    console.error(e);
+                    return [];
+                })
+            )
+        );
 
         return result.flat();
     }
