@@ -3,9 +3,9 @@ import { SignupErrorCodes } from "@api-subventions-asso/dto/build/auth/SignupDto
 import authPort from "@resources/auth/auth.port";
 
 export class AuthService {
-    async signup(email) {
-        if (!email) return SignupErrorCodes.EMAIL_NOT_VALID;
-        return await authPort.signup(email);
+    signup(email) {
+        if (!email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
+        return authPort.signup(email);
     }
 }
 
