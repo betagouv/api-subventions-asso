@@ -10,7 +10,6 @@ export class AssociationService {
     async getAssociation(id) {
         const path = `/association/${id}`;
         return axios.get(path).then(result => {
-            console.log(result.data.association);
             const association = toAssociationView(result.data.association);
             updateSearchHistory({
                 rna: association.rna,

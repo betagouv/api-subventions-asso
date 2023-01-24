@@ -1,4 +1,5 @@
 // Voir si il ne vaux mieux pas passer ça en adapteur
+import axios from "axios";
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
 import SSEConnector from "../../core/SseConnector";
 import Store from "../../core/Store";
@@ -47,7 +48,28 @@ class SubventionsPort {
             });
         });
 
+        connector.on("error", async error => {
+            console.warn("Flux as probably locked :", error, "Check with HTTPs request");
+            const subventions = await this._getSubventionByHttp(type, identifier);
+            store.update(state => ({
+                status: "close",
+                subventions: state.subventions.concat(subventions.map(d => flatenProviderValue(d))),
+                __meta__: {
+                    providerCalls: 1,
+                    providerAnswers: 1
+                }
+            }));
+        });
+
         return store;
+    }
+
+    _getSubventionByHttp(type, identifier) {
+        const pathHttp = `/${type}/${identifier}/subventions`;
+        return axios.get(pathHttp).then(result => {
+            if (!result.data) return [];
+            return result.data.subventions;
+        });
     }
 
     getAssociationSubventionsStore(identifier) {
