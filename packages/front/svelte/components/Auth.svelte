@@ -23,7 +23,7 @@
         }
         userStore.update(oldUser => Object.assign(oldUser, user));
         // set header token for each requests
-        axios.defaults.headers.common["x-access-token"] = user.jwt.token;
+        axios.defaults.headers.common["x-access-token"] = user?.jwt?.token;
     }
 
     const promise = getUser();
