@@ -317,23 +317,6 @@ describe("SubventionsVersementsDashboardController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should dont call updateSelectedExercice", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
-            const exercices = [{ exercice: 1 }, { exercice: 2 }];
-
-            const updateSelectedExerciceMock = jest
-                .spyOn(controller, "updateSelectedExercice")
-                .mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildExercices").mockImplementationOnce(() => exercices);
-
-            controller.selectedExercice.set(1);
-
-            controller._updateExercices(exercices);
-            const actual = updateSelectedExerciceMock.mock.calls.length;
-            const expected = 0;
-
-            expect(actual).toEqual(expected);
-        });
     });
 
     describe("_buildExercices", () => {

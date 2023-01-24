@@ -77,9 +77,7 @@ export default class SubventionsVersementsDashboardController {
         this.exercices = exercices;
         this.exercicesOptions.set(this._buildExercices());
 
-        if (this.selectedExercice.value) return;
-
-        this.updateSelectedExercice(this.exercices.length - 1);
+        this.updateSelectedExercice(this.selectedExercice.value || this.exercices.length - 1);
     }
 
     _buildExercices() {

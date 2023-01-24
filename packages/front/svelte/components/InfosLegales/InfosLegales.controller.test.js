@@ -15,7 +15,7 @@ jest.mock("../../views/association/association.helper", () => {
     };
 });
 
-import * as AssociationHelper from "../../views/association/association.helper";
+import { dateToDDMMYYYY } from "../../helpers/dateHelper";
 
 function buildPartialAssociation() {
     return { ...DEFAULT_ASSOCIATION };
@@ -42,13 +42,13 @@ describe("InfosLegales Controller", () => {
                         ],
                         [
                             "Date d'immatriculation",
-                            DEFAULT_ASSOCIATION.date_creation_rna,
-                            DEFAULT_ASSOCIATION.date_creation_siren
+                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_creation_rna),
+                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_creation_siren)
                         ],
                         [
                             "Date de modification",
-                            DEFAULT_ASSOCIATION.date_modification_rna,
-                            DEFAULT_ASSOCIATION.date_modification_siren
+                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_modification_rna),
+                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_modification_siren)
                         ]
                     ]
                 };
