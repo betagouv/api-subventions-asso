@@ -7,7 +7,7 @@
     const controller = new UserDistributionController();
     const promise = controller.init();
 
-    const { data } = controller;
+    const { distributions } = controller;
 
     $: controller.canvas = canvas;
 </script>
@@ -20,22 +20,14 @@
             <canvas bind:this={canvas} />
         </div>
         <div class="fr-mt-5v">
-            <div class="flex column">
-                <span class="rectangle flex active fr-text--bold align-center fr-mt-3v">{$data.active.value}</span>
-                <span class="fr-mt-3v">{$data.active.label}</span>
-            </div>
-            <div class="flex column">
-                <span class="rectangle flex idle fr-text--bold align-center fr-mt-3v">{$data.idle.value}</span>
-                <span class="fr-mt-3v">{$data.idle.label}</span>
-            </div>
-            <div class="flex column">
-                <span class="rectangle flex inactive fr-text--bold align-center fr-mt-3v">{$data.inactive.value}</span>
-                <span class="fr-mt-3v">{$data.inactive.label}</span>
-            </div>
-            <div class="flex column">
-                <span class="rectangle flex admin fr-text--bold align-center fr-mt-3v">{$data.admin.value}</span>
-                <span class="fr-mt-3v">{$data.admin.label}</span>
-            </div>
+            {#each $distributions as distribution}
+                <div class="flex column">
+                    <span class="rectangle flex fr-text--bold align-center fr-mt-3v {distribution.name}">
+                        {distribution.value}
+                    </span>
+                    <span class="fr-mt-3v">{distribution.label}</span>
+                </div>
+            {/each}
         </div>
     {/await}
 </Widget>

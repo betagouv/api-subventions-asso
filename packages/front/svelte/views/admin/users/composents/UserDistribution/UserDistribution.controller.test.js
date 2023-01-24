@@ -36,10 +36,22 @@ describe("UserDistributionController", () => {
 
             await controller.init();
 
-            expect(controller.data.value.admin.value).toBe(ADMIN);
-            expect(controller.data.value.active.value).toBe(ACTIVE);
-            expect(controller.data.value.idle.value).toBe(IDLE);
-            expect(controller.data.value.inactive.value).toBe(INACTIVE);
+            expect(controller.distributions.value).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        value: ADMIN
+                    }),
+                    expect.objectContaining({
+                        value: ACTIVE
+                    }),
+                    expect.objectContaining({
+                        value: IDLE
+                    }),
+                    expect.objectContaining({
+                        value: INACTIVE
+                    })
+                ])
+            );
         });
     });
 
@@ -94,11 +106,10 @@ describe("UserDistributionController", () => {
         });
 
         it("should start chart with data", () => {
-            const [ADMIN, ACTIVE, IDLE, INACTIVE] = [1, 2, 3, 4];
-            controller.data.value.admin.value = ADMIN;
-            controller.data.value.active.value = ACTIVE;
-            controller.data.value.idle.value = IDLE;
-            controller.data.value.inactive.value = INACTIVE;
+            const data = { admin: 1, active: 2, idle: 3, inactive: 4 };
+            controller.distributions.value.forEach(distribution => {
+                distribution.value = data[distribution.name];
+            });
             const expected = [
                 { test: true },
                 expect.objectContaining({
@@ -111,7 +122,7 @@ describe("UserDistributionController", () => {
                         ],
                         datasets: [
                             expect.objectContaining({
-                                data: [ADMIN, ACTIVE, IDLE, INACTIVE],
+                                data: Object.values(data),
                                 backgroundColor: ["#fef3fd", "#dee5fd", "#3558a2", "#fef4f3"]
                             })
                         ]
