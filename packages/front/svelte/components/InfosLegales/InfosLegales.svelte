@@ -11,7 +11,7 @@
 <div class="fr-grid-row fr-p-4w background-default">
     <div class="fr-col fr-col-md-6 fr-pr-2w">
         <p class="fr-text--lg fr-text--bold">Objet social</p>
-        <p>{association.objet_social}</p>
+        <p>{controller.objetSocial}</p>
     </div>
     <div class="fr-col fr-col-md-6 fr-pl-2w">
         <table class="fr-mb-1v">
@@ -49,7 +49,7 @@
                 outline={false}
                 ariaControls="fr-modal"
                 on:click={() => controller.displayModal()}>
-                Plus de détails
+                Voir les informations du RNA / Siren
             </Button>
         {/if}
     </div>

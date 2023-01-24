@@ -19,14 +19,19 @@ export default class InfosLegalesController {
         this._modalData = this._buildModalData();
     }
 
+    get objetSocial() {
+        return valueOrHyphen(this.association.objet_social);
+    }
+
     get siret() {
         let title, value;
         if (this.etablissement) {
             title = "SIRET établissement";
             value = this.etablissement.siret;
         } else {
+            const siretSiege = getSiegeSiret(this.association);
             title = "SIRET du siège";
-            value = getSiegeSiret(this.association);
+            value = isNaN(siretSiege) ? "-" : siretSiege;
         }
         return { title, value };
     }
@@ -38,7 +43,7 @@ export default class InfosLegalesController {
             value = addressToString(this.etablissement.adresse);
         } else {
             title = "Adresse du siège";
-            value = getAddress(this.association);
+            value = valueOrHyphen(getAddress(this.association));
         }
         return { title, value };
     }
@@ -64,8 +69,16 @@ export default class InfosLegalesController {
                 addressToString(this.association.adresse_siege_rna),
                 addressToString(this.association.adresse_siege_siren)
             ],
-            "Date d'immatriculation": [this.association.date_creation_rna, this.association.date_creation_siren],
-            "Date de modification": [this.association.date_modification_rna, this.association.date_modification_siren]
+            "Date d'immatriculation": [
+                this.association.date_creation_rna ? dateToDDMMYYYY(this.association.date_creation_rna) : null,
+                this.association.date_creation_siren ? dateToDDMMYYYY(this.association.date_creation_siren) : null
+            ],
+            "Date de modification": [
+                this.association.date_modification_rna ? dateToDDMMYYYY(this.association.date_modification_rna) : null,
+                this.association.date_modification_siren
+                    ? dateToDDMMYYYY(this.association.date_modification_siren)
+                    : null
+            ]
         };
         const rows = Object.entries(objectRows).map(([header, values]) => {
             return [header, ...values.map(value => valueOrHyphen(value))];
