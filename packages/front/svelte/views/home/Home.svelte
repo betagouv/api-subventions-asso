@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import homeService from "./home.service";
 
-    import { isRna, isSiren, isSiret } from "../../helpers/validatorHelper";
+    import { isRna, isSiren, isSiret, isStartOfSiret } from "../../helpers/validatorHelper";
     import { getSearchHistory } from "../../services/storage.service";
     import debounceFactory from "../../helpers/timeHelper";
     import { truncate } from "../../helpers/textHelper";
@@ -27,6 +27,8 @@
         searchResult.length = 0;
 
         if (text.length < 3) return;
+
+        if (isStartOfSiret(text.replace(" ", ""))) text = text.replace(" ", "");
 
         try {
             isLoading = true;
