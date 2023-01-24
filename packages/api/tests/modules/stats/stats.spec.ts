@@ -292,21 +292,8 @@ describe("/stats", () => {
 
             it("should return data with HTTP status code 200", async () => {
                 const DATA = {
-                    nb_users_before_year: 1,
-                    evol_nb_users_by_month: {
-                        January: 1,
-                        February: 1,
-                        March: 1,
-                        April: 2,
-                        May: 2,
-                        June: 2,
-                        July: 2,
-                        August: 2,
-                        September: 2,
-                        October: 2,
-                        November: 3,
-                        December: 3
-                    }
+                    nombres_utilisateurs_avant_annee: 1,
+                    evolution_nombres_utilisateurs: [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3]
                 };
                 const expected = { success: true, data: DATA };
                 await request(g.app)

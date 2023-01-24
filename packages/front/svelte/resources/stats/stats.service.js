@@ -13,7 +13,6 @@ export class StatsService {
             for (let month = TODAY.getMonth() + 1; month < 12; month++)
                 data.evolution_nombres_utilisateurs[month] = null;
         }
-        console.log(data);
         return data;
     }
 

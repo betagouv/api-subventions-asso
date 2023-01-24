@@ -144,20 +144,20 @@ describe("StatsService", () => {
         const INIT_COUNT = 2;
         const FINAL_DATA = {
             nombres_utilisateurs_avant_annee: INIT_COUNT,
-            evolution_nombres_utilisateurs: {
-                January: 3,
-                February: 3,
-                March: 4,
-                April: 4,
-                May: 4,
-                June: 4,
-                July: 4,
-                August: 4,
-                September: 5,
-                October: 5,
-                November: 5,
-                December: 5
-            }
+            evolution_nombres_utilisateurs: [
+                3,
+                3,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                5,
+                5,
+                5,
+                5
+            ]
         };
         const USER_DATA = [
             { signupAt: new Date(YEAR, 0, 23) },
@@ -207,7 +207,7 @@ describe("StatsService", () => {
             const INIT_COUNT_ALT = 12;
             const diff = -INIT_COUNT + INIT_COUNT_ALT;
             initCountMock.mockResolvedValueOnce(INIT_COUNT_ALT);
-            const FINAL_DATA_ALT = {};
+            const FINAL_DATA_ALT = [];
             for (const [month, count] of Object.entries(FINAL_DATA.evolution_nombres_utilisateurs)) {
                 FINAL_DATA_ALT[month] = count + diff;
             }

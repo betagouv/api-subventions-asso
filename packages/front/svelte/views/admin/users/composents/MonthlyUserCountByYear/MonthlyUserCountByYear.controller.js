@@ -45,7 +45,6 @@ export class MonthlyUserCountByYearController {
 
         const TODAY = new Date();
         if (this.year.value === TODAY.getFullYear()) {
-            console.log(this._monthData[TODAY.getMonth()] - this._lastYearNbUser);
             this.progress.set(this._monthData[TODAY.getMonth()] - this._lastYearNbUser);
             this.message.set(`depuis janvier ${this.year.value}`);
             return;
