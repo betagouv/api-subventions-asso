@@ -2,9 +2,10 @@
     export let label;
     export let value;
     export let id = "0";
+    export let required = false;
 
     const name = `input-text-${id}`;
 </script>
 
 <label class="fr-label" for={name}>{label}</label>
-<input class="fr-input" type="text" id={name} {name} bind:value />
+<input class="fr-input" type="text" id={name} {name} bind:value required={required ? "required" : undefined} />
