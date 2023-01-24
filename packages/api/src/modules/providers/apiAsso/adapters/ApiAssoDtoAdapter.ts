@@ -58,7 +58,8 @@ export default class ApiAssoDtoAdapter {
                 toDate(structure.identite.date_modif_siren)
             );
             const adresse =
-                structure.coordonnees.adresse_siege_sirene || fromRNA ? undefined : structure.coordonnees.adresse_siege;
+                structure.coordonnees.adresse_siege_sirene ||
+                (fromRNA ? undefined : structure.coordonnees.adresse_siege);
             const sirenAssociation: Association = {
                 denomination_siren: structure.identite.nom_sirene
                     ? toSirenPvs(structure.identite.nom_sirene)
