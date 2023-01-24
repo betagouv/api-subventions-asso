@@ -1,0 +1,62 @@
+<script>
+    import Alert from "@dsfr/Alert.svelte";
+    import Input from "@dsfr/Input.svelte";
+    import Button from "@dsfr/Button.svelte";
+    import Spinner from "@components/Spinner.svelte";
+    import SignupController from "./Signup.controller";
+
+    const ctrl = new SignupController();
+    const { email, signupPromise, firstSubmitted } = ctrl;
+</script>
+
+<div class="fr-container fr-mb-8w">
+    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+        <div class="fr-col">
+            <h1>
+                {ctrl.pageTitle}
+            </h1>
+            {#await $signupPromise}
+                <Spinner />
+            {:then email}
+                {#if $firstSubmitted}
+                    <Alert title="Félicitations, votre inscription a bien été prise en compte" type="success">
+                        Vous allez recevoir un mail pour finaliser votre inscription
+                    </Alert>
+
+                    <Alert title="Vous n'avez pas reçu de mail ?" type="info">
+                        Vous pouvez
+                        <a
+                            title="Contactez-nous"
+                            href="mailto:<%= `${ctrl.contactEmail}?subject=Lien%20d'inscription%20non%20re%C3%A7u&body=Bonjour, %0D%0A %0D%0A Je viens de m'inscrire avec l'adresse ${email} mais je n'ai reçu aucun mail d'activation. %0D%0A %0D%0A Pouvez-vous débloquer la situation?&html=true` ;%>"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            nous contacter
+                        </a>
+                        pour qu'on règle ce problème.
+                    </Alert>
+                {/if}
+            {:catch error}
+                <Alert title="Attention" type="warning">
+                    {ctrl.getErrorMessage(error)}
+                </Alert>
+            {/await}
+
+            <Alert
+                title="Data.subvention étant réservé aux agents de
+                    l'État, il est nécessaire d'être doté d'une adresse e-mail
+                    professionnelle du service public."
+                type="info" />
+
+            <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
+                <fieldset class="fr-fieldset fr-my-4w">
+                    <div class="fr-input-group">
+                        <Input label="Email professionnel:" id="signup-email" bind:value={$email} required={true} />
+                    </div>
+                </fieldset>
+                <div class="fr-input-group fr-my-4w">
+                    <Button type="submit" title="S'inscrire" htmlType="submit">Confirmer</Button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
