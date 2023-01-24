@@ -9,6 +9,7 @@
     export let icon = "";
     export let iconPosition = "";
     export let ariaControls = "";
+    export let htmlType = "";
 
     const dispatch = createEventDispatcher();
 
@@ -56,7 +57,8 @@
     {disabled}
     {title}
     aria-controls={ariaControls}
-    data-fr-opened={ariaControls.length ? "false" : ""}>
+    data-fr-opened={ariaControls.length ? "false" : ""}
+    type={htmlType}>
     <slot />
 </button>
 
