@@ -1,9 +1,10 @@
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes, SignupErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import { NextFunction, Request, Response } from "express";
 import { DefaultObject } from "../../../../@types/utils";
 import Controller from "../../../../decorators/controller.decorator";
 import { Get, Post } from "../../../../decorators/http.methods.decorator";
 import authService from "../../AuthService";
+import path from "path";
 
 @Controller("/auth")
 export default class AuthController {
@@ -150,31 +151,7 @@ export default class AuthController {
 
     @Get("signup")
     public async signupView(req: Request, res: Response, next: NextFunction) {
-        return res.render("auth/signup/index", {
-            pageTitle: `Créer votre compte sur ${res.locals.appName}`
-        });
-    }
-
-    @Post("signup")
-    public async signupPost(req: Request, res: Response, next: NextFunction) {
-        const email = req.body.email;
-
-        const result = await authService.signup(email);
-
-        if (result.type === "SUCCESS") {
-            return res.render("auth/signup/index", {
-                pageTitle: `Créer votre compte sur ${res.locals.appName}`,
-                success: true,
-                signupMail: email
-            });
-        }
-
-        return res.render("auth/signup/index", {
-            pageTitle: `Créer votre compte sur ${res.locals.appName}`,
-            error: true,
-            errorCode: result.code,
-            SignupErrorCodes
-        });
+        return res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Get("user")

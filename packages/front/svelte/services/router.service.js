@@ -16,6 +16,10 @@ export const buildBreadcrumbs = path => {
         if (path.includes("users/metrics")) crumbs.push({ label: PAGE_ADMIN_USERS_METRICS_NAME });
         if (path.includes("users/create")) crumbs.push({ label: PAGE_ADMIN_USERS_CREATE_NAME });
         if (path.includes("stats")) crumbs.push({ label: PAGE_ADMIN_STATS_NAME });
+    } else if (path.includes("auth")) {
+        crumbs.push({ label: "Accueil", url: "/" });
+        crumbs.push({ label: "Connexion", url: "/auth/login" });
+        if (path.includes("signup")) crumbs.push({ label: "Créer un compte" });
     }
     return crumbs;
 };

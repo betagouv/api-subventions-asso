@@ -3,9 +3,7 @@ import {
     LoginDtoNegativeResponse,
     LoginDtoPositiveResponse,
     ResetPasswordDtoNegativeResponse,
-    ResetPasswordErrorCodes,
-    SignupDtoNegativeResponse,
-    SignupErrorCodes
+    ResetPasswordErrorCodes
 } from "@api-subventions-asso/dto";
 import axios, { AxiosError } from "axios";
 import apiDatasubService from "../../shared/apiDatasub.service";
@@ -64,25 +62,6 @@ export class AuthService {
             return { type: "SUCCESS", data: result.data };
         } catch (e) {
             return { type: "ERROR" };
-        }
-    }
-
-    async signup(email: string): Promise<{ type: "ERROR" | "SUCCESS"; code?: SignupErrorCodes }> {
-        try {
-            const result = await apiDatasubService.signup(email);
-
-            if (!isNegativeResponse<SignupDtoNegativeResponse>(result.data)) {
-                return { type: "SUCCESS" };
-            }
-            return { type: "ERROR", code: result.data.errorCode };
-        } catch (e: unknown) {
-            if (axios.isAxiosError(e)) {
-                return {
-                    type: "ERROR",
-                    code: (e as AxiosError<SignupDtoNegativeResponse>).response?.data.errorCode
-                };
-            }
-            return { type: "ERROR", code: SignupErrorCodes.CREATION_ERROR };
         }
     }
 }
