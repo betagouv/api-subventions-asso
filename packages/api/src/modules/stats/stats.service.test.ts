@@ -141,26 +141,29 @@ describe("StatsService", () => {
         const oneYearLaterMock = jest.spyOn(DateHelper, "oneYearAfterPeriod");
 
         const YEAR = 2022;
+        const INIT_COUNT = 2;
         const FINAL_DATA = {
-            January: 3,
-            February: 3,
-            March: 4,
-            April: 4,
-            May: 4,
-            June: 4,
-            July: 4,
-            August: 4,
-            September: 5,
-            October: 5,
-            November: 5,
-            December: 5
+            nombres_utilisateurs_avant_annee: INIT_COUNT,
+            evolution_nombres_utilisateurs: [
+                3,
+                3,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                5,
+                5,
+                5,
+                5
+            ]
         };
         const USER_DATA = [
             { signupAt: new Date(YEAR, 0, 23) },
             { signupAt: new Date(YEAR, 2, 3) },
             { signupAt: new Date(YEAR, 8, 16) }
         ];
-        const INIT_COUNT = 2;
         const FIRST_DAY_PERIOD = new Date(YEAR, 0, 1);
         const NEXT_DAY_PERIOD = new Date(YEAR + 1, 0, 0);
 
@@ -204,12 +207,15 @@ describe("StatsService", () => {
             const INIT_COUNT_ALT = 12;
             const diff = -INIT_COUNT + INIT_COUNT_ALT;
             initCountMock.mockResolvedValueOnce(INIT_COUNT_ALT);
-            const FINAL_DATA_ALT = {};
-            for (const [month, count] of Object.entries(FINAL_DATA)) {
+            const FINAL_DATA_ALT = [];
+            for (const [month, count] of Object.entries(FINAL_DATA.evolution_nombres_utilisateurs)) {
                 FINAL_DATA_ALT[month] = count + diff;
             }
             const actual = await statsService.getMonthlyUserNbByYear(YEAR);
-            const expected = FINAL_DATA_ALT;
+            const expected = {
+                evolution_nombres_utilisateurs: FINAL_DATA_ALT,
+                nombres_utilisateurs_avant_annee: INIT_COUNT_ALT
+            };
             expect(actual).toEqual(expected);
         });
     });
