@@ -5,13 +5,14 @@
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/dto#readme",
     "license": "ISC",
-    "types": "./index.ts",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
     "directories": {
-        "lib": "lib",
+        "build": "./build",
         "test": "__tests__"
     },
     "files": [
-        "lib"
+        "./build"
     ],
     "repository": {
         "type": "git",
@@ -19,6 +20,7 @@
     },
     "scripts": {
         "test": "echo 'no test in dto'",
+        "prebuild": "rm -rf ./build/*",
         "build": "tsc --project ./"
     },
     "bugs": {
