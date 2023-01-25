@@ -1,5 +1,4 @@
 import statsPort from "./stats.port";
-import { monthCapitalizedFromId } from "../../helpers/dateHelper";
 
 export class StatsService {
     getTopAssociations(limit) {
@@ -7,11 +6,12 @@ export class StatsService {
     }
 
     async getMonthlyUserCount(year) {
-        const TODAY = new Date();
         const data = await statsPort.getMonthlyUserCount(year);
+        const TODAY = new Date();
         // TODO change this with api change #908
         if (year === TODAY.getFullYear()) {
-            for (let month = TODAY.getMonth() + 1; month < 12; month++) data[monthCapitalizedFromId(month)] = null;
+            for (let month = TODAY.getMonth() + 1; month < 12; month++)
+                data.evolution_nombres_utilisateurs[month] = null;
         }
         return data;
     }
