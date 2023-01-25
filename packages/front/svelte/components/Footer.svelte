@@ -21,7 +21,7 @@
                 </p>
                 <p class="fr-footer__content-desc">
                     Le code source est ouvert et les contributions sont bienvenues.
-                    <a title="Voir le code source" href={getRepo()} target="_blank" rel="noopener">
+                    <a title="Voir le code source" href={getRepo()} target="_blank" rel="noopener noreferrer">
                         Voir le code source
                     </a>
                 </p>
@@ -68,7 +68,8 @@
                 <p>
                     Sauf mention contraire, tous les contenus de ce site sont sous <a
                         href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-                        target="_blank">
+                        target="_blank"
+                        rel="noreferrer">
                         licence etalab-2.0
                     </a>
                 </p>

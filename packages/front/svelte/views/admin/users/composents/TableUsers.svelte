@@ -87,7 +87,8 @@
                                 <a
                                     href="/auth/reset-password/{user.resetToken}?active=true"
                                     class="fr-link"
-                                    target="_blank">
+                                    target="_blank"
+                                    rel="noreferrer">
                                     Copiez-moi !
                                 </a>
                             </td>
