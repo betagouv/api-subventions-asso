@@ -1,5 +1,5 @@
 <script>
-    import { version } from "../../package.json";
+    import packageInfo from "../../package.json";
     import { user as userStore } from "../store/user.store";
     import { getContext } from "svelte";
 
@@ -37,7 +37,7 @@
                     <div class="fr-header__service">
                         <a href="/" title="Accueil - {name}">
                             <p class="fr-header__service-title">
-                                {name} - V{version}
+                                {name} - V{packageInfo.version}
                             </p>
                             {#if env != "prod"}
                                 <p class="stage">{env}</p>
@@ -58,7 +58,7 @@
                                     href="https://github.com/betagouv/api-subventions-asso"
                                     title="code source - nouvelle fenêtre"
                                     target="_blank"
-                                    rel="noopener">
+                                    rel="noopener noreferrer">
                                     Code source
                                 </a>
                             </li>
