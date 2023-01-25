@@ -13,7 +13,9 @@
     {ctrl.pageTitle}
 </h1>
 {#await $signupPromise}
-    <Spinner />
+    <div class="fr-mb-5w fr-mt-n4w">
+        <Spinner />
+    </div>
 {:then email}
     {#if $firstSubmitted}
         <Alert title="Félicitations, votre inscription a bien été prise en compte" type="success">
