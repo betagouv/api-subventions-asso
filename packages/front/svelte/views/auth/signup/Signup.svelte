@@ -36,7 +36,7 @@
     {/if}
 {:catch error}
     <Alert title="Attention" type="warning">
-        {ctrl.getErrorMessage(error)}
+        {@html ctrl.getErrorMessage(error)}
     </Alert>
 {/await}
 
