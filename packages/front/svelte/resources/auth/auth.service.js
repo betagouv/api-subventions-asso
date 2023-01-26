@@ -5,7 +5,10 @@ import authPort from "@resources/auth/auth.port";
 export class AuthService {
     signup(email) {
         if (!email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
-        return authPort.signup(email);
+        return authPort
+            .signup(email)
+            .then(data => data)
+            .catch(error => Promise.reject(parseInt(error.message)));
     }
 }
 
