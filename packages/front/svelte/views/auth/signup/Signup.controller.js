@@ -26,12 +26,7 @@ export default class SignupController {
         this.firstSubmitted.set(true);
     }
 
-    getErrorMessage(error) {
-        const code = parseInt(error.message);
-        return this._getErrorMessageByCode(code);
-    }
-
-    _getErrorMessageByCode(code) {
+    getErrorMessage(code) {
         return this.ERROR_MESSAGES[code] || "Une erreur est survenue lors de la création de votre compte.";
     }
 

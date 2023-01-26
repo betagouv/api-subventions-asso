@@ -97,32 +97,18 @@ describe("SignupController", () => {
 
     describe("getErrorMessage", () => {
         const ctrl = new SignupController();
-        const ERROR_CODE = 42;
-        const ERROR = { message: ERROR_CODE.toString() };
-        const privateSpy = jest.spyOn(ctrl, "_getErrorMessageByCode");
-        const MESSAGE = "Voici la raison de l'erreur";
-
-        it("should call private method with error code", () => {
-            privateSpy.mockReturnValueOnce(MESSAGE);
-            ctrl.getErrorMessage(ERROR);
-            expect(privateSpy).toHaveBeenCalledWith(ERROR_CODE);
-        });
-    });
-
-    describe("_getErrorMessageByCode", () => {
-        const ctrl = new SignupController();
         const FOUND_MESSAGE = "Le code erreur est trouvé";
         ctrl.ERROR_MESSAGES = { 42: FOUND_MESSAGE };
 
         it("returns value from dict if found", () => {
             const expected = FOUND_MESSAGE;
-            const actual = ctrl._getErrorMessageByCode(42);
+            const actual = ctrl.getErrorMessage(42);
             expect(actual).toBe(expected);
         });
 
         it("returns default value if code not in dict", () => {
             const expected = "Une erreur est survenue lors de la création de votre compte.";
-            const actual = ctrl._getErrorMessageByCode(43);
+            const actual = ctrl.getErrorMessage(43);
             expect(actual).toBe(expected);
         });
     });

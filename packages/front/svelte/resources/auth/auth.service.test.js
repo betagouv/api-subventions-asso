@@ -17,7 +17,7 @@ describe("authService", () => {
         const RES = {};
         const EMAIL = "test@mail.fr";
 
-        beforeAll(() => portMock.mockReturnValue(RES));
+        beforeAll(() => portMock.mockResolvedValue(RES));
         afterAll(() => portMock.mockRestore());
 
         it("rejects with appropriate code if no email", () => {
@@ -30,10 +30,18 @@ describe("authService", () => {
             expect(portMock).toHaveBeenCalledWith(EMAIL);
         });
 
-        it("return result from port", async () => {
+        it("return result from port if success", async () => {
             const expected = RES;
             const actual = await authService.signup(EMAIL);
             expect(expected).toBe(actual);
+        });
+
+        it("rejects with error code from port if given", () => {
+            const ERROR_CODE = 5;
+            portMock.mockRejectedValueOnce({ message: ERROR_CODE.toString() });
+            const expected = ERROR_CODE;
+            const actual = authService.signup(EMAIL);
+            expect(actual).rejects.toBe(expected);
         });
     });
 });
