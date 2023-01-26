@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.3](https://github.com/betagouv/datasubvention/compare/v0.20.4...v0.21.3) (2023-01-26)
+
+### Bug Fixes
+
+-   **front:** add padding in modal ([06941f8](https://github.com/betagouv/datasubvention/commit/06941f8cfd72f917a949428878a28651a14e9a62))
+-   **front:** add reactivity on new subvention ([9867cb3](https://github.com/betagouv/datasubvention/commit/9867cb381a01a0378a3c4eec7fd7f3f9a710315c))
+-   **front:** clean info legal\* ([ebb8c4b](https://github.com/betagouv/datasubvention/commit/ebb8c4b76999db011f3a3e4885d8070266176377))
+-   **front:** fix enddate off message ([38bd308](https://github.com/betagouv/datasubvention/commit/38bd3081e0a97d230292b3fabf0a190fbd59d764))
+-   **front:** rename MMDDYYYDate to dateToDDMMYYYY ([#887](https://github.com/betagouv/datasubvention/issues/887)) ([3a9a6b6](https://github.com/betagouv/datasubvention/commit/3a9a6b680d451c5dede07b25993031f250188d82))
+-   **front:** search siret with space is posible ([0489c84](https://github.com/betagouv/datasubvention/commit/0489c8413ce59f6040cde1483f7cf77585cdf7e8))
+-   **front:** search siret with space is posible ([906da32](https://github.com/betagouv/datasubvention/commit/906da3292c467d411c5cba4bf9a3f0c6644c928d))
+-   **front:** use http if flux is hs ([c89d2c9](https://github.com/betagouv/datasubvention/commit/c89d2c960fe5f8d348d168d8e0524cf77511bfd1))
+
+### Features
+
+-   **api, front:** update README ([#816](https://github.com/betagouv/datasubvention/issues/816)) ([9281700](https://github.com/betagouv/datasubvention/commit/928170063f582f217464727a14898c4a4ccdcb58))
+-   **api,dto,front:** add email domains in db and allow admin to update it ([#753](https://github.com/betagouv/datasubvention/issues/753)) ([dab4a57](https://github.com/betagouv/datasubvention/commit/dab4a57562ed9fc79f08bed449166b8bed532da2))
+-   **front:** [#800](https://github.com/betagouv/datasubvention/issues/800) title and identifiers out of InfosLegales ([#861](https://github.com/betagouv/datasubvention/issues/861)) ([18d4177](https://github.com/betagouv/datasubvention/commit/18d4177ddec3b4e046370ca498761e6c36c59bd9))
+-   **front:** add blue banner for asso and etab view ([#841](https://github.com/betagouv/datasubvention/issues/841)) ([08fe101](https://github.com/betagouv/datasubvention/commit/08fe1019a0682fb82e9e7e0e038bcba23eb3072b))
+-   **front:** fix rebase ([#847](https://github.com/betagouv/datasubvention/issues/847)) ([bfd4bf7](https://github.com/betagouv/datasubvention/commit/bfd4bf7890bdc9d476f7c593e07c67a7f6e1c486))
+-   **front:** force document download in a new tab ([#842](https://github.com/betagouv/datasubvention/issues/842)) ([145d4e6](https://github.com/betagouv/datasubvention/commit/145d4e6d85327acca764e8d23286655e8c44edae))
+-   **front:** update asso etab card ([#839](https://github.com/betagouv/datasubvention/issues/839)) ([a66cac8](https://github.com/betagouv/datasubvention/commit/a66cac877ed11b87bed9b81faee6ffc00364a7b8))
+
 ## [0.21.1](https://github.com/betagouv/datasubvention/compare/v0.21.0...v0.21.1) (2023-01-17)
 
 **Note:** Version bump only for package front

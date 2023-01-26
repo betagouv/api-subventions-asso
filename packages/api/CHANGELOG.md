@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.3](https://github.com/betagouv/api-subventions-asso/compare/v0.20.4...v0.21.3) (2023-01-26)
+
+### Bug Fixes
+
+-   **api:** is domain accepted ([#848](https://github.com/betagouv/api-subventions-asso/issues/848)) ([b72b3d1](https://github.com/betagouv/api-subventions-asso/commit/b72b3d10048f3d69983cca75e4a419ae014f3a8e))
+-   **api:** use sirene siege ([f66ccb5](https://github.com/betagouv/api-subventions-asso/commit/f66ccb5d80f37b283df337eb5458892db27585af))
+
+### Features
+
+-   **api, front:** update README ([#816](https://github.com/betagouv/api-subventions-asso/issues/816)) ([9281700](https://github.com/betagouv/api-subventions-asso/commit/928170063f582f217464727a14898c4a4ccdcb58))
+-   **api,dto,front:** add email domains in db and allow admin to update it ([#753](https://github.com/betagouv/api-subventions-asso/issues/753)) ([dab4a57](https://github.com/betagouv/api-subventions-asso/commit/dab4a57562ed9fc79f08bed449166b8bed532da2))
+-   **api:** [#668](https://github.com/betagouv/api-subventions-asso/issues/668) [#771](https://github.com/betagouv/api-subventions-asso/issues/771) save and consult top associations ([#811](https://github.com/betagouv/api-subventions-asso/issues/811)) ([f1f7123](https://github.com/betagouv/api-subventions-asso/commit/f1f71230e7eb78b98ca50da13cdd2d0901dfe99c))
+-   **api:** [#737](https://github.com/betagouv/api-subventions-asso/issues/737) cumulative nb users by month one year ([#806](https://github.com/betagouv/api-subventions-asso/issues/806)) ([47b69d0](https://github.com/betagouv/api-subventions-asso/commit/47b69d047b90e961b1f0d087ae2eff1abd4716aa))
+
 ## [0.21.1](https://github.com/betagouv/api-subventions-asso/compare/v0.21.0...v0.21.1) (2023-01-17)
 
 **Note:** Version bump only for package api

@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.3](https://github.com/betagouv/api-subventions-asso/compare/v0.20.4...v0.21.3) (2023-01-26)
+
+### Bug Fixes
+
+-   **api:** is domain accepted ([#848](https://github.com/betagouv/api-subventions-asso/issues/848)) ([b72b3d1](https://github.com/betagouv/api-subventions-asso/commit/b72b3d10048f3d69983cca75e4a419ae014f3a8e))
+-   **api:** use sirene siege ([f66ccb5](https://github.com/betagouv/api-subventions-asso/commit/f66ccb5d80f37b283df337eb5458892db27585af))
+-   **front:** add padding in modal ([06941f8](https://github.com/betagouv/api-subventions-asso/commit/06941f8cfd72f917a949428878a28651a14e9a62))
+-   **front:** add reactivity on new subvention ([9867cb3](https://github.com/betagouv/api-subventions-asso/commit/9867cb381a01a0378a3c4eec7fd7f3f9a710315c))
+-   **front:** clean info legal\* ([ebb8c4b](https://github.com/betagouv/api-subventions-asso/commit/ebb8c4b76999db011f3a3e4885d8070266176377))
+-   **front:** fix enddate off message ([38bd308](https://github.com/betagouv/api-subventions-asso/commit/38bd3081e0a97d230292b3fabf0a190fbd59d764))
+-   **front:** rename MMDDYYYDate to dateToDDMMYYYY ([#887](https://github.com/betagouv/api-subventions-asso/issues/887)) ([3a9a6b6](https://github.com/betagouv/api-subventions-asso/commit/3a9a6b680d451c5dede07b25993031f250188d82))
+-   **front:** search siret with space is posible ([0489c84](https://github.com/betagouv/api-subventions-asso/commit/0489c8413ce59f6040cde1483f7cf77585cdf7e8))
+-   **front:** search siret with space is posible ([906da32](https://github.com/betagouv/api-subventions-asso/commit/906da3292c467d411c5cba4bf9a3f0c6644c928d))
+-   **front:** use http if flux is hs ([c89d2c9](https://github.com/betagouv/api-subventions-asso/commit/c89d2c960fe5f8d348d168d8e0524cf77511bfd1))
+
+### Features
+
+-   **api, front:** update README ([#816](https://github.com/betagouv/api-subventions-asso/issues/816)) ([9281700](https://github.com/betagouv/api-subventions-asso/commit/928170063f582f217464727a14898c4a4ccdcb58))
+-   **api,dto,front:** add email domains in db and allow admin to update it ([#753](https://github.com/betagouv/api-subventions-asso/issues/753)) ([dab4a57](https://github.com/betagouv/api-subventions-asso/commit/dab4a57562ed9fc79f08bed449166b8bed532da2))
+-   **api:** [#668](https://github.com/betagouv/api-subventions-asso/issues/668) [#771](https://github.com/betagouv/api-subventions-asso/issues/771) save and consult top associations ([#811](https://github.com/betagouv/api-subventions-asso/issues/811)) ([f1f7123](https://github.com/betagouv/api-subventions-asso/commit/f1f71230e7eb78b98ca50da13cdd2d0901dfe99c))
+-   **api:** [#737](https://github.com/betagouv/api-subventions-asso/issues/737) cumulative nb users by month one year ([#806](https://github.com/betagouv/api-subventions-asso/issues/806)) ([47b69d0](https://github.com/betagouv/api-subventions-asso/commit/47b69d047b90e961b1f0d087ae2eff1abd4716aa))
+-   **front:** [#800](https://github.com/betagouv/api-subventions-asso/issues/800) title and identifiers out of InfosLegales ([#861](https://github.com/betagouv/api-subventions-asso/issues/861)) ([18d4177](https://github.com/betagouv/api-subventions-asso/commit/18d4177ddec3b4e046370ca498761e6c36c59bd9))
+-   **front:** add blue banner for asso and etab view ([#841](https://github.com/betagouv/api-subventions-asso/issues/841)) ([08fe101](https://github.com/betagouv/api-subventions-asso/commit/08fe1019a0682fb82e9e7e0e038bcba23eb3072b))
+-   **front:** fix rebase ([#847](https://github.com/betagouv/api-subventions-asso/issues/847)) ([bfd4bf7](https://github.com/betagouv/api-subventions-asso/commit/bfd4bf7890bdc9d476f7c593e07c67a7f6e1c486))
+-   **front:** force document download in a new tab ([#842](https://github.com/betagouv/api-subventions-asso/issues/842)) ([145d4e6](https://github.com/betagouv/api-subventions-asso/commit/145d4e6d85327acca764e8d23286655e8c44edae))
+-   **front:** update asso etab card ([#839](https://github.com/betagouv/api-subventions-asso/issues/839)) ([a66cac8](https://github.com/betagouv/api-subventions-asso/commit/a66cac877ed11b87bed9b81faee6ffc00364a7b8))
+
 ## [0.21.2](https://github.com/betagouv/api-subventions-asso/compare/v0.21.1...v0.21.2) (2023-01-18)
 
 **Note:** Version bump only for package api-subventions-asso
@@ -46,6 +73,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 -   **api:** add message on api index route ([4d5f64f](https://github.com/betagouv/api-subventions-asso/commit/4d5f64fa4d020c26c30c6e8ee0763c74c12d91e8))
+
 ## [0.20.2](https://github.com/betagouv/api-subventions-asso/compare/v0.19.4...v0.20.2) (2023-01-05)
 
 ### Bug Fixes

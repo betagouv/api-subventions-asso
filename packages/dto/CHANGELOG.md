@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.3](https://github.com/betagouv/datasubvention/compare/v0.20.4...v0.21.3) (2023-01-26)
+
+### Features
+
+-   **api,dto,front:** add email domains in db and allow admin to update it ([#753](https://github.com/betagouv/datasubvention/issues/753)) ([dab4a57](https://github.com/betagouv/datasubvention/commit/dab4a57562ed9fc79f08bed449166b8bed532da2))
+-   **api:** [#668](https://github.com/betagouv/datasubvention/issues/668) [#771](https://github.com/betagouv/datasubvention/issues/771) save and consult top associations ([#811](https://github.com/betagouv/datasubvention/issues/811)) ([f1f7123](https://github.com/betagouv/datasubvention/commit/f1f71230e7eb78b98ca50da13cdd2d0901dfe99c))
+
 ## [0.21.2](https://github.com/betagouv/datasubvention/compare/v0.21.1...v0.21.2) (2023-01-18)
 
 **Note:** Version bump only for package dto
