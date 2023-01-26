@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.4](https://github.com/betagouv/api-subventions-asso/compare/v0.21.3...v0.21.4) (2023-01-26)
+
+### Bug Fixes
+
+-   **api:** use cursor instead of array ([b0a3d26](https://github.com/betagouv/api-subventions-asso/commit/b0a3d261d0e52aa73b377bc1afa97c9e88c8d6e1))
+
 ## [0.21.3](https://github.com/betagouv/api-subventions-asso/compare/v0.20.4...v0.21.3) (2023-01-26)
 
 ### Bug Fixes
