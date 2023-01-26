@@ -1,6 +1,5 @@
 import authPort from "@resources/auth/auth.port";
 import authService from "@resources/auth/auth.service";
-import statsService from "@resources/stats/stats.service";
 
 const DEFAULT_ERROR_CODE = 49;
 

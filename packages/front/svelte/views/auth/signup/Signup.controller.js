@@ -8,8 +8,8 @@ export default class SignupController {
     ERROR_MESSAGES = {
         [SignupErrorCodes.EMAIL_NOT_VALID]: "L'adresse mail fournie ne semble pas être une adresse valide.",
         [SignupErrorCodes.USER_ALREADY_EXIST]: "Un compte lié à cette adresse mail existe déjà.",
-        [SignupErrorCodes.CREATION_ERROR]: `Une erreur est survenue lors de la création de votre compte. Re-essayer plus tard ou <a href="/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a>`,
-        [SignupErrorCodes.CREATION_RESET_ERROR]: `Une erreur est survenue lors de la création de votre compte. Re-essayer plus tard ou <a href="/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a>`,
+        [SignupErrorCodes.CREATION_ERROR]: `Une erreur est survenue lors de la création de votre compte. Ré-essayez plus tard ou <a href="/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a>`,
+        [SignupErrorCodes.CREATION_RESET_ERROR]: `Une erreur est survenue lors de la création de votre compte. Ré-essayez plus tard ou <a href="/contact" target="_blank" rel="noopener noreferrer">contactez-nous</a>`,
         [SignupErrorCodes.EMAIL_MUST_BE_END_GOUV]: "L'adresse mail fournie ne semble pas être liée au gouvernement."
     };
 
