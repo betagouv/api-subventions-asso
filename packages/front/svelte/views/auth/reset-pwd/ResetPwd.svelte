@@ -3,6 +3,7 @@
     import Input from "@dsfr/Input.svelte";
     import Button from "@dsfr/Button.svelte";
     import { ResetPwdController } from "./ResetPwd.controller";
+    import Spinner from "@components/Spinner.svelte";
 
     export let token;
 
@@ -26,7 +27,11 @@
                     <li>Doit contenir au moins 8 caractères, mais pas plus de 32</li>
                 </ul>
             </Alert>
-            {#await $promise catch error}
+            {#await $promise}
+                <div class="fr-mb-5w fr-mt-n4w">
+                    <Spinner />
+                </div>
+            {:catch error}
                 <Alert title="Attention" type="warning">
                     {@html ctrl.getErrorMessage(error)}
                 </Alert>
