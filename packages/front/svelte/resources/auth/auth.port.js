@@ -16,6 +16,8 @@ export class AuthPort {
                 throw new Error(errorCode);
             });
     }
+
+    resetPassword(token, password) {}
 }
 
 const authPort = new AuthPort();

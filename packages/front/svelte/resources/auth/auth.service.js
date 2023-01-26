@@ -10,6 +10,8 @@ export class AuthService {
             .then(data => data)
             .catch(error => Promise.reject(parseInt(error.message)));
     }
+
+    async resetPassword(token, password) {}
 }
 
 const authService = new AuthService();
