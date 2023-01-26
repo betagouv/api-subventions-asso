@@ -1,5 +1,4 @@
-// TODO update import after switch svelte to ts #330
-import { SignupErrorCodes } from "@api-subventions-asso/dto/build/auth/SignupDtoResponse";
+import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import authPort from "@resources/auth/auth.port";
 
 export class AuthService {
@@ -11,7 +10,13 @@ export class AuthService {
             .catch(error => Promise.reject(parseInt(error.message)));
     }
 
-    async resetPassword(token, password) {}
+    resetPassword(token, password) {
+        if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
+        return authPort
+            .resetPassword(token, password)
+            .then(data => data)
+            .catch(error => Promise.reject(parseInt(error.message)));
+    }
 }
 
 const authService = new AuthService();
