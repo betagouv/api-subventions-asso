@@ -6,6 +6,7 @@ import Home from "./views/home/Home.svelte";
 import AdminUsersMetrics from "./views/admin/users/AdminUsersMetrics.svelte";
 import Admin from "./views/admin/Admin.svelte";
 import AdminStats from "./views/admin/stats/AdminStats.svelte";
+import ResetPwd from "./views/auth/reset-pwd/ResetPwd.svelte";
 import Signup from "./views/auth/signup/Signup.svelte";
 
 export default {
@@ -16,6 +17,7 @@ export default {
     "admin/users/metrics": () => AdminUsersMetrics,
     "admin/stats": () => AdminStats,
     admin: () => Admin,
-    "/": () => Home,
-    "auth/signup": () => Signup
+    "auth/signup": () => Signup,
+    "auth/reset-password/:token": () => ResetPwd,
+    "/": () => Home
 };
