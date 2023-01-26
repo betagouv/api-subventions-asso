@@ -9,8 +9,6 @@ const {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: userRepository } = require("../build/src/modules/user/repositories/user.repository");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { asyncForEach } = require("../build/src/shared/helpers/ArrayHelper");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
@@ -22,24 +20,25 @@ const {
 module.exports = {
     async up(db, client) {
         await connectDB();
-        const logs = await statsRepository.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
+        const logsCursor = await statsRepository.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
 
         await statsAssociationsVisitRepository.createIndexes();
         await rnaSirenRepository.createIndexes();
 
-        await asyncForEach(logs, async log => {
-            if (!log.meta.req.user?.email || log.meta.res.statusCode !== 200) return;
+        while (await logsCursor.hasNext()) {
+            const log = await logsCursor.next();
+            if (!log.meta.req.user?.email || log.meta.res.statusCode !== 200) continue;
             const identifier = log.meta.req.url.split("/").pop();
 
             const typeIdentifier = getIdentifierType(identifier);
             if (typeIdentifier === null) {
-                return;
+                continue;
             }
 
             const user = await userRepository.findByEmail(log.meta.req.user.email);
 
             if (!user || user.roles.includes("admin")) {
-                return;
+                continue;
             }
 
             await statsAssociationsVisitRepository.add({
@@ -47,7 +46,7 @@ module.exports = {
                 userId: user._id,
                 date: log.timestamp
             });
-        });
+        }
     },
 
     async down(db, client) {

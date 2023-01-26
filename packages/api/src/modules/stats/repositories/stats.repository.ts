@@ -102,11 +102,9 @@ export class StatsRepository {
     }
 
     public getLogsWithRegexUrl(regex: RegExp) {
-        return this.collection
-            .find({
-                "meta.req.url": regex
-            })
-            .toArray();
+        return this.collection.find({
+            "meta.req.url": regex
+        });
     }
 }
 
