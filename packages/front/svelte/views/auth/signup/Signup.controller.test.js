@@ -2,8 +2,7 @@ import SignupController from "./Signup.controller";
 import authService from "@resources/auth/auth.service";
 import { getContext } from "svelte";
 
-// TODO update path after switch svelte to ts #330
-jest.mock("@api-subventions-asso/dto/build/auth/SignupDtoResponse", () => ({
+jest.mock("@api-subventions-asso/dto", () => ({
     SignupErrorCodes: {
         EMAIL_NOT_VALID: 1,
         USER_ALREADY_EXIST: 2,
@@ -45,6 +44,7 @@ describe("SignupController", () => {
             const ctrl = new SignupController();
             expect(ctrl.app.getName).toBeCalled();
         });
+
         it("sets pageTitle from app getName return value", () => {
             const ctrl = new SignupController();
             const actual = ctrl.pageTitle;
