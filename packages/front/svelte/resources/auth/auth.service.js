@@ -22,6 +22,10 @@ export class AuthService {
         if (!email) return Promise.reject();
         return authPort.forgetPassword(email).then(data => data);
     }
+
+    login(email, password) {
+        return authPort.login(email, password);
+    }
 }
 
 const authService = new AuthService();

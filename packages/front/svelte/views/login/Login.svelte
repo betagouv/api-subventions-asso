@@ -1,0 +1,71 @@
+<script>
+    import Alert from "../../dsfr/Alert.svelte";
+    import Button from "../../dsfr/Button.svelte";
+    import LoginController from "./Login.controller";
+
+    let form;
+    const controller = new LoginController();
+
+    const { error } = controller;
+
+    $: controller.formElt = form;
+</script>
+
+<div class="fr-container fr-mb-8w">
+    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+        <div class="fr-col fr-col-lg-8">
+            <h1>Connexion</h1>
+            {#if $error != null}
+                <Alert title="Attention">
+                    {$error}
+                </Alert>
+            {:else}
+                <Alert type="info" title="Inscription">
+                    <a class="fr-link" href="/auth/signup">
+                        Rendez-vous sur notre formulaire d'inscription (en cliquant sur ce lien)
+                    </a>
+                </Alert>
+            {/if}
+            <!-- <% if (typeof loginError !='undefined' && loginError) { %>
+                        <div role="alert" class="fr-alert fr-alert--warning">
+                            <p class="fr-alert__title">Attention</p>
+                            <% if (errorCode===errorCodes.EMAIL_OR_PASSWORD_NOT_MATCH) { %>
+                                <p>Mot de passe ou email incorrect</p>
+                                <% } else if (errorCode===errorCodes.USER_NOT_ACTIVE) { %>
+                                    <p>Votre compte ne semble pas encore activé, si vous ne retrouvez pas
+                                        votre mail d'activation vous pouvez faire mot de passe oublié.</p>
+                                    <% } else { %>
+                                        <p>Une erreur interne est survenue, veuillez réessayer plus tard. Si
+                                            le problème persiste, n'hésitez pas à <a title="Contactez-nous"
+                                                href="mailto:<%= `${contactEmail}?subject=Problème de connexion&body=Bonjour, %0D%0A %0D%0A Je n'arrive pas à me connecter, votre application m'indique une erreur interne. Voici le code erreur : ${errorCode}&html=true` %>"
+                                                target="_blank" rel="noopener noreferrer">
+                                                nous contacter.
+                                            </a>.</p>
+                                        <% } %>
+                        </div>
+                        <% } %> -->
+            <!-- <% if (typeof success !='undefined' && success) { %>
+                                <div role="alert" class="fr-alert fr-alert--success">
+                                    <p>
+                                        <%-success==="COMPTE_ACTIVED"
+                                            ? "Votre compte a bien été activé, vous pouvez maintenant vous connecter"
+                                            : "Votre mot de passe a bien été changé" %>
+                                    </p>
+                                </div>
+                                <% } %> -->
+            <form bind:this={form} on:submit={e => controller.submit(e)}>
+                <fieldset class="fr-fieldset fr-my-4w">
+                    <legend class="fr-fieldset__legend" id="text-legend">Vos identifiants</legend>
+                    <label class="fr-label fr-pl-1w" for="text-input-text">Email :</label>
+                    <input class="fr-input fr-ml-1w" type="email" name="email" required="true" />
+                    <label class="fr-label fr-mt-2w fr-ml-1w" for="text-input-text">Mot de passe :</label>
+                    <input class="fr-input fr-ml-1w" type="password" name="password" required="true" />
+                </fieldset>
+                <div class="fr-input-group fr-my-4w">
+                    <button type="submit" class="fr-btn" title="Connection">Valider</button>
+                    <a class="fr-link" href="/auth/forget-password">Mot de passe oublié</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
