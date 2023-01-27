@@ -61,10 +61,9 @@ export class MonthlyUserCountByYearController {
         gradient.addColorStop(0, "#ADBFFC");
         gradient.addColorStop(1, "white");
 
-        // TODO change with api format #908
-        const labels = this._monthData.map((month, key) =>
-                    new Date(2022, key, 1).toLocaleDateString(`fr`, { month: `narrow` })
-                ),
+        const labels = [...Array(12).keys()].map(monthId =>
+            new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
+        );
         const data = this._monthData;
 
         return new Chart(canvas, {
