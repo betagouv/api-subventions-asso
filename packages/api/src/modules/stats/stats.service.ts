@@ -32,6 +32,8 @@ class StatsService {
         const init_count = await userService.countTotalUsersOnDate(start);
         const users = await userService.findByPeriod(start, oneYearAfterPeriod(year));
 
+        const now = new Date();
+        const lastMonth = now.getFullYear() === year ? now.getMonth() + 1 : now.getFullYear() < year ? 0 : 12;
         const countNewByMonth = new Array(12).fill(0);
 
         for (const user of users) {
@@ -41,10 +43,12 @@ class StatsService {
 
         return {
             nombres_utilisateurs_avant_annee: init_count,
-            evolution_nombres_utilisateurs: countNewByMonth.reduce((acc, month, index) => {
-                acc[index] = month + (acc[index - 1] || init_count);
-                return acc;
-            }, [])
+            evolution_nombres_utilisateurs: countNewByMonth
+                .reduce((acc, month, index) => {
+                    acc[index] = month + (acc[index - 1] || init_count);
+                    return acc;
+                }, [])
+                .slice(0, lastMonth)
         };
     }
 
