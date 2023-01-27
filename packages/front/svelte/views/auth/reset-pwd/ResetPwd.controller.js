@@ -25,7 +25,6 @@ export class ResetPwdController {
             token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND)
         );
         this.password = new Store("");
-        this.firstSubmitted = new Store(false);
     }
 
     getErrorMessage(code) {
@@ -34,7 +33,6 @@ export class ResetPwdController {
 
     onSubmit() {
         this.promise.set(authService.resetPassword(this.token, this.password.value));
-        this.firstSubmitted.set(true);
         return this.promise.value
             .then(() => {
                 window.location.assign(

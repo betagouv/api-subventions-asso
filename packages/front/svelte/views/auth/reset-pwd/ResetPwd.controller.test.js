@@ -19,10 +19,9 @@ describe("ResetPwdController", () => {
 
     describe("constructor and static values", () => {
         it.each`
-            propertyName        | expected
-            ${"password"}       | ${""}
-            ${"promise"}        | ${Promise.resolve()}
-            ${"firstSubmitted"} | ${false}
+            propertyName  | expected
+            ${"password"} | ${""}
+            ${"promise"}  | ${Promise.resolve()}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new ResetPwdController(TOKEN);
             expect(ctrl[propertyName].value).toEqual(expected);
@@ -53,12 +52,10 @@ describe("ResetPwdController", () => {
         const serviceMock = jest.spyOn(authService, "resetPassword");
         const PROMISE = Promise.resolve();
         let setPromiseMock;
-        let setFirstSubmittedMock;
 
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
             setPromiseMock = jest.spyOn(ctrl.promise, "set");
-            setFirstSubmittedMock = jest.spyOn(ctrl.firstSubmitted, "set");
             ctrl.password.value = PASSWORD;
 
             delete window.location;
@@ -74,11 +71,6 @@ describe("ResetPwdController", () => {
         it("sets promise with value from service", () => {
             ctrl.onSubmit();
             expect(setPromiseMock).toBeCalledWith(PROMISE);
-        });
-
-        it("registers first submitted state", () => {
-            ctrl.onSubmit();
-            expect(setFirstSubmittedMock).toBeCalledWith(true);
         });
 
         it.each`
