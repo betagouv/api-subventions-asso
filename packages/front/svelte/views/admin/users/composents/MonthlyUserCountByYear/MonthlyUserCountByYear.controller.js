@@ -32,7 +32,7 @@ export class MonthlyUserCountByYearController {
 
     async updateYear(newYearIndex) {
         await this._load(STATS_YEAR_CHOICES[newYearIndex]);
-        this.chartData = this._monthData;
+        this.chartData = [this._lastYearNbUser, ...this._monthData];
         this.chart.update();
     }
 
@@ -61,10 +61,13 @@ export class MonthlyUserCountByYearController {
         gradient.addColorStop(0, "#ADBFFC");
         gradient.addColorStop(1, "white");
 
-        const labels = [...Array(12).keys()].map(monthId =>
-            new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
-        );
-        const data = this._monthData;
+        const labels = [
+            "",
+            ...[...Array(12).keys()].map(monthId =>
+                new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
+            )
+        ];
+        const data = [this._lastYearNbUser, ...this._monthData];
 
         return new Chart(canvas, {
             type: "line",
