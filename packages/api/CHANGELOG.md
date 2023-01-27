@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.22.0](https://github.com/betagouv/api-subventions-asso/compare/v0.21.4...v0.22.0) (2023-01-27)
+
+### Bug Fixes
+
+-   **api,front:** review cleaning ([a0beda3](https://github.com/betagouv/api-subventions-asso/commit/a0beda35b3891f7a28fe852b341d0f11942b65ab))
+-   **api:** keep just good request ([#897](https://github.com/betagouv/api-subventions-asso/issues/897)) ([5b51d9c](https://github.com/betagouv/api-subventions-asso/commit/5b51d9c4646b5010d1b6ef1e1a43338877a1fc55))
+
+### Features
+
+-   **api, dto:** add UserCountByStatus stats ressource ([#896](https://github.com/betagouv/api-subventions-asso/issues/896)) ([d4ee988](https://github.com/betagouv/api-subventions-asso/commit/d4ee988e1dfa62b904fcdb5921fe62a533f676a3))
+-   **api, front:** add code convention to README ([#903](https://github.com/betagouv/api-subventions-asso/issues/903)) ([c6da308](https://github.com/betagouv/api-subventions-asso/commit/c6da308640a354dfe6b6ab42879d3f3925f667da))
+-   **api:** change logout managements ([#885](https://github.com/betagouv/api-subventions-asso/issues/885)) ([505efba](https://github.com/betagouv/api-subventions-asso/commit/505efbaa013e3654a06156995a283f022eb4be64)), closes [#864](https://github.com/betagouv/api-subventions-asso/issues/864)
+-   **api:** change management of api asso files ([223227e](https://github.com/betagouv/api-subventions-asso/commit/223227e6c563c020c4104ed329e49a6909f14480))
+-   **api:** return nb_users_before_year on get monthly user stats ([21a01c1](https://github.com/betagouv/api-subventions-asso/commit/21a01c19d9aa1064b2d5568502675207775f7e67))
+
 ## [0.21.4](https://github.com/betagouv/api-subventions-asso/compare/v0.21.3...v0.21.4) (2023-01-26)
 
 ### Bug Fixes

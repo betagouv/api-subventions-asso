@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.22.0](https://github.com/betagouv/datasubvention/compare/v0.21.4...v0.22.0) (2023-01-27)
+
+### Bug Fixes
+
+-   **api,front:** review cleaning ([a0beda3](https://github.com/betagouv/datasubvention/commit/a0beda35b3891f7a28fe852b341d0f11942b65ab))
+-   **front:** don't escape error message ([cc9a4f4](https://github.com/betagouv/datasubvention/commit/cc9a4f4ebd4c59f23d95f352a9cf5de4b3c0f193))
+-   **front:** don't fail if user not connected ([298582b](https://github.com/betagouv/datasubvention/commit/298582bd10b0206d5a95ac6b7545b0b56c93d5d0))
+-   **front:** fix breadcrumbs ([9608f2f](https://github.com/betagouv/datasubvention/commit/9608f2fadf1349a4d7f706632b0099f6506dc2c0))
+-   **front:** homogenize service return (always int code) ([301ddb0](https://github.com/betagouv/datasubvention/commit/301ddb0f712a7775476df4562df9c6b70c8ccfcc))
+-   **front:** no email is promise rejection ([7ce66fc](https://github.com/betagouv/datasubvention/commit/7ce66fc8cc78bf88e3a0dbc38f7fc91f43932fb3))
+
+### Features
+
+-   **api, dto:** add UserCountByStatus stats ressource ([#896](https://github.com/betagouv/datasubvention/issues/896)) ([d4ee988](https://github.com/betagouv/datasubvention/commit/d4ee988e1dfa62b904fcdb5921fe62a533f676a3))
+-   **api, front:** add code convention to README ([#903](https://github.com/betagouv/datasubvention/issues/903)) ([c6da308](https://github.com/betagouv/datasubvention/commit/c6da308640a354dfe6b6ab42879d3f3925f667da))
+-   **api:** change logout managements ([#885](https://github.com/betagouv/datasubvention/issues/885)) ([505efba](https://github.com/betagouv/datasubvention/commit/505efbaa013e3654a06156995a283f022eb4be64)), closes [#864](https://github.com/betagouv/datasubvention/issues/864)
+-   **front:** [#661](https://github.com/betagouv/datasubvention/issues/661) widget user nb ([#905](https://github.com/betagouv/datasubvention/issues/905)) ([32760f1](https://github.com/betagouv/datasubvention/commit/32760f168fa16c1b01e48c6aae438fd9b73ead90)), closes [#753](https://github.com/betagouv/datasubvention/issues/753)
+-   **front:** add user distributions ([368a224](https://github.com/betagouv/datasubvention/commit/368a2244eef73fd28880980d9cdd04f082e14cfc))
+-   **front:** month helper ([ccc06c8](https://github.com/betagouv/datasubvention/commit/ccc06c838c218ff4cf16c36c07296a4673358e12))
+-   **front:** package lock ([8251f33](https://github.com/betagouv/datasubvention/commit/8251f33606836ff25d969569b151a73a3605c749))
+-   **front:** package lock ([1cc16ed](https://github.com/betagouv/datasubvention/commit/1cc16edb549cf64fd3867b84654972d4f7fa8137))
+-   **front:** port and service ([6b9912d](https://github.com/betagouv/datasubvention/commit/6b9912ded82e3ec74b5067dd0638c9cd96b874ba))
+-   **front:** quick button type support ([c19dfeb](https://github.com/betagouv/datasubvention/commit/c19dfeba56f474742d8ae1cc2efb10fbf0b7e374))
+-   **front:** quick input required on input ([a8c0eb0](https://github.com/betagouv/datasubvention/commit/a8c0eb0d215628a3e5a6a17aa953c3201f2332c7))
+-   **front:** remove response success ([db2b30a](https://github.com/betagouv/datasubvention/commit/db2b30a196e3012eaff9eefe1b4e0901d3d0fee1))
+-   **front:** signup component and controller ([0a6dcba](https://github.com/betagouv/datasubvention/commit/0a6dcbafbf34e4ee7fa9f9ec54ae9fdeaaaea86c))
+-   **front:** spinner spacing ([b66eb0c](https://github.com/betagouv/datasubvention/commit/b66eb0c312ce6355a630890ab25dc1f3cae6b738))
+-   **front:** stats port and service ([a5ddbc8](https://github.com/betagouv/datasubvention/commit/a5ddbc82fce1d3af85a4b3a14728e620d3e3b4ab))
+-   **front:** style spacing and sizes ([3d98b3b](https://github.com/betagouv/datasubvention/commit/3d98b3b702e2936f39c745d4e145bcca74bbe85c))
+-   **front:** switch router from ejs to svelte ([a68a9f8](https://github.com/betagouv/datasubvention/commit/a68a9f8ccaded68768cc863ae769b7888b366e33))
+-   **front:** use nb_users_before_year ([8bee87d](https://github.com/betagouv/datasubvention/commit/8bee87d015d6a195fad10c82f137e0d7820d0778))
+
 ## [0.21.3](https://github.com/betagouv/datasubvention/compare/v0.20.4...v0.21.3) (2023-01-26)
 
 ### Bug Fixes

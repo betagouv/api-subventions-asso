@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.22.0](https://github.com/betagouv/datasubvention/compare/v0.21.4...v0.22.0) (2023-01-27)
+
+### Features
+
+-   **api, dto:** add UserCountByStatus stats ressource ([#896](https://github.com/betagouv/datasubvention/issues/896)) ([d4ee988](https://github.com/betagouv/datasubvention/commit/d4ee988e1dfa62b904fcdb5921fe62a533f676a3))
+
 ## [0.21.3](https://github.com/betagouv/datasubvention/compare/v0.20.4...v0.21.3) (2023-01-26)
 
 ### Features
