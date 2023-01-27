@@ -14,6 +14,7 @@ export class ResetPwdController {
             "Le format du mot de passe ne correspond pas aux exigences de sécurité"
     };
     DEFAULT_ERROR_MESSAGE = "Une erreur est survenue lors de la création de votre compte.";
+
     constructor(token) {
         this.token = token;
         const urlParams = new URLSearchParams(window.location.search);
@@ -31,11 +32,16 @@ export class ResetPwdController {
         return this.ERROR_MESSAGES[code] || this.DEFAULT_ERROR_MESSAGE;
     }
 
-    async onSubmit() {
+    onSubmit() {
         this.promise.set(authService.resetPassword(this.token, this.password.value));
         this.firstSubmitted.set(true);
-        if (await this.promise.value)
-            window.location = "/auth/login?success=" + (this.activation ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED");
+        return this.promise.value
+            .then(() => {
+                window.location.assign(
+                    "/auth/login?success=" + (this.activation ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED")
+                );
+            })
+            .catch((_, ignore) => ignore());
     }
 
     checkPassword(password) {
