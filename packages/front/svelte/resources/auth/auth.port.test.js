@@ -3,10 +3,9 @@ import authPort from "./auth.port";
 
 const DEFAULT_ERROR_CODE = 49;
 
-jest.mock("@api-subventions-asso/dto/build/auth/SignupDtoResponse", () => ({
-    SignupErrorCodes: {
-        CREATION_ERROR: DEFAULT_ERROR_CODE
-    },
+jest.mock("@api-subventions-asso/dto", () => ({
+    SignupErrorCodes: { CREATION_ERROR: DEFAULT_ERROR_CODE },
+    ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
     __esModule: true // this property makes it work
 }));
 
@@ -40,6 +39,40 @@ describe("AuthPort", () => {
             axiosPostMock.mockRejectedValueOnce(undefined);
             const expected = new Error(DEFAULT_ERROR_CODE);
             expect(async () => authPort.signup(EMAIL)).rejects.toThrowError(expected);
+        });
+    });
+
+    describe("resetPassword()", () => {
+        const axiosPostMock = jest.spyOn(axios, "post");
+        const RES = true;
+        const PASSWORD = "very secret";
+        const TOKEN = "123";
+
+        it("calls resetPassword route", async () => {
+            const PATH = "/auth/reset-password";
+            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            await authPort.resetPassword(TOKEN, PASSWORD);
+            expect(axiosPostMock).toBeCalledWith(PATH, { token: TOKEN, password: PASSWORD });
+        });
+
+        it("returns true if success", async () => {
+            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            const actual = await authPort.resetPassword(TOKEN, PASSWORD);
+            const expected = RES;
+            expect(actual).toBe(expected);
+        });
+
+        it("throws error with error code if any", () => {
+            const ERROR_CODE = 42;
+            axiosPostMock.mockRejectedValueOnce({ response: { data: { code: ERROR_CODE } } });
+            const expected = new Error(ERROR_CODE);
+            expect(async () => authPort.resetPassword(TOKEN, PASSWORD)).rejects.toThrowError(expected);
+        });
+
+        it("throws error with default code if none received", () => {
+            axiosPostMock.mockRejectedValueOnce(undefined);
+            const expected = new Error(DEFAULT_ERROR_CODE);
+            expect(async () => authPort.resetPassword(TOKEN, PASSWORD)).rejects.toThrowError(expected);
         });
     });
 });

@@ -1,4 +1,4 @@
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import { NextFunction, Request, Response } from "express";
 import { DefaultObject } from "../../../../@types/utils";
 import Controller from "../../../../decorators/controller.decorator";
@@ -88,65 +88,7 @@ export default class AuthController {
 
     @Get("reset-password/:tokenId")
     public resetPasswordView(req: Request, res: Response, next: NextFunction) {
-        const id = req.params.tokenId;
-
-        if (!id) {
-            res.statusCode = 422;
-            return res.render("error");
-        }
-
-        res.render("auth/reset-password/resetPassword", {
-            pageTitle: "Changement de mot de passe",
-            token: id,
-            activation: req.query.active
-        });
-    }
-
-    @Get("reset-password/*")
-    public async resetPasswordViewHOTFIX(req: Request, res: Response, next: NextFunction) {
-        req.params.tokenId = req.path.split("reset-password/")[1];
-        return this.resetPasswordView(req, res, next);
-    }
-
-    @Post("reset-password/:tokenId")
-    public async resetPasswordPost(req: Request, res: Response, next: NextFunction) {
-        if (!req.body.token || !req.body.password) {
-            const id = req.params.tokenId;
-
-            if (!id || !req.body.token) {
-                res.statusCode = 500;
-                return res.render("error");
-            }
-
-            res.statusCode = 422;
-            return res.render("auth/reset-password/resetPassword", {
-                pageTitle: "Changement de mot de passe",
-                token: id || req.body.token,
-                activation: req.query.active,
-                error: ResetPasswordErrorCodes.INTERNAL_ERROR,
-                errorCodes: ResetPasswordErrorCodes
-            });
-        }
-
-        const result = await authService.resetPassword(req.body.token, req.body.password);
-
-        if (result.type === "ERROR") {
-            res.statusCode = 422;
-            return res.render("auth/reset-password/resetPassword", {
-                pageTitle: "Changement de mot de passe",
-                token: req.body.token,
-                activation: req.query.active,
-                error: result.code,
-                errorCodes: ResetPasswordErrorCodes
-            });
-        }
-        res.redirect("/auth/login?success=" + (req.query.active ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED"));
-    }
-
-    @Post("reset-password/*")
-    public async resetPasswordPostHOTFIX(req: Request, res: Response, next: NextFunction) {
-        req.params.tokenId = req.path.split("reset-password/")[1];
-        return this.resetPasswordPost(req, res, next);
+        return res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Get("signup")
