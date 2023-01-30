@@ -105,8 +105,6 @@ describe("MonthlyUserCountByYearController", () => {
         let buildChartSpy = jest.spyOn(ctrl, "_buildChart").mockImplementation(() => (ctrl.chart = CHART));
         ctrl.dataPromise = Promise.resolve();
 
-        // it("waits for data ??", () => {}); // TODO howto
-
         it("calls _buildChart", async () => {
             await ctrl.onCanvasMount(CANVAS);
             expect(buildChartSpy).toBeCalledWith(CANVAS);
@@ -147,10 +145,12 @@ describe("MonthlyUserCountByYearController", () => {
         });
 
         it("updates chart data with _data values", async () => {
+            const lastData = 20;
             loadSpy.mockImplementationOnce(async () => {
                 ctrl._monthData = DATA;
+                ctrl._lastYearNbUser = lastData;
             });
-            const expected = [22, 30];
+            const expected = [lastData, ...DATA];
             await ctrl.updateYear(YEAR_INDEX);
             expect(setterSpy).toBeCalledWith(expected);
         });
@@ -246,13 +246,31 @@ describe("MonthlyUserCountByYearController", () => {
             ctrl._buildChart(undefined);
             expect(Chart).not.toHaveBeenCalled();
         });
+
         it("build Chart with appropriate canvas", () => {
             ctrl._buildChart(CANVAS);
             expect(Chart).toBeCalledWith(CANVAS, expect.anything());
         });
+
         it("returns Chart Object", () => {
             const expected = CHART;
             const actual = ctrl._buildChart(CANVAS);
+            expect(actual).toStrictEqual(expected);
+        });
+
+        it("sets data with correct values", () => {
+            ctrl._monthData = [22, 40];
+            ctrl._lastYearNbUser = 12;
+            const expected = [12, 22, 40];
+            ctrl._buildChart(CANVAS);
+            const actual = Chart.mock.calls[0][1].data.datasets[0].data;
+            expect(actual).toStrictEqual(expected);
+        });
+
+        it("sets labels with correct values", () => {
+            const expected = ["", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+            ctrl._buildChart(CANVAS);
+            const actual = Chart.mock.calls[0][1].data.labels;
             expect(actual).toStrictEqual(expected);
         });
     });
