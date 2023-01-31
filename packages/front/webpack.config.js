@@ -13,6 +13,7 @@ module.exports = {
             "@components": path.resolve(__dirname, "svelte/components"),
             "@dsfr": path.resolve(__dirname, "svelte/dsfr"),
             "@core": path.resolve(__dirname, "svelte/core"),
+            "@services": path.resolve(__dirname, "svelte/services"),
             "@helpers": path.resolve(__dirname, "svelte/helpers")
         }
     }

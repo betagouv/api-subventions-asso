@@ -25,7 +25,7 @@
     "scripts": {
         "dev": "nodemon",
         "start": "node ./build/src/index.js",
-        "prebuild": "webpack && webpack --config ./webpack.svelte.config.js",
+        "prebuild": "rm -rf ./build/* && webpack && webpack --config ./webpack.svelte.config.js",
         "build": "tsc --project tsconfig.build.json",
         "postbuild": "npm run copy-files",
         "copy-files": "cp -r views build && cp -r static build && mkdir build/node_modules && cp -r node_modules/@gouvfr build/node_modules/@gouvfr",
