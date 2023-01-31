@@ -1,12 +1,12 @@
 import {
+    AssociationTopDtoResponse,
+    ErrorResponse,
+    MonthlyRequestsDtoResponse,
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
-    MonthlyAvgRequestDtoResponse,
-    AssociationTopDtoResponse,
-    UsersByStatusResponseDto,
-    ErrorResponse
+    UsersByStatusResponseDto
 } from "@api-subventions-asso/dto";
-import { Controller, Get, Query, Route, Security, Tags, Response } from "tsoa";
+import { Controller, Get, Query, Response, Route, Security, Tags } from "tsoa";
 import statsService from "../../stats.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
 
@@ -77,13 +77,9 @@ export class StatsController extends Controller {
      */
     @Get("/requests/monthly/{year}")
     @Response<ErrorResponse>("500")
-    async getRequestsPerMonthByYear(
-        year: string,
-        @Query() includesAdmin = "false"
-    ): Promise<MonthlyAvgRequestDtoResponse> {
+    getRequestsPerMonthByYear(year: string, @Query() includesAdmin = "false"): Promise<MonthlyRequestsDtoResponse> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
-        const result = await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
-        return { data: result };
+        return statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
     }
 
     /**
