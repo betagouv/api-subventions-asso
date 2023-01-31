@@ -34,6 +34,18 @@ class StatsPort {
             return result.data.data;
         });
     }
+
+    getMonthlyRequestCount(year) {
+        const path = `${this.BASE_PATH}/requests/monthly/${year}`;
+        return axios.get(path).then(result => {
+            if (result.data.message) throw new Error(result.data.message);
+            return {
+                monthlyData: result.data.nb_requetes_par_mois,
+                sum: result.data.somme_nb_requetes,
+                average: result.data.nb_requetes_moyen
+            };
+        });
+    }
 }
 
 const statsPort = new StatsPort();

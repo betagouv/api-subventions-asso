@@ -12,6 +12,10 @@ export class StatsService {
     getUsersDistribution() {
         return statsPort.getUsersDistribution();
     }
+
+    getMonthlyRequestCount(year) {
+        return statsPort.getMonthlyRequestCount(year);
+    }
 }
 
 const statsService = new StatsService();

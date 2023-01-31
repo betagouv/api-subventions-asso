@@ -36,7 +36,6 @@ describe("statsService", () => {
         });
     });
 
-
     describe("getMonthlyUser", () => {
         const spyPort = jest.spyOn(statsPort, "getMonthlyUserCount");
         const YEAR = 2022;
@@ -51,6 +50,24 @@ describe("statsService", () => {
             const expected = {};
             spyPort.mockResolvedValueOnce(expected);
             const actual = await statsService.getMonthlyUserCount(2022);
+            expect(expected).toBe(actual);
+        });
+    });
+
+    describe("getMonthlyRequest", () => {
+        const spyPort = jest.spyOn(statsPort, "getMonthlyRequestCount");
+        const YEAR = 2022;
+
+        it("calls getMonthlyRequestCount", async () => {
+            spyPort.mockImplementationOnce(jest.fn());
+            await statsService.getMonthlyRequestCount(YEAR);
+            expect(spyPort).toHaveBeenCalledWith(YEAR);
+        });
+
+        it("returns port's result", async () => {
+            const expected = {};
+            spyPort.mockResolvedValueOnce(expected);
+            const actual = await statsService.getMonthlyRequestCount(2022);
             expect(expected).toBe(actual);
         });
     });
