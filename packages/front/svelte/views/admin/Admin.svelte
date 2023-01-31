@@ -1,12 +1,5 @@
 <script>
     import Card from "../../dsfr/Card.svelte";
-    import { user as userStore } from "../../store/user.store";
-
-    const user = $userStore;
-
-    if (!user || !user.roles || !user.roles.includes("admin")) {
-        document.location.href = "/";
-    }
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">

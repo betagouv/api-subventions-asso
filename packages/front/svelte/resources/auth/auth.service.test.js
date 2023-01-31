@@ -107,4 +107,35 @@ describe("authService", () => {
             expect(actual).rejects.toBeUndefined();
         });
     });
+
+    describe("login()", () => {
+        const portMock = jest.spyOn(authPort, "login");
+        it("should be call port", async () => {
+            const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
+
+            portMock.mockResolvedValueOnce({});
+
+            await authService.login(...expected);
+            expect(portMock).toHaveBeenCalledWith(...expected);
+        });
+
+        it("should save user in local storage", async () => {
+            const expected = { _id: "USER_ID" };
+
+            portMock.mockResolvedValueOnce(expected);
+
+            await authService.login("", "");
+            const actual = JSON.parse(localStorage.getItem(authService.USER_LOCAL_STORAGE_KEY));
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return user", async () => {
+            const expected = { _id: "USER_ID" };
+
+            portMock.mockResolvedValueOnce(expected);
+
+            const actual = await authService.login("", "");
+            expect(actual).toEqual(expected);
+        });
+    });
 });

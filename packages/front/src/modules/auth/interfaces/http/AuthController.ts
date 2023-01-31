@@ -18,10 +18,7 @@ export default class AuthController {
 
     @Get("login")
     public loginView(req: Request, res: Response, next: NextFunction) {
-        res.render("auth/login/login", {
-            pageTitle: "Connexion",
-            success: req.query.success
-        });
+        return res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Post("login")
