@@ -5,15 +5,8 @@ export class StatsService {
         return statsPort.getTopAssociations(limit);
     }
 
-    async getMonthlyUserCount(year) {
-        const data = await statsPort.getMonthlyUserCount(year);
-        const TODAY = new Date();
-        // TODO change this with api change #908
-        if (year === TODAY.getFullYear()) {
-            for (let month = TODAY.getMonth() + 1; month < 12; month++)
-                data.evolution_nombres_utilisateurs[month] = null;
-        }
-        return data;
+    getMonthlyUserCount(year) {
+        return statsPort.getMonthlyUserCount(year);
     }
 
     getUsersDistribution() {

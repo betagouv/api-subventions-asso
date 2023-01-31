@@ -1,4 +1,4 @@
-import { englishMonthNames, firstDayOfPeriod, oneYearAfterPeriod, isValidDate } from "../../shared/helpers/DateHelper";
+import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 import statsRepository from "./repositories/stats.repository";
 import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
@@ -29,9 +29,11 @@ class StatsService {
 
     async getMonthlyUserNbByYear(year: number) {
         const start = firstDayOfPeriod(year);
-        let count = await userService.countTotalUsersOnDate(start);
+        const init_count = await userService.countTotalUsersOnDate(start);
         const users = await userService.findByPeriod(start, oneYearAfterPeriod(year));
 
+        const now = new Date();
+        const lastMonth = now.getFullYear() === year ? now.getMonth() + 1 : now.getFullYear() < year ? 0 : 12;
         const countNewByMonth = new Array(12).fill(0);
 
         for (const user of users) {
@@ -40,12 +42,13 @@ class StatsService {
         }
 
         return {
-            nombres_utilisateurs_avant_annee: count,
-            evolution_nombres_utilisateurs: countNewByMonth.reduce((acc, month, index) => {
-                const totalUsersOnMonth = month + (acc[index - 1] || count);
-                acc[index] = totalUsersOnMonth;
-                return acc;
-            }, [])
+            nombres_utilisateurs_avant_annee: init_count,
+            evolution_nombres_utilisateurs: countNewByMonth
+                .reduce((acc, month, index) => {
+                    acc[index] = month + (acc[index - 1] || init_count);
+                    return acc;
+                }, [])
+                .slice(0, lastMonth)
         };
     }
 

@@ -22,13 +22,12 @@ class StatsPort {
             if (result.data.message) throw new Error(result.data.message);
             return result.data.data;
         });
-        // TODO update with new api output #867
     }
 
     getUsersDistribution() {
         const path = `${this.BASE_PATH}/users/status`;
         return axios.get(path).then(result => {
-            if (!result.data.success) throw new Error(result.data.message);
+            if (!result.data.data) throw new Error(result.data.message);
             return result.data.data;
         });
     }
