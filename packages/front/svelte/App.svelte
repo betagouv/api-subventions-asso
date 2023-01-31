@@ -9,7 +9,7 @@
     import GenericModal from "./dsfr/GenericModal.svelte";
     import Matomo from "./components/Matomo.svelte";
     import Router from "./components/Router.svelte";
-    import Header from "./components/Header.svelte";
+    import Header from "./components/Header/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import Theme from "./components/Theme.svelte";
 
