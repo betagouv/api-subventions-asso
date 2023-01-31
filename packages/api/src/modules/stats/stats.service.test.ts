@@ -94,43 +94,69 @@ describe("StatsService", () => {
         const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsRepository, "countRequestsPerMonthByYear");
 
         const YEAR = 2022;
-        const mockedValue = {
-            January: 201,
-            February: 21,
-            March: 20,
-            April: 201,
-            May: 13,
-            June: 201,
-            July: 201,
-            August: 15,
-            September: 201,
-            October: 300,
-            November: 201,
-            December: 1
-        };
+        const CURR_YEAR = new Date().getFullYear();
+        const CURR_MONTH = new Date().getMonth();
+        const mockedValue = [
+            { _id: 1, nbOfRequests: 201 },
+            { _id: 2, nbOfRequests: 21 },
+            { _id: 10, nbOfRequests: 300 },
+            { _id: 12, nbOfRequests: 1 }
+        ];
 
-        beforeEach(() => {
-            monthlyAvgRequestsOnPeriodMock.mockResolvedValueOnce(mockedValue);
-        });
+        beforeAll(() => monthlyAvgRequestsOnPeriodMock.mockResolvedValue(mockedValue));
+        afterAll(() => monthlyAvgRequestsOnPeriodMock.mockRestore());
 
-        it("should call repository", async () => {
+        it("calls repository", async () => {
             const expected = [YEAR, false];
             const actual = statsRepository.countRequestsPerMonthByYear;
             await statsService.getRequestsPerMonthByYear(YEAR, false);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
-        it("should call repository with includesAdmin", async () => {
+        it("calls repository with includesAdmin", async () => {
             const expected = [YEAR, true];
             const actual = statsRepository.countRequestsPerMonthByYear;
             await statsService.getRequestsPerMonthByYear(YEAR, true);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
-        it("should call repository", async () => {
-            const expected = mockedValue;
-            const actual = await statsService.getRequestsPerMonthByYear(YEAR, false);
-            expect(actual).toStrictEqual(expected);
+        describe.each`
+            time         | year             | detail                                       | sum                     | avg
+            ${"past"}    | ${CURR_YEAR - 1} | ${[201, 21, 0, 0, 0, 0, 0, 0, 0, 300, 0, 1]} | ${523}                  | ${523 / 12}
+            ${"current"} | ${CURR_YEAR}     | ${Array(CURR_MONTH + 1).fill(5)}             | ${(CURR_MONTH + 1) * 5} | ${5}
+            ${"future"}  | ${CURR_YEAR + 1} | ${[]}                                        | ${0}                    | ${0}
+        `("returns correct value for $time year", ({ year, detail, sum, avg }) => {
+            beforeEach(() => {
+                if (year === CURR_YEAR)
+                    monthlyAvgRequestsOnPeriodMock.mockResolvedValueOnce(
+                        Array(CURR_MONTH + 1)
+                            .fill(0)
+                            .map((_, index) => ({
+                                _id: index + 1,
+                                nbOfRequests: 5
+                            }))
+                    );
+            });
+
+            // TODO fix case current
+
+            it("returns formatted detail", async () => {
+                const expected = detail;
+                const actual = (await statsService.getRequestsPerMonthByYear(year, false)).nb_requetes_par_mois;
+                expect(actual).toStrictEqual(expected);
+            });
+
+            it("returns correct sum", async () => {
+                const expected = sum;
+                const actual = (await statsService.getRequestsPerMonthByYear(year, false)).somme_nb_requetes;
+                expect(actual).toStrictEqual(expected);
+            });
+
+            it("returns correct average", async () => {
+                const expected = avg;
+                const actual = (await statsService.getRequestsPerMonthByYear(year, false)).nb_requetes_moyen;
+                expect(actual).toStrictEqual(expected);
+            });
         });
     });
 
