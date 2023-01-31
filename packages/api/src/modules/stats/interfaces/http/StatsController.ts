@@ -77,9 +77,12 @@ export class StatsController extends Controller {
      */
     @Get("/requests/monthly/{year}")
     @Response<ErrorResponse>("500")
-    getRequestsPerMonthByYear(year: string, @Query() includesAdmin = "false"): Promise<MonthlyRequestsDtoResponse> {
+    async getRequestsPerMonthByYear(
+        year: string,
+        @Query() includesAdmin = "false"
+    ): Promise<MonthlyRequestsDtoResponse> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
-        return statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
+        return await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
     }
 
     /**

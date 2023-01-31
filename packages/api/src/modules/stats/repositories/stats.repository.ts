@@ -1,8 +1,6 @@
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
-import { getMonthlyDataObject } from "../../../shared/helpers/DateHelper";
-import { NbRequestsPerMonthRequest } from "@api-subventions-asso/dto";
 
 export class StatsRepository {
     private readonly collection = db.collection("log");

@@ -30,31 +30,6 @@ export const englishMonthNames = Object.values(frenchToEnglishMonthsMap).map(mon
     capitalizeFirstLetter(monthLowercase)
 );
 
-export function getMonthlyDataObject(dbData, index1Key, dataKey) {
-    /*
-    format object from [
-        { index1Key: 1, dataKey: dataJanuary },
-        ... ,
-        { index1Key: 12, dataKey: dataDecember }
-    ]
-    to {
-        January: dataJanuary,
-        ... ,
-        December: dataDecember,
-    }
-     */
-    const resultByMonth0Index = {};
-    let index1;
-    for (const document of dbData) {
-        index1 = document[index1Key];
-        resultByMonth0Index[index1 - 1] = document[dataKey];
-    }
-    return englishMonthNames.reduce((acc, month, index) => {
-        acc[month] = resultByMonth0Index[index] || 0;
-        return acc;
-    }, {});
-}
-
 export const getMonthFromFrenchStr = (month: string) => {
     return frenchToEnglishMonthsMap[month];
 };
