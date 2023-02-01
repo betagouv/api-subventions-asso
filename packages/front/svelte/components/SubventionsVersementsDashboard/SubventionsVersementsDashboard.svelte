@@ -51,7 +51,7 @@
         {#if $elements?.length}
             <SubventionsVersemementsStatistique elements={$elements} year={$selectedYear} />
             {#if $loaderStateStore.status != "end"}
-                <Alert type="info" title="Récupérations en cours des subventions chez nos fournisseurs ...">
+                <Alert type="info" title="Récupération en cours des subventions chez nos fournisseurs ...">
                     <ProgressBar percent={$loaderStateStore.percent} />
                 </Alert>
             {/if}
