@@ -32,13 +32,17 @@ class StatsService {
                 somme_nb_requetes: 0
             };
         const lastMonthIndex1 = now.getFullYear() === year ? now.getMonth() + 1 : 12;
-        const countAsArray = Array(12).fill(0);
+
         const countAsObjectIndex1 = await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
-        countAsObjectIndex1.forEach(
-            ({ _id: monthIdIndex1, nbOfRequests }) => (countAsArray[monthIdIndex1 - 1] = nbOfRequests)
+        const { countAsArray, sum } = countAsObjectIndex1.reduce(
+            (acc, { _id: monthIdIndex1, nbOfRequests }) => {
+                acc.countAsArray[monthIdIndex1 - 1] = nbOfRequests;
+                acc.sum += nbOfRequests;
+                return acc;
+            },
+            { countAsArray: Array(12).fill(0), sum: 0 }
         );
         countAsArray.splice(lastMonthIndex1);
-        const sum = countAsArray.reduce((partialSum, nbReq) => nbReq + partialSum);
 
         return {
             nb_requetes_par_mois: countAsArray,
