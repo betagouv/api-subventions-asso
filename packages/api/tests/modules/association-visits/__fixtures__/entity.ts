@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import AssociationVisitEntity from "../../../../src/modules/stats/entities/AssociationVisitEntity";
 
 const now = new Date();
-export const TODAY = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+export const TODAY = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 15));
 export const THIS_MONTH = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
 export const PREVIOUS_MONTH = new Date(Date.UTC(now.getFullYear(), now.getMonth() - 1, 1));
 
