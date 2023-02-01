@@ -23,8 +23,32 @@ class StatsService {
         return statsRepository.countMedianRequestsOnPeriod(start, end, includesAdmin);
     }
 
-    getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
-        return statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
+    async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
+        const now = new Date();
+        if (year > now.getFullYear())
+            return {
+                nb_requetes_par_mois: [],
+                nb_requetes_moyen: 0,
+                somme_nb_requetes: 0
+            };
+        const lastMonthIndex1 = now.getFullYear() === year ? now.getMonth() + 1 : 12;
+
+        const countAsObjectIndex1 = await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
+        const { countAsArray, sum } = countAsObjectIndex1.reduce(
+            (acc, { _id: monthIdIndex1, nbOfRequests }) => {
+                acc.countAsArray[monthIdIndex1 - 1] = nbOfRequests;
+                acc.sum += nbOfRequests;
+                return acc;
+            },
+            { countAsArray: Array(12).fill(0), sum: 0 }
+        );
+        countAsArray.splice(lastMonthIndex1);
+
+        return {
+            nb_requetes_par_mois: countAsArray,
+            nb_requetes_moyen: sum / lastMonthIndex1,
+            somme_nb_requetes: sum
+        };
     }
 
     async getMonthlyUserNbByYear(year: number) {

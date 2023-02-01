@@ -95,69 +95,28 @@ describe("StatsRepository", () => {
     });
 
     describe("countRequestsPerMonthByYear()", () => {
-        async function checkMonthlyAvgStatFormat(aggregateOutput, expected) {
-            // @ts-expect-error statsRepository.collection is private attribute and mock typing errors
-            jest.spyOn(statsRepository.collection, "aggregate").mockReturnValueOnce({ toArray: () => aggregateOutput });
-            const actual = await statsRepository.countRequestsPerMonthByYear(YEAR, false);
-            expect(actual).toStrictEqual(expected);
-        }
+        // @ts-expect-error statsRepository.collection is private attribute and mock typing errors
+        const mongoSpy = jest.spyOn(statsRepository.collection, "aggregate");
+        const MONGO_OUTPUT = [
+            { _id: 1, nbOfRequest: 201 },
+            { _id: 2, nbOfRequest: 21 },
+            { _id: 10, nbOfRequest: 300 },
+            { _id: 12, nbOfRequest: 1 }
+        ];
 
-        it("should format the result properly", async () => {
-            await checkMonthlyAvgStatFormat(
-                [
-                    { _id: 1, nbOfRequest: 201 },
-                    { _id: 2, nbOfRequest: 21 },
-                    { _id: 3, nbOfRequest: 20 },
-                    { _id: 4, nbOfRequest: 201 },
-                    { _id: 5, nbOfRequest: 13 },
-                    { _id: 6, nbOfRequest: 201 },
-                    { _id: 7, nbOfRequest: 201 },
-                    { _id: 8, nbOfRequest: 15 },
-                    { _id: 9, nbOfRequest: 201 },
-                    { _id: 10, nbOfRequest: 300 },
-                    { _id: 11, nbOfRequest: 201 },
-                    { _id: 12, nbOfRequest: 1 }
-                ],
-                {
-                    January: 201,
-                    February: 21,
-                    March: 20,
-                    April: 201,
-                    May: 13,
-                    June: 201,
-                    July: 201,
-                    August: 15,
-                    September: 201,
-                    October: 300,
-                    November: 201,
-                    December: 1
-                }
-            );
+        it("calls mongo aggregation", async () => {
+            // @ts-expect-error mock
+            mongoSpy.mockReturnValueOnce({ toArray: () => Promise.resolve(MONGO_OUTPUT) });
+            await statsRepository.countRequestsPerMonthByYear(YEAR, false);
+            expect(mongoSpy).toBeCalled();
         });
 
-        it("should fill in empty months", async () => {
-            await checkMonthlyAvgStatFormat(
-                [
-                    { _id: 1, nbOfRequest: 201 },
-                    { _id: 2, nbOfRequest: 21 },
-                    { _id: 10, nbOfRequest: 300 },
-                    { _id: 12, nbOfRequest: 1 }
-                ],
-                {
-                    January: 201,
-                    February: 21,
-                    March: 0,
-                    April: 0,
-                    May: 0,
-                    June: 0,
-                    July: 0,
-                    August: 0,
-                    September: 0,
-                    October: 300,
-                    November: 0,
-                    December: 1
-                }
-            );
+        it("returns repo's result'", async () => {
+            // @ts-expect-error mock
+            mongoSpy.mockReturnValueOnce({ toArray: () => Promise.resolve(MONGO_OUTPUT) });
+            const expected = MONGO_OUTPUT;
+            const actual = await statsRepository.countRequestsPerMonthByYear(YEAR, false);
+            expect(actual).toStrictEqual(expected);
         });
     });
 });

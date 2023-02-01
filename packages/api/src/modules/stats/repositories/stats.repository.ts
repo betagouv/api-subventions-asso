@@ -1,8 +1,6 @@
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
-import { getMonthlyDataObject } from "../../../shared/helpers/DateHelper";
-import { NbRequestsPerMonthRequest } from "@api-subventions-asso/dto";
 
 export class StatsRepository {
     private readonly collection = db.collection("log");
@@ -78,7 +76,7 @@ export class StatsRepository {
         return result[middle].nbOfRequest;
     }
 
-    public async countRequestsPerMonthByYear(year: number, includesAdmin: boolean): Promise<NbRequestsPerMonthRequest> {
+    public countRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
         const start = new Date(year, 0, 1);
         const end = new Date(year + 1, 0, 0);
         const buildQuery = () => {
@@ -91,16 +89,12 @@ export class StatsRepository {
                     "meta.req.user.email": { $ne: null }
                 }
             };
-            if (!includesAdmin) {
-                matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
-            }
-            const annotateQuery = { $addFields: { month: { $month: "$timestamp" } } };
+            if (!includesAdmin) matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
 
-            return [matchQuery, annotateQuery, { $group: { _id: "$month", nbOfRequest: { $sum: 1 } } }];
+            return [matchQuery, { $group: { _id: { $month: "$timestamp" }, nbOfRequests: { $sum: 1 } } }];
         };
 
-        const queryResult = await this.collection.aggregate(buildQuery()).toArray();
-        return getMonthlyDataObject(queryResult, "_id", "nbOfRequest");
+        return this.collection.aggregate(buildQuery()).toArray();
     }
 
     public getLogsWithRegexUrl(regex: RegExp) {
