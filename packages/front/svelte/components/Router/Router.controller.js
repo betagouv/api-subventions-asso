@@ -4,20 +4,20 @@ import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
 
 export default class RouterController {
-    constructor() {
+    constructor(routes) {
         this.crumbs = new Store([]);
         this.props = new Store();
         this.component = new Store();
         this.query = new Store({});
-        this.routes = {};
+        this.routes = routes;
     }
 
     loadRoute(path, searchQuery) {
         const current = RouterService.getRoute(this.routes, path);
-        if (current.needAuthentification) {
+        if (!current.disableAuth) {
             const user = authService.getCurrentUser();
 
-            if (!user._id) return RouterService.goToUrl("/auth/login");
+            if (!user || !user._id) return RouterService.goToUrl("/auth/login");
             if (path.includes("admin") && !isAdmin(user)) return RouterService.goToUrl("/");
         }
         this.query.set(this.getQueryParams(searchQuery));

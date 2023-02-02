@@ -6,12 +6,11 @@
 
     export let routes = {};
 
-    const controller = new RouterController();
+    const controller = new RouterController(routes);
 
     const { crumbs, component, props, query } = controller;
 
     onMount(() => {
-        controller.routes = routes;
         controller.loadRoute(location.pathname, location.search);
     });
 </script>

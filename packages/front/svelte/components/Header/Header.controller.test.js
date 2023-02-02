@@ -13,7 +13,7 @@ describe("HeaderController", () => {
         const authServiceMock = jest.spyOn(authService, "logout");
         const routerServiceMock = jest.spyOn(routerService, "goToUrl");
 
-        it("should be call authService", () => {
+        it("should call authService", () => {
             authServiceMock.mockReturnValueOnce({});
             routerServiceMock.mockReturnValue(null);
 
@@ -22,7 +22,7 @@ describe("HeaderController", () => {
             expect(authServiceMock).toHaveBeenCalledTimes(1);
         });
 
-        it("should be call goToUrl", () => {
+        it("should call goToUrl", () => {
             authServiceMock.mockReturnValueOnce(null);
             routerServiceMock.mockReturnValue(null);
             controller.logout();

@@ -3,8 +3,8 @@ import AuthController from "@components/Auth/Auth.controller";
 import authService from "@resources/auth/auth.service";
 
 describe("AuthController", () => {
-    describe("initCurrentUserInApp", () => {
-        const authServiceMock = jest.spyOn(authService, "getCurrentUser");
+    describe("init", () => {
+        const authServiceMock = jest.spyOn(authService, "initUserInApp");
 
         let controller;
 
@@ -15,19 +15,9 @@ describe("AuthController", () => {
         it("should be call authService", async () => {
             authServiceMock.mockReturnValueOnce({});
 
-            await controller.initCurrentUserInApp();
+            await controller.init();
 
             expect(authServiceMock).toHaveBeenCalledTimes(1);
-        });
-
-        it("should be axios header", async () => {
-            const expected = "FAKE_TOKEN";
-            authServiceMock.mockReturnValueOnce({ jwt: { token: expected } });
-
-            await controller.initCurrentUserInApp();
-            const actual = axios.defaults.headers.common["x-access-token"];
-
-            expect(actual).toBe(expected);
         });
     });
 });

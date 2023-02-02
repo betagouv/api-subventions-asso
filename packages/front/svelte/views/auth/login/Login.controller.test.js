@@ -31,7 +31,7 @@ describe("LoginController", () => {
             formDataMock.mockRestore();
         });
 
-        it("should don't call login", async () => {
+        it("should not call login if form not set up", async () => {
             controller.formElt = null;
             await controller.submit(event);
 
@@ -94,14 +94,14 @@ describe("LoginController", () => {
     });
 
     describe("_getErrorMessage", () => {
-        it("sould return email passoword dont match message", () => {
+        it("should return 'email passoword don't match' message", () => {
             const actual = controller._getErrorMessage(LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
             const expected = "Mot de passe ou email incorrect";
 
             expect(actual).toBe(expected);
         });
 
-        it("sould return un active message", () => {
+        it("should return 'inactive' message", () => {
             const actual = controller._getErrorMessage(LoginDtoErrorCodes.USER_NOT_ACTIVE);
             const expected =
                 "Votre compte ne semble pas encore activé, si vous ne retrouvez pas votre mail d'activation vous pouvez faire mot de passe oublié.";
@@ -109,7 +109,7 @@ describe("LoginController", () => {
             expect(actual).toBe(expected);
         });
 
-        it("sould return default message", () => {
+        it("should return default message", () => {
             const actual = controller._getErrorMessage(Infinity);
             const expected = "Une erreur interne est survenue, veuillez réessayer plus tard.";
 
@@ -118,7 +118,7 @@ describe("LoginController", () => {
     });
 
     describe("_getSuccessMessage", () => {
-        it("sould actived acount message", () => {
+        it("should return 'activated account' message", () => {
             controller._query.success = "COMPTE_ACTIVED";
             const actual = controller._getSuccessMessage();
             const expected = "Votre compte a bien été activé, vous pouvez maintenant vous connecter";
@@ -126,7 +126,7 @@ describe("LoginController", () => {
             expect(actual).toBe(expected);
         });
 
-        it("sould password message", () => {
+        it("should return 'password changed' message", () => {
             controller._query.success = "OTHER";
             const actual = controller._getSuccessMessage();
             const expected = "Votre mot de passe a bien été changé";

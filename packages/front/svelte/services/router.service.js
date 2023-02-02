@@ -35,10 +35,10 @@ export const mapSegments = path =>
         }));
 
 export const getRouteSegments = routes =>
-    Object.entries(routes).map(([path, { component, needAuthentification }]) => ({
+    Object.entries(routes).map(([path, { component, disableAuth }]) => ({
         path,
         component,
-        needAuthentification,
+        disableAuth,
         segments: mapSegments(path)
     }));
 

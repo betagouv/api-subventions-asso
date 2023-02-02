@@ -6,7 +6,6 @@
     export let query;
     const controller = new LoginController(query);
 
-    console.log(query);
     const { error, showSuccessMessage, successMessage } = controller;
     $: controller.formElt = form;
 </script>

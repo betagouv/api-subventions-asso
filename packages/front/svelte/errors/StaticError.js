@@ -4,7 +4,5 @@ export default class StaticError extends Error {
         this.data = data;
     }
 
-    static get httpCode() {
-        return 0;
-    }
+    static httpCode = 0;
 }

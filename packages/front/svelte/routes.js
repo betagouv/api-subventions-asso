@@ -13,44 +13,36 @@ import Login from "./views/auth/login/Login.svelte";
 
 export default {
     "association/:id": {
-        component: () => Association,
-        needAuthentification: true
+        component: () => Association
     },
     "etablissement/:id": {
-        component: () => Etablissement,
-        needAuthentification: true
+        component: () => Etablissement
     },
     "admin/users/list": {
-        component: () => AdminUsersAccount,
-        needAuthentification: true
+        component: () => AdminUsersAccount
     },
     "admin/users/create": {
-        component: () => AdminUsersCreate,
-        needAuthentification: true
+        component: () => AdminUsersCreate
     },
     "admin/users/metrics": {
-        component: () => AdminUsersMetrics,
-        needAuthentification: true
+        component: () => AdminUsersMetrics
     },
     "admin/stats": {
-        component: () => AdminStats,
-        needAuthentification: true
+        component: () => AdminStats
     },
     admin: {
-        component: () => Admin,
-        needAuthentification: true
+        component: () => Admin
     },
     "/": {
-        component: () => Home,
-        needAuthentification: true
+        component: () => Home
     },
     "auth/signup": {
         component: () => Signup,
-        needAuthentification: false
+        disableAuth: false
     },
     "auth/login": {
         component: () => Login,
-        needAuthentification: false
+        disableAuth: true
     },
     "auth/reset-password/:token": {
         component: () => ResetPwd,

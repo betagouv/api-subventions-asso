@@ -6,12 +6,12 @@ describe("RouterController", () => {
     let controller;
 
     beforeEach(() => {
-        controller = new RouterController();
+        controller = new RouterController({});
     });
 
     describe("loadRoute", () => {
         const getRouteMock = jest.spyOn(routerService, "getRoute").mockReturnValue({
-            needAuthentification: false,
+            disableAuth: true,
             segments: [],
             component: jest.fn()
         });
@@ -34,68 +34,68 @@ describe("RouterController", () => {
             getQueryParamsMock.mockRestore();
         });
 
-        it("should be call get route", () => {
+        it("should call get route", () => {
             const expected = [{}, "path"];
             controller.loadRoute(expected[1], "");
 
             expect(getRouteMock).toHaveBeenCalledWith(...expected);
         });
 
-        it("should be call getQueryParams", () => {
+        it("should call getQueryParams", () => {
             const expected = "searchQuery";
             controller.loadRoute("", expected);
 
             expect(getQueryParamsMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should be call buildBreadcrumbs", () => {
+        it("should call buildBreadcrumbs", () => {
             const expected = "path";
             controller.loadRoute(expected, "");
 
             expect(buildBreadcrumbsMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should be call getProps", () => {
+        it("should call getProps", () => {
             const expected = ["path", []];
             controller.loadRoute(expected[0], "");
 
             expect(getPropsMock).toHaveBeenCalledWith(...expected);
         });
 
-        it("should be call component", () => {
-            const mockedCoponent = jest.fn();
+        it("should call component", () => {
+            const mockedComponent = jest.fn();
 
             getRouteMock.mockReturnValueOnce({
-                needAuthentification: false,
+                disableAuth: true,
                 segments: [],
-                component: mockedCoponent
+                component: mockedComponent
             });
 
             controller.loadRoute("path", "");
 
-            expect(mockedCoponent).toHaveBeenCalledTimes(1);
+            expect(mockedComponent).toHaveBeenCalledTimes(1);
         });
 
-        it("should be call getCurrentUser", () => {
-            getRouteMock.mockReturnValueOnce({ needAuthentification: true });
+        it("should call getCurrentUser", () => {
+            getRouteMock.mockReturnValueOnce({ disableAuth: false });
 
             controller.loadRoute("", "");
 
             expect(getCurrentUserMock).toHaveBeenCalledTimes(1);
         });
 
-        it("should be call goToUrl with params: '/auth/login'", () => {
+        it("should call goToUrl with params: '/auth/login'", () => {
             const expected = "/auth/login";
-            getRouteMock.mockReturnValueOnce({ needAuthentification: true });
+            getRouteMock.mockReturnValueOnce({ disableAuth: false });
 
             controller.loadRoute("", "");
 
             expect(goToUrlMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should be call goToUrl with params: '/'", () => {
+        it("should call goToUrl with params: '/'", () => {
             const expected = "/";
-            getRouteMock.mockReturnValueOnce({ needAuthentification: true });
+            getRouteMock.mockReturnValueOnce({ disableAuth: false });
             getCurrentUserMock.mockReturnValueOnce({ _id: "ID", roles: ["user"] });
 
             controller.loadRoute("/admin/list", "");
@@ -103,8 +103,8 @@ describe("RouterController", () => {
             expect(goToUrlMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should don't call goToUrl", () => {
-            getRouteMock.mockReturnValueOnce({ needAuthentification: true, component: jest.fn() });
+        it("should not call goToUrl if user has enough roles", () => {
+            getRouteMock.mockReturnValueOnce({ disableAuth: false, component: jest.fn() });
             getCurrentUserMock.mockReturnValueOnce({ _id: "ID", roles: ["user", "admin"] });
 
             controller.loadRoute("/admin/list", "");
