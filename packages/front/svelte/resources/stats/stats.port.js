@@ -20,10 +20,7 @@ class StatsPort {
         const path = `${this.BASE_PATH}/users/monthly/${year}`;
         return axios.get(path).then(result => {
             if (result.data.message) throw new Error(result.data.message);
-            return {
-                lastYearNbUser: result.data.data.nombres_utilisateurs_avant_annee,
-                monthlyData: result.data.data.evolution_nombres_utilisateurs
-            };
+            return result.data.data;
         });
     }
 
@@ -39,11 +36,7 @@ class StatsPort {
         const path = `${this.BASE_PATH}/requests/monthly/${year}`;
         return axios.get(path).then(result => {
             if (result.data.message) throw new Error(result.data.message);
-            return {
-                monthlyData: result.data.nb_requetes_par_mois,
-                sum: result.data.somme_nb_requetes,
-                average: result.data.nb_requetes_moyen
-            };
+            return result.data;
         });
     }
 }

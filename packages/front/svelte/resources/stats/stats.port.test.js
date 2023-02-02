@@ -30,10 +30,6 @@ describe("StatsPort", () => {
             nombres_utilisateurs_avant_annee: 42,
             evolution_nombres_utilisateurs: [43, 44]
         };
-        const POST_DATA = {
-            lastYearNbUser: 42,
-            monthlyData: [43, 44]
-        };
         beforeAll(() => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: { data: AXIOS_DATA } })));
         afterAll(() => spyAxios.mockRestore());
 
@@ -44,7 +40,7 @@ describe("StatsPort", () => {
         });
 
         it("should return formatted data from axios result", async () => {
-            const expected = POST_DATA;
+            const expected = AXIOS_DATA;
             const actual = await statsPort.getMonthlyUserCount(YEAR);
             expect(actual).toEqual(expected);
         });
@@ -58,11 +54,6 @@ describe("StatsPort", () => {
             nb_requetes_moyen: 4.8,
             somme_nb_requetes: 90
         };
-        const PORT_DATA = {
-            monthlyData: [43, 44],
-            average: 4.8,
-            sum: 90
-        };
         beforeAll(() => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: AXIOS_DATA })));
         afterAll(() => spyAxios.mockRestore());
 
@@ -73,7 +64,7 @@ describe("StatsPort", () => {
         });
 
         it("should return formatted data from axios result", async () => {
-            const expected = PORT_DATA;
+            const expected = AXIOS_DATA;
             const actual = await statsPort.getMonthlyRequestCount(YEAR);
             expect(actual).toEqual(expected);
         });

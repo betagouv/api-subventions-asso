@@ -1,5 +1,6 @@
 import statsPort from "./stats.port";
 import statsService from "./stats.service";
+import statsAdapter from "@resources/stats/stats.adapter";
 
 describe("statsService", () => {
     describe("getTopAssociations", () => {
@@ -38,37 +39,67 @@ describe("statsService", () => {
 
     describe("getMonthlyUser", () => {
         const spyPort = jest.spyOn(statsPort, "getMonthlyUserCount");
+        const spyAdapter = jest.spyOn(statsAdapter, "formatUserCount");
+        const PORT_RES = "old value";
+        const ADAPTER_RES = "new value";
         const YEAR = 2022;
 
+        beforeAll(() => {
+            spyAdapter.mockReturnValue(ADAPTER_RES);
+            spyPort.mockResolvedValue(PORT_RES);
+        });
+        afterAll(() => {
+            spyAdapter.mockRestore();
+            spyPort.mockRestore();
+        });
+
         it("calls getMonthlyUserCount", async () => {
-            spyPort.mockImplementationOnce(jest.fn());
             await statsService.getMonthlyUserCount(YEAR);
             expect(spyPort).toHaveBeenCalledWith(YEAR);
         });
 
+        it("calls adapter with port's result", async () => {
+            await statsService.getMonthlyUserCount(YEAR);
+            expect(spyAdapter).toHaveBeenCalledWith(PORT_RES);
+        });
+
         it("returns port's result", async () => {
-            const expected = {};
-            spyPort.mockResolvedValueOnce(expected);
-            const actual = await statsService.getMonthlyUserCount(2022);
-            expect(expected).toBe(actual);
+            const expected = ADAPTER_RES;
+            const actual = await statsService.getMonthlyUserCount(YEAR);
+            expect(expected).toEqual(actual);
         });
     });
 
     describe("getMonthlyRequest", () => {
         const spyPort = jest.spyOn(statsPort, "getMonthlyRequestCount");
+        const spyAdapter = jest.spyOn(statsAdapter, "formatRequestCount");
+        const PORT_RES = "old value";
+        const ADAPTER_RES = "new value";
         const YEAR = 2022;
 
-        it("calls getMonthlyRequestCount", async () => {
-            spyPort.mockImplementationOnce(jest.fn());
+        beforeAll(() => {
+            spyAdapter.mockReturnValue(ADAPTER_RES);
+            spyPort.mockResolvedValue(PORT_RES);
+        });
+        afterAll(() => {
+            spyAdapter.mockRestore();
+            spyPort.mockRestore();
+        });
+
+        it("calls getMonthlyUserCount", async () => {
             await statsService.getMonthlyRequestCount(YEAR);
             expect(spyPort).toHaveBeenCalledWith(YEAR);
         });
 
+        it("calls adapter with port's result", async () => {
+            await statsService.getMonthlyRequestCount(YEAR);
+            expect(spyAdapter).toHaveBeenCalledWith(PORT_RES);
+        });
+
         it("returns port's result", async () => {
-            const expected = {};
-            spyPort.mockResolvedValueOnce(expected);
-            const actual = await statsService.getMonthlyRequestCount(2022);
-            expect(expected).toBe(actual);
+            const expected = ADAPTER_RES;
+            const actual = await statsService.getMonthlyRequestCount(YEAR);
+            expect(expected).toEqual(actual);
         });
     });
 });
