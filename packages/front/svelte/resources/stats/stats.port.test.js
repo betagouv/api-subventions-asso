@@ -26,7 +26,14 @@ describe("StatsPort", () => {
     describe("getMonthlyUserCount", () => {
         let spyAxios;
         const YEAR = 2022;
-        const AXIOS_DATA = {};
+        const AXIOS_DATA = {
+            nombres_utilisateurs_avant_annee: 42,
+            evolution_nombres_utilisateurs: [43, 44]
+        };
+        const POST_DATA = {
+            lastYearNbUser: 42,
+            monthlyData: [43, 44]
+        };
         beforeAll(() => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: { data: AXIOS_DATA } })));
         afterAll(() => spyAxios.mockRestore());
 
@@ -36,9 +43,30 @@ describe("StatsPort", () => {
             expect(spyAxios).toHaveBeenCalledWith(path);
         });
 
-        it("should return data from axios result", async () => {
-            const expected = AXIOS_DATA;
+        it("should return formatted data from axios result", async () => {
+            const expected = POST_DATA;
             const actual = await statsPort.getMonthlyUserCount(YEAR);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getMonthlyRequestCount", () => {
+        let spyAxios;
+        const YEAR = 2022;
+        const AXIOS_DATA = {};
+        const PORT_DATA = {};
+        beforeAll(() => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: AXIOS_DATA })));
+        afterAll(() => spyAxios.mockRestore());
+
+        it("should call axios with proper path", async () => {
+            const path = `/stats/requests/monthly/2022`;
+            await statsPort.getMonthlyRequestCount(YEAR);
+            expect(spyAxios).toHaveBeenCalledWith(path);
+        });
+
+        it("should return formatted data from axios result", async () => {
+            const expected = AXIOS_DATA;
+            const actual = await statsPort.getMonthlyRequestCount(YEAR);
             expect(actual).toBe(expected);
         });
     });

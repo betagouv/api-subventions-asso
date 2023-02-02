@@ -20,7 +20,10 @@ class StatsPort {
         const path = `${this.BASE_PATH}/users/monthly/${year}`;
         return axios.get(path).then(result => {
             if (result.data.message) throw new Error(result.data.message);
-            return result.data.data;
+            return {
+                lastYearNbUser: result.data.data.nombres_utilisateurs_avant_annee,
+                monthlyData: result.data.data.evolution_nombres_utilisateurs
+            };
         });
     }
 
