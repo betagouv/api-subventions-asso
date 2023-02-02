@@ -18,10 +18,11 @@ describe("MonthlyGraphController", () => {
     const LOAD_DATA = jest.fn();
     describe("constructor", () => {
         it.each`
-            parameterName    | expected
-            ${"_monthData"}  | ${[]}
-            ${"yearOptions"} | ${[{ value: 2023, label: 2023 }, { value: 2022, label: 2022 }]}
-            ${"title"}       | ${TITLE}
+            parameterName          | expected
+            ${"_monthData"}        | ${[]}
+            ${"yearOptions"}       | ${[{ value: 2023, label: 2023 }, { value: 2022, label: 2022 }]}
+            ${"title"}             | ${TITLE}
+            ${"withPreviousValue"} | ${false}
         `("initializes correctly $parameterName", ({ parameterName, expected }) => {
             const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
             expect(ctrl[parameterName]).toEqual(expected);
@@ -189,7 +190,15 @@ describe("MonthlyGraphController", () => {
             expect(actual).toStrictEqual(expected);
         });
 
-        it("sets labels with correct values", () => {
+        it("sets labels with correct values (default 'withPreviousValue')", () => {
+            const expected = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+            ctrl._buildChart(CANVAS);
+            const actual = Chart.mock.calls[0][1].data.labels;
+            expect(actual).toStrictEqual(expected);
+        });
+
+        it("sets labels with correct values with previous value", () => {
+            const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE, true);
             const expected = ["", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
             ctrl._buildChart(CANVAS);
             const actual = Chart.mock.calls[0][1].data.labels;

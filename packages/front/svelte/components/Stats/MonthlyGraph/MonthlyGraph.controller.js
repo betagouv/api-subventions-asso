@@ -8,10 +8,11 @@ export class MonthlyGraphController {
      * @param  {(year: number) => Promise<{ aggregateStats: { message: string, value: number | string }[], monthlyData: number[] }>} loadData
      * @param {string} title
      */
-    constructor(loadData, title = "") {
+    constructor(loadData, title = "", withPreviousValue = false) {
         if (!loadData) console.error("MonthlyGraph expects a function to load data");
         this.loadData = year => loadData(year); // ensure we have the right "this"
         this.title = title;
+        this.withPreviousValue = withPreviousValue;
         this.dataPromise = new Store(Promise.resolve());
 
         this._monthData = [];
@@ -52,12 +53,10 @@ export class MonthlyGraphController {
         gradient.addColorStop(0, "#ADBFFC");
         gradient.addColorStop(1, "white");
 
-        const labels = [
-            "",
-            ...[...Array(12).keys()].map(monthId =>
-                new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
-            )
-        ];
+        const labels = [...Array(12).keys()].map(monthId =>
+            new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
+        );
+        if (this.withPreviousValue) labels.splice(0, 0, "");
 
         return new Chart(canvas, {
             type: "line",

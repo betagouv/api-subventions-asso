@@ -8,8 +8,9 @@
     let canvas;
     export let loadData;
     export let title = "";
+    export let withPreviousValue = false;
 
-    const ctrl = new MonthlyGraphController(loadData, title);
+    const ctrl = new MonthlyGraphController(loadData, title, withPreviousValue);
     ctrl.init();
     const { year, dataPromise } = ctrl;
 

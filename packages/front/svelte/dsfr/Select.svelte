@@ -4,6 +4,7 @@
     export let options;
     export let selected = undefined;
     export let label = undefined;
+    export let narrow = false;
     export let id = "0";
 
     const name = `input-text-${id}`;
@@ -15,7 +16,7 @@
     }
 </script>
 
-<div class="fr-select-group">
+<div class="fr-select-group" style:width="{narrow ? 'fit-content' : undefined}">
     {#if label}
         <label class="fr-label" for={name}>{label}</label>
     {/if}
