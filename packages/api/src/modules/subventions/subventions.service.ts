@@ -9,11 +9,12 @@ import providers from "../providers";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 import Flux from "../../shared/Flux";
+import { BadRequestError } from "../../shared/errors/httpErrors";
 
 export class SubventionsService {
     async getDemandesByAssociation(id: AssociationIdentifiers) {
         let type = getIdentifierType(id);
-        if (!type) throw new Error("You must provide a valid SIREN or RNA");
+        if (!type) throw new BadRequestError("You must provide a valid SIREN or RNA");
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(id);

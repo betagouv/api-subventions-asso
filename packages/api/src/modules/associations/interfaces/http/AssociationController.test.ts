@@ -1,4 +1,5 @@
 import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import Flux from "../../../../shared/Flux";
 import associationsService from "../../associations.service";
 import { AssociationController } from "./AssociationController";
@@ -11,8 +12,12 @@ describe("AssociationController", () => {
     describe("getDemandeSubventions", () => {
         const getSubventionsSpy = jest.spyOn(associationsService, "getSubventions");
         it("should call service with args", async () => {
-            getSubventionsSpy.mockImplementationOnce(jest.fn());
-            await controller.getDemandeSubventions(IDENTIFIER);
+            const subventions = [{}] as DemandeSubvention[];
+            const flux = new Flux(subventions);
+            flux.close();
+            // @ts-expect-error: mock
+            getSubventionsSpy.mockReturnValueOnce(flux);
+            controller.getDemandeSubventions(IDENTIFIER);
             expect(getSubventionsSpy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
@@ -47,12 +52,10 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return an error message", async () => {
+        it("should throw Error", async () => {
             const ERROR_MESSAGE = "Error";
             getSubventionsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { message: ERROR_MESSAGE };
-            const actual = await controller.getVersements(IDENTIFIER);
-            expect(actual).toEqual(expected);
+            expect(() => controller.getVersements(IDENTIFIER)).rejects.toThrowError(ERROR_MESSAGE);
         });
     });
 
@@ -73,12 +76,10 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return an error message", async () => {
+        it("should throw error", async () => {
             const ERROR_MESSAGE = "Error";
             getDocumentsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { message: ERROR_MESSAGE };
-            const actual = await controller.getDocuments(IDENTIFIER);
-            expect(actual).toEqual(expected);
+            expect(() => controller.getDocuments(IDENTIFIER)).rejects.toThrowError(ERROR_MESSAGE);
         });
     });
 
@@ -99,20 +100,10 @@ describe("AssociationController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return an ErrorResponse if no association found", async () => {
-            // @ts-expect-error: mock
-            getAssociationSpy.mockImplementationOnce(() => null);
-            const expected = { message: "Association not found" };
-            const actual = await controller.getAssociation(IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
-
         it("should return an error message", async () => {
             const ERROR_MESSAGE = "Error";
             getAssociationSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { message: ERROR_MESSAGE };
-            const actual = await controller.getAssociation(IDENTIFIER);
-            expect(actual).toEqual(expected);
+            expect(() => controller.getAssociation(IDENTIFIER)).rejects.toThrowError(ERROR_MESSAGE);
         });
     });
 
