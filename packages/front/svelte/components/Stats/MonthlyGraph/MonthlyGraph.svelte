@@ -12,7 +12,7 @@
 
     const ctrl = new MonthlyGraphController(loadData, title, withPreviousValue);
     ctrl.init();
-    const { year, dataPromise } = ctrl;
+    const { year, dataPromise, yearOptions } = ctrl;
 
     $: ctrl.onCanvasMount(canvas);
 </script>
@@ -28,10 +28,9 @@
                         id={title}
                         on:change={e => ctrl.updateYear(e.detail)}
                         label="Année"
-                        options={ctrl.yearOptions}
+                        options={yearOptions}
                         bind:selected={$year}
-                        narrow
-                    />
+                        narrow />
                     <div class="chart-container">
                         <canvas bind:this={canvas} />
                     </div>

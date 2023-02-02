@@ -7,9 +7,10 @@ export class MonthlyGraphController {
      * initializes monthly graph controller
      * @param  {(year: number) => Promise<{ aggregateStats: { message: string, value: number | string }[], monthlyData: number[] }>} loadData
      * @param {string} title
+     * @param {boolean } withPreviousValue does label have empty value before month initials
      */
     constructor(loadData, title = "", withPreviousValue = false) {
-        if (!loadData) console.error("MonthlyGraph expects a function to load data");
+        if (!loadData) throw "MonthlyGraph expects a function to load data";
         this.loadData = year => loadData(year); // ensure we have the right "this"
         this.title = title;
         this.withPreviousValue = withPreviousValue;
@@ -56,7 +57,7 @@ export class MonthlyGraphController {
         const labels = [...Array(12).keys()].map(monthId =>
             new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
         );
-        if (this.withPreviousValue) labels.splice(0, 0, "");
+        if (this.withPreviousValue) labels.unshift("");
 
         return new Chart(canvas, {
             type: "line",
