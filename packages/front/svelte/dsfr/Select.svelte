@@ -16,7 +16,7 @@
     }
 </script>
 
-<div class="fr-select-group" style:width="{narrow ? 'fit-content' : undefined}">
+<div class="fr-select-group" style:width={narrow ? "fit-content" : undefined}>
     {#if label}
         <label class="fr-label" for={name}>{label}</label>
     {/if}
