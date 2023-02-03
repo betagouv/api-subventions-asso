@@ -75,4 +75,31 @@ describe("AuthPort", () => {
             expect(async () => authPort.resetPassword(TOKEN, PASSWORD)).rejects.toThrowError(expected);
         });
     });
+
+    describe("forgetPassword()", () => {
+        const axiosPostMock = jest.spyOn(axios, "post");
+        const RES = true;
+        const EMAIL = "test@mail.fr";
+
+        it("calls forgetPassword route", async () => {
+            const PATH = "/auth/forget-password";
+            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            await authPort.forgetPassword(EMAIL);
+            expect(axiosPostMock).toBeCalledWith(PATH, { email: EMAIL });
+        });
+
+        it("returns true if success", async () => {
+            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            const expected = RES;
+            const actual = await authPort.forgetPassword(EMAIL);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns axios promise if fails", () => {
+            const FAILURE = {};
+            const expected = FAILURE;
+            axiosPostMock.mockRejectedValueOnce(FAILURE);
+            expect(async () => authPort.forgetPassword(EMAIL)).rejects.toEqual(expected);
+        });
+    });
 });

@@ -27,6 +27,11 @@ export class AuthPort {
                 throw new Error(errorCode);
             });
     }
+
+    forgetPassword(email) {
+        const path = `${this.BASE_PATH}/forget-password`;
+        return axios.post(path, { email }).then(() => true);
+    }
 }
 
 const authPort = new AuthPort();
