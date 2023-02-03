@@ -31,6 +31,14 @@ class StatsPort {
             return result.data.data;
         });
     }
+
+    getMonthlyRequestCount(year) {
+        const path = `${this.BASE_PATH}/requests/monthly/${year}`;
+        return axios.get(path).then(result => {
+            if (result.data.message) throw new Error(result.data.message);
+            return result.data;
+        });
+    }
 }
 
 const statsPort = new StatsPort();
