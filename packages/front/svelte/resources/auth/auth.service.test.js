@@ -76,4 +76,35 @@ describe("authService", () => {
             expect(actual).rejects.toBe(expected);
         });
     });
+
+    describe("forgetPassword()", () => {
+        const portMock = jest.spyOn(authPort, "forgetPassword");
+        const RES = true;
+        const EMAIL = "test@test.fr";
+
+        beforeAll(() => portMock.mockResolvedValue(true));
+        afterAll(() => portMock.mockRestore());
+
+        it("rejects if no email", () => {
+            const test = () => authService.forgetPassword();
+            expect(test).rejects.toBeUndefined();
+        });
+
+        it("calls port", async () => {
+            await authService.forgetPassword(EMAIL);
+            expect(portMock).toHaveBeenCalledWith(EMAIL);
+        });
+
+        it("return result from port if success", async () => {
+            const expected = RES;
+            const actual = await authService.forgetPassword(EMAIL);
+            expect(expected).toBe(actual);
+        });
+
+        it("rejects with error code from port if given", () => {
+            portMock.mockRejectedValueOnce(undefined);
+            const actual = authService.forgetPassword(EMAIL);
+            expect(actual).rejects.toBeUndefined();
+        });
+    });
 });

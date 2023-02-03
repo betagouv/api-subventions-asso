@@ -55,35 +55,7 @@ export default class AuthController {
 
     @Get("forget-password")
     public forgetPasswordView(req: Request, res: Response) {
-        res.render("auth/forget-password/index", {
-            pageTitle: "Mot de passe perdu"
-        });
-    }
-
-    @Post("forget-password")
-    public async forgetPasswordPost(req: Request, res: Response) {
-        if (!req.body.email) {
-            res.statusCode = 422;
-            return res.render("auth/forget-password/index", {
-                pageTitle: "Mot de passe perdu",
-                error: true
-            });
-        }
-
-        const result = await authService.forgetPassword(req.body.email);
-
-        if (result.type !== "SUCCESS") {
-            res.statusCode = 422;
-            return res.render("auth/forget-password/index", {
-                pageTitle: "Mot de passe perdu",
-                error: true
-            });
-        }
-
-        return res.render("auth/forget-password/index", {
-            pageTitle: "Mot de passe perdu",
-            success: true
-        });
+        return res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
     @Get("reset-password/:tokenId")

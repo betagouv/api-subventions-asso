@@ -17,6 +17,11 @@ export class AuthService {
             .then(data => data)
             .catch(error => Promise.reject(parseInt(error.message)));
     }
+
+    forgetPassword(email) {
+        if (!email) return Promise.reject();
+        return authPort.forgetPassword(email).then(data => data);
+    }
 }
 
 const authService = new AuthService();
