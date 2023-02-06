@@ -1,9 +1,9 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
+    import authService from "@resources/auth/auth.service";
+    import userService from "@resources/users/users.service";
     import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
-    import userService from "../../../../resources/users/users.service";
-    import { user as userStore } from "../../../../store/user.store";
     import { action, data, modal } from "../../../../store/modal.store";
     import adminService from "../../admin.service";
 
@@ -12,6 +12,8 @@
 
     export let users;
     let selectedUserId;
+
+    const currentUser = authService.getCurrentUser();
 
     const dispatch = createEventDispatcher();
 
@@ -100,7 +102,7 @@
                         {/if}
                         <td>
                             <Button
-                                disabled={user.email == $userStore.email}
+                                disabled={user.email == currentUser.email}
                                 type="tertiary"
                                 icon="delete-fill"
                                 ariaControls="fr-modal"

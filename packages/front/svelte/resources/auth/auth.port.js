@@ -1,4 +1,5 @@
 import axios from "axios";
+import errorsService from "../../errors/errors.service";
 import { ResetPasswordErrorCodes, SignupErrorCodes } from "@api-subventions-asso/dto";
 
 export class AuthPort {
@@ -25,6 +26,21 @@ export class AuthPort {
             .catch(error => {
                 const errorCode = error?.response?.data?.code || defaultErrorCode;
                 throw new Error(errorCode);
+            })
+    }
+    
+    login(email, password) {
+        return axios
+            .post("/auth/login", { email, password })
+            .then(value => {
+                return value.data.user;
+            })
+            .catch(e => {
+                const ErrorClass = errorsService.axiosErrorToError(e);
+                throw new ErrorClass({
+                    message: e.response.data.message,
+                    code: e.response.data.errorCode
+                });
             });
     }
 
@@ -35,5 +51,4 @@ export class AuthPort {
 }
 
 const authPort = new AuthPort();
-
 export default authPort;

@@ -35,9 +35,10 @@ export const mapSegments = path =>
         }));
 
 export const getRouteSegments = routes =>
-    Object.entries(routes).map(([path, component]) => ({
+    Object.entries(routes).map(([path, { component, disableAuth }]) => ({
         path,
         component,
+        disableAuth,
         segments: mapSegments(path)
     }));
 
@@ -55,4 +56,8 @@ export const getProps = (path, routeSegments) => {
     let props = {};
     getSegments(path).forEach((s, i) => routeSegments[i].variable && (props[routeSegments[i].name] = s));
     return props;
+};
+
+export const goToUrl = url => {
+    location.href = url;
 };

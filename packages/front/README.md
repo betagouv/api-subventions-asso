@@ -109,6 +109,10 @@ async function init() {
 }
 ```
 
+## Redirections
+
+Les redirections en interne de l'app doivent être gérer par les controllers JS car ce sont eux qui sont en charge de l'intreface avec le navigateur (browser).
+
 ## Tests unitaires
 
 ```js

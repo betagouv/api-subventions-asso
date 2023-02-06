@@ -1,5 +1,7 @@
 import axios from "axios";
 import authPort from "./auth.port";
+import errorsService from "../../errors/errors.service";
+import UnauthoziedError from "../../errors/UnauthorizedError";
 
 const DEFAULT_ERROR_CODE = 49;
 
@@ -61,18 +63,32 @@ describe("AuthPort", () => {
             const expected = RES;
             expect(actual).toBe(expected);
         });
+    });
+    
+    describe("login()", () => {
+        const axiosPostMock = jest.spyOn(axios, "post");
+        const errorSerivceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(UnauthoziedError);
+        const EMAIL = "test@mail.fr";
+        const PASSWORD = "FAKE_PASSWORD";
 
-        it("throws error with error code if any", () => {
-            const ERROR_CODE = 42;
-            axiosPostMock.mockRejectedValueOnce({ response: { data: { code: ERROR_CODE } } });
-            const expected = new Error(ERROR_CODE);
-            expect(async () => authPort.resetPassword(TOKEN, PASSWORD)).rejects.toThrowError(expected);
+        it("calls signup route", async () => {
+            const PATH = "/auth/login";
+            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            await authPort.login(EMAIL, PASSWORD);
+            expect(axiosPostMock).toBeCalledWith(PATH, { email: EMAIL, password: PASSWORD });
         });
 
-        it("throws error with default code if none received", () => {
-            axiosPostMock.mockRejectedValueOnce(undefined);
-            const expected = new Error(DEFAULT_ERROR_CODE);
-            expect(async () => authPort.resetPassword(TOKEN, PASSWORD)).rejects.toThrowError(expected);
+        it("returns user if success", async () => {
+            const expected = { email: EMAIL };
+            axiosPostMock.mockResolvedValueOnce({ data: { user: expected } });
+            const actual = await authPort.login(EMAIL, PASSWORD);
+            expect(actual).toBe(expected);
+        });
+
+        it("throws error with error code if any", () => {
+            const HTTP_ERROR_CODE = 401;
+            axiosPostMock.mockRejectedValueOnce({ response: { status: HTTP_ERROR_CODE, data: {} } });
+            expect(async () => authPort.login(EMAIL, PASSWORD)).rejects.toThrowError(UnauthoziedError);
         });
     });
 

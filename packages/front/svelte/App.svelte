@@ -5,11 +5,11 @@
     import { ENV } from "../src/shared/config";
     import { displayBlueBanner } from "./store/context.store";
 
-    import Auth from "./components/Auth.svelte";
+    import Auth from "./components/Auth/Auth.svelte";
     import GenericModal from "./dsfr/GenericModal.svelte";
     import Matomo from "./components/Matomo.svelte";
-    import Router from "./components/Router.svelte";
-    import Header from "./components/Header.svelte";
+    import Router from "./components/Router/Router.svelte";
+    import Header from "./components/Header/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import Theme from "./components/Theme.svelte";
 

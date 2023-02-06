@@ -9,17 +9,47 @@ import AdminStats from "./views/admin/stats/AdminStats.svelte";
 import ResetPwd from "./views/auth/reset-pwd/ResetPwd.svelte";
 import ForgetPwd from "./views/auth/forget-pwd/ForgetPwd.svelte";
 import Signup from "./views/auth/signup/Signup.svelte";
+import Login from "./views/auth/login/Login.svelte";
 
 export default {
-    "association/:id": () => Association,
-    "etablissement/:id": () => Etablissement,
-    "admin/users/list": () => AdminUsersAccount,
-    "admin/users/create": () => AdminUsersCreate,
-    "admin/users/metrics": () => AdminUsersMetrics,
-    "admin/stats": () => AdminStats,
-    admin: () => Admin,
-    "auth/signup": () => Signup,
-    "auth/reset-password/:token": () => ResetPwd,
-    "auth/forget-password": () => ForgetPwd,
-    "/": () => Home
+    "association/:id": {
+        component: () => Association
+    },
+    "etablissement/:id": {
+        component: () => Etablissement
+    },
+    "admin/users/list": {
+        component: () => AdminUsersAccount
+    },
+    "admin/users/create": {
+        component: () => AdminUsersCreate
+    },
+    "admin/users/metrics": {
+        component: () => AdminUsersMetrics
+    },
+    "admin/stats": {
+        component: () => AdminStats
+    },
+    admin: {
+        component: () => Admin
+    },
+    "/": {
+        component: () => Home
+    },
+    "auth/signup": {
+        component: () => Signup,
+        disableAuth: false
+    },
+    "auth/login": {
+        component: () => Login,
+        disableAuth: true
+    },
+    "auth/reset-password/:token": {
+        component: () => ResetPwd,
+        disableAuth: true
+    },
+    "auth/forget-password": {
+        component: () => ForgetPwd,
+        disableAuth: true
+    }
 };

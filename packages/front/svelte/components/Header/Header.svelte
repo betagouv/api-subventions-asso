@@ -1,13 +1,16 @@
 <script>
-    import packageInfo from "../../package.json";
-    import { user as userStore } from "../store/user.store";
+    import packageInfo from "../../../package.json";
     import { getContext } from "svelte";
+    import HeaderController from "./Header.controller";
+    import authService from "../../resources/auth/auth.service";
 
-    const user = $userStore;
+    const user = authService.getCurrentUser();
     const { getName, getDescription, getEnv } = getContext("app");
     const name = getName();
     const description = getDescription();
     const env = getEnv();
+
+    const controller = new HeaderController();
 </script>
 
 <header class="fr-header">
@@ -79,13 +82,9 @@
                             {/if}
                             {#if user?.jwt}
                                 <li>
-                                    <a
-                                        class="fr-btn fr-link--icon-right"
-                                        href="/auth/logout"
-                                        title="se déconnecter"
-                                        rel="noopener">
+                                    <button class="fr-btn fr-link--icon-left" on:click={() => controller.logout()}>
                                         Se déconnecter
-                                    </a>
+                                    </button>
                                 </li>
                             {/if}
                         </ul>

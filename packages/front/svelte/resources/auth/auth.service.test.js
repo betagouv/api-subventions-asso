@@ -1,3 +1,4 @@
+import axios from "axios";
 import authPort from "@resources/auth/auth.port";
 import authService from "@resources/auth/auth.service";
 
@@ -107,4 +108,73 @@ describe("authService", () => {
             expect(actual).rejects.toBeUndefined();
         });
     });
+
+    describe("login()", () => {
+        const portMock = jest.spyOn(authPort, "login");
+        it("should be call port", async () => {
+            const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
+
+            portMock.mockResolvedValueOnce({});
+
+            await authService.login(...expected);
+            expect(portMock).toHaveBeenCalledWith(...expected);
+        });
+
+        it("should save user in local storage", async () => {
+            const expected = { _id: "USER_ID" };
+
+            portMock.mockResolvedValueOnce(expected);
+
+            await authService.login("", "");
+            const actual = JSON.parse(localStorage.getItem(authService.USER_LOCAL_STORAGE_KEY));
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return user", async () => {
+            const expected = { _id: "USER_ID" };
+
+            portMock.mockResolvedValueOnce(expected);
+
+            const actual = await authService.login("", "");
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("initUserInApp", () => {
+        const getCurrentUserMock = jest.spyOn(authService, "getCurrentUser");
+
+        afterAll(() => {
+            getCurrentUserMock.mockRestore();
+        })
+
+        it("should be axios header", async () => {
+            const expected = "FAKE_TOKEN";
+            getCurrentUserMock.mockReturnValueOnce({ jwt: { token: expected } });
+
+            await authService.initUserInApp();
+            const actual = axios.defaults.headers.common["x-access-token"];
+
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("logout", () => {
+        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-jest-tests
+        const localStorageMock = jest.spyOn(Storage.prototype, "removeItem");
+        it("should call removeItem on localStorage", () => {
+            authService.logout();
+
+            expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+        });
+    })
+
+    describe("getCurrentUser", () => {
+        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-jest-tests
+        const localStorageMock = jest.spyOn(Storage.prototype, "getItem");
+        it("should call getItem on localStorage", () => {
+            authService.getCurrentUser();
+
+            expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+        });
+    })
 });
