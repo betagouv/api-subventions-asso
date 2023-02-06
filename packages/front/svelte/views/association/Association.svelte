@@ -15,7 +15,7 @@
 
     activeBlueBanner();
 
-    const titles = ["Tableau de bord", "Pièces administratives", "Établissements"];
+    const titles = ["Tableau de bord", "Statistiques", "Pièces administratives", "Établissements"];
     let promise = associationService.getAssociation(id);
 </script>
 
