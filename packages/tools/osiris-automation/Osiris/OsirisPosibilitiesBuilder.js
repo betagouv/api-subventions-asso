@@ -213,7 +213,6 @@ class OsirisPosibilitiesBuilder {
 
             if (await this.__isValid(selectionPosibility)) {
                 posibilities.push(selectionPosibility);
-                return posibilities;
             }
 
             return posibilities;

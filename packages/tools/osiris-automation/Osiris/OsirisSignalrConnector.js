@@ -3,6 +3,7 @@ const axios = require("axios");
 require("./jQueryNodeLoader");
 
 window._origin = "https://osiris.extranet.jeunesse-sports.gouv.fr"
+window.EventSource = require("eventsource");
 
 require("signalr");
 
@@ -13,6 +14,7 @@ class OsirisSignalrConnector {
         this.connection = $.hubConnection(`${window._origin}/OsirisSignalr/signalr`, { useDefaultPath: false });
         this.reportHubProxy = this.connection.createHubProxy("reporthub");
         this.connection.reconnectDelay = 1;
+        this.connection.transportConnectTimeout = 3000;
         this.connection.reconnecting(() => {
             console.log("SignalR trying reconnecting")
         })
@@ -65,17 +67,22 @@ class OsirisSignalrConnector {
 
         if (this.debug) console.log("Login in progress ...");
 
-        const result = await axios.default.request({
-            url: `${window._origin}/Login/GetSignalrToken`,
-            headers:{
-                Cookie: this.connectionCookies.map(c => `${c.name}=${c.value};`).join(" ")
-            },
-            method: "POST",
-        })
-    
-        await this.reportHubProxy.invoke('login', result.data.Token);
+        try {
+            console.log("Getting token");
+            const result = await axios.default.request({
+                url: `${window._origin}/Login/GetSignalrToken`,
+                headers:{
+                    Cookie: this.connectionCookies.map(c => `${c.name}=${c.value};`).join(" ")
+                },
+                method: "POST",
+            })
+            console.log("Token as found");
+            await this.reportHubProxy.invoke('login', result.data.Token);
+            if (this.debug) console.log("Successfully logged");
+        } catch(e) {
+            console.log(e);
+        }
 
-        if (this.debug) console.log("Successfully logged");
     }
 
     onStatus(callback) {

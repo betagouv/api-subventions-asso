@@ -1,6 +1,6 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-
+const browserScript = require("./browser-script");
 
 class OsirisPuppeteer {
 
@@ -17,9 +17,17 @@ class OsirisPuppeteer {
 
     _loadPuppeteer() {
         return new Promise(async resolve => {
-            this.browser = await puppeteer.launch({ headless: true });
+            this.browser = await puppeteer.launch({ headless: false, timeout: 0, args: ['--single-process', '--disable-gpu']});
             this.page = await this.browser.newPage();
-            await this.page.goto(this.osirisUrl);
+            try {
+                await this.page.goto(this.osirisUrl);
+            } catch {
+                await this.page.close();
+                await this.__wait(2000);
+                this.page = await this.browser.newPage();
+            } finally {
+                await this.page.goto(this.osirisUrl);
+            }
 
             resolve();
         })
@@ -29,7 +37,9 @@ class OsirisPuppeteer {
         await this.loadPromise;
 
         if (this.page.url() === this.osirisUrl) { // We are on home this.page, so we are connected
-            return this.page.cookies();
+            const cookies = await this.page.cookies();
+            // this.browser.close();
+            return cookies;
         }
     
         if (this.page.url().includes("/Login/Identification")) { // We are on login this.page
@@ -48,8 +58,11 @@ class OsirisPuppeteer {
             await this.__waitPageLoad();
             // check if we are in home this.page or in login this.page
             if (this.page.url() === this.osirisUrl) { // We are on home this.page, so we are connected
-                return this.page.cookies();
+                const cookies = await this.page.cookies();
+                // this.browser.close();
+                return cookies;
             }
+            console.log(this.page.url());
             throw new Error("Nous n'arrivons pas à accéder au service");
         }
     
@@ -82,9 +95,10 @@ class OsirisPuppeteer {
      */
 
     async extractDossiers(year) {
+        await this.connect();
         const route = "Statistique/SuiviActionDossier";
         
-        const managerDownloadsInterval = await __startManageDownloads(page);
+        const managerDownloadsInterval = await this.__startManageDownloads(year);
     
         await this.page.goto(this.osirisUrl + route);
     
@@ -94,8 +108,8 @@ class OsirisPuppeteer {
         console.log("ENDED");
     }
 
-    async __startManageDownloads() {
-        const downloadPath = './extract';
+    async __startManageDownloads(year) {
+        const downloadPath = './extract/' + year;
         this.__clearDir(downloadPath);
         await this.page._client().send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath });
     
@@ -112,6 +126,12 @@ class OsirisPuppeteer {
     }
 
     __clearDir(dirPath) {
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath);
+        }
+
+
         fs.readdir(dirPath, (err, files) => {
             if (err) throw err;
             for (const file of files) {

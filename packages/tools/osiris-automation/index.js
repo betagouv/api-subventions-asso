@@ -12,34 +12,64 @@ const year = process.argv[2] || new Date().getFullYear().toString();
 const posibilitiesFile = process.argv[3] || null
 const skip = process.argv[4] || 0;
 
+async function getCookie() {
+    console.log("Getting cookies");
+    const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
 
-async function startExtractOsiris(cookies, year) {
-    const osirisDownloader = new OsirisExtractDownloader(cookies, year, false);
-    const osirisPosibilitiesBuilder = new OsirisPosibilitiesBuilder(year, cookies, false);
+    const cookies = await osirisPuppeteer.connect();
+    console.log("Cookies as found");
 
-    let posibilities = [];
-    if (posibilitiesFile && fs.existsSync(posibilitiesFile)) {
-        posibilities = JSON.parse(fs.readFileSync(posibilitiesFile, { encoding: "utf-8"}));
-    } else {
-        posibilities = await osirisPosibilitiesBuilder.buildPosibilities();
-        fs.writeFileSync("./current-posibilities.json", JSON.stringify(posibilities));
+    return cookies;
+}
+
+async function downloadPosibilities(year, posibilities, i) {
+    if (!this.downloader) {
+        console.log("Connect osiris extract downloader");
+        this.downloader = new OsirisExtractDownloader(await getCookie(), year, true);
+        await this.downloader.loadPromise;
+        await new Promise(r => setTimeout(r), 1000);
+        console.log("Downloader as init");
+    }
+    const posibility = posibilities[i];
+
+    if (!posibility) return;
+
+    try {
+        console.log(`Start to download ${i}/${posibilities.length}`);
+
+        await this.downloader.download(posibility, getCookie);
+        console.log(`End to download ${i}/${posibilities.length}`);
+
+        return await downloadPosibilities(year, posibilities, Number(i) + 1);
+    } catch {
+        // Retry download but restart downloader
+        this.downloader = null;
+        console.log("Error retry to download current posibility");
+        await new Promise(r => setTimeout(r), 1000 * 60 * 10); // 10min for wait osiris restart;
+        return await downloadPosibilities(year, posibilities, i);
     }
 
-    await posibilities.reduce(async (acc, posibility, i) => {
-        if (i < skip) return acc; 
-        await acc;
-        await osirisDownloader.download(posibility);
-        console.log(`${i}/${posibilities.length}`)
-    }, Promise.resolve());
+}
+
+async function startExtractOsiris(year) {
+    let posibilities = [];
+    if (posibilitiesFile && fs.existsSync(posibilitiesFile)) {
+        posibilities = JSON.parse(fs.readFileSync(posibilitiesFile, { encoding: "utf-8" }));
+    } else {
+        const osirisPosibilitiesBuilder = new OsirisPosibilitiesBuilder(year, await getCookie(), false);
+        posibilities = await osirisPosibilitiesBuilder.buildPosibilities();
+        fs.writeFileSync(`./current-posibilities-${year}.json`, JSON.stringify(posibilities));
+    }
+
+    await downloadPosibilities(year, posibilities, skip);
+
+    console.log("End of download");
 } 
 
 
 (async () => {
     const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
 
-    const cookies = await osirisPuppeteer.connect();
-
-    await startExtractOsiris(cookies, year);
-    // await osirisPuppeteer.extractDossiers(year);
-    await osirisPuppeteer.close();
+    // await startExtractOsiris(year);
+    await osirisPuppeteer.extractDossiers(year);
 })();

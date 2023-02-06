@@ -78,7 +78,7 @@ module.exports = (year) => {
 
     async function stepTypeFinancement() {
         const selector = document.getElementById("ProgrammeTypeFinancementId");
-        const listTypeFinancement = [...selector.options].slice(1); // TODO remove slice is just for debug
+        const listTypeFinancement = [...selector.options];
         return listTypeFinancement.reduce(async (acc, typeElt) => {
             await acc;
             const financementType = typeElt.text;
@@ -98,7 +98,7 @@ module.exports = (year) => {
         const sousTypeSelect = document.getElementById("SousTypeFinancementId");
     
         await domHelper.onElementChange(sousTypeSelect);
-        const sousTypeOptions = [...sousTypeSelect.options].slice(1); // Remove first because is *
+        const sousTypeOptions = [...sousTypeSelect.options];
         return sousTypeOptions.reduce(async (acc, optionElt) => {
             await acc;
             const subTypeText = optionElt.text;
@@ -164,7 +164,7 @@ module.exports = (year) => {
         if (domHelper.isInDepassement()) { // Big export so we cut
             const modaliteSelect = document.getElementById("IsPluriannuel");
 
-            const options = [...modaliteSelect.options].slice(1); // Remove first because is *
+            const options = [...modaliteSelect.options];
             return options.reduce(async (acc, optionElt) => {
                 await acc;
                 const optionText = optionElt.text;
@@ -198,7 +198,7 @@ module.exports = (year) => {
         if (selectIsVisible) {
             const typeFederationSelect = document.getElementById("TypeFederationId");
 
-            const options = [...typeFederationSelect.options].slice(1); // Remove first because is *
+            const options = [...typeFederationSelect.options];
             return options.reduce(async (acc, optionElt) => {
                 await acc;
                 const optionText = optionElt.text;
@@ -215,7 +215,6 @@ module.exports = (year) => {
             return download(name);
         }
     }
-    
 
     return stepTypeFinancement();
 }

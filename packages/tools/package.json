@@ -42,7 +42,8 @@
         "fetch": "^1.1.0",
         "jquery": "^3.6.0",
         "puppeteer": "^14.4.0",
-        "signalr": "^2.4.3"
+        "signalr": "^2.4.3",
+        "eventsource": "^2.0.2"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.53.0",

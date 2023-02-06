@@ -3,6 +3,7 @@ const fs = require("fs");
 const axios = require("axios");
 const qs = require("qs");
 const OsirisSignalrConnector = require("./OsirisSignalrConnector");
+const { send } = require("process");
 
 class OsirisExtractDownloader {
     constructor(cookie, year, debug = false) {
@@ -14,48 +15,63 @@ class OsirisExtractDownloader {
 
         this.currentDownloadFileName = "";
         this.currentDownloadCallback = null;
+        this.currentDownloadCallbackError = null;
+        this.isDisabled = false;
 
         this.reports = [];
         this.chunks = [];
 
         this.connector.onStatus((...agrs) => this.__onStatus(...agrs));
         this.connector.onContent((...agrs) => this.__onContent(...agrs));
+        this.connector.onError((...args) => {
+            this.isDisabled = true;
+            if (this.currentDownloadCallbackError) this.currentDownloadCallbackError(...args);
+        });
 
         this.__clearReportDir();
         this.loadPromise = this.connector.connect();
     }
 
-    async download(posibility) {
+    async download(posibility, getCookie) {
         await this.loadPromise;
         if (this.currentDownloadCallback) throw new Error("Please download file one by one"); // Techniquement possible de télécharger plusieur fichiers en même temps, mais imposible de les nommés correctements
 
-        return new Promise(async resolve => {
-
+        return new Promise(async (resolve, reject) => {
             this.currentDownloadFileName = this.__buildFileName(posibility);
 
             this.currentDownloadCallback = resolve;
+            this.currentDownloadCallbackError = reject;
 
-            const timeout = setTimeout(() => {
-                this.connector.connect();
-            }, 1000 * 60 * 10 ) // 10 min
-
-            await this.__sendExtarctOrder(posibility);
-
-            clearTimeout(timeout);
+            await this.__sendExtarctOrder(posibility, getCookie);
         });
     }
 
-    __sendExtarctOrder(posibility) {
+    async __sendExtarctOrder(posibility, getCookie) {
         var url = 'Statistique/SuiviActionDossier/';
-        return axios.default.request({
-            url: this.BASE_URL + url,
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Cookie: this.connectionCookies.map(c => `${c.name}=${c.value};`).join(" ")
-            },
-            data: qs.stringify(posibility),
-        })
+        const sendRequest = () => {
+            return axios.default.request({
+                url: this.BASE_URL + url,
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Cookie: this.connectionCookies.map(c => `${c.name}=${c.value};`).join(" ")
+                },
+                data: qs.stringify(posibility),
+                timeout: 0
+            })
+        }
+        
+        try {
+            return await sendRequest();
+        } catch (e) {
+            console.log(e, "Retry send request, please wait 10s")
+            return new Promise((resolve) => {
+                setTimeout(async () => {
+                    this.connectionCookies = await getCookie();
+                    resolve(await sendRequest());
+                }, 1000 * 10);
+            })
+        }
     }
 
     __buildFileName(posibility) {
@@ -63,6 +79,8 @@ class OsirisExtractDownloader {
     }
 
     __onStatus(result) {
+        if (this.isDisabled) return;
+
         this.reports.push({
             ...result,
             ChunkReceived: 0
@@ -70,6 +88,7 @@ class OsirisExtractDownloader {
     }
 
     __onContent(chunk) {
+        if (this.isDisabled) return;
         if (!chunk.Part) return;
 
         this.chunks.push({
