@@ -7,6 +7,7 @@ import versementsService from "../versements/versements.service";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
 import { DefaultObject } from "../../@types";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
 
@@ -95,6 +96,13 @@ describe("EtablissementsService", () => {
             toSimplifiedEtablissementMock.mockImplementationOnce(etablissement => etablissement);
             await etablissementService.getEtablissementsBySiren(SIREN);
             expect(toSimplifiedEtablissementMock).toHaveBeenCalledTimes(2);
+        });
+
+        it("should throw a not found error", async () => {
+            aggregateMock.mockResolvedValueOnce([]);
+            await expect(() => etablissementService.getEtablissementsBySiren(SIREN)).rejects.toThrowError(
+                NotFoundError
+            );
         });
     });
 });

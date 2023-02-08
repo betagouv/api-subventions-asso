@@ -10,11 +10,13 @@ import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 import Flux from "../../shared/Flux";
 import { BadRequestError } from "../../shared/errors/httpErrors";
+import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
+import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
 export class SubventionsService {
     async getDemandesByAssociation(id: AssociationIdentifiers) {
         let type = getIdentifierType(id);
-        if (!type) throw new BadRequestError("You must provide a valid SIREN or RNA");
+        if (!type) throw new AssociationIdentifierError();
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(id);
@@ -29,7 +31,7 @@ export class SubventionsService {
 
     getDemandesByEtablissement(id: Siret) {
         const type = getIdentifierType(id);
-        if (type !== StructureIdentifiersEnum.siret) throw new Error("You must provide a valid SIRET");
+        if (type !== StructureIdentifiersEnum.siret) throw new StructureIdentifiersError("SIRET");
 
         return this.aggregateByType(id, StructureIdentifiersEnum.siret);
     }
