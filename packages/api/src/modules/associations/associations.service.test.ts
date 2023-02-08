@@ -16,6 +16,7 @@ import { Document } from "@api-subventions-asso/dto/search/Document";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 
 jest.mock("../providers/index");
 
@@ -23,7 +24,7 @@ const DEFAULT_PROVIDERS = providers.default;
 
 describe("AssociationService", () => {
     const RNA = "W000000001";
-    const SIREN = "000000001";
+    const SIREN = "100000001";
     const SIRET = SIREN + "00001";
     const INVALID_IDENTIFIER = "Z0345";
     const getAssociationByRnaSpy = jest.spyOn(associationsService, "getAssociationByRna");
@@ -126,17 +127,17 @@ describe("AssociationService", () => {
     describe("getAssociationBySiren()", () => {
         it("should call aggregate", async () => {
             // @ts-expect-error: mock
-            aggregateMock.mockImplementationOnce(() => []);
+            aggregateMock.mockImplementationOnce(async () => [{}]);
             await associationsService.getAssociationBySiren(SIREN);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
-        it("should return null if aggregates return an empty array", async () => {
+        it("should throw not found error if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
-            const expected = null;
-            const actual = await associationsService.getAssociationBySiren(SIREN);
-            expect(actual).toEqual(expected);
+            expect(() => associationsService.getAssociationBySiren(SIREN)).rejects.toThrowError(
+                new NotFoundError("Association not found")
+            );
         });
         it("should call FormaterHelper.formatData()", async () => {
             // @ts-expect-error: mock
@@ -151,17 +152,17 @@ describe("AssociationService", () => {
     describe("getAssociationBySiret()", () => {
         it("should call aggregate", async () => {
             // @ts-expect-error: mock
-            aggregateMock.mockImplementationOnce(async () => []);
+            aggregateMock.mockImplementationOnce(async () => [{}]);
             await associationsService.getAssociationBySiret(SIRET);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
-        it("should return null if aggregates return an empty array", async () => {
+        it("should throw not found error if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
-            const expected = null;
-            const actual = await associationsService.getAssociationBySiret(SIRET);
-            expect(actual).toEqual(expected);
+            expect(() => associationsService.getAssociationBySiret(SIRET)).rejects.toThrowError(
+                new NotFoundError("Association not found")
+            );
         });
         it("should call FormaterHelper.formatData()", async () => {
             // @ts-expect-error: mock
@@ -176,19 +177,19 @@ describe("AssociationService", () => {
     describe("getAssociationByRna()", () => {
         it("should call aggregate", async () => {
             // @ts-expect-error: mock
-            aggregateMock.mockImplementationOnce(() => []);
+            aggregateMock.mockImplementationOnce(() => [{}]);
             rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
             await associationsService.getAssociationByRna(RNA);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
-        it("should return null if aggregates return an empty array", async () => {
+        it("should throw not found error if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
-            const expected = null;
-            const actual = await associationsService.getAssociationByRna(RNA);
-            expect(actual).toEqual(expected);
+            expect(() => associationsService.getAssociationByRna(RNA)).rejects.toThrowError(
+                new NotFoundError("Association not found")
+            );
         });
         it("should call FormaterHelper.formatData()", async () => {
             // @ts-expect-error: mock
@@ -266,13 +267,12 @@ describe("AssociationService", () => {
             expect(actual).toHaveLength(expected);
         });
 
-        it("should return empty array (EtablissementService return null)", async () => {
-            const expected = 0;
-
-            getEtablissementsBySirenMock.mockImplementationOnce(() => Promise.resolve(null));
+        it("should throw NotFoundError", async () => {
+            getEtablissementsBySirenMock.mockImplementationOnce(() => {
+                throw new NotFoundError();
+            });
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
-            const actual = await associationsService.getEtablissements(SIRET);
-            expect(actual).toHaveLength(expected);
+            expect(() => associationsService.getEtablissements(SIRET)).rejects.toThrowError(NotFoundError);
         });
 
         it("should throw error (identifiers type not accepted)", async () => {

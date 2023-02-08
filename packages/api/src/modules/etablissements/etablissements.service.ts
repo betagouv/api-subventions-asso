@@ -15,6 +15,7 @@ import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 import { EtablissementAdapter } from "./EtablissementAdapter";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {
@@ -36,7 +37,7 @@ export class EtablissementsService {
     async getEtablissementsBySiren(siren: Siren) {
         const data = await this.aggregate(siren);
 
-        if (!data.length) return null;
+        if (!data.length) throw new NotFoundError();
 
         const groupBySiret = data.reduce((acc, etablissement) => {
             const siret = etablissement.siret[0].value;

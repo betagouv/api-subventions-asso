@@ -1,5 +1,6 @@
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import versementsService from "./versements.service";
@@ -16,7 +17,17 @@ describe("VersementsService", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
 
             await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
-                new AssociationIdentifierError()
+                AssociationIdentifierError
+            );
+        });
+
+        it("should throw not found error because siren not found", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            getVersementsMock.mockImplementationOnce(async () => []);
+            getSirenMock.mockImplementationOnce(async () => null);
+
+            await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
+                NotFoundError
             );
         });
 

@@ -23,15 +23,8 @@ export class AssociationController extends Controller {
     @Get("/{identifier}")
     @Response<ErrorResponse>("404")
     public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
-        try {
-            const association = await associationService.getAssociation(identifier);
-            if (association) return { association };
-            this.setStatus(404);
-            return { message: "Association not found" };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const association = await associationService.getAssociation(identifier);
+        return { association };
     }
 
     /**
@@ -43,18 +36,13 @@ export class AssociationController extends Controller {
     @Get("/{identifier}/subventions")
     @Response<ErrorResponse>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
-        try {
-            const flux = await associationService.getSubventions(identifier);
-            const result = await flux.toPromise();
-            const subventions = result
-                .map(fluxSub => fluxSub.subventions)
-                .filter(sub => sub)
-                .flat() as DemandeSubvention[];
-            return { subventions };
-        } catch (e) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const flux = await associationService.getSubventions(identifier);
+        const result = await flux.toPromise();
+        const subventions = result
+            .map(fluxSub => fluxSub.subventions)
+            .filter(sub => sub)
+            .flat() as DemandeSubvention[];
+        return { subventions };
     }
 
     /**
@@ -65,13 +53,8 @@ export class AssociationController extends Controller {
      */
     @Get("/{identifier}/versements")
     public async getVersements(identifier: AssociationIdentifiers): Promise<GetVersementsResponseDto> {
-        try {
-            const result = await associationService.getVersements(identifier);
-            return { versements: result };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const result = await associationService.getVersements(identifier);
+        return { versements: result };
     }
 
     /**
@@ -82,13 +65,8 @@ export class AssociationController extends Controller {
      */
     @Get("/{identifier}/documents")
     public async getDocuments(identifier: AssociationIdentifiers): Promise<GetDocumentsResponseDto> {
-        try {
-            const result = await associationService.getDocuments(identifier);
-            return { documents: result };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const result = await associationService.getDocuments(identifier);
+        return { documents: result };
     }
 
     /**

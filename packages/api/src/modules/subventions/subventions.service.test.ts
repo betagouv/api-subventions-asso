@@ -2,6 +2,8 @@ import subventionsService from "./subventions.service";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as providers from "../providers";
+import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 
 jest.mock("../providers/index");
 
@@ -20,15 +22,10 @@ describe("SubventionsService", () => {
 
     describe("getDemandesByAssociation()", () => {
         it("should throw an error if identifier is not valid", async () => {
-            const expected = "You must provide a valid SIREN or RNA";
-            let actual;
             getIdentifierTypeMock.mockImplementationOnce(() => null);
-            try {
-                await subventionsService.getDemandesByAssociation(IDENTIFIER);
-            } catch (e) {
-                actual = (e as Error).message;
-            }
-            expect(actual).toEqual(expected);
+            await expect(() => subventionsService.getDemandesByAssociation(IDENTIFIER)).rejects.toThrowError(
+                AssociationIdentifierError
+            );
         });
         it("should return DemandeSubvention[]", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
@@ -40,28 +37,18 @@ describe("SubventionsService", () => {
     });
 
     describe("getDemandesByEtablissement", () => {
-        it("should throw an error if given a SIREN", async () => {
-            const expected = "You must provide a valid SIRET";
-            let actual;
+        it("should throw an error if given a SIREN", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
-            try {
-                await subventionsService.getDemandesByEtablissement(IDENTIFIER);
-            } catch (e) {
-                actual = (e as Error).message;
-            }
-            expect(actual).toEqual(expected);
+            expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
+                StructureIdentifiersError
+            );
         });
 
-        it("should throw an error if given a RNA", async () => {
-            const expected = "You must provide a valid SIRET";
-            let actual;
+        it("should throw an error if given a RNA", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
-            try {
-                await subventionsService.getDemandesByEtablissement(IDENTIFIER);
-            } catch (e) {
-                actual = (e as Error).message;
-            }
-            expect(actual).toEqual(expected);
+            expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
+                StructureIdentifiersError
+            );
         });
 
         it("should return DemandeSubvention[]", async () => {

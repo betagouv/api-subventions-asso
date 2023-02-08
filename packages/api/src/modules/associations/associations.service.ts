@@ -22,6 +22,7 @@ import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {
@@ -33,7 +34,7 @@ export class AssociationsService {
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5
     };
 
-    async getAssociation(id: StructureIdentifiers): Promise<Association | null> {
+    async getAssociation(id: StructureIdentifiers): Promise<Association> {
         const type = IdentifierHelper.getIdentifierType(id);
         let association;
 
@@ -55,13 +56,13 @@ export class AssociationsService {
 
     async getAssociationBySiren(siren: Siren) {
         const data = await this.aggregate(siren);
-        if (!data.length) return null;
+        if (!data.length) throw new NotFoundError("Association not found");
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
     async getAssociationBySiret(siret: Siret) {
         const data = await this.aggregate(siret);
-        if (!data.length) return null;
+        if (!data.length) throw new NotFoundError("Association not found");
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
@@ -70,7 +71,7 @@ export class AssociationsService {
         if (siren) return this.getAssociationBySiren(siren);
 
         const data = await this.aggregate(rna);
-        if (!data.length) return null;
+        if (!data.length) throw new NotFoundError("Association not found");
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
@@ -96,16 +97,13 @@ export class AssociationsService {
         if (!type || type === StructureIdentifiersEnum.siret) {
             throw new Error("You must provide a valid SIREN or RNA");
         }
-
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(identifier);
-
             if (!siren) return [];
 
             identifier = siren;
         }
-
-        return (await etablissementService.getEtablissementsBySiren(identifier)) || [];
+        return await etablissementService.getEtablissementsBySiren(identifier);
     }
 
     private async aggregate(id: StructureIdentifiers) {

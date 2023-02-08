@@ -6,6 +6,7 @@ import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 
 export class VersementsService {
     async getVersementsByAssociation(identifier: AssociationIdentifiers) {
@@ -17,36 +18,9 @@ export class VersementsService {
             siren = await rnaSirenService.getSiren(identifier);
         }
 
-        if (!siren) return [];
+        if (!siren) throw new NotFoundError("Impossible to recover the SIREN");
 
         return this.getVersementsBySiren(siren);
-    }
-
-    async aggregateVersementsByAssoSearch(asso: Association) {
-        if (!asso.siren || asso.siren?.length === 0) return null;
-
-        const siren = asso.siren[0].value;
-        const versements = await this.getVersementsBySiren(siren);
-
-        asso.versements = versements;
-
-        asso.etablissements?.forEach(etablissement => {
-            etablissement.versements = versements.filter(
-                versement => versement.siret.value === etablissement.siret[0].value
-            );
-
-            if (!etablissement.versements) return;
-
-            etablissement.demandes_subventions?.forEach(demandeSubvention => {
-                if (!this.hasVersements(demandeSubvention)) return;
-                demandeSubvention.versements = this.filterVersementByKey(
-                    etablissement.versements,
-                    demandeSubvention.versementKey?.value
-                );
-            });
-        });
-
-        return asso;
     }
 
     hasVersements(demandeSubvention: DemandeSubvention) {
@@ -56,21 +30,6 @@ export class VersementsService {
     filterVersementByKey(versements, key) {
         if (!versements) return null;
         return versements.filter(versement => (versement.ej?.value || versement.codePoste?.value) === key);
-    }
-
-    async aggregateVersementsByEtablissementSearch(etablissement: Etablissement) {
-        if (!etablissement.siret || etablissement.siret.length === 0) return null;
-
-        const versements = await this.getVersementsBySiret(etablissement.siret[0].value);
-
-        etablissement.versements = versements;
-
-        etablissement.demandes_subventions?.forEach(demandeSubvention => {
-            if (!this.hasVersements(demandeSubvention)) return;
-            demandeSubvention.versements = this.filterVersementByKey(versements, demandeSubvention.versementKey?.value);
-        });
-
-        return etablissement;
     }
 
     async getVersementsBySiret(siret: Siret): Promise<Versement[]> {
