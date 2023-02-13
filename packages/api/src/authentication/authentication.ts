@@ -5,7 +5,7 @@ import UnauthorizedError from "../shared/errors/httpErrors/UnauthorizedError";
 
 export function expressAuthentication(req: LoginRequest, securityName = "jwt", scopes: string[] = []) {
     if (securityName !== "jwt") {
-        console.warn(`${securityName} is not an valid securtiy please change by jwt`);
+        console.warn(`${securityName} is not an valid security please change by jwt`);
         return Promise.reject(new Error("Internal server error"));
     }
 
@@ -23,6 +23,6 @@ export function expressAuthentication(req: LoginRequest, securityName = "jwt", s
             return reject(new UnauthorizedError("JWT does not contain required scope."));
         }
 
-        resolve(userService.refrechExpirationToken(user));
+        resolve(userService.refreshExpirationToken(user));
     });
 }

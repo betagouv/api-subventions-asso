@@ -63,7 +63,7 @@ export function authMocks(app: Express) {
     });
 
     app.use((req, res, next) => {
-        if (req.authInfo) return next(); // if authInfo is not empty then the auhtentication is already check
+        if (req.authInfo) return next(); // if authInfo is not empty then the authentication is already check
         passport.authenticate("jwt", (error, user: UserDto, info: IVerifyOptions) => {
             if (error) return next(error);
             if (user) {

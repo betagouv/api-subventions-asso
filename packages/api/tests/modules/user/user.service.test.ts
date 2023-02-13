@@ -37,7 +37,7 @@ describe("user.service.ts", () => {
                 code: UserServiceErrors.CREATE_INVALID_EMAIL
             });
         });
-        it("should be reject because user already exist", async () => {
+        it("should reject because user already exist", async () => {
             await service.createUser("test@beta.gouv.fr");
             await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
                 success: false,
@@ -45,12 +45,12 @@ describe("user.service.ts", () => {
                 code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
             });
         });
-        it("should be reject because password is not valid", async () => {
+        it("should reject because password is not valid", async () => {
             const actual = await service.createUser("test@beta.gouv.fr", [RoleEnum.user], "aa");
             expect(actual).toMatchSnapshot();
         });
 
-        it("should be return created user", async () => {
+        it("should return created user", async () => {
             await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
                 success: true,
                 user: { email: "test@beta.gouv.fr", active: false, roles: ["user"] }
@@ -99,7 +99,7 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should be reject because user email not found", async () => {
+        it("should reject because user email not found", async () => {
             await expect(service.addRolesToUser("wrong@email.fr", [RoleEnum.admin])).resolves.toMatchObject({
                 success: false,
                 message: "User email does not correspond to a user",
@@ -107,7 +107,7 @@ describe("user.service.ts", () => {
             });
         });
 
-        it("should be reject because role not found", async () => {
+        it("should reject because role not found", async () => {
             await expect(service.addRolesToUser("test@beta.gouv.fr", ["CHEF"])).resolves.toMatchObject({
                 success: false,
                 message: `The role "CHEF" does not exist`,
@@ -115,14 +115,14 @@ describe("user.service.ts", () => {
             });
         });
 
-        it("should be update user (called with email)", async () => {
+        it("should update user (called with email)", async () => {
             await expect(service.addRolesToUser("test@beta.gouv.fr", [RoleEnum.admin])).resolves.toMatchObject({
                 success: true,
                 user: { roles: ["user", "admin"] }
             });
         });
 
-        it("should be update user (called with user)", async () => {
+        it("should update user (called with user)", async () => {
             const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
             await expect(service.addRolesToUser(user, [RoleEnum.admin])).resolves.toMatchObject({
                 success: true,
@@ -136,7 +136,7 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should be reject because user email not found", async () => {
+        it("should reject because user email not found", async () => {
             const expected = {
                 success: false,
                 message: "User email does not correspond to a user",
@@ -168,15 +168,15 @@ describe("user.service.ts", () => {
         });
     });
 
-    describe("refrechExpirationToken", () => {
+    describe("refreshExpirationToken", () => {
         beforeEach(async () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should be update user (called with user)", async () => {
+        it("should update user (called with user)", async () => {
             const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
             const mock = jest.spyOn(userRepository, "update");
-            await service.refrechExpirationToken(user);
+            await service.refreshExpirationToken(user);
 
             expect(mock).toHaveBeenCalled();
         });
@@ -202,7 +202,7 @@ describe("user.service.ts", () => {
             });
         });
 
-        it("should reject because resetToken not found", async () => {
+        it("should reject because resetToken has expired", async () => {
             await userResetRepository.removeAllByUserId(userId);
             await userResetRepository.create(
                 new UserReset(userId, "token", new Date(Date.now() - 1000 * 60 * 60 * 24 * 11))
@@ -263,7 +263,7 @@ describe("user.service.ts", () => {
             userId = result.user._id;
         });
 
-        it("should be reject because user email not found", async () => {
+        it("should reject because user email not found", async () => {
             await expect(service.forgetPassword("wrong@email.fr")).resolves.toMatchObject({
                 success: false,
                 message: "User not found",
@@ -271,7 +271,7 @@ describe("user.service.ts", () => {
             });
         });
 
-        it("should be update user (called with user)", async () => {
+        it("should update user (called with user)", async () => {
             await expect(service.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({
                 success: true,
                 reset: { userId: userId }
@@ -287,7 +287,7 @@ describe("user.service.ts", () => {
             user = result.user;
         });
 
-        it("should be create a reset user", async () => {
+        it("should create a reset user", async () => {
             const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByUserId");
             const mockCreate = jest.spyOn(userResetRepository, "create");
             const mockUpdate = jest.spyOn(userRepository, "update");
@@ -307,7 +307,7 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should be rejected because user not found", async () => {
+        it("should reject because user not found", async () => {
             const expected = {
                 success: false,
                 message: "User not found",
@@ -336,37 +336,37 @@ describe("user.service.ts", () => {
     });
 
     describe("passwordValidator", () => {
-        it("should be reject beause no number in password", () => {
+        it("should reject because no number in password", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(service.passwordValidator("AAAAAAAaaaaaa;;;;")).toBe(false);
         });
 
-        it("should be reject beause no char (Uppercase) in password", () => {
+        it("should reject because no char (Uppercase) in password", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(service.passwordValidator("11111aaaaaa;;;;")).toBe(false);
         });
 
-        it("should be reject beause no char (Lowercase) in password", () => {
+        it("should reject because no char (Lowercase) in password", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(service.passwordValidator("11111AAAAA;;;;")).toBe(false);
         });
 
-        it("should be reject beause no special char in password", () => {
+        it("should reject because no special char in password", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(service.passwordValidator("11111AAAAAaaaaaa")).toBe(false);
         });
 
-        it("should be reject beause length is to short in password", () => {
+        it("should reject because length is to short in password", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(service.passwordValidator("Aa1;")).toBe(false);
         });
 
-        it("should be reject beause length is to big in password", () => {
+        it("should reject because length is to big in password", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(
@@ -376,7 +376,7 @@ describe("user.service.ts", () => {
             ).toBe(false);
         });
 
-        it("should be accept", () => {
+        it("should accept", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             expect(service.passwordValidator("SUPER;test::12345678")).toBe(true);
