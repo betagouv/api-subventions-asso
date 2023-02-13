@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/betagouv/api-subventions-asso/compare/v0.22.0...v0.23.0) (2023-02-13)
+
+### Features
+
+-   **front:** stat api does not invent data in the future ([c0a17fe](https://github.com/betagouv/api-subventions-asso/commit/c0a17fe7044ab130c5707cee5e7b99c7960b4c55))
+
 # [0.22.0](https://github.com/betagouv/api-subventions-asso/compare/v0.21.4...v0.22.0) (2023-01-27)
 
 ### Bug Fixes

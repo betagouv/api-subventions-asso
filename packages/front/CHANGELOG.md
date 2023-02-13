@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/betagouv/datasubvention/compare/v0.22.0...v0.23.0) (2023-02-13)
+
+### Bug Fixes
+
+-   **front:** clean for review ([1d833af](https://github.com/betagouv/datasubvention/commit/1d833af6f0bf12b5f502f22d4ec6d1a4bac33076))
+
+### Features
+
+-   **front:** add chat crisp ([3fd35f7](https://github.com/betagouv/datasubvention/commit/3fd35f7ad91b2213c3c2726f65ea6024f80657dc))
+-   **front:** add new widget in stats + layout ([495c043](https://github.com/betagouv/datasubvention/commit/495c043452f6171a4db96daa8e08e265424841e8))
+-   **front:** add stats page on association ([c382c50](https://github.com/betagouv/datasubvention/commit/c382c50c79e05730a1dd4d68a2c635f962667b3d))
+-   **front:** cleanup resetPassword service ([f53f445](https://github.com/betagouv/datasubvention/commit/f53f445e1fff40039eac30547397345c6235abf6))
+-   **front:** compute labels from fresh in front ([d696f77](https://github.com/betagouv/datasubvention/commit/d696f770f8fee6687f4bccacd665a4d3dc9c919d))
+-   **front:** configure legend : previous value or not ([afc1bf5](https://github.com/betagouv/datasubvention/commit/afc1bf5e1e6a5ed451288054cdc2d111171388de))
+-   **front:** display value before start of year in graph ([a3e5998](https://github.com/betagouv/datasubvention/commit/a3e5998f1245239e99d5db3289866b3fb39e06c4))
+-   **front:** dynamic Input type ([873e09b](https://github.com/betagouv/datasubvention/commit/873e09b4d8c0202fc9b8dbef67b44b3f0f94313d))
+-   **front:** forget password oignon pipeline ([c5998c3](https://github.com/betagouv/datasubvention/commit/c5998c369594b10c4192a00e74afb840d1901b6d))
+-   **front:** forget password svelte component ([3ee2013](https://github.com/betagouv/datasubvention/commit/3ee201326afd96cd51aec0a73f43abb3f4990c87))
+-   **front:** generic monthly graph component ([34cfcf4](https://github.com/betagouv/datasubvention/commit/34cfcf4c1a3cac00e5b3cdcf420764f5f6865d9d))
+-   **front:** manage user authentification in svelte part ([9fbe82f](https://github.com/betagouv/datasubvention/commit/9fbe82f76eb4ce03a297df4c57a3572b08979424))
+-   **front:** misc review comments ([a114702](https://github.com/betagouv/datasubvention/commit/a114702a94bb3ef0a962c55133f59e42539ab3c0))
+-   **front:** monthly request graph component ([7796423](https://github.com/betagouv/datasubvention/commit/7796423ba5652579eb2e325c703505bb30646366))
+-   **front:** oignon pipeline to get request monthly count ([6ce01db](https://github.com/betagouv/datasubvention/commit/6ce01dbf4a6b286c56d5a13665fe88d7ba281793))
+-   **front:** post reset pwd ([38515a8](https://github.com/betagouv/datasubvention/commit/38515a804844be152a1b4d211d73be68b6febab2))
+-   **front:** reset pwd spinner ([eb5fae9](https://github.com/betagouv/datasubvention/commit/eb5fae941312812539b4be8a8b07fa339d4bfbba))
+-   **front:** reset-pwd breadcrumbs ([eb8d1ed](https://github.com/betagouv/datasubvention/commit/eb8d1ed967d55433bd33a73d203d107da6eb036a))
+-   **front:** select supports id ([9f2e49f](https://github.com/betagouv/datasubvention/commit/9f2e49f3c0ac70e4cd958f88c9bbe3085636d512))
+-   **front:** stat api does not invent data in the future ([c0a17fe](https://github.com/betagouv/datasubvention/commit/c0a17fe7044ab130c5707cee5e7b99c7960b4c55))
+-   **front:** switch forget-password routing to svelte ([bbf8375](https://github.com/betagouv/datasubvention/commit/bbf83759c0f800a03b77b5e3ab9e53e06162d920))
+-   **front:** switch routing to svelte ([ae1b4d8](https://github.com/betagouv/datasubvention/commit/ae1b4d82ee6c4e40b4a8a31cfb1dba3fec9cb037))
+-   **front:** update router service and add error service ([4a1a582](https://github.com/betagouv/datasubvention/commit/4a1a58232798b336f4a59127f0b7e20604ba2ad1))
+-   **front:** wip structure of reset-password feature ([1813a3c](https://github.com/betagouv/datasubvention/commit/1813a3c66f8120c795de17e5ba63204ea93f86b3))
+-   **front:** wip wip ([875132b](https://github.com/betagouv/datasubvention/commit/875132b57eda3ce4d85f936153d5e98e1b509420))
+
 # [0.22.0](https://github.com/betagouv/datasubvention/compare/v0.21.4...v0.22.0) (2023-01-27)
 
 ### Bug Fixes
