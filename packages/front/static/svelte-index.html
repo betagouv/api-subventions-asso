@@ -16,31 +16,17 @@
         <link rel="shortcut icon" href="/~/@gouvfr/dsfr/dist/favicon/favicon.ico" type="image/x-icon" />
         <!-- 32×32 -->
         <script type="module" src="/static/js/svelte.js" defer></script>
-        <script>
-            window.pipedriveLeadboosterConfig = {
-                base: "leadbooster-chat.pipedrive.com",
-                companyId: 10768636,
-                playbookUuid: "b6f560d1-9d89-4015-9435-443709c510bd",
-                version: 2
-            };
+        <script type="text/javascript">
+            window.$crisp = [];
+            window.CRISP_WEBSITE_ID = "9b58fbdb-9b81-4ac8-9754-ee1eb9d8d058";
             (function () {
-                var w = window;
-                if (w.LeadBooster) {
-                    console.warn("LeadBooster already exists");
-                } else {
-                    w.LeadBooster = {
-                        q: [],
-                        on: function (n, h) {
-                            this.q.push({ t: "o", n: n, h: h });
-                        },
-                        trigger: function (n) {
-                            this.q.push({ t: "t", n: n });
-                        }
-                    };
-                }
+                d = document;
+                s = d.createElement("script");
+                s.src = "https://client.crisp.chat/l.js";
+                s.async = 1;
+                d.getElementsByTagName("head")[0].appendChild(s);
             })();
         </script>
-        <script src="https://leadbooster-chat.pipedrive.com/assets/loader.js" async></script>
     </head>
 
     <noscript>
