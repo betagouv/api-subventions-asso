@@ -155,7 +155,7 @@ export class UserService {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email.toLocaleLowerCase());
 
         if (!userWithSecrets?.jwt) {
-            // No jwt, so user is already disconected
+            // No jwt, so user is already disconnected
             return user;
         }
 
@@ -339,15 +339,15 @@ export class UserService {
         roles: RoleEnum[]
     ): Promise<{ success: true; user: UserDto } | UserServiceError> {
         if (typeof user === "string") {
-            const findedUser = await userRepository.findByEmail(user);
-            if (!findedUser) {
+            const foundUser = await userRepository.findByEmail(user);
+            if (!foundUser) {
                 return {
                     success: false,
                     message: "User email does not correspond to a user",
                     code: UserServiceErrors.USER_NOT_FOUND
                 };
             }
-            user = findedUser;
+            user = foundUser;
         }
 
         if (!roles.every(role => Object.values(RoleEnum).includes(role))) {
@@ -364,15 +364,15 @@ export class UserService {
 
     async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true; user: UserDto }> {
         if (typeof user === "string") {
-            const findedUser = await userRepository.findByEmail(user);
-            if (!findedUser) {
+            const foundUser = await userRepository.findByEmail(user);
+            if (!foundUser) {
                 return {
                     success: false,
                     message: "User email does not correspond to a user",
                     code: UserServiceErrors.USER_NOT_FOUND
                 };
             }
-            user = findedUser;
+            user = foundUser;
         }
 
         user.active = true;
@@ -380,7 +380,7 @@ export class UserService {
         return { success: true, user: await userRepository.update(user) };
     }
 
-    async refrechExpirationToken(user: UserDto) {
+    async refreshExpirationToken(user: UserDto) {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
             return {

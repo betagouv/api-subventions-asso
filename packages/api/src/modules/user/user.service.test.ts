@@ -74,7 +74,7 @@ describe("User Service", () => {
     };
 
     beforeEach(() => {
-        // @ts-expect-error: taggle
+        // @ts-expect-error: mock
         buildJWTTokenMock.mockImplementation(() => "SIGNED_TOKEN");
         jwtVerifyMock.mockImplementation(() => ({
             token: "TOKEN",
