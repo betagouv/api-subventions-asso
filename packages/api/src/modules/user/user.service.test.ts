@@ -18,15 +18,12 @@ jest.mock("jsonwebtoken", () => ({
     }
 }));
 
-import jwt from "jsonwebtoken";
-
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceError, UserServiceErrors } from "./user.service";
 import { ObjectId } from "mongodb";
 import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
-import { UserDtoSuccessResponse } from "@api-subventions-asso/dto";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import UserReset from "./entities/UserReset";
 import userRepository from "./repositories/user.repository";

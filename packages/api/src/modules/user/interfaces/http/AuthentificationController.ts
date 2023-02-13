@@ -1,16 +1,12 @@
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Response } from "tsoa";
-import userService, { UserServiceErrors } from "../../user.service";
+import userService from "../../user.service";
 import {
-    LoginDtoErrorCodes,
-    LoginDtoNegativeResponse,
     LoginDtoResponse,
     ResetPasswordDtoNegativeResponse,
     ResetPasswordDtoResponse,
-    ResetPasswordErrorCodes,
-    SignupDtoResponse,
-    SignupErrorCodes
+    SignupDtoResponse
 } from "@api-subventions-asso/dto";
-import { DefaultObject, IdentifiedRequest, LoginRequest } from "../../../../@types";
+import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 
 @Route("/auth")
