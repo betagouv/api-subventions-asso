@@ -23,8 +23,7 @@ import {
     SuccessResponse
 } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { ValidateErrorJSON } from "../../../../@types";
-import { IdentifiedRequest } from "../../../../@types/ApiRequests";
+import { ValidateErrorJSON, IdentifiedRequest } from "../../../../@types";
 import userService, { UserServiceErrors } from "../../user.service";
 
 // TODO: make this a class or something generic for all Controller ?
