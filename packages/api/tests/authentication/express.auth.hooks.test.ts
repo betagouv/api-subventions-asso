@@ -23,7 +23,7 @@ describe("express.auth.hooks", () => {
     });
 
     describe("local", () => {
-        it("Should be logged user", done => {
+        it("Should log in user", done => {
             const obj: { [key: string]: unknown } = {};
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
@@ -58,7 +58,7 @@ describe("express.auth.hooks", () => {
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
-        it("Should be not logged user", done => {
+        it("Should not log user in", done => {
             const obj: { [key: string]: unknown } = {};
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
@@ -83,7 +83,7 @@ describe("express.auth.hooks", () => {
     });
 
     describe("jwt", () => {
-        it("Should be logged user", done => {
+        it("Should log user in", done => {
             const obj: { [key: string]: unknown } = {};
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
@@ -120,7 +120,7 @@ describe("express.auth.hooks", () => {
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
-        it("Should be not logged user", done => {
+        it("Should not log user in", done => {
             const obj: { [key: string]: unknown } = {};
             function strat(data: unknown, call: unknown) {
                 obj.data = data;

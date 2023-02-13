@@ -12,11 +12,11 @@ import { RoleEnum } from "../@enums/Roles";
 describe("expressAuthentication", () => {
     // Spys
     const verifyMock = jest.spyOn(jwt, "verify");
-    const refrechExpirationTokenMock = jest.spyOn(userService, "refrechExpirationToken");
+    const refreshExpirationTokenMock = jest.spyOn(userService, "refreshExpirationToken");
     const findByEmailMock = jest.spyOn(userService, "findByEmail");
     const findJwtByEmailMock = jest.spyOn(userService, "findJwtByEmail");
     const updateMock = jest.spyOn(userRepository, "update");
-    const SPYS = [verifyMock, findByEmailMock, findByEmailMock, refrechExpirationTokenMock, updateMock];
+    const SPYS = [verifyMock, findByEmailMock, findByEmailMock, refreshExpirationTokenMock, updateMock];
 
     const DEFAULT_REQ = {
         body: {},
@@ -34,7 +34,7 @@ describe("expressAuthentication", () => {
     let warn: jest.SpyInstance;
     beforeAll(() => {
         warn = jest.spyOn(console, "warn").mockImplementation();
-        refrechExpirationTokenMock.mockImplementation(jest.fn());
+        refreshExpirationTokenMock.mockImplementation(jest.fn());
         findByEmailMock.mockImplementation(email =>
             Promise.resolve({
                 email,

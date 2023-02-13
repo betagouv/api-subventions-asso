@@ -145,7 +145,7 @@ export class UserController extends Controller {
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     @Response<UserDtoErrorResponse>(400, "Validator Error", {
         message:
-            "Password is not hard, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
+            "Password is too weak, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
         errorCode: UserErrorCodes.INVALID_PASSWORD
     })
     public async changePassword(

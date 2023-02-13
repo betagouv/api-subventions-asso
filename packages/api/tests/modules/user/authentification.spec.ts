@@ -63,7 +63,7 @@ describe("AuthentificationController, /auth", () => {
             });
         });
 
-        it("should reject because password is not hard", async () => {
+        it("should reject because password is too weak", async () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 

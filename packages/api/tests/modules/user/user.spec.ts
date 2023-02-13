@@ -47,7 +47,7 @@ describe("UserController, /user", () => {
             });
         });
 
-        it("should add reject because role not exist", async () => {
+        it("should reject because role not exist", async () => {
             await userService.createUser("futur-admin@beta.gouv.fr");
 
             const response = await request(g.app)
@@ -63,7 +63,7 @@ describe("UserController, /user", () => {
             expect(response.body).toMatchSnapshot();
         });
 
-        it("should return 401 because user dont have rigth", async () => {
+        it("should return 401 because user dont have right", async () => {
             const response = await request(g.app)
                 .post("/user/admin/roles")
                 .send({
@@ -106,7 +106,7 @@ describe("UserController, /user", () => {
             });
         });
 
-        it("should be change password", async () => {
+        it("should change password", async () => {
             const result = await userService.createUser("user@beta.gouv.fr");
 
             if (!result.success) throw new Error("User create not works");
@@ -127,7 +127,7 @@ describe("UserController, /user", () => {
             expect(userUpdated).toMatchObject(result.user);
         });
 
-        it("should add reject because password is not hard", async () => {
+        it("should reject because password is too weak", async () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
@@ -140,7 +140,7 @@ describe("UserController, /user", () => {
             expect(response.body).toMatchSnapshot();
         });
 
-        it("should return 401 beacause user not connected", async () => {
+        it("should return 401 because user not connected", async () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
