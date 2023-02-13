@@ -4,6 +4,7 @@
     import Etablissements from "./Etablissements.svelte";
     import Documents from "../../../components/Documents/Documents.svelte";
     import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+    import Stats from "./Stats/Stats.svelte";
 
     export let titles;
     export let association;
@@ -17,6 +18,8 @@
                 {#if index === 0}
                     <SubventionsVersementsDashboard identifier={associationIdentifier} />
                 {:else if index === 1}
+                    <Stats />
+                {:else if index === 2}
                     <Documents resource={association} />
                 {:else}
                     <Etablissements {associationIdentifier} {association} />
