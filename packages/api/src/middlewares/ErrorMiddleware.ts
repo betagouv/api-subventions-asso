@@ -14,8 +14,10 @@ export function errorHandler(isTest: boolean) {
         if (err instanceof Error) {
             if (!isTest) console.error(err);
             const statusCode = err instanceof HttpError ? err.status : 500;
+            const errorCode = err instanceof HttpError ? err.code : undefined;
             return res.status(statusCode).json({
-                message: err.message
+                message: err.message,
+                code: errorCode
             });
         }
         next();
