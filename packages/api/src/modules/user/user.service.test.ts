@@ -89,10 +89,7 @@ describe("User Service", () => {
 
     describe("signup", () => {
         it("should create a consumer", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({
-                success: true,
-                reset: {} as UserReset
-            }));
+            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createConsumerMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.signup(EMAIL, RoleEnum.consumer);
             expect(createConsumerMock).toHaveBeenCalled();
@@ -101,20 +98,14 @@ describe("User Service", () => {
         it("should create a user", async () => {});
 
         it("should create a reset token", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({
-                success: true,
-                reset: {} as UserReset
-            }));
+            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.signup(EMAIL);
             expect(resetUserMock).toHaveBeenCalled();
         });
 
         it("should send a mail", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({
-                success: true,
-                reset: {} as UserReset
-            }));
+            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             await userService.signup(EMAIL);
             expect(sendCreationMailMock).toHaveBeenCalled();
@@ -122,10 +113,7 @@ describe("User Service", () => {
 
         it("should return success response with email", async () => {
             const expected = { email: EMAIL, success: true };
-            resetUserMock.mockImplementationOnce(async () => ({
-                success: true,
-                reset: {} as UserReset
-            }));
+            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
             const actual = await userService.signup(EMAIL);
             expect(actual).toEqual(expected);
