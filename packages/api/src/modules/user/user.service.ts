@@ -394,15 +394,9 @@ export class UserService {
         };
     }
 
-    async forgetPassword(email: string): Promise<UserServiceError | { success: true; reset: UserReset }> {
+    async forgetPassword(email: string): Promise<UserReset> {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
+        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
         const resetResult = await this.resetUser(user);
 

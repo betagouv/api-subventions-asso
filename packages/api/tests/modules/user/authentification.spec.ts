@@ -35,7 +35,7 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
                 message: "User not found"
             });
@@ -47,13 +47,11 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
 
@@ -67,13 +65,11 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaa",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(500);
@@ -101,8 +97,6 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             const oldResetTimout = UserService.RESET_TIMEOUT;
             UserService.RESET_TIMEOUT = 0;
 
@@ -110,7 +104,7 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
 
@@ -126,15 +120,13 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             await db.collection("users").deleteOne({ email: "test-reset@beta.gouv.fr" });
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
 
