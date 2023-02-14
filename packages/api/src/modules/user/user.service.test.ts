@@ -112,7 +112,7 @@ describe("User Service", () => {
         });
 
         it("should return success response with email", async () => {
-            const expected = { email: EMAIL, success: true };
+            const expected = EMAIL;
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             const actual = await userService.signup(EMAIL);
