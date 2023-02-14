@@ -322,45 +322,42 @@ describe("User Service", () => {
         });
     });
 
-    describe("validEmail()", () => {
+    describe("validateEmail()", () => {
         const isDomainAcceptedMock = jest
             .spyOn(configurationsService, "isDomainAccepted")
             .mockImplementation(async () => true);
         const EMAIL = "daemon.targaryen@ac-pentos.ws";
+
         it("should verify domain", async () => {
             //@ts-expect-error: private method
-            await userService.validEmail(EMAIL);
+            await userService.validateEmail(EMAIL);
             expect(isDomainAcceptedMock).toHaveBeenCalledWith(EMAIL);
         });
 
-        it("should return SuccessResponse", async () => {
-            const expected = { success: true };
+        it("should return if email is correct", async () => {
             //@ts-expect-error: private method
-            const actual = await userService.validEmail(EMAIL);
-            expect(actual).toEqual(expected);
+            await userService.validateEmail(EMAIL);
         });
 
-        it("should return UserServiceError if not well formatted", async () => {
+        it("should throw error if not well formatted", async () => {
             const expected = {
-                success: false,
                 message: "Email is not valid",
                 code: UserServiceErrors.CREATE_INVALID_EMAIL
             };
             //@ts-expect-error: private method
-            const actual = await userService.validEmail();
-            expect(actual).toEqual(expected);
+            const test = () => userService.validateEmail();
+            await expect(test).rejects.toMatchObject(expected);
         });
 
-        it("should return UserServiceError if domain not accepted", async () => {
+        it("should throw error if domain not accepted", async () => {
             isDomainAcceptedMock.mockImplementationOnce(async () => false);
             const expected = {
-                success: false,
                 message: "Email domain is not accepted",
                 code: UserServiceErrors.CREATE_EMAIL_GOUV
             };
             //@ts-expect-error: private method
-            const actual = await userService.validEmail(EMAIL);
-            expect(actual).toEqual(expected);
+            const test = () => userService.validateEmail(EMAIL);
+            await expect(test).rejects.toMatchObject(expected);
         });
     });
 
