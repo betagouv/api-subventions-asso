@@ -205,9 +205,7 @@ export class UserService {
         roles: RoleEnum[] = [RoleEnum.user],
         password = "TMP_PASSWOrd;12345678"
     ): Promise<UserServiceError | { success: true; user: UserDto }> {
-        const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
-
-        if (!validUser.success) return validUser;
+        await this.validateEmailAndPassword(email.toLocaleLowerCase(), password);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
@@ -277,10 +275,7 @@ export class UserService {
     }
 
     public async update(user: UserDto): Promise<UserServiceError | { success: true; user: UserDto }> {
-        const emailIsValid = await this.validEmail(user.email);
-        if (!emailIsValid.success) {
-            return emailIsValid;
-        }
+        await this.validateEmail(user.email);
         return { success: true, user: await userRepository.update(user) };
     }
 
@@ -565,31 +560,17 @@ export class UserService {
         };
     }
 
-    private async validEmailAndPassword(
-        email: string,
-        password: string
-    ): Promise<UserServiceError | { success: true }> {
-        const emailValid = await this.validEmail(email);
+    private async validateEmailAndPassword(email: string, password: string): Promise<void> {
+        await this.validateEmail(email);
 
-        if (!emailValid.success) return emailValid;
+        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
+            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
 
-        if (await userRepository.findByEmail(email.toLocaleLowerCase())) {
-            return {
-                success: false,
-                message: "User is already exist",
-                code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
-            };
-        }
-
-        if (!this.passwordValidator(password)) {
-            return {
-                success: false,
-                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            };
-        }
-
-        return { success: true };
+        if (!this.passwordValidator(password))
+            throw new BadRequestError(
+                UserService.PASSWORD_VALIDATOR_MESSAGE,
+                UserServiceErrors.FORMAT_PASSWORD_INVALID
+            );
     }
 
     public isRoleValid(role: RoleEnum) {
@@ -600,24 +581,14 @@ export class UserService {
         return roles.every(role => this.isRoleValid(role));
     }
 
-    private async validEmail(email: string): Promise<UserServiceError | { success: true }> {
+    private async validateEmail(email: string): Promise<void> {
         if (!REGEX_MAIL.test(email)) {
-            return {
-                success: false,
-                message: "Email is not valid",
-                code: UserServiceErrors.CREATE_INVALID_EMAIL
-            };
+            throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
         }
 
         if (!(await configurationsService.isDomainAccepted(email))) {
-            return {
-                success: false,
-                message: "Email domain is not accepted",
-                code: UserServiceErrors.CREATE_EMAIL_GOUV
-            };
+            throw new BadRequestError("Email domain is not accepted", UserServiceErrors.CREATE_EMAIL_GOUV);
         }
-
-        return { success: true };
     }
 
     private buildJWTToken(user: DefaultObject, options: { expiration: boolean } = { expiration: true }) {
