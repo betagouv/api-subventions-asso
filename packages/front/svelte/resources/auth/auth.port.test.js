@@ -1,7 +1,7 @@
 import axios from "axios";
 import authPort from "./auth.port";
 import errorsService from "../../errors/errors.service";
-import UnauthoziedError from "../../errors/UnauthorizedError";
+import UnauthorizedError from "../../errors/UnauthorizedError";
 
 const DEFAULT_ERROR_CODE = 49;
 
@@ -64,10 +64,10 @@ describe("AuthPort", () => {
             expect(actual).toBe(expected);
         });
     });
-    
+
     describe("login()", () => {
         const axiosPostMock = jest.spyOn(axios, "post");
-        const errorSerivceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(UnauthoziedError);
+        const errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(UnauthorizedError);
         const EMAIL = "test@mail.fr";
         const PASSWORD = "FAKE_PASSWORD";
 
@@ -88,7 +88,7 @@ describe("AuthPort", () => {
         it("throws error with error code if any", () => {
             const HTTP_ERROR_CODE = 401;
             axiosPostMock.mockRejectedValueOnce({ response: { status: HTTP_ERROR_CODE, data: {} } });
-            expect(async () => authPort.login(EMAIL, PASSWORD)).rejects.toThrowError(UnauthoziedError);
+            expect(async () => authPort.login(EMAIL, PASSWORD)).rejects.toThrowError(UnauthorizedError);
         });
     });
 
