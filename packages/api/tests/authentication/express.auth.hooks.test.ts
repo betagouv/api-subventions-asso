@@ -84,6 +84,7 @@ describe("express.auth.hooks", () => {
     describe("jwt", () => {
         it("Should log user in", done => {
             const obj: { [key: string]: unknown } = {};
+
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
@@ -91,16 +92,13 @@ describe("express.auth.hooks", () => {
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
             jest.spyOn(userService, "authenticate").mockImplementation(async user => ({
-                success: true,
-                user: {
-                    email: user.email,
-                    roles: [],
-                    active: true,
-                    signupAt: new Date(),
-                    jwt: { token: "", expirateDate: new Date() },
-                    stats: { searchCount: 0, lastSearchDate: null },
-                    _id: new ObjectId()
-                }
+                email: user.email,
+                roles: [],
+                active: true,
+                signupAt: new Date(),
+                jwt: { token: "", expirateDate: new Date() },
+                stats: { searchCount: 0, lastSearchDate: null },
+                _id: new ObjectId()
             }));
 
             passportMock.mockImplementation(name => {
@@ -121,17 +119,14 @@ describe("express.auth.hooks", () => {
 
         it("Should not log user in", done => {
             const obj: { [key: string]: unknown } = {};
+
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, "authenticate").mockImplementation(async () => ({
-                success: false,
-                code: 42,
-                message: "User not found"
-            }));
+            jest.spyOn(userService, "authenticate").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name === "login") return;
@@ -139,7 +134,7 @@ describe("express.auth.hooks", () => {
                     { headers: { "x-access-token": "TOKEN" } },
                     { email: "test@beta.gouv.fr" },
                     (...args: unknown[]) => {
-                        expect(args[2]).toMatchObject({ message: "User not found" });
+                        expect(args[0]).toMatchObject(ERROR);
                         done();
                     }
                 );

@@ -63,7 +63,7 @@ export class UserRepository {
         return this.collection.findOne({ _id: id });
     }
 
-    private removeSecrets(user: UserDbo): UserDto | null {
+    removeSecrets(user: UserDbo): UserDto | null {
         if (!user) return null;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
