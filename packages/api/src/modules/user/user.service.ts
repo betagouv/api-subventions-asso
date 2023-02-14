@@ -18,6 +18,15 @@ import UserDbo from "./repositories/dbo/UserDbo";
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 import configurationsService from "../configurations/configurations.service";
+import {
+    BadRequestError,
+    ConflictError,
+    ForbiddenError,
+    InternalServerError,
+    NotFoundError,
+    UnauthorizedError
+} from "../../shared/errors/httpErrors";
+import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,

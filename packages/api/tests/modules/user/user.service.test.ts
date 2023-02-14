@@ -7,6 +7,7 @@ import UserReset from "../../../src/modules/user/entities/UserReset";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
 import { UserService, UserServiceErrors } from "../../../src/modules/user/user.service";
+import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 describe("user.service.ts", () => {
     let service;
