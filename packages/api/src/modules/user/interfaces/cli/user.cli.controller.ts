@@ -3,20 +3,20 @@ import { StaticImplements } from "../../../../decorators/staticImplements.decora
 import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
+import { csvParse } from "../../../../shared/helpers/ParserHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
     static cmdName = "user";
 
     async create(email: string) {
-        const result = await userService.createUser(email);
-
-        if (!result.success) {
-            console.info("User creation error : \n", result.message);
-            return;
+        try {
+            await userService.createUser(email);
+            console.info("User has been created");
+        } catch (error: unknown) {
+            const e = error as Error;
+            console.info("User creation error : \n", e.message);
         }
-
-        console.info("User has been created");
     }
 
     async setRoles(email: string, ...roles: RoleEnum[]) {
@@ -42,20 +42,16 @@ export default class UserCliController {
     }
 
     async addList(file: string) {
-        if (typeof file !== "string") {
-            throw new Error("Parse command need file args");
-        }
-
         if (!fs.existsSync(file)) {
             throw new Error(`File not found ${file}`);
         }
 
         const fileContent = fs.readFileSync(file);
+        const emails = csvParse(fileContent).flat();
 
-        const results = await userService.addUsersByCsv(fileContent);
+        const results = await userService.createUsersByList(emails);
+        const failureCount = emails.length - results.length;
 
-        const echec = results.filter(result => !result.success);
-
-        console.info(`${results.length - echec.length} users addeds and ${echec.length} user rejected`);
+        console.info(`${results.length} users added and ${failureCount} users rejected`);
     }
 }
