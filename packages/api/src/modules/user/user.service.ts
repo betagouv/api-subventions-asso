@@ -14,6 +14,7 @@ import userResetRepository from "./repositories/user-reset.repository";
 import UserNotPersisted from "./entities/UserNotPersisted";
 import UserReset from "./entities/UserReset";
 import UserDbo from "./repositories/dbo/UserDbo";
+import dedent from "dedent";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
@@ -54,7 +55,7 @@ export interface UserServiceError {
 
 export class UserService {
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
-    public static PASSWORD_VALIDATOR_MESSAGE = `Password is not hard, please use this rules:
+    public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
         At least one digit [0-9]
         At least one lowercase character [a-z]
         At least one uppercase character [A-Z]
