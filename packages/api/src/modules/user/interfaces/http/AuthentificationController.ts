@@ -26,36 +26,10 @@ export class AuthentificationController extends Controller {
     @Post("/reset-password")
     @Response<ResetPasswordDtoNegativeResponse>("500")
     public async resetPassword(@Body() body: { password: string; token: string }): Promise<ResetPasswordDtoResponse> {
-        const result = await userService.resetPassword(body.password, body.token);
-
-        if (!result.success) {
-            this.setStatus(500);
-
-            let errorCode = ResetPasswordErrorCodes.INTERNAL_ERROR;
-
-            switch (result.code) {
-                case UserServiceErrors.RESET_TOKEN_NOT_FOUND:
-                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND;
-                    break;
-                case UserServiceErrors.RESET_TOKEN_EXPIRED:
-                    errorCode = ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED;
-                    break;
-                case UserServiceErrors.USER_NOT_FOUND:
-                    errorCode = ResetPasswordErrorCodes.USER_NOT_FOUND;
-                    break;
-                case UserServiceErrors.FORMAT_PASSWORD_INVALID:
-                    errorCode = ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID;
-                    break;
-            }
-
-            return {
-                message: result.message,
-                code: errorCode
-            };
-        }
+        const user = await userService.resetPassword(body.password, body.token);
 
         return {
-            user: { ...result.user, _id: result.user._id.toString() }
+            user: { ...user, _id: user._id.toString() }
         };
     }
 
