@@ -247,25 +247,19 @@ describe("user.service.ts", () => {
     describe("forgetPassword", () => {
         let userId: ObjectId;
         beforeEach(async () => {
-            const result = await service.createUser("test@beta.gouv.fr");
-            if (!result.success) throw new Error("User create faild");
-
-            userId = result.user._id;
+            const user = await service.createUser("test@beta.gouv.fr");
+            userId = user._id;
         });
 
         it("should reject because user email not found", async () => {
-            await expect(service.forgetPassword("wrong@email.fr")).resolves.toMatchObject({
-                success: false,
+            await expect(service.forgetPassword("wrong@email.fr")).rejects.toMatchObject({
                 message: "User not found",
                 code: UserServiceErrors.USER_NOT_FOUND
             });
         });
 
         it("should update user (called with user)", async () => {
-            await expect(service.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({
-                success: true,
-                reset: { userId: userId }
-            });
+            await expect(service.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({ userId: userId });
         });
     });
 
