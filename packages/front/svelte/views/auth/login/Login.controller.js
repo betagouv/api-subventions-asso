@@ -40,7 +40,7 @@ export default class LoginController {
     }
 
     _getSuccessMessage() {
-        return this._query.success === "COMPTE_ACTIVED"
+        return this._query.success === "ACCOUNT_ACTIVATED"
             ? "Votre compte a bien été activé, vous pouvez maintenant vous connecter"
             : "Votre mot de passe a bien été changé";
     }
