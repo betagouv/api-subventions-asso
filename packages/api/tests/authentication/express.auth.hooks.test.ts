@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import passport from "passport";
+import passport = require("passport");
 import { Express } from "express";
-import passportLocal from "passport-local";
-import passportJwt from "passport-jwt";
+import passportLocal = require("passport-local");
+import passportJwt = require("passport-jwt");
 import userService from "../../src/modules/user/user.service";
 import { authMocks } from "../../src/authentication/express.auth.hooks";
 import { ObjectId } from "mongodb";

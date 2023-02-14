@@ -1,4 +1,4 @@
-import request from "supertest";
+import request = require("supertest");
 import statsService from "../../../src/modules/stats/stats.service";
 import getAdminToken from "../../__helpers__/getAdminToken";
 import getUserToken from "../../__helpers__/getUserToken";
