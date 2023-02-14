@@ -11,7 +11,7 @@ import {
     SignupErrorCodes
 } from "@api-subventions-asso/dto";
 import { DefaultObject, IdentifiedRequest, LoginRequest } from "../../../../@types";
-import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 
 @Route("/auth")
 @Tags("Authentification Controller")

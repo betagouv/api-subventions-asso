@@ -1,7 +1,7 @@
 import { IVerifyOptions } from "passport-local";
 import { LoginRequest } from "../@types";
 import userService from "../modules/user/user.service";
-import UnauthorizedError from "../shared/errors/httpErrors/UnauthorizedError";
+import { UnauthorizedError } from "../shared/errors/httpErrors";
 
 export function expressAuthentication(req: LoginRequest, securityName = "jwt", scopes: string[] = []) {
     if (securityName !== "jwt") {
