@@ -88,33 +88,9 @@ export class AuthentificationController extends Controller {
     @Post("/signup")
     @SuccessResponse("201", "Signup successfully")
     public async signup(@Body() body: { email: string }): Promise<SignupDtoResponse> {
-        const result = await userService.signup(body.email);
-
-        if (result.success) {
-            this.setStatus(201);
-            return {
-                email: result.email
-            };
-        }
-
-        const internalServerError = [SignupErrorCodes.CREATION_ERROR, SignupErrorCodes.CREATION_RESET_ERROR];
-
-        const errorMatch: DefaultObject<SignupErrorCodes> = {
-            [UserServiceErrors.CREATE_INVALID_EMAIL]: SignupErrorCodes.EMAIL_NOT_VALID,
-            [UserServiceErrors.CREATE_USER_ALREADY_EXIST]: SignupErrorCodes.USER_ALREADY_EXIST,
-            [UserServiceErrors.CREATE_USER_WRONG]: SignupErrorCodes.CREATION_ERROR,
-            [UserServiceErrors.CREATE_RESET_PASSWORD_WRONG]: SignupErrorCodes.CREATION_RESET_ERROR,
-            [UserServiceErrors.CREATE_EMAIL_GOUV]: SignupErrorCodes.EMAIL_MUST_BE_END_GOUV
-        };
-
-        const errorCode: SignupErrorCodes = errorMatch[result.code] || SignupErrorCodes.CREATION_ERROR;
-
-        this.setStatus(internalServerError.includes(errorCode) ? 500 : 422);
-
-        return {
-            errorCode,
-            message: result.message
-        };
+        const email = await userService.signup(body.email);
+        this.setStatus(201);
+        return { email };
     }
 
     @Get("/logout")

@@ -257,10 +257,7 @@ export class UserService {
         return (await Promise.all(promises)).filter(result => result != null);
     }
 
-    public async signup(
-        email: string,
-        role = RoleEnum.user
-    ): Promise<UserServiceError | { success: true; email: string }> {
+    public async signup(email: string, role = RoleEnum.user): Promise<string> {
         let user;
         const lowerCaseEmail = email.toLocaleLowerCase();
         if (role == RoleEnum.consumer) {
@@ -273,7 +270,7 @@ export class UserService {
 
         await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.token);
 
-        return { email, success: true };
+        return email;
     }
 
     async addRolesToUser(
