@@ -334,64 +334,36 @@ export class UserService {
         return await userRepository.update(userWithSecrets);
     }
 
-    async resetPassword(
-        password: string,
-        resetToken: string
-    ): Promise<UserServiceError | { success: true; user: UserDto }> {
+    async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        if (!reset) {
-            return {
-                success: false,
-                message: "Reset token not found",
-                code: UserServiceErrors.RESET_TOKEN_NOT_FOUND
-            };
-        }
+        if (!reset) throw new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
 
-        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now()) {
-            return {
-                success: false,
-                message: "Reset token has expired, please retry forget password",
-                code: UserServiceErrors.RESET_TOKEN_EXPIRED
-            };
-        }
+        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now())
+            throw new BadRequestError(
+                "Reset token has expired, please retry forget password",
+                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+            );
 
         const user = await userRepository.findById(reset.userId);
 
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
+        if (!user) throw new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND);
 
-        if (!this.passwordValidator(password)) {
-            return {
-                success: false,
-                message: `Password is not hard, please use this rules:
-                        At least one digit [0-9]
-                        At least one lowercase character [a-z]
-                        At least one uppercase character [A-Z]
-                        At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-                        At least 8 characters in length, but no more than 32.
-                    `,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            };
-        }
+        if (!this.passwordValidator(password))
+            throw new BadRequestError(
+                UserService.PASSWORD_VALIDATOR_MESSAGE,
+                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+            );
 
         const hashPassword = await bcrypt.hash(password, 10);
 
         await userResetRepository.remove(reset);
 
-        return {
-            success: true,
-            user: await userRepository.update({
-                ...user,
-                hashPassword,
-                active: true
-            })
-        };
+        return await userRepository.update({
+            ...user,
+            hashPassword,
+            active: true
+        });
     }
 
     async forgetPassword(email: string): Promise<UserReset> {

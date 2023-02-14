@@ -72,7 +72,7 @@ describe("AuthentificationController, /auth", () => {
                     token: result.token
                 })
                 .set("Accept", "application/json");
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
             });
@@ -87,7 +87,7 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
             });
@@ -107,8 +107,9 @@ describe("AuthentificationController, /auth", () => {
                     token: result.token
                 })
                 .set("Accept", "application/json");
+            UserService.RESET_TIMEOUT = oldResetTimout;
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
             });
@@ -130,7 +131,7 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.USER_NOT_FOUND
             });
