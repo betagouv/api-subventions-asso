@@ -36,10 +36,12 @@ export function authMocks(app: Express) {
                 passReqToCallback: true
             },
             async (req: Request, tokenPayload, done) => {
-                const result = await userService.authenticate(tokenPayload, getJtwTokenFromRequest(req));
-                if (result.success && result.user)
-                    return done(null, result.user, { message: "Logged in Successfully" });
-                else return done(null, false, { message: (result as UserServiceError).message });
+                try {
+                    const user = await userService.authenticate(tokenPayload, getJtwTokenFromRequest(req));
+                    if (user) return done(null, user, { message: "Logged in Successfully" });
+                } catch (e) {
+                    done(e);
+                }
             }
         )
     );
