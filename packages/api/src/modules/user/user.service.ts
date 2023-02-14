@@ -239,9 +239,9 @@ export class UserService {
         };
     }
 
-    public async update(user: UserDto): Promise<UserServiceError | { success: true; user: UserDto }> {
+    public async update(user: UserDto): Promise<UserDto> {
         await this.validateEmail(user.email);
-        return { success: true, user: await userRepository.update(user) };
+        return await userRepository.update(user);
     }
 
     public async delete(userId: string): Promise<{ success: boolean }> {

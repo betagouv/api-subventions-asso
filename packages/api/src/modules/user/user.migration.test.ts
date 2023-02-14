@@ -24,7 +24,7 @@ describe("UserMigration", () => {
         const userServiceDeleteMock = jest.spyOn(userService, "delete");
 
         it("should update user", async () => {
-            userServiceUpdateMock.mockImplementationOnce(user => Promise.resolve({ user, success: true }));
+            userServiceUpdateMock.mockImplementationOnce(user => Promise.resolve(user));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.UPDATE,
