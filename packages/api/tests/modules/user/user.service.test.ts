@@ -186,10 +186,9 @@ describe("user.service.ts", () => {
         });
 
         it("should reject because resetToken not found", async () => {
-            await expect(service.resetPassword("", "FAKE_TOKEN")).resolves.toMatchObject({
-                success: false,
+            await expect(service.resetPassword("", "FAKE_TOKEN")).rejects.toMatchObject({
                 message: "Reset token not found",
-                code: UserServiceErrors.RESET_TOKEN_NOT_FOUND
+                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
             });
         });
 
@@ -199,10 +198,9 @@ describe("user.service.ts", () => {
                 new UserReset(userId, "token", new Date(Date.now() - 1000 * 60 * 60 * 24 * 11))
             );
 
-            await expect(service.resetPassword("", "token")).resolves.toMatchObject({
-                success: false,
+            await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
                 message: "Reset token has expired, please retry forget password",
-                code: UserServiceErrors.RESET_TOKEN_EXPIRED
+                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
             });
         });
 
@@ -210,30 +208,28 @@ describe("user.service.ts", () => {
             await userResetRepository.removeAllByUserId(userId);
             await userResetRepository.create(new UserReset(new ObjectId(), "token", new Date()));
 
-            await expect(service.resetPassword("", "token")).resolves.toMatchObject({
-                success: false,
+            await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
                 message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
+                code: ResetPasswordErrorCodes.USER_NOT_FOUND
             });
         });
 
         it("should reject because password not valid", async () => {
-            await expect(service.resetPassword("", "token")).resolves.toMatchObject({
-                success: false,
+            await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
                 message: dedent`Password is too weak, please use this rules:
                     At least one digit [0-9]
                     At least one lowercase character [a-z]
                     At least one uppercase character [A-Z]
                     At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
                     At least 8 characters in length, but no more than 32.`,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
+                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
             });
         });
 
         it("should change password", async () => {
             await expect(service.resetPassword("newPass;word789", "token")).resolves.toMatchObject({
-                success: true,
-                user: { email: "test@beta.gouv.fr", active: true }
+                email: "test@beta.gouv.fr",
+                active: true
             });
         });
 
