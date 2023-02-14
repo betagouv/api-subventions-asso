@@ -1,4 +1,4 @@
-import request from "supertest";
+import request = require("supertest");
 import { BadRequestErrorCode, BadRequestErrorMessage } from "../../../src/shared/errors/httpErrors";
 import getAdminToken from "../../__helpers__/getAdminToken";
 
