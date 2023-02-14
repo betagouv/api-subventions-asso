@@ -289,16 +289,10 @@ export class UserService {
 
         if (!result.success) return { success: false, message: result.message, code: result.code };
 
+
         const resetResult = await this.resetUser(result.user);
 
-        if (!resetResult.success)
-            return {
-                success: false,
-                message: resetResult.message,
-                code: resetResult.code
-            };
-
-        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.reset.token);
+        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.token);
 
         return { email, success: true };
     }
@@ -436,14 +430,12 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        if (resetResult.success) {
-            mailNotifierService.sendForgetPassword(email.toLocaleLowerCase(), resetResult.reset.token);
-        }
+        await mailNotifierService.sendForgetPassword(email.toLocaleLowerCase(), resetResult.token);
 
         return resetResult;
     }
 
-    async resetUser(user: UserDto): Promise<UserServiceError | { success: true; reset: UserReset }> {
+    async resetUser(user: UserDto): Promise<UserReset> {
         await userResetRepository.removeAllByUserId(user._id);
 
         const token = RandToken.generate(32);
@@ -452,18 +444,17 @@ export class UserService {
         const createdReset = await userResetRepository.create(reset);
 
         if (!createdReset) {
-            return {
-                success: false,
-                message: "The user reset password could not be created",
-                code: UserServiceErrors.CREATE_RESET_PASSWORD_WRONG
-            };
+            throw new InternalServerError(
+                "The user reset password could not be created",
+                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG
+            );
         }
 
         user.active = false;
 
         await userRepository.update(user);
 
-        return { success: true, reset: createdReset };
+        return createdReset;
     }
 
     // Only used in tests

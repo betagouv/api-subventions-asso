@@ -293,10 +293,7 @@ describe("user.service.ts", () => {
             const mockCreate = jest.spyOn(userResetRepository, "create");
             const mockUpdate = jest.spyOn(userRepository, "update");
 
-            await expect(service.resetUser(user)).resolves.toMatchObject({
-                success: true,
-                reset: { userId: user._id }
-            });
+            await expect(service.resetUser(user)).resolves.toMatchObject({ userId: user._id });
             expect(mockRemoveAll).toHaveBeenCalledWith(user._id);
             expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ userId: user._id }));
             expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ active: false }));
