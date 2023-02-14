@@ -21,35 +21,6 @@ export default class AuthController {
         return res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
     }
 
-    @Post("login")
-    public async loginPost(req: Request, res: Response, next: NextFunction) {
-        if (!req.body.email || !req.body.password) {
-            return res.render("auth/login/login", {
-                pageTitle: "Connexion",
-                loginError: true,
-                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
-                errorCodes: LoginDtoErrorCodes
-            });
-        }
-
-        const result = await authService.login(req.body.email, req.body.password);
-
-        if (result.type === "ERROR") {
-            res.statusCode = 422;
-            return res.render("auth/login/login", {
-                pageTitle: "Connexion",
-                loginError: true,
-                errorCode: result.code,
-                errorCodes: LoginDtoErrorCodes
-            });
-        }
-
-        const sessionData = req.session as unknown as DefaultObject;
-        sessionData.user = result.data.user;
-
-        res.redirect("/");
-    }
-
     @Get("forget-password")
     public forgetPasswordView(req: Request, res: Response) {
         return res.sendFile(path.join(__dirname, "../../../../../static/svelte-index.html"));
