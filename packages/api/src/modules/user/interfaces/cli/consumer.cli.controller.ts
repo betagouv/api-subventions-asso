@@ -8,13 +8,12 @@ export default class ConsumerCliController {
     static cmdName = "consumer";
 
     async create(email: string) {
-        const result = await userService.signup(email, RoleEnum.consumer);
-
-        if (!result.success) {
-            console.info("Consumer user creation error : \n", result.message);
-            return;
+        try {
+            await userService.signup(email, RoleEnum.consumer);
+            console.info("Consumer user has been created");
+        } catch (error) {
+            const e = error as Error;
+            console.info("Consumer user creation error : \n", e.message);
         }
-
-        console.info("Consumer user has been created");
     }
 }

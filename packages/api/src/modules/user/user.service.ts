@@ -149,19 +149,13 @@ export class UserService {
     }
 
     async createConsumer(email: string) {
-        const createResult = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
-        if (!createResult?.success) return createResult;
-        const user = createResult.user;
+        const user = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
         const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
         try {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
-            return { success: true, user };
+            return user;
         } catch (e) {
-            return {
-                success: false,
-                message: "Could not create consumer token",
-                code: UserServiceErrors.CREATE_CONSUMER_TOKEN
-            };
+            throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
         }
     }
 
@@ -169,7 +163,7 @@ export class UserService {
         email: string,
         roles: RoleEnum[] = [RoleEnum.user],
         password = "TMP_PASSWOrd;12345678"
-    ): Promise<UserServiceError | { success: true; user: UserDto }> {
+    ): Promise<UserDto> {
         await this.validateEmailAndPassword(email.toLocaleLowerCase(), password);
 
         const partialUser = {
@@ -180,11 +174,7 @@ export class UserService {
         };
 
         if (!this.validRoles(roles))
-            return {
-                success: false,
-                message: "Given user role does not exist",
-                code: UserServiceErrors.ROLE_NOT_FOUND
-            };
+            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
 
         const now = new Date();
         const jwtParams = {
@@ -206,15 +196,10 @@ export class UserService {
 
         const createdUser = await userRepository.create(user);
 
-        if (!createdUser) {
-            return {
-                success: false,
-                message: "The user could not be created",
-                code: UserServiceErrors.CREATE_USER_WRONG
-            };
-        }
+        if (!createdUser)
+            throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
 
-        return { success: true, user: createdUser };
+        return createdUser;
     }
 
     public async updatePassword(
@@ -268,29 +253,23 @@ export class UserService {
     }
 
     public async createUsersByList(emails: string[]) {
-        return emails.reduce(async (acc, email) => {
-            const data = await acc;
-            const result = await this.signup(email.toLocaleLowerCase());
-            return Promise.resolve([...data, { email, ...result }]);
-        }, Promise.resolve([]) as Promise<({ success: true; email: string } | UserServiceError)[]>);
+        const promises = emails.map(email => this.signup(email.toLocaleLowerCase()).catch(() => null));
+        return (await Promise.all(promises)).filter(result => result != null);
     }
 
     public async signup(
         email: string,
         role = RoleEnum.user
     ): Promise<UserServiceError | { success: true; email: string }> {
-        let result;
+        let user;
         const lowerCaseEmail = email.toLocaleLowerCase();
         if (role == RoleEnum.consumer) {
-            result = await this.createConsumer(lowerCaseEmail);
+            user = await this.createConsumer(lowerCaseEmail);
         } else {
-            result = await this.createUser(lowerCaseEmail);
+            user = await this.createUser(lowerCaseEmail);
         }
 
-        if (!result.success) return { success: false, message: result.message, code: result.code };
-
-
-        const resetResult = await this.resetUser(result.user);
+        const resetResult = await this.resetUser(user);
 
         await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.token);
 
