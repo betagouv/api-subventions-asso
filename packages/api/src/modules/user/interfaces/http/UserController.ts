@@ -3,10 +3,25 @@ import {
     GetRolesDtoResponse,
     UserDtoErrorResponse,
     UserDtoResponse,
+    UserDtoSuccessResponse,
     UserErrorCodes,
     UserListDtoResponse
 } from "@api-subventions-asso/dto";
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
+import {
+    Route,
+    Controller,
+    Tags,
+    Post,
+    Body,
+    Security,
+    Put,
+    Request,
+    Get,
+    Delete,
+    Path,
+    Response,
+    SuccessResponse
+} from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { ValidateErrorJSON } from "../../../../@types";
 import { IdentifiedRequest } from "../../../../@types/ApiRequests";
