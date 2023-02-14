@@ -169,8 +169,10 @@ describe("AuthentificationController, /auth", () => {
                         email: USER_EMAIL
                     })
                     .set("Accept", "application/json")
-                    .expect(201)
-                    .expect(res => expect(res.body.user).toMatchObject(expected));
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.body.user).toMatchObject(expected);
+                    });
             });
 
             it("should not return password", async () => {
