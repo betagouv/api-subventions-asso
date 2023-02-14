@@ -63,43 +63,27 @@ export class UserService {
 
     private static CONSUMER_TOKEN_PROP = "isConsumerToken";
 
-    async authenticate(tokenPayload, token): Promise<UserServiceError | { success: true; user: UserDto }> {
+    async authenticate(tokenPayload, token): Promise<UserDto> {
         // Find the user associated with the email provided by the user
         const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email.toLocaleLowerCase());
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
+        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
         if (!tokenPayload[UserService.CONSUMER_TOKEN_PROP]) {
-            if (!user.active) {
-                return {
-                    success: false,
-                    message: "User is not active",
-                    code: UserServiceErrors.USER_NOT_ACTIVE
-                };
-            }
-            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
-                return {
-                    success: false,
-                    message: "JWT has expired, please login try again",
-                    code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
-                };
-            }
-            if (user.jwt?.token !== token) {
-                return {
-                    success: false,
-                    message: "JWT has expired, please login try again",
-                    code: UserServiceErrors.USER_TOKEN_EXPIRED
-                };
-            }
+            if (!user.active) throw new ForbiddenError("User is not active", UserServiceErrors.USER_NOT_ACTIVE);
+
+            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
+                throw new UnauthorizedError(
+                    "JWT has expired, please login try again",
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                );
+
+            if (user.jwt?.token !== token)
+                throw new UnauthorizedError(
+                    "JWT has expired, please login try again",
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                );
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        return { success: true, user: userRepository.removeSecrets(user) };
+        return userRepository.removeSecrets(user) as UserDto;
     }
 
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
