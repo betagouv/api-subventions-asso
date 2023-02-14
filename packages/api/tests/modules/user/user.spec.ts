@@ -107,11 +107,8 @@ describe("UserController, /user", () => {
         });
 
         it("should change password", async () => {
-            const result = await userService.createUser("user@beta.gouv.fr");
-
-            if (!result.success) throw new Error("User create not works");
-
-            await userService.activeUser(result.user);
+            const user = await userService.createUser("user@beta.gouv.fr");
+            await userService.activeUser(user);
 
             const response = await request(g.app)
                 .put("/user/password")
@@ -124,7 +121,7 @@ describe("UserController, /user", () => {
             expect(response.statusCode).toBe(200);
             const userUpdated = await userService.findByEmail("user@beta.gouv.fr");
 
-            expect(userUpdated).toMatchObject(result.user);
+            expect(userUpdated).toMatchObject(user);
         });
 
         it("should reject because password is too weak", async () => {

@@ -33,29 +33,29 @@ describe("user.service.ts", () => {
 
     describe("createUser", () => {
         it("should reject because email is not valid", async () => {
-            await expect(service.createUser("test[at]beta.gouv.fr")).resolves.toMatchObject({
-                success: false,
+            await expect(service.createUser("test[at]beta.gouv.fr")).rejects.toMatchObject({
                 message: "Email is not valid",
                 code: UserServiceErrors.CREATE_INVALID_EMAIL
             });
         });
         it("should reject because user already exist", async () => {
             await service.createUser("test@beta.gouv.fr");
-            await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
-                success: false,
+            const test = async () => await service.createUser("test@beta.gouv.fr");
+            await expect(test).rejects.toMatchObject({
                 message: "User is already exist",
                 code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
             });
         });
         it("should reject because password is not valid", async () => {
-            const actual = await service.createUser("test@beta.gouv.fr", [RoleEnum.user], "aa");
-            expect(actual).toMatchSnapshot();
+            const test = async () => await service.createUser("test@beta.gouv.fr", [RoleEnum.user], "aa");
+            await expect(test).rejects.toMatchSnapshot();
         });
 
         it("should return created user", async () => {
             await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
-                success: true,
-                user: { email: "test@beta.gouv.fr", active: false, roles: ["user"] }
+                email: "test@beta.gouv.fr",
+                active: false,
+                roles: ["user"]
             });
         });
     });
@@ -65,8 +65,6 @@ describe("user.service.ts", () => {
         const buffer = Buffer.from(csv);
 
         it("should call createUsersByList with 2 email", async () => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             const mock = jest.spyOn(service, "createUsersByList").mockImplementationOnce(() => null);
 
             await service.addUsersByCsv(buffer);
@@ -78,21 +76,16 @@ describe("user.service.ts", () => {
 
     describe("createUsersByList", () => {
         it("should create two users", async () => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             const result = await service.createUsersByList(["test@beta.gouv.fr", "test2@beta.gouv.fr"]);
             expect(result).toHaveLength(2);
-            expect(result.every(r => r.success)).toBe(true);
+            expect(result.every(r => r != null)).toBe(true);
         });
 
         it("should create one user and reject one other user", async () => {
             await service.createUser("test@beta.gouv.fr");
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             const result = await service.createUsersByList(["test@beta.gouv.fr", "test2@beta.gouv.fr"]);
-            expect(result).toHaveLength(2);
-            expect(result.filter(r => r.success)).toHaveLength(1);
-            expect(result.filter(r => !r.success)).toHaveLength(1);
+            expect(result).toHaveLength(1);
+            expect(result.every(r => r != null)).toBe(true);
         });
     });
 
@@ -187,12 +180,8 @@ describe("user.service.ts", () => {
     describe("resetPassword", () => {
         let userId: ObjectId;
         beforeEach(async () => {
-            const result = await service.createUser("test@beta.gouv.fr");
-
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            if (!result.success) throw new Error(result.message);
-            userId = result.user._id;
+            const user = await service.createUser("test@beta.gouv.fr");
+            userId = user._id;
             await userResetRepository.create(new UserReset(userId, "token", new Date()));
         });
 
@@ -282,11 +271,7 @@ describe("user.service.ts", () => {
 
     describe("resetUser", () => {
         let user: UserDto;
-        beforeEach(async () => {
-            const result = await service.createUser("test@beta.gouv.fr");
-            if (!result.success) throw new Error("USER is not created");
-            user = result.user;
-        });
+        beforeEach(() => (user = service.createUser("test@beta.gouv.fr")));
 
         it("should create a reset user", async () => {
             const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByUserId");

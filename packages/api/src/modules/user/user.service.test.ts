@@ -90,7 +90,7 @@ describe("User Service", () => {
     describe("signup", () => {
         it("should create a consumer", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createConsumerMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
+            createConsumerMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup(EMAIL, RoleEnum.consumer);
             expect(createConsumerMock).toHaveBeenCalled();
         });
@@ -99,14 +99,14 @@ describe("User Service", () => {
 
         it("should create a reset token", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
+            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup(EMAIL);
             expect(resetUserMock).toHaveBeenCalled();
         });
 
         it("should send a mail", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
+            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup(EMAIL);
             expect(sendCreationMailMock).toHaveBeenCalled();
         });
@@ -114,7 +114,7 @@ describe("User Service", () => {
         it("should return success response with email", async () => {
             const expected = { email: EMAIL, success: true };
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({ success: true, user: {} as UserDto }));
+            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             const actual = await userService.signup(EMAIL);
             expect(actual).toEqual(expected);
         });
@@ -226,23 +226,21 @@ describe("User Service", () => {
 
     describe("createConsumer", () => {
         it("should call userRepository.createUser", async () => {
-            createUserMock.mockImplementationOnce(jest.fn());
+            // @ts-expect-error mock
+            createUserMock.mockResolvedValueOnce({ _id: "" });
             await userService.createConsumer(EMAIL);
             expect(createUserMock).toBeCalledTimes(1);
         });
 
         it("should not create consumer token if user creation failed", async () => {
-            createUserMock.mockImplementationOnce(async email => ({ success: false } as UserServiceError));
-            await userService.createConsumer(EMAIL);
+            createUserMock.mockRejectedValueOnce(new Error());
+            await userService.createConsumer(EMAIL).catch(() => {});
             expect(createUserMock).toBeCalledTimes(1);
         });
 
         it("should create a token ", async () => {
             const expected = CONSUMER_JWT_PAYLOAD;
-            createUserMock.mockImplementationOnce(async () => ({
-                success: true,
-                user: USER_WITHOUT_SECRET
-            }));
+            createUserMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
             await userService.createConsumer(EMAIL);
             expect(buildJWTTokenMock).toHaveBeenCalledWith(expected, {
                 expiration: false
@@ -250,16 +248,13 @@ describe("User Service", () => {
         });
 
         it("should call consumerTokenRepository.create", async () => {
-            createUserMock.mockImplementationOnce(async () => ({
-                success: true,
-                user: {} as UserDto
-            }));
+            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.createConsumer(EMAIL);
             expect(createMock).toBeCalledTimes(1);
         });
 
         it("should return UserDtoSuccessResponse", async () => {
-            const expected = { success: true as true, user: CONSUMER_USER };
+            const expected = CONSUMER_USER;
             createUserMock.mockImplementationOnce(async () => expected);
             createMock.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer(EMAIL);
