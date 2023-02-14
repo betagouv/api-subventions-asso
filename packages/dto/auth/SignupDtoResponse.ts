@@ -11,7 +11,7 @@ export interface SignupDtoPositiveResponse {
 }
 
 export interface SignupDtoNegativeResponse {
-    errorCode: SignupErrorCodes;
+    code: SignupErrorCodes;
     message: string;
 }
 

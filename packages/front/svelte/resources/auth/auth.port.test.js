@@ -32,7 +32,7 @@ describe("AuthPort", () => {
 
         it("throws error with error code if any", () => {
             const ERROR_CODE = 42;
-            axiosPostMock.mockRejectedValueOnce({ response: { data: { errorCode: ERROR_CODE } } });
+            axiosPostMock.mockRejectedValueOnce({ response: { data: { code: ERROR_CODE } } });
             const expected = new Error(ERROR_CODE);
             expect(async () => authPort.signup(EMAIL)).rejects.toThrowError(expected);
         });
