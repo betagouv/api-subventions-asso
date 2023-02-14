@@ -1,4 +1,4 @@
-import request from "supertest";
+import request = require("supertest");
 import getUserToken from "../../../../../__helpers__/getUserToken";
 import rnaSirenService from "../../../../../../src/modules/open-data/rna-siren/rnaSiren.service";
 
