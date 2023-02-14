@@ -12,7 +12,7 @@ export class AuthPort {
             .post(path, { email })
             .then(result => result.data.email)
             .catch(error => {
-                const errorCode = error?.response?.data?.errorCode || defaultErrorCode;
+                const errorCode = error?.response?.data?.code || defaultErrorCode;
                 throw new Error(errorCode);
             });
     }
@@ -26,9 +26,9 @@ export class AuthPort {
             .catch(error => {
                 const errorCode = error?.response?.data?.code || defaultErrorCode;
                 throw new Error(errorCode);
-            })
+            });
     }
-    
+
     login(email, password) {
         return axios
             .post("/auth/login", { email, password })
@@ -39,7 +39,7 @@ export class AuthPort {
                 const ErrorClass = errorsService.axiosErrorToError(e);
                 throw new ErrorClass({
                     message: e.response.data.message,
-                    code: e.response.data.errorCode
+                    code: e.response.data.code
                 });
             });
     }
