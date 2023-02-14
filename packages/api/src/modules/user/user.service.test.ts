@@ -32,6 +32,7 @@ import UserReset from "./entities/UserReset";
 import userRepository from "./repositories/user.repository";
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
+import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -135,12 +136,11 @@ describe("User Service", () => {
         it("should throw an Error if user not found", async () => {
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => null);
             const expected = {
-                success: false,
                 message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
+                code: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH
             };
-            const actual = await userService.login(USER_DBO.email, "PASSWORD");
-            expect(actual).toEqual(expected);
+            const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should throw an Error if user is not active", async () => {
@@ -149,27 +149,25 @@ describe("User Service", () => {
                 active: false
             }));
             const expected = {
-                success: false,
                 message: "User is not active",
-                code: UserServiceErrors.USER_NOT_ACTIVE
+                code: LoginDtoErrorCodes.USER_NOT_ACTIVE
             };
-            const actual = await userService.login(USER_DBO.email, "PASSWORD");
-            expect(actual).toEqual(expected);
+            const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should throw an Error if password do not match", async () => {
             bcryptCompareMock.mockImplementationOnce(async () => false);
             const expected = {
-                success: false,
                 message: "Password does not match",
-                code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH
+                code: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH
             };
-            const actual = await userService.login(USER_DBO.email, "PASSWORD");
-            expect(actual).toEqual(expected);
-            bcryptCompareMock.mockImplementationOnce(async () => true);
+            const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should generate new token and update user", async () => {
+            getUserWithSecretsByEmailMock.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
             // minus two days
             const oldDate = new Date(Date.now() - 172800001);
             jwtVerifyMock.mockImplementation(() => ({
@@ -182,14 +180,7 @@ describe("User Service", () => {
         });
 
         it("should return user", async () => {
-            const TWO_DAY_AFTER = new Date(Date.now() + JWT_EXPIRES_TIME);
-            const expected = {
-                success: true,
-                user: {
-                    ...USER_WITHOUT_PASSWORD,
-                    jwt: { token: SIGNED_TOKEN, expirateDate: TWO_DAY_AFTER }
-                }
-            };
+            const expected = USER_WITHOUT_PASSWORD;
             const actual = await userService.login(USER_DBO.email, "PASSWORD");
             expect(actual).toEqual(expected);
         });
