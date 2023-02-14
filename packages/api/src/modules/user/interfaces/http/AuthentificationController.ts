@@ -67,7 +67,7 @@ export class AuthentificationController extends Controller {
     }
 
     @Post("/login")
-    @SuccessResponse("201", "Login successfully")
+    @SuccessResponse("200", "Login successfully")
     public login(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Body() body: { email: string; password: string }, // Just for docs
@@ -77,43 +77,12 @@ export class AuthentificationController extends Controller {
 
         if (req.user) {
             // Successfully logged
-            this.setStatus(201);
             return {
                 user: req.user
             };
         }
 
-        const errorCode = parseInt(req.authInfo.message, 10);
-
-        const errors: DefaultObject<{
-            errorCode: LoginDtoErrorCodes;
-            message: string;
-        }> = {
-            [UserServiceErrors.USER_NOT_FOUND]: {
-                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
-                message: "Email or password not match"
-            },
-            [UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH]: {
-                errorCode: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
-                message: "Email or password not match"
-            },
-            [UserServiceErrors.USER_NOT_ACTIVE]: {
-                errorCode: LoginDtoErrorCodes.USER_NOT_ACTIVE,
-                message: "User is inactive"
-            },
-            [UserServiceErrors.LOGIN_UPDATE_JWT_FAIL]: {
-                errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
-                message: "Internal error, please try later"
-            }
-        };
-
-        const result: LoginDtoNegativeResponse = errors[errorCode] || {
-            errorCode: LoginDtoErrorCodes.INTERNAL_ERROR,
-            message: "Internal error, please try later"
-        };
-
-        this.setStatus(401);
-        return result;
+        throw new InternalServerError();
     }
 
     @Post("/signup")

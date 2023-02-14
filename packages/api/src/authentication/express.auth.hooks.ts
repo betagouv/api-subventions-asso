@@ -17,10 +17,12 @@ export function authMocks(app: Express) {
                 passwordField: "password"
             },
             async (email, password, done) => {
-                const result = await userService.login(email, password);
-                if (result.success) return done(null, result.user, { message: "Logged in Successfully" });
-
-                return done(null, false, { message: result.code.toString() }); // It's hack because message accept just string
+                try {
+                    const user = await userService.login(email, password);
+                    return done(null, user, { message: "Logged in Successfully" });
+                } catch (e) {
+                    done(e);
+                }
             }
         )
     );

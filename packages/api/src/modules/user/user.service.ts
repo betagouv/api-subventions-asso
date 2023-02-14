@@ -26,7 +26,7 @@ import {
     NotFoundError,
     UnauthorizedError
 } from "../../shared/errors/httpErrors";
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -102,31 +102,15 @@ export class UserService {
         return { success: true, user: userRepository.removeSecrets(user) };
     }
 
-    async login(
-        email: string,
-        password: string
-    ): Promise<UserServiceError | { success: true; user: Omit<UserDbo, "hashPassword"> }> {
+    async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
 
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
-        if (!user.active) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
-        }
+        if (!user) throw new NotFoundError("User not found", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
+        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
-        if (!validPassword) {
-            return {
-                success: false,
-                message: "Password does not match",
-                code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH
-            };
-        }
+        if (!validPassword)
+            throw new UnauthorizedError("Password does not match", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
 
         const updateJwt = async () => {
             // Generate new JTW Token
@@ -141,11 +125,7 @@ export class UserService {
                 user.jwt = updatedJwt;
                 await userRepository.update(user);
             } catch (e) {
-                return {
-                    success: false,
-                    message: UserUpdateError.message,
-                    code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
-                };
+                throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
             }
         };
 
@@ -157,7 +137,7 @@ export class UserService {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, ...userWithoutPassword } = user;
-        return { success: true, user: userWithoutPassword };
+        return userWithoutPassword;
     }
 
     public async logout(user: UserDto) {
