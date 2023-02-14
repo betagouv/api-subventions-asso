@@ -8,6 +8,7 @@ import userResetRepository from "../../../src/modules/user/repositories/user-res
 import userRepository from "../../../src/modules/user/repositories/user.repository";
 import { UserService, UserServiceErrors } from "../../../src/modules/user/user.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import dedent from "dedent";
 
 describe("user.service.ts", () => {
     let service;
@@ -230,13 +231,12 @@ describe("user.service.ts", () => {
         it("should reject because password not valid", async () => {
             await expect(service.resetPassword("", "token")).resolves.toMatchObject({
                 success: false,
-                message: `Password is not hard, please use this rules:
-                        At least one digit [0-9]
-                        At least one lowercase character [a-z]
-                        At least one uppercase character [A-Z]
-                        At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-                        At least 8 characters in length, but no more than 32.
-                    `,
+                message: dedent`Password is too weak, please use this rules:
+                    At least one digit [0-9]
+                    At least one lowercase character [a-z]
+                    At least one uppercase character [A-Z]
+                    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
+                    At least 8 characters in length, but no more than 32.`,
                 code: UserServiceErrors.FORMAT_PASSWORD_INVALID
             });
         });
