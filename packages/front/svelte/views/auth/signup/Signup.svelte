@@ -26,7 +26,7 @@
             Vous pouvez
             <a
                 title="Contactez-nous"
-                href="mailto:<%= `${ctrl.contactEmail}?subject=Lien%20d'inscription%20non%20re%C3%A7u&body=Bonjour, %0D%0A %0D%0A Je viens de m'inscrire avec l'adresse ${email} mais je n'ai reçu aucun mail d'activation. %0D%0A %0D%0A Pouvez-vous débloquer la situation?&html=true` ;%>"
+                href="mailto:{ctrl.contactEmail}?subject=Lien%20d'inscription%20non%20re%C3%A7u&body=Bonjour, %0D%0A %0D%0AJe viens de m'inscrire avec l'adresse {email} mais je n'ai reçu aucun mail d'activation. %0D%0A %0D%0APouvez-vous débloquer la situation?&html=true"
                 target="_blank"
                 rel="noopener noreferrer">
                 nous contacter
