@@ -38,7 +38,7 @@ export default {
     },
     "auth/signup": {
         component: () => Signup,
-        disableAuth: false
+        disableAuth: true
     },
     "auth/login": {
         component: () => Login,
