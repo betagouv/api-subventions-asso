@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.1](https://github.com/betagouv/api-subventions-asso/compare/v0.23.0...v0.23.1) (2023-02-15)
+
+### Bug Fixes
+
+-   **api:** signup page does not need authentication ([a357965](https://github.com/betagouv/api-subventions-asso/commit/a357965edbd990ffde4d9cbf32674917a3d160b4))
+
 # [0.23.0](https://github.com/betagouv/api-subventions-asso/compare/v0.22.0...v0.23.0) (2023-02-13)
 
 ### Bug Fixes
