@@ -30,7 +30,7 @@ export class MailNotifierService {
                 Bienvenue sur la plateforme DataSubvention !
             </p>
             <p> 
-            Vous voilà inscrit à notre portail interministériel qui recense toutes les informations pour instruire vos demandes de subvention, <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">pour activer votre compte c'est par ici </a> !
+            Vous voilà inscrit à notre portail interministériel qui recense toutes les informations pour instruire vos demandes de subvention, <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true">pour activer votre compte, c'est par ici</a> !
             </p>
             <p>
             <b class="term">Vous avez une démo programmée avec notre équipe dans les jours qui viennent ?</b>
@@ -42,7 +42,7 @@ export class MailNotifierService {
             <b class="term">Vous souhaitez assister à une démo de l'outil ?</b>
             </p>
             <p>
-            Inscrivez-vous <a href="https://calendly.com/alexandra-morel-1/demo-data-subvention?month=2022-03">sur ce lien </a>.
+            Inscrivez-vous <a href="https://calendly.com/d/d33-m5t-rp2/demonstration-data-subvention">sur ce lien </a>.
             </p>
             
             <p>Bonne journée et à bientôt sur notre plateforme !</p>
@@ -57,7 +57,7 @@ export class MailNotifierService {
            Inutile d'aller plus loin, nous prendrons le temps d'activer votre compte ensemble, lors de cet échange.
            
            Vous souhaitez assister à une démo de l'outil ?
-           Inscrivez-vous sur https://calendly.com/alexandra-morel-1/demo-data-subvention?month=2022-03 .
+           Inscrivez-vous sur https://calendly.com/d/d33-m5t-rp2/demonstration-data-subvention .
            
             Bonne journée et à bientôt sur notre plateforme !
             L'équipe DataSubvention `
@@ -73,7 +73,7 @@ export class MailNotifierService {
                 Vous avez fait une demande de mot de passe perdu sur la plateforme DataSubvention.
             </p>
             <p>
-                Pour changer votre mot de passe, veuillez  vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}">ici</a>
+                Pour changer votre mot de passe, veuillez vous rendre sur la page d'activation en cliquant <a href="${FRONT_OFFICE_URL}/auth/reset-password/${token}">ici</a>
             </p>
             
             <p>Bonne journée, et à bientôt sur notre plateforme !</p>
