@@ -41,8 +41,7 @@
 {/await}
 
 <Alert
-    title="Data.subvention étant réservé aux agents de
-            l'État, il est nécessaire d'être doté d'une adresse e-mail
+    title="Data.subvention étant réservé aux agents du service public, il est nécessaire d'être doté d'une adresse e-mail
             professionnelle du service public."
     type="info" />
 
