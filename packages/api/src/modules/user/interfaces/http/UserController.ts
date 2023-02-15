@@ -93,7 +93,7 @@ export class UserController extends Controller {
      */
     @Post("/admin/create-user")
     @Security("jwt", ["admin"])
-    @SuccessResponse("201", "Internal Server Error")
+    @SuccessResponse("201", "User successfully created")
     public async createUser(@Body() body: { email: string }): Promise<CreateUserDtoResponse> {
         const email = await userService.signup(body.email);
         return { email };
