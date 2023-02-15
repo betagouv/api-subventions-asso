@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.3](https://github.com/betagouv/api-subventions-asso/compare/v0.23.2...v0.23.3) (2023-02-15)
+
+### Bug Fixes
+
+-   **api:** signup contact mailto ([169b77a](https://github.com/betagouv/api-subventions-asso/commit/169b77a2341bbfab744f997ce56225adfe1c29c0))
+-   **api:** update calendly link ([8932342](https://github.com/betagouv/api-subventions-asso/commit/89323421e4ae8cec4741ea21f2c1b6a728ef0072))
+
 ## [0.23.2](https://github.com/betagouv/api-subventions-asso/compare/v0.23.1...v0.23.2) (2023-02-15)
 
 ### Bug Fixes
