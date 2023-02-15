@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.2](https://github.com/betagouv/datasubvention/compare/v0.23.1...v0.23.2) (2023-02-15)
+
+### Bug Fixes
+
+-   **front:** fix access on admin page ([237ac24](https://github.com/betagouv/datasubvention/commit/237ac24ada509575de98910e62d9227ada167321))
+
 ## [0.23.1](https://github.com/betagouv/datasubvention/compare/v0.23.0...v0.23.1) (2023-02-15)
 
 ### Bug Fixes
