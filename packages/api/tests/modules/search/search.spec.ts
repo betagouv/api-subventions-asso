@@ -1,4 +1,4 @@
-import request from "supertest";
+import request = require("supertest");
 import getUserToken from "../../__helpers__/getUserToken";
 import { osirisRequestRepository } from "../../../src/modules/providers/osiris/repositories";
 import associationNameRepository from "../../../src/modules/association-name/repositories/associationName.repository";

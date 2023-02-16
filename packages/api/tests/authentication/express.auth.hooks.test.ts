@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import passport from "passport";
+import passport = require("passport");
 import { Express } from "express";
-import passportLocal from "passport-local";
-import passportJwt from "passport-jwt";
+import passportLocal = require("passport-local");
+import passportJwt = require("passport-jwt");
 import userService from "../../src/modules/user/user.service";
 import { authMocks } from "../../src/authentication/express.auth.hooks";
 import { ObjectId } from "mongodb";
 
 describe("express.auth.hooks", () => {
     let passportMock: jest.SpyInstance;
+    const ERROR = { message: "ERROR", code: 1 };
+
     beforeEach(() => {
         passportMock = jest.spyOn(passport, "use");
         jest.resetModules();
@@ -23,8 +25,9 @@ describe("express.auth.hooks", () => {
     });
 
     describe("local", () => {
-        it("Should be logged user", done => {
+        it("Should log in user", done => {
             const obj: { [key: string]: unknown } = {};
+
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
@@ -33,16 +36,13 @@ describe("express.auth.hooks", () => {
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
             jest.spyOn(userService, "login").mockImplementation(email =>
                 Promise.resolve({
-                    success: true,
-                    user: {
-                        _id: new ObjectId(),
-                        email,
-                        roles: [],
-                        active: true,
-                        signupAt: new Date(),
-                        jwt: { token: "", expirateDate: new Date() },
-                        stats: { searchCount: 0, lastSearchDate: null }
-                    }
+                    _id: new ObjectId(),
+                    email,
+                    roles: [],
+                    active: true,
+                    signupAt: new Date(),
+                    jwt: { token: "", expirateDate: new Date() },
+                    stats: { searchCount: 0, lastSearchDate: null }
                 })
             );
 
@@ -58,8 +58,9 @@ describe("express.auth.hooks", () => {
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
-        it("Should be not logged user", done => {
+        it("Should not log user in", done => {
             const obj: { [key: string]: unknown } = {};
+
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
@@ -67,14 +68,12 @@ describe("express.auth.hooks", () => {
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            jest.spyOn(userService, "login").mockImplementation(email =>
-                Promise.resolve({ success: false, message: "ERROR", code: 1 })
-            );
+            jest.spyOn(userService, "login").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name !== "login") return;
                 (obj.callback as (...args: unknown[]) => void)("test@beta.gouv.fr", "AAA", (...args: unknown[]) => {
-                    expect(args[2]).toMatchObject({ message: "1" });
+                    expect(args[0]).toMatchObject(ERROR);
                     done();
                 });
             });
@@ -83,8 +82,9 @@ describe("express.auth.hooks", () => {
     });
 
     describe("jwt", () => {
-        it("Should be logged user", done => {
+        it("Should log user in", done => {
             const obj: { [key: string]: unknown } = {};
+
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
@@ -92,16 +92,13 @@ describe("express.auth.hooks", () => {
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
             jest.spyOn(userService, "authenticate").mockImplementation(async user => ({
-                success: true,
-                user: {
-                    email: user.email,
-                    roles: [],
-                    active: true,
-                    signupAt: new Date(),
-                    jwt: { token: "", expirateDate: new Date() },
-                    stats: { searchCount: 0, lastSearchDate: null },
-                    _id: new ObjectId()
-                }
+                email: user.email,
+                roles: [],
+                active: true,
+                signupAt: new Date(),
+                jwt: { token: "", expirateDate: new Date() },
+                stats: { searchCount: 0, lastSearchDate: null },
+                _id: new ObjectId()
             }));
 
             passportMock.mockImplementation(name => {
@@ -120,19 +117,16 @@ describe("express.auth.hooks", () => {
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
-        it("Should be not logged user", done => {
+        it("Should not log user in", done => {
             const obj: { [key: string]: unknown } = {};
+
             function strat(data: unknown, call: unknown) {
                 obj.data = data;
                 obj.callback = call;
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, "authenticate").mockImplementation(async () => ({
-                success: false,
-                code: 42,
-                message: "User not found"
-            }));
+            jest.spyOn(userService, "authenticate").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name === "login") return;
@@ -140,7 +134,7 @@ describe("express.auth.hooks", () => {
                     { headers: { "x-access-token": "TOKEN" } },
                     { email: "test@beta.gouv.fr" },
                     (...args: unknown[]) => {
-                        expect(args[2]).toMatchObject({ message: "User not found" });
+                        expect(args[0]).toMatchObject(ERROR);
                         done();
                     }
                 );

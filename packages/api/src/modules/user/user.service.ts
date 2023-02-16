@@ -14,10 +14,20 @@ import userResetRepository from "./repositories/user-reset.repository";
 import UserNotPersisted from "./entities/UserNotPersisted";
 import UserReset from "./entities/UserReset";
 import UserDbo from "./repositories/dbo/UserDbo";
+import dedent from "dedent";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 import configurationsService from "../configurations/configurations.service";
+import {
+    BadRequestError,
+    ConflictError,
+    ForbiddenError,
+    InternalServerError,
+    NotFoundError,
+    UnauthorizedError
+} from "../../shared/errors/httpErrors";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -45,7 +55,7 @@ export interface UserServiceError {
 
 export class UserService {
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
-    public static PASSWORD_VALIDATOR_MESSAGE = `Password is not hard, please use this rules:
+    public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
         At least one digit [0-9]
         At least one lowercase character [a-z]
         At least one uppercase character [A-Z]
@@ -54,70 +64,38 @@ export class UserService {
 
     private static CONSUMER_TOKEN_PROP = "isConsumerToken";
 
-    async authenticate(tokenPayload, token): Promise<UserServiceError | { success: true; user: UserDto }> {
+    async authenticate(tokenPayload, token): Promise<UserDto> {
         // Find the user associated with the email provided by the user
         const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email.toLocaleLowerCase());
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
+        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
         if (!tokenPayload[UserService.CONSUMER_TOKEN_PROP]) {
-            if (!user.active) {
-                return {
-                    success: false,
-                    message: "User is not active",
-                    code: UserServiceErrors.USER_NOT_ACTIVE
-                };
-            }
-            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now()) {
-                return {
-                    success: false,
-                    message: "JWT has expired, please login try again",
-                    code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
-                };
-            }
-            if (user.jwt?.token !== token) {
-                return {
-                    success: false,
-                    message: "JWT has expired, please login try again",
-                    code: UserServiceErrors.USER_TOKEN_EXPIRED
-                };
-            }
+            if (!user.active) throw new ForbiddenError("User is not active", UserServiceErrors.USER_NOT_ACTIVE);
+
+            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
+                throw new UnauthorizedError(
+                    "JWT has expired, please login try again",
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                );
+
+            if (user.jwt?.token !== token)
+                throw new UnauthorizedError(
+                    "JWT has expired, please login try again",
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                );
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        return { success: true, user: userRepository.removeSecrets(user) };
+        return userRepository.removeSecrets(user) as UserDto;
     }
 
-    async login(
-        email: string,
-        password: string
-    ): Promise<UserServiceError | { success: true; user: Omit<UserDbo, "hashPassword"> }> {
+    async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
 
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
-        if (!user.active) {
-            return { success: false, message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
-        }
+        if (!user) throw new NotFoundError("User not found", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
+        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
-        if (!validPassword) {
-            return {
-                success: false,
-                message: "Password does not match",
-                code: UserServiceErrors.LOGIN_WRONG_PASSWORD_MATCH
-            };
-        }
+        if (!validPassword)
+            throw new UnauthorizedError("Password does not match", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
 
         const updateJwt = async () => {
             // Generate new JTW Token
@@ -132,11 +110,7 @@ export class UserService {
                 user.jwt = updatedJwt;
                 await userRepository.update(user);
             } catch (e) {
-                return {
-                    success: false,
-                    message: UserUpdateError.message,
-                    code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
-                };
+                throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
             }
         };
 
@@ -148,14 +122,14 @@ export class UserService {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hashPassword, ...userWithoutPassword } = user;
-        return { success: true, user: userWithoutPassword };
+        return userWithoutPassword;
     }
 
     public async logout(user: UserDto) {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email.toLocaleLowerCase());
 
         if (!userWithSecrets?.jwt) {
-            // No jwt, so user is already disconected
+            // No jwt, so user is already disconnected
             return user;
         }
 
@@ -175,19 +149,13 @@ export class UserService {
     }
 
     async createConsumer(email: string) {
-        const createResult = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
-        if (!createResult?.success) return createResult;
-        const user = createResult.user;
+        const user = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
         const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
         try {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
-            return { success: true, user };
+            return user;
         } catch (e) {
-            return {
-                success: false,
-                message: "Could not create consumer token",
-                code: UserServiceErrors.CREATE_CONSUMER_TOKEN
-            };
+            throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
         }
     }
 
@@ -195,10 +163,8 @@ export class UserService {
         email: string,
         roles: RoleEnum[] = [RoleEnum.user],
         password = "TMP_PASSWOrd;12345678"
-    ): Promise<UserServiceError | { success: true; user: UserDto }> {
-        const validUser = await this.validEmailAndPassword(email.toLocaleLowerCase(), password);
-
-        if (!validUser.success) return validUser;
+    ): Promise<UserDto> {
+        await this.validateEmailAndPassword(email.toLocaleLowerCase(), password);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
@@ -208,11 +174,7 @@ export class UserService {
         };
 
         if (!this.validRoles(roles))
-            return {
-                success: false,
-                message: "Given user role does not exist",
-                code: UserServiceErrors.ROLE_NOT_FOUND
-            };
+            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
 
         const now = new Date();
         const jwtParams = {
@@ -234,15 +196,10 @@ export class UserService {
 
         const createdUser = await userRepository.create(user);
 
-        if (!createdUser) {
-            return {
-                success: false,
-                message: "The user could not be created",
-                code: UserServiceErrors.CREATE_USER_WRONG
-            };
-        }
+        if (!createdUser)
+            throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
 
-        return { success: true, user: createdUser };
+        return createdUser;
     }
 
     public async updatePassword(
@@ -267,12 +224,9 @@ export class UserService {
         };
     }
 
-    public async update(user: UserDto): Promise<UserServiceError | { success: true; user: UserDto }> {
-        const emailIsValid = await this.validEmail(user.email);
-        if (!emailIsValid.success) {
-            return emailIsValid;
-        }
-        return { success: true, user: await userRepository.update(user) };
+    public async update(user: UserDto): Promise<UserDto> {
+        await this.validateEmail(user.email);
+        return await userRepository.update(user);
     }
 
     public async delete(userId: string): Promise<{ success: boolean }> {
@@ -299,39 +253,24 @@ export class UserService {
     }
 
     public async createUsersByList(emails: string[]) {
-        return emails.reduce(async (acc, email) => {
-            const data = await acc;
-            const result = await this.signup(email.toLocaleLowerCase());
-            return Promise.resolve([...data, { email, ...result }]);
-        }, Promise.resolve([]) as Promise<({ success: true; email: string } | UserServiceError)[]>);
+        const promises = emails.map(email => this.signup(email.toLocaleLowerCase()).catch(() => null));
+        return (await Promise.all(promises)).filter(result => result != null);
     }
 
-    public async signup(
-        email: string,
-        role = RoleEnum.user
-    ): Promise<UserServiceError | { success: true; email: string }> {
-        let result;
+    public async signup(email: string, role = RoleEnum.user): Promise<string> {
+        let user;
         const lowerCaseEmail = email.toLocaleLowerCase();
         if (role == RoleEnum.consumer) {
-            result = await this.createConsumer(lowerCaseEmail);
+            user = await this.createConsumer(lowerCaseEmail);
         } else {
-            result = await this.createUser(lowerCaseEmail);
+            user = await this.createUser(lowerCaseEmail);
         }
 
-        if (!result.success) return { success: false, message: result.message, code: result.code };
+        const resetResult = await this.resetUser(user);
 
-        const resetResult = await this.resetUser(result.user);
+        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.token);
 
-        if (!resetResult.success)
-            return {
-                success: false,
-                message: resetResult.message,
-                code: resetResult.code
-            };
-
-        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.reset.token);
-
-        return { email, success: true };
+        return email;
     }
 
     async addRolesToUser(
@@ -339,15 +278,15 @@ export class UserService {
         roles: RoleEnum[]
     ): Promise<{ success: true; user: UserDto } | UserServiceError> {
         if (typeof user === "string") {
-            const findedUser = await userRepository.findByEmail(user);
-            if (!findedUser) {
+            const foundUser = await userRepository.findByEmail(user);
+            if (!foundUser) {
                 return {
                     success: false,
                     message: "User email does not correspond to a user",
                     code: UserServiceErrors.USER_NOT_FOUND
                 };
             }
-            user = findedUser;
+            user = foundUser;
         }
 
         if (!roles.every(role => Object.values(RoleEnum).includes(role))) {
@@ -364,15 +303,15 @@ export class UserService {
 
     async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true; user: UserDto }> {
         if (typeof user === "string") {
-            const findedUser = await userRepository.findByEmail(user);
-            if (!findedUser) {
+            const foundUser = await userRepository.findByEmail(user);
+            if (!foundUser) {
                 return {
                     success: false,
                     message: "User email does not correspond to a user",
                     code: UserServiceErrors.USER_NOT_FOUND
                 };
             }
-            user = findedUser;
+            user = foundUser;
         }
 
         user.active = true;
@@ -380,7 +319,7 @@ export class UserService {
         return { success: true, user: await userRepository.update(user) };
     }
 
-    async refrechExpirationToken(user: UserDto) {
+    async refreshExpirationToken(user: UserDto) {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
             return {
@@ -395,86 +334,50 @@ export class UserService {
         return await userRepository.update(userWithSecrets);
     }
 
-    async resetPassword(
-        password: string,
-        resetToken: string
-    ): Promise<UserServiceError | { success: true; user: UserDto }> {
+    async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        if (!reset) {
-            return {
-                success: false,
-                message: "Reset token not found",
-                code: UserServiceErrors.RESET_TOKEN_NOT_FOUND
-            };
-        }
+        if (!reset) throw new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
 
-        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now()) {
-            return {
-                success: false,
-                message: "Reset token has expired, please retry forget password",
-                code: UserServiceErrors.RESET_TOKEN_EXPIRED
-            };
-        }
+        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now())
+            throw new BadRequestError(
+                "Reset token has expired, please retry forget password",
+                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+            );
 
         const user = await userRepository.findById(reset.userId);
 
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
+        if (!user) throw new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND);
 
-        if (!this.passwordValidator(password)) {
-            return {
-                success: false,
-                message: `Password is not hard, please use this rules:
-                        At least one digit [0-9]
-                        At least one lowercase character [a-z]
-                        At least one uppercase character [A-Z]
-                        At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-                        At least 8 characters in length, but no more than 32.
-                    `,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            };
-        }
+        if (!this.passwordValidator(password))
+            throw new BadRequestError(
+                UserService.PASSWORD_VALIDATOR_MESSAGE,
+                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+            );
 
         const hashPassword = await bcrypt.hash(password, 10);
 
         await userResetRepository.remove(reset);
 
-        return {
-            success: true,
-            user: await userRepository.update({
-                ...user,
-                hashPassword,
-                active: true
-            })
-        };
+        return await userRepository.update({
+            ...user,
+            hashPassword,
+            active: true
+        });
     }
 
-    async forgetPassword(email: string): Promise<UserServiceError | { success: true; reset: UserReset }> {
+    async forgetPassword(email: string): Promise<UserReset> {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
-        if (!user) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-        }
+        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
         const resetResult = await this.resetUser(user);
 
-        if (resetResult.success) {
-            mailNotifierService.sendForgetPassword(email.toLocaleLowerCase(), resetResult.reset.token);
-        }
+        await mailNotifierService.sendForgetPassword(email.toLocaleLowerCase(), resetResult.token);
 
         return resetResult;
     }
 
-    async resetUser(user: UserDto): Promise<UserServiceError | { success: true; reset: UserReset }> {
+    async resetUser(user: UserDto): Promise<UserReset> {
         await userResetRepository.removeAllByUserId(user._id);
 
         const token = RandToken.generate(32);
@@ -483,18 +386,17 @@ export class UserService {
         const createdReset = await userResetRepository.create(reset);
 
         if (!createdReset) {
-            return {
-                success: false,
-                message: "The user reset password could not be created",
-                code: UserServiceErrors.CREATE_RESET_PASSWORD_WRONG
-            };
+            throw new InternalServerError(
+                "The user reset password could not be created",
+                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG
+            );
         }
 
         user.active = false;
 
         await userRepository.update(user);
 
-        return { success: true, reset: createdReset };
+        return createdReset;
     }
 
     // Only used in tests
@@ -556,31 +458,17 @@ export class UserService {
         };
     }
 
-    private async validEmailAndPassword(
-        email: string,
-        password: string
-    ): Promise<UserServiceError | { success: true }> {
-        const emailValid = await this.validEmail(email);
+    private async validateEmailAndPassword(email: string, password: string): Promise<void> {
+        await this.validateEmail(email);
 
-        if (!emailValid.success) return emailValid;
+        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
+            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
 
-        if (await userRepository.findByEmail(email.toLocaleLowerCase())) {
-            return {
-                success: false,
-                message: "User is already exist",
-                code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
-            };
-        }
-
-        if (!this.passwordValidator(password)) {
-            return {
-                success: false,
-                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            };
-        }
-
-        return { success: true };
+        if (!this.passwordValidator(password))
+            throw new BadRequestError(
+                UserService.PASSWORD_VALIDATOR_MESSAGE,
+                UserServiceErrors.FORMAT_PASSWORD_INVALID
+            );
     }
 
     public isRoleValid(role: RoleEnum) {
@@ -591,24 +479,14 @@ export class UserService {
         return roles.every(role => this.isRoleValid(role));
     }
 
-    private async validEmail(email: string): Promise<UserServiceError | { success: true }> {
+    private async validateEmail(email: string): Promise<void> {
         if (!REGEX_MAIL.test(email)) {
-            return {
-                success: false,
-                message: "Email is not valid",
-                code: UserServiceErrors.CREATE_INVALID_EMAIL
-            };
+            throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
         }
 
         if (!(await configurationsService.isDomainAccepted(email))) {
-            return {
-                success: false,
-                message: "Email domain is not accepted",
-                code: UserServiceErrors.CREATE_EMAIL_GOUV
-            };
+            throw new BadRequestError("Email domain is not accepted", UserServiceErrors.CREATE_EMAIL_GOUV);
         }
-
-        return { success: true };
     }
 
     private buildJWTToken(user: DefaultObject, options: { expiration: boolean } = { expiration: true }) {

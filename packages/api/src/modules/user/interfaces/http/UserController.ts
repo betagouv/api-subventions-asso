@@ -3,13 +3,27 @@ import {
     GetRolesDtoResponse,
     UserDtoErrorResponse,
     UserDtoResponse,
+    UserDtoSuccessResponse,
     UserErrorCodes,
     UserListDtoResponse
 } from "@api-subventions-asso/dto";
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
+import {
+    Route,
+    Controller,
+    Tags,
+    Post,
+    Body,
+    Security,
+    Put,
+    Request,
+    Get,
+    Delete,
+    Path,
+    Response,
+    SuccessResponse
+} from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { ValidateErrorJSON } from "../../../../@types";
-import { IdentifiedRequest } from "../../../../@types/ApiRequests";
+import { ValidateErrorJSON, IdentifiedRequest } from "../../../../@types";
 import userService, { UserServiceErrors } from "../../user.service";
 
 // TODO: make this a class or something generic for all Controller ?
@@ -79,15 +93,10 @@ export class UserController extends Controller {
      */
     @Post("/admin/create-user")
     @Security("jwt", ["admin"])
-    @Response<UserDtoErrorResponse>(500, "Internal Server Error")
+    @SuccessResponse("201", "User successfully created")
     public async createUser(@Body() body: { email: string }): Promise<CreateUserDtoResponse> {
-        const result = await userService.createUsersByList([body.email]);
-
-        if (!result[0].success) {
-            this.setStatus(500);
-            return USER_INTERNAL_SERVER_ERROR;
-        }
-        return { email: result[0].email };
+        const email = await userService.signup(body.email);
+        return { email };
     }
 
     /**
@@ -145,7 +154,7 @@ export class UserController extends Controller {
     @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     @Response<UserDtoErrorResponse>(400, "Validator Error", {
         message:
-            "Password is not hard, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
+            "Password is too weak, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
         errorCode: UserErrorCodes.INVALID_PASSWORD
     })
     public async changePassword(
