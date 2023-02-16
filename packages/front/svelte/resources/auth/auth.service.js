@@ -2,6 +2,7 @@
 import axios from "axios";
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import authPort from "@resources/auth/auth.port";
+import { goToUrl } from "@services/router.service";
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
 
@@ -37,6 +38,18 @@ export class AuthService {
         const user = this.getCurrentUser();
         // set header token for each requests
         axios.defaults.headers.common["x-access-token"] = user?.jwt?.token;
+
+        axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.isAxiosError && error.response.status === 401) {
+                    this.logout();
+                    goToUrl("/auth/login");
+                }
+                // Do something with response error
+                return Promise.reject(error);
+            }
+        );
     }
 
     logout() {
