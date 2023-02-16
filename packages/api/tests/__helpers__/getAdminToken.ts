@@ -4,16 +4,7 @@ import userService from "../../src/modules/user/user.service";
 export default async function getAdminToken() {
     let user = await userService.findByEmail("admin@beta.gouv.fr");
 
-    if (!user) {
-        const result = await userService.createUser("admin@beta.gouv.fr");
-        if (!result.success) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            throw new Error(result.message);
-        }
-
-        user = result.user;
-    }
+    if (!user) user = await userService.createUser("admin@beta.gouv.fr");
 
     await userService.activeUser(user);
     await userService.addRolesToUser(user, [RoleEnum.admin]);

@@ -1,4 +1,4 @@
-import request from "supertest";
+import request = require("supertest");
 import userService, { UserService } from "../../../src/modules/user/user.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import db from "../../../src/shared/MongoConnection";
@@ -35,7 +35,7 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
                 message: "User not found"
             });
@@ -47,13 +47,11 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
 
@@ -63,20 +61,18 @@ describe("AuthentificationController, /auth", () => {
             });
         });
 
-        it("should reject because password is not hard", async () => {
+        it("should reject because password is too weak", async () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
-
-            if (!result.success) throw new Error("forget password error");
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaa",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
             });
@@ -91,7 +87,7 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
             });
@@ -101,8 +97,6 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             const oldResetTimout = UserService.RESET_TIMEOUT;
             UserService.RESET_TIMEOUT = 0;
 
@@ -110,11 +104,12 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
+            UserService.RESET_TIMEOUT = oldResetTimout;
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
             });
@@ -126,19 +121,17 @@ describe("AuthentificationController, /auth", () => {
             await userService.createUser("test-reset@beta.gouv.fr");
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
-            if (!result.success) throw new Error("forget password error");
-
             await db.collection("users").deleteOne({ email: "test-reset@beta.gouv.fr" });
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.reset.token
+                    token: result.token
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(500);
+            expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.USER_NOT_FOUND
             });
@@ -169,8 +162,10 @@ describe("AuthentificationController, /auth", () => {
                         email: USER_EMAIL
                     })
                     .set("Accept", "application/json")
-                    .expect(201)
-                    .expect(res => expect(res.body.user).toMatchObject(expected));
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.body.user).toMatchObject(expected);
+                    });
             });
 
             it("should not return password", async () => {

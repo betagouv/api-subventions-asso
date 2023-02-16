@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UserController, /user POST /admin/roles should add reject because role not exist 1`] = `
+exports[`UserController, /user POST /admin/roles should reject because role not exist 1`] = `
 Object {
   "details": Object {
     "roles.$0": Object {
@@ -12,14 +12,14 @@ Object {
 }
 `;
 
-exports[`UserController, /user Put /password should add reject because password is not hard 1`] = `
+exports[`UserController, /user Put /password should reject because password is too weak 1`] = `
 Object {
   "errorCode": 4,
-  "message": "Password is not hard, please use this rules:
-        At least one digit [0-9]
-        At least one lowercase character [a-z]
-        At least one uppercase character [A-Z]
-        At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\\\]
-        At least 8 characters in length, but no more than 32.",
+  "message": "Password is too weak, please use this rules:
+At least one digit [0-9]
+At least one lowercase character [a-z]
+At least one uppercase character [A-Z]
+At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\\\\\\\]
+At least 8 characters in length, but no more than 32.",
 }
 `;

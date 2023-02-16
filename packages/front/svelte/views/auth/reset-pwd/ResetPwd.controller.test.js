@@ -74,9 +74,9 @@ describe("ResetPwdController", () => {
         });
 
         it.each`
-            active   | queryParam            | case
-            ${true}  | ${"COMPTE_ACTIVED"}   | ${"activation"}
-            ${false} | ${"PASSWORD_CHANGED"} | ${"reset"}
+            active   | queryParam             | case
+            ${true}  | ${"ACCOUNT_ACTIVATED"} | ${"activation"}
+            ${false} | ${"PASSWORD_CHANGED"}  | ${"reset"}
         `("redirects if success with proper query in $case case", async ({ active, queryParam }) => {
             ctrl.activation = active;
             const expected = `/auth/login?success=${queryParam}`;

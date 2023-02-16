@@ -1,4 +1,4 @@
-import request from "supertest";
+import request = require("supertest");
 import getUserToken from "../../__helpers__/getUserToken";
 import getAdminToken from "../../__helpers__/getAdminToken";
 import userService from "../../../src/modules/user/user.service";
@@ -47,7 +47,7 @@ describe("UserController, /user", () => {
             });
         });
 
-        it("should add reject because role not exist", async () => {
+        it("should reject because role not exist", async () => {
             await userService.createUser("futur-admin@beta.gouv.fr");
 
             const response = await request(g.app)
@@ -63,7 +63,7 @@ describe("UserController, /user", () => {
             expect(response.body).toMatchSnapshot();
         });
 
-        it("should return 401 because user dont have rigth", async () => {
+        it("should return 401 because user dont have right", async () => {
             const response = await request(g.app)
                 .post("/user/admin/roles")
                 .send({
@@ -106,12 +106,9 @@ describe("UserController, /user", () => {
             });
         });
 
-        it("should be change password", async () => {
-            const result = await userService.createUser("user@beta.gouv.fr");
-
-            if (!result.success) throw new Error("User create not works");
-
-            await userService.activeUser(result.user);
+        it("should change password", async () => {
+            const user = await userService.createUser("user@beta.gouv.fr");
+            await userService.activeUser(user);
 
             const response = await request(g.app)
                 .put("/user/password")
@@ -124,10 +121,10 @@ describe("UserController, /user", () => {
             expect(response.statusCode).toBe(200);
             const userUpdated = await userService.findByEmail("user@beta.gouv.fr");
 
-            expect(userUpdated).toMatchObject(result.user);
+            expect(userUpdated).toMatchObject(user);
         });
 
-        it("should add reject because password is not hard", async () => {
+        it("should reject because password is too weak", async () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
@@ -140,7 +137,7 @@ describe("UserController, /user", () => {
             expect(response.body).toMatchSnapshot();
         });
 
-        it("should return 401 beacause user not connected", async () => {
+        it("should return 401 because user not connected", async () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({

@@ -1,10 +1,10 @@
-import request from "supertest";
+import request = require("supertest");
 import statsService from "../../../src/modules/stats/stats.service";
 import getAdminToken from "../../__helpers__/getAdminToken";
 import getUserToken from "../../__helpers__/getUserToken";
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import userFixture from "../user/__fixtures__/entity";
-import db, { connectDB } from "../../../src/shared/MongoConnection";
+import db from "../../../src/shared/MongoConnection";
 import visitsFixture, { THIS_MONTH, TODAY } from "../association-visits/__fixtures__/entity";
 import nameFixture from "../association-name/__fixtures__/entity";
 import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";

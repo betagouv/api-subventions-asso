@@ -36,7 +36,7 @@ export class ResetPwdController {
         return this.promise.value
             .then(() => {
                 window.location.assign(
-                    "/auth/login?success=" + (this.activation ? "COMPTE_ACTIVED" : "PASSWORD_CHANGED")
+                    "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED")
                 );
             })
             .catch((_, ignore) => ignore());

@@ -12,7 +12,7 @@ export interface LoginDtoPositiveResponse {
 
 export interface LoginDtoNegativeResponse {
     message: string;
-    errorCode: LoginDtoErrorCodes;
+    code: LoginDtoErrorCodes;
 }
 
 export type LoginDtoResponse = LoginDtoPositiveResponse | LoginDtoNegativeResponse;

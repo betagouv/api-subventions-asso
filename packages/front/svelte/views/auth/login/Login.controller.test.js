@@ -1,7 +1,7 @@
 import authService from "@resources/auth/auth.service";
 import LoginController from "./Login.controller";
 import * as RouterService from "../../../services/router.service";
-import UnauthoziedError from "../../../errors/UnauthorizedError";
+import UnauthorizedError from "../../../errors/UnauthorizedError";
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 
 describe("LoginController", () => {
@@ -66,7 +66,7 @@ describe("LoginController", () => {
 
         it("should call getErrorMessage", async () => {
             const expected = 1;
-            loginMock.mockRejectedValueOnce(new UnauthoziedError({ code: expected }));
+            loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: expected }));
             const getErrorMessageMock = jest.spyOn(controller, "_getErrorMessage").mockReturnValue("");
             controller.formElt = {
                 email: EMAIL,
@@ -80,7 +80,7 @@ describe("LoginController", () => {
 
         it("should call set message in error", async () => {
             const expected = "MESSAGE";
-            loginMock.mockRejectedValueOnce(new UnauthoziedError({ code: 1 }));
+            loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: 1 }));
             jest.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(expected);
             controller.formElt = {
                 email: EMAIL,
@@ -119,7 +119,7 @@ describe("LoginController", () => {
 
     describe("_getSuccessMessage", () => {
         it("should return 'activated account' message", () => {
-            controller._query.success = "COMPTE_ACTIVED";
+            controller._query.success = "ACCOUNT_ACTIVATED";
             const actual = controller._getSuccessMessage();
             const expected = "Votre compte a bien été activé, vous pouvez maintenant vous connecter";
 
