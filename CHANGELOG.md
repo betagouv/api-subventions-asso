@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.5](https://github.com/betagouv/api-subventions-asso/compare/v0.23.4...v0.23.5) (2023-02-16)
+
+### Features
+
+-   **front:** disable association stats tabs ([513116c](https://github.com/betagouv/api-subventions-asso/commit/513116c446798d5e31228397e40be8e8b30d01ea))
+
 ## [0.23.4](https://github.com/betagouv/api-subventions-asso/compare/v0.23.3...v0.23.4) (2023-02-16)
 
 ### Bug Fixes
