@@ -17,9 +17,9 @@
             <TabContent selected={index === 0} {index}>
                 {#if index === 0}
                     <SubventionsVersementsDashboard identifier={associationIdentifier} />
+                    <!-- {:else if index === 1} // Uncomment when stats are available
+                    <Stats /> -->
                 {:else if index === 1}
-                    <Stats />
-                {:else if index === 2}
                     <Documents resource={association} />
                 {:else}
                     <Etablissements {associationIdentifier} {association} />
