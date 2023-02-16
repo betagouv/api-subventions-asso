@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.4](https://github.com/betagouv/datasubvention/compare/v0.23.3...v0.23.4) (2023-02-16)
+
+### Bug Fixes
+
+-   **front:** when api return an 401 logout the user ([7002913](https://github.com/betagouv/datasubvention/commit/7002913ba7b7852d2602b8bffe488850109ea668))
+
 ## [0.23.3](https://github.com/betagouv/datasubvention/compare/v0.23.2...v0.23.3) (2023-02-15)
 
 ### Bug Fixes
