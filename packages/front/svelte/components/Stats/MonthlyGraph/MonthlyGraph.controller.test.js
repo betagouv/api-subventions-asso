@@ -16,15 +16,17 @@ import Chart from "chart.js/auto";
 describe("MonthlyGraphController", () => {
     const TITLE = "titre";
     const LOAD_DATA = jest.fn();
+    const RESOURCE_NAME = "trucs";
     describe("constructor", () => {
         it.each`
             parameterName          | expected
             ${"_monthData"}        | ${[]}
             ${"yearOptions"}       | ${[{ value: 2023, label: 2023 }, { value: 2022, label: 2022 }]}
             ${"title"}             | ${TITLE}
+            ${"resourceName"}      | ${RESOURCE_NAME}
             ${"withPreviousValue"} | ${false}
         `("initializes correctly $parameterName", ({ parameterName, expected }) => {
-            const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
+            const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE, RESOURCE_NAME);
             expect(ctrl[parameterName]).toEqual(expected);
         });
 
@@ -198,7 +200,7 @@ describe("MonthlyGraphController", () => {
         });
 
         it("sets labels with correct values with previous value", () => {
-            const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE, true);
+            const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE, "", true);
             const expected = ["", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
             ctrl._buildChart(CANVAS);
             const actual = Chart.mock.calls[0][1].data.labels;
