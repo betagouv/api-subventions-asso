@@ -43,3 +43,7 @@ export const oneYearAfterPeriod = (year: number, month: number | undefined = und
     if (month === undefined) return new Date(Date.UTC(year + 1, 0, 1));
     return new Date(Date.UTC(year, month + 1, 1));
 };
+
+export const computeMonthBetweenDates = (dateA: Date, dateB: Date): number => {
+    return Math.abs(dateA.getMonth() - dateB.getMonth() + (dateA.getFullYear() - dateB.getFullYear()) * 12);
+};
