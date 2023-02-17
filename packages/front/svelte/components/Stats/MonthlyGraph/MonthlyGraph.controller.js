@@ -51,8 +51,15 @@ export class MonthlyGraphController {
 
         const ctx = canvas.getContext("2d");
         const gradient = ctx.createLinearGradient(0, 0, 0, 288);
-        gradient.addColorStop(0, "#ADBFFC");
-        gradient.addColorStop(1, "white");
+        // maintain "dark mode" support
+        const blue = window
+            .getComputedStyle(document.documentElement, null)
+            .getPropertyValue("--background-contrast-blue-ecume-active");
+        const white = window
+            .getComputedStyle(document.documentElement, null)
+            .getPropertyValue("--background-default-grey");
+        gradient.addColorStop(0, blue);
+        gradient.addColorStop(1, white);
 
         const labels = [...Array(12).keys()].map(monthId =>
             new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
@@ -76,7 +83,7 @@ export class MonthlyGraphController {
                     {
                         label: this.title,
                         data: this._monthData,
-                        borderColor: "#3F49E3",
+                        borderColor: blue,
                         backgroundColor: gradient,
                         fill: true,
                         cubicInterpolationMode: "monotone",
