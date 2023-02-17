@@ -5,4 +5,4 @@
     const { loadData } = new MonthlyRequestCountByYearController();
 </script>
 
-<MonthlyGraph title="Fréquence d'usage : Nombre total de requêtes" {loadData} />
+<MonthlyGraph title="Fréquence d'usage : Nombre total de requêtes" {loadData} resourceName="Requêtes" />

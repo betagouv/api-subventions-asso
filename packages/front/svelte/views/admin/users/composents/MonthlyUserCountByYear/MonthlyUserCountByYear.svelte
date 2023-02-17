@@ -5,4 +5,4 @@
     const { loadData } = new MonthlyUserCountByYearController();
 </script>
 
-<MonthlyGraph title="Nombre d'utilisateurs" {loadData} withPreviousValue />
+<MonthlyGraph title="Nombre d'utilisateurs" {loadData} withPreviousValue resourceName="Utilisateurs" />
