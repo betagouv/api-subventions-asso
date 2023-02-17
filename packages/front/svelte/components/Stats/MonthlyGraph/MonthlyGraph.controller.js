@@ -73,7 +73,17 @@ export class MonthlyGraphController {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                interaction: {
+                    mode: "nearest",
+                    axis: "x",
+                    intersect: false
+                },
+                plugins: {
+                    tooltip: {
+                        intersect: false,
+                    },
+                    legend: { display: false }
+                },
                 scales: {
                     x: { grid: { display: false } },
                     y: { ticks: { precision: 0 } }
