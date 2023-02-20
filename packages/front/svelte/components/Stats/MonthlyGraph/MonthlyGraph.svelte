@@ -4,8 +4,10 @@
     import Spinner from "@components/Spinner.svelte";
     import Select from "@dsfr/Select.svelte";
     import Widget from "@components/Widget.svelte";
+    import MonthlyGraphTooltip from "@components/Stats/MonthlyGraphTooltip/MonthlyGraphTooltip.svelte";
 
     let canvas;
+    let tooltip;
     export let loadData;
     export let title = "";
     export let resourceName = "";
@@ -15,7 +17,7 @@
     ctrl.init();
     const { year, dataPromise, yearOptions } = ctrl;
 
-    $: ctrl.onCanvasMount(canvas);
+    $: if (canvas && tooltip) ctrl.onCanvasMount(canvas, tooltip);
 </script>
 
 <Widget title={ctrl.title}>
@@ -33,6 +35,11 @@
                         bind:selected={$year}
                         narrow />
                     <div class="chart-container">
+                        <MonthlyGraphTooltip
+                            bind:this={tooltip}
+                            resource={ctrl.resourceName}
+                            year={$year}
+                            {withPreviousValue} />
                         <canvas
                             bind:this={canvas}
                             aria-label="Graphique des {resourceName} par mois sur l'année {$year}"

@@ -87,19 +87,20 @@ describe("MonthlyGraphController", () => {
 
     describe("onCanvasMount", () => {
         const CANVAS = {};
+        const TOOLTIP = {};
         const CHART = {};
         const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
         let buildChartSpy = jest.spyOn(ctrl, "_buildChart").mockImplementation(() => (ctrl.chart = CHART));
         ctrl.dataPromise = Promise.resolve();
 
         it("calls _buildChart", async () => {
-            await ctrl.onCanvasMount(CANVAS);
-            expect(buildChartSpy).toBeCalledWith(CANVAS);
+            await ctrl.onCanvasMount(CANVAS, TOOLTIP);
+            expect(buildChartSpy).toBeCalledWith(CANVAS, TOOLTIP);
         });
 
         it("updates canvas with result from build", async () => {
             const expected = CHART;
-            await ctrl.onCanvasMount(CANVAS);
+            await ctrl.onCanvasMount(CANVAS, TOOLTIP);
             const actual = ctrl.chart;
             expect(actual).toBe(expected);
         });
@@ -163,38 +164,45 @@ describe("MonthlyGraphController", () => {
     describe("_buildChart", () => {
         const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
         const CHART = {};
+        const TOOLTIP = { $set: jest.fn() };
         const CANVAS = {
             getContext: () => ({
                 createLinearGradient: () => ({ addColorStop: jest.fn() })
             })
         };
+
         it("returns if canvas is undefined", () => {
-            ctrl._buildChart(undefined);
+            ctrl._buildChart(undefined, TOOLTIP);
+            expect(Chart).not.toHaveBeenCalled();
+        });
+
+        it("returns if container is undefined", () => {
+            ctrl._buildChart(CANVAS, undefined);
             expect(Chart).not.toHaveBeenCalled();
         });
 
         it("build Chart with appropriate canvas", () => {
-            ctrl._buildChart(CANVAS);
+            ctrl._buildChart(CANVAS, TOOLTIP);
             expect(Chart).toBeCalledWith(CANVAS, expect.anything());
         });
 
         it("returns Chart Object", () => {
             const expected = CHART;
-            const actual = ctrl._buildChart(CANVAS);
+            const actual = ctrl._buildChart(CANVAS, TOOLTIP);
             expect(actual).toStrictEqual(expected);
         });
 
         it("sets data with correct values", () => {
             ctrl._monthData = [22, 40];
             const expected = [22, 40];
-            ctrl._buildChart(CANVAS);
+            ctrl._buildChart(CANVAS, TOOLTIP);
             const actual = Chart.mock.calls[0][1].data.datasets[0].data;
             expect(actual).toStrictEqual(expected);
         });
 
         it("sets labels with correct values (default 'withPreviousValue')", () => {
             const expected = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-            ctrl._buildChart(CANVAS);
+            ctrl._buildChart(CANVAS, TOOLTIP);
             const actual = Chart.mock.calls[0][1].data.labels;
             expect(actual).toStrictEqual(expected);
         });
@@ -202,7 +210,7 @@ describe("MonthlyGraphController", () => {
         it("sets labels with correct values with previous value", () => {
             const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE, "", true);
             const expected = ["", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-            ctrl._buildChart(CANVAS);
+            ctrl._buildChart(CANVAS, TOOLTIP);
             const actual = Chart.mock.calls[0][1].data.labels;
             expect(actual).toStrictEqual(expected);
         });
