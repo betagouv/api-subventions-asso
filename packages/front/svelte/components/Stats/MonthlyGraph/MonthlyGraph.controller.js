@@ -34,8 +34,8 @@ export class MonthlyGraphController {
         this._monthData = data.monthlyData;
     }
 
-    async onCanvasMount(canvas) {
-        this.chart = this._buildChart(canvas);
+    async onCanvasMount(canvas, tooltip) {
+        this.chart = this._buildChart(canvas, tooltip);
     }
 
     async updateYear(newYearIndex) {
@@ -48,8 +48,8 @@ export class MonthlyGraphController {
         this.chart.data.datasets[0].data = newData;
     }
 
-    _buildChart(canvas) {
-        if (!canvas) return;
+    _buildChart(canvas, tooltip) {
+        if (!canvas || !tooltip) return;
 
         const ctx = canvas.getContext("2d");
         const gradient = ctx.createLinearGradient(0, 0, 0, 288);
@@ -84,6 +84,10 @@ export class MonthlyGraphController {
                 plugins: {
                     tooltip: {
                         intersect: false,
+                        enabled: false,
+                        external: context => {
+                            tooltip.$set({ context: { ...context }, year: this.year.value });
+                        }
                     },
                     legend: { display: false }
                 },
