@@ -54,6 +54,9 @@ export class MonthlyGraphController {
         const ctx = canvas.getContext("2d");
         const gradient = ctx.createLinearGradient(0, 0, 0, 288);
         // maintain "dark mode" support
+        const darkBlue = window
+            .getComputedStyle(document.documentElement, null)
+            .getPropertyValue("--background-active-blue-france");
         const blue = window
             .getComputedStyle(document.documentElement, null)
             .getPropertyValue("--background-contrast-blue-ecume-active");
@@ -100,7 +103,11 @@ export class MonthlyGraphController {
                         fill: true,
                         cubicInterpolationMode: "monotone",
                         tension: 0.4,
-                        pointStyle: false
+                        pointBorderColor: "transparent",
+                        pointBackgroundColor: "transparent",
+                        pointHoverBackgroundColor: darkBlue,
+                        pointHoverBorderColor: darkBlue,
+                        hoverRadius: 7
                     }
                 ]
             }
