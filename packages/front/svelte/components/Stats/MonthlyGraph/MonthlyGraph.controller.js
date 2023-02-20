@@ -110,7 +110,28 @@ export class MonthlyGraphController {
                         hoverRadius: 7
                     }
                 ]
-            }
+            },
+            plugins: [
+                {
+                    afterDraw: chart => {
+                        if (chart.tooltip?.opacity) {
+                            let x = chart.tooltip.caretX;
+                            let y = chart.tooltip.caretY;
+                            let yAxis = chart.scales.y;
+                            let ctx = chart.ctx;
+                            ctx.save();
+                            ctx.beginPath();
+                            ctx.setLineDash([5, 5]);
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(x, yAxis.bottom);
+                            ctx.lineWidth = 1;
+                            ctx.strokeStyle = darkBlue;
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                    }
+                }
+            ]
         });
     }
 }
