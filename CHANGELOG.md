@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.6](https://github.com/betagouv/api-subventions-asso/compare/v0.23.5...v0.23.6) (2023-02-23)
+
+### Bug Fixes
+
+-   **api:** change provider name for etablishement data ([dbf2e94](https://github.com/betagouv/api-subventions-asso/commit/dbf2e94ed9c4b57441b8ab18ff78407a8728d74d))
+
 ## [0.23.5](https://github.com/betagouv/api-subventions-asso/compare/v0.23.4...v0.23.5) (2023-02-16)
 
 ### Features
