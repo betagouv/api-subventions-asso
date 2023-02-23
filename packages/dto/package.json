@@ -21,13 +21,30 @@
     "scripts": {
         "test": "echo 'no test in dto'",
         "prebuild": "rm -rf ./build/*",
-        "build": "tsc --project ./"
+        "build": "tsc --project ./",
+        "lint": "eslint --fix --ext .ts",
+        "lint:all": "eslint --fix --ext .ts .",
+        "prettier": "prettier --write",
+        "prettier:all": "prettier --write ./**/*.ts",
+        "lint-format": "lint-staged"
+    },
+    "lint-staged": {
+        "./**/*.{ts}": [
+            "npx prettier --write --loglevel warn",
+            "npx eslint --fix --quiet"
+        ]
     },
     "bugs": {
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.53.0",
+        "eslint": "^8.34.0",
+        "eslint-config-prettier": "^8.6.0",
+        "eslint-plugin-import": "^2.27.5",
+        "lint-staged": "^13.1.2",
         "mongodb": "^4.7.0",
+        "prettier": "^2.8.4",
         "typescript": "^4.6.3"
     }
 }
