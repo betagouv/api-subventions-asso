@@ -46,6 +46,8 @@ settings:
           - ./svelte/core
         - - "@helpers"
           - ./svelte/helpers
+        - - "@services"
+          - ./svelte/services
       extensions:
         - .js
         - .svelte
