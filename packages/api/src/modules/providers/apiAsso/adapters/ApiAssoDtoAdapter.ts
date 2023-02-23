@@ -99,6 +99,10 @@ export default class ApiAssoDtoAdapter {
             return new Date(Date.UTC(year, month - 1, day));
         };
         const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameSiren, toDate(dateModif));
+        const toLCAPvs = ProviderValueFactory.buildProviderValuesAdapter(
+            this.providerNameLcaDocument,
+            toDate(dateModif)
+        );
 
         const toContact = (r: StructureRepresentantLegalDto) => ({
             nom: r.nom,
@@ -123,16 +127,16 @@ export default class ApiAssoDtoAdapter {
             }),
             information_banquaire: ribs
                 .filter(rib => rib.id_siret === etablissement.id_siret)
-                .map(rib => toSirenPvs({ iban: rib.iban, bic: rib.bic })),
+                .map(rib => toLCAPvs({ iban: rib.iban, bic: rib.bic })),
             representants_legaux: representantsLegaux
                 ? representantsLegaux
                       .filter(r => r.id_siret === etablissement.id_siret)
-                      .map(r => toSirenPvs(toContact(r)))
+                      .map(r => toLCAPvs(toContact(r)))
                 : undefined,
             contacts: representantsLegaux
                 ? representantsLegaux
                       .filter(r => r.id_siret === etablissement.id_siret)
-                      .map(r => toSirenPvs(toContact(r)))
+                      .map(r => toLCAPvs(toContact(r)))
                 : undefined
         };
     }

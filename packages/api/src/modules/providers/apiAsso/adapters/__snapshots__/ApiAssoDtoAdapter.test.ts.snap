@@ -487,7 +487,7 @@ Object {
     Array [
       Object {
         "last_update": 2010-01-01T00:00:00.000Z,
-        "provider": "SIREN",
+        "provider": "Le Compte Asso",
         "type": "object",
         "value": Object {
           "civilite": undefined,
@@ -521,7 +521,7 @@ Object {
     Array [
       Object {
         "last_update": 2010-01-01T00:00:00.000Z,
-        "provider": "SIREN",
+        "provider": "Le Compte Asso",
         "type": "object",
         "value": Object {
           "civilite": undefined,
@@ -574,7 +574,7 @@ Object {
     Array [
       Object {
         "last_update": 2010-01-01T00:00:00.000Z,
-        "provider": "SIREN",
+        "provider": "Le Compte Asso",
         "type": "object",
         "value": Object {
           "bic": "BIC_TEST",
@@ -585,7 +585,7 @@ Object {
     Array [
       Object {
         "last_update": 2010-01-01T00:00:00.000Z,
-        "provider": "SIREN",
+        "provider": "Le Compte Asso",
         "type": "object",
         "value": Object {
           "bic": "BIC_TEST 2",
