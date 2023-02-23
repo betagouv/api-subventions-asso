@@ -114,3 +114,5 @@ globalConfig.json
 
 # MacOS specific files
 .DS_Store
+
+.vscode/
