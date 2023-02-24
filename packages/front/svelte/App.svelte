@@ -1,8 +1,8 @@
 <script>
     import { setContext } from "svelte";
     import "./global.css";
-    import routes from "./routes";
     import { ENV } from "../src/shared/config";
+    import routes from "./routes";
     import { displayBlueBanner } from "./store/context.store";
 
     import Auth from "./components/Auth/Auth.svelte";

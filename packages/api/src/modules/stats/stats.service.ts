@@ -1,18 +1,18 @@
+import { WithId } from "mongodb";
+import { UserCountByStatus } from "@api-subventions-asso/dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
-import statsRepository from "./repositories/stats.repository";
 import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
-import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import { AssociationIdentifiers } from "../../@types";
-import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
 import userRepository from "../user/repositories/user.repository";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDbo from "../user/repositories/dbo/UserDbo";
-import { WithId } from "mongodb";
-import { UserCountByStatus } from "@api-subventions-asso/dto";
 import { isUserActif } from "../../shared/helpers/UserHelper";
+import AssociationVisitEntity from "./entities/AssociationVisitEntity";
+import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
+import statsRepository from "./repositories/stats.repository";
 
 class StatsService {
     getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {

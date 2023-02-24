@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
@@ -8,13 +8,13 @@ import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { waitPromise } from "../../../shared/helpers/WaitHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import AssociationDtoAdapter from "./adapters/AssociationDtoAdapter";
 import EntrepriseDtoAdapter from "./adapters/EntrepriseDtoAdapter";
 import EtablissementDtoAdapter from "./adapters/EtablissementDtoAdapter";
 import AssociationDto from "./dto/AssociationDto";
 import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     provider = {

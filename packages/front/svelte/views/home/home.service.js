@@ -1,8 +1,8 @@
 import axios from "axios";
 import { isRna, isStartOfSiret } from "../../helpers/validatorHelper";
 import { siretToSiren } from "../../helpers/sirenHelper";
-import InteruptSearchError from "./error/InteruptSearchError";
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
+import InteruptSearchError from "./error/InteruptSearchError";
 
 export class HomeService {
     constructor() {

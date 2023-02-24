@@ -3,21 +3,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
+import dedent from "dedent";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
-import { ConsumerToken } from "./entities/ConsumerToken";
-import consumerTokenRepository from "./repositories/consumer-token.repository";
-import { UserUpdateError } from "./repositories/errors/UserUpdateError";
-import userResetRepository from "./repositories/user-reset.repository";
-import UserNotPersisted from "./entities/UserNotPersisted";
-import UserReset from "./entities/UserReset";
-import UserDbo from "./repositories/dbo/UserDbo";
-import dedent from "dedent";
-
-import userRepository from "./repositories/user.repository";
-import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 import configurationsService from "../configurations/configurations.service";
 import {
     BadRequestError,
@@ -27,7 +18,16 @@ import {
     NotFoundError,
     UnauthorizedError
 } from "../../shared/errors/httpErrors";
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ConsumerToken } from "./entities/ConsumerToken";
+import consumerTokenRepository from "./repositories/consumer-token.repository";
+import { UserUpdateError } from "./repositories/errors/UserUpdateError";
+import userResetRepository from "./repositories/user-reset.repository";
+import UserNotPersisted from "./entities/UserNotPersisted";
+import UserReset from "./entities/UserReset";
+import UserDbo from "./repositories/dbo/UserDbo";
+
+import userRepository from "./repositories/user.repository";
+import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,

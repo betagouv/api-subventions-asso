@@ -1,10 +1,10 @@
 <script>
     import Tabs from "../../../dsfr/Tabs.svelte";
     import TabContent from "../../../dsfr/TabContent.svelte";
-    import ContactEtab from "./ContactEtab/ContactEtab.svelte";
     import Documents from "../../../components/Documents/Documents.svelte";
-    import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
     import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+    import ContactEtab from "./ContactEtab/ContactEtab.svelte";
+    import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
 
     export let etablissement;
     export let titles;

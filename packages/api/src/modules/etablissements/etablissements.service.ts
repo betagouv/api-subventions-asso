@@ -4,7 +4,6 @@ import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCom
 import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablissementDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
 import { DefaultObject } from "../../@types";
-import EtablissementProvider from "./@types/EtablissementProvider";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
@@ -14,8 +13,9 @@ import { isSiren } from "../../shared/Validators";
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import { EtablissementAdapter } from "./EtablissementAdapter";
 import { NotFoundError } from "../../shared/errors/httpErrors";
+import { EtablissementAdapter } from "./EtablissementAdapter";
+import EtablissementProvider from "./@types/EtablissementProvider";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {

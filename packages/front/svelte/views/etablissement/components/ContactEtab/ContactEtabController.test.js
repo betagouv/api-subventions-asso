@@ -1,5 +1,5 @@
-import ContactEtabController from "./ContactEtabController";
 import { formatPhoneNumber, valueOrHyphen } from "../../../../helpers/dataHelper";
+import ContactEtabController from "./ContactEtabController";
 
 jest.mock("../../../../helpers/dataHelper.js", () => ({
     ...jest.requireActual("../../../../helpers/dataHelper.js"),

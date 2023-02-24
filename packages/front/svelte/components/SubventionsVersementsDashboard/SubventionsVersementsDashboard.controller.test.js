@@ -1,8 +1,8 @@
 import Store from "../../core/Store";
-import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
-import * as helper from "./helper";
 import subventionsService from "../../resources/subventions/subventions.service";
 import versementsService from "../../resources/versements/versements.service";
+import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
+import * as helper from "./helper";
 
 describe("SubventionsVersementsDashboardController", () => {
     const SIREN = "123456789";
@@ -316,7 +316,6 @@ describe("SubventionsVersementsDashboardController", () => {
 
             expect(actual).toEqual(expected);
         });
-
     });
 
     describe("_buildExercices", () => {
