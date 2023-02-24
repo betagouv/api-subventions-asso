@@ -23,7 +23,6 @@ export * from "./shared/Adresse";
 export * from "./shared/Personne";
 export * from "./shared/InformationBancaire";
 export * from "./shared/ErrorResponse";
-export * from "./user/UserDto";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
 export * from "./errors/HttpErrorResponseDto";

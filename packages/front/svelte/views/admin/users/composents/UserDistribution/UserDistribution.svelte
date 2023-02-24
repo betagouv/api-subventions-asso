@@ -1,7 +1,7 @@
 <script>
+    import UserDistributionController from "./UserDistribution.controller";
     import Widget from "@components/Widget.svelte";
     import Spinner from "@components/Spinner.svelte";
-    import UserDistributionController from "./UserDistribution.controller";
 
     let canvas;
     const controller = new UserDistributionController();

@@ -1,6 +1,6 @@
+import { DemandeSubvention } from "@api-subventions-asso/dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import { DemandeSubvention } from "@api-subventions-asso/dto";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 

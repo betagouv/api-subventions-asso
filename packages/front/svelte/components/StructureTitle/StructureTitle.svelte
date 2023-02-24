@@ -1,6 +1,6 @@
 <script>
-    import { StructureTitleController } from "./StructureTitle.controller";
     import Button from "../../dsfr/Button.svelte";
+    import { StructureTitleController } from "./StructureTitle.controller";
 
     export let association;
     export let siret = undefined;

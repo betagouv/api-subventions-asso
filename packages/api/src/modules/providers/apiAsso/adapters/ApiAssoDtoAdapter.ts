@@ -1,7 +1,7 @@
-import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
-import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { Etablissement, Association } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
+import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
+import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import StructureDto, {
     StructureDacDocumentDto,
     StructureEtablissementDto,

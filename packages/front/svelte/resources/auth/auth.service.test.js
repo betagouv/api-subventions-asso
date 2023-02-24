@@ -145,7 +145,7 @@ describe("authService", () => {
 
         afterAll(() => {
             getCurrentUserMock.mockRestore();
-        })
+        });
 
         it("should be axios header", async () => {
             const expected = "FAKE_TOKEN";
@@ -166,7 +166,7 @@ describe("authService", () => {
 
             expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
-    })
+    });
 
     describe("getCurrentUser", () => {
         // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-jest-tests
@@ -176,5 +176,5 @@ describe("authService", () => {
 
             expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
-    })
+    });
 });

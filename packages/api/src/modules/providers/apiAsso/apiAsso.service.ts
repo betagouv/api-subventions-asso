@@ -1,5 +1,6 @@
 import { ProviderValues, Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
 import axios from "axios";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
@@ -9,12 +10,11 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import { Document } from "@api-subventions-asso/dto/search/Document";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import { isDateNewer } from "../../../shared/helpers/DateHelper";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, { DocumentDto, StructureDacDocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
-import { isDateNewer } from "../../../shared/helpers/DateHelper";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = {

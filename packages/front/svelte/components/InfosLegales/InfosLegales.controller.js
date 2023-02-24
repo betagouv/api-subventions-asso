@@ -1,4 +1,3 @@
-import { valueOrHyphen } from "../../helpers/dataHelper";
 import {
     addressToString,
     getAddress,
@@ -8,7 +7,8 @@ import {
 } from "../../views/association/association.helper";
 import { modal, data } from "../../store/modal.store";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
-import { dateToDDMMYYYY } from "../../helpers/dateHelper";
+import { valueOrHyphen } from "@helpers/dataHelper";
+import { dateToDDMMYYYY } from "@helpers/dateHelper";
 
 export default class InfosLegalesController {
     constructor(association, etablissement = undefined) {

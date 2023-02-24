@@ -40,10 +40,19 @@ describe("ResetPwdController", () => {
             queryParam   | expected
             ${undefined} | ${false}
             ${"TRUE"}    | ${true}
-        `("gets active query param", ({ queryParam, expected }) => {});
+        `(
+            "gets active query param",
+            // TODO
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            ({ queryParam, expected }) => {}
+        );
 
+        // TODO
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         it("sets title for activation according activation", () => {});
 
+        // TODO
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         it("sets title for reset according activation", () => {});
     });
 

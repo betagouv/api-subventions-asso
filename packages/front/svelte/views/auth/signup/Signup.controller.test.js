@@ -1,6 +1,6 @@
+import { getContext } from "svelte";
 import SignupController from "./Signup.controller";
 import authService from "@resources/auth/auth.service";
-import { getContext } from "svelte";
 
 jest.mock("@api-subventions-asso/dto", () => ({
     SignupErrorCodes: {

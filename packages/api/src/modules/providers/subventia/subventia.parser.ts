@@ -1,7 +1,7 @@
-import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import ISubventiaIndexedInformation from "./@types/ISubventiaIndexedInformation";
 import ILegalInformations from "../../search/@types/ILegalInformations";
+import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
+import ISubventiaIndexedInformation from "./@types/ISubventiaIndexedInformation";
 
 export default class SubventiaParser {
     static parse(fileContent: Buffer): SubventiaRequestEntity[] {

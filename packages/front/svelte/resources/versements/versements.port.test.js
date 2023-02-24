@@ -1,6 +1,6 @@
 import axios from "axios";
-import versementsPort from "./versements.port";
 import * as providerValueHelper from "../../helpers/providerValueHelper";
+import versementsPort from "./versements.port";
 
 describe("VersementsPort", () => {
     describe("getEtablissementVersements", () => {

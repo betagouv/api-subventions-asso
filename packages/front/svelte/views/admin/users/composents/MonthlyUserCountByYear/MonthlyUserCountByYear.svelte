@@ -1,6 +1,6 @@
 <script>
-    import MonthlyGraph from "@components/Stats/MonthlyGraph/MonthlyGraph.svelte";
     import { MonthlyUserCountByYearController } from "./MonthlyUserCountByYear.controller";
+    import MonthlyGraph from "@components/Stats/MonthlyGraph/MonthlyGraph.svelte";
 
     const { loadData } = new MonthlyUserCountByYearController();
 </script>

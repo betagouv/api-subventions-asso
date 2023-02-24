@@ -1,4 +1,4 @@
 export type InformationBancaire = {
-    iban?: string,
-    bic?: string
-}
+    iban?: string;
+    bic?: string;
+};

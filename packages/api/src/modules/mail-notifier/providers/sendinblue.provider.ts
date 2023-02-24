@@ -1,7 +1,7 @@
-import INotifier from "./@types/INotifier";
 import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from "sib-api-v3-typescript";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
 import { API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
+import INotifier from "./@types/INotifier";
 
 export default class SendInBlueProvider implements INotifier {
     private apiInstance: TransactionalEmailsApi;
