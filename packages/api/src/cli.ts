@@ -17,6 +17,8 @@ import { CliStaticInterface } from "./@types";
 
 import "./modules/association-name/associationName.service"; // Load association-name for load service in eventManager
 import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
+import DemarchesSimplifieesCliController
+    from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
 
 async function main() {
     await connectDB();
@@ -25,7 +27,7 @@ async function main() {
         mkdirSync("./logs");
     }
 
-    const contollers: CliStaticInterface[] = [
+    const controllers: CliStaticInterface[] = [
         OsirisCliController,
         LeCompteAssoCliController,
         MailNotifierCliController,
@@ -35,12 +37,13 @@ async function main() {
         DataGouvCliController,
         GisproCliController,
         SubventiaCliController,
-        ConsumerCliController
+        ConsumerCliController,
+        DemarchesSimplifieesCliController
     ];
 
     const args = process.argv.slice(2);
 
-    const Controller = contollers.find(controller => controller.cmdName === args[0]);
+    const Controller = controllers.find(controller => controller.cmdName === args[0]);
 
     if (!Controller) {
         throw new Error(`Controller ${args[0]} not found`);
