@@ -1,7 +1,7 @@
-import RnaSiren from ".././entities/RnaSirenEntity";
-import db from "../../../../shared/MongoConnection";
 import { Siren, Rna } from "@api-subventions-asso/dto";
 import { ObjectId } from "mongodb";
+import RnaSiren from ".././entities/RnaSirenEntity";
+import db from "../../../../shared/MongoConnection";
 
 export class RnaSirenRepository {
     private readonly collection = db.collection<RnaSiren>("rna-siren");

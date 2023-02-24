@@ -1,9 +1,9 @@
 <script>
+    import SignupController from "./Signup.controller";
     import Alert from "@dsfr/Alert.svelte";
     import Input from "@dsfr/Input.svelte";
     import Button from "@dsfr/Button.svelte";
     import Spinner from "@components/Spinner.svelte";
-    import SignupController from "./Signup.controller";
 
     const ctrl = new SignupController();
     const { email, signupPromise, firstSubmitted } = ctrl;

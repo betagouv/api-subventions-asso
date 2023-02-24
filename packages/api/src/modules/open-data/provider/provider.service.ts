@@ -1,7 +1,7 @@
-import ProvidersInfos from "./entities/ProvidersInfos";
 import providers from "../../providers";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import IProvider from "../../providers/@types/IProvider";
+import ProvidersInfos from "./entities/ProvidersInfos";
 
 class ProviderService {
     async getProvidersInfos(): Promise<ProvidersInfos> {

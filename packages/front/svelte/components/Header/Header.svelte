@@ -1,8 +1,8 @@
 <script>
-    import packageInfo from "../../../package.json";
     import { getContext } from "svelte";
-    import HeaderController from "./Header.controller";
+    import packageInfo from "../../../package.json";
     import authService from "../../resources/auth/auth.service";
+    import HeaderController from "./Header.controller";
 
     const user = authService.getCurrentUser();
     const { getName, getDescription, getEnv } = getContext("app");

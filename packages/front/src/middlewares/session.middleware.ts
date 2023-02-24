@@ -1,6 +1,6 @@
 import session from "express-session";
-import { MONGO_URL, SESSION_SECRET } from "../shared/config";
 import MongoStore from "connect-mongo";
+import { MONGO_URL, SESSION_SECRET } from "../shared/config";
 
 const twoDay = 1000 * 60 * 60 * 24 * 2;
 

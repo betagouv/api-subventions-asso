@@ -1,6 +1,7 @@
-import InfosLegalesController from "./InfosLegales.controller";
 import DEFAULT_ASSOCIATION from "../../views/association/__fixtures__/Association";
 import DEFAULT_ETABLISSEMENT from "../../views/etablissement/__fixtures__/Etablissement";
+import InfosLegalesController from "./InfosLegales.controller";
+import { dateToDDMMYYYY } from "@helpers/dateHelper";
 
 jest.mock("../../views/association/association.helper", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -14,8 +15,6 @@ jest.mock("../../views/association/association.helper", () => {
         getModification: jest.fn()
     };
 });
-
-import { dateToDDMMYYYY } from "../../helpers/dateHelper";
 
 function buildPartialAssociation() {
     return { ...DEFAULT_ASSOCIATION };

@@ -6,8 +6,8 @@
 
     import { modal, data } from "../../../store/modal.store";
 
-    import SubventionTableController from "./SubventionTable.controller";
     import SubventionInfoModal from "../Modals/SubventionInfoModal.svelte";
+    import SubventionTableController from "./SubventionTable.controller";
 
     export let sort;
     export let elements = [];

@@ -1,5 +1,5 @@
-import statsService from "@resources/stats/stats.service";
 import TopAssociationsController from "./TopAssociationsController";
+import statsService from "@resources/stats/stats.service";
 
 describe("TopAssociationsController", () => {
     describe("init", () => {

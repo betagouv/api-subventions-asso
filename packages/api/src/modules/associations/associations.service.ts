@@ -1,6 +1,5 @@
 import { ProviderValues, Association, Siret, Rna, Siren } from "@api-subventions-asso/dto";
 
-import AssociationsProvider from "./@types/AssociationsProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../@types";
 
@@ -23,6 +22,7 @@ import subventionsService from "../subventions/subventions.service";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
+import AssociationsProvider from "./@types/AssociationsProvider";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {

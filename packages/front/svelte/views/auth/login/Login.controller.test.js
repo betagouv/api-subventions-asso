@@ -1,8 +1,8 @@
-import authService from "@resources/auth/auth.service";
-import LoginController from "./Login.controller";
+import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import * as RouterService from "../../../services/router.service";
 import UnauthorizedError from "../../../errors/UnauthorizedError";
-import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
+import LoginController from "./Login.controller";
+import authService from "@resources/auth/auth.service";
 
 describe("LoginController", () => {
     let controller;
@@ -18,7 +18,7 @@ describe("LoginController", () => {
     describe("submit", () => {
         const loginMock = jest.spyOn(authService, "login");
         const goToUrlMock = jest.spyOn(RouterService, "goToUrl");
-        const formDataMock = jest.spyOn(global, "FormData").mockImplementation(data => new Map(Object.entries(data)));
+        const formDataMock = jest.spyOn(window, "FormData").mockImplementation(data => new Map(Object.entries(data)));
 
         const EMAIL = "test@datasubvention.beta.gouv.fr";
         const PASSWORD = "FAKE_PASSWORD";

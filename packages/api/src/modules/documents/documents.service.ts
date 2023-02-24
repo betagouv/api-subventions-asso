@@ -1,10 +1,10 @@
-import providers from "../providers";
-import DocumentProvider from "./@types/DocumentsProvider";
 import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
+import providers from "../providers";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import DocumentProvider from "./@types/DocumentsProvider";
 
 export class DocumentsService {
     public async getDocumentBySiren(siren: Siren) {

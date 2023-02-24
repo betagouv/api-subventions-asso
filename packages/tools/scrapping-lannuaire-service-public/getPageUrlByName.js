@@ -4,7 +4,7 @@ const { JSDOM } = require("jsdom");
 const ANNUAIRE_SEARCH_URL = "https://lannuaire.service-public.fr/recherche";
 
 /**
- * 
+ *
  * @param {string} name
  * @returns {Promise<null|string>}
  */
@@ -13,15 +13,13 @@ module.exports = async function getPageUrlByName(name) {
     const url = `${ANNUAIRE_SEARCH_URL}?whoWhat=${queryName}&where=`;
     try {
         const result = await axios.get(url);
-        
+
         if (result.status != 200) {
-            console.error(
-                {
-                    status:  result.status,
-                    body: result.data
-                }
-            )
-            return null
+            console.error({
+                status: result.status,
+                body: result.data
+            });
+            return null;
         }
 
         const html = result.data;
@@ -39,6 +37,6 @@ module.exports = async function getPageUrlByName(name) {
         return href;
     } catch (error) {
         console.error(error);
-        return null
+        return null;
     }
-}
+};
