@@ -1,7 +1,7 @@
 import axios from "axios";
-import authPort from "./auth.port";
 import errorsService from "../../errors/errors.service";
 import UnauthorizedError from "../../errors/UnauthorizedError";
+import authPort from "./auth.port";
 
 const DEFAULT_ERROR_CODE = 49;
 

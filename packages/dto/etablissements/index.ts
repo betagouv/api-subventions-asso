@@ -1,3 +1,3 @@
-export * from "./Etablissement"
-export * from "./EtablissementDtoResponse"
-export * from "./SimplifiedEtablissement"
+export * from "./Etablissement";
+export * from "./EtablissementDtoResponse";
+export * from "./SimplifiedEtablissement";

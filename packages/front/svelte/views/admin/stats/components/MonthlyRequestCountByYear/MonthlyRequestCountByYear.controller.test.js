@@ -1,5 +1,5 @@
-import { MonthlyRequestCountByYearController } from "./MonthlyRequestCountByYear.controller";
 import statsService from "../../../../../resources/stats/stats.service";
+import { MonthlyRequestCountByYearController } from "./MonthlyRequestCountByYear.controller";
 
 describe("MonthlyRequestCountByYearController", () => {
     describe("loadData", () => {

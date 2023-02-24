@@ -1,7 +1,7 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import * as CliHelper from "../../../shared/helpers/CliHelper";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import * as CliHelper from "../../../shared/helpers/CliHelper";
 
 export default class ChorusParser {
     public static parse(content: Buffer) {

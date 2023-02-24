@@ -1,17 +1,17 @@
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
+import { Siret } from "@api-subventions-asso/dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
-import { Siret } from "@api-subventions-asso/dto";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
+import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import providers from "../providers";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
-import { SubventionsFlux } from "./@types/SubventionsFlux";
 import Flux from "../../shared/Flux";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
+import { SubventionsFlux } from "./@types/SubventionsFlux";
 
 export class SubventionsService {
     async getDemandesByAssociation(id: AssociationIdentifiers) {

@@ -1,6 +1,6 @@
 <script>
-    import Button from "./Button.svelte";
     import { modal } from "../store/modal.store";
+    import Button from "./Button.svelte";
 </script>
 
 <dialog aria-labelledby="fr-modal-title" id="fr-modal" class="fr-modal">

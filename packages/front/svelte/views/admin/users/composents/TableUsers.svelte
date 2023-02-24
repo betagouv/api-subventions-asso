@@ -1,14 +1,14 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    import authService from "@resources/auth/auth.service";
-    import userService from "@resources/users/users.service";
     import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
     import { action, data, modal } from "../../../../store/modal.store";
     import adminService from "../../admin.service";
 
-    import RemoveUserModal from "./RemoveUserModal.svelte";
     import Button from "../../../../dsfr/Button.svelte";
+    import RemoveUserModal from "./RemoveUserModal.svelte";
+    import userService from "@resources/users/users.service";
+    import authService from "@resources/auth/auth.service";
 
     export let users;
     let selectedUserId;

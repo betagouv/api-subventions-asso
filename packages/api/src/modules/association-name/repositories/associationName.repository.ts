@@ -1,10 +1,10 @@
 import { WithId } from "mongodb";
+import { Rna, Siren } from "@api-subventions-asso/dto";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import db from "../../../shared/MongoConnection";
 import { isStartOfSiret } from "../../../shared/Validators";
 import IAssociationName from "../@types/IAssociationName";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
-import { Rna, Siren } from "@api-subventions-asso/dto";
 
 export class AssociationNameRepository {
     private readonly collection = db.collection<AssociationNameEntity>("association-name");

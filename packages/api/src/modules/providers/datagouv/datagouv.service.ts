@@ -1,5 +1,5 @@
-import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { Siren } from "@api-subventions-asso/dto";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import Provider from "../@types/IProvider";
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";

@@ -1,6 +1,6 @@
 <script>
-    import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
     import Table from "../../../../dsfr/Table.svelte";
+    import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
 
     export let elements; // informations_bancaires
 

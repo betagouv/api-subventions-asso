@@ -3,8 +3,8 @@ import { isSiret } from "../../helpers/validatorHelper";
 import subventionsService from "../../resources/subventions/subventions.service";
 import versementsService from "../../resources/versements/versements.service";
 
-import { mapSubventionsAndVersements, sortByPath } from "./helper";
 import Store from "../../core/Store";
+import { mapSubventionsAndVersements, sortByPath } from "./helper";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {

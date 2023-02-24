@@ -1,6 +1,6 @@
+import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 export class ResetPwdController {
     PWD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!#@$%^&(){}[\]:;<>,.?/~_+=|-]).{8,32}$/;

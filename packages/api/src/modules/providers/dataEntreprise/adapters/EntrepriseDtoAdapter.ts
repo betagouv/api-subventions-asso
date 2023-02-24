@@ -1,5 +1,5 @@
-import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { Association } from "@api-subventions-asso/dto";
+import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import EntrepriseDto from "../dto/EntrepriseDto";
 
 export default class EntrepriseDtoAdapter {

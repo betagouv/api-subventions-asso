@@ -1,19 +1,19 @@
 import "dotenv/config"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
-import express from "express";
 import path from "path";
+import express from "express";
 import bodyParser from "body-parser";
+import { UserWithJWTDto } from "@api-subventions-asso/dto";
+import { version as designSystemVersion } from "../package-lock.json";
 import authMiddleware from "./middlewares/auth.middleware";
 import { expressLogger } from "./middlewares/LogMiddleware";
 import sessionMiddleware from "./middlewares/session.middleware";
-import { version as designSystemVersion } from "../package-lock.json";
 
 import controllers from "./modules/controllers";
 import { DefaultObject } from "./@types/utils";
 import ControllerMethod, { ControllerRouteDEF } from "./@types/ControllerMethod";
 import EJSHelper from "./shared/helpers/EJSHelper";
 import * as Components from "./modules/global_components/index";
-import { UserWithJWTDto } from "@api-subventions-asso/dto";
 
 declare module "express-session" {
     interface Session {

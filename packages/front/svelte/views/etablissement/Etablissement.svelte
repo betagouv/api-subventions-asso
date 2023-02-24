@@ -2,13 +2,13 @@
     import DataNotFound from "../../components/DataNotFound.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
-    import TabEtab from "./components/TabEtab.svelte";
-    import etablissementService from "./etablissement.service";
     import associationService from "../association/association.service";
     import { siretToSiren } from "../../helpers/sirenHelper";
     import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
+    import etablissementService from "./etablissement.service";
+    import TabEtab from "./components/TabEtab.svelte";
 
     export let id;
 
