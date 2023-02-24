@@ -3,8 +3,9 @@ import axios from "axios";
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import routes from "../../routes";
 import authPort from "@resources/auth/auth.port";
-import { goToUrl } from "@services/router.service";
 import * as RouterService from "@services/router.service";
+import { goToUrl } from "@services/router.service";
+
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
 

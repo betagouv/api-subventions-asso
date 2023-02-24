@@ -17,8 +17,8 @@ import { NotFoundError } from "../../shared/errors/httpErrors";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import EtablissementProvider from "./@types/EtablissementProvider";
 import { EtablissementAdapter } from "./EtablissementAdapter";
+import EtablissementProvider from "./@types/EtablissementProvider";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {

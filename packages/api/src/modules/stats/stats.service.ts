@@ -1,6 +1,5 @@
 import { WithId } from "mongodb";
 import { UserCountByStatus } from "@api-subventions-asso/dto";
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
@@ -12,11 +11,11 @@ import { RoleEnum } from "../../@enums/Roles";
 import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
+import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
+import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import statsRepository from "./repositories/stats.repository";
-import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
-import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 
 class StatsService {
     getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
