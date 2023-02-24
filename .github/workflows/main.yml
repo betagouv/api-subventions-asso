@@ -18,9 +18,11 @@ jobs:
                   node-version: "16"
             - run: npm ci
             - run: npm run build
+            - run: npm run generate
             - uses: actions/cache@v3
               with:
                   path: |
+                      **/tsoa/
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
@@ -35,6 +37,7 @@ jobs:
             - uses: actions/cache@v3
               with:
                   path: |
+                      **/tsoa/
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
@@ -50,8 +53,8 @@ jobs:
             - uses: actions/cache@v3
               with:
                   path: |
+                      **/tsoa/
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
-            - run: npm run generate
             - run: npm test
