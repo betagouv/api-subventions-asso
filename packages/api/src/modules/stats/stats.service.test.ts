@@ -764,7 +764,7 @@ describe("StatsService", () => {
             "groupAssociationVisitsByAssociation"
         );
 
-        beforeEach(() => {
+        beforeAll(() => {
             // I don't know why, but if I create a spy on describe (not in beforeEach) at some point the spy are destroyed by line 276 (mockRestore), I think!
             // @ts-expect-error: private method
             keepOneVisitByUserAndDateMock = jest.spyOn(statsService, "keepOneVisitByUserAndDate").mockResolvedValue([]);
@@ -919,7 +919,7 @@ describe("StatsService", () => {
             expect(countUserAverageVisitsOnPeriodMock).toBeCalledTimes(1);
         });
 
-        it("should return one on born :0", async () => {
+        it("should return one on bound :0", async () => {
             findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(0.5);
 
@@ -929,7 +929,7 @@ describe("StatsService", () => {
             expect(actual).toEqual(expect.objectContaining(expected));
         });
 
-        it("should return one on born 1:10", async () => {
+        it("should return one on bound 1:10", async () => {
             findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(9);
 
@@ -939,7 +939,7 @@ describe("StatsService", () => {
             expect(actual).toEqual(expect.objectContaining(expected));
         });
 
-        it("should return one on born 11:20", async () => {
+        it("should return one on bound 11:20", async () => {
             findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(11);
 
@@ -949,7 +949,7 @@ describe("StatsService", () => {
             expect(actual).toEqual(expect.objectContaining(expected));
         });
 
-        it("should return one on born 21:30", async () => {
+        it("should return one on bound 21:30", async () => {
             findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(21);
 
@@ -959,7 +959,7 @@ describe("StatsService", () => {
             expect(actual).toEqual(expect.objectContaining(expected));
         });
 
-        it("should return one on born 31:", async () => {
+        it("should return one on bound 31:", async () => {
             findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(31);
 
