@@ -4,17 +4,20 @@
     import Spinner from "@components/Spinner.svelte";
     import Select from "@dsfr/Select.svelte";
     import Widget from "@components/Widget.svelte";
+    import MonthlyGraphTooltip from "@components/Stats/MonthlyGraphTooltip/MonthlyGraphTooltip.svelte";
 
     let canvas;
+    let tooltip;
     export let loadData;
     export let title = "";
+    export let resourceName = "";
     export let withPreviousValue = false;
 
-    const ctrl = new MonthlyGraphController(loadData, title, withPreviousValue);
+    const ctrl = new MonthlyGraphController(loadData, title, resourceName, withPreviousValue);
     ctrl.init();
     const { year, dataPromise, yearOptions } = ctrl;
 
-    $: ctrl.onCanvasMount(canvas);
+    $: if (canvas && tooltip) ctrl.onCanvasMount(canvas, tooltip);
 </script>
 
 <Widget title={ctrl.title}>
@@ -32,7 +35,16 @@
                         bind:selected={$year}
                         narrow />
                     <div class="chart-container">
-                        <canvas bind:this={canvas} />
+                        <MonthlyGraphTooltip
+                            bind:this={tooltip}
+                            resource={ctrl.resourceName}
+                            year={$year}
+                            {withPreviousValue} />
+                        <canvas
+                            bind:this={canvas}
+                            aria-label="Graphique des {resourceName} par mois sur l'année {$year}"
+                            role="image"
+                        ><!-- TODO fallback content for accessibility --></canvas>
                     </div>
                 </div>
                 <div class="fr-col-3">
