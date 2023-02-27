@@ -1,6 +1,6 @@
 import { Siret } from "..";
 import { ProviderValue } from "../shared/ProviderValue";
-import { Versement } from "../versements/Versement";
+import { Versement } from "../versements";
 
 export interface DemandeSubvention {
     service_instructeur: ProviderValue<string>;
