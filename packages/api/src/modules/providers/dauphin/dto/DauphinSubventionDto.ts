@@ -1,6 +1,6 @@
 /**
- * /!\ This DTO is not complete, because no docs are found so we complete as we go along.
- * Pease check if attribute is already here before use this
+ * /!\ This DTO is not complete, because no docs are found, so we complete as we go along.
+ * Please check if attribute is already here before use this
  */
 export default interface DauphinSubventionDto {
     id: string;
