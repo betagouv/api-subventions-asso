@@ -19,6 +19,7 @@ import "./modules/association-name/associationName.service"; // Load association
 import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
 import DemarchesSimplifieesCliController
     from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
+import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
 
 async function main() {
     await connectDB();
@@ -38,7 +39,8 @@ async function main() {
         GisproCliController,
         SubventiaCliController,
         ConsumerCliController,
-        DemarchesSimplifieesCliController
+        DemarchesSimplifieesCliController,
+        CaisseDepotsCliController
     ];
 
     const args = process.argv.slice(2);
