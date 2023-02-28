@@ -105,7 +105,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
             year -= 1;
             month = 12 - month;
         }
-        if (month < 10) return `v2/effectifs_mensuels_acoss_covid/${year}/0${month}/${siret}`;
+        if (month < 10) return `v2/effectifs_mensuels_acoss_covid/${year}/0${month}/etablissement/${siret}`;
         else return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret}`;
     }
 
