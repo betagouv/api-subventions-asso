@@ -8,6 +8,7 @@ import dataGouvService from "./datagouv/datagouv.service";
 import avisSituationInseeService from "./avisSituationInsee/avisSituationInsee.service";
 import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service";
 import dauphinService from "./dauphin/dauphin.service";
+import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 
 export default {
@@ -21,5 +22,6 @@ export default {
     avisSituationInseeService,
     apiEntrepriseService,
     dauphinService,
-    demarchesSimplifieesService
+    demarchesSimplifieesService,
+    caisseDepotsService
 };
