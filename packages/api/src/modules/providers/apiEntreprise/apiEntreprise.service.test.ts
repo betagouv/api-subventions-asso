@@ -159,68 +159,35 @@ describe("ApiEntrepriseService", () => {
         });
     });
 
-    describe("getExtraitRcs()", () => {
-        it.only("should return extrait rcs", async () => {
-            const expected = {};
-            // @ts-expect-error: mock
-            sendRequestMock.mockImplementationOnce(async () => ({ data: expected }));
-            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return null", async () => {
-            const expected = null;
-            sendRequestMock.mockImplementationOnce(() => {
-                throw new Error();
-            });
-            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
-            expect(actual).toEqual(expected);
-        });
-        it("should throw StructureIdentifiersError", async () => {
-            const expected = StructureIdentifiersError.name;
-            let actual;
-            try {
-                actual = await apiEntrepriseService.getExtractRcs(SIRET);
-            } catch (e) {
-                actual = (e as Error).constructor.name;
-            }
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("getEtablissementHeadcount()", () => {
         it("should call sendRequest() with arguments", async () => {
+            const HEADCOUNT_URL = "HEADCOUNT_URL";
+            // @ts-expect-error: private method
+            jest.spyOn(apiEntrepriseService, "buildHeadcountUrl").mockImplementationOnce(() => HEADCOUNT_URL);
             sendRequestMock.mockImplementationOnce(jest.fn());
-            const expected = [
-                // @ts-expect-error
-                `${apiEntrepriseService.buildHeadcountUrl()}/etablissement/${SIRET}`,
-                {},
-                HEADCOUNT_REASON
-            ];
             // @ts-expect-error
             await apiEntrepriseService.getEtablissementHeadcount(SIRET);
-            const actual = sendRequestMock.mock.calls[0];
-            expect(actual).toEqual(expected);
+            expect(sendRequestMock).toHaveBeenCalledWith(HEADCOUNT_URL, {}, HEADCOUNT_REASON, false);
         });
     });
 
     describe("buildHeadcountUrl()", () => {
         it("should return a valid URL", () => {
-            const expected = "effectifs_mensuels_acoss_covid/2022/01";
+            const expected = `v2/effectifs_mensuels_acoss_covid/2022/01/etablissement/${SIRET}`;
             // @ts-expect-error
-            const actual = apiEntrepriseService.buildHeadcountUrl();
+            const actual = apiEntrepriseService.buildHeadcountUrl(SIRET);
             expect(actual).toEqual(expected);
         });
 
         it("should minus the date month", () => {
-            const expected = "effectifs_mensuels_acoss_covid/2021/12";
+            const expected = `v2/effectifs_mensuels_acoss_covid/2021/12/etablissement/${SIRET}`;
             // @ts-expect-error
-            const actual = apiEntrepriseService.buildHeadcountUrl(1);
+            const actual = apiEntrepriseService.buildHeadcountUrl(SIRET, 1);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("getExtraitRcs", () => {
+    describe("getExtractRcs", () => {
         it("should return StructureIdentifierError", async () => {
             const execpted = new StructureIdentifiersError("siren");
             let actual;
@@ -235,8 +202,13 @@ describe("ApiEntrepriseService", () => {
         it("should return rcs extract", async () => {
             const expected = {};
             // @ts-expect-error
-            sendRequestMock.mockImplementationOnce(async () => expected);
-            const actual = await apiEntrepriseService.getExtractRcs(SIREN);
+            sendRequestMock.mockImplementationOnce(async () => ({ data: expected }));
+            let actual;
+            try {
+                actual = await apiEntrepriseService.getExtractRcs(SIREN);
+            } catch (e) {
+                actual = e;
+            }
             expect(actual).toEqual(expected);
         });
 
@@ -249,7 +221,7 @@ describe("ApiEntrepriseService", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return null if axios", async () => {
+        it("should return null if axios throw", async () => {
             const expected = null;
             sendRequestMock.mockImplementationOnce(() => {
                 throw new Error();
