@@ -10,8 +10,8 @@ jest.mock("chart.js/auto", () =>
     })
 );
 
-import { MonthlyGraphController } from "./MonthlyGraph.controller";
 import Chart from "chart.js/auto";
+import { MonthlyGraphController } from "./MonthlyGraph.controller";
 
 describe("MonthlyGraphController", () => {
     const TITLE = "titre";

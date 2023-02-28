@@ -1,10 +1,10 @@
+import path from "path";
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import { NextFunction, Request, Response } from "express";
 import { DefaultObject } from "../../../../@types/utils";
 import Controller from "../../../../decorators/controller.decorator";
 import { Get, Post } from "../../../../decorators/http.methods.decorator";
 import authService from "../../AuthService";
-import path from "path";
 
 @Controller("/auth")
 export default class AuthController {

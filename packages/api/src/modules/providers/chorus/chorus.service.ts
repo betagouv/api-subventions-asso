@@ -7,10 +7,10 @@ import { isEJ, isSiret } from "../../../shared/Validators";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
-import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 export interface RejectedRequest {
     state: "rejected";

@@ -15,7 +15,18 @@
         "url": "git+https://github.com/betagouv/api-subventions-asso.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\""
+        "test": "echo \"Error: run tests from root\"",
+        "lint": "eslint --fix --ext .js",
+        "lint:all": "eslint --fix --ext .js .",
+        "prettier": "prettier --write",
+        "prettier:all": "prettier --write ./**/*.js",
+        "lint-format": "lint-staged"
+    },
+    "lint-staged": {
+        "./**/*.{js,ts}": [
+            "npx prettier --write --loglevel warn",
+            "npx eslint --fix --quiet --ext .js"
+        ]
     },
     "bugs": {
         "url": "https://github.com/betagouv/api-subventions-asso/issues"
@@ -24,8 +35,15 @@
         "axios": "^0.26.1",
         "dotenv": "^16.0.1",
         "jsdom": "^19.0.0",
+        "lint-staged": "^13.1.2",
         "node-fetch": "^3.2.10",
         "node-xlsx": "^0.21.0",
         "qs": "^6.11.0"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.53.0",
+        "@typescript-eslint/parser": "^5.53.0",
+        "eslint-config-prettier": "^8.6.0",
+        "eslint-plugin-import": "^2.27.5"
     }
 }

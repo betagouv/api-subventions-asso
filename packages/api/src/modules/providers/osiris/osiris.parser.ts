@@ -1,10 +1,10 @@
-import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
-import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
 import { DefaultObject } from "../../../@types";
 import ILegalInformations from "../../search/@types/ILegalInformations";
+import OsirisActionEntity from "./entities/OsirisActionEntity";
+import OsirisRequestEntity from "./entities/OsirisRequestEntity";
+import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
+import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
 import IOsirisEvaluationsInformations from "./@types/IOsirisEvaluationsInformations";
 

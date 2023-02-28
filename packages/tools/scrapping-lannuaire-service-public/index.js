@@ -8,7 +8,7 @@ function normalizeLine(line, header) {
     header.forEach((h, index) => {
         if (line[index]) return;
         line[index] = undefined;
-    })
+    });
 
     return line;
 }
@@ -47,22 +47,20 @@ async function main() {
             return;
         }
         line[header.length] = phone;
-    }, Promise.resolve())
+    }, Promise.resolve());
 
     header.push("Personne - Téléphone");
 
     fs.writeFileSync("log.scrapping-lannuaire.json", JSON.stringify(notFound));
 
-    const newFileBuffer = xlsx.build([{
-        name: page.name,
-        data: [
-            header,
-            ...data
-        ]
-    }])
+    const newFileBuffer = xlsx.build([
+        {
+            name: page.name,
+            data: [header, ...data]
+        }
+    ]);
 
     fs.writeFileSync(userBddFilePath, newFileBuffer);
 }
-
 
 main();

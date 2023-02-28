@@ -3,12 +3,12 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import VersementsProvider from "../../versements/@types/VersementsProvider";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
-import VersementsProvider from "../../versements/@types/VersementsProvider";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1

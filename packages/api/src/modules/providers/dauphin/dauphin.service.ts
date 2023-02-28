@@ -4,12 +4,12 @@ import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto"
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_USERNAME, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import DauphinSubventionDto from "./dto/DauphinSubventionDto";
-import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
-import dauhpinCachesRepository from "./repositories/dauphinCache.repository";
 import configurationsService from "../../configurations/configurations.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { formatIntToThreeDigits, formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
+import DauphinSubventionDto from "./dto/DauphinSubventionDto";
+import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
+import dauhpinCachesRepository from "./repositories/dauphinCache.repository";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {

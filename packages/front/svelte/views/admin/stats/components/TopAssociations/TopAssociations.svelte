@@ -1,8 +1,7 @@
 <script>
+    import TopAssociationsController from "./TopAssociationsController";
     import Spinner from "@components/Spinner.svelte";
     import Widget from "@components/Widget.svelte";
-
-    import TopAssociationsController from "./TopAssociationsController";
 
     const controller = new TopAssociationsController();
 

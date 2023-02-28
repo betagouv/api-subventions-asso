@@ -1,5 +1,4 @@
 import { Siren, Siret, Versement, Association, Etablissement, DemandeSubvention } from "@api-subventions-asso/dto";
-import VersementsProvider from "./@types/VersementsProvider";
 import providers from "../providers";
 import { AssociationIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
@@ -7,6 +6,7 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { NotFoundError } from "../../shared/errors/httpErrors";
+import VersementsProvider from "./@types/VersementsProvider";
 
 export class VersementsService {
     async getVersementsByAssociation(identifier: AssociationIdentifiers) {

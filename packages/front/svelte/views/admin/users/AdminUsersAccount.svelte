@@ -5,14 +5,14 @@
     import Widget from "../../../components/Widget.svelte";
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
-    import SearchUsers from "./composents/SearchUsers.svelte";
-    import TableUsers from "./composents/TableUsers.svelte";
     import ActionGroup from "../../../components/ActionGroup.svelte";
     import Button from "../../../dsfr/Button.svelte";
     import Alert from "../../../dsfr/Alert.svelte";
     import Input from "../../../dsfr/Input.svelte";
     import { buildCsv, downloadCsv } from "../../../helpers/csvHelper";
     import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../admin.constant.js";
+    import TableUsers from "./composents/TableUsers.svelte";
+    import SearchUsers from "./composents/SearchUsers.svelte";
 
     let users,
         domains = [];

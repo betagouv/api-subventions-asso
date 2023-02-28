@@ -1,9 +1,9 @@
 <script>
     import Tabs from "../../../dsfr/Tabs.svelte";
     import TabContent from "../../../dsfr/TabContent.svelte";
-    import Etablissements from "./Etablissements.svelte";
     import Documents from "../../../components/Documents/Documents.svelte";
     import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+    import Etablissements from "./Etablissements.svelte";
     import Stats from "./Stats/Stats.svelte";
 
     export let titles;
