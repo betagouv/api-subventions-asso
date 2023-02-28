@@ -11,10 +11,12 @@ import userRepository from "../user/repositories/user.repository";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
+import * as DateHelper from "../../shared/helpers/DateHelper";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import statsRepository from "./repositories/stats.repository";
-import * as DateHelper from "../../shared/helpers/DateHelper";
+import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
+import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 
 class StatsService {
     getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
@@ -169,13 +171,12 @@ class StatsService {
         });
     }
 
-    private async countUserAverageVisitsOnPeriod(user: UserDto, start: Date, end: Date) {
+    private async countUserAverageVisitsOnPeriod(user: UserWithAssociationVistitsEntity, start: Date, end: Date) {
         const userStartDate = start.getTime() > user.signupAt.getTime() ? start : user.signupAt;
-        const visits = await statsAssociationsVisitRepository.findByUserIdAndPeriodGroupedByAssociationIdentifier(
-            user._id,
-            userStartDate,
-            end
-        );
+        const visits = user.associationVisits.map(visit => ({
+            _id: visit.associationIdentifier,
+            visits: [visit]
+        }));
         const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(visits);
         const visitsAssociation = visitsGroupedByAssociation
             .map(associationVisit => this.keepOneVisitByUserAndDate(associationVisit.visits))
@@ -187,12 +188,15 @@ class StatsService {
     }
 
     async getUsersByRequest() {
-        const users = await userService.find({ $ne: "admin" });
         const now = new Date();
         const end = new Date(now.getFullYear(), now.getMonth());
         const start = new Date(end.getFullYear() - 1, end.getMonth());
 
-        const result = await users.reduce(async (acc, user) => {
+        const usersWithAssociationVisits = await userAssociationVisitJoiner.findAssociationVisitsOnPeriodGroupedByUsers(
+            start,
+            end
+        );
+        const result = await usersWithAssociationVisits.reduce(async (acc, user) => {
             if (!user) return acc;
             const data = await acc;
             const averageVisits = await this.countUserAverageVisitsOnPeriod(user, start, end);
