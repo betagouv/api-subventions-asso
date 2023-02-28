@@ -3,7 +3,7 @@ import authService from "@resources/auth/auth.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 
 export class ResetPwdController {
-    PWD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[\]:;<>,.?/~_+=|-]).{8,32}$/;
+    PWD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!#@$%^&(){}[\]:;<>,.?/~_+=|-]).{8,32}$/;
     ERROR_MESSAGES = {
         [ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND]:
             "Ce lien n'est pas valide, vérifiez que l'URL est bien celle envoyée par mail.",
