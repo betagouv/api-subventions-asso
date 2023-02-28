@@ -221,7 +221,7 @@ describe("ApiEntrepriseService", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return null if axios throw", async () => {
+        it("should return null if axios throws", async () => {
             const expected = null;
             sendRequestMock.mockImplementationOnce(() => {
                 throw new Error();
