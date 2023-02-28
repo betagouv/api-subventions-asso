@@ -18,6 +18,8 @@ import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import userRepository from "../user/repositories/user.repository";
 import UserDbo from "../user/repositories/dbo/UserDbo";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
+import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -752,10 +754,6 @@ describe("StatsService", () => {
     });
 
     describe("countUserAverageVisitsOnPeriod", () => {
-        const findByUserIdAndPeriodGroupedByAssociationIdentifierMock: jest.SpyInstance = jest.spyOn(
-            statsAssociationsVisitRepository,
-            "findByUserIdAndPeriodGroupedByAssociationIdentifier"
-        );
         const computeMonthBetweenDatesMock: jest.SpyInstance = jest.spyOn(DateHelper, "computeMonthBetweenDates");
         let keepOneVisitByUserAndDateMock: jest.SpyInstance;
         const groupAssociationVisitsByAssociationMock: jest.SpyInstance = jest.spyOn(
@@ -773,57 +771,16 @@ describe("StatsService", () => {
             keepOneVisitByUserAndDateMock.mockRestore();
         });
 
-        it("should select the user signup date for start of period", async () => {
-            const user = {
-                id: "USER_ID",
-                signupAt: new Date(2023, 0, 5)
-            } as unknown as UserDto;
-            const start = new Date(2023, 0, 0);
-            const end = new Date(2024, 0, 0);
-
-            findByUserIdAndPeriodGroupedByAssociationIdentifierMock.mockResolvedValueOnce([]);
-            groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([]);
-            computeMonthBetweenDatesMock.mockResolvedValueOnce(1);
-
-            // @ts-expect-error: private method
-            await statsService.countUserAverageVisitsOnPeriod(user, start, end);
-
-            expect(findByUserIdAndPeriodGroupedByAssociationIdentifierMock).toHaveBeenCalledWith(
-                user._id,
-                user.signupAt,
-                end
-            );
-        });
-
-        it("should select the start date for start of period", async () => {
-            const user = {
-                id: "USER_ID",
-                signupAt: new Date(2023, 0, 0)
-            } as unknown as UserDto;
-            const start = new Date(2023, 0, 5);
-            const end = new Date(2024, 0, 0);
-
-            findByUserIdAndPeriodGroupedByAssociationIdentifierMock.mockResolvedValueOnce([]);
-            groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([]);
-            computeMonthBetweenDatesMock.mockResolvedValueOnce(1);
-
-            // @ts-expect-error: private method
-            await statsService.countUserAverageVisitsOnPeriod(user, start, end);
-
-            expect(findByUserIdAndPeriodGroupedByAssociationIdentifierMock).toHaveBeenCalledWith(user._id, start, end);
-        });
-
         it("should call groupAssociationVisitsByAssociation", async () => {
             const user = {
                 id: "USER_ID",
-                signupAt: new Date(2023, 0, 0)
-            } as unknown as UserDto;
+                signupAt: new Date(2023, 0, 0),
+                associationVisits: [{ associationIdentifier: "test", test: true }]
+            } as unknown as UserWithAssociationVistitsEntity;
+            const expected = [{ _id: user.associationVisits[0].associationIdentifier, visits: user.associationVisits }];
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
 
-            const expected = [{ test: true }];
-
-            findByUserIdAndPeriodGroupedByAssociationIdentifierMock.mockResolvedValueOnce(expected);
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([]);
             computeMonthBetweenDatesMock.mockResolvedValueOnce(1);
 
@@ -836,14 +793,14 @@ describe("StatsService", () => {
         it("should call keepOneVisitByUserAndDate", async () => {
             const user = {
                 id: "USER_ID",
-                signupAt: new Date(2023, 0, 0)
-            } as unknown as UserDto;
+                signupAt: new Date(2023, 0, 0),
+                associationVisits: []
+            } as unknown as UserWithAssociationVistitsEntity;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
 
             const expected = { test: true };
 
-            findByUserIdAndPeriodGroupedByAssociationIdentifierMock.mockResolvedValueOnce([]);
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([{ visits: expected }]);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
             computeMonthBetweenDatesMock.mockResolvedValueOnce(1);
@@ -857,12 +814,12 @@ describe("StatsService", () => {
         it("should call computeMonthBetweenDates", async () => {
             const user = {
                 id: "USER_ID",
-                signupAt: new Date(2023, 0, 0)
-            } as unknown as UserDto;
+                signupAt: new Date(2023, 0, 0),
+                associationVisits: []
+            } as unknown as UserWithAssociationVistitsEntity;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
 
-            findByUserIdAndPeriodGroupedByAssociationIdentifierMock.mockResolvedValueOnce([]);
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([{ test: true }]);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
             computeMonthBetweenDatesMock.mockReturnValueOnce(1);
@@ -876,12 +833,12 @@ describe("StatsService", () => {
         it("should return average", async () => {
             const user = {
                 id: "USER_ID",
-                signupAt: new Date(2023, 0, 0)
+                signupAt: new Date(2023, 0, 0),
+                associationVisits: []
             } as unknown as UserDto;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
 
-            findByUserIdAndPeriodGroupedByAssociationIdentifierMock.mockResolvedValueOnce([]);
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([{ visits: true }]);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
             computeMonthBetweenDatesMock.mockReturnValueOnce(1);
@@ -894,7 +851,7 @@ describe("StatsService", () => {
     });
 
     describe("getUsersByRequest", () => {
-        const findUsersMock = jest.spyOn(userService, "find");
+        const findUsersMock = jest.spyOn(userAssociationVisitJoiner, "findAssociationVisitsOnPeriodGroupedByUsers");
 
         const countUserAverageVisitsOnPeriodMock: jest.SpyInstance = jest.spyOn(
             statsService,
@@ -911,7 +868,7 @@ describe("StatsService", () => {
         });
 
         it("should call countUserAverageVisitsOnPeriod", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(1);
 
             await statsService.getUsersByRequest();
@@ -920,7 +877,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound :0", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(0.5);
 
             const actual = await statsService.getUsersByRequest();
@@ -930,7 +887,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 1:10", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(9);
 
             const actual = await statsService.getUsersByRequest();
@@ -940,7 +897,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 11:20", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(11);
 
             const actual = await statsService.getUsersByRequest();
@@ -950,7 +907,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 21:30", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(21);
 
             const actual = await statsService.getUsersByRequest();
@@ -960,7 +917,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 31:", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserDto]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(31);
 
             const actual = await statsService.getUsersByRequest();

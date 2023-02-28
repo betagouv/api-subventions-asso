@@ -6,6 +6,10 @@ import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 export class StatsAssociationsVisitRepository extends MigrationRepository<AssociationVisitEntity> {
     collectionName = "stats-association-visits";
 
+    joinIndexes = {
+        user: "userId"
+    };
+
     async add(entity: AssociationVisitEntity) {
         await this.collection.insertOne(entity);
         return true;
@@ -22,28 +26,6 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
             .aggregate([
                 {
                     $match: {
-                        date: {
-                            $gte: start,
-                            $lte: end
-                        }
-                    }
-                },
-                {
-                    $group: {
-                        _id: "$associationIdentifier",
-                        visits: { $addToSet: "$$ROOT" }
-                    }
-                }
-            ])
-            .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
-    }
-
-    findByUserIdAndPeriodGroupedByAssociationIdentifier(userId: ObjectId, start: Date, end: Date) {
-        return this.collection
-            .aggregate([
-                {
-                    $match: {
-                        userId,
                         date: {
                             $gte: start,
                             $lte: end
