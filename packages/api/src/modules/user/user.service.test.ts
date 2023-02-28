@@ -413,4 +413,12 @@ describe("User Service", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("passwordValidator()", () => {
+        it("should accept #", () => {
+            // @ts-expect-error: private method
+            const actual = userService.passwordValidator("Aa12345#");
+            expect(actual).toEqual(true);
+        });
+    });
 });
