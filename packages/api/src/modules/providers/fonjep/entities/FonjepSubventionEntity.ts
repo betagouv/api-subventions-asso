@@ -1,5 +1,5 @@
-import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import { Siret } from "@api-subventions-asso/dto";
+import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";

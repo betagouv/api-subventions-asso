@@ -1,7 +1,7 @@
-import OsirisEvaluationEntity from "../entities/OsirisEvaluationEntity";
 import { Siret, Siren } from "@api-subventions-asso/dto";
-import MigrationRepository from "../../../../shared/MigrationRepository";
 import { FindOneAndUpdateOptions } from "mongodb";
+import OsirisEvaluationEntity from "../entities/OsirisEvaluationEntity";
+import MigrationRepository from "../../../../shared/MigrationRepository";
 
 export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvaluationEntity> {
     readonly collectionName = "osiris-evaluation";

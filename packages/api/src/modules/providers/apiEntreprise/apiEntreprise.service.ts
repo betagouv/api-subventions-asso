@@ -1,20 +1,20 @@
 import axios, { AxiosError } from "axios";
 import qs from "qs";
 
+import { Association, Siren, Siret } from "@api-subventions-asso/dto";
+import { ExtraitRcsDto } from "@api-subventions-asso/dto/associations/ExtraitRcsDto";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import { isSiren, isSiret } from "../../../shared/Validators";
-import { Association, Siren, Siret } from "@api-subventions-asso/dto";
-import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { ExtraitRcsDto } from "@api-subventions-asso/dto/associations/ExtraitRcsDto";
+import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
+import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 
 export class ApiEntrepriseService implements EtablissementProvider, AssociationsProvider {
     static API_URL = "https://entreprise.api.gouv.fr/";

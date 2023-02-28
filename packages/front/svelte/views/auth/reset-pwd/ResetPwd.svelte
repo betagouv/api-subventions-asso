@@ -1,8 +1,8 @@
 <script>
+    import { ResetPwdController } from "./ResetPwd.controller";
     import Alert from "@dsfr/Alert.svelte";
     import Input from "@dsfr/Input.svelte";
     import Button from "@dsfr/Button.svelte";
-    import { ResetPwdController } from "./ResetPwd.controller";
     import Spinner from "@components/Spinner.svelte";
 
     export let token;

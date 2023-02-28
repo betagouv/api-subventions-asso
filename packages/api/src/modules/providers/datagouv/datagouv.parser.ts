@@ -3,9 +3,9 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { isSiren } from "../../../shared/Validators";
+import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { IStreamAction } from "./@types";
 import { UniteLegalHistoryRaw } from "./@types/UniteLegalHistoryRaw";
-import { isValidDate } from "../../../shared/helpers/DateHelper";
 
 export interface SaveCallback {
     (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>;

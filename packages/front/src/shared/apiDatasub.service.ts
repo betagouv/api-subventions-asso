@@ -6,8 +6,8 @@ import {
     SignupDtoResponse,
     EtablissementDtoResponse
 } from "@api-subventions-asso/dto";
-import { DATASUB_URL } from "./config";
 import UserDto, { UserWithJWTDto } from "@api-subventions-asso/dto/user/UserDto";
+import { DATASUB_URL } from "./config";
 
 export class APIDatasubService {
     login(email: string, password: string) {

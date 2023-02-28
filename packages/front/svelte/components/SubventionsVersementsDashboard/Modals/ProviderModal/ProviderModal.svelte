@@ -2,8 +2,8 @@
     import Spinner from "../../../Spinner.svelte";
     import DataNotFound from "../../../DataNotFound.svelte";
     import ErrorAlert from "../../../ErrorAlert.svelte";
-    import ProviderModalController from "./ProviderModal.controller";
     import ModalContent from "../../../../dsfr/ModalContent.svelte";
+    import ProviderModalController from "./ProviderModal.controller";
 
     const controller = new ProviderModalController();
     const { loading, providers, error } = controller;

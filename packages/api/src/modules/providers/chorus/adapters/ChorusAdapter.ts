@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
-import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { VersementChorus } from "@api-subventions-asso/dto";
+import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export default class ChorusAdapter {

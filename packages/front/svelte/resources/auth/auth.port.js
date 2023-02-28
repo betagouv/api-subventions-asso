@@ -1,6 +1,6 @@
 import axios from "axios";
-import errorsService from "../../errors/errors.service";
 import { ResetPasswordErrorCodes, SignupErrorCodes } from "@api-subventions-asso/dto";
+import errorsService from "../../errors/errors.service";
 
 export class AuthPort {
     BASE_PATH = "/auth";

@@ -4,9 +4,9 @@ jest.mock("chart.js/auto", () =>
     })
 );
 
-import statsService from "@resources/stats/stats.service";
 import Chart from "chart.js/auto";
 import UserDistributionController from "./UserDistribution.controller";
+import statsService from "@resources/stats/stats.service";
 
 describe("UserDistributionController", () => {
     describe("init", () => {

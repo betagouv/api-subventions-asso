@@ -1,6 +1,5 @@
 <script>
     import { onMount } from "svelte";
-    import homeService from "./home.service";
 
     import { isRna, isSiren, isSiret, isStartOfSiret } from "../../helpers/validatorHelper";
     import { getSearchHistory } from "../../services/storage.service";
@@ -10,8 +9,9 @@
     import Alert from "../../dsfr/Alert.svelte";
     import Card from "../../dsfr/Card.svelte";
     import Spinner from "../../components/Spinner.svelte";
-    import ResultCard from "./composents/ResultCard.svelte";
     import Messages from "../../components/Messages/Messages.svelte";
+    import ResultCard from "./composents/ResultCard.svelte";
+    import homeService from "./home.service";
 
     import InteruptSearchError from "./error/InteruptSearchError";
 

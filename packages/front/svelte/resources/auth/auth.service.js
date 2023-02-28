@@ -1,8 +1,8 @@
 // TODO update import after switch svelte to ts #330
 import axios from "axios";
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
-import authPort from "@resources/auth/auth.port";
 import { goToUrl } from "@services/router.service";
+import authPort from "@resources/auth/auth.port";
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
 

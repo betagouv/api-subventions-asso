@@ -1,7 +1,7 @@
-import db from "../../../../shared/MongoConnection";
 import { FindOneAndUpdateOptions, ObjectId } from "mongodb";
-import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import db from "../../../../shared/MongoConnection";
+import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 
 export class OsirisRequestRepository {
     private readonly collection = db.collection<OsirisRequestEntity>("osiris-requests");

@@ -1,12 +1,8 @@
-import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
-import leCompteAssoRepository from "./repositories/leCompteAsso.repository";
-import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
-import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
+import { Rna, Siret, Siren, Association, Etablissement } from "@api-subventions-asso/dto";
 import ILegalInformations from "../../search/@types/ILegalInformations";
 import { isAssociationName, isSiret, isCompteAssoId } from "../../../shared/Validators";
-import { Rna, Siret, Siren, Association, Etablissement } from "@api-subventions-asso/dto";
+import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
@@ -14,6 +10,10 @@ import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
+import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
+import leCompteAssoRepository from "./repositories/leCompteAsso.repository";
+import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
 
 export interface RejectedRequest {
     state: "rejected";

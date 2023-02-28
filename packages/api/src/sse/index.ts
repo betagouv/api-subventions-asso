@@ -1,9 +1,8 @@
 import { Express, NextFunction, Request, Response } from "express";
 import { expressAuthentication } from "../authentication/authentication";
 import { DefaultObject, ControllerRouteDEF, ControllerMethod, LoginRequest } from "../@types";
-import SSEResponse from "./@types/SSEResponse";
-
 import controllers from "../modules/controllers.sse";
+import SSEResponse from "./@types/SSEResponse";
 
 export default function RegisterSSERoutes(app: Express) {
     controllers.forEach(controllerClass => {

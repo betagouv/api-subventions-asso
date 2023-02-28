@@ -1,15 +1,15 @@
 <script>
     import { isAssociation } from "../../helpers/entrepriseHelper";
-    import associationService from "./association.service.js";
     import { activeBlueBanner } from "../../store/context.store";
 
     import Alert from "../../dsfr/Alert.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
-    import TabsAsso from "./components/TabsAsso.svelte";
     import DataNotFound from "../../components/DataNotFound.svelte";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
+    import TabsAsso from "./components/TabsAsso.svelte";
+    import associationService from "./association.service.js";
 
     export let id;
 
