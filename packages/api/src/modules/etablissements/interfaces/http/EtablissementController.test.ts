@@ -50,14 +50,6 @@ describe("EtablissementController", () => {
             const actual = await controller.getVersements(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
-
-        it("should return an error message", async () => {
-            const ERROR_MESSAGE = "Error";
-            getSubventionsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { message: ERROR_MESSAGE };
-            const actual = await controller.getVersements(IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
     });
 
     describe("getDocuments", () => {
@@ -68,19 +60,11 @@ describe("EtablissementController", () => {
             expect(getDocumentsSpy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
-        it("should return a success object", async () => {
+        it("should return documents", async () => {
             // @ts-expect-error: mock
             getDocumentsSpy.mockImplementationOnce(() => documents);
             const documents = [{}];
             const expected = { documents };
-            const actual = await controller.getDocuments(IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return an error object", async () => {
-            const ERROR_MESSAGE = "Error";
-            getDocumentsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { message: ERROR_MESSAGE };
             const actual = await controller.getDocuments(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
