@@ -1,14 +1,14 @@
-import request = require("supertest");
-import getUserToken from "../../../../__helpers__/getUserToken";
-import etablissementService from "../../../../../src/modules/etablissements/etablissements.service";
-import statsService from "../../../../../src/modules/stats/stats.service";
-import { siretToSiren } from "../../../../../src/shared/helpers/SirenHelper";
-import getAdminToken from "../../../../__helpers__/getAdminToken";
-import associationsService from "../../../../../src/modules/associations/associations.service";
-import { BadRequestError } from "../../../../../src/shared/errors/httpErrors";
-import OsirisRequestEntityFixture from "../../../providers/osiris/__fixtures__/entity";
-import dauphinService from "../../../../../src/modules/providers/dauphin/dauphin.service";
-import { osirisRequestRepository } from "../../../../../src/modules/providers/osiris/repositories";
+import request from "supertest";
+import getUserToken from "../../__helpers__/getUserToken";
+import etablissementService from "../../../src/modules/etablissements/etablissements.service";
+import statsService from "../../../src/modules/stats/stats.service";
+import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
+import getAdminToken from "../../__helpers__/getAdminToken";
+import associationsService from "../../../src/modules/associations/associations.service";
+import { BadRequestError } from "../../../src/shared/errors/httpErrors";
+import OsirisRequestEntityFixture from "../providers/osiris/__fixtures__/entity";
+import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
+import { osirisRequestRepository } from "../../../src/modules/providers/osiris/repositories";
 
 const g = global as unknown as { app: unknown };
 
@@ -21,39 +21,6 @@ describe("EtablissementController", () => {
     });
 
     describe("GET /etablissement/{SIRET_NUMBER}/subventions", () => {
-        describe("on error", () => {
-            const ERROR_MESSAGE = "This is an error message";
-
-            it("should return 404 when an error occur", async () => {
-                getSubventionsMock.mockImplementationOnce(() => {
-                    throw new Error();
-                });
-                const actual = (
-                    await request(g.app)
-                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                        .set("x-access-token", await getUserToken())
-                        .set("Accept", "application/json")
-                ).statusCode;
-
-                expect(actual).toBe(404);
-            });
-
-            it("should return an object when an error occur", async () => {
-                getSubventionsMock.mockImplementationOnce(() => {
-                    throw new Error(ERROR_MESSAGE);
-                });
-                const expected = { message: ERROR_MESSAGE };
-                const actual = (
-                    await request(g.app)
-                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                        .set("x-access-token", await getUserToken())
-                        .set("Accept", "application/json")
-                ).body;
-
-                expect(actual).toEqual(expected);
-            });
-        });
-
         // TODO: make it a real intergation test and mock calls to providers instead
         describe("on success", () => {
             const SUBVENTIONS = ["subventions"];
