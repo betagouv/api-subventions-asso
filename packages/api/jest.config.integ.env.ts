@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 jest.spyOn(console, "info").mockImplementation(() => {});
+jest.mock("axios");
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
