@@ -3,7 +3,6 @@ import axios from "axios";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import CaisseDepotsSubventionDto from "./dto/CaisseDepotsSubventionDto";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 
 export class CaisseDepotsService implements DemandesSubventionsProvider {
@@ -20,13 +19,13 @@ export class CaisseDepotsService implements DemandesSubventionsProvider {
         return this.getCaisseDepotsSubventions("33760730300068");
     }
 
-    private async getCaisseDepotsSubventions(identifier: string): Promise<CaisseDepotsSubventionDto[]> {
+    private async getCaisseDepotsSubventions(identifier: string): Promise<DemandeSubvention[]> {
         try {
             const result = await axios.get(
                 `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiare,"${identifier}")`
             );
 
-            return result.data.records.map(({ record }) => record);
+            return result.data.records.map(({ record }) => CaisseDepotsDtoAdapter.toDemandeSubvention(record));
         } catch (e) {
             console.error(e);
             return [];
@@ -38,17 +37,12 @@ export class CaisseDepotsService implements DemandesSubventionsProvider {
         return null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        return (await this.getCaisseDepotsSubventions(`${siren}*`)).map(dto =>
-            CaisseDepotsDtoAdapter.toDemandeSubvention(dto)
-        );
+    getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
+        return this.getCaisseDepotsSubventions(`${siren}*`);
     }
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        return (await this.getCaisseDepotsSubventions(siret)).map(dto =>
-            CaisseDepotsDtoAdapter.toDemandeSubvention(dto)
-        );
+    getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
+        return this.getCaisseDepotsSubventions(siret);
     }
 }
 
