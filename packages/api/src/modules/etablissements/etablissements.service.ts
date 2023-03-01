@@ -14,8 +14,11 @@ import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 import { NotFoundError } from "../../shared/errors/httpErrors";
-import { EtablissementAdapter } from "./EtablissementAdapter";
+import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import EtablissementProvider from "./@types/EtablissementProvider";
+import { EtablissementAdapter } from "./EtablissementAdapter";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {
@@ -28,10 +31,19 @@ export class EtablissementsService {
     };
 
     async getEtablissement(siret: Siret) {
+        const type = getIdentifierType(siret);
+        if (!type || type !== StructureIdentifiersEnum.siret) {
+            throw new BadRequestError("You must provide a valid SIRET");
+        }
         const data = await this.aggregate(siret);
-        if (!data.length) return null;
-        // @ts-expect-error: TODO: I don't know how to handle this without using "as unknown"
-        return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Etablissement;
+        if (!data.length) {
+            throw new NotFoundError("Etablissement not found");
+        }
+        return FormaterHelper.formatData(
+            // force TS typing because Etablissement[] is DefaultObject<ProviderValues>[]
+            data as unknown as DefaultObject<ProviderValues>[],
+            this.provider_score
+        ) as unknown as Etablissement;
     }
 
     async getEtablissementsBySiren(siren: Siren) {
