@@ -10,9 +10,6 @@ import {
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
 import { NotFoundError } from "../../../../shared/errors/httpErrors/NotFoundError";
-import { StructureIdentifiersEnum } from "../../../../@enums/StructureIdentifiersEnum";
-import { BadRequestError } from "../../../../shared/errors/httpErrors/BadRequestError";
-import * as IdentifierHelper from "../../../../shared/helpers/IdentifierHelper";
 
 @Route("etablissement")
 @Security("jwt")
@@ -23,23 +20,14 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}")
-    @Response<ErrorResponse>("400", "Identifiant incorrect", {
+    @Response<ErrorResponse>("400", "SIRET incorrect", {
         message: "You must provide a valid SIRET"
     })
     @Response<ErrorResponse>("404", "L'établissement n'a pas été trouvé", {
         message: "Etablissement not found"
     })
     public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
-        const type = IdentifierHelper.getIdentifierType(siret);
-
-        if (!type || type !== StructureIdentifiersEnum.siret) {
-            throw new BadRequestError("You must provide a valid SIRET");
-        }
         const etablissement = await etablissementService.getEtablissement(siret);
-
-        if (!etablissement) {
-            throw new NotFoundError("Etablissement not found");
-        }
         return { etablissement };
     }
 
@@ -50,19 +38,13 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/subventions")
-    @Response<ErrorResponse>("404")
     public async getDemandeSubventions(siret: Siret): Promise<GetSubventionsResponseDto> {
-        try {
-            const data = await etablissementService.getSubventions(siret).toPromise();
-            const subventions = data
-                .map(subFlux => subFlux.subventions)
-                .flat()
-                .filter(subvention => subvention) as DemandeSubvention[];
-            return { subventions };
-        } catch (e) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const data = await etablissementService.getSubventions(siret).toPromise();
+        const subventions = data
+            .map(subFlux => subFlux.subventions)
+            .flat()
+            .filter(subvention => subvention) as DemandeSubvention[];
+        return { subventions };
     }
 
     /**
@@ -72,15 +54,9 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/versements")
-    @Response<ErrorResponse>("404")
     public async getVersements(siret: Siret): Promise<GetVersementsResponseDto> {
-        try {
-            const versements = await etablissementService.getVersements(siret);
-            return { versements };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const versements = await etablissementService.getVersements(siret);
+        return { versements };
     }
 
     /**
@@ -90,14 +66,8 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/documents")
-    @Response<ErrorResponse>("404")
     public async getDocuments(siret: Siret): Promise<GetDocumentsResponseDto> {
-        try {
-            const documents = await etablissementService.getDocuments(siret);
-            return { documents };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const documents = await etablissementService.getDocuments(siret);
+        return { documents };
     }
 }

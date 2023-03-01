@@ -6,8 +6,7 @@ import subventionsService from "../subventions/subventions.service";
 import versementsService from "../versements/versements.service";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
-import { DefaultObject } from "../../@types";
-import { NotFoundError } from "../../shared/errors/httpErrors";
+import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
 
@@ -54,6 +53,31 @@ describe("EtablissementsService", () => {
 
     // @ts-ignore because formatHelper does black magic
     jest.spyOn(FormaterHelper, "formatData").mockImplementation((data, providerScore) => data);
+
+    describe("getEtablissement()", () => {
+        it("should throw BadRequestError", async () => {
+            let actual;
+            const expected = new BadRequestError("You must provide a valid SIRET");
+            try {
+                actual = await etablissementService.getEtablissement(SIRET.substring(0, 3));
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
+        });
+
+        it("should throw NotFoundError", async () => {
+            let actual;
+            const expected = new NotFoundError("Etablissement not found");
+            aggregateMock.mockImplementationOnce(async () => ({ data: [] }));
+            try {
+                actual = await etablissementService.getEtablissement(SIRET);
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
+        });
+    });
 
     describe("getVersements", () => {
         const getVersementsBySiretMock = jest.spyOn(versementsService, "getVersementsBySiret");
