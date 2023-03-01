@@ -9,7 +9,12 @@ export enum UserRepositoryErrors {
 }
 
 export class UserRepository {
+    collectionName = "users";
     private readonly collection = db.collection<UserDbo>("users");
+
+    joinIndexes = {
+        associationVisits: "_id"
+    };
 
     async findAll() {
         return this.collection.find({}).toArray();
