@@ -7,21 +7,19 @@ import getAdminToken from "../../__helpers__/getAdminToken";
 import associationsService from "../../../src/modules/associations/associations.service";
 import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import OsirisRequestEntityFixture from "../providers/osiris/__fixtures__/entity";
-import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
 import { osirisRequestRepository } from "../../../src/modules/providers/osiris/repositories";
 
 const g = global as unknown as { app: unknown };
 
 const ETABLISSEMENT_SIRET = "12345678901234";
 
-describe("EtablissementController", () => {
+describe("/etablissement", () => {
     const getSubventionsMock: jest.SpyInstance = jest.spyOn(etablissementService, "getSubventions");
     afterAll(() => {
         getSubventionsMock.mockRestore();
     });
 
-    describe("GET /etablissement/{SIRET_NUMBER}/subventions", () => {
-        // TODO: make it a real intergation test and mock calls to providers instead
+    describe("/{structure_identifier}/subventions", () => {
         describe("on success", () => {
             const SUBVENTIONS = ["subventions"];
             const SUBVENTION_FLUX = [{ subventions: SUBVENTIONS }];
@@ -57,7 +55,6 @@ describe("EtablissementController", () => {
 
     describe("/{structure_identifier}", () => {
         beforeEach(async () => {
-            jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => []);
             await osirisRequestRepository.add(OsirisRequestEntityFixture);
         });
         it("should add one visits on stats AssociationsVisit", async () => {
