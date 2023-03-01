@@ -155,4 +155,16 @@ export class StatsController extends Controller {
         const result = await statsService.getTopAssociationsByPeriod(Number(limit), start, end);
         return { data: result };
     }
+
+    /**
+     * Permet de récupérer le nombre d'utilisateurs qui ont fait en moyenne un certain nombre de requêtes (depuis un an)
+     *
+     * @summary Permet de récupérer le nombre d'utilisateurs qui on fait en moyenne un certain nombre de requêtes (depuis un an)
+     */
+    @Get("/users-by-request")
+    @Response<ErrorResponse>("500")
+    async getUsersByRequest() {
+        const result = await statsService.getUsersByRequest();
+        return { data: result };
+    }
 }

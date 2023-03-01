@@ -1,9 +1,14 @@
+import { ObjectId } from "mongodb";
 import { AssociationIdentifiers } from "../../../@types";
 import MigrationRepository from "../../../shared/MigrationRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 
 export class StatsAssociationsVisitRepository extends MigrationRepository<AssociationVisitEntity> {
     collectionName = "stats-association-visits";
+
+    joinIndexes = {
+        user: "userId"
+    };
 
     async add(entity: AssociationVisitEntity) {
         await this.collection.insertOne(entity);
@@ -13,6 +18,7 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
     async createIndexes() {
         await this.collection.createIndex({ date: 1 });
         await this.collection.createIndex({ associationIdentifier: 1 });
+        await this.collection.createIndex({ userId: 1 });
     }
 
     findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
