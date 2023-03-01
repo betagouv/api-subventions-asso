@@ -1,10 +1,10 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import axios from "axios";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import CaisseDepotsSubvDto from "./dto/CaisseDepotsSubvDto";
+import CaisseDepotsSubventionDto from "./dto/CaisseDepotsSubventionDto";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
-import axios from "axios";
 
 export class CaisseDepotsService implements DemandesSubventionsProvider {
     provider = {
@@ -20,7 +20,7 @@ export class CaisseDepotsService implements DemandesSubventionsProvider {
         return this.getCaisseDepotsSubventions("33760730300068");
     }
 
-    private async getCaisseDepotsSubventions(identifier: string): Promise<CaisseDepotsSubvDto[]> {
+    private async getCaisseDepotsSubventions(identifier: string): Promise<CaisseDepotsSubventionDto[]> {
         try {
             const result = await axios.get(
                 `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiare,"${identifier}")`

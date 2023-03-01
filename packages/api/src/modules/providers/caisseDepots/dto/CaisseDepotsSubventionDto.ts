@@ -1,6 +1,6 @@
 import { Siret } from "@api-subventions-asso/dto";
 
-export default interface CaisseDepotsSubvDto {
+export default interface CaisseDepotsSubventionDto {
     id: string;
     timestamp: string;
     fields: {
