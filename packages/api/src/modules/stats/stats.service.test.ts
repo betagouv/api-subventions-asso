@@ -755,20 +755,23 @@ describe("StatsService", () => {
 
     describe("countUserAverageVisitsOnPeriod", () => {
         const computeMonthBetweenDatesMock: jest.SpyInstance = jest.spyOn(DateHelper, "computeMonthBetweenDates");
-        let keepOneVisitByUserAndDateMock: jest.SpyInstance;
         const groupAssociationVisitsByAssociationMock: jest.SpyInstance = jest.spyOn(
             statsService,
             // @ts-expect-error: private method
             "groupAssociationVisitsByAssociation"
         );
+        let keepOneVisitByUserAndDateMock: jest.SpyInstance;
 
         beforeAll(() => {
-            // I don't know why, but if I create a spy on describe (not in beforeEach) at some point the spy are destroyed by line 276 (mockRestore), I think!
+            // I don't know why, but if I create a spy on describe (not in beforeAll) at some point the spy are destroyed by line 276 (mockRestore), I think!
             // @ts-expect-error: private method
             keepOneVisitByUserAndDateMock = jest.spyOn(statsService, "keepOneVisitByUserAndDate").mockResolvedValue([]);
+
+            computeMonthBetweenDatesMock.mockReturnValue(1);
         });
         afterAll(() => {
             keepOneVisitByUserAndDateMock.mockRestore();
+            computeMonthBetweenDatesMock.mockRestore();
         });
 
         it("should call groupAssociationVisitsByAssociation", async () => {
@@ -782,7 +785,6 @@ describe("StatsService", () => {
             const end = new Date(2024, 0, 0);
 
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([]);
-            computeMonthBetweenDatesMock.mockResolvedValueOnce(1);
 
             // @ts-expect-error: private method
             await statsService.countUserAverageVisitsOnPeriod(user, start, end);
@@ -803,7 +805,6 @@ describe("StatsService", () => {
 
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([{ visits: expected }]);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
-            computeMonthBetweenDatesMock.mockResolvedValueOnce(1);
 
             // @ts-expect-error: private method
             await statsService.countUserAverageVisitsOnPeriod(user, start, end);
@@ -822,7 +823,6 @@ describe("StatsService", () => {
 
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([{ test: true }]);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
-            computeMonthBetweenDatesMock.mockReturnValueOnce(1);
 
             // @ts-expect-error: private method
             await statsService.countUserAverageVisitsOnPeriod(user, start, end);
@@ -841,7 +841,6 @@ describe("StatsService", () => {
 
             groupAssociationVisitsByAssociationMock.mockResolvedValueOnce([{ visits: true }]);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
-            computeMonthBetweenDatesMock.mockReturnValueOnce(1);
 
             // @ts-expect-error: private method
             const actual = await statsService.countUserAverageVisitsOnPeriod(user, start, end);
