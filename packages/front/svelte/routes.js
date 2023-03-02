@@ -10,8 +10,12 @@ import ResetPwd from "./views/auth/reset-pwd/ResetPwd.svelte";
 import ForgetPwd from "./views/auth/forget-pwd/ForgetPwd.svelte";
 import Signup from "./views/auth/signup/Signup.svelte";
 import Login from "./views/auth/login/Login.svelte";
+import NotFound from "./views/not-found/NotFound.svelte";
 
 export default {
+    "/404": {
+        component: () => NotFound
+    },
     "association/:id": {
         component: () => Association
     },
