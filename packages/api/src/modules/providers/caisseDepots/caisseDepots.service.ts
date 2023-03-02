@@ -7,10 +7,10 @@ import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 
 export class CaisseDepotsService implements DemandesSubventionsProvider {
     provider = {
-        name: "Caisse des dépôts",
+        name: "API Caisse des dépôts",
         type: ProviderEnum.api,
         description:
-            "Ce jeu de données présente les subventions octroyées par la Caisse des Dépôts et Consignation, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018. Ce jeu de données est présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention. Sont présentes les informations concernant la date de la convention de subvention, l'identification du bénéficiaire (Siret et raison sociale), l'objet de la subvention, son montant en euros, sa nature et la période prévisionnelle de versement." // TODO check
+            "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention."
     };
     isDemandesSubventionsProvider = true;
     apiUrl = "https://opendata.caissedesdepots.fr/api/v2/";

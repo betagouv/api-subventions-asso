@@ -19,7 +19,7 @@
             des demandes ont été accordées en
             <b>{year}.</b>
             <br />
-            D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts et des Consignations.
+            D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.
         </p>
     </div>
     <div class="fr-col-4">
