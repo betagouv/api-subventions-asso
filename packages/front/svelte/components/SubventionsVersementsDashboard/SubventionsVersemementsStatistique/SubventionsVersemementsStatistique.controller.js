@@ -24,19 +24,19 @@ export default class SubventionsVersemementsStatistiqueController {
     _computeSubventionsPercent() {
         const { amountGranted, amountRequested } = this.elements.reduce(
             (acc, element) => {
-                if (!element.subvention || !element.subvention.montants) return acc;
+                if (!element?.subvention?.montants?.accorde || !element?.subvention?.montants?.demande) return acc;
                 acc.amountGranted += element.subvention.montants.accorde || 0;
                 acc.amountRequested += element.subvention.montants.demande || 0;
                 return acc;
             },
             { amountGranted: 0, amountRequested: 0 }
         );
-
-        return (amountGranted / amountRequested) * 100 || 0;
+        if (amountRequested === 0) return null;
+        return ((amountGranted / amountRequested) * 100).toFixed(0);
     }
 
     update() {
         this.versementsAmount.set(valueOrHyphen(numberToEuro(this._computeVersementsAmount())));
-        this.subventionsPercent.set(this._computeSubventionsPercent().toFixed(0));
+        this.subventionsPercent.set(this._computeSubventionsPercent());
     }
 }
