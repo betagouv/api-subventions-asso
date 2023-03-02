@@ -12,11 +12,11 @@ export default interface CaisseDepotsSubventionDto {
         dateconvention: string;
         nonbeneficiaire: string;
         nature: string;
-        nomattribuant: string;
+        nomattribuant: string; // centre financier
         idbeneficiare: Siret;
         pourcentagesubvention: number;
-        conditionsversement: string;
+        conditionsversement: "UNIQUE" | "ECHELONNE";
         idattribuant: Siret;
-        referencedecision: string | null;
+        referencedecision: string | null; // often null
     };
 }
