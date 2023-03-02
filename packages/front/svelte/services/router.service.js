@@ -8,6 +8,7 @@ import {
 // TODO: rendre dynamique (via une librairie de routing ?)
 export const buildBreadcrumbs = path => {
     const crumbs = [];
+    if (path.includes("404")) crumbs.push({ label: "Page introuvable" });
     if (path.includes("association")) crumbs.push({ label: `Association (${path.split("/").at(-1)})` });
     if (path.includes("etablissement")) crumbs.push({ label: `Établissement (${path.split("/").at(-1)})` });
     else if (path.includes("admin")) {
@@ -58,6 +59,7 @@ export const getProps = (path, routeSegments) => {
     return props;
 };
 
-export const goToUrl = url => {
-    location.href = url;
+export const goToUrl = (url, saveHistory = true) => {
+    if (saveHistory) window.location.assign(url);
+    else window.location.replace(url);
 };
