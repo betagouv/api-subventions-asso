@@ -16,7 +16,7 @@
         </p>
         <p>
             Si vous êtes arrivé sur cette page en cliquant sur un lien du site, merci de nous contacter via
-            <u>contact@datasubvention.bata.gouv.fr</u>
+            <u>contact@datasubvention.beta.gouv.fr</u>
             pour que nous puissions trouver la panne 🕵️‍♀️.
         </p>
         <div class="flex gap-16">
