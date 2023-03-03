@@ -2,6 +2,14 @@
 
 exports[`CaisseDepotsDtoAdapter toDemandeSubvention returns proper value 1`] = `
 Object {
+  "actions_proposee": Array [
+    Object {
+      "intitule": Object {
+        "providerData": "tata",
+        "value": "Faire des trucs",
+      },
+    },
+  ],
   "annee_demande": Object {
     "providerData": "tata",
     "value": 2019,
@@ -9,10 +17,6 @@ Object {
   "date_commision": Object {
     "providerData": "tata",
     "value": 2019-05-01T00:00:00.000Z,
-  },
-  "dispositif": Object {
-    "providerData": "tata",
-    "value": "Faire des trucs",
   },
   "financeur_principal": Object {
     "providerData": "tata",
@@ -23,10 +27,10 @@ Object {
       "providerData": "tata",
       "value": 23247,
     },
-    "demande": Object {
-      "providerData": "tata",
-      "value": 23247,
-    },
+  },
+  "pluriannualite": Object {
+    "providerData": "tata",
+    "value": "Non",
   },
   "service_instructeur": Object {
     "providerData": "tata",
@@ -39,6 +43,10 @@ Object {
   "status": Object {
     "providerData": "tata",
     "value": "Attribuée",
+  },
+  "versementKey": Object {
+    "providerData": "tata",
+    "value": "e2594e5c6e0630fa6ca88abd1ed74bfd297e65e7",
   },
 }
 `;
