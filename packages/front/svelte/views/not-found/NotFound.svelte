@@ -1,6 +1,5 @@
 <script>
     import NotFoundController from "./NotFound.controller";
-    import Button from "@dsfr/Button.svelte";
 
     const ctrl = new NotFoundController();
 </script>
@@ -16,12 +15,18 @@
         </p>
         <p>
             Si vous êtes arrivé sur cette page en cliquant sur un lien du site, merci de nous contacter via
-            <u>contact@datasubvention.beta.gouv.fr</u>
+            <a
+                title="Contactez-nous"
+                href="mailto:${ctrl.contactEmail}?subject=Page%20non%20trouvée%20&body=Bonjour%2C%0A%0Aje%20n%27arrive%20pas%20%C3%A0%20acc%C3%A9der%20%C3%A0%20la%20page%20%3A%20&html=true"
+                target="_blank"
+                rel="noopener noreferrer">
+                contact@datasubvention.bata.gouv.fr
+            </a>
+            <u />
             pour que nous puissions trouver la panne 🕵️‍♀️.
         </p>
-        <div class="flex gap-16">
-            <Button on:click={() => ctrl.toHome()}>Page d'accueil</Button>
-            <Button on:click={() => ctrl.openMail()} type="secondary">Contactez-nous</Button>
+        <div class="flex">
+            <a class="fr-link" href="/">Page d'accueil</a>
         </div>
     </div>
     <div class="same-size flex center fr-pl-8v fr-mx-8v">
@@ -30,10 +35,6 @@
 </div>
 
 <style>
-    .gap-16 {
-        gap: 16px;
-    }
-
     .same-size {
         flex: 1 1 0;
     }
