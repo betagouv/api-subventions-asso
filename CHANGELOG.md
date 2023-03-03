@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.7](https://github.com/betagouv/api-subventions-asso/compare/v0.23.6...v0.23.7) (2023-03-03)
+
+### Bug Fixes
+
+-   **front:** redirect to home on 404 only if route ([8bdb548](https://github.com/betagouv/api-subventions-asso/commit/8bdb5487de767c5ce9c2d965483ec50b01bba33c))
+
 ## [0.23.6](https://github.com/betagouv/api-subventions-asso/compare/v0.23.5...v0.23.6) (2023-02-23)
 
 ### Bug Fixes
