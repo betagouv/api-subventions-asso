@@ -13,8 +13,6 @@ import { getContext } from "svelte";
 
 jest.mock("@services/router.service");
 import NotFoundController from "./NotFound.controller";
-import { goToUrl } from "@services/router.service";
-
 
 describe("NotFoundController", () => {
     describe("constructor and static values", () => {
@@ -28,14 +26,6 @@ describe("NotFoundController", () => {
             const expected = getContext();
             const actual = ctrl.app;
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("toHome()", () => {
-        it("calls goToUrl()", () => {
-            const ctrl = new NotFoundController();
-            ctrl.toHome();
-            expect(goToUrl).toHaveBeenCalledWith("/", false);
         });
     });
 });
