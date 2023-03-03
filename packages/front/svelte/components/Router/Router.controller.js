@@ -13,8 +13,9 @@ export default class RouterController {
     }
 
     loadRoute(path, searchQuery) {
-        const current = RouterService.getRoute(this.routes, path);
-        if (!current.disableAuth) {
+        const route = RouterService.getRoute(this.routes, path);
+        if (!route) return RouterService.goToUrl("/404");
+        if (!route.disableAuth) {
             const user = authService.getCurrentUser();
 
             if (!user || !user._id) return RouterService.goToUrl("/auth/login");
@@ -22,8 +23,8 @@ export default class RouterController {
         }
         this.query.set(this.getQueryParams(searchQuery));
         this.crumbs.set(RouterService.buildBreadcrumbs(path));
-        this.props.set(RouterService.getProps(path, current.segments));
-        this.component.set(current.component());
+        this.props.set(RouterService.getProps(path, route.segments));
+        this.component.set(route.component());
     }
 
     getQueryParams(searchQuery) {

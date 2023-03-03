@@ -86,64 +86,9 @@ controllers.forEach(controllerClass => {
     });
 });
 
-// app.get('/', (req, res) => {
-//   res.render('landing')
-// })
-
-// app.get('/login', (req, res) => {
-//   res.render('login', {
-//     pageTitle: 'Connexion'
-//   })
-// })
-
-// app.get('/ressources', (req, res) => {
-//   res.render('ressources', {
-//     pageTitle: 'Ressources'
-//   })
-// })
-
-// app.get('/formulaire', (req, res) => {
-//   res.render('form', {
-//     pageTitle: 'Formulaire'
-//   })
-// })
-
-// app.get('/contact', (req, res) => {
-//   res.render('contact', {
-//     pageTitle: 'Contact'
-//   })
-// })
-
-// app.get('/accessibilite', (req, res) => {
-//   res.render('accessibilite', {
-//     pageTitle: 'Accessibilité'
-//   })
-// })
-
-// app.get('/components', (req, res) => {
-//   res.render('components', {
-//     pageTitle: 'Composants'
-//   })
-// })
-
-// app.get('/colors', (req, res) => {
-//   res.render('colors', {
-//     pageTitle: 'Couleurs'
-//   })
-// })
-
-// app.get('/typography', (req, res) => {
-//   res.render('typography', {
-//     pageTitle: 'Typographie'
-//   })
-// })
-
-// app.get('/mentions-legales', (req, res) => {
-//   res.render('legalNotice', {
-//     pageTitle: "Mentions légales",
-//     contactEmail: 'mon-produit@beta.gouv.fr',
-//   })
-// })
+app.get("*", function (req, res) {
+    res.sendFile(path.join(__dirname, "../static/svelte-index.html"));
+});
 
 module.exports = app.listen(port, () => {
     console.log(`${appName} listening at http://localhost:${port}`);
