@@ -10,6 +10,7 @@ import {
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
 import { NotFoundError } from "../../../../shared/errors/httpErrors/NotFoundError";
+import { AssociationIdentifiers } from "../../../../@types";
 
 @Route("etablissement")
 @Security("jwt")
@@ -32,9 +33,9 @@ export class EtablissementController extends Controller {
     }
 
     /**
-     * Recherche les demandes de subventions liées à un établisement
+     * Recherche les demandes de subventions liées à un établissement
      *
-     * @summary Recherche les demandes de subventions liées à un établisement
+     * @summary Recherche les demandes de subventions liées à un établissement
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/subventions")
@@ -48,9 +49,9 @@ export class EtablissementController extends Controller {
     }
 
     /**
-     * Recherche les versements liées à un établisement
+     * Recherche les versements liés à un établissement
      *
-     * @summary Recherche les versements liées à un établisement
+     * @summary Recherche les versements liés à un établissement
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/versements")
@@ -60,9 +61,9 @@ export class EtablissementController extends Controller {
     }
 
     /**
-     * Recherche les documents liées à un établisement
+     * Recherche les documents liés à un établissement
      *
-     * @summary Recherche les documents liées à un établisement
+     * @summary Recherche les documents liés à un établissement
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/documents")
