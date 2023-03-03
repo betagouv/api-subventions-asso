@@ -15,10 +15,12 @@
     <div class="fr-col-8">
         <h3>Demandes de subventions collectées</h3>
         <p>
-            <b>{$subventionsPercent}%</b>
-            des demandes ont été accordées en
-            <b>{year}.</b>
-            <br />
+            {#if $subventionsPercent !== null}
+                <b>{$subventionsPercent}%</b>
+                des demandes ont été accordées en
+                <b>{year}.</b>
+                <br />
+            {/if}
             D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.
         </p>
     </div>
