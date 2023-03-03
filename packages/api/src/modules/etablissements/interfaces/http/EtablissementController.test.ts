@@ -87,4 +87,12 @@ describe("EtablissementController", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("registerExtract", () => {
+        it("should return true", async () => {
+            const expected = true;
+            const actual = await controller.registerExtract(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        });
+    });
 });

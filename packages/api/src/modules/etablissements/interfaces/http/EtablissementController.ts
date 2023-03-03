@@ -71,4 +71,14 @@ export class EtablissementController extends Controller {
         const documents = await etablissementService.getDocuments(siret);
         return { documents };
     }
+
+    /**
+     * Permet de logger le mail de l'utilisateur qui fait un extract
+     * @param identifier Identifiant Siret
+     * @deprecated
+     */
+    @Get("/{identifier}/extract-data")
+    public async registerExtract(identifier: Siret): Promise<boolean> {
+        return true;
+    }
 }
