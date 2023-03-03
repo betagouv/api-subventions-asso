@@ -58,9 +58,9 @@ export class AssociationController extends Controller {
     }
 
     /**
-     * Recherche les documents liées à une association
+     * Recherche les documents liés à une association
      *
-     * @summary Recherche les documents liées à une association
+     * @summary Recherche les documents liés à une association
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/documents")
@@ -70,7 +70,7 @@ export class AssociationController extends Controller {
     }
 
     /**
-     * Retourne tous les établisements liée à une association
+     * Retourne tous les établissements liés à une association
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/etablissements")
