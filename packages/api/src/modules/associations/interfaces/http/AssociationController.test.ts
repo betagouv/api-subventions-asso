@@ -1,5 +1,4 @@
 import { DemandeSubvention } from "@api-subventions-asso/dto";
-import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import Flux from "../../../../shared/Flux";
 import associationsService from "../../associations.service";
 import { AssociationController } from "./AssociationController";
@@ -129,6 +128,14 @@ describe("AssociationController", () => {
             getEtablissementSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
             const expected = { message: ERROR_MESSAGE };
             const actual = await controller.getEtablissements(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("registerExtract", () => {
+        it("should return true", async () => {
+            const expected = true;
+            const actual = await controller.registerExtract(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });

@@ -83,4 +83,14 @@ export class AssociationController extends Controller {
             return { message: (e as Error).message };
         }
     }
+
+    /**
+     * Permet de logger le mail de l'utilisateur qui fait un extract
+     * @param identifier Identifiant Siren ou Rna
+     * @deprecated
+     */
+    @Get("/{identifier}/extract-data")
+    public async registerExtract(identifier: AssociationIdentifiers): Promise<boolean> {
+        return true;
+    }
 }
