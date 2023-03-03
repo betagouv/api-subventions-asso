@@ -8,6 +8,7 @@ import CGUController from "./cgu/interface/http/CGUController";
 import ContactController from "./contact/interface/http/ContactController";
 import AdminController from "./admin/interfaces/http/AdminController";
 import SvelteController from "./svelte-example/SvelteController";
+import NotFoundController from "./404Controller";
 
 export default [
     AuthController,
@@ -19,5 +20,6 @@ export default [
     ContactController,
     AdminController,
     CGUController,
-    SvelteController
+    SvelteController,
+    NotFoundController
 ];

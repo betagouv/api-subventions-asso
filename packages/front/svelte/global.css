@@ -67,6 +67,10 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     align-items: center;
 }
 
+.center {
+    justify-content: center;
+}
+
 .space-between {
     justify-content: space-between;
 }
