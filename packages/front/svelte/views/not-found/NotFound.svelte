@@ -6,7 +6,7 @@
 </script>
 
 <div class="flex">
-    <div class="same-size">
+    <div class="same-size fr-pr-8v">
         <h1>Page non trouvée</h1>
         <p class="fr-text--sm">Erreur 404</p>
         <p class="fr-text--lead">La page que vous cherchez est introuvable. Excusez-nous pour la gêne occasionnée.</p>
@@ -24,7 +24,7 @@
             <Button on:click={() => ctrl.openMail()} type="secondary">Contactez-nous</Button>
         </div>
     </div>
-    <div class="same-size flex center">
+    <div class="same-size flex center fr-pl-8v fr-mx-8v">
         <img src="/static/images/404.svg" alt="404 - Page non trouvée" />
     </div>
 </div>
