@@ -5,7 +5,7 @@ import { BadRequestError } from "../../../../shared/errors/httpErrors";
 const controller = new StatsController();
 
 describe("StatsController", () => {
-    const mockgetUserCountByStatus = jest.spyOn(statsService, "getUserCountByStatus").mockImplementation(jest.fn());
+    const mockGetUserCountByStatus = jest.spyOn(statsService, "getUserCountByStatus").mockImplementation(jest.fn());
 
     describe("getRequestsPerMonthByYear", () => {
         const getStatSpy = jest.spyOn(statsService, "getRequestsPerMonthByYear");
@@ -77,11 +77,11 @@ describe("StatsController", () => {
 
         it("should call statsService.getUserCountByStatus()", async () => {
             await controller.getUserCountByStatus();
-            expect(mockgetUserCountByStatus).toHaveBeenCalledTimes(1);
+            expect(mockGetUserCountByStatus).toHaveBeenCalledTimes(1);
         });
 
         it("should return data", async () => {
-            mockgetUserCountByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
+            mockGetUserCountByStatus.mockImplementationOnce(async () => USERS_BY_STATUS);
             const expected = { data: USERS_BY_STATUS };
             const actual = await controller.getUserCountByStatus();
             expect(actual).toEqual(expected);

@@ -37,7 +37,7 @@ export class StatsRepository {
                     ])
                     .next()
             )?.nbOfUsers || 0
-        ); // If no stats found nbOfUsers is null but whant retrun an number
+        ); // If no stats found nbOfUsers is null but want return a number
     }
 
     public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean): Promise<number> {
