@@ -925,4 +925,43 @@ describe("StatsService", () => {
             expect(actual).toEqual(expect.objectContaining(expected));
         });
     });
+
+    describe("getExporterEmails", () => {
+        const mailToLog = email => ({ meta: { req: { user: { email } } } });
+        const LOGS = [{ meta: { req: { user: { email: "a@b.c" } } } }, { meta: { req: { user: { email: "d@e.f" } } } }];
+        const repoMock = jest
+            .spyOn(statsRepository, "getLogsWithRegexUrl")
+            // @ts-expect-error mock
+            .mockReturnValue({ toArray: () => Promise.resolve(LOGS) });
+        const RES = ["a@b.c", "d@e.f"];
+
+        afterAll(() => repoMock.mockRestore());
+
+        it("gets proper logs from repository", async () => {
+            await statsService.getExportersEmails();
+            expect(repoMock).toBeCalledWith(/extract-data$/);
+        });
+
+        it("returns emails from logs", async () => {
+            const expected = RES;
+            const actual = await statsService.getExportersEmails();
+            expect(actual).toEqual(expected);
+        });
+
+        it("removes duplicates", async () => {
+            const expected = RES;
+            // @ts-expect-error mock
+            repoMock.mockReturnValueOnce({ toArray: () => Promise.resolve([...LOGS, mailToLog("a@b.c")]) });
+            const actual = await statsService.getExportersEmails();
+            expect(actual).toEqual(expected);
+        });
+
+        it("removes undefined", async () => {
+            const expected = RES;
+            // @ts-expect-error mock
+            repoMock.mockReturnValueOnce({ toArray: () => Promise.resolve([...LOGS, mailToLog("a@b.c")]) });
+            const actual = await statsService.getExportersEmails();
+            expect(actual).toEqual(expected);
+        });
+    });
 });
