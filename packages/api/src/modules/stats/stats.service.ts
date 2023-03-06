@@ -2,7 +2,7 @@ import { WithId } from "mongodb";
 import { UserCountByStatus } from "@api-subventions-asso/dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
-import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
+import { BadRequestError } from "../../shared/errors/httpErrors";
 import { AssociationIdentifiers } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
@@ -219,6 +219,12 @@ class StatsService {
             fin_periode: end,
             ...result
         };
+    }
+
+    async getExportersEmails() {
+        const logs = await statsRepository.getLogsWithRegexUrl(/extract-data$/).toArray();
+        const emailSet = new Set(logs.map(log => log?.meta?.req?.user?.email).filter(email => !!email));
+        return [...emailSet];
     }
 }
 
