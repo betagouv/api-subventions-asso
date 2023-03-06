@@ -144,4 +144,19 @@ describe("StatsController", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getExportersEmails", () => {
+        const EMAILS = ["a@b.c", "d@e.f"];
+        const serviceMock = jest.spyOn(statsService, "getExportersEmails").mockResolvedValue(EMAILS);
+        afterAll(() => serviceMock.mockRestore());
+        it("calls service", async () => {
+            await controller.getExportersEmails();
+            expect(serviceMock).toBeCalled();
+        });
+        it("sends result from service", async () => {
+            const expected = { emails: EMAILS };
+            const actual = await controller.getExportersEmails();
+            expect(actual).toEqual(expected);
+        });
+    });
 });

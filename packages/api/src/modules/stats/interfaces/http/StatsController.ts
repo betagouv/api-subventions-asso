@@ -167,4 +167,17 @@ export class StatsController extends Controller {
         const result = await statsService.getUsersByRequest();
         return { data: result };
     }
+
+    /**
+     * Permet de récupérer les mails des utilisateurs qui ont exporté le tableau (depuis le front)
+     *
+     * @summary Permet de récupérer les mails des utilisateurs qui ont exporté le tableau (depuis le front)
+     * @deprecated
+     */
+    @Get("/exporters")
+    @Response<ErrorResponse>("500")
+    async getExportersEmails() {
+        const result = await statsService.getExportersEmails();
+        return { emails: result };
+    }
 }
