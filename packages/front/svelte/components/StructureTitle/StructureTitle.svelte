@@ -22,9 +22,7 @@
     </div>
     {#if controller.hasActionButton}
         <div class="fr-col-2 fr-pt-1w">
-            <a href={controller.linkToAsso} tabindex="-1">
-                <Button>Voir l'association</Button>
-            </a>
+            <a class="fr-link" href={controller.linkToAsso}>Voir l'association</a>
         </div>
     {/if}
 </div>
