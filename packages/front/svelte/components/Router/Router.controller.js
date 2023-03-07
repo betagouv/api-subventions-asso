@@ -13,8 +13,8 @@ export default class RouterController {
     }
 
     loadRoute(path, searchQuery) {
-        const route = RouterService.getRoute(this.routes, path);
-        if (!route) return RouterService.goToUrl("/404");
+        let route = RouterService.getRoute(this.routes, path);
+        if (!route) route = RouterService.getRoute(this.routes, "/404");
         if (!route.disableAuth) {
             const user = authService.getCurrentUser();
 
