@@ -56,6 +56,10 @@ export default class SubventionsVersementsDashboardController {
         this._filterElementsBySelectedExercice();
     }
 
+    download() {
+        console.log("downloadCSV");
+    }
+
     _filterElementsBySelectedExercice() {
         const filteredElement = this._fullElements.filter(element => element.year === this.selectedYear.value);
         this.elements.set(filteredElement);

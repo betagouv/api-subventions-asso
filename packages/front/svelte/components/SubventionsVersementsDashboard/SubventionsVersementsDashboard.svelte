@@ -29,23 +29,22 @@
 {#await promise}
     <Spinner description="Chargement des demandes de subventions en cours ..." />
 {:then _null}
-    <div class="fr-grid-row fr-mt-3w fr-py-2w">
-        <div class="fr-col-8">
-            <h2>Tableau de bord</h2>
-        </div>
-        <div class="fr-col-4">
+    <div class="fr-grid-row fr-mt-3w fr-py-2w flex space-between">
+        <h2>Tableau de bord</h2>
+        <div class="baseline">
             <Button type="secondary" ariaControls="fr-modal" on:click={displayModal}>
                 Voir la liste des fournisseurs de données
             </Button>
         </div>
     </div>
-    <div class="fr-grid-row fr-py-4w">
-        <div class="fr-col-3 ">
+    <div class="fr-grid-row fr-py-4w flex space-between">
+        <div class="fr-col-3">
             <Select
                 on:change={event => controller.updateSelectedExercice(event.detail)}
                 selected={$selectedExercice}
                 options={$exercicesOptions} />
         </div>
+        <Button on:click={() => controller.download()}>Télécharger les données</Button>
     </div>
     <div class="fr-py-3w">
         {#if $elements?.length}
@@ -85,4 +84,7 @@
 {/await}
 
 <style>
+    .baseline {
+        align-self: baseline;
+    }
 </style>
