@@ -17,5 +17,12 @@ module.exports = {
         "@dsfr/(.*)$": "<rootDir>/svelte/dsfr/$1",
         "@helpers/(.*)$": "<rootDir>/svelte/helpers/$1",
         "@services/(.*)$": "<rootDir>/svelte/services/$1"
+    },
+    globals: {
+        $crisp: {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            push: () => {
+            }
+        }
     }
 };
