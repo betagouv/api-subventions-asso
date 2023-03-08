@@ -13,8 +13,8 @@ export class AssociationNameService {
         EventManager.add("association-name.matching");
 
         EventManager.on("association-name.matching", {}, async (cbStop, data) => {
-            await this.add(data as IAssociationName);
-            cbStop(); // HOTFIX permet d'attendre que le add soit fait avant d'envoyer un add
+            await this.upsert(data as IAssociationName);
+            cbStop();
         });
     }
 
@@ -100,6 +100,9 @@ export class AssociationNameService {
         return [...uniqueMapsValues].map(this._getMostRecentEntity);
     }
 
+    /***
+     * @deprecated risks DB write concurrency. use upsert instead
+     * */
     async add(entity: AssociationNameEntity) {
         if (await associationNameRepository.findOneByEntity(entity)) return; // TODO: UPDATE DATE ?
 
