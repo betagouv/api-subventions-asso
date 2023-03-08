@@ -1,4 +1,3 @@
-// TODO update import after switch svelte to ts #330
 import axios from "axios";
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import routes from "../../routes";

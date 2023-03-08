@@ -111,7 +111,7 @@ describe("authService", () => {
 
     describe("login()", () => {
         const portMock = jest.spyOn(authPort, "login");
-        it("should be call port", async () => {
+        it("should call port", async () => {
             const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
 
             portMock.mockResolvedValueOnce({});
