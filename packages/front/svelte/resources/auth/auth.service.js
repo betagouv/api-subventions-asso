@@ -4,6 +4,7 @@ import routes from "../../routes";
 import authPort from "@resources/auth/auth.port";
 import * as RouterService from "@services/router.service";
 import { goToUrl } from "@services/router.service";
+import crispService from "@services/crisp.service";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
@@ -32,6 +33,7 @@ export class AuthService {
     async login(email, password) {
         const user = await authPort.login(email, password);
         localStorage.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
+        crispService.setUserEmail(user.email);
 
         return user;
     }
@@ -40,6 +42,7 @@ export class AuthService {
         const user = this.getCurrentUser();
         // set header token for each requests
         axios.defaults.headers.common["x-access-token"] = user?.jwt?.token;
+        crispService.setUserEmail(user?.email);
 
         axios.interceptors.response.use(
             response => response,
@@ -57,6 +60,7 @@ export class AuthService {
 
     logout() {
         localStorage.removeItem(this.USER_LOCAL_STORAGE_KEY);
+        crispService.setUserEmail(null);
     }
 
     getCurrentUser() {
