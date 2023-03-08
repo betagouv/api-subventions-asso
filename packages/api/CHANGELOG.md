@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.8](https://github.com/betagouv/api-subventions-asso/compare/v0.23.7...v0.23.8) (2023-03-08)
+
+### Bug Fixes
+
+-   **api:** atomic update of association-name collection ([02099de](https://github.com/betagouv/api-subventions-asso/commit/02099de76d091f291a159a2e6e23e4536b676bb7))
+
 ## [0.23.6](https://github.com/betagouv/api-subventions-asso/compare/v0.23.5...v0.23.6) (2023-02-23)
 
 ### Bug Fixes
