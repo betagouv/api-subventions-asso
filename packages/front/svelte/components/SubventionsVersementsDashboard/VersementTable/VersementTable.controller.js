@@ -4,7 +4,7 @@ import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
 import { withTwoDigitYear } from "../../../helpers/dateHelper";
 import { getLastVersementsDate } from "../helper";
 
-export class VersementTableController {
+export default class VersementTableController {
     constructor(sortMethod) {
         this.sortMethod = sortMethod;
 
