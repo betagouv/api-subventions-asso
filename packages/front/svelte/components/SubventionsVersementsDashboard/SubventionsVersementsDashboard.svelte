@@ -44,7 +44,10 @@
                 selected={$selectedExercice}
                 options={$exercicesOptions} />
         </div>
-        <Button on:click={() => controller.download()}>Télécharger les données</Button>
+
+        <Button disabled={$loaderStateStore.status != "end"} on:click={() => controller.download()}>
+            Télécharger les données
+        </Button>
     </div>
     <div class="fr-py-3w">
         {#if $elements?.length}
