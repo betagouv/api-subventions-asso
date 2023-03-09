@@ -2,6 +2,7 @@ import { DemandeSubvention } from "@api-subventions-asso/dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import caisseDepotsService from "../caisseDepots.service";
 import CaisseDepotsSubventionDto from "../dto/CaisseDepotsSubventionDto";
+import { sameDateNextYear } from "../../../../shared/helpers/DateHelper";
 
 export default class CaisseDepotsDtoAdapter {
     private static _multiannuality(dto: CaisseDepotsSubventionDto): "Oui" | "Non" {
@@ -9,7 +10,7 @@ export default class CaisseDepotsDtoAdapter {
         if (!dto.fields.datesversement_fin || !dto.fields.datesversement_debut) return "Non";
         const start = new Date(dto.fields.datesversement_debut);
         const end = new Date(dto.fields.datesversement_fin);
-        const startNextYear = new Date(start.getFullYear() + 1, start.getMonth(), start.getDate());
+        const startNextYear = sameDateNextYear(start);
         if (end > startNextYear) return "Oui";
         return "Non";
     }
