@@ -2,7 +2,19 @@ import Store from "../../core/Store";
 import subventionsService from "../../resources/subventions/subventions.service";
 import versementsService from "../../resources/versements/versements.service";
 import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
+
+jest.mock("@helpers/csvHelper", () => {
+    return {
+        __esModule: true,
+        buildCsv: jest.fn()
+    };
+});
+
 import * as helper from "./helper";
+
+import SubventionTableController from "./SubventionTable/SubventionTable.controller";
+import VersementTableController from "./VersementTable/VersementTable.controller";
+import * as csvHelper from "@helpers/csvHelper";
 
 describe("SubventionsVersementsDashboardController", () => {
     const SIREN = "123456789";
@@ -186,6 +198,60 @@ describe("SubventionsVersementsDashboardController", () => {
             const actual = _filterElementsBySelectedExerciceMock.mock.calls.length;
 
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("download()", () => {
+        const mockExtractVersementHeaders = jest.spyOn(VersementTableController, "extractHeaders");
+        const mockExtractVersementRows = jest.spyOn(VersementTableController, "extractRows");
+        const mockExtractSubventionHeaders = jest.spyOn(SubventionTableController, "extractHeaders");
+        const mockExtractSubventionRows = jest.spyOn(SubventionTableController, "extractRows");
+
+        const spys = [
+            mockExtractVersementHeaders,
+            mockExtractVersementRows,
+            mockExtractSubventionHeaders,
+            mockExtractSubventionRows
+        ];
+
+        let ctrl;
+
+        const SUBVENTION_HEADERS = ["SUBVENTION_HEADER"];
+        const SUBVENTION_ROWS_A = ["SERVICE INST. A", "DISPOSITIF A"];
+        const SUBVENTION_ROWS_B = ["SERVICE INST. B", "DISPOSITIF B"];
+        const VERSEMENT_HEADERS = ["VERSEMENT_HEADER"];
+        const VERSEMENT_ROWS_A = ["CENTRE FINANCIER A"];
+        const VERSEMENT_ROWS_B = ["CENTRE FINANCIER B"];
+
+        beforeEach(() => {
+            ctrl = new SubventionsVersementsDashboardController(SIRET);
+            mockExtractSubventionHeaders.mockImplementation(jest.fn(() => SUBVENTION_HEADERS));
+            mockExtractSubventionRows.mockImplementation(jest.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
+            mockExtractVersementHeaders.mockImplementation(jest.fn(() => VERSEMENT_HEADERS));
+            mockExtractVersementRows.mockImplementation(jest.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
+        });
+        afterEach(() => spys.forEach(spy => spy.mockClear()));
+
+        it.each`
+            mock
+            ${mockExtractVersementHeaders}
+            ${mockExtractVersementRows}
+            ${mockExtractSubventionHeaders}
+            ${mockExtractSubventionRows}
+        `("should call extract methods", ({ mock }) => {
+            ctrl.download();
+            expect(mock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call buildCsv()", () => {
+            ctrl.download();
+            expect(csvHelper.buildCsv).toHaveBeenCalledWith(
+                [...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
+                [
+                    [...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
+                    [...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B]
+                ]
+            );
         });
     });
 

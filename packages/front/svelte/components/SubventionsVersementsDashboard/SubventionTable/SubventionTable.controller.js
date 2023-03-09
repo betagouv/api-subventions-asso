@@ -4,9 +4,15 @@ import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
 import { capitalizeFirstLetter } from "../../../helpers/textHelper";
 import { trim } from "../../../helpers/stringHelper";
 
-export default class SubventionTableController {
-    MAX_CHAR_SIZE = 53;
+const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
+const DISPOSITIF_LABEL = "Dispositif";
+const INTITULE_ACTION_LABEL = "Intitulé de l'action";
+const MONTANT_DEMANDE_LABEL = "Montant demandé";
+const MONTANT_ACCORDER_LABEL = "Montant accordé";
 
+const MAX_CHAR_SIZE = 53;
+
+export default class SubventionTableController {
     constructor(sortMethod) {
         this.sortMethod = sortMethod;
 
@@ -19,12 +25,44 @@ export default class SubventionTableController {
         this.buildColumnDataViews();
     }
 
-    sort(column) {
-        this.sortColumn = column;
-        this.columnDataViews.update(columnDataViews => this.updateColumnDataViews(columnDataViews));
+    // extract Table data to build CSV
+    static extractRows(elements) {
+        return elements.map(element => (element.subvention ? this._extractTableDataFromElement(element, true) : null));
     }
 
-    getProjectName(subvention) {
+    static extractHeaders() {
+        return [
+            SERVICE_INSTRUCTEUR_LABEL,
+            DISPOSITIF_LABEL,
+            INTITULE_ACTION_LABEL,
+            MONTANT_DEMANDE_LABEL,
+            MONTANT_ACCORDER_LABEL
+        ];
+    }
+
+    static _extractTableDataFromElement(element, onlyValues = false) {
+        const sizedTrim = value => trim(value, MAX_CHAR_SIZE);
+
+        let dispositif = element.subvention.dispositif;
+        if (!onlyValues && dispositif) dispositif = sizedTrim(dispositif);
+        let serviceInstructeur = element.subvention.service_instructeur;
+        if (!onlyValues && serviceInstructeur) serviceInstructeur = sizedTrim(serviceInstructeur);
+
+        const data = {
+            serviceInstructeur: valueOrHyphen(serviceInstructeur),
+            dispositif: valueOrHyphen(dispositif),
+            projectName: valueOrHyphen(this.getProjectName(element.subvention)),
+            montantsDemande: valueOrHyphen(numberToEuro(element.subvention.montants?.demande)),
+            montantsAccordeOrStatus: element.subvention.montants?.accorde
+                ? numberToEuro(element.subvention.montants?.accorde)
+                : element.subvention.status
+        };
+
+        if (onlyValues) return Object.values(data);
+        return data;
+    }
+
+    static getProjectName(subvention) {
         if (!subvention.actions_proposee || !subvention.actions_proposee.length) return;
 
         let names = subvention.actions_proposee
@@ -33,9 +71,14 @@ export default class SubventionTableController {
 
         names = [...new Set(names)].join("-");
 
-        names = trim(names, this.MAX_CHAR_SIZE);
+        names = trim(names, MAX_CHAR_SIZE);
 
         return names;
+    }
+
+    sort(column) {
+        this.sortColumn = column;
+        this.columnDataViews.update(columnDataViews => this.updateColumnDataViews(columnDataViews));
     }
 
     buildColumnDataViews() {
@@ -67,26 +110,20 @@ export default class SubventionTableController {
     updateElements(elements) {
         this.elements = elements;
 
-        const sizedTrim = value => trim(value, this.MAX_CHAR_SIZE);
         const elementsDataViews = this.elements.map(element => {
             if (!element.subvention) return null;
 
-            const projectName = valueOrHyphen(this.getProjectName(element.subvention));
-
             return {
+                ...SubventionTableController._extractTableDataFromElement(element),
                 subvention: element.subvention,
-                serviceInstructeur: sizedTrim(element.subvention.service_instructeur),
-                dispositif: valueOrHyphen(sizedTrim(element.subvention.dispositif)),
-                projectName: projectName,
-                projectNamePosition: projectName === "-" ? "center" : "start",
-                enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0),
-                montantsDemande: valueOrHyphen(numberToEuro(element.subvention.montants?.demande)),
-                montantsAccordeOrStatus: element.subvention.montants?.accorde
-                    ? numberToEuro(element.subvention.montants?.accorde)
-                    : element.subvention.status
+                // get from _extractTableDataFromElement()
+                projectNamePosition: this.projectName === "-" ? "center" : "start",
+                enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
             };
         });
 
         this.elementsDataViews.set(elementsDataViews);
     }
+
+    _extract;
 }
