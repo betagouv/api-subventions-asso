@@ -6,7 +6,8 @@ import SubventionsVersementsDashboardController from "./SubventionsVersementsDas
 jest.mock("@helpers/csvHelper", () => {
     return {
         __esModule: true,
-        buildCsv: jest.fn()
+        buildCsv: jest.fn(),
+        downloadCsv: jest.fn()
     };
 });
 
@@ -252,6 +253,11 @@ describe("SubventionsVersementsDashboardController", () => {
                     [...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B]
                 ]
             );
+        });
+
+        it("should call downloadCsv()", () => {
+            ctrl.download();
+            expect(csvHelper.buildCsv).toHaveBeenCalledTimes(1);
         });
     });
 
