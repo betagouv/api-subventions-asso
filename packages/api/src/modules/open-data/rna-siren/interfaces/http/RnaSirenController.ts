@@ -1,6 +1,5 @@
-import { Route, Get, Controller, Tags, Response } from "tsoa";
-import { Rna, Siren, RnaSirenResponseDto, GetRnaSirenErrorResponse } from "@api-subventions-asso/dto";
-import { siretToSiren } from "../../../../../shared/helpers/SirenHelper";
+import { Route, Get, Controller, Tags } from "tsoa";
+import { RnaSirenResponseDto } from "@api-subventions-asso/dto";
 import rnaSirenService from "../../rnaSiren.service";
 import { StructureIdentifiers } from "../../../../../@types";
 
@@ -11,35 +10,10 @@ export class RnaSirenController extends Controller {
      * Permet de récupérer le numéro RNA et le numéro Siren d'une association via l'un des deux (Rna ou Siren)
      *
      * @summary Permet de récupérer le numéro RNA et le numéro Siren d'une association via l'un des deux (Rna ou Siren)
-     * @param rna_or_siren_or_siret Peut-être soit le Rna, soit le Siren d'une association ou bien le Siret d'un établissement
+     * @param identifier Peut-être soit le Rna, soit le Siren d'une association ou bien le Siret d'un établissement
      */
-    @Get("{rna_or_siren_or_siret}")
-    @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren", {
-        rna: null,
-        siren: null
-    })
-    public async findBySiret(rna_or_siren_or_siret: StructureIdentifiers): Promise<RnaSirenResponseDto> {
-        let siren: null | Siren = null;
-        let rna: null | Rna = null;
-
-        if (rna_or_siren_or_siret.startsWith("W")) {
-            rna = rna_or_siren_or_siret;
-            siren = await rnaSirenService.getSiren(rna_or_siren_or_siret);
-        } else {
-            rna = await rnaSirenService.getRna(rna_or_siren_or_siret);
-            siren = siretToSiren(rna_or_siren_or_siret);
-        }
-
-        const match = !!(siren && rna);
-
-        if (!match) {
-            this.setStatus(404);
-            return { siren, rna };
-        } else {
-            return {
-                siren: siren as Siren,
-                rna: rna as Rna
-            };
-        }
+    @Get("{identifier}")
+    public async findBySiret(identifier: StructureIdentifiers): Promise<RnaSirenResponseDto> {
+        return rnaSirenService.findMatch(identifier);
     }
 }

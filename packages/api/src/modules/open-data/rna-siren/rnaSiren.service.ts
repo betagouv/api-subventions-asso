@@ -7,6 +7,8 @@ import leCompteAssoService from "../../providers/leCompteAsso/leCompteAsso.servi
 import dataEntrepriseService from "../../providers/dataEntreprise/dataEntreprise.service";
 import RequestEntity from "../../search/entities/RequestEntity";
 import EventManager from "../../../shared/EventManager";
+import { StructureIdentifiers } from "../../../@types";
+import { NotFoundError } from "../../../shared/errors/httpErrors";
 import RnaSiren from "./entities/RnaSirenEntity";
 import rnaSirenRepository from "./repositories/rnaSiren.repository";
 
@@ -118,6 +120,21 @@ export class RnaSirenService {
         if (!asso || !asso.rna || !asso.rna?.length) return null;
 
         return asso.rna[0].value;
+    }
+
+    public async findMatch(identifier: StructureIdentifiers): Promise<{ rna: Rna | null; siren: Siren | null }> {
+        let siren: null | Siren = null;
+        let rna: null | Rna = null;
+
+        if (identifier.startsWith("W")) {
+            rna = identifier;
+            siren = await this.getSiren(identifier);
+        } else {
+            rna = await this.getRna(identifier);
+            siren = siretToSiren(identifier);
+        }
+        if (!(siren && rna)) throw new NotFoundError("Nous n'avons pas réussi à trouver une correspondance RNA-Siren");
+        return { siren, rna };
     }
 }
 
