@@ -701,7 +701,7 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterActiveDacDocumentsMock).toHaveBeenCalledWith(expected);
+                expect(filterActiveDacDocumentsMock).toHaveBeenCalledWith(expected, IDENTIFIER);
             });
 
             it("should call filterActiveDacDocuments with empty array", async () => {
@@ -721,7 +721,7 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterActiveDacDocumentsMock).toHaveBeenCalledWith(expected);
+                expect(filterActiveDacDocumentsMock).toHaveBeenCalledWith(expected, IDENTIFIER);
             });
 
             it("should call filterDacDocuments with actives document_dac", async () => {

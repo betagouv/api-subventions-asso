@@ -2,7 +2,7 @@ import { ProviderValues, Rna, Siren, Siret, Association, Etablissement } from "@
 import axios from "axios";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { AssociationIdentifiers, DefaultObject } from "../../../@types";
+import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
@@ -64,7 +64,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         let etablissements: Etablissement[] = [];
 
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
-        if (!structure) return null;
+        if (!structure || !structure.identite) return null;
 
         if (structure.etablissement) {
             etablissements = structure.etablissement.map(e =>
@@ -186,7 +186,11 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return Object.values(uniquesRibs);
     }
 
-    private filterActiveDacDocuments(documents: StructureDacDocumentDto[]) {
+    private filterActiveDacDocuments(documents: StructureDacDocumentDto[], structureIdentifier: StructureIdentifiers) {
+        if (!Array.isArray(documents)) {
+            console.error("API-ASSO documents is not an array for structure " + structureIdentifier);
+            return [];
+        }
         return documents.filter(document => document.meta.etat === "courant");
     }
 
@@ -196,7 +200,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (!response) return [];
 
         const filtredRnaDocument = this.filterRnaDocuments(response.asso.documents.document_rna || []);
-        const activeDacDocuments = this.filterActiveDacDocuments(response.asso.documents.document_dac || []);
+        const activeDacDocuments = this.filterActiveDacDocuments(
+            response.asso.documents.document_dac || [],
+            identifier
+        );
         const filtredDacDocument = this.filterDacDocuments(activeDacDocuments);
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
 
