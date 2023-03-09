@@ -1,4 +1,4 @@
-import { computeMonthBetweenDates, getMonthFromFrenchStr, isValidDate } from "./DateHelper";
+import { computeMonthBetweenDates, getMonthFromFrenchStr, isValidDate, sameDateNextYear } from "./DateHelper";
 
 describe("DateHelper", () => {
     describe("getMonthFromFrenchStr", () => {
@@ -63,6 +63,15 @@ describe("DateHelper", () => {
             const actual = computeMonthBetweenDates(new Date(2023, 7, 0), new Date(2021, 10, 0));
 
             expect(expected).toBe(actual);
+        });
+    });
+
+    describe("sameDateNextYear", () => {
+        it("returns proper date", () => {
+            const input = new Date(2021, 6, 9);
+            const expected = new Date(2022, 6, 9);
+            const actual = sameDateNextYear(input);
+            expect(actual).toEqual(expected);
         });
     });
 });

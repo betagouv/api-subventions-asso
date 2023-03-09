@@ -39,6 +39,7 @@ export const isValidDate = date => date instanceof Date && !isNaN(date as unknow
 export const dateToUTCMonthYear = date => new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
 
 export const firstDayOfPeriod = (year: number, month = 0) => new Date(Date.UTC(year, month, 1));
+
 export const oneYearAfterPeriod = (year: number, month: number | undefined = undefined) => {
     if (month === undefined) return new Date(Date.UTC(year + 1, 0, 1));
     return new Date(Date.UTC(year, month + 1, 1));
@@ -47,3 +48,5 @@ export const oneYearAfterPeriod = (year: number, month: number | undefined = und
 export const computeMonthBetweenDates = (dateA: Date, dateB: Date): number => {
     return Math.abs(dateA.getMonth() - dateB.getMonth() + (dateA.getFullYear() - dateB.getFullYear()) * 12);
 };
+
+export const sameDateNextYear = (date: Date): Date => new Date(date.getFullYear() + 1, date.getMonth(), date.getDate());
