@@ -42,13 +42,13 @@ export default class SubventionTableController {
         ];
     }
 
-    static _extractTableDataFromElement(element, trim = true) {
+    static _extractTableDataFromElement(element, trimValue = true) {
         const sizedTrim = value => trim(value, MAX_CHAR_SIZE);
 
         let dispositif = element.subvention.dispositif;
-        if (trim && dispositif) dispositif = sizedTrim(dispositif);
+        if (trimValue && dispositif) dispositif = sizedTrim(dispositif);
         let serviceInstructeur = element.subvention.service_instructeur;
-        if (trim && serviceInstructeur) serviceInstructeur = sizedTrim(serviceInstructeur);
+        if (trimValue && serviceInstructeur) serviceInstructeur = sizedTrim(serviceInstructeur);
 
         return {
             serviceInstructeur: valueOrHyphen(serviceInstructeur),
