@@ -115,7 +115,7 @@ export default class SubventionTableController {
             return {
                 ...SubventionTableController._extractTableDataFromElement(element),
                 subvention: element.subvention,
-                // get from _extractTableDataFromElement()
+                // this.projectName comes from _extractTableDataFromElement()
                 projectNamePosition: this.projectName === "-" ? "center" : "start",
                 enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
             };
