@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.9](https://github.com/betagouv/api-subventions-asso/compare/v0.23.8...v0.23.9) (2023-03-10)
+
+### Bug Fixes
+
+-   **api:** add more check on use dauphin data ([f67f8c1](https://github.com/betagouv/api-subventions-asso/commit/f67f8c162380fcd1e7b3ef55b2682fee659ea02c))
+
 ## [0.23.8](https://github.com/betagouv/api-subventions-asso/compare/v0.23.7...v0.23.8) (2023-03-08)
 
 ### Bug Fixes
