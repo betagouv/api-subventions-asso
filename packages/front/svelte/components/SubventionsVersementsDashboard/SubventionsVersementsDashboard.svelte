@@ -45,7 +45,11 @@
                 options={$exercicesOptions} />
         </div>
 
-        <Button disabled={$loaderStateStore.status != "end"} on:click={() => controller.download()}>
+        <Button
+            on:click={() => controller.download()}
+            disabled={$loaderStateStore.status != "end"}
+            icon="download-line"
+            iconPosition="right">
             Télécharger les données
         </Button>
     </div>
