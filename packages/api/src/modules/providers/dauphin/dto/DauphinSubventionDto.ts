@@ -38,7 +38,7 @@ export default interface DauphinSubventionDto {
     planFinancement: [
         {
             current: boolean;
-            recette: {
+            recette?: {
                 postes?: [
                     {
                         sousPostes?: [
