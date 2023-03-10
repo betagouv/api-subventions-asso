@@ -22,11 +22,6 @@ describe("VersementTableController", () => {
             expect(actual).toEqual(["totalAmount", "centreFinancier", "lastVersementDate"]);
         });
 
-        it("should return an array of values", () => {
-            const actual = VersementTableController._extractTableDataFromElement(ELEMENT, true);
-            expect(actual).toEqual([undefined, undefined, undefined]);
-        });
-
         it("should call getLastVersementsDate()", () => {
             VersementTableController._extractTableDataFromElement(ELEMENT);
             expect(Helper.getLastVersementsDate).toHaveBeenCalledTimes(1);
@@ -57,14 +52,26 @@ describe("VersementTableController", () => {
 
     describe("extractRows()", () => {
         const mockExtractTableDataFromElement = jest.spyOn(VersementTableController, "_extractTableDataFromElement");
-        beforeAll(() => mockExtractTableDataFromElement.mockImplementation(jest.fn()));
+
+        beforeAll(() =>
+            mockExtractTableDataFromElement.mockImplementation(
+                jest.fn(() => ({
+                    totalAmount: undefined,
+                    centreFinancier: undefined,
+                    lastVersementDate: undefined
+                }))
+            )
+        );
+
         afterAll(() => mockExtractTableDataFromElement.mockRestore());
+
         it("should call _extractTableDataFromElement for each element in array", () => {
-            VersementTableController.extractRows([{ versements: [] }, { versements: [] }]);
+            VersementTableController.extractRows([{ versements: [{}] }, { versements: [{}] }]);
             expect(mockExtractTableDataFromElement).toHaveBeenCalledTimes(2);
         });
+
         it("should not call _extractTableDataFromElement if element has no versements", () => {
-            VersementTableController.extractRows([{}, { versements: [] }]);
+            VersementTableController.extractRows([{}, { versements: [{}] }]);
             expect(mockExtractTableDataFromElement).toHaveBeenCalledTimes(1);
         });
 

@@ -24,11 +24,6 @@ describe("SubventionTableController", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return an array of values", () => {
-            const actual = SubventionTableController._extractTableDataFromElement(ELEMENT, true);
-            expect(actual).toMatchObject([undefined, undefined, undefined, undefined, undefined]);
-        });
-
         it("should call valueOrHyphen() multiple time", () => {
             SubventionTableController._extractTableDataFromElement(ELEMENT);
             expect(dataHelper.valueOrHyphen).toHaveBeenCalledTimes(4);
@@ -44,7 +39,17 @@ describe("SubventionTableController", () => {
 
     describe("extractRows()", () => {
         const mockExtractTableDataFromElement = jest.spyOn(SubventionTableController, "_extractTableDataFromElement");
-        beforeAll(() => mockExtractTableDataFromElement.mockImplementation(jest.fn()));
+        beforeAll(() =>
+            mockExtractTableDataFromElement.mockImplementation(
+                jest.fn(() => ({
+                    serviceInstructeur: undefined,
+                    dispositif: undefined,
+                    projectName: undefined,
+                    montantsDemande: undefined,
+                    montantsAccordeOrStatus: undefined
+                }))
+            )
+        );
         afterAll(() => mockExtractTableDataFromElement.mockRestore());
         it("should call _extractTableDataFromElement for each element in array", () => {
             SubventionTableController.extractRows([{ subvention: {} }, { subvention: {} }]);
@@ -52,7 +57,7 @@ describe("SubventionTableController", () => {
         });
 
         it("should not call _extractTableDataFromElement if no subvention", () => {
-            const actual = SubventionTableController.extractRows([{ subvention: {} }, {}]);
+            SubventionTableController.extractRows([{ subvention: {} }, {}]);
             expect(mockExtractTableDataFromElement).toHaveBeenCalledTimes(1);
         });
 

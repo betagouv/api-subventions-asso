@@ -27,7 +27,9 @@ export default class SubventionTableController {
 
     // extract Table data to build CSV
     static extractRows(elements) {
-        return elements.map(element => (element.subvention ? this._extractTableDataFromElement(element, true) : null));
+        return elements.map(element =>
+            element.subvention ? Object.values(this._extractTableDataFromElement(element, false)) : null
+        );
     }
 
     static extractHeaders() {
@@ -40,15 +42,15 @@ export default class SubventionTableController {
         ];
     }
 
-    static _extractTableDataFromElement(element, onlyValues = false) {
+    static _extractTableDataFromElement(element, trim = true) {
         const sizedTrim = value => trim(value, MAX_CHAR_SIZE);
 
         let dispositif = element.subvention.dispositif;
-        if (!onlyValues && dispositif) dispositif = sizedTrim(dispositif);
+        if (trim && dispositif) dispositif = sizedTrim(dispositif);
         let serviceInstructeur = element.subvention.service_instructeur;
-        if (!onlyValues && serviceInstructeur) serviceInstructeur = sizedTrim(serviceInstructeur);
+        if (trim && serviceInstructeur) serviceInstructeur = sizedTrim(serviceInstructeur);
 
-        const data = {
+        return {
             serviceInstructeur: valueOrHyphen(serviceInstructeur),
             dispositif: valueOrHyphen(dispositif),
             projectName: valueOrHyphen(this.getProjectName(element.subvention)),
@@ -57,9 +59,6 @@ export default class SubventionTableController {
                 ? numberToEuro(element.subvention.montants?.accorde)
                 : element.subvention.status
         };
-
-        if (onlyValues) return Object.values(data);
-        return data;
     }
 
     static getProjectName(subvention) {
@@ -124,6 +123,4 @@ export default class SubventionTableController {
 
         this.elementsDataViews.set(elementsDataViews);
     }
-
-    _extract;
 }

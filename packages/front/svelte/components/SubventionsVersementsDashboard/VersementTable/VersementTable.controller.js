@@ -21,25 +21,23 @@ export default class VersementTableController {
         this.buildColumnDataViews();
     }
 
-    // extract Table data to build CSV
+    // extract values from versement table
     static extractRows(elements) {
-        return elements.map(element => (element.versements ? this._extractTableDataFromElement(element, true) : null));
+        return elements.map(element =>
+            element.versements ? Object.values(this._extractTableDataFromElement(element)) : null
+        );
     }
 
     static extractHeaders() {
         return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL];
     }
 
-    // extract main versement data that are displayed in the Table
-    static _extractTableDataFromElement(element, onlyValues = false) {
-        const data = {
+    static _extractTableDataFromElement(element) {
+        return {
             totalAmount: numberToEuro(VersementTableController.countTotalVersement(element.versements)),
             centreFinancier: valueOrHyphen(element.versements[0]?.centreFinancier),
             lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(element.versements)))
         };
-
-        if (onlyValues) return Object.values(data);
-        return data;
     }
 
     static countTotalVersement(versements) {
