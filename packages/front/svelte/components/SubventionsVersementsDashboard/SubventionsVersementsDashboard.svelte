@@ -32,8 +32,12 @@
     <div class="fr-grid-row fr-mt-3w fr-py-2w flex space-between">
         <h2>Tableau de bord</h2>
         <div class="baseline">
-            <Button type="secondary" ariaControls="fr-modal" on:click={displayModal}>
-                Voir la liste des fournisseurs de données
+            <Button
+                on:click={() => controller.download()}
+                disabled={$loaderStateStore.status != "end"}
+                icon="download-line"
+                iconPosition="right">
+                Télécharger les données
             </Button>
         </div>
     </div>
@@ -44,13 +48,8 @@
                 selected={$selectedExercice}
                 options={$exercicesOptions} />
         </div>
-
-        <Button
-            on:click={() => controller.download()}
-            disabled={$loaderStateStore.status != "end"}
-            icon="download-line"
-            iconPosition="right">
-            Télécharger les données
+        <Button type="tertiary" outline={false} ariaControls="fr-modal" on:click={displayModal}>
+            Voir la liste des fournisseurs de données
         </Button>
     </div>
     <div class="fr-py-3w">
