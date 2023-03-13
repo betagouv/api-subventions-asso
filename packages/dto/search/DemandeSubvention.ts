@@ -2,6 +2,14 @@ import { Siret } from "..";
 import { ProviderValue } from "../shared/ProviderValue";
 import { Versement } from "../versements";
 
+export enum ApplicationStatus {
+    PENDING = "En cours d'instruction",
+    INELIGIBLE = "Inéligible",
+    GRANTED = "Accordé",
+    REFUSED = "Refusé",
+    UNKNWON = ""
+}
+
 export interface DemandeSubvention {
     service_instructeur: ProviderValue<string>;
     siret: ProviderValue<Siret>;
