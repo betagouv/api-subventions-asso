@@ -20,7 +20,12 @@
             pour que nous puissions trouver la panne 🕵️‍♀️.
         </p>
         <div class="flex">
-            <Button on:click={() => ctrl.openEmail()} type="secondary">Contactez-nous</Button>
+            <a
+                class="fr-btn fr-btn--secondary"
+                href="mailto:{ctrl.contactEmail}?subject=Page%20non%20trouvée%20&body=Bonjour%2C%0A%0AJe%20ne%20parviens%20pas%20%C3%A0%20acc%C3%A9der%20%C3%A0%20la%20page%20%3A%20{window
+                    .location.href}&html=true">
+                Contactez-nous
+            </a>
         </div>
     </div>
     <div class="same-size flex center fr-pl-8v fr-mx-8v">
