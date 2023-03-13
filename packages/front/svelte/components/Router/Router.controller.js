@@ -14,16 +14,20 @@ export default class RouterController {
 
     loadRoute(path, searchQuery) {
         let route = RouterService.getRoute(this.routes, path);
-        if (!route) route = RouterService.getRoute(this.routes, "/404");
-        if (!route.disableAuth) {
-            const user = authService.getCurrentUser();
+        if (!route) {
+            route = RouterService.getRoute(this.routes, "/404");
+            this.crumbs.set(RouterService.buildBreadcrumbs("/404"));
+        } else {
+            if (!route.disableAuth) {
+                const user = authService.getCurrentUser();
 
-            if (!user || !user._id) return RouterService.goToUrl("/auth/login");
-            if (path.includes("admin") && !isAdmin(user)) return RouterService.goToUrl("/");
+                if (!user || !user._id) return RouterService.goToUrl("/auth/login");
+                if (path.includes("admin") && !isAdmin(user)) return RouterService.goToUrl("/");
+            }
+            this.crumbs.set(RouterService.buildBreadcrumbs(path));
+            this.query.set(this.getQueryParams(searchQuery));
+            this.props.set(RouterService.getProps(path, route.segments));
         }
-        this.query.set(this.getQueryParams(searchQuery));
-        this.crumbs.set(RouterService.buildBreadcrumbs(path));
-        this.props.set(RouterService.getProps(path, route.segments));
         this.component.set(route.component());
     }
 
