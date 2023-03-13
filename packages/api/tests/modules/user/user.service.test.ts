@@ -9,6 +9,8 @@ import userRepository from "../../../src/modules/user/repositories/user.reposito
 import { UserService, UserServiceErrors } from "../../../src/modules/user/user.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import dedent from "dedent";
+import { BadRequestError } from "../../../src/shared/errors/httpErrors";
+import { EntityNotFoundError } from "../../../src/shared/errors/httpErrors/EntityNotFound";
 
 describe("user.service.ts", () => {
     let service;
@@ -94,20 +96,26 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should reject because user email not found", async () => {
-            await expect(service.addRolesToUser("wrong@email.fr", [RoleEnum.admin])).resolves.toMatchObject({
-                success: false,
-                message: "User email does not correspond to a user",
-                code: UserServiceErrors.USER_NOT_FOUND
-            });
+        it("should throw EntityNotFoundError if user email not found", async () => {
+            const expected = new EntityNotFoundError("User Not Found");
+            let actual;
+            try {
+                actual = await service.addRolesToUser("wrong@email.fr", [RoleEnum.admin]);
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
         });
 
-        it("should reject because role not found", async () => {
-            await expect(service.addRolesToUser("test@beta.gouv.fr", ["CHEF"])).resolves.toMatchObject({
-                success: false,
-                message: `The role "CHEF" does not exist`,
-                code: UserServiceErrors.ROLE_NOT_FOUND
-            });
+        it("should throw BadRequestError if role not found", async () => {
+            const expected = new BadRequestError("Role Not Valid");
+            let actual;
+            try {
+                actual = await service.addRolesToUser("test@beta.gouv.fr", ["CHEF"]);
+            } catch (e) {
+                actual = e;
+            }
+            expect(actual).toEqual(expected);
         });
 
         it("should update user (called with email)", async () => {

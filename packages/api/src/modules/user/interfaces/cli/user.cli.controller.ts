@@ -11,7 +11,7 @@ export default class UserCliController {
 
     async create(email: string) {
         try {
-            await userService.createUser(email);
+            await userService.signup(email);
             console.info("User has been created");
         } catch (error: unknown) {
             const e = error as Error;
@@ -20,10 +20,10 @@ export default class UserCliController {
     }
 
     async setRoles(email: string, ...roles: RoleEnum[]) {
-        const result = await userService.addRolesToUser(email, roles);
-
-        if (!result.success) {
-            console.info("Roles upgarde error : \n", result.message);
+        try {
+            await userService.addRolesToUser(email, roles);
+        } catch (e) {
+            console.info("Roles upgarde error : \n", (e as Error).message);
             return;
         }
 
