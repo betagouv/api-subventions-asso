@@ -175,6 +175,12 @@ Array [
       "type": "string",
       "value": "Attribué - Reconduction",
     },
+    "statut_label": Object {
+      "last_update": "2022-01-02T00:00:00.000Z",
+      "provider": "Extranet FONJEP",
+      "type": "string",
+      "value": "Accordé",
+    },
     "versementKey": Object {
       "last_update": "2022-01-02T00:00:00.000Z",
       "provider": "Extranet FONJEP",
@@ -261,6 +267,12 @@ Array [
       "last_update": "2022-01-01T00:00:00.000Z",
       "provider": "OSIRIS",
       "type": "undefined",
+    },
+    "statut_label": Object {
+      "last_update": "2022-01-01T00:00:00.000Z",
+      "provider": "OSIRIS",
+      "type": "string",
+      "value": "",
     },
     "territoires": Array [],
     "versement": Object {
