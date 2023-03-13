@@ -92,6 +92,12 @@ Object {
     "type": "undefined",
     "value": undefined,
   },
+  "statut_label": Object {
+    "last_update": 2022-01-01T00:00:00.000Z,
+    "provider": "OSIRIS",
+    "type": "string",
+    "value": "NORMALIZED_LABEL",
+  },
   "territoires": Array [],
   "versement": Object {
     "acompte": Object {
@@ -222,6 +228,12 @@ Object {
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
+  },
+  "statut_label": Object {
+    "last_update": 2022-01-01T00:00:00.000Z,
+    "provider": "OSIRIS",
+    "type": "string",
+    "value": "NORMALIZED_LABEL",
   },
   "territoires": Array [],
   "versement": Object {

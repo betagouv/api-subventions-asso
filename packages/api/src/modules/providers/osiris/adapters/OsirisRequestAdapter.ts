@@ -11,9 +11,22 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
+import { toStatusFactory } from "../../helper";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
+    private static _statusMap: { [K in ApplicationStatus]?: string[] } = {
+        [ApplicationStatus.REFUSED]: ["Refusé"],
+        [ApplicationStatus.GRANTED]: ["Traitement Sirepa", "Traitement Chorus", "Terminé", "A évaluer"],
+        [ApplicationStatus.INELIGIBLE]: ["Rejeté", "Supprimé"],
+        [ApplicationStatus.PENDING]: [
+            "Edition document",
+            "Renvoyé au compte asso",
+            "En cours d'instruction",
+            "En attente superviseur",
+            "En attente décision"
+        ]
+    };
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
@@ -120,6 +133,7 @@ export default class OsirisRequestAdapter {
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
+        const toStatus = toStatusFactory(OsirisRequestAdapter._statusMap);
 
         const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
 
@@ -129,6 +143,7 @@ export default class OsirisRequestAdapter {
             service_instructeur: toPV(entity.providerInformations.service_instructeur),
             dispositif: toPV(entity.providerInformations.dispositif),
             sous_dispositif: toPV(entity.providerInformations.sous_dispositif),
+            statut_label: toPV(toStatus(entity.providerInformations.status)),
             status: toPV(entity.providerInformations.status),
             pluriannualite: toPV(entity.providerInformations.pluriannualite),
             ej: EJ,
