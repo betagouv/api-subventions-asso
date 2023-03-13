@@ -29,6 +29,7 @@ export interface DemandeSubvention {
         email: ProviderValue<string>;
         telephone?: ProviderValue<string>;
     };
+    statut_label: ProviderValue<ApplicationStatus>;
     status: ProviderValue<string>;
     montants?: {
         total?: ProviderValue<number>;
