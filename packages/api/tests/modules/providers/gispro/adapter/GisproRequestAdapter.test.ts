@@ -11,6 +11,7 @@ describe("GisproRequestAdapter", () => {
                 siret: {} as ProviderValue,
                 service_instructeur: {} as ProviderValue,
                 status: {} as ProviderValue,
+                statut_label: {} as ProviderValue,
                 montants: {} as ProviderValue,
                 actions_proposee: {} as ProviderValue
             };

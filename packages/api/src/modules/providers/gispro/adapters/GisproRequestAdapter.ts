@@ -13,6 +13,7 @@ export default class GisproRequestAdapter {
             siret: toPV(entities[0].providerInformations.siret),
             service_instructeur: toPV(entities[0].providerInformations.direction),
             status: toPV("Non communiqué par GISPRO"),
+            statut_label: toPV(ApplicationStatus.UNKNWON),
             montants: {
                 accorde: toPV(entities.reduce((total, entity) => total + entity.providerInformations.montant, 0))
             },

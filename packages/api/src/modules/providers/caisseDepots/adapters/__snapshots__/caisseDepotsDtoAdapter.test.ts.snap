@@ -42,7 +42,11 @@ Object {
   },
   "status": Object {
     "providerData": "tata",
-    "value": "Attribuée",
+    "value": "Accordé",
+  },
+  "statut_label": Object {
+    "providerData": "tata",
+    "value": "Accordé",
   },
   "versementKey": Object {
     "providerData": "tata",

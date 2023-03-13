@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention } from "@api-subventions-asso/dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import caisseDepotsService from "../caisseDepots.service";
 import CaisseDepotsSubventionDto from "../dto/CaisseDepotsSubventionDto";
@@ -24,7 +24,8 @@ export default class CaisseDepotsDtoAdapter {
             siret: toPV(dto.fields.idbeneficiare),
             service_instructeur: toPV(dto.fields.nomattribuant),
             actions_proposee: [{ intitule: toPV(dto.fields.objet) }],
-            status: toPV("Attribuée"),
+            statut_label: toPV(ApplicationStatus.GRANTED),
+            status: toPV(ApplicationStatus.GRANTED), // not given by provider
             montants: {
                 accorde: amount
             },
