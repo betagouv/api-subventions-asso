@@ -1,10 +1,32 @@
-import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention } from "@api-subventions-asso/dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
+import { toStatusFactory } from "../../helper";
 
 export default class DauphinDtoAdapter {
+    private static _statusMap: { [K in ApplicationStatus]?: string[] } = {
+        [ApplicationStatus.REFUSED]: ["Rejetée"],
+        [ApplicationStatus.GRANTED]: [
+            "A justifier",
+            "Justifiée",
+            "A été versé",
+            "Justification à modifier",
+            "Justification en cours"
+        ],
+        [ApplicationStatus.INELIGIBLE]: ["Cloturée", "Non recevable"],
+        [ApplicationStatus.PENDING]: [
+            "Prise en charge",
+            "Recevable",
+            "Transmise",
+            "En attente d'attestation",
+            "En attente d'instruction",
+            "En cours de saisie",
+            "En cours"
+        ]
+    };
+
     public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
         const lastUpdateDate =
             dto._document?.dateVersion ||
@@ -14,6 +36,7 @@ export default class DauphinDtoAdapter {
             dauphinService.provider.name,
             new Date(lastUpdateDate)
         );
+        const toStatus = toStatusFactory(DauphinDtoAdapter._statusMap);
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
         const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dto);
         let dispositif = "Politique de la ville";
@@ -34,6 +57,7 @@ export default class DauphinDtoAdapter {
             siret: toPV(dto.demandeur.SIRET.complet),
             service_instructeur: toPV(serviceInstructeur),
             dispositif: toPV(dispositif),
+            statut_label: toPV(toStatus(dto.virtualStatusLabel)),
             status: toPV(dto.virtualStatusLabel),
             annee_demande: toPV(dto.exerciceBudgetaire),
             montants: {
