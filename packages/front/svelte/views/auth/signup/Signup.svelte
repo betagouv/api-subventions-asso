@@ -41,8 +41,7 @@
 {/await}
 
 <Alert
-    title="Data.subvention étant réservé aux agents du service public, il est nécessaire d'être doté d'une adresse e-mail
-            professionnelle du service public."
+    title="Data.subvention étant réservé aux agents de l'État et public, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public."
     type="info" />
 
 <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
