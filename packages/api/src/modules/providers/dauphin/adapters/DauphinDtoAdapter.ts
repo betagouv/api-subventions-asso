@@ -15,7 +15,7 @@ export default class DauphinDtoAdapter {
             new Date(lastUpdateDate)
         );
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
-        const montantAccorde = DauphinDtoAdapter.getMontantAccorder(dto);
+        const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dto);
         let dispositif = "Politique de la ville";
         if (dto.thematique?.title) dispositif = dto.thematique?.title + " - " + dispositif;
 
@@ -58,7 +58,8 @@ export default class DauphinDtoAdapter {
             .flat(2)
             .filter(a => a)[0];
     }
-    private static getMontantAccorder(demande: DauphinSubventionDto) {
+
+    private static getMontantAccorde(demande: DauphinSubventionDto) {
         return demande.planFinancement
             .map(pf =>
                 pf.recette?.postes?.map(p =>
