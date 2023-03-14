@@ -46,7 +46,9 @@ export class UserController extends Controller {
     @Response<HttpErrorInterface>(400, "Bad Request")
     @Response<HttpErrorInterface>(409, "Unprocessable Entity")
     public async createUser(@Body() body: { email: string }): Promise<CreateUserDtoResponse> {
-        return { email: await userService.signup(body.email) };
+        const email = await userService.signup(body.email);
+        this.setStatus(201);
+        return { email };
     }
 
     /**
@@ -56,8 +58,8 @@ export class UserController extends Controller {
     @Delete("/admin/user/:id")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>(400, "Bad Request")
-    public async deleteUser(@Request() req: IdentifiedRequest, @Path() id: string): Promise<{ success: boolean }> {
-        if (!id) throw new BadRequestError("User ID is not define");
+    public async deleteUser(@Request() req: IdentifiedRequest, @Path() id: string): Promise<boolean> {
+        if (!id) throw new BadRequestError("User ID is not defined");
 
         if (req.user._id.toString() === id) {
             throw new BadRequestError("Cannot delete its own account");
