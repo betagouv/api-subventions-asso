@@ -222,12 +222,12 @@ export class UserService {
         return await userRepository.update(user);
     }
 
-    public async delete(userId: string): Promise<{ success: boolean }> {
+    public async delete(userId: string): Promise<boolean> {
         const user = await userRepository.findById(userId);
 
-        if (!user) return { success: false };
+        if (!user) return false;
 
-        return { success: await userRepository.delete(user) };
+        return await userRepository.delete(user);
     }
 
     public async addUsersByCsv(content: Buffer) {
@@ -266,7 +266,7 @@ export class UserService {
         return email;
     }
 
-    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ success: true; user: UserDto }> {
+    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
@@ -281,10 +281,10 @@ export class UserService {
 
         user.roles = [...new Set([...user.roles, ...roles])];
 
-        return { success: true, user: await userRepository.update(user) };
+        return { user: await userRepository.update(user) };
     }
 
-    async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true; user: UserDto }> {
+    async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
@@ -299,7 +299,7 @@ export class UserService {
 
         user.active = true;
 
-        return { success: true, user: await userRepository.update(user) };
+        return { user: await userRepository.update(user) };
     }
 
     async refreshExpirationToken(user: UserDto) {
@@ -423,10 +423,9 @@ export class UserService {
         return user.roles;
     }
 
-    public async listUsers(): Promise<{ success: true; users: UserWithResetTokenDto[] }> {
+    public async listUsers(): Promise<{ users: UserWithResetTokenDto[] }> {
         const users = (await userRepository.find()).filter(user => user) as UserDto[];
         return {
-            success: true,
             users: await Promise.all(
                 users.map(async user => {
                     const reset = await userResetRepository.findByUserId(user._id);
