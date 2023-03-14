@@ -109,13 +109,8 @@ describe("user.service.ts", () => {
 
         it("should throw BadRequestError if role not found", async () => {
             const expected = new BadRequestError("Role Not Valid");
-            let actual;
-            try {
-                actual = await service.addRolesToUser("test@beta.gouv.fr", ["CHEF"]);
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
+            const test = async () => await service.addRolesToUser("test@beta.gouv.fr", ["CHEF"]);
+            expect(test).rejects.toThrowError(expected);
         });
 
         it("should update user (called with email)", async () => {
