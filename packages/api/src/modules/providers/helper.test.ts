@@ -3,11 +3,11 @@ import { ApplicationStatus } from "@api-subventions-asso/dto";
 
 describe("toStatusFactory", () => {
     const PROVIDER_STATUS = "tata";
-    const statusMap = {
-        [ApplicationStatus.GRANTED]: ["toto", PROVIDER_STATUS],
-        [ApplicationStatus.REFUSED]: ["titi"]
-    };
-    const helper = toStatusFactory(statusMap);
+    const statusConversionArray = [
+        { label: ApplicationStatus.GRANTED, providerStatusList: ["toto", PROVIDER_STATUS] },
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["titi"] }
+    ];
+    const helper = toStatusFactory(statusConversionArray);
 
     it("finds proper status", () => {
         const expected = ApplicationStatus.GRANTED;

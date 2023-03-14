@@ -6,26 +6,32 @@ import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 import { toStatusFactory } from "../../helper";
 
 export default class DauphinDtoAdapter {
-    private static _statusMap: { [K in ApplicationStatus]?: string[] } = {
-        [ApplicationStatus.REFUSED]: ["Rejetée"],
-        [ApplicationStatus.GRANTED]: [
-            "A justifier",
-            "Justifiée",
-            "A été versé",
-            "Justification à modifier",
-            "Justification en cours"
-        ],
-        [ApplicationStatus.INELIGIBLE]: ["Cloturée", "Non recevable"],
-        [ApplicationStatus.PENDING]: [
-            "Prise en charge",
-            "Recevable",
-            "Transmise",
-            "En attente d'attestation",
-            "En attente d'instruction",
-            "En cours de saisie",
-            "En cours"
-        ]
-    };
+    private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["Rejetée"] },
+        {
+            label: ApplicationStatus.GRANTED,
+            providerStatusList: [
+                "A justifier",
+                "Justifiée",
+                "A été versé",
+                "Justification à modifier",
+                "Justification en cours"
+            ]
+        },
+        { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["Cloturée", "Non recevable"] },
+        {
+            label: ApplicationStatus.PENDING,
+            providerStatusList: [
+                "Prise en charge",
+                "Recevable",
+                "Transmise",
+                "En attente d'attestation",
+                "En attente d'instruction",
+                "En cours de saisie",
+                "En cours"
+            ]
+        }
+    ];
 
     public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
         const lastUpdateDate =
@@ -36,7 +42,7 @@ export default class DauphinDtoAdapter {
             dauphinService.provider.name,
             new Date(lastUpdateDate)
         );
-        const toStatus = toStatusFactory(DauphinDtoAdapter._statusMap);
+        const toStatus = toStatusFactory(DauphinDtoAdapter._statusConversionArray);
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
         const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dto);
         let dispositif = "Politique de la ville";

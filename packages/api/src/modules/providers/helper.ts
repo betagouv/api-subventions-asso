@@ -1,11 +1,12 @@
 import { ApplicationStatus } from "@api-subventions-asso/dto";
 
-export function toStatusFactory(statusMap: { [K in ApplicationStatus]?: string[] }) {
+export function toStatusFactory(statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[]) {
     function toStatus(providerStatus: string): ApplicationStatus {
-        for (const [normalizedStatus, providerStatusList] of Object.entries(statusMap)) {
-            if (providerStatusList.includes(providerStatus)) return normalizedStatus as ApplicationStatus;
-        }
-        return ApplicationStatus.UNKNWON;
+        if (!statusConversionArray) return ApplicationStatus.UNKNWON;
+        return (
+            statusConversionArray.find(({ providerStatusList }) => providerStatusList.includes(providerStatus))
+                ?.label || ApplicationStatus.UNKNWON
+        );
     }
 
     return toStatus;

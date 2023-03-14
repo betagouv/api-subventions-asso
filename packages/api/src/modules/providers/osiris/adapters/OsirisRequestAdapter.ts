@@ -15,18 +15,24 @@ import { toStatusFactory } from "../../helper";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
-    private static _statusMap: { [K in ApplicationStatus]?: string[] } = {
-        [ApplicationStatus.REFUSED]: ["Refusé"],
-        [ApplicationStatus.GRANTED]: ["Traitement Sirepa", "Traitement Chorus", "Terminé", "A évaluer"],
-        [ApplicationStatus.INELIGIBLE]: ["Rejeté", "Supprimé"],
-        [ApplicationStatus.PENDING]: [
-            "Edition document",
-            "Renvoyé au compte asso",
-            "En cours d'instruction",
-            "En attente superviseur",
-            "En attente décision"
-        ]
-    };
+    private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["Refusé"] },
+        {
+            label: ApplicationStatus.GRANTED,
+            providerStatusList: ["Traitement Sirepa", "Traitement Chorus", "Terminé", "A évaluer"]
+        },
+        { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["Rejeté", "Supprimé"] },
+        {
+            label: ApplicationStatus.PENDING,
+            providerStatusList: [
+                "Edition document",
+                "Renvoyé au compte asso",
+                "En cours d'instruction",
+                "En attente superviseur",
+                "En attente décision"
+            ]
+        }
+    ];
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
@@ -133,7 +139,7 @@ export default class OsirisRequestAdapter {
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
-        const toStatus = toStatusFactory(OsirisRequestAdapter._statusMap);
+        const toStatus = toStatusFactory(OsirisRequestAdapter._statusConversionArray);
 
         const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
 
