@@ -20,7 +20,6 @@ describe("UserController, /user", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                success: true,
                 user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"] }
             });
         });
@@ -39,7 +38,6 @@ describe("UserController, /user", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                success: true,
                 user: {
                     email: "futur-admin@beta.gouv.fr",
                     roles: ["user", RoleEnum.admin]

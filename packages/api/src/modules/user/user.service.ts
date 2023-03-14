@@ -274,8 +274,9 @@ export class UserService {
             user = foundUser;
         }
 
-        if (!roles.every(role => Object.values(RoleEnum).includes(role))) {
-            throw new BadRequestError("Role Not Valid", UserServiceErrors.ROLE_NOT_FOUND);
+        const invalidRole = roles.find(role => !Object.values(RoleEnum).includes(role));
+        if (invalidRole) {
+            throw new BadRequestError(`Role ${invalidRole} is not valid`, UserServiceErrors.ROLE_NOT_FOUND);
         }
 
         user.roles = [...new Set([...user.roles, ...roles])];

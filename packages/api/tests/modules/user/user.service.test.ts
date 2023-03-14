@@ -91,8 +91,9 @@ describe("user.service.ts", () => {
     });
 
     describe("addRolesToUser", () => {
+        const EMAIL = "test@beta.gouv.fr";
         beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
+            await service.createUser(EMAIL);
         });
 
         it("should throw NotFoundError if user email not found", async () => {
@@ -107,14 +108,14 @@ describe("user.service.ts", () => {
         });
 
         it("should throw BadRequestError if role not found", async () => {
-            const expected = new BadRequestError("Role Not Valid");
-            const test = async () => await service.addRolesToUser("test@beta.gouv.fr", ["CHEF"]);
+            const ROLE = "adm";
+            const expected = new BadRequestError(`Role ${ROLE} is not valid`);
+            const test = async () => await service.addRolesToUser(EMAIL, [ROLE]);
             expect(test).rejects.toThrowError(expected);
         });
 
         it("should update user (called with email)", async () => {
             await expect(service.addRolesToUser("test@beta.gouv.fr", [RoleEnum.admin])).resolves.toMatchObject({
-                success: true,
                 user: { roles: ["user", "admin"] }
             });
         });
@@ -122,7 +123,6 @@ describe("user.service.ts", () => {
         it("should update user (called with user)", async () => {
             const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
             await expect(service.addRolesToUser(user, [RoleEnum.admin])).resolves.toMatchObject({
-                success: true,
                 user: { roles: ["user", "admin"] }
             });
         });
@@ -150,7 +150,6 @@ describe("user.service.ts", () => {
 
         it("should update user (called with email)", async () => {
             const expected = {
-                success: true,
                 user: { active: true }
             };
             const actual = await service.activeUser("test@beta.gouv.fr");
@@ -158,7 +157,7 @@ describe("user.service.ts", () => {
         });
 
         it("should update user (called with user)", async () => {
-            const expected = { success: true, user: { active: true } };
+            const expected = { user: { active: true } };
             const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
             const actual = await service.activeUser(user);
             expect(actual).toMatchObject(expected);
