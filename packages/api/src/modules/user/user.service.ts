@@ -18,7 +18,6 @@ import {
     NotFoundError,
     UnauthorizedError
 } from "../../shared/errors/httpErrors";
-import { EntityNotFoundError } from "../../shared/errors/httpErrors/EntityNotFound";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -270,7 +269,7 @@ export class UserService {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
-                throw new EntityNotFoundError("User Not Found", UserServiceErrors.USER_NOT_FOUND);
+                throw new NotFoundError("User Not Found", UserServiceErrors.USER_NOT_FOUND);
             }
             user = foundUser;
         }

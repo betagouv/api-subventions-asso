@@ -9,8 +9,7 @@ import userRepository from "../../../src/modules/user/repositories/user.reposito
 import { UserService, UserServiceErrors } from "../../../src/modules/user/user.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import dedent from "dedent";
-import { BadRequestError } from "../../../src/shared/errors/httpErrors";
-import { EntityNotFoundError } from "../../../src/shared/errors/httpErrors/EntityNotFound";
+import { BadRequestError, NotFoundError } from "../../../src/shared/errors/httpErrors";
 
 describe("user.service.ts", () => {
     let service;
@@ -96,8 +95,8 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should throw EntityNotFoundError if user email not found", async () => {
-            const expected = new EntityNotFoundError("User Not Found");
+        it("should throw NotFoundError if user email not found", async () => {
+            const expected = new NotFoundError("User Not Found");
             let actual;
             try {
                 actual = await service.addRolesToUser("wrong@email.fr", [RoleEnum.admin]);
