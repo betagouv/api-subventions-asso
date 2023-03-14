@@ -42,7 +42,7 @@ export class AuthService {
         const user = this.getCurrentUser();
         // set header token for each requests
         axios.defaults.headers.common["x-access-token"] = user?.jwt?.token;
-        crispService.setUserEmail(user?.email);
+        if (user) crispService.setUserEmail(user.email);
 
         axios.interceptors.response.use(
             response => response,
@@ -60,7 +60,7 @@ export class AuthService {
 
     logout() {
         localStorage.removeItem(this.USER_LOCAL_STORAGE_KEY);
-        crispService.setUserEmail(null);
+        crispService.resetSession();
     }
 
     getCurrentUser() {

@@ -183,6 +183,12 @@ describe("authService", () => {
 
             expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
+
+        it("resets crisp session", () => {
+            const crispServiceMock = jest.spyOn(crispService, "resetSession").mockImplementation(jest.fn());
+            authService.logout();
+            expect(crispServiceMock).toBeCalled();
+        });
     });
 
     describe("getCurrentUser", () => {
