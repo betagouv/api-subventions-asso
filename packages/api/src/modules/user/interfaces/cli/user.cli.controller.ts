@@ -11,7 +11,7 @@ export default class UserCliController {
 
     async create(email: string) {
         try {
-            await userService.signup(email);
+            await userService.createUser(email);
             console.info("User has been created");
         } catch (error: unknown) {
             const e = error as Error;
@@ -33,7 +33,9 @@ export default class UserCliController {
     async active(email: string) {
         const result = await userService.activeUser(email);
 
+        //@ts-expect-error: refactoring, will be fixed with the removal of success in activeUser()
         if (!result.success) {
+            //@ts-expect-error: refactoring, will be fixed with the removal of success in activeUser()
             console.info("Active error : \n", result.message);
             return;
         }
