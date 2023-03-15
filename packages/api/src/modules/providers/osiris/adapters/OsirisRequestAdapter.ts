@@ -1,23 +1,42 @@
 import {
-    ProviderValues,
-    Rna,
-    DemandeSubvention,
-    ProviderValue,
+    ApplicationStatus,
     Association,
-    Etablissement
+    DemandeSubvention,
+    Etablissement,
+    ProviderValue,
+    Rna
 } from "@api-subventions-asso/dto";
-import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
+import { toStatusFactory } from "../../helper";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
+    private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["Refusé"] },
+        {
+            label: ApplicationStatus.GRANTED,
+            providerStatusList: ["Traitement Sirepa", "Traitement Chorus", "Terminé", "A évaluer"]
+        },
+        { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["Rejeté", "Supprimé"] },
+        {
+            label: ApplicationStatus.PENDING,
+            providerStatusList: [
+                "Edition document",
+                "Renvoyé au compte asso",
+                "En cours d'instruction",
+                "En attente superviseur",
+                "En attente décision"
+            ]
+        }
+    ];
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
+        const toPVs = ProviderValueFactory.buildProviderValuesAdapter(OsirisRequestAdapter.PROVIDER_NAME, dataDate);
         const federation =
             actions.length &&
             actions.find(action => action.indexedInformations.federation)?.indexedInformations.federation;
@@ -32,118 +51,40 @@ export default class OsirisRequestAdapter {
             actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesFemmes;
 
         return {
-            siren: ProviderValueAdapter.toProviderValues(
-                siretToSiren(entity.legalInformations.siret),
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
-            rna: ProviderValueAdapter.toProviderValues(
-                entity.legalInformations.rna,
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ) as ProviderValues<Rna>,
-            denomination_rna: ProviderValueAdapter.toProviderValues(
-                entity.legalInformations.name,
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
-            etablisements_siret: ProviderValueAdapter.toProviderValues(
-                [entity.legalInformations.siret],
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
+            siren: toPVs(siretToSiren(entity.legalInformations.siret)),
+            rna: toPVs(entity.legalInformations.rna as Rna),
+            denomination_rna: toPVs(entity.legalInformations.name),
+            etablisements_siret: toPVs([entity.legalInformations.siret]),
             nic_siege: entity.providerInformations.etablissementSiege
-                ? ProviderValueAdapter.toProviderValues(
-                      siretToNIC(entity.legalInformations.siret),
-                      OsirisRequestAdapter.PROVIDER_NAME,
-                      dataDate
-                  )
+                ? toPVs(siretToNIC(entity.legalInformations.siret))
                 : undefined,
-            federation: federation
-                ? ProviderValueAdapter.toProviderValues(federation, OsirisRequestAdapter.PROVIDER_NAME, dataDate)
-                : undefined,
+            federation: federation ? toPVs(federation) : undefined,
             licencies:
                 licencies && licenciesHommes && licenciesFemmes
                     ? {
-                          total: ProviderValueAdapter.toProviderValues(
-                              licencies,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          hommes: ProviderValueAdapter.toProviderValues(
-                              licenciesHommes,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          femmes: ProviderValueAdapter.toProviderValues(
-                              licenciesFemmes,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          )
+                          total: toPVs(licencies),
+                          hommes: toPVs(licenciesHommes),
+                          femmes: toPVs(licenciesFemmes)
                       }
                     : undefined,
             ...(actions.length
                 ? {
                       benevoles: {
-                          nombre: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.benevoles,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          ETPT: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.benevolesETPT,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          )
+                          nombre: toPVs(actions[0].indexedInformations.benevoles),
+                          ETPT: toPVs(actions[0].indexedInformations.benevolesETPT)
                       },
                       salaries: {
-                          nombre: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.salaries,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          cdi: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.salariesCDI,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          cdiETPT: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.salariesCDIETPT,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          cdd: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.salariesCDD,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          cddETPT: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.salariesCDDETPT,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          emploisAides: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.emploiesAides,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          emploisAidesETPT: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.emploiesAidesETPT,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          )
+                          nombre: toPVs(actions[0].indexedInformations.salaries),
+                          cdi: toPVs(actions[0].indexedInformations.salariesCDI),
+                          cdiETPT: toPVs(actions[0].indexedInformations.salariesCDIETPT),
+                          cdd: toPVs(actions[0].indexedInformations.salariesCDD),
+                          cddETPT: toPVs(actions[0].indexedInformations.salariesCDDETPT),
+                          emploisAides: toPVs(actions[0].indexedInformations.emploiesAides),
+                          emploisAidesETPT: toPVs(actions[0].indexedInformations.emploiesAidesETPT)
                       },
                       volontaires: {
-                          nombre: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.volontaires,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          ),
-                          ETPT: ProviderValueAdapter.toProviderValues(
-                              actions[0].indexedInformations.volontairesETPT,
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          )
+                          nombre: toPVs(actions[0].indexedInformations.volontaires),
+                          ETPT: toPVs(actions[0].indexedInformations.volontairesETPT)
                       }
                   }
                 : {})
@@ -152,70 +93,44 @@ export default class OsirisRequestAdapter {
 
     static toEtablissement(entity: OsirisRequestEntity): Etablissement {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
+        const toPVs = ProviderValueFactory.buildProviderValuesAdapter(OsirisRequestAdapter.PROVIDER_NAME, dataDate);
+
         return {
-            siret: ProviderValueAdapter.toProviderValues(
-                entity.legalInformations.siret,
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
-            nic: ProviderValueAdapter.toProviderValues(
-                siretToNIC(entity.legalInformations.siret),
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
-            siege: ProviderValueAdapter.toProviderValues(
-                entity.providerInformations.etablissementSiege,
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
-            adresse: ProviderValueAdapter.toProviderValues(
-                {
-                    voie: entity.providerInformations.etablissementVoie,
-                    code_postal: entity.providerInformations.etablissementCodePostal,
-                    commune: entity.providerInformations.etablissementCommune
-                },
-                OsirisRequestAdapter.PROVIDER_NAME,
-                dataDate
-            ),
+            siret: toPVs(entity.legalInformations.siret),
+            nic: toPVs(siretToNIC(entity.legalInformations.siret)),
+            siege: toPVs(entity.providerInformations.etablissementSiege),
+            adresse: toPVs({
+                voie: entity.providerInformations.etablissementVoie,
+                code_postal: entity.providerInformations.etablissementCodePostal,
+                commune: entity.providerInformations.etablissementCommune
+            }),
             representants_legaux: [
-                ProviderValueAdapter.toProviderValues(
-                    {
-                        nom: entity.providerInformations.representantNom,
-                        prenom: entity.providerInformations.representantPrenom,
-                        civilite: entity.providerInformations.representantCivilite,
-                        role: entity.providerInformations.representantRole,
-                        telephone: entity.providerInformations.representantPhone,
-                        email: entity.providerInformations.representantEmail
-                    },
-                    OsirisRequestAdapter.PROVIDER_NAME,
-                    dataDate
-                )
+                toPVs({
+                    nom: entity.providerInformations.representantNom,
+                    prenom: entity.providerInformations.representantPrenom,
+                    civilite: entity.providerInformations.representantCivilite,
+                    role: entity.providerInformations.representantRole,
+                    telephone: entity.providerInformations.representantPhone,
+                    email: entity.providerInformations.representantEmail
+                })
             ],
             contacts: [
-                ProviderValueAdapter.toProviderValues(
-                    {
-                        nom: entity.providerInformations.representantNom,
-                        prenom: entity.providerInformations.representantPrenom,
-                        civilite: entity.providerInformations.representantCivilite,
-                        role: entity.providerInformations.representantRole,
-                        telephone: entity.providerInformations.representantPhone,
-                        email: entity.providerInformations.representantEmail
-                    },
-                    OsirisRequestAdapter.PROVIDER_NAME,
-                    dataDate
-                )
+                toPVs({
+                    nom: entity.providerInformations.representantNom,
+                    prenom: entity.providerInformations.representantPrenom,
+                    civilite: entity.providerInformations.representantCivilite,
+                    role: entity.providerInformations.representantRole,
+                    telephone: entity.providerInformations.representantPhone,
+                    email: entity.providerInformations.representantEmail
+                })
             ],
             information_banquaire:
                 entity.providerInformations.etablissementBIC && entity.providerInformations.etablissementIBAN
                     ? [
-                          ProviderValueAdapter.toProviderValues(
-                              {
-                                  bic: entity.providerInformations.etablissementBIC,
-                                  iban: entity.providerInformations.etablissementIBAN
-                              },
-                              OsirisRequestAdapter.PROVIDER_NAME,
-                              dataDate
-                          )
+                          toPVs({
+                              bic: entity.providerInformations.etablissementBIC,
+                              iban: entity.providerInformations.etablissementIBAN
+                          })
                       ]
                     : []
         };
@@ -224,6 +139,7 @@ export default class OsirisRequestAdapter {
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
+        const toStatus = toStatusFactory(OsirisRequestAdapter._statusConversionArray);
 
         const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
 
@@ -233,6 +149,7 @@ export default class OsirisRequestAdapter {
             service_instructeur: toPV(entity.providerInformations.service_instructeur),
             dispositif: toPV(entity.providerInformations.dispositif),
             sous_dispositif: toPV(entity.providerInformations.sous_dispositif),
+            statut_label: toPV(toStatus(entity.providerInformations.status)),
             status: toPV(entity.providerInformations.status),
             pluriannualite: toPV(entity.providerInformations.pluriannualite),
             ej: EJ,

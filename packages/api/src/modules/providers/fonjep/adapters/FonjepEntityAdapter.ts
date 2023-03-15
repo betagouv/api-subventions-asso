@@ -1,4 +1,4 @@
-import { DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
@@ -24,6 +24,7 @@ export default class FonjepEntityAdapter {
             service_instructeur: toPV(entity.indexedInformations.service_instructeur),
             dispositif: toPV(entity.indexedInformations.dispositif),
             status: toPV(getSubventionStatus()),
+            statut_label: toPV(ApplicationStatus.GRANTED),
             pluriannualite: toPV("Oui"),
             plein_temps: toPV(entity.indexedInformations.plein_temps),
             annee_demande: toPV(entity.indexedInformations.annee_demande),

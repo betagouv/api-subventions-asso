@@ -1,10 +1,38 @@
-import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention } from "@api-subventions-asso/dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
+import { toStatusFactory } from "../../helper";
 
 export default class DauphinDtoAdapter {
+    private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["Rejetée"] },
+        {
+            label: ApplicationStatus.GRANTED,
+            providerStatusList: [
+                "A justifier",
+                "Justifiée",
+                "A été versé",
+                "Justification à modifier",
+                "Justification en cours"
+            ]
+        },
+        { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["Cloturée", "Non recevable"] },
+        {
+            label: ApplicationStatus.PENDING,
+            providerStatusList: [
+                "Prise en charge",
+                "Recevable",
+                "Transmise",
+                "En attente d'attestation",
+                "En attente d'instruction",
+                "En cours de saisie",
+                "En cours"
+            ]
+        }
+    ];
+
     public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
         const lastUpdateDate =
             dto._document?.dateVersion ||
@@ -14,8 +42,9 @@ export default class DauphinDtoAdapter {
             dauphinService.provider.name,
             new Date(lastUpdateDate)
         );
+        const toStatus = toStatusFactory(DauphinDtoAdapter._statusConversionArray);
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
-        const montantAccorde = DauphinDtoAdapter.getMontantAccorder(dto);
+        const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dto);
         let dispositif = "Politique de la ville";
         if (dto.thematique?.title) dispositif = dto.thematique?.title + " - " + dispositif;
 
@@ -34,6 +63,7 @@ export default class DauphinDtoAdapter {
             siret: toPV(dto.demandeur.SIRET.complet),
             service_instructeur: toPV(serviceInstructeur),
             dispositif: toPV(dispositif),
+            statut_label: toPV(toStatus(dto.virtualStatusLabel)),
             status: toPV(dto.virtualStatusLabel),
             annee_demande: toPV(dto.exerciceBudgetaire),
             montants: {
@@ -58,7 +88,8 @@ export default class DauphinDtoAdapter {
             .flat(2)
             .filter(a => a)[0];
     }
-    private static getMontantAccorder(demande: DauphinSubventionDto) {
+
+    private static getMontantAccorde(demande: DauphinSubventionDto) {
         return demande.planFinancement
             .map(pf =>
                 pf.recette?.postes?.map(p =>

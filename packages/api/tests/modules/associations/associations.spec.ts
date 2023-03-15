@@ -31,7 +31,7 @@ describe("/association", () => {
             expect(response.statusCode).toBe(200);
 
             const subventions = response.body.subventions;
-            // Sort subventions (OSIRS first) to avoid race test failure
+            // Sort subventions (OSIRIS first) to avoid race test failure
             subventions.sort(compareByValueBuilder("siret.provider"));
 
             expect(subventions).toMatchSnapshot();
