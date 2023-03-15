@@ -6,10 +6,10 @@ import SubventionsVersementsDashboardController from "./SubventionsVersementsDas
 import * as helper from "./helper";
 import SubventionTableController from "./SubventionTable/SubventionTable.controller";
 import VersementTableController from "./VersementTable/VersementTable.controller";
-import associationPort from "@resources/associations/association.port";
-jest.mock("@resources/associations/association.port");
-import establishmentPort from "@resources/establishments/establishment.port";
-jest.mock("@resources/establishments/establishment.port");
+import associationService from "@resources/associations/association.service";
+jest.mock("@resources/associations/association.service");
+import establishmentService from "@resources/establishments/establishment.service";
+jest.mock("@resources/establishments/establishment.service");
 
 jest.mock("@helpers/csvHelper", () => {
     return {
@@ -27,7 +27,6 @@ jest.mock("@helpers/validatorHelper", () => {
     };
 });
 import * as validatorHelper from "@helpers/validatorHelper";
-
 
 jest.mock("@helpers/validatorHelper");
 
@@ -280,13 +279,13 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should increment assocation extract data", () => {
             validatorHelper.isSiret.mockImplementationOnce(() => false);
             ctrl.download();
-            expect(associationPort.incExtractData).toHaveBeenCalledTimes(1);
+            expect(associationService.incExtractData).toHaveBeenCalledTimes(1);
         });
 
         it("should increment establishment extract data", () => {
             validatorHelper.isSiret.mockImplementationOnce(() => true);
             ctrl.download();
-            expect(establishmentPort.incExtractData).toHaveBeenCalledTimes(1);
+            expect(establishmentService.incExtractData).toHaveBeenCalledTimes(1);
         });
 
         it("should call downloadCsv()", () => {

@@ -8,8 +8,8 @@ import { mapSubventionsAndVersements, sortByPath } from "./helper";
 import SubventionTableController from "./SubventionTable/SubventionTable.controller";
 import VersementTableController from "./VersementTable/VersementTable.controller";
 import { buildCsv, downloadCsv } from "@helpers/csvHelper";
-import establishmentPort from "@resources/establishments/establishment.port";
-import associationPort from "@resources/associations/association.port";
+import establishmentService from "@resources/establishments/establishment.service";
+import associationService from "@resources/associations/association.service";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {
@@ -81,8 +81,8 @@ export default class SubventionsVersementsDashboardController {
 
         const csvString = buildCsv(headers, datasub);
         downloadCsv(csvString, `DataSubvention-${this.identifier}`);
-        if (this.isEtab()) establishmentPort.incExtractData();
-        else associationPort.incExtractData();
+        if (this.isEtab()) establishmentService.incExtractData(this.identifier);
+        else associationService.incExtractData(this.identifier);
     }
 
     _filterElementsBySelectedExercice() {
