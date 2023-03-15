@@ -1,3 +1,4 @@
+import { ApplicationStatus } from "@api-subventions-asso/dto";
 import Store from "../../../core/Store";
 
 import { numberToEuro, valueOrHyphen } from "@helpers/dataHelper";
@@ -55,9 +56,10 @@ export default class SubventionTableController {
             dispositif: valueOrHyphen(dispositif),
             projectName: valueOrHyphen(this.getProjectName(element.subvention)),
             montantsDemande: valueOrHyphen(numberToEuro(element.subvention.montants?.demande)),
-            montantsAccordeOrStatus: element.subvention.montants?.accorde
-                ? numberToEuro(element.subvention.montants?.accorde)
-                : element.subvention.status
+            montantsAccorde: numberToEuro(element.subvention.montants?.accorde),
+            status: element.subvention.statut_label,
+            showAmount:
+                element.subvention.statut_label === ApplicationStatus.GRANTED && element.subvention.montants?.accorde
         };
     }
 
@@ -117,7 +119,7 @@ export default class SubventionTableController {
             return {
                 ...tableData,
                 subvention: element.subvention,
-                projectNamePosition: this.tableData.projectName === "-" ? "center" : "start",
+                projectNamePosition: tableData.projectName === "-" ? "center" : "start",
                 enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
             };
         });

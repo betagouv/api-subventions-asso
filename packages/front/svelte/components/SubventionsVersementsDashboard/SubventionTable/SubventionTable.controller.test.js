@@ -18,7 +18,9 @@ describe("SubventionTableController", () => {
                 "dispositif",
                 "projectName",
                 "montantsDemande",
-                "montantsAccordeOrStatus"
+                "montantsAccorde",
+                "status",
+                "showAmount"
             ];
             const actual = Object.keys(SubventionTableController._extractTableDataFromElement(ELEMENT));
             expect(actual).toEqual(expected);
