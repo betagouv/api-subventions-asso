@@ -112,11 +112,12 @@ export default class SubventionTableController {
         const elementsDataViews = this.elements.map(element => {
             if (!element.subvention) return null;
 
+            const tableData = SubventionTableController._extractTableDataFromElement(element);
+
             return {
-                ...SubventionTableController._extractTableDataFromElement(element),
+                ...tableData,
                 subvention: element.subvention,
-                // this.projectName comes from _extractTableDataFromElement()
-                projectNamePosition: this.projectName === "-" ? "center" : "start",
+                projectNamePosition: this.tableData.projectName === "-" ? "center" : "start",
                 enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
             };
         });
