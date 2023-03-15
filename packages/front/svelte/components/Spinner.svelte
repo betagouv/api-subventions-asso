@@ -4,7 +4,7 @@
 
 <div class="spinner-container">
     <p>{description}</p>
-    <img src="/static/images/logo-beta.jpg" class="spinner" alt="Chargement en cours" />
+    <img src="/static/images/logo-beta.png" class="spinner" alt="Chargement en cours" />
 </div>
 
 <style>

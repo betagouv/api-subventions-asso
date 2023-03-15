@@ -9,7 +9,7 @@
 </div>
 
 <style>
-    /* used to avoid footer overlaspsing the blue banner */
+    /* used to avoid footer overlapping the blue banner */
     .fill-space {
         min-height: 30rem;
     }
