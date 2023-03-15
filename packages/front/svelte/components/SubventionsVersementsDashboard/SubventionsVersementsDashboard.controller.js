@@ -8,6 +8,8 @@ import { mapSubventionsAndVersements, sortByPath } from "./helper";
 import SubventionTableController from "./SubventionTable/SubventionTable.controller";
 import VersementTableController from "./VersementTable/VersementTable.controller";
 import { buildCsv, downloadCsv } from "@helpers/csvHelper";
+import establishmentPort from "@resources/establishments/establishment.port";
+import associationPort from "@resources/associations/association.port";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {
@@ -32,7 +34,7 @@ export default class SubventionsVersementsDashboardController {
         this.sortColumn = new Store(null);
     }
 
-    get isEtab() {
+    isEtab() {
         return isSiret(this.identifier);
     }
 
@@ -79,6 +81,8 @@ export default class SubventionsVersementsDashboardController {
 
         const csvString = buildCsv(headers, datasub);
         downloadCsv(csvString, `DataSubvention-${this.identifier}`);
+        if (this.isEtab()) establishmentPort.incExtractData();
+        else associationPort.incExtractData();
     }
 
     _filterElementsBySelectedExercice() {
@@ -132,12 +136,14 @@ export default class SubventionsVersementsDashboardController {
     }
 
     _getSubventionsStoreFactory() {
-        return this.isEtab
+        return this.isEtab()
             ? subventionsService.getEtablissementsSubventionsStore
             : subventionsService.getAssociationsSubventionsStore;
     }
 
     _getVersementsFactory() {
-        return this.isEtab ? versementsService.getEtablissementVersements : versementsService.getAssociationVersements;
+        return this.isEtab()
+            ? versementsService.getEtablissementVersements
+            : versementsService.getAssociationVersements;
     }
 }
