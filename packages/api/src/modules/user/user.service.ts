@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import dedent from "dedent";
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes, UserErrorCodes } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
@@ -202,20 +202,12 @@ export class UserService {
         return createdUser;
     }
 
-    public async updatePassword(
-        user: UserDto,
-        password: string
-    ): Promise<UserServiceError | { success: true; user: UserDto }> {
+    public async updatePassword(user: UserDto, password: string): Promise<{ user: UserDto }> {
         if (!this.passwordValidator(password)) {
-            return {
-                success: false,
-                message: UserService.PASSWORD_VALIDATOR_MESSAGE,
-                code: UserServiceErrors.FORMAT_PASSWORD_INVALID
-            };
+            throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
 
         return {
-            success: true,
             user: await userRepository.update({
                 ...user,
                 hashPassword: await bcrypt.hash(password, 10),
@@ -229,12 +221,12 @@ export class UserService {
         return await userRepository.update(user);
     }
 
-    public async delete(userId: string): Promise<{ success: boolean }> {
+    public async delete(userId: string): Promise<boolean> {
         const user = await userRepository.findById(userId);
 
-        if (!user) return { success: false };
+        if (!user) return false;
 
-        return { success: await userRepository.delete(user) };
+        return await userRepository.delete(user);
     }
 
     public async addUsersByCsv(content: Buffer) {
@@ -273,35 +265,27 @@ export class UserService {
         return email;
     }
 
-    async addRolesToUser(
-        user: UserDto | string,
-        roles: RoleEnum[]
-    ): Promise<{ success: true; user: UserDto } | UserServiceError> {
+    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
-                return {
-                    success: false,
-                    message: "User email does not correspond to a user",
-                    code: UserServiceErrors.USER_NOT_FOUND
-                };
+                throw new NotFoundError("User Not Found", UserServiceErrors.USER_NOT_FOUND);
             }
             user = foundUser;
         }
 
-        if (!roles.every(role => Object.values(RoleEnum).includes(role))) {
-            return {
-                success: false,
-                message: `The role "${roles.find(role => !Object.values(RoleEnum).includes(role))}" does not exist`,
-                code: UserServiceErrors.ROLE_NOT_FOUND
-            };
+        const roleEnumValues = Object.values(RoleEnum);
+        const invalidRole = roles.find(role => !roleEnumValues.includes(role));
+        if (invalidRole) {
+            throw new BadRequestError(`Role ${invalidRole} is not valid`, UserServiceErrors.ROLE_NOT_FOUND);
         }
 
         user.roles = [...new Set([...user.roles, ...roles])];
-        return { success: true, user: await userRepository.update(user) };
+
+        return { user: await userRepository.update(user) };
     }
 
-    async activeUser(user: UserDto | string): Promise<UserServiceError | { success: true; user: UserDto }> {
+    async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
@@ -316,7 +300,7 @@ export class UserService {
 
         user.active = true;
 
-        return { success: true, user: await userRepository.update(user) };
+        return { user: await userRepository.update(user) };
     }
 
     async refreshExpirationToken(user: UserDto) {
@@ -440,10 +424,9 @@ export class UserService {
         return user.roles;
     }
 
-    public async listUsers(): Promise<{ success: true; users: UserWithResetTokenDto[] }> {
+    public async listUsers(): Promise<{ users: UserWithResetTokenDto[] }> {
         const users = (await userRepository.find()).filter(user => user) as UserDto[];
         return {
-            success: true,
             users: await Promise.all(
                 users.map(async user => {
                     const reset = await userResetRepository.findByUserId(user._id);

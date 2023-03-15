@@ -1,42 +1,15 @@
 import {
     CreateUserDtoResponse,
     GetRolesDtoResponse,
-    UserDtoErrorResponse,
     UserDtoResponse,
-    UserDtoSuccessResponse,
-    UserErrorCodes,
     UserListDtoResponse
 } from "@api-subventions-asso/dto";
-import {
-    Route,
-    Controller,
-    Tags,
-    Post,
-    Body,
-    Security,
-    Put,
-    Request,
-    Get,
-    Delete,
-    Path,
-    Response,
-    SuccessResponse
-} from "tsoa";
+import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { ValidateErrorJSON, IdentifiedRequest } from "../../../../@types";
-import userService, { UserServiceErrors } from "../../user.service";
-
-// TODO: make this a class or something generic for all Controller ?
-const USER_INTERNAL_SERVER_ERROR: UserDtoErrorResponse = {
-    message: "Internal Server Error",
-    errorCode: UserErrorCodes.INTERNAL_ERROR
-};
-
-// TODO: make this a class or something generic for all Controller ?
-const USER_BAD_REQUEST: UserDtoErrorResponse = {
-    message: "Bad Request",
-    errorCode: UserErrorCodes.BAD_REQUEST
-};
+import { IdentifiedRequest } from "../../../../@types";
+import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
+import userService from "../../user.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -48,26 +21,10 @@ export class UserController extends Controller {
      */
     @Post("/admin/roles")
     @Security("jwt", ["admin"])
-    @Response<ValidateErrorJSON>(400, "Role Not Valid")
-    @Response<UserDtoErrorResponse>(422, "User Not Found", {
-        message: "User Not Found",
-        errorCode: UserErrorCodes.USER_NOT_F0UND
-    })
-    @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
+    @Response<HttpErrorInterface>(400, "Role Not Valid")
+    @Response<HttpErrorInterface>(422, "User Not Found")
     public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
-        const result = await userService.addRolesToUser(body.email, body.roles);
-
-        if (!result.success) {
-            const error = { ...USER_INTERNAL_SERVER_ERROR };
-            if (result.code === UserServiceErrors.USER_NOT_FOUND) {
-                this.setStatus(422);
-                error.message = "User Not Found";
-                error.errorCode = UserErrorCodes.USER_NOT_F0UND;
-            } else this.setStatus(500);
-            return error;
-        }
-
-        return result;
+        return await userService.addRolesToUser(body.email, body.roles);
     }
 
     /**
@@ -76,15 +33,8 @@ export class UserController extends Controller {
      */
     @Get("/admin/list-users")
     @Security("jwt", ["admin"])
-    @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
     public async listUsers(): Promise<UserListDtoResponse> {
-        const result = await userService.listUsers();
-
-        if (!result.success) {
-            this.setStatus(500);
-            return USER_INTERNAL_SERVER_ERROR;
-        }
-        return result;
+        return await userService.listUsers();
     }
 
     /**
@@ -93,9 +43,11 @@ export class UserController extends Controller {
      */
     @Post("/admin/create-user")
     @Security("jwt", ["admin"])
-    @SuccessResponse("201", "User successfully created")
+    @Response<HttpErrorInterface>(400, "Bad Request")
+    @Response<HttpErrorInterface>(409, "Unprocessable Entity")
     public async createUser(@Body() body: { email: string }): Promise<CreateUserDtoResponse> {
         const email = await userService.signup(body.email);
+        this.setStatus(201);
         return { email };
     }
 
@@ -105,24 +57,15 @@ export class UserController extends Controller {
      */
     @Delete("/admin/user/:id")
     @Security("jwt", ["admin"])
-    @Response(400, "Bad Request", USER_BAD_REQUEST)
-    @Response(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
-    public async deleteUser(
-        @Request() req: IdentifiedRequest,
-        @Path() id: string
-    ): Promise<{ success: boolean } | UserDtoErrorResponse> {
-        if (!id || req.user._id.toString() === id) {
-            this.setStatus(400);
-            return USER_BAD_REQUEST;
+    @Response<HttpErrorInterface>(400, "Bad Request")
+    public async deleteUser(@Request() req: IdentifiedRequest, @Path() id: string): Promise<boolean> {
+        if (!id) throw new BadRequestError("User ID is not defined");
+
+        if (req.user._id.toString() === id) {
+            throw new BadRequestError("Cannot delete its own account");
         }
 
-        const result = await userService.delete(id);
-
-        if (!result.success) {
-            this.setStatus(500);
-            return USER_INTERNAL_SERVER_ERROR;
-        }
-        return result;
+        return await userService.delete(id);
     }
 
     /**
@@ -131,19 +74,8 @@ export class UserController extends Controller {
      */
     @Get("/roles")
     @Security("jwt", ["user"])
-    @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
-    @Response(200, "Retourne un tableau de rôles")
     public async getRoles(@Request() req: IdentifiedRequest): Promise<GetRolesDtoResponse> {
-        const roles = userService.getRoles(req.user);
-
-        if (!roles) {
-            this.setStatus(500);
-            return USER_INTERNAL_SERVER_ERROR;
-        }
-
-        return {
-            roles
-        };
+        return { roles: await userService.getRoles(req.user) };
     }
 
     /**
@@ -151,30 +83,11 @@ export class UserController extends Controller {
      * @summary Update password
      */
     @Put("/password")
-    @Response<UserDtoErrorResponse>(500, "Internal Server Error", USER_INTERNAL_SERVER_ERROR)
-    @Response<UserDtoErrorResponse>(400, "Validator Error", {
-        message:
-            "Password is too weak, please use this rules: At least one digit [0-9] At least one lowercase character [a-z] At least one uppercase character [A-Z] At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\] At least 8 characters in length, but no more than 32.",
-        errorCode: UserErrorCodes.INVALID_PASSWORD
-    })
+    @Response<HttpErrorInterface>(400, "Bad Request")
     public async changePassword(
         @Request() req: IdentifiedRequest,
         @Body() body: { password: string }
     ): Promise<UserDtoResponse> {
-        const result = await userService.updatePassword(req.user, body.password);
-
-        if (!result.success) {
-            if (result.code === UserServiceErrors.FORMAT_PASSWORD_INVALID) {
-                this.setStatus(400);
-                return {
-                    message: result.message,
-                    errorCode: UserErrorCodes.INVALID_PASSWORD
-                };
-            }
-            this.setStatus(500);
-            return USER_INTERNAL_SERVER_ERROR;
-        }
-
-        return result;
+        return await userService.updatePassword(req.user, body.password);
     }
 }

@@ -20,10 +20,10 @@ export default class UserCliController {
     }
 
     async setRoles(email: string, ...roles: RoleEnum[]) {
-        const result = await userService.addRolesToUser(email, roles);
-
-        if (!result.success) {
-            console.info("Roles upgarde error : \n", result.message);
+        try {
+            await userService.addRolesToUser(email, roles);
+        } catch (e) {
+            console.info("Roles upgarde error : \n", (e as Error).message);
             return;
         }
 
@@ -33,7 +33,9 @@ export default class UserCliController {
     async active(email: string) {
         const result = await userService.activeUser(email);
 
+        //@ts-expect-error: refactoring, will be fixed with the removal of success in activeUser()
         if (!result.success) {
+            //@ts-expect-error: refactoring, will be fixed with the removal of success in activeUser()
             console.info("Active error : \n", result.message);
             return;
         }

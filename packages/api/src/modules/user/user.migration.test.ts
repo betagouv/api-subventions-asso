@@ -55,7 +55,7 @@ describe("UserMigration", () => {
                 email: "test@datasubvention.beta.gou.fr",
                 _id: new ObjectId()
             } as unknown as WithId<UserDto>;
-            userServiceDeleteMock.mockImplementationOnce(user => Promise.resolve({ user, success: true }));
+            userServiceDeleteMock.mockImplementationOnce(user => Promise.resolve(true));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.DELETE,
