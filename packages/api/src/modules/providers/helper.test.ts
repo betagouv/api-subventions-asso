@@ -20,4 +20,12 @@ describe("toStatusFactory", () => {
         const actual = helper("I am nowhere");
         expect(actual).toBe(expected);
     });
+
+    it("returns unknown if not an array", () => {
+        const expected = ApplicationStatus.UNKNWON;
+        // @ts-expect-error test edge cases
+        const helper = toStatusFactory("tata");
+        const actual = helper(PROVIDER_STATUS);
+        expect(actual).toBe(expected);
+    });
 });
