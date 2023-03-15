@@ -1,9 +1,17 @@
-import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
-import dedent from "dedent";
 import axios from "axios";
+import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
+import configurationsService from "../../configurations/configurations.service";
+import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
+import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
+import DemarchesSimplifieesDto from "./dto/DemarchesSimplifieesDto";
+import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
+import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
+import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
+import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
+import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 
 export class DemarchesSimplifieesService implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true;
@@ -17,35 +25,71 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         return Promise.resolve(null);
     }
 
-    getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
+    private async getSchemasByIds() {
+        const schemas = await demarchesSimplifieesMapperRepository.findAll();
+
+        return schemas.reduce((acc, schema) => {
+            acc[schema.demarcheId] = schema;
+            return acc;
+        }, {});
     }
 
-    getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
+    private async enititesToSubventions(entities) {
+        const schemasByIds = await this.getSchemasByIds();
+
+        return entities
+            .map(demande => {
+                const schema = schemasByIds[demande.demarcheId];
+
+                if (!schema) return null;
+
+                return DemarchesSimplifieesEntityAdapter.toSubvention(demande, schema);
+            })
+            .filter(sub => sub) as DemandeSubvention[];
     }
 
-    async firstQuery(processId = 52961) {
-        const query = dedent`query getDemarche($demarcheNumber: Int!) { 
-            demarche(number: $demarcheNumber) { 
-                id dossiers { 
-                     nodes { 
-                        id demandeur { 
-                            ... on PersonnePhysique { civilite nom prenom }
-                            ... on PersonneMorale { siret } 
-                        }
-                    }
-                } 
-            } 
-        }`;
+    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
+        const demandes = await demarchesSimplifieesDataRepository.findBySiren(siren);
+        return this.enititesToSubventions(demandes);
+    }
+
+    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
+        const demandes = await demarchesSimplifieesDataRepository.findBySiret(siret);
+        return this.enititesToSubventions(demandes);
+    }
+
+    async updateAllForms() {
+        const acceptedDSFormConfig = await configurationsService.getAcceptedDemarchesSimplifieesFormIds();
+
+        if (!acceptedDSFormConfig) {
+            throw new Error("DS is not configured on this env, please add mapper");
+        }
+
+        await asyncForEach(acceptedDSFormConfig.data, async formId => {
+            await this.updateDataByFormId(formId);
+        });
+    }
+
+    async updateDataByFormId(formId: number) {
+        const result = await this.sendQuery(GetDossiersByDemarcheId, {
+            demarcheNumber: formId
+        });
+
+        if (!result) return;
+
+        const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
+        await asyncForEach(entities, async entity => {
+            await demarchesSimplifieesDataRepository.upsert(entity);
+        });
+    }
+
+    async sendQuery(query, vars) {
         try {
-            const result = await axios.post(
+            const result = await axios.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,
-                    variables: {
-                        demarcheNumber: processId
-                    }
+                    variables: vars
                 },
                 this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN)
             );
@@ -53,7 +97,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
             return result.data;
         } catch (e) {
             console.error(e);
-            return [];
+            return null;
         }
     }
 
@@ -67,6 +111,10 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
                 "Referrer-Policy": "strict-origin-when-cross-origin"
             }
         };
+    }
+
+    addSchemaMapper(schema: DemarchesSimplifieesMapperEntity) {
+        return demarchesSimplifieesMapperRepository.upsert(schema);
     }
 }
 

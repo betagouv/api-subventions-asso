@@ -105,6 +105,37 @@ describe("ConfigurationService", () => {
         });
     });
 
+    describe("DemarchesSimplifiees Part", () => {
+        describe("getAcceptedDemarchesSimplifieesFormIds", () => {
+            it("should return form ids", async () => {
+                const expected = { data: ["id1", "id2"] };
+                getByNameMock.mockImplementationOnce(async () => expected);
+
+                const actual = await configurationsService.getAcceptedDemarchesSimplifieesFormIds();
+
+                expect(actual).toEqual(expected);
+            });
+
+            it("should call repository with good name", async () => {
+                const expected = "DS_ACCEPTED_FORM";
+                getByNameMock.mockImplementationOnce(async () => ({}));
+
+                await configurationsService.getAcceptedDemarchesSimplifieesFormIds();
+
+                expect(getByNameMock).toHaveBeenCalledWith(expected);
+            });
+
+            it("should retrun null", async () => {
+                const expected = { data: null };
+                getByNameMock.mockImplementationOnce(async () => expected);
+
+                const actual = await configurationsService.getAcceptedDemarchesSimplifieesFormIds();
+
+                expect(actual).toEqual(expected);
+            });
+        });
+    });
+
     describe("Email Domain Configuration Part", () => {
         const PERSISTED_DOMAINS = ["rhone.fr"];
         const NEW_DOMAIN = "ille-et-vilaine.fr";

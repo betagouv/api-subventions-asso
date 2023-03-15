@@ -43,7 +43,7 @@ export default class SubventionTableController {
     }
 
     static _extractTableDataFromElement(element, trimValue = true) {
-        const sizedTrim = value => trim(value, MAX_CHAR_SIZE);
+        const sizedTrim = value => (value ? trim(value, this.MAX_CHAR_SIZE) : value);
 
         let dispositif = element.subvention.dispositif;
         if (trimValue && dispositif) dispositif = sizedTrim(dispositif);

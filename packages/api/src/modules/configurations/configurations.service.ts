@@ -1,17 +1,18 @@
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
-import { DauphinTokenAvailableTime } from "./entities/DauphinTokenAvailableTimeDataEntity";
-import { DauphinTokenDataEntity } from "./entities/DauphinTokenDataEntity";
+import { DauphinTokenDataEntity, DauphinTokenAvailableTime, DSAcceptedForm } from "./entities";
+import ConfigurationEntity from "./entities/ConfigurationEntity";
 import configurationsRepository from "./repositories/configurations.repository";
 
 export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
-    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS"
+    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
+    DS_ACCEPTED_FORM = "DS_ACCEPTED_FORM"
 }
 
 export class ConfigurationsService {
-    createEmptyConfigEntity(name, defaultData) {
+    createEmptyConfigEntity<T>(name, defaultData: T): ConfigurationEntity<T> {
         return {
             name,
             data: defaultData,
@@ -19,7 +20,7 @@ export class ConfigurationsService {
         };
     }
 
-    updateConfigEntity(entity, data) {
+    updateConfigEntity<T>(entity, data: T): ConfigurationEntity<T> {
         return { ...entity, data, updatedAt: new Date() };
     }
 
@@ -37,6 +38,24 @@ export class ConfigurationsService {
         return configurationsRepository.getByName<DauphinTokenAvailableTime>(
             CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE
         );
+    }
+
+    getAcceptedDemarchesSimplifieesFormIds() {
+        return configurationsRepository.getByName<DSAcceptedForm>(CONFIGURATION_NAMES.DS_ACCEPTED_FORM);
+    }
+
+    async addAcceptedDemarchesSimplifieesFormIds(id: number) {
+        let configuration: ConfigurationEntity<DSAcceptedForm> | null =
+            await this.getAcceptedDemarchesSimplifieesFormIds();
+
+        if (!configuration)
+            configuration = this.createEmptyConfigEntity<DSAcceptedForm>(CONFIGURATION_NAMES.DS_ACCEPTED_FORM, []);
+
+        configuration = this.updateConfigEntity(configuration, [...new Set([...configuration.data, id])]);
+
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.DS_ACCEPTED_FORM, configuration);
+
+        return configuration.data;
     }
 
     /**
