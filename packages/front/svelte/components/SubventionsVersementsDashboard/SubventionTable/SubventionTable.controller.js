@@ -1,8 +1,8 @@
 import Store from "../../../core/Store";
 
-import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
-import { capitalizeFirstLetter } from "../../../helpers/textHelper";
-import { trim } from "../../../helpers/stringHelper";
+import { numberToEuro, valueOrHyphen } from "@helpers/dataHelper";
+import { capitalizeFirstLetter } from "@helpers/textHelper";
+import { trim } from "@helpers/stringHelper";
 
 const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
