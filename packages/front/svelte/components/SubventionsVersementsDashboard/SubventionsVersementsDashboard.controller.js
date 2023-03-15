@@ -32,6 +32,10 @@ export default class SubventionsVersementsDashboardController {
         this.sortColumn = new Store(null);
     }
 
+    get isEtab() {
+        return isSiret(this.identifier);
+    }
+
     async load() {
         const getSubventionsStore = this._getSubventionsStoreFactory();
         const getVersements = this._getVersementsFactory();
@@ -128,14 +132,12 @@ export default class SubventionsVersementsDashboardController {
     }
 
     _getSubventionsStoreFactory() {
-        return isSiret(this.identifier)
+        return this.isEtab
             ? subventionsService.getEtablissementsSubventionsStore
             : subventionsService.getAssociationsSubventionsStore;
     }
 
     _getVersementsFactory() {
-        return isSiret(this.identifier)
-            ? versementsService.getEtablissementVersements
-            : versementsService.getAssociationVersements;
+        return this.isEtab ? versementsService.getEtablissementVersements : versementsService.getAssociationVersements;
     }
 }
