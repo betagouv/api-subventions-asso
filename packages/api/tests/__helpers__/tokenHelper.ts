@@ -14,10 +14,6 @@ const getToken = async (role = RoleEnum.user) => {
 
     const jwtData = await userService.findJwtByEmail(user.email);
 
-    if (!jwtData.success) {
-        throw new Error(jwtData.message);
-    }
-
     return jwtData.jwt.token;
 };
 
