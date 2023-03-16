@@ -34,17 +34,22 @@ export default class ChorusCliController extends CliController {
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
-        const entities = ChorusParser.parseXls(fileContent, e => {
-            const validation = chorusService.validateEntity(e);
 
-            if (!validation.success)
+        const chorusEntityValidator = entity => {
+            try {
+                chorusService.validateEntity(entity);
+            } catch (e) {
                 logs.push(
-                    `\n\nThis request is not registered because: ${validation.message}\n`,
-                    JSON.stringify(validation.data, null, "\t")
+                    `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                    JSON.stringify(entity, null, "\t")
                 );
+            }
 
-            return validation.success;
-        });
+            return true;
+        };
+
+        const entities = ChorusParser.parseXls(fileContent, chorusEntityValidator);
+
         const totalEnities = entities.length;
 
         console.info(`\n${totalEnities} valid entities found in file.`);
