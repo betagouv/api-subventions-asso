@@ -4,10 +4,13 @@ import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
 import { withTwoDigitYear } from "../../../helpers/dateHelper";
 import { getLastVersementsDate } from "../helper";
 
-export class VersementTableController {
+const MONTANT_VERSE_LABEL = "Montant versé";
+const CENTRE_FINANCIER_LABEL = "Centre financier";
+const DATE_VERSEMENT_LABEL = "Date du versement";
+
+export default class VersementTableController {
     constructor(sortMethod) {
         this.sortMethod = sortMethod;
-
         this.elements = [];
         this.sortColumn = [];
 
@@ -18,7 +21,26 @@ export class VersementTableController {
         this.buildColumnDataViews();
     }
 
-    _countTotal(versements) {
+    // extract values from versement table
+    static extractRows(elements) {
+        return elements.map(element =>
+            element.versements ? Object.values(this._extractTableDataFromElement(element)) : null
+        );
+    }
+
+    static extractHeaders() {
+        return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL];
+    }
+
+    static _extractTableDataFromElement(element) {
+        return {
+            totalAmount: numberToEuro(VersementTableController.countTotalVersement(element.versements)),
+            centreFinancier: valueOrHyphen(element.versements[0]?.centreFinancier),
+            lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(element.versements)))
+        };
+    }
+
+    static countTotalVersement(versements) {
         return versements.reduce((acc, versement) => acc + versement.amount, 0);
     }
     _countVersements() {
@@ -37,11 +59,9 @@ export class VersementTableController {
             if (element.versements.length === 0) return null;
 
             return {
+                ...VersementTableController._extractTableDataFromElement(element),
                 versements: element.versements,
-                versementsModal: element.versements.map(this.buildVersementsModal),
-                totalAmount: numberToEuro(this._countTotal(element.versements)),
-                centreFinancier: valueOrHyphen(element.versements[0]?.centreFinancier),
-                lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(element.versements)))
+                versementsModal: element.versements.map(this.buildVersementsModal)
             };
         });
 
@@ -61,9 +81,9 @@ export class VersementTableController {
 
     buildColumnDataViews() {
         const columnsName = {
-            "versements.montant": "Montant versé",
-            "versements.centreFinancier": "Centre financier",
-            "versements.date": "Date du versement"
+            "versements.montant": MONTANT_VERSE_LABEL,
+            "versements.centreFinancier": CENTRE_FINANCIER_LABEL,
+            "versements.date": DATE_VERSEMENT_LABEL
         };
 
         this.columnDataViews.set(

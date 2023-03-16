@@ -7,7 +7,7 @@
     import VersementsInfoModal from "../Modals/VersementsInfoModal.svelte";
     import StringTableCell from "../../Tables/StringTableCell.svelte";
     import NumberTableCell from "../../Tables/NumberTableCell.svelte";
-    import { VersementTableController } from "./VersementTable.controller";
+    import VersementTableController from "./VersementTable.controller";
 
     export let sort;
     export let elements = [];

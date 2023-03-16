@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SubventionTableController extractHeaders() return an array of header 1`] = `
+[
+  "Service instructeur",
+  "Dispositif",
+  "Intitulé de l'action",
+  "Montant demandé",
+  "Montant accordé",
+]
+`;

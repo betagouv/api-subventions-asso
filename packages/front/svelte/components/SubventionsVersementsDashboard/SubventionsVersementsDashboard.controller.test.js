@@ -2,11 +2,45 @@ import Store from "../../core/Store";
 import subventionsService from "../../resources/subventions/subventions.service";
 import versementsService from "../../resources/versements/versements.service";
 import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
+
 import * as helper from "./helper";
+import SubventionTableController from "./SubventionTable/SubventionTable.controller";
+import VersementTableController from "./VersementTable/VersementTable.controller";
+import associationService from "@resources/associations/association.service";
+jest.mock("@resources/associations/association.service");
+import establishmentService from "@resources/establishments/establishment.service";
+jest.mock("@resources/establishments/establishment.service");
+
+jest.mock("@helpers/csvHelper", () => {
+    return {
+        __esModule: true,
+        buildCsv: jest.fn(),
+        downloadCsv: jest.fn()
+    };
+});
+import * as csvHelper from "@helpers/csvHelper";
+
+jest.mock("@helpers/validatorHelper", () => {
+    return {
+        __esModule: true,
+        isSiret: jest.fn()
+    };
+});
+import * as validatorHelper from "@helpers/validatorHelper";
+
+jest.mock("@helpers/validatorHelper");
 
 describe("SubventionsVersementsDashboardController", () => {
     const SIREN = "123456789";
     const SIRET = SIREN + "00012";
+
+    describe("isEtab()", () => {
+        it("should call isSiret()", () => {
+            const ctrl = new SubventionsVersementsDashboardController(SIREN);
+            ctrl.isEtab();
+            expect(validatorHelper.isSiret).toHaveBeenCalledWith(SIREN);
+        });
+    });
 
     describe("load", () => {
         it("should call method _getSubventionsStoreFactory", async () => {
@@ -189,6 +223,77 @@ describe("SubventionsVersementsDashboardController", () => {
         });
     });
 
+    describe("download()", () => {
+        const mockExtractVersementHeaders = jest.spyOn(VersementTableController, "extractHeaders");
+        const mockExtractVersementRows = jest.spyOn(VersementTableController, "extractRows");
+        const mockExtractSubventionHeaders = jest.spyOn(SubventionTableController, "extractHeaders");
+        const mockExtractSubventionRows = jest.spyOn(SubventionTableController, "extractRows");
+
+        const spys = [
+            mockExtractVersementHeaders,
+            mockExtractVersementRows,
+            mockExtractSubventionHeaders,
+            mockExtractSubventionRows
+        ];
+
+        let ctrl;
+
+        const SUBVENTION_HEADERS = ["SUBVENTION_HEADER"];
+        const SUBVENTION_ROWS_A = ["SERVICE INST. A", "DISPOSITIF A"];
+        const SUBVENTION_ROWS_B = ["SERVICE INST. B", "DISPOSITIF B"];
+        const VERSEMENT_HEADERS = ["VERSEMENT_HEADER"];
+        const VERSEMENT_ROWS_A = ["CENTRE FINANCIER A"];
+        const VERSEMENT_ROWS_B = ["CENTRE FINANCIER B"];
+
+        beforeEach(() => {
+            ctrl = new SubventionsVersementsDashboardController(SIRET);
+            mockExtractSubventionHeaders.mockImplementation(jest.fn(() => SUBVENTION_HEADERS));
+            mockExtractSubventionRows.mockImplementation(jest.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
+            mockExtractVersementHeaders.mockImplementation(jest.fn(() => VERSEMENT_HEADERS));
+            mockExtractVersementRows.mockImplementation(jest.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
+        });
+        afterEach(() => spys.forEach(spy => spy.mockClear()));
+
+        it.each`
+            mock
+            ${mockExtractVersementHeaders}
+            ${mockExtractVersementRows}
+            ${mockExtractSubventionHeaders}
+            ${mockExtractSubventionRows}
+        `("should call extract methods", ({ mock }) => {
+            ctrl.download();
+            expect(mock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call buildCsv()", () => {
+            ctrl.download();
+            expect(csvHelper.buildCsv).toHaveBeenCalledWith(
+                [...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
+                [
+                    [...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
+                    [...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B]
+                ]
+            );
+        });
+
+        it("should increment assocation extract data", () => {
+            validatorHelper.isSiret.mockImplementationOnce(() => false);
+            ctrl.download();
+            expect(associationService.incExtractData).toHaveBeenCalledTimes(1);
+        });
+
+        it("should increment establishment extract data", () => {
+            validatorHelper.isSiret.mockImplementationOnce(() => true);
+            ctrl.download();
+            expect(establishmentService.incExtractData).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call downloadCsv()", () => {
+            ctrl.download();
+            expect(csvHelper.buildCsv).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe("_filterElementsBySelectedExercice", () => {
         it("should filter elements with year is 2021", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
@@ -357,6 +462,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_getSubventionsStoreFactory", () => {
         it("should return etablissement method", () => {
+            validatorHelper.isSiret.mockImplementationOnce(() => true);
             const controller = new SubventionsVersementsDashboardController(SIRET);
             const expected = subventionsService.getEtablissementsSubventionsStore;
 
@@ -366,6 +472,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should return association method", () => {
+            validatorHelper.isSiret.mockImplementationOnce(() => false);
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = subventionsService.getAssociationsSubventionsStore;
 
@@ -377,6 +484,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_getVersementsFactory", () => {
         it("should return etablissement method", () => {
+            validatorHelper.isSiret.mockImplementationOnce(() => true);
             const controller = new SubventionsVersementsDashboardController(SIRET);
             const expected = versementsService.getEtablissementVersements;
 
@@ -386,6 +494,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should return association method", () => {
+            validatorHelper.isSiret.mockImplementationOnce(() => false);
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = versementsService.getAssociationVersements;
 

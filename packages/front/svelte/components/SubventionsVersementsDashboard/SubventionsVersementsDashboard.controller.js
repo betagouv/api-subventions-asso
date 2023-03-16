@@ -5,6 +5,11 @@ import versementsService from "../../resources/versements/versements.service";
 
 import Store from "../../core/Store";
 import { mapSubventionsAndVersements, sortByPath } from "./helper";
+import SubventionTableController from "./SubventionTable/SubventionTable.controller";
+import VersementTableController from "./VersementTable/VersementTable.controller";
+import { buildCsv, downloadCsv } from "@helpers/csvHelper";
+import establishmentService from "@resources/establishments/establishment.service";
+import associationService from "@resources/associations/association.service";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {
@@ -27,6 +32,10 @@ export default class SubventionsVersementsDashboardController {
         this.elements = new Store([]);
         this.sortDirection = new Store("asc");
         this.sortColumn = new Store(null);
+    }
+
+    isEtab() {
+        return isSiret(this.identifier);
     }
 
     async load() {
@@ -54,6 +63,26 @@ export default class SubventionsVersementsDashboardController {
         this.selectedExercice.set(selectedExercice);
         this.selectedYear.set(this.exercices[selectedExercice]);
         this._filterElementsBySelectedExercice();
+    }
+
+    download() {
+        const headers = [...SubventionTableController.extractHeaders(), ...VersementTableController.extractHeaders()];
+        const subventions = SubventionTableController.extractRows(this._fullElements);
+        const versements = VersementTableController.extractRows(this._fullElements);
+
+        // merge sub and vers
+        const datasub = subventions.map((subvention, index) => {
+            // empty subvention
+            if (!subvention) subvention = ["", "", "", "", ""];
+            // empty versement
+            if (!versements[index]) versements[index] = ["", "", ""];
+            return [...subvention, ...versements[index]];
+        });
+
+        const csvString = buildCsv(headers, datasub);
+        downloadCsv(csvString, `DataSubvention-${this.identifier}`);
+        if (this.isEtab()) establishmentService.incExtractData(this.identifier);
+        else associationService.incExtractData(this.identifier);
     }
 
     _filterElementsBySelectedExercice() {
@@ -107,13 +136,13 @@ export default class SubventionsVersementsDashboardController {
     }
 
     _getSubventionsStoreFactory() {
-        return isSiret(this.identifier)
+        return this.isEtab()
             ? subventionsService.getEtablissementsSubventionsStore
             : subventionsService.getAssociationsSubventionsStore;
     }
 
     _getVersementsFactory() {
-        return isSiret(this.identifier)
+        return this.isEtab()
             ? versementsService.getEtablissementVersements
             : versementsService.getAssociationVersements;
     }
