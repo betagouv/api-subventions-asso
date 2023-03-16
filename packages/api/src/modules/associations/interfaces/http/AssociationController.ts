@@ -75,13 +75,8 @@ export class AssociationController extends Controller {
      */
     @Get("/{identifier}/etablissements")
     public async getEtablissements(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
-        try {
-            const etablissements = await associationService.getEtablissements(identifier);
-            return { etablissements };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const etablissements = await associationService.getEtablissements(identifier);
+        return { etablissements };
     }
 
     /**

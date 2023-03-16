@@ -103,7 +103,11 @@ export class AssociationsService {
 
             identifier = siren;
         }
-        return await etablissementService.getEtablissementsBySiren(identifier);
+        const establishments = await etablissementService.getEtablissementsBySiren(identifier);
+        if (!establishments) {
+            throw new NotFoundError();
+        }
+        return establishments;
     }
 
     private async aggregate(id: StructureIdentifiers) {
