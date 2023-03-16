@@ -15,6 +15,7 @@ import EtablissementDtoAdapter from "./adapters/EtablissementDtoAdapter";
 import AssociationDto from "./dto/AssociationDto";
 import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
+import associationNameService from "../../association-name/associationName.service";
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     provider = {
@@ -57,19 +58,15 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const association = data.etablissement?.unite_legale;
         const rna = association?.identifiant_association;
 
-        if (rna) {
-            EventManager.call("rna-siren.matching", [{ rna, siren: siret }]);
-            const name = association.denomination;
-            if (name)
-                await EventManager.call("association-name.matching", [
-                    {
-                        rna,
-                        siren: siretToSiren(siret),
-                        name,
-                        provider: this.provider.name,
-                        lastUpdate: data.etablissement.updated_at
-                    }
-                ]);
+        if (rna) EventManager.call("rna-siren.matching", [{ rna, siren: siret }]);
+        if (rna && association.denomination) {
+            await associationNameService.upsert({
+                rna,
+                siren: siretToSiren(siret),
+                name: association.denomination,
+                provider: this.provider.name,
+                lastUpdate: new Date(data.etablissement.updated_at)
+            });
         }
 
         const etablissement = EtablissementDtoAdapter.toEtablissement(data.etablissement);
@@ -85,17 +82,14 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const association = data.unite_legale;
         const rna = association.identifiant_association;
         if (rna) {
-            const name = association.denomination;
+            await associationNameService.upsert({
+                rna,
+                siren,
+                name: association.denomination,
+                provider: this.provider.name,
+                lastUpdate: new Date(association.updated_at)
+            });
             EventManager.call("rna-siren.matching", [{ rna, siren }]);
-            await EventManager.call("association-name.matching", [
-                {
-                    rna,
-                    siren,
-                    name,
-                    provider: this.provider.name,
-                    lastUpdate: association.updated_at
-                }
-            ]);
         }
 
         if (data.unite_legale.etablissements) {
@@ -118,15 +112,13 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const association = data.association;
         const name = association.titre;
 
-        await EventManager.call("association-name.matching", [
-            {
-                rna,
-                siren: association.siret ? siretToSiren(association.siret) : null,
-                name,
-                provider: this.provider.name,
-                lastUpdate: association.updated_at
-            }
-        ]);
+        await associationNameService.upsert({
+            rna,
+            siren: association.siret ? siretToSiren(association.siret) : null,
+            name,
+            provider: this.provider.name,
+            lastUpdate: new Date(association.updated_at)
+        });
 
         if (association.siret) {
             const siren = siretToSiren(association.siret);

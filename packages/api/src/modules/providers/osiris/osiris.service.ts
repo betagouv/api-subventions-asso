@@ -10,6 +10,7 @@ import {
     isOsirisRequestId,
     isOsirisActionId
 } from "../../../shared/Validators";
+import associationNameService from "../../association-name/associationName.service";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
@@ -41,9 +42,13 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
 
         EventManager.call("rna-siren.matching", [{ rna, siren }]);
-        await EventManager.call("association-name.matching", [
-            { rna, siren, name, provider: this.provider.name, lastUpdate: date }
-        ]);
+        await associationNameService.upsert({
+            rna: rna || null,
+            siren,
+            name,
+            provider: this.provider.name,
+            lastUpdate: date
+        });
 
         if (existingFile) {
             await osirisRequestRepository.update(request);

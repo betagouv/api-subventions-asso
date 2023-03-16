@@ -14,6 +14,7 @@ import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequ
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import leCompteAssoRepository from "./repositories/leCompteAsso.repository";
 import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
+import associationNameService from "../../association-name/associationName.service";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -72,16 +73,14 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             const siret = legalInformations.siret;
             if (siret) {
                 const siren = siretToSiren(siret);
+                await associationNameService.upsert({
+                    rna: legalInformations.rna || null,
+                    siren,
+                    name: legalInformations.name,
+                    provider: this.provider.name,
+                    lastUpdate: partialEntity.providerInformations.transmis_le
+                });
                 EventManager.call("rna-siren.matching", [{ rna: legalInformations.rna, siren }]);
-                await EventManager.call("association-name.matching", [
-                    {
-                        rna: legalInformations.rna,
-                        siren,
-                        name: legalInformations.name,
-                        provider: this.provider.name,
-                        lastUpdate: partialEntity.providerInformations.transmis_le
-                    }
-                ]);
             }
 
             return {

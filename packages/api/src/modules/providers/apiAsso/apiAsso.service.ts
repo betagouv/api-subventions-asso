@@ -17,6 +17,8 @@ import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, { DocumentDto, StructureDacDocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
+import { isDateNewer } from "../../../shared/helpers/DateHelper";
+import associationNameService from "../../association-name/associationName.service";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = {
@@ -87,15 +89,13 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         const rnaIsMoreRecent = isDateNewer(lastUpdateDateRna, lastUpdateDateSiren);
 
-        await EventManager.call("association-name.matching", [
-            {
-                rna: structure.identite.id_rna,
-                siren: structure.identite.id_siren,
-                name: structure.identite.nom,
-                provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
-                lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren
-            }
-        ]);
+        await associationNameService.upsert({
+            rna: structure.identite.id_rna,
+            siren: structure.identite.id_siren,
+            name: structure.identite.nom,
+            provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
+            lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren
+        });
     }
 
     private filterRnaDocuments(documents: StructureRnaDocumentDto[]) {

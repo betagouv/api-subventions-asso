@@ -1,7 +1,6 @@
 import { Rna, Siren } from "@api-subventions-asso/dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { StructureIdentifiers } from "../../@types";
-import EventManager from "../../shared/EventManager";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
@@ -22,15 +21,6 @@ export class AssociationNameService {
         [osirisService.provider.name]: 0.3,
         [leCompteAssoService.provider.name]: 0.2
     };
-
-    constructor() {
-        EventManager.add("association-name.matching");
-
-        EventManager.on("association-name.matching", {}, async (cbStop, data) => {
-            await this.upsert(data as IAssociationName);
-            cbStop();
-        });
-    }
 
     async getGroupedIdentifiers(
         identifier: StructureIdentifiers
@@ -147,17 +137,8 @@ export class AssociationNameService {
         return [...uniqueMapsValues].map(this._mergeEntities) as AssociationNameEntity[];
     }
 
-    /***
-     * @deprecated risks DB write concurrency. use upsert instead
-     * */
-    async add(entity: AssociationNameEntity) {
-        if (await associationNameRepository.findOneByEntity(entity)) return; // TODO: UPDATE DATE ?
-
-        return await associationNameRepository.create(entity);
-    }
-
-    async upsert(entity: AssociationNameEntity) {
-        return await associationNameRepository.upsert(entity);
+    upsert(entity: AssociationNameEntity) {
+        return associationNameRepository.upsert(entity);
     }
 }
 
