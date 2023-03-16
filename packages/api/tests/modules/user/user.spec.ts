@@ -1,6 +1,5 @@
 import request = require("supertest");
-import getUserToken from "../../__helpers__/getUserToken";
-import getAdminToken from "../../__helpers__/getAdminToken";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import userService from "../../../src/modules/user/user.service";
 import { RoleEnum } from "../../../src/@enums/Roles";
 
@@ -15,7 +14,7 @@ describe("UserController, /user", () => {
                     email: "admin@beta.gouv.fr",
                     roles: [RoleEnum.admin]
                 })
-                .set("x-access-token", await getAdminToken())
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
@@ -33,7 +32,7 @@ describe("UserController, /user", () => {
                     email: "futur-admin@beta.gouv.fr",
                     roles: [RoleEnum.admin]
                 })
-                .set("x-access-token", await getAdminToken())
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
@@ -54,7 +53,7 @@ describe("UserController, /user", () => {
                     email: "futur-admin@beta.gouv.fr",
                     roles: ["test"]
                 })
-                .set("x-access-token", await getAdminToken())
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(400);
@@ -68,7 +67,7 @@ describe("UserController, /user", () => {
                     email: "admin@beta.gouv.fr",
                     roles: [RoleEnum.admin]
                 })
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(401);
@@ -94,7 +93,7 @@ describe("UserController, /user", () => {
                 .send({
                     password: "Test::11"
                 })
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
@@ -112,7 +111,7 @@ describe("UserController, /user", () => {
                 .send({
                     password: "Test::11"
                 })
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
@@ -127,7 +126,7 @@ describe("UserController, /user", () => {
                 .send({
                     password: "azerty"
                 })
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(400);

@@ -1,5 +1,5 @@
 import request from "supertest";
-import getUserToken from "../../__helpers__/getUserToken";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestRepository from "../../../src/modules/providers/osiris/repositories/osiris.request.repository";
 import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
 import { SubventionEntity as FonjepEntityFixture } from "../providers/fonjep/__fixtures__/entity";
@@ -8,7 +8,6 @@ import dauphinService from "../../../src/modules/providers/dauphin/dauphin.servi
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
 import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
-import getAdminToken from "../../__helpers__/getAdminToken";
 import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import associationsService from "../../../src/modules/associations/associations.service";
 
@@ -26,7 +25,7 @@ describe("/association", () => {
         it("should return a list of subventions", async () => {
             const response = await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}/subventions`)
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
 
@@ -42,7 +41,7 @@ describe("/association", () => {
         it("should return an association", async () => {
             const response = await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();
@@ -52,7 +51,7 @@ describe("/association", () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
             const expected = [
@@ -69,7 +68,7 @@ describe("/association", () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("x-access-token", await getAdminToken())
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 
@@ -104,7 +103,7 @@ describe("/association", () => {
         it("should return SimplifiedEtablissement[]", async () => {
             const response = await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.rna}/etablissements`)
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();

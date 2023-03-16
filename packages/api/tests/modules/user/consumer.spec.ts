@@ -1,5 +1,4 @@
 import request = require("supertest");
-import getUserToken from "../../__helpers__/getUserToken";
 import { createAndGetConsumerToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 
 const g = global as unknown as { app: unknown };
@@ -34,7 +33,7 @@ describe("/consumer", () => {
         //             email: "futur-admin@beta.gouv.fr",
         //             roles: [RoleEnum.admin]
         //         })
-        //         .set("x-access-token", await getAdminToken())
+        //         .set("x-access-token", await createAndGetAdminToken())
         //         .set("Accept", "application/json");
 
         //     expect(response.statusCode).toBe(200);

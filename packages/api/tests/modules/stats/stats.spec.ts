@@ -1,7 +1,6 @@
 import request = require("supertest");
+import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import statsService from "../../../src/modules/stats/stats.service";
-import getAdminToken from "../../__helpers__/getAdminToken";
-import getUserToken from "../../__helpers__/getUserToken";
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import userFixture from "../user/__fixtures__/entity";
 import db from "../../../src/shared/MongoConnection";
@@ -34,7 +33,7 @@ describe("/stats", () => {
                         start: YESTERDAY.toString(),
                         end: TODAY.toString()
                     })
-                    .set("x-access-token", await getAdminToken())
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
                 expect(actual.statusCode).toEqual(200);
                 expect(actual.body).toEqual(expected);
@@ -53,7 +52,7 @@ describe("/stats", () => {
                         start: YESTERDAY.toString(),
                         end: TODAY.toString()
                     })
-                    .set("x-access-token", await getAdminToken())
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
 
                 expect(actual.statusCode).toBe(500);
@@ -75,7 +74,7 @@ describe("/stats", () => {
                         start: YESTERDAY.toString(),
                         end: TODAY.toString()
                     })
-                    .set("x-access-token", await getUserToken())
+                    .set("x-access-token", await createAndGetUserToken())
                     .set("Accept", "application/json");
 
                 expect(actual.statusCode).toBe(401);
@@ -95,7 +94,7 @@ describe("/stats", () => {
                 const actual = await request(g.app)
                     .get("/stats/requests/median")
                     .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
-                    .set("x-access-token", await getAdminToken())
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
                 expect(actual.statusCode).toEqual(200);
                 expect(actual.body).toEqual(expected);
@@ -110,7 +109,7 @@ describe("/stats", () => {
                 const actual = await request(g.app)
                     .get("/stats/requests/median")
                     .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
-                    .set("x-access-token", await getAdminToken())
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
 
                 expect(actual.statusCode).toBe(500);
@@ -128,7 +127,7 @@ describe("/stats", () => {
                 const actual = await request(g.app)
                     .get("/stats/requests/median")
                     .query({ start: YESTERDAY.toString(), end: TODAY.toString() })
-                    .set("x-access-token", await getUserToken())
+                    .set("x-access-token", await createAndGetUserToken())
                     .set("Accept", "application/json")
                     .expect(401, expected);
             });
@@ -140,7 +139,7 @@ describe("/stats", () => {
             async function makeRequest(query) {
                 return request(g.app)
                     .get(`/stats/associations${query}`)
-                    .set("x-access-token", await getAdminToken())
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
             }
 
@@ -295,7 +294,7 @@ describe("/stats", () => {
                 const expected = { data: DATA };
                 await request(g.app)
                     .get(`/stats/users/monthly/${YEAR}`)
-                    .set("x-access-token", await getAdminToken())
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json")
                     .expect(200, expected);
             });
@@ -313,8 +312,8 @@ describe("/stats", () => {
                 const expected = { data: { admin: 1, active: 1, idle: 1, inactive: 1 } };
                 await request(g.app)
                     .get(`/stats/users/status`)
-                    // getAdminToken() creates an admin user
-                    .set("x-access-token", await getAdminToken())
+                    // createAndGetAdminToken() creates an admin user
+                    .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json")
                     .expect(200, expected);
             });
