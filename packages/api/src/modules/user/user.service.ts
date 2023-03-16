@@ -388,27 +388,17 @@ export class UserService {
     }
 
     // Only used in tests
-    async findJwtByEmail(
-        email: string
-    ): Promise<UserServiceError | { success: true; jwt: { token: string; expirateDate: Date } }> {
+    async findJwtByEmail(email: string): Promise<{ jwt: { token: string; expirateDate: Date } }> {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
         if (!userWithSecrets) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
+            throw new Error("User not found");
         }
 
         if (!userWithSecrets.jwt) {
-            return {
-                success: false,
-                message: "User is not active",
-                code: UserServiceErrors.USER_NOT_ACTIVE
-            };
+            throw new Error("User is not active");
         }
 
-        return { success: true, jwt: userWithSecrets.jwt };
+        return { jwt: userWithSecrets.jwt };
     }
 
     async findJwtByUser(user: UserDto) {

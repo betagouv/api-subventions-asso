@@ -47,7 +47,6 @@ describe("expressAuthentication", () => {
         );
         findJwtByEmailMock.mockImplementation(() =>
             Promise.resolve({
-                success: true,
                 jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() }
             })
         );
