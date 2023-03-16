@@ -48,7 +48,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to associaiton 1`] = `
+exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to association 1`] = `
 Object {
   "adresse_siege_rna": Array [
     Object {
@@ -115,7 +115,7 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to associaiton 1`] = `
+exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to association 1`] = `
 Object {
   "adresse_siege_siren": Array [
     Object {

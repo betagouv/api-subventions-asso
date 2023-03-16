@@ -97,13 +97,13 @@ describe("ApiAssoDtoAdapter", () => {
     });
 
     describe("sirenStructureToAssociation", () => {
-        it("should transform to associaiton", () => {
+        it("should transform to association", () => {
             expect(ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructureFixture)).toMatchSnapshot();
         });
     });
 
     describe("rnaStructureToAssociation", () => {
-        it("should transform to associaiton", () => {
+        it("should transform to association", () => {
             expect(ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructureFixture)).toMatchSnapshot();
         });
     });
