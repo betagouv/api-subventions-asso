@@ -3,6 +3,7 @@ import SignupController from "./Signup.controller";
 import authService from "@resources/auth/auth.service";
 
 jest.mock("@api-subventions-asso/dto", () => ({
+    ...jest.requireActual("@api-subventions-asso/dto"),
     SignupErrorCodes: {
         EMAIL_NOT_VALID: 1,
         USER_ALREADY_EXIST: 2,
