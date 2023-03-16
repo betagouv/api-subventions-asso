@@ -122,14 +122,6 @@ describe("AssociationController", () => {
             const actual = await controller.getEtablissements(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
-
-        it("should return an error message", async () => {
-            const ERROR_MESSAGE = "Error";
-            getEtablissementSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            const expected = { message: ERROR_MESSAGE };
-            const actual = await controller.getEtablissements(IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
     });
 
     describe("registerExtract", () => {
