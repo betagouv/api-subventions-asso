@@ -356,7 +356,7 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        await mailNotifierService.sendForgetPassword(email.toLocaleLowerCase(), resetResult.token);
+        mailNotifierService.sendForgetPasswordMail(email.toLocaleLowerCase(), resetResult.token);
 
         return resetResult;
     }
