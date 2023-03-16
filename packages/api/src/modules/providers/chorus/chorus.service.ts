@@ -14,7 +14,7 @@ import chorusLineRepository from "./repositories/chorus.line.repository";
 
 export interface RejectedRequest {
     state: "rejected";
-    result: { message: string; code: number; data: unknown };
+    result: { message: string; data: unknown };
 }
 
 export class ChorusService implements VersementsProvider {
@@ -29,46 +29,26 @@ export class ChorusService implements VersementsProvider {
 
     public validateEntity(entity: ChorusLineEntity) {
         if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {
-            return {
-                success: false,
-                message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`,
-                data: entity
-            };
+            throw new Error(`The branche ${entity.indexedInformations.codeBranche} is not accepted in data`);
         }
 
         if (!isSiret(entity.indexedInformations.siret)) {
-            return {
-                success: false,
-                message: `INVALID SIRET FOR ${entity.indexedInformations.siret}`,
-                data: entity
-            };
+            throw new Error(`INVALID SIRET FOR ${entity.indexedInformations.siret}`);
         }
 
         if (isNaN(entity.indexedInformations.amount)) {
-            return {
-                success: false,
-                message: `Amount is not a number`,
-                data: entity
-            };
+            throw new Error(`Amount is not a number`);
         }
 
         if (!(entity.indexedInformations.dateOperation instanceof Date)) {
-            return {
-                success: false,
-                message: `Operation date is not a valid date`,
-                data: entity
-            };
+            throw new Error(`Operation date is not a valid date`);
         }
 
         if (!isEJ(entity.indexedInformations.ej)) {
-            return {
-                success: false,
-                message: `INVALID EJ FOR ${entity.indexedInformations.ej}`,
-                data: entity
-            };
+            throw new Error(`INVALID EJ FOR ${entity.indexedInformations.ej}`);
         }
 
-        return { success: true };
+        return true;
     }
 
     /**
@@ -102,10 +82,12 @@ export class ChorusService implements VersementsProvider {
     }
 
     public async addChorusLine(entity: ChorusLineEntity) {
-        if (!this.validateEntity(entity).success) {
+        try {
+            this.validateEntity(entity);
+        } catch (error) {
             return {
                 state: "rejected",
-                result: this.validateEntity(entity)
+                result: { message: (error as Error).message, data: entity }
             };
         }
 
@@ -124,10 +106,7 @@ export class ChorusService implements VersementsProvider {
         ) {
             return {
                 state: "rejected",
-                result: {
-                    message: "The Siret does not correspond to an association",
-                    data: entity
-                }
+                result: { message: "The Siret does not correspond to an association", data: entity }
             };
         }
 
@@ -140,10 +119,7 @@ export class ChorusService implements VersementsProvider {
         } catch (e) {
             return {
                 state: "rejected",
-                result: {
-                    message: "Fail to create ChorusLineEntity",
-                    data: entity
-                }
+                result: { message: "Fail to create ChorusLineEntity", data: entity }
             };
         }
     }
