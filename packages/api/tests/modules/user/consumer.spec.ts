@@ -23,26 +23,5 @@ describe("/consumer", () => {
                     expect(response.body).toBeDefined();
                 });
         });
-
-        // it("should add role", async () => {
-        //     await userService.createUser("futur-admin@beta.gouv.fr");
-
-        //     const response = await request(g.app)
-        //         .post("/user/admin/roles")
-        //         .send({
-        //             email: "futur-admin@beta.gouv.fr",
-        //             roles: [RoleEnum.admin]
-        //         })
-        //         .set("x-access-token", await createAndGetAdminToken())
-        //         .set("Accept", "application/json");
-
-        //     expect(response.statusCode).toBe(200);
-        //     expect(response.body).toMatchObject({
-        //         user: {
-        //             email: "futur-admin@beta.gouv.fr",
-        //             roles: ["user", RoleEnum.admin]
-        //         }
-        //     });
-        // });
     });
 });
