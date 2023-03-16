@@ -4,13 +4,13 @@ import {
     GetEtablissementResponseDto,
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
-    Siret,
-    ErrorResponse
+    Siret
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
 import { NotFoundError } from "../../../../shared/errors/httpErrors/NotFoundError";
 import { AssociationIdentifiers } from "../../../../@types";
+import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 
 @Route("etablissement")
 @Security("jwt")
@@ -21,10 +21,10 @@ export class EtablissementController extends Controller {
      * @param siret Identifiant Siret
      */
     @Get("/{siret}")
-    @Response<ErrorResponse>("400", "SIRET incorrect", {
+    @Response<HttpErrorInterface>("400", "SIRET incorrect", {
         message: "You must provide a valid SIRET"
     })
-    @Response<ErrorResponse>("404", "L'établissement n'a pas été trouvé", {
+    @Response<HttpErrorInterface>("404", "L'établissement n'a pas été trouvé", {
         message: "Etablissement not found"
     })
     public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
