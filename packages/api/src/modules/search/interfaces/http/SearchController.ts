@@ -1,5 +1,5 @@
-import { ErrorResponse } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import AssociationNameEntity from "../../../association-name/entities/AssociationNameEntity";
 
 import searchService from "../../search.service";
@@ -14,18 +14,11 @@ export class SearchController extends Controller {
      * @param rna_or_siren Identifiant RNA ou Identifiant Siren
      */
     @Get("/associations/{input}")
-    @Response<ErrorResponse>("404", "Aucune association retrouvée", {
+    @Response<HttpErrorInterface>("404", "Aucune association retrouvée", {
         message: "Could match any association with given input : ${input}"
     })
-    public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] } | ErrorResponse> {
+    public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] }> {
         const result = await searchService.getAssociationsKeys(input);
-        if (!result || (Array.isArray(result) && result.length == 0)) {
-            this.setStatus(404);
-            return {
-                message: `Could match any association with given input : ${input}`
-            };
-        }
-        this.setStatus(200);
         return { result };
     }
 }
