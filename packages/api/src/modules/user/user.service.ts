@@ -140,8 +140,12 @@ export class UserService {
         return userRepository.findByEmail(email.toLocaleLowerCase());
     }
 
-    findConsumerToken(userId: ObjectId) {
-        return consumerTokenRepository.findToken(userId);
+    async findConsumerToken(userId: ObjectId): Promise<string> {
+        const token = await consumerTokenRepository.findToken(userId);
+        if (!token) {
+            throw new NotFoundError("Aucun token d'authentification n'a été trouvé");
+        }
+        return token;
     }
 
     find(query: DefaultObject = {}) {

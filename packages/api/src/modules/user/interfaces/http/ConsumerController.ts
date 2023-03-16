@@ -1,11 +1,8 @@
-import {
-    ConsumerTokenDtoNegativeResponse,
-    ConsumerTokenDtoPositiveResponse,
-    ConsumerTokenDtoResponse
-} from "@api-subventions-asso/dto";
+import { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse } from "@api-subventions-asso/dto";
 import { Controller, Get, Route, Security, Tags, Response, Request } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
+import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import userService from "../../user.service";
 
 @Route("consumer")
@@ -19,30 +16,11 @@ export class ConsumerController extends Controller {
      * @summary Permet de récupérer votre token unique d'authentification
      */
     @Get("token")
-    @Response<ConsumerTokenDtoPositiveResponse>(200, "Retourne votre token d'authentification unique", {
-        token: "VOTRE TOKEN"
-    })
-    @Response<ConsumerTokenDtoNegativeResponse>(422, "Aucun token d'authentification n'a été trouvé", {
-        message: "Aucun token d'authentification n'a été trouvé"
-    })
-    @Response<ConsumerTokenDtoNegativeResponse>(401, "L'utilisateur n'a pas le rôle CONSUMER", {
-        message: "JWT does not contain required scope."
-    })
+    @Response<ConsumerTokenDtoPositiveResponse>(200, "Retourne votre token d'authentification unique")
+    @Response<HttpErrorInterface>(404, "Aucun token d'authentification n'a été trouvé")
+    @Response<HttpErrorInterface>(401, "L'utilisateur n'a pas le rôle CONSUMER")
     public async getToken(@Request() req: IdentifiedRequest): Promise<ConsumerTokenDtoResponse> {
-        let token: string | undefined;
-        try {
-            token = await userService.findConsumerToken(req.user._id);
-        } catch {
-            /** Token not found */
-        }
-
-        if (!token) {
-            this.setStatus(422);
-            return {
-                message: "Aucun token d'authentification n'a été trouvé"
-            };
-        }
-
+        const token = await userService.findConsumerToken(req.user._id);
         return { token };
     }
 }
