@@ -1,13 +1,31 @@
-import { WithId } from "mongodb";
 import { Rna, Siren } from "@api-subventions-asso/dto";
+import { UpdateResult, WithId } from "mongodb";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import db from "../../../shared/MongoConnection";
 import { isStartOfSiret } from "../../../shared/Validators";
 import IAssociationName from "../@types/IAssociationName";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
+import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
 
 export class AssociationNameRepository {
     private readonly collection = db.collection<AssociationNameEntity>("association-name");
+    private upsertStack: ExecutionSyncStack<AssociationNameEntity, UpdateResult>;
+
+    constructor() {
+        this.upsertStack = new ExecutionSyncStack(entity => {
+            return this.collection.updateOne(
+                {
+                    rna: entity.rna,
+                    siren: entity.siren,
+                    name: entity.name
+                },
+                {
+                    $setOnInsert: entity
+                },
+                { upsert: true }
+            );
+        });
+    }
 
     private toEntity(document: WithId<AssociationNameEntity> | IAssociationName) {
         return new AssociationNameEntity(
@@ -60,18 +78,9 @@ export class AssociationNameRepository {
         return this.collection.insertOne(Object.assign({}, entity)); // Clone entity to avoid mutating the entity;
     }
 
-    async upsert(entity: AssociationNameEntity) {
-        return this.collection.updateOne(
-            {
-                rna: entity.rna,
-                siren: entity.siren,
-                name: entity.name
-            },
-            {
-                $setOnInsert: entity
-            },
-            { upsert: true }
-        );
+    async upsert(entity: AssociationNameEntity): Promise<UpdateResult> {
+        // Use stack because, sometimes to upsert on same entity as executed at the same time, please read : https://jira.mongodb.org/browse/SERVER-14322
+        return this.upsertStack.addOperation(entity);
     }
 
     async insertMany(entities: AssociationNameEntity[]) {

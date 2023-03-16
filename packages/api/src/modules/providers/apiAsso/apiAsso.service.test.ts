@@ -4,10 +4,15 @@ import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service";
 import { DacDtoDocument, DacSiret, DtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
 import { ApiAssoDocumentFixture } from "./__fixtures__/ApiAssoDocumentFixture";
-import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 import associationNameService from "../../association-name/associationName.service";
 import { sirenStructureFixture } from "./__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
+import {
+    fixtureAsso,
+    fixtureDocumentDac,
+    fixtureDocumentRna,
+    fixtureEtablissements
+} from "./__fixtures__/ApiAssoStructureFixture";
 
 jest.mock("../../../shared/EventManager");
 
@@ -23,10 +28,19 @@ describe("ApiAssoService", () => {
     // @ts-expect-error: mock private method
     const findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments") as jest.SpyInstance<any | null>;
 
+    let associationNameUpsert: jest.SpyInstance;
+
+
     const RNA = "W750000000";
+
+    beforeAll(() => {
+        // @ts-ignore relove value can must be an mongo updateObject, so just disable ts
+        associationNameUpsert = jest.spyOn(associationNameService, "upsert").mockResolvedValue({});
+    })
 
     afterAll(() => {
         adapterEtablissementMock.mockReset();
+        associationNameUpsert.mockReset();
     });
 
     describe("sendRequest", () => {
