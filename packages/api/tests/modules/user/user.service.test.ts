@@ -276,39 +276,6 @@ describe("user.service.ts", () => {
         });
     });
 
-    describe("findJwtByEmail", () => {
-        beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
-        });
-
-        it("should reject because user not found", async () => {
-            const expected = {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-            let actual;
-            try {
-                actual = await service.findJwtByEmail("wrong@email.fr");
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return jwt", async () => {
-            const expected = {
-                success: true,
-                jwt: {
-                    token: expect.stringContaining(""),
-                    expirateDate: expect.any(Date)
-                }
-            };
-            const actual = await service.findJwtByEmail("test@beta.gouv.fr");
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("passwordValidator", () => {
         it("should reject because no number in password", () => {
             expect(service.passwordValidator("AAAAAAAaaaaaa;;;;")).toBe(false);
