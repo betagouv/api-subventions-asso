@@ -48,295 +48,92 @@ Object {
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should return rna association 1`] = `
-Object {
-  "adresse_siege_rna": undefined,
-  "code_objet_social_1": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "code_objet_social_2": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "date_creation_rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "object",
-      "value": 1994-07-04T00:00:00.000Z,
-    },
-  ],
-  "date_modification_rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "object",
-      "value": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  "denomination_rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "string",
-      "value": "TEST",
-    },
-  ],
-  "objet_social": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "string",
-      "value": "W00000000",
-    },
-  ],
-}
-`;
-
-exports[`ApiAssoDtoAdapter toAssociation should return rna association with adresse 1`] = `
+exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to associaiton 1`] = `
 Object {
   "adresse_siege_rna": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "object",
       "value": Object {
-        "code_postal": undefined,
-        "commune": "paris",
-        "numero": undefined,
-        "type_voie": undefined,
-        "voie": undefined,
+        "code_postal": "42424",
+        "commune": "Londre",
+        "numero": "18",
+        "type_voie": "RUE",
+        "voie": "MEURIS",
       },
     },
   ],
   "code_objet_social_1": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "code_objet_social_2": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
+      "type": "string",
+      "value": "conduite d'activités économiques",
     },
   ],
   "date_creation_rna": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "object",
-      "value": 1994-07-04T00:00:00.000Z,
+      "value": 1998-02-07T00:00:00.000Z,
     },
   ],
   "date_modification_rna": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "object",
-      "value": 2018-01-01T00:00:00.000Z,
+      "value": 2023-01-12T00:00:00.000Z,
     },
   ],
   "denomination_rna": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
-      "value": "TEST",
+      "value": "Asso qui n'existe pas",
     },
   ],
   "objet_social": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
+      "type": "string",
+      "value": "Object social !",
     },
   ],
   "rna": Array [
     Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
+      "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
-      "value": "W00000000",
+      "value": "W000000000",
     },
   ],
 }
 `;
 
-exports[`ApiAssoDtoAdapter toAssociation should return rna association with date creation 1`] = `
-Object {
-  "adresse_siege_rna": undefined,
-  "code_objet_social_1": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "code_objet_social_2": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "date_creation_rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "object",
-      "value": 1906-07-15T00:00:00.000Z,
-    },
-  ],
-  "date_modification_rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "object",
-      "value": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  "denomination_rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "string",
-      "value": "TEST",
-    },
-  ],
-  "objet_social": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "undefined",
-      "value": undefined,
-    },
-  ],
-  "rna": Array [
-    Object {
-      "last_update": 2018-01-01T00:00:00.000Z,
-      "provider": "RNA",
-      "type": "string",
-      "value": "W00000000",
-    },
-  ],
-}
-`;
-
-exports[`ApiAssoDtoAdapter toAssociation should return siren association 1`] = `
+exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to associaiton 1`] = `
 Object {
   "adresse_siege_siren": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
       "value": Object {
-        "code_postal": undefined,
-        "commune": "paris",
-        "numero": undefined,
-        "type_voie": undefined,
-        "voie": undefined,
+        "code_postal": "42424",
+        "commune": "Londre",
+        "numero": "18",
+        "type_voie": "RUE",
+        "voie": "MEURIS",
       },
     },
   ],
   "categorie_juridique": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "9220",
-    },
-  ],
-  "date_creation_siren": undefined,
-  "date_modification_siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "object",
-      "value": 2010-01-01T00:00:00.000Z,
-    },
-  ],
-  "denomination_siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "TEST SIREN 2",
-    },
-  ],
-  "etablisements_siret": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "object",
-      "value": Array [
-        "50922194100000",
-        "50922194100001",
-      ],
-    },
-  ],
-  "nic_siege": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "0000",
-    },
-  ],
-  "siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "509221941",
-    },
-  ],
-}
-`;
-
-exports[`ApiAssoDtoAdapter toAssociation should return siren association with date creation 1`] = `
-Object {
-  "adresse_siege_siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "object",
-      "value": Object {
-        "code_postal": undefined,
-        "commune": "paris",
-        "numero": undefined,
-        "type_voie": undefined,
-        "voie": undefined,
-      },
-    },
-  ],
-  "categorie_juridique": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "9220",
@@ -344,124 +141,53 @@ Object {
   ],
   "date_creation_siren": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": 1906-07-15T00:00:00.000Z,
+      "value": 1993-01-11T00:00:00.000Z,
     },
   ],
   "date_modification_siren": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": 2010-01-01T00:00:00.000Z,
+      "value": 2019-11-28T00:00:00.000Z,
     },
   ],
   "denomination_siren": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
-      "value": "TEST SIREN 2",
+      "value": "Je suis un fause asso",
     },
   ],
   "etablisements_siret": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
       "value": Array [
-        "50922194100000",
-        "50922194100001",
+        "123004648000021",
+        "123004648000013",
       ],
     },
   ],
   "nic_siege": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
-      "value": "0000",
+      "value": "00002",
     },
   ],
   "siren": Array [
     Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
+      "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
-      "value": "509221941",
-    },
-  ],
-}
-`;
-
-exports[`ApiAssoDtoAdapter toAssociation should return siren association without nom siren 1`] = `
-Object {
-  "adresse_siege_siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "object",
-      "value": Object {
-        "code_postal": undefined,
-        "commune": "paris",
-        "numero": undefined,
-        "type_voie": undefined,
-        "voie": undefined,
-      },
-    },
-  ],
-  "categorie_juridique": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "9220",
-    },
-  ],
-  "date_creation_siren": undefined,
-  "date_modification_siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "object",
-      "value": 2010-01-01T00:00:00.000Z,
-    },
-  ],
-  "denomination_siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "TEST",
-    },
-  ],
-  "etablisements_siret": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "object",
-      "value": Array [
-        "50922194100000",
-        "50922194100001",
-      ],
-    },
-  ],
-  "nic_siege": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "0000",
-    },
-  ],
-  "siren": Array [
-    Object {
-      "last_update": 2010-01-01T00:00:00.000Z,
-      "provider": "SIREN",
-      "type": "string",
-      "value": "509221941",
+      "value": "1230046480",
     },
   ],
 }

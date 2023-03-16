@@ -8,77 +8,10 @@ import {
 } from "../__fixtures__/ApiAssoStructureFixture";
 import { DacDtoDocument, RnaDtoDocument } from "../__fixtures__/DtoDocumentFixture";
 import { ApiAssoDocumentFixture } from "../__fixtures__/ApiAssoDocumentFixture";
+import { sirenStructureFixture } from "../__fixtures__/SirenStructureFixture";
+import { rnaStructureFixture } from "../__fixtures__/RnaStructureFixture";
 
 describe("ApiAssoDtoAdapter", () => {
-    describe("toAssociation", () => {
-        it("should return two associations", () => {
-            const expected = 2;
-            const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
-
-            expect(actual).toHaveLength(expected);
-        });
-
-        it("should return siren association", () => {
-            const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
-
-            expect(actual[1]).toMatchSnapshot();
-        });
-
-        it("should return rna association", () => {
-            const actual = ApiAssoDtoAdapter.toAssociation(fixtureAsso);
-
-            expect(actual[0]).toMatchSnapshot();
-        });
-
-        it("should return rna association with adresse", () => {
-            const actual = ApiAssoDtoAdapter.toAssociation({
-                ...fixtureAsso,
-                identite: {
-                    ...fixtureAsso.identite,
-                    regime: "loi1901"
-                }
-            });
-
-            expect(actual[0]).toMatchSnapshot();
-        });
-
-        it("should return rna association with date creation", () => {
-            const actual = ApiAssoDtoAdapter.toAssociation({
-                ...fixtureAsso,
-                identite: {
-                    ...fixtureAsso.identite,
-                    date_creat: "01-01-2022"
-                }
-            });
-
-            expect(actual[0]).toMatchSnapshot();
-        });
-
-        it("should return siren association with date creation", () => {
-            const actual = ApiAssoDtoAdapter.toAssociation({
-                ...fixtureAsso,
-                identite: {
-                    ...fixtureAsso.identite,
-                    date_creation_sirene: "01-01-2022"
-                }
-            });
-
-            expect(actual[1]).toMatchSnapshot();
-        });
-
-        it("should return siren association without nom siren", () => {
-            const actual = ApiAssoDtoAdapter.toAssociation({
-                ...fixtureAsso,
-                identite: {
-                    ...fixtureAsso.identite,
-                    nom_sirene: undefined
-                }
-            });
-
-            expect(actual[1]).toMatchSnapshot();
-        });
-    });
-
     describe("toEtablissement", () => {
         it("should return etablissement with rib", () => {
             const actual = ApiAssoDtoAdapter.toEtablissement(
@@ -160,6 +93,26 @@ describe("ApiAssoDtoAdapter", () => {
                 ApiAssoDocumentFixture.asso.documents.document_dac[0]
             );
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("sirenStructureToAssociation", () => {
+        it("should transform to associaiton", () => {
+            expect(ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructureFixture)).toMatchSnapshot();
+        });
+    });
+
+    describe("rnaStructureToAssociation", () => {
+        it("should transform to associaiton", () => {
+            expect(ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructureFixture)).toMatchSnapshot();
+        });
+    });
+
+    describe("apiDateToDate", () => {
+        it("should return valid date", () => {
+            const actual = ApiAssoDtoAdapter.apiDateToDate("2022-12-23");
+
+            expect(actual).toEqual(new Date(Date.UTC(2022, 11, 23)));
         });
     });
 });
