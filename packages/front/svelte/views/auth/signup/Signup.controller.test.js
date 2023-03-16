@@ -56,11 +56,15 @@ describe("SignupController", () => {
         it.each`
             propertyName        | expected
             ${"email"}          | ${""}
-            ${"signupPromise"}  | ${Promise.resolve()}
             ${"firstSubmitted"} | ${false}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new SignupController();
             expect(ctrl[propertyName].value).toEqual(expected);
+        });
+
+        it("initializes correctly signupPromise store", () => {
+            const ctrl = new SignupController();
+            expect(ctrl.signupPromise.value).resolves.toBeUndefined();
         });
     });
 
