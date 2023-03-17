@@ -5,6 +5,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import configurationsService from "../../configurations/configurations.service";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
+import { DefaultObject } from "../../../@types";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import DemarchesSimplifieesDto from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -83,7 +84,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         });
     }
 
-    async sendQuery(query, vars) {
+    async sendQuery(query: string, vars: DefaultObject) {
         try {
             const result = await axios.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
