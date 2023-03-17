@@ -3,6 +3,7 @@
     export let colspan = undefined;
     export let position = "start";
     export let overflow = "hidden";
+    let style;
 
     $: style = `--justify: ${position}; --overflow: ${overflow}`;
 </script>
