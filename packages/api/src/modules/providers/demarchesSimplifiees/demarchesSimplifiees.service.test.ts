@@ -138,9 +138,10 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             findBySirenMock = jest.spyOn(demarchesSimplifieesDataRepository, "findBySiren").mockResolvedValue([]);
-            // @ts-expect-error enititesToSubventions is private method
             entitiesToSubMock = jest
+                // @ts-expect-error enititesToSubventions is private method
                 .spyOn(demarchesSimplifieesService, "enititesToSubventions")
+                // @ts-expect-error disable ts form return type of enititesToSubventions
                 .mockImplementation(data => data);
         });
 
@@ -177,9 +178,10 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             findBySiret = jest.spyOn(demarchesSimplifieesDataRepository, "findBySiret").mockResolvedValue([]);
-            // @ts-expect-error enititesToSubventions is private method
             entitiesToSubMock = jest
+                // @ts-expect-error enititesToSubventions is private method
                 .spyOn(demarchesSimplifieesService, "enititesToSubventions")
+                // @ts-expect-error disable ts form return type of enititesToSubventions
                 .mockImplementation(data => data);
         });
 
@@ -213,10 +215,10 @@ describe("DemarchesSimplifieesService", () => {
         let updateDataByFormIdMock: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-expect-error disable ts form return type of getAcceptedDemarchesSimplifieesFormIds
             configAcceptedFormsMock = jest
-                .spyOn(configurationsService, "getAcceptedDemarchesSimplifieesFormIds")
-                .mockResolvedValue({ data: [] });
+            .spyOn(configurationsService, "getAcceptedDemarchesSimplifieesFormIds")
+            // @ts-expect-error disable ts form return type of getAcceptedDemarchesSimplifieesFormIds
+            .mockResolvedValue({ data: [] });
             updateDataByFormIdMock = jest.spyOn(demarchesSimplifieesService, "updateDataByFormId").mockResolvedValue();
         });
 
