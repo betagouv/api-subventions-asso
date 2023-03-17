@@ -21,7 +21,7 @@ export default class CaisseDepotsDtoAdapter {
         const amount = toPV(dto.fields.montant);
 
         return {
-            siret: toPV(dto.fields.idbeneficiare),
+            siret: toPV(dto.fields.idbeneficiaire),
             service_instructeur: toPV(dto.fields.nomattribuant),
             actions_proposee: [{ intitule: toPV(dto.fields.objet) }],
             statut_label: toPV(ApplicationStatus.GRANTED),

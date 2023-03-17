@@ -10,10 +10,10 @@ export default interface CaisseDepotsSubventionDto {
         datesversement_debut: string;
         datesversement_fin: string | null;
         dateconvention: string;
-        nonbeneficiaire: string;
+        nombeneficiaire: string;
         nature: string;
         nomattribuant: string; // centre financier
-        idbeneficiare: Siret;
+        idbeneficiaire: Siret;
         pourcentagesubvention: number;
         conditionsversement: "UNIQUE" | "ECHELONNE";
         idattribuant: Siret;
