@@ -3,6 +3,7 @@ import SignupController from "./Signup.controller";
 import authService from "@resources/auth/auth.service";
 
 jest.mock("@api-subventions-asso/dto", () => ({
+    ...jest.requireActual("@api-subventions-asso/dto"),
     SignupErrorCodes: {
         EMAIL_NOT_VALID: 1,
         USER_ALREADY_EXIST: 2,
@@ -55,11 +56,15 @@ describe("SignupController", () => {
         it.each`
             propertyName        | expected
             ${"email"}          | ${""}
-            ${"signupPromise"}  | ${Promise.resolve()}
             ${"firstSubmitted"} | ${false}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new SignupController();
             expect(ctrl[propertyName].value).toEqual(expected);
+        });
+
+        it("initializes correctly signupPromise store", () => {
+            const ctrl = new SignupController();
+            expect(ctrl.signupPromise.value).resolves.toBeUndefined();
         });
     });
 

@@ -8,6 +8,7 @@
 
     import SubventionInfoModal from "../Modals/SubventionInfoModal.svelte";
     import SubventionTableController from "./SubventionTable.controller";
+    import StatusLabel from "@components/SubventionsVersementsDashboard/SubventionTable/StatutLabel/StatusLabel.svelte";
 
     export let sort;
     export let elements = [];
@@ -35,7 +36,7 @@
             <col class="col-140" />
             <col class="col-80" />
             <col class="col-100" />
-            <col class="col-100" />
+            <col class="col-190" />
         </colgroup>
     </svelte:fragment>
     <svelte:fragment slot="head">
@@ -81,8 +82,12 @@
                     <TableCell position="end">
                         {elementData.montantsDemande}
                     </TableCell>
-                    <TableCell primary={true} position="end">
-                        {elementData.montantsAccordeOrStatus}
+                    <TableCell position="end">
+                        {#if elementData.showAmount}
+                            {elementData.montantsAccorde}
+                        {:else}
+                            <StatusLabel status={elementData.status} />
+                        {/if}
                     </TableCell>
                 {/if}
             </tr>
@@ -144,5 +149,10 @@
     .col-80 {
         width: 80px;
         max-width: 80px;
+    }
+
+    .col-190 {
+        width: 190px;
+        max-width: 190px;
     }
 </style>

@@ -3,7 +3,7 @@ import { ProviderValue } from "../shared/ProviderValue";
 import { Versement } from "../versements";
 
 export enum ApplicationStatus {
-    PENDING = "En cours d'instruction",
+    PENDING = "En instruction",
     INELIGIBLE = "Inéligible",
     GRANTED = "Accordé",
     REFUSED = "Refusé",

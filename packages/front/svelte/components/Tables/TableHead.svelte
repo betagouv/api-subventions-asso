@@ -35,6 +35,7 @@
         min-height: 100px;
         max-height: 100px;
         overflow: hidden;
+        font-size: 0.875rem;
     }
 
     div :global(.fr-btn) {

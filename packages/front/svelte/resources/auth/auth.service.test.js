@@ -6,6 +6,7 @@ import crispService from "@services/crisp.service";
 const DEFAULT_ERROR_CODE = 49;
 
 jest.mock("@api-subventions-asso/dto", () => ({
+    ...jest.requireActual("@api-subventions-asso/dto"),
     SignupErrorCodes: { EMAIL_NOT_VALID: DEFAULT_ERROR_CODE },
     ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
     __esModule: true // this property makes it work

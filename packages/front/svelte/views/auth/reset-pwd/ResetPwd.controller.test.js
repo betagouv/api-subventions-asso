@@ -3,6 +3,7 @@ import { ResetPwdController } from "./ResetPwd.controller";
 import authService from "@resources/auth/auth.service";
 
 jest.mock("@api-subventions-asso/dto", () => ({
+    ...jest.requireActual("@api-subventions-asso/dto"),
     ResetPasswordErrorCodes: {
         RESET_TOKEN_NOT_FOUND: 1,
         RESET_TOKEN_EXPIRED: 2,

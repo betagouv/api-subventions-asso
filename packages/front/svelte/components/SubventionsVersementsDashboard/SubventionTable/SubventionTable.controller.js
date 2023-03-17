@@ -1,8 +1,9 @@
+import { ApplicationStatus } from "@api-subventions-asso/dto";
 import Store from "../../../core/Store";
 
-import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
-import { capitalizeFirstLetter } from "../../../helpers/textHelper";
-import { trim } from "../../../helpers/stringHelper";
+import { numberToEuro, valueOrHyphen } from "@helpers/dataHelper";
+import { capitalizeFirstLetter } from "@helpers/textHelper";
+import { trim } from "@helpers/stringHelper";
 
 const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
@@ -55,9 +56,10 @@ export default class SubventionTableController {
             dispositif: valueOrHyphen(dispositif),
             projectName: valueOrHyphen(this.getProjectName(element.subvention)),
             montantsDemande: valueOrHyphen(numberToEuro(element.subvention.montants?.demande)),
-            montantsAccordeOrStatus: element.subvention.montants?.accorde
-                ? numberToEuro(element.subvention.montants?.accorde)
-                : element.subvention.status
+            montantsAccorde: numberToEuro(element.subvention.montants?.accorde),
+            status: element.subvention.statut_label,
+            showAmount:
+                element.subvention.statut_label === ApplicationStatus.GRANTED && element.subvention.montants?.accorde
         };
     }
 
