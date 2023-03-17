@@ -2,7 +2,7 @@ import { Etablissement, Association } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import StructureDto, {
+import {
     StructureDacDocumentDto,
     StructureEtablissementDto,
     StructureRepresentantLegalDto,
@@ -10,82 +10,66 @@ import StructureDto, {
     StructureRnaDocumentDto
 } from "../dto/StructureDto";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
+import { RnaStructureDto } from "../dto/RnaStructureDto";
+import { SirenStructureDto } from "../dto/SirenStructureDto";
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "RNA";
     static providerNameLcaDocument = "Le Compte Asso";
     static providerNameSiren = "SIREN";
 
-    static toAssociation(structure: StructureDto): Association[] {
-        const associations: Association[] = [];
-        const fromRNA = structure.identite.regime === "loi1901"; // Data come from rna
-        const toDate = (stringDate: string) => {
-            const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
-            return new Date(Date.UTC(year, month - 1, day));
+    static apiDateToDate(stringDate: string) {
+        const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
+        return new Date(Date.UTC(year, month - 1, day));
+    }
+
+    static sirenStructureToAssociation(structure: SirenStructureDto): Association {
+        const toPvs = ProviderValueFactory.buildProviderValuesAdapter(
+            this.providerNameSiren,
+            ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren)
+        );
+
+        return {
+            denomination_siren: toPvs(structure.identite.nom),
+            siren: toPvs(structure.identite.id_siren),
+            nic_siege: toPvs(siretToNIC(structure.identite.id_siret_siege)),
+            categorie_juridique: toPvs(structure.identite.id_forme_juridique.toString()),
+            date_creation_siren: toPvs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_creation_sirene)),
+            date_modification_siren: toPvs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren)),
+            adresse_siege_siren: toPvs({
+                numero: structure.coordonnees.adresse_siege.num_voie,
+                type_voie: structure.coordonnees.adresse_siege.type_voie,
+                voie: structure.coordonnees.adresse_siege.voie,
+                code_postal: structure.coordonnees.adresse_siege.cp,
+                commune: structure.coordonnees.adresse_siege.commune
+            }),
+            etablisements_siret: toPvs(structure.etablissement.map(e => e.id_siret))
         };
+    }
 
-        if (structure.identite.date_modif_rna) {
-            const toRnaPvs = ProviderValueFactory.buildProviderValuesAdapter(
-                this.providerNameRna,
-                toDate(structure.identite.date_modif_rna)
-            );
-            const rnaAssociation: Association = {
-                rna: toRnaPvs(structure.identite.id_rna),
-                denomination_rna: toRnaPvs(structure.identite.nom),
-                date_creation_rna: structure.identite.date_creat
-                    ? toRnaPvs(toDate(structure.identite.date_creat))
-                    : undefined,
-                date_modification_rna: toRnaPvs(toDate(structure.identite.date_modif_rna)),
-                objet_social: toRnaPvs(structure.activites.objet),
-                code_objet_social_1: toRnaPvs(structure.activites.id_objet_social1),
-                code_objet_social_2: toRnaPvs(structure.activites.id_objet_social2),
-                adresse_siege_rna: fromRNA
-                    ? toRnaPvs({
-                          numero: structure.coordonnees.adresse_siege.num_voie,
-                          type_voie: structure.coordonnees.adresse_siege.type_voie,
-                          voie: structure.coordonnees.adresse_siege.voie,
-                          code_postal: structure.coordonnees.adresse_siege.cp,
-                          commune: structure.coordonnees.adresse_siege.commune
-                      })
-                    : undefined
-            };
-            associations.push(rnaAssociation);
-        }
+    static rnaStructureToAssociation(structure: RnaStructureDto): Association {
+        const toPVs = ProviderValueFactory.buildProviderValuesAdapter(
+            this.providerNameRna,
+            ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna)
+        );
 
-        if (structure.identite.date_modif_siren) {
-            const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(
-                this.providerNameSiren,
-                toDate(structure.identite.date_modif_siren)
-            );
-            const adresse =
-                structure.coordonnees.adresse_siege_sirene ||
-                (fromRNA ? undefined : structure.coordonnees.adresse_siege);
-            const sirenAssociation: Association = {
-                denomination_siren: structure.identite.nom_sirene
-                    ? toSirenPvs(structure.identite.nom_sirene)
-                    : toSirenPvs(structure.identite.nom),
-                siren: toSirenPvs(structure.identite.id_siren),
-                nic_siege: toSirenPvs(siretToNIC(structure.identite.id_siret_siege)),
-                categorie_juridique: toSirenPvs(structure.identite.id_forme_juridique.toString()),
-                date_creation_siren: structure.identite.date_creation_sirene
-                    ? toSirenPvs(toDate(structure.identite.date_creation_sirene))
-                    : undefined,
-                date_modification_siren: toSirenPvs(toDate(structure.identite.date_modif_siren)),
-                adresse_siege_siren: adresse
-                    ? toSirenPvs({
-                          numero: adresse.num_voie,
-                          type_voie: adresse.type_voie,
-                          voie: adresse.voie,
-                          code_postal: adresse.cp,
-                          commune: adresse.commune
-                      })
-                    : undefined,
-                etablisements_siret: toSirenPvs(structure.etablissement.map(e => e.id_siret))
-            };
-            associations.push(sirenAssociation);
-        }
-
-        return associations;
+        return {
+            rna: toPVs(structure.identite.id_rna),
+            denomination_rna: toPVs(structure.identite.nom),
+            date_creation_rna: structure.identite.date_pub_jo
+                ? toPVs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_pub_jo))
+                : undefined,
+            date_modification_rna: toPVs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna)),
+            objet_social: toPVs(structure.activites.objet),
+            code_objet_social_1: toPVs(structure.activites.lib_objet_social1),
+            adresse_siege_rna: toPVs({
+                numero: structure.coordonnees.adresse_siege.num_voie,
+                type_voie: structure.coordonnees.adresse_siege.type_voie,
+                voie: structure.coordonnees.adresse_siege.voie,
+                code_postal: structure.coordonnees.adresse_siege.cp,
+                commune: structure.coordonnees.adresse_siege.commune
+            })
+        };
     }
 
     static toEtablissement(
@@ -94,14 +78,13 @@ export default class ApiAssoDtoAdapter {
         representantsLegaux: StructureRepresentantLegalDto[],
         dateModif: string
     ): Etablissement {
-        const toDate = (stringDate: string) => {
-            const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
-            return new Date(Date.UTC(year, month - 1, day));
-        };
-        const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(this.providerNameSiren, toDate(dateModif));
+        const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(
+            this.providerNameSiren,
+            ApiAssoDtoAdapter.apiDateToDate(dateModif)
+        );
         const toLCAPvs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameLcaDocument,
-            toDate(dateModif)
+            ApiAssoDtoAdapter.apiDateToDate(dateModif)
         );
 
         const toContact = (r: StructureRepresentantLegalDto) => ({

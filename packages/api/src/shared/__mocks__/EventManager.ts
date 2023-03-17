@@ -1,3 +1,5 @@
 export default {
-    call: jest.fn()
+    call: jest.fn(),
+    add: jest.fn(),
+    on: jest.fn()
 };

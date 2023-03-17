@@ -1,4 +1,4 @@
-import { ProviderValues, Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
 import axios from "axios";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -6,15 +6,17 @@ import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";
-import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import { isDateNewer } from "../../../shared/helpers/DateHelper";
+import associationNameService from "../../association-name/associationName.service";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, { DocumentDto, StructureDacDocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
+import { RnaStructureDto } from "./dto/RnaStructureDto";
+import { SirenStructureDto } from "./dto/SirenStructureDto";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = {
@@ -23,14 +25,6 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         description:
             "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
     };
-    private dataSirenCache = new CacheData<{
-        associations: Association[];
-        etablissements: Etablissement[];
-    }>(CACHE_TIMES.ONE_DAY);
-    private dataRnaCache = new CacheData<{
-        associations: Association[];
-        etablissements: Etablissement[];
-    }>(CACHE_TIMES.ONE_DAY);
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
     private async sendRequest<T>(route: string): Promise<T | null> {
@@ -54,76 +48,54 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         }
     }
 
-    private async findFullScopeAssociation(identifier: AssociationIdentifiers): Promise<{
-        associations: Association[];
-        etablissements: Etablissement[];
-    } | null> {
-        if (this.dataSirenCache.has(identifier)) return this.dataSirenCache.get(identifier)[0];
-        if (this.dataRnaCache.has(identifier)) return this.dataRnaCache.get(identifier)[0];
+    private async findAssociationByRna(rna: Rna): Promise<Association | null> {
+        const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna}`);
 
-        let etablissements: Etablissement[] = [];
+        if (!rnaStructure) return null;
+        return ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructure);
+    }
 
-        const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
-        if (!structure || !structure.identite) return null;
+    private async findAssociationBySiren(siren: Siren): Promise<Association | null> {
+        const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
 
-        if (structure.etablissement) {
-            etablissements = structure.etablissement.map(e =>
-                ApiAssoDtoAdapter.toEtablissement(
-                    e,
-                    structure.rib,
-                    structure.representant_legal,
-                    structure.identite.date_modif_siren
-                )
-            );
-        }
+        if (!sirenStructure) return null;
+        return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
+    }
 
-        const result = {
-            associations: ApiAssoDtoAdapter.toAssociation(structure),
-            etablissements
-        };
+    private async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
+        const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
 
-        if (structure.identite.id_rna || structure.identite.id_siren) {
-            if (structure.identite.id_rna && structure.identite.id_siren) {
-                EventManager.call("rna-siren.matching", [
-                    {
-                        rna: structure.identite.id_rna,
-                        siren: structure.identite.id_siren
-                    }
-                ]);
+        if (!structure) return null;
+
+        await this.saveStructureInAssociationName(structure);
+
+        return structure.etablissement.map(etablissement =>
+            ApiAssoDtoAdapter.toEtablissement(
+                etablissement,
+                structure.rib,
+                structure.representant_legal,
+                structure.identite.date_modif_siren
+            )
+        );
+    }
+
+    private async saveStructureInAssociationName(structure: StructureDto) {
+        if (!structure?.identite.id_siren || !structure?.identite.id_rna || !structure?.identite.nom) return;
+
+        const lastUpdateDateRna = ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna);
+        const lastUpdateDateSiren = ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren);
+
+        const rnaIsMoreRecent = isDateNewer(lastUpdateDateRna, lastUpdateDateSiren);
+
+        await EventManager.call("association-name.matching", [
+            {
+                rna: structure.identite.id_rna,
+                siren: structure.identite.id_siren,
+                name: structure.identite.nom,
+                provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
+                lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren
             }
-
-            await asyncForEach(result.associations, async association => {
-                let denomination;
-
-                if (association.denomination_rna && association.denomination_siren) {
-                    if (isDateNewer(structure.identite.date_modif_rna, structure.identite.date_modif_siren))
-                        denomination = association.denomination_rna;
-                    else denomination = association.denomination_siren;
-                } else if (association.denomination_rna || association.denomination_siren) {
-                    denomination = association.denomination_rna || association.denomination_siren;
-                } else {
-                    return;
-                }
-
-                await EventManager.call("association-name.matching", [
-                    {
-                        rna: structure.identite.id_rna,
-                        siren: structure.identite.id_siren,
-                        name: denomination[0].value,
-                        provider: denomination[0].provider,
-                        lastUpdate: (
-                            (association.date_modification_rna ||
-                                association.date_modification_siren) as ProviderValues<Date>
-                        )[0].value
-                    }
-                ]);
-            });
-        }
-
-        if (structure.identite.id_siren) this.dataSirenCache.add(structure.identite.id_siren, result);
-        if (structure.identite.id_rna) this.dataRnaCache.add(structure.identite.id_rna, result);
-
-        return result;
+        ]);
     }
 
     private filterRnaDocuments(documents: StructureRnaDocumentDto[]) {
@@ -223,11 +195,19 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     isAssociationsProvider = true;
 
     async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
-        const result = await this.findFullScopeAssociation(siren);
+        const sirenAssociation = await this.findAssociationBySiren(siren);
 
-        if (!result) return null;
+        if (!sirenAssociation) return null;
 
-        return result.associations;
+        const groupedIdentifier = await associationNameService.getGroupedIdentifiers(siren);
+
+        if (!groupedIdentifier.rna) return [sirenAssociation];
+
+        const rnaAssociation = await this.findAssociationByRna(groupedIdentifier.rna);
+
+        if (!rnaAssociation) return [sirenAssociation];
+
+        return [sirenAssociation, rnaAssociation];
     }
 
     async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
@@ -235,11 +215,19 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     }
 
     async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
-        const result = await this.findFullScopeAssociation(rna);
+        const rnaAssociation = await this.findAssociationByRna(rna);
 
-        if (!result) return null;
+        if (!rnaAssociation) return null;
 
-        return result.associations;
+        const groupedIdentifier = await associationNameService.getGroupedIdentifiers(rna);
+
+        if (!groupedIdentifier.siren) return [rnaAssociation];
+
+        const sirenAssociation = await this.findAssociationBySiren(groupedIdentifier.siren);
+
+        if (!sirenAssociation) return [rnaAssociation];
+
+        return [rnaAssociation, sirenAssociation];
     }
 
     /**
@@ -261,11 +249,11 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     }
 
     async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
-        const result = await this.findFullScopeAssociation(siren);
+        const etablissements = await this.findEtablissementsBySiren(siren);
 
-        if (!result) return null;
+        if (!etablissements) return null;
 
-        return result.etablissements;
+        return etablissements;
     }
 
     /**
