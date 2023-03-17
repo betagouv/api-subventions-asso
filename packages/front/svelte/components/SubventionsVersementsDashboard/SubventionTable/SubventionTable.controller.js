@@ -117,7 +117,7 @@ export default class SubventionTableController {
             return {
                 ...tableData,
                 subvention: element.subvention,
-                projectNamePosition: this.tableData.projectName === "-" ? "center" : "start",
+                projectNamePosition: tableData.projectName === "-" ? "center" : "start",
                 enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
             };
         });
