@@ -1,9 +1,8 @@
 import request from "supertest";
-import getUserToken from "../../__helpers__/getUserToken";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import etablissementService from "../../../src/modules/etablissements/etablissements.service";
 import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
-import getAdminToken from "../../__helpers__/getAdminToken";
 import associationsService from "../../../src/modules/associations/associations.service";
 import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import OsirisRequestEntityFixture from "../providers/osiris/__fixtures__/entity";
@@ -32,7 +31,7 @@ describe("/etablissement", () => {
                 const actual = (
                     await request(g.app)
                         .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                        .set("x-access-token", await getUserToken())
+                        .set("x-access-token", await createAndGetUserToken())
                         .set("Accept", "application/json")
                 ).statusCode;
 
@@ -44,7 +43,7 @@ describe("/etablissement", () => {
                 const actual = (
                     await request(g.app)
                         .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                        .set("x-access-token", await getUserToken())
+                        .set("x-access-token", await createAndGetUserToken())
                         .set("Accept", "application/json")
                 ).body;
 
@@ -61,7 +60,7 @@ describe("/etablissement", () => {
             const beforeRequestTime = new Date();
             const a = await request(g.app)
                 .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("x-access-token", await getUserToken())
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
@@ -79,7 +78,7 @@ describe("/etablissement", () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("x-access-token", await getAdminToken())
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 

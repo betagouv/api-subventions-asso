@@ -1,5 +1,5 @@
 import request = require("supertest");
-import getUserToken from "../../../../../__helpers__/getUserToken";
+import { createAndGetUserToken } from "../../../../../__helpers__/tokenHelper";
 import rnaSirenService from "../../../../../../src/modules/open-data/rna-siren/rnaSiren.service";
 
 const g = global as unknown as { app: unknown };
@@ -21,7 +21,7 @@ describe("RnaSirenController", () => {
                 const actual = (
                     await request(g.app)
                         .get(`/open-data/rna-siren/${RNA}`)
-                        .set("x-access-token", await getUserToken())
+                        .set("x-access-token", await createAndGetUserToken())
                         .set("Accept", "application/json")
                 ).body;
 
@@ -38,7 +38,7 @@ describe("RnaSirenController", () => {
                 const actual = (
                     await request(g.app)
                         .get(`/open-data/rna-siren/${SIREN}`)
-                        .set("x-access-token", await getUserToken())
+                        .set("x-access-token", await createAndGetUserToken())
                         .set("Accept", "application/json")
                 ).body;
 

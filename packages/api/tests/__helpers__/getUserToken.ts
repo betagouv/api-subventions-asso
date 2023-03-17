@@ -1,6 +1,6 @@
 import userService from "../../src/modules/user/user.service";
 
-export default async function getUserToken() {
+export default async function createAndGetUserToken() {
     let user = await userService.findByEmail("user@beta.gouv.fr");
 
     if (!user) user = await userService.createUser("user@beta.gouv.fr");
