@@ -28,4 +28,9 @@
         line-break: anywhere;
         padding: 12px;
     }
+
+    td.primary {
+        color: var(--text-active-blue-france);
+        font-weight: 500;
+    }
 </style>
