@@ -4,7 +4,7 @@
     export let color = undefined;
 </script>
 
-<div class="fr-table {color ? `fr-table--${color}` : ''}" class:fr-table--bordered={bordered}>
+<div class="fr-table {color ? `fr-table--${color}` : ''} custom-table" class:fr-table--bordered={bordered}>
     <table>
         <slot name="colgroup" />
         <caption class="sr-only">{title}</caption>
@@ -20,7 +20,6 @@
 </div>
 
 <style>
-    /* TODO: export this to avoid modifying DSFR components */
     table {
         display: table;
         table-layout: fixed;
@@ -36,11 +35,17 @@
         box-shadow: none;
     }
 
-    tbody :global(td) {
-        border-bottom: 1px #e5e5e5 solid;
-    }
-
     .fr-table--bordered table {
         border: 2px solid #2e2e2e;
+    }
+
+    .custom-table :global(tbody td),
+    .custom-table :global(thead th) {
+        border-bottom: 1px #e5e5e5 solid;
+        background-color: var(--background-default-grey);
+    }
+
+    .custom-table :global(tr.clickable) {
+        cursor: pointer;
     }
 </style>

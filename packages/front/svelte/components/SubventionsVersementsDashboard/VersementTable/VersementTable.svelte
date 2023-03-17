@@ -77,8 +77,4 @@
         width: 110px;
         max-width: 110px;
     }
-
-    tr.clickable {
-        cursor: pointer;
-    }
 </style>
