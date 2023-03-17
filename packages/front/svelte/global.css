@@ -4,7 +4,7 @@ body {
     height: 100%;
 }
 
-/* This is use to hide content only usefull for accessibility
+/* This is use to hide content only useful for accessibility
 https://webaim.org/techniques/css/invisiblecontent/#techniques */
 .sr-only {
     position: absolute;
@@ -15,7 +15,7 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     overflow: hidden;
 }
 
-/* POSITIONNING / LAYOUT */
+/* POSITIONING / LAYOUT */
 
 .flex {
     display: flex;
