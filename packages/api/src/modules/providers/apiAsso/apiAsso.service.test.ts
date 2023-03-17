@@ -30,13 +30,12 @@ describe("ApiAssoService", () => {
 
     let associationNameUpsert: jest.SpyInstance;
 
-
     const RNA = "W750000000";
 
     beforeAll(() => {
-        // @ts-ignore relove value can must be an mongo updateObject, so just disable ts
+        // @ts-expect-error resolve value can must be an mongo updateObject, so just disable ts
         associationNameUpsert = jest.spyOn(associationNameService, "upsert").mockResolvedValue({});
-    })
+    });
 
     afterAll(() => {
         adapterEtablissementMock.mockReset();

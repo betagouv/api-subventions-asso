@@ -57,7 +57,7 @@ describe("ExecutionSyncStack", () => {
             operationExecutorMock.mockClear();
         });
 
-        it("should dont call operationExecutor", async () => {
+        it("should not call operationExecutor", async () => {
             // @ts-ignore inProgress is private attribue
             stack.inProgress = true;
 
@@ -103,6 +103,32 @@ describe("ExecutionSyncStack", () => {
             await stack.executeOperations();
 
             expect(operationExecutorMock).toBeCalledTimes(3);
+        });
+
+        it("should check if all promise as been resolved", async () => {
+            const resolver = jest.fn();
+            // @ts-ignore stackLines is private attribut
+            stack.stackLines.push(
+                {
+                    entity: "hello",
+                    rejecter: jest.fn(),
+                    resolver
+                },
+                {
+                    entity: "hello",
+                    rejecter: jest.fn(),
+                    resolver
+                },
+                {
+                    entity: "hello",
+                    rejecter: jest.fn(),
+                    resolver
+                }
+            );
+            // @ts-ignore executeOperations is private method
+            await stack.executeOperations();
+
+            expect(resolver).toBeCalledTimes(3);
         });
     });
 });
