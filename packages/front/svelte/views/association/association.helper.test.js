@@ -25,7 +25,7 @@ describe("Association Helper", () => {
     });
 
     describe("addressToString", () => {
-        it("should return concatened address", () => {
+        it("should return concatenated address", () => {
             const ADDRESS = DEFAULT_ASSOCIATION.adresse_siege_rna;
             const expected = "15 RUE DE BREST 35000 RENNES";
             const actual = AssociationHelper.addressToString(ADDRESS);

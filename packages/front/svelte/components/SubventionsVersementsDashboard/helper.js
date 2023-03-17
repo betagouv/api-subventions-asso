@@ -38,12 +38,12 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
         withKey: {}
     });
 
-    const flatenElements = [
+    const flattenElements = [
         ...Object.values(elementsGroupedByVersementKey.withKey),
         ...elementsGroupedByVersementKey.none
     ];
 
-    const uniformizedElements = linkVersementsToSubvention(flatenElements);
+    const uniformizedElements = linkVersementsToSubvention(flattenElements);
     return uniformizedElements.sort(sortByDateAsc);
 };
 
