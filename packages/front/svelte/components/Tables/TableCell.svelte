@@ -7,7 +7,7 @@
     $: style = `--justify: ${position}; --overflow: ${overflow}`;
 </script>
 
-<td class="bg-white" {colspan} class:primary>
+<td {colspan} class:primary>
     <div {style}>
         <slot />
     </div>

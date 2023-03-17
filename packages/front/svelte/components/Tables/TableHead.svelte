@@ -7,7 +7,7 @@
     export let actionDisable = false;
 </script>
 
-<th class="bg-white" scope="col">
+<th scope="col">
     <div class="{actionActive ? 'active' : ''} {actionActive ? actionDirection : ''}">
         <p>
             <slot />
