@@ -60,7 +60,14 @@
                     class="clickable">
                     <NumberTableCell primary="true" value={element.totalAmount} />
                     <StringTableCell value={element.centreFinancier} />
-                    <StringTableCell value={element.lastVersementDate} />
+                    <TableCell>
+                        {element.lastVersementDate}
+                        <!--
+                        What follows is an a11y trick: users can focus this on keyboard.
+                        This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
+                        -->
+                        <button class="sr-only">Voir plus</button>
+                    </TableCell>
                 </tr>
             {/if}
         {/each}

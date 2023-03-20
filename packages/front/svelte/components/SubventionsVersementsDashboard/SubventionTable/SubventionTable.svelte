@@ -77,6 +77,13 @@
                             {elementData.montantsAccorde}
                         {:else}
                             <StatusLabel status={elementData.status} />
+                            <!--
+                        What follows is an a11y trick: users can focus this on keyboard.
+                        This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
+                        -->
+                            <button class="sr-only" disabled={elementData?.enableButtonMoreInfo ? undefined : "true"}>
+                                Voir plus
+                            </button>
                         {/if}
                     </TableCell>
                 {/if}
