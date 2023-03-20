@@ -18,9 +18,7 @@ describe("leCompteAssoService", () => {
                 } as ILeCompteAssoRequestInformations,
                 data: {}
             };
-            expect(leCompteAssoService.validEntity(entity)).toMatchObject({
-                success: true
-            });
+            expect(leCompteAssoService.validEntity(entity)).toEqual(true);
         });
 
         it("should reject validation because siret is wrong", () => {
@@ -33,7 +31,6 @@ describe("leCompteAssoService", () => {
             };
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
-                success: false,
                 message: "INVALID SIRET FOR 000000000000aa",
                 data: {
                     siret: "000000000000aa",
@@ -52,7 +49,6 @@ describe("leCompteAssoService", () => {
             };
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
-                success: false,
                 message: "INVALID NAME FOR ",
                 data: {
                     siret: "00000000000000",
@@ -71,7 +67,6 @@ describe("leCompteAssoService", () => {
             };
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
-                success: false,
                 message: "INVALID COMPTE ASSO ID FOR HELLO WORLD",
                 data: {
                     compteAssoId: "00000000000000"
