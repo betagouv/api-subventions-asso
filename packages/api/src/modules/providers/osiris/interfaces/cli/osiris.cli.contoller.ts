@@ -44,7 +44,7 @@ export default class OsirisCliController {
             console.info(`Check ${requests.length} entities!`);
             requests.forEach(entity => {
                 const result = osirisService.validRequest(entity);
-                if (!result.success) {
+                if (result !== true) {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
@@ -55,7 +55,7 @@ export default class OsirisCliController {
             console.info(`Check ${actions.length} entities!`);
             actions.forEach(entity => {
                 const result = osirisService.validAction(entity);
-                if (!result.success) {
+                if (result !== true) {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
@@ -130,7 +130,7 @@ export default class OsirisCliController {
 
             let validation = osirisService.validRequest(osirisRequest);
 
-            if (validation.code === 2) {
+            if (validation !== true && validation.code === 2) {
                 // RNA NOT FOUND // TODO: use const for decribe error
                 const rna = await rnaSirenService.getRna(osirisRequest.legalInformations.siret, true);
 
@@ -148,7 +148,7 @@ export default class OsirisCliController {
 
             CliHelper.printProgress(index + 1, requests.length);
 
-            if (!validation.success && validation.code != 2) {
+            if (validation !== true && validation.code != 2) {
                 logs.push(
                     `\n\nThis request is not registered because: ${validation.message}\n`,
                     JSON.stringify(validation.data, null, "\t")
@@ -175,7 +175,7 @@ export default class OsirisCliController {
 
                 CliHelper.printProgress(index + 1, actions.length);
 
-                if (!validation.success) {
+                if (validation !== true) {
                     logs.push(
                         `\n\nThis request is not registered because: ${validation.message}\n`,
                         JSON.stringify(validation.data, null, "\t")
@@ -210,7 +210,7 @@ export default class OsirisCliController {
 
                 CliHelper.printProgress(index + 1, evaluations.length);
 
-                if (!validation.success) {
+                if (validation !== true) {
                     logs.push(
                         `\n\nThis request is not registered because: ${validation.message}\n`,
                         JSON.stringify(validation.data, null, "\t")

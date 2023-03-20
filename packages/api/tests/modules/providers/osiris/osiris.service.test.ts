@@ -270,7 +270,6 @@ describe("OsirisService", () => {
                     {}
                 );
                 const expected = {
-                    success: false,
                     message: `INVALID OSIRIS ACTION ID FOR ${evaluation.indexedInformations.osirisActionId}`,
                     data: evaluation.data
                 };
@@ -289,7 +288,6 @@ describe("OsirisService", () => {
                     {}
                 );
                 const expected = {
-                    success: false,
                     message: `INVALID SIRET FOR ${evaluation.indexedInformations.siret}`,
                     data: evaluation.data
                 };
@@ -308,7 +306,6 @@ describe("OsirisService", () => {
                     {}
                 );
                 const expected = {
-                    success: false,
                     message: `INVALID EVALUATION RESULTAT FOR ${evaluation.indexedInformations.evaluation_resultat}`,
                     data: evaluation.data
                 };
@@ -326,9 +323,8 @@ describe("OsirisService", () => {
                     },
                     {}
                 );
-                const expected = { success: true };
                 const actual = osirisService.validEvaluation(evaluation);
-                expect(actual).toMatchObject(expected);
+                expect(actual).toBeTruthy();
             });
         });
 
