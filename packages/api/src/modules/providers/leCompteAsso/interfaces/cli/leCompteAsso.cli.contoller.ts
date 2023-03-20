@@ -47,7 +47,7 @@ export default class LeCompteAssoCliController {
                 console.info(`Check ${entities.length} entities!`);
                 entities.forEach(entity => {
                     const result = leCompteAssoService.validEntity(entity);
-                    if (!result.success) {
+                    if (result !== true) {
                         console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                     }
                 });
@@ -100,7 +100,7 @@ export default class LeCompteAssoCliController {
 
         entities.forEach(entity => {
             const result = leCompteAssoService.validEntity(entity);
-            if (result.success) return;
+            if (result === true) return;
             parsageError = true;
         });
 
