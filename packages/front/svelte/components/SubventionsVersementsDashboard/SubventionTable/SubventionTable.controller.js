@@ -1,9 +1,11 @@
 import { ApplicationStatus } from "@api-subventions-asso/dto";
 import Store from "../../../core/Store";
 
+import { modal, data } from "../../../store/modal.store";
 import { numberToEuro, valueOrHyphen } from "@helpers/dataHelper";
 import { capitalizeFirstLetter } from "@helpers/textHelper";
 import { trim } from "@helpers/stringHelper";
+import SubventionInfoModal from "@components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
 
 const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
@@ -125,5 +127,11 @@ export default class SubventionTableController {
         });
 
         this.elementsDataViews.set(elementsDataViews);
+    }
+
+    onRowClick(elementData) {
+        if (!elementData?.enableButtonMoreInfo) return;
+        data.update(() => ({ subvention: elementData.subvention }));
+        modal.update(() => SubventionInfoModal);
     }
 }
