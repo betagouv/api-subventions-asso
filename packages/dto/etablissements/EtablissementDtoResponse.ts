@@ -8,7 +8,6 @@ export interface IEtablissement extends Etablissement {
 }
 
 export interface EtablissementDtoResponse {
-    success: boolean;
     etablissement?: IEtablissement;
     message?: string;
 }
