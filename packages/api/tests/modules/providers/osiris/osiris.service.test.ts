@@ -286,7 +286,7 @@ describe("OsirisService", () => {
                 expect(actual).toMatchObject(expected);
             });
 
-            it("should return success if valid", () => {
+            it("should return true if valid", () => {
                 const evaluation = new OsirisEvaluationEntity(
                     {
                         osirisActionId: "FAKE_OSIRIS_ID",
