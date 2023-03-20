@@ -29,7 +29,7 @@ export class ChorusService implements VersementsProvider {
 
     public validateEntity(entity: ChorusLineEntity) {
         if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {
-            throw new Error(`The branche ${entity.indexedInformations.codeBranche} is not accepted in data`);
+            throw new Error(`The branch ${entity.indexedInformations.codeBranche} is not accepted in data`);
         }
 
         if (!isSiret(entity.indexedInformations.siret)) {
