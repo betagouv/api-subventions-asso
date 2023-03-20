@@ -63,7 +63,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     public validRequest(request: OsirisRequestEntity) {
         if (!isSiret(request.legalInformations.siret)) {
             return {
-                success: false,
                 message: `INVALID SIRET FOR ${request.legalInformations.siret}`,
                 data: request.legalInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET
@@ -72,7 +71,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!isRna(request.legalInformations.rna)) {
             return {
-                success: false,
                 message: `INVALID RNA FOR ${request.legalInformations.rna}`,
                 data: request.legalInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_RNA
@@ -81,7 +79,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!isAssociationName(request.legalInformations.name)) {
             return {
-                success: false,
                 message: `INVALID NAME FOR ${request.legalInformations.name}`,
                 data: request.legalInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_NAME
@@ -90,7 +87,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!isCompteAssoId(request.providerInformations.compteAssoId)) {
             return {
-                success: false,
                 message: `INVALID COMPTE ASSO ID FOR ${request.legalInformations.name}`,
                 data: request.providerInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_CAID
@@ -99,14 +95,13 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!isOsirisRequestId(request.providerInformations.osirisId)) {
             return {
-                success: false,
                 message: `INVALID OSIRIS ID FOR ${request.legalInformations.name}`,
                 data: request.providerInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID
             };
         }
 
-        return { success: true };
+        return true;
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
@@ -129,7 +124,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     public validAction(action: OsirisActionEntity) {
         if (!isCompteAssoId(action.indexedInformations.compteAssoId)) {
             return {
-                success: false,
                 message: `INVALID COMPTE ASSO ID FOR ${action.indexedInformations.compteAssoId}`,
                 data: action.indexedInformations
             };
@@ -137,20 +131,18 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!isOsirisActionId(action.indexedInformations.osirisActionId)) {
             return {
-                success: false,
                 message: `INVALID OSIRIS ACTION ID FOR ${action.indexedInformations.osirisActionId}`,
                 data: action.indexedInformations
             };
         }
 
-        return { success: true };
+        return true;
     }
 
     public validEvaluation(entity: OsirisEvaluationEntity) {
         const evaluation = entity.indexedInformations;
         if (!isOsirisActionId(evaluation.osirisActionId)) {
             return {
-                success: false,
                 message: `INVALID OSIRIS ACTION ID FOR ${evaluation.osirisActionId}`,
                 data: evaluation
             };
@@ -158,7 +150,6 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!isSiret(evaluation.siret)) {
             return {
-                success: false,
                 message: `INVALID SIRET FOR ${evaluation.siret}`,
                 data: evaluation
             };
@@ -166,13 +157,12 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         if (!evaluation.evaluation_resultat.length) {
             return {
-                success: false,
                 message: `INVALID EVALUATION RESULTAT FOR ${evaluation.evaluation_resultat}`,
                 data: evaluation
             };
         }
 
-        return { success: true };
+        return true;
     }
 
     public async addEvaluation(entity: OsirisEvaluationEntity) {
