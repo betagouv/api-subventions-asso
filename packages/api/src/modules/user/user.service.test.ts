@@ -108,7 +108,7 @@ describe("User Service", () => {
             expect(sendCreationMailMock).toHaveBeenCalled();
         });
 
-        it("should return success response with email", async () => {
+        it("should return an email", async () => {
             const expected = EMAIL;
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({} as UserDto));
