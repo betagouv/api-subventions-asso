@@ -70,7 +70,7 @@ describe("SubventiaCliController", () => {
             readFileMock.mockImplementation(() => "");
             parseMock.mockImplementationOnce(() => [expected]);
 
-            createEntityMock.mockImplementationOnce(async () => ({ success: true } as unknown as AcceptedRequest));
+            createEntityMock.mockImplementationOnce(async () => ({ state: "created" } as AcceptedRequest));
 
             await _parse("FILE");
 
@@ -82,9 +82,7 @@ describe("SubventiaCliController", () => {
             readFileMock.mockImplementation(() => "");
             parseMock.mockImplementationOnce(() => [{ fake: "entity" } as unknown as SubventiaRequestEntity]);
 
-            createEntityMock.mockImplementationOnce(
-                async () => ({ success: false, message: expected } as unknown as RejectedRequest)
-            );
+            createEntityMock.mockImplementationOnce(async () => ({ message: expected } as unknown as RejectedRequest));
 
             await _parse("FILE");
 
