@@ -82,7 +82,7 @@
                     <TableCell position="end">
                         {elementData.montantsDemande}
                     </TableCell>
-                    <TableCell position="end">
+                    <TableCell position="end" primary="true">
                         {#if elementData.showAmount}
                             {elementData.montantsAccorde}
                         {:else}
