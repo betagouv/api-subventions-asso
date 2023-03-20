@@ -3,9 +3,6 @@
     import TableHead from "../../Tables/TableHead.svelte";
     import Table from "../../../dsfr/Table.svelte";
 
-    import { modal, data } from "../../../store/modal.store";
-
-    import SubventionInfoModal from "../Modals/SubventionInfoModal.svelte";
     import SubventionTableController from "./SubventionTable.controller";
     import StatusLabel from "@components/SubventionsVersementsDashboard/SubventionTable/StatutLabel/StatusLabel.svelte";
 
@@ -17,12 +14,6 @@
     const controller = new SubventionTableController(sort);
 
     const { elementsDataViews, columnDataViews } = controller;
-
-    const displayModal = subvention => {
-        if (!subvention) return;
-        data.update(() => ({ subvention }));
-        modal.update(() => SubventionInfoModal);
-    };
 
     $: elements, controller.updateElements(elements);
     $: currentSort, controller.sort(currentSort);
@@ -55,7 +46,7 @@
                 class:clickable={elementData?.enableButtonMoreInfo}
                 aria-controls={elementData?.enableButtonMoreInfo ? "fr-modal" : undefined}
                 data-fr-opened={elementData?.enableButtonMoreInfo ? "false" : undefined}
-                on:click={() => displayModal(elementData?.subvention)}>
+                on:click={() => controller.onRowClick(elementData)}>
                 {#if !elementData}
                     <TableCell colspan="5" position="center">
                         Nous ne disposons pas encore de cette information
