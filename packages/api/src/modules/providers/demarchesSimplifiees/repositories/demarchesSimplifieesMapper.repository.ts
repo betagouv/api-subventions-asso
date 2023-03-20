@@ -21,6 +21,15 @@ export class DemarchesSimplifieesMapperRepository extends MigrationRepository<De
     findAll() {
         return this.collection.find({}).toArray();
     }
+
+    getAcceptedDemarcheIds(): Promise<number[]> {
+        return this.collection
+            .find({})
+            .map(schema => {
+                return schema.demarcheId;
+            })
+            .toArray();
+    }
 }
 
 const demarchesSimplifieesMapperRepository = new DemarchesSimplifieesMapperRepository();

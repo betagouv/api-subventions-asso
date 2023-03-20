@@ -3,7 +3,6 @@ import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto"
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
-import configurationsService from "../../configurations/configurations.service";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
@@ -60,13 +59,13 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     }
 
     async updateAllForms() {
-        const acceptedDSFormConfig = await configurationsService.getAcceptedDemarchesSimplifieesFormIds();
+        const formsIds = await demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds();
 
-        if (!acceptedDSFormConfig) {
+        if (!formsIds) {
             throw new Error("DS is not configured on this env, please add mapper");
         }
 
-        await asyncForEach(acceptedDSFormConfig.data, async formId => {
+        await asyncForEach(formsIds, async formId => {
             await this.updateDataByFormId(formId);
         });
     }

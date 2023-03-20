@@ -1,6 +1,5 @@
 import { DemandeSubvention } from "@api-subventions-asso/dto";
 import axios from "axios";
-import configurationsService from "../../configurations/configurations.service";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
@@ -211,29 +210,28 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe("updateAllForms", () => {
-        let configAcceptedFormsMock: jest.SpyInstance;
+        let getAcceptedDemarcheIdsMock: jest.SpyInstance;
         let updateDataByFormIdMock: jest.SpyInstance;
 
         beforeAll(() => {
-            configAcceptedFormsMock = jest
-            .spyOn(configurationsService, "getAcceptedDemarchesSimplifieesFormIds")
-            // @ts-expect-error disable ts form return type of getAcceptedDemarchesSimplifieesFormIds
-            .mockResolvedValue({ data: [] });
+            getAcceptedDemarcheIdsMock = jest
+                .spyOn(demarchesSimplifieesMapperRepository, "getAcceptedDemarcheIds")
+                .mockResolvedValue([]);
             updateDataByFormIdMock = jest.spyOn(demarchesSimplifieesService, "updateDataByFormId").mockResolvedValue();
         });
 
         afterAll(() => {
-            configAcceptedFormsMock.mockRestore();
+            getAcceptedDemarcheIdsMock.mockRestore();
             updateDataByFormIdMock.mockRestore();
         });
 
         it("should get accepted forms ids", async () => {
             await demarchesSimplifieesService.updateAllForms();
-            expect(configAcceptedFormsMock).toHaveBeenCalledTimes(1);
+            expect(getAcceptedDemarcheIdsMock).toHaveBeenCalledTimes(1);
         });
 
         it("should throw error (ds are not configured)", async () => {
-            configAcceptedFormsMock.mockResolvedValueOnce(null);
+            getAcceptedDemarcheIdsMock.mockResolvedValueOnce(null);
             expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
                 "DS is not configured on this env, please add mapper"
             );
@@ -242,9 +240,7 @@ describe("DemarchesSimplifieesService", () => {
         it("should call updateDataByFormId with all formIds", async () => {
             const expected = [12345, 12346];
 
-            configAcceptedFormsMock.mockResolvedValueOnce({
-                data: expected
-            });
+            getAcceptedDemarcheIdsMock.mockResolvedValueOnce(expected);
 
             await demarchesSimplifieesService.updateAllForms();
 

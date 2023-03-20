@@ -40,24 +40,6 @@ export class ConfigurationsService {
         );
     }
 
-    getAcceptedDemarchesSimplifieesFormIds() {
-        return configurationsRepository.getByName<DSAcceptedForm>(CONFIGURATION_NAMES.DS_ACCEPTED_FORM);
-    }
-
-    async addAcceptedDemarchesSimplifieesFormIds(id: number) {
-        let configuration: ConfigurationEntity<DSAcceptedForm> | null =
-            await this.getAcceptedDemarchesSimplifieesFormIds();
-
-        if (!configuration)
-            configuration = this.createEmptyConfigEntity<DSAcceptedForm>(CONFIGURATION_NAMES.DS_ACCEPTED_FORM, []);
-
-        configuration = this.updateConfigEntity(configuration, [...new Set([...configuration.data, id])]);
-
-        await configurationsRepository.upsert(CONFIGURATION_NAMES.DS_ACCEPTED_FORM, configuration);
-
-        return configuration.data;
-    }
-
     /**
      * |---------------------|
      * |  Email Domain Part  |
