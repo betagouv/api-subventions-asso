@@ -67,7 +67,7 @@
     const usersPromise = adminService.getUsers();
     const domainsPromise = adminService.getUserDomaines();
     const promises = Promise.all([usersPromise, domainsPromise]).then(results => {
-        users = results[0];
+        users = results[0].reverse();
         domains = results[1];
     });
 </script>
