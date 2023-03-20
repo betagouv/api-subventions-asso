@@ -78,7 +78,7 @@ describe("EtablissementController", () => {
             expect(getEtablissementSpy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
-        it("should return a success object", async () => {
+        it("should return an establishment", async () => {
             // @ts-expect-error: mock
             getEtablissementSpy.mockImplementationOnce(() => etablissement);
             const etablissement = {};
