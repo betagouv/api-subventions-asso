@@ -19,6 +19,15 @@ describe("/search", () => {
             Promise.all(AssociationNameFixture.map(fixture => associationNameRepository.create(fixture)));
         });
 
+        it("should return 204", async () => {
+            const response = await request(g.app)
+                .get(`/search/associations/NOT_FOUND_ASSO}`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+
+            expect(response.statusCode).toBe(204);
+        });
+
         it("should return an Association from its RNA", async () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture[0].rna}`)
