@@ -21,7 +21,7 @@ describe("GisproService", () => {
         it("return success if valid", () => {
             const request = new GisproActionEntity(ValidGisproRequestInformation, {});
             const actual = gisproService.validEntity(request);
-            const expected = { success: true };
+            const expected = true;
             expect(actual).toEqual(expected);
         });
 
@@ -35,8 +35,7 @@ describe("GisproService", () => {
             const expected = {
                 code: 1,
                 data: { ...invalidGisproRequestInformation },
-                message: `INVALID SIRET FOR ${invalidGisproRequestInformation.siret}`,
-                success: false
+                message: `INVALID SIRET FOR ${invalidGisproRequestInformation.siret}`
             };
             expect(actual).toEqual(expected);
         });
