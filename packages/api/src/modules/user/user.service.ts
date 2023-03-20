@@ -303,10 +303,7 @@ export class UserService {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
-                return {
-                    message: "User email does not correspond to a user",
-                    code: UserServiceErrors.USER_NOT_FOUND
-                };
+                throw new NotFoundError("User email does not correspond to a user");
             }
             user = foundUser;
         }
