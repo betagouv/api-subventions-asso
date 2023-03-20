@@ -19,6 +19,7 @@ export class SearchController extends Controller {
     })
     public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] }> {
         const result = await searchService.getAssociationsKeys(input);
+        if (result.length === 0) this.setStatus(204);
         return { result };
     }
 }
