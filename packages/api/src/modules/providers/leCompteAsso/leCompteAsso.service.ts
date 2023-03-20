@@ -31,7 +31,6 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
     public validEntity(partialEntity: ILeCompteAssoPartialRequestEntity) {
         if (!isSiret(partialEntity.legalInformations.siret)) {
             return {
-                success: false,
                 message: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`,
                 data: partialEntity.legalInformations
             };
@@ -39,7 +38,6 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
 
         if (!isAssociationName(partialEntity.legalInformations.name)) {
             return {
-                success: false,
                 message: `INVALID NAME FOR ${partialEntity.legalInformations.name}`,
                 data: partialEntity.legalInformations
             };
@@ -47,13 +45,12 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
 
         if (!isCompteAssoId(partialEntity.providerInformations.compteAssoId)) {
             return {
-                success: false,
                 message: `INVALID COMPTE ASSO ID FOR ${partialEntity.legalInformations.name}`,
                 data: partialEntity.providerInformations
             };
         }
 
-        return { success: true };
+        return true;
     }
 
     public async addRequest(
