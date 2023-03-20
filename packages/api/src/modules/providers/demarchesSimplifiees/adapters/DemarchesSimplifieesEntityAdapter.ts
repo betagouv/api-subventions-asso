@@ -26,15 +26,17 @@ export class DemarchesSimplifieesEntityAdapter {
 
         mapper.schema.forEach(property => {
             let value = lodash.get(entity, property.from);
-            if (value === undefined) return;
-            console.log(value);
-            if (isString(value) && value.length === 0) return;
-            else if (isValidDate(new Date(cleanDate(value)))) value = cleanDate(value);
-            else if (!isNaN(parseFloat(value))) value = parseFloat(value);
+            const valueDate = new Date(cleanDate(value));
+            const valueNumber = parseFloat(value);
+
+            if (value === undefined || value === "") return;
+            else if (isValidDate(valueDate)) value = valueDate;
+            else if (!isNaN(valueNumber)) value = valueNumber;
+
             lodash.set(subvention, property.to, toPv(value));
         });
 
-        // Manual assing because not only one year
+        // Manual assign because not only one year
         if (subvention.date_debut) subvention.annee_demande = toPv((subvention.date_debut.value as Date).getFullYear());
 
         return subvention as unknown as DemandeSubvention;
