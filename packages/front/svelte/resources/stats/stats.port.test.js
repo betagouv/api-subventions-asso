@@ -16,7 +16,7 @@ describe("StatsPort", () => {
         it("should return data", async () => {
             const expected = [{ ATD: 1 }, { TOTO: 2 }];
 
-            axiosGetMock.mockImplementationOnce(async () => ({ data: { success: true, data: expected } }));
+            axiosGetMock.mockImplementationOnce(async () => ({ data: { data: expected } }));
 
             const actual = await statsPort.getTopAssociations();
             expect(actual).toEqual(expected);
