@@ -48,7 +48,6 @@ export enum UserServiceErrors {
 }
 
 export interface UserServiceError {
-    success: false;
     message: string;
     code: number;
 }
@@ -294,7 +293,6 @@ export class UserService {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
                 return {
-                    success: false,
                     message: "User email does not correspond to a user",
                     code: UserServiceErrors.USER_NOT_FOUND
                 };
@@ -311,7 +309,6 @@ export class UserService {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
             return {
-                success: false,
                 message: "User is not active",
                 code: UserServiceErrors.USER_NOT_ACTIVE
             };

@@ -135,7 +135,6 @@ describe("user.service.ts", () => {
 
         it("should reject because user email not found", async () => {
             const expected = {
-                success: false,
                 message: "User email does not correspond to a user",
                 code: UserServiceErrors.USER_NOT_FOUND
             };
