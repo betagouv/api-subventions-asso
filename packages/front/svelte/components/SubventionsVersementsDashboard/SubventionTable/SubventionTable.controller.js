@@ -88,7 +88,6 @@ export default class SubventionTableController {
             "subvention.service_instructeur": "Service instructeur",
             "subvention.dispositif": "Dispositif",
             "subvention.project-name": "Intitulé de l'action",
-            "more.info": "Plus d'infos",
             "subvention.montants.demande": "Montant demandé",
             "subvention.montants.accorde": "Montant accordé"
         };
