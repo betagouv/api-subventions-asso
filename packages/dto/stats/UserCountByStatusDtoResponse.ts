@@ -1,5 +1,3 @@
-import { ErrorResponse } from "../shared/ErrorResponse";
-
 export type UserCountByStatus = {
     admin: number;
     active: number;
@@ -11,4 +9,4 @@ export interface UserCountByStatusSuccessResponse {
     data: UserCountByStatus;
 }
 
-export type UsersByStatusResponseDto = UserCountByStatusSuccessResponse | ErrorResponse;
+export type UsersByStatusResponseDto = UserCountByStatusSuccessResponse;

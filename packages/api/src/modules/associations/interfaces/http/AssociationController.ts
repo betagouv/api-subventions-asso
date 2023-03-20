@@ -4,11 +4,11 @@ import {
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
     GetDocumentsResponseDto,
-    DemandeSubvention,
-    ErrorResponse
+    DemandeSubvention
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../../../@types";
+import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 
 import associationService from "../../associations.service";
 
@@ -21,7 +21,7 @@ export class AssociationController extends Controller {
      * @param identifier Siret, Siren ou Rna
      */
     @Get("/{identifier}")
-    @Response<ErrorResponse>("404")
+    @Response<HttpErrorInterface>("404")
     public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
         const association = await associationService.getAssociation(identifier);
         return { association };
@@ -34,7 +34,7 @@ export class AssociationController extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/subventions")
-    @Response<ErrorResponse>("404")
+    @Response<HttpErrorInterface>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
         const flux = await associationService.getSubventions(identifier);
         const result = await flux.toPromise();
@@ -75,13 +75,8 @@ export class AssociationController extends Controller {
      */
     @Get("/{identifier}/etablissements")
     public async getEtablissements(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
-        try {
-            const etablissements = await associationService.getEtablissements(identifier);
-            return { etablissements };
-        } catch (e: unknown) {
-            this.setStatus(404);
-            return { message: (e as Error).message };
-        }
+        const etablissements = await associationService.getEtablissements(identifier);
+        return { etablissements };
     }
 
     /**

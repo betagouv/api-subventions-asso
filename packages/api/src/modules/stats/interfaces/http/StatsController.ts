@@ -1,6 +1,5 @@
 import {
     AssociationTopDtoResponse,
-    ErrorResponse,
     MonthlyRequestsDtoResponse,
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
@@ -25,9 +24,6 @@ export class StatsController extends Controller {
      * @returns {StatsRequestDtoResponse}
      */
     @Get("/requests")
-    @Response<ErrorResponse>(500, "Error", {
-        message: "An Error message"
-    })
     async getNbUsersByRequestsOnPeriod(
         @Query() start: string,
         @Query() end: string,
@@ -53,7 +49,6 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/requests/median")
-    @Response<ErrorResponse>("500")
     async getMedianRequestOnPeriod(
         @Query() start: string,
         @Query() end: string,
@@ -76,7 +71,6 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/requests/monthly/{year}")
-    @Response<ErrorResponse>("500")
     async getRequestsPerMonthByYear(
         year: string,
         @Query() includesAdmin = "false"
@@ -93,7 +87,6 @@ export class StatsController extends Controller {
      * @returns
      */
     @Get("/users/monthly/{year}")
-    @Response<ErrorResponse>("500")
     async getCumulatedUsersPerMonthByYear(year: string): Promise<unknown> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         const result = await statsService.getMonthlyUserNbByYear(Number(year));
@@ -107,7 +100,6 @@ export class StatsController extends Controller {
      * @summary Permet de récupérer le nombre d'utilisateur par statut
      */
     @Get("/users/status")
-    @Response<ErrorResponse>("500")
     async getUserCountByStatus(): Promise<UsersByStatusResponseDto> {
         const result = await statsService.getUserCountByStatus();
         return { data: result };
@@ -124,7 +116,6 @@ export class StatsController extends Controller {
      * @param endMonth Number of the end period month (January as 0). Default as 0. For exemple endYear = 2023 and endMonth = 0, the end period has 31/01/2023
      */
     @Get("/associations")
-    @Response<ErrorResponse>("500")
     async getTopAssociations(
         @Query() limit = "5",
         @Query() startYear: string | null = null,
@@ -162,7 +153,6 @@ export class StatsController extends Controller {
      * @summary Permet de récupérer le nombre d'utilisateurs qui ont fait en moyenne un certain nombre de requêtes (depuis un an)
      */
     @Get("/users-by-request")
-    @Response<ErrorResponse>("500")
     async getUsersByRequest() {
         const result = await statsService.getUsersByRequest();
         return { data: result };
@@ -175,7 +165,6 @@ export class StatsController extends Controller {
      * @deprecated
      */
     @Get("/exporters")
-    @Response<ErrorResponse>("500")
     async getExportersEmails() {
         const result = await statsService.getExportersEmails();
         return { emails: result };

@@ -1,10 +1,5 @@
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Response } from "tsoa";
-import {
-    LoginDtoResponse,
-    ResetPasswordDtoNegativeResponse,
-    ResetPasswordDtoResponse,
-    SignupDtoResponse
-} from "@api-subventions-asso/dto";
+import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@api-subventions-asso/dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
@@ -20,7 +15,6 @@ export class AuthentificationController extends Controller {
     }
 
     @Post("/reset-password")
-    @Response<ResetPasswordDtoNegativeResponse>("500")
     public async resetPassword(@Body() body: { password: string; token: string }): Promise<ResetPasswordDtoResponse> {
         const user = await userService.resetPassword(body.password, body.token);
 

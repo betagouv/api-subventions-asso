@@ -1,5 +1,6 @@
-import { AddEmailDomainDto, GetEmailDomainsDto, ErrorResponse } from "@api-subventions-asso/dto";
+import { AddEmailDomainDto, GetEmailDomainsDto } from "@api-subventions-asso/dto";
 import { Controller, Get, Post, Route, Security, Tags, Response, Body, SuccessResponse } from "tsoa";
+import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import configurationsService from "../../configurations.service";
 
 @Route("/config")
@@ -13,7 +14,7 @@ export class ConfigurationsController extends Controller {
      */
     @Post("/domains")
     @SuccessResponse("201", "Created")
-    @Response<ErrorResponse>(500, "Internal Server Error", {
+    @Response<HttpErrorInterface>(500, "Internal Server Error", {
         message: "Internal Server Error"
     })
     public async addDomain(@Body() body: { domain: string }): Promise<AddEmailDomainDto> {
@@ -27,7 +28,7 @@ export class ConfigurationsController extends Controller {
      * @returns {GetEmailDomainsDto}
      */
     @Get("/domains")
-    @Response<ErrorResponse>(500, "Internal Server Error", {
+    @Response<HttpErrorInterface>(500, "Internal Server Error", {
         message: "Internal Server Error"
     })
     public async getDomains(): Promise<GetEmailDomainsDto> {

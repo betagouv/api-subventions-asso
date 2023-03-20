@@ -12,9 +12,4 @@ export interface ResetPasswordDtoPositiveResponse {
     user: UserWithResetTokenDto;
 }
 
-export interface ResetPasswordDtoNegativeResponse {
-    message: string;
-    code: ResetPasswordErrorCodes;
-}
-
-export type ResetPasswordDtoResponse = ResetPasswordDtoPositiveResponse | ResetPasswordDtoNegativeResponse;
+export type ResetPasswordDtoResponse = ResetPasswordDtoPositiveResponse;
