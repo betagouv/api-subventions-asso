@@ -18,7 +18,7 @@ const ValidGisproRequestInformation: IGisproActionInformations = {
 
 describe("GisproService", () => {
     describe("validEntity()", () => {
-        it("return success if valid", () => {
+        it("return true if valid", () => {
             const request = new GisproActionEntity(ValidGisproRequestInformation, {});
             const actual = gisproService.validEntity(request);
             const expected = true;
