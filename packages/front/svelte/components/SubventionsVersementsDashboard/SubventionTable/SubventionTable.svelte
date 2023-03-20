@@ -1,7 +1,6 @@
 <script>
     import TableCell from "../../Tables/TableCell.svelte";
     import TableHead from "../../Tables/TableHead.svelte";
-    import Button from "../../../dsfr/Button.svelte";
     import Table from "../../../dsfr/Table.svelte";
 
     import { modal, data } from "../../../store/modal.store";
@@ -20,6 +19,7 @@
     const { elementsDataViews, columnDataViews } = controller;
 
     const displayModal = subvention => {
+        if (!subvention) return;
         data.update(() => ({ subvention }));
         modal.update(() => SubventionInfoModal);
     };
@@ -34,7 +34,6 @@
             <col class="col-120" />
             <col class="col-120" />
             <col class="col-140" />
-            <col class="col-80" />
             <col class="col-100" />
             <col class="col-190" />
         </colgroup>
@@ -52,7 +51,11 @@
     </svelte:fragment>
     <svelte:fragment slot="body">
         {#each $elementsDataViews as elementData}
-            <tr>
+            <tr
+                class:clickable={elementData?.enableButtonMoreInfo}
+                aria-controls={elementData?.enableButtonMoreInfo ? "fr-modal" : undefined}
+                data-fr-opened={elementData?.enableButtonMoreInfo ? "false" : undefined}
+                on:click={() => displayModal(elementData?.subvention)}>
                 {#if !elementData}
                     <TableCell colspan="5" position="center">
                         Nous ne disposons pas encore de cette information
@@ -65,19 +68,6 @@
                     </TableCell>
                     <TableCell position={elementData.projectNamePosition}>
                         {elementData.projectName}
-                    </TableCell>
-                    <TableCell position="center" overflow="visible">
-                        {#if elementData.enableButtonMoreInfo}
-                            <Button
-                                icon="information-line"
-                                ariaControls="fr-modal"
-                                on:click={() => displayModal(elementData.subvention)} />
-                        {:else}
-                            <div class="tooltip-wrapper">
-                                <span class="tooltip">Nous ne disposons pas de plus d'informations</span>
-                                <Button disabled="true" icon="information-line" />
-                            </div>
-                        {/if}
                     </TableCell>
                     <TableCell position="end">
                         {elementData.montantsDemande}
@@ -96,41 +86,6 @@
 </Table>
 
 <style>
-    /* This is a quick fix and if needed a Tooltip component should be made */
-    .tooltip-wrapper {
-        position: relative;
-    }
-
-    .tooltip-wrapper .tooltip {
-        top: -40px;
-        left: -139px;
-    }
-
-    .tooltip {
-        display: none;
-        position: absolute;
-        color: #fff;
-        background-color: #555;
-        padding: 5px;
-        border-radius: 6px;
-        white-space: nowrap;
-    }
-
-    .tooltip::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
-
-    .tooltip-wrapper:hover > span.tooltip {
-        display: block;
-    }
-
     .col-140 {
         width: 140px;
         max-width: 140px;
@@ -144,11 +99,6 @@
     .col-100 {
         width: 100px;
         max-width: 100px;
-    }
-
-    .col-80 {
-        width: 80px;
-        max-width: 80px;
     }
 
     .col-190 {
