@@ -59,17 +59,18 @@ export class AssociationNameService {
         throw new Error("identifier type is not supported");
     }
 
-    private _mergeEntities(entities: AssociationNameEntity[]): AssociationNameEntity {
-        const bestEntity = entities.sort(
-            (a, b) => {
-                const result = AssociationNameService.PROVIDER_SCORES[b.provider] - AssociationNameService.PROVIDER_SCORES[a.provider];
+    private _mergeEntities(entities: AssociationNameEntity[]): AssociationNameEntity | undefined {
+        if (entities.length == 0) return;
 
-                if (result != 0) return result;
+        const bestEntity = entities.sort((a, b) => {
+            const result =
+                AssociationNameService.PROVIDER_SCORES[b.provider] - AssociationNameService.PROVIDER_SCORES[a.provider];
 
-                // if result is 0 so providers have the same scores so select by date
-                return new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime();
-            }
-        )[0];
+            if (result != 0) return result;
+
+            // if result is 0 so providers have the same scores so select by date
+            return new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime();
+        })[0];
 
         return {
             name: bestEntity.name,
@@ -143,7 +144,7 @@ export class AssociationNameService {
         // Above reduce creates duplicates. Removes then by creating a Set
         const uniqueMapsValues = new Set(flattenMapsValues);
 
-        return [...uniqueMapsValues].map(this._mergeEntities);
+        return [...uniqueMapsValues].map(this._mergeEntities) as AssociationNameEntity[];
     }
 
     /***
