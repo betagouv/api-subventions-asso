@@ -27,7 +27,7 @@ describe("chorus.service", () => {
             );
 
             expect(() => chorusService.validateEntity(entity)).toThrow(
-                `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`
+                `The branch ${entity.indexedInformations.codeBranche} is not accepted in data`
             );
         });
 
