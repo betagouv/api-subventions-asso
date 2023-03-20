@@ -32,8 +32,8 @@
     <svelte:fragment slot="colgroup">
         <colgroup>
             <col class="col-120" />
-            <col class="col-120" />
-            <col class="col-140" />
+            <col class="col-170" />
+            <col class="col-170" />
             <col class="col-100" />
             <col class="col-190" />
         </colgroup>
@@ -86,9 +86,9 @@
 </Table>
 
 <style>
-    .col-140 {
-        width: 140px;
-        max-width: 140px;
+    .col-170 {
+        width: 170px;
+        max-width: 170px;
     }
 
     .col-120 {
