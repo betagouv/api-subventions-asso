@@ -35,7 +35,7 @@ export default class GisproCliController {
             console.info(`Check ${actions.length} entities!`);
             actions.forEach(entity => {
                 const result = gisproService.validEntity(entity);
-                if (!result.success) {
+                if (result !== true) {
                     console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
                 }
             });
@@ -108,7 +108,7 @@ export default class GisproCliController {
 
             CliHelper.printProgress(index + 1, actions.length);
 
-            if (!validation.success) {
+            if (validation !== true) {
                 logs.push(
                     `\n\nThis request is not registered because: ${validation.message}\n`,
                     JSON.stringify(validation.data, null, "\t")
