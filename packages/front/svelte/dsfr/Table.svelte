@@ -48,4 +48,9 @@
     .custom-table :global(tr.clickable) {
         cursor: pointer;
     }
+
+    .custom-table :global(tr.clickable:hover td),
+    :global(tr.clickable:focus-within td) {
+        background-color: var(--background-alt-grey);
+    }
 </style>
