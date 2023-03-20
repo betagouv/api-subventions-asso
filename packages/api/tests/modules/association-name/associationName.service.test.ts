@@ -12,11 +12,9 @@ describe("AssociationNameService", () => {
                 "0000000000",
                 "FAKE NAME",
                 LAST_UPDATE,
-                ""
+                null
             );
-            jest.spyOn(associationNameRepository, "findAllStartingWith").mockImplementation(
-                jest.fn().mockResolvedValue([associationNameEntity])
-            );
+            jest.spyOn(associationNameRepository, "findAllStartingWith").mockResolvedValue([associationNameEntity]);
             const expected = [associationNameEntity];
             const actual = await associationNameService.getAllStartingWith(INPUT);
             expect(actual).toEqual(expected);
