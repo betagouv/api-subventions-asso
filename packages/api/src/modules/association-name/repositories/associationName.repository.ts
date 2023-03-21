@@ -21,14 +21,15 @@ export class AssociationNameRepository {
 
     async findAllStartingWith(value: string) {
         if (isStartOfSiret(value)) value = siretToSiren(value); // Check if value is a start of siret
+        const valueNoSpace = value.replace(/\s/g, "");
         return (
             await this.collection
                 .find({
                     $or: [
-                        { siren: { $regex: value, $options: "i" } },
+                        { siren: { $regex: valueNoSpace, $options: "i" } },
                         {
                             rna: {
-                                $regex: value,
+                                $regex: valueNoSpace,
                                 $options: "i"
                             }
                         },
