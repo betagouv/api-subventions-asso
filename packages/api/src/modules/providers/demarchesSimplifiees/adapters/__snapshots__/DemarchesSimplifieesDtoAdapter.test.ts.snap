@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DemarchesSimplifieesDtoAdapter toEntities should retrun valid entity 1`] = `
+Array [
+  Object {
+    "demande": Object {
+      "annotations": Object {
+        "ID": Object {
+          "label": "PLAI",
+          "value": "YO",
+        },
+      },
+      "champs": Object {
+        "ID": Object {
+          "label": "PLAI",
+          "value": "YO",
+        },
+      },
+      "demandeur": Object {
+        "siret": "00000000000000",
+      },
+    },
+    "demarcheId": 12345,
+    "siret": "00000000000000",
+  },
+]
+`;

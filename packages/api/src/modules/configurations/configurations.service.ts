@@ -1,7 +1,7 @@
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
-import { DauphinTokenAvailableTime } from "./entities/DauphinTokenAvailableTimeDataEntity";
-import { DauphinTokenDataEntity } from "./entities/DauphinTokenDataEntity";
+import { DauphinTokenDataEntity, DauphinTokenAvailableTime, DSAcceptedForm } from "./entities";
+import ConfigurationEntity from "./entities/ConfigurationEntity";
 import configurationsRepository from "./repositories/configurations.repository";
 
 export enum CONFIGURATION_NAMES {
@@ -11,7 +11,7 @@ export enum CONFIGURATION_NAMES {
 }
 
 export class ConfigurationsService {
-    createEmptyConfigEntity(name, defaultData) {
+    createEmptyConfigEntity<T>(name, defaultData: T): ConfigurationEntity<T> {
         return {
             name,
             data: defaultData,
@@ -19,7 +19,7 @@ export class ConfigurationsService {
         };
     }
 
-    updateConfigEntity(entity, data) {
+    updateConfigEntity<T>(entity, data: T): ConfigurationEntity<T> {
         return { ...entity, data, updatedAt: new Date() };
     }
 
