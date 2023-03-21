@@ -4,7 +4,12 @@ import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import dedent from "dedent";
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes, UserErrorCodes } from "@api-subventions-asso/dto";
+import {
+    LoginDtoErrorCodes,
+    ResetPasswordErrorCodes,
+    SignupErrorCodes,
+    UserErrorCodes
+} from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
@@ -259,7 +264,13 @@ export class UserService {
         if (role == RoleEnum.consumer) {
             user = await this.createConsumer(lowerCaseEmail);
         } else {
-            user = await this.createUser(lowerCaseEmail);
+            try {
+                user = await this.createUser(lowerCaseEmail);
+            } catch (e) {
+                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
+                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                throw e;
+            }
         }
 
         const resetResult = await this.resetUser(user);

@@ -1,6 +1,6 @@
 {
     "name": "api",
-    "version": "0.24.3",
+    "version": "0.24.4",
     "description": "",
     "main": "index.js",
     "engines": {
@@ -58,6 +58,7 @@
         "jsonwebtoken": "^9.0.0",
         "lodash": "^4.17.21",
         "migrate-mongo": "^8.2.3",
+        "moment": "^2.29.4",
         "mongodb": "^4.3.0",
         "node-xlsx": "^0.21.0",
         "nodemailer": "^6.7.2",
@@ -82,6 +83,7 @@
         "@types/express-winston": "^4.0.0",
         "@types/jest": "^27.4.0",
         "@types/lodash": "^4.14.191",
+        "@types/moment": "^2.13.0",
         "@types/node": "^17.0.7",
         "@types/nodemailer": "^6.4.4",
         "@types/passport": "^1.0.7",

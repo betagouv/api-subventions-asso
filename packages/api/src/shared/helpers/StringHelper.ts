@@ -9,3 +9,11 @@ export function formatIntToTwoDigits(int: number) {
 export function formatIntToThreeDigits(int: number) {
     return ("00" + int).slice(-3);
 }
+
+export function stringIsFloat(string: string): boolean {
+    return /[d,.]+/.test(string) && !isNaN(parseFloat(string));
+}
+
+export function stringIsInt(string: string): boolean {
+    return /d+/.test(string) && !isNaN(parseInt(string, 10));
+}

@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.4](https://github.com/betagouv/api-subventions-asso/compare/v0.24.3...v0.24.4) (2023-03-21)
+
+
+### Bug Fixes
+
+* **api:** back to string identifiers ([af0f896](https://github.com/betagouv/api-subventions-asso/commit/af0f8960da86303bd6dfa18eed11c55ebbe11e08))
+* **api:** fix ds amounts and date parsing ([aaeeff6](https://github.com/betagouv/api-subventions-asso/commit/aaeeff653c8fb34d1fc2ccc8f10adfb70c8673eb))
+* **api:** proper signup error code ([939424e](https://github.com/betagouv/api-subventions-asso/commit/939424eae2cacef6569ec9271446afafabef2ced))
+* **api:** remove space from search by identifier ([ee216bb](https://github.com/betagouv/api-subventions-asso/commit/ee216bb7d50333ca1f1ac62ad531e11ddb1cff44))
+* **front:** add best http error management ([fc4dece](https://github.com/betagouv/api-subventions-asso/commit/fc4dece64a25a87a573c18d0a93b36e3f636d637))
+* **front:** add beta on label in extract csv download button ([9c5f29b](https://github.com/betagouv/api-subventions-asso/commit/9c5f29bba510618f30bd47575b7a2404234f6293))
+* **front:** remove ds from list of providers ([280b2bd](https://github.com/betagouv/api-subventions-asso/commit/280b2bdf56954a3ade53531cf100c89017fb7cb3))
+* **front:** update max char limit ([8e723b3](https://github.com/betagouv/api-subventions-asso/commit/8e723b3cd7dfe452a72e81def0b3d96c698d2629))
+
+
+### Features
+
+* **front:** wording ([4eb87be](https://github.com/betagouv/api-subventions-asso/commit/4eb87beff45ddeec8e45ad29aafad105c6555151))
+
+
+
+
+
 ## [0.24.3](https://github.com/betagouv/api-subventions-asso/compare/v0.24.2...v0.24.3) (2023-03-21)
 
 

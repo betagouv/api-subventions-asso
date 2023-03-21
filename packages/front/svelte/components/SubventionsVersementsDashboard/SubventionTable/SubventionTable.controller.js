@@ -11,7 +11,7 @@ const INTITULE_ACTION_LABEL = "Intitulé de l'action";
 const MONTANT_DEMANDE_LABEL = "Montant demandé";
 const MONTANT_ACCORDER_LABEL = "Montant accordé";
 
-const MAX_CHAR_SIZE = 53;
+const MAX_CHAR_SIZE = 50;
 
 export default class SubventionTableController {
     constructor(sortMethod) {
