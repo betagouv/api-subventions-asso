@@ -3,6 +3,72 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.24.0](https://github.com/betagouv/datasubvention/compare/v0.23.9...v0.24.0) (2023-03-21)
+
+
+### Bug Fixes
+
+* **front:** add padding and margin ([5772e73](https://github.com/betagouv/datasubvention/commit/5772e73a950c46c6c32ab95c394ff0c572ee0c42))
+* **front:** fix from rebase ([96aca46](https://github.com/betagouv/datasubvention/commit/96aca466523f6986ec7b84546cfad1aafd0bc39e))
+* **front:** get projectName from _extractTableDataFromElement ([cdd7500](https://github.com/betagouv/datasubvention/commit/cdd75000d6096bfd97f43b4f20a29920a06e69aa))
+* **front:** no undefined this ([9e76e92](https://github.com/betagouv/datasubvention/commit/9e76e92c07b71a62896c3636f7a06ff8340aa16a))
+* **front:** reset crisp session instead of trying to set null email ([12eac5b](https://github.com/betagouv/datasubvention/commit/12eac5b06cbfa09070b6b5b3af1e1cfb1db32350))
+* **front:** test downloadCsv in SubventionsVersementsDashboardController ([3ae6b61](https://github.com/betagouv/datasubvention/commit/3ae6b612e2aa39d86784f8065397d94834bd2d0e))
+* **front:** update comment ([551cdc6](https://github.com/betagouv/datasubvention/commit/551cdc664931312750af37412f72368f7a3f5618))
+* **front:** use trimValue instead of trim to avoid name collision ([7c177e4](https://github.com/betagouv/datasubvention/commit/7c177e425631993215156bbda2e5338656aaba5d))
+
+
+### Features
+
+* **api, front:** add # in password regex ([8e4915d](https://github.com/betagouv/datasubvention/commit/8e4915db7351fbcfedf5f5e8afdbe7075e65c7b9))
+* **api,front:** wording ([ab2b0ad](https://github.com/betagouv/datasubvention/commit/ab2b0ad7992bfab470b1b438348b33806ed251b5))
+* **api:** better use of data and its tests ([c0f9bc5](https://github.com/betagouv/datasubvention/commit/c0f9bc5ba5a528bcbaab531178b0791d27c8efb1))
+* **api:** wip wip ([3d90dee](https://github.com/betagouv/datasubvention/commit/3d90dee79d28764e9c8f2c5506d983e1293f4671))
+* **api:** wording agents publics ([c8bb8e4](https://github.com/betagouv/datasubvention/commit/c8bb8e4079d0d05587ecc785a4433c49fcdaf4ab))
+* **front:** 1053 wording signup page ([a9cb688](https://github.com/betagouv/datasubvention/commit/a9cb688c896bf9176e310aaa4983601ff53cc4c6))
+* **front:** accessibility improvement and note for later ([c323153](https://github.com/betagouv/datasubvention/commit/c323153971fde4db8eb892c64706aee9a335ddc7))
+* **front:** add 404 view ([3e19ad6](https://github.com/betagouv/datasubvention/commit/3e19ad6f1f7c3364226026a312e6e618eddd722e))
+* **front:** add BOM to CSV to force Excel UTF-8 encoding ([a6a1e1b](https://github.com/betagouv/datasubvention/commit/a6a1e1b2de874539c52f8a4941da8df928f4ac64))
+* **front:** add breadcrumb ([0fe403f](https://github.com/betagouv/datasubvention/commit/0fe403f47e245695fde0afdae41bc13a26dd5c89))
+* **front:** add Caisse Dépôts in provider list ([4ae6e67](https://github.com/betagouv/datasubvention/commit/4ae6e67ad08c2c5dcdcc3360d419b106091e6962))
+* **front:** add datasub download button ([d955a4d](https://github.com/betagouv/datasubvention/commit/d955a4d58ef0fffe6fe47abd50de3148b46fb839))
+* **front:** add ds on data provider and qwick fix on sizedTrim ([21b1adc](https://github.com/betagouv/datasubvention/commit/21b1adcd90f58a5280c711bf7fc09b08b0e68873))
+* **front:** add icon to download datasub csv button ([9d5b5f9](https://github.com/betagouv/datasubvention/commit/9d5b5f92bc824ec11fbbaa2a5126074c5201ef33))
+* **front:** add isEtab getter in controller ([b5515d4](https://github.com/betagouv/datasubvention/commit/b5515d4abbcf09404f80767412d76368d3cc9a78))
+* **front:** add structure ports and call extractData on download ([8df55a5](https://github.com/betagouv/datasubvention/commit/8df55a569ba9dc9c1ab7dfc8a8b018fea29c6830))
+* **front:** build and download DataSub CSV ([0b5b6ac](https://github.com/betagouv/datasubvention/commit/0b5b6acfdce0e238f06bbee303be0f9c142bbee6))
+* **front:** change column head font size ([689397d](https://github.com/betagouv/datasubvention/commit/689397dc94dc527644373c54538b66d656fb65bc))
+* **front:** crisp reset session ([c349856](https://github.com/betagouv/datasubvention/commit/c349856488a0a9fd3a22f330051e25dce0082bd1))
+* **front:** crisp service sets user email ([6a1fc57](https://github.com/betagouv/datasubvention/commit/6a1fc57ea5a1900cf61104447aa322927f4e3a68))
+* **front:** disable csv button while loading data ([ef1b73a](https://github.com/betagouv/datasubvention/commit/ef1b73a73633d66717ae45f4f9f0eea080647df4))
+* **front:** draw line to help reading ([a014245](https://github.com/betagouv/datasubvention/commit/a014245d0860f33918a40067d861a28114e1aa34))
+* **front:** dsfr color mode in graph ([4d64ca2](https://github.com/betagouv/datasubvention/commit/4d64ca2599ba4e462ff039a710604d3979ebc834))
+* **front:** extract values in extractRows instead of using onlyValues boolean ([d562adf](https://github.com/betagouv/datasubvention/commit/d562adfd88303a947c28e3c52f34fc56ec077d2e))
+* **front:** hide unknown percent ([a589a0a](https://github.com/betagouv/datasubvention/commit/a589a0aca2e59ed3f05c4bf4dc2518382d0fdcae))
+* **front:** keep wrong url when redirecting to 404 view ([63d50b4](https://github.com/betagouv/datasubvention/commit/63d50b4a71630dd1260bbcf4d840e2a194b1d435))
+* **front:** make VersementTableController as default export ([7ba0907](https://github.com/betagouv/datasubvention/commit/7ba09071b45bba6fc39450d8bd4c51bc20ef5094))
+* **front:** mock axios ([f7906c5](https://github.com/betagouv/datasubvention/commit/f7906c5166ca8655be53ece8590f13e8c7fed817))
+* **front:** page setup and login saves email to crisp ([3ddda15](https://github.com/betagouv/datasubvention/commit/3ddda15e19eac578ffd409e1ed7a906fb1edf9f1))
+* **front:** redirect all calls to svelte ([ef21167](https://github.com/betagouv/datasubvention/commit/ef21167724fa54f3b1ef1512b35978a70ca4bc68))
+* **front:** replace 404 button with links ([66c8dd6](https://github.com/betagouv/datasubvention/commit/66c8dd6d7dcb8ac79fa8aca6bbf045bbfedd64d6))
+* **front:** replace button to link for go to association in etab view ([91ec963](https://github.com/betagouv/datasubvention/commit/91ec9636d0fea5add6097d95839959b4993a23b2))
+* **front:** resourceName prop in monthly graph component ([ac99d1a](https://github.com/betagouv/datasubvention/commit/ac99d1a7565c22f140943f23927c1eaee262ebe7))
+* **front:** show newer users first ([4390d8b](https://github.com/betagouv/datasubvention/commit/4390d8bf29b7a59078c7ae3f1cad58b9b9474c7e))
+* **front:** show tooltip even if not on the point ([d410e7b](https://github.com/betagouv/datasubvention/commit/d410e7b4aac45e99118ae9d907dbe65e161d82c3))
+* **front:** status column instead of granted amount ([74b2873](https://github.com/betagouv/datasubvention/commit/74b28736fcf8b9e59fe0778e9732c3755981d9da))
+* **front:** status label badge component & controller ([8c2174b](https://github.com/betagouv/datasubvention/commit/8c2174b5e77db63644b7023c45ece4d27ccdc17e))
+* **front:** switch button position ([f9a050e](https://github.com/betagouv/datasubvention/commit/f9a050e29d8552a259f85a29771b8206a19e3c32))
+* **front:** tooltip component for monthly graph ([055149c](https://github.com/betagouv/datasubvention/commit/055149c1199f9f04bd68267ff2cfb8bb7e705db9))
+* **front:** transparent background spinner ([d9c571f](https://github.com/betagouv/datasubvention/commit/d9c571f06ec64940e5cd35148ebe1bec393aaac7))
+* **front:** update 404 content ([fba8ffc](https://github.com/betagouv/datasubvention/commit/fba8ffc4fadd1c9081a678dfb34132f97daa5d48))
+* **front:** use link instead of button to send mail ([4441954](https://github.com/betagouv/datasubvention/commit/4441954c917f6252190a04d54d5aee5a4e120b79))
+* **front:** use services to call port in controller ([de553f2](https://github.com/betagouv/datasubvention/commit/de553f2bf531820b129948d1303e0f6f67c904e8))
+* **front:** use tooltip in monthly graph ([d74d3f0](https://github.com/betagouv/datasubvention/commit/d74d3f0b42fdee07813c51f888fc8fd30fb5553d))
+
+
+
+
+
 ## [0.23.9](https://github.com/betagouv/datasubvention/compare/v0.23.8...v0.23.9) (2023-03-10)
 
 **Note:** Version bump only for package front

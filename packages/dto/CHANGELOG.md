@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.24.0](https://github.com/betagouv/datasubvention/compare/v0.23.9...v0.24.0) (2023-03-21)
+
+
+### Bug Fixes
+
+* **dto:** revert deleted file ([f67bfcb](https://github.com/betagouv/datasubvention/commit/f67bfcb574202e2f8945f506a9d019d7f3284a63))
+* **dto:** revert ResetPasswordErrorCodes removal ([eef731b](https://github.com/betagouv/datasubvention/commit/eef731bfdb2f388a7642bd015d8bcb46eb840850))
+
+
+### Features
+
+* **api, dto:** update error handling in UserController ([9b0c058](https://github.com/betagouv/datasubvention/commit/9b0c0587e01c80f4f1940511ceddf8e0f9417d91))
+* **dto:** normalized application status enum ([0551fb7](https://github.com/betagouv/datasubvention/commit/0551fb757ba365e77cc14fd6acdd97a0a27a57fb))
+* **dto:** update application dto with normalized status label ([37fa9a0](https://github.com/betagouv/datasubvention/commit/37fa9a08e0f0aad2d91faac7dd19ff025fd23de3))
+* **dto:** update application status enum ([46ee7d6](https://github.com/betagouv/datasubvention/commit/46ee7d6c9e8fd7424ed0cffde653404254d65e3e))
+
+
+
+
+
 # [0.23.0](https://github.com/betagouv/datasubvention/compare/v0.22.0...v0.23.0) (2023-02-13)
 
 **Note:** Version bump only for package dto
