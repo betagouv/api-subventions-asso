@@ -1,3 +1,5 @@
+import NotFoundError from "./NotFoundError";
+import StaticError from "./StaticError";
 import UnauthoziedError from "./UnauthorizedError";
 
 export class ErrorsService {
@@ -6,9 +8,22 @@ export class ErrorsService {
         switch (e.response.status) {
             case UnauthoziedError.httpCode:
                 return UnauthoziedError;
+            case NotFoundError.httpCode:
+                return NotFoundError;
         }
 
-        return Error;
+        return this._buildUnknownError(e.response.status);
+    }
+
+    _buildUnknownError(status) {
+        return class extends StaticError {
+            static httpCode = status;
+
+            constructor(...args) {
+                super(...args);
+                console.error(`HTTP ERROR ${status} is not implemented`);
+            }
+        };
     }
 }
 
