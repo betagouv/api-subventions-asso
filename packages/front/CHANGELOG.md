@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.4](https://github.com/betagouv/datasubvention/compare/v0.24.3...v0.24.4) (2023-03-21)
+
+
+### Bug Fixes
+
+* **front:** add best http error management ([fc4dece](https://github.com/betagouv/datasubvention/commit/fc4dece64a25a87a573c18d0a93b36e3f636d637))
+* **front:** add beta on label in extract csv download button ([9c5f29b](https://github.com/betagouv/datasubvention/commit/9c5f29bba510618f30bd47575b7a2404234f6293))
+* **front:** remove ds from list of providers ([280b2bd](https://github.com/betagouv/datasubvention/commit/280b2bdf56954a3ade53531cf100c89017fb7cb3))
+* **front:** update max char limit ([8e723b3](https://github.com/betagouv/datasubvention/commit/8e723b3cd7dfe452a72e81def0b3d96c698d2629))
+
+
+### Features
+
+* **front:** wording ([4eb87be](https://github.com/betagouv/datasubvention/commit/4eb87beff45ddeec8e45ad29aafad105c6555151))
+
+
+
+
+
 ## [0.24.2](https://github.com/betagouv/datasubvention/compare/v0.24.1...v0.24.2) (2023-03-21)
 
 

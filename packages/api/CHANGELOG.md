@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.4](https://github.com/betagouv/api-subventions-asso/compare/v0.24.3...v0.24.4) (2023-03-21)
+
+
+### Bug Fixes
+
+* **api:** back to string identifiers ([af0f896](https://github.com/betagouv/api-subventions-asso/commit/af0f8960da86303bd6dfa18eed11c55ebbe11e08))
+* **api:** fix ds amounts and date parsing ([aaeeff6](https://github.com/betagouv/api-subventions-asso/commit/aaeeff653c8fb34d1fc2ccc8f10adfb70c8673eb))
+* **api:** proper signup error code ([939424e](https://github.com/betagouv/api-subventions-asso/commit/939424eae2cacef6569ec9271446afafabef2ced))
+* **api:** remove space from search by identifier ([ee216bb](https://github.com/betagouv/api-subventions-asso/commit/ee216bb7d50333ca1f1ac62ad531e11ddb1cff44))
+
+
+
+
+
 ## [0.24.3](https://github.com/betagouv/api-subventions-asso/compare/v0.24.2...v0.24.3) (2023-03-21)
 
 
