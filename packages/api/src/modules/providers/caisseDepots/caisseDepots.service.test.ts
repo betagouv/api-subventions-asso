@@ -18,7 +18,7 @@ describe("CaisseDepotsService", () => {
 
         it("calls axios get with proper url", async () => {
             const URL =
-                'https://opendata.caissedesdepots.fr/api/v2/catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiare,"toto")';
+                "https://opendata.caissedesdepots.fr/api/v2/catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, toto)";
             // @ts-expect-error: mock
             await caisseDepotsService.getCaisseDepotsSubventions(IDENTIFIER);
             expect(axiosGetSpy).toBeCalledWith(URL);
