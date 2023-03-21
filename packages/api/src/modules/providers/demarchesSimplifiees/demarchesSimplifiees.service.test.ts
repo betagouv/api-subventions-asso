@@ -47,7 +47,7 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
-    describe("enititesToSubventions", () => {
+    describe("entitiesToSubventions", () => {
         let getSchemasByIdsMock: jest.SpyInstance;
         let entityAdatperToSubMock: jest.SpyInstance;
 
@@ -65,8 +65,8 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call getSchemasByIds", async () => {
-            // @ts-expect-error enititesToSubventions is private method
-            await demarchesSimplifieesService.enititesToSubventions([]);
+            // @ts-expect-error entitiesToSubventions is private method
+            await demarchesSimplifieesService.entitiesToSubventions([]);
 
             expect(getSchemasByIdsMock).toBeCalledTimes(1);
         });
@@ -86,8 +86,8 @@ describe("DemarchesSimplifieesService", () => {
                 [DEMARCHE_ID]: expected[1]
             });
 
-            // @ts-expect-error enititesToSubventions is private method
-            await demarchesSimplifieesService.enititesToSubventions([expected[0]]);
+            // @ts-expect-error entitiesToSubventions is private method
+            await demarchesSimplifieesService.entitiesToSubventions([expected[0]]);
 
             expect(entityAdatperToSubMock).toBeCalledWith(...expected);
         });
@@ -104,8 +104,8 @@ describe("DemarchesSimplifieesService", () => {
                 }
             });
 
-            // @ts-expect-error enititesToSubventions is private method
-            const actual = await demarchesSimplifieesService.enititesToSubventions([expected]);
+            // @ts-expect-error entitiesToSubventions is private method
+            const actual = await demarchesSimplifieesService.entitiesToSubventions([expected]);
 
             expect(actual).toEqual([expected]);
         });
@@ -122,8 +122,8 @@ describe("DemarchesSimplifieesService", () => {
                 }
             });
 
-            // @ts-expect-error enititesToSubventions is private method
-            const actual = await demarchesSimplifieesService.enititesToSubventions([expected]);
+            // @ts-expect-error entitiesToSubventions is private method
+            const actual = await demarchesSimplifieesService.entitiesToSubventions([expected]);
 
             expect(actual).toHaveLength(0);
         });
@@ -138,9 +138,9 @@ describe("DemarchesSimplifieesService", () => {
         beforeAll(() => {
             findBySirenMock = jest.spyOn(demarchesSimplifieesDataRepository, "findBySiren").mockResolvedValue([]);
             entitiesToSubMock = jest
-                // @ts-expect-error enititesToSubventions is private method
-                .spyOn(demarchesSimplifieesService, "enititesToSubventions")
-                // @ts-expect-error disable ts form return type of enititesToSubventions
+                // @ts-expect-error entitiesToSubventions is private method
+                .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
+                // @ts-expect-error disable ts form return type of entitiesToSubventions
                 .mockImplementation(data => data);
         });
 
@@ -155,7 +155,7 @@ describe("DemarchesSimplifieesService", () => {
             expect(findBySirenMock).toBeCalledTimes(1);
         });
 
-        it("should call enititesToSubventions", async () => {
+        it("should call entitiesToSubventions", async () => {
             await demarchesSimplifieesService.getDemandeSubventionBySiren(SIREN);
             expect(entitiesToSubMock).toHaveBeenCalledWith([]);
             expect(entitiesToSubMock).toBeCalledTimes(1);
@@ -178,9 +178,9 @@ describe("DemarchesSimplifieesService", () => {
         beforeAll(() => {
             findBySiret = jest.spyOn(demarchesSimplifieesDataRepository, "findBySiret").mockResolvedValue([]);
             entitiesToSubMock = jest
-                // @ts-expect-error enititesToSubventions is private method
-                .spyOn(demarchesSimplifieesService, "enititesToSubventions")
-                // @ts-expect-error disable ts form return type of enititesToSubventions
+                // @ts-expect-error entitiesToSubventions is private method
+                .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
+                // @ts-expect-error disable ts form return type of entitiesToSubventions
                 .mockImplementation(data => data);
         });
 
@@ -189,13 +189,13 @@ describe("DemarchesSimplifieesService", () => {
             entitiesToSubMock.mockRestore();
         });
 
-        it("should call findBySiren", async () => {
+        it("should call findBySiret", async () => {
             await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
             expect(findBySiret).toHaveBeenCalledWith(SIRET);
             expect(findBySiret).toBeCalledTimes(1);
         });
 
-        it("should call enititesToSubventions", async () => {
+        it("should call entitiesToSubventions", async () => {
             await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
             expect(entitiesToSubMock).toHaveBeenCalledWith([]);
             expect(entitiesToSubMock).toBeCalledTimes(1);
@@ -230,7 +230,7 @@ describe("DemarchesSimplifieesService", () => {
             expect(getAcceptedDemarcheIdsMock).toHaveBeenCalledTimes(1);
         });
 
-        it("should throw error (ds are not configured)", async () => {
+        it("should throw error (ds is not configured)", async () => {
             getAcceptedDemarcheIdsMock.mockResolvedValueOnce(null);
             expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
                 "DS is not configured on this env, please add mapper"
@@ -332,7 +332,7 @@ describe("DemarchesSimplifieesService", () => {
             expect(buildSearchHeaderMock).toBeCalledTimes(1);
         });
 
-        it("should return null when axios throw error", async () => {
+        it("should return null when axios throws error", async () => {
             postMock.mockRejectedValueOnce(new Error("axios not happy"));
 
             const actual = await demarchesSimplifieesService.sendQuery("", {});
@@ -340,7 +340,7 @@ describe("DemarchesSimplifieesService", () => {
             expect(actual).toBe(null);
         });
 
-        it("should retrun data", async () => {
+        it("should return data", async () => {
             const expected = { data: true };
             postMock.mockResolvedValueOnce({ data: expected });
 

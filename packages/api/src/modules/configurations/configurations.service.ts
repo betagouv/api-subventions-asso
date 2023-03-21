@@ -7,8 +7,7 @@ import configurationsRepository from "./repositories/configurations.repository";
 export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
-    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
-    DS_ACCEPTED_FORM = "DS_ACCEPTED_FORM"
+    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS"
 }
 
 export class ConfigurationsService {

@@ -20,7 +20,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             expect(actual.siret.value).toBe(SIRET);
         });
 
-        it("should return use schema for build subvention", () => {
+        it("should use schema to build subvention", () => {
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(
                 {
                     siret: SIRET,

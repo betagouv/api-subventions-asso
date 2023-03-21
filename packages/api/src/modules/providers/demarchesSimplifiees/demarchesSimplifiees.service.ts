@@ -34,7 +34,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         }, {});
     }
 
-    private async enititesToSubventions(entities) {
+    private async entitiesToSubventions(entities) {
         const schemasByIds = await this.getSchemasByIds();
 
         return entities
@@ -50,12 +50,12 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         const demandes = await demarchesSimplifieesDataRepository.findBySiren(siren);
-        return this.enititesToSubventions(demandes);
+        return this.entitiesToSubventions(demandes);
     }
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const demandes = await demarchesSimplifieesDataRepository.findBySiret(siret);
-        return this.enititesToSubventions(demandes);
+        return this.entitiesToSubventions(demandes);
     }
 
     async updateAllForms() {

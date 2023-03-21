@@ -2,7 +2,7 @@ import MigrationRepository from "../../../../shared/MigrationRepository";
 import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMapperEntity";
 
 export class DemarchesSimplifieesMapperRepository extends MigrationRepository<DemarchesSimplifieesMapperEntity> {
-    public collectionName = "demarches-simplifiees-mapper";
+    public collectionName = "demarches-simplifiees-schemas";
 
     async createIndexes() {
         await this.collection.createIndex({ demarcheIdId: 1 }, { unique: true });

@@ -36,7 +36,7 @@ export class DemarchesSimplifieesEntityAdapter {
             lodash.set(subvention, property.to, toPv(value));
         });
 
-        // Manual assign because not only one year
+        // DS dont have an attribute with only year, so we getting year of the start date
         if (subvention.date_debut) subvention.annee_demande = toPv((subvention.date_debut.value as Date).getFullYear());
 
         return subvention as unknown as DemandeSubvention;
