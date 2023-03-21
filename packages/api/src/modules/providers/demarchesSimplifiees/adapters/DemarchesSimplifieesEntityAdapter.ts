@@ -25,16 +25,18 @@ export class DemarchesSimplifieesEntityAdapter {
 
         mapper.schema.forEach(property => {
             let value = lodash.get(entity, property.from);
-            const valueDate = moment(value, "DD MMMM YYYY", "fr").toDate();
+            const valueDate = [moment(value, "DD MMMM YYYY", "fr", true).toDate(), new Date(value)].find(date =>
+                isValidDate(date)
+            );
 
             if (value === undefined || value === "") return;
             else if (stringIsFloat(value)) value = parseFloat(value);
-            else if (isValidDate(valueDate)) value = valueDate;
+            else value = valueDate || value;
 
             lodash.set(subvention, property.to, toPv(value));
         });
 
-        // DS doesn't have an attribute with only year, so we getting year from the start date
+        // DS doesn't have an attribute with only year, so we get year from the start date
         if (subvention.date_debut && subvention.date_debut.value && isValidDate(subvention.date_debut.value))
             subvention.annee_demande = toPv((subvention.date_debut.value as Date).getFullYear());
 

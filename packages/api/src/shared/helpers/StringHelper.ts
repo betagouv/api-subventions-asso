@@ -11,9 +11,9 @@ export function formatIntToThreeDigits(int: number) {
 }
 
 export function stringIsFloat(string: string): boolean {
-    return /[d,.]+/.test(string) && !isNaN(parseFloat(string));
+    return /^[\d,.]+$/.test(string) && !isNaN(parseFloat(string));
 }
 
 export function stringIsInt(string: string): boolean {
-    return /d+/.test(string) && !isNaN(parseInt(string, 10));
+    return /^\d+$/.test(string) && !isNaN(parseInt(string, 10));
 }
