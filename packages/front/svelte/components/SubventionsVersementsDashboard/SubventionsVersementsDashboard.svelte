@@ -37,7 +37,7 @@
                 disabled={$loaderStateStore.status != "end"}
                 icon="download-line"
                 iconPosition="right">
-                Télécharger les données
+                Télécharger les données - (BÊTA)
             </Button>
         </div>
     </div>
