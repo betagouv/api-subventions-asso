@@ -21,7 +21,7 @@
                 <b>{year}.</b>
                 <br />
             {/if}
-            D'après les données récupérées via Dauphin, Osiris, Fonjep, Démarches Simplifiées et la Caisse des Dépôts.
+            D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.
         </p>
     </div>
     <div class="fr-col-4">
