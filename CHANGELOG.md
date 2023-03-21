@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.2](https://github.com/betagouv/api-subventions-asso/compare/v0.24.1...v0.24.2) (2023-03-21)
+
+
+### Bug Fixes
+
+* **api,fron:** hotfix caisse depos and wrong merge ([6a7df46](https://github.com/betagouv/api-subventions-asso/commit/6a7df46999fd6fee2fa10e806b88860f3e0743ec))
+
+
+
+
+
 ## [0.24.1](https://github.com/betagouv/api-subventions-asso/compare/v0.24.0...v0.24.1) (2023-03-21)
 
 
