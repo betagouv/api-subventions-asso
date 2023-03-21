@@ -67,7 +67,7 @@
     const usersPromise = adminService.getUsers();
     const domainsPromise = adminService.getUserDomaines();
     const promises = Promise.all([usersPromise, domainsPromise]).then(results => {
-        users = results[0];
+        users = results[0].reverse();
         domains = results[1];
     });
 </script>
@@ -120,11 +120,10 @@
                     </div>
                     <div class="fr-col fr-col-md-6">
                         <div class="fr-grid-row fr-grid-row--right">
-                            <Button on:click={downloadUsersCsv}>Téléchager la liste en CSV</Button>
+                            <Button on:click={downloadUsersCsv}>Télécharger la liste en CSV</Button>
                         </div>
                     </div>
                 </div>
-                <!-- TODO: ne pas recharger les utilisateurs mais plutôt mettre à jour l'objet users pour éviter une requête -->
                 <TableUsers {users} on:userDeleted={e => removeUser(e)} />
             </Widget>
         </div>
