@@ -22,7 +22,7 @@ export class CaisseDepotsService implements DemandesSubventionsProvider {
     private async getCaisseDepotsSubventions(identifier: string): Promise<DemandeSubvention[]> {
         try {
             const result = await axios.get(
-                `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiare,"${identifier}")`
+                `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, ${identifier})`
             );
 
             return result.data.records.map(({ record }) => CaisseDepotsDtoAdapter.toDemandeSubvention(record));

@@ -44,10 +44,11 @@ export default class SubventionTableController {
     }
 
     static _extractTableDataFromElement(element, trimValue = true) {
-        const sizedTrim = value => (value ? trim(value, this.MAX_CHAR_SIZE) : value);
+        const sizedTrim = value => (value ? trim(value, MAX_CHAR_SIZE) : value);
 
         let dispositif = element.subvention.dispositif;
         if (trimValue && dispositif) dispositif = sizedTrim(dispositif);
+
         let serviceInstructeur = element.subvention.service_instructeur;
         if (trimValue && serviceInstructeur) serviceInstructeur = sizedTrim(serviceInstructeur);
 
