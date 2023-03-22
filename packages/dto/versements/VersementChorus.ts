@@ -11,4 +11,5 @@ export interface VersementChorus extends BaseVersement {
     codeBranche?: ProviderValue<string>;
     branche?: ProviderValue<string>;
     type?: ProviderValue<string>;
+    bop: ProviderValue<string>;
 }
