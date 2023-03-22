@@ -24,7 +24,7 @@ export class APIDatasubService {
     }
 
     listUser(user: UserWithJWTDto) {
-        return this.sendRequest<{ success: boolean; users: UserDto[] }>("GET", "/user/admin/list-users", user);
+        return this.sendRequest<{ users: UserDto[] }>("GET", "/user/admin/list-users", user);
     }
 
     createUser(userEmail: string, adminUser: UserWithJWTDto) {
@@ -41,7 +41,7 @@ export class APIDatasubService {
     }
 
     forgetPassword(email: string) {
-        return this.sendRequest<{ success: boolean }>("POST", "/auth/forget-password", undefined, {
+        return this.sendRequest("POST", "/auth/forget-password", undefined, {
             email
         });
     }

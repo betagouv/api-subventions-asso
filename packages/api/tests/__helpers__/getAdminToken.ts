@@ -10,11 +10,5 @@ export default async function createAndGetAdminToken() {
     await userService.addRolesToUser(user, [RoleEnum.admin]);
     const jwtData = await userService.findJwtByEmail(user.email);
 
-    if (!jwtData.success) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        throw new Error(jwtData.message);
-    }
-
     return jwtData.jwt.token;
 }

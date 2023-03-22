@@ -134,18 +134,8 @@ describe("user.service.ts", () => {
         });
 
         it("should reject because user email not found", async () => {
-            const expected = {
-                success: false,
-                message: "User email does not correspond to a user",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-            let actual;
-            try {
-                actual = await service.activeUser("wrong@email.fr");
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
+            const expected = new NotFoundError("User email does not correspond to a user");
+            expect(() => service.activeUser("wrong@email.fr")).rejects.toThrowError(expected);
         });
 
         it("should update user (called with email)", async () => {
@@ -273,39 +263,6 @@ describe("user.service.ts", () => {
             expect(mockRemoveAll).toHaveBeenCalledWith(user._id);
             expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ userId: user._id }));
             expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ active: false }));
-        });
-    });
-
-    describe("findJwtByEmail", () => {
-        beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
-        });
-
-        it("should reject because user not found", async () => {
-            const expected = {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-            let actual;
-            try {
-                actual = await service.findJwtByEmail("wrong@email.fr");
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return jwt", async () => {
-            const expected = {
-                success: true,
-                jwt: {
-                    token: expect.stringContaining(""),
-                    expirateDate: expect.any(Date)
-                }
-            };
-            const actual = await service.findJwtByEmail("test@beta.gouv.fr");
-            expect(actual).toEqual(expected);
         });
     });
 

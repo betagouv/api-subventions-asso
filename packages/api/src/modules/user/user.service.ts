@@ -53,7 +53,6 @@ export enum UserServiceErrors {
 }
 
 export interface UserServiceError {
-    success: false;
     message: string;
     code: number;
 }
@@ -304,11 +303,7 @@ export class UserService {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
-                return {
-                    success: false,
-                    message: "User email does not correspond to a user",
-                    code: UserServiceErrors.USER_NOT_FOUND
-                };
+                throw new NotFoundError("User email does not correspond to a user");
             }
             user = foundUser;
         }
@@ -322,7 +317,6 @@ export class UserService {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
             return {
-                success: false,
                 message: "User is not active",
                 code: UserServiceErrors.USER_NOT_ACTIVE
             };
@@ -399,27 +393,17 @@ export class UserService {
     }
 
     // Only used in tests
-    async findJwtByEmail(
-        email: string
-    ): Promise<UserServiceError | { success: true; jwt: { token: string; expirateDate: Date } }> {
+    async findJwtByEmail(email: string): Promise<{ jwt: { token: string; expirateDate: Date } }> {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
         if (!userWithSecrets) {
-            return {
-                success: false,
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
+            throw new Error("User not found");
         }
 
         if (!userWithSecrets.jwt) {
-            return {
-                success: false,
-                message: "User is not active",
-                code: UserServiceErrors.USER_NOT_ACTIVE
-            };
+            throw new Error("User is not active");
         }
 
-        return { success: true, jwt: userWithSecrets.jwt };
+        return { jwt: userWithSecrets.jwt };
     }
 
     async findJwtByUser(user: UserDto) {

@@ -8,11 +8,5 @@ export default async function createAndGetUserToken() {
     await userService.activeUser(user);
     const jwtData = await userService.findJwtByEmail(user.email);
 
-    if (!jwtData.success) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        throw new Error(jwtData.message);
-    }
-
     return jwtData.jwt.token;
 }

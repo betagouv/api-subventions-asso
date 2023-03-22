@@ -24,7 +24,6 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
     public validEntity(entity: GisproActionEntity) {
         if (!isSiret(entity.providerInformations.siret)) {
             return {
-                success: false,
                 message: `INVALID SIRET FOR ${entity.providerInformations.siret}`,
                 data: entity.providerInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET
@@ -33,14 +32,13 @@ export class GisproService implements DemandesSubventionsProvider, IProvider {
 
         if (!isAssociationName(entity.providerInformations.tier)) {
             return {
-                success: false,
                 message: `INVALID NAME FOR ${entity.providerInformations.tier}`,
                 data: entity.providerInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_NAME
             };
         }
 
-        return { success: true };
+        return true;
     }
 
     public async upsertMany(requests: GisproActionEntity[]) {

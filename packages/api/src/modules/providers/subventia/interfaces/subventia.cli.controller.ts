@@ -39,8 +39,8 @@ export default class SubventiaCliController extends CliController {
 
         const results = await entities.reduce(saveEntities, Promise.resolve([]));
 
-        const created = results.filter(result => result.success) as AcceptedRequest[];
-        const rejected = results.filter(result => !result.success) as RejectedRequest[];
+        const created = results.filter(result => (result as AcceptedRequest).state === "created") as AcceptedRequest[];
+        const rejected = results.filter(result => (result as RejectedRequest).message) as RejectedRequest[];
 
         this.logger.logIC(`
             ${results.length}/${entities.length}

@@ -31,16 +31,12 @@ export default class UserCliController {
     }
 
     async active(email: string) {
-        const result = await userService.activeUser(email);
-
-        //@ts-expect-error: refactoring, will be fixed with the removal of success in activeUser()
-        if (!result.success) {
-            //@ts-expect-error: refactoring, will be fixed with the removal of success in activeUser()
-            console.info("Active error : \n", result.message);
-            return;
+        try {
+            await userService.activeUser(email);
+            console.info("User has actived");
+        } catch (e) {
+            console.info("Active error : \n", (e as Error).message);
         }
-
-        console.info("User has actived");
     }
 
     async addList(file: string) {

@@ -6,22 +6,19 @@ export enum SUBVENTIA_SERVICE_ERROR {
 }
 
 export interface RejectedRequest {
-    success: false;
     message: string;
     code: SUBVENTIA_SERVICE_ERROR;
     data?: unknown;
 }
 
 export interface AcceptedRequest {
-    success: true;
     state: "created";
 }
 
 export class SubventiaService {
-    validateEntity(entity: SubventiaRequestEntity): { success: true } | RejectedRequest {
+    validateEntity(entity: SubventiaRequestEntity): true | RejectedRequest {
         if (!isSiret(entity.legalInformations.siret)) {
             return {
-                success: false,
                 message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 data: entity,
                 code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
@@ -30,7 +27,6 @@ export class SubventiaService {
 
         if (!isAssociationName(entity.legalInformations.name)) {
             return {
-                success: false,
                 message: `INVALID NAME FOR ${entity.legalInformations.siret}`,
                 data: entity,
                 code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
@@ -45,7 +41,6 @@ export class SubventiaService {
 
         if (!isStringsValid(strings)) {
             return {
-                success: false,
                 message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 data: entity,
                 code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
@@ -56,23 +51,21 @@ export class SubventiaService {
 
         if (!isNumbersValid(numbers)) {
             return {
-                success: false,
                 message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 data: entity,
                 code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
             };
         }
 
-        return { success: true };
+        return true;
     }
 
     async createEntity(entity: SubventiaRequestEntity): Promise<RejectedRequest | AcceptedRequest> {
         const valid = this.validateEntity(entity);
 
-        if (!valid.success) return valid;
+        if (valid !== true) return valid;
 
         return {
-            success: true,
             state: "created"
         };
     }

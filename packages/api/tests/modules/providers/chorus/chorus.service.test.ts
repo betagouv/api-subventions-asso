@@ -25,11 +25,10 @@ describe("chorus.service", () => {
                 },
                 {}
             );
-            expect(chorusService.validateEntity(entity)).toEqual({
-                success: false,
-                message: `The branche ${entity.indexedInformations.codeBranche} is not accepted in data`,
-                data: entity
-            });
+
+            expect(() => chorusService.validateEntity(entity)).toThrow(
+                `The branch ${entity.indexedInformations.codeBranche} is not accepted in data`
+            );
         });
 
         it("should be reject amount is not number", () => {
@@ -51,11 +50,7 @@ describe("chorus.service", () => {
                 },
                 {}
             );
-            expect(chorusService.validateEntity(entity)).toEqual({
-                success: false,
-                message: `Amount is not a number`,
-                data: entity
-            });
+            expect(() => chorusService.validateEntity(entity)).toThrow(`Amount is not a number`);
         });
 
         it("should be reject dateOperation is not Date", () => {
@@ -77,11 +72,7 @@ describe("chorus.service", () => {
                 },
                 {}
             );
-            expect(chorusService.validateEntity(entity)).toEqual({
-                success: false,
-                message: `Operation date is not a valid date`,
-                data: entity
-            });
+            expect(() => chorusService.validateEntity(entity)).toThrow(`Operation date is not a valid date`);
         });
 
         it("should be reject siret is not valid", () => {
@@ -103,11 +94,9 @@ describe("chorus.service", () => {
                 },
                 {}
             );
-            expect(chorusService.validateEntity(entity)).toEqual({
-                success: false,
-                message: `INVALID SIRET FOR ${entity.indexedInformations.siret}`,
-                data: entity
-            });
+            expect(() => chorusService.validateEntity(entity)).toThrow(
+                `INVALID SIRET FOR ${entity.indexedInformations.siret}`
+            );
         });
 
         it("should be reject ej is not valid", () => {
@@ -129,11 +118,9 @@ describe("chorus.service", () => {
                 },
                 {}
             );
-            expect(chorusService.validateEntity(entity)).toEqual({
-                success: false,
-                message: `INVALID EJ FOR ${entity.indexedInformations.ej}`,
-                data: entity
-            });
+            expect(() => chorusService.validateEntity(entity)).toThrow(
+                `INVALID EJ FOR ${entity.indexedInformations.ej}`
+            );
         });
 
         it("should be accept", () => {
@@ -155,7 +142,7 @@ describe("chorus.service", () => {
                 },
                 {}
             );
-            expect(chorusService.validateEntity(entity)).toEqual({ success: true });
+            expect(chorusService.validateEntity(entity)).toEqual(true);
         });
     });
 
@@ -183,7 +170,6 @@ describe("chorus.service", () => {
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
                 state: "rejected",
                 result: expect.objectContaining({
-                    success: false,
                     message: "INVALID SIRET FOR SIRET"
                 })
             });
