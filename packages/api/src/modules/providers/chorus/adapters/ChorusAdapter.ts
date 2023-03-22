@@ -29,7 +29,8 @@ export default class ChorusAdapter {
             numeroTier: toPvOrUndefined(entity.indexedInformations.numeroTier),
             activitee: toPvOrUndefined(entity.indexedInformations.activitee),
             compte: toPvOrUndefined(entity.indexedInformations.compte),
-            type: toPvOrUndefined(entity.indexedInformations.typeOperation)
+            type: toPvOrUndefined(entity.indexedInformations.typeOperation),
+            bop: toPv(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4))
         };
     }
 }
