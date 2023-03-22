@@ -134,17 +134,8 @@ describe("user.service.ts", () => {
         });
 
         it("should reject because user email not found", async () => {
-            const expected = {
-                message: "User email does not correspond to a user",
-                code: UserServiceErrors.USER_NOT_FOUND
-            };
-            let actual;
-            try {
-                actual = await service.activeUser("wrong@email.fr");
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
+            const expected = new NotFoundError("User email does not correspond to a user");
+            expect(() => service.activeUser("wrong@email.fr")).rejects.toThrowError(expected);
         });
 
         it("should update user (called with email)", async () => {
