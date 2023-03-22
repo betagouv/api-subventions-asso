@@ -43,9 +43,9 @@
     <svelte:fragment slot="body">
         {#each $elementsDataViews as elementData}
             <tr
-                class:clickable={elementData?.enableButtonMoreInfo}
-                aria-controls={elementData?.enableButtonMoreInfo ? "fr-modal" : undefined}
-                data-fr-opened={elementData?.enableButtonMoreInfo ? "false" : undefined}
+                class:clickable={elementData?.hasMoreInfo}
+                aria-controls={elementData?.hasMoreInfo ? "fr-modal" : undefined}
+                data-fr-opened={elementData?.hasMoreInfo ? "false" : undefined}
                 on:click={() => controller.onRowClick(elementData)}>
                 {#if !elementData}
                     <TableCell colspan="5" position="center">
@@ -72,7 +72,7 @@
                         What follows is an a11y trick: users can focus this on keyboard.
                         This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
                         -->
-                            <button class="sr-only" disabled={elementData?.enableButtonMoreInfo ? undefined : "true"}>
+                            <button class="sr-only" disabled={elementData?.hasMoreInfo ? undefined : "true"}>
                                 Voir plus
                             </button>
                         {/if}
