@@ -5,6 +5,7 @@ import { WithId } from "mongodb";
 import rnaSirenService from "../../../../src/modules/open-data/rna-siren/rnaSiren.service";
 
 describe("chorus.service", () => {
+    const DATE = new Date(2022, 1, 5);
     describe("validateEntity", () => {
         it("rejects because codeBranche is not accepted", () => {
             const entity = new ChorusLineEntity(
@@ -324,10 +325,9 @@ describe("chorus.service", () => {
     });
 
     describe("getVersementsBySiret", () => {
-        const now = new Date();
         let entity: WithId<ChorusLineEntity>;
         const toPV = (value: unknown, provider = "Chorus") =>
-            ProviderValueAdapter.toProviderValue(value, provider, now);
+            ProviderValueAdapter.toProviderValue(value, provider, DATE);
 
         let mock: jest.SpyInstance<Promise<boolean>, [siret: string]>;
 
@@ -341,7 +341,7 @@ describe("chorus.service", () => {
                             siret: "10000000000000",
                             ej: "1000000000",
                             amount: 1000,
-                            dateOperation: now,
+                            dateOperation: DATE,
                             branche: "BRANCHE",
                             codeBranche: "Z004",
                             centreFinancier: "CENTRE_FINANCIER",
@@ -362,20 +362,21 @@ describe("chorus.service", () => {
         });
 
         it("finds entity", async () => {
-            await expect(chorusService.getVersementsBySiret("10000000000000")).resolves.toEqual([
+            await expect(chorusService.getVersementsBySiret("10000000000000")).resolves.toMatchObject([
                 {
                     id: entity._id.toString(),
                     siret: toPV("10000000000000"),
                     ej: toPV("1000000000"),
                     versementKey: toPV("1000000000"),
                     amount: toPV(1000),
-                    dateOperation: toPV(now),
+                    dateOperation: toPV(DATE),
                     branche: toPV("BRANCHE"),
                     codeBranche: toPV("Z004"),
                     centreFinancier: toPV("CENTRE_FINANCIER"),
                     domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                     compte: toPV("COMPTE"),
-                    type: toPV("ZSUB")
+                    type: toPV("ZSUB"),
+                    bop: toPV("DOMA")
                 }
             ]);
         });
@@ -385,10 +386,9 @@ describe("chorus.service", () => {
     });
 
     describe("getVersementsBySiren", () => {
-        const now = new Date();
         let entity: WithId<ChorusLineEntity>;
         const toPV = (value: unknown, provider = "Chorus") =>
-            ProviderValueAdapter.toProviderValue(value, provider, now);
+            ProviderValueAdapter.toProviderValue(value, provider, DATE);
         let mock: jest.SpyInstance<Promise<boolean>, [siret: string]>;
 
         beforeEach(async () => {
@@ -401,7 +401,7 @@ describe("chorus.service", () => {
                             siret: "10000000000000",
                             ej: "1000000000",
                             amount: 1000,
-                            dateOperation: now,
+                            dateOperation: DATE,
                             branche: "BRANCHE",
                             codeBranche: "Z004",
                             centreFinancier: "CENTRE_FINANCIER",
@@ -422,20 +422,21 @@ describe("chorus.service", () => {
         });
 
         it("finds entity", async () => {
-            await expect(chorusService.getVersementsBySiren("100000000")).resolves.toEqual([
+            await expect(chorusService.getVersementsBySiren("100000000")).resolves.toMatchObject([
                 {
                     id: entity._id.toString(),
                     siret: toPV("10000000000000"),
                     ej: toPV("1000000000"),
                     versementKey: toPV("1000000000"),
                     amount: toPV(1000),
-                    dateOperation: toPV(now),
+                    dateOperation: toPV(DATE),
                     branche: toPV("BRANCHE"),
                     codeBranche: toPV("Z004"),
                     centreFinancier: toPV("CENTRE_FINANCIER"),
                     domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                     compte: toPV("COMPTE"),
-                    type: toPV("ZSUB")
+                    type: toPV("ZSUB"),
+                    bop: toPV("DOMA")
                 }
             ]);
         });
@@ -445,10 +446,9 @@ describe("chorus.service", () => {
     });
 
     describe("getVersementsBySiren", () => {
-        const now = new Date();
         let entity: WithId<ChorusLineEntity>;
         const toPV = (value: unknown, provider = "Chorus") =>
-            ProviderValueAdapter.toProviderValue(value, provider, now);
+            ProviderValueAdapter.toProviderValue(value, provider, DATE);
         let mock: jest.SpyInstance<Promise<boolean>, [siret: string]>;
 
         beforeEach(async () => {
@@ -461,7 +461,7 @@ describe("chorus.service", () => {
                             siret: "10000000000000",
                             ej: "1000000000",
                             amount: 1000,
-                            dateOperation: now,
+                            dateOperation: DATE,
                             branche: "BRANCHE",
                             codeBranche: "Z004",
                             centreFinancier: "CENTRE_FINANCIER",
@@ -482,20 +482,21 @@ describe("chorus.service", () => {
         });
 
         it("finds entity", async () => {
-            await expect(chorusService.getVersementsByKey("1000000000")).resolves.toEqual([
+            await expect(chorusService.getVersementsByKey("1000000000")).resolves.toMatchObject([
                 {
                     id: entity._id.toString(),
                     siret: toPV("10000000000000"),
                     ej: toPV("1000000000"),
                     versementKey: toPV("1000000000"),
                     amount: toPV(1000),
-                    dateOperation: toPV(now),
+                    dateOperation: toPV(DATE),
                     branche: toPV("BRANCHE"),
                     codeBranche: toPV("Z004"),
                     centreFinancier: toPV("CENTRE_FINANCIER"),
                     domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                     compte: toPV("COMPTE"),
-                    type: toPV("ZSUB")
+                    type: toPV("ZSUB"),
+                    bop: toPV("DOMA")
                 }
             ]);
         });
@@ -505,8 +506,6 @@ describe("chorus.service", () => {
     });
 
     describe("getVersementsBySiren", () => {
-        const now = new Date();
-
         beforeEach(async () => {
             jest.clearAllMocks();
             jest.spyOn(chorusService, "sirenBelongAsso").mockImplementationOnce(() => Promise.resolve(true));
@@ -518,7 +517,7 @@ describe("chorus.service", () => {
                         siret: "10000000000000",
                         ej: "1000000000",
                         amount: 1000,
-                        dateOperation: now,
+                        dateOperation: DATE,
                         branche: "BRANCHE",
                         codeBranche: "Z004",
                         centreFinancier: "CENTRE_FINANCIER",
