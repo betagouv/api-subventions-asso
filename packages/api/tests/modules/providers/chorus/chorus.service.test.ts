@@ -6,7 +6,7 @@ import rnaSirenService from "../../../../src/modules/open-data/rna-siren/rnaSire
 
 describe("chorus.service", () => {
     describe("validateEntity", () => {
-        it("should be reject because codeBranche not accepted", () => {
+        it("rejects because codeBranche is not accepted", () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -31,7 +31,7 @@ describe("chorus.service", () => {
             );
         });
 
-        it("should be reject amount is not number", () => {
+        it("rejects because amount is not a number", () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -53,7 +53,7 @@ describe("chorus.service", () => {
             expect(() => chorusService.validateEntity(entity)).toThrow(`Amount is not a number`);
         });
 
-        it("should be reject dateOperation is not Date", () => {
+        it("rejects dateOperation is not a Date", () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -75,7 +75,7 @@ describe("chorus.service", () => {
             expect(() => chorusService.validateEntity(entity)).toThrow(`Operation date is not a valid date`);
         });
 
-        it("should be reject siret is not valid", () => {
+        it("rejects because siret is not valid", () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -99,7 +99,7 @@ describe("chorus.service", () => {
             );
         });
 
-        it("should be reject ej is not valid", () => {
+        it("rejects because ej is not valid", () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -123,7 +123,7 @@ describe("chorus.service", () => {
             );
         });
 
-        it("should be accept", () => {
+        it("accepts", () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -147,7 +147,7 @@ describe("chorus.service", () => {
     });
 
     describe("addChorusLine", () => {
-        it("should be reject because entity is not valid", async () => {
+        it("rejects because entity is not valid", async () => {
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
                 {
@@ -175,7 +175,7 @@ describe("chorus.service", () => {
             });
         });
 
-        it("should be create entity", async () => {
+        it("creates entity", async () => {
             const mock = jest
                 .spyOn(chorusService, "sirenBelongAsso")
                 .mockImplementationOnce(() => Promise.resolve(true));
@@ -273,7 +273,7 @@ describe("chorus.service", () => {
             mock.mockRestore();
         });
 
-        it("should be not update because same ej but not same id", async () => {
+        it("does not update because same ej but not same id", async () => {
             const mock = jest.spyOn(chorusService, "sirenBelongAsso").mockImplementation(() => Promise.resolve(true));
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
@@ -347,7 +347,7 @@ describe("chorus.service", () => {
             mock.mockRestore();
         });
 
-        it("should be find entity", async () => {
+        it("finds entity", async () => {
             await expect(chorusService.getVersementsBySiret("10000000000000")).resolves.toEqual([
                 {
                     id: entity._id.toString(),
@@ -365,7 +365,7 @@ describe("chorus.service", () => {
                 }
             ]);
         });
-        it("should be no find entity", async () => {
+        it("finds no entity", async () => {
             await expect(chorusService.getVersementsBySiret("10000000000004")).resolves.toHaveLength(0);
         });
     });
@@ -407,7 +407,7 @@ describe("chorus.service", () => {
             mock.mockRestore();
         });
 
-        it("should be find entity", async () => {
+        it("finds entity", async () => {
             await expect(chorusService.getVersementsBySiren("100000000")).resolves.toEqual([
                 {
                     id: entity._id.toString(),
@@ -425,7 +425,7 @@ describe("chorus.service", () => {
                 }
             ]);
         });
-        it("should be no find entity", async () => {
+        it("finds no entity", async () => {
             await expect(chorusService.getVersementsBySiren("100000009")).resolves.toHaveLength(0);
         });
     });
@@ -467,7 +467,7 @@ describe("chorus.service", () => {
             mock.mockRestore();
         });
 
-        it("should be find entity", async () => {
+        it("finds entity", async () => {
             await expect(chorusService.getVersementsByKey("1000000000")).resolves.toEqual([
                 {
                     id: entity._id.toString(),
@@ -485,7 +485,7 @@ describe("chorus.service", () => {
                 }
             ]);
         });
-        it("should be no find entity", async () => {
+        it("finds no entity", async () => {
             await expect(chorusService.getVersementsByKey("2000000000")).resolves.toHaveLength(0);
         });
     });
@@ -519,17 +519,17 @@ describe("chorus.service", () => {
             );
         });
 
-        it("should be return true because siret is already in chorusline", async () => {
+        it("returns true because siret is already in chorus line", async () => {
             await expect(chorusService.sirenBelongAsso("10000000")).resolves.toBe(true);
         });
 
-        it("should be return true because siret match with rna", async () => {
+        it("returns true because siret match with rna", async () => {
             jest.spyOn(rnaSirenService, "getRna").mockImplementationOnce(() => Promise.resolve("W0000000"));
 
             await expect(chorusService.sirenBelongAsso("10000000")).resolves.toBe(true);
         });
 
-        it("should be return false ", async () => {
+        it("returns false ", async () => {
             jest.spyOn(rnaSirenService, "getRna").mockImplementationOnce(() => Promise.resolve(null));
 
             await expect(chorusService.sirenBelongAsso("200000000")).resolves.toBe(false);
