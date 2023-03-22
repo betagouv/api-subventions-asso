@@ -122,7 +122,7 @@ export default class SubventionTableController {
                 ...tableData,
                 subvention: element.subvention,
                 projectNamePosition: tableData.projectName === "-" ? "center" : "start",
-                enableButtonMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
+                hasMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
             };
         });
 
@@ -130,7 +130,7 @@ export default class SubventionTableController {
     }
 
     onRowClick(elementData) {
-        if (!elementData?.enableButtonMoreInfo) return;
+        if (!elementData?.hasMoreInfo) return;
         data.update(() => ({ subvention: elementData.subvention }));
         modal.update(() => SubventionInfoModal);
     }
