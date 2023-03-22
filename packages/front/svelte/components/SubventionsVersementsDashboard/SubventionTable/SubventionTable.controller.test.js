@@ -78,7 +78,7 @@ describe("SubventionTableController", () => {
 
     describe("onRowClick", () => {
         const elementData = {
-            enableButtonMoreInfo: true,
+            hasMoreInfo: true,
             subvention: {}
         };
 
