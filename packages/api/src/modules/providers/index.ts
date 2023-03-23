@@ -10,6 +10,7 @@ import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service";
 import dauphinService from "./dauphin/dauphin.service";
 import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
+import bodaccService from "./bodacc/bodacc.service";
 
 export default {
     dataEntrepriseService,
@@ -23,5 +24,6 @@ export default {
     apiEntrepriseService,
     dauphinService,
     demarchesSimplifieesService,
-    caisseDepotsService
+    caisseDepotsService,
+    bodaccService
 };
