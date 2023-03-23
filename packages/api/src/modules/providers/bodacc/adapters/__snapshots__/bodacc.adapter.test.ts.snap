@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bodacc Adapter toAssociation should return SIREN and BODACC 1`] = `
+Object {
+  "bodacc": Array [
+    Array [
+      Object {
+        "last_update": 2023-03-23T16:08:46.179Z,
+        "provider": "Bodacc",
+        "type": "object",
+        "value": Object {
+          "record": Object {
+            "fields": Object {
+              "registre": Array [
+                "",
+                "123456789",
+              ],
+            },
+          },
+        },
+      },
+    ],
+  ],
+  "siren": Array [
+    Object {
+      "last_update": 2023-03-23T16:08:46.179Z,
+      "provider": "Bodacc",
+      "type": "string",
+      "value": "123456789",
+    },
+  ],
+}
+`;
