@@ -35,6 +35,11 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         description:
             "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement)."
     };
+
+    constructor() {
+        associationNameService.setProviderScore(this.provider.name, 0.3);
+    }
+
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
         const existingFile = await osirisRequestRepository.findByOsirisId(request.providerInformations.osirisId);
         const { rna, siret, name } = request.legalInformations;

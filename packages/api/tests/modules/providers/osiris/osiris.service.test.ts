@@ -1,3 +1,4 @@
+import associationNameService from "../../../../src/modules/association-name/associationName.service";
 import IOsirisActionsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
 import IOsirisEvaluationsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisEvaluationsInformations";
 import IOsirisRequestInformations from "../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
@@ -16,6 +17,21 @@ describe("OsirisService", () => {
 
     describe("requests part", () => {
         describe("addRequest", () => {
+            let associationNameUpsertMock: jest.SpyInstance;
+
+            beforeAll(() => {
+                // @ts-expect-error mock mongodb return value
+                associationNameUpsertMock = jest.spyOn(associationNameService, "upsert").mockResolvedValue();
+            });
+
+            afterAll(() => {
+                associationNameUpsertMock.mockRestore();
+            });
+
+            beforeEach(() => {
+                associationNameUpsertMock.mockClear();
+            });
+
             it("should return the added osiris request", async () => {
                 const entity = new OsirisRequestEntity(
                     { siret: "SIRET", rna: "RNA", name: "NAME" },
@@ -70,18 +86,29 @@ describe("OsirisService", () => {
                     providerInformations: { osirisId: null, dateCommission: LAST_UPDATE }
                 };
                 await osirisService.addRequest(ENTITY as unknown as OsirisRequestEntity);
-                expect(eventManagerMock).toHaveBeenCalledTimes(2);
+                expect(eventManagerMock).toHaveBeenCalledTimes(1);
                 expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-                expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [
-                    {
-                        rna: RNA,
-                        siren: SIREN,
-                        name: NAME,
-                        provider: osirisService.provider.name,
-                        lastUpdate: LAST_UPDATE
-                    }
-                ]);
                 eventManagerMock.mockReset();
+            });
+
+            it("should call association name upsert", async () => {
+                const LAST_UPDATE = new Date();
+                const RNA = "RNA";
+                const SIREN = "SIREN";
+                const NAME = "NAME";
+                const ENTITY = {
+                    legalInformations: { rna: RNA, siret: SIREN, name: NAME },
+                    providerInformations: { osirisId: null, dateCommission: LAST_UPDATE }
+                };
+                await osirisService.addRequest(ENTITY as unknown as OsirisRequestEntity);
+                expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
+                expect(associationNameUpsertMock).toBeCalledWith({
+                    rna: RNA,
+                    siren: SIREN,
+                    name: NAME,
+                    provider: osirisService.provider.name,
+                    lastUpdate: LAST_UPDATE
+                });
             });
         });
 

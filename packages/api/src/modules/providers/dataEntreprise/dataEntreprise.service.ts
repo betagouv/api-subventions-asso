@@ -9,13 +9,13 @@ import { waitPromise } from "../../../shared/helpers/WaitHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import associationNameService from "../../association-name/associationName.service";
 import AssociationDtoAdapter from "./adapters/AssociationDtoAdapter";
 import EntrepriseDtoAdapter from "./adapters/EntrepriseDtoAdapter";
 import EtablissementDtoAdapter from "./adapters/EtablissementDtoAdapter";
 import AssociationDto from "./dto/AssociationDto";
 import EntrepriseDto from "./dto/EntrepriseDto";
 import EtablisementDto from "./dto/EtablissementDto";
-import associationNameService from "../../association-name/associationName.service";
 
 export class DataEntrepriseService implements AssociationsProvider, EtablissementProvider {
     provider = {
@@ -35,6 +35,10 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
     private associationsCache = new CacheData<Association>(CACHE_TIMES.ONE_DAY);
     private associationsRnaCache = new CacheData<Association>(CACHE_TIMES.ONE_DAY);
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
+
+    constructor() {
+        associationNameService.setProviderScore(this.provider.name, 0.5);
+    }
 
     private async sendRequest<T>(route: string, wait: boolean): Promise<T | null> {
         if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;

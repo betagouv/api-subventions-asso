@@ -1,3 +1,5 @@
+import associationNameService from "../../../src/modules/association-name/associationName.service";
+import rnaSirenService from "../../../src/modules/open-data/rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity";
 import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
@@ -83,18 +85,29 @@ describe("leCompteAssoService", () => {
             .spyOn(EventManager, "call")
             .mockImplementation((name, value) => Promise.resolve({ name, value }));
         let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
+        let associationNameUpsertMock: jest.SpyInstance;
+        let rnaSirenServiceMock: jest.SpyInstance;
 
         beforeEach(() => {
             dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
+            associationNameUpsertMock.mockClear();
         });
 
         afterEach(() => {
             dataEntrepriseServiceFindAssociationBySiren.mockClear();
         });
 
+        beforeAll(() => {
+            // @ts-expect-error mock mongodb return value
+            associationNameUpsertMock = jest.spyOn(associationNameService, "upsert").mockResolvedValue();
+            rnaSirenServiceMock = jest.spyOn(rnaSirenService, "getRna");
+        });
+
         afterAll(() => {
             dataEntrepriseServiceFindAssociationBySiren.mockReset();
             eventManagerMock.mockReset();
+            associationNameUpsertMock.mockRestore();
+            rnaSirenServiceMock.mockRestore();
         });
 
         it("should find rna in localdb and save data in database", async () => {
@@ -217,10 +230,6 @@ describe("leCompteAssoService", () => {
         });
 
         it("should call EventManager", async () => {
-            jest.spyOn(leCompteAssoRepository, "findByCompteAssoId").mockImplementationOnce(() =>
-                // @ts-expect-error: Jest mock
-                Promise.resolve({ legalInformations: { rna: RNA } })
-            );
             const LAST_UPDATE = new Date();
             const RNA = "RNA";
             const SIREN = "SIREN";
@@ -233,18 +242,41 @@ describe("leCompteAssoService", () => {
                 } as unknown as ILeCompteAssoRequestInformations,
                 data: {}
             };
+            rnaSirenServiceMock.mockResolvedValueOnce(RNA);
+            dataEntrepriseServiceFindAssociationBySiren.mockResolvedValueOnce({
+                categorie_juridique: [{ value: "9210" }]
+            });
             await leCompteAssoService.addRequest(PARTIAL_ENTITY);
-            expect(eventManagerMock).toHaveBeenCalledTimes(2);
+            expect(eventManagerMock).toHaveBeenCalledTimes(1);
             expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-            expect(eventManagerMock).toHaveBeenNthCalledWith(2, "association-name.matching", [
-                {
-                    rna: RNA,
-                    siren: SIREN,
-                    name: NAME,
-                    provider: leCompteAssoService.provider.name,
-                    lastUpdate: LAST_UPDATE
-                }
-            ]);
+        });
+
+        it("should call association name upsert", async () => {
+            const LAST_UPDATE = new Date();
+            const RNA = "RNA";
+            const SIREN = "SIREN";
+            const NAME = "NAME";
+            const PARTIAL_ENTITY = {
+                legalInformations: { siret: SIREN, name: NAME },
+                providerInformations: {
+                    compeAssoId: "",
+                    transmis_le: LAST_UPDATE
+                } as unknown as ILeCompteAssoRequestInformations,
+                data: {}
+            };
+            rnaSirenServiceMock.mockResolvedValueOnce(RNA);
+            dataEntrepriseServiceFindAssociationBySiren.mockResolvedValueOnce({
+                categorie_juridique: [{ value: "9210" }]
+            });
+            await leCompteAssoService.addRequest(PARTIAL_ENTITY);
+            expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
+            expect(associationNameUpsertMock).toHaveBeenCalledWith({
+                rna: RNA,
+                siren: SIREN,
+                name: NAME,
+                provider: leCompteAssoService.provider.name,
+                lastUpdate: LAST_UPDATE
+            });
         });
     });
 

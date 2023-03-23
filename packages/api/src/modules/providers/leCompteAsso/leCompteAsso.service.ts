@@ -10,11 +10,11 @@ import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import associationNameService from "../../association-name/associationName.service";
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import leCompteAssoRepository from "./repositories/leCompteAsso.repository";
 import LeCompteAssoRequestAdapter from "./adapters/LeCompteAssoRequestAdapter";
-import associationNameService from "../../association-name/associationName.service";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -28,6 +28,10 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         description:
             "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET."
     };
+
+    constructor() {
+        associationNameService.setProviderScore(this.provider.name, 0.2);
+    }
 
     public validEntity(partialEntity: ILeCompteAssoPartialRequestEntity) {
         if (!isSiret(partialEntity.legalInformations.siret)) {
@@ -70,18 +74,6 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                 ...partialEntity.legalInformations,
                 rna: existingEntity.legalInformations.rna
             };
-            const siret = legalInformations.siret;
-            if (siret) {
-                const siren = siretToSiren(siret);
-                await associationNameService.upsert({
-                    rna: legalInformations.rna || null,
-                    siren,
-                    name: legalInformations.name,
-                    provider: this.provider.name,
-                    lastUpdate: partialEntity.providerInformations.transmis_le
-                });
-                EventManager.call("rna-siren.matching", [{ rna: legalInformations.rna, siren }]);
-            }
 
             return {
                 state: "updated",
@@ -129,6 +121,19 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             ...partialEntity.legalInformations,
             rna
         };
+
+        const siret = legalInformations.siret;
+        if (siret) {
+            const siren = siretToSiren(siret);
+            await associationNameService.upsert({
+                rna: legalInformations.rna || null,
+                siren,
+                name: legalInformations.name,
+                provider: this.provider.name,
+                lastUpdate: partialEntity.providerInformations.transmis_le
+            });
+            EventManager.call("rna-siren.matching", [{ rna: legalInformations.rna, siren }]);
+        }
 
         const entity = new LeCompteAssoRequestEntity(
             legalInformations,

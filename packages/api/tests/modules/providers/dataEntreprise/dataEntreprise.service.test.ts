@@ -1,7 +1,10 @@
 import axios from "axios";
+import associationNameService from "../../../../src/modules/association-name/associationName.service";
 import dataEntrepriseService from "../../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
+import dataGouvService from "../../../../src/modules/providers/datagouv/datagouv.service";
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
 import EventManager from "../../../../src/shared/EventManager";
+import { siretToSiren } from "../../../../src/shared/helpers/SirenHelper";
 
 describe("DataEntrepriseService", () => {
     const now = new Date();
@@ -9,6 +12,17 @@ describe("DataEntrepriseService", () => {
     const spyEventManager = jest
         .spyOn(EventManager, "call")
         .mockImplementation((name, value) => Promise.resolve({ name, value }));
+
+    let associationNameUpsertMock: jest.SpyInstance;
+
+    beforeAll(() => {
+        // @ts-expect-error mock mongodb return value
+        associationNameUpsertMock = jest.spyOn(associationNameService, "upsert").mockResolvedValue();
+    });
+
+    afterAll(() => {
+        associationNameUpsertMock.mockRestore();
+    });
 
     beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -18,6 +32,7 @@ describe("DataEntrepriseService", () => {
 
     afterEach(() => {
         spyEventManager.mockClear();
+        associationNameUpsertMock.mockClear();
     });
 
     describe("findAssociationByRna", () => {
@@ -55,19 +70,23 @@ describe("DataEntrepriseService", () => {
             // @ts-expect-error: Jest mock
             jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
             await dataEntrepriseService.findAssociationByRna(RNA);
-            expect(spyEventManager).toHaveBeenCalledTimes(2);
-            expect(spyEventManager).toHaveBeenNthCalledWith(1, "association-name.matching", [
-                {
-                    rna: RNA,
-                    siren: DATA.association.siret,
-                    name: DATA.association.titre,
-                    provider: dataEntrepriseService.provider.name,
-                    lastUpdate: DATA.association.updated_at
-                }
-            ]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "rna-siren.matching", [
+            expect(spyEventManager).toHaveBeenCalledTimes(1);
+            expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [
                 { rna: RNA, siren: DATA.association.siret }
             ]);
+        });
+        it("should call association name upsert", async () => {
+            // @ts-expect-error: Jest mock
+            jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
+            await dataEntrepriseService.findAssociationByRna(RNA);
+            expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
+            expect(associationNameUpsertMock).toBeCalledWith({
+                rna: RNA,
+                siren: DATA.association.siret,
+                name: DATA.association.titre,
+                provider: dataEntrepriseService.provider.name,
+                lastUpdate: LAST_UPDATE
+            });
         });
     });
 
@@ -103,18 +122,22 @@ describe("DataEntrepriseService", () => {
             // @ts-expect-error: Jest mock
             jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
             await dataEntrepriseService.findEtablissementBySiret(SIRET);
-            expect(spyEventManager).toHaveBeenCalledTimes(2);
+            expect(spyEventManager).toHaveBeenCalledTimes(1);
             expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIRET }]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [
-                {
-                    rna: RNA,
-                    siren: SIRET,
-                    name: NAME,
-                    provider: dataEntrepriseService.provider.name,
-                    lastUpdate: LAST_UPDATE
-                }
-            ]);
             spyEventManager;
+        });
+        it("should call association name upsert", async () => {
+            // @ts-expect-error: Jest mock
+            jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
+            await dataEntrepriseService.findEtablissementBySiret(SIRET);
+            expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
+            expect(associationNameUpsertMock).toBeCalledWith({
+                rna: RNA,
+                siren: siretToSiren(SIRET),
+                name: NAME,
+                provider: dataEntrepriseService.provider.name,
+                lastUpdate: LAST_UPDATE
+            });
         });
     });
 
@@ -157,17 +180,22 @@ describe("DataEntrepriseService", () => {
             // @ts-expect-error: Jest mock
             jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
             await dataEntrepriseService.findAssociationBySiren(SIREN);
-            expect(spyEventManager).toHaveBeenCalledTimes(2);
+            expect(spyEventManager).toHaveBeenCalledTimes(1);
             expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
-            expect(spyEventManager).toHaveBeenNthCalledWith(2, "association-name.matching", [
-                {
-                    rna: RNA,
-                    siren: SIREN,
-                    name: NAME,
-                    provider: dataEntrepriseService.provider.name,
-                    lastUpdate: LAST_UPDATE
-                }
-            ]);
+        });
+
+        it("should call association name upsert", async () => {
+            // @ts-expect-error: Jest mock
+            jest.spyOn(dataEntrepriseService, "sendRequest").mockImplementationOnce(async () => Promise.resolve(DATA));
+            await dataEntrepriseService.findAssociationBySiren(SIREN);
+            expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
+            expect(associationNameUpsertMock).toBeCalledWith({
+                rna: RNA,
+                siren: SIREN,
+                name: NAME,
+                provider: dataEntrepriseService.provider.name,
+                lastUpdate: LAST_UPDATE
+            });
         });
     });
 });

@@ -3,24 +3,15 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
-import dataEntrepriseService from "../providers/dataEntreprise/dataEntreprise.service";
-import dataGouvService from "../providers/datagouv/datagouv.service";
-import leCompteAssoService from "../providers/leCompteAsso/leCompteAsso.service";
-import osirisService from "../providers/osiris/osiris.service";
-import IAssociationName from "./@types/IAssociationName";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 import associationNameRepository from "./repositories/associationName.repository";
 
 export class AssociationNameService {
-    static PROVIDER_SCORES = {
-        [dataGouvService.provider.name]: 1,
-        [ApiAssoDtoAdapter.providerNameRna]: 1,
-        [ApiAssoDtoAdapter.providerNameSiren]: 1,
-        [dataEntrepriseService.provider.name]: 0.5,
-        [osirisService.provider.name]: 0.3,
-        [leCompteAssoService.provider.name]: 0.2
-    };
+    private providerScores = {};
+
+    setProviderScore(providerName: string, score: number) {
+        this.providerScores[providerName] = score;
+    }
 
     async getGroupedIdentifiers(
         identifier: StructureIdentifiers
@@ -53,8 +44,7 @@ export class AssociationNameService {
         if (entities.length == 0) return;
 
         const bestEntity = entities.sort((a, b) => {
-            const result =
-                AssociationNameService.PROVIDER_SCORES[b.provider] - AssociationNameService.PROVIDER_SCORES[a.provider];
+            const result = this.providerScores[b.provider] - this.providerScores[a.provider];
 
             if (result != 0) return result;
 

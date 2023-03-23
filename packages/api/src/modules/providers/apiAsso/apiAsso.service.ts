@@ -17,8 +17,6 @@ import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, { DocumentDto, StructureDacDocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
-import { isDateNewer } from "../../../shared/helpers/DateHelper";
-import associationNameService from "../../association-name/associationName.service";
 
 export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
     public provider = {
@@ -28,6 +26,11 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
     };
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
+
+    constructor() {
+        associationNameService.setProviderScore(ApiAssoDtoAdapter.providerNameRna, 1);
+        associationNameService.setProviderScore(ApiAssoDtoAdapter.providerNameSiren, 1);
+    }
 
     private async sendRequest<T>(route: string): Promise<T | null> {
         if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;

@@ -1,6 +1,7 @@
 import { Siren } from "@api-subventions-asso/dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import Provider from "../@types/IProvider";
+import associationNameService from "../../association-name/associationName.service";
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
 import HistoryImportEntity from "./entities/HistoryImportEntity";
@@ -13,6 +14,10 @@ export class DataGouvService implements Provider {
         description:
             "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire)."
     };
+
+    constructor() {
+        associationNameService.setProviderScore(this.provider.name, 1);
+    }
 
     async insertManyEntrepriseSiren(entities: EntrepriseSirenEntity[]) {
         return entrepriseSirenRepository.insertMany(entities);
