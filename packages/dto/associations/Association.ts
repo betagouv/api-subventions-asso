@@ -7,6 +7,7 @@ import { DemandeSubvention } from "../search/DemandeSubvention";
 import { Etablissement } from "../etablissements/Etablissement";
 import { Versement } from "../versements/Versement";
 import { ExtraitRcsDto } from "./ExtraitRcsDto";
+import { BodaccRecordDto } from "./BodaccRecordDto";
 
 export interface Association {
     siren?: ProviderValues<Siren>;
@@ -52,4 +53,5 @@ export interface Association {
     versements?: Versement[];
     etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
     extrait_rcs?: ProviderValues<ExtraitRcsDto> | null;
+    bodacc: BodaccRecordDto[];
 }
