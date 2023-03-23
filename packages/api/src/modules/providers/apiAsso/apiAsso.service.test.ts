@@ -33,7 +33,7 @@ describe("ApiAssoService", () => {
     const RNA = "W750000000";
 
     beforeAll(() => {
-        // @ts-expect-error resolve value can must be an mongo updateObject, so just disable ts
+        // @ts-expect-error  mock mongodb return value
         associationNameUpsert = jest.spyOn(associationNameService, "upsert").mockResolvedValue({});
     });
 
@@ -127,7 +127,7 @@ describe("ApiAssoService", () => {
 
             beforeAll(() => {
                 findAssociationBySirenMock = jest
-                // @ts-expect-error findAssociationBySiren is private method
+                    // @ts-expect-error findAssociationBySiren is private method
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(sirenStructureFixture);
@@ -234,7 +234,7 @@ describe("ApiAssoService", () => {
                 getGroupedIdentifiersMock = jest
                     .spyOn(associationNameService, "getGroupedIdentifiers")
                     .mockImplementation(async rna => ({ siren: undefined, rna }));
-                    findAssociationBySirenMock = jest
+                findAssociationBySirenMock = jest
                     // @ts-expect-error findAssociationByRna is private method
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy

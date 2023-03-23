@@ -1,4 +1,4 @@
-import ExecutionSyncStack from "./ExecutionSyncStack";
+import ExecutionSyncStack from "../../src/shared/ExecutionSyncStack";
 
 describe("ExecutionSyncStack", () => {
     let stack: ExecutionSyncStack<string, string>;
