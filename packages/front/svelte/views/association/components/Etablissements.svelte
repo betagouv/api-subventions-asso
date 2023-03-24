@@ -1,16 +1,13 @@
 <script>
     import { onMount } from "svelte";
-    import { addressToString } from "../association.helper";
     import associationService from "../association.service.js";
 
-    import Card from "../../../dsfr/Card.svelte";
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
 
-    import etablissementService from "../../etablissement/etablissement.service";
-    import { valueOrHyphen } from "../../../helpers/dataHelper";
-    import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
+    import { waitElementIsVisible } from "@helpers/visibilityHelper";
+    import EstablishmentCard from "@components/EstablishmentCard/EstablishmentCard.svelte";
 
     export let associationIdentifier;
     export let association;
@@ -32,22 +29,9 @@
             <h3>Les établissements rattachés à cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each etablissements as etablissement}
-                    <Card
-                        title={association.denomination_rna || association.denomination_siren}
-                        url="/etablissement/{etablissement.siret}">
-                        <p>
-                            {etablissementService.getEtablissementStatus(etablissement)}
-                            <br />
-                            SIRET : {valueOrHyphen(etablissement.siret)}
-                            <br />
-                        </p>
-                        <div class="flex">
-                            <span class="fr-col-md-1 fr-mr-1w fr-icon-map-pin-2-line color" />
-                            <span class="fr-col-md-11 fr-text--bold">
-                                {valueOrHyphen(addressToString(etablissement.adresse))}
-                            </span>
-                        </div>
-                    </Card>
+                    <EstablishmentCard
+                        assoName={association.denomination_rna || association.denomination_siren}
+                        establishment={etablissement} />
                 {/each}
             </div>
         {:else}
@@ -63,9 +47,3 @@
         {/if}
     {/await}
 </div>
-
-<style>
-    .color {
-        color: var(--blue-france-sun-113-625);
-    }
-</style>
