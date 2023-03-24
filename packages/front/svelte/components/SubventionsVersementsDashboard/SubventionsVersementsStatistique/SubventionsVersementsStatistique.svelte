@@ -1,10 +1,10 @@
 <script>
-    import SubventionsVersemementsStatistiqueController from "./SubventionsVersemementsStatistique.controller";
+    import SubventionsVersementsStatistiqueController from "./SubventionsVersementsStatistique.controller";
 
     export let elements;
     export let year;
 
-    const controller = new SubventionsVersemementsStatistiqueController(elements);
+    const controller = new SubventionsVersementsStatistiqueController(elements);
 
     const { subventionsPercent, versementsAmount } = controller;
 
