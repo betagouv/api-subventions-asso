@@ -26,7 +26,6 @@ export default class SubventionsAdapter {
             montantsDemande: valueOrHyphen(numberToEuro(subvention.montants?.demande)),
             montantsAccorde: numberToEuro(subvention.montants?.accorde),
             status: subvention.statut_label,
-            showAmount: subvention.statut_label === ApplicationStatus.GRANTED && subvention.montants?.accorde
         };
     }
 
