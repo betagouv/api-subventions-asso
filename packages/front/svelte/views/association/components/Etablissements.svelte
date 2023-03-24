@@ -36,12 +36,12 @@
             </div>
         {:else}
             <DataNotFound
-                content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association" />
+                content="Nous sommes désolés, nous n'avons trouvé aucun établissement lié à cette association" />
         {/if}
     {:catch error}
         {#if error.request && error.request.status == 404}
             <DataNotFound
-                content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association" />
+                content="Nous sommes désolés, nous n'avons trouvé aucun établissement lié à cette association" />
         {:else}
             <ErrorAlert message={error.message} />
         {/if}
