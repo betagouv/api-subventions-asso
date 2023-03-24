@@ -7,5 +7,6 @@ exports[`SubventionTableController extractHeaders() return an array of header 1`
   "Intitulé de l'action",
   "Montant demandé",
   "Montant accordé",
+  "Statut de la demande",
 ]
 `;
