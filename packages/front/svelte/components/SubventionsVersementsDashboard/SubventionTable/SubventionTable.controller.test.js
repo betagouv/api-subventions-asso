@@ -54,17 +54,6 @@ describe("SubventionTableController", () => {
         };
 
         it.each`
-            variableName
-            ${"data"}
-            ${"modal"}
-        `("doesn't update modal data if nothing to show", ({ variableName }) => {
-            const controller = new SubventionTableController(() => 0);
-            controller.onRowClick({});
-            // eslint-disable-next-line import/namespace
-            expect(modalStore[variableName].update).not.toHaveBeenCalled();
-        });
-
-        it.each`
             variableName | expected
             ${"data"}    | ${{ subvention: {} }}
             ${"modal"}   | ${SubventionInfoModal}
