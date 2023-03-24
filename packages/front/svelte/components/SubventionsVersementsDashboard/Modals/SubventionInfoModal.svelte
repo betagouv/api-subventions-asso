@@ -1,30 +1,39 @@
 <script>
     import { data } from "../../../store/modal.store";
+    import { capitalizeFirstLetter } from "@helpers/textHelper";
 </script>
 
 {#if $data.subvention}
     {#each $data.subvention.actions_proposee as action}
-        <div class="action">
-            <h4>{action.intitule}</h4>
+        <section>
+            <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
             {#each action.objectifs.split("\n") as line}
                 {#if line.length}
                     <p>{line}</p>
                 {/if}
             {/each}
-        </div>
+        </section>
     {/each}
 {/if}
 
 <style>
-    .action {
-        margin-bottom: 40px;
-        border-bottom: 1px black solid;
-        padding-bottom: 25px;
+    section h4 {
+        color: var(--text-active-blue-france);
+        margin-bottom: 1.33em;
     }
 
-    .action:last-child {
-        margin-bottom: 0px;
-        padding-bottom: 0px;
-        border-bottom: 0px;
+    section {
+        margin-bottom: 3rem;
+    }
+
+    section:last-child {
+        margin-bottom: 0;
+    }
+
+    section h4[class*=" fr-fi-"]::before,
+    section h4[class*=" fr-icon-"]::before,
+    section h4[class^="fr-fi-"]::before,
+    section h4[class^="fr-icon-"]::before {
+        margin-right: 0.5rem;
     }
 </style>
