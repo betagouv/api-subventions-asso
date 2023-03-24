@@ -4,6 +4,35 @@
 </script>
 
 {#if $data.subvention}
+    <!-- TODO info établissement: from a store ?
+    <section>
+        <h4 class="fr-icon-arrow-right-line">Établissement concerné</h4>
+        <EstablishmentCard {establishment} {assoName}>
+    </section>
+    -->
+    <section>
+        <h4 class="fr-icon-arrow-right-line">Informations collectées</h4>
+        <p class="fr-text--lead">
+            <span class="fr-text--bold">{$data.montantAccorde}</span>
+            ont été accordés sur
+            <span class="fr-text--bold">{$data.montantDemande}</span>
+             demandés.
+        </p>
+        <!-- TODO provider and update value
+        <p class="fr-text--lg fr-text--bold">D'après les données récupérées via {provider} et
+            mises à jour le {updateDate}.</p>
+        -->
+        {#if $data.subvention.date_depot}
+            <p class="fr-text--lg">
+                <span class="fr-text--bold">Date de dépôt de la demande :</span>
+                {$data.subvention.date_depot}
+            </p>{/if}
+        {#if $data.subvention.date_decision}
+            <p class="fr-text--lg">
+                <span class="fr-text--bold">Date de décision du service instructeur :</span>
+                {$data.subvention.date_decision}
+            </p>{/if}
+    </section>
     {#each $data.subvention.actions_proposee as action}
         <section>
             <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
