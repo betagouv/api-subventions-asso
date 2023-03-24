@@ -73,7 +73,7 @@ export default class SubventionsVersementsDashboardController {
         // merge sub and vers
         const datasub = subventions.map((subvention, index) => {
             // empty subvention
-            if (!subvention) subvention = ["", "", "", "", ""];
+            if (!subvention) subvention = ["", "", "", "", "", ""];
             // empty versement
             if (!versements[index]) versements[index] = ["", "", ""];
             return [...subvention, ...versements[index]];
