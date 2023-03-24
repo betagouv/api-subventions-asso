@@ -29,8 +29,7 @@ describe("Subventions Adapter", () => {
                 "projectName",
                 "montantsDemande",
                 "montantsAccorde",
-                "status",
-                "showAmount"
+                "status"
             ];
             const actual = Object.keys(SubventionsAdapter.toSubvention(SUBVENTION));
             expect(actual).toEqual(expected);
