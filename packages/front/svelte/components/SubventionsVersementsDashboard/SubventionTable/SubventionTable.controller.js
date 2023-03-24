@@ -91,7 +91,11 @@ export default class SubventionTableController {
 
     onRowClick(elementData) {
         if (!elementData?.hasMoreInfo) return;
-        data.update(() => ({ subvention: elementData.subvention }));
+        data.update(() => ({
+            subvention: elementData.subvention,
+            montantDemande: elementData.montantsDemande,
+            montantAccorde: elementData.montantsAccorde
+        }));
         modal.update(() => SubventionInfoModal);
     }
 }
