@@ -15,12 +15,12 @@ export class BodaccService implements AssociationsProvider {
 
     isAssociationsProvider = true;
 
-    api = "https://bodacc-datadila.opendatasoft.com/api/v2";
+    apiUrl = "https://bodacc-datadila.opendatasoft.com/api/v2";
 
     async sendRequest(siren: Siren) {
         try {
             const result = await axios.get<BodaccDto>(
-                `${this.api}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren}`
+                `${this.apiUrl}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren}`
             );
             return result.data;
         } catch (e) {
