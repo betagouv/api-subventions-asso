@@ -17,9 +17,9 @@ import { CliStaticInterface } from "./@types";
 
 import "./modules/association-name/associationName.service"; // Load association-name for load service in eventManager
 import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
-import DemarchesSimplifieesCliController
-    from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
+import DemarchesSimplifieesCliController from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
 import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
+import GisproJoinCliController from "./modules/providers/gisproJoin/interfaces/cli/gisproJoin.cli.controller";
 
 async function main() {
     await connectDB();
@@ -40,7 +40,8 @@ async function main() {
         SubventiaCliController,
         ConsumerCliController,
         DemarchesSimplifieesCliController,
-        CaisseDepotsCliController
+        CaisseDepotsCliController,
+        GisproJoinCliController
     ];
 
     const args = process.argv.slice(2);
