@@ -66,16 +66,18 @@ export default class SubventionsVersementsDashboardController {
     }
 
     download() {
-        const headers = [...SubventionTableController.extractHeaders(), ...VersementTableController.extractHeaders()];
+        const subvHeader = SubventionTableController.extractHeaders();
+        const versHeader = VersementTableController.extractHeaders();
+        const headers = [...subvHeader, ...versHeader];
         const subventions = SubventionTableController.extractRows(this._fullElements);
         const versements = VersementTableController.extractRows(this._fullElements);
 
         // merge sub and vers
         const datasub = subventions.map((subvention, index) => {
             // empty subvention
-            if (!subvention) subvention = ["", "", "", "", "", ""];
+            if (!subvention) subvention = Array(subvHeader.length).fill("");
             // empty versement
-            if (!versements[index]) versements[index] = ["", "", ""];
+            if (!versements[index]) versements[index] = Array(versHeader.length).fill("");
             return [...subvention, ...versements[index]];
         });
 
