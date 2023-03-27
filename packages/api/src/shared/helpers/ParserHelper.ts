@@ -6,13 +6,13 @@ import { ParserInfo, ParserPath, DefaultObject } from "../../@types";
 
 export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo) {
     let path: ParserPath;
-    let adatper = (v: string | undefined): unknown => v;
+    let adapter = (v: string | undefined): unknown => v;
 
     if (Array.isArray(parserData)) {
         path = parserData;
     } else {
         path = parserData.path;
-        adatper = parserData.adapter || adatper;
+        adapter = parserData.adapter || adapter;
     }
 
     const result = path.reduce((acc, name) => {
@@ -31,7 +31,7 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
         return obj[key.trim()];
     }, data) as string;
 
-    return adatper(result) as T;
+    return adapter(result) as T;
 }
 
 export function indexDataByPathObject(

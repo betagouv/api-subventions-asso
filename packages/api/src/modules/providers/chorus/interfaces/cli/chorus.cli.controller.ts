@@ -50,13 +50,13 @@ export default class ChorusCliController extends CliController {
 
         const entities = ChorusParser.parseXls(fileContent, chorusEntityValidator);
 
-        const totalEnities = entities.length;
+        const totalEntities = entities.length;
 
-        console.info(`\n${totalEnities} valid entities found in file.`);
+        console.info(`\n${totalEntities} valid entities found in file.`);
 
         console.info("Start register in database ...");
 
-        const batchNumber = Math.ceil(totalEnities / batchSize);
+        const batchNumber = Math.ceil(totalEntities / batchSize);
         const batchs: ChorusLineEntity[][] = [];
 
         for (let i = 0; i < batchNumber; i++) {
@@ -69,7 +69,7 @@ export default class ChorusCliController extends CliController {
         };
 
         await asyncForEach(batchs, async (batch, index) => {
-            CliHelper.printProgress(index * 1000, totalEnities);
+            CliHelper.printProgress(index * 1000, totalEntities);
             const result = await chorusService.insertBatchChorusLine(batch, forceClean);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
