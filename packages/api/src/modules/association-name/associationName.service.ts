@@ -124,7 +124,7 @@ export class AssociationNameService {
         // Above reduce creates duplicates. Removes then by creating a Set
         const uniqueMapsValues = new Set(flattenMapsValues);
 
-        return [...uniqueMapsValues].map(this._mergeEntities) as AssociationNameEntity[];
+        return [...uniqueMapsValues].map(entities => this._mergeEntities(entities)) as AssociationNameEntity[];
     }
 
     upsert(entity: AssociationNameEntity) {
