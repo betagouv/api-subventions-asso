@@ -10,7 +10,7 @@ export class BodaccService implements AssociationsProvider {
     provider = {
         type: ProviderEnum.api,
         name: "Bodacc",
-        description: ""
+        description: "Le bulletin officiel des annonces civiles et commerciales"
     };
 
     isAssociationsProvider = true;
