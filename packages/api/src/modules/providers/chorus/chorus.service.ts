@@ -52,7 +52,7 @@ export class ChorusService implements VersementsProvider {
     }
 
     /**
-     * @param entities /!\ entites must be validated upstream
+     * @param entities /!\ entities must be validated upstream
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[], dropedDb = false) {
         const acceptedEntities = await asyncFilter(entities, async entity => {

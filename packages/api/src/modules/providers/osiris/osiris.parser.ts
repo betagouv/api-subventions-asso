@@ -12,12 +12,12 @@ export default class OsirisParser {
     public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
         const data = ParseHelper.xlsParse(content)[0];
         const headers = data.slice(0, 2) as string[][];
-        const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
+        const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
-        return raws.map(raw => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rawToRawWithHeaders(
+        return rows.map(row => {
+            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
-                raw,
+                row,
                 OsirisRequestEntity.defaultMainCategory
             );
 
@@ -41,12 +41,12 @@ export default class OsirisParser {
 
         const headers = data.slice(0, 2) as string[][];
 
-        const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
+        const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
-        return raws.map((raw: unknown[]) => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rawToRawWithHeaders(
+        return rows.map((row: unknown[]) => {
+            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
-                raw,
+                row,
                 OsirisActionEntity.defaultMainCategory
             );
 
@@ -65,12 +65,12 @@ export default class OsirisParser {
 
         const headers = data.slice(0, 2) as string[][];
 
-        const raws = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
+        const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
-        return raws.map((raw: unknown[]) => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rawToRawWithHeaders(
+        return rows.map((row: unknown[]) => {
+            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
-                raw,
+                row,
                 OsirisEvaluationEntity.defaultMainCategory
             );
             const indexedInformations = ParseHelper.indexDataByPathObject(
@@ -96,10 +96,10 @@ export default class OsirisParser {
         return (headers[1][position] as string).trim();
     }
 
-    private static rawToRawWithHeaders(headers: string[][], raw: unknown[], defaultMainCategory: string) {
+    private static rowToRowWithHeaders(headers: string[][], row: unknown[], defaultMainCategory: string) {
         const data: DefaultObject<DefaultObject<string | number>> = {};
 
-        raw.forEach((value, index) => {
+        row.forEach((value, index) => {
             const mainCategory = OsirisParser.findMainCategory(headers, index, defaultMainCategory);
             const category = OsirisParser.findCategory(headers, index);
 
