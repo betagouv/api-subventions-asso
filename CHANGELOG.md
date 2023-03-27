@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.6](https://github.com/betagouv/api-subventions-asso/compare/v0.24.5...v0.24.6) (2023-03-27)
+
+
+### Bug Fixes
+
+* **api:** limit the circular dependencies ([e42dee1](https://github.com/betagouv/api-subventions-asso/commit/e42dee1f8c4f4d26634f87f473b261076d4277fa))
+* **api:** probably fix duplicate error mongo ([4bae331](https://github.com/betagouv/api-subventions-asso/commit/4bae3318f5d386fe21a5a226d74790536c430b87))
+* **api:** remove event manager in association name ([469162e](https://github.com/betagouv/api-subventions-asso/commit/469162e5448fea38b4f76b573e3cdb1163890d0f))
+
+
+
+
+
 ## [0.24.5](https://github.com/betagouv/api-subventions-asso/compare/v0.24.4...v0.24.5) (2023-03-21)
 
 
