@@ -10,8 +10,8 @@ export default class ChorusParser {
             .replace(/"/g, "")
             .replace("", "")
             .split("\n") // Select line by line
-            .map(raw =>
-                raw
+            .map(row =>
+                row
                     .split(";")
                     .map(r => r.split("\t"))
                     .flat()
@@ -27,9 +27,9 @@ export default class ChorusParser {
             return header.trim();
         });
 
-        return data.reduce((entities, raw) => {
-            if (!raw.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = ParseHelper.linkHeaderToData(header, raw);
+        return data.reduce((entities, row) => {
+            if (!row.map(column => column.trim()).filter(c => c).length) return entities;
+            const parsedData = ParseHelper.linkHeaderToData(header, row);
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 ChorusLineEntity.indexedInformationsPath,
@@ -48,24 +48,24 @@ export default class ChorusParser {
         const page = pages[0];
         console.log("Read file end");
 
-        const headerRaw = page[0] as string[];
+        const headerRow = page[0] as string[];
         const header: string[] = [];
 
-        for (let i = 0; i < headerRaw.length; i++) {
-            if (!headerRaw[i]) {
+        for (let i = 0; i < headerRow.length; i++) {
+            if (!headerRow[i]) {
                 const name = header[i - 1] as string;
                 header[i - 1] = `${name} CODE`;
                 header.push(name.replace("&#32;", " ").trim());
             } else {
-                header.push(headerRaw[i].replace(/&#32;/g, " ").trim());
+                header.push(headerRow[i].replace(/&#32;/g, " ").trim());
             }
         }
 
         const data = page.slice(1) as string[][];
-        return data.reduce((entities, raw, index) => {
+        return data.reduce((entities, row, index) => {
             CliHelper.printAtSameLine(`${index} entities parsed of ${data.length}`);
 
-            const parsedData = ParseHelper.linkHeaderToData(header, raw);
+            const parsedData = ParseHelper.linkHeaderToData(header, row);
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 ChorusLineEntity.indexedInformationsPath,
                 parsedData
