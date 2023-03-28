@@ -7,7 +7,12 @@
     <!-- TODO info établissement: from a store ?
     <section>
         <h4 class="fr-icon-arrow-right-line">Établissement concerné</h4>
-        <EstablishmentCard {establishment} {assoName}>
+        <div class="bigger-link">
+            <a href="/etablissement/{establishment.siret}" target="_blank" rel="noreferrer">
+                {association.denomination_rna || association.denomination_siren}
+            </a>
+            <EstablishmentPreview {establishment} small={true} />
+        </div>
     </section>
     -->
     <section>
@@ -64,5 +69,16 @@
     section h4[class^="fr-fi-"]::before,
     section h4[class^="fr-icon-"]::before {
         margin-right: 0.5rem;
+    }
+
+    .bigger-link {
+        position: relative;
+    }
+
+    .bigger-link > a::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        content: "";
     }
 </style>
