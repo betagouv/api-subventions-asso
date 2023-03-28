@@ -1,6 +1,7 @@
-import axios from "axios";
-// Voir s'il ne vaut mieux pas passer ça en adapter
+import { NotFoundError } from "../../errors";
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
+import requestsService from "@services/requests.service";
+// Voir s'il ne vaut mieux pas passer ça en adapter
 
 class VersementsPort {
     getEtablissementVersements(identifier) {
@@ -13,13 +14,13 @@ class VersementsPort {
 
     _getVersements(identifier, type) {
         const path = `/${type}/${identifier}/versements`;
-        return axios
+        return requestsService
             .get(path)
             .then(result => {
                 return result.data.versements.map(versement => flatenProviderValue(versement));
             })
             .catch(e => {
-                if (e.request.status == 404) return [];
+                if (e instanceof NotFoundError) return [];
                 throw e;
             });
     }
