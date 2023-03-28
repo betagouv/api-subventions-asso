@@ -67,7 +67,7 @@ describe("AuthPort", () => {
 
     describe("login()", () => {
         const axiosPostMock = jest.spyOn(axios, "post");
-        const errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(UnauthorizedError);
+        jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(UnauthorizedError);
         const EMAIL = "test@mail.fr";
         const PASSWORD = "FAKE_PASSWORD";
 

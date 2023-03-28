@@ -1,6 +1,6 @@
 <script>
-    import { MonthlyGraphTooltipController } from "./MonthlyGraphTooltip.controller";
     import { tick } from "svelte";
+    import { MonthlyGraphTooltipController } from "./MonthlyGraphTooltip.controller";
 
     export let resource = "";
     export let context = {};

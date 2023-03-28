@@ -21,6 +21,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         description: "" // TODO
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
     }
