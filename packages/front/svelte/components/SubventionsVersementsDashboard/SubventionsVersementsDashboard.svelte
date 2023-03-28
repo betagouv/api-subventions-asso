@@ -52,7 +52,7 @@
             Voir la liste des fournisseurs de données
         </Button>
     </div>
-    <div class="fr-py-3w">
+    <div class="fr-py-3w compact-columns">
         {#if $elements?.length}
             <SubventionsVersemementsStatistique elements={$elements} year={$selectedYear} />
             {#if $loaderStateStore.status != "end"}
@@ -92,5 +92,13 @@
 <style>
     .baseline {
         align-self: baseline;
+    }
+
+    .compact-columns :global(.fr-grid-row--gutters) {
+        margin: -0.5rem;
+    }
+
+    .compact-columns :global(.fr-grid-row--gutters > [class^="fr-col-"]) {
+        padding: 0.5rem;
     }
 </style>
