@@ -44,10 +44,10 @@ export default {
         component: () => Home
     },
     contact: {
-        component: () => Contact,
+        component: () => Contact
     },
     "mentions-legales": {
-        component: () => LegalNotice,
+        component: () => LegalNotice
     },
     cgu: {
         component: () => Cgu,
