@@ -16,7 +16,7 @@
             <span class="fr-text--bold">{$data.montantAccorde}</span>
             ont été accordés sur
             <span class="fr-text--bold">{$data.montantDemande}</span>
-             demandés.
+            demandés.
         </p>
         <!-- TODO provider and update value
         <p class="fr-text--lg fr-text--bold">D'après les données récupérées via {provider} et
