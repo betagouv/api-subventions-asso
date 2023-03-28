@@ -1,4 +1,4 @@
-import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Response } from "tsoa";
+import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
 import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@api-subventions-asso/dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";

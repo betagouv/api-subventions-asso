@@ -4,6 +4,7 @@ import Controller from "../../../../decorators/controller.decorator";
 import { Get, Post } from "../../../../decorators/http.methods.decorator";
 import adminService from "../../user.service";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 @Controller("/admin")
 export default class AdminController {
     private useSvelte(res: Response) {

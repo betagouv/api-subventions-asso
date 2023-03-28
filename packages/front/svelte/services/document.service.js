@@ -39,6 +39,7 @@ export class DocumentService {
                 .sort(([keyA], [keyB]) => (keyA > keyB ? 1 : -1)) // Sort by type
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 .map(
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()) // In same type sort by date
                 )
                 .flat()

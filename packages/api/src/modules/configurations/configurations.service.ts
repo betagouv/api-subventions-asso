@@ -1,6 +1,6 @@
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
-import { DauphinTokenDataEntity, DauphinTokenAvailableTime, DSAcceptedForm } from "./entities";
+import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
 import ConfigurationEntity from "./entities/ConfigurationEntity";
 import configurationsRepository from "./repositories/configurations.repository";
 

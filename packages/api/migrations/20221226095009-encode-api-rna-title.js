@@ -4,6 +4,7 @@ const iconv = require("iconv-lite");
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
 module.exports = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
         const collection = db.collection("association-name");
@@ -25,6 +26,7 @@ module.exports = {
         }
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // NOT IMPLEMENTED
     }

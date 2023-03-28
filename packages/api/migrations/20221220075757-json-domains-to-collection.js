@@ -6,6 +6,7 @@ const { ACCEPTED_EMAIL_DOMAINS } = require("../build/src/configurations/auth.con
 const { CONFIGURATION_NAMES } = require("../build/src/modules/configurations/configurations.service.js");
 
 module.exports = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
         const collection = db.collection("configurations");
