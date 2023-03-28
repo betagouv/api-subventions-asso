@@ -1,6 +1,7 @@
-import axios from "axios";
+import { NotFoundError } from "../../errors";
 import * as providerValueHelper from "../../helpers/providerValueHelper";
 import versementsPort from "./versements.port";
+import requestsService from "@services/requests.service";
 
 describe("VersementsPort", () => {
     describe("getEtablissementVersements", () => {
@@ -76,26 +77,26 @@ describe("VersementsPort", () => {
     });
 
     describe("_getVersements", () => {
-        let axiosGetMock;
+        let getMock;
         let flatenProviderValueMock;
 
         beforeAll(() => {
-            axiosGetMock = jest.spyOn(axios, "get");
+            getMock = jest.spyOn(requestsService, "get");
             flatenProviderValueMock = jest.spyOn(providerValueHelper, "flatenProviderValue");
         });
 
         afterAll(() => {
-            axiosGetMock.mockRestore();
+            getMock.mockRestore();
             flatenProviderValueMock.mockRestore();
         });
 
         it("should call axios with fake value type in path", async () => {
             const expected = ["/FAKE/ID/versements"];
 
-            axiosGetMock.mockImplementationOnce(async () => ({ data: { versements: [] } }));
+            getMock.mockImplementationOnce(async () => ({ data: { versements: [] } }));
 
             await versementsPort._getVersements("ID", "FAKE");
-            const actual = axiosGetMock.mock.calls[0];
+            const actual = getMock.mock.calls[0];
 
             expect(actual).toEqual(expected);
         });
@@ -103,7 +104,7 @@ describe("VersementsPort", () => {
         it("should return versements", async () => {
             const expected = [{ versement: 1 }, { versement: 2 }];
 
-            axiosGetMock.mockImplementationOnce(async () => ({ data: { versements: expected } }));
+            getMock.mockImplementationOnce(async () => ({ data: { versements: expected } }));
             flatenProviderValueMock.mockImplementationOnce(v => v);
 
             const actual = await versementsPort._getVersements("ID", "FAKE");
@@ -114,15 +115,8 @@ describe("VersementsPort", () => {
         it("should return empty versements array when api answer return an 404 error", async () => {
             const expected = 0;
 
-            class FakeNotFoundError extends Error {
-                // Voir si on deplace ça !
-                request = {
-                    status: 404
-                };
-            }
-
-            axiosGetMock.mockImplementationOnce(async () => {
-                throw new FakeNotFoundError();
+            getMock.mockImplementationOnce(async () => {
+                throw new NotFoundError("");
             });
 
             const actual = (await versementsPort._getVersements("ID", "FAKE")).length;
@@ -138,7 +132,7 @@ describe("VersementsPort", () => {
                 };
             }
 
-            axiosGetMock.mockImplementationOnce(async () => {
+            getMock.mockImplementationOnce(async () => {
                 throw new FakeApiError();
             });
 
