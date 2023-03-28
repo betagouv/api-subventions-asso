@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.8](https://github.com/betagouv/api-subventions-asso/compare/v0.24.7...v0.24.8) (2023-03-28)
+
+
+### Bug Fixes
+
+* **front:** footer dsfr conformity ([b468de1](https://github.com/betagouv/api-subventions-asso/commit/b468de1e3e2dd856f3a3e8931db586fa9964be6e))
+
+
+### Features
+
+* **front:** link to static stats ([f0aace5](https://github.com/betagouv/api-subventions-asso/commit/f0aace50fb7a59589f4ada9ec8710c9bd9a9ac8b))
+
+
+
+
+
 ## [0.24.7](https://github.com/betagouv/api-subventions-asso/compare/v0.24.6...v0.24.7) (2023-03-27)
 
 
