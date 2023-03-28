@@ -27,16 +27,22 @@
                 </p>
                 <ul class="fr-footer__content-list">
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" title="Contactez-nous" href="/contact">Contactez-nous</a>
+                        <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">
+                            legifrance.gouv.fr
+                        </a>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" href="https://www.numerique.gouv.fr/">numerique.gouv.fr</a>
+                        <a class="fr-footer__content-link" target="_blank" href="https://www.numerique.gouv.fr/">
+                            numerique.gouv.fr
+                        </a>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" href="https://beta.gouv.fr/">beta.gouv.fr</a>
+                        <a class="fr-footer__content-link" target="_blank" href="https://beta.gouv.fr/">beta.gouv.fr</a>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" href="https://www.gouvernement.fr/">gouvernement.fr</a>
+                        <a class="fr-footer__content-link" target="_blank" href="https://www.gouvernement.fr/">
+                            gouvernement.fr
+                        </a>
                     </li>
                 </ul>
             </div>
