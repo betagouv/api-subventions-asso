@@ -13,6 +13,7 @@ import Login from "./views/auth/login/Login.svelte";
 import NotFound from "./views/not-found/NotFound.svelte";
 import Contact from "./views/Contact.svelte";
 import LegalNotice from "./views/LegalNotice.svelte";
+import Cgu from "./views/Cgu.svelte";
 
 export default {
     "/404": {
@@ -47,6 +48,8 @@ export default {
     },
     "mentions-legales": {
         component: () => LegalNotice,
+    cgu: {
+        component: () => Cgu,
         disableAuth: true
     },
     "auth/signup": {
