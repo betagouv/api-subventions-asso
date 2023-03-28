@@ -7,7 +7,6 @@ import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import providers from "../providers";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import Flux from "../../shared/Flux";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";

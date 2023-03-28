@@ -5,6 +5,7 @@ const userRepository = require("../build/src/modules/user/repositoies/user.repos
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
         const result = [];
@@ -64,6 +65,7 @@ module.exports = {
         );
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
