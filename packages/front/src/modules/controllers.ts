@@ -2,7 +2,6 @@ import AssociationController from "./association/interfaces/http/AssociationCont
 import AuthController from "./auth/interfaces/http/AuthController";
 import EtablissementController from "./etablissement/interfaces/http/EtablissementController";
 import HomeController from "./home/interfaces/http/HomeController";
-import SearchController from "./search/interfaces/http/SearchController";
 import LegalNoticeController from "./legal_notice/interface/http/LegalNoticeController";
 import CGUController from "./cgu/interface/http/CGUController";
 import ContactController from "./contact/interface/http/ContactController";
@@ -15,7 +14,6 @@ export default [
     AssociationController,
     EtablissementController,
     HomeController,
-    SearchController,
     LegalNoticeController,
     ContactController,
     AdminController,
