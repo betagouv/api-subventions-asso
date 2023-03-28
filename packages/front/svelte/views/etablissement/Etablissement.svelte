@@ -8,7 +8,7 @@
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
     import etablissementService from "./etablissement.service";
-    import TabEtab from "./components/TabEtab.svelte";
+    import TabsEtab from "./components/TabsEtab.svelte";
 
     export let id;
 
@@ -31,7 +31,7 @@
                 <InfosLegales {association} {etablissement} />
             </div>
             <div class="fr-mb-6w">
-                <TabEtab {etablissement} {titles} identifier={id} />
+                <TabsEtab {etablissement} {titles} identifier={id} />
             </div>
         {:catch error}
             {#if error.request && error.request.status === 404}
