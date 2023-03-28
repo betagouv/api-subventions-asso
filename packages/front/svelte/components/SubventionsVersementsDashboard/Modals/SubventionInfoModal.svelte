@@ -17,12 +17,20 @@
     -->
     <section>
         <h4 class="fr-icon-arrow-right-line">Informations collectées</h4>
+        <!-- prettier-ignore-start -->
         <p class="fr-text--lead">
-            <span class="fr-text--bold">{$data.montantAccorde}</span>
-            ont été accordés sur
-            <span class="fr-text--bold">{$data.montantDemande}</span>
-            demandés.
+            {#if $data.subvention.montants.accorde}
+                <span class="fr-text--bold">{$data.montantAccorde}</span>
+                ont été accordés{#if $data.subvention.montants.demande}
+                    {" "}sur
+                    <span class="fr-text--bold">{$data.montantDemande}</span>
+                    demandés{/if}.
+            {:else if $data.subvention.montants.demande}
+                <span class="fr-text--bold">{$data.montantDemande}</span>
+                 ont été demandés.
+            {/if}
         </p>
+        <!-- prettier-ignore-end -->
         <!-- TODO provider and update value
         <p class="fr-text--lg fr-text--bold">D'après les données récupérées via {provider} et
             mises à jour le {updateDate}.</p>
