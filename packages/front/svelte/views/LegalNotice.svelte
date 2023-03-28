@@ -57,9 +57,7 @@ Ce site est hébergé en propre par Scalingo SAS, 15 avenue du Rhin, 67100 Stras
 
 <h3>En savoir plus</h3>
 Pour en savoir plus sur la politique d’accessibilité numérique de l’État :
-<a href="https://references.modernisation.gouv.fr/accessibilite-numerique">
-    https://references.modernisation.gouv.fr/accessibilite-numerique
-</a>
+<a href="https://accessibilite.numerique.gouv.fr/">https://accessibilite.numerique.gouv.fr/</a>
 
 <h2>Sécurité</h2>
 
