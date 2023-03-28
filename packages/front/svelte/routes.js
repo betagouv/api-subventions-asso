@@ -11,6 +11,7 @@ import ForgetPwd from "./views/auth/forget-pwd/ForgetPwd.svelte";
 import Signup from "./views/auth/signup/Signup.svelte";
 import Login from "./views/auth/login/Login.svelte";
 import NotFound from "./views/not-found/NotFound.svelte";
+import Contact from "./views/contact/Contact.svelte";
 
 export default {
     "/404": {
@@ -39,6 +40,10 @@ export default {
     },
     "/": {
         component: () => Home
+    },
+    contact: {
+        component: () => Contact,
+        disableAuth: true
     },
     "auth/signup": {
         component: () => Signup,
