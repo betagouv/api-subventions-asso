@@ -1,0 +1,151 @@
+import axios from "axios";
+import { DATASUB_URL } from "../../src/shared/config";
+import { NotFoundError } from "../errors";
+import errorsService from "../errors/errors.service";
+import requestsService from "@services/requests.service";
+
+describe("RequestService", () => {
+    describe("constructor", () => {
+        it("should set baseUrl", () => {
+            expect(axios.defaults.baseURL).toBe(DATASUB_URL);
+        });
+    });
+
+    describe("http methods", () => {
+        let _sendRequestMock;
+
+        beforeAll(() => {
+            _sendRequestMock = jest.spyOn(requestsService, "_sendRequest").mockResolvedValue();
+        });
+        afterAll(() => {
+            _sendRequestMock.mockRestore();
+        });
+
+        beforeEach(() => {
+            _sendRequestMock.mockClear();
+        });
+
+        describe("get", () => {
+            it("should call _sendRequest", async () => {
+                const expectedPath = "GET_PATH";
+                const expectedParam = { test: true };
+                await requestsService.get(expectedPath, expectedParam);
+
+                expect(_sendRequestMock).toHaveBeenCalledWith("get", expectedPath, expectedParam);
+            });
+        });
+
+        describe("post", () => {
+            it("should call _sendRequest", async () => {
+                const expectedPath = "POST_PATH";
+                const expectedBody = { test: true };
+                await requestsService.post(expectedPath, expectedBody);
+
+                expect(_sendRequestMock).toHaveBeenCalledWith("post", expectedPath, undefined, expectedBody);
+            });
+        });
+
+        describe("delete", () => {
+            it("should call _sendRequest", async () => {
+                const expectedPath = "DELETE_PATH";
+                const expectedParam = { test: true };
+                await requestsService.delete(expectedPath, expectedParam);
+
+                expect(_sendRequestMock).toHaveBeenCalledWith("delete", expectedPath, expectedParam);
+            });
+        });
+    });
+
+    describe("initAuthenfication", () => {
+        it("should defaults auth header", () => {
+            const expected = "TOKEN";
+            requestsService.initAuthenfication(expected);
+
+            expect(axios.defaults.headers.common["x-access-token"]).toBe(expected);
+        });
+    });
+
+    describe("addErrorHooks", () => {
+        it("should add hooks in errorHooks array", () => {
+            const expected = jest.fn();
+            requestsService.addErrorHook(NotFoundError, expected);
+
+            expect(requestsService._errorHooks).toEqual([
+                expect.objectContaining({
+                    ErrorClass: NotFoundError,
+                    callback: expected
+                })
+            ]);
+        });
+    });
+
+    describe("_sendRequest", () => {
+        let axiosRequestMock;
+        let errorServiceMock;
+
+        beforeAll(() => {
+            axiosRequestMock = jest.spyOn(axios, "request").mockResolvedValue();
+            errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(NotFoundError);
+        });
+
+        afterAll(() => {
+            axiosRequestMock.mockRestore();
+            errorServiceMock.mockRestore();
+        });
+
+        it("should call axios with good params", async () => {
+            const type = "get";
+            const path = "path/to";
+            const params = { query: true };
+            const data = { body: true };
+
+            await requestsService._sendRequest(type, path, params, data);
+
+            expect(axiosRequestMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    url: path,
+                    method: type,
+                    data,
+                    params
+                })
+            );
+        });
+
+        it("should throw notfoundError", () => {
+            axiosRequestMock.mockRejectedValueOnce({
+                response: {
+                    data: {
+                        message: "",
+                        code: ""
+                    }
+                }
+            });
+
+            expect(() => requestsService._sendRequest("get", "path")).rejects.toThrowError(NotFoundError);
+        });
+
+        it("should call hooks", async () => {
+            axiosRequestMock.mockRejectedValueOnce({
+                response: {
+                    data: {
+                        message: "",
+                        code: ""
+                    }
+                }
+            });
+
+            const callback = jest.fn();
+
+            requestsService._errorHooks.push({
+                ErrorClass: NotFoundError,
+                callback
+            });
+
+            try {
+                await requestsService._sendRequest("get", "path");
+            } catch {
+                expect(callback).toBeCalledTimes(1);
+            }
+        });
+    });
+});
