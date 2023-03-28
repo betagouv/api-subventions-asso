@@ -3,7 +3,6 @@ import fs from "fs";
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
 import demarchesSimplifieesService from "../../demarchesSimplifiees.service";
-import configurationsService from "../../../../configurations/configurations.service";
 import DemarchesSimplifieesMapperEntity from "../../entities/DemarchesSimplifieesMapperEntity";
 
 @StaticImplements<CliStaticInterface>()

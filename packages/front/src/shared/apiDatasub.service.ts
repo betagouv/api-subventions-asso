@@ -73,7 +73,7 @@ export class APIDatasubService {
         user?: UserWithJWTDto,
         body?: unknown
     ) {
-        let response: AxiosResponse<T, any>;
+        let response: AxiosResponse<T, unknown>;
         const url = `${DATASUB_URL}${uri}`;
         try {
             switch (method) {

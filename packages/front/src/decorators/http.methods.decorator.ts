@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export function Get(route: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (!target["__methods__"]) target["__methods__"] = [];
         target["__methods__"].push({
@@ -10,6 +13,7 @@ export function Get(route: string) {
 }
 
 export function Post(route: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (!target["__methods__"]) target["__methods__"] = [];
         target["__methods__"].push({
@@ -21,6 +25,7 @@ export function Post(route: string) {
 }
 
 export function Put(route: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (!target["__methods__"]) target["__methods__"] = [];
         target["__methods__"].push({
@@ -32,6 +37,7 @@ export function Put(route: string) {
 }
 
 export function Delete(route: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (!target["__methods__"]) target["__methods__"] = [];
         target["__methods__"].push({

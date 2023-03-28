@@ -1,8 +1,8 @@
 import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from "sib-api-v3-typescript";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
 import { API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
-import INotifier from "./@types/INotifier";
 import { DefaultObject } from "../../../@types";
+import INotifier from "./@types/INotifier";
 
 export enum TemplateEnum {
     creation = 55,
