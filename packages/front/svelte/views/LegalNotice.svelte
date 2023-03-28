@@ -26,11 +26,10 @@
 </p>
 
 <h2>Directrice.eur de la publication</h2>
-
-Directeur interministériel du numérique.
+<p>Directeur interministériel du numérique.</p>
 
 <h2>Hébergement de la Plateforme</h2>
-Ce site est hébergé en propre par Scalingo SAS, 15 avenue du Rhin, 67100 Strasbourg, France.
+<p>Ce site est hébergé en propre par Scalingo SAS, 15 avenue du Rhin, 67100 Strasbourg, France.</p>
 
 <h2>Accessibilité</h2>
 <p>
@@ -56,8 +55,10 @@ Ce site est hébergé en propre par Scalingo SAS, 15 avenue du Rhin, 67100 Stras
 </p>
 
 <h3>En savoir plus</h3>
-Pour en savoir plus sur la politique d’accessibilité numérique de l’État :
-<a href="https://accessibilite.numerique.gouv.fr/">https://accessibilite.numerique.gouv.fr/</a>
+<p>
+    Pour en savoir plus sur la politique d’accessibilité numérique de l’État :
+    <a href="https://accessibilite.numerique.gouv.fr/">https://accessibilite.numerique.gouv.fr/</a>
+</p>
 
 <h2>Sécurité</h2>
 
