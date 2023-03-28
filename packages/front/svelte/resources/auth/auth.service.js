@@ -1,8 +1,9 @@
-import axios from "axios";
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import routes from "../../routes";
+import { UnauthoziedError } from "../../errors";
 import authPort from "@resources/auth/auth.port";
 import * as RouterService from "@services/router.service";
+import requestsService from "@services/requests.service";
 import { goToUrl } from "@services/router.service";
 import crispService from "@services/crisp.service";
 
@@ -40,22 +41,17 @@ export class AuthService {
 
     initUserInApp() {
         const user = this.getCurrentUser();
-        // set header token for each requests
-        axios.defaults.headers.common["x-access-token"] = user?.jwt?.token;
+
+        requestsService.initAuthenfication(user?.jwt?.token);
         if (user) crispService.setUserEmail(user.email);
 
-        axios.interceptors.response.use(
-            response => response,
-            error => {
-                const current = RouterService.getRoute(routes, location.pathname);
-                if (error.isAxiosError && error.response.status === 401 && !current.disableAuth) {
-                    this.logout();
-                    goToUrl("/auth/login");
-                }
-                // Do something with response error
-                return Promise.reject(error);
-            }
-        );
+        requestsService.addErrorHook(UnauthoziedError, () => {
+            const current = RouterService.getRoute(routes, location.pathname);
+            if (current.disableAuth) return;
+
+            this.logout();
+            goToUrl("/auth/login");
+        });
     }
 
     logout() {

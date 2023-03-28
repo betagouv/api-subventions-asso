@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ResetPasswordErrorCodes, SignupErrorCodes } from "@api-subventions-asso/dto";
-import errorsService from "../../errors/errors.service";
+import requestsService from "@services/requests.service";
 
 export class AuthPort {
     BASE_PATH = "/auth";
@@ -30,18 +30,9 @@ export class AuthPort {
     }
 
     login(email, password) {
-        return axios
-            .post("/auth/login", { email, password })
-            .then(value => {
-                return value.data.user;
-            })
-            .catch(e => {
-                const ErrorClass = errorsService.axiosErrorToError(e);
-                throw new ErrorClass({
-                    message: e.response.data.message,
-                    code: e.response.data.code
-                });
-            });
+        return requestsService.post("/auth/login", { email, password }).then(value => {
+            return value.data.user;
+        });
     }
 
     forgetPassword(email) {

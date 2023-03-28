@@ -1,7 +1,7 @@
 import axios from "axios";
-import errorsService from "../../errors/errors.service";
 import UnauthorizedError from "../../errors/UnauthorizedError";
 import authPort from "./auth.port";
+import requestsService from "@services/requests.service";
 
 const DEFAULT_ERROR_CODE = 49;
 
@@ -66,29 +66,22 @@ describe("AuthPort", () => {
     });
 
     describe("login()", () => {
-        const axiosPostMock = jest.spyOn(axios, "post");
-        jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(UnauthorizedError);
+        const postMock = jest.spyOn(requestsService, "post");
         const EMAIL = "test@mail.fr";
         const PASSWORD = "FAKE_PASSWORD";
 
         it("calls signup route", async () => {
             const PATH = "/auth/login";
-            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            postMock.mockResolvedValueOnce({ data: {} });
             await authPort.login(EMAIL, PASSWORD);
-            expect(axiosPostMock).toBeCalledWith(PATH, { email: EMAIL, password: PASSWORD });
+            expect(postMock).toBeCalledWith(PATH, { email: EMAIL, password: PASSWORD });
         });
 
         it("returns user if success", async () => {
             const expected = { email: EMAIL };
-            axiosPostMock.mockResolvedValueOnce({ data: { user: expected } });
+            postMock.mockResolvedValueOnce({ data: { user: expected } });
             const actual = await authPort.login(EMAIL, PASSWORD);
             expect(actual).toBe(expected);
-        });
-
-        it("throws error with error code if any", () => {
-            const HTTP_ERROR_CODE = 401;
-            axiosPostMock.mockRejectedValueOnce({ response: { status: HTTP_ERROR_CODE, data: {} } });
-            expect(async () => authPort.login(EMAIL, PASSWORD)).rejects.toThrowError(UnauthorizedError);
         });
     });
 
