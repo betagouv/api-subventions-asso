@@ -7,7 +7,8 @@
     import DataNotFound from "../../../components/DataNotFound.svelte";
 
     import { waitElementIsVisible } from "@helpers/visibilityHelper";
-    import EstablishmentCard from "@components/EstablishmentCard/EstablishmentCard.svelte";
+    import Card from "@dsfr/Card.svelte";
+    import EstablishmentPreview from "@components/EstablishmentPreview/EstablishmentPreview.svelte";
 
     export let associationIdentifier;
     export let association;
@@ -29,9 +30,11 @@
             <h3>Les établissements rattachés à cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each etablissements as etablissement}
-                    <EstablishmentCard
-                        assoName={association.denomination_rna || association.denomination_siren}
-                        establishment={etablissement} />
+                    <Card
+                        title={association.denomination_rna || association.denomination_siren}
+                        url="/etablissement/{etablissement.siret}">
+                        <EstablishmentPreview establishment={etablissement} />
+                    </Card>
                 {/each}
             </div>
         {:else}
