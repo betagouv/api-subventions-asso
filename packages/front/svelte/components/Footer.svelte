@@ -53,6 +53,15 @@
                     <a class="fr-footer__bottom-link" href="/accessibilite">Accessibilité : non conforme</a>
                 </li>
                 <li class="fr-footer__bottom-item">
+                    <a
+                        class="fr-footer__bottom-link"
+                        href="https://blog.datasubvention.beta.gouv.fr/statistiques/"
+                        target="_blank"
+                        rel="noreferrer">
+                        Statistiques d'usage
+                    </a>
+                </li>
+                <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
