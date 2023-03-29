@@ -21,7 +21,7 @@ describe("RequestService", () => {
             _sendRequestMock.mockRestore();
         });
 
-        beforeEach(() => {
+        afterEach(() => {
             _sendRequestMock.mockClear();
         });
 
@@ -56,10 +56,10 @@ describe("RequestService", () => {
         });
     });
 
-    describe("initAuthenfication", () => {
+    describe("initAuthentification", () => {
         it("should defaults auth header", () => {
             const expected = "TOKEN";
-            requestsService.initAuthenfication(expected);
+            requestsService.initAuthentification(expected);
 
             expect(axios.defaults.headers.common["x-access-token"]).toBe(expected);
         });
