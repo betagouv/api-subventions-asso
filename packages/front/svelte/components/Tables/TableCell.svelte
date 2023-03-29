@@ -7,7 +7,7 @@
     $: style = `--justify: ${position}`;
 </script>
 
-<td {colspan} class:primary>
+<td {colspan} class:primary class="fr-p-3v">
     <div class="table-cell-container" {style}>
         <div class="table-cell-content">
             <slot />
@@ -34,7 +34,6 @@
 
     td {
         line-break: anywhere;
-        padding: 12px;
     }
 
     td.primary {
