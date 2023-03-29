@@ -21,7 +21,7 @@ class RequestsService {
         return this._sendRequest("delete", path, params);
     }
 
-    initAuthenfication(apiToken) {
+    initAuthentification(apiToken) {
         axios.defaults.headers.common["x-access-token"] = apiToken;
     }
 
