@@ -43,9 +43,9 @@
     <svelte:fragment slot="body">
         {#each $elementsDataViews as elementData}
             <tr
-                class="clickable"
-                aria-controls="fr-modal"
-                data-fr-opened="false"
+                class:clickable={elementData}
+                aria-controls={elementData ? "fr-modal" : undefined}
+                data-fr-opened={elementData ? "false" : undefined}
                 on:click={() => controller.onRowClick(elementData)}>
                 {#if !elementData}
                     <TableCell colspan="5" position="center">
