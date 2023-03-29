@@ -1,7 +1,6 @@
 import SubventionsAdapter from "./subventions.adapter";
 import * as dataHelper from "@helpers/dataHelper";
 jest.mock("@helpers/dataHelper");
-import * as textHelper from "@helpers/textHelper";
 jest.mock("@helpers/textHelper", () => ({
     capitalizeFirstLetter: value => value
 }));
@@ -39,7 +38,7 @@ describe("Subventions Adapter", () => {
     });
 
     describe("_getProjectName", () => {
-        it("return concatened names", () => {
+        it("return concatenated names", () => {
             const expected = "A. - B. - C.";
             const actual = SubventionsAdapter._getProjectName(SUBVENTION);
             expect(actual).toEqual(expected);
