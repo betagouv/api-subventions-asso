@@ -1,10 +1,6 @@
 import SubventionsAdapter from "./subventions.adapter";
 import * as dataHelper from "@helpers/dataHelper";
 jest.mock("@helpers/dataHelper");
-import * as stringHelper from "@helpers/stringHelper";
-jest.mock("@helpers/stringHelper", () => ({
-    trim: value => value
-}));
 import * as textHelper from "@helpers/textHelper";
 jest.mock("@helpers/textHelper", () => ({
     capitalizeFirstLetter: value => value

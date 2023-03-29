@@ -8,19 +8,28 @@
 </script>
 
 <td {colspan} class:primary>
-    <div {style}>
-        <slot />
+    <div class="table-cell-container" {style}>
+        <div class="table-cell-content">
+            <slot />
+        </div>
     </div>
 </td>
 
 <style>
-    div {
+    .table-cell-container {
         display: flex;
         justify-content: var(--justify);
         align-items: center;
         height: 92px;
         max-height: 92px;
+    }
+
+    .table-cell-content {
+        display: -webkit-box;
+        overflow: hidden;
         overflow-wrap: anywhere;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
     }
 
     td {
