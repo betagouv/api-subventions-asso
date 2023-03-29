@@ -13,6 +13,7 @@ import Login from "./views/auth/login/Login.svelte";
 import NotFound from "./views/not-found/NotFound.svelte";
 import LegalNotice from "./views/LegalNotice.svelte";
 import Cgu from "./views/Cgu.svelte";
+import Contact from "./views/Contact.svelte";
 
 export default {
     "/404": {
@@ -48,6 +49,10 @@ export default {
     },
     cgu: {
         component: () => Cgu,
+        disableAuth: true
+    },
+    contact: {
+        component: () => Contact,
         disableAuth: true
     },
     "auth/signup": {
