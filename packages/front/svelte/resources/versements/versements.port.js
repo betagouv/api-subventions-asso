@@ -1,7 +1,6 @@
 import { NotFoundError } from "../../errors";
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
 import requestsService from "@services/requests.service";
-// Voir s'il ne vaut mieux pas passer ça en adapter
 
 class VersementsPort {
     getEtablissementVersements(identifier) {
