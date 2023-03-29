@@ -46,7 +46,7 @@
                 {$data.subvention.date_decision}
             </p>{/if}
     </section>
-    {#each $data.subvention.actions_proposee as action}
+    {#each $data.subvention?.actions_proposee || [] as action}
         <section>
             <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
             {#each action.objectifs?.split("\n") || [] as line}
