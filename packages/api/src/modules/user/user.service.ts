@@ -167,7 +167,7 @@ export class UserService {
         }
     }
 
-    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = DEFAULT_PWD): Promise<UserDto> {
+    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user]): Promise<UserDto> {
         await this.validateEmail(email.toLocaleLowerCase());
 
         if (await userRepository.findByEmail(email.toLocaleLowerCase()))
