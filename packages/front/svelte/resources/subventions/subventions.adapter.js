@@ -1,23 +1,12 @@
 import { ApplicationStatus } from "@api-subventions-asso/dto";
 import { valueOrHyphen, numberToEuro } from "@helpers/dataHelper";
-import { trim } from "@helpers/stringHelper";
 import { capitalizeFirstLetter } from "@helpers/textHelper";
 
 export default class SubventionsAdapter {
-    static MAX_CHAR_SIZE = 63;
-
-    static toSubvention(subvention, trimValue = true) {
-        const sizedTrim = value => (value ? trim(value, this.MAX_CHAR_SIZE) : value);
-
+    static toSubvention(subvention) {
         let dispositif = subvention.dispositif;
         let serviceInstructeur = subvention.service_instructeur;
         let projectName = this._getProjectName(subvention);
-
-        if (trimValue) {
-            dispositif = sizedTrim(dispositif);
-            serviceInstructeur = sizedTrim(serviceInstructeur);
-            projectName = sizedTrim(projectName, this.MAX_CHAR_SIZE);
-        }
 
         return {
             serviceInstructeur: valueOrHyphen(serviceInstructeur),
