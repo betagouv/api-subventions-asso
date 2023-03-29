@@ -16,9 +16,9 @@ export async function createAndActiveAdminUser() {
 }
 
 export async function createUser(email = USER_EMAIL) {
-    await userService.createUser(email, [RoleEnum.user], DEFAULT_PASSWORD);
+    await userService.createUser(email, [RoleEnum.user]);
 }
 
 export async function createAdminUser() {
-    await userService.createUser(ADMIN_EMAIL, [RoleEnum.user, RoleEnum.admin], DEFAULT_PASSWORD);
+    await userService.createUser(ADMIN_EMAIL, [RoleEnum.user, RoleEnum.admin]);
 }
