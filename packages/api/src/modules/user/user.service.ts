@@ -168,7 +168,10 @@ export class UserService {
     }
 
     async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = DEFAULT_PWD): Promise<UserDto> {
-        await this.validateEmailAndPassword(email.toLocaleLowerCase(), password);
+        await this.validateEmail(email.toLocaleLowerCase());
+
+        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
+            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
@@ -434,19 +437,6 @@ export class UserService {
                 })
             )
         };
-    }
-
-    private async validateEmailAndPassword(email: string, password: string): Promise<void> {
-        await this.validateEmail(email);
-
-        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
-            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
-
-        if (!this.passwordValidator(password))
-            throw new BadRequestError(
-                UserService.PASSWORD_VALIDATOR_MESSAGE,
-                UserServiceErrors.FORMAT_PASSWORD_INVALID
-            );
     }
 
     public isRoleValid(role: RoleEnum) {
