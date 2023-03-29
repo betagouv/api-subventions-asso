@@ -163,6 +163,7 @@ export class UserService {
             await consumerTokenRepository.create(new ConsumerToken(user._id, token));
             return user;
         } catch (e) {
+            await this.delete(user._id.toString());
             throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
         }
     }
