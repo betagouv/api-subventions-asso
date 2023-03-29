@@ -9,6 +9,7 @@ import {
 export const buildBreadcrumbs = path => {
     const crumbs = [];
     if (path.includes("404")) crumbs.push({ label: "Page introuvable" });
+    if (path.includes("contact")) crumbs.push({ label: "Contactez-nous" });
     if (path.includes("mentions-legales")) crumbs.push({ label: "Mentions Légales" });
     if (path.includes("cgu")) crumbs.push({ label: "Conditions générales d’utilisation" });
     if (path.includes("association")) crumbs.push({ label: `Association (${path.split("/").at(-1)})` });
