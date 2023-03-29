@@ -32,7 +32,7 @@ import UserReset from "./entities/UserReset";
 import UserDbo from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
-import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
+import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -167,16 +167,12 @@ export class UserService {
         }
     }
 
-    async createUser(
-        email: string,
-        roles: RoleEnum[] = [RoleEnum.user],
-        password = "TMP_PASSWOrd;12345678"
-    ): Promise<UserDto> {
+    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user], password = DEFAULT_PWD): Promise<UserDto> {
         await this.validateEmailAndPassword(email.toLocaleLowerCase(), password);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
-            hashPassword: await bcrypt.hash(password, 10),
+            hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
             roles
         };
