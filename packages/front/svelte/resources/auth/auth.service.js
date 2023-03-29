@@ -42,7 +42,7 @@ export class AuthService {
     initUserInApp() {
         const user = this.getCurrentUser();
 
-        requestsService.initAuthenfication(user?.jwt?.token);
+        requestsService.initAuthentification(user?.jwt?.token);
         if (user) crispService.setUserEmail(user.email);
 
         requestsService.addErrorHook(UnauthoziedError, () => {
