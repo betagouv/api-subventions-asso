@@ -2,6 +2,8 @@ import * as dataHelper from "@helpers/dataHelper";
 jest.mock("@helpers/dataHelper");
 import * as dateHelper from "@helpers/dateHelper";
 jest.mock("@helpers/dateHelper");
+import * as subventionVersementHelper from "@components/SubventionsVersementsDashboard/helper";
+jest.mock("@components/SubventionsVersementsDashboard/helper");
 
 import VersementsAdapter from "@resources/versements/versements.adapter";
 
@@ -15,9 +17,8 @@ describe("Versements Adapter", () => {
 
     describe("toVersement()", () => {
         const mockCountTotalVersement = jest.spyOn(VersementsAdapter, "_countTotalVersement");
-        const mockGetLastVersementsDate = jest.spyOn(VersementsAdapter, "_getLastVersementsDate");
 
-        const mocks = [mockCountTotalVersement, mockGetLastVersementsDate];
+        const mocks = [mockCountTotalVersement];
 
         beforeAll(() => mocks.forEach(mock => mock.mockImplementation(jest.fn())));
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
@@ -28,9 +29,9 @@ describe("Versements Adapter", () => {
             expect(actual).toEqual(["totalAmount", "centreFinancier", "lastVersementDate"]);
         });
 
-        it("should call _getLastVersementsDate()", () => {
+        it("should call getLastVersementsDate()", () => {
             VersementsAdapter.toVersement(VERSEMENTS);
-            expect(mockGetLastVersementsDate).toHaveBeenCalledTimes(1);
+            expect(subventionVersementHelper.getLastVersementsDate).toHaveBeenCalledTimes(1);
         });
 
         it("should call _countTotalVersement()", () => {
@@ -59,14 +60,6 @@ describe("Versements Adapter", () => {
         it("return sum of versements", () => {
             const expected = 100;
             const actual = VersementsAdapter._countTotalVersement(VERSEMENTS);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("_getLastVersementsDate", () => {
-        it("return most recent date", () => {
-            const expected = MOST_RECENT_DATE;
-            const actual = VersementsAdapter._getLastVersementsDate(VERSEMENTS);
             expect(actual).toEqual(expected);
         });
     });
