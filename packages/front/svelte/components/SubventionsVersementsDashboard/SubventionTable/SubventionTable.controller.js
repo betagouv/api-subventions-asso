@@ -91,6 +91,7 @@ export default class SubventionTableController {
     }
 
     onRowClick(elementData) {
+        if (!elementData) return;
         data.update(() => ({
             subvention: elementData.subvention,
             montantDemande: elementData.montantsDemande,
