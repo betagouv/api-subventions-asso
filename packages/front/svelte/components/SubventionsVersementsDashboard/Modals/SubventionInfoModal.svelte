@@ -27,7 +27,7 @@
                     demandés{/if}.
             {:else if $data.subvention.montants.demande}
                 <span class="fr-text--bold">{$data.montantDemande}</span>
-                 ont été demandés.
+                ont été demandés.
             {/if}
         </p>
         <!-- prettier-ignore-end -->
@@ -49,7 +49,7 @@
     {#each $data.subvention.actions_proposee as action}
         <section>
             <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
-            {#each action.objectifs.split("\n") as line}
+            {#each action.objectifs?.split("\n") || [] as line}
                 {#if line.length}
                     <p>{line}</p>
                 {/if}
