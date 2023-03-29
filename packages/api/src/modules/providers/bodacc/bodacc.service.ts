@@ -31,7 +31,7 @@ export class BodaccService implements AssociationsProvider {
 
     async getAssociationsBySiren(siren: Siren) {
         const bodaccDto = await this.sendRequest(siren);
-        if (!bodaccDto) return null;
+        if (!bodaccDto || bodaccDto.total_count === 0) return null;
         return [BodaccAdapter.toAssociation(bodaccDto)];
     }
 
