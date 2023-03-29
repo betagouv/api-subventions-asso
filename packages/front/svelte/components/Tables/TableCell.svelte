@@ -32,10 +32,6 @@
         -webkit-box-orient: vertical;
     }
 
-    td {
-        line-break: anywhere;
-    }
-
     td.primary {
         color: var(--text-active-blue-france);
         font-weight: 500;
