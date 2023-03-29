@@ -11,6 +11,7 @@ import ForgetPwd from "./views/auth/forget-pwd/ForgetPwd.svelte";
 import Signup from "./views/auth/signup/Signup.svelte";
 import Login from "./views/auth/login/Login.svelte";
 import NotFound from "./views/not-found/NotFound.svelte";
+import Contact from "./views/Contact.svelte";
 import LegalNotice from "./views/LegalNotice.svelte";
 import Cgu from "./views/Cgu.svelte";
 
@@ -41,6 +42,10 @@ export default {
     },
     "/": {
         component: () => Home
+    },
+    contact: {
+        component: () => Contact,
+        disableAuth: true
     },
     "mentions-legales": {
         component: () => LegalNotice,
