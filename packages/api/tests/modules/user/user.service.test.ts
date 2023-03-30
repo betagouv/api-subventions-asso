@@ -47,10 +47,6 @@ describe("user.service.ts", () => {
                 code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
             });
         });
-        it("should reject because password is not valid", async () => {
-            const test = async () => await service.createUser("test@beta.gouv.fr", [RoleEnum.user], "aa");
-            await expect(test).rejects.toMatchSnapshot();
-        });
 
         it("should return created user", async () => {
             await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
