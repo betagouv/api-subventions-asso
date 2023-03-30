@@ -43,10 +43,12 @@
     </div>
     <div class="fr-grid-row fr-py-4w flex space-between">
         <div class="fr-col-3">
-            <Select
-                on:change={event => controller.updateSelectedExercice(event.detail)}
-                selected={$selectedExercice}
-                options={$exercicesOptions} />
+            {#if $exercicesOptions.length}
+                <Select
+                    on:change={event => controller.updateSelectedExercice(event.detail)}
+                    selected={$selectedExercice}
+                    options={$exercicesOptions} />
+            {/if}
         </div>
         <Button type="tertiary" outline={false} ariaControls="fr-modal" on:click={displayModal}>
             Voir la liste des fournisseurs de données
