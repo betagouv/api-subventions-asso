@@ -71,6 +71,7 @@
         "sib-api-v3-typescript": "^2.2.2",
         "swagger-ui-express": "^4.3.0",
         "tqdm": "^2.0.3",
+        "toad-scheduler": "^2.2.0",
         "ts-node": "^10.4.0",
         "tsoa": "^3.2.1",
         "winston": "^3.5.1",
