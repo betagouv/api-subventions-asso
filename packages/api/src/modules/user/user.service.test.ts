@@ -1,3 +1,5 @@
+import { InternalServerError } from "../../shared/errors/httpErrors";
+
 const bcryptCompareMock = jest.fn(async () => true);
 jest.mock("bcrypt", () => ({
     __esModule: true, // this property makes it work
@@ -225,9 +227,12 @@ describe("User Service", () => {
         let deleteUserMock;
 
         beforeAll(() => {
+            deleteUserMock = jest.spyOn(userService, "delete");
+            deleteUserMock.mockImplementation(jest.fn());
             createUserMock.mockImplementation(async () => CONSUMER_USER);
         });
         afterAll(() => {
+            deleteUserMock.mockRestore();
             createUserMock.mockRestore();
         });
 
@@ -254,6 +259,21 @@ describe("User Service", () => {
         it("should call consumerTokenRepository.create", async () => {
             await userService.createConsumer(EMAIL);
             expect(createTokenMock).toBeCalledTimes(1);
+        });
+
+        it("should delete user if token generation failed", async () => {
+            createTokenMock.mockRejectedValueOnce(new Error());
+            const id = USER_WITHOUT_SECRET._id.toString();
+            await userService.createConsumer(EMAIL).catch(() => {});
+            expect(deleteUserMock).toHaveBeenCalledWith(id);
+        });
+
+        it("should throw if token generation failed", async () => {
+            createTokenMock.mockRejectedValueOnce(new Error());
+            const test = () => userService.createConsumer(EMAIL);
+            await expect(test).rejects.toMatchObject(
+                new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN)
+            );
         });
 
         it("should return UserDtoSuccessResponse", async () => {
