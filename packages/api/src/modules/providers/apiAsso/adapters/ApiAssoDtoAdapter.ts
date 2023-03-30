@@ -167,11 +167,11 @@ export default class ApiAssoDtoAdapter {
     static dacDocumentToRib(rib: StructureDacDocumentDto): Document {
         const isoDate = new Date(rib.time_depot);
 
-        const toRnaPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameRna, isoDate);
+        const toLCAPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameLcaDocument, isoDate);
         return {
-            nom: toRnaPv(rib.meta.iban || rib.nom),
-            type: toRnaPv("RIB"),
-            url: toRnaPv(rib.url),
+            nom: toLCAPv(rib.meta.iban || rib.nom),
+            type: toLCAPv("RIB"),
+            url: toLCAPv(rib.url),
             __meta__: {
                 siret: String(rib.meta.id_siret)
             }
