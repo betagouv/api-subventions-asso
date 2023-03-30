@@ -9,7 +9,7 @@
     import ErrorAlert from "../ErrorAlert.svelte";
 
     import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
-    import SubventionsVersemementsStatistique from "./SubventionsVersemementsStatistique/SubventionsVersemementsStatistique.svelte";
+    import SubventionsVersementsStatistique from "./SubventionsVersementsStatistique/SubventionsVersementsStatistique.svelte";
     import SubventionTable from "./SubventionTable/SubventionTable.svelte";
     import VersementTable from "./VersementTable/VersementTable.svelte";
     import ProviderModal from "./Modals/ProviderModal/ProviderModal.svelte";
@@ -54,7 +54,7 @@
     </div>
     <div class="fr-py-3w compact-columns">
         {#if $elements?.length}
-            <SubventionsVersemementsStatistique elements={$elements} year={$selectedYear} />
+            <SubventionsVersementsStatistique elements={$elements} year={$selectedYear} />
             {#if $loaderStateStore.status != "end"}
                 <Alert type="info" title="Récupération en cours des subventions chez nos fournisseurs ...">
                     <ProgressBar percent={$loaderStateStore.percent} />

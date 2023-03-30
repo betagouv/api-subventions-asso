@@ -1,8 +1,8 @@
 import Store from "../../../core/Store";
 
-import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
+import { numberToEuro, valueOrHyphen } from "@helpers/dataHelper";
 
-export default class SubventionsVersemementsStatistiqueController {
+export default class SubventionsVersementsStatistiqueController {
     constructor() {
         this.elements = [];
 

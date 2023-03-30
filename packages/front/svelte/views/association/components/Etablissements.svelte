@@ -1,16 +1,14 @@
 <script>
     import { onMount } from "svelte";
-    import { addressToString } from "../association.helper";
     import associationService from "../association.service.js";
 
-    import Card from "../../../dsfr/Card.svelte";
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
 
-    import etablissementService from "../../etablissement/etablissement.service";
-    import { valueOrHyphen } from "../../../helpers/dataHelper";
-    import { waitElementIsVisible } from "../../../helpers/visibilityHelper";
+    import { waitElementIsVisible } from "@helpers/visibilityHelper";
+    import Card from "@dsfr/Card.svelte";
+    import EstablishmentPreview from "@components/EstablishmentPreview/EstablishmentPreview.svelte";
 
     export let associationIdentifier;
     export let association;
@@ -35,37 +33,20 @@
                     <Card
                         title={association.denomination_rna || association.denomination_siren}
                         url="/etablissement/{etablissement.siret}">
-                        <p>
-                            {etablissementService.getEtablissementStatus(etablissement)}
-                            <br />
-                            SIRET : {valueOrHyphen(etablissement.siret)}
-                            <br />
-                        </p>
-                        <div class="flex">
-                            <span class="fr-col-md-1 fr-mr-1w fr-icon-map-pin-2-line color" />
-                            <span class="fr-col-md-11 fr-text--bold">
-                                {valueOrHyphen(addressToString(etablissement.adresse))}
-                            </span>
-                        </div>
+                        <EstablishmentPreview establishment={etablissement} />
                     </Card>
                 {/each}
             </div>
         {:else}
             <DataNotFound
-                content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association" />
+                content="Nous sommes désolés, nous n'avons trouvé aucun établissement lié à cette association" />
         {/if}
     {:catch error}
         {#if error.request && error.request.status == 404}
             <DataNotFound
-                content="Nous sommes désolés, nous n'avons trouvé aucun etablissement liée à cette association" />
+                content="Nous sommes désolés, nous n'avons trouvé aucun établissement lié à cette association" />
         {:else}
             <ErrorAlert message={error.message} />
         {/if}
     {/await}
 </div>
-
-<style>
-    .color {
-        color: var(--blue-france-sun-113-625);
-    }
-</style>

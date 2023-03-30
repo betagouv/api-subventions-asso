@@ -8,7 +8,8 @@ const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
 const INTITULE_ACTION_LABEL = "Intitulé de l'action";
 const MONTANT_DEMANDE_LABEL = "Montant demandé";
-const MONTANT_ACCORDER_LABEL = "Montant accordé";
+const MONTANT_ACCORDE_LABEL = "Montant accordé";
+const STATUS_LABEL = "Statut de la demande";
 
 export default class SubventionTableController {
     constructor(sortMethod) {
@@ -36,7 +37,8 @@ export default class SubventionTableController {
             DISPOSITIF_LABEL,
             INTITULE_ACTION_LABEL,
             MONTANT_DEMANDE_LABEL,
-            MONTANT_ACCORDER_LABEL
+            MONTANT_ACCORDE_LABEL,
+            STATUS_LABEL
         ];
     }
 
@@ -51,7 +53,7 @@ export default class SubventionTableController {
             "subvention.dispositif": "Dispositif",
             "subvention.project-name": "Intitulé de l'action",
             "subvention.montants.demande": "Montant demandé",
-            "subvention.montants.accorde": "Montant accordé"
+            "subvention.statut_label": "Statut de la demande"
         };
 
         this.columnDataViews.set(
@@ -81,8 +83,7 @@ export default class SubventionTableController {
             return {
                 ...tableData,
                 subvention: element.subvention,
-                projectNamePosition: tableData.projectName === "-" ? "center" : "start",
-                hasMoreInfo: !!(element.subvention.actions_proposee?.length || 0)
+                projectNamePosition: tableData.projectName === "-" ? "center" : "start"
             };
         });
 
@@ -90,8 +91,12 @@ export default class SubventionTableController {
     }
 
     onRowClick(elementData) {
-        if (!elementData?.hasMoreInfo) return;
-        data.update(() => ({ subvention: elementData.subvention }));
+        if (!elementData) return;
+        data.update(() => ({
+            subvention: elementData.subvention,
+            montantDemande: elementData.montantsDemande,
+            montantAccorde: elementData.montantsAccorde
+        }));
         modal.update(() => SubventionInfoModal);
     }
 }
