@@ -48,22 +48,16 @@ describe("ContactEtabController", () => {
     });
 
     describe("_containsRole()", () => {
-        it("should return true with role undefined", () => {
-            const expected = true;
-            const actual = controller._containsRole(CONTACTS[0]);
-            expect(actual).toEqual(expected);
-        });
-
         it("should return true with role selected", () => {
             const expected = true;
-            controller.selectedRole = "Coordinatrice";
+            controller._selectedRoleIndex = CONTACTS.findIndex(contact => contact.role === "Coordinatrice") + 1;
             const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
             const expected = false;
-            controller.selectedRole = "Président";
+            controller._selectedRoleIndex = CONTACTS.findIndex(contact => contact.role === "Président") + 1;
             const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
@@ -71,7 +65,7 @@ describe("ContactEtabController", () => {
 
     describe("_getRoles()", () => {
         it("should return an array of roles", () => {
-            const expected = ["", "Coordinatrice", "Président"];
+            const expected = ["Afficher tous les rôles", "Coordinatrice", "Président"];
             const actual = controller._getRoles();
             expect(actual).toEqual(expected);
         });
@@ -109,7 +103,7 @@ describe("ContactEtabController", () => {
 
         it("should filter contacts on role", () => {
             let actual;
-            controller.selectedRole = "Coordinatrice";
+            controller._selectedRoleIndex = CONTACTS.findIndex(contact => contact.role === "Coordinatrice") + 1;
             controller._filter();
             controller.contacts.subscribe(value => (actual = value));
             expect(actual).toMatchSnapshot();
