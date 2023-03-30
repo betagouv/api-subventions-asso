@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { getIconClass } from "./helper";
 
     export let type = "primary";
     export let size = "medium";
@@ -12,8 +13,6 @@
     export let htmlType = "";
 
     const dispatch = createEventDispatcher();
-
-    const iconClass = !icon.length || icon.startsWith("fr-icon-") ? icon : `fr-icon-${icon}`;
 
     const classBySize = {
         small: "fr-btn--sm",
@@ -47,7 +46,7 @@
         else return classByType[type][1];
     }
 
-    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${iconClass}
+    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
      ${getSpecificIconClass()}`;
 </script>
 
