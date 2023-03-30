@@ -2,7 +2,7 @@ import Store from "../../../core/Store";
 
 import { numberToEuro, valueOrHyphen } from "../../../helpers/dataHelper";
 import { withTwoDigitYear } from "../../../helpers/dateHelper";
-import { getLastVersementsDate } from "../helper";
+import VersementsAdapter from "@resources/versements/versements.adapter";
 
 const MONTANT_VERSE_LABEL = "Montant versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
@@ -24,7 +24,7 @@ export default class VersementTableController {
     // extract values from versement table
     static extractRows(elements) {
         return elements.map(element =>
-            element.versements ? Object.values(this._extractTableDataFromElement(element)) : null
+            element.versements ? Object.values(VersementsAdapter.toVersement(element.versements)) : null
         );
     }
 
@@ -32,17 +32,6 @@ export default class VersementTableController {
         return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL];
     }
 
-    static _extractTableDataFromElement(element) {
-        return {
-            totalAmount: numberToEuro(VersementTableController.countTotalVersement(element.versements)),
-            centreFinancier: valueOrHyphen(element.versements[0]?.centreFinancier),
-            lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(element.versements)))
-        };
-    }
-
-    static countTotalVersement(versements) {
-        return versements.reduce((acc, versement) => acc + versement.amount, 0);
-    }
     _countVersements() {
         return this.elements.filter(e => e.versements?.length).length;
     }
@@ -59,7 +48,7 @@ export default class VersementTableController {
             if (element.versements.length === 0) return null;
 
             return {
-                ...VersementTableController._extractTableDataFromElement(element),
+                ...VersementsAdapter.toVersement(element.versements),
                 versements: element.versements,
                 versementsModal: element.versements.map(this.buildVersementsModal)
             };
