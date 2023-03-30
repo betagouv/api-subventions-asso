@@ -8,6 +8,7 @@ jest.mock("../../../../helpers/dataHelper.js", () => ({
 }));
 
 describe("ContactEtabController", () => {
+    const ROLES = ["Afficher tous les rôles", "Coordinatrice", "Président"];
     const CONTACTS = [
         {
             civilite: "Madame",
@@ -15,28 +16,28 @@ describe("ContactEtabController", () => {
             prenom: "Jane",
             telephone: "06 01 02 03 04",
             email: "coordination@foo.bar",
-            role: "Coordinatrice"
+            role: ROLES[1]
         },
         {
             nom: "MARTIN",
             prenom: "François",
             telephone: "06 11 22 33 44",
             email: "contact@foo.bar",
-            role: "Président"
+            role: ROLES[2]
         },
         {
             nom: "DOE",
             prenom: "Jane",
             telephone: "06 01 02 03 04",
             email: "coordination@foo.bar",
-            role: "Coordinatrice"
+            role: ROLES[1]
         },
         {
             nom: "BLACK",
             prenom: "Jeff",
             telephone: "07 11 22 33 57",
             email: "coordination@foo.bar",
-            role: "Coordinatrice"
+            role: ROLES[1]
         }
     ];
 
@@ -50,14 +51,14 @@ describe("ContactEtabController", () => {
     describe("_containsRole()", () => {
         it("should return true with role selected", () => {
             const expected = true;
-            controller._selectedRoleIndex = CONTACTS.findIndex(contact => contact.role === "Coordinatrice") + 1;
+            controller._selectedRoleIndex = 1;
             const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
             const expected = false;
-            controller._selectedRoleIndex = CONTACTS.findIndex(contact => contact.role === "Président") + 1;
+            controller._selectedRoleIndex = 2;
             const actual = controller._containsRole(CONTACTS[0]);
             expect(actual).toEqual(expected);
         });
@@ -65,7 +66,7 @@ describe("ContactEtabController", () => {
 
     describe("_getRoles()", () => {
         it("should return an array of roles", () => {
-            const expected = ["Afficher tous les rôles", "Coordinatrice", "Président"];
+            const expected = ROLES;
             const actual = controller._getRoles();
             expect(actual).toEqual(expected);
         });
@@ -103,7 +104,7 @@ describe("ContactEtabController", () => {
 
         it("should filter contacts on role", () => {
             let actual;
-            controller._selectedRoleIndex = CONTACTS.findIndex(contact => contact.role === "Coordinatrice") + 1;
+            controller._selectedRoleIndex = 1;
             controller._filter();
             controller.contacts.subscribe(value => (actual = value));
             expect(actual).toMatchSnapshot();
