@@ -6,6 +6,7 @@ const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printProgress } = require("../build/src/shared/helpers/CliHelper");
 
 module.exports = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         console.log("Start RNA-SIREN migration");
         await connectDB();
@@ -30,6 +31,7 @@ module.exports = {
         }, Promise.resolve(null));
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // TODO write the statements to rollback your migration (if possible)
         // Example:

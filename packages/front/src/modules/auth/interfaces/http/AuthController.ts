@@ -6,6 +6,7 @@ import Controller from "../../../../decorators/controller.decorator";
 import { Get, Post } from "../../../../decorators/http.methods.decorator";
 import authService from "../../AuthService";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 @Controller("/auth")
 export default class AuthController {
     @Get("logout")

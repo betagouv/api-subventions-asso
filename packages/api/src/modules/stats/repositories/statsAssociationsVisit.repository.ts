@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { AssociationIdentifiers } from "../../../@types";
 import MigrationRepository from "../../../shared/MigrationRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";

@@ -44,7 +44,7 @@ describe("ResetPwdController", () => {
         `(
             "gets active query param",
             // TODO
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
             ({ queryParam, expected }) => {}
         );
 

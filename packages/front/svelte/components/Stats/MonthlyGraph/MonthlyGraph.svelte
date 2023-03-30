@@ -42,9 +42,9 @@
                             {withPreviousValue} />
                         <canvas
                             bind:this={canvas}
-                            aria-label="Graphique des {resourceName} par mois sur l'année {$year}"
-                            role="image"
-                        ><!-- TODO fallback content for accessibility --></canvas>
+                            aria-label="Graphique des {resourceName} par mois sur l'année {$year}">
+                            <!-- TODO fallback content for accessibility -->
+                        </canvas>
                     </div>
                 </div>
                 <div class="fr-col-3">
