@@ -2,32 +2,34 @@
     export let primary = false;
     export let colspan = undefined;
     export let position = "start";
-    export let overflow = "hidden";
     let style;
 
-    $: style = `--justify: ${position}; --overflow: ${overflow}`;
+    $: style = `--justify: ${position}`;
 </script>
 
-<td {colspan} class:primary>
-    <div {style}>
-        <slot />
+<td {colspan} class:primary class="fr-p-3v">
+    <div class="table-cell-container" {style}>
+        <div class="table-cell-content">
+            <slot />
+        </div>
     </div>
 </td>
 
 <style>
-    div {
+    .table-cell-container {
         display: flex;
         justify-content: var(--justify);
         align-items: center;
         height: 92px;
         max-height: 92px;
-        overflow: var(--overflow);
-        overflow-wrap: anywhere;
     }
 
-    td {
-        line-break: anywhere;
-        padding: 12px;
+    .table-cell-content {
+        display: -webkit-box;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
     }
 
     td.primary {
