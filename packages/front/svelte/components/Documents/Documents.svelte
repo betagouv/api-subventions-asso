@@ -2,11 +2,11 @@
     import { onMount } from "svelte";
 
     import Spinner from "../Spinner.svelte";
-    import CardDocuments from "../CardDocuments.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import Alert from "../../dsfr/Alert.svelte";
     import { DocumentsController } from "./Documents.controller";
+    import Card from "@dsfr/Card.svelte";
 
     export let resource;
     export let resourceType = "association";
@@ -29,11 +29,11 @@
             <h3>Pièces administratives pour {controller.resourceNameWithDemonstrative}</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each documents as document}
-                    <CardDocuments
+                    <Card
                         title={document.label}
                         url={document.url}
                         size="6"
-                        footer={controller.getDateString(document.date)}>
+                        endDetail={controller.getDateString(document.date)}>
                         <p>
                             {document.nom}
                         </p>
@@ -41,7 +41,7 @@
                         <p class="card-document_fournisseur">
                             Fournisseur du fichier: <b>{document.provider}</b>
                         </p>
-                    </CardDocuments>
+                    </Card>
                 {/each}
             </div>
         {:else}
