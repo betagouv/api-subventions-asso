@@ -1,3 +1,5 @@
+import { InternalServerError } from "../../shared/errors/httpErrors";
+
 const bcryptCompareMock = jest.fn(async () => true);
 jest.mock("bcrypt", () => ({
     __esModule: true, // this property makes it work
@@ -35,7 +37,7 @@ jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
 describe("User Service", () => {
     const sendCreationMailMock = jest.spyOn(mailNotifierService, "sendCreationMail").mockImplementationOnce(jest.fn());
-    const createMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
+    const createTokenMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
     const resetUserMock = jest.spyOn(userService, "resetUser");
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
@@ -222,9 +224,19 @@ describe("User Service", () => {
     });
 
     describe("createConsumer", () => {
+        let deleteUserMock;
+
+        beforeAll(() => {
+            deleteUserMock = jest.spyOn(userService, "delete");
+            deleteUserMock.mockImplementation(jest.fn());
+            createUserMock.mockImplementation(async () => CONSUMER_USER);
+        });
+        afterAll(() => {
+            deleteUserMock.mockRestore();
+            createUserMock.mockRestore();
+        });
+
         it("should call userRepository.createUser", async () => {
-            // @ts-expect-error mock
-            createUserMock.mockResolvedValueOnce({ _id: "" });
             await userService.createConsumer(EMAIL);
             expect(createUserMock).toBeCalledTimes(1);
         });
@@ -245,15 +257,28 @@ describe("User Service", () => {
         });
 
         it("should call consumerTokenRepository.create", async () => {
-            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.createConsumer(EMAIL);
-            expect(createMock).toBeCalledTimes(1);
+            expect(createTokenMock).toBeCalledTimes(1);
+        });
+
+        it("should delete user if token generation failed", async () => {
+            createTokenMock.mockRejectedValueOnce(new Error());
+            const id = USER_WITHOUT_SECRET._id.toString();
+            await userService.createConsumer(EMAIL).catch(() => {});
+            expect(deleteUserMock).toHaveBeenCalledWith(id);
+        });
+
+        it("should throw if token generation failed", async () => {
+            createTokenMock.mockRejectedValueOnce(new Error());
+            const test = () => userService.createConsumer(EMAIL);
+            await expect(test).rejects.toMatchObject(
+                new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN)
+            );
         });
 
         it("should return UserDtoSuccessResponse", async () => {
             const expected = CONSUMER_USER;
-            createUserMock.mockImplementationOnce(async () => expected);
-            createMock.mockImplementationOnce(async () => true);
+            createTokenMock.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer(EMAIL);
             expect(actual).toEqual(expected);
         });
