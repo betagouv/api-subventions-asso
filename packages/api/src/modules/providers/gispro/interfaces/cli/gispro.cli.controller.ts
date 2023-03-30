@@ -3,13 +3,13 @@ import fs from "fs";
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
 import CliController from "../../../../../shared/CliController";
-import GisproJoinParser from "../../gisproJoin.parser";
+import GisproParser from "../../gispro.parser";
 
 @StaticImplements<CliStaticInterface>()
-export default class GisproJoinCliController extends CliController {
-    static cmdName = "gisproJoin";
+export default class GisproCliController extends CliController {
+    static cmdName = "gispro";
 
-    protected logFileParsePath = "./logs/gisproJoin.parse.log.txt";
+    protected logFileParsePath = "./logs/gispro.parse.log.txt";
 
     /**
      * Tests parser
@@ -28,6 +28,6 @@ export default class GisproJoinCliController extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const entities = GisproJoinParser.parse(fileContent, () => true);
+        const entities = GisproParser.parse(fileContent, () => true);
     }
 }

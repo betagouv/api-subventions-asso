@@ -1,10 +1,10 @@
 import tqdm = require("tqdm");
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import GisproJoinLineEntity from "./entities/gisproJoinLineEntity";
-import GisproJoin from "./@types/GisproJoin";
+import GisproLineEntity from "./entities/gisproLineEntity";
+import Gispro from "./@types/Gispro";
 
-export default class GisproJoinParser {
-    static parse(content: Buffer, validator: (entity: GisproJoin) => boolean) {
+export default class GisproParser {
+    static parse(content: Buffer, validator: (entity: Gispro) => boolean) {
         console.log("Open and read file ...");
         const pages = ParseHelper.xlsParse(content);
         const page = pages[2];
@@ -14,14 +14,14 @@ export default class GisproJoinParser {
 
         const data = page.slice(1) as string[][];
 
-        const entities: GisproJoinLineEntity[] = [];
+        const entities: GisproLineEntity[] = [];
         for (const row of tqdm(data)) {
             const parsedData = ParseHelper.linkHeaderToData(header, row);
             const indexedRow = ParseHelper.indexDataByPathObject(
-                GisproJoinLineEntity.indexedInformationsPath,
+                GisproLineEntity.indexedInformationsPath,
                 parsedData
-            ) as unknown as GisproJoin;
-            const entity = new GisproJoinLineEntity(indexedRow.ej, indexedRow.dauphinId, indexedRow.siret);
+            ) as unknown as Gispro;
+            const entity = new GisproLineEntity(indexedRow.ej, indexedRow.dauphinId, indexedRow.siret);
 
             if (validator(entity)) entities.push(entity);
         }
