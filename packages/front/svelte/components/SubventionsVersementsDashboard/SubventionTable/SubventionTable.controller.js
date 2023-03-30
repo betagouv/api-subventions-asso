@@ -26,7 +26,7 @@ export default class SubventionTableController {
     // extract Table data to build CSV
     static extractRows(elements) {
         return elements.map(element =>
-            element.subvention ? Object.values(SubventionsAdapter.toSubvention(element.subvention, false)) : null
+            element.subvention ? Object.values(SubventionsAdapter.toSubvention(element.subvention)) : null
         );
     }
 
