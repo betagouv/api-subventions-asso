@@ -1,7 +1,11 @@
 import { ToadScheduler } from "toad-scheduler";
 import { CronController } from "./@types/cron";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- test purposes
+import { ExampleCronController } from "./modules/example/interfaces/cron/example.cron.controller";
 
-const controllers: CronController[] = [];
+const controllers: CronController[] = [
+    // ExampleCronController
+];
 
 const scheduler = new ToadScheduler();
 
