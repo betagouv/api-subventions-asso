@@ -8,7 +8,7 @@ export default class ContactEtabController {
         this._siret = siret;
         this._filteredContacts = new Store(this._contacts);
         this.roles = this._getRoles();
-        this.selectedRole = "";
+        this._selectedRoleIndex = 0;
         this._inputName = "";
     }
 
@@ -28,7 +28,7 @@ export default class ContactEtabController {
     }
 
     filterByRole(index) {
-        this.selectedRole = this.roles[index];
+        this._selectedRoleIndex = index;
         this._filter();
     }
 
@@ -58,15 +58,21 @@ export default class ContactEtabController {
     }
 
     _filter() {
-        if (this.selectedRole === "" && this._inputName === "") this.reset();
-        else
-            this._filteredContacts.set(
-                this._contacts.filter(contact => this._containsRole(contact) && this._containsName(contact))
-            );
+        if (this._selectedRoleIndex === 0 && this._inputName === "") this.reset();
+        else {
+            let filteredByNameContacts = this._contacts.filter(contact => this._containsName(contact));
+            if (this._selectedRoleIndex === 0) this._filteredContacts.set(filteredByNameContacts);
+            else {
+                const filteredByNameAndRoleContacts = filteredByNameContacts.filter(contact =>
+                    this._containsRole(contact)
+                );
+                this._filteredContacts.set(filteredByNameAndRoleContacts);
+            }
+        }
     }
 
     _containsRole(contact) {
-        return !this.selectedRole || contact.role === this.selectedRole;
+        return contact.role === this.roles[this._selectedRoleIndex];
     }
 
     _containsName(contact) {
@@ -77,7 +83,8 @@ export default class ContactEtabController {
     }
 
     _getRoles() {
-        return ["", ...new Set(this._contacts.map(contact => contact.role))];
+        const roles = ["Afficher tous les rôles", ...new Set(this._contacts.map(contact => contact.role))];
+        return roles.filter(contact => contact !== "-");
     }
 
     _buildCsvName() {
