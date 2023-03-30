@@ -8,8 +8,6 @@ import {
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
-import { NotFoundError } from "../../../../shared/errors/httpErrors/NotFoundError";
-import { AssociationIdentifiers } from "../../../../@types";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 
 @Route("etablissement")
@@ -78,6 +76,7 @@ export class EtablissementController extends Controller {
      * @deprecated
      */
     @Get("/{identifier}/extract-data")
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async registerExtract(identifier: Siret): Promise<boolean> {
         return true;
     }

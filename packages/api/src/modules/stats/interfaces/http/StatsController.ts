@@ -5,7 +5,7 @@ import {
     StatsRequestsMedianDtoResponse,
     UsersByStatusResponseDto
 } from "@api-subventions-asso/dto";
-import { Controller, Get, Query, Response, Route, Security, Tags } from "tsoa";
+import { Controller, Get, Query, Route, Security, Tags } from "tsoa";
 import statsService from "../../stats.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
 

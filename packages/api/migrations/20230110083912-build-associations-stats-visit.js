@@ -1,23 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: statsRepository } = require("../build/src/modules/stats/repositories/stats.repository");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const {
     default: statsAssociationsVisitRepository
 } = require("../build/src/modules/stats/repositories/statsAssociationsVisit.repository");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: userRepository } = require("../build/src/modules/user/repositories/user.repository");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const {
     default: rnaSirenRepository
 } = require("../build/src/modules/open-data/rna-siren/repositories/rnaSiren.repository");
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
         const logsCursor = await statsRepository.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
@@ -49,6 +45,7 @@ module.exports = {
         }
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         await connectDB();
         db.collection(statsAssociationsVisitRepository.collectionName).drop();

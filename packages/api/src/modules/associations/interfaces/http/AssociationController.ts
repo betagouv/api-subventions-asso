@@ -85,6 +85,7 @@ export class AssociationController extends Controller {
      * @deprecated
      */
     @Get("/{identifier}/extract-data")
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async registerExtract(identifier: AssociationIdentifiers): Promise<boolean> {
         return true;
     }

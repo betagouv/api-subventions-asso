@@ -1,6 +1,5 @@
 <script>
     import NotFoundController from "./NotFound.controller";
-    import Button from "@dsfr/Button.svelte";
 
     const ctrl = new NotFoundController();
 </script>
