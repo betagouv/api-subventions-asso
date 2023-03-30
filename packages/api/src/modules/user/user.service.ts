@@ -32,7 +32,7 @@ import UserReset from "./entities/UserReset";
 import UserDbo from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
-import { REGEX_MAIL, REGEX_PASSWORD } from "./user.constant";
+import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -167,16 +167,15 @@ export class UserService {
         }
     }
 
-    async createUser(
-        email: string,
-        roles: RoleEnum[] = [RoleEnum.user],
-        password = "TMP_PASSWOrd;12345678"
-    ): Promise<UserDto> {
-        await this.validateEmailAndPassword(email.toLocaleLowerCase(), password);
+    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user]): Promise<UserDto> {
+        await this.validateEmail(email.toLocaleLowerCase());
+
+        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
+            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
-            hashPassword: await bcrypt.hash(password, 10),
+            hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
             roles
         };
@@ -438,19 +437,6 @@ export class UserService {
                 })
             )
         };
-    }
-
-    private async validateEmailAndPassword(email: string, password: string): Promise<void> {
-        await this.validateEmail(email);
-
-        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
-            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
-
-        if (!this.passwordValidator(password))
-            throw new BadRequestError(
-                UserService.PASSWORD_VALIDATOR_MESSAGE,
-                UserServiceErrors.FORMAT_PASSWORD_INVALID
-            );
     }
 
     public isRoleValid(role: RoleEnum) {
