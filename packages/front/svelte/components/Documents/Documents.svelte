@@ -33,7 +33,8 @@
                         title={document.label}
                         url={document.url}
                         size="6"
-                        endDetail={controller.getDateString(document.date)}>
+                        endDetail={controller.getDateString(document.date)}
+                        target="_blank">
                         <p>
                             {document.nom}
                         </p>
