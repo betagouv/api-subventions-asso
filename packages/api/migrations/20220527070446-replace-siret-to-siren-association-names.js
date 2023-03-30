@@ -3,6 +3,7 @@ const { connectDB } = require("../build/src/shared/MongoConnection");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
 
 module.exports = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
 
@@ -27,6 +28,7 @@ module.exports = {
         }
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // TODO write the statements to rollback your migration (if possible)
         // Example:

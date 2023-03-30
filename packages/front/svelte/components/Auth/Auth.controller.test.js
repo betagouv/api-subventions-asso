@@ -1,4 +1,3 @@
-import axios from "axios";
 import AuthController from "@components/Auth/Auth.controller";
 import authService from "@resources/auth/auth.service";
 

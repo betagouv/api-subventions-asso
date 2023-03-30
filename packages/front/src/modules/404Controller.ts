@@ -10,6 +10,7 @@ export default class NotFoundController {
     }
 
     @Get("")
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public adminView(req: Request, res: Response, next: NextFunction) {
         return this.useSvelte(res);
     }
