@@ -7,6 +7,11 @@ class RequestsService {
 
     constructor() {
         axios.defaults.baseURL = DATASUB_URL;
+
+        axios.interceptors.response.use(
+            response => response,
+            error => this._errorCatcher(error)
+        );
     }
 
     get(path, params) {
@@ -21,7 +26,7 @@ class RequestsService {
         return this._sendRequest("delete", path, params);
     }
 
-    initAuthentification(apiToken) {
+    initAuthentication(apiToken) {
         axios.defaults.headers.common["x-access-token"] = apiToken;
     }
 
@@ -33,31 +38,30 @@ class RequestsService {
     }
 
     _sendRequest(type, path, params, data) {
-        return axios
-            .request({
-                url: path,
-                method: type,
-                data,
-                params
-            })
-            .catch(error => {
-                const ErrorClass = errorsService.axiosErrorToError(error);
+        return axios.request({
+            url: path,
+            method: type,
+            data,
+            params
+        });
+    }
 
-                const hooks = this._errorHooks.filter(hook => hook.ErrorClass === ErrorClass);
-                const typedError = new ErrorClass({
-                    message: error.response.data.message,
-                    code: error.response.data.code,
-                    __nativeError__: error
-                });
+    _errorCatcher(error) {
+        const ErrorClass = errorsService.axiosErrorToError(error);
 
-                if (hooks.length) {
-                    hooks.forEach(hook => {
-                        hook.callback(typedError);
-                    });
-                }
+        const hooks = this._errorHooks.filter(hook => hook.ErrorClass === ErrorClass);
+        const typedError = new ErrorClass({
+            message: error.response.data.message,
+            code: error.response.data.code,
+            __nativeError__: error
+        });
 
-                throw typedError;
+        if (hooks.length) {
+            hooks.forEach(hook => {
+                hook.callback(typedError);
             });
+        }
+        throw typedError;
     }
 }
 
