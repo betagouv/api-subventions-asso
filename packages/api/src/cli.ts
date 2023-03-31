@@ -8,7 +8,6 @@ import DataGouvCliController from "./modules/providers/datagouv/interfaces/cli/d
 import FonjepCliController from "./modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
 import ChorusCliController from "./modules/providers/chorus/interfaces/cli/chorus.cli.controller";
 import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
-import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
 import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
 import ConsumerCliController from "./modules/user/interfaces/cli/consumer.cli.controller";
 import { connectDB } from "./shared/MongoConnection";
@@ -17,9 +16,9 @@ import { CliStaticInterface } from "./@types";
 
 import "./modules/association-name/associationName.service"; // Load association-name for load service in eventManager
 import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
-import DemarchesSimplifieesCliController
-    from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
+import DemarchesSimplifieesCliController from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
 import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
+import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
 
 async function main() {
     await connectDB();
@@ -36,11 +35,11 @@ async function main() {
         ChorusCliController,
         FonjepCliController,
         DataGouvCliController,
-        GisproCliController,
         SubventiaCliController,
         ConsumerCliController,
         DemarchesSimplifieesCliController,
-        CaisseDepotsCliController
+        CaisseDepotsCliController,
+        GisproCliController
     ];
 
     const args = process.argv.slice(2);
