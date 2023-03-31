@@ -2,7 +2,7 @@
 
 ## Choix technique et architecture
 
-Le projet utilisent la stack technique suivante :
+Le projet utilise la stack technique suivante :
 
 -   NodeJs
 -   Typescript
@@ -46,7 +46,7 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 1. Run `npm run dev`
 2. Visit [http://localhost:8080](http://localhost:8080)
 
-## Executer une commande CLI
+## Exécuter une commande CLI
 
 1. Run `npm run cli [controller name] [method name] [...arguments]`
 
@@ -81,7 +81,7 @@ Exemple : `const establishment = association.etablissement // retour API en fran
 ### MERGE vs REBASE
 
 `rebase` la branche fille depuis la branche mère si cette dernière a été modifiée.
-`merge` uniquement pour fusionner develop dans main et main dans PROD.
+`merge` uniquement pour fusionner `develop` dans `main` et `main` dans `PROD`.
 Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent ensuite se `rebase` depuis leur branche mère pour récupérer la modification.
 
 ### Hooks
@@ -92,7 +92,7 @@ Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent en
 
 Pour faire simple, chaque commit doit spécifier le ou les packages lerna ciblés par le développement ainsi qu'un mot clé identifiant la nature du développement (feature, refactoring, test, hotfix, etc).
 
-Par exemple, un commit de feature classique sur l'API se nommera "feat(api): nouvelle fontionnalité".
+Par exemple, un commit de feature classique sur l'API se nommera "feat(api): nouvelle fonctionnalité".
 
 #### Push
 
@@ -116,9 +116,9 @@ Les tests sont divisés en deux parties :
 
 ### Test unitaire
 
-Les tests unitaires sont présents au plus proche du code testé. Leur nom doit se terminer par .unit.test `. C'est sur ces tests qu'est exécuté le coverage, qui a une tolérance de 85%. Un exemple type est présent dans `/src/example.unit.test `. Il montre l'utilisation, si possible, de deux constantes `actual`et`expected`qui sont ensuite comparées via`expect(actual).toEqual(expected)`. Cette façon de faire force les tests à être unitaires et atomiques, en ne testant qu'une seule chose à la fois et en rendant le test lisible et compréhensible.
+Les tests unitaires sont présents au plus proche du code testé. Leur nom doit se terminer par `.test.ts`. C'est sur ces tests qu'est exécuté le coverage, qui a une tolérance de 85%. Un exemple type est présent dans `/src/example.test.ts`. Il montre l'utilisation, si possible, de deux constantes `actual` et `expected` qui sont ensuite comparées via `expect(actual).toEqual(expected)`. Cette façon de faire force les tests à être unitaires et atomiques, en ne testant qu'une seule chose à la fois et en rendant le test lisible et compréhensible.
 
-Le coverage se teste avec la commande `npm run test:cov` qui parcours tous les fichiers `.unit.ts` présents dans `./src `. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande `npm run test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts`.
+Le coverage se teste avec la commande `npm run test:cov` qui parcours tous les fichiers `.test.ts` présents dans `./src `. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande `npm run test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts`.
 
 Format de test à suivre :
 
