@@ -1,7 +1,7 @@
 import { ParserInfo } from "../../../../@types";
-import GisproJoin from "../@types/GisproJoin";
+import Gispro from "../@types/Gispro";
 
-export default class GisproJoinLineEntity implements GisproJoin {
+export default class GisproLineEntity implements Gispro {
     public provider = "Gispro";
 
     public static indexedInformationsPath: { [key: string]: ParserInfo } = {
