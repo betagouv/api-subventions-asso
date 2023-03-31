@@ -56,10 +56,10 @@ describe("RequestService", () => {
         });
     });
 
-    describe("initAuthentification", () => {
+    describe("initAuthentication", () => {
         it("should defaults auth header", () => {
             const expected = "TOKEN";
-            requestsService.initAuthentification(expected);
+            requestsService.initAuthentication(expected);
 
             expect(axios.defaults.headers.common["x-access-token"]).toBe(expected);
         });
@@ -80,12 +80,13 @@ describe("RequestService", () => {
     });
 
     describe("_sendRequest", () => {
+        const SomeError = NotFoundError;
         let axiosRequestMock;
         let errorServiceMock;
 
         beforeAll(() => {
             axiosRequestMock = jest.spyOn(axios, "request").mockResolvedValue();
-            errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(NotFoundError);
+            errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
         });
 
         afterAll(() => {
@@ -110,39 +111,52 @@ describe("RequestService", () => {
                 })
             );
         });
+    });
 
-        it("should throw notfoundError", () => {
-            axiosRequestMock.mockRejectedValueOnce({
+    describe("_errorCatcher", () => {
+        const SomeError = NotFoundError;
+        let errorServiceMock;
+
+        beforeAll(() => {
+            errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
+        });
+
+        afterAll(() => {
+            errorServiceMock.mockRestore();
+        });
+
+        it("should throw SomeError", () => {
+            const fakeError = {
                 response: {
                     data: {
                         message: "",
                         code: ""
                     }
                 }
-            });
+            };
 
-            expect(() => requestsService._sendRequest("get", "path")).rejects.toThrowError(NotFoundError);
+            expect(() => requestsService._errorCatcher(fakeError)).toThrowError(SomeError);
         });
 
         it("should call hooks", async () => {
-            axiosRequestMock.mockRejectedValueOnce({
+            const fakeError = {
                 response: {
                     data: {
                         message: "",
                         code: ""
                     }
                 }
-            });
+            };
 
             const callback = jest.fn();
 
             requestsService._errorHooks.push({
-                ErrorClass: NotFoundError,
+                ErrorClass: SomeError,
                 callback
             });
 
             try {
-                await requestsService._sendRequest("get", "path");
+                requestsService._errorCatcher(fakeError);
             } catch {
                 expect(callback).toBeCalledTimes(1);
             }
