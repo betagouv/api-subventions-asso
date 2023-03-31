@@ -1,71 +1,30 @@
-import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-import { DefaultObject } from "../../../@types";
-import ActionsPagesIndexer from "./indexers/ActionsPagesIndexer";
-import TiersPagesIndexer from "./indexers/TiersPagesIndexer";
-import GisproActionEntity from "./entities/GisproActionEntity";
-import IGisproActionInformations from "./@types/IGisproActionInformations";
+import tqdm = require("tqdm");
+import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import GisproLineEntity from "./entities/gisproLineEntity";
+import Gispro from "./@types/Gispro";
 
 export default class GisproParser {
-    public static parseActions(content: Buffer): GisproActionEntity[] {
-        const importedDate = new Date();
-        const pages = ParserHelper.xlsParseWithPageName(content);
+    static parse(content: Buffer, validator: (entity: Gispro) => boolean) {
+        console.log("Open and read file ...");
+        const pages = ParseHelper.xlsParse(content);
+        const page = pages[2];
+        console.log("Read file end");
 
-        const pagesWithHeader = pages.reduce((acc, page) => {
-            const headers = page.data.slice(0, 1).flat() as string[];
-            const raws = page.data.slice(1, page.data.length) as unknown[][];
-            return acc.concat({
-                name: page.name,
-                data: raws.map(raw => ParserHelper.linkHeaderToData(headers, raw))
-            });
-        }, [] as { name: string; data: DefaultObject<unknown>[] }[]);
+        const header = page[0] as string[];
 
-        const findPage = (query: string | RegExp) => pagesWithHeader.find(p => p.name.match(query));
+        const data = page.slice(1) as string[][];
 
-        const actionsPage = findPage(/(actions)|(base 2016 GISPRO)/);
+        const entities: GisproLineEntity[] = [];
+        for (const row of tqdm(data)) {
+            const parsedData = ParseHelper.linkHeaderToData(header, row);
+            const indexedRow = ParseHelper.indexDataByPathObject(
+                GisproLineEntity.indexedInformationsPath,
+                parsedData
+            ) as unknown as Gispro;
+            const entity = new GisproLineEntity(indexedRow.ej, indexedRow.dauphinId, indexedRow.siret);
 
-        if (!actionsPage) return [];
-
-        const tiersPage = findPage(/(CUMUL PAR .* TIERS)|(CUMUL PAR ORG)|(CUMUL ORGANISME)|(base .* tiers)/);
-
-        const getUniformatedTier = (
-            siret: unknown
-        ):
-            | undefined
-            | {
-                  siret: string | number;
-                  CodeTiers: string | number;
-                  Tiers: string;
-                  TypeTiers: string;
-              } => {
-            if (!siret || !tiersPage) return undefined;
-
-            const tiers = tiersPage.data.find(raw => ParserHelper.findByPath(raw, TiersPagesIndexer.siret) === siret);
-            if (tiers)
-                return {
-                    siret: (ParserHelper.findByPath(tiers, TiersPagesIndexer.siret) as string).toString(),
-                    CodeTiers: ParserHelper.findByPath(tiers, TiersPagesIndexer.CodeTiers),
-                    Tiers: ParserHelper.findByPath(tiers, TiersPagesIndexer.Tiers),
-                    TypeTiers: ParserHelper.findByPath(tiers, TiersPagesIndexer.TypeTiers)
-                };
-        };
-
-        return actionsPage.data.reduce((acc, actionLine) => {
-            const parsedData = ParserHelper.indexDataByPathObject(ActionsPagesIndexer, actionLine);
-            const tier = getUniformatedTier(parsedData.siret);
-            const raw = {
-                tier,
-                action: parsedData,
-                generated: {
-                    importedDate
-                }
-            };
-
-            const indexedInformations = ParserHelper.indexDataByPathObject(
-                GisproActionEntity.indexedProviderInformationsPath,
-                raw
-            ) as unknown as IGisproActionInformations;
-
-            return acc.concat([new GisproActionEntity(indexedInformations, raw)]);
-        }, [] as GisproActionEntity[]);
+            if (validator(entity)) entities.push(entity);
+        }
+        return entities;
     }
 }
