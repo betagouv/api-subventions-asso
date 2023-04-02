@@ -58,6 +58,24 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 4. Faites ensuite une requête HTTP POST `localhost:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
 5. Enfin, pour vous connecter, faite une requête HTTP POST `localhost:8080/auth/login` avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
 
+## Mettre en place une tâche récurrente
+
+Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Pour ajouter une tâche récurrente, il faut :
+
+1. Créer un contrôleur `src/modules/[nom-module]/interfaces/cron/[controller-namer].cron.controller.ts` sur le modèle du fichier `example.cron.controller.ts`. Le contrôleur doit exporter une classe avec
+    - un attribut `name` qui l'identifie
+    - autant de méthodes que de tâches. Ces méthodes devront être munies du décorateur `Cron` ou `AsyncCron` en fonction de si la tâche est asynchrone ou non. Bien préciser. Le décorateur prend deux attributs : 
+      - l'intervalle entre deux exécutions, sous forme d'objet (ex: `{ days: 10 }`)
+      - un booléen indiquant si cet intervalle est "long" ou non, soit s'il fait + de 24,85 jours. Ce critère qui semble arbitraire permet d'arbitrer entre deux objets techniques différents pour éviter un problème potentiel d'overflow d'entier.
+2. Enregistrer le contrôleur dans `src/cron.ts`
+
+### En cas d'erreur
+Un message mattermost est envoyé automatiquement, avec la stacktrace en détail (cliquer sur le `i` à droite du nom d'utilisateur) 
+
+### Option `runImmediately` de l'intervalle
+Le paramètre `schedule` des contrôleurs supporte un attribut qui précise si la tâche doit se lancer une première fois au lancement de l'application ou non. Contrairement au comportement par défaut du module, ce paramètre est activé par défaut.
+Attention, s'il est désactivé, l'intervalle sera réinitialisé à chaque redémarrage de l'application (donc au moins à chaque mise en prod et crash de l'api)
+
 ## Conventions de Code
 
 ### API

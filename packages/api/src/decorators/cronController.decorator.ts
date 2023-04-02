@@ -16,6 +16,10 @@ function errorHandler(cronName) {
     };
 }
 
+/**
+ * @param schedule: SimpleIntervalSchedule (toad-scheduler)
+ * @param isIntervalLong: boolean -- set to true if interval is higher than 24.85 days. Prevents overflow issues
+ */
 export function Cron(schedule, isIntervalLong) {
     return function (target, propertyKey: string, descriptor) {
         if (!target["__jobs__"]) target["__jobs__"] = [];
@@ -26,6 +30,10 @@ export function Cron(schedule, isIntervalLong) {
     };
 }
 
+/**
+ * @param schedule: SimpleIntervalSchedule (toad-scheduler)
+ * @param isIntervalLong: boolean -- set to true if interval is higher than 24.85 days. Prevents overflow issues
+ */
 export function AsyncCron(schedule, isIntervalLong) {
     return function (target, propertyKey: string, descriptor) {
         if (!target["__jobs__"]) target["__jobs__"] = [];
