@@ -34,6 +34,12 @@ export default class SubventionsVersementsDashboardController {
         this.sortColumn = new Store(null);
     }
 
+    get notFoundMessage() {
+        const defaultContent = "Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement";
+        if (this.exercicesOptions.value.length) return `${defaultContent} sur l'année ${this.selectedYear.value}`;
+        else return defaultContent;
+    }
+
     isEtab() {
         return isSiret(this.identifier);
     }
