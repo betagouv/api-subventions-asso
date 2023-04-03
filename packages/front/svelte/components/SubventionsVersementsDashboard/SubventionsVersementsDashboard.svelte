@@ -24,9 +24,6 @@
         controller;
 
     const displayModal = () => modal.update(() => ProviderModal);
-
-    let notFoundContent = "Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement";
-    if (exercicesOptions.length) notFoundContent += ` sur l'année ${$selectedYear}`;
 </script>
 
 {#await promise}
@@ -82,7 +79,7 @@
                 </div>
             </div>
         {:else}
-            <DataNotFound content={notFoundContent} />
+            <DataNotFound content={controller.notFoundMessage} />
         {/if}
     </div>
 {:catch error}
