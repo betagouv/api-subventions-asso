@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/betagouv/datasubvention/compare/v0.24.7...v0.25.0) (2023-04-04)
+
+
+### Features
+
+* **api:** sends bop ([fa9d900](https://github.com/betagouv/datasubvention/commit/fa9d900a2898ba1cb5d14c7f7d831ab1f636a578))
+* **dto:** add BodaccRecordDto to AssociationDto ([7a975a6](https://github.com/betagouv/datasubvention/commit/7a975a6cdcbcb095ea481fec22f67442b1a5b6d1))
+* **dto:** make Association Bodacc optionnal ([0dd8447](https://github.com/betagouv/datasubvention/commit/0dd8447da230e8e1d8e701bdf615e27c2146b33b))
+* **dto:** make Association bodacc prop a ProviderValues ([84af61b](https://github.com/betagouv/datasubvention/commit/84af61b2e9cb9bbec220c6436617dbfb88021cac))
+
+
+
+
+
 # [0.24.0](https://github.com/betagouv/datasubvention/compare/v0.23.9...v0.24.0) (2023-03-21)
 
 
