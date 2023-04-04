@@ -48,6 +48,7 @@ export default {
     },
     "mentions-legales": {
         component: () => LegalNotice,
+    },
     cgu: {
         component: () => Cgu,
         disableAuth: true

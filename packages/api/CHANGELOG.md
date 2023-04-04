@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/betagouv/api-subventions-asso/compare/v0.24.7...v0.25.0) (2023-04-04)
+
+
+### Bug Fixes
+
+* **api:** change provider name of rib documents ([9cb1ebd](https://github.com/betagouv/api-subventions-asso/commit/9cb1ebd1e07f80fce3ee1a601d53f4144dd4b99f))
+* **api:** delete consumer if could not create token ([a6204a9](https://github.com/betagouv/api-subventions-asso/commit/a6204a9d326fc5aab713fb5b249c6dbe5954da0e))
+* **api:** fix chorus service tests ([faf11de](https://github.com/betagouv/api-subventions-asso/commit/faf11de22f794656b723fdc7f5c596eaa9067796))
+* **api:** mock new Date in bodacc adapter test ([9b3d39f](https://github.com/betagouv/api-subventions-asso/commit/9b3d39f5a26d49610881529129c16536b5b9c5f1))
+* **api:** return null if bodacc anwser is empty ([5f1d9ac](https://github.com/betagouv/api-subventions-asso/commit/5f1d9ac8523a7b9decdcb8b1731f6e64e30bdc5e))
+* **api:** user.service activeUser test ([a43f27b](https://github.com/betagouv/api-subventions-asso/commit/a43f27bb910d8024d7d5f0f4b5f053babd8e579e))
+
+
+### Features
+
+* **api:** add bodacc description ([43f90d6](https://github.com/betagouv/api-subventions-asso/commit/43f90d68fd9307952759afe5173f38131547dcaa))
+* **api:** add bodacc service and adapter ([f75b14a](https://github.com/betagouv/api-subventions-asso/commit/f75b14ae84dde45f124e501398d42ce5949bff45))
+* **api:** add bodacc service in the provider list ([70d1343](https://github.com/betagouv/api-subventions-asso/commit/70d1343b772dc6d6b6c31dd7fdeb6a4421df1a24))
+* **api:** cli controller to test gispro parser ([f4d70f0](https://github.com/betagouv/api-subventions-asso/commit/f4d70f07027372cae12d6cf063730c91254e1a96))
+* **api:** gispro join parser and types ([5bd9eee](https://github.com/betagouv/api-subventions-asso/commit/5bd9eee3ae7fd915ebb612c7e262f26ad1fda6cc))
+* **api:** sends bop ([fa9d900](https://github.com/betagouv/api-subventions-asso/commit/fa9d900a2898ba1cb5d14c7f7d831ab1f636a578))
+* **api:** tqdm to pretty print progress ([ba888a0](https://github.com/betagouv/api-subventions-asso/commit/ba888a0bdaccd270861c35c477b8f8ddf9dec4e5))
+* **api:** update http error code documentation ([b8d94fd](https://github.com/betagouv/api-subventions-asso/commit/b8d94fd71425311190d1fdda6800684e5dbf95d7))
+
+
+
+
+
 ## [0.24.7](https://github.com/betagouv/api-subventions-asso/compare/v0.24.6...v0.24.7) (2023-03-27)
 
 
