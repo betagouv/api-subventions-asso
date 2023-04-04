@@ -17,7 +17,8 @@ import Cgu from "./views/Cgu.svelte";
 
 export default {
     "/404": {
-        component: () => NotFound
+        component: () => NotFound,
+        disableAuth: true
     },
     "association/:id": {
         component: () => Association
@@ -45,9 +46,11 @@ export default {
     },
     contact: {
         component: () => Contact,
+        disableAuth: true
     },
     "mentions-legales": {
         component: () => LegalNotice,
+        disableAuth: true
     },
     cgu: {
         component: () => Cgu,
