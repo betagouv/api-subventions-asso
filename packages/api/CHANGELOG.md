@@ -5,202 +5,145 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.25.0](https://github.com/betagouv/api-subventions-asso/compare/v0.24.7...v0.25.0) (2023-04-04)
 
-
 ### Bug Fixes
 
-* **api:** change provider name of rib documents ([9cb1ebd](https://github.com/betagouv/api-subventions-asso/commit/9cb1ebd1e07f80fce3ee1a601d53f4144dd4b99f))
-* **api:** delete consumer if could not create token ([a6204a9](https://github.com/betagouv/api-subventions-asso/commit/a6204a9d326fc5aab713fb5b249c6dbe5954da0e))
-* **api:** fix chorus service tests ([faf11de](https://github.com/betagouv/api-subventions-asso/commit/faf11de22f794656b723fdc7f5c596eaa9067796))
-* **api:** mock new Date in bodacc adapter test ([9b3d39f](https://github.com/betagouv/api-subventions-asso/commit/9b3d39f5a26d49610881529129c16536b5b9c5f1))
-* **api:** return null if bodacc anwser is empty ([5f1d9ac](https://github.com/betagouv/api-subventions-asso/commit/5f1d9ac8523a7b9decdcb8b1731f6e64e30bdc5e))
-* **api:** user.service activeUser test ([a43f27b](https://github.com/betagouv/api-subventions-asso/commit/a43f27bb910d8024d7d5f0f4b5f053babd8e579e))
-
+-   **api:** change provider name of rib documents ([9cb1ebd](https://github.com/betagouv/api-subventions-asso/commit/9cb1ebd1e07f80fce3ee1a601d53f4144dd4b99f))
+-   **api:** delete consumer if could not create token ([a6204a9](https://github.com/betagouv/api-subventions-asso/commit/a6204a9d326fc5aab713fb5b249c6dbe5954da0e))
+-   **api:** fix chorus service tests ([faf11de](https://github.com/betagouv/api-subventions-asso/commit/faf11de22f794656b723fdc7f5c596eaa9067796))
+-   **api:** mock new Date in bodacc adapter test ([9b3d39f](https://github.com/betagouv/api-subventions-asso/commit/9b3d39f5a26d49610881529129c16536b5b9c5f1))
+-   **api:** return null if bodacc anwser is empty ([5f1d9ac](https://github.com/betagouv/api-subventions-asso/commit/5f1d9ac8523a7b9decdcb8b1731f6e64e30bdc5e))
+-   **api:** user.service activeUser test ([a43f27b](https://github.com/betagouv/api-subventions-asso/commit/a43f27bb910d8024d7d5f0f4b5f053babd8e579e))
 
 ### Features
 
-* **api:** add bodacc description ([43f90d6](https://github.com/betagouv/api-subventions-asso/commit/43f90d68fd9307952759afe5173f38131547dcaa))
-* **api:** add bodacc service and adapter ([f75b14a](https://github.com/betagouv/api-subventions-asso/commit/f75b14ae84dde45f124e501398d42ce5949bff45))
-* **api:** add bodacc service in the provider list ([70d1343](https://github.com/betagouv/api-subventions-asso/commit/70d1343b772dc6d6b6c31dd7fdeb6a4421df1a24))
-* **api:** cli controller to test gispro parser ([f4d70f0](https://github.com/betagouv/api-subventions-asso/commit/f4d70f07027372cae12d6cf063730c91254e1a96))
-* **api:** gispro join parser and types ([5bd9eee](https://github.com/betagouv/api-subventions-asso/commit/5bd9eee3ae7fd915ebb612c7e262f26ad1fda6cc))
-* **api:** sends bop ([fa9d900](https://github.com/betagouv/api-subventions-asso/commit/fa9d900a2898ba1cb5d14c7f7d831ab1f636a578))
-* **api:** tqdm to pretty print progress ([ba888a0](https://github.com/betagouv/api-subventions-asso/commit/ba888a0bdaccd270861c35c477b8f8ddf9dec4e5))
-* **api:** update http error code documentation ([b8d94fd](https://github.com/betagouv/api-subventions-asso/commit/b8d94fd71425311190d1fdda6800684e5dbf95d7))
-
-
-
-
+-   **api:** add bodacc description ([43f90d6](https://github.com/betagouv/api-subventions-asso/commit/43f90d68fd9307952759afe5173f38131547dcaa))
+-   **api:** add bodacc service and adapter ([f75b14a](https://github.com/betagouv/api-subventions-asso/commit/f75b14ae84dde45f124e501398d42ce5949bff45))
+-   **api:** add bodacc service in the provider list ([70d1343](https://github.com/betagouv/api-subventions-asso/commit/70d1343b772dc6d6b6c31dd7fdeb6a4421df1a24))
+-   **api:** cli controller to test gispro parser ([f4d70f0](https://github.com/betagouv/api-subventions-asso/commit/f4d70f07027372cae12d6cf063730c91254e1a96))
+-   **api:** gispro join parser and types ([5bd9eee](https://github.com/betagouv/api-subventions-asso/commit/5bd9eee3ae7fd915ebb612c7e262f26ad1fda6cc))
+-   **api:** sends bop ([fa9d900](https://github.com/betagouv/api-subventions-asso/commit/fa9d900a2898ba1cb5d14c7f7d831ab1f636a578))
+-   **api:** tqdm to pretty print progress ([ba888a0](https://github.com/betagouv/api-subventions-asso/commit/ba888a0bdaccd270861c35c477b8f8ddf9dec4e5))
+-   **api:** update http error code documentation ([b8d94fd](https://github.com/betagouv/api-subventions-asso/commit/b8d94fd71425311190d1fdda6800684e5dbf95d7))
 
 ## [0.24.10](https://github.com/betagouv/api-subventions-asso/compare/v0.24.9...v0.24.10) (2023-04-12)
 
-
 ### Bug Fixes
 
-* **api:** fix create index osiris request ([4770a6e](https://github.com/betagouv/api-subventions-asso/commit/4770a6e77a0169cbf2710c45cdf3d303e45f11d2))
-
-
-
-
+-   **api:** fix create index osiris request ([4770a6e](https://github.com/betagouv/api-subventions-asso/commit/4770a6e77a0169cbf2710c45cdf3d303e45f11d2))
 
 ## [0.24.9](https://github.com/betagouv/api-subventions-asso/compare/v0.24.8...v0.24.9) (2023-04-12)
 
-
 ### Bug Fixes
 
-* **api:** add osiris repositories indexes ([cdcb9f7](https://github.com/betagouv/api-subventions-asso/commit/cdcb9f7f6e58a1e098a6543790a19687c8791a08))
-
-
-
-
+-   **api:** add osiris repositories indexes ([cdcb9f7](https://github.com/betagouv/api-subventions-asso/commit/cdcb9f7f6e58a1e098a6543790a19687c8791a08))
 
 ## [0.24.7](https://github.com/betagouv/api-subventions-asso/compare/v0.24.6...v0.24.7) (2023-03-27)
 
-
 ### Bug Fixes
 
-* **api:** call _mergeentities with good this ([caabbf9](https://github.com/betagouv/api-subventions-asso/commit/caabbf90d19e6ff8ebe316eda4def9974f672df9))
-
-
-
-
+-   **api:** call \_mergeentities with good this ([caabbf9](https://github.com/betagouv/api-subventions-asso/commit/caabbf90d19e6ff8ebe316eda4def9974f672df9))
 
 ## [0.24.6](https://github.com/betagouv/api-subventions-asso/compare/v0.24.5...v0.24.6) (2023-03-27)
 
-
 ### Bug Fixes
 
-* **api:** limit the circular dependencies ([e42dee1](https://github.com/betagouv/api-subventions-asso/commit/e42dee1f8c4f4d26634f87f473b261076d4277fa))
-* **api:** probably fix duplicate error mongo ([4bae331](https://github.com/betagouv/api-subventions-asso/commit/4bae3318f5d386fe21a5a226d74790536c430b87))
-* **api:** remove event manager in association name ([469162e](https://github.com/betagouv/api-subventions-asso/commit/469162e5448fea38b4f76b573e3cdb1163890d0f))
-
-
-
-
+-   **api:** limit the circular dependencies ([e42dee1](https://github.com/betagouv/api-subventions-asso/commit/e42dee1f8c4f4d26634f87f473b261076d4277fa))
+-   **api:** probably fix duplicate error mongo ([4bae331](https://github.com/betagouv/api-subventions-asso/commit/4bae3318f5d386fe21a5a226d74790536c430b87))
+-   **api:** remove event manager in association name ([469162e](https://github.com/betagouv/api-subventions-asso/commit/469162e5448fea38b4f76b573e3cdb1163890d0f))
 
 ## [0.24.5](https://github.com/betagouv/api-subventions-asso/compare/v0.24.4...v0.24.5) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **api:** do not overinterpret dates nor numbers ([c45ca8e](https://github.com/betagouv/api-subventions-asso/commit/c45ca8e4db3638210d5265e3dcc944de3b838b3d))
-
-
-
-
+-   **api:** do not overinterpret dates nor numbers ([c45ca8e](https://github.com/betagouv/api-subventions-asso/commit/c45ca8e4db3638210d5265e3dcc944de3b838b3d))
 
 ## [0.24.4](https://github.com/betagouv/api-subventions-asso/compare/v0.24.3...v0.24.4) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **api:** back to string identifiers ([af0f896](https://github.com/betagouv/api-subventions-asso/commit/af0f8960da86303bd6dfa18eed11c55ebbe11e08))
-* **api:** fix ds amounts and date parsing ([aaeeff6](https://github.com/betagouv/api-subventions-asso/commit/aaeeff653c8fb34d1fc2ccc8f10adfb70c8673eb))
-* **api:** proper signup error code ([939424e](https://github.com/betagouv/api-subventions-asso/commit/939424eae2cacef6569ec9271446afafabef2ced))
-* **api:** remove space from search by identifier ([ee216bb](https://github.com/betagouv/api-subventions-asso/commit/ee216bb7d50333ca1f1ac62ad531e11ddb1cff44))
-
-
-
-
+-   **api:** back to string identifiers ([af0f896](https://github.com/betagouv/api-subventions-asso/commit/af0f8960da86303bd6dfa18eed11c55ebbe11e08))
+-   **api:** fix ds amounts and date parsing ([aaeeff6](https://github.com/betagouv/api-subventions-asso/commit/aaeeff653c8fb34d1fc2ccc8f10adfb70c8673eb))
+-   **api:** proper signup error code ([939424e](https://github.com/betagouv/api-subventions-asso/commit/939424eae2cacef6569ec9271446afafabef2ced))
+-   **api:** remove space from search by identifier ([ee216bb](https://github.com/betagouv/api-subventions-asso/commit/ee216bb7d50333ca1f1ac62ad531e11ddb1cff44))
 
 ## [0.24.3](https://github.com/betagouv/api-subventions-asso/compare/v0.24.2...v0.24.3) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **api:** fix test ([5bc5110](https://github.com/betagouv/api-subventions-asso/commit/5bc5110b7b200082b497f6a4a74466e3efdbe599))
-
-
-
-
+-   **api:** fix test ([5bc5110](https://github.com/betagouv/api-subventions-asso/commit/5bc5110b7b200082b497f6a4a74466e3efdbe599))
 
 ## [0.24.2](https://github.com/betagouv/api-subventions-asso/compare/v0.24.1...v0.24.2) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **api,fron:** hotfix caisse depos and wrong merge ([6a7df46](https://github.com/betagouv/api-subventions-asso/commit/6a7df46999fd6fee2fa10e806b88860f3e0743ec))
-
-
-
-
+-   **api,fron:** hotfix caisse depos and wrong merge ([6a7df46](https://github.com/betagouv/api-subventions-asso/commit/6a7df46999fd6fee2fa10e806b88860f3e0743ec))
 
 ## [0.24.1](https://github.com/betagouv/api-subventions-asso/compare/v0.24.0...v0.24.1) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **api:** fix reading error ([d46cc11](https://github.com/betagouv/api-subventions-asso/commit/d46cc1169cd5939fc74cf69a9bf9b98c41727873))
-
-
-
-
+-   **api:** fix reading error ([d46cc11](https://github.com/betagouv/api-subventions-asso/commit/d46cc1169cd5939fc74cf69a9bf9b98c41727873))
 
 # [0.24.0](https://github.com/betagouv/api-subventions-asso/compare/v0.23.9...v0.24.0) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **api:** admin user creation success response ([bc116c9](https://github.com/betagouv/api-subventions-asso/commit/bc116c95d5c9e49386280817c91b362ad3b7240a))
-* **api:** api asso fix error on document is not array on structure dont have identite ([f4364da](https://github.com/betagouv/api-subventions-asso/commit/f4364da0652a5ce3f10b71416deb33faafbadb70))
-* **api:** call splited route for rna and siren in api asso ([737559d](https://github.com/betagouv/api-subventions-asso/commit/737559d35680b2655ceec01c89927bb4833cb84e))
-* **api:** fix _merge entities and one tests ([1148570](https://github.com/betagouv/api-subventions-asso/commit/11485703e30dc6c02128efc53cbd25d1ffb203eb))
-* **api:** fix TS error ([0e55260](https://github.com/betagouv/api-subventions-asso/commit/0e55260a6e8628f002e0438e1519fd845a708978))
-* **api:** remove .only in tests and fix etablissement headcount url ([f44e3d0](https://github.com/betagouv/api-subventions-asso/commit/f44e3d0e3d158a231e44a8de9843719e8325617a))
-* **api:** revert NotFoundError in getEtablissements() ([9badb82](https://github.com/betagouv/api-subventions-asso/commit/9badb82b3f325c5b377ba89a4745b6c409455ae4))
-* **api:** update AssociationController test ([6d857f8](https://github.com/betagouv/api-subventions-asso/commit/6d857f83343c5127ebbb026a2d713761b2f1249b))
-
+-   **api:** admin user creation success response ([bc116c9](https://github.com/betagouv/api-subventions-asso/commit/bc116c95d5c9e49386280817c91b362ad3b7240a))
+-   **api:** api asso fix error on document is not array on structure dont have identite ([f4364da](https://github.com/betagouv/api-subventions-asso/commit/f4364da0652a5ce3f10b71416deb33faafbadb70))
+-   **api:** call splited route for rna and siren in api asso ([737559d](https://github.com/betagouv/api-subventions-asso/commit/737559d35680b2655ceec01c89927bb4833cb84e))
+-   **api:** fix \_merge entities and one tests ([1148570](https://github.com/betagouv/api-subventions-asso/commit/11485703e30dc6c02128efc53cbd25d1ffb203eb))
+-   **api:** fix TS error ([0e55260](https://github.com/betagouv/api-subventions-asso/commit/0e55260a6e8628f002e0438e1519fd845a708978))
+-   **api:** remove .only in tests and fix etablissement headcount url ([f44e3d0](https://github.com/betagouv/api-subventions-asso/commit/f44e3d0e3d158a231e44a8de9843719e8325617a))
+-   **api:** revert NotFoundError in getEtablissements() ([9badb82](https://github.com/betagouv/api-subventions-asso/commit/9badb82b3f325c5b377ba89a4745b6c409455ae4))
+-   **api:** update AssociationController test ([6d857f8](https://github.com/betagouv/api-subventions-asso/commit/6d857f83343c5127ebbb026a2d713761b2f1249b))
 
 ### Features
 
-* **api, dto:** update error handling in UserController ([9b0c058](https://github.com/betagouv/api-subventions-asso/commit/9b0c0587e01c80f4f1940511ceddf8e0f9417d91))
-* **api, front:** add # in password regex ([8e4915d](https://github.com/betagouv/api-subventions-asso/commit/8e4915db7351fbcfedf5f5e8afdbe7075e65c7b9))
-* **api,dto:** update according to caisse dto spelling fixes ([bb7d2e6](https://github.com/betagouv/api-subventions-asso/commit/bb7d2e681bf51c45caef61ec7d9c96229708c578))
-* **api,front:** wording ([ab2b0ad](https://github.com/betagouv/api-subventions-asso/commit/ab2b0ad7992bfab470b1b438348b33806ed251b5))
-* **api:** adapter call in method with api call ([cf9c313](https://github.com/betagouv/api-subventions-asso/commit/cf9c31335f800b7ee1ed1bf7959604cf03956b28))
-* **api:** add dbo to subvention dto adapter ([8c4d89a](https://github.com/betagouv/api-subventions-asso/commit/8c4d89a77364d35731df9221288836d358962142))
-* **api:** add ds dto to dbo adapter ([49a9f80](https://github.com/betagouv/api-subventions-asso/commit/49a9f805508ba64f75b71bcc02ae98241e1e4871))
-* **api:** add endpoint user by request ([ec8467a](https://github.com/betagouv/api-subventions-asso/commit/ec8467a13f91f6c0a2d41de42a0bf3630c166e8e))
-* **api:** add joiner between user and association visits ([5b972e7](https://github.com/betagouv/api-subventions-asso/commit/5b972e7e161f46ea3b456473c547170a9e981702))
-* **api:** add posibility to add schema and update/find ds data ([fe906d1](https://github.com/betagouv/api-subventions-asso/commit/fe906d1ad7d0d3f6a2977b8ffe52325db1544c5e))
-* **api:** add real template ids ([be9dc5a](https://github.com/betagouv/api-subventions-asso/commit/be9dc5aa524534a0b318183deb77cef9736f0453))
-* **api:** better use of data and its tests ([c0f9bc5](https://github.com/betagouv/api-subventions-asso/commit/c0f9bc5ba5a528bcbaab531178b0791d27c8efb1))
-* **api:** caisse depots service and adapter ([2003014](https://github.com/betagouv/api-subventions-asso/commit/2003014f593b1d16448b9bdd0db015a44c84b3ad))
-* **api:** caisse depots, fonjep and gispro adapters implements new dto ([6bd8fdd](https://github.com/betagouv/api-subventions-asso/commit/6bd8fdd9553fa805628b336ed0ff29a212c6450d))
-* **api:** caisseDepots types ([5f3079d](https://github.com/betagouv/api-subventions-asso/commit/5f3079dfe7dd980e78bdc04102631cc4fd1cf256))
-* **api:** change 422 to 404 HTTP error ([9f6dce3](https://github.com/betagouv/api-subventions-asso/commit/9f6dce362e5054064c55fb653a6f5a9f463e71d7))
-* **api:** controller route to get emails of extractor users ([72b6c3b](https://github.com/betagouv/api-subventions-asso/commit/72b6c3b35a968961301a038c492e021c650810f2))
-* **api:** create tokenHelper ([136b22f](https://github.com/betagouv/api-subventions-asso/commit/136b22f95f8530212c3a5a83fd0309cc24e4bca0))
-* **api:** date helper sameDateNextYear ([3997f56](https://github.com/betagouv/api-subventions-asso/commit/3997f561f520780e0f0ba8032f908f70aa32a186))
-* **api:** dauphin adapter implements new dto ([e710e9e](https://github.com/betagouv/api-subventions-asso/commit/e710e9e3a0034cc2d8416f364b4a1a0e242a2196))
-* **api:** dedent password errors ([3c1304c](https://github.com/betagouv/api-subventions-asso/commit/3c1304cd2c1f6eb1b67b71eeb9a0b7a14ce78b1f))
-* **api:** demarches simplifiees poc ([08b6838](https://github.com/betagouv/api-subventions-asso/commit/08b683886d4be0f533f292eb183cf3b6a935c8cb))
-* **api:** demarches simplifiees poc cli ([0577e77](https://github.com/betagouv/api-subventions-asso/commit/0577e77c0173797762ec1f82ac0fa1193d444d56))
-* **api:** error handling in search controller ([d653e84](https://github.com/betagouv/api-subventions-asso/commit/d653e8445eebabc114300cab5beadcb0f7bfb23b))
-* **api:** get emails from logs about extracts ([975fb8b](https://github.com/betagouv/api-subventions-asso/commit/975fb8b022a2007fa832d6aa45ffd80fb83f9721))
-* **api:** helper to convert status ([2c9468c](https://github.com/betagouv/api-subventions-asso/commit/2c9468c7ef4912826fdf14fe1df33453ee36fa78))
-* **api:** include error code in Error interface ([4d5f46b](https://github.com/betagouv/api-subventions-asso/commit/4d5f46b1def5606997c5de2d9f39503fc292c479))
-* **api:** integ test consumer controller ([00fe33b](https://github.com/betagouv/api-subventions-asso/commit/00fe33b85b918b8e8491d22ea8613243937e3e41))
-* **api:** osiris adapter implements new dto ([32a107e](https://github.com/betagouv/api-subventions-asso/commit/32a107ec476f0373ea45bf7723fdfcd267862645))
-* **api:** prepare use of sendinblue template emails ([960114e](https://github.com/betagouv/api-subventions-asso/commit/960114eda8955ad0520ec3729668ce6a5d3e93e0))
-* **api:** register extract routes and tests ([21474dd](https://github.com/betagouv/api-subventions-asso/commit/21474ddbff909544361bd9d9cf5782a1ccb8e77b))
-* **api:** register new provider ([bec0c9c](https://github.com/betagouv/api-subventions-asso/commit/bec0c9cc78a7232b44e5a8660e6ffed50711b717))
-* **api:** remove success:true from refactored methods ([2c78f40](https://github.com/betagouv/api-subventions-asso/commit/2c78f4006429300f6bd4d4394783c956ff647a23))
-* **api:** remove TODO comment ([3a39761](https://github.com/betagouv/api-subventions-asso/commit/3a39761173db8f38fa3bf5c1c8fdb19b05d2f34a))
-* **api:** return 201 in createUser ([622c3c8](https://github.com/betagouv/api-subventions-asso/commit/622c3c8fadf2c4f851a0d4c0867df889d19548c7))
-* **api:** return which role is not valid ([fabaeef](https://github.com/betagouv/api-subventions-asso/commit/fabaeef0f09ff477d0f7b35d68f6b9c7b16b7a61))
-* **api:** save Object.values before loop ([4112202](https://github.com/betagouv/api-subventions-asso/commit/41122024db1e232a5c7d5329f6288985db040450))
-* **api:** sort name by provider trust and fix mergable same asso ([c1c0d25](https://github.com/betagouv/api-subventions-asso/commit/c1c0d252b89224787772f92935981a37dddd179b))
-* **api:** test cli command ([90947d4](https://github.com/betagouv/api-subventions-asso/commit/90947d48ff2f622b5ecd39fe6fad51917e172831))
-* **api:** update tests ([e24d6c5](https://github.com/betagouv/api-subventions-asso/commit/e24d6c5245f95d750176afcc5cc3acbb25c0397f))
-* **api:** use helper ([b0449ad](https://github.com/betagouv/api-subventions-asso/commit/b0449ad3135e0ad6ade39f3af323dc74f677f9e2))
-* **api:** wip wip ([3d90dee](https://github.com/betagouv/api-subventions-asso/commit/3d90dee79d28764e9c8f2c5506d983e1293f4671))
-* **front:** add ds on data provider and qwick fix on sizedTrim ([21b1adc](https://github.com/betagouv/api-subventions-asso/commit/21b1adcd90f58a5280c711bf7fc09b08b0e68873))
-* **front:** helper tests if not an array given ([9e04988](https://github.com/betagouv/api-subventions-asso/commit/9e049889c6196af236b70cd4aed99b8828e189ea))
-* **front:** wording and spelling ([ed47bca](https://github.com/betagouv/api-subventions-asso/commit/ed47bcaa6b4d4ca9d7863624399586764432a32d))
-
-
-
-
+-   **api, dto:** update error handling in UserController ([9b0c058](https://github.com/betagouv/api-subventions-asso/commit/9b0c0587e01c80f4f1940511ceddf8e0f9417d91))
+-   **api, front:** add # in password regex ([8e4915d](https://github.com/betagouv/api-subventions-asso/commit/8e4915db7351fbcfedf5f5e8afdbe7075e65c7b9))
+-   **api,dto:** update according to caisse dto spelling fixes ([bb7d2e6](https://github.com/betagouv/api-subventions-asso/commit/bb7d2e681bf51c45caef61ec7d9c96229708c578))
+-   **api,front:** wording ([ab2b0ad](https://github.com/betagouv/api-subventions-asso/commit/ab2b0ad7992bfab470b1b438348b33806ed251b5))
+-   **api:** adapter call in method with api call ([cf9c313](https://github.com/betagouv/api-subventions-asso/commit/cf9c31335f800b7ee1ed1bf7959604cf03956b28))
+-   **api:** add dbo to subvention dto adapter ([8c4d89a](https://github.com/betagouv/api-subventions-asso/commit/8c4d89a77364d35731df9221288836d358962142))
+-   **api:** add ds dto to dbo adapter ([49a9f80](https://github.com/betagouv/api-subventions-asso/commit/49a9f805508ba64f75b71bcc02ae98241e1e4871))
+-   **api:** add endpoint user by request ([ec8467a](https://github.com/betagouv/api-subventions-asso/commit/ec8467a13f91f6c0a2d41de42a0bf3630c166e8e))
+-   **api:** add joiner between user and association visits ([5b972e7](https://github.com/betagouv/api-subventions-asso/commit/5b972e7e161f46ea3b456473c547170a9e981702))
+-   **api:** add posibility to add schema and update/find ds data ([fe906d1](https://github.com/betagouv/api-subventions-asso/commit/fe906d1ad7d0d3f6a2977b8ffe52325db1544c5e))
+-   **api:** add real template ids ([be9dc5a](https://github.com/betagouv/api-subventions-asso/commit/be9dc5aa524534a0b318183deb77cef9736f0453))
+-   **api:** better use of data and its tests ([c0f9bc5](https://github.com/betagouv/api-subventions-asso/commit/c0f9bc5ba5a528bcbaab531178b0791d27c8efb1))
+-   **api:** caisse depots service and adapter ([2003014](https://github.com/betagouv/api-subventions-asso/commit/2003014f593b1d16448b9bdd0db015a44c84b3ad))
+-   **api:** caisse depots, fonjep and gispro adapters implements new dto ([6bd8fdd](https://github.com/betagouv/api-subventions-asso/commit/6bd8fdd9553fa805628b336ed0ff29a212c6450d))
+-   **api:** caisseDepots types ([5f3079d](https://github.com/betagouv/api-subventions-asso/commit/5f3079dfe7dd980e78bdc04102631cc4fd1cf256))
+-   **api:** change 422 to 404 HTTP error ([9f6dce3](https://github.com/betagouv/api-subventions-asso/commit/9f6dce362e5054064c55fb653a6f5a9f463e71d7))
+-   **api:** controller route to get emails of extractor users ([72b6c3b](https://github.com/betagouv/api-subventions-asso/commit/72b6c3b35a968961301a038c492e021c650810f2))
+-   **api:** create tokenHelper ([136b22f](https://github.com/betagouv/api-subventions-asso/commit/136b22f95f8530212c3a5a83fd0309cc24e4bca0))
+-   **api:** date helper sameDateNextYear ([3997f56](https://github.com/betagouv/api-subventions-asso/commit/3997f561f520780e0f0ba8032f908f70aa32a186))
+-   **api:** dauphin adapter implements new dto ([e710e9e](https://github.com/betagouv/api-subventions-asso/commit/e710e9e3a0034cc2d8416f364b4a1a0e242a2196))
+-   **api:** dedent password errors ([3c1304c](https://github.com/betagouv/api-subventions-asso/commit/3c1304cd2c1f6eb1b67b71eeb9a0b7a14ce78b1f))
+-   **api:** demarches simplifiees poc ([08b6838](https://github.com/betagouv/api-subventions-asso/commit/08b683886d4be0f533f292eb183cf3b6a935c8cb))
+-   **api:** demarches simplifiees poc cli ([0577e77](https://github.com/betagouv/api-subventions-asso/commit/0577e77c0173797762ec1f82ac0fa1193d444d56))
+-   **api:** error handling in search controller ([d653e84](https://github.com/betagouv/api-subventions-asso/commit/d653e8445eebabc114300cab5beadcb0f7bfb23b))
+-   **api:** get emails from logs about extracts ([975fb8b](https://github.com/betagouv/api-subventions-asso/commit/975fb8b022a2007fa832d6aa45ffd80fb83f9721))
+-   **api:** helper to convert status ([2c9468c](https://github.com/betagouv/api-subventions-asso/commit/2c9468c7ef4912826fdf14fe1df33453ee36fa78))
+-   **api:** include error code in Error interface ([4d5f46b](https://github.com/betagouv/api-subventions-asso/commit/4d5f46b1def5606997c5de2d9f39503fc292c479))
+-   **api:** integ test consumer controller ([00fe33b](https://github.com/betagouv/api-subventions-asso/commit/00fe33b85b918b8e8491d22ea8613243937e3e41))
+-   **api:** osiris adapter implements new dto ([32a107e](https://github.com/betagouv/api-subventions-asso/commit/32a107ec476f0373ea45bf7723fdfcd267862645))
+-   **api:** prepare use of sendinblue template emails ([960114e](https://github.com/betagouv/api-subventions-asso/commit/960114eda8955ad0520ec3729668ce6a5d3e93e0))
+-   **api:** register extract routes and tests ([21474dd](https://github.com/betagouv/api-subventions-asso/commit/21474ddbff909544361bd9d9cf5782a1ccb8e77b))
+-   **api:** register new provider ([bec0c9c](https://github.com/betagouv/api-subventions-asso/commit/bec0c9cc78a7232b44e5a8660e6ffed50711b717))
+-   **api:** remove success:true from refactored methods ([2c78f40](https://github.com/betagouv/api-subventions-asso/commit/2c78f4006429300f6bd4d4394783c956ff647a23))
+-   **api:** remove TODO comment ([3a39761](https://github.com/betagouv/api-subventions-asso/commit/3a39761173db8f38fa3bf5c1c8fdb19b05d2f34a))
+-   **api:** return 201 in createUser ([622c3c8](https://github.com/betagouv/api-subventions-asso/commit/622c3c8fadf2c4f851a0d4c0867df889d19548c7))
+-   **api:** return which role is not valid ([fabaeef](https://github.com/betagouv/api-subventions-asso/commit/fabaeef0f09ff477d0f7b35d68f6b9c7b16b7a61))
+-   **api:** save Object.values before loop ([4112202](https://github.com/betagouv/api-subventions-asso/commit/41122024db1e232a5c7d5329f6288985db040450))
+-   **api:** sort name by provider trust and fix mergable same asso ([c1c0d25](https://github.com/betagouv/api-subventions-asso/commit/c1c0d252b89224787772f92935981a37dddd179b))
+-   **api:** test cli command ([90947d4](https://github.com/betagouv/api-subventions-asso/commit/90947d48ff2f622b5ecd39fe6fad51917e172831))
+-   **api:** update tests ([e24d6c5](https://github.com/betagouv/api-subventions-asso/commit/e24d6c5245f95d750176afcc5cc3acbb25c0397f))
+-   **api:** use helper ([b0449ad](https://github.com/betagouv/api-subventions-asso/commit/b0449ad3135e0ad6ade39f3af323dc74f677f9e2))
+-   **api:** wip wip ([3d90dee](https://github.com/betagouv/api-subventions-asso/commit/3d90dee79d28764e9c8f2c5506d983e1293f4671))
+-   **front:** add ds on data provider and qwick fix on sizedTrim ([21b1adc](https://github.com/betagouv/api-subventions-asso/commit/21b1adcd90f58a5280c711bf7fc09b08b0e68873))
+-   **front:** helper tests if not an array given ([9e04988](https://github.com/betagouv/api-subventions-asso/commit/9e049889c6196af236b70cd4aed99b8828e189ea))
+-   **front:** wording and spelling ([ed47bca](https://github.com/betagouv/api-subventions-asso/commit/ed47bcaa6b4d4ca9d7863624399586764432a32d))
 
 ## [0.23.9](https://github.com/betagouv/api-subventions-asso/compare/v0.23.8...v0.23.9) (2023-03-10)
 
