@@ -5,7 +5,6 @@
 
     import { modal, data } from "../../../store/modal.store";
     import VersementsInfoModal from "../Modals/VersementsInfoModal.svelte";
-    import StringTableCell from "../../Tables/StringTableCell.svelte";
     import NumberTableCell from "../../Tables/NumberTableCell.svelte";
     import VersementTableController from "./VersementTable.controller";
 
@@ -59,12 +58,14 @@
                     data-fr-opened="false"
                     class="clickable">
                     <NumberTableCell primary="true" value={element.totalAmount} />
-                    <StringTableCell value={element.centreFinancier} />
                     <TableCell>
                         {element.lastVersementDate}
+                    </TableCell>
+                    <TableCell position="end">
+                        {element.bop}
                         <!--
-                        What follows is an a11y trick: users can focus this on keyboard.
-                        This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
+                            What follows is an a11y trick: users can focus this on keyboard.
+                            This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
                         -->
                         <button class="sr-only">Voir plus</button>
                     </TableCell>
