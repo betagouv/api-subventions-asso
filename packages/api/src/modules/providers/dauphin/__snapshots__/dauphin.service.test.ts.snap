@@ -1,50 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dauphin Service buildFindByIdQuery should send ref 1`] = `
-Object {
-  "_source": Array [],
-  "aggs": Object {},
-  "query": Object {
-    "filtered": Object {
-      "filter": Object {
-        "bool": Object {
-          "must": Array [
-            Object {
-              "query": Object {
-                "query_string": Object {
-                  "analyze_wildcard": true,
-                  "query": "reference:REF",
-                },
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  "size": 2000,
-}
-`;
-
-exports[`Dauphin Service buildQuery should build query 1`] = `
-Object {
-  "_source": Array [],
-  "aggs": Object {},
-  "query": Object {
-    "filtered": Object {
-      "filter": Object {
-        "bool": Object {
-          "must": Object {
-            "obj": true,
-          },
-        },
-      },
-    },
-  },
-  "size": 2000,
-}
-`;
-
 exports[`Dauphin Service buildSearchHeader should build header 1`] = `
 Object {
   "headers": Object {
@@ -59,115 +14,30 @@ Object {
 }
 `;
 
-exports[`Dauphin Service buildSearchQuery should send siren 1`] = `
-Object {
-  "_source": Array [],
-  "aggs": Object {},
-  "query": Object {
-    "filtered": Object {
-      "filter": Object {
-        "bool": Object {
-          "must": Array [
-            Object {
-              "bool": Object {
-                "should": Array [
-                  Object {
-                    "nested": Object {
-                      "filter": Object {
-                        "bool": Object {
-                          "should": Array [
-                            Object {
-                              "query": Object {
-                                "query_string": Object {
-                                  "analyze_wildcard": true,
-                                  "query": "beneficiaires.SIRET.SIREN:FAKE_SIREN",
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      "path": "beneficiaires",
-                    },
-                  },
-                ],
-              },
-            },
-            undefined,
-          ],
-        },
-      },
-    },
-  },
-  "size": 2000,
-}
-`;
-
-exports[`Dauphin Service buildSearchQuery should send siren and date 1`] = `
-Object {
-  "_source": Array [],
-  "aggs": Object {},
-  "query": Object {
-    "filtered": Object {
-      "filter": Object {
-        "bool": Object {
-          "must": Array [
-            Object {
-              "bool": Object {
-                "should": Array [
-                  Object {
-                    "nested": Object {
-                      "filter": Object {
-                        "bool": Object {
-                          "should": Array [
-                            Object {
-                              "query": Object {
-                                "query_string": Object {
-                                  "analyze_wildcard": true,
-                                  "query": "beneficiaires.SIRET.SIREN:FAKE_SIREN",
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      "path": "beneficiaires",
-                    },
-                  },
-                ],
-              },
-            },
-            Object {
-              "query": Object {
-                "query_string": Object {
-                  "analyze_wildcard": true,
-                  "query": "date:>1970\\\\-01\\\\-01T01\\\\:00\\\\:00.000Z",
-                },
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  "size": 2000,
-}
-`;
-
-exports[`Dauphin Service sendAuthRequest should call axios.post with good data 1`] = `
+exports[`Dauphin Service getApplicationsFromDate should call axios with args 1`] = `
 Array [
-  Array [
-    "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
-    "username=DAUPHIN_USERNAME&password=DAUPHIN_PASSWORD&redirectTo=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fagents%2F%23%2Fcget%2Fhome%3FredirectTo%3Dportal.home",
-    Object {
-      "headers": Object {
-        "Referer": "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "content-type": "application/x-www-form-urlencoded",
-      },
+  "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
+  Object {
+    "from": 0,
+  },
+  Object {
+    "headers": Object {},
+  },
+]
+`;
+
+exports[`Dauphin Service sendAuthRequest should call axios 1`] = `
+Array [
+  "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
+  "username=DAUPHIN_USERNAME&password=DAUPHIN_PASSWORD&redirectTo=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fagents%2F%23%2Fcget%2Fhome%3FredirectTo%3Dportal.home",
+  Object {
+    "headers": Object {
+      "Referer": "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "accept": "application/json, text/plain, */*",
+      "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+      "content-type": "application/x-www-form-urlencoded",
     },
-  ],
+  },
 ]
 `;
