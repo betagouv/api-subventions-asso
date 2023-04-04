@@ -1,15 +1,16 @@
 import axios from "axios";
 import qs from "qs";
-import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { DemandeSubvention, Siren, Siret } from "@api-subventions-asso/dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_USERNAME, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { formatIntToThreeDigits, formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
+import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
+import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
+import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
@@ -21,152 +22,141 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     isDemandesSubventionsProvider = true;
 
+    async fetchAndSaveApplicationsFromDate(date) {
+        try {
+            const token = await this.getAuthToken();
+            const applications = await this.getApplicationsFromDate(token, date);
+            await this.saveApplicationsInCache(applications);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const siren = siretToSiren(siret);
-        const lastUpdate = await dauhpinGisproRepository.getLastUpdateBySiren(siren);
-
-        try {
-            const token = await this.getAuthToken();
-            const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
-            await Promise.all(demandes.flat().map(demande => dauhpinGisproRepository.upsert({ dauphin: demande })));
-        } catch (e) {
-            console.error(e);
-        }
-
-        return (await dauhpinGisproRepository.findBySiret(siret)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto),
-        );
+        const applications = await dauhpinGisproRepository.findBySiret(siret);
+        return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
+
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const lastUpdate = await dauhpinGisproRepository.getLastUpdateBySiren(siren);
-
-        try {
-            const token = await this.getAuthToken();
-            const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
-            await Promise.all(demandes.flat().map(demande => dauhpinGisproRepository.upsert({ dauphin: demande })));
-        } catch (e) {
-            console.error(e);
-        }
-
-        return (await dauhpinGisproRepository.findBySiren(siren)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto),
-        );
+        const applications = await dauhpinGisproRepository.findBySiren(siren);
+        return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
+    async getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
         return null;
     }
 
-    private async getDauphinSubventions(siren: Siren, token, lastUpdate?: Date): Promise<DauphinSubventionDto[]> {
-        try {
-            const result = await axios.post(
-                "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-                this.buildSearchQuery(siren, lastUpdate),
-                this.buildSearchHeader(token),
-            );
+    private async getApplicationsFromDate(token, date: Date): Promise<DauphinGisproDbo[]> {
+        let totalToFetch = 0;
+        let applications: any[] = [];
+        do {
+            try {
+                const result = (
+                    await axios.post(
+                        "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
+                        { ...this.buildFetchFromDateQuery(date), from: applications.length },
+                        this.buildSearchHeader(token),
+                    )
+                ).data;
 
-            return result.data.hits.hits.map(h => {
-                const source = h._source;
+                if (!result || !result.hits) return [];
 
-                if ("demandeur" in source) {
-                    delete source.demandeur.pieces;
-                    delete source.demandeur.history;
-                    delete source.demandeur.linkedUsers;
+                const hits = result.hits.hits as any[];
+                totalToFetch = result.hits.total;
+
+                if (!hits) {
+                    throw new Error("Something went wrong with dauphin results");
                 }
 
-                if ("beneficiaires" in source) {
-                    source.beneficiaires.forEach(beneficiaire => {
-                        delete beneficiaire.pieces;
-                        delete beneficiaire.history;
-                        delete beneficiaire.linkedUsers;
-                    });
-                }
+                applications = applications.concat(hits);
+                console.log(`fetched ${applications.length} over ${totalToFetch}`);
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
+        } while (applications.length < totalToFetch);
 
-                return source;
-            });
-        } catch (e) {
-            console.error(e);
-            return [];
-        }
+        if (!totalToFetch || !applications.length) return applications;
+
+        return applications.map(dbo => ({ dauphin: this.formatAndReturnDto(dbo) }));
     }
 
-    private buildSearchQuery(siren: Siren, date?: Date) {
-        return this.buildQuery([
-            {
-                bool: {
-                    should: [
-                        {
-                            nested: {
-                                path: "beneficiaires",
-                                filter: {
+    private saveApplicationsInCache(applications: DauphinGisproDbo[]) {
+        console.log("applications length :", applications.length);
+        return asyncForEach(applications, async application => {
+            await dauhpinGisproRepository.upsert(application);
+        });
+    }
+
+    private formatAndReturnDto(hit) {
+        const source = hit._source;
+
+        if ("demandeur" in source) {
+            delete source.demandeur.pieces;
+            delete source.demandeur.history;
+            delete source.demandeur.linkedUsers;
+        }
+
+        if ("beneficiaires" in source) {
+            source.beneficiaires.forEach(beneficiaire => {
+                delete beneficiaire.pieces;
+                delete beneficiaire.history;
+                delete beneficiaire.linkedUsers;
+            });
+        }
+
+        return source as DauphinSubventionDto;
+    }
+
+    private toDauphinDateString(date: Date) {
+        const year = date.getFullYear();
+        const month = formatIntToTwoDigits(date.getMonth() + 1);
+        const day = formatIntToTwoDigits(date.getDate());
+        return `${year}-${month}-${day}`;
+    }
+
+    private buildFetchFromDateQuery(date) {
+        return {
+            size: 1000,
+            sort: [{ "demandeur.famille.title": { order: "asc", missing: "_last", mode: "min" } }],
+            query: {
+                filtered: {
+                    filter: {
+                        bool: {
+                            must: [
+                                {
+                                    query: {
+                                        query_string: {
+                                            query: "demandeur.famille.href:\\/referentiel\\-tiers\\/cget\\/familles\\/75",
+                                            analyze_wildcard: true,
+                                        },
+                                    },
+                                },
+                                {
                                     bool: {
-                                        should: [
+                                        must: [
                                             {
                                                 query: {
-                                                    query_string: {
-                                                        query: "beneficiaires.SIRET.SIREN:" + siren,
-                                                        analyze_wildcard: true,
+                                                    range: {
+                                                        date: {
+                                                            gte: this.toDauphinDateString(date),
+                                                            time_zone: "+2:00",
+                                                        },
                                                     },
                                                 },
                                             },
                                         ],
                                     },
                                 },
-                            },
-                        },
-                    ],
-                },
-            },
-            date
-                ? {
-                      query: {
-                          query_string: {
-                              query: "date:>" + this.formatDateToDauphinDate(date),
-                              analyze_wildcard: true,
-                          },
-                      },
-                  }
-                : undefined,
-        ]);
-    }
-
-    private buildFindByIdQuery(ref: string) {
-        return this.buildQuery([
-            {
-                query: {
-                    query_string: {
-                        query: "reference:" + ref,
-                        analyze_wildcard: true,
-                    },
-                },
-            },
-        ]);
-    }
-
-    private buildQuery(searchQuery: unknown[]) {
-        return {
-            size: 2000,
-            query: {
-                filtered: {
-                    filter: {
-                        bool: {
-                            must: searchQuery,
+                            ],
                         },
                     },
                 },
             },
+            inner_hits: {},
             _source: [],
             aggs: {},
         };
-    }
-
-    private formatDateToDauphinDate(date: Date): string {
-        return `${date.getFullYear()}\\-${formatIntToTwoDigits(date.getMonth() + 1)}\\-${formatIntToTwoDigits(
-            date.getDate(),
-        )}T${formatIntToTwoDigits(date.getHours())}\\:${formatIntToTwoDigits(
-            date.getMinutes(),
-        )}\\:${formatIntToTwoDigits(date.getSeconds())}.${formatIntToThreeDigits(date.getMilliseconds())}Z`;
     }
 
     private buildSearchHeader(token) {

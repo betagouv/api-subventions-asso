@@ -19,6 +19,7 @@ import SubventiaCliController from "./modules/providers/subventia/interfaces/sub
 import DemarchesSimplifieesCliController from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
 import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
 import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
+import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dauphin.cli.controller";
 
 async function main() {
     await connectDB();
@@ -40,6 +41,7 @@ async function main() {
         DemarchesSimplifieesCliController,
         CaisseDepotsCliController,
         GisproCliController,
+        DauphinCliController,
     ];
 
     const args = process.argv.slice(2);
