@@ -7,8 +7,15 @@ export default class VersementsAdapter {
         return {
             totalAmount: numberToEuro(this._countTotalVersement(versements)),
             centreFinancier: valueOrHyphen(versements[0]?.centreFinancier),
-            lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(versements)))
+            lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(versements))),
+            bop: valueOrHyphen(this._formatBop(versements[0]?.bop))
         };
+    }
+
+    static _formatBop(bop) {
+        // transform 0163 in 163
+        if (!bop || bop[0] !== "0") return bop;
+        return bop.substring(1, 4);
     }
 
     static _countTotalVersement(versements) {

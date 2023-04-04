@@ -7,6 +7,7 @@ import VersementsAdapter from "@resources/versements/versements.adapter";
 const MONTANT_VERSE_LABEL = "Montant versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
 const DATE_VERSEMENT_LABEL = "Date du versement";
+const BOP_LABEL = "BOP";
 
 export default class VersementTableController {
     constructor(sortMethod) {
@@ -28,8 +29,10 @@ export default class VersementTableController {
         );
     }
 
+    // Order is important to respect VersementsAdapter.toVersement() format
+    // TODO: enhance this and make a mapper header - versement property ?
     static extractHeaders() {
-        return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL];
+        return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL, BOP_LABEL];
     }
 
     _countVersements() {
@@ -71,8 +74,8 @@ export default class VersementTableController {
     buildColumnDataViews() {
         const columnsName = {
             "versements.montant": MONTANT_VERSE_LABEL,
-            "versements.centreFinancier": CENTRE_FINANCIER_LABEL,
-            "versements.date": DATE_VERSEMENT_LABEL
+            "versements.date": DATE_VERSEMENT_LABEL,
+            "versements.bop": BOP_LABEL
         };
 
         this.columnDataViews.set(
