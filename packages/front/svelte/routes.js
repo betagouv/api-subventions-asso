@@ -44,7 +44,7 @@ export default {
         component: () => Home
     },
     contact: {
-        component: () => Contact
+        component: () => Contact,
     },
     "mentions-legales": {
         component: () => LegalNotice,
