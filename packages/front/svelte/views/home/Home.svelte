@@ -1,19 +1,18 @@
 <script>
     import { onMount } from "svelte";
 
-    import { isRna, isSiren, isSiret, isStartOfSiret } from "../../helpers/validatorHelper";
-    import { getSearchHistory } from "../../services/storage.service";
-    import debounceFactory from "../../helpers/timeHelper";
-    import { truncate } from "../../helpers/textHelper";
-
     import Alert from "../../dsfr/Alert.svelte";
     import Card from "../../dsfr/Card.svelte";
     import Spinner from "../../components/Spinner.svelte";
     import Messages from "../../components/Messages/Messages.svelte";
-    import ResultCard from "./composents/ResultCard.svelte";
+    import ResultCard from "./components/ResultCard.svelte";
     import homeService from "./home.service";
 
-    import InteruptSearchError from "./error/InteruptSearchError";
+    import InterruptSearchError from "./error/InterruptSearchError";
+    import debounceFactory from "@helpers/timeHelper";
+    import { truncate } from "@helpers/textHelper";
+    import { getSearchHistory } from "@services/storage.service";
+    import { isRna, isSiren, isSiret, isStartOfSiret } from "@helpers/validatorHelper";
 
     let error;
     if (new URLSearchParams(location.search).get("error")) error = true;
@@ -32,10 +31,9 @@
 
         try {
             isLoading = true;
-            const result = await homeService.search(text);
-            searchResult = result;
+            searchResult = await homeService.search(text);
         } catch (e) {
-            if (e instanceof InteruptSearchError) return;
+            if (e instanceof InterruptSearchError) return;
 
             error = true;
         }

@@ -2,7 +2,7 @@ import axios from "axios";
 import { isRna, isStartOfSiret } from "../../helpers/validatorHelper";
 import { siretToSiren } from "../../helpers/sirenHelper";
 import { flatenProviderValue } from "../../helpers/providerValueHelper";
-import InteruptSearchError from "./error/InteruptSearchError";
+import InterruptSearchError from "./error/InterruptSearchError";
 
 export class HomeService {
     constructor() {
@@ -35,7 +35,7 @@ export class HomeService {
         if (this.currentSearchPromise && this.currentSearchPromise.text === searchedText) {
             return this.currentSearchPromise.promise;
         } else if (this.currentSearchPromise) {
-            this.currentSearchPromise.reject(new InteruptSearchError());
+            this.currentSearchPromise.reject(new InterruptSearchError());
         }
 
         let promise;
@@ -67,7 +67,7 @@ export class HomeService {
             result = await this._searchByAssociationKey(searchedText);
         } catch (catchedError) {
             if (isRna(searchedText) || isStartOfSiret(searchedText)) {
-                // If no data found in association name collection we search by rna or siren, because association name is not exostive.
+                // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
                 result = [await this._searchByRnaOrSiren("" + searchedText)];
             }
             error = catchedError;
