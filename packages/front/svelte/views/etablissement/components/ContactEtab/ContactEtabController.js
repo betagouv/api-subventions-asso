@@ -40,9 +40,9 @@ export default class ContactEtabController {
         downloadCsv(
             buildCsv(
                 this.getHeaders(),
-                this._contacts.map(contact => Object.values(contact))
+                this._contacts.map(contact => Object.values(contact)),
             ),
-            this._buildCsvName()
+            this._buildCsvName(),
         );
     }
 
@@ -53,7 +53,7 @@ export default class ContactEtabController {
             prenom: valueOrHyphen(contact.prenom),
             telephone: valueOrHyphen(formatPhoneNumber(contact.telephone)),
             email: valueOrHyphen(contact.email),
-            role: valueOrHyphen(contact.role)
+            role: valueOrHyphen(contact.role),
         };
     }
 
@@ -64,7 +64,7 @@ export default class ContactEtabController {
             if (this._selectedRoleIndex === 0) this._filteredContacts.set(filteredByNameContacts);
             else {
                 const filteredByNameAndRoleContacts = filteredByNameContacts.filter(contact =>
-                    this._containsRole(contact)
+                    this._containsRole(contact),
                 );
                 this._filteredContacts.set(filteredByNameAndRoleContacts);
             }

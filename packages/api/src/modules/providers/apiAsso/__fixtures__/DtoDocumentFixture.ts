@@ -6,46 +6,46 @@ export const RnaDtoDocument = {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
         provider: ApiAssoDtoAdapter.providerNameRna,
         type: "string",
-        value: "PV - ididididid"
+        value: "PV - ididididid",
     },
     type: {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
         provider: ApiAssoDtoAdapter.providerNameRna,
         type: "string",
-        value: "PV"
+        value: "PV",
     },
     url: {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
         provider: ApiAssoDtoAdapter.providerNameRna,
         type: "string",
-        value: "/fake/url"
-    }
+        value: "/fake/url",
+    },
 };
 
 export const DacSiret = "50922194100000";
 
 export const DacDtoDocument = {
     __meta__: {
-        siret: DacSiret
+        siret: DacSiret,
     },
     nom: {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
         provider: ApiAssoDtoAdapter.providerNameLcaDocument,
         type: "string",
-        value: "nom fake"
+        value: "nom fake",
     },
     type: {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
         provider: ApiAssoDtoAdapter.providerNameLcaDocument,
         type: "string",
-        value: "BPA"
+        value: "BPA",
     },
     url: {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
         provider: ApiAssoDtoAdapter.providerNameLcaDocument,
         type: "string",
-        value: "/fake/url"
-    }
+        value: "/fake/url",
+    },
 };
 
 export const DtoDocument = [RnaDtoDocument, DacDtoDocument];

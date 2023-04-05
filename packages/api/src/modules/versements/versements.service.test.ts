@@ -17,7 +17,7 @@ describe("VersementsService", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
 
             await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
-                AssociationIdentifierError
+                AssociationIdentifierError,
             );
         });
 
@@ -27,7 +27,7 @@ describe("VersementsService", () => {
             getSirenMock.mockImplementationOnce(async () => null);
 
             await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
-                NotFoundError
+                NotFoundError,
             );
         });
 
@@ -72,7 +72,7 @@ describe("VersementsService", () => {
             const expected = false;
             const actual = versementsService.hasVersements({
                 // @ts-expect-error: test
-                versementKey: { value: undefined }
+                versementKey: { value: undefined },
             });
             expect(actual).toEqual(expected);
         });
@@ -81,7 +81,7 @@ describe("VersementsService", () => {
             const expected = true;
             const actual = versementsService.hasVersements({
                 // @ts-expect-error: test
-                versementKey: { value: VERSEMENT_KEY }
+                versementKey: { value: VERSEMENT_KEY },
             });
             expect(actual).toEqual(expected);
         });
@@ -91,7 +91,7 @@ describe("VersementsService", () => {
         it("should return null if versement undefined", () => {
             const expected = null;
             const actual = versementsService.filterVersementByKey(undefined, {
-                value: VERSEMENT_KEY
+                value: VERSEMENT_KEY,
             });
             expect(actual).toEqual(expected);
         });

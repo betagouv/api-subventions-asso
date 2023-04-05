@@ -11,7 +11,7 @@ import {
     fixtureAsso,
     fixtureDocumentDac,
     fixtureDocumentRna,
-    fixtureEtablissements
+    fixtureEtablissements,
 } from "./__fixtures__/ApiAssoStructureFixture";
 
 jest.mock("../../../shared/EventManager");
@@ -69,8 +69,8 @@ describe("ApiAssoService", () => {
             axiosMock.mockImplementationOnce(() =>
                 Promise.resolve({
                     status: 200,
-                    data: expected
-                })
+                    data: expected,
+                }),
             );
             cacheHasMock.mockImplementationOnce(() => false);
 
@@ -84,8 +84,8 @@ describe("ApiAssoService", () => {
             axiosMock.mockImplementationOnce(() =>
                 Promise.resolve({
                     status: 404,
-                    data: 1
-                })
+                    data: 1,
+                }),
             );
             cacheHasMock.mockImplementationOnce(() => false);
 
@@ -492,7 +492,7 @@ describe("ApiAssoService", () => {
 
             axiosMock = jest.spyOn(axios, "get").mockResolvedValue({
                 status: 200,
-                data: fixtureAsso
+                data: fixtureAsso,
             });
         });
 
@@ -502,8 +502,8 @@ describe("ApiAssoService", () => {
                     {
                         sous_type: "MD",
                         annee: 2022,
-                        time: 0
-                    }
+                        time: 0,
+                    },
                 ];
 
                 const documents = [
@@ -511,8 +511,8 @@ describe("ApiAssoService", () => {
                     {
                         sous_type: "WRONG",
                         annee: 2022,
-                        time: 0
-                    }
+                        time: 0,
+                    },
                 ];
 
                 // @ts-ignore filterRnaDocuments has private method
@@ -526,8 +526,8 @@ describe("ApiAssoService", () => {
                     {
                         sous_type: "MD",
                         annee: 2022,
-                        time: 0
-                    }
+                        time: 0,
+                    },
                 ];
 
                 const documents = [
@@ -535,8 +535,8 @@ describe("ApiAssoService", () => {
                     {
                         sous_type: "MD",
                         annee: 2021,
-                        time: 0
-                    }
+                        time: 0,
+                    },
                 ];
 
                 // @ts-ignore filterRnaDocuments has private method
@@ -551,20 +551,20 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            type: "RFA"
+                            type: "RFA",
                         },
-                        time_depot: new Date().toString()
-                    }
+                        time_depot: new Date().toString(),
+                    },
                 ];
 
                 const documents = [
                     ...expected,
                     {
                         meta: {
-                            type: "WRONG"
+                            type: "WRONG",
                         },
-                        time_depot: new Date().toString()
-                    }
+                        time_depot: new Date().toString(),
+                    },
                 ];
 
                 // @ts-ignore filterDacDocuments has private method
@@ -577,20 +577,20 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            type: "RFA"
+                            type: "RFA",
                         },
-                        time_depot: new Date().toString()
-                    }
+                        time_depot: new Date().toString(),
+                    },
                 ];
 
                 const documents = [
                     ...expected,
                     {
                         meta: {
-                            type: "RFA"
+                            type: "RFA",
                         },
-                        time_depot: new Date(2021, 1).toString()
-                    }
+                        time_depot: new Date(2021, 1).toString(),
+                    },
                 ];
 
                 // @ts-ignore filterDacDocuments has private method
@@ -606,19 +606,19 @@ describe("ApiAssoService", () => {
                     {
                         meta: {
                             type: "RIB",
-                            iban: ""
+                            iban: "",
                         },
-                        url: "FAKE_URL"
-                    }
+                        url: "FAKE_URL",
+                    },
                 ];
 
                 const documents = [
                     ...expected,
                     {
                         meta: {
-                            type: "WRONG"
-                        }
-                    }
+                            type: "WRONG",
+                        },
+                    },
                 ];
 
                 // @ts-ignore filterRibsInDacDocuments has private method
@@ -633,23 +633,23 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            etat: "courant"
-                        }
+                            etat: "courant",
+                        },
                     },
                     {
                         meta: {
-                            etat: "courant"
-                        }
-                    }
+                            etat: "courant",
+                        },
+                    },
                 ];
 
                 const documents = [
                     ...expected,
                     {
                         meta: {
-                            etat: "WRONG"
-                        }
-                    }
+                            etat: "WRONG",
+                        },
+                    },
                 ];
 
                 // @ts-ignore filterActiveDacDocuments has private method
@@ -699,16 +699,16 @@ describe("ApiAssoService", () => {
             it("should call filterRnaDocuments with document_rna", async () => {
                 const expected = [
                     {
-                        sous_type: "PV"
-                    }
+                        sous_type: "PV",
+                    },
                 ];
 
                 sendRequestMock.mockResolvedValueOnce({
                     asso: {
                         documents: {
-                            document_rna: expected
-                        }
-                    }
+                            document_rna: expected,
+                        },
+                    },
                 });
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -727,8 +727,8 @@ describe("ApiAssoService", () => {
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
-                        documents: {}
-                    }
+                        documents: {},
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -746,17 +746,17 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            type: "RFA"
-                        }
-                    }
+                            type: "RFA",
+                        },
+                    },
                 ];
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
-                            document_dac: expected
-                        }
-                    }
+                            document_dac: expected,
+                        },
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -775,8 +775,8 @@ describe("ApiAssoService", () => {
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
-                        documents: {}
-                    }
+                        documents: {},
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -794,17 +794,17 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            type: "RFA"
-                        }
-                    }
+                            type: "RFA",
+                        },
+                    },
                 ];
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
-                            document_dac: expected
-                        }
-                    }
+                            document_dac: expected,
+                        },
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -822,17 +822,17 @@ describe("ApiAssoService", () => {
                 const expected = [
                     {
                         meta: {
-                            type: "RFA"
-                        }
-                    }
+                            type: "RFA",
+                        },
+                    },
                 ];
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
-                            document_dac: expected
-                        }
-                    }
+                            document_dac: expected,
+                        },
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -848,15 +848,15 @@ describe("ApiAssoService", () => {
 
             it("should call ApiAssoDtoAdapter.rnaDocumentToDocument with document_rna", async () => {
                 const expected = {
-                    sous_type: "PV"
+                    sous_type: "PV",
                 };
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
-                            document_rna: [expected]
-                        }
-                    }
+                            document_rna: [expected],
+                        },
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(data => data);
@@ -874,16 +874,16 @@ describe("ApiAssoService", () => {
             it("should call ApiAssoDtoAdapter.dacDocumentToDocument with document_dac", async () => {
                 const expected = {
                     meta: {
-                        type: "RFA"
-                    }
+                        type: "RFA",
+                    },
                 };
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
-                            document_dac: [expected]
-                        }
-                    }
+                            document_dac: [expected],
+                        },
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);
@@ -901,16 +901,16 @@ describe("ApiAssoService", () => {
             it("should call ApiAssoDtoAdapter.dacDocumentToDocument with ribs document_dac", async () => {
                 const expected = {
                     meta: {
-                        type: "RIB"
-                    }
+                        type: "RIB",
+                    },
                 };
 
                 sendRequestMock.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
-                            document_dac: [expected]
-                        }
-                    }
+                            document_dac: [expected],
+                        },
+                    },
                 }));
 
                 filterRnaDocumentsMock.mockImplementationOnce(() => []);

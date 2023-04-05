@@ -10,7 +10,7 @@ export class CaisseDepotsService implements DemandesSubventionsProvider {
         name: "API Caisse des dépôts",
         type: ProviderEnum.api,
         description:
-            "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention."
+            "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention.",
     };
     isDemandesSubventionsProvider = true;
     apiUrl = "https://opendata.caissedesdepots.fr/api/v2/";
@@ -22,7 +22,7 @@ export class CaisseDepotsService implements DemandesSubventionsProvider {
     private async getCaisseDepotsSubventions(identifier: string): Promise<DemandeSubvention[]> {
         try {
             const result = await axios.get(
-                `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${identifier}")`
+                `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${identifier}")`,
             );
 
             return result.data.records.map(({ record }) => CaisseDepotsDtoAdapter.toDemandeSubvention(record));

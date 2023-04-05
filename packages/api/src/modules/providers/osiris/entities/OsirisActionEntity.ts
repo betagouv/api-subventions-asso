@@ -52,14 +52,14 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         montants_versement_accorde: ["Montants et versements", "Accordé"],
         montants_versement_attribue: ["Montants et versements", "Montant Total Attribué"],
         montants_versement_realise: ["Montants et versements", "Réalisé"],
-        montants_versement_compensation: ["Montants et versements", "Compensation"]
+        montants_versement_compensation: ["Montants et versements", "Compensation"],
     };
 
     constructor(
         public indexedInformations: IOsirisActionsInformations,
         public data: unknown,
         public _id?: ObjectId,
-        public evaluation?: Falsy<OsirisEvaluationEntity>
+        public evaluation?: Falsy<OsirisEvaluationEntity>,
     ) {
         super(indexedInformations, data, _id);
     }

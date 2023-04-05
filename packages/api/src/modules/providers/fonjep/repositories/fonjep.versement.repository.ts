@@ -20,7 +20,7 @@ export class FonjepVersementRepository extends MigrationRepository<FonjepVerseme
     public findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
     }

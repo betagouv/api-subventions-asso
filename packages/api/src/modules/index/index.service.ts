@@ -3,7 +3,7 @@ export class IndexService {
         return {
             message: "Bienvenue sur l'api Data.Subvention",
             doc: "https://github.com/betagouv/api-subventions-asso/wiki/Documentation-API-&-Guide-d'int%C3%A9gration",
-            swagger: "/docs"
+            swagger: "/docs",
         };
     }
 }

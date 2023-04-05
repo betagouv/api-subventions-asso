@@ -11,6 +11,6 @@ export const toDocumentComponent = document => {
     return {
         ...flatenProviderValue(document),
         provider: getProvider(document.nom),
-        date: new Date(getDate(document.nom))
+        date: new Date(getDate(document.nom)),
     };
 };

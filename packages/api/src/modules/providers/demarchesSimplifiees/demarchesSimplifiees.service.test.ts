@@ -20,8 +20,8 @@ describe("DemarchesSimplifieesService", () => {
             mapperRepoFindAllMock.mockResolvedValue([
                 {
                     demarcheId: 1,
-                    schema: []
-                }
+                    schema: [],
+                },
             ]);
         });
 
@@ -40,9 +40,9 @@ describe("DemarchesSimplifieesService", () => {
                 expect.objectContaining({
                     1: {
                         demarcheId: 1,
-                        schema: expect.any(Array)
-                    }
-                })
+                        schema: expect.any(Array),
+                    },
+                }),
             );
         });
     });
@@ -75,15 +75,15 @@ describe("DemarchesSimplifieesService", () => {
             const DEMARCHE_ID = 12345;
             const expected = [
                 {
-                    demarcheId: DEMARCHE_ID
+                    demarcheId: DEMARCHE_ID,
                 },
                 {
-                    id: DEMARCHE_ID
-                }
+                    id: DEMARCHE_ID,
+                },
             ];
 
             getSchemasByIdsMock.mockResolvedValue({
-                [DEMARCHE_ID]: expected[1]
+                [DEMARCHE_ID]: expected[1],
             });
 
             // @ts-expect-error entitiesToSubventions is private method
@@ -95,13 +95,13 @@ describe("DemarchesSimplifieesService", () => {
         it("should return one sub", async () => {
             const DEMARCHE_ID = 12345;
             const expected = {
-                demarcheId: DEMARCHE_ID
+                demarcheId: DEMARCHE_ID,
             };
 
             getSchemasByIdsMock.mockResolvedValue({
                 [DEMARCHE_ID]: {
-                    id: DEMARCHE_ID
-                }
+                    id: DEMARCHE_ID,
+                },
             });
 
             // @ts-expect-error entitiesToSubventions is private method
@@ -113,13 +113,13 @@ describe("DemarchesSimplifieesService", () => {
         it("should not return sub because no schema match", async () => {
             const DEMARCHE_ID = 12345;
             const expected = {
-                demarcheId: 12346
+                demarcheId: 12346,
             };
 
             getSchemasByIdsMock.mockResolvedValue({
                 [DEMARCHE_ID]: {
-                    id: DEMARCHE_ID
-                }
+                    id: DEMARCHE_ID,
+                },
             });
 
             // @ts-expect-error entitiesToSubventions is private method
@@ -233,7 +233,7 @@ describe("DemarchesSimplifieesService", () => {
         it("should throw error (ds is not configured)", async () => {
             getAcceptedDemarcheIdsMock.mockResolvedValueOnce(null);
             expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
-                "DS is not configured on this env, please add mapper"
+                "DS is not configured on this env, please add mapper",
             );
         });
 
@@ -317,8 +317,8 @@ describe("DemarchesSimplifieesService", () => {
                 variables: {
                     we: "",
                     are: "",
-                    vars: ""
-                }
+                    vars: "",
+                },
             };
 
             await demarchesSimplifieesService.sendQuery(expected.query, expected.variables);

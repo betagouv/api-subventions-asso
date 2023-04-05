@@ -15,7 +15,7 @@ export function waitElementIsVisible(element, percentage = 50) {
             resolve();
         }
         observer = new IntersectionObserver(intersect, {
-            threshold: percentage / 100
+            threshold: percentage / 100,
         });
         observer.observe(element.parentElement);
     });

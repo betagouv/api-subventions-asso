@@ -4,7 +4,7 @@ import {
     GetEtablissementResponseDto,
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
-    Siret
+    Siret,
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
@@ -20,10 +20,10 @@ export class EtablissementController extends Controller {
      */
     @Get("/{siret}")
     @Response<HttpErrorInterface>("400", "SIRET incorrect", {
-        message: "You must provide a valid SIRET"
+        message: "You must provide a valid SIRET",
     })
     @Response<HttpErrorInterface>("404", "L'établissement n'a pas été trouvé", {
-        message: "Etablissement not found"
+        message: "Etablissement not found",
     })
     public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
         const etablissement = await etablissementService.getEtablissement(siret);

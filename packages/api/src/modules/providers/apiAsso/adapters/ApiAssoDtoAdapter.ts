@@ -7,7 +7,7 @@ import {
     StructureEtablissementDto,
     StructureRepresentantLegalDto,
     StructureRibDto,
-    StructureRnaDocumentDto
+    StructureRnaDocumentDto,
 } from "../dto/StructureDto";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
@@ -26,7 +26,7 @@ export default class ApiAssoDtoAdapter {
     static sirenStructureToAssociation(structure: SirenStructureDto): Association {
         const toPvs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameSiren,
-            ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren)
+            ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren),
         );
 
         return {
@@ -41,16 +41,16 @@ export default class ApiAssoDtoAdapter {
                 type_voie: structure.coordonnees.adresse_siege.type_voie,
                 voie: structure.coordonnees.adresse_siege.voie,
                 code_postal: structure.coordonnees.adresse_siege.cp,
-                commune: structure.coordonnees.adresse_siege.commune
+                commune: structure.coordonnees.adresse_siege.commune,
             }),
-            etablisements_siret: toPvs(structure.etablissement.map(e => e.id_siret))
+            etablisements_siret: toPvs(structure.etablissement.map(e => e.id_siret)),
         };
     }
 
     static rnaStructureToAssociation(structure: RnaStructureDto): Association {
         const toPVs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameRna,
-            ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna)
+            ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna),
         );
 
         return {
@@ -67,8 +67,8 @@ export default class ApiAssoDtoAdapter {
                 type_voie: structure.coordonnees.adresse_siege.type_voie,
                 voie: structure.coordonnees.adresse_siege.voie,
                 code_postal: structure.coordonnees.adresse_siege.cp,
-                commune: structure.coordonnees.adresse_siege.commune
-            })
+                commune: structure.coordonnees.adresse_siege.commune,
+            }),
         };
     }
 
@@ -76,15 +76,15 @@ export default class ApiAssoDtoAdapter {
         etablissement: StructureEtablissementDto,
         ribs: StructureRibDto[],
         representantsLegaux: StructureRepresentantLegalDto[],
-        dateModif: string
+        dateModif: string,
     ): Etablissement {
         const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameSiren,
-            ApiAssoDtoAdapter.apiDateToDate(dateModif)
+            ApiAssoDtoAdapter.apiDateToDate(dateModif),
         );
         const toLCAPvs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameLcaDocument,
-            ApiAssoDtoAdapter.apiDateToDate(dateModif)
+            ApiAssoDtoAdapter.apiDateToDate(dateModif),
         );
 
         const toContact = (r: StructureRepresentantLegalDto) => ({
@@ -93,7 +93,7 @@ export default class ApiAssoDtoAdapter {
             civilite: r.civilité,
             telephone: r.telephone,
             email: r.courriel,
-            role: r.fonction
+            role: r.fonction,
         });
 
         return {
@@ -106,7 +106,7 @@ export default class ApiAssoDtoAdapter {
                 type_voie: etablissement.adresse.type_voie,
                 voie: etablissement.adresse.voie,
                 code_postal: etablissement.adresse.cp,
-                commune: etablissement.adresse.commune
+                commune: etablissement.adresse.commune,
             }),
             information_banquaire: ribs
                 .filter(rib => rib.id_siret === etablissement.id_siret)
@@ -120,7 +120,7 @@ export default class ApiAssoDtoAdapter {
                 ? representantsLegaux
                       .filter(r => r.id_siret === etablissement.id_siret)
                       .map(r => toLCAPvs(toContact(r)))
-                : undefined
+                : undefined,
         };
     }
 
@@ -135,7 +135,7 @@ export default class ApiAssoDtoAdapter {
             nom: toRnaPv(`${rnaDocument.lib_sous_type} - ${rnaDocument.id}`),
             type: toRnaPv(rnaDocument.sous_type),
             url: toRnaPv(rnaDocument.url),
-            __meta__: {}
+            __meta__: {},
         };
     }
 
@@ -149,9 +149,9 @@ export default class ApiAssoDtoAdapter {
                     isoDate.getMonth(),
                     isoDate.getDate(),
                     isoDate.getHours(),
-                    isoDate.getMinutes()
-                )
-            )
+                    isoDate.getMinutes(),
+                ),
+            ),
         );
 
         return {
@@ -159,8 +159,8 @@ export default class ApiAssoDtoAdapter {
             type: toLCAPv(dacDocument.meta.type),
             url: toLCAPv(dacDocument.url),
             __meta__: {
-                siret: String(dacDocument.meta.id_siret)
-            }
+                siret: String(dacDocument.meta.id_siret),
+            },
         };
     }
 
@@ -173,8 +173,8 @@ export default class ApiAssoDtoAdapter {
             type: toLCAPv("RIB"),
             url: toLCAPv(rib.url),
             __meta__: {
-                siret: String(rib.meta.id_siret)
-            }
+                siret: String(rib.meta.id_siret),
+            },
         };
     }
 }

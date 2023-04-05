@@ -12,9 +12,9 @@ export default class FonjepSubventionEntity {
                 if (!value) return value;
 
                 return value.replace(/ /g, "");
-            }
+            },
         },
-        name: ["Association", "RaisonSociale"]
+        name: ["Association", "RaisonSociale"],
     };
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
@@ -26,7 +26,7 @@ export default class FonjepSubventionEntity {
                 if (!value) return 0;
 
                 return !value.length ? parseFloat(value) : 0;
-            }
+            },
         },
         status: ["PstStatutPosteLibelle"],
         raison: ["PstRaisonStatutLibelle"],
@@ -37,7 +37,7 @@ export default class FonjepSubventionEntity {
             adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
-            }
+            },
         },
         updated_at: ["updated_at"],
         unique_id: ["id"],
@@ -45,10 +45,10 @@ export default class FonjepSubventionEntity {
         ville: ["Association", "Ville"],
         code_postal: {
             path: ["Association", "CodePostal"],
-            adapter: formatCP
+            adapter: formatCP,
         },
         contact: ["Association", "ContactEmail"],
-        plein_temps: ["PleinTemps"]
+        plein_temps: ["PleinTemps"],
     };
 
     constructor(
@@ -57,6 +57,6 @@ export default class FonjepSubventionEntity {
             name: string;
         },
         public indexedInformations: IFonjepIndexedInformations,
-        public data: unknown
+        public data: unknown,
     ) {}
 }

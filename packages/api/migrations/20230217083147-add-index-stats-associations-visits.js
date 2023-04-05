@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: statsAssociationsVisitRepository
+    default: statsAssociationsVisitRepository,
 } = require("../build/src/modules/stats/repositories/statsAssociationsVisit.repository");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -18,5 +18,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

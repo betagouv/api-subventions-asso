@@ -53,7 +53,7 @@ export default class LeCompteAssoCliController {
                 });
 
                 console.info(`${COLORS.Reset}Validation done`);
-            })
+            }),
         );
     }
 
@@ -82,8 +82,8 @@ export default class LeCompteAssoCliController {
             .then(() =>
                 fs.writeFileSync(this.logFileParsePath, logs.join(""), {
                     flag: "w",
-                    encoding: "utf-8"
-                })
+                    encoding: "utf-8",
+                }),
             );
     }
 
@@ -108,7 +108,7 @@ export default class LeCompteAssoCliController {
             console.error(`${COLORS.FgRed}An error occurred while parsing the file ${file}${COLORS.Reset}`);
             logs.push(`An error occurred while parsing the file ${file}`);
             console.info(
-                "Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE"
+                "Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE",
             );
             return;
         }
@@ -132,7 +132,7 @@ export default class LeCompteAssoCliController {
                       }
                     | RejectedRequest
                 )[]
-            >
+            >,
         );
 
         const created = results.filter(({ state }) => state === "created");
@@ -148,7 +148,7 @@ export default class LeCompteAssoCliController {
         rejected.forEach(request => {
             logs.push(
                 `\n\nThis request is not registered because: ${request.result.message}\n`,
-                JSON.stringify(request.result.data, null, "\t")
+                JSON.stringify(request.result.data, null, "\t"),
             );
         });
     }

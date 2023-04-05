@@ -18,16 +18,16 @@ export default class OsirisParser {
             const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
                 row,
-                OsirisRequestEntity.defaultMainCategory
+                OsirisRequestEntity.defaultMainCategory,
             );
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 OsirisRequestEntity.indexedProviderInformationsPath,
-                data
+                data,
             ) as IOsirisRequestInformations;
             const legalInformations = ParseHelper.indexDataByPathObject(
                 OsirisRequestEntity.indexedLegalInformationsPath,
-                data
+                data,
             ) as unknown as ILegalInformations;
 
             indexedInformations.extractYear = year;
@@ -47,12 +47,12 @@ export default class OsirisParser {
             const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
                 row,
-                OsirisActionEntity.defaultMainCategory
+                OsirisActionEntity.defaultMainCategory,
             );
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 OsirisActionEntity.indexedInformationsPath,
-                data
+                data,
             ) as unknown as IOsirisActionsInformations;
             indexedInformations.extractYear = year;
 
@@ -71,11 +71,11 @@ export default class OsirisParser {
             const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
                 row,
-                OsirisEvaluationEntity.defaultMainCategory
+                OsirisEvaluationEntity.defaultMainCategory,
             );
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 OsirisEvaluationEntity.indexedInformationsPath,
-                data
+                data,
             ) as unknown as IOsirisEvaluationsInformations;
             indexedInformations.extractYear = year;
 

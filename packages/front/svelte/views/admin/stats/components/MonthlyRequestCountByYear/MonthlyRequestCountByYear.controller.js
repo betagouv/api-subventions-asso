@@ -8,12 +8,12 @@ export class MonthlyRequestCountByYearController {
         const aggregateStats = [
             {
                 message: `Nombre total de requêtes en ${year}`,
-                value: data.sum
+                value: data.sum,
             },
             {
                 message: `Nombre moyen de requêtes par mois`,
-                value: data.average.toFixed()
-            }
+                value: data.average.toFixed(),
+            },
         ];
         return { monthlyData, aggregateStats };
     }

@@ -12,7 +12,7 @@ jest.mock("../../views/association/association.helper", () => {
         getSiegeSiret: () => ASSOCIATION.default.siren + ASSOCIATION.default.nic_siege,
         getAddress: () => ASSOCIATION.default.adresse_siege_rna,
         getImmatriculation: jest.fn(),
-        getModification: jest.fn()
+        getModification: jest.fn(),
     };
 });
 
@@ -37,19 +37,19 @@ describe("InfosLegales Controller", () => {
                         [
                             "Adresse du siège",
                             DEFAULT_ASSOCIATION.adresse_siege_rna,
-                            DEFAULT_ASSOCIATION.adresse_siege_siren
+                            DEFAULT_ASSOCIATION.adresse_siege_siren,
                         ],
                         [
                             "Date d'immatriculation",
                             dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_creation_rna),
-                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_creation_siren)
+                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_creation_siren),
                         ],
                         [
                             "Date de modification",
                             dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_modification_rna),
-                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_modification_siren)
-                        ]
-                    ]
+                            dateToDDMMYYYY(DEFAULT_ASSOCIATION.date_modification_siren),
+                        ],
+                    ],
                 };
                 const actual = controller._buildModalData();
                 expect(actual).toEqual(expected);
@@ -60,7 +60,7 @@ describe("InfosLegales Controller", () => {
             it("should return headquarters siret object", () => {
                 const expected = {
                     title: "SIRET du siège",
-                    value: DEFAULT_ASSOCIATION.siren + DEFAULT_ASSOCIATION.nic_siege
+                    value: DEFAULT_ASSOCIATION.siren + DEFAULT_ASSOCIATION.nic_siege,
                 };
                 const actual = controller.siret;
                 expect(actual).toEqual(expected);

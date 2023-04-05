@@ -15,7 +15,7 @@ export class SearchController extends Controller {
      */
     @Get("/associations/{input}")
     @Response<HttpErrorInterface>("404", "Aucune association retrouvée", {
-        message: "Could match any association with given input : ${input}"
+        message: "Could match any association with given input : ${input}",
     })
     public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] }> {
         const result = await searchService.getAssociationsKeys(input);

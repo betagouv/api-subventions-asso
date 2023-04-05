@@ -23,10 +23,10 @@ export class OsirisRequestRepository {
         return (
             await this.collection.findOneAndUpdate(
                 {
-                    "providerInformations.osirisId": osirisRequest.providerInformations.osirisId
+                    "providerInformations.osirisId": osirisRequest.providerInformations.osirisId,
                 },
                 { $set: requestWithoutId },
-                options
+                options,
             )
         ).value as OsirisRequestEntity;
     }
@@ -37,14 +37,14 @@ export class OsirisRequestRepository {
 
     public findByOsirisId(osirisId: string) {
         return this.collection.findOne({
-            "providerInformations.osirisId": osirisId
+            "providerInformations.osirisId": osirisId,
         }) as unknown as OsirisRequestEntity | null;
     }
 
     public findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret
+                "legalInformations.siret": siret,
             })
             .toArray();
     }
@@ -52,7 +52,7 @@ export class OsirisRequestRepository {
     public findByRna(rna: Rna) {
         return this.collection
             .find({
-                "legalInformations.rna": rna
+                "legalInformations.rna": rna,
             })
             .toArray();
     }
@@ -60,7 +60,7 @@ export class OsirisRequestRepository {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
     }

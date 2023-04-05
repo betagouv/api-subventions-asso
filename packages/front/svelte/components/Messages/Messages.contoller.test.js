@@ -7,7 +7,7 @@ describe("MessagesController", () => {
             const controller = new MessagesController();
             const message = {
                 startDate: new Date(),
-                endDate: new Date(2999, 1)
+                endDate: new Date(2999, 1),
             };
 
             const actual = controller._isVisibleMessage(message);
@@ -19,7 +19,7 @@ describe("MessagesController", () => {
             const controller = new MessagesController();
             const message = {
                 startDate: new Date(2988, 1),
-                endDate: new Date(2999, 1)
+                endDate: new Date(2999, 1),
             };
 
             const actual = controller._isVisibleMessage(message);
@@ -31,7 +31,7 @@ describe("MessagesController", () => {
             const controller = new MessagesController();
             const message = {
                 startDate: new Date(2000, 1),
-                endDate: new Date(2001, 1)
+                endDate: new Date(2001, 1),
             };
 
             const actual = controller._isVisibleMessage(message);

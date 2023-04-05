@@ -12,7 +12,7 @@ describe("Versements Adapter", () => {
     const VERSEMENTS = [
         { amount: 30, dateOperation: new Date(MOST_RECENT_DATE.getDate() - 1) },
         { amount: 40, dateOperation: new Date(MOST_RECENT_DATE.getDate() - 3) },
-        { amount: 30, dateOperation: MOST_RECENT_DATE }
+        { amount: 30, dateOperation: MOST_RECENT_DATE },
     ];
 
     describe("toVersement()", () => {

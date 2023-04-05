@@ -12,7 +12,7 @@ export class InfosBancairesEtabController {
             informationBancaireEtab?.map(infoBancaireSourced => ({
                 ...getValue(infoBancaireSourced),
                 date: DateHelper.formatDate(getDate(infoBancaireSourced)),
-                provider: getProvider(infoBancaireSourced)
+                provider: getProvider(infoBancaireSourced),
             })) || []
         );
     }

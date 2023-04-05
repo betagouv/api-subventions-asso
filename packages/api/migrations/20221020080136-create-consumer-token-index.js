@@ -5,5 +5,5 @@ module.exports = {
     },
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    async down(db, client) {}
+    async down(db, client) {},
 };

@@ -18,12 +18,12 @@ const ETABLISSEMENT_1 = {
             value: SIRET,
             provider: "BASE SIREN <Via API ASSO>",
             last_update: "2022-08-29T00:00:00.000Z" as unknown as Date,
-            type: "string"
-        }
+            type: "string",
+        },
     ],
     nic: [],
     versements: [],
-    demandes_subventions: []
+    demandes_subventions: [],
 };
 const ETABLISSEMENT_2 = {
     siret: [
@@ -31,12 +31,12 @@ const ETABLISSEMENT_2 = {
             value: "000000000000002",
             provider: "BASE SIREN <Via API ASSO>",
             last_update: "2022-08-29T00:00:00.000Z" as unknown as Date,
-            type: "string"
-        }
+            type: "string",
+        },
     ],
     nic: [],
     versements: [],
-    demandes_subventions: []
+    demandes_subventions: [],
 };
 
 describe("EtablissementsService", () => {
@@ -125,7 +125,7 @@ describe("EtablissementsService", () => {
         it("should throw a not found error", async () => {
             aggregateMock.mockResolvedValueOnce([]);
             await expect(() => etablissementService.getEtablissementsBySiren(SIREN)).rejects.toThrowError(
-                NotFoundError
+                NotFoundError,
             );
         });
     });

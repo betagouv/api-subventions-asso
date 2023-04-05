@@ -17,7 +17,7 @@ const main = () => {
     asyncAppAction(
         "run",
         `--size 2XL --env EXPORT_DATE=${exportDate} bash ./packages/api/tools/datagouv/download_parser_unite_legal.sh`,
-        appName
+        appName,
     ).then(() => {
         console.log("Extract end !");
 

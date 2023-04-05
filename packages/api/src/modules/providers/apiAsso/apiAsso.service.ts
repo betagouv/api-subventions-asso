@@ -22,7 +22,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         name: "API ASSO",
         type: ProviderEnum.api,
         description:
-            "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso."
+            "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
     };
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
@@ -38,8 +38,8 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             const res = await axios.get<T>(`${API_ASSO_URL}/${route}`, {
                 headers: {
                     Accept: "application/json",
-                    "X-Gravitee-Api-Key": API_ASSO_TOKEN as string
-                }
+                    "X-Gravitee-Api-Key": API_ASSO_TOKEN as string,
+                },
             });
 
             if (res.status === 200) {
@@ -78,8 +78,8 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                 etablissement,
                 structure.rib,
                 structure.representant_legal,
-                structure.identite.date_modif_siren
-            )
+                structure.identite.date_modif_siren,
+            ),
         );
     }
 
@@ -96,7 +96,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             siren: structure.identite.id_siren,
             name: structure.identite.nom,
             provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
-            lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren
+            lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren,
         });
     }
 
@@ -113,7 +113,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                     .filter(document => document["sous_type"].toLocaleUpperCase() === type)
                     .sort(sortByYearAndTimeAsc)
                     // Get most recent document
-                    .pop()
+                    .pop(),
             )
             .filter(document => document) as StructureRnaDocumentDto[];
     }
@@ -127,7 +127,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             "CAP",
             "Jeunesse et Education Populaire (JEP)",
             "Education nationale",
-            "Formation"
+            "Formation",
         ];
 
         const sortByTimeDepotAsc = (a: StructureDacDocumentDto, b: StructureDacDocumentDto) =>
@@ -139,14 +139,14 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                     .filter(document => document.meta.type.toLocaleUpperCase() === type.toLocaleUpperCase())
                     .sort(sortByTimeDepotAsc)
                     // Get most recent document
-                    .pop()
+                    .pop(),
             )
             .filter(document => document) as StructureDacDocumentDto[];
     }
     private filterRibsInDacDocuments(documents: StructureDacDocumentDto[]) {
         const ribs = documents.filter(
             document =>
-                document.meta.type.toLocaleUpperCase() === "RIB" && document.url && document.meta.iban !== "null"
+                document.meta.type.toLocaleUpperCase() === "RIB" && document.url && document.meta.iban !== "null",
         );
 
         const uniquesRibs = ribs.reduce((acc, rib) => {
@@ -176,7 +176,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const filtredRnaDocument = this.filterRnaDocuments(response.asso.documents.document_rna || []);
         const activeDacDocuments = this.filterActiveDacDocuments(
             response.asso.documents.document_dac || [],
-            identifier
+            identifier,
         );
         const filtredDacDocument = this.filterDacDocuments(activeDacDocuments);
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
@@ -184,7 +184,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return [
             ...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)),
             ...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)),
-            ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToRib(document))
+            ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToRib(document)),
         ];
     }
 

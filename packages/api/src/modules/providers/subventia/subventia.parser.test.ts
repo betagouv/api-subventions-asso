@@ -8,7 +8,7 @@ describe("SubventiaParser", () => {
         const data = [
             [1, 2, 3],
             [4, 5, 6],
-            [7, 8, 9]
+            [7, 8, 9],
         ];
 
         const fileContentData = [[header, ...data]];
@@ -47,7 +47,7 @@ describe("SubventiaParser", () => {
             const expected = [
                 [header, data[0]],
                 [header, data[1]],
-                [header, data[2]]
+                [header, data[2]],
             ];
 
             SubventiaParser.parse(buffer);
@@ -64,7 +64,7 @@ describe("SubventiaParser", () => {
             const expected = {
                 A: 1,
                 B: 2,
-                C: 3
+                C: 3,
             };
             linkHeaderToDataMock.mockImplementationOnce(() => expected);
             indexDataByPathObjectMock.mockImplementation(() => ({}));
@@ -73,11 +73,11 @@ describe("SubventiaParser", () => {
 
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
                 SubventiaRequestEntity.indexedProviderInformationsPath,
-                expected
+                expected,
             );
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
                 SubventiaRequestEntity.indexedLegalInformationsPath,
-                expected
+                expected,
             );
 
             indexDataByPathObjectMock.mockReset();

@@ -4,7 +4,7 @@ import CaisseDepotsDtoAdapter from "./caisseDepotsDtoAdapter";
 
 jest.mock("../caisseDepots.service", () => ({
     __esModule: true,
-    default: { provider: { name: "TOTO" } }
+    default: { provider: { name: "TOTO" } },
 }));
 
 describe("CaisseDepotsDtoAdapter", () => {
@@ -12,7 +12,7 @@ describe("CaisseDepotsDtoAdapter", () => {
         const DTO_MULITANNUAL_FIELDS = {
             datesversement_debut: new Date(2020, 9, 2),
             conditionsversement: "ECHELONNE",
-            datesversement_fin: new Date(2021, 10, 4)
+            datesversement_fin: new Date(2021, 10, 4),
         };
         const CLOSE_END = new Date(2020, 10, 6);
 
@@ -20,7 +20,7 @@ describe("CaisseDepotsDtoAdapter", () => {
             const expected = expectMulti ? "Oui" : "Non";
             // @ts-expect-error mock private method
             const actual = CaisseDepotsDtoAdapter._multiannuality({
-                fields: { ...DTO_MULITANNUAL_FIELDS, ...changeToMultiDto }
+                fields: { ...DTO_MULITANNUAL_FIELDS, ...changeToMultiDto },
             });
             return expect(actual).toBe(expected);
         }
@@ -54,7 +54,7 @@ describe("CaisseDepotsDtoAdapter", () => {
             // @ts-expect-error mock
             .mockImplementation((name, date) => v => ({
                 value: v,
-                providerData: "tata"
+                providerData: "tata",
             }));
         it("generate ProviderValueAdapter with proper date and name", () => {
             CaisseDepotsDtoAdapter.toDemandeSubvention(INPUT);

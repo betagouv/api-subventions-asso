@@ -11,7 +11,7 @@ describe("LoginController", () => {
         controller = new LoginController({});
         controller.formElt = {
             email: "",
-            password: ""
+            password: "",
         };
     });
 
@@ -24,7 +24,7 @@ describe("LoginController", () => {
         const PASSWORD = "FAKE_PASSWORD";
 
         const event = {
-            preventDefault: jest.fn()
+            preventDefault: jest.fn(),
         };
 
         afterAll(() => {
@@ -43,7 +43,7 @@ describe("LoginController", () => {
 
             controller.formElt = {
                 email: EMAIL,
-                password: PASSWORD
+                password: PASSWORD,
             };
 
             await controller.submit(event);
@@ -56,7 +56,7 @@ describe("LoginController", () => {
 
             controller.formElt = {
                 email: EMAIL,
-                password: PASSWORD
+                password: PASSWORD,
             };
 
             await controller.submit(event);
@@ -70,7 +70,7 @@ describe("LoginController", () => {
             const getErrorMessageMock = jest.spyOn(controller, "_getErrorMessage").mockReturnValue("");
             controller.formElt = {
                 email: EMAIL,
-                password: PASSWORD
+                password: PASSWORD,
             };
 
             await controller.submit(event);
@@ -84,7 +84,7 @@ describe("LoginController", () => {
             jest.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(expected);
             controller.formElt = {
                 email: EMAIL,
-                password: PASSWORD
+                password: PASSWORD,
             };
 
             await controller.submit(event);

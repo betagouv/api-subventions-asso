@@ -25,5 +25,5 @@ export default {
     dauphinService,
     demarchesSimplifieesService,
     caisseDepotsService,
-    bodaccService
+    bodaccService,
 };

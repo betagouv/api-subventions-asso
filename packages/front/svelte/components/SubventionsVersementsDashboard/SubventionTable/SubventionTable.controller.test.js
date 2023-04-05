@@ -1,7 +1,7 @@
 jest.mock("../helper");
 jest.mock("../../../store/modal.store", () => ({
     modal: { update: jest.fn() },
-    data: { update: jest.fn() }
+    data: { update: jest.fn() },
 }));
 import * as modalStore from "../../../store/modal.store";
 import SubventionTableController from "./SubventionTable.controller";
@@ -25,9 +25,9 @@ describe("SubventionTableController", () => {
                     dispositif: undefined,
                     projectName: undefined,
                     montantsDemande: undefined,
-                    montantsAccordeOrStatus: undefined
-                }))
-            )
+                    montantsAccordeOrStatus: undefined,
+                })),
+            ),
         );
         afterAll(() => mockToSubvention.mockRestore());
         it("should call SubventionsAdapter.toSubvention for each element in array", () => {
@@ -50,7 +50,7 @@ describe("SubventionTableController", () => {
     describe("onRowClick", () => {
         const elementData = {
             hasMoreInfo: true,
-            subvention: {}
+            subvention: {},
         };
 
         it.each`

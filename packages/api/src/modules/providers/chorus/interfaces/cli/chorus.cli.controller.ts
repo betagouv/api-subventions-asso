@@ -41,7 +41,7 @@ export default class ChorusCliController extends CliController {
             } catch (e) {
                 logs.push(
                     `\n\nThis request is not registered because: ${(e as Error).message}\n`,
-                    JSON.stringify(entity, null, "\t")
+                    JSON.stringify(entity, null, "\t"),
                 );
             }
 
@@ -65,7 +65,7 @@ export default class ChorusCliController extends CliController {
 
         const finalResult = {
             created: 0,
-            rejected: 0
+            rejected: 0,
         };
 
         await asyncForEach(batchs, async (batch, index) => {
@@ -85,7 +85,7 @@ export default class ChorusCliController extends CliController {
 
         fs.writeFileSync(this.logFileParsePath, logs.join(""), {
             flag: "w",
-            encoding: "utf-8"
+            encoding: "utf-8",
         });
     }
 
@@ -123,7 +123,7 @@ export default class ChorusCliController extends CliController {
                       }
                     | RejectedRequest
                 )[]
-            >
+            >,
         );
 
         const created = results.filter(({ state }) => state === "created");
@@ -139,7 +139,7 @@ export default class ChorusCliController extends CliController {
         rejected.forEach(request => {
             logs.push(
                 `\n\nThis request is not registered because: ${request.result.message}\n`,
-                JSON.stringify(request.result.data, null, "\t")
+                JSON.stringify(request.result.data, null, "\t"),
             );
         });
     }

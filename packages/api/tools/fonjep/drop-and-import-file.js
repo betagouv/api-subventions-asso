@@ -7,7 +7,7 @@ const dateString = process.argv[4];
 
 if (process.argv.length < 5) {
     console.error(
-        "Please use command: node drop-and-import-file.js [YOUR_APP_NAME] [LINK_TO_DATA] [DATE_OF_EXPORT (YYYY-DD-MM)]"
+        "Please use command: node drop-and-import-file.js [YOUR_APP_NAME] [LINK_TO_DATA] [DATE_OF_EXPORT (YYYY-DD-MM)]",
     );
     process.exit();
 }
@@ -20,7 +20,7 @@ scalingoHelper
     .asyncAppAction(
         "run",
         `--size 2XL --file ${fonjepFile} --env IMPORT_DATE=${dateString} bash ./packages/api/tools/fonjep/import-file.sh`,
-        appName
+        appName,
     )
     .then(() => {
         console.log("Extract end !");

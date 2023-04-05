@@ -10,7 +10,7 @@ export class BodaccService implements AssociationsProvider {
     provider = {
         type: ProviderEnum.api,
         name: "Bodacc",
-        description: "Le bulletin officiel des annonces civiles et commerciales"
+        description: "Le bulletin officiel des annonces civiles et commerciales",
     };
 
     isAssociationsProvider = true;
@@ -20,7 +20,7 @@ export class BodaccService implements AssociationsProvider {
     async sendRequest(siren: Siren) {
         try {
             const result = await axios.get<BodaccDto>(
-                `${this.apiUrl}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren}`
+                `${this.apiUrl}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren}`,
             );
             return result.data;
         } catch (e) {

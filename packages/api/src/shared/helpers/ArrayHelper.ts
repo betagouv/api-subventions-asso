@@ -1,6 +1,6 @@
 export async function asyncFilter<T>(
     array: T[],
-    callback: (value: T, index: number) => Promise<boolean>
+    callback: (value: T, index: number) => Promise<boolean>,
 ): Promise<T[]> {
     return array.reduce(async (acc, value, index) => {
         const arrayResult = await acc;

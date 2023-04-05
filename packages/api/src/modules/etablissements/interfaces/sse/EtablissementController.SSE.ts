@@ -5,7 +5,7 @@ import SSEResponse from "../../../../sse/@types/SSEResponse";
 import etablissementService from "../../etablissements.service";
 
 @ControllerSSE("/sse/etablissement", {
-    security: "jwt"
+    security: "jwt",
 })
 export class EtablissementSSEController {
     /**

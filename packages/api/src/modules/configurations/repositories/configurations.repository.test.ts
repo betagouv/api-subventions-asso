@@ -11,19 +11,19 @@ describe("Configuration Repository", () => {
 
             const expected = [
                 {
-                    name: "TEST"
+                    name: "TEST",
                 },
                 {
-                    $set: expect.objectContaining({ data: "test-data", name: "TEST" })
+                    $set: expect.objectContaining({ data: "test-data", name: "TEST" }),
                 },
                 {
-                    upsert: true
-                }
+                    upsert: true,
+                },
             ];
 
             configurationsRepository.upsert("TEST", {
                 data: "test-data",
-                name: "TEST"
+                name: "TEST",
             });
 
             expect(fn).toHaveBeenCalledWith(...expected);
@@ -37,8 +37,8 @@ describe("Configuration Repository", () => {
 
             const expected = [
                 {
-                    name: "TEST"
-                }
+                    name: "TEST",
+                },
             ];
 
             configurationsRepository.getByName("TEST");

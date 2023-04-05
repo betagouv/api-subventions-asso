@@ -1,13 +1,13 @@
 jest.mock("@helpers/dateHelper", () => {
     return {
         __esModule: true, // this property makes it work
-        STATS_YEAR_CHOICES: [2023, 2022]
+        STATS_YEAR_CHOICES: [2023, 2022],
     };
 });
 jest.mock("chart.js/auto", () =>
     jest.fn(function () {
         return {};
-    })
+    }),
 );
 
 import Chart from "chart.js/auto";
@@ -55,7 +55,7 @@ describe("MonthlyGraphController", () => {
         const MONTHLY_DATA = [43, 44];
         const DATA = {
             monthlyData: MONTHLY_DATA,
-            lastYearNbUser: 42
+            lastYearNbUser: 42,
         };
         const LOAD_DATA = jest.fn(() => Promise.resolve(DATA));
         const YEAR = 2022;
@@ -111,7 +111,7 @@ describe("MonthlyGraphController", () => {
 
         ctrl.chart = {
             update: jest.fn(),
-            __esModule: true // this property makes it work
+            __esModule: true, // this property makes it work
         };
         const updateChartSpy = jest.spyOn(ctrl.chart, "update");
         const setterSpy = jest.spyOn(ctrl, "chartData", "set");
@@ -167,8 +167,8 @@ describe("MonthlyGraphController", () => {
         const TOOLTIP = { $set: jest.fn() };
         const CANVAS = {
             getContext: () => ({
-                createLinearGradient: () => ({ addColorStop: jest.fn() })
-            })
+                createLinearGradient: () => ({ addColorStop: jest.fn() }),
+            }),
         };
 
         it("returns if canvas is undefined", () => {

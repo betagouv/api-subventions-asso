@@ -13,7 +13,7 @@ describe("ConfigurationService", () => {
     const EMPTY_ENTITY = {
         name: CONFIG_NAME,
         data: DEFAULT_DATA,
-        updatedAt: new Date()
+        updatedAt: new Date(),
     };
     describe("createEmptyConfigEntity()", () => {
         it("should return entity", () => {
@@ -70,7 +70,7 @@ describe("ConfigurationService", () => {
                 await configurationsService.setDauphinToken(expected);
 
                 expect(upsertMock).toHaveBeenCalledWith("DAUPHIN-TOKEN", {
-                    data: expected
+                    data: expected,
                 });
             });
         });
@@ -112,7 +112,7 @@ describe("ConfigurationService", () => {
 
         beforeAll(() => {
             getByNameMock.mockImplementation(async name => ({
-                data: [...PERSISTED_DOMAINS]
+                data: [...PERSISTED_DOMAINS],
             }));
             upsertMock.mockImplementation(jest.fn());
         });
@@ -132,7 +132,7 @@ describe("ConfigurationService", () => {
                 await configurationsService.addEmailDomain(NEW_DOMAIN);
                 expect(upsertMock).toHaveBeenCalledWith(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
                     data: [...PERSISTED_DOMAINS, NEW_DOMAIN],
-                    updatedAt: new Date()
+                    updatedAt: new Date(),
                 });
             });
 
@@ -142,7 +142,7 @@ describe("ConfigurationService", () => {
                 expect(upsertMock).toHaveBeenCalledWith(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
                     name: CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
                     data: [NEW_DOMAIN],
-                    updatedAt: new Date()
+                    updatedAt: new Date(),
                 });
             });
 

@@ -22,7 +22,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         name: "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
         type: ProviderEnum.api,
         description:
-            "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv."
+            "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv.",
     };
 
     private BASE_URL = "https://entreprise.data.gouv.fr";
@@ -69,7 +69,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
                 siren: siretToSiren(siret),
                 name: association.denomination,
                 provider: this.provider.name,
-                lastUpdate: new Date(data.etablissement.updated_at)
+                lastUpdate: new Date(data.etablissement.updated_at),
             });
         }
 
@@ -91,7 +91,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
                 siren,
                 name: association.denomination,
                 provider: this.provider.name,
-                lastUpdate: new Date(association.updated_at)
+                lastUpdate: new Date(association.updated_at),
             });
             EventManager.call("rna-siren.matching", [{ rna, siren }]);
         }
@@ -100,7 +100,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
             data.unite_legale.etablissements.forEach(etablissement => {
                 const etab = EtablissementDtoAdapter.toEtablissement({
                     ...etablissement,
-                    unite_legale: data.unite_legale
+                    unite_legale: data.unite_legale,
                 });
                 this.etablissementsCache.add(etablissement.siret, etab);
             });
@@ -121,7 +121,7 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
             siren: association.siret ? siretToSiren(association.siret) : null,
             name,
             provider: this.provider.name,
-            lastUpdate: new Date(association.updated_at)
+            lastUpdate: new Date(association.updated_at),
         });
 
         if (association.siret) {
@@ -172,16 +172,16 @@ export class DataEntrepriseService implements AssociationsProvider, Etablissemen
         const assos: Association[] = [];
         const result = await this.sendRequest<{ etablissement: EtablisementDto }>(
             `${this.SIRETTE_ROUTE}/${siret}`,
-            false
+            false,
         );
 
         if (result?.etablissement)
             assos.push(
                 EntrepriseDtoAdapter.toAssociation({
                     unite_legale: {
-                        ...result.etablissement.unite_legale
-                    }
-                })
+                        ...result.etablissement.unite_legale,
+                    },
+                }),
             );
 
         const rna = await rnaSirenService.getRna(siren);

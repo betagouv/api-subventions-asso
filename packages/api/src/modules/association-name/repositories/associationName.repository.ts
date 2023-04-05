@@ -17,12 +17,12 @@ export class AssociationNameRepository {
                 {
                     rna: entity.rna,
                     siren: entity.siren,
-                    name: entity.name
+                    name: entity.name,
                 },
                 {
-                    $setOnInsert: entity
+                    $setOnInsert: entity,
                 },
-                { upsert: true }
+                { upsert: true },
             );
         });
     }
@@ -33,7 +33,7 @@ export class AssociationNameRepository {
             document.name,
             document.provider,
             document.lastUpdate,
-            document.siren
+            document.siren,
         );
     }
 
@@ -48,11 +48,11 @@ export class AssociationNameRepository {
                         {
                             rna: {
                                 $regex: valueNoSpace,
-                                $options: "i"
-                            }
+                                $options: "i",
+                            },
                         },
-                        { name: { $regex: value, $options: "i" } }
-                    ]
+                        { name: { $regex: value, $options: "i" } },
+                    ],
                 })
                 .toArray()
         ).map(document => this.toEntity(document));
@@ -62,7 +62,7 @@ export class AssociationNameRepository {
         const result = await this.collection.findOne({
             rna: entity.rna,
             siren: entity.siren,
-            name: entity.name
+            name: entity.name,
         });
         if (result) return this.toEntity(result);
         return null;
@@ -70,7 +70,7 @@ export class AssociationNameRepository {
 
     async findAllByIdentifier(identifier: Siren | Rna) {
         return (await this.collection.find({ $or: [{ rna: identifier }, { siren: identifier }] }).toArray()).map(
-            document => this.toEntity(document)
+            document => this.toEntity(document),
         );
     }
 

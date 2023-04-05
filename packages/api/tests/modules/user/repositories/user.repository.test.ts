@@ -14,7 +14,7 @@ describe("UserRepository", () => {
         signupAt: new Date(),
         jwt: { token: "TOKEN", expirateDate: new Date() },
         active: false,
-        stats: { searchCount: 0, lastSearchDate: null }
+        stats: { searchCount: 0, lastSearchDate: null },
     };
     describe("The methods must not return any secret", () => {
         beforeEach(async () => {
@@ -25,8 +25,8 @@ describe("UserRepository", () => {
             await expect(userRepository.findByEmail("test@beta.gouv.fr")).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
-                    jwt: { token: expect.any(String), expirateDate: expect.any(Date) }
-                })
+                    jwt: { token: expect.any(String), expirateDate: expect.any(Date) },
+                }),
             );
         });
 
@@ -35,8 +35,8 @@ describe("UserRepository", () => {
             await expect(userRepository.update({ ...user, active: true })).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
-                    jwt: { token: expect.any(String), expirateDate: expect.any(Date) }
-                })
+                    jwt: { token: expect.any(String), expirateDate: expect.any(Date) },
+                }),
             );
         });
 
@@ -44,8 +44,8 @@ describe("UserRepository", () => {
             await expect(userRepository.create(new UserNotPersisted(defaultUser))).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
-                    jwt: { token: expect.any(String), expirateDate: expect.any(Date) }
-                })
+                    jwt: { token: expect.any(String), expirateDate: expect.any(Date) },
+                }),
             );
         });
     });
@@ -75,7 +75,7 @@ describe("UserRepository", () => {
                 _id: expect.any(ObjectId),
                 signupAt: expect.any(Date),
                 hashPassword: expect.any(String),
-                jwt: { expirateDate: expect.any(Date), token: expect.any(String) }
+                jwt: { expirateDate: expect.any(Date), token: expect.any(String) },
             });
         });
 

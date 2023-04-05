@@ -8,7 +8,7 @@ import {
     isCompteAssoId,
     isRna,
     isOsirisRequestId,
-    isOsirisActionId
+    isOsirisActionId,
 } from "../../../shared/Validators";
 import associationNameService from "../../association-name/associationName.service";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
@@ -25,7 +25,7 @@ export const VALID_REQUEST_ERROR_CODE = {
     INVALID_RNA: 2,
     INVALID_NAME: 3,
     INVALID_CAID: 4,
-    INVALID_OSIRISID: 5
+    INVALID_OSIRISID: 5,
 };
 
 export class OsirisService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
@@ -33,7 +33,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         name: "OSIRIS",
         type: ProviderEnum.raw,
         description:
-            "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement)."
+            "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
     };
 
     constructor() {
@@ -52,20 +52,20 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             siren,
             name,
             provider: this.provider.name,
-            lastUpdate: date
+            lastUpdate: date,
         });
 
         if (existingFile) {
             await osirisRequestRepository.update(request);
             return {
                 state: "updated",
-                result: request
+                result: request,
             };
         } else {
             await osirisRequestRepository.add(request);
             return {
                 state: "created",
-                result: request
+                result: request,
             };
         }
     }
@@ -75,7 +75,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             return {
                 message: `INVALID SIRET FOR ${request.legalInformations.siret}`,
                 data: request.legalInformations,
-                code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET
+                code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET,
             };
         }
 
@@ -83,7 +83,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             return {
                 message: `INVALID RNA FOR ${request.legalInformations.rna}`,
                 data: request.legalInformations,
-                code: VALID_REQUEST_ERROR_CODE.INVALID_RNA
+                code: VALID_REQUEST_ERROR_CODE.INVALID_RNA,
             };
         }
 
@@ -91,7 +91,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             return {
                 message: `INVALID NAME FOR ${request.legalInformations.name}`,
                 data: request.legalInformations,
-                code: VALID_REQUEST_ERROR_CODE.INVALID_NAME
+                code: VALID_REQUEST_ERROR_CODE.INVALID_NAME,
             };
         }
 
@@ -99,7 +99,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             return {
                 message: `INVALID COMPTE ASSO ID FOR ${request.legalInformations.name}`,
                 data: request.providerInformations,
-                code: VALID_REQUEST_ERROR_CODE.INVALID_CAID
+                code: VALID_REQUEST_ERROR_CODE.INVALID_CAID,
             };
         }
 
@@ -107,7 +107,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             return {
                 message: `INVALID OSIRIS ID FOR ${request.legalInformations.name}`,
                 data: request.providerInformations,
-                code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID
+                code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID,
             };
         }
 
@@ -119,7 +119,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (existingAction) {
             return {
                 state: "updated",
-                result: await osirisActionRepository.update(action)
+                result: await osirisActionRepository.update(action),
             };
         }
 
@@ -127,7 +127,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         return {
             state: "created",
-            result: action
+            result: action,
         };
     }
 
@@ -135,14 +135,14 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (!isCompteAssoId(action.indexedInformations.compteAssoId)) {
             return {
                 message: `INVALID COMPTE ASSO ID FOR ${action.indexedInformations.compteAssoId}`,
-                data: action.indexedInformations
+                data: action.indexedInformations,
             };
         }
 
         if (!isOsirisActionId(action.indexedInformations.osirisActionId)) {
             return {
                 message: `INVALID OSIRIS ACTION ID FOR ${action.indexedInformations.osirisActionId}`,
-                data: action.indexedInformations
+                data: action.indexedInformations,
             };
         }
 
@@ -154,21 +154,21 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (!isOsirisActionId(evaluation.osirisActionId)) {
             return {
                 message: `INVALID OSIRIS ACTION ID FOR ${evaluation.osirisActionId}`,
-                data: evaluation
+                data: evaluation,
             };
         }
 
         if (!isSiret(evaluation.siret)) {
             return {
                 message: `INVALID SIRET FOR ${evaluation.siret}`,
-                data: evaluation
+                data: evaluation,
             };
         }
 
         if (!evaluation.evaluation_resultat.length) {
             return {
                 message: `INVALID EVALUATION RESULTAT FOR ${evaluation.evaluation_resultat}`,
-                data: evaluation
+                data: evaluation,
             };
         }
 
@@ -181,7 +181,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
         if (existingEvaluation) {
             return {
                 state: "updated",
-                result: await osirisEvaluationRepository.update(entity)
+                result: await osirisEvaluationRepository.update(entity),
             };
         }
 
@@ -189,7 +189,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         return {
             state: "created",
-            result: entity
+            result: entity,
         };
     }
 
@@ -198,13 +198,13 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         for (const request of requests) {
             request.actions = await osirisActionRepository.findByCompteAssoId(
-                request.providerInformations.compteAssoId
+                request.providerInformations.compteAssoId,
             );
             // map -> save actions + map -> save eval
             await request.actions.reduce(async (acc, value) => {
                 await acc;
                 value.evaluation = await osirisEvaluationRepository.findByActionId(
-                    value.indexedInformations.osirisActionId
+                    value.indexedInformations.osirisActionId,
                 );
             }, Promise.resolve());
         }
@@ -218,7 +218,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         for (const request of requests) {
             request.actions = actions.filter(
-                a => a.indexedInformations.compteAssoId === request.providerInformations.compteAssoId
+                a => a.indexedInformations.compteAssoId === request.providerInformations.compteAssoId,
             );
         }
         return requests;
@@ -229,7 +229,7 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
 
         for (const request of requests) {
             request.actions = await osirisActionRepository.findByCompteAssoId(
-                request.providerInformations.compteAssoId
+                request.providerInformations.compteAssoId,
             );
         }
         return requests;
@@ -251,9 +251,9 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined
-                )
-            )
+                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined,
+                ),
+            ),
         );
 
         return associations;
@@ -267,9 +267,9 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined
-                )
-            )
+                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined,
+                ),
+            ),
         );
 
         return associations;
@@ -283,9 +283,9 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined
-                )
-            )
+                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined,
+                ),
+            ),
         );
 
         return associations;

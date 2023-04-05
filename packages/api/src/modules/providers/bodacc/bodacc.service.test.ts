@@ -3,12 +3,12 @@ import BodaccAdapter from "./adapters/bodacc.adapter";
 import bodaccService from "./bodacc.service";
 import { BodaccDto } from "./dto/BodaccDto";
 jest.mock("axios", () => ({
-    get: jest.fn(() => ({ data: null }))
+    get: jest.fn(() => ({ data: null })),
 }));
 
 import * as SirenHelper from "./../../../shared/helpers/SirenHelper";
 jest.mock("./../../../shared/helpers/SirenHelper", () => ({
-    siretToSiren: jest.fn(siren => siren)
+    siretToSiren: jest.fn(siren => siren),
 }));
 
 describe("Bodacc Service", () => {
@@ -17,12 +17,12 @@ describe("Bodacc Service", () => {
     const RECORD = {
         record: {
             fields: {
-                registre: ["", SIREN]
-            }
-        }
+                registre: ["", SIREN],
+            },
+        },
     };
     const BODACC_DTO = {
-        records: [RECORD]
+        records: [RECORD],
     } as BodaccDto;
 
     const mockToAssociation = jest.spyOn(BodaccAdapter, "toAssociation").mockImplementation(jest.fn());
@@ -31,7 +31,7 @@ describe("Bodacc Service", () => {
         it("should call axios with url", async () => {
             await bodaccService.sendRequest(SIREN);
             expect(axios.get).toHaveBeenCalledWith(
-                `https://bodacc-datadila.opendatasoft.com/api/v2/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${SIREN}`
+                `https://bodacc-datadila.opendatasoft.com/api/v2/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${SIREN}`,
             );
         });
     });

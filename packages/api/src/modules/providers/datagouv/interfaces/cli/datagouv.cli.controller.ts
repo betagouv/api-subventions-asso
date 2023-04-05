@@ -37,7 +37,7 @@ export default class DataGouvCliController extends CliController {
             "changementNicSiegeUniteLegale",
             "changementEconomieSocialeSolidaireUniteLegale",
             "changementSocieteMissionUniteLegale",
-            "changementCaractereEmployeurUniteLegale"
+            "changementCaractereEmployeurUniteLegale",
         ];
 
         return props.every(prop => entity[prop] === "false");
@@ -109,7 +109,7 @@ export default class DataGouvCliController extends CliController {
         await dataGouvService.addNewImport({
             filename: file,
             dateOfFile: exportDate,
-            dateOfImport: new Date()
+            dateOfImport: new Date(),
         });
     }
 }

@@ -5,7 +5,7 @@ import { Get } from "../../../../decorators/sse.methods.decorator";
 import SSEResponse from "../../../../sse/@types/SSEResponse";
 
 @ControllerSSE("/sse/association", {
-    security: "jwt"
+    security: "jwt",
 })
 export class AssociationSSEController {
     /**

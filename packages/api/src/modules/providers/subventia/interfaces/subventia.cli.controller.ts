@@ -29,7 +29,7 @@ export default class SubventiaCliController extends CliController {
         const saveEntities = async (
             acc: Promise<(RejectedRequest | AcceptedRequest)[]>,
             entity: SubventiaRequestEntity,
-            index: number
+            index: number,
         ) => {
             const data = await acc;
             CliHelper.printProgress(index + 1, entities.length);
@@ -51,7 +51,7 @@ export default class SubventiaCliController extends CliController {
         rejected.forEach(result => {
             this.logger.log(
                 `\n\nThis request is not registered because: ${result.message}\n`,
-                JSON.stringify(result.data, null, "\t")
+                JSON.stringify(result.data, null, "\t"),
             );
         });
     }

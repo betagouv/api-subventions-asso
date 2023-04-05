@@ -3,7 +3,7 @@ export enum SignupErrorCodes {
     USER_ALREADY_EXIST = 2,
     CREATION_ERROR = 3,
     CREATION_RESET_ERROR = 4,
-    EMAIL_MUST_BE_END_GOUV = 5
+    EMAIL_MUST_BE_END_GOUV = 5,
 }
 
 export interface SignupDtoPositiveResponse {

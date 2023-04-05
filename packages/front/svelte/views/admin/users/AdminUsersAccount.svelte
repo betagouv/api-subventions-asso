@@ -45,7 +45,7 @@
             user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
             user.resetTokenDate ? new Date(user.resetTokenDate).toLocaleString() : "",
             user.stats.searchCount,
-            new Date(user.stats.lastSearchDate).toLocaleString()
+            new Date(user.stats.lastSearchDate).toLocaleString(),
         ]);
 
         const csvHeader = [
@@ -56,7 +56,7 @@
             "Lien d'activation",
             "Date du token de reset",
             "Nombres de recherches",
-            "Date dernière recherche"
+            "Date dernière recherche",
         ];
 
         const csvString = buildCsv(csvHeader, csvRows);

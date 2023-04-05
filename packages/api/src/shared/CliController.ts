@@ -37,15 +37,15 @@ export default class CliController {
             files
                 .reduce((acc, filePath) => {
                     return acc.then(() =>
-                        exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs)
+                        exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs),
                     );
                 }, Promise.resolve())
                 // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
                 .then(() =>
                     fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
                         flag: "w",
-                        encoding: "utf-8"
-                    })
+                        encoding: "utf-8",
+                    }),
                 )
         );
     }

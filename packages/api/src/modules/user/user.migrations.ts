@@ -7,7 +7,7 @@ import userService from "./user.service";
 
 export enum EmailToLowerCaseAction {
     UPDATE = 1,
-    DELETE = 2
+    DELETE = 2,
 }
 
 export default class UserMigrations {
@@ -42,14 +42,14 @@ export default class UserMigrations {
 
                 return acc;
             },
-            { actived: [] as UserDto[], unactived: [] as UserDto[] }
+            { actived: [] as UserDto[], unactived: [] as UserDto[] },
         );
     }
 
     private toLowerCaseUsers(users: UserDto[]) {
         return users.map((user: UserDto) => ({
             ...user,
-            email: user.email.toLowerCase()
+            email: user.email.toLowerCase(),
         }));
     }
 
@@ -58,8 +58,8 @@ export default class UserMigrations {
             return [
                 {
                     action: EmailToLowerCaseAction.UPDATE,
-                    user: users[0]
-                }
+                    user: users[0],
+                },
             ];
 
         const usersToRemove: UserDto[] = [];
@@ -72,11 +72,11 @@ export default class UserMigrations {
             return [
                 {
                     action: EmailToLowerCaseAction.UPDATE,
-                    user: lastCreated
+                    user: lastCreated,
                 },
                 ...unactived
                     .filter(user => user != lastCreated)
-                    .map(user => ({ action: EmailToLowerCaseAction.DELETE, user }))
+                    .map(user => ({ action: EmailToLowerCaseAction.DELETE, user })),
             ];
         }
 
@@ -88,21 +88,21 @@ export default class UserMigrations {
         return [
             {
                 action: EmailToLowerCaseAction.UPDATE,
-                user: lastConnectedUser
+                user: lastConnectedUser,
             },
             ...usersToRemove.map(user => ({
                 action: EmailToLowerCaseAction.DELETE,
-                user
-            }))
+                user,
+            })),
         ];
     }
 
     private async findLastCreatedUser(users: UserDto[]) {
         const resetUsers = await Promise.all(
-            users.map(user => userService.findUserResetByUserId(user._id as ObjectId))
+            users.map(user => userService.findUserResetByUserId(user._id as ObjectId)),
         );
         const ordered = (resetUsers.filter(reset => reset) as UserReset[]).sort(
-            (resetA, resetB) => resetB.createdAt.getTime() - resetA.createdAt.getTime()
+            (resetA, resetB) => resetB.createdAt.getTime() - resetA.createdAt.getTime(),
         );
 
         return users.find(user => user._id === ordered[0].userId) as UserDto;
@@ -115,8 +115,8 @@ export default class UserMigrations {
                 jwt: (await userService.findJwtByUser(user)) as {
                     token: string;
                     expirateDate: Date;
-                }
-            }))
+                },
+            })),
         );
 
         const sortedJwt = jwtUsers.sort((a, b) => b.jwt.expirateDate.getTime() - a.jwt.expirateDate.getTime());

@@ -10,7 +10,7 @@ class RequestsService {
 
         axios.interceptors.response.use(
             response => response,
-            error => this._errorCatcher(error)
+            error => this._errorCatcher(error),
         );
     }
 
@@ -33,7 +33,7 @@ class RequestsService {
     addErrorHook(ErrorClass, callback) {
         this._errorHooks.push({
             ErrorClass,
-            callback
+            callback,
         });
     }
 
@@ -42,7 +42,7 @@ class RequestsService {
             url: path,
             method: type,
             data,
-            params
+            params,
         });
     }
 
@@ -53,7 +53,7 @@ class RequestsService {
         const typedError = new ErrorClass({
             message: error.response.data.message,
             code: error.response.data.code,
-            __nativeError__: error
+            __nativeError__: error,
         });
 
         if (hooks.length) {

@@ -16,7 +16,7 @@ describe("ProviderValueFactory", () => {
                 provider: "TEST",
                 value: "STRING_VALUE",
                 last_update: now,
-                type: "string"
+                type: "string",
             };
             expect(actual).toEqual(expected);
         });
@@ -38,8 +38,8 @@ describe("ProviderValueFactory", () => {
                     provider: "TEST",
                     value: "STRING_VALUE",
                     last_update: now,
-                    type: "string"
-                }
+                    type: "string",
+                },
             ]);
             expect(actual).toEqual(expected);
         });

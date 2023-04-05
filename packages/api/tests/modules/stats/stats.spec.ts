@@ -31,7 +31,7 @@ describe("/stats", () => {
                     .query({
                         nbReq: MIN_REQUESTS,
                         start: YESTERDAY.toString(),
-                        end: TODAY.toString()
+                        end: TODAY.toString(),
                     })
                     .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
@@ -42,7 +42,7 @@ describe("/stats", () => {
             it("should return error with HTTP status code 500", async () => {
                 const ERROR_MESSAGE = "Something went wrong";
                 spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () =>
-                    Promise.reject(new Error(ERROR_MESSAGE))
+                    Promise.reject(new Error(ERROR_MESSAGE)),
                 );
                 const expected = { message: ERROR_MESSAGE };
                 const actual = await request(g.app)
@@ -50,7 +50,7 @@ describe("/stats", () => {
                     .query({
                         nbReq: MIN_REQUESTS,
                         start: YESTERDAY.toString(),
-                        end: TODAY.toString()
+                        end: TODAY.toString(),
                     })
                     .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json");
@@ -62,17 +62,17 @@ describe("/stats", () => {
             it("should return error with HTTP status code 401", async () => {
                 const ERROR_MESSAGE = "Something went wrong";
                 spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () =>
-                    Promise.reject(new Error(ERROR_MESSAGE))
+                    Promise.reject(new Error(ERROR_MESSAGE)),
                 );
                 const expected = {
-                    message: "JWT does not contain required scope."
+                    message: "JWT does not contain required scope.",
                 };
                 const actual = await request(g.app)
                     .get("/stats/requests")
                     .query({
                         nbReq: MIN_REQUESTS,
                         start: YESTERDAY.toString(),
-                        end: TODAY.toString()
+                        end: TODAY.toString(),
                     })
                     .set("x-access-token", await createAndGetUserToken())
                     .set("Accept", "application/json");
@@ -103,7 +103,7 @@ describe("/stats", () => {
             it("should return error with HTTP status code 500", async () => {
                 const ERROR_MESSAGE = "Something went wrong";
                 spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () =>
-                    Promise.reject(new Error(ERROR_MESSAGE))
+                    Promise.reject(new Error(ERROR_MESSAGE)),
                 );
                 const expected = { message: ERROR_MESSAGE };
                 const actual = await request(g.app)
@@ -119,10 +119,10 @@ describe("/stats", () => {
             it("should return error with HTTP status code 401", async () => {
                 const ERROR_MESSAGE = "Something went wrong";
                 spyGetMedianRequestsOnPeriod.mockImplementationOnce(async () =>
-                    Promise.reject(new Error(ERROR_MESSAGE))
+                    Promise.reject(new Error(ERROR_MESSAGE)),
                 );
                 const expected = {
-                    message: "JWT does not contain required scope."
+                    message: "JWT does not contain required scope.",
                 };
                 const actual = await request(g.app)
                     .get("/stats/requests/median")
@@ -146,7 +146,7 @@ describe("/stats", () => {
             function makeRequestWithParams(
                 limit: undefined | number = undefined,
                 start: undefined | Date = undefined,
-                end: undefined | Date = undefined
+                end: undefined | Date = undefined,
             ) {
                 const queryObj: DefaultObject<string | number> = {};
 
@@ -178,30 +178,30 @@ describe("/stats", () => {
                     const data = [
                         {
                             name: "GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS",
-                            visits: 4
+                            visits: 4,
                         },
                         {
                             name: "ORIN ÀBAJADE",
-                            visits: 2
+                            visits: 2,
                         },
                         {
                             name: "LA CASERNE BASCULE",
-                            visits: 2
+                            visits: 2,
                         },
                         {
                             name: "ASSOCIATION AURORE",
-                            visits: 2
+                            visits: 2,
                         },
                         {
                             name: "AVENIR ET JOIE - JOC",
-                            visits: 2
-                        }
+                            visits: 2,
+                        },
                     ];
 
                     const response = await makeRequestWithParams();
                     expect(response.statusCode).toBe(200);
                     expect(response.body).toMatchObject({
-                        data: expect.arrayContaining(data)
+                        data: expect.arrayContaining(data),
                     });
                 });
 
@@ -209,12 +209,12 @@ describe("/stats", () => {
                     const data = [
                         {
                             name: "GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS",
-                            visits: 3
+                            visits: 3,
                         },
                         {
                             name: "ORIN ÀBAJADE",
-                            visits: 2
-                        }
+                            visits: 2,
+                        },
                     ];
                     const limit = 2;
                     const start = THIS_MONTH;
@@ -289,7 +289,7 @@ describe("/stats", () => {
             it("should return data with HTTP status code 200", async () => {
                 const DATA = {
                     nombres_utilisateurs_avant_annee: 1,
-                    evolution_nombres_utilisateurs: [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3]
+                    evolution_nombres_utilisateurs: [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3],
                 };
                 const expected = { data: DATA };
                 await request(g.app)

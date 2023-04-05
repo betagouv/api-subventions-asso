@@ -15,7 +15,7 @@ jest.mock("@helpers/csvHelper", () => {
     return {
         __esModule: true,
         buildCsv: jest.fn(),
-        downloadCsv: jest.fn()
+        downloadCsv: jest.fn(),
     };
 });
 import * as csvHelper from "@helpers/csvHelper";
@@ -23,7 +23,7 @@ import * as csvHelper from "@helpers/csvHelper";
 jest.mock("@helpers/validatorHelper", () => {
     return {
         __esModule: true,
-        isSiret: jest.fn()
+        isSiret: jest.fn(),
     };
 });
 import * as validatorHelper from "@helpers/validatorHelper";
@@ -233,7 +233,7 @@ describe("SubventionsVersementsDashboardController", () => {
             mockExtractVersementHeaders,
             mockExtractVersementRows,
             mockExtractSubventionHeaders,
-            mockExtractSubventionRows
+            mockExtractSubventionRows,
         ];
 
         let ctrl;
@@ -271,8 +271,8 @@ describe("SubventionsVersementsDashboardController", () => {
                 [...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
                 [
                     [...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
-                    [...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B]
-                ]
+                    [...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B],
+                ],
             );
         });
 
@@ -432,7 +432,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
             const expected = [
                 { value: 0, label: `Exercice ${element2020.year} (année civile)` },
-                { value: 1, label: `Exercice ${element2021.year} (année civile)` }
+                { value: 1, label: `Exercice ${element2021.year} (année civile)` },
             ];
 
             const actual = controller._buildExercices();

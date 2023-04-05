@@ -4,5 +4,5 @@ export enum UserErrorCodes {
     USER_NOT_F0UND,
     INVALID_ROLE,
     INVALID_PASSWORD,
-    INVALID_DOMAIN
+    INVALID_DOMAIN,
 }

@@ -6,7 +6,7 @@ describe("SubventiaRepository", () => {
         let getCollectionMock: jest.SpyInstance;
         const collection = {
             insertOne: jest.fn(),
-            findOne: jest.fn()
+            findOne: jest.fn(),
         };
 
         beforeAll(() => {
@@ -28,15 +28,15 @@ describe("SubventiaRepository", () => {
 
         it("should send create request to mongo", async () => {
             const expected = {
-                name: "I'm subventia entity"
+                name: "I'm subventia entity",
             } as unknown as SubventiaRequestEntity;
 
             collection.insertOne.mockImplementationOnce(() => ({
-                insertedId: "FAKE_ID"
+                insertedId: "FAKE_ID",
             }));
             collection.findOne.mockImplementationOnce(() => ({
                 _id: "FAKE_ID",
-                ...expected
+                ...expected,
             }));
 
             await subventiaRepository.create(expected);
