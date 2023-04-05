@@ -60,13 +60,22 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 
 ## Mettre en place une tâche récurrente
 
-Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Pour ajouter une tâche récurrente, il faut :
+Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Il existe deux types de façon de programmer les tâches : 
+- par un intervalle (*ex* : `{ minutes: 3 }`"toutes le 3 minutes")
+- par une expression cron (*ex* : `"0 0 1 * *"` tous les premiers du mois) 
+
+Pour ajouter une tâche récurrente, il faut :
 
 1. Créer un contrôleur `src/modules/[nom-module]/interfaces/cron/[controller-namer].cron.controller.ts` sur le modèle du fichier `example.cron.controller.ts`. Le contrôleur doit exporter une classe avec
     - un attribut `name` qui l'identifie
-    - autant de méthodes que de tâches. Ces méthodes devront être munies du décorateur `Cron` ou `AsyncCron` en fonction de si la tâche est asynchrone ou non. Bien préciser. Le décorateur prend deux attributs : 
-      - l'intervalle entre deux exécutions, sous forme d'objet (ex: `{ days: 10 }`)
-      - un booléen indiquant si cet intervalle est "long" ou non, soit s'il fait + de 24,85 jours. Ce critère qui semble arbitraire permet d'arbitrer entre deux objets techniques différents pour éviter un problème potentiel d'overflow d'entier.
+    - autant de méthodes que de tâches. Ces méthodes devront être munies d'un décorateur parmi 
+      - `Cron`
+      - `AsyncCron` 
+      - `Cron`
+      - `AsyncIntervalCron`
+      en fonction de si la tâche est asynchrone ou non et du type de programmation donnée. Le décorateur prend deux attributs : 
+      - la programmation de la tâche (intervalle ou expression cron)
+      - dans le cas `Interval` : un booléen indiquant si cet intervalle est "long" ou non, c'est-à-dire s'il fait + de 24,85 jours. Ce critère qui semble arbitraire permet d'arbitrer entre deux objets techniques différents pour éviter un problème potentiel d'overflow d'entier.
 2. Enregistrer le contrôleur dans `src/cron.ts`
 
 ### En cas d'erreur
