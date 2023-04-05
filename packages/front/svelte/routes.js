@@ -47,7 +47,7 @@ export default {
         component: () => Contact
     },
     "mentions-legales": {
-        component: () => LegalNotice
+        component: () => LegalNotice,
     },
     cgu: {
         component: () => Cgu,
