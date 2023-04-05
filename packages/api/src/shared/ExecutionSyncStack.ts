@@ -19,7 +19,7 @@ export default class ExecutionSyncStack<EntityType, OperationResultType> {
             this.stackLines.push({
                 entity,
                 rejecter,
-                resolver
+                resolver,
             });
 
             this.executeOperations();

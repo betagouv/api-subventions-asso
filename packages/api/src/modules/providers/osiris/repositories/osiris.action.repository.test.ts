@@ -5,9 +5,9 @@ const mongoMock = jest.mock("../../../../shared/MongoConnection", () => ({
     default: {
         collection: () => ({
             insertOne: jest.fn(),
-            findOneAndUpdate: findOneAndUpdateMock
-        })
-    }
+            findOneAndUpdate: findOneAndUpdateMock,
+        }),
+    },
 }));
 import db from "../../../../shared/MongoConnection";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
@@ -30,7 +30,7 @@ describe("OsirisActionRepository", () => {
     const ENTITY = {
         indexedInformations: { osirisActionId: OSIRIS_ACTION_ID },
         data: {},
-        evaluation: undefined
+        evaluation: undefined,
     } as OsirisActionEntity;
     const ENTITY_WITH_ID = Object.assign({ _id: new ObjectId("6239dd8a674c33bdf741f56b") }, ENTITY);
     describe("add()", () => {

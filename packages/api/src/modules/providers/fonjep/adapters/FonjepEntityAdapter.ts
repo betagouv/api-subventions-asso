@@ -31,8 +31,8 @@ export default class FonjepEntityAdapter {
             date_fin: toPV(entity.indexedInformations.date_fin_triennale),
             montants: {
                 accorde: toPV(entity.indexedInformations.montant_paye),
-                demande: toPV(entity.indexedInformations.montant_paye)
-            }
+                demande: toPV(entity.indexedInformations.montant_paye),
+            },
         };
     }
 
@@ -45,13 +45,13 @@ export default class FonjepEntityAdapter {
             nic: toPV(siretToNIC(entity.legalInformations.siret)),
             adresse: toPV({
                 code_postal: entity.indexedInformations.code_postal,
-                commune: entity.indexedInformations.ville
+                commune: entity.indexedInformations.ville,
             }),
             contacts: [
                 toPV({
-                    email: entity.indexedInformations.contact
-                })
-            ]
+                    email: entity.indexedInformations.contact,
+                }),
+            ],
         };
     }
 
@@ -68,7 +68,7 @@ export default class FonjepEntityAdapter {
             dateOperation: toPV(entity.indexedInformations.date_versement),
             periodeDebut: toPV(entity.indexedInformations.periode_debut),
             periodeFin: toPV(entity.indexedInformations.periode_fin),
-            montantAPayer: toPV(entity.indexedInformations.montant_a_payer)
+            montantAPayer: toPV(entity.indexedInformations.montant_a_payer),
         };
     }
 }

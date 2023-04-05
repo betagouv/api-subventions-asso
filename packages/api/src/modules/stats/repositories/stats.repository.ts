@@ -9,16 +9,16 @@ export class StatsRepository {
         start: Date,
         end: Date,
         nbReq: number,
-        includesAdmin: boolean
+        includesAdmin: boolean,
     ): Promise<number> {
         const matchQuery: { $match: DefaultObject } = {
             $match: {
                 timestamp: {
                     $gte: start,
-                    $lte: end
+                    $lte: end,
                 },
-                "meta.req.url": /\/(association|etablissement)\/.{9,14}$/
-            }
+                "meta.req.url": /\/(association|etablissement)\/.{9,14}$/,
+            },
         };
         if (!includesAdmin) {
             matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
@@ -30,10 +30,10 @@ export class StatsRepository {
                     .aggregate([
                         matchQuery,
                         {
-                            $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } }
+                            $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } },
                         },
                         { $match: { nbOfRequest: { $gte: nbReq } } },
-                        { $count: "nbOfUsers" }
+                        { $count: "nbOfUsers" },
                     ])
                     .next()
             )?.nbOfUsers || 0
@@ -46,11 +46,11 @@ export class StatsRepository {
                 $match: {
                     timestamp: {
                         $gte: start,
-                        $lte: end
+                        $lte: end,
                     },
                     "meta.req.user.email": { $ne: null },
-                    "meta.req.url": /\/(association|etablissement)\/.{9,14}$/
-                }
+                    "meta.req.url": /\/(association|etablissement)\/.{9,14}$/,
+                },
             };
             if (!includesAdmin) {
                 matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
@@ -59,7 +59,7 @@ export class StatsRepository {
             return [
                 matchQuery,
                 { $group: { _id: "$meta.req.user.email", nbOfRequest: { $sum: 1 } } },
-                { $sort: { nbOfRequest: 1 } }
+                { $sort: { nbOfRequest: 1 } },
             ];
         };
 
@@ -84,10 +84,10 @@ export class StatsRepository {
                 $match: {
                     timestamp: {
                         $gte: start,
-                        $lte: end
+                        $lte: end,
                     },
-                    "meta.req.user.email": { $ne: null }
-                }
+                    "meta.req.user.email": { $ne: null },
+                },
             };
             if (!includesAdmin) matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
 
@@ -99,7 +99,7 @@ export class StatsRepository {
 
     public getLogsWithRegexUrl(regex: RegExp) {
         return this.collection.find({
-            "meta.req.url": regex
+            "meta.req.url": regex,
         });
     }
 }

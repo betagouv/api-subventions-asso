@@ -14,7 +14,7 @@ export class AssociationNameService {
     }
 
     async getGroupedIdentifiers(
-        identifier: StructureIdentifiers
+        identifier: StructureIdentifiers,
     ): Promise<{ rna: undefined | Rna; siren: undefined | Siren }> {
         const typeIdentifier = getIdentifierType(identifier);
 
@@ -22,7 +22,7 @@ export class AssociationNameService {
             const associationNames = await associationNameRepository.findByRna(identifier);
             return {
                 rna: identifier,
-                siren: associationNames.find(entity => entity.siren)?.siren || undefined
+                siren: associationNames.find(entity => entity.siren)?.siren || undefined,
             };
         } else if (
             typeIdentifier === StructureIdentifiersEnum.siren ||
@@ -33,7 +33,7 @@ export class AssociationNameService {
 
             return {
                 siren,
-                rna: associationNames.find(entity => entity.rna)?.rna || undefined
+                rna: associationNames.find(entity => entity.rna)?.rna || undefined,
             };
         }
 
@@ -57,7 +57,7 @@ export class AssociationNameService {
             provider: bestEntity.provider,
             lastUpdate: bestEntity.lastUpdate,
             rna: bestEntity.rna || entities.find(e => e.rna)?.rna || null,
-            siren: bestEntity.siren || entities.find(e => e.siren)?.siren || null
+            siren: bestEntity.siren || entities.find(e => e.siren)?.siren || null,
         };
     }
 
@@ -69,7 +69,7 @@ export class AssociationNameService {
         const associations = await associationNameRepository.findAllStartingWith(value);
         const rnaAndSirenMaps = {
             rnaMap: new Map<Rna, AssociationNameEntity[]>(),
-            sirenMap: new Map<Siren, AssociationNameEntity[]>()
+            sirenMap: new Map<Siren, AssociationNameEntity[]>(),
         };
 
         function getAssociationArray(association, maps) {
@@ -103,8 +103,8 @@ export class AssociationNameService {
                 const mergedArray = [
                     ...new Set([
                         ...(acc.rnaMap.get(association.rna) || []),
-                        ...(acc.sirenMap.get(association.siren) || [])
-                    ])
+                        ...(acc.sirenMap.get(association.siren) || []),
+                    ]),
                 ];
                 acc.sirenMap.set(association.siren, mergedArray);
                 acc.rnaMap.set(association.rna, mergedArray);

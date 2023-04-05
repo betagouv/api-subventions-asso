@@ -5,8 +5,8 @@ describe("UsersService", () => {
         it("should return true", () => {
             const user = {
                 stats: {
-                    lastSearchDate: new Date()
-                }
+                    lastSearchDate: new Date(),
+                },
             };
             const expected = true;
             const actual = userService.isUserActif(user);
@@ -17,8 +17,8 @@ describe("UsersService", () => {
         it("should return false", () => {
             const user = {
                 stats: {
-                    lastSearchDate: new Date(2000)
-                }
+                    lastSearchDate: new Date(2000),
+                },
             };
             const expected = false;
             const actual = userService.isUserActif(user);

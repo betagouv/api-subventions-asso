@@ -18,14 +18,14 @@ export default class LeCompteAssoRequestEntity extends RequestEntity {
 
                 const [day, month, year] = value.split("/").map(v => parseInt(v, 10));
                 return new Date(year, month - 1, day);
-            }
+            },
         },
-        createur_email: ["Compte du créateur"]
+        createur_email: ["Compte du créateur"],
     };
 
     public static indexedLegalInformationsPath = {
         siret: ["Numéro Siret"],
-        name: ["Nom association"]
+        name: ["Nom association"],
     };
 
     public providerMatchingKeys: string[] = ["compteAssoId"];
@@ -34,7 +34,7 @@ export default class LeCompteAssoRequestEntity extends RequestEntity {
         public legalInformations: ILegalInformations,
         public providerInformations: ILeCompteAssoRequestInformations,
         public data: unknown,
-        public _id?: ObjectId
+        public _id?: ObjectId,
     ) {
         super(legalInformations);
     }

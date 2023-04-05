@@ -12,14 +12,14 @@ describe("UserController, /user", () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin]
+                    roles: [RoleEnum.admin],
                 })
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"] }
+                user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"] },
             });
         });
 
@@ -30,7 +30,7 @@ describe("UserController, /user", () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "futur-admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin]
+                    roles: [RoleEnum.admin],
                 })
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
@@ -39,8 +39,8 @@ describe("UserController, /user", () => {
             expect(response.body).toMatchObject({
                 user: {
                     email: "futur-admin@beta.gouv.fr",
-                    roles: ["user", RoleEnum.admin]
-                }
+                    roles: ["user", RoleEnum.admin],
+                },
             });
         });
 
@@ -51,7 +51,7 @@ describe("UserController, /user", () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "futur-admin@beta.gouv.fr",
-                    roles: ["test"]
+                    roles: ["test"],
                 })
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
@@ -65,7 +65,7 @@ describe("UserController, /user", () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin]
+                    roles: [RoleEnum.admin],
                 })
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
@@ -78,7 +78,7 @@ describe("UserController, /user", () => {
                 .post("/user/admin/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin]
+                    roles: [RoleEnum.admin],
                 })
                 .set("Accept", "application/json");
 
@@ -91,14 +91,14 @@ describe("UserController, /user", () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
-                    password: "Test::11"
+                    password: "Test::11",
                 })
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                user: { email: "user@beta.gouv.fr", roles: ["user"] }
+                user: { email: "user@beta.gouv.fr", roles: ["user"] },
             });
         });
 
@@ -109,7 +109,7 @@ describe("UserController, /user", () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
-                    password: "Test::11"
+                    password: "Test::11",
                 })
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
@@ -124,7 +124,7 @@ describe("UserController, /user", () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
-                    password: "azerty"
+                    password: "azerty",
                 })
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
@@ -137,7 +137,7 @@ describe("UserController, /user", () => {
             const response = await request(g.app)
                 .put("/user/password")
                 .send({
-                    password: "Test::11"
+                    password: "Test::11",
                 })
                 .set("Accept", "application/json");
 

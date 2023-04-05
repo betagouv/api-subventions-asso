@@ -6,8 +6,8 @@ jest.mock("svelte", () => ({
     __esModule: true, // this property makes it work
     // thanks to https://www.bam.tech/article/fix-jest-mock-cannot-access-before-initialization-error
     getContext: jest.fn().mockImplementation(() => ({
-        getContact: mockGetContact
-    }))
+        getContact: mockGetContact,
+    })),
 }));
 import { getContext } from "svelte";
 

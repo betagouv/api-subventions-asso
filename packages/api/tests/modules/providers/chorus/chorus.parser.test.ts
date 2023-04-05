@@ -21,15 +21,15 @@ describe("chorus.parser.ts", () => {
                 "N° DP": "100000000",
                 "N° EJ": "2100000000",
                 "Référentiel de programmation": "Cpte engagmt citoyen",
-                "Type d'opération": "Subventions"
+                "Type d'opération": "Subventions",
             },
             indexedInformations: {
                 amount: 1,
                 dateOperation: new Date(Date.UTC(1970, 0, 1)),
                 ej: "2100000000",
-                siret: "10000000000000"
+                siret: "10000000000000",
             },
-            provider: "Chorus"
+            provider: "Chorus",
         });
     });
 });

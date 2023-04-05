@@ -15,7 +15,7 @@ export class ConfigurationsController extends Controller {
     @Post("/domains")
     @SuccessResponse("201", "Created")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
-        message: "Internal Server Error"
+        message: "Internal Server Error",
     })
     public async addDomain(@Body() body: { domain: string }): Promise<AddEmailDomainDto> {
         const persistedDomain = await configurationsService.addEmailDomain(body.domain);
@@ -29,7 +29,7 @@ export class ConfigurationsController extends Controller {
      */
     @Get("/domains")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
-        message: "Internal Server Error"
+        message: "Internal Server Error",
     })
     public async getDomains(): Promise<GetEmailDomainsDto> {
         const domains = await configurationsService.getEmailDomains();

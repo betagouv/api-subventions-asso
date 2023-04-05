@@ -18,7 +18,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     provider = {
         name: "Démarches Simplifiées",
         type: ProviderEnum.api,
-        description: "" // TODO
+        description: "", // TODO
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -73,7 +73,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
 
     async updateDataByFormId(formId: number) {
         const result = await this.sendQuery(GetDossiersByDemarcheId, {
-            demarcheNumber: formId
+            demarcheNumber: formId,
         });
 
         if (!result) return;
@@ -90,9 +90,9 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,
-                    variables: vars
+                    variables: vars,
                 },
-                this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN)
+                this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
             );
 
             return result.data;
@@ -109,8 +109,8 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
                 "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
                 authorization: "Bearer " + token,
                 "content-type": "application/json;charset=UTF-8",
-                "Referrer-Policy": "strict-origin-when-cross-origin"
-            }
+                "Referrer-Policy": "strict-origin-when-cross-origin",
+            },
         };
     }
 

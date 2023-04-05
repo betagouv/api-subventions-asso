@@ -5,7 +5,7 @@ describe("toStatusFactory", () => {
     const PROVIDER_STATUS = "tata";
     const statusConversionArray = [
         { label: ApplicationStatus.GRANTED, providerStatusList: ["toto", PROVIDER_STATUS] },
-        { label: ApplicationStatus.REFUSED, providerStatusList: ["titi"] }
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["titi"] },
     ];
     const helper = toStatusFactory(statusConversionArray);
 

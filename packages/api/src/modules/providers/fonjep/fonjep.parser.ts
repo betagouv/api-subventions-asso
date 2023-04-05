@@ -31,11 +31,11 @@ export default class FonjepParser {
     private static createFonjepSubventionEntity(parsedData: DefaultObject<unknown>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
             FonjepSubventionEntity.indexedProviderInformationsPath,
-            parsedData
+            parsedData,
         ) as unknown as IFonjepIndexedInformations;
         const legalInformations = ParserHelper.indexDataByPathObject(
             FonjepSubventionEntity.indexedLegalInformationsPath,
-            parsedData
+            parsedData,
         ) as { siret: Siret; name: string };
         return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
     }
@@ -43,11 +43,11 @@ export default class FonjepParser {
     private static createFonjepVersementEntity(data: DefaultObject<unknown>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
             FonjepVersementEntity.indexedProviderInformationsPath,
-            data
+            data,
         ) as unknown as IFonjepVersementIndexedInformations;
         const legalInformations = ParserHelper.indexDataByPathObject(
             FonjepVersementEntity.indexedLegalInformationsPath,
-            data
+            data,
         ) as { siret: Siret };
         return new FonjepVersementEntity(legalInformations, indexedInformations, data);
     }
@@ -82,15 +82,15 @@ export default class FonjepParser {
                     ...versement,
                     siret: association ? association["SiretOuRidet"] : undefined,
                     updated_at: currentDate,
-                    id: versementId
-                })
+                    id: versementId,
+                }),
             );
             return versements;
         };
 
         const createSubventions = (
             subventions: FonjepSubventionEntity[],
-            poste: DefaultObject<string | number | undefined>
+            poste: DefaultObject<string | number | undefined>,
         ) => {
             const financeur = findTiers(poste["FinanceurAttributeurCode"]);
             const typePoste = findTypePoste(poste["PstTypePosteCode"]);
@@ -109,15 +109,15 @@ export default class FonjepParser {
                     Financeur: financeur,
                     TypePoste: typePoste,
                     Association: association,
-                    Dispositif: dispositif
-                })
+                    Dispositif: dispositif,
+                }),
             );
             return subventions;
         };
 
         return {
             subventions: postes.reduce(createSubventions, []),
-            versements: versements.reduce(createVersements, [])
+            versements: versements.reduce(createVersements, []),
         };
     }
 }

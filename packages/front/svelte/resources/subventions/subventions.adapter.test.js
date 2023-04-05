@@ -2,14 +2,14 @@ import SubventionsAdapter from "./subventions.adapter";
 import * as dataHelper from "@helpers/dataHelper";
 jest.mock("@helpers/dataHelper");
 jest.mock("@helpers/textHelper", () => ({
-    capitalizeFirstLetter: value => value
+    capitalizeFirstLetter: value => value,
 }));
 
 describe("Subventions Adapter", () => {
     const SUBVENTION = {
         dispositif: "ABC DISPOSITIF",
         serviceInstructeur: "SERVICE INST.",
-        actions_proposee: [{ intitule: "A" }, { intitule: "B" }, { intitule: "C" }]
+        actions_proposee: [{ intitule: "A" }, { intitule: "B" }, { intitule: "C" }],
     };
 
     describe("toSubvention()", () => {
@@ -24,7 +24,7 @@ describe("Subventions Adapter", () => {
                 "projectName",
                 "montantsDemande",
                 "montantsAccorde",
-                "status"
+                "status",
             ];
             const actual = Object.keys(SubventionsAdapter.toSubvention(SUBVENTION));
             expect(actual).toEqual(expected);

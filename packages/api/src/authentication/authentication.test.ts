@@ -22,8 +22,8 @@ describe("expressAuthentication", () => {
         body: {},
         query: {},
         headers: {
-            "x-access-token": "token"
-        } as unknown
+            "x-access-token": "token",
+        } as unknown,
     } as express.Request;
     const SECURITY_NAME = "jwt";
     const VERIFY_DEFAULT_MOCK = (_, __, cb: (err: null, d: unknown) => void) => {
@@ -42,13 +42,13 @@ describe("expressAuthentication", () => {
                 active: true,
                 signupAt: new Date(),
                 stats: { searchCount: 0, lastSearchDate: null },
-                _id: new ObjectId()
-            })
+                _id: new ObjectId(),
+            }),
         );
         findJwtByEmailMock.mockImplementation(() =>
             Promise.resolve({
-                jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() }
-            })
+                jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() },
+            }),
         );
         updateMock.mockImplementation(user =>
             Promise.resolve({
@@ -57,8 +57,8 @@ describe("expressAuthentication", () => {
                 active: true,
                 signupAt: new Date(),
                 stats: { searchCount: 0, lastSearchDate: null },
-                _id: new ObjectId()
-            })
+                _id: new ObjectId(),
+            }),
         );
         // @ts-expect-error: mock
         verifyMock.mockImplementation(VERIFY_DEFAULT_MOCK);
@@ -78,17 +78,17 @@ describe("expressAuthentication", () => {
         const req = {
             body: {},
             query: {},
-            headers: {}
+            headers: {},
         } as LoginRequest;
         expect(expressAuthentication(req, SECURITY_NAME)).rejects.toThrowError("User not logged");
     });
 
     it("should throw an error when user role is not allowed", async () => {
         const req = Object.assign({}, DEFAULT_REQ, {
-            user: { roles: [RoleEnum.user] }
+            user: { roles: [RoleEnum.user] },
         }) as LoginRequest;
         await expect(expressAuthentication(req, SECURITY_NAME, [RoleEnum.admin])).rejects.toThrowError(
-            "JWT does not contain required scope."
+            "JWT does not contain required scope.",
         );
     });
 });

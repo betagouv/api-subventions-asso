@@ -2,7 +2,7 @@ class StatsAdapter {
     formatUserCount(apiData) {
         return {
             lastYearNbUser: apiData.nombres_utilisateurs_avant_annee,
-            monthlyData: apiData.evolution_nombres_utilisateurs
+            monthlyData: apiData.evolution_nombres_utilisateurs,
         };
     }
 
@@ -10,7 +10,7 @@ class StatsAdapter {
         return {
             monthlyData: apiData.nb_requetes_par_mois,
             sum: apiData.somme_nb_requetes,
-            average: apiData.nb_requetes_moyen
+            average: apiData.nb_requetes_moyen,
         };
     }
 }

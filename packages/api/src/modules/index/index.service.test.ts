@@ -6,7 +6,7 @@ describe("indexService", () => {
             const expected = {
                 message: "Bienvenue sur l'api Data.Subvention",
                 doc: "https://github.com/betagouv/api-subventions-asso/wiki/Documentation-API-&-Guide-d'int%C3%A9gration",
-                swagger: "/docs"
+                swagger: "/docs",
             };
 
             const actual = indexService.getIndexData();

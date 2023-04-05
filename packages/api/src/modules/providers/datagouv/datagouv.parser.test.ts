@@ -10,7 +10,7 @@ describe("DataGouvParser", () => {
                 // @ts-expect-error: invalid date
                 periodStart: "2022-0a-02",
                 importDate: new Date("2022-10-01"),
-                now
+                now,
             });
             expect(actual).toBeFalsy();
         });
@@ -25,7 +25,7 @@ describe("DataGouvParser", () => {
             const actual = DataGouvParser.isDatesValid({
                 periodStart,
                 importDate: null,
-                now
+                now,
             });
             expect(actual).toBeFalsy();
         });
@@ -35,7 +35,7 @@ describe("DataGouvParser", () => {
             const actual = DataGouvParser.isDatesValid({
                 periodStart: new Date("2022-11-01"),
                 importDate: new Date("2022-12-01"),
-                now
+                now,
             });
             expect(actual).toBeFalsy();
         });
@@ -54,7 +54,7 @@ describe("DataGouvParser", () => {
             const actual = DataGouvParser.isDatesValid({
                 periodStart,
                 importDate,
-                now
+                now,
             });
             expect(actual).toBeTruthy();
         });
@@ -77,14 +77,14 @@ describe("DataGouvParser", () => {
                     }
                 },
                 pause: jest.fn(),
-                resume: jest.fn()
+                resume: jest.fn(),
             } as unknown as fs.ReadStream;
 
             spys.push(jest.spyOn(fs, "createReadStream").mockImplementationOnce(() => stream));
 
             return {
                 mockPause: stream.pause,
-                mockResume: stream.resume
+                mockResume: stream.resume,
             };
         };
 
@@ -108,8 +108,8 @@ describe("DataGouvParser", () => {
             const buffer = buildFileContent([
                 {
                     siren: "000000001",
-                    dateDebut: "1970-01-01"
-                }
+                    dateDebut: "1970-01-01",
+                },
             ]);
 
             buildStreamMock(buffer);
@@ -122,7 +122,7 @@ describe("DataGouvParser", () => {
             expect(mock).toBeCalledWith(
                 expect.objectContaining({ siren: "000000001" }),
                 expect.any(Function),
-                expect.any(Function)
+                expect.any(Function),
             );
         });
 
@@ -131,7 +131,7 @@ describe("DataGouvParser", () => {
             for (let i = 0; i < 10000; i++) {
                 data.push({
                     siren: ("000000000" + i).slice(-9),
-                    dateDebut: "1970-01-01"
+                    dateDebut: "1970-01-01",
                 });
             }
 
@@ -150,8 +150,8 @@ describe("DataGouvParser", () => {
             const buffer = buildFileContent([
                 {
                     siren: "000000001",
-                    dateDebut: "1970-01-01"
-                }
+                    dateDebut: "1970-01-01",
+                },
             ]);
 
             const mocks = buildStreamMock(buffer);

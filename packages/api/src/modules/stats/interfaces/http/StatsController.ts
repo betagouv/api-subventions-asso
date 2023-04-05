@@ -3,7 +3,7 @@ import {
     MonthlyRequestsDtoResponse,
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
-    UsersByStatusResponseDto
+    UsersByStatusResponseDto,
 } from "@api-subventions-asso/dto";
 import { Controller, Get, Query, Route, Security, Tags } from "tsoa";
 import statsService from "../../stats.service";
@@ -28,13 +28,13 @@ export class StatsController extends Controller {
         @Query() start: string,
         @Query() end: string,
         @Query() nbReq: string,
-        @Query() includesAdmin = "false"
+        @Query() includesAdmin = "false",
     ): Promise<StatsRequestDtoResponse> {
         const result = await statsService.getNbUsersByRequestsOnPeriod(
             new Date(start),
             new Date(end),
             Number(nbReq),
-            includesAdmin === "true"
+            includesAdmin === "true",
         );
         return { data: result };
     }
@@ -52,12 +52,12 @@ export class StatsController extends Controller {
     async getMedianRequestOnPeriod(
         @Query() start: string,
         @Query() end: string,
-        @Query() includesAdmin = "false"
+        @Query() includesAdmin = "false",
     ): Promise<StatsRequestsMedianDtoResponse> {
         const result = await statsService.getMedianRequestsOnPeriod(
             new Date(start),
             new Date(end),
-            includesAdmin === "true"
+            includesAdmin === "true",
         );
         return { data: result };
     }
@@ -73,7 +73,7 @@ export class StatsController extends Controller {
     @Get("/requests/monthly/{year}")
     async getRequestsPerMonthByYear(
         year: string,
-        @Query() includesAdmin = "false"
+        @Query() includesAdmin = "false",
     ): Promise<MonthlyRequestsDtoResponse> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         return await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
@@ -121,7 +121,7 @@ export class StatsController extends Controller {
         @Query() startYear: string | null = null,
         @Query() startMonth: string | null = null,
         @Query() endYear: string | null = null,
-        @Query() endMonth: string | null = null
+        @Query() endMonth: string | null = null,
     ): Promise<AssociationTopDtoResponse> {
         if (isNaN(Number(limit))) throw new BadRequestError("'limit' must be a number");
         if (startYear !== null && isNaN(Number(startYear))) throw new BadRequestError("'startYear' must be a number");

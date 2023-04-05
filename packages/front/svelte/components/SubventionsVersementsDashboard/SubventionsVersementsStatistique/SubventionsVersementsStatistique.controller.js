@@ -29,7 +29,7 @@ export default class SubventionsVersementsStatistiqueController {
                 acc.amountRequested += element.subvention.montants.demande || 0;
                 return acc;
             },
-            { amountGranted: 0, amountRequested: 0 }
+            { amountGranted: 0, amountRequested: 0 },
         );
         if (amountRequested === 0) return null;
         return ((amountGranted / amountRequested) * 100).toFixed(0);

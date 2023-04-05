@@ -31,7 +31,7 @@ export class AssociationsService {
         [EntrepriseDtoAdapter.PROVIDER_NAME]: 1,
         [AssociationDtoAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
-        [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5
+        [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
     };
 
     async getAssociation(id: StructureIdentifiers): Promise<Association> {

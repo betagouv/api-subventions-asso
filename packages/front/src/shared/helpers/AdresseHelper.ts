@@ -15,7 +15,7 @@ export default class AdresseHelper {
 
         return `${numero || ""} ${type_voie || ""} ${voie || ""} ${code_postal || ""} ${commune || ""}`.replace(
             "  ",
-            " "
+            " ",
         );
     }
 }

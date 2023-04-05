@@ -19,7 +19,7 @@ export default class GisproParser {
             const parsedData = ParseHelper.linkHeaderToData(header, row);
             const indexedRow = ParseHelper.indexDataByPathObject(
                 GisproLineEntity.indexedInformationsPath,
-                parsedData
+                parsedData,
             ) as unknown as Gispro;
             const entity = new GisproLineEntity(indexedRow.ej, indexedRow.dauphinId, indexedRow.siret);
 

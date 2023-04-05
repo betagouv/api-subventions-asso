@@ -4,7 +4,7 @@ import {
     fixtureAsso,
     fixtureEtablissements,
     fixtureRepresentantLegal,
-    fixtureRib
+    fixtureRib,
 } from "../__fixtures__/ApiAssoStructureFixture";
 import { DacDtoDocument, RnaDtoDocument } from "../__fixtures__/DtoDocumentFixture";
 import { ApiAssoDocumentFixture } from "../__fixtures__/ApiAssoDocumentFixture";
@@ -18,7 +18,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEtablissements[0],
                 fixtureRib,
                 [],
-                fixtureAsso.identite.date_modif_siren
+                fixtureAsso.identite.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -29,7 +29,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEtablissements[0],
                 [],
                 fixtureRepresentantLegal,
-                fixtureAsso.identite.date_modif_siren
+                fixtureAsso.identite.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -40,7 +40,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEtablissements[1],
                 fixtureRib,
                 [],
-                fixtureAsso.identite.date_modif_siren
+                fixtureAsso.identite.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -51,7 +51,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEtablissements[1],
                 [],
                 undefined as unknown as StructureRepresentantLegalDto[],
-                fixtureAsso.identite.date_modif_siren
+                fixtureAsso.identite.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -62,7 +62,7 @@ describe("ApiAssoDtoAdapter", () => {
         it("should return StructureRnaDocumentDto", () => {
             const expected = RnaDtoDocument;
             const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(
-                ApiAssoDocumentFixture.asso.documents.document_rna[0]
+                ApiAssoDocumentFixture.asso.documents.document_rna[0],
             );
             expect(actual).toEqual(expected);
         });
@@ -70,7 +70,7 @@ describe("ApiAssoDtoAdapter", () => {
         it("should set date to 01/01/1970 if year is not define", () => {
             const document_rna = {
                 ...ApiAssoDocumentFixture.asso.documents.document_rna[0],
-                annee: undefined
+                annee: undefined,
             };
             const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
             expect(actual).toMatchSnapshot();
@@ -79,7 +79,7 @@ describe("ApiAssoDtoAdapter", () => {
         it("should set date to 01/01 of year if time is not define", () => {
             const document_rna = {
                 ...ApiAssoDocumentFixture.asso.documents.document_rna[0],
-                time: undefined
+                time: undefined,
             };
             const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
             expect(actual).toMatchSnapshot();
@@ -90,7 +90,7 @@ describe("ApiAssoDtoAdapter", () => {
         it("should return StructureDacDocumentDto", () => {
             const expected = DacDtoDocument;
             const actual = ApiAssoDtoAdapter.dacDocumentToDocument(
-                ApiAssoDocumentFixture.asso.documents.document_dac[0]
+                ApiAssoDocumentFixture.asso.documents.document_dac[0],
             );
             expect(actual).toEqual(expected);
         });

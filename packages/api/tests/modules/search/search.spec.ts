@@ -36,7 +36,7 @@ describe("/search", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                result: [{ lastUpdate: expect.any(String) }]
+                result: [{ lastUpdate: expect.any(String) }],
             });
         });
         it("should return an Association from its Siren", async () => {
@@ -47,7 +47,7 @@ describe("/search", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                result: [{ lastUpdate: expect.any(String) }]
+                result: [{ lastUpdate: expect.any(String) }],
             });
         });
         it("should return an AssociationNameEntity from its name", async () => {
@@ -58,7 +58,7 @@ describe("/search", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                result: [{ lastUpdate: expect.any(String) }]
+                result: [{ lastUpdate: expect.any(String) }],
             });
         });
     });

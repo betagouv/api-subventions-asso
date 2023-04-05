@@ -13,7 +13,7 @@ describe("UniteLegaleHistoriqueAdapter", () => {
                 AssociationRaw.denominationUniteLegale,
                 dataGouvService.provider.name,
                 new Date(AssociationRaw.dateDebut),
-                AssociationRaw.siren
+                AssociationRaw.siren,
             );
             const actual = UniteLegaleHistoriqueAdapter.rawToAssociationName(AssociationRaw);
             expect(actual).toEqual(expected);

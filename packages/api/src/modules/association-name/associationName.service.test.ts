@@ -15,8 +15,8 @@ describe("associationName.service", () => {
                 name: "ALPCM NANTES BASKET",
                 provider: "Base Sirene - DataGouv",
                 rna: null,
-                siren: "433955101"
-            }
+                siren: "433955101",
+            },
         ];
 
         beforeAll(() => {
@@ -60,7 +60,7 @@ describe("associationName.service", () => {
 
         it("should throw error", async () => {
             await expect(() => associationNameService.getGroupedIdentifiers("toto")).rejects.toThrowError(
-                "identifier type is not supported"
+                "identifier type is not supported",
             );
         });
 

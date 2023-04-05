@@ -7,7 +7,7 @@ export function Get(route: string) {
         target["__methods__"].push({
             method: "GET",
             route: route,
-            function: target[propertyKey] as any
+            function: target[propertyKey] as any,
         });
     };
 }
@@ -19,7 +19,7 @@ export function Post(route: string) {
         target["__methods__"].push({
             method: "POST",
             route: route,
-            function: target[propertyKey] as any
+            function: target[propertyKey] as any,
         });
     };
 }
@@ -31,7 +31,7 @@ export function Put(route: string) {
         target["__methods__"].push({
             method: "PUT",
             route: route,
-            function: target[propertyKey] as any
+            function: target[propertyKey] as any,
         });
     };
 }
@@ -43,7 +43,7 @@ export function Delete(route: string) {
         target["__methods__"].push({
             method: "DELETE",
             route: route,
-            function: target[propertyKey] as any
+            function: target[propertyKey] as any,
         });
     };
 }

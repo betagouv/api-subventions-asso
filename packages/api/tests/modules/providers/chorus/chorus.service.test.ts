@@ -22,13 +22,13 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
 
             expect(() => chorusService.validateEntity(entity)).toThrow(
-                `The branch ${entity.indexedInformations.codeBranche} is not accepted in data`
+                `The branch ${entity.indexedInformations.codeBranche} is not accepted in data`,
             );
         });
 
@@ -47,9 +47,9 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
             expect(() => chorusService.validateEntity(entity)).toThrow(`Amount is not a number`);
         });
@@ -69,9 +69,9 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
             expect(() => chorusService.validateEntity(entity)).toThrow(`Operation date is not a valid date`);
         });
@@ -91,12 +91,12 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
             expect(() => chorusService.validateEntity(entity)).toThrow(
-                `INVALID SIRET FOR ${entity.indexedInformations.siret}`
+                `INVALID SIRET FOR ${entity.indexedInformations.siret}`,
             );
         });
 
@@ -115,12 +115,12 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
             expect(() => chorusService.validateEntity(entity)).toThrow(
-                `INVALID EJ FOR ${entity.indexedInformations.ej}`
+                `INVALID EJ FOR ${entity.indexedInformations.ej}`,
             );
         });
 
@@ -139,9 +139,9 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
             expect(chorusService.validateEntity(entity)).toEqual(true);
         });
@@ -163,16 +163,16 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
                 state: "rejected",
                 result: expect.objectContaining({
-                    message: "INVALID SIRET FOR SIRET"
-                })
+                    message: "INVALID SIRET FOR SIRET",
+                }),
             });
         });
 
@@ -194,14 +194,14 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
                 state: "created",
-                result: entity
+                result: entity,
             });
 
             mock.mockRestore();
@@ -225,17 +225,17 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
                 state: "rejected",
                 result: {
                     message: "The Siret does not correspond to an association",
-                    data: entity
-                }
+                    data: entity,
+                },
             });
 
             mock.mockRestore();
@@ -258,9 +258,9 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
 
             await chorusService.addChorusLine(entity);
@@ -269,7 +269,7 @@ describe("chorus.service", () => {
 
             await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
                 state: "updated",
-                result: entity
+                result: entity,
             });
             mock.mockRestore();
         });
@@ -290,9 +290,9 @@ describe("chorus.service", () => {
                     domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                     codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                     compte: "COMPTE",
-                    typeOperation: "ZSUB"
+                    typeOperation: "ZSUB",
                 },
-                {}
+                {},
             );
 
             await chorusService.addChorusLine(entity);
@@ -304,7 +304,7 @@ describe("chorus.service", () => {
 
             await expect(chorusService.addChorusLine(entityWithoutId)).resolves.toEqual({
                 state: "created",
-                result: entityWithoutId
+                result: entityWithoutId,
             });
             mock.mockRestore();
         });
@@ -335,10 +335,10 @@ describe("chorus.service", () => {
                             domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                             codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                             compte: "COMPTE",
-                            typeOperation: "ZSUB"
+                            typeOperation: "ZSUB",
                         },
-                        {}
-                    )
+                        {},
+                    ),
                 )
             ).result as WithId<ChorusLineEntity>;
         });
@@ -362,8 +362,8 @@ describe("chorus.service", () => {
                     domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                     compte: toPV("COMPTE"),
                     type: toPV("ZSUB"),
-                    bop: toPV("DOMA")
-                }
+                    bop: toPV("DOMA"),
+                },
             ]);
         });
         it("finds no entity", async () => {
@@ -395,10 +395,10 @@ describe("chorus.service", () => {
                             domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                             codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                             compte: "COMPTE",
-                            typeOperation: "ZSUB"
+                            typeOperation: "ZSUB",
                         },
-                        {}
-                    )
+                        {},
+                    ),
                 )
             ).result as WithId<ChorusLineEntity>;
         });
@@ -422,8 +422,8 @@ describe("chorus.service", () => {
                     domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                     compte: toPV("COMPTE"),
                     type: toPV("ZSUB"),
-                    bop: toPV("DOMA")
-                }
+                    bop: toPV("DOMA"),
+                },
             ]);
         });
         it("finds no entity", async () => {
@@ -455,10 +455,10 @@ describe("chorus.service", () => {
                             domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                             codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                             compte: "COMPTE",
-                            typeOperation: "ZSUB"
+                            typeOperation: "ZSUB",
                         },
-                        {}
-                    )
+                        {},
+                    ),
                 )
             ).result as WithId<ChorusLineEntity>;
         });
@@ -482,8 +482,8 @@ describe("chorus.service", () => {
                     domaineFonctionnel: toPV("DOMAINE_FONCTIONNEL"),
                     compte: toPV("COMPTE"),
                     type: toPV("ZSUB"),
-                    bop: toPV("DOMA")
-                }
+                    bop: toPV("DOMA"),
+                },
             ]);
         });
         it("finds no entity", async () => {
@@ -511,10 +511,10 @@ describe("chorus.service", () => {
                         domaineFonctionnel: "DOMAINE_FONCTIONNEL",
                         codeDomaineFonctionnel: "DOMAINE_FONCTIONNEL_CODE",
                         compte: "COMPTE",
-                        typeOperation: "ZSUB"
+                        typeOperation: "ZSUB",
                     },
-                    {}
-                )
+                    {},
+                ),
             );
         });
 

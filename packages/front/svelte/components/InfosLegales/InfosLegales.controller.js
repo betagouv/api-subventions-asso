@@ -3,7 +3,7 @@ import {
     getAddress,
     getImmatriculation,
     getModification,
-    getSiegeSiret
+    getSiegeSiret,
 } from "../../views/association/association.helper";
 import { modal, data } from "../../store/modal.store";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
@@ -67,25 +67,25 @@ export default class InfosLegalesController {
             Dénomination: [this.association.denomination_rna, this.association.denomination_siren],
             "Adresse du siège": [
                 addressToString(this.association.adresse_siege_rna),
-                addressToString(this.association.adresse_siege_siren)
+                addressToString(this.association.adresse_siege_siren),
             ],
             "Date d'immatriculation": [
                 this.association.date_creation_rna ? dateToDDMMYYYY(this.association.date_creation_rna) : null,
-                this.association.date_creation_siren ? dateToDDMMYYYY(this.association.date_creation_siren) : null
+                this.association.date_creation_siren ? dateToDDMMYYYY(this.association.date_creation_siren) : null,
             ],
             "Date de modification": [
                 this.association.date_modification_rna ? dateToDDMMYYYY(this.association.date_modification_rna) : null,
                 this.association.date_modification_siren
                     ? dateToDDMMYYYY(this.association.date_modification_siren)
-                    : null
-            ]
+                    : null,
+            ],
         };
         const rows = Object.entries(objectRows).map(([header, values]) => {
             return [header, ...values.map(value => valueOrHyphen(value))];
         });
         return {
             headers,
-            rows
+            rows,
         };
     }
 }

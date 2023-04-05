@@ -45,7 +45,7 @@ class EventManager {
 
         const event = {
             name: eventName,
-            callbacks: []
+            callbacks: [],
         };
 
         this.events.push(event);
@@ -79,7 +79,7 @@ class EventManager {
         const callbackObject = {
             callback,
             id: (option.name as string) || bcrypt.hashSync("DEFAULT_ID", Math.random() * 10 + 1),
-            option: option as EventOption
+            option: option as EventOption,
         };
 
         if (position != -1) {
@@ -91,7 +91,7 @@ class EventManager {
         this.callbacks.push({
             event,
             callbackObject,
-            id: callbackObject.id
+            id: callbackObject.id,
         });
 
         return callbackObject.id;

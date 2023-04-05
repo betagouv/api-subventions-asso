@@ -15,10 +15,10 @@ export class UserAssociationVisitJoiner {
                             ? {}
                             : {
                                   roles: {
-                                      $ne: "admin"
-                                  }
-                              })
-                    }
+                                      $ne: "admin",
+                                  },
+                              }),
+                    },
                 },
                 {
                     $lookup: {
@@ -32,13 +32,13 @@ export class UserAssociationVisitJoiner {
                                 $match: {
                                     visitDate: {
                                         $gte: start,
-                                        $lte: end
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
+                                        $lte: end,
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
             ])
             .toArray();
     }

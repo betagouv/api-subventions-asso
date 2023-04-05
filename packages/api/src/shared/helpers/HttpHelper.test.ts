@@ -33,8 +33,8 @@ describe("HttpHelper", () => {
             // @ts-expect-error mock
             const actual = getJtwTokenFromRequest({
                 headers: {
-                    "x-access-token": expected
-                }
+                    "x-access-token": expected,
+                },
             });
 
             expect(actual).toBe(expected);
@@ -46,8 +46,8 @@ describe("HttpHelper", () => {
             const actual = getJtwTokenFromRequest({
                 headers: {},
                 query: {
-                    token: expected
-                }
+                    token: expected,
+                },
             });
 
             expect(actual).toBe(expected);
@@ -58,7 +58,7 @@ describe("HttpHelper", () => {
             // @ts-expect-error mock
             const actual = getJtwTokenFromRequest({
                 headers: {},
-                query: {}
+                query: {},
             });
 
             expect(actual).toBe(expected);

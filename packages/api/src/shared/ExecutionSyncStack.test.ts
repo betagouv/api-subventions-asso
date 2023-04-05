@@ -72,7 +72,7 @@ describe("ExecutionSyncStack", () => {
             stack.stackLines.push({
                 entity: "hello",
                 rejecter: jest.fn(),
-                resolver: jest.fn()
+                resolver: jest.fn(),
             });
             // @ts-ignore executeOperations is private method
             await stack.executeOperations();
@@ -86,18 +86,18 @@ describe("ExecutionSyncStack", () => {
                 {
                     entity: "hello",
                     rejecter: jest.fn(),
-                    resolver: jest.fn()
+                    resolver: jest.fn(),
                 },
                 {
                     entity: "hello",
                     rejecter: jest.fn(),
-                    resolver: jest.fn()
+                    resolver: jest.fn(),
                 },
                 {
                     entity: "hello",
                     rejecter: jest.fn(),
-                    resolver: jest.fn()
-                }
+                    resolver: jest.fn(),
+                },
             );
             // @ts-ignore executeOperations is private method
             await stack.executeOperations();
@@ -112,18 +112,18 @@ describe("ExecutionSyncStack", () => {
                 {
                     entity: "hello",
                     rejecter: jest.fn(),
-                    resolver
+                    resolver,
                 },
                 {
                     entity: "hello",
                     rejecter: jest.fn(),
-                    resolver
+                    resolver,
                 },
                 {
                     entity: "hello",
                     rejecter: jest.fn(),
-                    resolver
-                }
+                    resolver,
+                },
             );
             // @ts-ignore executeOperations is private method
             await stack.executeOperations();

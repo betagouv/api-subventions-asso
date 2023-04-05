@@ -9,33 +9,33 @@ const AssociationNameArray = [
         siren: "010000000",
         name: "Equitation Club",
         provider: "",
-        lastUpdate: new Date()
+        lastUpdate: new Date(),
     },
     {
         rna: "W000000001",
         siren: "007000001",
         name: "Equité pour tous",
         provider: "",
-        lastUpdate: new Date()
+        lastUpdate: new Date(),
     },
     {
         rna: "W000000002",
         siren: "010000002",
         name: "Club sandwitch",
         provider: "",
-        lastUpdate: new Date()
+        lastUpdate: new Date(),
     },
     {
         rna: "W000000003",
         siren: "00000003",
         name: "007 Fan Collection",
         provider: "",
-        lastUpdate: new Date()
-    }
+        lastUpdate: new Date(),
+    },
 ];
 
 const AssociationEntityArray = AssociationNameArray.map(
-    item => new AssociationNameEntity(item.rna, item.name, item.provider, item.lastUpdate, item.siren)
+    item => new AssociationNameEntity(item.rna, item.name, item.provider, item.lastUpdate, item.siren),
 );
 
 describe("AssociationNameRepository", () => {

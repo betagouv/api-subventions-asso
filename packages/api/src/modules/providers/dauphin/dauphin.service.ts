@@ -16,7 +16,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         name: "Dauphin",
         type: ProviderEnum.api,
         description:
-            "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction."
+            "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
     };
 
     isDemandesSubventionsProvider = true;
@@ -34,7 +34,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         }
 
         return (await dauhpinCachesRepository.findBySiret(siret)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto)
+            DauphinDtoAdapter.toDemandeSubvention(dto),
         );
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
@@ -49,7 +49,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         }
 
         return (await dauhpinCachesRepository.findBySiren(siren)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto)
+            DauphinDtoAdapter.toDemandeSubvention(dto),
         );
     }
 
@@ -63,7 +63,7 @@ export class DauphinService implements DemandesSubventionsProvider {
             const result = await axios.post(
                 "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
                 this.buildSearchQuery(siren, lastUpdate),
-                this.buildSearchHeader(token)
+                this.buildSearchHeader(token),
             );
 
             return result.data.hits.hits.map(h => {
@@ -106,28 +106,28 @@ export class DauphinService implements DemandesSubventionsProvider {
                                                 query: {
                                                     query_string: {
                                                         query: "beneficiaires.SIRET.SIREN:" + siren,
-                                                        analyze_wildcard: true
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                }
+                                                        analyze_wildcard: true,
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
             },
             date
                 ? {
                       query: {
                           query_string: {
                               query: "date:>" + this.formatDateToDauphinDate(date),
-                              analyze_wildcard: true
-                          }
-                      }
+                              analyze_wildcard: true,
+                          },
+                      },
                   }
-                : undefined
+                : undefined,
         ]);
     }
 
@@ -137,10 +137,10 @@ export class DauphinService implements DemandesSubventionsProvider {
                 query: {
                     query_string: {
                         query: "reference:" + ref,
-                        analyze_wildcard: true
-                    }
-                }
-            }
+                        analyze_wildcard: true,
+                    },
+                },
+            },
         ]);
     }
 
@@ -151,21 +151,21 @@ export class DauphinService implements DemandesSubventionsProvider {
                 filtered: {
                     filter: {
                         bool: {
-                            must: searchQuery
-                        }
-                    }
-                }
+                            must: searchQuery,
+                        },
+                    },
+                },
             },
             _source: [],
-            aggs: {}
+            aggs: {},
         };
     }
 
     private formatDateToDauphinDate(date: Date): string {
         return `${date.getFullYear()}\\-${formatIntToTwoDigits(date.getMonth() + 1)}\\-${formatIntToTwoDigits(
-            date.getDate()
+            date.getDate(),
         )}T${formatIntToTwoDigits(date.getHours())}\\:${formatIntToTwoDigits(
-            date.getMinutes()
+            date.getMinutes(),
         )}\\:${formatIntToTwoDigits(date.getSeconds())}.${formatIntToThreeDigits(date.getMilliseconds())}Z`;
     }
 
@@ -178,8 +178,8 @@ export class DauphinService implements DemandesSubventionsProvider {
                 "content-type": "application/json;charset=UTF-8",
                 "mg-authentication": "true",
                 Referer: "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
-                "Referrer-Policy": "strict-origin-when-cross-origin"
-            }
+                "Referrer-Policy": "strict-origin-when-cross-origin",
+            },
         };
     }
 
@@ -206,7 +206,7 @@ export class DauphinService implements DemandesSubventionsProvider {
             username: DAUPHIN_USERNAME,
             password: DAUPHIN_PASSWORD,
             redirectTo: "https://agent-dauphin.cget.gouv.fr/agents/#/cget/home?redirectTo=portal.home",
-            captcha: undefined
+            captcha: undefined,
         });
 
         return axios
@@ -216,8 +216,8 @@ export class DauphinService implements DemandesSubventionsProvider {
                     "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
                     "content-type": "application/x-www-form-urlencoded",
                     Referer: "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
-                    "Referrer-Policy": "strict-origin-when-cross-origin"
-                }
+                    "Referrer-Policy": "strict-origin-when-cross-origin",
+                },
             })
             .then(reslut => {
                 return reslut.data;

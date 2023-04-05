@@ -18,7 +18,7 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> 
 
     public async findOneBySiren(siren: Siren) {
         return this.collection.findOne({
-            "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
+            "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`),
         });
     }
 
@@ -69,7 +69,7 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> 
     public findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`)
+                "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
     }

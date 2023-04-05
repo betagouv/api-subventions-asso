@@ -6,7 +6,7 @@ import INotifier from "./@types/INotifier";
 
 export enum TemplateEnum {
     creation = 55,
-    forgetPassword = 74
+    forgetPassword = 74,
 }
 
 export default class SendInBlueProvider implements INotifier {
@@ -40,8 +40,8 @@ export default class SendInBlueProvider implements INotifier {
         try {
             await this.apiInstance.sendTransacEmail(sendSmtpEmail, {
                 headers: {
-                    "content-type": "application/json"
-                }
+                    "content-type": "application/json",
+                },
             });
             return true;
         } catch (error) {

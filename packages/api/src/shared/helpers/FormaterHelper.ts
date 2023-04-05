@@ -5,7 +5,7 @@ import ProviderValueAdapter from "../adapters/ProviderValueAdapter";
 export default class FormaterHelper {
     private static sortAndFilter(
         data: DefaultObject<ProviderValues | ProviderValues[]>,
-        providersScore: DefaultObject<number>
+        providersScore: DefaultObject<number>,
     ) {
         const sort = (a: ProviderValue<unknown>, b: ProviderValue<unknown>) =>
             FormaterHelper.sortByProviders(a, b, providersScore);
@@ -34,14 +34,14 @@ export default class FormaterHelper {
 
                 acc[key] = v;
                 return acc;
-            }, {} as DefaultObject<ProviderValue>)
+            }, {} as DefaultObject<ProviderValue>),
         );
     }
 
     private static sortByProviders(
         a: ProviderValue<unknown>,
         b: ProviderValue<unknown>,
-        providersScore: DefaultObject<number>
+        providersScore: DefaultObject<number>,
     ) {
         const score = (providersScore[b.provider] || 0) - (providersScore[a.provider] || 0);
 
@@ -62,7 +62,7 @@ export default class FormaterHelper {
             if (ProviderValueAdapter.isProviderValues(a[key] || b[key] || [])) {
                 acc[key] = [
                     ...((a[key]?.length ? a[key].flat() : []) as unknown[]),
-                    ...((b[key]?.length ? b[key].flat() : []) as unknown[])
+                    ...((b[key]?.length ? b[key].flat() : []) as unknown[]),
                 ];
             } else if (a[key] && b[key]) {
                 if (Array.isArray(a[key]) && Array.isArray(b[key])) {
@@ -70,7 +70,7 @@ export default class FormaterHelper {
                 } else {
                     acc[key] = FormaterHelper.merge(
                         a[key] as unknown as DefaultObject<unknown[]>,
-                        b[key] as unknown as DefaultObject<unknown[]>
+                        b[key] as unknown as DefaultObject<unknown[]>,
                     );
                 }
             } else {
@@ -90,7 +90,7 @@ export default class FormaterHelper {
             uniqueData = FormaterHelper.merge(data[0], data[0]);
         } else {
             uniqueData = data.reduce((acc, subData) =>
-                FormaterHelper.merge(acc, subData)
+                FormaterHelper.merge(acc, subData),
             ) as DefaultObject<ProviderValues>;
         }
         return FormaterHelper.sortAndFilter(uniqueData, providerScore);

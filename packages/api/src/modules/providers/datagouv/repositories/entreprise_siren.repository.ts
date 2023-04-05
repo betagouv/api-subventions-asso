@@ -23,10 +23,10 @@ export class EntrepriseSirenRepository extends MigrationRepository<EntrepriseSir
 
     public async replaceCollection() {
         const oldCollectionExist = (await this.db.listCollections().toArray()).find(
-            c => c.name === this.collectionName
+            c => c.name === this.collectionName,
         );
         const newCollectionExist = (await this.db.listCollections().toArray()).find(
-            c => c.name === this.collectionImportName
+            c => c.name === this.collectionImportName,
         );
 
         if (oldCollectionExist) await this.collection.rename(this.collectionName + "-OLD");

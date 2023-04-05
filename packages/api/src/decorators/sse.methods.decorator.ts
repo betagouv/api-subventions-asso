@@ -7,7 +7,7 @@ function factoryDecorator(method: "POST" | "GET" | "PUT" | "DELETE", route: stri
             method,
             route: route,
             function: target[propertyKey] as any,
-            securityRoles
+            securityRoles,
         });
     };
 }

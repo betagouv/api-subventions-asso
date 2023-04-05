@@ -2,5 +2,5 @@
 export enum StructureIdentifiersEnum {
     rna = "RNA",
     siret = "SIRET",
-    siren = "SIREN"
+    siren = "SIREN",
 }

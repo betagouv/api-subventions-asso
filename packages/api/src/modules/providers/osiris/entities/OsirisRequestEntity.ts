@@ -20,7 +20,7 @@ export default class OsirisRequestEntity extends RequestEntity {
                 if (!value) return value;
 
                 return parseFloat(value);
-            }
+            },
         },
         dateCommission: {
             path: ["Dossier", "Date Commission"],
@@ -29,18 +29,18 @@ export default class OsirisRequestEntity extends RequestEntity {
 
                 const [day, month, year] = value.split("/").map(v => parseInt(v, 10));
                 return new Date(Date.UTC(year, month - 1, day));
-            }
+            },
         },
         exerciceDebut: {
             path: ["Dossier", "Exercice Début"],
             adapter: value => {
                 if (!value) return value;
                 return new Date(Date.UTC(parseInt(value), 0));
-            }
+            },
         },
         etablissementSiege: {
             path: ["Association", "Siège"],
-            adapter: value => value === "Oui"
+            adapter: value => value === "Oui",
         },
         etablissementVoie: ["Coordonnées correspondance (publipostage)", "Voie"],
         etablissementCodePostal: ["Coordonnées correspondance (publipostage)", "Code Postal"],
@@ -63,47 +63,47 @@ export default class OsirisRequestEntity extends RequestEntity {
 
         montantsTotal: {
             path: ["Montants", "Coût (Total des Charges)"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         montantsDemande: {
             path: ["Montants", "Demandé"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         montantsPropose: {
             path: ["Montants", "Proposé"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         montantsAccorde: {
             path: ["Montants", "Accordé"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
 
         versementAcompte: {
             path: ["Versements", "Acompte"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementSolde: {
             path: ["Versements", "Solde"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementRealise: {
             path: ["Versements", "Réalisé"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementCompensationN1: {
             path: ["Versements", "Compensation N-1"],
-            adapter: value => (value ? parseFloat(value) : value)
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementCompensationN: {
             path: ["Versements", "Reversement/Compensation"],
-            adapter: value => (value ? parseFloat(value) : value)
-        }
+            adapter: value => (value ? parseFloat(value) : value),
+        },
     };
 
     public static indexedLegalInformationsPath = {
         siret: [["Association", "Bénéficiaire"], "N° Siret"],
         rna: [["Association", "Bénéficiaire"], "N° RNA"],
-        name: [["Association", "Bénéficiaire"], "Nom"]
+        name: [["Association", "Bénéficiaire"], "Nom"],
     };
 
     public provider = "Osiris";
@@ -115,7 +115,7 @@ export default class OsirisRequestEntity extends RequestEntity {
         public providerInformations: IOsirisRequestInformations,
         public data: unknown,
         public _id?: ObjectId,
-        public actions?: OsirisActionEntity[]
+        public actions?: OsirisActionEntity[],
     ) {
         super(legalInformations);
     }

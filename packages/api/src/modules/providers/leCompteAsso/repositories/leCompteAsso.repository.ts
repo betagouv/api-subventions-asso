@@ -17,24 +17,24 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
         return (
             await this.collection.findOneAndUpdate(
                 {
-                    "providerInformations.compteAssoId": request.providerInformations.compteAssoId
+                    "providerInformations.compteAssoId": request.providerInformations.compteAssoId,
                 },
                 { $set: requestWithoutId },
-                options
+                options,
             )
         ).value as LeCompteAssoRequestEntity;
     }
 
     public findByCompteAssoId(compteAssoId: string) {
         return this.collection.findOne({
-            "providerInformations.compteAssoId": compteAssoId
+            "providerInformations.compteAssoId": compteAssoId,
         }) as unknown as LeCompteAssoRequestEntity | null;
     }
 
     public findsBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret
+                "legalInformations.siret": siret,
             })
             .toArray();
     }
@@ -42,7 +42,7 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
     public findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
     }
@@ -50,7 +50,7 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
     public findsByRna(rna: Rna) {
         return this.collection
             .find({
-                "legalInformations.rna": rna
+                "legalInformations.rna": rna,
             })
             .toArray();
     }
