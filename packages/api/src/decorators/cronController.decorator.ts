@@ -1,7 +1,15 @@
-import { AsyncTask, LongIntervalJob, SimpleIntervalJob, Task } from "toad-scheduler";
+import {
+    AsyncTask,
+    CronJob,
+    CronSchedule,
+    LongIntervalJob,
+    SimpleIntervalJob,
+    SimpleIntervalSchedule,
+    Task
+} from "toad-scheduler";
 import axios from "axios";
 
-function errorHandler(cronName) {
+export const errorHandler = cronName => {
     return error => {
         console.error(`error during cron ${cronName}`);
         console.trace();
@@ -14,32 +22,40 @@ function errorHandler(cronName) {
             })
             .catch(() => console.error("error sending mattermost log"));
     };
-}
+};
+
+export const newJob = (schedule, jobConstructor, taskConstructor) => {
+    const attributeName = jobConstructor === CronJob ? "__cronJobs__" : "__intervalJobs__";
+    return function (target, propertyKey: string, descriptor) {
+        if (!target[attributeName]) target[attributeName] = [];
+        const cronName = `${target.constructor.name}.${propertyKey}`;
+        const task = new taskConstructor(cronName, () => descriptor.value(), errorHandler(cronName));
+        target[attributeName].push(new jobConstructor(schedule, task, { preventOverrun: true }));
+    };
+};
 
 /**
  * @param schedule: SimpleIntervalSchedule (toad-scheduler)
  * @param isIntervalLong: boolean -- set to true if interval is higher than 24.85 days. Prevents overflow issues
  */
-export function Cron(schedule, isIntervalLong) {
-    return function (target, propertyKey: string, descriptor) {
-        if (!target["__jobs__"]) target["__jobs__"] = [];
-        const cronName = `${target.constructor.name}.${propertyKey}`;
-        const task = new Task(cronName, () => descriptor.value(), errorHandler(cronName));
-        const jobConstructor = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
-        target["__jobs__"].push(new jobConstructor({ ...schedule, runImmediately: true }, task));
-    };
-}
+export const IntervalCron = (schedule: SimpleIntervalSchedule, isIntervalLong: boolean) => {
+    const jobConstructor = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
+    return newJob({ runImmediately: true, ...schedule }, jobConstructor, Task);
+};
 
 /**
  * @param schedule: SimpleIntervalSchedule (toad-scheduler)
  * @param isIntervalLong: boolean -- set to true if interval is higher than 24.85 days. Prevents overflow issues
  */
-export function AsyncCron(schedule, isIntervalLong) {
-    return function (target, propertyKey: string, descriptor) {
-        if (!target["__jobs__"]) target["__jobs__"] = [];
-        const cronName = `${target.constructor.name}.${propertyKey}`;
-        const task = new AsyncTask(propertyKey, () => descriptor.value(), errorHandler(cronName));
-        const jobConstructor = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
-        target["__jobs__"].push(new jobConstructor({ runImmediately: true, ...schedule }, task));
-    };
-}
+export const AsyncIntervalCron = (schedule: SimpleIntervalSchedule, isIntervalLong: boolean) => {
+    const jobConstructor = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
+    return newJob({ runImmediately: true, ...schedule }, jobConstructor, AsyncTask);
+};
+
+export const Cron = (schedule: CronSchedule) => {
+    return newJob(schedule, CronJob, Task);
+};
+
+export const AsyncCron = (schedule: CronSchedule) => {
+    return newJob(schedule, CronJob, AsyncTask);
+};
