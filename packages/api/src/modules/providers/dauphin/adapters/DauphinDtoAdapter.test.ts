@@ -15,16 +15,16 @@ describe("DauphinDtoAdapter", () => {
                 history: { begin: {}, events: [] },
                 demandeur: { SIRET: {} },
                 planFinancement: [],
-                financeursPrivilegies: [{ title: "title" }]
-            }
+                financeursPrivilegies: [{ title: "title" }],
+            },
         };
 
         const buildDauphinEntityWithVirtualStatus = virtualStatus => {
             return {
                 dauphin: {
                     ...minDauphinEntity.dauphin,
-                    virtualStatusLabel: virtualStatus
-                }
+                    virtualStatusLabel: virtualStatus,
+                },
             };
         };
 
