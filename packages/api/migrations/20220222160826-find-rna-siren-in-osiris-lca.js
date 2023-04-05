@@ -16,9 +16,9 @@ module.exports = {
                     const data = await collection.find({}).toArray();
                     return data.map(request => ({
                         rna: request.legalInformations.rna,
-                        siret: request.legalInformations.siret
+                        siret: request.legalInformations.siret,
                     }));
-                })
+                }),
             )
         ).flat();
 
@@ -36,5 +36,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

@@ -8,7 +8,7 @@ export default class ChorusLineEntity {
 
     public static indexedInformationsPath: { [key: string]: ParserInfo } = {
         ej: {
-            path: ["N° EJ"]
+            path: ["N° EJ"],
         },
         siret: { path: ["Code taxe 1"] },
         codeBranche: { path: ["Branche CODE"] },
@@ -26,7 +26,7 @@ export default class ChorusLineEntity {
                 if (!value || typeof value === "number") return value;
 
                 return parseFloat(value.replace("\r", "").replace(" ", "").replace(",", "."));
-            }
+            },
         },
         dateOperation: {
             path: ["Date de dernière opération sur la DP"],
@@ -38,14 +38,14 @@ export default class ChorusLineEntity {
                 }
 
                 return ExcelDateToJSDate(parseInt(value, 10));
-            }
-        }
+            },
+        },
     };
 
     constructor(
         public uniqueId: string,
         public indexedInformations: IChorusIndexedInformations,
         public data: unknown,
-        public _id?: ObjectId
+        public _id?: ObjectId,
     ) {}
 }

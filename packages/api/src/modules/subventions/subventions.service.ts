@@ -37,7 +37,7 @@ export class SubventionsService {
 
     private aggregate(
         id: StructureIdentifiers,
-        type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum]
+        type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum],
     ): Flux<SubventionsFlux> {
         if (type === StructureIdentifiersEnum.siret || type === StructureIdentifiersEnum.siren) {
             if (type === StructureIdentifiersEnum.siret) id = siretToSiren(id);
@@ -56,11 +56,11 @@ export class SubventionsService {
         const providers = this.getDemandesSubventionsProviders();
 
         const defaultMeta = {
-            totalProviders: providers.length
+            totalProviders: providers.length,
         };
 
         subventionsFlux.push({
-            __meta__: defaultMeta
+            __meta__: defaultMeta,
         });
 
         let countAnswers = 0;
@@ -71,11 +71,11 @@ export class SubventionsService {
 
                 subventionsFlux.push({
                     __meta__: { ...defaultMeta, provider: p.provider.name },
-                    subventions: subventions || []
+                    subventions: subventions || [],
                 });
 
                 if (countAnswers === providers.length) subventionsFlux.close();
-            })
+            }),
         );
 
         return subventionsFlux;
@@ -83,7 +83,7 @@ export class SubventionsService {
 
     private getDemandesSubventionsProviders() {
         return Object.values(providers).filter(
-            p => (p as unknown as DemandesSubventionsProvider).isDemandesSubventionsProvider
+            p => (p as unknown as DemandesSubventionsProvider).isDemandesSubventionsProvider,
         ) as unknown as DemandesSubventionsProvider[];
     }
 }

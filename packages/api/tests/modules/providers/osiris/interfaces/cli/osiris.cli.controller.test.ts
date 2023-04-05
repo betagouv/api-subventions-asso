@@ -34,7 +34,7 @@ describe("OsirisCliController", () => {
 
         it("should throw an error because the file does not exist", () => {
             expect(() => controller.parse("requests", "fake/path", "2022")).rejects.toThrowError(
-                "File not found fake/path"
+                "File not found fake/path",
             );
         });
     });
@@ -70,7 +70,7 @@ describe("OsirisCliController", () => {
 
         it("should throw an error because the file does not exist", () => {
             expect(() => controller.parse("actions", "fake/path", "2022")).rejects.toThrowError(
-                "File not found fake/path"
+                "File not found fake/path",
             );
         });
     });
@@ -86,7 +86,7 @@ describe("OsirisCliController", () => {
             const filePath = path.resolve(__dirname, "../../__fixtures__/SuiviDossiers_test.xls");
 
             expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrowError(
-                "The type unknown is not taken into account"
+                "The type unknown is not taken into account",
             );
         });
     });
@@ -104,11 +104,11 @@ describe("OsirisCliController", () => {
                     compteAssoId: "COMPTEASSOID",
                     ej: "",
                     amountAwarded: 0,
-                    dateCommission: new Date()
+                    dateCommission: new Date(),
                 } as IOsirisRequestInformations,
                 {},
                 undefined,
-                []
+                [],
             );
             await osirisService.addRequest(entity);
         });
@@ -150,11 +150,11 @@ describe("OsirisCliController", () => {
                     compteAssoId: "COMPTEASSOID",
                     ej: "",
                     amountAwarded: 0,
-                    dateCommission: new Date()
+                    dateCommission: new Date(),
                 } as IOsirisRequestInformations,
                 {},
                 undefined,
-                []
+                [],
             );
             await osirisService.addRequest(entity);
         });

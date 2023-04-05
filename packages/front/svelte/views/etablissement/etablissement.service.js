@@ -16,7 +16,7 @@ export class EtablissementService {
             // When contacts is a ProviderValues, only the first element is returned and this is not the behavior we want for contacts
             return {
                 ...toEtablissementComponent(etablissement),
-                contacts: etablissementService.getContactsList(etablissement)
+                contacts: etablissementService.getContactsList(etablissement),
             };
         });
     }

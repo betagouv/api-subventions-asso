@@ -16,8 +16,8 @@ describe("AuthentificationController, /auth", () => {
                 reset: {
                     _id: expect.any(String),
                     userId: expect.any(String),
-                    createdAt: expect.any(String)
-                }
+                    createdAt: expect.any(String),
+                },
             };
             await request(g.app)
                 .post("/auth/forget-password")
@@ -31,13 +31,13 @@ describe("AuthentificationController, /auth", () => {
             const response = await request(g.app)
                 .post("/auth/forget-password")
                 .send({
-                    email: "useraa@beta.gouv.fr"
+                    email: "useraa@beta.gouv.fr",
                 })
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
-                message: "User not found"
+                message: "User not found",
             });
         });
     });
@@ -51,13 +51,13 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.token
+                    token: result.token,
                 })
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                user: { email: "test-reset@beta.gouv.fr", active: true }
+                user: { email: "test-reset@beta.gouv.fr", active: true },
             });
         });
 
@@ -69,12 +69,12 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaa",
-                    token: result.token
+                    token: result.token,
                 })
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
             });
         });
 
@@ -83,13 +83,13 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: "sdsdsdsd"
+                    token: "sdsdsdsd",
                 })
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
+                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
             });
         });
 
@@ -104,14 +104,14 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.token
+                    token: result.token,
                 })
                 .set("Accept", "application/json");
             UserService.RESET_TIMEOUT = oldResetTimout;
 
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
             });
 
             UserService.RESET_TIMEOUT = oldResetTimout;
@@ -127,13 +127,13 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.token
+                    token: result.token,
                 })
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.USER_NOT_FOUND
+                code: ResetPasswordErrorCodes.USER_NOT_FOUND,
             });
         });
     });
@@ -151,15 +151,15 @@ describe("AuthentificationController, /auth", () => {
                     active: true,
                     jwt: {
                         token: expect.any(String),
-                        expirateDate: expect.any(String)
-                    }
+                        expirateDate: expect.any(String),
+                    },
                 };
 
                 await request(g.app)
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
-                        email: USER_EMAIL
+                        email: USER_EMAIL,
                     })
                     .set("Accept", "application/json")
                     .expect(200)
@@ -173,7 +173,7 @@ describe("AuthentificationController, /auth", () => {
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
-                        email: USER_EMAIL
+                        email: USER_EMAIL,
                     })
                     .set("Accept", "application/json")
                     .expect(res => expect(res.body.user.hashPassword).toEqual(undefined));
@@ -184,7 +184,7 @@ describe("AuthentificationController, /auth", () => {
                     .post("/auth/login")
                     .send({
                         password: "WRONG PASSWORD",
-                        email: USER_EMAIL
+                        email: USER_EMAIL,
                     })
                     .set("Accept", "application/json")
                     .expect(401);
@@ -198,7 +198,7 @@ describe("AuthentificationController, /auth", () => {
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
-                        email: USER_EMAIL
+                        email: USER_EMAIL,
                     })
                     .set("Accept", "application/json");
 

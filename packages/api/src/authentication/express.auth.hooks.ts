@@ -14,7 +14,7 @@ export function authMocks(app: Express) {
         new LocalStrategy(
             {
                 usernameField: "email",
-                passwordField: "password"
+                passwordField: "password",
             },
             async (email, password, done) => {
                 try {
@@ -23,8 +23,8 @@ export function authMocks(app: Express) {
                 } catch (e) {
                     done(e);
                 }
-            }
-        )
+            },
+        ),
     );
 
     // This verifies that the token sent by the user is valid
@@ -33,7 +33,7 @@ export function authMocks(app: Express) {
             {
                 secretOrKey: JWT_SECRET,
                 jwtFromRequest: getJtwTokenFromRequest,
-                passReqToCallback: true
+                passReqToCallback: true,
             },
             async (req: Request, tokenPayload, done) => {
                 try {
@@ -42,8 +42,8 @@ export function authMocks(app: Express) {
                 } catch (e) {
                     done(e);
                 }
-            }
-        )
+            },
+        ),
     );
 
     passport.serializeUser((user, done) => {

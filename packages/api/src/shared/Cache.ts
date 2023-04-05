@@ -23,8 +23,8 @@ export default class CacheData<T> {
         const values = [
             {
                 validateDate: new Date().getTime() + this.timeToCacheMS,
-                value
-            }
+                value,
+            },
         ] as CacheValue<T>[];
         if (this.collection.has(key)) values.push(...(this.collection.get(key) as []));
 

@@ -56,7 +56,7 @@ describe("FonjepService", () => {
             const expected = new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
@@ -69,7 +69,7 @@ describe("FonjepService", () => {
             const expected = new FonjepRejectedRequest(
                 `INVALID NAME FOR ${SubventionEntity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
@@ -83,7 +83,7 @@ describe("FonjepService", () => {
             const expected = new FonjepRejectedRequest(
                 `INVALID DATE FOR ${SubventionEntity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
@@ -98,7 +98,7 @@ describe("FonjepService", () => {
             const expected = new FonjepRejectedRequest(
                 `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
@@ -114,7 +114,7 @@ describe("FonjepService", () => {
             const expected = new FonjepRejectedRequest(
                 `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
             const actual = fonjepService.validateEntity(entity);
             expect(actual).toEqual(expected);
@@ -162,7 +162,7 @@ describe("FonjepService", () => {
             const expected = new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${WRONG_SIRET}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
             const actual = await fonjepService.createVersementEntity(entity);
             expect(actual).toEqual(expected);

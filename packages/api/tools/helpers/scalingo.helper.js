@@ -4,7 +4,7 @@ const child_process = require("child_process");
 module.exports = {
     asyncAppAction(action, value, appName) {
         const child = child_process.spawn(`scalingo`, ["--app", appName, action, ...value.split(" ")], {
-            env: process.env
+            env: process.env,
         });
 
         return new Promise(resolve => {
@@ -22,5 +22,5 @@ module.exports = {
                 resolve();
             });
         });
-    }
+    },
 };

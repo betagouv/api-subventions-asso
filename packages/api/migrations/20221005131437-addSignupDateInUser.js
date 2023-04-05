@@ -17,22 +17,22 @@ module.exports = {
                         $or: [
                             {
                                 "meta.req.url": new RegExp("/user/admin/create-user"),
-                                "meta.res.statusCode": 200
+                                "meta.res.statusCode": 200,
                             },
                             {
                                 "meta.req.url": new RegExp("/auth/signup"),
-                                "meta.res.statusCode": 201
-                            }
-                        ]
-                    }
+                                "meta.res.statusCode": 201,
+                            },
+                        ],
+                    },
                 },
                 {
                     $group: {
                         _id: "$meta.req.body.email",
                         email: { $first: "$meta.req.body.email" },
-                        date: { $first: "$timestamp" }
-                    }
-                }
+                        date: { $first: "$timestamp" },
+                    },
+                },
             ])
             .forEach(r => {
                 const userEmail = r.email;
@@ -40,7 +40,7 @@ module.exports = {
 
                 const partialUser = {
                     email: userEmail,
-                    signupAt: date
+                    signupAt: date,
                 };
                 result.push(partialUser);
             });
@@ -54,8 +54,8 @@ module.exports = {
             async user =>
                 await userRepository.update({
                     ...user,
-                    signupAt: new Date("2022-01-01")
-                })
+                    signupAt: new Date("2022-01-01"),
+                }),
         );
     },
 
@@ -64,5 +64,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

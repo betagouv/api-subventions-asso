@@ -13,11 +13,11 @@ export default class SubventiaParser {
             const parsedData = ParseHelper.linkHeaderToData(headers, raw);
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 SubventiaRequestEntity.indexedProviderInformationsPath,
-                parsedData
+                parsedData,
             ) as unknown as ISubventiaIndexedInformation;
             const legalInformations = ParseHelper.indexDataByPathObject(
                 SubventiaRequestEntity.indexedLegalInformationsPath,
-                parsedData
+                parsedData,
             ) as unknown as ILegalInformations;
 
             return new SubventiaRequestEntity(legalInformations, indexedInformations, parsedData);

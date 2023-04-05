@@ -16,7 +16,7 @@ export class RnaSirenController extends Controller {
     @Get("{rna_or_siren_or_siret}")
     @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren", {
         rna: null,
-        siren: null
+        siren: null,
     })
     public async findBySiret(rna_or_siren_or_siret: StructureIdentifiers): Promise<RnaSirenResponseDto> {
         let siren: null | Siren = null;
@@ -38,7 +38,7 @@ export class RnaSirenController extends Controller {
         } else {
             return {
                 siren: siren as Siren,
-                rna: rna as Rna
+                rna: rna as Rna,
             };
         }
     }

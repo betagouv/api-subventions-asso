@@ -24,7 +24,7 @@ describe("SubventionsService", () => {
         it("should throw an error if identifier is not valid", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
             await expect(() => subventionsService.getDemandesByAssociation(IDENTIFIER)).rejects.toThrowError(
-                AssociationIdentifierError
+                AssociationIdentifierError,
             );
         });
         it("should return DemandeSubvention[]", async () => {
@@ -40,14 +40,14 @@ describe("SubventionsService", () => {
         it("should throw an error if given a SIREN", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
-                StructureIdentifiersError
+                StructureIdentifiersError,
             );
         });
 
         it("should throw an error if given a RNA", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
-                StructureIdentifiersError
+                StructureIdentifiersError,
             );
         });
 

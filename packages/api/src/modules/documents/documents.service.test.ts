@@ -177,7 +177,7 @@ describe("Documents Service", () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const actual = documentsService.isDocumentProvider({
-                isDocumentProvider: true
+                isDocumentProvider: true,
             });
 
             expect(actual).toBe(expected);
@@ -283,8 +283,8 @@ describe("Documents Service", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
-                    getDocumentsByRna: mock
-                } as unknown as Provider
+                    getDocumentsByRna: mock,
+                } as unknown as Provider,
             ]);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -301,8 +301,8 @@ describe("Documents Service", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
-                    getDocumentsBySiren: mock
-                } as unknown as Provider
+                    getDocumentsBySiren: mock,
+                } as unknown as Provider,
             ]);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -319,8 +319,8 @@ describe("Documents Service", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
-                    getDocumentsBySiret: mock
-                } as unknown as Provider
+                    getDocumentsBySiret: mock,
+                } as unknown as Provider,
             ]);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -337,20 +337,20 @@ describe("Documents Service", () => {
                 {
                     type: toPV("rib"),
                     url: toPV("/url/to/file"),
-                    nom: toPV("name of file")
+                    nom: toPV("name of file"),
                 },
                 {
                     type: toPV("document"),
                     url: toPV("/url/to/file2"),
-                    nom: toPV("name of file2")
-                }
+                    nom: toPV("name of file2"),
+                },
             ];
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
-                    getDocumentsBySiret: async () => expected
-                } as unknown as Provider
+                    getDocumentsBySiret: async () => expected,
+                } as unknown as Provider,
             ]);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

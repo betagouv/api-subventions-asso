@@ -72,7 +72,7 @@ describe("AvisSituationInseeService", () => {
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
-                data: expected
+                data: expected,
             }));
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
@@ -86,7 +86,7 @@ describe("AvisSituationInseeService", () => {
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
-                data: expected
+                data: expected,
             }));
             // @ts-expect-error getInseeEtablissements is private method
             await avisSituationInseeService.getInseeEtablissements("SIREN");
@@ -100,7 +100,7 @@ describe("AvisSituationInseeService", () => {
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 404,
-                data: false
+                data: false,
             }));
             // @ts-expect-error getInseeEtablissements is private method
             const actual = await avisSituationInseeService.getInseeEtablissements("");
@@ -114,7 +114,7 @@ describe("AvisSituationInseeService", () => {
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 404,
-                data: expected
+                data: expected,
             }));
             // @ts-expect-error getInseeEtablissements is private method
             await avisSituationInseeService.getInseeEtablissements("SIREN");
@@ -153,9 +153,9 @@ describe("AvisSituationInseeService", () => {
                 etablissements: [
                     {
                         etablissementSiege: false,
-                        nic: "11111"
-                    }
-                ]
+                        nic: "11111",
+                    },
+                ],
             }));
 
             const expected = null;
@@ -170,9 +170,9 @@ describe("AvisSituationInseeService", () => {
                 etablissements: [
                     {
                         etablissementSiege: true,
-                        nic: "11111"
-                    }
-                ]
+                        nic: "11111",
+                    },
+                ],
             }));
 
             const expected = [
@@ -180,22 +180,22 @@ describe("AvisSituationInseeService", () => {
                     type: ProviderValueAdapter.toProviderValue(
                         "Avis Situation Insee",
                         avisSituationInseeService.provider.name,
-                        expect.any(Date)
+                        expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
                         `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
                         avisSituationInseeService.provider.name,
-                        expect.any(Date)
+                        expect.any(Date),
                     ),
                     nom: ProviderValueAdapter.toProviderValue(
                         `Avis Situation Insee (00000000011111)`,
                         avisSituationInseeService.provider.name,
-                        expect.any(Date)
+                        expect.any(Date),
                     ),
                     __meta__: {
-                        siret: "00000000011111"
-                    }
-                }
+                        siret: "00000000011111",
+                    },
+                },
             ];
 
             const actual = await avisSituationInseeService.getDocumentsBySiren("000000000");
@@ -234,9 +234,9 @@ describe("AvisSituationInseeService", () => {
                 etablissements: [
                     {
                         etablissementSiege: true,
-                        nic: "11111"
-                    }
-                ]
+                        nic: "11111",
+                    },
+                ],
             }));
 
             const expected = [
@@ -244,22 +244,22 @@ describe("AvisSituationInseeService", () => {
                     type: ProviderValueAdapter.toProviderValue(
                         "Avis Situation Insee",
                         avisSituationInseeService.provider.name,
-                        expect.any(Date)
+                        expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
                         `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
                         avisSituationInseeService.provider.name,
-                        expect.any(Date)
+                        expect.any(Date),
                     ),
                     nom: ProviderValueAdapter.toProviderValue(
                         `Avis Situation Insee (00000000011111)`,
                         avisSituationInseeService.provider.name,
-                        expect.any(Date)
+                        expect.any(Date),
                     ),
                     __meta__: {
-                        siret: "00000000011111"
-                    }
-                }
+                        siret: "00000000011111",
+                    },
+                },
             ];
 
             const actual = await avisSituationInseeService.getDocumentsBySiret("00000000011111");

@@ -13,7 +13,7 @@ export class FonjepSubventionRepository extends MigrationRepository<FonjepSubven
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret
+                "legalInformations.siret": siret,
             })
             .toArray();
     }
@@ -21,7 +21,7 @@ export class FonjepSubventionRepository extends MigrationRepository<FonjepSubven
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
     }

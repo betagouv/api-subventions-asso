@@ -38,17 +38,17 @@ export class RnaSirenRepository {
                             // Group by rna
                             _id: { rna: "$rna" },
                             dups: { $addToSet: "$_id" },
-                            count: { $sum: 1 }
-                        }
+                            count: { $sum: 1 },
+                        },
                     },
                     {
                         $match: {
                             // Keep just groups to have length > 1
-                            count: { $gt: 1 }
-                        }
-                    }
+                            count: { $gt: 1 },
+                        },
+                    },
                 ],
-                { allowDiskUse: true } // For faster processing if set is larger
+                { allowDiskUse: true }, // For faster processing if set is larger
             )
             .forEach(doc => {
                 doc.dups.shift(); // First element skipped for deleting

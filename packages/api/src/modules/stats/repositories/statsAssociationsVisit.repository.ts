@@ -6,7 +6,7 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
     collectionName = "stats-association-visits";
 
     joinIndexes = {
-        user: "userId"
+        user: "userId",
     };
 
     async add(entity: AssociationVisitEntity) {
@@ -27,16 +27,16 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
                     $match: {
                         date: {
                             $gte: start,
-                            $lte: end
-                        }
-                    }
+                            $lte: end,
+                        },
+                    },
                 },
                 {
                     $group: {
                         _id: "$associationIdentifier",
-                        visits: { $addToSet: "$$ROOT" }
-                    }
-                }
+                        visits: { $addToSet: "$$ROOT" },
+                    },
+                },
             ])
             .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
     }

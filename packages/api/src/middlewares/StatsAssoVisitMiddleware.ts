@@ -16,7 +16,7 @@ export default async function StatsAssoVisitMiddleware(req: IdentifiedRequest, r
     await statsService.addAssociationVisit({
         userId: req.user._id,
         associationIdentifier: id,
-        date: new Date()
+        date: new Date(),
     });
 }
 

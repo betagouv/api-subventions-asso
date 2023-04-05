@@ -22,10 +22,10 @@ export class OsirisActionRepository {
         const dbo = (
             await this.collection.findOneAndUpdate(
                 {
-                    "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId
+                    "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId,
                 },
                 { $set: actionWithoutId },
-                options
+                options,
             )
         ).value;
         if (!dbo) throw new MongoCnxError();
@@ -34,7 +34,7 @@ export class OsirisActionRepository {
 
     public async findByOsirisId(osirisId: string) {
         const dbo = await this.collection.findOne({
-            "indexedInformations.osirisActionId": osirisId
+            "indexedInformations.osirisActionId": osirisId,
         });
         if (!dbo) return null;
         return OsirisActionAdapter.toEntity(dbo);

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
-    default: osirisRepository
+    default: osirisRepository,
 } = require("../build/src/modules/providers/osiris/repositories/osiris.request.repository");
 const {
-    default: associationNameRepository
+    default: associationNameRepository,
 } = require("../build/src/modules/association-name/repositories/associationName.repository");
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
@@ -32,7 +32,7 @@ module.exports = {
                     rna,
                     name,
                     provider: "OSIRIS",
-                    lastUpdate: date
+                    lastUpdate: date,
                 });
             }
             counter++;
@@ -46,5 +46,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

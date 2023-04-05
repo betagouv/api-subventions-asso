@@ -26,7 +26,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
         name: "API Entreprise",
         type: ProviderEnum.api,
         description:
-            "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...)."
+            "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
     };
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
@@ -37,12 +37,12 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
         route: string,
         queryParams: DefaultObject<string>,
         reason: string,
-        isNewAPI = true
+        isNewAPI = true,
     ): Promise<T | null> {
         const defaultParams = {
             context: "aides publiques",
             recipient: "12004101700035",
-            object: reason
+            object: reason,
         };
 
         const params = qs.stringify({ ...defaultParams, ...queryParams });
@@ -57,7 +57,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
         let result;
         if (isNewAPI) {
             result = await axios.get<T>(fullURL, {
-                headers: { Authorization: `Bearer ${API_ENTREPRISE_TOKEN}` }
+                headers: { Authorization: `Bearer ${API_ENTREPRISE_TOKEN}` },
             });
         } else {
             result = await axios.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`);
@@ -114,7 +114,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
             `${this.buildHeadcountUrl(siret, subtractMonths)}`,
             {},
             this.HEADCOUNT_REASON,
-            false
+            false,
         );
     }
 
@@ -125,7 +125,7 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
                     await this.sendRequest<{ data: ExtraitRcsDto }>(
                         `v3/infogreffe/rcs/unites_legales/${siren}/extrait_kbis`,
                         {},
-                        this.RCS_EXTRACT_REASON
+                        this.RCS_EXTRACT_REASON,
                     )
                 )?.data;
             } catch (e) {

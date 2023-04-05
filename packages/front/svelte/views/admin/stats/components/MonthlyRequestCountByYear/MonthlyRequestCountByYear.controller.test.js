@@ -7,7 +7,7 @@ describe("MonthlyRequestCountByYearController", () => {
         const DATA = {
             monthlyData: [23, 24],
             sum: 1,
-            average: 5.7
+            average: 5.7,
         };
         const YEAR = 2022;
         let ctrl;

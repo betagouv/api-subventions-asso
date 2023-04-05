@@ -30,8 +30,8 @@ describe("StatsAssoVisitsMiddleware", () => {
     it("should not call addAssociationVisit because user is admin", async () => {
         const req = {
             user: {
-                roles: ["admin"]
-            }
+                roles: ["admin"],
+            },
         } as IdentifiedRequest;
         isRequestFromAdminMock.mockImplementationOnce(() => true);
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
@@ -41,7 +41,7 @@ describe("StatsAssoVisitsMiddleware", () => {
     it("should not call addAssociationVisit if regex doesn't found", async () => {
         const req = {
             user: {},
-            originalUrl: ""
+            originalUrl: "",
         } as IdentifiedRequest;
         isRequestFromAdminMock.mockImplementationOnce(() => false);
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
@@ -51,7 +51,7 @@ describe("StatsAssoVisitsMiddleware", () => {
     it("should not call addAssociationVisit because regex doesn't find identifier", async () => {
         const req = {
             user: {},
-            originalUrl: "/association/TOTO"
+            originalUrl: "/association/TOTO",
         } as IdentifiedRequest;
         isRequestFromAdminMock.mockImplementationOnce(() => false);
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
@@ -66,16 +66,16 @@ describe("StatsAssoVisitsMiddleware", () => {
         const USER_ID = "USER_ID";
         const req = {
             user: {
-                _id: USER_ID
+                _id: USER_ID,
             },
-            originalUrl: `/association/${RNA}`
+            originalUrl: `/association/${RNA}`,
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
         const expected = {
             userId: USER_ID,
             associationIdentifier: RNA,
-            date: expect.any(Date)
+            date: expect.any(Date),
         };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
@@ -89,16 +89,16 @@ describe("StatsAssoVisitsMiddleware", () => {
         const USER_ID = "USER_ID";
         const req = {
             user: {
-                _id: USER_ID
+                _id: USER_ID,
             },
-            originalUrl: `/association/${SIREN}`
+            originalUrl: `/association/${SIREN}`,
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
         const expected = {
             userId: USER_ID,
             associationIdentifier: SIREN,
-            date: expect.any(Date)
+            date: expect.any(Date),
         };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);
@@ -113,16 +113,16 @@ describe("StatsAssoVisitsMiddleware", () => {
         const USER_ID = "USER_ID";
         const req = {
             user: {
-                _id: USER_ID
+                _id: USER_ID,
             },
-            originalUrl: `/etablissement/${SIRET}`
+            originalUrl: `/etablissement/${SIRET}`,
         } as unknown as IdentifiedRequest;
         await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
 
         const expected = {
             userId: USER_ID,
             associationIdentifier: SIREN,
-            date: expect.any(Date)
+            date: expect.any(Date),
         };
 
         expect(addAssociationVisitMock).toBeCalledWith(expected);

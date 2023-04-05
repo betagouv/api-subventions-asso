@@ -3,7 +3,7 @@ const mockIsUserActif = jest.fn();
 jest.mock("../../shared/helpers/UserHelper", () => {
     return {
         __esModule: true, // this property makes it work
-        isUserActif: mockIsUserActif
+        isUserActif: mockIsUserActif,
     };
 });
 
@@ -103,7 +103,7 @@ describe("StatsService", () => {
             { _id: 1, nbOfRequests: 201 },
             { _id: 2, nbOfRequests: 21 },
             { _id: 10, nbOfRequests: 300 },
-            { _id: 12, nbOfRequests: 1 }
+            { _id: 12, nbOfRequests: 1 },
         ];
 
         beforeAll(() => monthlyAvgRequestsOnPeriodMock.mockResolvedValue(mockedValue));
@@ -136,8 +136,8 @@ describe("StatsService", () => {
                             .fill(0)
                             .map((_, index) => ({
                                 _id: index + 1,
-                                nbOfRequests: 5
-                            }))
+                                nbOfRequests: 5,
+                            })),
                     );
             });
 
@@ -175,12 +175,12 @@ describe("StatsService", () => {
         const EVOLUTION = [3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5];
         const FINAL_DATA = {
             nombres_utilisateurs_avant_annee: INIT_COUNT,
-            evolution_nombres_utilisateurs: EVOLUTION
+            evolution_nombres_utilisateurs: EVOLUTION,
         };
         const USER_DATA = [
             { signupAt: new Date(PAST_YEAR, 0, 23) },
             { signupAt: new Date(PAST_YEAR, 2, 3) },
-            { signupAt: new Date(PAST_YEAR, 8, 16) }
+            { signupAt: new Date(PAST_YEAR, 8, 16) },
         ];
         const FIRST_DAY_PERIOD = new Date(PAST_YEAR, 0, 1);
         const NEXT_DAY_PERIOD = new Date(PAST_YEAR + 1, 0, 0);
@@ -225,7 +225,7 @@ describe("StatsService", () => {
             const actual = await statsService.getMonthlyUserNbByYear(THIS_YEAR + 1);
             const expected = {
                 nombres_utilisateurs_avant_annee: INIT_COUNT,
-                evolution_nombres_utilisateurs: []
+                evolution_nombres_utilisateurs: [],
             };
             expect(actual).toEqual(expected);
         });
@@ -234,7 +234,7 @@ describe("StatsService", () => {
             const THIS_MONTH = new Date().getMonth();
             const expected = {
                 nombres_utilisateurs_avant_annee: INIT_COUNT,
-                evolution_nombres_utilisateurs: EVOLUTION.slice(0, THIS_MONTH + 1)
+                evolution_nombres_utilisateurs: EVOLUTION.slice(0, THIS_MONTH + 1),
             };
             expect(actual).toEqual(expected);
         });
@@ -250,7 +250,7 @@ describe("StatsService", () => {
             const actual = await statsService.getMonthlyUserNbByYear(PAST_YEAR);
             const expected = {
                 evolution_nombres_utilisateurs: FINAL_DATA_ALT,
-                nombres_utilisateurs_avant_annee: INIT_COUNT_ALT
+                nombres_utilisateurs_avant_annee: INIT_COUNT_ALT,
             };
             expect(actual).toEqual(expected);
         });
@@ -263,13 +263,13 @@ describe("StatsService", () => {
 
         const findGroupedByAssociationIdentifierOnPeriodMock: jest.SpyInstance = jest.spyOn(
             statsAssociationsVisitRepository,
-            "findGroupedByAssociationIdentifierOnPeriod"
+            "findGroupedByAssociationIdentifierOnPeriod",
         );
         const getNameFromIdentifierMock = jest.spyOn(associationNameService, "getNameFromIdentifier");
         const groupAssociationVisitsByAssociationMock: jest.SpyInstance = jest.spyOn(
             statsService,
             // @ts-expect-error groupAssociationVisitsByAssociation is private method
-            "groupAssociationVisitsByAssociation"
+            "groupAssociationVisitsByAssociation",
         );
         // @ts-expect-error groupAssociationVisitsByAssociation is private method
         const keepOneVisitByUserAndDateMock: jest.SpyInstance = jest.spyOn(statsService, "keepOneVisitByUserAndDate");
@@ -283,13 +283,13 @@ describe("StatsService", () => {
             const invalidDate = new Date("");
 
             await expect(async () => statsService.getTopAssociationsByPeriod(5, invalidDate, END)).rejects.toThrowError(
-                "Invalid Date"
+                "Invalid Date",
             );
         });
 
         it("should throw error, start date is undefined", async () => {
             await expect(async () =>
-                statsService.getTopAssociationsByPeriod(5, undefined as unknown as Date, END)
+                statsService.getTopAssociationsByPeriod(5, undefined as unknown as Date, END),
             ).rejects.toThrowError("Invalid Date");
         });
 
@@ -297,13 +297,13 @@ describe("StatsService", () => {
             const invalidDate = new Date("");
 
             await expect(async () =>
-                statsService.getTopAssociationsByPeriod(5, START, invalidDate)
+                statsService.getTopAssociationsByPeriod(5, START, invalidDate),
             ).rejects.toThrowError("Invalid Date");
         });
 
         it("should throw error, end date is undefined", async () => {
             await expect(async () =>
-                statsService.getTopAssociationsByPeriod(5, START, undefined as unknown as Date)
+                statsService.getTopAssociationsByPeriod(5, START, undefined as unknown as Date),
             ).rejects.toThrowError("Invalid Date");
         });
 
@@ -317,8 +317,8 @@ describe("StatsService", () => {
         it("should call groupAssociationVisitsByAssociation with database data", async () => {
             const expected = [
                 {
-                    fake: "data"
-                }
+                    fake: "data",
+                },
             ];
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => expected);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => []);
@@ -333,8 +333,8 @@ describe("StatsService", () => {
             const DATA = [
                 {
                     id: "",
-                    visits: expected
-                }
+                    visits: expected,
+                },
             ];
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
@@ -350,8 +350,8 @@ describe("StatsService", () => {
             const DATA = [
                 {
                     id: expected,
-                    visits: "Visits"
-                }
+                    visits: "Visits",
+                },
             ];
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
@@ -367,12 +367,12 @@ describe("StatsService", () => {
             const DATA = [
                 {
                     id: "ID2",
-                    visits: "Visits"
+                    visits: "Visits",
                 },
                 {
                     id: "ID1",
-                    visits: "Visits"
-                }
+                    visits: "Visits",
+                },
             ];
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
@@ -387,22 +387,22 @@ describe("StatsService", () => {
             const expected = [
                 {
                     name: "ID2",
-                    visits: 42
+                    visits: 42,
                 },
                 {
                     name: "ID1",
-                    visits: 1
-                }
+                    visits: 1,
+                },
             ];
             const DATA = [
                 {
                     id: "ID1",
-                    visits: { length: 1 }
+                    visits: { length: 1 },
                 },
                 {
                     id: "ID2",
-                    visits: { length: 42 }
-                }
+                    visits: { length: 42 },
+                },
             ];
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
@@ -416,13 +416,13 @@ describe("StatsService", () => {
         it("should return named result", async () => {
             const expected = {
                 name: "Association 1",
-                visits: 42
+                visits: 42,
             };
             const DATA = [
                 {
                     id: "ID",
-                    visits: { length: 42 }
-                }
+                    visits: { length: 42 },
+                },
             ];
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
@@ -457,7 +457,7 @@ describe("StatsService", () => {
             groupVisitsOnMapsMock.mockImplementation(async () => {});
             const expected = [
                 { _id: RNA, visits: ["AA"] },
-                { _id: SIREN, visits: ["BB"] }
+                { _id: SIREN, visits: ["BB"] },
             ];
             // @ts-expect-error groupAssociationVisitsByAssociation is private method
             await statsService.groupAssociationVisitsByAssociation(expected);
@@ -475,7 +475,7 @@ describe("StatsService", () => {
             // @ts-expect-error groupAssociationVisitsByAssociation is private method
             const actual = await statsService.groupAssociationVisitsByAssociation([
                 { _id: RNA, visits: ["AA"] as unknown as AssociationVisitEntity[] },
-                { _id: SIREN, visits: ["BB"] as unknown as AssociationVisitEntity[] }
+                { _id: SIREN, visits: ["BB"] as unknown as AssociationVisitEntity[] },
             ]);
 
             expect(actual).toHaveLength(1);
@@ -494,8 +494,8 @@ describe("StatsService", () => {
             const sirenMap = new Map();
             const expected = [
                 {
-                    visits: 1
-                }
+                    visits: 1,
+                },
             ];
             // @ts-expect-error groupVisitsOnMaps is private methode
             await statsService.groupVisitsOnMaps({ _id: RNA, visits: expected }, rnaMap, sirenMap);
@@ -507,8 +507,8 @@ describe("StatsService", () => {
             const rnaMap = new Map();
             const expected = [
                 {
-                    visits: 1
-                }
+                    visits: 1,
+                },
             ];
             // @ts-expect-error groupVisitsOnMaps is private methode
             await statsService.groupVisitsOnMaps({ _id: SIREN, visits: expected }, rnaMap, sirenMap);
@@ -526,12 +526,12 @@ describe("StatsService", () => {
                     _id: SIREN,
                     visits: [
                         {
-                            visits: 1
-                        }
-                    ]
+                            visits: 1,
+                        },
+                    ],
                 },
                 rnaMap,
-                sirenMap
+                sirenMap,
             );
             expect(sirenMap.get(SIREN)).toBe(expected);
             expect(rnaMap.get(RNA)).toBe(expected);
@@ -540,7 +540,7 @@ describe("StatsService", () => {
         it("should getting all identifers of association", async () => {
             getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
                 rna: RNA,
-                siren: SIREN
+                siren: SIREN,
             }));
             const sirenMap = new Map();
             const rnaMap = new Map();
@@ -550,12 +550,12 @@ describe("StatsService", () => {
                     _id: SIREN,
                     visits: [
                         {
-                            visits: 1
-                        }
-                    ]
+                            visits: 1,
+                        },
+                    ],
                 },
                 rnaMap,
-                sirenMap
+                sirenMap,
             );
 
             expect(getGroupedIdentifiersMock).toHaveBeenCalledWith(SIREN);
@@ -564,7 +564,7 @@ describe("StatsService", () => {
         it("should add visits on all maps", async () => {
             getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
                 rna: RNA,
-                siren: SIREN
+                siren: SIREN,
             }));
             const sirenMap = new Map();
             const rnaMap = new Map();
@@ -572,9 +572,9 @@ describe("StatsService", () => {
                 id: SIREN,
                 visits: [
                     {
-                        visits: 1
-                    }
-                ]
+                        visits: 1,
+                    },
+                ],
             };
             // @ts-expect-error groupVisitsOnMaps is private methode
             await statsService.groupVisitsOnMaps({ _id: SIREN, visits: expected.visits }, rnaMap, sirenMap);
@@ -588,7 +588,7 @@ describe("StatsService", () => {
         it("should add visits on sirenMap", async () => {
             getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
                 rna: undefined,
-                siren: SIREN
+                siren: SIREN,
             }));
             const sirenMap = new Map();
             const rnaMap = new Map();
@@ -596,9 +596,9 @@ describe("StatsService", () => {
                 id: SIREN,
                 visits: [
                     {
-                        visits: 1
-                    }
-                ]
+                        visits: 1,
+                    },
+                ],
             };
             // @ts-expect-error groupVisitsOnMaps is private methode
             await statsService.groupVisitsOnMaps({ _id: SIREN, visits: expected.visits }, rnaMap, sirenMap);
@@ -609,7 +609,7 @@ describe("StatsService", () => {
         it("should add visits on rnaMap", async () => {
             getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
                 rna: RNA,
-                siren: undefined
+                siren: undefined,
             }));
             const sirenMap = new Map();
             const rnaMap = new Map();
@@ -617,9 +617,9 @@ describe("StatsService", () => {
                 id: RNA,
                 visits: [
                     {
-                        visits: 1
-                    }
-                ]
+                        visits: 1,
+                    },
+                ],
             };
             // @ts-expect-error groupVisitsOnMaps is private methode
             await statsService.groupVisitsOnMaps({ _id: RNA, visits: expected.visits }, rnaMap, sirenMap);
@@ -634,15 +634,15 @@ describe("StatsService", () => {
         it("should return one visit", () => {
             const expected = {
                 userId: "USER_ID",
-                date: new Date()
+                date: new Date(),
             };
 
             const visits = [
                 {
                     userId: "USER_ID",
-                    date: new Date(expected.date.getTime() + TEN_MINUTE_MS)
+                    date: new Date(expected.date.getTime() + TEN_MINUTE_MS),
                 },
-                expected
+                expected,
             ];
             // @ts-expect-error groupVisitsOnMaps is private methode
             const actual = statsService.keepOneVisitByUserAndDate(visits);
@@ -655,20 +655,20 @@ describe("StatsService", () => {
             const expected = [
                 {
                     userId: "USER_ID",
-                    date: new Date()
+                    date: new Date(),
                 },
                 {
                     userId: "USER_ID_2",
-                    date: new Date()
-                }
+                    date: new Date(),
+                },
             ];
 
             const visits = [
                 {
                     userId: "USER_ID",
-                    date: new Date(expected[0].date.getTime() + TEN_MINUTE_MS)
+                    date: new Date(expected[0].date.getTime() + TEN_MINUTE_MS),
                 },
-                ...expected
+                ...expected,
             ];
             // @ts-expect-error groupVisitsOnMaps is private methode
             const actual = statsService.keepOneVisitByUserAndDate(visits);
@@ -683,7 +683,7 @@ describe("StatsService", () => {
             admin: 0,
             active: 0,
             idle: 0,
-            inactive: 0
+            inactive: 0,
         };
 
         it("should increment admin", () => {
@@ -692,7 +692,7 @@ describe("StatsService", () => {
             const actual = statsService.reduceUsersToUsersByStatus(
                 { ...DEFAULT_USERS_BY_STATUS },
                 // @ts-expect-error: partial object
-                { roles: ["admin"] }
+                { roles: ["admin"] },
             ).admin;
             expect(actual).toEqual(expected);
         });
@@ -704,7 +704,7 @@ describe("StatsService", () => {
             const actual = statsService.reduceUsersToUsersByStatus(
                 { ...DEFAULT_USERS_BY_STATUS },
                 // @ts-expect-error: partial object
-                { roles: ["user"] }
+                { roles: ["user"] },
             ).active;
             expect(actual).toEqual(expected);
         });
@@ -716,7 +716,7 @@ describe("StatsService", () => {
             const actual = statsService.reduceUsersToUsersByStatus(
                 { ...DEFAULT_USERS_BY_STATUS },
                 // @ts-expect-error: partial object
-                { roles: ["user"], active: true }
+                { roles: ["user"], active: true },
             ).idle;
             expect(actual).toEqual(expected);
         });
@@ -728,7 +728,7 @@ describe("StatsService", () => {
             const actual = statsService.reduceUsersToUsersByStatus(
                 { ...DEFAULT_USERS_BY_STATUS },
                 // @ts-expect-error: partial object
-                { roles: ["user"], active: false }
+                { roles: ["user"], active: false },
             ).inactive;
             expect(actual).toEqual(expected);
         });
@@ -758,7 +758,7 @@ describe("StatsService", () => {
         const groupAssociationVisitsByAssociationMock: jest.SpyInstance = jest.spyOn(
             statsService,
             // @ts-expect-error: private method
-            "groupAssociationVisitsByAssociation"
+            "groupAssociationVisitsByAssociation",
         );
         let keepOneVisitByUserAndDateMock: jest.SpyInstance;
 
@@ -778,7 +778,7 @@ describe("StatsService", () => {
             const user = {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
-                associationVisits: [{ associationIdentifier: "test", test: true }]
+                associationVisits: [{ associationIdentifier: "test", test: true }],
             } as unknown as UserWithAssociationVistitsEntity;
             const expected = [{ _id: user.associationVisits[0].associationIdentifier, visits: user.associationVisits }];
             const start = new Date(2023, 0, 5);
@@ -796,7 +796,7 @@ describe("StatsService", () => {
             const user = {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
-                associationVisits: []
+                associationVisits: [],
             } as unknown as UserWithAssociationVistitsEntity;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
@@ -816,7 +816,7 @@ describe("StatsService", () => {
             const user = {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
-                associationVisits: []
+                associationVisits: [],
             } as unknown as UserWithAssociationVistitsEntity;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
@@ -834,7 +834,7 @@ describe("StatsService", () => {
             const user = {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
-                associationVisits: []
+                associationVisits: [],
             } as unknown as UserDto;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
@@ -855,7 +855,7 @@ describe("StatsService", () => {
         const countUserAverageVisitsOnPeriodMock: jest.SpyInstance = jest.spyOn(
             statsService,
             // @ts-ignore private methode
-            "countUserAverageVisitsOnPeriod"
+            "countUserAverageVisitsOnPeriod",
         );
 
         it("should call user find", async () => {

@@ -15,7 +15,7 @@ describe("ConsumerCliController", () => {
             const actual = await userRepository.findByEmail(EMAIL);
             expect(actual).toMatchSnapshot({
                 _id: expect.any(ObjectId),
-                signupAt: expect.any(Date)
+                signupAt: expect.any(Date),
             });
         });
 
@@ -28,7 +28,7 @@ describe("ConsumerCliController", () => {
                 iat: expect.any(Number),
                 _id: expect.any(String),
                 signupAt: expect.any(String),
-                now: expect.any(String)
+                now: expect.any(String),
             });
         });
     });

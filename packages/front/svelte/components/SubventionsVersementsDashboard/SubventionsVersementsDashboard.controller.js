@@ -17,7 +17,7 @@ export default class SubventionsVersementsDashboardController {
 
         this.loaderStateStore = new Store({
             status: "loading",
-            percent: 0
+            percent: 0,
         });
 
         this._fullElements = [];
@@ -102,7 +102,7 @@ export default class SubventionsVersementsDashboardController {
         this.loaderStateStore.set(this._buildLoadState(state));
         this._fullElements = mapSubventionsAndVersements({
             subventions: state.subventions,
-            versements: this._versements || []
+            versements: this._versements || [],
         });
 
         const computedExercices = [...new Set(this._fullElements.map(element => element.year))].sort((a, b) => a - b);
@@ -124,7 +124,7 @@ export default class SubventionsVersementsDashboardController {
     _buildLoadState(state) {
         return {
             status: state.status === "close" ? "end" : "loading",
-            percent: (state.__meta__.providerAnswers / state.__meta__.providerCalls) * 100
+            percent: (state.__meta__.providerAnswers / state.__meta__.providerCalls) * 100,
         };
     }
 
@@ -134,7 +134,7 @@ export default class SubventionsVersementsDashboardController {
             centreFinancier: "[0].centreFinancier",
             date: "lastDate",
             montant: "amount",
-            "project-name": "actions_proposee[0].intitule"
+            "project-name": "actions_proposee[0].intitule",
         };
 
         return [object, specificPathIndex[firstAttribute] || [firstAttribute, ...rest]]

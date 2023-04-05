@@ -18,7 +18,7 @@ export class DocumentService {
             RCA: "Télécharger le Rapport du commissaire aux compte",
             "Education nationale": `Télécharger "L'agrément Education Nationale"`,
             "Jeunesse et Education Populaire (JEP)": `Télécharger "L'agrément jeunesse et éducation populaire"`,
-            Formation: `Télécharger "L'habilitation d'organisme de formation"`
+            Formation: `Télécharger "L'habilitation d'organisme de formation"`,
         };
         const result = await axios.get(path);
         const documents = result.data.documents.map(document => toDocumentComponent(document));
@@ -28,7 +28,7 @@ export class DocumentService {
 
             acc[document.type].push({
                 ...document,
-                label: documentLabels[document.type] || document.type
+                label: documentLabels[document.type] || document.type,
             });
 
             return acc;
@@ -40,7 +40,7 @@ export class DocumentService {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 .map(
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()) // In same type sort by date
+                    ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same type sort by date
                 )
                 .flat()
         );

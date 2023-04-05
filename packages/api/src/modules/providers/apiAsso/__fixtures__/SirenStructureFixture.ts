@@ -11,7 +11,7 @@ export const sirenStructureFixture: SirenStructureDto = {
         date_modif_siren: "2019-11-28",
         active: true,
         active_sirene: true,
-        regime: "loi1901"
+        regime: "loi1901",
     },
     activites: {
         id_activite_principale: "94.99Z",
@@ -19,7 +19,7 @@ export const sirenStructureFixture: SirenStructureDto = {
         id_tranche_effectif: "NN",
         effectif_salarie_cent: 0,
         annee_effectif_salarie_cent: 0,
-        appartenance_ess: "O"
+        appartenance_ess: "O",
     },
     coordonnees: {
         adresse_siege: {
@@ -29,7 +29,7 @@ export const sirenStructureFixture: SirenStructureDto = {
             commune: "Londre",
             code_insee: "42424",
             cp: "42424",
-            type_voie: "RUE"
+            type_voie: "RUE",
         },
         adresse_gestion: {
             cplt_1: "Place des orties",
@@ -38,8 +38,8 @@ export const sirenStructureFixture: SirenStructureDto = {
             commune: "Londre",
             code_insee: "42424",
             cp: "42424",
-            type_voie: "RUE"
-        }
+            type_voie: "RUE",
+        },
     },
     nbEtabsActifs: 1,
     etablissement: [
@@ -52,7 +52,7 @@ export const sirenStructureFixture: SirenStructureDto = {
                 commune: "Londre",
                 code_insee: "42424",
                 cp: "42424",
-                type_voie: "RUE"
+                type_voie: "RUE",
             },
             id_siret: "123004648000021",
             est_siege: true,
@@ -60,7 +60,7 @@ export const sirenStructureFixture: SirenStructureDto = {
             id_activite_principale: "94.99Z",
             annee_activite_principale: 0,
             effectif_salarie_cent: 0,
-            annee_effectif_salarie_cent: 0
+            annee_effectif_salarie_cent: 0,
         },
         {
             actif: false,
@@ -70,7 +70,7 @@ export const sirenStructureFixture: SirenStructureDto = {
                 commune: "London",
                 code_insee: "77777",
                 cp: "77777",
-                type_voie: "St"
+                type_voie: "St",
             },
             id_siret: "123004648000013",
             est_siege: false,
@@ -79,7 +79,7 @@ export const sirenStructureFixture: SirenStructureDto = {
             annee_activite_principale: 0,
             id_tranche_effectif: "NN",
             effectif_salarie_cent: 0,
-            annee_effectif_salarie_cent: 0
-        }
-    ]
+            annee_effectif_salarie_cent: 0,
+        },
+    ],
 };

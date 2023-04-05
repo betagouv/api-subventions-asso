@@ -10,7 +10,7 @@ export class UniteLegaleHistoriqueAdapter {
             raw.denominationUniteLegale,
             dataGouvService.provider.name,
             new Date(raw.dateDebut),
-            raw.siren
+            raw.siren,
         );
     }
 

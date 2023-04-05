@@ -12,7 +12,7 @@ describe("AssociationNameService", () => {
                 "0000000000",
                 "FAKE NAME",
                 LAST_UPDATE,
-                null
+                null,
             );
             jest.spyOn(associationNameRepository, "findAllStartingWith").mockResolvedValue([associationNameEntity]);
             const expected = [associationNameEntity];

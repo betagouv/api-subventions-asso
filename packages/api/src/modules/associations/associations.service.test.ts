@@ -90,13 +90,13 @@ describe("AssociationService", () => {
     describe("isAssociationsProvider()", () => {
         it("should return true", () => {
             const actual = associationsService.isAssociationsProvider({
-                isAssociationsProvider: true
+                isAssociationsProvider: true,
             });
             expect(actual).toBeTruthy();
         });
         it("should return false", () => {
             const actual = associationsService.isAssociationsProvider({
-                isAssociationsProvider: false
+                isAssociationsProvider: false,
             });
             expect(actual).toBeFalsy();
         });
@@ -136,7 +136,7 @@ describe("AssociationService", () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             expect(() => associationsService.getAssociationBySiren(SIREN)).rejects.toThrowError(
-                new NotFoundError("Association not found")
+                new NotFoundError("Association not found"),
             );
         });
         it("should call FormaterHelper.formatData()", async () => {
@@ -161,7 +161,7 @@ describe("AssociationService", () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             expect(() => associationsService.getAssociationBySiret(SIRET)).rejects.toThrowError(
-                new NotFoundError("Association not found")
+                new NotFoundError("Association not found"),
             );
         });
         it("should call FormaterHelper.formatData()", async () => {
@@ -188,7 +188,7 @@ describe("AssociationService", () => {
             aggregateMock.mockImplementationOnce(() => []);
             rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
             expect(() => associationsService.getAssociationByRna(RNA)).rejects.toThrowError(
-                new NotFoundError("Association not found")
+                new NotFoundError("Association not found"),
             );
         });
         it("should call FormaterHelper.formatData()", async () => {
@@ -243,7 +243,7 @@ describe("AssociationService", () => {
     describe("getEtablissements()", () => {
         it("should call etablissementService.getEtablissementsBySiren()", async () => {
             getEtablissementsBySirenMock.mockImplementationOnce(() =>
-                Promise.resolve([{ etablissement: true } as unknown as Etablissement])
+                Promise.resolve([{ etablissement: true } as unknown as Etablissement]),
             );
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             await associationsService.getEtablissements(SIRET);

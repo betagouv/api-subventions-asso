@@ -11,7 +11,7 @@ import fonjepVersementRepository from "./repositories/fonjep.versement.repositor
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 
 export enum FONJEP_SERVICE_ERRORS {
-    INVALID_ENTITY = 1
+    INVALID_ENTITY = 1,
 }
 
 export class FonjepRejectedRequest extends Error {
@@ -31,7 +31,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         name: "Extranet FONJEP",
         type: ProviderEnum.raw,
         description:
-            "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour."
+            "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
     };
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
@@ -49,7 +49,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             return new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
         }
 
@@ -57,7 +57,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             return new FonjepRejectedRequest(
                 `INVALID NAME FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
         }
 
@@ -67,7 +67,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             return new FonjepRejectedRequest(
                 `INVALID DATE FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
         }
 
@@ -78,14 +78,14 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             entity.indexedInformations.type_post,
             entity.indexedInformations.ville,
             entity.indexedInformations.code_postal,
-            entity.indexedInformations.contact
+            entity.indexedInformations.contact,
         ];
 
         if (!isStringsValid(strings)) {
             return new FonjepRejectedRequest(
                 `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
         }
 
@@ -95,7 +95,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             return new FonjepRejectedRequest(
                 `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
         }
 
@@ -107,7 +107,7 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
             return new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity
+                entity,
             );
         }
 

@@ -14,7 +14,7 @@ export default class DataGouvParser {
     private static isDatesValid({
         periodStart,
         importDate,
-        now
+        now,
     }: {
         periodStart: Date;
         importDate: Date | null;
@@ -64,7 +64,7 @@ export default class DataGouvParser {
                     totalEntities++;
                     const parsedData = ParseHelper.linkHeaderToData(
                         header as string[],
-                        raw
+                        raw,
                     ) as unknown as UniteLegalHistoryRaw;
                     if (!parsedData.siren || !isSiren(parsedData.siren)) return;
 
@@ -74,7 +74,7 @@ export default class DataGouvParser {
                         !this.isDatesValid({
                             periodStart: periodStartDate,
                             importDate: lastImportDate,
-                            now
+                            now,
                         })
                     )
                         return;

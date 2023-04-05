@@ -14,7 +14,7 @@ module.exports = {
         collection.insertOne({
             name: CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
             data: ACCEPTED_EMAIL_DOMAINS,
-            updatedAt: new Date()
+            updatedAt: new Date(),
         });
-    }
+    },
 };

@@ -12,7 +12,7 @@ module.exports = {
         await connectDB();
         const collection = db.collection("osiris-requests");
         const cursor = await collection.find({
-            "providerInformations.status": null
+            "providerInformations.status": null,
         });
         while (await cursor.hasNext()) {
             const { _id, ...doc } = await cursor.next();
@@ -29,5 +29,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

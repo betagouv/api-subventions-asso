@@ -13,7 +13,7 @@ export default class OsirisEvaluationEntity {
             path: ["Bénéficiaire", "N° Siret"],
             adapter: value => {
                 return String(value);
-            }
+            },
         },
         evaluation_resultat: ["Evaluation", "Objectifs atteints au regard des indicateurs"],
         cout_total_realise: {
@@ -21,13 +21,13 @@ export default class OsirisEvaluationEntity {
             adapter: value => {
                 if (!value) return value;
                 return parseFloat(value);
-            }
-        }
+            },
+        },
     };
 
     constructor(
         public indexedInformations: IOsirisEvaluationsInformations,
         public data: unknown,
-        public _id?: ObjectId
+        public _id?: ObjectId,
     ) {}
 }

@@ -4,7 +4,7 @@ import {
     LoginDtoResponse,
     ResetPasswordDtoResponse,
     SignupDtoResponse,
-    EtablissementDtoResponse
+    EtablissementDtoResponse,
 } from "@api-subventions-asso/dto";
 import UserDto, { UserWithJWTDto } from "@api-subventions-asso/dto/user/UserDto";
 import { DATASUB_URL } from "./config";
@@ -13,13 +13,13 @@ export class APIDatasubService {
     login(email: string, password: string) {
         return this.sendRequest<LoginDtoResponse>("POST", "/auth/login", undefined, {
             email,
-            password
+            password,
         });
     }
 
     signup(email: string) {
         return this.sendRequest<SignupDtoResponse>("POST", "/auth/signup", undefined, {
-            email
+            email,
         });
     }
 
@@ -29,20 +29,20 @@ export class APIDatasubService {
 
     createUser(userEmail: string, adminUser: UserWithJWTDto) {
         return this.sendRequest<{ email: string }>("POST", "/user/admin/create-user", adminUser, {
-            email: userEmail
+            email: userEmail,
         });
     }
 
     resetPassword(token: string, password: string) {
         return this.sendRequest<ResetPasswordDtoResponse>("POST", "/auth/reset-password", undefined, {
             token,
-            password
+            password,
         });
     }
 
     forgetPassword(email: string) {
         return this.sendRequest("POST", "/auth/forget-password", undefined, {
-            email
+            email,
         });
     }
 
@@ -62,8 +62,8 @@ export class APIDatasubService {
         if (!user || !user.jwt || !user.jwt.token) return {};
         return {
             headers: {
-                "x-access-token": user.jwt.token as string
-            }
+                "x-access-token": user.jwt.token as string,
+            },
         };
     }
 
@@ -71,7 +71,7 @@ export class APIDatasubService {
         method: "POST" | "GET" | "PUT" | "DELETE",
         uri: string,
         user?: UserWithJWTDto,
-        body?: unknown
+        body?: unknown,
     ) {
         let response: AxiosResponse<T, unknown>;
         const url = `${DATASUB_URL}${uri}`;

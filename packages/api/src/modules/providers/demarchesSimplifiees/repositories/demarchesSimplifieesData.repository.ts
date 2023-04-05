@@ -13,10 +13,10 @@ export class DemarchesSimplifieesDataRepository extends MigrationRepository<Dema
     async upsert(entity: DemarchesSimplifieesDataEntity) {
         await this.collection.updateOne(
             {
-                "demande.id": entity.demande.id
+                "demande.id": entity.demande.id,
             },
             { $set: entity },
-            { upsert: true }
+            { upsert: true },
         );
     }
 

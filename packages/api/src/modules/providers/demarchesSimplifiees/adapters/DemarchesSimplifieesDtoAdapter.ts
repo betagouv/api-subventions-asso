@@ -14,18 +14,18 @@ export default class DemarchesSimplifieesDtoAdapter {
                         champs: dossier.champs.reduce((acc, champ) => {
                             acc[champ.id] = {
                                 value: champ.stringValue,
-                                label: champ.label
+                                label: champ.label,
                             };
                             return acc;
                         }, {}),
                         annotations: dossier.annotations.reduce((acc, annotation) => {
                             acc[annotation.id] = {
                                 value: annotation.stringValue,
-                                label: annotation.label
+                                label: annotation.label,
                             };
                             return acc;
-                        }, {})
-                    }
+                        }, {}),
+                    },
                 };
             })
             .filter(entity => entity) as DemarchesSimplifieesDataEntity[];

@@ -8,7 +8,7 @@ export default class VersementsAdapter {
             totalAmount: numberToEuro(this._countTotalVersement(versements)),
             centreFinancier: valueOrHyphen(versements[0]?.centreFinancier),
             lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(versements))),
-            bop: valueOrHyphen(this._formatBop(versements[0]?.bop))
+            bop: valueOrHyphen(this._formatBop(versements[0]?.bop)),
         };
     }
 

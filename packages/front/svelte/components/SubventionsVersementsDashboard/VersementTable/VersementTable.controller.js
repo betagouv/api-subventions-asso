@@ -25,7 +25,7 @@ export default class VersementTableController {
     // extract values from versement table
     static extractRows(elements) {
         return elements.map(element =>
-            element.versements ? Object.values(VersementsAdapter.toVersement(element.versements)) : null
+            element.versements ? Object.values(VersementsAdapter.toVersement(element.versements)) : null,
         );
     }
 
@@ -53,7 +53,7 @@ export default class VersementTableController {
             return {
                 ...VersementsAdapter.toVersement(element.versements),
                 versements: element.versements,
-                versementsModal: element.versements.map(this.buildVersementsModal)
+                versementsModal: element.versements.map(this.buildVersementsModal),
             };
         });
 
@@ -67,7 +67,7 @@ export default class VersementTableController {
             domaineFonctionnel: valueOrHyphen(versement.domaineFonctionnel),
             activitee: valueOrHyphen(versement.activitee),
             centreFinancier: valueOrHyphen(versement.centreFinancier),
-            date: withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8)
+            date: withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8),
         };
     }
 
@@ -75,7 +75,7 @@ export default class VersementTableController {
         const columnsName = {
             "versements.montant": MONTANT_VERSE_LABEL,
             "versements.date": DATE_VERSEMENT_LABEL,
-            "versements.bop": BOP_LABEL
+            "versements.bop": BOP_LABEL,
         };
 
         this.columnDataViews.set(
@@ -83,8 +83,8 @@ export default class VersementTableController {
                 label,
                 name,
                 action: () => this.sortMethod(name),
-                active: this.sortColumn === name
-            }))
+                active: this.sortColumn === name,
+            })),
         );
     }
 

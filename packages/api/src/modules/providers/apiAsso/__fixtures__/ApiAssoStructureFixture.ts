@@ -3,18 +3,18 @@ import StructureDto, {
     StructureEtablissementDto,
     StructureRepresentantLegalDto,
     StructureRibDto,
-    StructureRnaDocumentDto
+    StructureRnaDocumentDto,
 } from "../dto/StructureDto";
 
 export const fixtureEtablissements = [
     {
         id_siret: "50922194100000",
-        adresse: {}
+        adresse: {},
     },
     {
         id_siret: "50922194100001",
-        adresse: {}
-    }
+        adresse: {},
+    },
 ] as StructureEtablissementDto[];
 
 export const fixtureDocumentRna = [
@@ -24,8 +24,8 @@ export const fixtureDocumentRna = [
         sous_type: "PV",
         id: "ididididid",
         time: 1622557171,
-        annee: 2021
-    }
+        annee: 2021,
+    },
 ] as StructureRnaDocumentDto[];
 
 export const fixtureDocumentDac = [
@@ -35,24 +35,24 @@ export const fixtureDocumentDac = [
         meta: {
             type: "BPA",
             id_siret: 50922194100000,
-            etat: "courant"
+            etat: "courant",
         },
-        time_depot: "2021-06-18 12:02:53"
-    }
+        time_depot: "2021-06-18 12:02:53",
+    },
 ] as StructureDacDocumentDto[];
 
 export const fixtureRib = [
     {
         id_siret: "50922194100000",
         iban: "TEST",
-        bic: "BIC_TEST"
+        bic: "BIC_TEST",
     },
     {
         id_siret: "50922194100000",
         iban: "TEST 2",
         bic: "BIC_TEST 2",
-        url: "fake/path/to/rib"
-    }
+        url: "fake/path/to/rib",
+    },
 ] as StructureRibDto[];
 
 export const fixtureRepresentantLegal = [
@@ -60,8 +60,8 @@ export const fixtureRepresentantLegal = [
         nom: "Jedusor",
         prenom: "Tom",
         role: "Mage pas simpa",
-        id_siret: "50922194100000"
-    }
+        id_siret: "50922194100000",
+    },
 ] as unknown as StructureRepresentantLegalDto[];
 
 export const fixtureAsso = {
@@ -76,16 +76,16 @@ export const fixtureAsso = {
         date_creation_siren: "1985-02-26",
         date_modif_rna: "2018-01-01",
         date_modif_siren: "2010-01-01",
-        regime: "Autre"
+        regime: "Autre",
     },
     activites: {},
     coordonnees: {
         adresse_siege: {
-            commune: "paris"
-        }
+            commune: "paris",
+        },
     },
     rib: fixtureRib,
     etablissement: fixtureEtablissements,
     document_rna: fixtureDocumentRna,
-    document_dac: fixtureDocumentDac
+    document_dac: fixtureDocumentDac,
 } as unknown as StructureDto;

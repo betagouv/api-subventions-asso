@@ -20,7 +20,7 @@ export default class OsirisCliController {
     private logFileParsePath = {
         actions: "./logs/osiris.parse.actions.log.txt",
         requests: "./logs/osiris.parse.requests.log.txt",
-        evaluations: "./logs/osiris.parse.evaluations.log.txt"
+        evaluations: "./logs/osiris.parse.evaluations.log.txt",
     };
 
     public validate(type: string, file: string, extractYear = "2022") {
@@ -69,7 +69,7 @@ export default class OsirisCliController {
     public async parse(
         type: "requests" | "actions" | "evaluations",
         file: string,
-        extractYear: string
+        extractYear: string,
     ): Promise<unknown> {
         if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
             throw new Error("Parse command need type, extractYear and file args");
@@ -96,8 +96,8 @@ export default class OsirisCliController {
             .then(() =>
                 fs.writeFileSync(this.logFileParsePath[type], logs.join(""), {
                     flag: "w",
-                    encoding: "utf-8"
-                })
+                    encoding: "utf-8",
+                }),
             );
     }
 
@@ -137,7 +137,7 @@ export default class OsirisCliController {
                 if (typeof rna !== "string") {
                     logs.push(
                         `\n\nThis request is not registered because: RNA not found\n`,
-                        JSON.stringify(osirisRequest.legalInformations, null, "\t")
+                        JSON.stringify(osirisRequest.legalInformations, null, "\t"),
                     );
                     return data;
                 }
@@ -151,7 +151,7 @@ export default class OsirisCliController {
             if (validation !== true && validation.code != 2) {
                 logs.push(
                     `\n\nThis request is not registered because: ${validation.message}\n`,
-                    JSON.stringify(validation.data, null, "\t")
+                    JSON.stringify(validation.data, null, "\t"),
                 );
             } else data.push(await osirisService.addRequest(osirisRequest));
 
@@ -178,7 +178,7 @@ export default class OsirisCliController {
                 if (validation !== true) {
                     logs.push(
                         `\n\nThis request is not registered because: ${validation.message}\n`,
-                        JSON.stringify(validation.data, null, "\t")
+                        JSON.stringify(validation.data, null, "\t"),
                     );
                 } else data.push(await osirisService.addAction(osirisAction));
 
@@ -189,7 +189,7 @@ export default class OsirisCliController {
                     state: string;
                     result: OsirisActionEntity;
                 }[]
-            >
+            >,
         );
 
         const created = results.filter(({ state }) => state === "created");
@@ -213,7 +213,7 @@ export default class OsirisCliController {
                 if (validation !== true) {
                     logs.push(
                         `\n\nThis request is not registered because: ${validation.message}\n`,
-                        JSON.stringify(validation.data, null, "\t")
+                        JSON.stringify(validation.data, null, "\t"),
                     );
                 } else data.push(await osirisService.addEvaluation(entity));
 
@@ -224,7 +224,7 @@ export default class OsirisCliController {
                     state: string;
                     result: OsirisEvaluationEntity;
                 }[]
-            >
+            >,
         );
 
         const created = results.filter(({ state }) => state === "created");

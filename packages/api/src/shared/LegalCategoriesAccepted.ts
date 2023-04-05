@@ -9,5 +9,5 @@ export const LEGAL_CATEGORIES_ACCEPTED = [
     "9240", // Congrégation
     "9260", // Association de droit local (Bas-Rhin, Haut-Rhin et Moselle)
     "9300", // Fondation
-    "92" // Association loi 1901 ou assimilé
+    "92", // Association loi 1901 ou assimilé
 ];

@@ -7,7 +7,7 @@ import configurationsRepository from "./repositories/configurations.repository";
 export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
-    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS"
+    ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
 }
 
 export class ConfigurationsService {
@@ -15,7 +15,7 @@ export class ConfigurationsService {
         return {
             name,
             data: defaultData,
-            updatedAt: new Date()
+            updatedAt: new Date(),
         };
     }
 
@@ -29,13 +29,13 @@ export class ConfigurationsService {
 
     async setDauphinToken(token: string) {
         await configurationsRepository.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, {
-            data: token
+            data: token,
         });
     }
 
     getDauphinTokenAvailableTime() {
         return configurationsRepository.getByName<DauphinTokenAvailableTime>(
-            CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE
+            CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE,
         );
     }
 
@@ -57,14 +57,14 @@ export class ConfigurationsService {
         if (!document) {
             await configurationsRepository.upsert(
                 CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
-                this.createEmptyConfigEntity(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, [domain])
+                this.createEmptyConfigEntity(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, [domain]),
             );
             return domain;
         }
         if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
         await configurationsRepository.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
-            this.updateConfigEntity(document, [...document.data, domain])
+            this.updateConfigEntity(document, [...document.data, domain]),
         );
         return domain;
     }

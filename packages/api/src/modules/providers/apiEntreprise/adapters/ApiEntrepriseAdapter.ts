@@ -10,23 +10,23 @@ export default class ApiEntrepriseAdapter {
     static toEtablissement(data: IApiEntrepriseHeadcount): Etablissement {
         const toProviderValue = ProviderValueFactory.buildProviderValuesAdapter(
             this.PROVIDER_NAME,
-            new Date(parseInt(data.annee, 10), parseInt(data.mois, 10))
+            new Date(parseInt(data.annee, 10), parseInt(data.mois, 10)),
         );
         return {
             siret: toProviderValue(data.siret),
             nic: toProviderValue(siretToNIC(data.siret)),
-            headcount: toProviderValue(data.effectifs_mensuels)
+            headcount: toProviderValue(data.effectifs_mensuels),
         };
     }
 
     static toAssociation(data: IApiEntrepriseExtraitRcs): Association {
         const toProviderValue = ProviderValueFactory.buildProviderValuesAdapter(
             this.PROVIDER_NAME,
-            this.toValidDate(data.date_extrait)
+            this.toValidDate(data.date_extrait),
         );
         return {
             siren: toProviderValue(data.siren),
-            extrait_rcs: toProviderValue(data)
+            extrait_rcs: toProviderValue(data),
         };
     }
 

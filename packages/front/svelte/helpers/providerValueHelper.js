@@ -7,7 +7,7 @@ export const flatenProviderValue = providerValueObject => {
             [prop]:
                 isProviderValues(providerValueObject[prop]) || isProviderValue(providerValueObject[prop])
                     ? getValue(providerValueObject[prop])
-                    : flatenProviderValue(providerValueObject[prop])
+                    : flatenProviderValue(providerValueObject[prop]),
         };
     };
 
@@ -26,7 +26,7 @@ export const getObjectWithMetadata = providerValueObject => {
     return {
         ...flatenProviderValue(providerValueObject),
         provider: getProvider(providerValueObject.nom),
-        date: new Date(getDate(providerValueObject.nom))
+        date: new Date(getDate(providerValueObject.nom)),
     };
 };
 

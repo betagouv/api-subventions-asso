@@ -9,12 +9,12 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(
                 {
                     siret: SIRET,
-                    demande: { dateDerniereModification: new Date() }
+                    demande: { dateDerniereModification: new Date() },
                 } as unknown as DemarchesSimplifieesDataEntity,
                 {
                     demarcheId: 12345,
-                    schema: []
-                }
+                    schema: [],
+                },
             );
 
             expect(actual.siret.value).toBe(SIRET);
@@ -25,25 +25,25 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
                 {
                     siret: SIRET,
                     demande: { dateDerniereModification: new Date() },
-                    toto: ["jedusor"]
+                    toto: ["jedusor"],
                 } as unknown as DemarchesSimplifieesDataEntity,
                 {
                     demarcheId: 12345,
                     schema: [
                         {
                             from: "toto[0]",
-                            to: "tom"
-                        }
-                    ]
-                }
+                            to: "tom",
+                        },
+                    ],
+                },
             );
 
             expect(actual).toEqual(
                 expect.objectContaining({
                     tom: expect.objectContaining({
-                        value: "jedusor"
-                    })
-                })
+                        value: "jedusor",
+                    }),
+                }),
             );
         });
     });

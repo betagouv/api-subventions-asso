@@ -7,7 +7,7 @@ export enum ApplicationStatus {
     INELIGIBLE = "Inéligible",
     GRANTED = "Accordé",
     REFUSED = "Refusé",
-    UNKNWON = ""
+    UNKNWON = "",
 }
 
 export interface DemandeSubvention {

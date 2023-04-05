@@ -57,8 +57,8 @@ describe("/association", () => {
             const expected = [
                 {
                     name: siretToSiren(OsirisRequestEntityFixture.legalInformations.siret),
-                    visits: 1
-                }
+                    visits: 1,
+                },
             ];
 
             expect(actual).toEqual(expected);

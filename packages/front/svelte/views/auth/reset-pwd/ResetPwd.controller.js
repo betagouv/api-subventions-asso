@@ -11,7 +11,7 @@ export class ResetPwdController {
             "Ce lien n'est pas valide, vérifiez que l'URL est bien celle envoyée par mail.",
         [ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED]: `Le lien a expiré, allez sur <a href="/auth/forget-password" target="_blank" rel="noopener noreferrer">la page mot de passe oublié</a> pour recevoir un nouveau lien d'activation.`,
         [ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID]:
-            "Le format du mot de passe ne correspond pas aux exigences de sécurité"
+            "Le format du mot de passe ne correspond pas aux exigences de sécurité",
     };
     DEFAULT_ERROR_MESSAGE = "Une erreur est survenue lors de la création de votre compte.";
 
@@ -22,7 +22,7 @@ export class ResetPwdController {
         this.title = this.activation ? "Activer mon compte en créant mon mot de passe" : "Modifier votre mot de passe";
 
         this.promise = new Store(
-            token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND)
+            token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND),
         );
         this.password = new Store("");
     }
@@ -36,7 +36,7 @@ export class ResetPwdController {
         return this.promise.value
             .then(() => {
                 window.location.assign(
-                    "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED")
+                    "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"),
                 );
             })
             .catch((_, ignore) => ignore());

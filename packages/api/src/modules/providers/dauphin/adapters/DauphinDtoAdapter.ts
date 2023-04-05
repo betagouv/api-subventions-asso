@@ -15,8 +15,8 @@ export default class DauphinDtoAdapter {
                 "Justifiée",
                 "A été versé",
                 "Justification à modifier",
-                "Justification en cours"
-            ]
+                "Justification en cours",
+            ],
         },
         { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["Cloturée", "Non recevable"] },
         {
@@ -28,9 +28,9 @@ export default class DauphinDtoAdapter {
                 "En attente d'attestation",
                 "En attente d'instruction",
                 "En cours de saisie",
-                "En cours"
-            ]
-        }
+                "En cours",
+            ],
+        },
     ];
 
     public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
@@ -40,7 +40,7 @@ export default class DauphinDtoAdapter {
             dto.history.begin.date;
         const toPV = ProviderValueFactory.buildProviderValueAdapter(
             dauphinService.provider.name,
-            new Date(lastUpdateDate)
+            new Date(lastUpdateDate),
         );
         const toStatus = toStatusFactory(DauphinDtoAdapter._statusConversionArray);
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
@@ -68,14 +68,14 @@ export default class DauphinDtoAdapter {
             annee_demande: toPV(dto.exerciceBudgetaire),
             montants: {
                 demande: montantDemande ? toPV(montantDemande) : undefined,
-                accorde: montantAccorde ? toPV(montantAccorde) : undefined
+                accorde: montantAccorde ? toPV(montantAccorde) : undefined,
             },
             actions_proposee: [
                 {
                     intitule: toPV(dto.intituleProjet),
-                    objectifs: toPV(dto.description?.value || dto.virtualStatusLabel)
-                }
-            ]
+                    objectifs: toPV(dto.description?.value || dto.virtualStatusLabel),
+                },
+            ],
         };
     }
 
@@ -83,7 +83,7 @@ export default class DauphinDtoAdapter {
         return demande.planFinancement
             .find(pf => pf.current)
             ?.recette?.postes?.map(p =>
-                p?.sousPostes?.map(s => s?.lignes?.map(l => (l.dispositifEligible ? l.montant.ht : undefined)))
+                p?.sousPostes?.map(s => s?.lignes?.map(l => (l.dispositifEligible ? l.montant.ht : undefined))),
             )
             .flat(2)
             .filter(a => a)[0];
@@ -93,8 +93,8 @@ export default class DauphinDtoAdapter {
         return demande.planFinancement
             .map(pf =>
                 pf.recette?.postes?.map(p =>
-                    p?.sousPostes?.map(s => s?.lignes?.map(l => l.financement?.montantVote?.ht))
-                )
+                    p?.sousPostes?.map(s => s?.lignes?.map(l => l.financement?.montantVote?.ht)),
+                ),
             )
             .flat(3)
             .filter(a => a)[0];

@@ -4,7 +4,7 @@ import { capitalizeFirstLetter } from "@helpers/textHelper";
 jest.mock("@helpers/textHelper", () => {
     return {
         __esModule: true, // this property makes it work
-        capitalizeFirstLetter: jest.fn(() => "Capitalized")
+        capitalizeFirstLetter: jest.fn(() => "Capitalized"),
     };
 });
 
@@ -50,7 +50,7 @@ describe("MonthlyGraphTooltipController", () => {
                 ctrl._withPreviousValue = withPreviousValue;
                 const actual = ctrl._normalizedMonth0Index(givenIndex);
                 expect(actual).toBe(expected);
-            }
+            },
         );
     });
 
@@ -150,7 +150,7 @@ describe("MonthlyGraphTooltipController", () => {
                 const expected = {
                     opacity: "1",
                     left: "12px",
-                    top: "22px"
+                    top: "22px",
                 };
                 ctrl.update({ tooltip: TOOLTIP_VISIBLE });
                 expect(ctrl._dynamicStyle).toMatchObject(expected);

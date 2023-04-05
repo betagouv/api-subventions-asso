@@ -19,5 +19,5 @@ export default [
     AdminController,
     CGUController,
     SvelteController,
-    NotFoundController
+    NotFoundController,
 ];

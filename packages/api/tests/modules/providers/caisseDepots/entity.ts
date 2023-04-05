@@ -18,6 +18,6 @@ export default {
         datesversement_fin: null,
         idrae: null,
         notificationue: "Non",
-        pourcentagesubvention: 1
-    }
+        pourcentagesubvention: 1,
+    },
 } as CaisseDepotsSubventionDto;
