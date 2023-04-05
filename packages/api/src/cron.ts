@@ -13,8 +13,11 @@ export function initCron() {
     for (const controllerClass of controllers) {
         // @ts-expect-error generic type
         const controller = new controllerClass();
-        for (const job of controller["__jobs__"]) {
+        for (const job of controller["__intervalJobs__"] || []) {
             scheduler.addIntervalJob(job);
+        }
+        for (const job of controller["__cronJobs__"] || []) {
+            scheduler.addCronJob(job);
         }
     }
 }
