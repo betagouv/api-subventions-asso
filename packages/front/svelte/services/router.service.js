@@ -2,7 +2,7 @@ import {
     PAGE_ADMIN_USERS_METRICS_NAME,
     PAGE_ADMIN_USERS_ACCOUNT_NAME,
     PAGE_ADMIN_USERS_CREATE_NAME,
-    PAGE_ADMIN_STATS_NAME
+    PAGE_ADMIN_STATS_NAME,
 } from "../views/admin/admin.constant";
 
 // TODO: rendre dynamique (via une librairie de routing ?)
@@ -35,7 +35,7 @@ export const mapSegments = path =>
         .split("/")
         .map(segment => ({
             name: segment.replace(":", ""),
-            variable: segment.startsWith(":")
+            variable: segment.startsWith(":"),
         }));
 
 export const getRouteSegments = routes =>
@@ -43,7 +43,7 @@ export const getRouteSegments = routes =>
         path,
         component,
         disableAuth,
-        segments: mapSegments(path)
+        segments: mapSegments(path),
     }));
 
 export const getSegments = path => path.replace(/^\/+|\/+$/g, "").split("/");

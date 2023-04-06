@@ -22,7 +22,7 @@ export class ChorusService implements VersementsProvider {
         name: "Chorus",
         type: ProviderEnum.raw,
         description:
-            "Chorus est un système d'information porté par l'AIFE pour les services de l'Etat qui permet de gérer les paiements des crédits Etat, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'Etat."
+            "Chorus est un système d'information porté par l'AIFE pour les services de l'Etat qui permet de gérer les paiements des crédits Etat, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'Etat.",
     };
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
@@ -73,7 +73,7 @@ export class ChorusService implements VersementsProvider {
 
         return {
             rejected: entities.length - acceptedEntities.length,
-            created: acceptedEntities.length
+            created: acceptedEntities.length,
         };
     }
 
@@ -87,7 +87,7 @@ export class ChorusService implements VersementsProvider {
         } catch (error) {
             return {
                 state: "rejected",
-                result: { message: (error as Error).message, data: entity }
+                result: { message: (error as Error).message, data: entity },
             };
         }
 
@@ -95,7 +95,7 @@ export class ChorusService implements VersementsProvider {
         if (alreadyExist) {
             return {
                 state: "updated",
-                result: await chorusLineRepository.update(entity)
+                result: await chorusLineRepository.update(entity),
             };
         }
 
@@ -106,7 +106,7 @@ export class ChorusService implements VersementsProvider {
         ) {
             return {
                 state: "rejected",
-                result: { message: "The Siret does not correspond to an association", data: entity }
+                result: { message: "The Siret does not correspond to an association", data: entity },
             };
         }
 
@@ -114,12 +114,12 @@ export class ChorusService implements VersementsProvider {
             await chorusLineRepository.create(entity);
             return {
                 state: "created",
-                result: entity
+                result: entity,
             };
         } catch (e) {
             return {
                 state: "rejected",
-                result: { message: "Fail to create ChorusLineEntity", data: entity }
+                result: { message: "Fail to create ChorusLineEntity", data: entity },
             };
         }
     }

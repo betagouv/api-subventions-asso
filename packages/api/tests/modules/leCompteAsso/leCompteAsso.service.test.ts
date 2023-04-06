@@ -14,9 +14,9 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
             expect(leCompteAssoService.validEntity(entity)).toEqual(true);
         });
@@ -25,17 +25,17 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "000000000000aa", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
                 message: "INVALID SIRET FOR 000000000000aa",
                 data: {
                     siret: "000000000000aa",
-                    name: "HELLO WORLD"
-                }
+                    name: "HELLO WORLD",
+                },
             });
         });
 
@@ -43,17 +43,17 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
                 message: "INVALID NAME FOR ",
                 data: {
                     siret: "00000000000000",
-                    name: ""
-                }
+                    name: "",
+                },
             });
         });
 
@@ -61,16 +61,16 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "00000000000000"
+                    compteAssoId: "00000000000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             expect(leCompteAssoService.validEntity(entity)).toMatchObject({
                 message: "INVALID COMPTE ASSO ID FOR HELLO WORLD",
                 data: {
-                    compteAssoId: "00000000000000"
-                }
+                    compteAssoId: "00000000000000",
+                },
             });
         });
     });
@@ -109,21 +109,21 @@ describe("leCompteAssoService", () => {
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
 
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({
                 state: "created",
-                result: { legalInformations: { rna: "FAKE_RNA" } }
+                result: { legalInformations: { rna: "FAKE_RNA" } },
             });
         });
 
@@ -131,22 +131,22 @@ describe("leCompteAssoService", () => {
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
 
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             await leCompteAssoService.addRequest(entity);
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({
                 state: "updated",
-                result: { legalInformations: { rna: "FAKE_RNA" } }
+                result: { legalInformations: { rna: "FAKE_RNA" } },
             });
         });
 
@@ -154,21 +154,21 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({
                 state: "created",
-                result: { legalInformations: { rna: "FAKE_RNA" } }
+                result: { legalInformations: { rna: "FAKE_RNA" } },
             });
         });
 
@@ -176,16 +176,16 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("0000", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("0000", "test", new Date()),
+                }),
             );
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({
@@ -194,10 +194,10 @@ describe("leCompteAssoService", () => {
                     code: 10,
                     data: {
                         name: "HELLO WORLD",
-                        siret: "00000000000000"
+                        siret: "00000000000000",
                     },
-                    message: "The company is not in legal cateries accepted"
-                }
+                    message: "The company is not in legal cateries accepted",
+                },
             });
         });
 
@@ -205,9 +205,9 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve(null));
 
@@ -217,10 +217,10 @@ describe("leCompteAssoService", () => {
                     code: 11,
                     data: {
                         name: "HELLO WORLD",
-                        siret: "00000000000000"
+                        siret: "00000000000000",
                     },
-                    message: "RNA not found"
-                }
+                    message: "RNA not found",
+                },
             });
         });
 
@@ -233,13 +233,13 @@ describe("leCompteAssoService", () => {
                 legalInformations: { siret: SIREN, name: NAME },
                 providerInformations: {
                     compeAssoId: "",
-                    transmis_le: LAST_UPDATE
+                    transmis_le: LAST_UPDATE,
                 } as unknown as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
             rnaSirenServiceMock.mockResolvedValueOnce(RNA);
             dataEntrepriseServiceFindAssociationBySiren.mockResolvedValueOnce({
-                categorie_juridique: [{ value: "9210" }]
+                categorie_juridique: [{ value: "9210" }],
             });
             await leCompteAssoService.addRequest(PARTIAL_ENTITY);
             expect(eventManagerMock).toHaveBeenCalledTimes(1);
@@ -255,13 +255,13 @@ describe("leCompteAssoService", () => {
                 legalInformations: { siret: SIREN, name: NAME },
                 providerInformations: {
                     compeAssoId: "",
-                    transmis_le: LAST_UPDATE
+                    transmis_le: LAST_UPDATE,
                 } as unknown as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
             rnaSirenServiceMock.mockResolvedValueOnce(RNA);
             dataEntrepriseServiceFindAssociationBySiren.mockResolvedValueOnce({
-                categorie_juridique: [{ value: "9210" }]
+                categorie_juridique: [{ value: "9210" }],
             });
             await leCompteAssoService.addRequest(PARTIAL_ENTITY);
             expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
@@ -270,7 +270,7 @@ describe("leCompteAssoService", () => {
                 siren: SIREN,
                 name: NAME,
                 provider: leCompteAssoService.provider.name,
-                lastUpdate: LAST_UPDATE
+                lastUpdate: LAST_UPDATE,
             });
         });
     });
@@ -282,8 +282,8 @@ describe("leCompteAssoService", () => {
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
         });
 
@@ -299,9 +299,9 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             await leCompteAssoService.addRequest(entity);
@@ -313,9 +313,9 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             await leCompteAssoService.addRequest(entity);
@@ -331,8 +331,8 @@ describe("leCompteAssoService", () => {
             dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
         });
 
@@ -348,9 +348,9 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             await leCompteAssoService.addRequest(entity);
@@ -362,9 +362,9 @@ describe("leCompteAssoService", () => {
             const entity: ILeCompteAssoPartialRequestEntity = {
                 legalInformations: { siret: "00000000000000", name: "HELLO WORLD" },
                 providerInformations: {
-                    compteAssoId: "21-000000"
+                    compteAssoId: "21-000000",
                 } as ILeCompteAssoRequestInformations,
-                data: {}
+                data: {},
             };
 
             await leCompteAssoService.addRequest(entity);

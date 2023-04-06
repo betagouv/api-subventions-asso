@@ -24,7 +24,7 @@ describe("/etablissement", () => {
             const SUBVENTION_FLUX = [{ subventions: SUBVENTIONS }];
             beforeEach(() => {
                 getSubventionsMock.mockImplementationOnce(() => ({
-                    toPromise: async () => SUBVENTION_FLUX
+                    toPromise: async () => SUBVENTION_FLUX,
                 }));
             });
             it("should return 200", async () => {
@@ -67,8 +67,8 @@ describe("/etablissement", () => {
             const expected = [
                 {
                     name: siretToSiren(OsirisRequestEntityFixture.legalInformations.siret),
-                    visits: 1
-                }
+                    visits: 1,
+                },
             ];
 
             expect(actual).toEqual(expected);

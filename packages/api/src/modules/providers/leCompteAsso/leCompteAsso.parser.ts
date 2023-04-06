@@ -16,20 +16,20 @@ export default class LeCompteAssoParser {
             const legalInformations = {
                 ...(ParseHelper.indexDataByPathObject(
                     LeCompteAssoRequestEntity.indexedLegalInformationsPath,
-                    parsedData
+                    parsedData,
                 ) as { siret: Siret; name: string }),
-                rna: null
+                rna: null,
             };
 
             const providerInformations = ParseHelper.indexDataByPathObject(
                 LeCompteAssoRequestEntity.indexedProviderInformationsPath,
-                parsedData
+                parsedData,
             ) as ILeCompteAssoRequestInformations;
 
             entities.push({
                 legalInformations,
                 providerInformations,
-                data: parsedData
+                data: parsedData,
             });
 
             return entities;

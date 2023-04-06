@@ -4,7 +4,7 @@ import FonjepVersementEntity from "../../../../../src/modules/providers/fonjep/e
 export const SubventionEntity = new FonjepEntity(
     {
         siret: "00000000000002",
-        name: "FONJET_ENTITY_FIXTURE"
+        name: "FONJET_ENTITY_FIXTURE",
     },
     {
         unique_id: "unique_id",
@@ -21,14 +21,14 @@ export const SubventionEntity = new FonjepEntity(
         ville: "Paris",
         contact: "contact@beta.gouv.fr",
         type_post: "POSTE",
-        dispositif: "Dispositif"
+        dispositif: "Dispositif",
     },
-    {}
+    {},
 );
 
 export const VersementEntity = new FonjepVersementEntity(
     {
-        siret: "00000000000002"
+        siret: "00000000000002",
     },
     {
         unique_id: "unique_id",
@@ -38,7 +38,7 @@ export const VersementEntity = new FonjepVersementEntity(
         periode_fin: new Date(),
         date_versement: new Date(),
         montant_paye: 1000,
-        montant_a_payer: 1000
+        montant_a_payer: 1000,
     },
-    {}
+    {},
 );

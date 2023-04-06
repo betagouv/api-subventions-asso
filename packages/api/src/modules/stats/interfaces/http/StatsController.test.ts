@@ -14,7 +14,7 @@ describe("StatsController", () => {
         const mockedValue = {
             nb_requetes_par_mois: [201, 21, 20, 201, 13, 201, 201, 15, 201, 300, 201, 1],
             nb_requetes_moyen: 12,
-            somme_nb_requetes: 12
+            somme_nb_requetes: 12,
         };
 
         it("should call service with args default", async () => {
@@ -49,7 +49,7 @@ describe("StatsController", () => {
         const YEAR_NB = 2022;
         const mockedValue = {
             nombres_utilisateurs_avant_annee: 201,
-            evolution_nombres_utilisateurs: [201, 21, 20, 201, 13, 201, 201, 15, 201, 300, 201, 1]
+            evolution_nombres_utilisateurs: [201, 21, 20, 201, 13, 201, 201, 15, 201, 300, 201, 1],
         };
 
         it("should call service with args default", async () => {
@@ -96,9 +96,9 @@ describe("StatsController", () => {
             { name: "L'ARCHE DE SIENA", visits: 76 },
             {
                 name: "ASSOCIATION DE LA FONDATION ETUDIANTE POUR LA VILLE AFEV",
-                visits: 61
+                visits: 61,
             },
-            { name: "AURORE (DAWN)", visits: 52 }
+            { name: "AURORE (DAWN)", visits: 52 },
         ];
 
         beforeAll(() => serviceSpy.mockResolvedValue(DATA));
@@ -106,7 +106,7 @@ describe("StatsController", () => {
 
         it("should throw error if limit is not a number", () => {
             expect(() => controller.getTopAssociations("erztye")).rejects.toThrowError(
-                new BadRequestError("'limit' must be a number")
+                new BadRequestError("'limit' must be a number"),
             );
         });
 
@@ -116,7 +116,7 @@ describe("StatsController", () => {
             const expected = [
                 5,
                 new Date(Date.UTC(now.getFullYear() - 1, now.getMonth())),
-                new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1))
+                new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1)),
             ];
 
             expect(serviceSpy).toBeCalledWith(...expected);
@@ -130,7 +130,7 @@ describe("StatsController", () => {
                 start.getFullYear().toString(),
                 start.getMonth().toString(),
                 end.getFullYear().toString(),
-                end.getMonth().toString()
+                end.getMonth().toString(),
             );
 
             const expected = [7, start, new Date(Date.UTC(2022, 3))];

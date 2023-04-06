@@ -40,7 +40,7 @@ describe("DataGouv Controller", () => {
             // @ts-expect-error: test private method
             const actual = controller.shouldAssoBeSaved({
                 ...AssociationRaw,
-                changementDenominationUniteLegale: "true"
+                changementDenominationUniteLegale: "true",
             });
             expect(actual).toEqual(expected);
         });
@@ -51,7 +51,7 @@ describe("DataGouv Controller", () => {
             // @ts-expect-error: test private method
             const actual = controller.shouldAssoBeSaved({
                 ...AssociationRaw,
-                ...PartialUniteLegalRaw
+                ...PartialUniteLegalRaw,
             });
             expect(actual).toEqual(expected);
         });
@@ -63,7 +63,7 @@ describe("DataGouv Controller", () => {
             const actual = controller.shouldAssoBeSaved({
                 ...AssociationRaw,
                 ...PartialUniteLegalRaw,
-                changementEtatAdministratifUniteLegale: "true"
+                changementEtatAdministratifUniteLegale: "true",
             });
             expect(actual).toEqual(expected);
         });
@@ -84,7 +84,7 @@ describe("DataGouv Controller", () => {
             // @ts-expect-error: test private method
             const actual = controller.isUniteLegaleNew({
                 ...PartialUniteLegalRaw,
-                changementEtatAdministratifUniteLegale: "true"
+                changementEtatAdministratifUniteLegale: "true",
             });
             expect(actual).toEqual(expected);
         });

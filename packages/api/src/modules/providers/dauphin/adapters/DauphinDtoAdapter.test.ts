@@ -5,7 +5,7 @@ const mockToStatus = jest.fn(() => mockLabel);
 
 jest.mock("../../helper", () => ({
     toStatusFactory: () => mockToStatus,
-    __esModule: true // this property makes it work
+    __esModule: true, // this property makes it work
 }));
 
 describe("DauphinDtoAdapter", () => {
@@ -14,7 +14,7 @@ describe("DauphinDtoAdapter", () => {
             history: { begin: {}, events: [] },
             demandeur: { SIRET: {} },
             planFinancement: [],
-            financeursPrivilegies: [{ title: "title" }]
+            financeursPrivilegies: [{ title: "title" }],
         };
 
         it("generates status translator", () => {
@@ -29,7 +29,7 @@ describe("DauphinDtoAdapter", () => {
             // @ts-expect-error: mock
             const res = DauphinDtoAdapter.toDemandeSubvention({
                 ...minDauphinEntity,
-                virtualStatusLabel: PROVIDER_STATUS
+                virtualStatusLabel: PROVIDER_STATUS,
             });
             const actual = res?.statut_label?.value;
             expect(actual).toBe(mockLabel);

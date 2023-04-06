@@ -128,7 +128,7 @@ describe("VersementsPort", () => {
             class FakeApiError extends Error {
                 // Voir si on deplace ça !
                 request = {
-                    status: 999
+                    status: 999,
                 };
             }
 

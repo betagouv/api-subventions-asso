@@ -6,6 +6,6 @@ export const docsMiddlewares = async () => [
     swaggerUi.setup(await import("../../tsoa/swagger.json"), {
         customCss: ".swagger-ui .topbar { display: none }",
         customSiteTitle: "Data Subvention",
-        customfavIcon: "/assets/images/favicons/favicon.ico"
-    })
+        customfavIcon: "/assets/images/favicons/favicon.ico",
+    }),
 ];

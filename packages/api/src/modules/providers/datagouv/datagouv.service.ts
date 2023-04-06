@@ -12,7 +12,7 @@ export class DataGouvService implements Provider {
         name: "Base Sirene - DataGouv",
         type: ProviderEnum.raw,
         description:
-            "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire)."
+            "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire).",
     };
 
     constructor() {

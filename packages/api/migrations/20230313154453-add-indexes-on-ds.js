@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: demarchesSimplifieesDataRepository
+    default: demarchesSimplifieesDataRepository,
 } = require("../build/src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository");
 const {
-    default: demarchesSimplifieesMapperRepository
+    default: demarchesSimplifieesMapperRepository,
 } = require("../build/src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -22,5 +22,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

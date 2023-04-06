@@ -7,7 +7,7 @@ export const numberToEuro = value => {
     return value.toLocaleString("fr-FR", {
         style: "currency",
         currency: "EUR",
-        maximumFractionDigits: value % 1 ? 2 : 0
+        maximumFractionDigits: value % 1 ? 2 : 0,
     });
 };
 

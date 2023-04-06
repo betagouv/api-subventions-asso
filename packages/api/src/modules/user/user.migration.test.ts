@@ -15,7 +15,7 @@ describe("UserMigration", () => {
         const groupUsersByEmailMock: jest.SpyInstance<DefaultObject<UserDto[]>> = jest.spyOn(
             userMigration,
             // @ts-expect-error toLowerCaseUsers is private method
-            "groupUsersByEmail"
+            "groupUsersByEmail",
         );
         // @ts-expect-error toLowerCaseUsers is private method
         const findUsersActionMock: jest.SpyInstance = jest.spyOn(userMigration, "findUsersAction");
@@ -28,18 +28,18 @@ describe("UserMigration", () => {
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.UPDATE,
-                    user
-                }))
+                    user,
+                })),
             );
             usersFindMock.mockImplementationOnce(async () => [
                 {
-                    email: "test@datasubvention.beta.gou.fr"
-                } as unknown as WithId<UserDto>
+                    email: "test@datasubvention.beta.gou.fr",
+                } as unknown as WithId<UserDto>,
             ]);
             toLowerCaseUsersMock.mockImplementationOnce((a: UserDto[]) => a);
             groupUsersByEmailMock.mockImplementationOnce(users => {
                 return {
-                    [users[0].email]: [users[0] as UserDto]
+                    [users[0].email]: [users[0] as UserDto],
                 };
             });
 
@@ -53,20 +53,20 @@ describe("UserMigration", () => {
         it("should delete user", async () => {
             const user = {
                 email: "test@datasubvention.beta.gou.fr",
-                _id: new ObjectId()
+                _id: new ObjectId(),
             } as unknown as WithId<UserDto>;
             userServiceDeleteMock.mockImplementationOnce(user => Promise.resolve(true));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.DELETE,
-                    user
-                }))
+                    user,
+                })),
             );
             usersFindMock.mockImplementationOnce(async () => [user]);
             toLowerCaseUsersMock.mockImplementationOnce((a: UserDto[]) => a);
             groupUsersByEmailMock.mockImplementationOnce(users => {
                 return {
-                    [users[0].email]: [users[0] as UserDto]
+                    [users[0].email]: [users[0] as UserDto],
                 };
             });
 
@@ -80,22 +80,22 @@ describe("UserMigration", () => {
         it("should be return grouped emails", () => {
             const users = [
                 {
-                    email: "test@beta"
+                    email: "test@beta",
                 },
                 {
-                    email: "test@beta"
+                    email: "test@beta",
                 },
                 {
-                    email: "test@beta"
+                    email: "test@beta",
                 },
                 {
-                    email: "othertest@beta"
-                }
+                    email: "othertest@beta",
+                },
             ];
 
             const expected = {
                 "test@beta": [users[0], users[1], users[2]],
-                "othertest@beta": [users[3]]
+                "othertest@beta": [users[3]],
             };
 
             // @ts-expect-error groupUsersByEmail is private methods
@@ -110,21 +110,21 @@ describe("UserMigration", () => {
             const users = [
                 {
                     email: "test@beta",
-                    active: true
+                    active: true,
                 },
                 {
                     email: "test@beta",
-                    active: false
+                    active: false,
                 },
                 {
                     email: "test@beta",
-                    active: false
-                }
+                    active: false,
+                },
             ];
 
             const expected = {
                 actived: [users[0]],
-                unactived: [users[1], users[2]]
+                unactived: [users[1], users[2]],
             };
 
             // @ts-expect-error groupUsersByStatus is private methods
@@ -138,26 +138,26 @@ describe("UserMigration", () => {
         it("should return users email in lower case", () => {
             const users = [
                 {
-                    email: "Test@beta"
+                    email: "Test@beta",
                 },
                 {
-                    email: "Test2@beta"
+                    email: "Test2@beta",
                 },
                 {
-                    email: "test3@beta"
-                }
+                    email: "test3@beta",
+                },
             ];
 
             const expected = [
                 {
-                    email: "test@beta"
+                    email: "test@beta",
                 },
                 {
-                    email: "test2@beta"
+                    email: "test2@beta",
                 },
                 {
-                    email: "test3@beta"
-                }
+                    email: "test3@beta",
+                },
             ];
 
             // @ts-expect-error toLowerCaseUsers is private methods
@@ -171,7 +171,7 @@ describe("UserMigration", () => {
         const groupUsersByStatusMock: jest.SpyInstance<DefaultObject<UserDto[]>> = jest.spyOn(
             userMigration,
             // @ts-expect-error groupUsersByStatus is private methods
-            "groupUsersByStatus"
+            "groupUsersByStatus",
         );
         // @ts-expect-error findLastConnectedUser is private methods
         const findLastConnectedUserMock: jest.SpyInstance<UserDto> = jest.spyOn(userMigration, "findLastConnectedUser");
@@ -184,8 +184,8 @@ describe("UserMigration", () => {
             const expected = [
                 {
                     user: users[0],
-                    action: EmailToLowerCaseAction.UPDATE
-                }
+                    action: EmailToLowerCaseAction.UPDATE,
+                },
             ];
 
             // @ts-expect-error findUsersAction is private methods
@@ -197,27 +197,27 @@ describe("UserMigration", () => {
         it("should return one update user and one delete user (updated user active)", async () => {
             const users = [
                 {
-                    name: "USER A"
+                    name: "USER A",
                 },
                 {
-                    name: "USER B"
-                }
+                    name: "USER B",
+                },
             ];
             groupUsersByStatusMock.mockImplementationOnce((users: UserDto[]) => ({
                 actived: [users[0]],
-                unactived: [users[1]]
+                unactived: [users[1]],
             }));
             findLastConnectedUserMock.mockImplementationOnce((users: UserDto[]) => users[0]);
 
             const expected = [
                 {
                     user: users[0],
-                    action: EmailToLowerCaseAction.UPDATE
+                    action: EmailToLowerCaseAction.UPDATE,
                 },
                 {
                     user: users[1],
-                    action: EmailToLowerCaseAction.DELETE
-                }
+                    action: EmailToLowerCaseAction.DELETE,
+                },
             ];
 
             // @ts-expect-error findUsersAction is private methods
@@ -229,27 +229,27 @@ describe("UserMigration", () => {
         it("should return one update user and one delete user (no users actived)", async () => {
             const users = [
                 {
-                    name: "USER A"
+                    name: "USER A",
                 },
                 {
-                    name: "USER B"
-                }
+                    name: "USER B",
+                },
             ];
             groupUsersByStatusMock.mockImplementationOnce((users: UserDto[]) => ({
                 actived: [],
-                unactived: [users[0], users[1]]
+                unactived: [users[0], users[1]],
             }));
             findLastCreatedUserMock.mockImplementationOnce((users: UserDto[]) => users[0]);
 
             const expected = [
                 {
                     user: users[0],
-                    action: EmailToLowerCaseAction.UPDATE
+                    action: EmailToLowerCaseAction.UPDATE,
                 },
                 {
                     user: users[1],
-                    action: EmailToLowerCaseAction.DELETE
-                }
+                    action: EmailToLowerCaseAction.DELETE,
+                },
             ];
 
             // @ts-expect-error findUsersAction is private methods
@@ -269,24 +269,24 @@ describe("UserMigration", () => {
         it("should return last reset user", async () => {
             const users = [
                 {
-                    _id: "userId1"
+                    _id: "userId1",
                 },
                 {
-                    _id: "userId2"
-                }
+                    _id: "userId2",
+                },
             ] as unknown as UserDto[];
             const resets: DefaultObject = {
                 [users[0]._id.toString()]: {
                     userId: users[0]._id,
-                    createdAt: new Date()
+                    createdAt: new Date(),
                 },
                 [users[1]._id.toString()]: {
                     userId: users[1]._id,
-                    createdAt: new Date(2020, 9, 9)
-                }
+                    createdAt: new Date(2020, 9, 9),
+                },
             };
             findUserResetByUserIdMock.mockImplementation(
-                async userId => resets[userId.toString()] as unknown as WithId<UserReset>
+                async userId => resets[userId.toString()] as unknown as WithId<UserReset>,
             );
 
             const expected = users[0];
@@ -307,21 +307,21 @@ describe("UserMigration", () => {
         it("should return last reset user", async () => {
             const users = [
                 {
-                    _id: "userId1"
+                    _id: "userId1",
                 },
                 {
-                    _id: "userId2"
-                }
+                    _id: "userId2",
+                },
             ] as unknown as UserDto[];
             const tokens: DefaultObject<{ token: string; expirateDate: Date }> = {
                 [users[0]._id.toString()]: {
                     token: "",
-                    expirateDate: new Date()
+                    expirateDate: new Date(),
                 },
                 [users[1]._id.toString()]: {
                     token: "",
-                    expirateDate: new Date(2020, 9, 9)
-                }
+                    expirateDate: new Date(2020, 9, 9),
+                },
             };
             findJwtByUserMock.mockImplementation(async user => tokens[user._id.toString()]);
 

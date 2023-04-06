@@ -40,7 +40,7 @@ export default interface DemarchesSimplifieesDto {
                             label: string;
                             stringValue: string;
                         }[];
-                    }
+                    },
                 ];
             };
         };

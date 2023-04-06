@@ -8,7 +8,7 @@ export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvalua
 
     public async findByActionId(actionId: string) {
         return this.collection.findOne({
-            "indexedInformations.osirisActionId": actionId
+            "indexedInformations.osirisActionId": actionId,
         });
     }
 
@@ -24,10 +24,10 @@ export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvalua
         return (
             await this.collection.findOneAndUpdate(
                 {
-                    "indexedInformations.osirisActionId": request.indexedInformations.osirisActionId
+                    "indexedInformations.osirisActionId": request.indexedInformations.osirisActionId,
                 },
                 { $set: requestWithoutId },
-                options
+                options,
             )
         ).value as OsirisEvaluationEntity;
     }
@@ -35,7 +35,7 @@ export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvalua
     public findsBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret
+                "legalInformations.siret": siret,
             })
             .toArray();
     }
@@ -43,7 +43,7 @@ export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvalua
     public findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`)
+                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
     }

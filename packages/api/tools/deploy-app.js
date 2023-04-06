@@ -10,7 +10,7 @@ const dataFilePath = process.argv[5];
 
 if (process.argv.length < 6) {
     console.error(
-        "Please use command: node deploy-app.js [YOUR_APP_NAME] [ENV_VAR_JSON_FILE] [FIRST_USER_EMAIL] [DATA_FILE_PATH_TAR.GZ]"
+        "Please use command: node deploy-app.js [YOUR_APP_NAME] [ENV_VAR_JSON_FILE] [FIRST_USER_EMAIL] [DATA_FILE_PATH_TAR.GZ]",
     );
     return;
 }
@@ -21,7 +21,7 @@ function scalingoAppAction(action, value) {
 
 function scalingAsyncAppAction(action, value) {
     const child = child_process.spawn(`scalingo`, ["--app", appName, action, ...value.split(" ")], {
-        env: process.env
+        env: process.env,
     });
 
     return new Promise(resolve => {
@@ -82,7 +82,7 @@ console.log("Uploading and init data");
 
 scalingAsyncAppAction(
     "run",
-    `--file ${path.resolve(dataFilePath)} --size XL bash ./tools/extract_on_container.sh`
+    `--file ${path.resolve(dataFilePath)} --size XL bash ./tools/extract_on_container.sh`,
 ).then(() => {
     console.log("Extract end !");
     console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);

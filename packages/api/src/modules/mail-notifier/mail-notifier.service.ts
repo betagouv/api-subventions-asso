@@ -12,7 +12,7 @@ export class MailNotifierService {
 
     public async sendCreationMail(email: string, token: string) {
         await this.provider.sendCreationMail(email, {
-            url: `${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true`
+            url: `${FRONT_OFFICE_URL}/auth/reset-password/${token}?active=true`,
         });
     }
 

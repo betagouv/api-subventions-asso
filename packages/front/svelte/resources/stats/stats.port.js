@@ -8,7 +8,7 @@ class StatsPort {
         const path = `${this.BASE_PATH}/associations`;
         return axios
             .get(path, {
-                params: query
+                params: query,
             })
             .then(result => {
                 if (result.data.message) throw new Error(result.data.message);

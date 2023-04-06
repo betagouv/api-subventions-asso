@@ -8,7 +8,7 @@ import {
     LoginDtoErrorCodes,
     ResetPasswordErrorCodes,
     SignupErrorCodes,
-    UserErrorCodes
+    UserErrorCodes,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -21,7 +21,7 @@ import {
     ForbiddenError,
     InternalServerError,
     NotFoundError,
-    UnauthorizedError
+    UnauthorizedError,
 } from "../../shared/errors/httpErrors";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
@@ -49,7 +49,7 @@ export enum UserServiceErrors {
     CREATE_RESET_PASSWORD_WRONG,
     CREATE_EMAIL_GOUV,
     CREATE_CONSUMER_TOKEN,
-    USER_TOKEN_EXPIRED
+    USER_TOKEN_EXPIRED,
 }
 
 export interface UserServiceError {
@@ -79,13 +79,13 @@ export class UserService {
             if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
                 throw new UnauthorizedError(
                     "JWT has expired, please login try again",
-                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
                 );
 
             if (user.jwt?.token !== token)
                 throw new UnauthorizedError(
                     "JWT has expired, please login try again",
-                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
                 );
         }
         return userRepository.removeSecrets(user) as UserDto;
@@ -107,7 +107,7 @@ export class UserService {
 
             const updatedJwt = {
                 token: this.buildJWTToken(user as unknown as DefaultObject),
-                expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME)
+                expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
             };
 
             try {
@@ -178,7 +178,7 @@ export class UserService {
             email: email.toLocaleLowerCase(),
             hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
-            roles
+            roles,
         };
 
         if (!this.validRoles(roles))
@@ -187,19 +187,19 @@ export class UserService {
         const now = new Date();
         const jwtParams = {
             token: this.buildJWTToken(partialUser),
-            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME)
+            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
         const stats = {
             searchCount: 0,
-            lastSearchDate: null
+            lastSearchDate: null,
         };
 
         const user = new UserNotPersisted({
             ...partialUser,
             jwt: jwtParams,
             active: false,
-            stats
+            stats,
         });
 
         const createdUser = await userRepository.create(user);
@@ -219,8 +219,8 @@ export class UserService {
             user: await userRepository.update({
                 ...user,
                 hashPassword: await bcrypt.hash(password, 10),
-                active: true
-            })
+                active: true,
+            }),
         };
     }
 
@@ -245,7 +245,7 @@ export class UserService {
                 raw
                     .split(";")
                     .map(r => r.split("\t"))
-                    .flat()
+                    .flat(),
             ); // Parse column
         const emails = data.map(line => line[0]).filter(email => email.length);
 
@@ -318,7 +318,7 @@ export class UserService {
         if (!userWithSecrets?.jwt) {
             return {
                 message: "User is not active",
-                code: UserServiceErrors.USER_NOT_ACTIVE
+                code: UserServiceErrors.USER_NOT_ACTIVE,
             };
         }
 
@@ -335,7 +335,7 @@ export class UserService {
         if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now())
             throw new BadRequestError(
                 "Reset token has expired, please retry forget password",
-                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
             );
 
         const user = await userRepository.findById(reset.userId);
@@ -345,7 +345,7 @@ export class UserService {
         if (!this.passwordValidator(password))
             throw new BadRequestError(
                 UserService.PASSWORD_VALIDATOR_MESSAGE,
-                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
             );
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -355,7 +355,7 @@ export class UserService {
         return await userRepository.update({
             ...user,
             hashPassword,
-            active: true
+            active: true,
         });
     }
 
@@ -381,7 +381,7 @@ export class UserService {
         if (!createdReset) {
             throw new InternalServerError(
                 "The user reset password could not be created",
-                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG
+                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG,
             );
         }
 
@@ -433,10 +433,10 @@ export class UserService {
                         ...user,
                         _id: user._id.toString(),
                         resetToken: reset?.token,
-                        resetTokenDate: reset?.createdAt
+                        resetTokenDate: reset?.createdAt,
                     } as UserWithResetTokenDto;
-                })
-            )
+                }),
+            ),
         };
     }
 

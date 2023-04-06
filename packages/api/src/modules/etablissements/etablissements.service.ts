@@ -27,7 +27,7 @@ export class EtablissementsService {
         [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
-        [FonjepEntityAdapter.PROVIDER_NAME]: 0.5
+        [FonjepEntityAdapter.PROVIDER_NAME]: 0.5,
     };
 
     async getEtablissement(siret: Siret) {
@@ -42,7 +42,7 @@ export class EtablissementsService {
         return FormaterHelper.formatData(
             // force TS typing because Etablissement[] is DefaultObject<ProviderValues>[]
             data as unknown as DefaultObject<ProviderValues>[],
-            this.provider_score
+            this.provider_score,
         ) as unknown as Etablissement;
     }
 
@@ -67,8 +67,8 @@ export class EtablissementsService {
                 FormaterHelper.formatData(
                     // @ts-expect-error: transform Etablissement[] to DefaultObject<ProviderValues>[]
                     etablissements as DefaultObject<ProviderValues>[],
-                    this.provider_score
-                ) as Etablissement
+                    this.provider_score,
+                ) as Etablissement,
         );
 
         const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) =>

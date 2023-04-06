@@ -7,12 +7,12 @@ module.exports = {
         await connectDB();
 
         await configRepo.upsert("DAUPHIN-TOKEN-AVAILABLE", {
-            data: 1000 * 60 * 60 * 12
+            data: 1000 * 60 * 60 * 12,
         }); // 12h
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // TODO write the statements to rollback your migration (if possible)
-    }
+    },
 };

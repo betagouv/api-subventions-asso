@@ -9,7 +9,7 @@ export class EtablissementAdapter {
             siege,
             ouvert,
             adresse,
-            headcount
+            headcount,
         } as SimplifiedEtablissement;
     }
 }

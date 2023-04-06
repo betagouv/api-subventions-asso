@@ -4,7 +4,7 @@ import {
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
     GetDocumentsResponseDto,
-    DemandeSubvention
+    DemandeSubvention,
 } from "@api-subventions-asso/dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../../../@types";

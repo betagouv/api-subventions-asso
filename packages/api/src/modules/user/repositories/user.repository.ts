@@ -5,7 +5,7 @@ import User from "../entities/UserNotPersisted";
 import UserDbo from "./dbo/UserDbo";
 
 export enum UserRepositoryErrors {
-    UPDATE_FAIL = 1
+    UPDATE_FAIL = 1,
 }
 
 export class UserRepository {
@@ -13,7 +13,7 @@ export class UserRepository {
     private readonly collection = db.collection<UserDbo>("users");
 
     joinIndexes = {
-        associationVisits: "_id"
+        associationVisits: "_id",
     };
 
     async findAll() {

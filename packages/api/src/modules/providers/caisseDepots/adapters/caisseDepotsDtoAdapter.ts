@@ -27,13 +27,13 @@ export default class CaisseDepotsDtoAdapter {
             statut_label: toPV(ApplicationStatus.GRANTED),
             status: toPV(ApplicationStatus.GRANTED), // not given by provider
             montants: {
-                accorde: amount
+                accorde: amount,
             },
             date_commision: toPV(new Date(dto.fields.dateconvention)), // doubt
             financeur_principal: toPV(dto.fields.nomattribuant),
             annee_demande: toPV(new Date(dto.fields.dateconvention).getFullYear()), // doubt
             pluriannualite: toPV(this._multiannuality(dto)),
-            versementKey: toPV(dto.id)
+            versementKey: toPV(dto.id),
         };
     }
 }

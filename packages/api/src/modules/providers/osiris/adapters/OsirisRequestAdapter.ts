@@ -4,7 +4,7 @@ import {
     DemandeSubvention,
     Etablissement,
     ProviderValue,
-    Rna
+    Rna,
 } from "@api-subventions-asso/dto";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
@@ -19,7 +19,7 @@ export default class OsirisRequestAdapter {
         { label: ApplicationStatus.REFUSED, providerStatusList: ["Refusé"] },
         {
             label: ApplicationStatus.GRANTED,
-            providerStatusList: ["Traitement Sirepa", "Traitement Chorus", "Terminé", "A évaluer"]
+            providerStatusList: ["Traitement Sirepa", "Traitement Chorus", "Terminé", "A évaluer"],
         },
         { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["Rejeté", "Supprimé"] },
         {
@@ -29,9 +29,9 @@ export default class OsirisRequestAdapter {
                 "Renvoyé au compte asso",
                 "En cours d'instruction",
                 "En attente superviseur",
-                "En attente décision"
-            ]
-        }
+                "En attente décision",
+            ],
+        },
     ];
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
@@ -64,14 +64,14 @@ export default class OsirisRequestAdapter {
                     ? {
                           total: toPVs(licencies),
                           hommes: toPVs(licenciesHommes),
-                          femmes: toPVs(licenciesFemmes)
+                          femmes: toPVs(licenciesFemmes),
                       }
                     : undefined,
             ...(actions.length
                 ? {
                       benevoles: {
                           nombre: toPVs(actions[0].indexedInformations.benevoles),
-                          ETPT: toPVs(actions[0].indexedInformations.benevolesETPT)
+                          ETPT: toPVs(actions[0].indexedInformations.benevolesETPT),
                       },
                       salaries: {
                           nombre: toPVs(actions[0].indexedInformations.salaries),
@@ -80,14 +80,14 @@ export default class OsirisRequestAdapter {
                           cdd: toPVs(actions[0].indexedInformations.salariesCDD),
                           cddETPT: toPVs(actions[0].indexedInformations.salariesCDDETPT),
                           emploisAides: toPVs(actions[0].indexedInformations.emploiesAides),
-                          emploisAidesETPT: toPVs(actions[0].indexedInformations.emploiesAidesETPT)
+                          emploisAidesETPT: toPVs(actions[0].indexedInformations.emploiesAidesETPT),
                       },
                       volontaires: {
                           nombre: toPVs(actions[0].indexedInformations.volontaires),
-                          ETPT: toPVs(actions[0].indexedInformations.volontairesETPT)
-                      }
+                          ETPT: toPVs(actions[0].indexedInformations.volontairesETPT),
+                      },
                   }
-                : {})
+                : {}),
         };
     }
 
@@ -102,7 +102,7 @@ export default class OsirisRequestAdapter {
             adresse: toPVs({
                 voie: entity.providerInformations.etablissementVoie,
                 code_postal: entity.providerInformations.etablissementCodePostal,
-                commune: entity.providerInformations.etablissementCommune
+                commune: entity.providerInformations.etablissementCommune,
             }),
             representants_legaux: [
                 toPVs({
@@ -111,8 +111,8 @@ export default class OsirisRequestAdapter {
                     civilite: entity.providerInformations.representantCivilite,
                     role: entity.providerInformations.representantRole,
                     telephone: entity.providerInformations.representantPhone,
-                    email: entity.providerInformations.representantEmail
-                })
+                    email: entity.providerInformations.representantEmail,
+                }),
             ],
             contacts: [
                 toPVs({
@@ -121,18 +121,18 @@ export default class OsirisRequestAdapter {
                     civilite: entity.providerInformations.representantCivilite,
                     role: entity.providerInformations.representantRole,
                     telephone: entity.providerInformations.representantPhone,
-                    email: entity.providerInformations.representantEmail
-                })
+                    email: entity.providerInformations.representantEmail,
+                }),
             ],
             information_banquaire:
                 entity.providerInformations.etablissementBIC && entity.providerInformations.etablissementIBAN
                     ? [
                           toPVs({
                               bic: entity.providerInformations.etablissementBIC,
-                              iban: entity.providerInformations.etablissementIBAN
-                          })
+                              iban: entity.providerInformations.etablissementIBAN,
+                          }),
                       ]
-                    : []
+                    : [],
         };
     }
 
@@ -161,13 +161,13 @@ export default class OsirisRequestAdapter {
                 email: toPV(entity.providerInformations.representantEmail),
                 telephone: entity.providerInformations.representantPhone
                     ? toPV(entity.providerInformations.representantPhone)
-                    : undefined
+                    : undefined,
             },
             montants: {
                 total: toPV(entity.providerInformations.montantsTotal),
                 demande: toPV(entity.providerInformations.montantsDemande),
                 propose: toPV(entity.providerInformations.montantsPropose),
-                accorde: toPV(entity.providerInformations.montantsAccorde)
+                accorde: toPV(entity.providerInformations.montantsAccorde),
             },
             versement: {
                 acompte: toPV(entity.providerInformations.versementAcompte),
@@ -175,16 +175,16 @@ export default class OsirisRequestAdapter {
                 realise: toPV(entity.providerInformations.versementRealise),
                 compensation: {
                     "n-1": toPV(entity.providerInformations.versementCompensationN1),
-                    reversement: toPV(entity.providerInformations.versementCompensationN)
-                }
-            }
+                    reversement: toPV(entity.providerInformations.versementCompensationN),
+                },
+            },
         };
 
         if (entity.actions) {
             const territoires = entity.actions.map(action => {
                 return {
                     status: toPV(action.indexedInformations.territoireStatus),
-                    commentaire: toPV(action.indexedInformations.territoireCommentaire)
+                    commentaire: toPV(action.indexedInformations.territoireCommentaire),
                 };
             });
 
@@ -195,7 +195,7 @@ export default class OsirisRequestAdapter {
                             t.status.value === territoire.status.value &&
                             t.status.last_update === territoire.status.last_update &&
                             t.commentaire.value === territoire.commentaire.value &&
-                            t.commentaire.last_update === territoire.commentaire.last_update
+                            t.commentaire.last_update === territoire.commentaire.last_update,
                     )
                 )
                     return acc;
@@ -216,7 +216,7 @@ export default class OsirisRequestAdapter {
                 indicateurs: toPV(action.indexedInformations.indicateurs),
                 cofinanceurs: {
                     noms: toPV(action.indexedInformations.cofinanceurs),
-                    montant_demandes: toPV(action.indexedInformations.cofinanceurs_montant_demandes)
+                    montant_demandes: toPV(action.indexedInformations.cofinanceurs_montant_demandes),
                 },
                 montants_versement: {
                     total: toPV(action.indexedInformations.montants_versement_total),
@@ -225,14 +225,14 @@ export default class OsirisRequestAdapter {
                     accorde: toPV(action.indexedInformations.montants_versement_accorde),
                     attribue: toPV(action.indexedInformations.montants_versement_attribue),
                     realise: toPV(action.indexedInformations.montants_versement_realise),
-                    compensation: toPV(action.indexedInformations.montants_versement_compensation)
+                    compensation: toPV(action.indexedInformations.montants_versement_compensation),
                 },
                 evaluation: action.evaluation
                     ? {
                           evaluation_resultat: toPV(action.evaluation.indexedInformations.evaluation_resultat),
-                          cout_total_realise: toPV(action.evaluation.indexedInformations.cout_total_realise)
+                          cout_total_realise: toPV(action.evaluation.indexedInformations.cout_total_realise),
                       }
-                    : undefined
+                    : undefined,
             }));
         }
 

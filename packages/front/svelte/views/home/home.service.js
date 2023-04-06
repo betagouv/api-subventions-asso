@@ -18,7 +18,7 @@ export class HomeService {
             return {
                 rna: asso.rna,
                 siren: asso.siren,
-                name: asso.denomination_rna || asso.denomination_siren
+                name: asso.denomination_rna || asso.denomination_siren,
             };
         });
     }
@@ -44,7 +44,7 @@ export class HomeService {
             this.currentSearchPromise = {
                 text: searchedText,
                 promise,
-                reject
+                reject,
             };
 
             const { result, error } = await this._search(searchedText);

@@ -42,7 +42,7 @@ export const AGENT_ETAT_DOMAIN = [
     "region-academique-occitanie.fr",
     "region-academique-ocitanie.fr",
     "region-academique-paca.fr",
-    "stjs.wf"
+    "stjs.wf",
 ];
 
 export const COLLECTIVITE_DOMAIN = ["rhone.fr"];

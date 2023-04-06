@@ -4,7 +4,7 @@ describe("providerValueHelper", () => {
     const PROVIDER_VALUE = {
         value: "VALUE",
         provider: "PROVIDER",
-        last_update: new Date()
+        last_update: new Date(),
     };
 
     // TODO: flatenProviderValue

@@ -22,7 +22,7 @@ describe("DataGouvService", () => {
             const expected = {
                 filename: "fake_filename.csv",
                 dateOfFile: new Date(),
-                dateOfImport: new Date()
+                dateOfImport: new Date(),
             };
 
             await dataGouvService.addNewImport(expected);
@@ -49,7 +49,7 @@ describe("DataGouvService", () => {
             findLastImportMock.mockImplementationOnce(() => ({
                 filename: "TEST",
                 dateOfFile: expected,
-                dateOfImport: new Date()
+                dateOfImport: new Date(),
             }));
 
             const actual = await dataGouvService.getLastDateImport();

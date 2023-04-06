@@ -13,8 +13,8 @@ class SubventionsPort {
             subventions: [],
             __meta__: {
                 providerCalls: 0,
-                providerAnswers: 0
-            }
+                providerAnswers: 0,
+            },
         });
 
         connector.on("data", data => {
@@ -24,8 +24,8 @@ class SubventionsPort {
                     ...state,
                     __meta__: {
                         ...state.__meta__,
-                        providerCalls: data.__meta__.totalProviders
-                    }
+                        providerCalls: data.__meta__.totalProviders,
+                    },
                 }));
             } else if (data.subventions) {
                 store.update(state => ({
@@ -33,8 +33,8 @@ class SubventionsPort {
                     subventions: state.subventions.concat(data.subventions.map(d => flatenProviderValue(d))),
                     __meta__: {
                         ...state.__meta__,
-                        providerAnswers: state.__meta__.providerAnswers + 1
-                    }
+                        providerAnswers: state.__meta__.providerAnswers + 1,
+                    },
                 }));
             }
         });
@@ -43,7 +43,7 @@ class SubventionsPort {
             store.update(state => {
                 return {
                     ...state,
-                    status: "close"
+                    status: "close",
                 };
             });
         });
@@ -56,8 +56,8 @@ class SubventionsPort {
                 subventions: state.subventions.concat(subventions.map(d => flatenProviderValue(d))),
                 __meta__: {
                     providerCalls: 1,
-                    providerAnswers: 1
-                }
+                    providerAnswers: 1,
+                },
             }));
         });
 

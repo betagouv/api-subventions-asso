@@ -22,7 +22,7 @@ export default interface DauphinSubventionDto {
     financeursPrivilegies?: [
         {
             title: string;
-        }
+        },
     ];
     thematique?: {
         title?: string;
@@ -54,13 +54,13 @@ export default interface DauphinSubventionDto {
                                                 ht: number;
                                             };
                                         };
-                                    }
+                                    },
                                 ];
-                            }
+                            },
                         ];
-                    }
+                    },
                 ];
             };
-        }
+        },
     ];
 }

@@ -28,7 +28,7 @@ describe("ApiEntrepriseService", () => {
             const expected = { test: true };
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
-                data: expected
+                data: expected,
             }));
 
             // @ts-expect-error sendRequest is private method
@@ -55,14 +55,14 @@ describe("ApiEntrepriseService", () => {
         it("should call queryString with default params", async () => {
             const params = {
                 context: "aides publiques",
-                recipient: "12004101700035"
+                recipient: "12004101700035",
             };
 
             const expected = [{ ...params, object: HEADCOUNT_REASON }];
 
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
-                data: { test: true }
+                data: { test: true },
             }));
 
             qsMock.mockImplementationOnce(() => "QUERY");

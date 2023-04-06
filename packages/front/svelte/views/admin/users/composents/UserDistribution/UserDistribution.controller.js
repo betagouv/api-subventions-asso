@@ -28,26 +28,26 @@ export default class UserDistributionController {
                 name: "admin",
                 value: 0,
                 label: "Administrateurs",
-                color: "#fef3fd" // --background-alt-purple-glycine
+                color: "#fef3fd", // --background-alt-purple-glycine
             },
             {
                 name: "active",
                 value: 0,
                 label: "Utilisateurs actifs (hors admin)",
-                color: "#dee5fd" // --background-action-low-blue-ecume
+                color: "#dee5fd", // --background-action-low-blue-ecume
             },
             {
                 name: "idle",
                 value: 0,
                 label: "Utilisateurs non actifs (hors admin)",
-                color: "#3558a2" // --background-action-high-blue-cumulus
+                color: "#3558a2", // --background-action-high-blue-cumulus
             },
             {
                 name: "inactive",
                 value: 0,
                 label: "Utilisateurs n'ayant pas activé leurs comptes (hors admin)",
-                color: "#fef4f3" // --background-alt-pink-tuile
-            }
+                color: "#fef4f3", // --background-alt-pink-tuile
+            },
         ];
     }
 
@@ -58,9 +58,9 @@ export default class UserDistributionController {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: false
-                    }
-                }
+                        display: false,
+                    },
+                },
             },
             data: {
                 labels: this.distributions.value.map(distribution => distribution.label),
@@ -68,10 +68,10 @@ export default class UserDistributionController {
                     {
                         label: "Utilisateurs",
                         data: this.distributions.value.map(distribution => distribution.value),
-                        backgroundColor: this.distributions.value.map(distribution => distribution.color)
-                    }
-                ]
-            }
+                        backgroundColor: this.distributions.value.map(distribution => distribution.color),
+                    },
+                ],
+            },
         });
     }
 }

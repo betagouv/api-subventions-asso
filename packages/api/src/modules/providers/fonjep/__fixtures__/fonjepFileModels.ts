@@ -12,7 +12,7 @@ export const DEFAULT_POSTE = {
     DateFinTriennalite: 43100,
     PstTypePosteCode: "FONJEP",
     PleinTemps: "Oui",
-    DoublementUniteCompte: "Non"
+    DoublementUniteCompte: "Non",
 };
 
 export const DEFAULT_VERSEMENT = {
@@ -21,7 +21,7 @@ export const DEFAULT_VERSEMENT = {
     PeriodeFin: 43008,
     DateVersement: 43070,
     MontantAPayer: 3646,
-    MontantPaye: 3646
+    MontantPaye: 3646,
 };
 
 export const DATA_WITH_HEADER = [
@@ -35,7 +35,7 @@ export const DATA_WITH_HEADER = [
             SiretOuRidet: "00000000000000",
             CodePostal: "00000",
             Ville: "Paris",
-            ContactEmail: "exemple@beta.gouv.fr"
+            ContactEmail: "exemple@beta.gouv.fr",
         },
         {
             Code: "16DIV",
@@ -46,8 +46,8 @@ export const DATA_WITH_HEADER = [
             SiretOuRidet: "00000000000000",
             CodePostal: "00000",
             Ville: "Paris",
-            ContactEmail: "exemple@beta.gouv.fr"
-        }
+            ContactEmail: "exemple@beta.gouv.fr",
+        },
     ],
     [
         DEFAULT_POSTE,
@@ -65,8 +65,8 @@ export const DATA_WITH_HEADER = [
             DateFinTriennalite: 43465,
             PstTypePosteCode: "FONJEP",
             PleinTemps: "Oui",
-            DoublementUniteCompte: "Non"
-        }
+            DoublementUniteCompte: "Non",
+        },
     ],
     [
         DEFAULT_VERSEMENT,
@@ -76,20 +76,20 @@ export const DATA_WITH_HEADER = [
             PeriodeFin: DEFAULT_VERSEMENT.PeriodeFin + 50,
             DateVersement: DEFAULT_VERSEMENT.DateVersement,
             MontantAPayer: DEFAULT_VERSEMENT.MontantAPayer,
-            MontantPaye: DEFAULT_VERSEMENT.MontantPaye
-        }
+            MontantPaye: DEFAULT_VERSEMENT.MontantPaye,
+        },
     ],
     [
         { Code: "DOUBLE", Libelle: "UNITE DE COMPTE DOUBLEE" },
         { Code: "FONJEP", Libelle: "Poste FONJEP" },
         { Code: "PSTEMP", Libelle: "POSTES EMPOI FONJEP (100 %)" },
-        { Code: "FONBIS", Libelle: "PROLONGATION PAS DE FRAIS" }
+        { Code: "FONBIS", Libelle: "PROLONGATION PAS DE FRAIS" },
     ],
     [
         {
             ID: 1,
             Libelle: "FONJEP Jeunesse éducation populaire",
-            FinanceurCode: 10004
+            FinanceurCode: 10004,
         },
         { ID: 2, Libelle: "FONJEP Cohésion sociale", FinanceurCode: 10005 },
         { ID: 3, Libelle: "FONJEP Politique de la ville", FinanceurCode: 10008 },
@@ -97,16 +97,16 @@ export const DATA_WITH_HEADER = [
         {
             ID: 5,
             Libelle: "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)",
-            FinanceurCode: 10010
+            FinanceurCode: 10010,
         },
         { ID: 6, Libelle: "FONJEP Culture", FinanceurCode: 10012 },
         {
             ID: 7,
             Libelle: "FONJEP Centre de ressour ces et d'information des bénévoles",
-            FinanceurCode: 10016
+            FinanceurCode: 10016,
         },
-        { ID: 8, Libelle: "FONJEP Jeunes", FinanceurCode: 10017 }
-    ]
+        { ID: 8, Libelle: "FONJEP Jeunes", FinanceurCode: 10017 },
+    ],
 ];
 
 export const RAW_DATA = [
@@ -120,9 +120,9 @@ export const RAW_DATA = [
             "SiretOuRidet",
             "CodePostal",
             "Ville",
-            "ContactEmail"
+            "ContactEmail",
         ],
-        [1234, "CENTRE D'INFO ****", "Oui", "Non", "Non", "00000000000000", "00000", "Paris", "exemple@beta.gouv.fr"]
+        [1234, "CENTRE D'INFO ****", "Oui", "Non", "Non", "00000000000000", "00000", "Paris", "exemple@beta.gouv.fr"],
     ],
     [
         [
@@ -139,22 +139,22 @@ export const RAW_DATA = [
             "DateFinTriennalite",
             "PstTypePosteCode",
             "PleinTemps",
-            "DoublementUniteCompte"
+            "DoublementUniteCompte",
         ],
-        ["J10540", 3, "Attribué", "Reconduction", "1234", 1234, 1234, 1234, 2017, 6666, 43465, "FONJEP", "Oui", "Non"]
+        ["J10540", 3, "Attribué", "Reconduction", "1234", 1234, 1234, 1234, 2017, 6666, 43465, "FONJEP", "Oui", "Non"],
     ],
     // TODO: add versements
     [
         ["PosteCode", "PeriodeDebut", "PeriodeFin", "DateVersement", "MontantAPayer", "MontantPaye"],
         ["J10540", "1/1/2017", "31/3/2017", "26/1/2017", "1 777,00 €", "1 777,00 €"],
-        ["J10540", "1/4/2017", "30/6/2017", "27/4/2017", "1 777,00 €", "1 777,00 €"]
+        ["J10540", "1/4/2017", "30/6/2017", "27/4/2017", "1 777,00 €", "1 777,00 €"],
     ],
     [
         ["Code", "Libelle"],
         ["DOUBLE", "UNITE DE COMPTE DOUBLEE"],
         ["FONJEP", "Poste FONJEP"],
         ["PSTEMP", "POSTES EMPOI FONJEP (100 %)"],
-        ["FONBIS", "PROLONGATION PAS DE FRAIS"]
+        ["FONBIS", "PROLONGATION PAS DE FRAIS"],
     ],
     [
         ["ID", "Libelle", "FinanceurCode"],
@@ -165,6 +165,6 @@ export const RAW_DATA = [
         [5, "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)", 100010],
         [6, "FONJEP Culture", 100012],
         [7, "FONJEP Centre de ressources et d'information des bénévoles", 100016],
-        [8, "FONJEP Jeunes", 100017]
-    ]
+        [8, "FONJEP Jeunes", 100017],
+    ],
 ];

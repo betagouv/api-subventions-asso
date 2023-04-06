@@ -9,18 +9,18 @@ const YESTERDAY = (function (date) {
 
 const SUBVENTION = {
     isSub: true,
-    annee_demande: TODAY.getFullYear()
+    annee_demande: TODAY.getFullYear(),
 };
 
 const FONJEP_VERSEMENT = {
     isVersement: true,
     periodDebut: TODAY,
-    dateOperation: YESTERDAY
+    dateOperation: YESTERDAY,
 };
 
 const CHORUS_VERSEMENT = {
     isVersement: true,
-    dateOperation: YESTERDAY
+    dateOperation: YESTERDAY,
 };
 
 describe("helper", () => {
@@ -64,7 +64,7 @@ describe("helper", () => {
         it("should return undefined", () => {
             const actual = Helper.getVersementYear({
                 periodDebut: undefined,
-                dateOperation: undefined
+                dateOperation: undefined,
             });
             expect(actual).toEqual(undefined);
         });

@@ -12,21 +12,21 @@ import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 export class DemarchesSimplifieesEntityAdapter {
     static toSubvention(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity
+        mapper: DemarchesSimplifieesMapperEntity,
     ): DemandeSubvention {
         const toPv = ProviderValueFactory.buildProviderValueAdapter(
             demarchesSimplifieesService.provider.name,
-            new Date(entity.demande.dateDerniereModification)
+            new Date(entity.demande.dateDerniereModification),
         );
 
         const subvention: DefaultObject<ProviderValue> = {
-            siret: toPv(entity.siret)
+            siret: toPv(entity.siret),
         };
 
         mapper.schema.forEach(property => {
             let value = lodash.get(entity, property.from);
             const valueDate = [moment(value, "DD MMMM YYYY", "fr", true).toDate(), new Date(value)].find(date =>
-                isValidDate(date)
+                isValidDate(date),
             );
 
             if (value === undefined || value === "") return;

@@ -27,16 +27,16 @@ describe("leCompteAsso.parser", () => {
                 "Numéro dossier LCA": "21-000000",
                 "Pluriannuel?": "Non",
                 "Service(s) instructeur(s)": "DR-AAA",
-                "Transmis le": "01/01/1970 12:00"
+                "Transmis le": "01/01/1970 12:00",
             },
             legalInformations: {
                 name: "Lorem ipsum dolor sit",
                 rna: null,
-                siret: "0"
+                siret: "0",
             },
             providerInformations: {
-                compteAssoId: "21-000000"
-            }
+                compteAssoId: "21-000000",
+            },
         });
     });
 });

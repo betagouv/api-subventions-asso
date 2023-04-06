@@ -13,7 +13,7 @@ describe("/config", () => {
                     .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json")
                     .expect(200, {
-                        domains: [process.env.BETA_GOUV_DOMAIN]
+                        domains: [process.env.BETA_GOUV_DOMAIN],
                     });
             });
         });
@@ -35,7 +35,7 @@ describe("/config", () => {
                     .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json")
                     .expect(BadRequestErrorCode, {
-                        message: BadRequestErrorMessage
+                        message: BadRequestErrorMessage,
                     });
             });
         });

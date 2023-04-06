@@ -1,7 +1,7 @@
 jest.mock("chart.js/auto", () =>
     jest.fn(function () {
         return {};
-    })
+    }),
 );
 
 import Chart from "chart.js/auto";
@@ -31,7 +31,7 @@ describe("UserDistributionController", () => {
                 admin: ADMIN,
                 active: ACTIVE,
                 idle: IDLE,
-                inactive: INACTIVE
+                inactive: INACTIVE,
             }));
 
             await controller.init();
@@ -39,18 +39,18 @@ describe("UserDistributionController", () => {
             expect(controller.distributions.value).toEqual(
                 expect.arrayContaining([
                     expect.objectContaining({
-                        value: ADMIN
+                        value: ADMIN,
                     }),
                     expect.objectContaining({
-                        value: ACTIVE
+                        value: ACTIVE,
                     }),
                     expect.objectContaining({
-                        value: IDLE
+                        value: IDLE,
                     }),
                     expect.objectContaining({
-                        value: INACTIVE
-                    })
-                ])
+                        value: INACTIVE,
+                    }),
+                ]),
             );
         });
     });
@@ -118,16 +118,16 @@ describe("UserDistributionController", () => {
                             "Administrateurs",
                             "Utilisateurs actifs (hors admin)",
                             "Utilisateurs non actifs (hors admin)",
-                            "Utilisateurs n'ayant pas activé leurs comptes (hors admin)"
+                            "Utilisateurs n'ayant pas activé leurs comptes (hors admin)",
                         ],
                         datasets: [
                             expect.objectContaining({
                                 data: Object.values(data),
-                                backgroundColor: ["#fef3fd", "#dee5fd", "#3558a2", "#fef4f3"]
-                            })
-                        ]
-                    })
-                })
+                                backgroundColor: ["#fef3fd", "#dee5fd", "#3558a2", "#fef4f3"],
+                            }),
+                        ],
+                    }),
+                }),
             ];
 
             controller._canvas = expected[0];

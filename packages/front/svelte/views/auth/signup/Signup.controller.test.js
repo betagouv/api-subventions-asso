@@ -9,9 +9,9 @@ jest.mock("@api-subventions-asso/dto", () => ({
         USER_ALREADY_EXIST: 2,
         CREATION_ERROR: 3,
         CREATION_RESET_ERROR: 4,
-        EMAIL_MUST_BE_END_GOUV: 5
+        EMAIL_MUST_BE_END_GOUV: 5,
     },
-    __esModule: true // this property makes it work
+    __esModule: true, // this property makes it work
 }));
 
 const NAME = "nom";
@@ -19,8 +19,8 @@ const NAME = "nom";
 jest.mock("svelte", () => ({
     __esModule: true, // this property makes it work
     getContext: jest.fn(() => ({
-        getName: jest.fn(() => NAME)
-    }))
+        getName: jest.fn(() => NAME),
+    })),
 }));
 
 describe("SignupController", () => {

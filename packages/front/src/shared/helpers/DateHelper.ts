@@ -9,7 +9,7 @@ export default class DateHelper {
 
         return `${doubleNumber(date.getDate())}/${doubleNumber(date.getMonth() + 1)}/${date.getFullYear()}`.replace(
             "  ",
-            " "
+            " ",
         );
     }
 
@@ -19,7 +19,7 @@ export default class DateHelper {
         const doubleNumber = (num: number) => ("0" + num).slice(-2);
 
         return `${this.formatDate(date.toString())} à ${doubleNumber(date.getHours())}:${doubleNumber(
-            date.getMinutes()
+            date.getMinutes(),
         )}h`;
     }
 
