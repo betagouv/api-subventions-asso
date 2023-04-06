@@ -1,8 +1,11 @@
+import Gispro from "../../../gispro/@types/Gispro";
+
 /**
  * /!\ This DTO is not complete, because no docs are found, so we complete as we go along.
  * Please check if attribute is already here before use this
  */
 export default interface DauphinGisproDbo {
+    gispro?: Gispro;
     dauphin: {
         id: string;
         reference: string;
