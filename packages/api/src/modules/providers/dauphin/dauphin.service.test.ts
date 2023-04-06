@@ -15,7 +15,7 @@ describe("Dauphin Service", () => {
     describe("getDemandeSubventionBySiret", () => {
         const getLastUpdateMock: jest.SpyInstance<unknown> = jest.spyOn(
             dauhpinGisproRepository,
-            "getLastUpdateBySiren"
+            "getLastUpdateBySiren",
         );
         const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "findBySiret");
         const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "upsert");
@@ -56,7 +56,7 @@ describe("Dauphin Service", () => {
 
             await dauphinService.getDemandeSubventionBySiret("FAKE_SIRET");
 
-            expect(upsertMock).toHaveBeenCalledWith({dauphin: expected});
+            expect(upsertMock).toHaveBeenCalledWith({ dauphin: expected });
         });
 
         it("should keep lastUpdate", async () => {
@@ -93,7 +93,7 @@ describe("Dauphin Service", () => {
     describe("getDemandeSubventionBySiren", () => {
         const getLastUpdateMock: jest.SpyInstance<unknown> = jest.spyOn(
             dauhpinGisproRepository,
-            "getLastUpdateBySiren"
+            "getLastUpdateBySiren",
         );
         const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "findBySiren");
         const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "upsert");
@@ -134,7 +134,7 @@ describe("Dauphin Service", () => {
 
             await dauphinService.getDemandeSubventionBySiren("FAKE_SIRET");
 
-            expect(upsertMock).toHaveBeenCalledWith({dauphin: expected});
+            expect(upsertMock).toHaveBeenCalledWith({ dauphin: expected });
         });
 
         it("should keep lastUpdate", async () => {

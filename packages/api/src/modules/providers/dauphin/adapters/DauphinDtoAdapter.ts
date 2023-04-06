@@ -75,8 +75,8 @@ export default class DauphinDtoAdapter {
             actions_proposee: [
                 {
                     intitule: toPV(dauphinData.intituleProjet),
-                    objectifs: toPV(dauphinData.description?.value || dauphinData.virtualStatusLabel)
-                }
+                    objectifs: toPV(dauphinData.description?.value || dauphinData.virtualStatusLabel),
+                },
             ],
         };
     }

@@ -13,7 +13,7 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
     async upsert(entity: DauphinGisproDbo) {
         return this.collection.updateOne(
             {
-                "dauphin.reference": entity.dauphin.reference
+                "dauphin.reference": entity.dauphin.reference,
             },
             { $set: entity },
             { upsert: true },
@@ -23,7 +23,7 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "dauphin.demandeur.SIRET.complet": siret
+                "dauphin.demandeur.SIRET.complet": siret,
             })
             .toArray();
     }
@@ -31,7 +31,7 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "dauphin.demandeur.SIRET.SIREN": siren
+                "dauphin.demandeur.SIRET.SIREN": siren,
             })
             .toArray();
     }
@@ -41,13 +41,13 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
             .aggregate([
                 {
                     $match: {
-                        "dauphin.demandeur.SIRET.SIREN": siren
-                    }
+                        "dauphin.demandeur.SIRET.SIREN": siren,
+                    },
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$dauphin._document.dateVersion" }
-                    }
+                        dateVersion: { $toDate: "$dauphin._document.dateVersion" },
+                    },
                 },
                 {
                     $sort: {
@@ -71,13 +71,13 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
             .aggregate([
                 {
                     $match: {
-                        "dauphin.demandeur.SIRET.complet": siret
-                    }
+                        "dauphin.demandeur.SIRET.complet": siret,
+                    },
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$dauphin._document.dateVersion" }
-                    }
+                        dateVersion: { $toDate: "$dauphin._document.dateVersion" },
+                    },
                 },
                 {
                     $sort: {

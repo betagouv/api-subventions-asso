@@ -34,7 +34,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         }
 
         return (await dauhpinGisproRepository.findBySiret(siret)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto)
+            DauphinDtoAdapter.toDemandeSubvention(dto),
         );
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
@@ -49,7 +49,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         }
 
         return (await dauhpinGisproRepository.findBySiren(siren)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto)
+            DauphinDtoAdapter.toDemandeSubvention(dto),
         );
     }
 

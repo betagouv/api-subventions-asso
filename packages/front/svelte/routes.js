@@ -46,7 +46,7 @@ export default {
     },
     "mentions-legales": {
         component: () => LegalNotice,
-        disableAuth: true
+        disableAuth: true,
     },
     cgu: {
         component: () => Cgu,
@@ -54,7 +54,7 @@ export default {
     },
     contact: {
         component: () => Contact,
-        disableAuth: true
+        disableAuth: true,
     },
     "auth/signup": {
         component: () => Signup,
