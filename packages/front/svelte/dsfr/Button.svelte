@@ -17,19 +17,19 @@
     const classBySize = {
         small: "fr-btn--sm",
         medium: "fr-bn--md",
-        large: "fr-bn--lg"
+        large: "fr-bn--lg",
     };
 
     const classByType = {
         primary: "",
         secondary: "fr-btn--secondary",
-        tertiary: ["fr-btn--tertiary", "fr-btn--tertiary-no-outline"]
+        tertiary: ["fr-btn--tertiary", "fr-btn--tertiary-no-outline"],
     };
 
     const classByIcon = {
         right: "fr-btn--icon-right",
         left: "fr-btn--icon-left",
-        default: ""
+        default: "",
     };
 
     function getSpecificSizeClass() {

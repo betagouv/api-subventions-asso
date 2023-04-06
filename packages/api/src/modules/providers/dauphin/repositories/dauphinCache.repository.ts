@@ -8,17 +8,17 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
     async upsert(entity: DauphinSubventionDto) {
         return this.collection.updateOne(
             {
-                reference: entity.reference
+                reference: entity.reference,
             },
             { $set: entity },
-            { upsert: true }
+            { upsert: true },
         );
     }
 
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "demandeur.SIRET.complet": siret
+                "demandeur.SIRET.complet": siret,
             })
             .toArray();
     }
@@ -26,7 +26,7 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "demandeur.SIRET.SIREN": siren
+                "demandeur.SIRET.SIREN": siren,
             })
             .toArray();
     }
@@ -36,22 +36,22 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
             .aggregate([
                 {
                     $match: {
-                        "demandeur.SIRET.SIREN": siren
-                    }
+                        "demandeur.SIRET.SIREN": siren,
+                    },
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$_document.dateVersion" }
-                    }
+                        dateVersion: { $toDate: "$_document.dateVersion" },
+                    },
                 },
                 {
                     $sort: {
-                        dateVersion: -1
-                    }
+                        dateVersion: -1,
+                    },
                 },
                 {
-                    $limit: 1
-                }
+                    $limit: 1,
+                },
             ])
             .toArray();
 
@@ -67,22 +67,22 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
             .aggregate([
                 {
                     $match: {
-                        "demandeur.SIRET.complet": siret
-                    }
+                        "demandeur.SIRET.complet": siret,
+                    },
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$_document.dateVersion" }
-                    }
+                        dateVersion: { $toDate: "$_document.dateVersion" },
+                    },
                 },
                 {
                     $sort: {
-                        dateVersion: -1
-                    }
+                        dateVersion: -1,
+                    },
                 },
                 {
-                    $limit: 1
-                }
+                    $limit: 1,
+                },
             ])
             .toArray();
 

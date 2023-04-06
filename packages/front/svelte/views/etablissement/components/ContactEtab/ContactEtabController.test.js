@@ -4,7 +4,7 @@ import ContactEtabController from "./ContactEtabController";
 jest.mock("../../../../helpers/dataHelper.js", () => ({
     ...jest.requireActual("../../../../helpers/dataHelper.js"),
     valueOrHyphen: jest.fn(v => v),
-    formatPhoneNumber: jest.fn(v => v)
+    formatPhoneNumber: jest.fn(v => v),
 }));
 
 describe("ContactEtabController", () => {
@@ -16,29 +16,29 @@ describe("ContactEtabController", () => {
             prenom: "Jane",
             telephone: "06 01 02 03 04",
             email: "coordination@foo.bar",
-            role: ROLES[1]
+            role: ROLES[1],
         },
         {
             nom: "MARTIN",
             prenom: "François",
             telephone: "06 11 22 33 44",
             email: "contact@foo.bar",
-            role: ROLES[2]
+            role: ROLES[2],
         },
         {
             nom: "DOE",
             prenom: "Jane",
             telephone: "06 01 02 03 04",
             email: "coordination@foo.bar",
-            role: ROLES[1]
+            role: ROLES[1],
         },
         {
             nom: "BLACK",
             prenom: "Jeff",
             telephone: "07 11 22 33 57",
             email: "coordination@foo.bar",
-            role: ROLES[1]
-        }
+            role: ROLES[1],
+        },
     ];
 
     let controller;

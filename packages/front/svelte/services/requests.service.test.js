@@ -73,8 +73,8 @@ describe("RequestService", () => {
             expect(requestsService._errorHooks).toEqual([
                 expect.objectContaining({
                     ErrorClass: NotFoundError,
-                    callback: expected
-                })
+                    callback: expected,
+                }),
             ]);
         });
     });
@@ -107,8 +107,8 @@ describe("RequestService", () => {
                     url: path,
                     method: type,
                     data,
-                    params
-                })
+                    params,
+                }),
             );
         });
     });
@@ -130,9 +130,9 @@ describe("RequestService", () => {
                 response: {
                     data: {
                         message: "",
-                        code: ""
-                    }
-                }
+                        code: "",
+                    },
+                },
             };
 
             expect(() => requestsService._errorCatcher(fakeError)).toThrowError(SomeError);
@@ -143,16 +143,16 @@ describe("RequestService", () => {
                 response: {
                     data: {
                         message: "",
-                        code: ""
-                    }
-                }
+                        code: "",
+                    },
+                },
             };
 
             const callback = jest.fn();
 
             requestsService._errorHooks.push({
                 ErrorClass: SomeError,
-                callback
+                callback,
             });
 
             try {

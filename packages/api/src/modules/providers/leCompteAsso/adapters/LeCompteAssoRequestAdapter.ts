@@ -12,18 +12,18 @@ export default class LeCompteAssoRequestAdapter {
             siren: ProviderValueAdapter.toProviderValues(
                 siretToSiren(entity.legalInformations.siret),
                 LeCompteAssoRequestAdapter.PROVIDER_NAME,
-                dataDate
+                dataDate,
             ),
             rna: ProviderValueAdapter.toProviderValues(
                 entity.legalInformations.rna,
                 LeCompteAssoRequestAdapter.PROVIDER_NAME,
-                dataDate
+                dataDate,
             ) as ProviderValues<Rna>,
             denomination_rna: ProviderValueAdapter.toProviderValues(
                 entity.legalInformations.name,
                 LeCompteAssoRequestAdapter.PROVIDER_NAME,
-                dataDate
-            )
+                dataDate,
+            ),
         };
     }
 
@@ -34,24 +34,24 @@ export default class LeCompteAssoRequestAdapter {
             siret: ProviderValueAdapter.toProviderValues(
                 entity.legalInformations.siret,
                 LeCompteAssoRequestAdapter.PROVIDER_NAME,
-                dataDate
+                dataDate,
             ),
             nic: ProviderValueAdapter.toProviderValues(
                 siretToNIC(entity.legalInformations.siret),
                 LeCompteAssoRequestAdapter.PROVIDER_NAME,
-                dataDate
+                dataDate,
             ),
             contacts: entity.providerInformations.createur_email
                 ? [
                       ProviderValueAdapter.toProviderValues(
                           {
-                              email: entity.providerInformations.createur_email
+                              email: entity.providerInformations.createur_email,
                           },
                           LeCompteAssoRequestAdapter.PROVIDER_NAME,
-                          dataDate
-                      )
+                          dataDate,
+                      ),
                   ]
-                : undefined
+                : undefined,
         };
     }
 }

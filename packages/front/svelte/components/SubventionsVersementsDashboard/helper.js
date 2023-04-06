@@ -23,7 +23,7 @@ const linkVersementsToSubvention = elements =>
             versements: versements,
             siret,
             date: lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastVersementsDate(versements),
-            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastVersementsDate(versements).getFullYear()
+            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastVersementsDate(versements).getFullYear(),
         });
 
         return acc;
@@ -35,12 +35,12 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
 
     const elementsGroupedByVersementKey = [...taggedSubventions, ...taggedVersements].reduce(groupByVersementKey, {
         none: [],
-        withKey: {}
+        withKey: {},
     });
 
     const flattenElements = [
         ...Object.values(elementsGroupedByVersementKey.withKey),
-        ...elementsGroupedByVersementKey.none
+        ...elementsGroupedByVersementKey.none,
     ];
 
     const uniformizedElements = linkVersementsToSubvention(flattenElements);

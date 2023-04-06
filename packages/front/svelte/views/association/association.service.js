@@ -15,7 +15,7 @@ export class AssociationService {
                 rna: association.rna,
                 siren: association.siren,
                 name: association.denomination_rna || association.denomination_siren,
-                objectSocial: association.objet_social || ""
+                objectSocial: association.objet_social || "",
             });
             return association;
         });

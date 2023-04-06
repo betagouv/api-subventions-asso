@@ -31,7 +31,7 @@ describe("LeCompteAssoCliController", () => {
             expect(errorLog).toHaveBeenCalledWith(expect.stringMatching("INVALID SIRET FOR 0"), {
                 name: "Lorem ipsum dolor sit",
                 rna: null,
-                siret: "0"
+                siret: "0",
             });
 
             errorLog.mockClear();
@@ -46,14 +46,14 @@ describe("LeCompteAssoCliController", () => {
             expect(errorLog).toHaveBeenCalledWith(expect.stringMatching("INVALID SIRET FOR 0"), {
                 name: "Lorem ipsum dolor sit",
                 rna: null,
-                siret: "0"
+                siret: "0",
             });
             expect(info.mock.calls).toEqual(
                 expect.arrayContaining([
                     ["\nStart validation file: ", testFilePath],
                     ["Check 1 entities!"],
-                    [expect.stringMatching("Validation done")] // Using stringMatching because console.info is called with color
-                ])
+                    [expect.stringMatching("Validation done")], // Using stringMatching because console.info is called with color
+                ]),
             );
             info.mockClear();
             errorLog.mockClear();
@@ -67,7 +67,7 @@ describe("LeCompteAssoCliController", () => {
             expect(info.mock.calls).toEqual([
                 ["\nStart validation file: ", testFilePath],
                 ["Check 1 entities!"],
-                [expect.stringMatching("Validation done")] // Using stringMatching because console.info is called with color
+                [expect.stringMatching("Validation done")], // Using stringMatching because console.info is called with color
             ]);
 
             info.mockClear();
@@ -102,8 +102,8 @@ describe("LeCompteAssoCliController", () => {
             mock.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
 
             await controller.parse(path.resolve(__dirname, "../../__fixtures__"));
@@ -115,21 +115,23 @@ describe("LeCompteAssoCliController", () => {
                 ["1 entities found in file."],
                 [
                     `All entities is valid !
-Start register in database ...`
+Start register in database ...`,
                 ],
                 [
                     `
             1/1
             1 requests created and 0 requests updated
             0 requests not valid
-        `
+        `,
                 ],
                 ["\nStart parse file: ", testWrongFilePath],
                 ["1 entities found in file."],
-                ["Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE"]
+                [
+                    "Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE",
+                ],
             ]);
             expect(errorLog).toHaveBeenCalledWith(
-                expect.stringMatching("An error occurred while parsing the file " + testWrongFilePath)
+                expect.stringMatching("An error occurred while parsing the file " + testWrongFilePath),
             );
             info.mockClear();
             errorLog.mockClear();
@@ -141,8 +143,8 @@ Start register in database ...`
             mock.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("RNA", "test", new Date()),
-                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date())
-                })
+                    categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
+                }),
             );
 
             await controller.parse(testFilePath);
@@ -154,15 +156,15 @@ Start register in database ...`
                 ["1 entities found in file."],
                 [
                     `All entities is valid !
-Start register in database ...`
+Start register in database ...`,
                 ],
                 [
                     `
             1/1
             1 requests created and 0 requests updated
             0 requests not valid
-        `
-                ]
+        `,
+                ],
             ]);
 
             info.mockClear();

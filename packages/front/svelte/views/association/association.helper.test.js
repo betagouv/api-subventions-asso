@@ -12,7 +12,7 @@ describe("Association Helper", () => {
         it("should return address from SIREN", () => {
             const expected = "51 BD JEANNE D'ARC 35700 RENNES";
             const actual = AssociationHelper.getAddress({
-                adresse_siege_siren: DEFAULT_ASSOCIATION.adresse_siege_siren
+                adresse_siege_siren: DEFAULT_ASSOCIATION.adresse_siege_siren,
             });
             expect(actual).toEqual(expected);
         });
@@ -37,7 +37,7 @@ describe("Association Helper", () => {
         it("should return immatriculation from RNA", () => {
             const expected = DEFAULT_ASSOCIATION.date_creation_rna;
             const actual = AssociationHelper.getImmatriculation({
-                date_creation_rna: DEFAULT_ASSOCIATION.date_creation_rna
+                date_creation_rna: DEFAULT_ASSOCIATION.date_creation_rna,
             });
             expect(actual).toEqual(expected);
         });
@@ -45,7 +45,7 @@ describe("Association Helper", () => {
         it("should return immatriculation from SIREN", () => {
             const expected = DEFAULT_ASSOCIATION.date_creation_siren;
             const actual = AssociationHelper.getImmatriculation({
-                date_creation_siren: DEFAULT_ASSOCIATION.date_creation_siren
+                date_creation_siren: DEFAULT_ASSOCIATION.date_creation_siren,
             });
             expect(actual).toEqual(expected);
         });
@@ -61,7 +61,7 @@ describe("Association Helper", () => {
         it("should return immatriculation from RNA", () => {
             const expected = DEFAULT_ASSOCIATION.date_creation_rna;
             const actual = AssociationHelper.getImmatriculation({
-                date_creation_rna: DEFAULT_ASSOCIATION.date_creation_rna
+                date_creation_rna: DEFAULT_ASSOCIATION.date_creation_rna,
             });
             expect(actual).toEqual(expected);
         });
@@ -69,7 +69,7 @@ describe("Association Helper", () => {
         it("should return immatriculation from SIREN", () => {
             const expected = DEFAULT_ASSOCIATION.date_creation_siren;
             const actual = AssociationHelper.getImmatriculation({
-                date_creation_siren: DEFAULT_ASSOCIATION.date_creation_siren
+                date_creation_siren: DEFAULT_ASSOCIATION.date_creation_siren,
             });
             expect(actual).toEqual(expected);
         });

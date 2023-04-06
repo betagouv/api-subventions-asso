@@ -13,7 +13,7 @@ describe("RouterController", () => {
         const getRouteMock = jest.spyOn(routerService, "getRoute").mockReturnValue({
             disableAuth: true,
             segments: [],
-            component: jest.fn()
+            component: jest.fn(),
         });
         const goToUrlMock = jest.spyOn(routerService, "goToUrl").mockReturnValue(null);
         const getPropsMock = jest.spyOn(routerService, "getProps").mockResolvedValue({});
@@ -68,7 +68,7 @@ describe("RouterController", () => {
             getRouteMock.mockReturnValueOnce({
                 disableAuth: true,
                 segments: [],
-                component: mockedComponent
+                component: mockedComponent,
             });
 
             controller.loadRoute("path", "");
@@ -118,7 +118,7 @@ describe("RouterController", () => {
             const query = "?a=b&c=d";
             const expected = {
                 a: "b",
-                c: "d"
+                c: "d",
             };
 
             const actual = controller.getQueryParams(query);

@@ -15,7 +15,7 @@ describe("SubventiaService", () => {
 
         it("should reject entity (validation fail)", async () => {
             const expected = {
-                message: "I'm a test"
+                message: "I'm a test",
             } as unknown as RejectedRequest;
             validationMock.mockImplementationOnce(() => expected);
 
@@ -28,7 +28,7 @@ describe("SubventiaService", () => {
             validationMock.mockImplementationOnce(() => true);
             repoCreateMock.mockImplementation(jest.fn());
             const expected = {
-                state: "created"
+                state: "created",
             };
             const actual = await subventiaService.createEntity(entity);
 
@@ -43,7 +43,7 @@ describe("SubventiaService", () => {
             const expected = {
                 message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
 
             const actual = subventiaService.validateEntity(entity);
@@ -58,7 +58,7 @@ describe("SubventiaService", () => {
             const expected = {
                 message: `INVALID NAME FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
 
             const actual = subventiaService.validateEntity(entity);
@@ -74,7 +74,7 @@ describe("SubventiaService", () => {
             const expected = {
                 message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
 
             const actual = subventiaService.validateEntity(entity);
@@ -91,7 +91,7 @@ describe("SubventiaService", () => {
             const expected = {
                 message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
 
             const actual = subventiaService.validateEntity(entity);

@@ -12,8 +12,8 @@ export class MonthlyUserCountByYearController {
         const aggregateStats = [
             {
                 message,
-                value: `+ ${data.monthlyData[data.monthlyData.length - 1] - data.lastYearNbUser}`
-            }
+                value: `+ ${data.monthlyData[data.monthlyData.length - 1] - data.lastYearNbUser}`,
+            },
         ];
         return { monthlyData, aggregateStats };
     }

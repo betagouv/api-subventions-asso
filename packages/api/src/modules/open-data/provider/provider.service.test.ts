@@ -9,24 +9,24 @@ jest.mock("../../../../src/modules/providers/index", () => ({
             provider: {
                 name: "serviceA",
                 type: ProviderEnum.raw,
-                description: "descriptionA"
-            }
+                description: "descriptionA",
+            },
         },
         serviceB: {
             provider: {
                 name: "serviceB",
                 type: ProviderEnum.api,
-                description: "descriptionB"
-            }
+                description: "descriptionB",
+            },
         },
         serviceC: {
             provider: {
                 name: "serviceC",
                 type: ProviderEnum.raw,
-                description: "descriptionC"
-            }
-        }
-    }
+                description: "descriptionC",
+            },
+        },
+    },
 }));
 
 import providers from "../../providers/index";
@@ -40,23 +40,23 @@ describe("ProviderService", () => {
                         // @ts-expect-error: mock
                         name: providers.serviceB.provider.name,
                         // @ts-expect-error: mock
-                        description: providers.serviceB.provider.description
-                    }
+                        description: providers.serviceB.provider.description,
+                    },
                 ],
                 [
                     {
                         // @ts-expect-error: mock
                         name: providers.serviceA.provider.name,
                         // @ts-expect-error: mock
-                        description: providers.serviceA.provider.description
+                        description: providers.serviceA.provider.description,
                     },
                     {
                         // @ts-expect-error: mock
                         name: providers.serviceC.provider.name,
                         // @ts-expect-error: mock
-                        description: providers.serviceC.provider.description
-                    }
-                ]
+                        description: providers.serviceC.provider.description,
+                    },
+                ],
             );
             const actual = await providerService.getProvidersInfos();
             expect(actual).toEqual(expected);

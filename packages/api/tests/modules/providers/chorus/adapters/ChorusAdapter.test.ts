@@ -25,10 +25,10 @@ describe("ChorusAdapter", () => {
                 siret: "FAKE",
                 ej: "FAKE",
                 amount: 0,
-                dateOperation: now
+                dateOperation: now,
             },
             {},
-            "" as unknown as ObjectId
+            "" as unknown as ObjectId,
         );
 
         const actual = ChorusAdapter.toVersement(entity as WithId<ChorusLineEntity>);
@@ -44,7 +44,7 @@ describe("ChorusAdapter", () => {
             siret: toPV("FAKE"),
             ej: toPV("FAKE"),
             amount: toPV(0),
-            dateOperation: toPV(now)
+            dateOperation: toPV(now),
         };
 
         expect(actual).toMatchObject(expected);
@@ -63,10 +63,10 @@ describe("ChorusAdapter", () => {
                 siret: "FAKE",
                 ej: "FAKE",
                 amount: 0,
-                dateOperation: now
+                dateOperation: now,
             },
             {},
-            "" as unknown as ObjectId
+            "" as unknown as ObjectId,
         );
 
         const actual = ChorusAdapter.toVersement(entity as WithId<ChorusLineEntity>);
@@ -78,7 +78,7 @@ describe("ChorusAdapter", () => {
             siret: toPV("FAKE"),
             ej: toPV("FAKE"),
             amount: toPV(0),
-            dateOperation: toPV(now)
+            dateOperation: toPV(now),
         };
 
         expect(actual).toMatchObject(expected);

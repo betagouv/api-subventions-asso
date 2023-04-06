@@ -14,7 +14,7 @@ export default class ChorusParser {
                 row
                     .split(";")
                     .map(r => r.split("\t"))
-                    .flat()
+                    .flat(),
             ); // Parse column
 
         const headers = data.splice(0, 7);
@@ -33,11 +33,11 @@ export default class ChorusParser {
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 ChorusLineEntity.indexedInformationsPath,
-                parsedData
+                parsedData,
             ) as unknown as IChorusIndexedInformations;
 
             return entities.concat(
-                new ChorusLineEntity(this.buildUniqueId(indexedInformations), indexedInformations, parsedData)
+                new ChorusLineEntity(this.buildUniqueId(indexedInformations), indexedInformations, parsedData),
             );
         }, [] as ChorusLineEntity[]);
     }
@@ -68,12 +68,12 @@ export default class ChorusParser {
             const parsedData = ParseHelper.linkHeaderToData(header, row);
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 ChorusLineEntity.indexedInformationsPath,
-                parsedData
+                parsedData,
             ) as unknown as IChorusIndexedInformations;
             const entity = new ChorusLineEntity(
                 this.buildUniqueId(indexedInformations),
                 indexedInformations,
-                parsedData
+                parsedData,
             );
 
             if (validator(entity)) {

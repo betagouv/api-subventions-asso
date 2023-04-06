@@ -8,7 +8,7 @@ export function errorHandler(isTest: boolean) {
             console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
             return res.status(400).json({
                 message: "Validation Failed",
-                details: err?.fields
+                details: err?.fields,
             });
         }
         if (err instanceof Error) {
@@ -17,7 +17,7 @@ export function errorHandler(isTest: boolean) {
             const errorCode = err instanceof HttpError ? err.code : undefined;
             return res.status(statusCode).json({
                 message: err.message,
-                code: errorCode
+                code: errorCode,
             });
         }
         next();

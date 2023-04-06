@@ -9,7 +9,7 @@ export default class BodaccAdapter {
 
         return {
             siren: toPVs(dto.records[0].record.fields.registre[1]),
-            bodacc: dto.records.map(record => toPVs(record))
+            bodacc: dto.records.map(record => toPVs(record)),
         } as Association;
     }
 }

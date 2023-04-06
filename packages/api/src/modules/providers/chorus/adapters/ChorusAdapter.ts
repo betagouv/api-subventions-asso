@@ -11,7 +11,7 @@ export default class ChorusAdapter {
             ProviderValueAdapter.toProviderValue(
                 value,
                 ChorusAdapter.PROVIDER_NAME,
-                entity.indexedInformations.dateOperation
+                entity.indexedInformations.dateOperation,
             );
         const toPvOrUndefined = value => (value ? toPv(value) : undefined);
         return {
@@ -30,7 +30,7 @@ export default class ChorusAdapter {
             activitee: toPvOrUndefined(entity.indexedInformations.activitee),
             compte: toPvOrUndefined(entity.indexedInformations.compte),
             type: toPvOrUndefined(entity.indexedInformations.typeOperation),
-            bop: toPv(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4))
+            bop: toPv(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4)),
         };
     }
 }

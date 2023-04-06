@@ -9,7 +9,7 @@ module.exports = {
         await connectDB();
         const collection = db.collection("association-name");
         const cursor = collection.find({
-            provider: "API SIRENE données ouvertes + API Répertoire des Associations (RNA)"
+            provider: "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
         });
 
         while (await cursor.hasNext()) {
@@ -29,5 +29,5 @@ module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // NOT IMPLEMENTED
-    }
+    },
 };

@@ -7,7 +7,7 @@ import * as ApiConf from "./../../../configurations/apis.conf";
 
 jest.mock("./../../../configurations/apis.conf", () => ({
     DAUPHIN_USERNAME: "DAUPHIN_USERNAME",
-    DAUPHIN_PASSWORD: "DAUPHIN_PASSWORD"
+    DAUPHIN_PASSWORD: "DAUPHIN_PASSWORD",
 }));
 
 describe("Dauphin Service", () => {
@@ -15,7 +15,7 @@ describe("Dauphin Service", () => {
     describe("getDemandeSubventionBySiret", () => {
         const getLastUpdateMock: jest.SpyInstance<unknown> = jest.spyOn(
             dauhpinCachesRepository,
-            "getLastUpdateBySiren"
+            "getLastUpdateBySiren",
         );
         const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "findBySiret");
         const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "upsert");
@@ -24,7 +24,7 @@ describe("Dauphin Service", () => {
         const getDauphinSubventionsMock: jest.SpyInstance<unknown> = jest.spyOn(
             dauphinService,
             // @ts-expect-error getDauphinSubventions is private methode
-            "getDauphinSubventions"
+            "getDauphinSubventions",
         );
 
         const toDemandeSubventionMock: jest.SpyInstance<unknown> = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
@@ -93,7 +93,7 @@ describe("Dauphin Service", () => {
     describe("getDemandeSubventionBySiren", () => {
         const getLastUpdateMock: jest.SpyInstance<unknown> = jest.spyOn(
             dauhpinCachesRepository,
-            "getLastUpdateBySiren"
+            "getLastUpdateBySiren",
         );
         const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "findBySiren");
         const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "upsert");
@@ -102,7 +102,7 @@ describe("Dauphin Service", () => {
         const getDauphinSubventionsMock: jest.SpyInstance<unknown> = jest.spyOn(
             dauphinService,
             // @ts-expect-error getDauphinSubventions is private methode
-            "getDauphinSubventions"
+            "getDauphinSubventions",
         );
 
         const toDemandeSubventionMock: jest.SpyInstance<unknown> = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
@@ -190,9 +190,9 @@ describe("Dauphin Service", () => {
             axiosPostMock.mockImplementationOnce(async () => ({
                 data: {
                     hits: {
-                        hits: expected.map(data => ({ _source: data }))
-                    }
-                }
+                        hits: expected.map(data => ({ _source: data })),
+                    },
+                },
             }));
 
             // @ts-expect-error getDauphinSubventions is private
@@ -207,9 +207,9 @@ describe("Dauphin Service", () => {
             axiosPostMock.mockImplementationOnce(async () => ({
                 data: {
                     hits: {
-                        hits: []
-                    }
-                }
+                        hits: [],
+                    },
+                },
             }));
 
             // @ts-expect-error getDauphinSubventions is private
@@ -224,9 +224,9 @@ describe("Dauphin Service", () => {
             axiosPostMock.mockImplementationOnce(async () => ({
                 data: {
                     hits: {
-                        hits: []
-                    }
-                }
+                        hits: [],
+                    },
+                },
             }));
 
             // @ts-expect-error getDauphinSubventions is private
@@ -244,7 +244,7 @@ describe("Dauphin Service", () => {
 
         it("should send siren and date", () => {
             const dateString = new Date("1970-01-01").toLocaleString("en-US", {
-                timeZone: "Europe/Paris"
+                timeZone: "Europe/Paris",
             });
 
             // @ts-expect-error buildSearchQuery is private
@@ -276,11 +276,11 @@ describe("Dauphin Service", () => {
     describe("formatDateToDauphinDate", () => {
         it("should format date", () => {
             const dateString = new Date("1970-01-01").toLocaleString("en-US", {
-                timeZone: "Europe/Paris"
+                timeZone: "Europe/Paris",
             });
             // @ts-expect-error formatDateToDauphinDate is private
             expect(dauphinService.formatDateToDauphinDate(new Date(dateString))).toEqual(
-                "1970\\-01\\-01T01\\:00\\:00.000Z"
+                "1970\\-01\\-01T01\\:00\\:00.000Z",
             );
         });
     });
@@ -289,7 +289,7 @@ describe("Dauphin Service", () => {
         const getDauphinTokenMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsService, "getDauphinToken");
         const getDauphinTokenAvailableTimeMock: jest.SpyInstance<unknown> = jest.spyOn(
             configurationsService,
-            "getDauphinTokenAvailableTime"
+            "getDauphinTokenAvailableTime",
         );
         const setDauphinTokenMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsService, "setDauphinToken");
         // @ts-expect-error sendAuthRequest is private
@@ -298,10 +298,10 @@ describe("Dauphin Service", () => {
         it("should return cached token", async () => {
             getDauphinTokenMock.mockImplementationOnce(() => ({
                 updatedAt: new Date(),
-                data: TOKEN
+                data: TOKEN,
             }));
             getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
-                data: Infinity
+                data: Infinity,
             }));
 
             // @ts-expect-error getAuthToken is private
@@ -313,10 +313,10 @@ describe("Dauphin Service", () => {
         it("should return new token", async () => {
             getDauphinTokenMock.mockImplementationOnce(() => ({
                 updatedAt: new Date(),
-                data: "WRONG_TOKEN"
+                data: "WRONG_TOKEN",
             }));
             getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
-                data: -Infinity
+                data: -Infinity,
             }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
@@ -329,7 +329,7 @@ describe("Dauphin Service", () => {
         it("should return new token because no old token", async () => {
             getDauphinTokenMock.mockImplementationOnce(() => null);
             getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
-                data: -Infinity
+                data: -Infinity,
             }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);
@@ -342,10 +342,10 @@ describe("Dauphin Service", () => {
         it("should save the new token", async () => {
             getDauphinTokenMock.mockImplementationOnce(() => ({
                 updatedAt: new Date(),
-                data: "WRONG_TOKEN"
+                data: "WRONG_TOKEN",
             }));
             getDauphinTokenAvailableTimeMock.mockImplementationOnce(() => ({
-                data: -Infinity
+                data: -Infinity,
             }));
             sendAuthRequestMock.mockImplementationOnce(() => TOKEN);
             setDauphinTokenMock.mockImplementationOnce(() => null);

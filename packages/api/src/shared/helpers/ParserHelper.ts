@@ -36,7 +36,7 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
 
 export function indexDataByPathObject(
     pathObject: DefaultObject<ParserPath | ParserInfo>,
-    data: DefaultObject<unknown>
+    data: DefaultObject<unknown>,
 ) {
     return Object.keys(pathObject).reduce((acc, key: string) => {
         const tempAcc = acc as { [key: string]: string };
@@ -85,11 +85,11 @@ export function xlsParseWithPageName(content: Buffer) {
         raw: true,
         rawNumbers: true,
         cellNF: true,
-        dateNF: "165"
+        dateNF: "165",
     });
     return xls.map(xlsPage => ({
         data: xlsPage.data.filter(row => (row as unknown[]).length),
-        name: xlsPage.name
+        name: xlsPage.name,
     }));
 }
 

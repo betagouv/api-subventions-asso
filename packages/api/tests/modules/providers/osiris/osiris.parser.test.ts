@@ -23,13 +23,13 @@ describe("OsirisParser", () => {
                 legalInformations: {
                     siret: "0",
                     rna: "W0000000",
-                    name: "Lorem ipsum dolor sit amet,"
+                    name: "Lorem ipsum dolor sit amet,",
                 },
                 provider: "Osiris",
                 providerInformations: {
                     osirisId: "DD00-00-0000",
-                    compteAssoId: "21-000000"
-                }
+                    compteAssoId: "21-000000",
+                },
             });
         });
     });
@@ -49,8 +49,8 @@ describe("OsirisParser", () => {
             expect(actions[0]).toMatchObject({
                 indexedInformations: {
                     osirisActionId: "DD00-21-0000-1",
-                    compteAssoId: "21-000000"
-                }
+                    compteAssoId: "21-000000",
+                },
             });
         });
     });
@@ -70,7 +70,7 @@ describe("OsirisParser", () => {
                 osirisActionId: "DD00-21-0000-1",
                 siret: "0",
                 evaluation_resultat: "Lorem ipsum dolor sit amet,",
-                cout_total_realise: 3600
+                cout_total_realise: 3600,
             };
             expect(actual).toMatchObject(expected);
         });

@@ -51,7 +51,7 @@ export default class FonjepCliController extends CliController {
         subventionRejected.forEach(result => {
             logs.push(
                 `\n\nThis subvention is not registered because: ${result.message} \n`,
-                JSON.stringify(result.data, null, "\t")
+                JSON.stringify(result.data, null, "\t"),
             );
         });
 
@@ -79,7 +79,7 @@ export default class FonjepCliController extends CliController {
         versementRejected.forEach(result => {
             logs.push(
                 `\n\nThis versement is not registered because: ${result.message} \n`,
-                JSON.stringify(result.data, null, "\t")
+                JSON.stringify(result.data, null, "\t"),
             );
         });
     }

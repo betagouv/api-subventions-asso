@@ -8,12 +8,12 @@ describe("Bodacc Adapter", () => {
     const RECORD = {
         record: {
             fields: {
-                registre: ["", SIREN]
-            }
-        }
+                registre: ["", SIREN],
+            },
+        },
     };
     const BODACC_DTO = {
-        records: [RECORD]
+        records: [RECORD],
     } as BodaccDto;
 
     describe("toAssociation", () => {

@@ -8,7 +8,7 @@ const DEFAULT_ERROR_CODE = 49;
 jest.mock("@api-subventions-asso/dto", () => ({
     SignupErrorCodes: { CREATION_ERROR: DEFAULT_ERROR_CODE },
     ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
-    __esModule: true // this property makes it work
+    __esModule: true, // this property makes it work
 }));
 
 describe("AuthPort", () => {

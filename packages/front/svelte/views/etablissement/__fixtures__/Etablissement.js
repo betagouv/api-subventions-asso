@@ -6,5 +6,5 @@ export default {
     siege: "true",
     ouvert: "true",
     adresse: Association.adresse_siege_rna,
-    headcount: 40
+    headcount: 40,
 };

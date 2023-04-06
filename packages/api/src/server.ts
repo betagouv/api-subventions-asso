@@ -22,7 +22,7 @@ async function factoryEndMiddleware(
     req: IdentifiedRequest,
     res: Response,
     next: NextFunction,
-    middleware: (req: IdentifiedRequest, res: Response) => void
+    middleware: (req: IdentifiedRequest, res: Response) => void,
 ) {
     res.on("finish", () => middleware(req, res));
     next();
@@ -34,8 +34,8 @@ export async function startServer(port = "8080", isTest = false) {
 
     app.use(
         cors({
-            origin: "*"
-        })
+            origin: "*",
+        }),
     );
 
     if (!isTest) app.use(expressLogger());
@@ -51,8 +51,8 @@ export async function startServer(port = "8080", isTest = false) {
     StatsSearchRoutesRegex.forEach(route => app.use(route, StatsSearchMiddleware));
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>
-            factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware)
-        )
+            factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware),
+        ),
     );
 
     RegisterRoutes(app); // TSOA Part

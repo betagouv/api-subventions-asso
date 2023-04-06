@@ -7,7 +7,7 @@ describe("StructureTitleController", () => {
         siren: "100000000",
         denomination_rna: "nom_rna",
         denomination_siren: "nom_siren",
-        nic_siege: "00000"
+        nic_siege: "00000",
     };
     const ETAB_SIRET = "10000000000000";
     const controllerAsso = new StructureTitleController(ASSO);

@@ -39,7 +39,7 @@ async function main() {
         ConsumerCliController,
         DemarchesSimplifieesCliController,
         CaisseDepotsCliController,
-        GisproCliController
+        GisproCliController,
     ];
 
     const args = process.argv.slice(2);

@@ -10,19 +10,19 @@ export default class EtablissementDtoAdapter {
             siret: ProviderValueAdapter.toProviderValues(
                 dto.siret,
                 EtablissementDtoAdapter.PROVIDER_NAME,
-                new Date(dto.updated_at)
+                new Date(dto.updated_at),
             ),
             siege: dto.unite_legale
                 ? ProviderValueAdapter.toProviderValues(
                       dto.unite_legale.nic_siege === dto.nic,
                       EtablissementDtoAdapter.PROVIDER_NAME,
-                      new Date(dto.updated_at)
+                      new Date(dto.updated_at),
                   )
                 : undefined,
             nic: ProviderValueAdapter.toProviderValues(
                 dto.nic,
                 EtablissementDtoAdapter.PROVIDER_NAME,
-                new Date(dto.updated_at)
+                new Date(dto.updated_at),
             ),
             adresse: ProviderValueAdapter.toProviderValues(
                 {
@@ -30,18 +30,18 @@ export default class EtablissementDtoAdapter {
                     type_voie: dto.type_voie,
                     voie: dto.libelle_voie,
                     code_postal: dto.code_postal,
-                    commune: dto.libelle_commune
+                    commune: dto.libelle_commune,
                 },
                 EtablissementDtoAdapter.PROVIDER_NAME,
-                new Date(dto.updated_at)
+                new Date(dto.updated_at),
             ),
             ouvert: dto.etat_administratif
                 ? ProviderValueAdapter.toProviderValues(
                       dto.etat_administratif !== "F",
                       EtablissementDtoAdapter.PROVIDER_NAME,
-                      new Date(dto.updated_at)
+                      new Date(dto.updated_at),
                   )
-                : undefined
+                : undefined,
         };
     }
 }

@@ -17,9 +17,9 @@ describe("VersementTableController", () => {
                 jest.fn(() => ({
                     totalAmount: undefined,
                     centreFinancier: undefined,
-                    lastVersementDate: undefined
-                }))
-            )
+                    lastVersementDate: undefined,
+                })),
+            ),
         );
 
         afterAll(() => mockToVersement.mockRestore());

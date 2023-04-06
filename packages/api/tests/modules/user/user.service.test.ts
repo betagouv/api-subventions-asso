@@ -24,7 +24,7 @@ describe("user.service.ts", () => {
 
         it("should be return user", async () => {
             await expect(service.findByEmail("test@beta.gouv.fr")).resolves.toMatchObject({
-                email: "test@beta.gouv.fr"
+                email: "test@beta.gouv.fr",
             });
         });
         it("should be return null", async () => {
@@ -36,7 +36,7 @@ describe("user.service.ts", () => {
         it("should reject because email is not valid", async () => {
             await expect(service.createUser("test[at]beta.gouv.fr")).rejects.toMatchObject({
                 message: "Email is not valid",
-                code: UserServiceErrors.CREATE_INVALID_EMAIL
+                code: UserServiceErrors.CREATE_INVALID_EMAIL,
             });
         });
         it("should reject because user already exist", async () => {
@@ -44,7 +44,7 @@ describe("user.service.ts", () => {
             const test = async () => await service.createUser("test@beta.gouv.fr");
             await expect(test).rejects.toMatchObject({
                 message: "User is already exist",
-                code: UserServiceErrors.CREATE_USER_ALREADY_EXIST
+                code: UserServiceErrors.CREATE_USER_ALREADY_EXIST,
             });
         });
 
@@ -52,7 +52,7 @@ describe("user.service.ts", () => {
             await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
                 email: "test@beta.gouv.fr",
                 active: false,
-                roles: ["user"]
+                roles: ["user"],
             });
         });
     });
@@ -112,14 +112,14 @@ describe("user.service.ts", () => {
 
         it("should update user (called with email)", async () => {
             await expect(service.addRolesToUser("test@beta.gouv.fr", [RoleEnum.admin])).resolves.toMatchObject({
-                user: { roles: ["user", "admin"] }
+                user: { roles: ["user", "admin"] },
             });
         });
 
         it("should update user (called with user)", async () => {
             const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
             await expect(service.addRolesToUser(user, [RoleEnum.admin])).resolves.toMatchObject({
-                user: { roles: ["user", "admin"] }
+                user: { roles: ["user", "admin"] },
             });
         });
     });
@@ -136,7 +136,7 @@ describe("user.service.ts", () => {
 
         it("should update user (called with email)", async () => {
             const expected = {
-                user: { active: true }
+                user: { active: true },
             };
             const actual = await service.activeUser("test@beta.gouv.fr");
             expect(actual).toMatchObject(expected);
@@ -175,19 +175,19 @@ describe("user.service.ts", () => {
         it("should reject because resetToken not found", async () => {
             await expect(service.resetPassword("", "FAKE_TOKEN")).rejects.toMatchObject({
                 message: "Reset token not found",
-                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND
+                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
             });
         });
 
         it("should reject because resetToken has expired", async () => {
             await userResetRepository.removeAllByUserId(userId);
             await userResetRepository.create(
-                new UserReset(userId, "token", new Date(Date.now() - 1000 * 60 * 60 * 24 * 11))
+                new UserReset(userId, "token", new Date(Date.now() - 1000 * 60 * 60 * 24 * 11)),
             );
 
             await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
                 message: "Reset token has expired, please retry forget password",
-                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED
+                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
             });
         });
 
@@ -197,7 +197,7 @@ describe("user.service.ts", () => {
 
             await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
                 message: "User not found",
-                code: ResetPasswordErrorCodes.USER_NOT_FOUND
+                code: ResetPasswordErrorCodes.USER_NOT_FOUND,
             });
         });
 
@@ -209,14 +209,14 @@ describe("user.service.ts", () => {
                     At least one uppercase character [A-Z]
                     At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
                     At least 8 characters in length, but no more than 32.`,
-                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID
+                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
             });
         });
 
         it("should change password", async () => {
             await expect(service.resetPassword("newPass;word789", "token")).resolves.toMatchObject({
                 email: "test@beta.gouv.fr",
-                active: true
+                active: true,
             });
         });
 
@@ -237,7 +237,7 @@ describe("user.service.ts", () => {
         it("should reject because user email not found", async () => {
             await expect(service.forgetPassword("wrong@email.fr")).rejects.toMatchObject({
                 message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND
+                code: UserServiceErrors.USER_NOT_FOUND,
             });
         });
 
@@ -286,8 +286,8 @@ describe("user.service.ts", () => {
         it("should reject because length is to big in password", () => {
             expect(
                 service.passwordValidator(
-                    "Aa1;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                )
+                    "Aa1;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                ),
             ).toBe(false);
         });
 

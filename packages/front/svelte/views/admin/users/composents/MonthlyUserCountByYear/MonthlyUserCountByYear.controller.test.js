@@ -6,7 +6,7 @@ describe("MonthlyUserCountByYearController", () => {
         const spyService = jest.spyOn(statsService, "getMonthlyUserCount");
         const DATA = {
             monthlyData: [23, 24],
-            lastYearNbUser: 1
+            lastYearNbUser: 1,
         };
         const CURR_YEAR = new Date().getFullYear();
         const YEAR = CURR_YEAR - 1;
@@ -40,7 +40,7 @@ describe("MonthlyUserCountByYearController", () => {
             async ({ year, propertyName, expected }) => {
                 const actual = (await ctrl.loadData(year)).aggregateStats[0][propertyName];
                 expect(actual).toBe(expected);
-            }
+            },
         );
     });
 });

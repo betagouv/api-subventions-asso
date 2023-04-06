@@ -2,7 +2,7 @@ import {
     CreateUserDtoResponse,
     GetRolesDtoResponse,
     UserDtoResponse,
-    UserListDtoResponse
+    UserListDtoResponse,
 } from "@api-subventions-asso/dto";
 import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
@@ -86,7 +86,7 @@ export class UserController extends Controller {
     @Response<HttpErrorInterface>(400, "Bad Request")
     public async changePassword(
         @Request() req: IdentifiedRequest,
-        @Body() body: { password: string }
+        @Body() body: { password: string },
     ): Promise<UserDtoResponse> {
         return await userService.updatePassword(req.user, body.password);
     }

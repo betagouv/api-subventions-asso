@@ -39,17 +39,17 @@ describe("sendinblue.provider", () => {
                 bcc: [
                     {
                         email: "log@datasubvention.beta.gouv.fr",
-                        name: "Data.Subvention Log"
-                    }
+                        name: "Data.Subvention Log",
+                    },
                 ],
-                to: [{ email: EMAIL }]
+                to: [{ email: EMAIL }],
             };
             await provider.sendMail(EMAIL, PARAMS, TEMPLATE_ID);
 
             expect(spySendTransacEmail).toHaveBeenCalledWith(expected, {
                 headers: {
-                    "content-type": "application/json"
-                }
+                    "content-type": "application/json",
+                },
             });
         });
     });

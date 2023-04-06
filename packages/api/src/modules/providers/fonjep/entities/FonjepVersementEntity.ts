@@ -10,8 +10,8 @@ export default class FonjepVersementEntity {
             adapter: value => {
                 if (!value) return value;
                 return value.replace(/ /g, "");
-            }
-        }
+            },
+        },
     };
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
@@ -23,24 +23,24 @@ export default class FonjepVersementEntity {
             adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
-            }
+            },
         },
         periode_fin: {
             path: ["PeriodeFin"],
             adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
-            }
+            },
         },
         date_versement: {
             path: ["DateVersement"],
             adapter: value => {
                 if (!value) return value;
                 return ParseHelper.ExcelDateToJSDate(Number(value));
-            }
+            },
         },
         montant_a_payer: ["MontantAPayer"],
-        montant_paye: ["MontantPaye"]
+        montant_paye: ["MontantPaye"],
     };
 
     constructor(
@@ -48,6 +48,6 @@ export default class FonjepVersementEntity {
             siret: Siret;
         },
         public indexedInformations: IFonjepVersementIndexedInformations,
-        public data: unknown
+        public data: unknown,
     ) {}
 }

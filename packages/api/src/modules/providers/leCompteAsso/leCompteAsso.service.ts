@@ -26,7 +26,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         name: "Le Compte Asso",
         type: ProviderEnum.api,
         description:
-            "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET."
+            "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET.",
     };
 
     constructor() {
@@ -37,21 +37,21 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         if (!isSiret(partialEntity.legalInformations.siret)) {
             return {
                 message: `INVALID SIRET FOR ${partialEntity.legalInformations.siret}`,
-                data: partialEntity.legalInformations
+                data: partialEntity.legalInformations,
             };
         }
 
         if (!isAssociationName(partialEntity.legalInformations.name)) {
             return {
                 message: `INVALID NAME FOR ${partialEntity.legalInformations.name}`,
-                data: partialEntity.legalInformations
+                data: partialEntity.legalInformations,
             };
         }
 
         if (!isCompteAssoId(partialEntity.providerInformations.compteAssoId)) {
             return {
                 message: `INVALID COMPTE ASSO ID FOR ${partialEntity.legalInformations.name}`,
-                data: partialEntity.providerInformations
+                data: partialEntity.providerInformations,
             };
         }
 
@@ -59,17 +59,17 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
     }
 
     public async addRequest(
-        partialEntity: ILeCompteAssoPartialRequestEntity
+        partialEntity: ILeCompteAssoPartialRequestEntity,
     ): Promise<{ state: string; result: LeCompteAssoRequestEntity } | RejectedRequest> {
         const existingEntity = await leCompteAssoRepository.findByCompteAssoId(
-            partialEntity.providerInformations.compteAssoId
+            partialEntity.providerInformations.compteAssoId,
         );
 
         if (existingEntity) {
             const legalInformations: ILegalInformations = {
                 ...existingEntity.legalInformations,
                 ...partialEntity.legalInformations,
-                rna: existingEntity.legalInformations.rna
+                rna: existingEntity.legalInformations.rna,
             };
 
             return {
@@ -78,16 +78,16 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                     new LeCompteAssoRequestEntity(
                         legalInformations,
                         partialEntity.providerInformations,
-                        partialEntity.data
-                    )
-                )
+                        partialEntity.data,
+                    ),
+                ),
             };
         }
 
         // Rna is not exported in CompteAsso so we search in api
         const rna = await rnaSirenService.getRna(partialEntity.legalInformations.siret, true);
         const asso = await dataEntrepriseService.findAssociationBySiren(
-            siretToSiren(partialEntity.legalInformations.siret)
+            siretToSiren(partialEntity.legalInformations.siret),
         );
 
         if (!rna || !asso || !asso.categorie_juridique?.length) {
@@ -96,8 +96,8 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                 result: {
                     message: "RNA not found",
                     code: 11,
-                    data: partialEntity.legalInformations
-                }
+                    data: partialEntity.legalInformations,
+                },
             };
         }
 
@@ -108,15 +108,15 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                     message: "The company is not in legal cateries accepted",
                     code: 10,
                     data: {
-                        ...partialEntity.legalInformations
-                    }
-                }
+                        ...partialEntity.legalInformations,
+                    },
+                },
             };
         }
 
         const legalInformations: ILegalInformations = {
             ...partialEntity.legalInformations,
-            rna
+            rna,
         };
 
         const siret = legalInformations.siret;
@@ -127,7 +127,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
                 siren,
                 name: legalInformations.name,
                 provider: this.provider.name,
-                lastUpdate: partialEntity.providerInformations.transmis_le
+                lastUpdate: partialEntity.providerInformations.transmis_le,
             });
             EventManager.call("rna-siren.matching", [{ rna: legalInformations.rna, siren }]);
         }
@@ -135,12 +135,12 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         const entity = new LeCompteAssoRequestEntity(
             legalInformations,
             partialEntity.providerInformations,
-            partialEntity.data
+            partialEntity.data,
         );
         await leCompteAssoRepository.addRequest(entity);
         return {
             state: "created",
-            result: entity
+            result: entity,
         };
     }
 

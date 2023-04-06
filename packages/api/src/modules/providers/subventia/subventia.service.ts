@@ -2,7 +2,7 @@ import { isAssociationName, isNumbersValid, isSiret, isStringsValid } from "../.
 import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
 
 export enum SUBVENTIA_SERVICE_ERROR {
-    INVALID_ENTITY = 1
+    INVALID_ENTITY = 1,
 }
 
 export interface RejectedRequest {
@@ -21,7 +21,7 @@ export class SubventiaService {
             return {
                 message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
         }
 
@@ -29,21 +29,21 @@ export class SubventiaService {
             return {
                 message: `INVALID NAME FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
         }
 
         const strings = [
             entity.indexedInformations.status,
             entity.indexedInformations.description,
-            entity.indexedInformations.financeurs
+            entity.indexedInformations.financeurs,
         ];
 
         if (!isStringsValid(strings)) {
             return {
                 message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
         }
 
@@ -53,7 +53,7 @@ export class SubventiaService {
             return {
                 message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY
+                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
             };
         }
 
@@ -66,7 +66,7 @@ export class SubventiaService {
         if (valid !== true) return valid;
 
         return {
-            state: "created"
+            state: "created",
         };
     }
 }

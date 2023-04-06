@@ -40,7 +40,7 @@ describe("SubventiaCliController", () => {
             await _parse("FILE");
 
             expect(logMock).toHaveBeenCalledWith(
-                `\n\n--------------------------------\nFILE\n--------------------------------\n\n`
+                `\n\n--------------------------------\nFILE\n--------------------------------\n\n`,
             );
             expect(logICMock).toHaveBeenCalledWith("\nStart parse file: ", "FILE");
         });
@@ -88,8 +88,8 @@ describe("SubventiaCliController", () => {
 
             expect(logMock.mock.calls).toEqual(
                 expect.arrayContaining([
-                    expect.arrayContaining([`\n\nThis request is not registered because: ${expected}\n`])
-                ])
+                    expect.arrayContaining([`\n\nThis request is not registered because: ${expected}\n`]),
+                ]),
             );
         });
     });

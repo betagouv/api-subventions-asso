@@ -18,31 +18,31 @@ import Contact from "./views/Contact.svelte";
 export default {
     "/404": {
         component: () => NotFound,
-        disableAuth: true
+        disableAuth: true,
     },
     "association/:id": {
-        component: () => Association
+        component: () => Association,
     },
     "etablissement/:id": {
-        component: () => Etablissement
+        component: () => Etablissement,
     },
     "admin/users/list": {
-        component: () => AdminUsersAccount
+        component: () => AdminUsersAccount,
     },
     "admin/users/create": {
-        component: () => AdminUsersCreate
+        component: () => AdminUsersCreate,
     },
     "admin/users/metrics": {
-        component: () => AdminUsersMetrics
+        component: () => AdminUsersMetrics,
     },
     "admin/stats": {
-        component: () => AdminStats
+        component: () => AdminStats,
     },
     admin: {
-        component: () => Admin
+        component: () => Admin,
     },
     "/": {
-        component: () => Home
+        component: () => Home,
     },
     "mentions-legales": {
         component: () => LegalNotice,
@@ -50,7 +50,7 @@ export default {
     },
     cgu: {
         component: () => Cgu,
-        disableAuth: true
+        disableAuth: true,
     },
     contact: {
         component: () => Contact,
@@ -58,18 +58,18 @@ export default {
     },
     "auth/signup": {
         component: () => Signup,
-        disableAuth: true
+        disableAuth: true,
     },
     "auth/login": {
         component: () => Login,
-        disableAuth: true
+        disableAuth: true,
     },
     "auth/reset-password/:token": {
         component: () => ResetPwd,
-        disableAuth: true
+        disableAuth: true,
     },
     "auth/forget-password": {
         component: () => ForgetPwd,
-        disableAuth: true
-    }
+        disableAuth: true,
+    },
 };

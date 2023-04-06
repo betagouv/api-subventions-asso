@@ -16,10 +16,10 @@ export const expressLogger = () =>
                 options: {
                     useNewUrlParser: true,
                     poolSize: 2,
-                    autoReconnect: true
+                    autoReconnect: true,
                 },
-                metaKey: "meta"
-            })
+                metaKey: "meta",
+            }),
         ],
         meta: true,
         msg: "Request: HTTP {{req.method}} {{req.url}}; ipAddress {{req.connection.remoteAddress}}",
@@ -32,7 +32,7 @@ export const expressLogger = () =>
             "body",
             "user",
             "connection",
-            "headers"
+            "headers",
         ],
         responseWhitelist: ["statusCode"],
         ignoreRoute: req => {
@@ -48,5 +48,5 @@ export const expressLogger = () =>
                 });
             }
             return LOGGER_SECRET_FIELDS.includes(propName) ? "**********" : req[propName];
-        }
+        },
     });

@@ -6,7 +6,7 @@ import Store from "../../core/Store";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
-    etablissement: "cet établissement"
+    etablissement: "cet établissement",
 };
 
 export class DocumentsController {
@@ -29,14 +29,14 @@ export class DocumentsController {
     get getterByType() {
         return {
             etablissement: this.getEtablissementDocuments,
-            association: this.getAssociationDocuments
+            association: this.getAssociationDocuments,
         };
     }
 
     async getAssociationDocuments(association) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
         return associationDocuments.filter(
-            doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association)
+            doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association),
         );
     }
 

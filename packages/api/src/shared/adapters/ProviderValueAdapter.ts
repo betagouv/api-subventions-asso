@@ -20,7 +20,7 @@ export default class ProviderValueAdapter {
             value,
             provider,
             last_update: updated_at,
-            type: typeof value
+            type: typeof value,
         };
     }
 
@@ -30,8 +30,8 @@ export default class ProviderValueAdapter {
                 value,
                 provider,
                 last_update: updated_at,
-                type: typeof value
-            }
+                type: typeof value,
+            },
         ];
     }
 }

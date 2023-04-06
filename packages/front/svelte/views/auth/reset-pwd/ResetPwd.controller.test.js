@@ -9,9 +9,9 @@ jest.mock("@api-subventions-asso/dto", () => ({
         RESET_TOKEN_EXPIRED: 2,
         USER_NOT_FOUND: 3,
         PASSWORD_FORMAT_INVALID: 4,
-        INTERNAL_ERROR: 5
+        INTERNAL_ERROR: 5,
     },
-    __esModule: true // this property makes it work
+    __esModule: true, // this property makes it work
 }));
 
 describe("ResetPwdController", () => {
@@ -45,7 +45,7 @@ describe("ResetPwdController", () => {
             "gets active query param",
             // TODO
             // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-            ({ queryParam, expected }) => {}
+            ({ queryParam, expected }) => {},
         );
 
         // TODO

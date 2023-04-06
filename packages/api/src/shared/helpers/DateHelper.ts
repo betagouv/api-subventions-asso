@@ -23,11 +23,11 @@ export const frenchToEnglishMonthsMap = {
     SEPTEMBRE: "september",
     OCTOBRE: "october",
     NOVEMBRE: "november",
-    DECEMBRE: "december"
+    DECEMBRE: "december",
 };
 
 export const englishMonthNames = Object.values(frenchToEnglishMonthsMap).map(monthLowercase =>
-    capitalizeFirstLetter(monthLowercase)
+    capitalizeFirstLetter(monthLowercase),
 );
 
 export const getMonthFromFrenchStr = (month: string) => {

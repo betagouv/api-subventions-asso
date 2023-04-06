@@ -12,13 +12,13 @@ describe("FonjepParser", () => {
         [
             ["foo", "bar"],
             ["foo1", "bar1"],
-            ["foo2", "bar2"]
+            ["foo2", "bar2"],
         ],
         [
             ["foo", "baz"],
             ["foo1", "baz1"],
-            ["foo2", "baz2"]
-        ]
+            ["foo2", "baz2"],
+        ],
     ];
 
     // @ts-expect-error: mock
@@ -31,12 +31,12 @@ describe("FonjepParser", () => {
             const expected = [
                 [
                     { foo: "foo1", bar: "bar1" },
-                    { foo: "foo2", bar: "bar2" }
+                    { foo: "foo2", bar: "bar2" },
                 ],
                 [
                     { foo: "foo1", baz: "baz1" },
-                    { foo: "foo2", baz: "baz2" }
-                ]
+                    { foo: "foo2", baz: "baz2" },
+                ],
             ];
             // @ts-expect-error: test private method
             const actual = FonjepParser.mapHeaderToData(PAGES);
@@ -92,11 +92,11 @@ describe("FonjepParser", () => {
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
                 FonjepSubventionEntity.indexedProviderInformationsPath,
-                {}
+                {},
             );
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
                 FonjepSubventionEntity.indexedLegalInformationsPath,
-                {}
+                {},
             );
         });
         it("should create a FonjepSubventionEntity", () => {
@@ -123,11 +123,11 @@ describe("FonjepParser", () => {
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
                 FonjepVersementEntity.indexedProviderInformationsPath,
-                {}
+                {},
             );
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
                 FonjepVersementEntity.indexedLegalInformationsPath,
-                {}
+                {},
             );
         });
 

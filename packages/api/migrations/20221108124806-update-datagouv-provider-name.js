@@ -12,9 +12,9 @@ module.exports = {
 
         await collection.updateMany(
             {
-                provider: "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)"
+                provider: "Base Sirene des entreprises et de leurs établissements (data.gouv.fr)",
             },
-            { $set: { provider: dataGouvService.provider.name } }
+            { $set: { provider: dataGouvService.provider.name } },
         );
     },
 
@@ -23,5 +23,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

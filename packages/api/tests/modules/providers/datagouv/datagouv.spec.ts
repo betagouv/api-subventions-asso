@@ -11,7 +11,7 @@ describe("datagouv", () => {
         it("should save associationNames", async () => {
             await controller.parse(
                 path.resolve(__dirname, "./__fixtures__/StockUniteLegaleHistorique.csv"),
-                "2022-11-07"
+                "2022-11-07",
             );
             expect(upsertAssociationNameMock).toHaveBeenCalledTimes(3);
         });
@@ -19,7 +19,7 @@ describe("datagouv", () => {
         it("should save entrepriseSirens", async () => {
             await controller.parse(
                 path.resolve(__dirname, "./__fixtures__/StockUniteLegaleHistorique.csv"),
-                "2022-11-07"
+                "2022-11-07",
             );
             expect(upsertEntrepriseSirenMock).toHaveBeenCalledTimes(1);
         });

@@ -6,9 +6,9 @@ const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, {
         MONGO_USER && MONGO_PASSWORD
             ? {
                   username: MONGO_USER,
-                  password: MONGO_PASSWORD
+                  password: MONGO_PASSWORD,
               }
-            : undefined
+            : undefined,
 });
 
 export const connectDB = () =>

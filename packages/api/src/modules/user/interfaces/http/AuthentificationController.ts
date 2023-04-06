@@ -19,7 +19,7 @@ export class AuthentificationController extends Controller {
         const user = await userService.resetPassword(body.password, body.token);
 
         return {
-            user: { ...user, _id: user._id.toString() }
+            user: { ...user, _id: user._id.toString() },
         };
     }
 
@@ -28,14 +28,14 @@ export class AuthentificationController extends Controller {
     public login(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Body() body: { email: string; password: string }, // Just for docs
-        @Request() req: LoginRequest
+        @Request() req: LoginRequest,
     ): LoginDtoResponse {
         // If you change the route please change in express.auth.hooks.ts
 
         if (req.user) {
             // Successfully logged
             return {
-                user: req.user
+                user: req.user,
             };
         }
 

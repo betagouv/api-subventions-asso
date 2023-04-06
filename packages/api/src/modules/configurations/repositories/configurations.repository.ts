@@ -8,10 +8,10 @@ export class ConfigurationsRepository extends MigrationRepository<ConfigurationE
     async upsert(name: string, partialEntity: Partial<ConfigurationEntity>) {
         return this.collection.updateOne(
             {
-                name: name
+                name: name,
             },
             { $set: { ...partialEntity, updatedAt: new Date() } },
-            { upsert: true }
+            { upsert: true },
         );
     }
 

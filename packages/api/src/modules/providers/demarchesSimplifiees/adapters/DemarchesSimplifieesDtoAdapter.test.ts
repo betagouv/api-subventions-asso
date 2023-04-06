@@ -13,29 +13,29 @@ describe("DemarchesSimplifieesDtoAdapter", () => {
                                 nodes: [
                                     {
                                         demandeur: {
-                                            siret: SIRET
+                                            siret: SIRET,
                                         },
                                         champs: [
                                             {
                                                 id: "ID",
                                                 stringValue: "YO",
-                                                label: "PLAI"
-                                            }
+                                                label: "PLAI",
+                                            },
                                         ],
                                         annotations: [
                                             {
                                                 id: "ID",
                                                 stringValue: "YO",
-                                                label: "PLAI"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    }
+                                                label: "PLAI",
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        },
+                    },
                 } as unknown as DemarchesSimplifieesDto,
-                12345
+                12345,
             );
 
             expect(actual).toMatchSnapshot();

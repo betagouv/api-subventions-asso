@@ -44,8 +44,8 @@ describe("DataEntrepriseService", () => {
                 id_association: "ID_ASSO",
                 siret: SIRET,
                 titre: "TITRE",
-                updated_at: LAST_UPDATE
-            }
+                updated_at: LAST_UPDATE,
+            },
         };
         it("should called api", async () => {
             const mock = jest.spyOn(axios, "get").mockImplementationOnce(() => Promise.resolve({ data: DATA }));
@@ -54,7 +54,7 @@ describe("DataEntrepriseService", () => {
 
             expect(mock).toHaveBeenCalled();
             expect(result).toMatchObject({
-                rna: toPVs("ID_ASSO", "<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>")
+                rna: toPVs("ID_ASSO", "<Base RNA> EntrepriseData <https://entreprise.data.gouv.fr>"),
             });
         });
 
@@ -72,7 +72,7 @@ describe("DataEntrepriseService", () => {
             await dataEntrepriseService.findAssociationByRna(RNA);
             expect(spyEventManager).toHaveBeenCalledTimes(1);
             expect(spyEventManager).toHaveBeenNthCalledWith(1, "rna-siren.matching", [
-                { rna: RNA, siren: DATA.association.siret }
+                { rna: RNA, siren: DATA.association.siret },
             ]);
         });
         it("should call association name upsert", async () => {
@@ -85,7 +85,7 @@ describe("DataEntrepriseService", () => {
                 siren: DATA.association.siret,
                 name: DATA.association.titre,
                 provider: dataEntrepriseService.provider.name,
-                lastUpdate: LAST_UPDATE
+                lastUpdate: LAST_UPDATE,
             });
         });
     });
@@ -99,8 +99,8 @@ describe("DataEntrepriseService", () => {
             etablissement: {
                 siret: SIRET,
                 unite_legale: { identifiant_association: RNA, denomination: NAME },
-                updated_at: LAST_UPDATE
-            }
+                updated_at: LAST_UPDATE,
+            },
         };
 
         it("should call the API", async () => {
@@ -108,7 +108,7 @@ describe("DataEntrepriseService", () => {
             const result = await dataEntrepriseService.findEtablissementBySiret(SIRET);
             expect(mock).toHaveBeenCalled();
             expect(result).toMatchObject({
-                siret: toPVs(SIRET, "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>")
+                siret: toPVs(SIRET, "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>"),
             });
         });
 
@@ -136,7 +136,7 @@ describe("DataEntrepriseService", () => {
                 siren: siretToSiren(SIRET),
                 name: NAME,
                 provider: dataEntrepriseService.provider.name,
-                lastUpdate: LAST_UPDATE
+                lastUpdate: LAST_UPDATE,
             });
         });
     });
@@ -153,8 +153,8 @@ describe("DataEntrepriseService", () => {
                 identifiant_association: RNA,
                 denomination: NAME,
                 etablissement_siege: {},
-                etablissements: []
-            }
+                etablissements: [],
+            },
         };
         it("should call the API", async () => {
             const mock = jest.spyOn(axios, "get").mockImplementationOnce(() => Promise.resolve({ data: DATA }));
@@ -163,7 +163,7 @@ describe("DataEntrepriseService", () => {
 
             expect(mock).toHaveBeenCalled();
             expect(result).toMatchObject({
-                siren: toPVs(SIREN, "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>")
+                siren: toPVs(SIREN, "<Base SIRET> EntrepriseData <https://entreprise.data.gouv.fr>"),
             });
         });
 
@@ -194,7 +194,7 @@ describe("DataEntrepriseService", () => {
                 siren: SIREN,
                 name: NAME,
                 provider: dataEntrepriseService.provider.name,
-                lastUpdate: LAST_UPDATE
+                lastUpdate: LAST_UPDATE,
             });
         });
     });

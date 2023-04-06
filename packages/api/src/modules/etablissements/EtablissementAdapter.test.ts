@@ -5,7 +5,7 @@ const ETABLISSEMENT = {
     siret: [{ value: SIRET }],
     nic: [{}],
     versements: {},
-    demandes_subventions: {}
+    demandes_subventions: {},
 };
 
 describe("EtablissementAdapter", () => {

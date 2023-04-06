@@ -12,7 +12,7 @@ const RnaSirenArray = [
     { rna: "W000000000", siren: "000000000" },
     { rna: "W000000001", siren: "000000001" },
     { rna: "W000000002", siren: "000000002" },
-    { rna: "W000000003", siren: "000000003" }
+    { rna: "W000000003", siren: "000000003" },
 ];
 
 describe("RnaSirenService", () => {
@@ -27,11 +27,11 @@ describe("RnaSirenService", () => {
         it("should add RnaSiren", async () => {
             expect(await db.collection("rna-siren").findOne({ rna: "W000000000" })).toMatchObject({
                 rna: "W000000000",
-                siren: "000000000"
+                siren: "000000000",
             });
             expect(await db.collection("rna-siren").findOne({ siren: "000000000" })).toMatchObject({
                 rna: "W000000000",
-                siren: "000000000"
+                siren: "000000000",
             });
         });
 
@@ -40,7 +40,7 @@ describe("RnaSirenService", () => {
             expect(await db.collection("rna-siren").find({ rna: "W000000000" }).toArray).toHaveLength(1);
             expect(await db.collection("rna-siren").findOne({ siren: "000000000" })).toMatchObject({
                 rna: "W000000000",
-                siren: "000000000"
+                siren: "000000000",
             });
         });
     });
@@ -69,9 +69,9 @@ describe("RnaSirenService", () => {
                 Promise.resolve([
                     {
                         rna: [{ value: "W000000001" }],
-                        siren: [{ value: "000000001" }]
-                    }
-                ] as unknown as Association[])
+                        siren: [{ value: "000000001" }],
+                    },
+                ] as unknown as Association[]),
             );
 
             expect(await rnaSirenService.getRna("000000001")).toBe("W000000001");
@@ -82,9 +82,9 @@ describe("RnaSirenService", () => {
                 Promise.resolve([
                     {
                         rna: [{ value: "W000000001" }],
-                        siren: [{ value: "000000001" }]
-                    }
-                ] as unknown as Association[])
+                        siren: [{ value: "000000001" }],
+                    },
+                ] as unknown as Association[]),
             );
 
             expect(await rnaSirenService.getRna("000000001")).toBe("W000000001");

@@ -32,7 +32,7 @@ class StatsService {
             return {
                 nb_requetes_par_mois: [],
                 nb_requetes_moyen: 0,
-                somme_nb_requetes: 0
+                somme_nb_requetes: 0,
             };
         const lastMonthIndex1 = now.getFullYear() === year ? now.getMonth() + 1 : 12;
 
@@ -43,14 +43,14 @@ class StatsService {
                 acc.sum += nbOfRequests;
                 return acc;
             },
-            { countAsArray: Array(12).fill(0), sum: 0 }
+            { countAsArray: Array(12).fill(0), sum: 0 },
         );
         countAsArray.splice(lastMonthIndex1);
 
         return {
             nb_requetes_par_mois: countAsArray,
             nb_requetes_moyen: sum / lastMonthIndex1,
-            somme_nb_requetes: sum
+            somme_nb_requetes: sum,
         };
     }
 
@@ -75,7 +75,7 @@ class StatsService {
                     acc[index] = month + (acc[index - 1] || init_count);
                     return acc;
                 }, [])
-                .slice(0, lastMonth)
+                .slice(0, lastMonth),
         };
     }
 
@@ -88,7 +88,7 @@ class StatsService {
         const identifiers = await associationNameService.getGroupedIdentifiers(group._id);
         const associationVisits = {
             id: group._id,
-            visits: [] as AssociationVisitEntity[]
+            visits: [] as AssociationVisitEntity[],
         };
 
         associationVisits.visits.push(...group.visits);
@@ -124,13 +124,13 @@ class StatsService {
         const visitsGroupedByAssociationIdentifier =
             await statsAssociationsVisitRepository.findGroupedByAssociationIdentifierOnPeriod(start, end);
         const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(
-            visitsGroupedByAssociationIdentifier
+            visitsGroupedByAssociationIdentifier,
         );
 
         const countVisitByAssociationDesc = visitsGroupedByAssociation
             .map(associationVisit => ({
                 id: associationVisit.id,
-                visits: this.keepOneVisitByUserAndDate(associationVisit.visits).length
+                visits: this.keepOneVisitByUserAndDate(associationVisit.visits).length,
             }))
             .sort((a, b) => b.visits - a.visits);
 
@@ -141,7 +141,7 @@ class StatsService {
             const result = await acc;
             return result.concat({
                 name: await getAssociationName(topAssociation.id),
-                visits: topAssociation.visits
+                visits: topAssociation.visits,
             });
         }, Promise.resolve([]) as Promise<{ name: string; visits: number }[]>);
 
@@ -166,7 +166,7 @@ class StatsService {
             admin: 0,
             active: 0,
             idle: 0,
-            inactive: 0
+            inactive: 0,
         });
     }
 
@@ -174,7 +174,7 @@ class StatsService {
         const userStartDate = start.getTime() > user.signupAt.getTime() ? start : user.signupAt;
         const visits = user.associationVisits.map(visit => ({
             _id: visit.associationIdentifier,
-            visits: [visit]
+            visits: [visit],
         }));
         const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(visits);
         const visitsAssociation = visitsGroupedByAssociation
@@ -193,7 +193,7 @@ class StatsService {
 
         const usersWithAssociationVisits = await userAssociationVisitJoiner.findAssociationVisitsOnPeriodGroupedByUsers(
             start,
-            end
+            end,
         );
         const result = await usersWithAssociationVisits.reduce(async (acc, user) => {
             if (!user) return acc;
@@ -217,7 +217,7 @@ class StatsService {
         return {
             debut_periode: start,
             fin_periode: end,
-            ...result
+            ...result,
         };
     }
 

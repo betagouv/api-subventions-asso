@@ -11,7 +11,7 @@ class ProviderService {
     private splitProvidersByType(providersInfos: ProvidersInfos, service: IProvider) {
         const providerInfo = {
             name: service.provider.name,
-            description: service.provider.description
+            description: service.provider.description,
         };
         if (service.provider.type === ProviderEnum.api) providersInfos.api.push(providerInfo);
         else providersInfos.raw.push(providerInfo);

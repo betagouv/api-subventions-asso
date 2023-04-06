@@ -14,19 +14,19 @@ export default {
     returnValueOrHyphen: (value: unknown) => value || "-",
 
     adresse: {
-        toString: AdresseHelper.providerValuesToString
+        toString: AdresseHelper.providerValuesToString,
     },
     phone: {
-        format: PhoneHelper.formatWithSpace
+        format: PhoneHelper.formatWithSpace,
     },
     date: {
         toProviderValueString: DateHelper.toProviderValueString,
         formatDate: DateHelper.formatDate,
-        formatDateWithHour: DateHelper.formatDateWithHour
+        formatDateWithHour: DateHelper.formatDateWithHour,
     },
     capitalizeFirstLetter: (str: string | undefined) => (str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str),
     amount: {
         providerValueToEuro: AmountHelper.providerValueToEuro,
-        numberToEuro: AmountHelper.numberToEuro
-    }
+        numberToEuro: AmountHelper.numberToEuro,
+    },
 };

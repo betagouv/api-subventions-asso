@@ -73,7 +73,7 @@ describe("StatsRepository", () => {
             // @ts-expect-error statsRepository.collection is private attribute
             jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({
                 // @ts-expect-error type error due to mocking documents
-                toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }]
+                toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }],
             }));
             const expected = 2;
             const actual = await statsRepository.countMedianRequestsOnPeriod(START, END, true);
@@ -85,7 +85,7 @@ describe("StatsRepository", () => {
             // @ts-expect-error statsRepository.collection is private attribute
             jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({
                 // @ts-expect-error type error due to mocking documents
-                toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }, { nbOfRequest: 4 }]
+                toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }, { nbOfRequest: 4 }],
             }));
             const expected = 2.5;
             const actual = await statsRepository.countMedianRequestsOnPeriod(START, END, true);
@@ -101,7 +101,7 @@ describe("StatsRepository", () => {
             { _id: 1, nbOfRequest: 201 },
             { _id: 2, nbOfRequest: 21 },
             { _id: 10, nbOfRequest: 300 },
-            { _id: 12, nbOfRequest: 1 }
+            { _id: 12, nbOfRequest: 1 },
         ];
 
         it("calls mongo aggregation", async () => {

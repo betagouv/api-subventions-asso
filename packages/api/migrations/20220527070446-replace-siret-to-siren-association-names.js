@@ -10,7 +10,7 @@ module.exports = {
         const collection = db.collection("association-name");
         const cursor = collection.find({
             siren: { $exists: true },
-            $expr: { $gt: [{ $strLenCP: "$siren" }, 9] }
+            $expr: { $gt: [{ $strLenCP: "$siren" }, 9] },
         });
 
         console.log("Starting transforming siret to siren...");
@@ -33,5 +33,5 @@ module.exports = {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };

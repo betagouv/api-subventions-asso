@@ -42,8 +42,8 @@ describe("express.auth.hooks", () => {
                     active: true,
                     signupAt: new Date(),
                     jwt: { token: "", expirateDate: new Date() },
-                    stats: { searchCount: 0, lastSearchDate: null }
-                })
+                    stats: { searchCount: 0, lastSearchDate: null },
+                }),
             );
 
             passportMock.mockImplementation(name => {
@@ -98,7 +98,7 @@ describe("express.auth.hooks", () => {
                 signupAt: new Date(),
                 jwt: { token: "", expirateDate: new Date() },
                 stats: { searchCount: 0, lastSearchDate: null },
-                _id: new ObjectId()
+                _id: new ObjectId(),
             }));
 
             passportMock.mockImplementation(name => {
@@ -110,7 +110,7 @@ describe("express.auth.hooks", () => {
                     (...args: unknown[]) => {
                         expect(args[1]).toMatchObject({ email: "test@beta.gouv.fr" });
                         done();
-                    }
+                    },
                 );
             });
 
@@ -136,7 +136,7 @@ describe("express.auth.hooks", () => {
                     (...args: unknown[]) => {
                         expect(args[0]).toMatchObject(ERROR);
                         done();
-                    }
+                    },
                 );
             });
             authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);

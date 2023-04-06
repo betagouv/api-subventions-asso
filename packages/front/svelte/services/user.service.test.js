@@ -2,7 +2,7 @@ import * as UserService from "./user.service";
 
 describe("user.service", () => {
     const USER = {
-        roles: ["user"]
+        roles: ["user"],
     };
     describe("isAdmin", () => {
         it("should return true", () => {

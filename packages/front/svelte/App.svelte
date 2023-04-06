@@ -18,7 +18,7 @@
         getName: () => "Data.Subvention",
         getDescription: () => "Les dernières informations sur les associations et leurs subventions",
         getContact: () => "contact@datasubvention.beta.gouv.fr",
-        getRepo: () => "https://github.com/betagouv/api-subventions-asso"
+        getRepo: () => "https://github.com/betagouv/api-subventions-asso",
     });
 </script>
 

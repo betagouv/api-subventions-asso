@@ -51,8 +51,8 @@ export class DocumentsService {
                 provider[method].call(provider, id).catch(e => {
                     console.error(e);
                     return [];
-                })
-            )
+                }),
+            ),
         );
 
         return result.flat();

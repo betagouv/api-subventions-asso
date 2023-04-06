@@ -14,5 +14,5 @@ module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         // NOT IMPLEMENTED
-    }
+    },
 };

@@ -6,7 +6,7 @@ const mockToStatus = jest.fn(() => mockLabel);
 
 jest.mock("../../helper", () => ({
     toStatusFactory: () => mockToStatus,
-    __esModule: true // this property makes it work
+    __esModule: true, // this property makes it work
 }));
 
 describe("OsirisRequestAdapter", () => {
@@ -28,7 +28,7 @@ describe("OsirisRequestAdapter", () => {
             OsirisRequestAdapter.toDemandeSubvention({
                 ...OsirisEntity,
                 // @ts-expect-error: mock
-                providerInformations: { status: PROVIDER_STATUS }
+                providerInformations: { status: PROVIDER_STATUS },
             });
             expect(mockToStatus).toBeCalledWith(PROVIDER_STATUS);
         });
@@ -38,7 +38,7 @@ describe("OsirisRequestAdapter", () => {
             const res = OsirisRequestAdapter.toDemandeSubvention({
                 ...OsirisEntity,
                 // @ts-expect-error: mock
-                providerInformations: { status: PROVIDER_STATUS }
+                providerInformations: { status: PROVIDER_STATUS },
             });
             const actual = res?.statut_label?.value;
             expect(actual).toBe(mockLabel);

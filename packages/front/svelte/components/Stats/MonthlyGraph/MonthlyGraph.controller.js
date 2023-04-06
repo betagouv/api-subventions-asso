@@ -67,7 +67,7 @@ export class MonthlyGraphController {
         gradient.addColorStop(1, white);
 
         const labels = [...Array(12).keys()].map(monthId =>
-            new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` })
+            new Date(2022, monthId, 1).toLocaleDateString(`fr`, { month: `narrow` }),
         );
         if (this.withPreviousValue) labels.unshift("");
 
@@ -79,7 +79,7 @@ export class MonthlyGraphController {
                 interaction: {
                     mode: "nearest",
                     axis: "x",
-                    intersect: false
+                    intersect: false,
                 },
                 plugins: {
                     tooltip: {
@@ -87,14 +87,14 @@ export class MonthlyGraphController {
                         enabled: false,
                         external: context => {
                             tooltip.$set({ context: { ...context }, year: this.year.value });
-                        }
+                        },
                     },
-                    legend: { display: false }
+                    legend: { display: false },
                 },
                 scales: {
                     x: { grid: { display: false } },
-                    y: { ticks: { precision: 0 } }
-                }
+                    y: { ticks: { precision: 0 } },
+                },
             },
             data: {
                 labels,
@@ -111,9 +111,9 @@ export class MonthlyGraphController {
                         pointBackgroundColor: "transparent",
                         pointHoverBackgroundColor: darkBlue,
                         pointHoverBorderColor: darkBlue,
-                        hoverRadius: 7
-                    }
-                ]
+                        hoverRadius: 7,
+                    },
+                ],
             },
             plugins: [
                 {
@@ -133,9 +133,9 @@ export class MonthlyGraphController {
                         ctx.strokeStyle = darkBlue;
                         ctx.stroke();
                         ctx.restore();
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         });
     }
 }

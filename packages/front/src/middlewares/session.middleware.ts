@@ -10,10 +10,10 @@ const sessionMiddleware = () => {
         saveUninitialized: true,
         store: MongoStore.create({
             mongoUrl: MONGO_URL,
-            collectionName: "sessions_front"
+            collectionName: "sessions_front",
         }),
         cookie: { maxAge: twoDay },
-        resave: false
+        resave: false,
     });
 };
 
