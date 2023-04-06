@@ -7,7 +7,7 @@ const controllers: CronController[] = [
     // ExampleCronController
 ];
 
-const scheduler = new ToadScheduler();
+export const scheduler = new ToadScheduler();
 
 export function initCron() {
     for (const controllerClass of controllers) {
