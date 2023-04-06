@@ -2,7 +2,7 @@ import axios from "axios";
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
-import dauhpinCachesRepository from "./repositories/dauphinCache.repository";
+import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
 import * as ApiConf from "./../../../configurations/apis.conf";
 
 jest.mock("./../../../configurations/apis.conf", () => ({
@@ -14,11 +14,11 @@ describe("Dauphin Service", () => {
     const TOKEN = "FAKE_TOKEN";
     describe("getDemandeSubventionBySiret", () => {
         const getLastUpdateMock: jest.SpyInstance<unknown> = jest.spyOn(
-            dauhpinCachesRepository,
-            "getLastUpdateBySiren",
+            dauhpinGisproRepository,
+            "getLastUpdateBySiren"
         );
-        const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "findBySiret");
-        const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "upsert");
+        const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "findBySiret");
+        const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "upsert");
         // @ts-expect-error getAuthToken is private methode
         const getAuthTokenMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "getAuthToken");
         const getDauphinSubventionsMock: jest.SpyInstance<unknown> = jest.spyOn(
@@ -56,7 +56,7 @@ describe("Dauphin Service", () => {
 
             await dauphinService.getDemandeSubventionBySiret("FAKE_SIRET");
 
-            expect(upsertMock).toHaveBeenCalledWith(expected);
+            expect(upsertMock).toHaveBeenCalledWith({dauphin: expected});
         });
 
         it("should keep lastUpdate", async () => {
@@ -92,11 +92,11 @@ describe("Dauphin Service", () => {
 
     describe("getDemandeSubventionBySiren", () => {
         const getLastUpdateMock: jest.SpyInstance<unknown> = jest.spyOn(
-            dauhpinCachesRepository,
-            "getLastUpdateBySiren",
+            dauhpinGisproRepository,
+            "getLastUpdateBySiren"
         );
-        const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "findBySiren");
-        const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinCachesRepository, "upsert");
+        const findBySirenMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "findBySiren");
+        const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(dauhpinGisproRepository, "upsert");
         // @ts-expect-error getAuthToken is private methode
         const getAuthTokenMock: jest.SpyInstance<unknown> = jest.spyOn(dauphinService, "getAuthToken");
         const getDauphinSubventionsMock: jest.SpyInstance<unknown> = jest.spyOn(
@@ -134,7 +134,7 @@ describe("Dauphin Service", () => {
 
             await dauphinService.getDemandeSubventionBySiren("FAKE_SIRET");
 
-            expect(upsertMock).toHaveBeenCalledWith(expected);
+            expect(upsertMock).toHaveBeenCalledWith({dauphin: expected});
         });
 
         it("should keep lastUpdate", async () => {
