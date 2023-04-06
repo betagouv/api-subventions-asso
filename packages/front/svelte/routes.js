@@ -17,7 +17,8 @@ import Contact from "./views/Contact.svelte";
 
 export default {
     "/404": {
-        component: () => NotFound
+        component: () => NotFound,
+        disableAuth: true
     },
     "association/:id": {
         component: () => Association
