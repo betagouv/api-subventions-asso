@@ -32,13 +32,15 @@
     <div class="fr-grid-row fr-mt-3w fr-py-2w flex space-between">
         <h2>Tableau de bord</h2>
         <div class="baseline">
-            <Button
-                on:click={() => controller.download()}
-                disabled={$loaderStateStore.status != "end"}
-                icon="download-line"
-                iconPosition="right">
-                Télécharger les données - (BÊTA)
-            </Button>
+            {#if $elements && $elements.length}
+                <Button
+                    on:click={() => controller.download()}
+                    disabled={$loaderStateStore.status != "end"}
+                    icon="download-line"
+                    iconPosition="right">
+                    Télécharger les données - (BÊTA)
+                </Button>
+            {/if}
         </div>
     </div>
     <div class="fr-grid-row fr-py-4w flex space-between">
