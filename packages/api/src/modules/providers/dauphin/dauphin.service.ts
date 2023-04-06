@@ -7,6 +7,7 @@ import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubven
 import configurationsService from "../../configurations/configurations.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { formatIntToThreeDigits, formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
+import Gispro from "../gispro/@types/Gispro";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
@@ -222,6 +223,15 @@ export class DauphinService implements DemandesSubventionsProvider {
             .then(reslut => {
                 return reslut.data;
             });
+    }
+
+    async insertGisproEntity(gisproEntity: Gispro) {
+        const entity = await dauhpinGisproRepository.findOneByCodeDossier(gisproEntity.dauphinId);
+
+        if (!entity) return;
+
+        entity.gispro = gisproEntity;
+        await dauhpinGisproRepository.upsert(entity);
     }
 }
 
