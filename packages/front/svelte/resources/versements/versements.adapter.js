@@ -5,7 +5,7 @@ import { getLastVersementsDate } from "@components/SubventionsVersementsDashboar
 export default class VersementsAdapter {
     static toVersement(versements) {
         return {
-            totalAmount: numberToEuro(this._countTotalVersement(versements)),
+            totalAmount: valueOrHyphen(this._getTotalPayment(versements)),
             centreFinancier: valueOrHyphen(versements[0]?.centreFinancier),
             lastVersementDate: valueOrHyphen(withTwoDigitYear(getLastVersementsDate(versements))),
             bop: valueOrHyphen(this._formatBop(versements[0]?.bop)),
@@ -16,6 +16,12 @@ export default class VersementsAdapter {
         // transform 0163 in 163
         if (!bop || bop[0] !== "0") return bop;
         return bop.substring(1, 4);
+    }
+
+    static _getTotalPayment(versements) {
+        if (!versements || !versements.length) return undefined;
+
+        return numberToEuro(this._countTotalVersement(versements));
     }
 
     static _countTotalVersement(versements) {
