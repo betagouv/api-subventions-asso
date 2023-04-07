@@ -29,7 +29,19 @@ export const newJob = (schedule, JobClass, TaskClass) => {
     return function (target, propertyKey: string, descriptor) {
         if (!target[attributeName]) target[attributeName] = [];
         const cronName = `${target.constructor.name}.${propertyKey}`;
-        const task = new TaskClass(cronName, () => descriptor.value(), errorHandlerFactory(cronName));
+
+        const loggedFunction =
+            TaskClass === AsyncTask
+                ? () => {
+                      console.log(`cron task started: ${cronName}`);
+                      return descriptor.value().then(() => console.log(`cron task ended successfully: ${cronName}`));
+                  }
+                : () => {
+                      console.log(`cron task started: ${cronName}`);
+                      descriptor.value();
+                      console.log(`cron task ended successfully: ${cronName}`);
+                  };
+        const task = new TaskClass(cronName, loggedFunction, errorHandlerFactory(cronName));
         target[attributeName].push(new JobClass(schedule, task, { preventOverrun: true }));
     };
 };
