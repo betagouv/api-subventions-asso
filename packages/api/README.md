@@ -2,7 +2,7 @@
 
 ## Choix technique et architecture
 
-Le projet utilisent la stack technique suivante :
+Le projet utilise la stack technique suivante :
 
 -   NodeJs
 -   Typescript
@@ -46,7 +46,7 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 1. Run `npm run dev`
 2. Visit [http://localhost:8080](http://localhost:8080)
 
-## Executer une commande CLI
+## Exécuter une commande CLI
 
 1. Run `npm run cli [controller name] [method name] [...arguments]`
 
@@ -57,6 +57,33 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 3. Allez dans la collection `user-reset` de mongodb user et copiez la valeur du token nouvellement généré.
 4. Faites ensuite une requête HTTP POST `localhost:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
 5. Enfin, pour vous connecter, faite une requête HTTP POST `localhost:8080/auth/login` avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
+
+## Mettre en place une tâche récurrente
+
+Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Il existe deux types de façon de programmer les tâches : 
+- par un intervalle (*ex* : `{ minutes: 3 }`"toutes le 3 minutes")
+- par une expression cron (*ex* : `"0 0 1 * *"` tous les premiers du mois) 
+
+Pour ajouter une tâche récurrente, il faut :
+
+1. Créer un contrôleur `src/modules/[nom-module]/interfaces/cron/[controller-namer].cron.controller.ts` sur le modèle du fichier `example.cron.controller.ts`. Le contrôleur doit exporter une classe avec
+    - un attribut `name` qui l'identifie
+    - autant de méthodes que de tâches. Ces méthodes devront être munies d'un décorateur parmi 
+      - `Cron`
+      - `AsyncCron` 
+      - `Cron`
+      - `AsyncIntervalCron`
+      en fonction de si la tâche est asynchrone ou non et du type de programmation donnée. Le décorateur prend deux attributs : 
+      - la programmation de la tâche (intervalle ou expression cron)
+      - dans le cas `Interval` : un booléen indiquant si cet intervalle est "long" ou non, c'est-à-dire s'il fait + de 24,85 jours. Ce critère qui semble arbitraire permet d'arbitrer entre deux objets techniques différents pour éviter un problème potentiel d'overflow d'entier.
+2. Enregistrer le contrôleur dans `src/cron.ts`
+
+### En cas d'erreur
+Un message mattermost est envoyé automatiquement, avec la stacktrace en détail (cliquer sur le `i` à droite du nom d'utilisateur) 
+
+### Option `runImmediately` de l'intervalle
+Le paramètre `schedule` des contrôleurs supporte un attribut qui précise si la tâche doit se lancer une première fois au lancement de l'application ou non. Contrairement au comportement par défaut du module, ce paramètre est activé par défaut.
+Attention, s'il est désactivé, l'intervalle sera réinitialisé à chaque redémarrage de l'application (donc au moins à chaque mise en prod et crash de l'api)
 
 ## Conventions de Code
 
@@ -81,7 +108,7 @@ Exemple : `const establishment = association.etablissement // retour API en fran
 ### MERGE vs REBASE
 
 `rebase` la branche fille depuis la branche mère si cette dernière a été modifiée.
-`merge` uniquement pour fusionner develop dans main et main dans PROD.
+`merge` uniquement pour fusionner `develop` dans `main` et `main` dans `PROD`.
 Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent ensuite se `rebase` depuis leur branche mère pour récupérer la modification.
 
 ### Hooks
@@ -92,7 +119,7 @@ Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent en
 
 Pour faire simple, chaque commit doit spécifier le ou les packages lerna ciblés par le développement ainsi qu'un mot clé identifiant la nature du développement (feature, refactoring, test, hotfix, etc).
 
-Par exemple, un commit de feature classique sur l'API se nommera "feat(api): nouvelle fontionnalité".
+Par exemple, un commit de feature classique sur l'API se nommera "feat(api): nouvelle fonctionnalité".
 
 #### Push
 
@@ -116,9 +143,9 @@ Les tests sont divisés en deux parties :
 
 ### Test unitaire
 
-Les tests unitaires sont présents au plus proche du code testé. Leur nom doit se terminer par .unit.test `. C'est sur ces tests qu'est exécuté le coverage, qui a une tolérance de 85%. Un exemple type est présent dans `/src/example.unit.test `. Il montre l'utilisation, si possible, de deux constantes `actual`et`expected`qui sont ensuite comparées via`expect(actual).toEqual(expected)`. Cette façon de faire force les tests à être unitaires et atomiques, en ne testant qu'une seule chose à la fois et en rendant le test lisible et compréhensible.
+Les tests unitaires sont présents au plus proche du code testé. Leur nom doit se terminer par `.test.ts`. C'est sur ces tests qu'est exécuté le coverage, qui a une tolérance de 85%. Un exemple type est présent dans `/src/example.test.ts`. Il montre l'utilisation, si possible, de deux constantes `actual` et `expected` qui sont ensuite comparées via `expect(actual).toEqual(expected)`. Cette façon de faire force les tests à être unitaires et atomiques, en ne testant qu'une seule chose à la fois et en rendant le test lisible et compréhensible.
 
-Le coverage se teste avec la commande `npm run test:cov` qui parcours tous les fichiers `.unit.ts` présents dans `./src `. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande `npm run test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts`.
+Le coverage se teste avec la commande `npm run test:cov` qui parcours tous les fichiers `.test.ts` présents dans `./src `. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande `npm run test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts`.
 
 Format de test à suivre :
 
