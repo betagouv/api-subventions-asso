@@ -9,7 +9,7 @@ import {
 } from "toad-scheduler";
 import axios from "axios";
 
-export const errorHandler = cronName => {
+export const errorHandlerFactory = cronName => {
     return error => {
         console.error(`error during cron ${cronName}`);
         console.trace();
@@ -24,13 +24,13 @@ export const errorHandler = cronName => {
     };
 };
 
-export const newJob = (schedule, jobConstructor, taskConstructor) => {
-    const attributeName = jobConstructor === CronJob ? "__cronJobs__" : "__intervalJobs__";
+export const newJob = (schedule, JobClass, TaskClass) => {
+    const attributeName = JobClass === CronJob ? "__cronJobs__" : "__intervalJobs__";
     return function (target, propertyKey: string, descriptor) {
         if (!target[attributeName]) target[attributeName] = [];
         const cronName = `${target.constructor.name}.${propertyKey}`;
-        const task = new taskConstructor(cronName, () => descriptor.value(), errorHandler(cronName));
-        target[attributeName].push(new jobConstructor(schedule, task, { preventOverrun: true }));
+        const task = new TaskClass(cronName, () => descriptor.value(), errorHandlerFactory(cronName));
+        target[attributeName].push(new JobClass(schedule, task, { preventOverrun: true }));
     };
 };
 
@@ -39,8 +39,8 @@ export const newJob = (schedule, jobConstructor, taskConstructor) => {
  * @param isIntervalLong: boolean -- set to true if interval is higher than 24.85 days. Prevents overflow issues
  */
 export const IntervalCron = (schedule: SimpleIntervalSchedule, isIntervalLong: boolean) => {
-    const jobConstructor = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
-    return newJob({ runImmediately: true, ...schedule }, jobConstructor, Task);
+    const JobClass = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
+    return newJob({ runImmediately: true, ...schedule }, JobClass, Task);
 };
 
 /**
@@ -48,8 +48,8 @@ export const IntervalCron = (schedule: SimpleIntervalSchedule, isIntervalLong: b
  * @param isIntervalLong: boolean -- set to true if interval is higher than 24.85 days. Prevents overflow issues
  */
 export const AsyncIntervalCron = (schedule: SimpleIntervalSchedule, isIntervalLong: boolean) => {
-    const jobConstructor = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
-    return newJob({ runImmediately: true, ...schedule }, jobConstructor, AsyncTask);
+    const JobClass = isIntervalLong ? LongIntervalJob : SimpleIntervalJob;
+    return newJob({ runImmediately: true, ...schedule }, JobClass, AsyncTask);
 };
 
 export const Cron = (schedule: CronSchedule) => {

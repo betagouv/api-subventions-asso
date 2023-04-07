@@ -10,9 +10,9 @@ const controllers: CronController[] = [
 export const scheduler = new ToadScheduler();
 
 export function initCron() {
-    for (const controllerClass of controllers) {
+    for (const ControllerClass of controllers) {
         // @ts-expect-error generic type
-        const controller = new controllerClass();
+        const controller = new ControllerClass();
         for (const job of controller["__intervalJobs__"] || []) {
             scheduler.addIntervalJob(job);
         }
