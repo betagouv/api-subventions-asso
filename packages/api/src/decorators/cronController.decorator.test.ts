@@ -24,83 +24,71 @@ describe("cronController decorator", () => {
     describe("newJob()", () => {
         const JOB = {};
         const TASK = {};
-        const JOB_CONSTRUCTOR = SimpleIntervalJob;
-        const TASK_CONSTRUCTOR = Task;
+        const JOB_CLASS = SimpleIntervalJob;
+        const TASK_CLASS = Task;
         const ATTRIBUTE_TO_FILL = "__intervalJobs__";
         const CLASS_NAME = "ClassName";
         const ERROR_HANDLER_RESULT = "error handled";
-        let errorHandlerSpy;
+        let errorHandlerFactorySpy;
 
         const TASK_NAME = "ClassName.actionToRepeat";
 
         beforeAll(
             () =>
-                (errorHandlerSpy = jest.spyOn(Decorators, "errorHandler").mockReturnValue(
+                (errorHandlerFactorySpy = jest.spyOn(Decorators, "errorHandlerFactory").mockReturnValue(
                     // @ts-expect-error mock
                     ERROR_HANDLER_RESULT
                 ))
         );
-        afterAll(() => errorHandlerSpy.mockRestore());
+        afterAll(() => errorHandlerFactorySpy.mockRestore());
 
-        function testResult(
-            schedule,
-            jobConstructor,
-            taskConstructor,
-            target: any = { constructor: { name: CLASS_NAME } }
-        ) {
+        function testResult(schedule, JobClass, TaskClass, target: any = { constructor: { name: CLASS_NAME } }) {
             const PROPERTY_KEY = "actionToRepeat";
             const DESCRIPTOR = {
                 value: () => {}
             };
-            const decoratedFunction = Decorators.newJob(schedule, jobConstructor, taskConstructor);
+            const decoratedFunction = Decorators.newJob(schedule, JobClass, TaskClass);
             decoratedFunction(target, PROPERTY_KEY, DESCRIPTOR);
             return target;
         }
 
         it.each`
-            attributeNameToPopulate | jobConstructor
+            attributeNameToPopulate | JobClass
             ${"__cronJobs__"}       | ${CronJob}
             ${"__intervalJobs__"}   | ${LongIntervalJob}
             ${"__intervalJobs__"}   | ${SimpleIntervalJob}
-        `(
-            "populates proper attribute name '$attributeNameToPopulate'",
-            ({ jobConstructor, attributeNameToPopulate }) => {
-                const actual = testResult(SCHEDULE, jobConstructor, TASK_CONSTRUCTOR)[attributeNameToPopulate]?.length;
-                expect(actual).toBe(1);
-            }
-        );
+        `("populates proper attribute name '$attributeNameToPopulate'", ({ JobClass, attributeNameToPopulate }) => {
+            const actual = testResult(SCHEDULE, JobClass, TASK_CLASS)[attributeNameToPopulate]?.length;
+            expect(actual).toBe(1);
+        });
 
         it("adds job in existing array", () => {
-            const actual = testResult(SCHEDULE, JOB_CONSTRUCTOR, TASK_CONSTRUCTOR, {
+            const actual = testResult(SCHEDULE, JOB_CLASS, TASK_CLASS, {
                 [ATTRIBUTE_TO_FILL]: ["something"]
             })[ATTRIBUTE_TO_FILL]?.length;
             expect(actual).toBe(2);
         });
 
         it("job constructor is called with proper schedule", () => {
-            testResult(SCHEDULE, JOB_CONSTRUCTOR, TASK_CONSTRUCTOR);
-            expect(JOB_CONSTRUCTOR.prototype.constructor).toBeCalledWith(SCHEDULE, TASK, { preventOverrun: true });
+            testResult(SCHEDULE, JOB_CLASS, TASK_CLASS);
+            expect(JOB_CLASS.prototype.constructor).toBeCalledWith(SCHEDULE, TASK, { preventOverrun: true });
         });
 
         it("task is constructed with proper task name", () => {
             const expectedTaskName = "ClassName.actionToRepeat";
-            testResult(SCHEDULE, JOB_CONSTRUCTOR, TASK_CONSTRUCTOR);
-            expect(TASK_CONSTRUCTOR.prototype.constructor).toBeCalledWith(
-                TASK_NAME,
-                expect.anything(),
-                ERROR_HANDLER_RESULT
-            );
+            testResult(SCHEDULE, JOB_CLASS, TASK_CLASS);
+            expect(TASK_CLASS.prototype.constructor).toBeCalledWith(TASK_NAME, expect.anything(), ERROR_HANDLER_RESULT);
         });
 
-        it("errorHandler is called with task name", () => {
-            testResult(SCHEDULE, JOB_CONSTRUCTOR, TASK_CONSTRUCTOR);
-            expect(errorHandlerSpy).toBeCalledWith(TASK_NAME);
+        it("errorHandlerFactory is called with task name", () => {
+            testResult(SCHEDULE, JOB_CLASS, TASK_CLASS);
+            expect(errorHandlerFactorySpy).toBeCalledWith(TASK_NAME);
         });
     });
 
-    describe("errorHandler", () => {
+    describe("errorHandlerFactory's result", () => {
         const CRON_NAME = "name";
-        const errorHandler = Decorators.errorHandler(CRON_NAME);
+        const errorHandler = Decorators.errorHandlerFactory(CRON_NAME);
 
         it("logs error with proper cron name", () => {
             const expected = "error during cron name";
@@ -126,38 +114,38 @@ describe("cronController decorator", () => {
         });
 
         it.each`
-            decorator               | type        | taskConstructor
+            decorator               | type        | TaskClass
             ${Decorators.AsyncCron} | ${" async"} | ${AsyncTask}
             ${Decorators.Cron}      | ${""}       | ${Task}
-        `("cron-type$type schedule calls newJob() with proper args", ({ decorator, taskConstructor }) => {
+        `("cron-type$type schedule calls newJob() with proper args", ({ decorator, TaskClass }) => {
             decorator(SCHEDULE);
-            expect(newJobSpy).toBeCalledWith(SCHEDULE, CronJob, taskConstructor);
+            expect(newJobSpy).toBeCalledWith(SCHEDULE, CronJob, TaskClass);
         });
 
         describe("interval-type schedule", () => {
             it.each`
-                decorator                       | isIntervalLong | type        | jobConstructor       | taskConstructor
+                decorator                       | isIntervalLong | type        | JobClass             | TaskClass
                 ${Decorators.AsyncIntervalCron} | ${true}        | ${" async"} | ${LongIntervalJob}   | ${AsyncTask}
                 ${Decorators.IntervalCron}      | ${true}        | ${""}       | ${LongIntervalJob}   | ${Task}
                 ${Decorators.AsyncIntervalCron} | ${false}       | ${" async"} | ${SimpleIntervalJob} | ${AsyncTask}
                 ${Decorators.IntervalCron}      | ${false}       | ${""}       | ${SimpleIntervalJob} | ${Task}
             `(
                 "cron-type$type schedule calls newJob() with proper args",
-                ({ decorator, taskConstructor, isIntervalLong, jobConstructor }) => {
+                ({ decorator, TaskClass, isIntervalLong, JobClass }) => {
                     decorator(SCHEDULE, isIntervalLong);
                     const expectedSchedule = { runImmediately: true };
-                    expect(newJobSpy).toBeCalledWith(expectedSchedule, jobConstructor, taskConstructor);
+                    expect(newJobSpy).toBeCalledWith(expectedSchedule, JobClass, TaskClass);
                 }
             );
 
             it.each`
-                decorator                       | taskConstructor
+                decorator                       | TaskClass
                 ${Decorators.AsyncIntervalCron} | ${AsyncTask}
                 ${Decorators.IntervalCron}      | ${Task}
-            `("overrides runImmediately", ({ decorator, taskConstructor }) => {
+            `("overrides runImmediately", ({ decorator, TaskClass }) => {
                 const tweakedSchedule = { runImmediately: false };
                 decorator(tweakedSchedule, false);
-                expect(newJobSpy).toBeCalledWith(tweakedSchedule, SimpleIntervalJob, taskConstructor);
+                expect(newJobSpy).toBeCalledWith(tweakedSchedule, SimpleIntervalJob, TaskClass);
             });
         });
     });
