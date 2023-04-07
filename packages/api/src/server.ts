@@ -15,6 +15,7 @@ import RegisterSSERoutes from "./sse";
 import StatsSearchMiddleware, { StatsSearchRoutesRegex } from "./middlewares/StatsSearchMiddleware";
 import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
 import { IdentifiedRequest } from "./@types";
+import { initCron } from "./cron";
 
 const appName = "api-subventions-asso";
 
@@ -62,6 +63,8 @@ export async function startServer(port = "8080", isTest = false) {
     app.use("/docs", ...(await docsMiddlewares()));
 
     app.use(errorHandler(isTest));
+
+    initCron();
 
     return app.listen(port, () => {
         if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);

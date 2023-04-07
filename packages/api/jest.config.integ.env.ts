@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { scheduler } from "./src/cron";
+
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
 
@@ -49,4 +51,5 @@ afterEach(async () => {
 afterAll(async () => {
     await client.close();
     g.app?.close();
+    scheduler.stop()
 });
