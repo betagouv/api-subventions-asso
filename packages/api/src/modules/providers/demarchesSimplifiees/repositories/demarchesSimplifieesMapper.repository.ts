@@ -5,7 +5,7 @@ export class DemarchesSimplifieesMapperRepository extends MigrationRepository<De
     public collectionName = "demarches-simplifiees-schemas";
 
     async createIndexes() {
-        await this.collection.createIndex({ demarcheIdId: 1 }, { unique: true });
+        await this.collection.createIndex({ demarcheId: 1 }, { unique: true });
     }
 
     async upsert(entity: DemarchesSimplifieesMapperEntity) {
