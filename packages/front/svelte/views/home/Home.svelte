@@ -1,5 +1,4 @@
 <script>
-    import { truncate } from "lodash/string";
     import Alert from "../../dsfr/Alert.svelte";
     import Card from "../../dsfr/Card.svelte";
     import Spinner from "../../components/Spinner.svelte";
@@ -80,7 +79,7 @@
                     size="6"
                     direction="horizontal">
                     <div class="card-description">
-                        {truncate(search.objectSocial, 150)}
+                        {search.objectSocial}
                     </div>
                 </Card>
             {/each}
@@ -99,6 +98,10 @@
     }
 
     .history .card-description {
-        /* TODO : css trim */
+        display: -webkit-box;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 </style>
