@@ -51,36 +51,21 @@
                 {/each}
             </div>
         {:else}
-            <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-                <div class="fr-col-12 fr-col-md-12">
-                    <div class="fr-card fr-card--no-arrow">
-                        <div class="fr-card__body">
-                            <Alert type="info" small={true}>
-                                <p>
-                                    Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA,
-                                    SIREN ou SIRET
-                                </p>
-                            </Alert>
-                            <Alert small={true}>
-                                <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
-                            </Alert>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="fr-mt-2w" />
+            <Alert type="info" small={true}>
+                <p>
+                    Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA, SIREN ou SIRET
+                </p>
+            </Alert>
+            <Alert small={true}>
+                <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
+            </Alert>
         {/if}
     {:catch error}
-        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-md-12">
-                <div class="fr-card fr-card--no-arrow">
-                    <div class="fr-card__body">
-                        <Alert type="error" small={true}>
-                            <p>Une erreur est survenue</p>
-                        </Alert>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="fr-mt-2w" />
+        <Alert type="error" small={true}>
+            <p>Une erreur est survenue</p>
+        </Alert>
     {/await}
 {/if}
 
