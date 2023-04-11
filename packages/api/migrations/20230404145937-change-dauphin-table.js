@@ -1,11 +1,10 @@
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: dauphinGisproRepository
+    default: dauphinGisproRepository,
 } = require("../build/src/modules/providers/dauphin/repositories/dauphin-gispro.repository");
 
-const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper")
+const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 
 module.exports = {
     async up(db) {
@@ -25,13 +24,13 @@ module.exports = {
                         if (key == "_id") return acc;
                         acc[key] = "";
                         return acc;
-                    }, {})
+                    }, {}),
                 },
-                $set: { dauphin: entity }
+                $set: { dauphin: entity },
             };
 
             await collection.updateOne({ _id: entity._id }, updateQuery);
-            i++
+            i++;
             printAtSameLine(i + " entites saved");
         }
 
@@ -51,9 +50,9 @@ module.exports = {
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
     },
 
-    async down(db, client) {
+    async down() {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };
