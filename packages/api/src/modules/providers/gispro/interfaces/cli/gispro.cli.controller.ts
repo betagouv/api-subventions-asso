@@ -33,19 +33,9 @@ export default class GisproCliController extends CliController {
         const fileContent = fs.readFileSync(file);
 
         const entities = GisproParser.parse(fileContent, () => true);
-
-        console.log(entities);
     }
 
     protected async _parse(file: string) {
-        if (typeof file !== "string") {
-            throw new Error("Parse command need file args");
-        }
-
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-
         this.logger.logIC("\nStart parse file: ", file);
 
         const fileContent = fs.readFileSync(file);
@@ -58,7 +48,7 @@ export default class GisproCliController extends CliController {
 
         for await (const entity of tqdm(entities)) {
             await dauphinService.insertGisproEntity(entity);
-        };
+        }
 
         this.logger.logIC("\nEntities has been save");
     }
