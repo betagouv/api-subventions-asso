@@ -35,7 +35,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         }
 
         return (await dauhpinGisproRepository.findBySiret(siret)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto)
+            DauphinDtoAdapter.toDemandeSubvention(dto),
         );
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
@@ -50,7 +50,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         }
 
         return (await dauhpinGisproRepository.findBySiren(siren)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto)
+            DauphinDtoAdapter.toDemandeSubvention(dto),
         );
     }
 
@@ -226,7 +226,7 @@ export class DauphinService implements DemandesSubventionsProvider {
     }
 
     async insertGisproEntity(gisproEntity: Gispro) {
-        const entity = await dauhpinGisproRepository.findOneByCodeDossier(gisproEntity.dauphinId);
+        const entity = await dauhpinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
 
         if (!entity) return;
 
