@@ -1,42 +1,51 @@
-import InterruptSearchError from "./error/InterruptSearchError";
-import homeService from "./home.service";
-import debounceFactory from "@helpers/timeHelper";
+import { debounce } from "lodash/function";
 import { getSearchHistory } from "@services/storage.service";
 import { isRna, isSiren, isSiret, isStartOfSiret } from "@helpers/validatorHelper";
 import Store from "@core/Store";
+import associationService from "@resources/associations/association.service";
 
 export class HomeController {
     constructor() {
-        this.error = new Store(!!new URLSearchParams(location.search).get("error"));
         this.isLoading = new Store(false);
-        this.searchResult = [];
+        this.searchResult = new Store([]);
         this.searchHistory = getSearchHistory();
         this.input = new Store("");
+        this._searchCache = new Map();
+        this.currentSearch = new Store(null);
     }
-
-    debounce = debounceFactory(200);
 
     onInput(input) {
-        return this._searchAssociation(input);
+        if (input.length < 3) return;
+
+        this._debouncedInitSearch();
+        this._debouncedPerformSearch(input);
     }
 
-    async _searchAssociation(text) {
-        this.error.set(false);
-        this.searchResult.length = 0;
+    _initSearch() {
+        if (!this.isLoading.value) this.isLoading.set(true);
+    }
 
-        if (text.length < 3) return;
+    _debouncedInitSearch = debounce(() => this._initSearch());
 
-        if (isStartOfSiret(text.replace(" ", ""))) text = text.replace(" ", "");
+    _performSearch(text) {
+        text = this._removeSpaceFromIdentifier(text);
 
-        try {
-            this.isLoading.set(true);
-            this.searchResult = await homeService.search(text);
-        } catch (e) {
-            if (e instanceof InterruptSearchError) return;
+        // nothing to do if we are already searching for the same text
+        if (text === this.currentSearch.value?.text) return;
 
-            this.error.set(true);
-        }
+        this.currentSearch.set({
+            promise: this._searchAndCache(text).then(result => this._finishSearch(text, result)),
+            text,
+        });
+    }
+
+    _debouncedPerformSearch = debounce(text => this._performSearch(text), 1000);
+
+    _finishSearch(text, result) {
+        if (text !== this.currentSearch.value?.text) return;
         this.isLoading.set(false);
+        this.searchResult.set(result || []);
+        return result;
     }
 
     onSubmit() {
@@ -44,8 +53,21 @@ export class HomeController {
             location.href = `/association/${this.input}`;
         } else if (isSiret(this.input)) {
             location.href = `/etablissement/${this.input}`;
-        } else if (this.searchResult.length !== 0) {
-            location.href = `/association/${this.searchResult[0].rna || this.searchResult[0].siren}`;
+        } else if (this.searchResult.value?.length) {
+            location.href = `/association/${this.searchResult.value[0].rna || this.searchResult.value[0].siren}`;
         }
+    }
+
+    async _searchAndCache(searchedText) {
+        if (this._searchCache.has(searchedText)) return this._searchCache.get(searchedText);
+        const result = (await associationService.search(searchedText)).slice(0, 20);
+        this._searchCache.set(searchedText, result);
+        return result;
+    }
+
+    _removeSpaceFromIdentifier(text) {
+        const textWithoutSpace = text.replace(" ", "");
+        if (isStartOfSiret(textWithoutSpace) || isRna(textWithoutSpace)) return textWithoutSpace;
+        return text;
     }
 }

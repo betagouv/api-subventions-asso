@@ -8,17 +8,16 @@
     import { HomeController } from "./Home.controller";
 
     const ctrl = new HomeController();
-    const { input, isLoading, error } = ctrl;
+    const { input, isLoading, currentSearch, searchResult } = ctrl;
 
-    // Only triggers searchAssociation if input is defined and whenever it changes
-    $: input && ctrl.debounce(() => ctrl.onInput($input));
+    $: input && ctrl.onInput($input);
 </script>
 
 <Messages />
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
-        <form on:submit|preventDefault={ctrl.onSubmit}>
+        <form on:submit|preventDefault={() => ctrl.onSubmit()}>
             <div class="fr-search-bar fr-search-bar--lg" id="search-input">
                 <input
                     class="fr-input"
@@ -43,33 +42,49 @@
             </div>
         </div>
     </div>
-{:else if $error}
-    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-        <div class="fr-col-12 fr-col-md-12">
-            <div class="fr-card fr-card--no-arrow">
-                <div class="fr-card__body">
-                    <Alert type="info" small={true}>
-                        <p>
-                            Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA, SIREN ou
-                            SIRET
-                        </p>
-                    </Alert>
-                    <Alert small={true}>
-                        <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
-                    </Alert>
+{:else if $currentSearch}
+    {#await $currentSearch.promise then result}
+        {#if $searchResult.length}
+            <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
+                {#each $searchResult as association}
+                    <ResultCard {association} searchValue={$input} />
+                {/each}
+            </div>
+        {:else}
+            <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-md-12">
+                    <div class="fr-card fr-card--no-arrow">
+                        <div class="fr-card__body">
+                            <Alert type="info" small={true}>
+                                <p>
+                                    Si la recherche par nom ne donne pas de résultats, vous pouvez essayer avec le RNA,
+                                    SIREN ou SIRET
+                                </p>
+                            </Alert>
+                            <Alert small={true}>
+                                <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
+                            </Alert>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {/if}
+    {:catch error}
+        <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-md-12">
+                <div class="fr-card fr-card--no-arrow">
+                    <div class="fr-card__body">
+                        <Alert type="error" small={true}>
+                            <p>Une erreur est survenue</p>
+                        </Alert>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-{:else if ctrl.searchResult}
-    <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
-        {#each ctrl.searchResult as association}
-            <ResultCard {association} searchValue={$input} />
-        {/each}
-    </div>
+    {/await}
 {/if}
 
-{#if !ctrl.searchResult.length && !$isLoading && ctrl.searchHistory.length}
+{#if !$isLoading && !$searchResult.length}
     <div class="history fr-pt-5w">
         <h4 class="fr-py-3w">Vos dernières recherches</h4>
         <div class="fr-grid-row fr-grid-row--gutters">
@@ -96,5 +111,9 @@
 
     .card-description {
         min-height: 3rem;
+    }
+
+    .history .card-description {
+        /* TODO : css trim */
     }
 </style>
