@@ -9,6 +9,12 @@ import OsirisActionAdapter from "./dboAdapters/osirisActionAdapter";
 export class OsirisActionRepository {
     private readonly collection = db.collection<OsirisActionEntityDbo>("osiris-actions");
 
+    async createIndexes() {
+        await this.collection.createIndex({ "indexedInformations.compteAssoId": 1 });
+        await this.collection.createIndex({ "indexedInformations.osirisActionId": 1 });
+        await this.collection.createIndex({ "indexedInformations.siret": 1 });
+    }
+
     // Action Part
     public async add(osirisAction: OsirisActionEntity) {
         await this.collection.insertOne(OsirisActionAdapter.toDbo(osirisAction));

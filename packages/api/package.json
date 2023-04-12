@@ -1,6 +1,6 @@
 {
     "name": "api",
-    "version": "0.24.7",
+    "version": "0.24.9",
     "description": "",
     "main": "index.js",
     "engines": {
