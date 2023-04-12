@@ -7,7 +7,7 @@ export class OsirisRequestRepository {
     private readonly collection = db.collection<OsirisRequestEntity>("osiris-requests");
 
     async createIndexes() {
-        await this.collection.createIndex({ "providerInformations.osirisId": 1 });
+        await this.collection.createIndex({ "providerInformations.osirisId": 1 }, { unique: true });
         await this.collection.createIndex({ "legalInformations.rna": 1 });
         await this.collection.createIndex({ "legalInformations.siret": 1 });
     }
