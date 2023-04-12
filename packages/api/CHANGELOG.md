@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.10](https://github.com/betagouv/api-subventions-asso/compare/v0.24.9...v0.24.10) (2023-04-12)
+
+
+### Bug Fixes
+
+* **api:** fix create index osiris request ([4770a6e](https://github.com/betagouv/api-subventions-asso/commit/4770a6e77a0169cbf2710c45cdf3d303e45f11d2))
+
+
+
+
+
 ## [0.24.9](https://github.com/betagouv/api-subventions-asso/compare/v0.24.8...v0.24.9) (2023-04-12)
 
 
