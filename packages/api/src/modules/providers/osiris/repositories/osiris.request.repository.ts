@@ -6,6 +6,12 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 export class OsirisRequestRepository {
     private readonly collection = db.collection<OsirisRequestEntity>("osiris-requests");
 
+    async createIndexes() {
+        await this.collection.createIndex({ "providerInformations.osirisId": 1 });
+        await this.collection.createIndex({ "legalInformations.rna": 1 });
+        await this.collection.createIndex({ "legalInformations.siret": 1 });
+    }
+
     public async add(osirisRequest: OsirisRequestEntity) {
         return this.collection.insertOne(osirisRequest);
     }
