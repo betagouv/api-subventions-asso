@@ -1,14 +1,19 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
 import MigrationRepository from "../../../../shared/MigrationRepository";
-import DauphinSubventionDto from "../dto/DauphinSubventionDto";
+import DauphinGisproDbo from "./dbo/DauphinGisproDbo";
 
-export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventionDto> {
-    readonly collectionName = "dauphin-caches";
+export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDbo> {
+    readonly collectionName = "dauphin-gispro";
 
-    async upsert(entity: DauphinSubventionDto) {
+    async createIndexes() {
+        await this.collection.createIndex({ "dauphin.demandeur.SIRET.complet": 1 });
+        await this.collection.createIndex({ "dauphin.demandeur.SIRET.SIREN": 1 });
+    }
+
+    async upsert(entity: DauphinGisproDbo) {
         return this.collection.updateOne(
             {
-                reference: entity.reference,
+                "dauphin.reference": entity.dauphin.reference
             },
             { $set: entity },
             { upsert: true },
@@ -18,7 +23,7 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "demandeur.SIRET.complet": siret,
+                "dauphin.demandeur.SIRET.complet": siret
             })
             .toArray();
     }
@@ -26,7 +31,7 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "demandeur.SIRET.SIREN": siren,
+                "dauphin.demandeur.SIRET.SIREN": siren
             })
             .toArray();
     }
@@ -36,13 +41,13 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
             .aggregate([
                 {
                     $match: {
-                        "demandeur.SIRET.SIREN": siren,
-                    },
+                        "dauphin.demandeur.SIRET.SIREN": siren
+                    }
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$_document.dateVersion" },
-                    },
+                        dateVersion: { $toDate: "$dauphin._document.dateVersion" }
+                    }
                 },
                 {
                     $sort: {
@@ -54,8 +59,7 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
                 },
             ])
             .toArray();
-
-        if (result.length) return new Date(result[0]._document.dateVersion);
+        if (result.length) return new Date(result[0].dauphin._document.dateVersion);
         return undefined;
     }
 
@@ -67,13 +71,13 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
             .aggregate([
                 {
                     $match: {
-                        "demandeur.SIRET.complet": siret,
-                    },
+                        "dauphin.demandeur.SIRET.complet": siret
+                    }
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$_document.dateVersion" },
-                    },
+                        dateVersion: { $toDate: "$dauphin._document.dateVersion" }
+                    }
                 },
                 {
                     $sort: {
@@ -91,6 +95,6 @@ export class DauhpinCachesRepository extends MigrationRepository<DauphinSubventi
     }
 }
 
-const dauhpinCachesRepository = new DauhpinCachesRepository();
+const dauhpinGisproRepository = new DauhpinGisproRepository();
 
-export default dauhpinCachesRepository;
+export default dauhpinGisproRepository;
