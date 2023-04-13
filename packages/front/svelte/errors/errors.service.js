@@ -4,14 +4,14 @@ import { NotFoundError, UnauthoziedError } from "./index";
 export class ErrorsService {
     axiosErrorToError(e) {
         if (!e.isAxiosError) throw e;
-        switch (e.response.status) {
+        switch (e.response?.status) {
             case UnauthoziedError.httpCode:
                 return UnauthoziedError;
             case NotFoundError.httpCode:
                 return NotFoundError;
         }
 
-        return this._buildUnknownError(e.response.status);
+        return this._buildUnknownError(e.response?.status);
     }
 
     _buildUnknownError(status) {
