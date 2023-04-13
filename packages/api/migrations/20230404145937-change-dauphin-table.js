@@ -38,11 +38,11 @@ module.exports = {
 
         console.log("Rename collection");
         await collection.rename("dauphin-gispro");
-        console.log("Rename collection are finished");
+        console.log("Rename collection is finished");
 
         console.log("Create new indexes");
         await dauphinGisproRepository.createIndexes();
-        console.log("All new indexes has been created");
+        console.log("All new indexes have been created");
 
         // TODO write your migration here.
         // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
