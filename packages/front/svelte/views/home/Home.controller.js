@@ -49,10 +49,10 @@ export class HomeController {
     }
 
     onSubmit() {
-        if (isRna(this.input) || isSiren(this.input)) {
-            location.href = `/association/${this.input}`;
-        } else if (isSiret(this.input)) {
-            location.href = `/etablissement/${this.input}`;
+        if (isRna(this.input.value) || isSiren(this.input.value)) {
+            location.href = `/association/${this.input.value}`;
+        } else if (isSiret(this.input.value)) {
+            location.href = `/etablissement/${this.input.value}`;
         } else if (this.searchResult.value?.length) {
             location.href = `/association/${this.searchResult.value[0].rna || this.searchResult.value[0].siren}`;
         }
@@ -66,7 +66,7 @@ export class HomeController {
     }
 
     _removeSpaceFromIdentifier(text) {
-        const textWithoutSpace = text.replace(" ", "");
+        const textWithoutSpace = text.replaceAll(" ", "");
         if (isStartOfSiret(textWithoutSpace) || isRna(textWithoutSpace)) return textWithoutSpace;
         return text;
     }
