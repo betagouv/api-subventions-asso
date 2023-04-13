@@ -9,7 +9,7 @@ import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { formatIntToThreeDigits, formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
-import dauhpinCachesRepository from "./repositories/dauphinCache.repository";
+import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
@@ -23,33 +23,33 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const siren = siretToSiren(siret);
-        const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
+        const lastUpdate = await dauhpinGisproRepository.getLastUpdateBySiren(siren);
 
         try {
             const token = await this.getAuthToken();
             const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
-            await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+            await Promise.all(demandes.flat().map(demande => dauhpinGisproRepository.upsert({ dauphin: demande })));
         } catch (e) {
             console.error(e);
         }
 
-        return (await dauhpinCachesRepository.findBySiret(siret)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto),
+        return (await dauhpinGisproRepository.findBySiret(siret)).map(dto =>
+            DauphinDtoAdapter.toDemandeSubvention(dto)
         );
     }
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const lastUpdate = await dauhpinCachesRepository.getLastUpdateBySiren(siren);
+        const lastUpdate = await dauhpinGisproRepository.getLastUpdateBySiren(siren);
 
         try {
             const token = await this.getAuthToken();
             const demandes = await this.getDauphinSubventions(siren, token, lastUpdate);
-            await Promise.all(demandes.flat().map(demande => dauhpinCachesRepository.upsert(demande)));
+            await Promise.all(demandes.flat().map(demande => dauhpinGisproRepository.upsert({ dauphin: demande })));
         } catch (e) {
             console.error(e);
         }
 
-        return (await dauhpinCachesRepository.findBySiren(siren)).map(dto =>
-            DauphinDtoAdapter.toDemandeSubvention(dto),
+        return (await dauhpinGisproRepository.findBySiren(siren)).map(dto =>
+            DauphinDtoAdapter.toDemandeSubvention(dto)
         );
     }
 

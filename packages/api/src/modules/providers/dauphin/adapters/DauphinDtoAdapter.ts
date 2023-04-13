@@ -4,6 +4,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 import { toStatusFactory } from "../../helper";
+import DauphinGisproDbo from "../repositories/dbo/DauphinGisproDbo";
 
 export default class DauphinDtoAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -33,22 +34,23 @@ export default class DauphinDtoAdapter {
         },
     ];
 
-    public static toDemandeSubvention(dto: DauphinSubventionDto): DemandeSubvention {
+    public static toDemandeSubvention(dbo: DauphinGisproDbo): DemandeSubvention {
+        const dauphinData = dbo.dauphin;
         const lastUpdateDate =
-            dto._document?.dateVersion ||
-            dto.history.events[dto.history.events.length - 1]?.date ||
-            dto.history.begin.date;
+            dauphinData._document?.dateVersion ||
+            dauphinData.history.events[dauphinData.history.events.length - 1]?.date ||
+            dauphinData.history.begin.date;
         const toPV = ProviderValueFactory.buildProviderValueAdapter(
             dauphinService.provider.name,
             new Date(lastUpdateDate),
         );
         const toStatus = toStatusFactory(DauphinDtoAdapter._statusConversionArray);
-        const montantDemande = DauphinDtoAdapter.getMontantDemande(dto);
-        const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dto);
+        const montantDemande = DauphinDtoAdapter.getMontantDemande(dauphinData);
+        const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dauphinData);
         let dispositif = "Politique de la ville";
-        if (dto.thematique?.title) dispositif = dto.thematique?.title + " - " + dispositif;
+        if (dauphinData.thematique?.title) dispositif = dauphinData.thematique?.title + " - " + dispositif;
 
-        let serviceInstructeur = dto.financeursPrivilegies?.[0].title || "";
+        let serviceInstructeur = dauphinData.financeursPrivilegies?.[0].title || "";
         if (serviceInstructeur.match(/^\d{2}-ETAT-POLITIQUE-VILLE/)) {
             const part = serviceInstructeur.split("-");
             serviceInstructeur = `Politique de la ville (Dept ${part[0]})`;
@@ -60,21 +62,21 @@ export default class DauphinDtoAdapter {
         }
 
         return {
-            siret: toPV(dto.demandeur.SIRET.complet),
+            siret: toPV(dauphinData.demandeur.SIRET.complet),
             service_instructeur: toPV(serviceInstructeur),
             dispositif: toPV(dispositif),
-            statut_label: toPV(toStatus(dto.virtualStatusLabel)),
-            status: toPV(dto.virtualStatusLabel),
-            annee_demande: toPV(dto.exerciceBudgetaire),
+            statut_label: toPV(toStatus(dauphinData.virtualStatusLabel)),
+            status: toPV(dauphinData.virtualStatusLabel),
+            annee_demande: toPV(dauphinData.exerciceBudgetaire),
             montants: {
                 demande: montantDemande ? toPV(montantDemande) : undefined,
                 accorde: montantAccorde ? toPV(montantAccorde) : undefined,
             },
             actions_proposee: [
                 {
-                    intitule: toPV(dto.intituleProjet),
-                    objectifs: toPV(dto.description?.value || dto.virtualStatusLabel),
-                },
+                    intitule: toPV(dauphinData.intituleProjet),
+                    objectifs: toPV(dauphinData.description?.value || dauphinData.virtualStatusLabel)
+                }
             ],
         };
     }
