@@ -64,7 +64,9 @@
                         {elementData.montantsDemande}
                     </TableCell>
                     <TableCell position="end" primary="true">
-                        <StatusLabel status={elementData.status} />
+                        {#key elementData.status}
+                            <StatusLabel status={elementData.status} />
+                        {/key}
                         <!--
                         What follows is an a11y trick: users can focus this on keyboard.
                         This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
