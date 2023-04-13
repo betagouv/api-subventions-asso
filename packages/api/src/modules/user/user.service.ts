@@ -94,7 +94,7 @@ export class UserService {
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
 
-        if (!user) throw new NotFoundError("User not found", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
+        if (!user) throw new UnauthorizedError("User not found", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
         if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
         const validPassword = await bcrypt.compare(password, user.hashPassword);
