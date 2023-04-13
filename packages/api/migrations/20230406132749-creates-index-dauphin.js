@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: dauphinGisproRepository
+    default: dauphinGisproRepository,
 } = require("../build/src/modules/providers/dauphin/repositories/dauphin-gispro.repository");
 
-
 module.exports = {
-    async up(db, client) {
+    async up() {
         await connectDB();
 
         console.log("Create new indexes");
@@ -19,9 +18,9 @@ module.exports = {
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
     },
 
-    async down(db, client) {
+    async down() {
         // TODO write the statements to rollback your migration (if possible)
         // Example:
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    }
+    },
 };
