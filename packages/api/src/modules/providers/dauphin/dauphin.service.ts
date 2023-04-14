@@ -10,7 +10,6 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
-import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
@@ -25,8 +24,7 @@ export class DauphinService implements DemandesSubventionsProvider {
     async fetchAndSaveApplicationsFromDate(date) {
         try {
             const token = await this.getAuthToken();
-            const applications = await this.getApplicationsFromDate(token, date);
-            await this.saveApplicationsInCache(applications);
+            await this.getApplicationsFromDate(token, date);
         } catch (e) {
             console.error(e);
         }
@@ -46,45 +44,44 @@ export class DauphinService implements DemandesSubventionsProvider {
         return null;
     }
 
-    private async getApplicationsFromDate(token, date: Date): Promise<DauphinGisproDbo[]> {
+    private async getApplicationsFromDate(token, date: Date) {
         let totalToFetch = 0;
-        let applications: any[] = [];
+        let fetched = 0;
         do {
             try {
+                console.log(`start fetching data from ${fetched}`);
                 const result = (
                     await axios.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-                        { ...this.buildFetchFromDateQuery(date), from: applications.length },
+                        { ...this.buildFetchFromDateQuery(date), from: fetched },
                         this.buildSearchHeader(token),
                     )
                 ).data;
 
                 if (!result || !result.hits) return [];
 
-                const hits = result.hits.hits as any[];
+                const applications = result.hits.hits;
+                fetched += applications.length;
                 totalToFetch = result.hits.total;
 
-                if (!hits) {
+                if (!applications) {
                     throw new Error("Something went wrong with dauphin results");
                 }
 
-                applications = applications.concat(hits);
-                console.log(`fetched ${applications.length} over ${totalToFetch}`);
+                await this.saveApplicationsInCache(applications.map(this.formatAndReturnDto));
+
+                console.log(`fetched ${applications.length} applications`);
             } catch (e) {
                 console.error(e);
                 return [];
             }
-        } while (applications.length < totalToFetch);
-
-        if (!totalToFetch || !applications.length) return applications;
-
-        return applications.map(dbo => ({ dauphin: this.formatAndReturnDto(dbo) }));
+        } while (fetched < totalToFetch);
+        return Promise.resolve();
     }
 
-    private saveApplicationsInCache(applications: DauphinGisproDbo[]) {
-        console.log("applications length :", applications.length);
+    private saveApplicationsInCache(applications: DauphinSubventionDto[]) {
         return asyncForEach(applications, async application => {
-            await dauhpinGisproRepository.upsert(application);
+            await dauhpinGisproRepository.upsert({ dauphin: application });
         });
     }
 
