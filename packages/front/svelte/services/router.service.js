@@ -4,6 +4,11 @@ import {
     PAGE_ADMIN_USERS_CREATE_NAME,
     PAGE_ADMIN_STATS_NAME
 } from "../views/admin/admin.constant";
+if (![].at) {
+    Array.prototype.at = function (pos) {
+        return this.slice(pos, pos + 1)[0];
+    };
+}
 
 // TODO: rendre dynamique (via une librairie de routing ?)
 export const buildBreadcrumbs = path => {
