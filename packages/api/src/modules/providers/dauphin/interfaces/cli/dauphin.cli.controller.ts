@@ -6,13 +6,11 @@ import dauphinService from "../../dauphin.service";
 export default class DauphinCliController {
     static cmdName = "dauphin";
 
-    async getApplications(date = new Date()) {
+    // only for test purpose
+    async test(date = new Date()) {
         const midnight = new Date(date);
-
         midnight.setHours(0, 0, 0, 0);
-
-        console.log(midnight);
-
+        console.log(`fetching all dauphin applications since ${midnight}`);
         await dauphinService.fetchAndSaveApplicationsFromDate(midnight);
     }
 }
