@@ -116,7 +116,7 @@ export class DauphinService implements DemandesSubventionsProvider {
     private buildFetchFromDateQuery(date) {
         return {
             size: 1000,
-            sort: [{ "demandeur.famille.title": { order: "asc", missing: "_last", mode: "min" } }],
+            sort: [{ date: { order: "desc", missing: "_last", mode: "max" } }],
             query: {
                 filtered: {
                     filter: {
