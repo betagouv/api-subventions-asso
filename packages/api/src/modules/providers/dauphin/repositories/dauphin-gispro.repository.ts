@@ -8,7 +8,9 @@ export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDb
     async createIndexes() {
         await this.collection.createIndex({ "dauphin.demandeur.SIRET.complet": 1 });
         await this.collection.createIndex({ "dauphin.demandeur.SIRET.SIREN": 1 });
+        // Unique id on dauphin
         await this.collection.createIndex({ "dauphin.reference": 1 });
+        // Unique id on gispro
         await this.collection.createIndex({ "dauphin.multiFinancement.financeurs.source.reference": 1 });
     }
 
