@@ -82,7 +82,7 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("`fetchAndSaveApplicationsFromDate`", () => {
+    describe("fetchAndSaveApplicationsFromDate", () => {
         // @ts-expect-error: private method
         const mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken");
         // @ts-expect-error: private method
@@ -169,6 +169,17 @@ describe("Dauphin Service", () => {
             // @ts-expect-error getDauphinSubventions is private
             await dauphinService.getApplicationsFromDate(TOKEN, new Date());
             expect(mockSaveApplicationsInCache).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("saveApplicationsInCache", () => {
+        it("should upsert entites asynchornously", async () => {
+            const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
+            mockUpsert.mockImplementation();
+            // @ts-expect-error: private method
+            await dauphinService.saveApplicationsInCache(ENTITIES);
+            expect(mockUpsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
+            expect(mockUpsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
         });
     });
 
@@ -278,17 +289,6 @@ describe("Dauphin Service", () => {
             const actual = await dauphinService.sendAuthRequest();
 
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("saveApplicationsInCache", () => {
-        it("should upsert entites asynchornously", async () => {
-            const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
-            mockUpsert.mockImplementation();
-            // @ts-expect-error: private method
-            await dauphinService.saveApplicationsInCache(ENTITIES);
-            expect(mockUpsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
-            expect(mockUpsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
         });
     });
 });
