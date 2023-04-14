@@ -21,15 +21,6 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     isDemandesSubventionsProvider = true;
 
-    async fetchAndSaveApplicationsFromDate(date) {
-        try {
-            const token = await this.getAuthToken();
-            await this.getApplicationsFromDate(token, date);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const applications = await dauhpinGisproRepository.findBySiret(siret);
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
@@ -42,6 +33,15 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     async getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
         return null;
+    }
+
+    async fetchAndSaveApplicationsFromDate(date) {
+        try {
+            const token = await this.getAuthToken();
+            await this.getApplicationsFromDate(token, date);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     private async getApplicationsFromDate(token, date: Date) {
@@ -62,7 +62,8 @@ export class DauphinService implements DemandesSubventionsProvider {
 
                 const applications = result.hits.hits;
                 fetched += applications.length;
-                totalToFetch = result.hits.total;
+
+                if (totalToFetch === 0) totalToFetch = result.hits.total;
 
                 if (!applications) {
                     throw new Error("Something went wrong with dauphin results");
