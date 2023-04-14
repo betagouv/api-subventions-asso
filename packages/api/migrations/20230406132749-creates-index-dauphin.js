@@ -10,7 +10,7 @@ module.exports = {
 
         console.log("Create new indexes");
         await dauphinGisproRepository.createIndexes();
-        console.log("All new indexes has been created");
+        console.log("All new indexes have been created");
 
         // TODO write your migration here.
         // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
