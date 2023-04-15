@@ -27,13 +27,6 @@
 </script>
 
 <Table>
-    <svelte:fragment slot="colgroup">
-        <colgroup>
-            <col class="col-100" />
-            <col />
-            <col class="col-110" />
-        </colgroup>
-    </svelte:fragment>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnDataView}
             <TableHead
@@ -74,15 +67,3 @@
         {/each}
     </svelte:fragment>
 </Table>
-
-<style>
-    .col-100 {
-        width: 100px;
-        max-width: 100px;
-    }
-
-    .col-110 {
-        width: 110px;
-        max-width: 110px;
-    }
-</style>
