@@ -6,11 +6,13 @@ jest.mock("@helpers/textHelper", () => ({
 }));
 
 describe("Subventions Adapter", () => {
+    const SIRET = "12345678912345";
     const SUBVENTION = {
         dispositif: "ABC DISPOSITIF",
         serviceInstructeur: "SERVICE INST.",
         actions_proposee: [{ intitule: "A" }, { intitule: "B" }, { intitule: "C" }],
     };
+    const ELEMENT = { siret: SIRET, subvention: SUBVENTION };
 
     describe("toSubvention()", () => {
         const mockGetProjectName = jest.spyOn(SubventionsAdapter, "_getProjectName");
@@ -19,6 +21,7 @@ describe("Subventions Adapter", () => {
 
         it("should return an object with properties", () => {
             const expected = [
+                "siret",
                 "serviceInstructeur",
                 "dispositif",
                 "projectName",
@@ -26,13 +29,13 @@ describe("Subventions Adapter", () => {
                 "montantsAccorde",
                 "status",
             ];
-            const actual = Object.keys(SubventionsAdapter.toSubvention(SUBVENTION));
+            const actual = Object.keys(SubventionsAdapter.toSubvention(ELEMENT));
             expect(actual).toEqual(expected);
         });
 
         it("should call valueOrHyphen() multiple time", () => {
-            SubventionsAdapter.toSubvention(SUBVENTION);
-            expect(dataHelper.valueOrHyphen).toHaveBeenCalledTimes(4);
+            SubventionsAdapter.toSubvention(ELEMENT);
+            expect(dataHelper.valueOrHyphen).toHaveBeenCalledTimes(5);
         });
     });
 

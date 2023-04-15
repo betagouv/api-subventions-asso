@@ -20,19 +20,14 @@
 </script>
 
 <Table>
-    <svelte:fragment slot="colgroup">
-        <colgroup>
-            <col class="col-120" />
-            <col class="col-170" />
-            <col class="col-170" />
-            <col class="col-100" />
-            <col class="col-190" />
-        </colgroup>
-    </svelte:fragment>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnData}
             {#if columnData.haveAction}
-                <TableHead action={columnData.action} actionActive={columnData.active} actionDirection={sortDirection}>
+                <TableHead
+                    size={columnData.size}
+                    action={columnData.action}
+                    actionActive={columnData.active}
+                    actionDirection={sortDirection}>
                     {columnData.label}
                 </TableHead>
             {:else}
@@ -53,6 +48,11 @@
                     </TableCell>
                     <TableCell primary={true} position="end">?</TableCell>
                 {:else}
+                    <TableCell>
+                        {elementData.siret.substring(0, 8)}
+                        <br />
+                        {elementData.siret.substring(9, 14)}
+                    </TableCell>
                     <TableCell>{elementData.serviceInstructeur}</TableCell>
                     <TableCell>
                         {elementData.dispositif}
@@ -76,25 +76,3 @@
         {/each}
     </svelte:fragment>
 </Table>
-
-<style>
-    .col-170 {
-        width: 170px;
-        max-width: 170px;
-    }
-
-    .col-120 {
-        width: 120px;
-        max-width: 120px;
-    }
-
-    .col-100 {
-        width: 100px;
-        max-width: 100px;
-    }
-
-    .col-190 {
-        width: 190px;
-        max-width: 190px;
-    }
-</style>

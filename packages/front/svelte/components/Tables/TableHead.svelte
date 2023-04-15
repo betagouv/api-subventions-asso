@@ -1,13 +1,17 @@
 <script>
     import Button from "../../dsfr/Button.svelte";
 
+    export let size = undefined;
     export let action = undefined;
     export let actionActive = false;
     export let actionDirection = "asc";
     export let actionDisable = false;
+
+    let width = size ? `width:${size}` : undefined;
+    if (width?.slice(-1) !== "%") width += "%";
 </script>
 
-<th scope="col">
+<th style={width || null}>
     <div class="{actionActive ? 'active' : ''} {actionActive ? actionDirection : ''}">
         <p>
             <slot />
@@ -34,8 +38,8 @@
     p {
         min-height: 100px;
         max-height: 100px;
-        overflow: hidden;
         font-size: 0.875rem;
+        word-wrap: break-word;
     }
 
     div :global(.fr-btn) {
