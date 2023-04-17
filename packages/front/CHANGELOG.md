@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/betagouv/datasubvention/compare/v0.25.1...v0.26.0) (2023-04-17)
+
+
+### Bug Fixes
+
+* **front:** disable auth on 404 page ([2627934](https://github.com/betagouv/datasubvention/commit/2627934ce78e67378cc60238c11f6e2854affca6))
+* **front:** display hyphen in total amount when no versements ([5aaf0fe](https://github.com/betagouv/datasubvention/commit/5aaf0fea866ae4d48349f7e8b311f4b864fe6f10))
+* **front:** remove all spaces not only the first one ([b0199b2](https://github.com/betagouv/datasubvention/commit/b0199b2af47e6a225a1bd60b035922ee5e985bc2))
+
+
+### Features
+
+* **front:** display bop in application table ([b519afc](https://github.com/betagouv/datasubvention/commit/b519afc231c925ccb8ee8ab90baf571d81342692))
+* **front:** hide extract csv button if no data ([2bc3679](https://github.com/betagouv/datasubvention/commit/2bc3679e819f19bd7bc9147298ba00778864271b))
+* **front:** use service/port architecture and proper error management ([10b9881](https://github.com/betagouv/datasubvention/commit/10b9881ebbc39f0ab1cec4a4601079071d130f52))
+
+
+
+
+
 ## [0.25.1](https://github.com/betagouv/datasubvention/compare/v0.24.10...v0.25.1) (2023-04-17)
 
 

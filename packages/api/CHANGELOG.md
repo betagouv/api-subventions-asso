@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/betagouv/api-subventions-asso/compare/v0.25.1...v0.26.0) (2023-04-17)
+
+
+### Features
+
+* **api:** add dependency to cron ([4ab0a07](https://github.com/betagouv/api-subventions-asso/commit/4ab0a079b84924f26cda21e7a79ae379004ef943))
+* **api:** add ej and versementkey on dauphin dto ([e1c8f80](https://github.com/betagouv/api-subventions-asso/commit/e1c8f80be8fd8abd89ef58991d4846c9ad1f3f70))
+* **api:** add gispro data one dauhpin data ([90a95b7](https://github.com/betagouv/api-subventions-asso/commit/90a95b715cb712dec661e32f29df1364b9696437))
+* **api:** cron architecture ([18f37f0](https://github.com/betagouv/api-subventions-asso/commit/18f37f0792328df561741b2d9845a42e19fd0ac9))
+* **api:** cron for demarches simplifiees ([0386e4b](https://github.com/betagouv/api-subventions-asso/commit/0386e4b57923edac0d3108d765183f713a2a952e))
+* **api:** example cron controller ([449e9ed](https://github.com/betagouv/api-subventions-asso/commit/449e9ed2962d250740be4bfab0e4494c7d00b083))
+* **api:** log cron tasks ([f4f132e](https://github.com/betagouv/api-subventions-asso/commit/f4f132ecf1f27fba37a61e60248025c53b1b0fbf))
+* **api:** new cron scheduler example ([1f89eaa](https://github.com/betagouv/api-subventions-asso/commit/1f89eaa7033385bdbeeacb0012597967435e13a8))
+* **api:** new cron scheduler format ([6b4f0f2](https://github.com/betagouv/api-subventions-asso/commit/6b4f0f2a255b2727e0ac2a9529c995f27b9edd12))
+* **api:** user not found in login should be 401 ([c359738](https://github.com/betagouv/api-subventions-asso/commit/c359738f99d6e7580b2a69f5f401564b5d3c34aa))
+
+
+
+
+
 ## [0.25.1](https://github.com/betagouv/api-subventions-asso/compare/v0.24.10...v0.25.1) (2023-04-17)
 
 
