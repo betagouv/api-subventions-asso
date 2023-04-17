@@ -3,6 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.25.1](https://github.com/betagouv/api-subventions-asso/compare/v0.24.10...v0.25.1) (2023-04-17)
+
+
+### Bug Fixes
+
+* **api:** change provider name of rib documents ([395ff4d](https://github.com/betagouv/api-subventions-asso/commit/395ff4d1a14d9f4b06bdfe57dda674549aba9ff1))
+* **api:** delete consumer if could not create token ([5016a43](https://github.com/betagouv/api-subventions-asso/commit/5016a43757973255bce85a9ff1a6f4ed95e1bf0d))
+* **api:** fix chorus service tests ([3a7bb8c](https://github.com/betagouv/api-subventions-asso/commit/3a7bb8cc1a4362665787075a0c6eeebfe75fcedb))
+* **api:** mock new Date in bodacc adapter test ([ea153d5](https://github.com/betagouv/api-subventions-asso/commit/ea153d56e6ba66a971a4f3c7bbf63a0ccb3ce645))
+* **api:** return null if bodacc anwser is empty ([c7e098d](https://github.com/betagouv/api-subventions-asso/commit/c7e098d29c7ca94d4c9cc3c67d8549963bf44feb))
+* **api:** user.service activeUser test ([5c9b6c2](https://github.com/betagouv/api-subventions-asso/commit/5c9b6c2b543e53b64cc4d8e3b2af69782e1af9c4))
+* **front:** minimum & maximum nb digits need to be consistent ([bedee74](https://github.com/betagouv/api-subventions-asso/commit/bedee74de75097de55c0f3d8f36fb582ad96af46))
+* **front:** no modale on empty rows ([c14fe24](https://github.com/betagouv/api-subventions-asso/commit/c14fe24ebbebedb89c464da601f46dab23bdc4e6))
+* **front:** open doc card in new tab ([69e25ee](https://github.com/betagouv/api-subventions-asso/commit/69e25ee80486ceeecb96882258829be722d1cf2e))
+* **front:** polyfill at to be supported by old firefox ([b9519ef](https://github.com/betagouv/api-subventions-asso/commit/b9519ef7299d87d7a410c8ed15390e763408b93b))
+* **front:** print of no action description ([4d96935](https://github.com/betagouv/api-subventions-asso/commit/4d96935a48e90b7973b4dcd6fc0c42a7350d8cf1))
+* **front:** remove second icon in document card ([ee18b39](https://github.com/betagouv/api-subventions-asso/commit/ee18b3992bd53a192ed798906fb9015c5ebd67ee))
+* **front:** use getLastVersementsDate from helper ([29b2a47](https://github.com/betagouv/api-subventions-asso/commit/29b2a477fe51cafa30a9d7d792b7aeb567545d72))
+* **front:** when no action ([21fd0d4](https://github.com/betagouv/api-subventions-asso/commit/21fd0d41cfff2eb6d42e14ac9f5b578e0fd36156))
+
+
+### Features
+
+* **api:** add bodacc description ([49bdce3](https://github.com/betagouv/api-subventions-asso/commit/49bdce39d35b7e357c9a55a55115bb1ff4e54c48))
+* **api:** add bodacc service and adapter ([7ac55e7](https://github.com/betagouv/api-subventions-asso/commit/7ac55e7c24c94ce0a35101f42d3de37ff3b264b5))
+* **api:** add bodacc service in the provider list ([d4344a1](https://github.com/betagouv/api-subventions-asso/commit/d4344a1045cc55a71edf3ba2af4f6814b79f84c9))
+* **api:** cli controller to test gispro parser ([3aa9b6c](https://github.com/betagouv/api-subventions-asso/commit/3aa9b6c2e22d8dee9228b386da422022dc211834))
+* **api:** gispro join parser and types ([6264c03](https://github.com/betagouv/api-subventions-asso/commit/6264c03f25a3e20b2caab7c605997c0c111b252c))
+* **api:** sends bop ([ae51da1](https://github.com/betagouv/api-subventions-asso/commit/ae51da12d46da1d285bcbf74d7cf330b6d75a0b3))
+* **api:** tqdm to pretty print progress ([71f8c66](https://github.com/betagouv/api-subventions-asso/commit/71f8c6650ba8416c1f85e962c12d28d425e2a202))
+* **api:** update http error code documentation ([6e675c5](https://github.com/betagouv/api-subventions-asso/commit/6e675c520b44cbf03c208dc6c476879354cb6d79))
+* **dto:** add BodaccRecordDto to AssociationDto ([e4e4941](https://github.com/betagouv/api-subventions-asso/commit/e4e4941965ae13bd2a5fc7f7e2249dda1917745d))
+* **dto:** make Association Bodacc optionnal ([99486cc](https://github.com/betagouv/api-subventions-asso/commit/99486cc6ec291f2cce23b75e3858e7ced6a7d84f))
+* **dto:** make Association bodacc prop a ProviderValues ([687cb75](https://github.com/betagouv/api-subventions-asso/commit/687cb757d154a50847edceb0b4b82d37068f31df))
+* **front:** 1113 data disclaimer + style ([066e066](https://github.com/betagouv/api-subventions-asso/commit/066e06625856591f9b7cd508d3544630bf01f97e)), closes [#1113](https://github.com/betagouv/api-subventions-asso/issues/1113)
+* **front:** a11y and style using p tags ([2cb30ca](https://github.com/betagouv/api-subventions-asso/commit/2cb30ca115928b340da2bbb3d4d24a472cebd0a3))
+* **front:** a11y sr-only tabbable button ([3b89049](https://github.com/betagouv/api-subventions-asso/commit/3b89049fe8f2fa214b7927eaae211c0c1534bde9))
+* **front:** add all roles select option for contacts filtering ([60dfe29](https://github.com/betagouv/api-subventions-asso/commit/60dfe29b2be6371e95055257486903b9f459cb06))
+* **front:** add requests service ([78c5baf](https://github.com/betagouv/api-subventions-asso/commit/78c5baf3b62eeaf6b7c6e4f67cd4139e91f9b0ab))
+* **front:** back to always status ([73e7b80](https://github.com/betagouv/api-subventions-asso/commit/73e7b80d84c4847f9fab58e5b8fd8f15097c4dea))
+* **front:** contact page breadcrumbs ([669fdbb](https://github.com/betagouv/api-subventions-asso/commit/669fdbb2c14ef0187024c06248273f832519b36c))
+* **front:** contact page in svelte ([8d55b4c](https://github.com/betagouv/api-subventions-asso/commit/8d55b4cb033db31e1e90d9433fa8617c0a736a43))
+* **front:** don't cut word ([fca9976](https://github.com/betagouv/api-subventions-asso/commit/fca9976a1eca759ad57265b6c6c9478c1311ae08))
+* **front:** extract notFoundMessage from controller ([2e42636](https://github.com/betagouv/api-subventions-asso/commit/2e42636d39b050522e6046fd2b8b0cfe6c17e239))
+* **front:** hide exercice filter ([8964bf2](https://github.com/betagouv/api-subventions-asso/commit/8964bf2a454fa6eb67f3ef415fd4a63e679fdbe5))
+* **front:** link only on address ([5da624c](https://github.com/betagouv/api-subventions-asso/commit/5da624c05e49ee7faae015c234ed126c19886faa))
+* **front:** new subvention info modale ([223237e](https://github.com/betagouv/api-subventions-asso/commit/223237e5225e4f374cf83fc39a349d63f05ecea2))
+* **front:** prepare establishment preview style and click behavior ([8b47a31](https://github.com/betagouv/api-subventions-asso/commit/8b47a310f9bbc32fa76ad4d71e06dc883b5726f6))
+* **front:** primary cell style ([f5a40e7](https://github.com/betagouv/api-subventions-asso/commit/f5a40e7318e47adecc0a966f1539cb8a128d9c5e))
+* **front:** safe display of amount if some are unknown ([adfbe9c](https://github.com/betagouv/api-subventions-asso/commit/adfbe9c2e9161cddabbb87f4c00abce6cb05db57))
+* **front:** subv modal on row click instead of specific column ([80fc7b7](https://github.com/betagouv/api-subventions-asso/commit/80fc7b7444a0f068d6224df83213fc0d4433d235))
+* **front:** update contactEtab test ([3fff7ea](https://github.com/betagouv/api-subventions-asso/commit/3fff7ea93ad8dff2be94c8987da5cbdb67c26896))
+* **front:** update external link ([e4607a5](https://github.com/betagouv/api-subventions-asso/commit/e4607a5c0436c3c6aec91c51a273bf60a5078936))
+* **front:** update wording if no data on any exercices ([939e821](https://github.com/betagouv/api-subventions-asso/commit/939e821fce7ff0324bfd0bf12e549ef3943ecf17))
+* **front:** use request service on auth and versement ports ([28fbb4e](https://github.com/betagouv/api-subventions-asso/commit/28fbb4e612f32fb1cc7dba34af60e443ca21d428))
+* **front:** use svelte contact page ([f2fdd21](https://github.com/betagouv/api-subventions-asso/commit/f2fdd217ebba4e854d23b93b3bcc4056b64c2939))
+
+
+
+
+
 # [0.25.0](https://github.com/betagouv/api-subventions-asso/compare/v0.24.7...v0.25.0) (2023-04-04)
 
 
