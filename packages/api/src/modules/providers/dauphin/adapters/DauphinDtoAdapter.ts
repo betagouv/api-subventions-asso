@@ -65,6 +65,8 @@ export default class DauphinDtoAdapter {
             siret: toPV(dauphinData.demandeur.SIRET.complet),
             service_instructeur: toPV(serviceInstructeur),
             dispositif: toPV(dispositif),
+            ej: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
+            versementKey: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
             statut_label: toPV(toStatus(dauphinData.virtualStatusLabel)),
             status: toPV(dauphinData.virtualStatusLabel),
             annee_demande: toPV(dauphinData.exerciceBudgetaire),
@@ -75,8 +77,8 @@ export default class DauphinDtoAdapter {
             actions_proposee: [
                 {
                     intitule: toPV(dauphinData.intituleProjet),
-                    objectifs: toPV(dauphinData.description?.value || dauphinData.virtualStatusLabel)
-                }
+                    objectifs: toPV(dauphinData.description?.value || dauphinData.virtualStatusLabel),
+                },
             ],
         };
     }
