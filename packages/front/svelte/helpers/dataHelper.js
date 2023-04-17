@@ -3,11 +3,13 @@ export const valueOrHyphen = value => value || "-";
 export const numberToEuro = value => {
     if (isNaN(value)) return;
     value = typeof value === "string" ? parseFloat(value) : value;
+    const nbDigits = value % 1 ? 2 : 0;
     // maximumFractionDigits: check if value have digits if not digits no display N,00
     return value.toLocaleString("fr-FR", {
         style: "currency",
         currency: "EUR",
-        maximumFractionDigits: value % 1 ? 2 : 0
+        maximumFractionDigits: nbDigits,
+        minimumFractionDigits: nbDigits
     });
 };
 
