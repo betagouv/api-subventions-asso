@@ -2,18 +2,22 @@ import { Siren, Siret } from "@api-subventions-asso/dto";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import DauphinGisproDbo from "./dbo/DauphinGisproDbo";
 
-export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDbo> {
+export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDbo> {
     readonly collectionName = "dauphin-gispro";
 
     async createIndexes() {
         await this.collection.createIndex({ "dauphin.demandeur.SIRET.complet": 1 });
         await this.collection.createIndex({ "dauphin.demandeur.SIRET.SIREN": 1 });
+        // Unique id on dauphin
+        await this.collection.createIndex({ "dauphin.reference": 1 });
+        // Unique id on gispro
+        await this.collection.createIndex({ "dauphin.multiFinancement.financeurs.source.reference": 1 });
     }
 
     async upsert(entity: DauphinGisproDbo) {
         return this.collection.updateOne(
             {
-                "dauphin.reference": entity.dauphin.reference
+                "dauphin.reference": entity.dauphin.reference,
             },
             { $set: entity },
             { upsert: true },
@@ -23,7 +27,7 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "dauphin.demandeur.SIRET.complet": siret
+                "dauphin.demandeur.SIRET.complet": siret,
             })
             .toArray();
     }
@@ -31,9 +35,15 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "dauphin.demandeur.SIRET.SIREN": siren
+                "dauphin.demandeur.SIRET.SIREN": siren,
             })
             .toArray();
+    }
+
+    findOneByDauphinId(codeDossier: string) {
+        return this.collection.findOne({
+            "dauphin.multiFinancement.financeurs.source.reference": codeDossier,
+        });
     }
 
     async getLastUpdateBySiren(siren: Siren): Promise<Date | undefined> {
@@ -41,13 +51,13 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
             .aggregate([
                 {
                     $match: {
-                        "dauphin.demandeur.SIRET.SIREN": siren
-                    }
+                        "dauphin.demandeur.SIRET.SIREN": siren,
+                    },
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$dauphin._document.dateVersion" }
-                    }
+                        dateVersion: { $toDate: "$dauphin._document.dateVersion" },
+                    },
                 },
                 {
                     $sort: {
@@ -71,13 +81,13 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
             .aggregate([
                 {
                     $match: {
-                        "dauphin.demandeur.SIRET.complet": siret
-                    }
+                        "dauphin.demandeur.SIRET.complet": siret,
+                    },
                 },
                 {
                     $addFields: {
-                        dateVersion: { $toDate: "$dauphin._document.dateVersion" }
-                    }
+                        dateVersion: { $toDate: "$dauphin._document.dateVersion" },
+                    },
                 },
                 {
                     $sort: {
@@ -95,6 +105,6 @@ export class DauhpinGisproRepository extends MigrationRepository<DauphinGisproDb
     }
 }
 
-const dauhpinGisproRepository = new DauhpinGisproRepository();
+const dauphinGisproRepository = new DauphinGisproRepository();
 
-export default dauhpinGisproRepository;
+export default dauphinGisproRepository;
