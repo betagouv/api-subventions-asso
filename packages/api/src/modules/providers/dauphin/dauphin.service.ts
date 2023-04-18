@@ -233,6 +233,10 @@ export class DauphinService implements DemandesSubventionsProvider {
         entity.gispro = gisproEntity;
         await dauhpinGisproRepository.upsert(entity);
     }
+
+    migrateDauphinCacheToDauphinGispro(logger) {
+        return dauhpinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
+    }
 }
 
 const dauphinService = new DauphinService();

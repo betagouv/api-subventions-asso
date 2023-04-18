@@ -1,4 +1,5 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
+import { UpdateFilter } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import DauphinGisproDbo from "./dbo/DauphinGisproDbo";
 
@@ -102,6 +103,42 @@ export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDb
 
         if (result.length) return new Date(result[0]._document.dateVersion);
         return undefined;
+    }
+
+    async migrateDauphinCacheToDauphinGispro(logger: (message: string, writeOnSameLine?: boolean) => void) {
+        const collection = this.db.collection("dauphin-caches");
+        await collection.dropIndexes();
+
+        logger("Start update all entities");
+        const cursor = collection.find();
+        let i = 0;
+
+        for await (const entity of cursor) {
+            const updateQuery = {
+                $unset: {
+                    ...Object.keys(entity).reduce((acc, key) => {
+                        if (key == "_id") return acc;
+                        acc[key] = "";
+                        return acc;
+                    }, {}),
+                },
+                $set: { dauphin: entity },
+            };
+
+            await collection.updateOne({ _id: entity._id }, updateQuery as unknown as UpdateFilter<DauphinGisproDbo>);
+            i++;
+            logger(i + " entites saved", true);
+        }
+
+        logger("All entities has been updated");
+
+        logger("Rename collection");
+        await collection.rename("dauphin-gispro");
+        logger("Rename collection is finished");
+
+        logger("Create new indexes");
+        await this.createIndexes();
+        logger("All new indexes have been created");
     }
 }
 
