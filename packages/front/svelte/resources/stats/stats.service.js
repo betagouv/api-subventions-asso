@@ -15,8 +15,8 @@ export class StatsService {
         return statsPort.getUsersDistribution();
     }
 
-    async getMonthlyRequestCount(year) {
-        const rawData = await statsPort.getMonthlyRequestCount(year);
+    async getMonthlyVisitCount(year) {
+        const rawData = await statsPort.getMonthlyVisitCount(year);
         return statsAdapter.formatRequestCount(rawData);
     }
 }

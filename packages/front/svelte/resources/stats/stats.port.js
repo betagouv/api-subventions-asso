@@ -32,8 +32,9 @@ class StatsPort {
         });
     }
 
-    getMonthlyRequestCount(year) {
-        const path = `${this.BASE_PATH}/requests/monthly/${year}`;
+    getMonthlyVisitCount(year) {
+        // TODO update route (and test?)
+        const path = `${this.BASE_PATH}/visits/monthly/${year}`;
         return axios.get(path).then(result => {
             if (result.data.message) throw new Error(result.data.message);
             return result.data;

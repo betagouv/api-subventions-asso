@@ -76,27 +76,6 @@ export class StatsRepository {
         return result[middle].nbOfRequest;
     }
 
-    public countRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
-        const start = new Date(year, 0, 1);
-        const end = new Date(year + 1, 0, 0);
-        const buildQuery = () => {
-            const matchQuery: { $match: DefaultObject } = {
-                $match: {
-                    timestamp: {
-                        $gte: start,
-                        $lte: end,
-                    },
-                    "meta.req.user.email": { $ne: null },
-                },
-            };
-            if (!includesAdmin) matchQuery.$match["meta.req.user.roles"] = { $nin: [RoleEnum.admin] };
-
-            return [matchQuery, { $group: { _id: { $month: "$timestamp" }, nbOfRequests: { $sum: 1 } } }];
-        };
-
-        return this.collection.aggregate(buildQuery()).toArray();
-    }
-
     public getLogsWithRegexUrl(regex: RegExp) {
         return this.collection.find({
             "meta.req.url": regex,

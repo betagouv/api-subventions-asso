@@ -1,5 +1,5 @@
 import statsService from "../../../../../resources/stats/stats.service";
-import { MonthlyRequestCountByYearController } from "./MonthlyRequestCountByYear.controller";
+import { MonthlyVisitCountByYearController } from "./MonthlyVisitCountByYearController";
 
 describe("MonthlyRequestCountByYearController", () => {
     describe("loadData", () => {
@@ -14,7 +14,7 @@ describe("MonthlyRequestCountByYearController", () => {
 
         beforeAll(() => {
             spyService.mockResolvedValue(DATA);
-            ctrl = new MonthlyRequestCountByYearController();
+            ctrl = new MonthlyVisitCountByYearController();
         });
         afterAll(() => spyService.mockRestore());
 

@@ -1,7 +1,7 @@
 <script>
     import { PAGE_ADMIN_STATS_NAME } from "../admin.constant";
     import TopAssociations from "./components/TopAssociations/TopAssociations.svelte";
-    import MonthlyRequestCountByYear from "./components/MonthlyRequestCountByYear/MonthlyRequestCountByYear.svelte";
+    import MonthlyRequestCountByYear from "./components/MonthlyVisitCountByYear/MonthlyVisitCountByYear.svelte";
 </script>
 
 <h1 class="fr-h2 fr-mb-6w">{PAGE_ADMIN_STATS_NAME}</h1>

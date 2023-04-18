@@ -7,38 +7,32 @@ const controller = new StatsController();
 describe("StatsController", () => {
     const mockGetUserCountByStatus = jest.spyOn(statsService, "getUserCountByStatus").mockImplementation(jest.fn());
 
-    describe("getRequestsPerMonthByYear", () => {
-        const getStatSpy = jest.spyOn(statsService, "getRequestsPerMonthByYear");
+    describe("getVisitsPerMonthByYear", () => {
+        const getStatSpy = jest.spyOn(statsService, "getVisitsPerMonthByYear");
         const YEAR_STR = "2022";
         const YEAR_NB = 2022;
         const mockedValue = {
-            nb_requetes_par_mois: [201, 21, 20, 201, 13, 201, 201, 15, 201, 300, 201, 1],
-            nb_requetes_moyen: 12,
-            somme_nb_requetes: 12,
+            nb_visites_par_mois: [201, 21, 20, 201, 13, 201, 201, 15, 201, 300, 201, 1],
+            nb_visites_moyen: 12,
+            somme_nb_visites: 12,
         };
 
         it("should call service with args default", async () => {
             getStatSpy.mockImplementationOnce(jest.fn());
-            await controller.getRequestsPerMonthByYear(YEAR_STR);
-            expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB, false);
-        });
-
-        it("should call service with args with includeAdmin", async () => {
-            getStatSpy.mockImplementationOnce(jest.fn());
-            await controller.getRequestsPerMonthByYear(YEAR_STR, "true");
-            expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB, true);
+            await controller.getVisitsPerMonthByYear(YEAR_STR);
+            expect(getStatSpy).toHaveBeenCalledWith(YEAR_NB);
         });
 
         it("should return data", async () => {
             getStatSpy.mockResolvedValueOnce(mockedValue);
             const expected = mockedValue;
-            const actual = await controller.getRequestsPerMonthByYear(YEAR_STR);
+            const actual = await controller.getVisitsPerMonthByYear(YEAR_STR);
             expect(actual).toStrictEqual(expected);
         });
 
         it("should require a number as date", async () => {
             const expected = new BadRequestError("'date' must be a number");
-            const test = () => controller.getRequestsPerMonthByYear("not a number");
+            const test = () => controller.getVisitsPerMonthByYear("not a number");
             await expect(test).rejects.toThrowError(expected);
         });
     });

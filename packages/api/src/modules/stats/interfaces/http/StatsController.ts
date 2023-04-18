@@ -1,6 +1,6 @@
 import {
     AssociationTopDtoResponse,
-    MonthlyRequestsDtoResponse,
+    MonthlyVisitsDtoResponse,
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
     UsersByStatusResponseDto,
@@ -63,20 +63,17 @@ export class StatsController extends Controller {
     }
 
     /**
-     * Permet de récupérer le nombre total de requêtes sur un période donnée
+     * Permet de récupérer le nombre total de requêtes sur une année donnée
      *
-     * @summary Permet de récupérer le nombre total de requêtes sur un période donnée
+     * @summary Permet de récupérer le nombre total de requêtes sur une année donnée
      * @param year
-     * @param {string=} [includesAdmin = "false"] true to include admin in stats, false for exclude admin (All value other of "true" will be considered as false)
      * @returns
      */
-    @Get("/requests/monthly/{year}")
-    async getRequestsPerMonthByYear(
-        year: string,
-        @Query() includesAdmin = "false",
-    ): Promise<MonthlyRequestsDtoResponse> {
+    @Get("/visits/monthly/{year}")
+    async getVisitsPerMonthByYear(year: string): Promise<MonthlyVisitsDtoResponse> {
+        // TODO rename function and route, update test and front
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
-        return await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
+        return await statsService.getVisitsPerMonthByYear(Number(year));
     }
 
     /**

@@ -1,6 +1,7 @@
-import { AssociationIdentifiers } from "../../../@types";
+import { AssociationIdentifiers, DefaultObject } from "../../../@types";
 import MigrationRepository from "../../../shared/MigrationRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
+import { RoleEnum } from "../../../@enums/Roles";
 
 export class StatsAssociationsVisitRepository extends MigrationRepository<AssociationVisitEntity> {
     collectionName = "stats-association-visits";
@@ -39,6 +40,26 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
                 },
             ])
             .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
+    }
+
+    public countVisitsPerMonthByYear(year: number) {
+        // TODO use stats-association-visits, rename, adapt tests
+        const start = new Date(year, 0, 1);
+        const end = new Date(year + 1, 0, 0);
+        const buildQuery = () => {
+            const matchQuery: { $match: DefaultObject } = {
+                $match: {
+                    date: {
+                        $gte: start,
+                        $lte: end,
+                    },
+                },
+            };
+
+            return [matchQuery, { $group: { _id: { $month: "$date" }, nbOfVisits: { $sum: 1 } } }];
+        };
+
+        return this.collection.aggregate(buildQuery()).toArray();
     }
 }
 

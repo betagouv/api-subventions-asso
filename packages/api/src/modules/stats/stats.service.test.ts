@@ -94,32 +94,25 @@ describe("StatsService", () => {
     });
 
     describe("getRequestsPerMonthByYear()", () => {
-        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsRepository, "countRequestsPerMonthByYear");
+        const monthlyAvgVisitsOnPeriodMock = jest.spyOn(statsAssociationsVisitRepository, "countVisitsPerMonthByYear");
 
         const YEAR = 2022;
         const CURR_YEAR = new Date().getFullYear();
         const CURR_MONTH = new Date().getMonth();
         const mockedValue = [
-            { _id: 1, nbOfRequests: 201 },
-            { _id: 2, nbOfRequests: 21 },
-            { _id: 10, nbOfRequests: 300 },
-            { _id: 12, nbOfRequests: 1 },
+            { _id: 1, nbOfVisits: 201 },
+            { _id: 2, nbOfVisits: 21 },
+            { _id: 10, nbOfVisits: 300 },
+            { _id: 12, nbOfVisits: 1 },
         ];
 
-        beforeAll(() => monthlyAvgRequestsOnPeriodMock.mockResolvedValue(mockedValue));
-        afterAll(() => monthlyAvgRequestsOnPeriodMock.mockRestore());
+        beforeAll(() => monthlyAvgVisitsOnPeriodMock.mockResolvedValue(mockedValue));
+        afterAll(() => monthlyAvgVisitsOnPeriodMock.mockRestore());
 
         it("calls repository", async () => {
-            const expected = [YEAR, false];
-            const actual = statsRepository.countRequestsPerMonthByYear;
-            await statsService.getRequestsPerMonthByYear(YEAR, false);
-            expect(actual).toHaveBeenCalledWith(...expected);
-        });
-
-        it("calls repository with includesAdmin", async () => {
-            const expected = [YEAR, true];
-            const actual = statsRepository.countRequestsPerMonthByYear;
-            await statsService.getRequestsPerMonthByYear(YEAR, true);
+            const expected = [YEAR];
+            const actual = statsAssociationsVisitRepository.countVisitsPerMonthByYear;
+            await statsService.getVisitsPerMonthByYear(YEAR);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
@@ -131,12 +124,12 @@ describe("StatsService", () => {
         `("returns correct value for $time year", ({ year, detail, sum, avg }) => {
             beforeEach(() => {
                 if (year === CURR_YEAR)
-                    monthlyAvgRequestsOnPeriodMock.mockResolvedValueOnce(
+                    monthlyAvgVisitsOnPeriodMock.mockResolvedValueOnce(
                         Array(CURR_MONTH + 1)
                             .fill(0)
                             .map((_, index) => ({
                                 _id: index + 1,
-                                nbOfRequests: 5,
+                                nbOfVisits: 5,
                             })),
                     );
             });
@@ -145,19 +138,19 @@ describe("StatsService", () => {
 
             it("returns formatted detail", async () => {
                 const expected = detail;
-                const actual = (await statsService.getRequestsPerMonthByYear(year, false)).nb_requetes_par_mois;
+                const actual = (await statsService.getVisitsPerMonthByYear(year)).nb_visites_par_mois;
                 expect(actual).toStrictEqual(expected);
             });
 
             it("returns correct sum", async () => {
                 const expected = sum;
-                const actual = (await statsService.getRequestsPerMonthByYear(year, false)).somme_nb_requetes;
+                const actual = (await statsService.getVisitsPerMonthByYear(year)).somme_nb_visites;
                 expect(actual).toStrictEqual(expected);
             });
 
             it("returns correct average", async () => {
                 const expected = avg;
-                const actual = (await statsService.getRequestsPerMonthByYear(year, false)).nb_requetes_moyen;
+                const actual = (await statsService.getVisitsPerMonthByYear(year)).nb_visites_moyen;
                 expect(actual).toStrictEqual(expected);
             });
         });

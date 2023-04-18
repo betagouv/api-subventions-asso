@@ -59,13 +59,13 @@ describe("StatsPort", () => {
 
         it("should call axios with proper path", async () => {
             const path = `/stats/requests/monthly/2022`;
-            await statsPort.getMonthlyRequestCount(YEAR);
+            await statsPort.getMonthlyVisitCount(YEAR);
             expect(spyAxios).toHaveBeenCalledWith(path);
         });
 
         it("should return formatted data from axios result", async () => {
             const expected = AXIOS_DATA;
-            const actual = await statsPort.getMonthlyRequestCount(YEAR);
+            const actual = await statsPort.getMonthlyVisitCount(YEAR);
             expect(actual).toEqual(expected);
         });
     });

@@ -1,8 +1,8 @@
 import statsService from "@resources/stats/stats.service";
 
-export class MonthlyRequestCountByYearController {
+export class MonthlyVisitCountByYearController {
     async loadData(year) {
-        const data = await statsService.getMonthlyRequestCount(year);
+        const data = await statsService.getMonthlyVisitCount(year);
 
         const monthlyData = data.monthlyData;
         const aggregateStats = [

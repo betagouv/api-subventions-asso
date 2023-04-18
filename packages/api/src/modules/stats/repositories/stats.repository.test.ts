@@ -93,30 +93,4 @@ describe("StatsRepository", () => {
             expect(actual).toBe(expected);
         });
     });
-
-    describe("countRequestsPerMonthByYear()", () => {
-        // @ts-expect-error statsRepository.collection is private attribute and mock typing errors
-        const mongoSpy = jest.spyOn(statsRepository.collection, "aggregate");
-        const MONGO_OUTPUT = [
-            { _id: 1, nbOfRequest: 201 },
-            { _id: 2, nbOfRequest: 21 },
-            { _id: 10, nbOfRequest: 300 },
-            { _id: 12, nbOfRequest: 1 },
-        ];
-
-        it("calls mongo aggregation", async () => {
-            // @ts-expect-error mock
-            mongoSpy.mockReturnValueOnce({ toArray: () => Promise.resolve(MONGO_OUTPUT) });
-            await statsRepository.countRequestsPerMonthByYear(YEAR, false);
-            expect(mongoSpy).toBeCalled();
-        });
-
-        it("returns repo's result'", async () => {
-            // @ts-expect-error mock
-            mongoSpy.mockReturnValueOnce({ toArray: () => Promise.resolve(MONGO_OUTPUT) });
-            const expected = MONGO_OUTPUT;
-            const actual = await statsRepository.countRequestsPerMonthByYear(YEAR, false);
-            expect(actual).toStrictEqual(expected);
-        });
-    });
 });

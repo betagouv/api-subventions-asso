@@ -87,18 +87,18 @@ describe("statsService", () => {
         });
 
         it("calls getMonthlyUserCount", async () => {
-            await statsService.getMonthlyRequestCount(YEAR);
+            await statsService.getMonthlyVisitCount(YEAR);
             expect(spyPort).toHaveBeenCalledWith(YEAR);
         });
 
         it("calls adapter with port's result", async () => {
-            await statsService.getMonthlyRequestCount(YEAR);
+            await statsService.getMonthlyVisitCount(YEAR);
             expect(spyAdapter).toHaveBeenCalledWith(PORT_RES);
         });
 
         it("returns port's result", async () => {
             const expected = ADAPTER_RES;
-            const actual = await statsService.getMonthlyRequestCount(YEAR);
+            const actual = await statsService.getMonthlyVisitCount(YEAR);
             expect(expected).toEqual(actual);
         });
     });

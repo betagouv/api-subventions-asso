@@ -26,21 +26,22 @@ class StatsService {
         return statsRepository.countMedianRequestsOnPeriod(start, end, includesAdmin);
     }
 
-    async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
+    async getVisitsPerMonthByYear(year: number) {
+        // TODO lighten recompute, rename, update tests
         const now = new Date();
         if (year > now.getFullYear())
             return {
-                nb_requetes_par_mois: [],
-                nb_requetes_moyen: 0,
-                somme_nb_requetes: 0,
+                nb_visites_par_mois: [],
+                nb_visites_moyen: 0,
+                somme_nb_visites: 0,
             };
         const lastMonthIndex1 = now.getFullYear() === year ? now.getMonth() + 1 : 12;
 
-        const countAsObjectIndex1 = await statsRepository.countRequestsPerMonthByYear(year, includesAdmin);
+        const countAsObjectIndex1 = await statsAssociationsVisitRepository.countVisitsPerMonthByYear(year);
         const { countAsArray, sum } = countAsObjectIndex1.reduce(
-            (acc, { _id: monthIdIndex1, nbOfRequests }) => {
-                acc.countAsArray[monthIdIndex1 - 1] = nbOfRequests;
-                acc.sum += nbOfRequests;
+            (acc, { _id: monthIdIndex1, nbOfVisits }) => {
+                acc.countAsArray[monthIdIndex1 - 1] = nbOfVisits;
+                acc.sum += nbOfVisits;
                 return acc;
             },
             { countAsArray: Array(12).fill(0), sum: 0 },
@@ -48,9 +49,9 @@ class StatsService {
         countAsArray.splice(lastMonthIndex1);
 
         return {
-            nb_requetes_par_mois: countAsArray,
-            nb_requetes_moyen: sum / lastMonthIndex1,
-            somme_nb_requetes: sum,
+            nb_visites_par_mois: countAsArray,
+            nb_visites_moyen: sum / lastMonthIndex1,
+            somme_nb_visites: sum,
         };
     }
 
