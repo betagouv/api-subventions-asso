@@ -183,6 +183,28 @@ describe("Dauphin Service", () => {
         });
     });
 
+    describe("formatAndReturnDto", () => {
+        it("should remove fields", () => {
+            const objectToKeep = { foo: "bar" };
+            const demandeurFieldToKeep = { fieldToKeep: "baz" };
+            const beneficiaireFieldToKeep = { fieldToKeep: "ban" };
+            const expected = {
+                objectToKeep,
+                demandeur: demandeurFieldToKeep,
+                beneficiaires: [beneficiaireFieldToKeep],
+            };
+            // @ts-expect-error: private method
+            const actual = dauphinService.formatAndReturnDto({
+                _source: {
+                    objectToKeep,
+                    demandeur: { ...demandeurFieldToKeep, pieces: "", history: "", linkedUsers: "" },
+                    beneficiaires: [{ ...beneficiaireFieldToKeep, pieces: "", history: "", linkedUsers: "" }],
+                },
+            });
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("toDauphinDateString", () => {
         it("should return date", () => {
             const DATE = new Date("2023-04-12");
