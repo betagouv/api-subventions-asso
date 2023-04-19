@@ -64,6 +64,7 @@
                         {elementData.montantsDemande}
                     </TableCell>
                     <TableCell position="end" primary="true">
+                        <!-- We need #key because StatusLabelController does not see that elementData changes and StatusLabel is not natively rebuilt -->
                         {#key elementData.status}
                             <StatusLabel status={elementData.status} />
                         {/key}
