@@ -9,5 +9,5 @@ export default interface DocumentProvider extends Provider {
     getDocumentsBySiret(siret: Siret): Promise<Document[] | null>;
     getDocumentsByRna(rna: Rna): Promise<Document[] | null>;
 
-    getRibsBySiren?: (siren: Siren) => Promise<Document[]>
+    getRibsBySiret?: (siren: Siren) => Promise<Document[]>;
 }

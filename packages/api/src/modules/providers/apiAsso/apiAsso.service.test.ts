@@ -3,34 +3,41 @@ import { Association, Etablissement } from "@api-subventions-asso/dto";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service";
 import { DacDtoDocument, DacSiret, DtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
-import { ApiAssoDocumentFixture } from "./__fixtures__/ApiAssoDocumentFixture";
 import associationNameService from "../../association-name/associationName.service";
 import { sirenStructureFixture } from "./__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
-import {
-    fixtureAsso,
-    fixtureDocumentDac,
-    fixtureDocumentRna,
-    fixtureEtablissements,
-} from "./__fixtures__/ApiAssoStructureFixture";
+import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 
 jest.mock("../../../shared/EventManager");
+jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
+    rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
+    dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
+    dacDocumentToRib: jest.fn(),
+    toEtablissement: r => ({ ...r, siret: [{ value: r.id_siret }] } as unknown as Etablissement),
+    rnaStructureToAssociation: jest.fn().mockImplementation(data => data),
+    sirenStructureToAssociation: jest.fn().mockImplementation(data => data),
+}));
 
 describe("ApiAssoService", () => {
     let axiosMock = jest.spyOn(axios, "get");
-    const adapterRnaDocumentMock = jest.spyOn(ApiAssoDtoAdapter, "rnaDocumentToDocument");
-    const adapterDacDocumentMock = jest.spyOn(ApiAssoDtoAdapter, "dacDocumentToDocument");
-    const adapterEtablissementMock = jest
-        .spyOn(ApiAssoDtoAdapter, "toEtablissement")
-        .mockImplementation(r => ({ ...r, siret: [{ value: r.id_siret }] } as unknown as Etablissement));
     // @ts-expect-error: mock private method
     let sendRequestMock = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
+    // @ts-expect-error: mock private method
+    let mockFetchDocuments = jest.spyOn(apiAssoService, "fetchDocuments") as jest.SpyInstance<any | null>;
     // @ts-expect-error: mock private method
     const findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments") as jest.SpyInstance<any | null>;
 
     let associationNameUpsert: jest.SpyInstance;
 
     const RNA = "W750000000";
+    const API_ASSO_RESPONSE = {
+        asso: {
+            documents: {
+                document_dac: [],
+                document_rna: [],
+            },
+        },
+    };
 
     beforeAll(() => {
         // @ts-expect-error  mock mongodb return value
@@ -38,7 +45,6 @@ describe("ApiAssoService", () => {
     });
 
     afterAll(() => {
-        adapterEtablissementMock.mockReset();
         associationNameUpsert.mockReset();
     });
 
@@ -107,14 +113,18 @@ describe("ApiAssoService", () => {
         });
     });
 
-    describe("findDocuments", () => {
-        it("should return documents", async () => {
-            const expected = DtoDocument;
-            sendRequestMock.mockImplementationOnce(async () => ApiAssoDocumentFixture);
-            adapterDacDocumentMock.mockImplementationOnce(() => DacDtoDocument);
-            adapterRnaDocumentMock.mockImplementationOnce(() => RnaDtoDocument);
-            // @ts-expect-error: test private method
-            const actual = await apiAssoService.findDocuments(RNA);
+    describe("fetchDocuments", () => {
+        it("call sendRequest()", async () => {
+            // @ts-expect-error: private method
+            await apiAssoService.fetchDocuments(RNA);
+            expect(sendRequestMock).toHaveBeenCalledWith(`/proxy_db_asso/documents/${RNA}`);
+        });
+
+        it("return documents", async () => {
+            const expected = API_ASSO_RESPONSE.asso.documents;
+            sendRequestMock.mockImplementationOnce(async () => API_ASSO_RESPONSE);
+            // @ts-expect-error: private method
+            const actual = await apiAssoService.fetchDocuments(RNA);
             expect(actual).toEqual(expected);
         });
     });
@@ -291,18 +301,13 @@ describe("ApiAssoService", () => {
         describe("findAssociationByRna", () => {
             const RNA = "W000000000";
             let sendRequestMock: jest.SpyInstance;
-            let rnaStructureToAssoMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-ignore sendRequest is private Method
                 sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
-                rnaStructureToAssoMock = jest
-                    .spyOn(ApiAssoDtoAdapter, "rnaStructureToAssociation")
-                    .mockImplementation(data => data as Association);
             });
 
             afterAll(() => {
-                rnaStructureToAssoMock.mockRestore();
                 sendRequestMock.mockRestore();
             });
 
@@ -319,25 +324,20 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findAssociationByRna is private method
                 await apiAssoService.findAssociationByRna(RNA);
 
-                expect(rnaStructureToAssoMock).toBeCalledWith(expected);
+                expect(ApiAssoDtoAdapter.rnaStructureToAssociation).toBeCalledWith(expected);
             });
         });
 
         describe("findAssociationBySiren", () => {
             const SIREN = "000000000";
             let sendRequestMock: jest.SpyInstance;
-            let sirenStructureToAssoMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-ignore sendRequest is private Method
                 sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
-                sirenStructureToAssoMock = jest
-                    .spyOn(ApiAssoDtoAdapter, "sirenStructureToAssociation")
-                    .mockImplementation(data => data as Association);
             });
 
             afterAll(() => {
-                sirenStructureToAssoMock.mockRestore();
                 sendRequestMock.mockRestore();
             });
 
@@ -354,7 +354,7 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findAssociationBySiren is private method
                 await apiAssoService.findAssociationBySiren(SIREN);
 
-                expect(sirenStructureToAssoMock).toBeCalledWith(expected);
+                expect(ApiAssoDtoAdapter.sirenStructureToAssociation).toBeCalledWith(expected);
             });
         });
     });
@@ -662,38 +662,26 @@ describe("ApiAssoService", () => {
         describe("findDocuments", () => {
             const IDENTIFIER = "123456789";
 
-            let filterRnaDocumentsMock: jest.SpyInstance;
-            let filterActiveDacDocumentsMock: jest.SpyInstance;
-            let filterDacDocumentsMock: jest.SpyInstance;
-            let filterRibsInDacDocumentsMock: jest.SpyInstance;
-            let rnaDocumentToDocumentMock: jest.SpyInstance;
-            let dacDocumentToDocumentMock: jest.SpyInstance;
-            let dacDocumentToRibMock: jest.SpyInstance;
+            // @ts-expect-error: mock
+            const mockFilterRnaDocuments = jest.spyOn(apiAssoService, "filterRnaDocuments");
+            // @ts-expect-error: mock
+            const mockFilterActiveDacDocuments = jest.spyOn(apiAssoService, "filterActiveDacDocuments");
+            // @ts-expect-error: mock
+            const mockFilterDacDocuments = jest.spyOn(apiAssoService, "filterDacDocuments");
+            // @ts-expect-error: mock
+            const mockFilterRibsInDacDocuments = jest.spyOn(apiAssoService, "filterRibsInDacDocuments");
 
             beforeAll(() => {
                 // @ts-ignore filterRnaDocuments has private method
-                filterRnaDocumentsMock = jest.spyOn(apiAssoService, "filterRnaDocuments");
+                mockFilterRnaDocuments.mockImplementation(() => []);
                 // @ts-ignore filterActiveDacDocuments has private method
-                filterActiveDacDocumentsMock = jest.spyOn(apiAssoService, "filterActiveDacDocuments");
+                mockFilterActiveDacDocuments.mockImplementation(() => []);
                 // @ts-ignore filterDacDocuments has private method
-                filterDacDocumentsMock = jest.spyOn(apiAssoService, "filterDacDocuments");
+                mockFilterDacDocuments.mockImplementation(() => []);
                 // @ts-ignore filterRibsInDacDocuments has private method
-                filterRibsInDacDocumentsMock = jest.spyOn(apiAssoService, "filterRibsInDacDocuments");
-                rnaDocumentToDocumentMock = jest.spyOn(ApiAssoDtoAdapter, "rnaDocumentToDocument");
-                dacDocumentToDocumentMock = jest.spyOn(ApiAssoDtoAdapter, "dacDocumentToDocument");
-                dacDocumentToRibMock = jest.spyOn(ApiAssoDtoAdapter, "dacDocumentToRib");
+                mockFilterRibsInDacDocuments.mockImplementation(() => []);
                 // @ts-ignore sendRequestMock is private method
                 sendRequestMock = jest.spyOn(apiAssoService, "sendRequest");
-            });
-
-            afterAll(() => {
-                filterRnaDocumentsMock.mockReset();
-                filterActiveDacDocumentsMock.mockReset();
-                filterDacDocumentsMock.mockReset();
-                filterRibsInDacDocumentsMock.mockReset();
-                rnaDocumentToDocumentMock.mockReset();
-                dacDocumentToDocumentMock.mockReset();
-                dacDocumentToRibMock.mockReset();
             });
 
             it("should call filterRnaDocuments with document_rna", async () => {
@@ -711,15 +699,10 @@ describe("ApiAssoService", () => {
                     },
                 });
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(() => []);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
-
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterRnaDocumentsMock).toHaveBeenCalledWith(expected);
+                expect(mockFilterRnaDocuments).toHaveBeenCalledWith(expected);
             });
 
             it("should call filterRnaDocuments with empty array", async () => {
@@ -731,15 +714,10 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(() => []);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
-
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterRnaDocumentsMock).toHaveBeenCalledWith(expected);
+                expect(mockFilterRnaDocuments).toHaveBeenCalledWith(expected);
             });
 
             it("should call filterActiveDacDocuments with document_dac", async () => {
@@ -759,15 +737,10 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(() => []);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
-
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterActiveDacDocumentsMock).toHaveBeenCalledWith(expected, IDENTIFIER);
+                expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, IDENTIFIER);
             });
 
             it("should call filterActiveDacDocuments with empty array", async () => {
@@ -779,15 +752,10 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(() => []);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
-
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterActiveDacDocumentsMock).toHaveBeenCalledWith(expected, IDENTIFIER);
+                expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, IDENTIFIER);
             });
 
             it("should call filterDacDocuments with actives document_dac", async () => {
@@ -807,15 +775,13 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(data => data);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
+                // @ts-expect-error: mock
+                mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterDacDocumentsMock).toHaveBeenCalledWith(expected);
+                expect(mockFilterDacDocuments).toHaveBeenCalledWith(expected);
             });
 
             it("should call filterRibsInDacDocuments with actives document_dac", async () => {
@@ -835,15 +801,13 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(data => data);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
+                // @ts-expect-error: mock
+                mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(filterRibsInDacDocumentsMock).toHaveBeenCalledWith(expected);
+                expect(mockFilterRibsInDacDocuments).toHaveBeenCalledWith(expected);
             });
 
             it("should call ApiAssoDtoAdapter.rnaDocumentToDocument with document_rna", async () => {
@@ -859,16 +823,13 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(data => data);
-                filterActiveDacDocumentsMock.mockImplementationOnce(() => []);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
-                rnaDocumentToDocumentMock.mockImplementationOnce(data => data);
+                // @ts-expect-error: mock
+                mockFilterRnaDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(rnaDocumentToDocumentMock).toHaveBeenCalledWith(expected);
+                expect(ApiAssoDtoAdapter.rnaDocumentToDocument).toHaveBeenCalledWith(expected);
             });
 
             it("should call ApiAssoDtoAdapter.dacDocumentToDocument with document_dac", async () => {
@@ -886,16 +847,15 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(data => data);
-                filterDacDocumentsMock.mockImplementationOnce(data => data);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(() => []);
-                dacDocumentToDocumentMock.mockImplementationOnce(data => data);
+                // @ts-expect-error: mock
+                mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
+                // @ts-expect-error: mock
+                mockFilterDacDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(dacDocumentToDocumentMock).toHaveBeenCalledWith(expected);
+                expect(ApiAssoDtoAdapter.dacDocumentToDocument).toHaveBeenCalledWith(expected);
             });
 
             it("should call ApiAssoDtoAdapter.dacDocumentToDocument with ribs document_dac", async () => {
@@ -913,17 +873,17 @@ describe("ApiAssoService", () => {
                     },
                 }));
 
-                filterRnaDocumentsMock.mockImplementationOnce(() => []);
-                filterActiveDacDocumentsMock.mockImplementationOnce(data => data);
-                filterRibsInDacDocumentsMock.mockImplementationOnce(data => data);
-                filterDacDocumentsMock.mockImplementationOnce(() => []);
-                dacDocumentToDocumentMock.mockImplementationOnce(data => data);
-                dacDocumentToRibMock.mockImplementationOnce(data => data);
+                // @ts-expect-error: mock
+                mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
+                // @ts-expect-error: mock
+                mockFilterRibsInDacDocuments.mockImplementationOnce(data => data);
+                // @ts-expect-error: mock
+                ApiAssoDtoAdapter.dacDocumentToDocument.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
                 await apiAssoService.findDocuments(IDENTIFIER);
 
-                expect(dacDocumentToRibMock).toHaveBeenCalledWith(expected);
+                expect(ApiAssoDtoAdapter.dacDocumentToRib).toHaveBeenCalledWith(expected);
             });
         });
 

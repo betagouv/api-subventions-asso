@@ -70,6 +70,12 @@ export class EtablissementController extends Controller {
         return { documents };
     }
 
+    @Get("/{siret}/documents/rib")
+    public async getRibs(siret: Siret): Promise<GetDocumentsResponseDto> {
+        const ribs = await etablissementService.getRibs(siret);
+        return { documents: ribs };
+    }
+
     /**
      * Permet de logger le mail de l'utilisateur qui fait un extract
      * @param identifier Identifiant Siret

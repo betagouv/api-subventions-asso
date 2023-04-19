@@ -84,15 +84,17 @@ export interface StructureDacDocumentDto {
     };
 }
 
-export interface DocumentDto {
+export interface StructureDocumentDto {
     asso: {
-        documents: {
-            nbDocDac: number;
-            nbDocRna: number;
-            document_dac: StructureDacDocumentDto[];
-            document_rna: StructureRnaDocumentDto[];
-        };
+        documents: DocumentsDto;
     };
+}
+
+export interface DocumentsDto {
+    nbDocDac: number;
+    nbDocRna: number;
+    document_dac: StructureDacDocumentDto[];
+    document_rna: StructureRnaDocumentDto[];
 }
 
 export default interface StructureDto {

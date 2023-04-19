@@ -13,7 +13,11 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import { isDateNewer } from "../../../shared/helpers/DateHelper";
 import associationNameService from "../../association-name/associationName.service";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
-import StructureDto, { DocumentDto, StructureDacDocumentDto, StructureRnaDocumentDto } from "./dto/StructureDto";
+import StructureDto, {
+    StructureDacDocumentDto,
+    StructureDocumentDto,
+    StructureRnaDocumentDto,
+} from "./dto/StructureDto";
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 
@@ -47,7 +51,8 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                 return res.data;
             }
             return null;
-        } catch {
+        } catch (e) {
+            console.log("coucou erreur", e);
             return null;
         }
     }
@@ -168,16 +173,26 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return documents.filter(document => document.meta.etat === "courant");
     }
 
+    private async fetchDocuments(identifier: AssociationIdentifiers) {
+        const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifier}`);
+        return result?.asso.documents;
+    }
+
+    private async findRibs(identifier: AssociationIdentifiers) {
+        const documents = await this.fetchDocuments(identifier);
+        if (!documents) return [];
+
+        const activeDacDocuments = this.filterActiveDacDocuments(documents.document_dac || [], identifier);
+        const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
+        return ribs.map(rib => ApiAssoDtoAdapter.dacDocumentToRib(rib));
+    }
+
     private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[]> {
-        const response = await this.sendRequest<DocumentDto>(`/proxy_db_asso/documents/${identifier}`);
+        const documents = await this.fetchDocuments(identifier);
+        if (!documents) return [];
 
-        if (!response) return [];
-
-        const filtredRnaDocument = this.filterRnaDocuments(response.asso.documents.document_rna || []);
-        const activeDacDocuments = this.filterActiveDacDocuments(
-            response.asso.documents.document_dac || [],
-            identifier,
-        );
+        const filtredRnaDocument = this.filterRnaDocuments(documents.document_rna || []);
+        const activeDacDocuments = this.filterActiveDacDocuments(documents.document_dac || [], identifier);
         const filtredDacDocument = this.filterDacDocuments(activeDacDocuments);
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
 
@@ -287,6 +302,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
     async getDocumentsByRna(rna: Rna) {
         return this.findDocuments(rna);
+    }
+
+    async getRibsBySiret(siret: Siret) {
+        return this.findRibs(siretToSiren(siret));
     }
 }
 

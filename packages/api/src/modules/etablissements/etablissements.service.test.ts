@@ -103,7 +103,6 @@ describe("EtablissementsService", () => {
 
     describe("getDocuments", () => {
         const getDocumentBySiretMock = jest.spyOn(documentsService, "getDocumentBySiret");
-        const SIRET = "000000000000000";
 
         it("should call subventions service", async () => {
             getDocumentBySiretMock.mockImplementation(async () => []);
@@ -111,6 +110,18 @@ describe("EtablissementsService", () => {
             await etablissementService.getDocuments(SIRET);
 
             expect(getDocumentBySiretMock).toHaveBeenCalledWith(SIRET);
+        });
+    });
+
+    describe("getRibs", () => {
+        const getRibsBySiretMock = jest.spyOn(documentsService, "getRibsBySiret");
+
+        it("should call subventions service", async () => {
+            getRibsBySiretMock.mockImplementation(async () => []);
+
+            await etablissementService.getRibs(SIRET);
+
+            expect(getRibsBySiretMock).toHaveBeenCalledWith(SIRET);
         });
     });
 

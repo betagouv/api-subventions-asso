@@ -1,29 +1,35 @@
 import documentsService from "./documents.service";
-import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 jest.mock("../providers");
 
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
+import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+
+jest.mock("../../shared/helpers/IdentifierHelper", () => ({
+    getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
+}));
 
 describe("Documents Service", () => {
+    const SIREN = "123456789";
+    const SIRET = `${SIREN}12345`;
+
     describe("getDocumentBySiren", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const aggregateMock = jest.spyOn(documentsService, "aggregate") as jest.SpyInstance<
+        const mockAggregateDocuments = jest.spyOn(documentsService, "aggregateDocuments") as jest.SpyInstance<
             Promise<(string | null)[]>,
             []
         >;
 
         afterAll(() => {
-            aggregateMock.mockClear();
+            mockAggregateDocuments.mockClear();
         });
 
         it("should be return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve(expected));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
 
             const actual = await documentsService.getDocumentBySiren("SIREN");
 
@@ -33,7 +39,9 @@ describe("Documents Service", () => {
         it("should be return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve(["DocumentA", null, null, "DocumentB", null]));
+            mockAggregateDocuments.mockImplementationOnce(() =>
+                Promise.resolve(["DocumentA", null, null, "DocumentB", null]),
+            );
 
             const actual = await documentsService.getDocumentBySiren("SIREN");
 
@@ -43,7 +51,7 @@ describe("Documents Service", () => {
         it("should be return an empty list", async () => {
             const expected = 0;
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve([null, null, null]));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
 
             const actual = await documentsService.getDocumentBySiren("SIREN");
 
@@ -52,11 +60,11 @@ describe("Documents Service", () => {
 
         it("should call aggregate with SIREN", async () => {
             const expected = "SIREN";
-            aggregateMock.mockImplementationOnce(() => Promise.resolve([]));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([]));
 
             await documentsService.getDocumentBySiren(expected);
 
-            const actual = aggregateMock;
+            const actual = mockAggregateDocuments;
 
             expect(actual).toHaveBeenCalledWith(expected);
         });
@@ -65,29 +73,31 @@ describe("Documents Service", () => {
     describe("getDocumentBySiret", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const aggregateMock = jest.spyOn(documentsService, "aggregate") as jest.SpyInstance<
+        const mockAggregateDocuments = jest.spyOn(documentsService, "aggregateDocuments") as jest.SpyInstance<
             Promise<(string | null)[]>,
             []
         >;
 
         afterAll(() => {
-            aggregateMock.mockClear();
+            mockAggregateDocuments.mockClear();
         });
 
-        it("should be return list of document", async () => {
+        it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve(expected));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
 
             const actual = await documentsService.getDocumentBySiret("SIRET");
 
-            expect(expected).toEqual(actual);
+            expect(actual).toEqual(expected);
         });
 
         it("should be return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve(["DocumentA", null, null, "DocumentB", null]));
+            mockAggregateDocuments.mockImplementationOnce(() =>
+                Promise.resolve(["DocumentA", null, null, "DocumentB", null]),
+            );
 
             const actual = await documentsService.getDocumentBySiret("SIRET");
 
@@ -97,41 +107,37 @@ describe("Documents Service", () => {
         it("should be return an empty list", async () => {
             const expected = 0;
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve([null, null, null]));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
 
             const actual = await documentsService.getDocumentBySiret("SIRET");
 
             expect(actual).toHaveLength(expected);
         });
 
-        it("should call aggregate with SIRET", async () => {
+        it("should call aggregateDocuments with SIRET", async () => {
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([]));
             const expected = "SIRET";
-            aggregateMock.mockImplementationOnce(() => Promise.resolve([]));
-
             await documentsService.getDocumentBySiret(expected);
-
-            const actual = aggregateMock;
-
-            expect(actual).toHaveBeenCalledWith(expected);
+            expect(mockAggregateDocuments).toHaveBeenCalledWith(expected);
         });
     });
 
     describe("getDocumentByRna", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const aggregateMock = jest.spyOn(documentsService, "aggregate") as jest.SpyInstance<
+        const mockAggregateDocuments = jest.spyOn(documentsService, "aggregateDocuments") as jest.SpyInstance<
             Promise<(string | null)[]>,
             []
         >;
 
         afterAll(() => {
-            aggregateMock.mockClear();
+            mockAggregateDocuments.mockClear();
         });
 
         it("should be return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve(expected));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
 
             const actual = await documentsService.getDocumentByRna("RNA");
 
@@ -141,7 +147,9 @@ describe("Documents Service", () => {
         it("should be return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve(["DocumentA", null, null, "DocumentB", null]));
+            mockAggregateDocuments.mockImplementationOnce(() =>
+                Promise.resolve(["DocumentA", null, null, "DocumentB", null]),
+            );
 
             const actual = await documentsService.getDocumentByRna("RNA");
 
@@ -151,7 +159,7 @@ describe("Documents Service", () => {
         it("should be return an empty list", async () => {
             const expected = 0;
 
-            aggregateMock.mockImplementationOnce(() => Promise.resolve([null, null, null]));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
 
             const actual = await documentsService.getDocumentByRna("RNA");
 
@@ -160,11 +168,11 @@ describe("Documents Service", () => {
 
         it("should call aggregate with RNA", async () => {
             const expected = "RNA";
-            aggregateMock.mockImplementationOnce(() => Promise.resolve([]));
+            mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([]));
 
             await documentsService.getDocumentByRna(expected);
 
-            const actual = aggregateMock;
+            const actual = mockAggregateDocuments;
 
             expect(actual).toHaveBeenCalledWith(expected);
         });
@@ -251,28 +259,39 @@ describe("Documents Service", () => {
         });
     });
 
-    describe("aggregate", () => {
+    describe("getRibProviders", () => {
+        // @ts-expect-error: mock
+        const mockAggregateRibs = jest.spyOn(documentsService, "aggregateRibs").mockImplementationOnce(jest.fn());
+        // @ts-expect-error: mock
+        const getDocumentProvidersMock = jest.spyOn(documentsService, "getDocumentProviders");
+        it("should call getDocumentProviders()", () => {
+            // @ts-expect-error: private method
+            documentsService.getRibProviders(SIRET);
+            expect(getDocumentProvidersMock).toHaveBeenCalled();
+        });
+    });
+
+    describe("aggregateDocuments", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const getDocumentProvidersMock = jest.spyOn(documentsService, "getDocumentProviders") as jest.SpyInstance<
             Provider[],
             []
         >;
-        const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
 
         afterAll(() => {
             getDocumentProvidersMock.mockClear();
-            getIdentifierTypeMock.mockClear();
         });
 
-        it("should be throw error", async () => {
+        it("should throw error", async () => {
             const expected = "You must provide a valid SIREN or RNA or SIRET";
 
-            getIdentifierTypeMock.mockImplementationOnce(() => null);
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockImplementationOnce(() => null);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            const actual = documentsService.aggregate("WRONG");
+            const actual = documentsService.aggregateDocuments("WRONG");
             expect(actual).rejects.toThrowError(expected);
         });
 
@@ -280,7 +299,8 @@ describe("Documents Service", () => {
             const mock = jest.fn(async () => true);
             const expected = "W00000000";
 
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
                     getDocumentsByRna: mock,
@@ -289,7 +309,7 @@ describe("Documents Service", () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            await documentsService.aggregate(expected);
+            await documentsService.aggregateDocuments(expected);
 
             expect(mock).toHaveBeenCalledWith(expected);
         });
@@ -298,7 +318,8 @@ describe("Documents Service", () => {
             const mock = jest.fn(async () => true);
             const expected = "123456789";
 
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
                     getDocumentsBySiren: mock,
@@ -307,7 +328,7 @@ describe("Documents Service", () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            await documentsService.aggregate(expected);
+            await documentsService.aggregateDocuments(expected);
 
             expect(mock).toHaveBeenCalledWith(expected);
         });
@@ -316,7 +337,8 @@ describe("Documents Service", () => {
             const mock = jest.fn(async () => true);
             const expected = "12345678912345";
 
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
             getDocumentProvidersMock.mockImplementationOnce(() => [
                 {
                     getDocumentsBySiret: mock,
@@ -325,38 +347,37 @@ describe("Documents Service", () => {
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            await documentsService.aggregate(expected);
+            await documentsService.aggregateDocuments(expected);
 
             expect(mock).toHaveBeenCalledWith(expected);
         });
 
-        it("should return documents", async () => {
-            const toPV = (value: unknown) => ProviderValueAdapter.toProviderValue(value, "TEST", new Date());
+        it("should call aggregate()", async () => {
+            // @ts-expect-error: spy private method
+            const spyAggregate = jest.spyOn(documentsService, "aggregate").mockImplementationOnce(jest.fn());
+            // @ts-expect-error: private method
+            await documentsService.aggregateDocuments(SIREN);
+            expect(spyAggregate).toHaveBeenCalled();
+        });
+    });
 
-            const expected = [
-                {
-                    type: toPV("rib"),
-                    url: toPV("/url/to/file"),
-                    nom: toPV("name of file"),
-                },
-                {
-                    type: toPV("document"),
-                    url: toPV("/url/to/file2"),
-                    nom: toPV("name of file2"),
-                },
-            ];
+    describe("aggregate", () => {
+        const fn = jest.fn(async () => [{}, {}]);
+        const providers = [
+            {
+                getDocuments: fn,
+            },
+        ];
+        it("should call method", async () => {
+            // @ts-expect-error: private method
+            await documentsService.aggregate(providers, "getDocuments", SIREN);
+            expect(fn).toHaveBeenCalledTimes(1);
+        });
 
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
-            getDocumentProvidersMock.mockImplementationOnce(() => [
-                {
-                    getDocumentsBySiret: async () => expected,
-                } as unknown as Provider,
-            ]);
-
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const actual = await documentsService.aggregate(expected);
-
+        it("return documents", async () => {
+            const expected = [{}, {}];
+            // @ts-expect-error: private method
+            const actual = await documentsService.aggregate(providers, "getDocuments", SIREN);
             expect(actual).toEqual(expected);
         });
     });
