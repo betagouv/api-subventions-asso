@@ -25,7 +25,10 @@ export class DemarchesSimplifieesEntityAdapter {
 
         mapper.schema.forEach(property => {
             let value = lodash.get(entity, property.from);
-            const valueDate = [moment(value, "DD MMMM YYYY", "fr", true).toDate(), new Date(value)].find(date =>
+            const valueDate = [
+                moment(value, "DD MMMM YYYY", "fr", true).toDate(), // Use moment for read french date
+                moment(value, true) // use moment with strict params true, to force the reading of a date in js format and not an interpretation
+            ].find(date =>
                 isValidDate(date),
             );
 
