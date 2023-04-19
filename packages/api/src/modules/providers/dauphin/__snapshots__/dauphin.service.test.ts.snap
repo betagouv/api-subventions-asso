@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`Dauphin Service getApplicationsFromDate should call axios with args 1`] = `
+exports[`Dauphin Service persistApplicationsFromDate should call axios with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
   Object {

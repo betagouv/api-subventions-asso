@@ -86,7 +86,7 @@ describe("Dauphin Service", () => {
         // @ts-expect-error: private method
         const mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken");
         // @ts-expect-error: private method
-        const mockGetApplicationsFromDate = jest.spyOn(dauphinService, "getApplicationsFromDate");
+        const mockGetApplicationsFromDate = jest.spyOn(dauphinService, "persistApplicationsFromDate");
 
         const mocks = [mockGetAuthToken, mockGetApplicationsFromDate];
 
@@ -106,13 +106,13 @@ describe("Dauphin Service", () => {
             expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
         });
 
-        it("should call getApplicationsFromDate", async () => {
+        it("should call persistApplicationsFromDate", async () => {
             await dauphinService.fetchAndSaveApplicationsFromDate(new Date());
             expect(mockGetApplicationsFromDate).toHaveBeenCalledTimes(1);
         });
     });
 
-    describe("getApplicationsFromDate", () => {
+    describe("persistApplicationsFromDate", () => {
         // @ts-expect-error private method
         const mockBuildSearchHeader = jest.spyOn(dauphinService, "buildSearchHeader");
         // @ts-expect-error private method
@@ -146,28 +146,28 @@ describe("Dauphin Service", () => {
         it("should call buildFetchFromDateQuery", async () => {
             const DATE = new Date();
             // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.getApplicationsFromDate(TOKEN, DATE);
+            await dauphinService.persistApplicationsFromDate(TOKEN, DATE);
             expect(mockBuildFetchFromDateQuery).toHaveBeenCalledWith(DATE);
         });
 
         it("should build headers from token", async () => {
             const expected = TOKEN;
             // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.getApplicationsFromDate(TOKEN, new Date());
+            await dauphinService.persistApplicationsFromDate(TOKEN, new Date());
             expect(mockBuildSearchHeader).toHaveBeenCalledWith(expected);
         });
 
         it("should call axios with args", async () => {
             const DATE = new Date();
             // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.getApplicationsFromDate(TOKEN, DATE);
+            await dauphinService.persistApplicationsFromDate(TOKEN, DATE);
             // @ts-expect-error: mock
             expect(axios.post.mock.calls[0]).toMatchSnapshot();
         });
 
         it("should call mockSaveApplicationsInCache", async () => {
             // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.getApplicationsFromDate(TOKEN, new Date());
+            await dauphinService.persistApplicationsFromDate(TOKEN, new Date());
             expect(mockSaveApplicationsInCache).toHaveBeenCalledTimes(1);
         });
     });

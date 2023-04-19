@@ -39,13 +39,13 @@ export class DauphinService implements DemandesSubventionsProvider {
     async fetchAndSaveApplicationsFromDate(date) {
         try {
             const token = await this.getAuthToken();
-            await this.getApplicationsFromDate(token, date);
+            await this.persistApplicationsFromDate(token, date);
         } catch (e) {
             console.error(e);
         }
     }
 
-    private async getApplicationsFromDate(token, date: Date) {
+    private async persistApplicationsFromDate(token, date: Date) {
         let totalToFetch = 0;
         let fetched = 0;
         do {
@@ -59,7 +59,7 @@ export class DauphinService implements DemandesSubventionsProvider {
                     )
                 ).data;
 
-                if (!result || !result.hits) return [];
+                if (!result || !result.hits) break;
 
                 const applications = result.hits.hits;
                 fetched += applications.length;
