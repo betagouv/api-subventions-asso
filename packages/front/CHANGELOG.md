@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.26.2](https://github.com/betagouv/datasubvention/compare/v0.26.1...v0.26.2) (2023-04-19)
+
+
+### Bug Fixes
+
+* **front:** handle errors without status ([a847020](https://github.com/betagouv/datasubvention/commit/a847020742d145e908ec06c44e9feb813578e620))
+* **front:** reload status badge ([1469c16](https://github.com/betagouv/datasubvention/commit/1469c16cf8849e7d3109e09bee7f9557dc2f26f4))
+
+
+### Features
+
+* **front:** add establishment siret to application table ([559272f](https://github.com/betagouv/datasubvention/commit/559272f79d5a8c88382a9124da07ca44eb72fad4))
+
+
+
+
+
 # [0.26.0](https://github.com/betagouv/datasubvention/compare/v0.25.1...v0.26.0) (2023-04-17)
 
 

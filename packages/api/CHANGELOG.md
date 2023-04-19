@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.26.2](https://github.com/betagouv/api-subventions-asso/compare/v0.26.1...v0.26.2) (2023-04-19)
+
+
+### Features
+
+* **api:** add two ds schemas ([119df79](https://github.com/betagouv/api-subventions-asso/commit/119df79ad3b991671e15aac9e34ce6eebe0fcb6e))
+
+
+
+
+
 ## [0.26.1](https://github.com/betagouv/api-subventions-asso/compare/v0.26.0...v0.26.1) (2023-04-18)
 
 

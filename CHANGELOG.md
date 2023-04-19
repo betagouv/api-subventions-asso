@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.26.2](https://github.com/betagouv/api-subventions-asso/compare/v0.26.1...v0.26.2) (2023-04-19)
+
+
+### Bug Fixes
+
+* **front:** handle errors without status ([a847020](https://github.com/betagouv/api-subventions-asso/commit/a847020742d145e908ec06c44e9feb813578e620))
+* **front:** reload status badge ([1469c16](https://github.com/betagouv/api-subventions-asso/commit/1469c16cf8849e7d3109e09bee7f9557dc2f26f4))
+
+
+### Features
+
+* **api:** add two ds schemas ([119df79](https://github.com/betagouv/api-subventions-asso/commit/119df79ad3b991671e15aac9e34ce6eebe0fcb6e))
+* **front:** add establishment siret to application table ([559272f](https://github.com/betagouv/api-subventions-asso/commit/559272f79d5a8c88382a9124da07ca44eb72fad4))
+
+
+
+
+
 ## [0.26.1](https://github.com/betagouv/api-subventions-asso/compare/v0.26.0...v0.26.1) (2023-04-18)
 
 
