@@ -17,7 +17,7 @@ export default class DauphinCliController {
     }
 
     // only for test purpose
-    async test(date = new Date()) {
+    async testFetchData(date = new Date()) {
         const midnight = new Date(date);
         midnight.setHours(0, 0, 0, 0);
         console.log(`fetching all dauphin applications since ${midnight}`);
