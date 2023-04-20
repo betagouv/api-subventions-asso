@@ -63,7 +63,7 @@ export default class DauphinDtoAdapter {
 
         return {
             siret: toPV(dauphinData.demandeur.SIRET.complet),
-            service_instructeur: toPV(serviceInstructeur),
+            service_instructeur: toPV("Dauphin"), // Dont use serviceInstructeur because it does not take into account the multifunders
             dispositif: toPV(dispositif),
             ej: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
             versementKey: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
