@@ -7,7 +7,7 @@ import DemarchesSimplifieesMapperEntity from "../../entities/DemarchesSimplifiee
 
 @StaticImplements<CliStaticInterface>()
 export default class DemarchesSimplifieesCliController {
-    static cmdName = "demarche-simplifiees";
+    static cmdName = "demarches-simplifiees";
 
     async updateAll() {
         await demarchesSimplifieesService.updateAllForms();
