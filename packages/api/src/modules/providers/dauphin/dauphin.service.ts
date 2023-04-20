@@ -36,16 +36,8 @@ export class DauphinService implements DemandesSubventionsProvider {
         return null;
     }
 
-    async fetchAndSaveApplicationsFromDate(date) {
-        try {
-            const token = await this.getAuthToken();
-            await this.persistApplicationsFromDate(token, date);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    private async persistApplicationsFromDate(token, date: Date) {
+    public async fetchAndSaveApplicationsFromDate(date: Date) {
+        const token = await this.getAuthToken();
         let totalToFetch = 0;
         let fetched = 0;
         do {
