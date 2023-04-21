@@ -44,7 +44,8 @@ export class DauphinService implements DemandesSubventionsProvider {
         let fetched = 0;
         do {
             try {
-                console.log(`start fetching data from ${fetched}`);
+                if (fetched == 0) console.log("start fetching data...");
+                else console.log(`fetching data from ${fetched}`);
                 const result = (
                     await axios.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
@@ -58,7 +59,10 @@ export class DauphinService implements DemandesSubventionsProvider {
                 const applications = result.hits.hits;
                 fetched += applications.length;
 
-                if (totalToFetch === 0) totalToFetch = result.hits.total;
+                if (totalToFetch === 0) {
+                    totalToFetch = result.hits.total;
+                    console.log(`found ${totalToFetch} applications to be fetched`);
+                }
 
                 if (!applications) {
                     throw new Error("Something went wrong with dauphin results");

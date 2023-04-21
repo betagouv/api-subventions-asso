@@ -16,8 +16,7 @@ export default class DauphinCliController {
         await dauphinService.migrateDauphinCacheToDauphinGispro(logger);
     }
 
-    // only for test purpose
-    async testUpdateCache() {
+    async updateCache() {
         await dauphinService.updateCache();
     }
 }

@@ -1,7 +1,6 @@
 import { AsyncCron } from "../../../../../decorators/cronController.decorator";
 import { CronController } from "../../../../../@types/cron";
 import dauphinService from "../../dauphin.service";
-import dauphinGisproRepository from "../../repositories/dauphin-gispro.repository";
 
 export class DauphinCronController implements CronController {
     name = "dauphinCron";
