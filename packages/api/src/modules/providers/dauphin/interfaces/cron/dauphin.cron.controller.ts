@@ -1,6 +1,7 @@
 import { AsyncCron } from "../../../../../decorators/cronController.decorator";
 import { CronController } from "../../../../../@types/cron";
 import dauphinService from "../../dauphin.service";
+import dauphinGisproRepository from "../../repositories/dauphin-gispro.repository";
 
 export class DauphinCronController implements CronController {
     name = "dauphinCron";
@@ -8,6 +9,6 @@ export class DauphinCronController implements CronController {
     // every day at 20PM
     @AsyncCron({ cronExpression: "0 20 * * *" })
     updateDauphinCache() {
-        return dauphinService.fetchAndSaveApplicationsFromDate(new Date());
+        return dauphinService.updateCache();
     }
 }

@@ -47,14 +47,9 @@ export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDb
         });
     }
 
-    async getLastUpdateBySiren(siren: Siren): Promise<Date | undefined> {
+    async getLastImportDate() {
         const result = await this.collection
             .aggregate([
-                {
-                    $match: {
-                        "dauphin.demandeur.SIRET.SIREN": siren,
-                    },
-                },
                 {
                     $addFields: {
                         dateVersion: { $toDate: "$dauphin._document.dateVersion" },
@@ -65,44 +60,17 @@ export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDb
                         dateVersion: -1,
                     },
                 },
+                { $project: { dateVersion: "$dateVersion" } },
                 {
                     $limit: 1,
                 },
             ])
-            .toArray();
-        if (result.length) return new Date(result[0].dauphin._document.dateVersion);
-        return undefined;
-    }
-
-    /**
-     * @deprecated
-     */
-    async getLastUpdateBySiret(siret: Siret): Promise<Date | undefined> {
-        const result = await this.collection
-            .aggregate([
-                {
-                    $match: {
-                        "dauphin.demandeur.SIRET.complet": siret,
-                    },
-                },
-                {
-                    $addFields: {
-                        dateVersion: { $toDate: "$dauphin._document.dateVersion" },
-                    },
-                },
-                {
-                    $sort: {
-                        dateVersion: -1,
-                    },
-                },
-                {
-                    $limit: 1,
-                },
-            ])
-            .toArray();
-
-        if (result.length) return new Date(result[0]._document.dateVersion);
-        return undefined;
+            .toArray()
+            .then(arrs => {
+                return arrs[0] || null;
+            });
+        if (result) return new Date(result.dateVersion);
+        return result;
     }
 
     async migrateDauphinCacheToDauphinGispro(logger: (message: string, writeOnSameLine?: boolean) => void) {

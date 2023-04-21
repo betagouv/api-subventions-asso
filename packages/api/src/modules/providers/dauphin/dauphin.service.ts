@@ -10,7 +10,7 @@ import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
-import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
+import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 
 export class DauphinService implements DemandesSubventionsProvider {
     provider = {
@@ -23,12 +23,12 @@ export class DauphinService implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true;
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const applications = await dauhpinGisproRepository.findBySiret(siret);
+        const applications = await dauphinGisproRepository.findBySiret(siret);
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const applications = await dauhpinGisproRepository.findBySiren(siren);
+        const applications = await dauphinGisproRepository.findBySiren(siren);
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
@@ -36,7 +36,9 @@ export class DauphinService implements DemandesSubventionsProvider {
         return null;
     }
 
-    public async fetchAndSaveApplicationsFromDate(date: Date) {
+    async updateCache() {
+        const lastUpdateDate = await dauphinGisproRepository.getLastImportDate();
+        console.log(`update cache from ${lastUpdateDate.toString()}`);
         const token = await this.getAuthToken();
         let totalToFetch = 0;
         let fetched = 0;
@@ -46,7 +48,7 @@ export class DauphinService implements DemandesSubventionsProvider {
                 const result = (
                     await axios.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-                        { ...this.buildFetchFromDateQuery(date), from: fetched },
+                        { ...this.buildFetchFromDateQuery(lastUpdateDate), from: fetched },
                         this.buildSearchHeader(token),
                     )
                 ).data;
@@ -75,7 +77,7 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     private saveApplicationsInCache(applications: DauphinSubventionDto[]) {
         return asyncForEach(applications, async application => {
-            await dauhpinGisproRepository.upsert({ dauphin: application });
+            await dauphinGisproRepository.upsert({ dauphin: application });
         });
     }
 
@@ -206,16 +208,16 @@ export class DauphinService implements DemandesSubventionsProvider {
     }
 
     async insertGisproEntity(gisproEntity: Gispro) {
-        const entity = await dauhpinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
+        const entity = await dauphinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
 
         if (!entity) return;
 
         entity.gispro = gisproEntity;
-        await dauhpinGisproRepository.upsert(entity);
+        await dauphinGisproRepository.upsert(entity);
     }
 
     migrateDauphinCacheToDauphinGispro(logger) {
-        return dauhpinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
+        return dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
     }
 }
 
