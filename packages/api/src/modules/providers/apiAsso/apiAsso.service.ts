@@ -51,8 +51,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                 return res.data;
             }
             return null;
-        } catch (e) {
-            console.log("coucou erreur", e);
+        } catch {
             return null;
         }
     }
@@ -305,7 +304,9 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     }
 
     async getRibsBySiret(siret: Siret) {
-        return this.findRibs(siretToSiren(siret));
+        const ribs = await this.findRibs(siretToSiren(siret));
+
+        return ribs.filter(rib => rib.__meta__.siret === siret);
     }
 }
 
