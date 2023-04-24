@@ -64,6 +64,25 @@ describe("LoginController", () => {
             expect(goToUrlMock).toHaveBeenCalledWith("/");
         });
 
+        it("should call goToUrl with url from query", async () => {
+            loginMock.mockResolvedValueOnce({});
+            const url = "/tada";
+            const encodedUrl = "%2Ftada";
+
+            const oldLocation = window.location;
+            delete window.location;
+            window.location = new URL(`${oldLocation.origin}${oldLocation.pathname}?url=${encodedUrl}`);
+
+            controller.formElt = {
+                email: EMAIL,
+                password: PASSWORD,
+            };
+
+            await controller.submit(event);
+
+            expect(goToUrlMock).toHaveBeenCalledWith(url);
+        });
+
         it("should call getErrorMessage", async () => {
             const expected = 1;
             loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: expected }));
