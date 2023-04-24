@@ -1,6 +1,6 @@
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import routes from "../../routes";
-import { UnauthoziedError } from "../../errors";
+import { UnauthorizedError } from "../../errors";
 import authPort from "@resources/auth/auth.port";
 import * as RouterService from "@services/router.service";
 import requestsService from "@services/requests.service";
@@ -45,7 +45,7 @@ export class AuthService {
         requestsService.initAuthentication(user?.jwt?.token);
         if (user) crispService.setUserEmail(user.email);
 
-        requestsService.addErrorHook(UnauthoziedError, () => {
+        requestsService.addErrorHook(UnauthorizedError, () => {
             const current = RouterService.getRoute(routes, location.pathname);
             if (current.disableAuth) return;
 

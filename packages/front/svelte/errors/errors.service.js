@@ -1,12 +1,12 @@
 import StaticError from "./StaticError";
-import { NotFoundError, UnauthoziedError } from "./index";
+import { NotFoundError, UnauthorizedError } from "./index";
 
 export class ErrorsService {
     axiosErrorToError(e) {
         if (!e.isAxiosError) throw e;
         switch (e.response?.status) {
-            case UnauthoziedError.httpCode:
-                return UnauthoziedError;
+            case UnauthorizedError.httpCode:
+                return UnauthorizedError;
             case NotFoundError.httpCode:
                 return NotFoundError;
         }
