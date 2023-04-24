@@ -50,7 +50,8 @@ export class AuthService {
             if (current.disableAuth) return;
 
             this.logout();
-            goToUrl("/auth/login");
+            const queryUrl = encodeURIComponent(location.pathname);
+            goToUrl(`/auth/login?url=${queryUrl}`);
         });
     }
 

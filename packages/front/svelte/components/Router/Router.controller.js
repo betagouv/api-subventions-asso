@@ -1,5 +1,5 @@
 import * as RouterService from "../../services/router.service";
-import { isAdmin } from "../../services/user.service";
+import { isAdmin } from "@services/user.service";
 import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
 
@@ -21,7 +21,8 @@ export default class RouterController {
             if (!route.disableAuth) {
                 const user = authService.getCurrentUser();
 
-                if (!user || !user._id) return RouterService.goToUrl("/auth/login");
+                const queryUrl = encodeURIComponent(location.pathname);
+                if (!user || !user._id) return RouterService.goToUrl(`/auth/login?url=${queryUrl}`);
                 if (path.includes("admin") && !isAdmin(user)) return RouterService.goToUrl("/");
             }
             this.crumbs.set(RouterService.buildBreadcrumbs(path));
