@@ -17,17 +17,17 @@
         <p
             class="fr-mb-0
 ">
-            {#if $subventionsPercent !== null}
+            <!--{#if $subventionsPercent !== null}
                 <b>{$subventionsPercent}%</b>
                 des demandes ont été accordées en
                 <b>{year}*.</b>
                 <br />
-            {/if}
+            {/if}-->
             D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.
         </p>
         <p class="asterisk">
-            *Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées au
-            service.
+            <!--*-->Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées
+            au service.
         </p>
     </div>
     <div class="fr-col-4">
