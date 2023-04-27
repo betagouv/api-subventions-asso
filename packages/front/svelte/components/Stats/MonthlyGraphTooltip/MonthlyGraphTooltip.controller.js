@@ -1,5 +1,5 @@
 import Store from "@core/Store";
-import { capitalizeFirstLetter } from "@helpers/textHelper";
+import { capitalizeFirstLetter } from "@helpers/stringHelper";
 
 export class MonthlyGraphTooltipController {
     constructor(withPreviousValue, year) {

@@ -1,7 +1,7 @@
 import { MonthlyGraphTooltipController } from "./MonthlyGraphTooltip.controller";
-import { capitalizeFirstLetter } from "@helpers/textHelper";
+import { capitalizeFirstLetter } from "@helpers/stringHelper";
 
-jest.mock("@helpers/textHelper", () => {
+jest.mock("@helpers/stringHelper", () => {
     return {
         __esModule: true, // this property makes it work
         capitalizeFirstLetter: jest.fn(() => "Capitalized"),

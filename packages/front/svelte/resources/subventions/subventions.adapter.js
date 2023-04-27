@@ -1,5 +1,5 @@
 import { valueOrHyphen, numberToEuro } from "@helpers/dataHelper";
-import { capitalizeFirstLetter } from "@helpers/textHelper";
+import { capitalizeFirstLetter } from "@helpers/stringHelper";
 
 export default class SubventionsAdapter {
     /**

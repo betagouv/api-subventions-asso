@@ -1,12 +1,12 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    import { capitalizeFirstLetter } from "../../../../helpers/textHelper";
     import { action, data, modal } from "../../../../store/modal.store";
     import adminService from "../../admin.service";
-
+    
     import Button from "../../../../dsfr/Button.svelte";
     import RemoveUserModal from "./RemoveUserModal.svelte";
+    import { capitalizeFirstLetter } from "@helpers/stringHelper";
     import userService from "@resources/users/users.service";
     import authService from "@resources/auth/auth.service";
 
