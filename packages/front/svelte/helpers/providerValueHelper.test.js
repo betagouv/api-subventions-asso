@@ -1,13 +1,33 @@
 import * as ProviderValueHelper from "./providerValueHelper";
 
-describe("providerValueHelper", () => {
-    const PROVIDER_VALUE = {
-        value: "VALUE",
-        provider: "PROVIDER",
-        last_update: new Date(),
+function buildProviderValue(value, providerName = "PROVIDER A", date = new Date()) {
+    return {
+        value: value,
+        provider: providerName,
+        last_update: date,
     };
+}
 
-    // TODO: flatenProviderValue
+describe("providerValueHelper", () => {
+    const PROVIDER_VALUE = buildProviderValue("VALUE");
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    describe("flatenProviderValue", () => {
+        describe("when value is a ProviderValues", () => {
+            const PROVIDER_VALUES = [
+                buildProviderValue("A", "PROVIDER A", today),
+                buildProviderValue("B", "PROVIDER A", yesterday),
+            ];
+
+            it("should return an array of value", () => {
+                const expected = [PROVIDER_VALUES[0].value, PROVIDER_VALUES[1].value];
+                const actual = ProviderValueHelper.flatenProviderValue(PROVIDER_VALUES);
+                expect(actual).toEqual(expected);
+            });
+        });
+    });
 
     describe("getPropFromProviderValue()", () => {
         it("should return a function", () => {

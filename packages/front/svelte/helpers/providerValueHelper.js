@@ -17,6 +17,9 @@ export const flatenProviderValue = providerValueObject => {
         return providerValueObject.map(ob => flatenProviderValue(ob));
     }
 
+    if (isProviderValue(providerValueObject)) return getValue(providerValueObject);
+
+    // Else we got an object of provider value(s)
     const providerValueObjectProps = Object.keys(providerValueObject);
     return providerValueObjectProps.reduce(reduceProviderValues, {});
 };

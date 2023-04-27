@@ -53,5 +53,5 @@ export interface Association {
     versements?: Versement[];
     etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
     extrait_rcs?: ProviderValues<ExtraitRcsDto> | null;
-    bodacc?: ProviderValues<BodaccRecordDto>[];
+    bodacc?: ProviderValues<BodaccRecordDto[]>;
 }
