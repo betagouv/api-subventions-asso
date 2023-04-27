@@ -2,10 +2,17 @@ import axios from "axios";
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
-import dauhpinGisproRepository from "./repositories/dauphin-gispro.repository";
+import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 
 jest.mock("axios", () => ({
     post: jest.fn(),
+}));
+
+jest.mock("./repositories/dauphin-gispro.repository", () => ({
+    getLastImportDate: jest.fn(() => new Date()),
+    upsert: jest.fn(),
+    findBySiret: jest.fn(),
+    findBySiren: jest.fn(),
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -19,12 +26,6 @@ jest.mock("./../../../configurations/apis.conf", () => ({
 
 describe("Dauphin Service", () => {
     const TOKEN = "FAKE_TOKEN";
-    const mockUpsert = jest.spyOn(dauhpinGisproRepository, "upsert");
-
-    beforeAll(() => {
-        // @ts-expect-error: mock
-        mockUpsert.mockImplementation(() => Promise.resolve());
-    });
 
     const DATA = [{ a: true }, { b: true }];
 
@@ -40,7 +41,6 @@ describe("Dauphin Service", () => {
     });
 
     describe("getDemandeSubventionBySiret", () => {
-        const mockFindBySiret = jest.spyOn(dauhpinGisproRepository, "findBySiret");
         const mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
 
         afterEach(() => mockToDemandeSubvention.mockReset());
@@ -49,7 +49,7 @@ describe("Dauphin Service", () => {
             const APPLICATION_ENTITIES = [{ id: "A" }, { id: "B" }];
             const expected = APPLICATION_ENTITIES;
             // @ts-expect-error: mock return value
-            mockFindBySiret.mockImplementationOnce(async () => APPLICATION_ENTITIES);
+            dauphinGisproRepository.findBySiret.mockImplementationOnce(async () => APPLICATION_ENTITIES);
             // @ts-expect-error: mock return value
             mockToDemandeSubvention.mockImplementation(data => data);
 
@@ -60,13 +60,12 @@ describe("Dauphin Service", () => {
     });
 
     describe("getDemandeSubventionBySiren", () => {
-        const findBySirenMock = jest.spyOn(dauhpinGisproRepository, "findBySiren");
         const mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
 
         it("should return subventions", async () => {
             const expected = [{ fake: "data" }];
             // @ts-expect-error: mock return value
-            findBySirenMock.mockImplementationOnce(async () => expected);
+            dauphinGisproRepository.findBySiren.mockImplementationOnce(async () => expected);
             // @ts-expect-error: mock return value
             mockToDemandeSubvention.mockImplementationOnce(data => data);
             const actual = await dauphinService.getDemandeSubventionBySiren("FAKE_SIREN");
@@ -82,54 +81,28 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("fetchAndSaveApplicationsFromDate", () => {
-        // @ts-expect-error: private method
-        const mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken");
-        // @ts-expect-error: private method
-        const mockGetApplicationsFromDate = jest.spyOn(dauphinService, "persistApplicationsFromDate");
-
-        const mocks = [mockGetAuthToken, mockGetApplicationsFromDate];
-
-        beforeEach(() => {
-            // @ts-expect-error: mock
-            mockGetAuthToken.mockImplementation(async () => TOKEN);
-            // @ts-expect-error: mock
-            mockGetApplicationsFromDate.mockImplementation(() => []);
-        });
-
-        afterEach(() => mocks.forEach(mock => mock.mockReset()));
-
-        afterAll(() => mocks.forEach(mock => mock.mockRestore()));
-
-        it("should call getAuthToken", async () => {
-            await dauphinService.fetchAndSaveApplicationsFromDate(new Date());
-            expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call persistApplicationsFromDate", async () => {
-            await dauphinService.fetchAndSaveApplicationsFromDate(new Date());
-            expect(mockGetApplicationsFromDate).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe("persistApplicationsFromDate", () => {
-        // @ts-expect-error private method
+    describe("updateCache", () => {
+        // @ts-expect-error spy private method
         const mockBuildSearchHeader = jest.spyOn(dauphinService, "buildSearchHeader");
-        // @ts-expect-error private method
+        // @ts-expect-error spy private method
         const mockBuildFetchFromDateQuery = jest.spyOn(dauphinService, "buildFetchFromDateQuery");
-        // @ts-expect-error private method
+        // @ts-expect-error spy private method
         const mockFormatAndReturnDto = jest.spyOn(dauphinService, "formatAndReturnDto");
-        // @ts-expect-error: private method
+        // @ts-expect-error: spy private method
         const mockSaveApplicationsInCache = jest.spyOn(dauphinService, "saveApplicationsInCache");
-
+        // @ts-expect-error: spy private method
+        const mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken");
         const mocks = [
             mockBuildSearchHeader,
             mockBuildFetchFromDateQuery,
             mockFormatAndReturnDto,
             mockSaveApplicationsInCache,
+            mockGetAuthToken,
         ];
 
         beforeEach(() => {
+            // @ts-expect-error: mock
+            mockGetAuthToken.mockImplementation(async () => TOKEN);
             //@ts-expect-error: mock
             mockBuildSearchHeader.mockImplementation(() => ({ headers: {} }));
             mockBuildFetchFromDateQuery.mockImplementation(jest.fn());
@@ -143,31 +116,37 @@ describe("Dauphin Service", () => {
 
         afterAll(() => mocks.map(mock => mock.mockRestore()));
 
+        it("should call repository.getLastImportDate()", async () => {
+            await dauphinService.updateCache();
+            expect(dauphinGisproRepository.getLastImportDate).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call getAuthToken", async () => {
+            await dauphinService.updateCache();
+            expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+        });
+
         it("should call buildFetchFromDateQuery", async () => {
             const DATE = new Date();
-            // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.persistApplicationsFromDate(TOKEN, DATE);
+            await dauphinService.updateCache();
             expect(mockBuildFetchFromDateQuery).toHaveBeenCalledWith(DATE);
         });
 
         it("should build headers from token", async () => {
             const expected = TOKEN;
-            // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.persistApplicationsFromDate(TOKEN, new Date());
+            await dauphinService.updateCache();
             expect(mockBuildSearchHeader).toHaveBeenCalledWith(expected);
         });
 
         it("should call axios with args", async () => {
             const DATE = new Date();
-            // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.persistApplicationsFromDate(TOKEN, DATE);
+            await dauphinService.updateCache();
             // @ts-expect-error: mock
             expect(axios.post.mock.calls[0]).toMatchSnapshot();
         });
 
         it("should call mockSaveApplicationsInCache", async () => {
-            // @ts-expect-error getDauphinSubventions is private
-            await dauphinService.persistApplicationsFromDate(TOKEN, new Date());
+            await dauphinService.updateCache();
             expect(mockSaveApplicationsInCache).toHaveBeenCalledTimes(1);
         });
     });
@@ -175,11 +154,10 @@ describe("Dauphin Service", () => {
     describe("saveApplicationsInCache", () => {
         it("should upsert entites asynchornously", async () => {
             const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
-            mockUpsert.mockImplementation();
             // @ts-expect-error: private method
             await dauphinService.saveApplicationsInCache(ENTITIES);
-            expect(mockUpsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
-            expect(mockUpsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
+            expect(dauphinGisproRepository.upsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
+            expect(dauphinGisproRepository.upsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
         });
     });
 
