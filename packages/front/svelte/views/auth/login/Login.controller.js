@@ -19,7 +19,8 @@ export default class LoginController {
 
         try {
             await authService.login(email, password);
-            goToUrl("/");
+            const urlToGo = decodeURIComponent(location.search.match(/(\?|&)url=([^&]*)/)?.[2] || "/");
+            goToUrl(urlToGo);
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
 

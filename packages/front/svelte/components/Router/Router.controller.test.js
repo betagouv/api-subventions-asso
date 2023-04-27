@@ -1,6 +1,7 @@
 import * as routerService from "../../services/router.service";
 import RouterController from "./Router.controller";
 import authService from "@resources/auth/auth.service";
+import { isRna, isSiren, isSiret } from "@helpers/validatorHelper";
 
 describe("RouterController", () => {
     let controller;
@@ -84,11 +85,19 @@ describe("RouterController", () => {
             expect(getCurrentUserMock).toHaveBeenCalledTimes(1);
         });
 
-        it("should call goToUrl with params: '/auth/login'", () => {
-            const expected = "/auth/login";
+        it("should call goToUrl with params: '/auth/login' plus search query", () => {
+            const expected = "/auth/login?url=%2Ftada";
+
+            const oldLocation = window.location;
+            delete window.location;
+            window.location = new URL(`${oldLocation.origin}/tada`);
+
             getRouteMock.mockReturnValueOnce({ disableAuth: false });
 
             controller.loadRoute("", "");
+
+            delete window.location;
+            window.location = oldLocation;
 
             expect(goToUrlMock).toHaveBeenCalledWith(expected);
         });

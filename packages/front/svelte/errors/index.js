@@ -1,4 +1,4 @@
 import NotFoundError from "./NotFoundError";
-import UnauthoziedError from "./UnauthorizedError";
+import UnauthorizedError from "./UnauthorizedError";
 
-export { UnauthoziedError, NotFoundError };
+export { UnauthorizedError, NotFoundError };
