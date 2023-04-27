@@ -70,6 +70,24 @@ describe("EtablissementController", () => {
         });
     });
 
+    describe("getRibs", () => {
+        const getRibsSpy = jest.spyOn(etablissementsService, "getRibs");
+        it("should call service with args", async () => {
+            getRibsSpy.mockImplementationOnce(jest.fn());
+            await controller.getRibs(IDENTIFIER);
+            expect(getRibsSpy).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("should return ribs", async () => {
+            const documents = [{}];
+            // @ts-expect-error: mock
+            getRibsSpy.mockImplementationOnce(() => documents);
+            const expected = { documents };
+            const actual = await controller.getRibs(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("getEtablissement", () => {
         const getEtablissementSpy = jest.spyOn(etablissementsService, "getEtablissement");
         it("should call service with args", async () => {

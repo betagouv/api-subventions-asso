@@ -89,6 +89,10 @@ export class EtablissementsService {
         return await documentsService.getDocumentBySiret(siret);
     }
 
+    getRibs(siret: Siret) {
+        return documentsService.getRibsBySiret(siret);
+    }
+
     private async aggregate(id: Siren | Siret) {
         const getter = isSiren(id) ? "getEtablissementsBySiren" : "getEtablissementsBySiret";
         const etablisementProviders = this.getEtablissementProviders();

@@ -8,21 +8,25 @@ import DocumentProvider from "./@types/DocumentsProvider";
 
 export class DocumentsService {
     public async getDocumentBySiren(siren: Siren) {
-        const result = await this.aggregate(siren);
+        const result = await this.aggregateDocuments(siren);
 
         return result.filter(d => d) as Document[];
     }
 
     public async getDocumentByRna(rna: Rna) {
-        const result = await this.aggregate(rna);
+        const result = await this.aggregateDocuments(rna);
 
         return result.filter(d => d) as Document[];
     }
 
     public async getDocumentBySiret(siret: Siret) {
-        const result = await this.aggregate(siret);
+        const result = await this.aggregateDocuments(siret);
 
         return result.filter(d => d) as Document[];
+    }
+
+    public async getRibsBySiret(siret: Siret) {
+        return await this.aggregateRibs(siret);
     }
 
     private isDocumentProvider(data: unknown): data is DocumentProvider {
@@ -33,7 +37,28 @@ export class DocumentsService {
         return Object.values(providers).filter(p => this.isDocumentProvider(p)) as DocumentProvider[];
     }
 
-    private async aggregate(id: StructureIdentifiers): Promise<(Document | null)[]> {
+    private getRibProviders() {
+        return this.getDocumentProviders().filter(p => p.getRibsBySiret);
+    }
+
+    private async aggregateRibs(id: Siret) {
+        return await this.aggregate(this.getRibProviders(), "getRibsBySiret", id);
+    }
+
+    private async aggregate(providers, method, id) {
+        const result = await Promise.all(
+            providers.map(provider =>
+                provider[method].call(provider, id).catch(e => {
+                    console.error(e);
+                    return [];
+                }),
+            ),
+        );
+
+        return result.flat() as Document[];
+    }
+
+    private async aggregateDocuments(id: StructureIdentifiers): Promise<(Document | null)[]> {
         const documentProviders = this.getDocumentProviders();
 
         const type = getIdentifierType(id);
@@ -46,16 +71,7 @@ export class DocumentsService {
                 ? "getDocumentsBySiren"
                 : "getDocumentsBySiret";
 
-        const result = await Promise.all(
-            documentProviders.map(provider =>
-                provider[method].call(provider, id).catch(e => {
-                    console.error(e);
-                    return [];
-                }),
-            ),
-        );
-
-        return result.flat();
+        return await this.aggregate(documentProviders, method, id);
     }
 }
 
