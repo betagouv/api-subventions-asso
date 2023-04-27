@@ -170,22 +170,6 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
         return entities.map(e => FonjepEntityAdapter.toEtablissement(e));
     }
 
-    async dropCollection() {
-        try {
-            return await fonjepSubventionRepository.drop();
-        } catch (e) {
-            return false;
-        }
-    }
-
-    async renameCollection(name: string) {
-        try {
-            return await fonjepSubventionRepository.rename(name);
-        } catch (e) {
-            return false;
-        }
-    }
-
     /**
      * |----------------------------|
      * |  Versements Part  |
@@ -208,6 +192,22 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     async getVersementsBySiren(siren: Siren) {
         return this.toVersementArray(await fonjepVersementRepository.findBySiren(siren));
+    }
+
+    /**
+     * |----------------------------|
+     * |  Database Management       |
+     * |----------------------------|
+     */
+
+    useTemporyCollection(active: boolean) {
+        fonjepSubventionRepository.useTemporyCollection(active);
+        fonjepVersementRepository.useTemporyCollection(active);
+    }
+
+    async applyTemporyCollection() {
+        await fonjepSubventionRepository.applyTemporyCollection();
+        await fonjepVersementRepository.applyTemporyCollection();
     }
 }
 
