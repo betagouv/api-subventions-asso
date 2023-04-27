@@ -43,10 +43,7 @@
                 data-fr-opened={elementData ? "false" : undefined}
                 on:click={() => controller.onRowClick(elementData)}>
                 {#if !elementData}
-                    <TableCell colspan="5" position="center">
-                        Nous ne disposons pas encore de cette information
-                    </TableCell>
-                    <TableCell primary={true} position="end">?</TableCell>
+                    <TableCell colspan="6" position="center">Information actuellement indisponible</TableCell>
                 {:else}
                     <TableCell>
                         {elementData.establishment}
