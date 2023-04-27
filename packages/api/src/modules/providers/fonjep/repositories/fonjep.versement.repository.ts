@@ -1,9 +1,14 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
-import MigrationRepository from "../../../../shared/MigrationRepository";
 import FonjepVersementEntity from "../entities/FonjepVersementEntity";
+import { FonjepCoreRepository } from "./fonjep.core.repository";
 
-export class FonjepVersementRepository extends MigrationRepository<FonjepVersementEntity> {
+export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersementEntity> {
     readonly collectionName = "fonjepVersement";
+
+    async createIndexes() {
+        await this.collection.createIndex({ "indexedInformations.code_poste": 1 });
+        await this.collection.createIndex({ "legalInformations.siret": 1 });
+    }
 
     create(entity: FonjepVersementEntity) {
         return this.collection.insertOne(entity);

@@ -9,10 +9,14 @@ jest.mock("fs");
 describe("FonjepCliController", () => {
     const createSubventionEntityMock = jest.spyOn(fonjepService, "createSubventionEntity");
     const createVersementEntityMock = jest.spyOn(fonjepService, "createVersementEntity");
+    const useTemporyCollectionMock = jest.spyOn(fonjepService, "useTemporyCollection");
+    const applyTemporyCollectionMock = jest.spyOn(fonjepService, "applyTemporyCollection");
 
     beforeAll(() => {
         createSubventionEntityMock.mockImplementation(async () => true);
         createVersementEntityMock.mockImplementation(async () => true);
+        applyTemporyCollectionMock.mockImplementation(async () => {});
+        useTemporyCollectionMock.mockImplementation(() => {});
     });
 
     const cli = new FonjepCliController();
@@ -38,16 +42,6 @@ describe("FonjepCliController", () => {
             await cli._parse(PATH, [], new Date());
             expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.subventions.length);
             expect(createVersementEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.versements.length);
-        });
-    });
-
-    describe("drop()", () => {
-        it("should call FonjepRepository.drop()", async () => {
-            const mockDrop = jest.spyOn(fonjepSubventionRepository, "drop").mockImplementationOnce(jest.fn());
-            const expected = 1;
-            await cli.drop();
-            const actual = mockDrop.mock.calls.length;
-            expect(actual).toEqual(expected);
         });
     });
 });
