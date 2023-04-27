@@ -94,7 +94,10 @@ export class EtablissementsService {
         const etablisementProviders = this.getEtablissementProviders();
 
         const promises = etablisementProviders.map(async provider => {
-            const etabs = await provider[getter](id, true);
+            const etabs = await provider[getter](id, true).catch(e => {
+                console.error(provider, e);
+                return null;
+            });
             if (etabs) return etabs;
             else return null;
         });

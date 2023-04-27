@@ -84,7 +84,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     }
 
     private async saveStructureInAssociationName(structure: StructureDto) {
-        if (!structure?.identite.id_siren || !structure?.identite.id_rna || !structure?.identite.nom) return;
+        if (!structure?.identite?.id_siren || !structure?.identite?.id_rna || !structure?.identite?.nom) return;
 
         const lastUpdateDateRna = ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna);
         const lastUpdateDateSiren = ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren);
