@@ -87,12 +87,4 @@ export default class FonjepCliController extends CliController {
     public async drop() {
         await fonjepService.dropCollection();
     }
-
-    public async rename(newTableName: string | undefined) {
-        if (!newTableName) {
-            throw new Error("newTableName arguments is missing");
-        }
-
-        await fonjepService.renameCollection(newTableName);
-    }
 }
