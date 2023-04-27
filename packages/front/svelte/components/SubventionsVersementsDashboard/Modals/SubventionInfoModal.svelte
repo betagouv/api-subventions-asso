@@ -1,6 +1,6 @@
 <script>
     import { data } from "../../../store/modal.store";
-    import { capitalizeFirstLetter } from "@helpers/textHelper";
+    import { capitalizeFirstLetter } from "@helpers/stringHelper";
 </script>
 
 {#if $data.subvention}
