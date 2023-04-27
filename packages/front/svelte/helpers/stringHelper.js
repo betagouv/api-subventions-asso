@@ -1,6 +1,8 @@
 export function trim(str, length) {
     if (str.length <= length) return str;
 
+    if (length < 3) return str.slice(0, length);
+
     return str.slice(0, length - 3) + "...";
 }
 
