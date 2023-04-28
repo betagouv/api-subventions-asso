@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AnnouncementController getter judgment should parse judgment in JSON 1`] = `"https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:A202202272158"`;
+
+exports[`AnnouncementController getter publication should return url 1`] = `"https://www.bodacc.fr/telechargements/COMMERCIALES/PDF/A/2022/20220227/1/BODACC_A_PDF_Unitaire_20220227_02158.pdf"`;
+
+exports[`AnnouncementController getter url should return url 1`] = `"https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:A202202272158"`;

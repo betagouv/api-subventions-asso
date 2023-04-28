@@ -9,8 +9,6 @@
     export let labelIcon = undefined;
     export let icon = undefined;
 
-    console.log(`titleSize = ${titleSize}`);
-
     const actionClasses = `fr-btn${labelIcon ? " " + getIconClass(labelIcon) : ""}`;
     const calloutClasses = `fr-callout${icon ? " " + getIconClass(icon) : ""}`;
 </script>
