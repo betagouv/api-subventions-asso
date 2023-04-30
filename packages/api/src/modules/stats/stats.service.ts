@@ -152,9 +152,10 @@ class StatsService {
         return statsAssociationsVisitRepository.add(visit);
     }
 
-    private reduceUsersToUsersByStatus(usersByStatus: UserCountByStatus, user: WithId<UserDbo>) {
+    private async reduceUsersToUsersByStatus(acc: Promise<UserCountByStatus>, user: WithId<UserDbo>) {
+        const usersByStatus = await acc;
         if (user.roles.includes(RoleEnum.admin)) usersByStatus.admin++;
-        else if (isUserActif(user)) usersByStatus.active++;
+        else if (await isUserActif(user)) usersByStatus.active++;
         else if (user.active) usersByStatus.idle++;
         else usersByStatus.inactive++;
         return usersByStatus;
@@ -162,12 +163,15 @@ class StatsService {
 
     async getUserCountByStatus() {
         const users = await userRepository.findAll();
-        return users.reduce(this.reduceUsersToUsersByStatus, {
-            admin: 0,
-            active: 0,
-            idle: 0,
-            inactive: 0,
-        });
+        return users.reduce(
+            this.reduceUsersToUsersByStatus,
+            Promise.resolve({
+                admin: 0,
+                active: 0,
+                idle: 0,
+                inactive: 0,
+            }),
+        );
     }
 
     private async countUserAverageVisitsOnPeriod(user: UserWithAssociationVistitsEntity, start: Date, end: Date) {

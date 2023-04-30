@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { AssociationIdentifiers } from "../../../@types";
 import MigrationRepository from "../../../shared/MigrationRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
@@ -18,6 +19,15 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
         await this.collection.createIndex({ date: 1 });
         await this.collection.createIndex({ associationIdentifier: 1 });
         await this.collection.createIndex({ userId: 1 });
+    }
+
+    async getLastSearchDate(id) {
+        const result = await this.collection
+            .find({ userId: new ObjectId(id) })
+            .sort({ date: -1 })
+            .toArray();
+        if (!result.length) return null;
+        return result[0].date;
     }
 
     findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
