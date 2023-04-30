@@ -7,7 +7,6 @@ jest.mock("../../shared/helpers/UserHelper", () => {
     };
 });
 
-import * as UserHelper from "../../shared/helpers/UserHelper";
 import statsService from "./stats.service";
 import userService from "../user/user.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
@@ -686,50 +685,57 @@ describe("StatsService", () => {
             inactive: 0,
         };
 
-        it("should increment admin", () => {
+        it("should increment admin", async () => {
             const expected = DEFAULT_USERS_BY_STATUS.admin + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["admin"] },
-            ).admin;
+            );
+            const actual = stats.admin;
             expect(actual).toEqual(expected);
         });
 
-        it("should increment active", () => {
+        it("should increment active", async () => {
             mockIsUserActif.mockImplementationOnce(() => true);
             const expected = DEFAULT_USERS_BY_STATUS.active + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["user"] },
-            ).active;
+            );
+
+            const actual = stats.active;
             expect(actual).toEqual(expected);
         });
 
-        it("should increment idle", () => {
+        it("should increment idle", async () => {
             mockIsUserActif.mockImplementationOnce(() => false);
             const expected = DEFAULT_USERS_BY_STATUS.idle + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["user"], active: true },
-            ).idle;
+            );
+
+            const actual = stats.idle;
             expect(actual).toEqual(expected);
         });
 
-        it("should increment inactive", () => {
+        it("should increment inactive", async () => {
             mockIsUserActif.mockImplementationOnce(() => false);
             const expected = DEFAULT_USERS_BY_STATUS.inactive + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["user"], active: false },
-            ).inactive;
+            );
+
+            const actual = stats.inactive;
             expect(actual).toEqual(expected);
         });
     });
