@@ -3,11 +3,13 @@ import {
     MonthlyRequestsDtoResponse,
     StatsRequestDtoResponse,
     StatsRequestsMedianDtoResponse,
+    UserRequestsResponseDto,
     UsersByStatusResponseDto,
 } from "@api-subventions-asso/dto";
 import { Controller, Get, Query, Route, Security, Tags } from "tsoa";
 import statsService from "../../stats.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { IdentifiedRequest } from "../../../../@types";
 
 @Route("stats")
 @Security("jwt", ["admin"])
@@ -77,6 +79,17 @@ export class StatsController extends Controller {
     ): Promise<MonthlyRequestsDtoResponse> {
         if (isNaN(Number(year))) throw new BadRequestError("'date' must be a number");
         return await statsService.getRequestsPerMonthByYear(Number(year), includesAdmin === "true");
+    }
+
+    /**
+     * Permet de récupérer le nombre de requêtes sur les pages associations et établissements d'un utilisateur
+     *
+     * @summary Permet de récupérer le nombre de requêtes sur les pages associations et établissements d'un utilisateur
+     */
+    @Get("/user/requests")
+    async getUserRequests(@Query() id: string): Promise<UserRequestsResponseDto> {
+        const result = await statsService.getUserRequests(id);
+        return { data: result };
     }
 
     /**

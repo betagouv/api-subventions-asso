@@ -280,6 +280,40 @@ describe("/stats", () => {
         });
     });
 
+    describe("/user", () => {
+        describe("/requests", () => {
+            it("should return UserRequestsSuccessResponse", async () => {
+                const TODAY = new Date();
+                const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
+                await createAndActiveUser(ACTIVE_USER_EMAIL);
+                const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+                await statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
+                });
+                await statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
+                });
+                await statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: TODAY,
+                });
+                const expected = { data: 3 };
+                await request(g.app)
+                    .get(`/stats/user/requests`)
+                    .query({ id: ACTIVE_USER._id.toString() })
+                    // createAndGetAdminToken() creates an admin user
+                    .set("x-access-token", await createAndGetAdminToken())
+                    .set("Accept", "application/json")
+                    .expect(200, expected);
+            });
+        });
+    });
+
     describe("/users", () => {
         describe("/monthly/{year}", () => {
             const YEAR = 2022;
@@ -303,7 +337,7 @@ describe("/stats", () => {
         });
 
         describe("/status", () => {
-            it("should return UsersByStatusSuccessResponse", async () => {
+            it("should return UserCountByStatusSuccessResponse", async () => {
                 const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
                 await createAndActiveUser(ACTIVE_USER_EMAIL);
                 await createAndActiveUser("idle.user@beta.gouv.fr");
