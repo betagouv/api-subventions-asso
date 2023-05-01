@@ -21,11 +21,13 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
         await this.collection.createIndex({ userId: 1 });
     }
 
-    async getLastSearchDate(id) {
-        const result = await this.collection
-            .find({ userId: new ObjectId(id) })
-            .sort({ date: -1 })
-            .toArray();
+    countUserRequests(userId: string) {
+        const mongoId = new ObjectId(userId);
+        return this.collection.countDocuments({ userId: mongoId });
+    }
+
+    async getLastSearchDate(userId) {
+        const result = await this.collection.find({ userId }).sort({ date: -1 }).toArray();
         if (!result.length) return null;
         return result[0].date;
     }
