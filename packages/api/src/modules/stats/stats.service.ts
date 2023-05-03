@@ -234,6 +234,10 @@ class StatsService {
         const emailSet = new Set(logs.map(log => log?.meta?.req?.user?.email).filter(email => !!email));
         return [...emailSet];
     }
+
+    async getUserLastSearchDate(userId) {
+        return statsAssociationsVisitRepository.getLastSearchDate(userId);
+    }
 }
 
 const statsService = new StatsService();
