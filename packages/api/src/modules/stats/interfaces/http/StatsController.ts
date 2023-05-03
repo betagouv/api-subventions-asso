@@ -9,7 +9,6 @@ import {
 import { Controller, Get, Query, Route, Security, Tags } from "tsoa";
 import statsService from "../../stats.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
-import { IdentifiedRequest } from "../../../../@types";
 
 @Route("stats")
 @Security("jwt", ["admin"])
