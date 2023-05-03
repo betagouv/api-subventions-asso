@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/betagouv/datasubvention/compare/v0.26.2...v0.27.0) (2023-05-03)
+
+
+### Bug Fixes
+
+* **front:** stabilizes trim when required length is too short ([0e0b99b](https://github.com/betagouv/datasubvention/commit/0e0b99bfbd919b2829efc8facb0219fb5ddcaeb3))
+
+
+### Features
+
+* **front:** hide subv percentage (potentially inaccurate) ([6e8fb3b](https://github.com/betagouv/datasubvention/commit/6e8fb3bc4157f662bb0ecfbe5ec36448c02c4bb7))
+* **front:** return to intended url after login ([90e8c9a](https://github.com/betagouv/datasubvention/commit/90e8c9ad96802dbb1df0e2b399645f2a2440d0a4))
+* **front:** wording no data in table ([9fa4846](https://github.com/betagouv/datasubvention/commit/9fa48461af129ce99ecd37a3531f89b0d6936242))
+
+
+
+
+
 ## [0.26.2](https://github.com/betagouv/datasubvention/compare/v0.26.1...v0.26.2) (2023-04-19)
 
 
