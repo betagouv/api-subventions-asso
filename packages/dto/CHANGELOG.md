@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/betagouv/datasubvention/compare/v0.26.2...v0.27.0) (2023-05-03)
+
+
+### Features
+
+* **dto:** common grant dto ([1c77f65](https://github.com/betagouv/datasubvention/commit/1c77f654ec0e09ab69b67dca594e07942744a4ab))
+
+
+
+
+
 # [0.26.0](https://github.com/betagouv/datasubvention/compare/v0.25.1...v0.26.0) (2023-04-17)
 
 **Note:** Version bump only for package dto

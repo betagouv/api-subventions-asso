@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/betagouv/api-subventions-asso/compare/v0.26.2...v0.27.0) (2023-05-03)
+
+
+### Bug Fixes
+
+* **api:** catch error from establishment provider ([88cfe67](https://github.com/betagouv/api-subventions-asso/commit/88cfe6795e4be2f77862cfdc8e03a4a1f655b5d5))
+* **api:** change dauphin service instructor ([b699bc4](https://github.com/betagouv/api-subventions-asso/commit/b699bc4e55092d97b1c5c9153891ba3f0968d184))
+* **api:** undefined-safety when apiAsso structure is incomplete ([abfe22a](https://github.com/betagouv/api-subventions-asso/commit/abfe22ac1fca80974a44188e11b3211391969ce7))
+* **front:** stabilizes trim when required length is too short ([0e0b99b](https://github.com/betagouv/api-subventions-asso/commit/0e0b99bfbd919b2829efc8facb0219fb5ddcaeb3))
+
+
+### Features
+
+* **api:** add establishment document rib route ([17ba547](https://github.com/betagouv/api-subventions-asso/commit/17ba547cf30a4adb763fbf127a0c8939df972856))
+* **api:** add sort desc on date in query ([0d91899](https://github.com/betagouv/api-subventions-asso/commit/0d91899e218879ca6ceddac2d4fee1bcefbe79da))
+* **api:** clean from review ([a562570](https://github.com/betagouv/api-subventions-asso/commit/a562570410c11d668de7b46ffd93c3921e05497a))
+* **api:** create dauphin cron ([eb10896](https://github.com/betagouv/api-subventions-asso/commit/eb10896c0df3d107e4e255b63627359e7544a278))
+* **api:** fetch and save dauphin data from date ([382cad7](https://github.com/betagouv/api-subventions-asso/commit/382cad70b710de476df005b3071c451eb1628595))
+* **api:** make clear that dauphin cli is for test only ([4601a74](https://github.com/betagouv/api-subventions-asso/commit/4601a74a4887522ce1a1143ea6e8a38a4152e277))
+* **api:** merge dauphin methods ([8196a6d](https://github.com/betagouv/api-subventions-asso/commit/8196a6d2d566dc0295f66f60efaab79fdb69a3ed))
+* **api:** minor updates from review ([f00054c](https://github.com/betagouv/api-subventions-asso/commit/f00054c03eb595db5e7acf1ed00f11f2ebcda9d6))
+* **api:** remove debug console log ([0fd30a1](https://github.com/betagouv/api-subventions-asso/commit/0fd30a12ecf59273ad67b1bf326e48d63b649456))
+* **api:** rename cli test command ([b9a7ec8](https://github.com/betagouv/api-subventions-asso/commit/b9a7ec85798296655ee37c5355e5491469e06434))
+* **api:** test formatAndReturnDto ([d6d5620](https://github.com/betagouv/api-subventions-asso/commit/d6d5620d6894505ff25c326072b6d5172d7c8327))
+* **api:** update cache from last import date ([15d7bf0](https://github.com/betagouv/api-subventions-asso/commit/15d7bf0ee99ef8a4f0be87b830b5983909015950))
+* **api:** update cron logs ([85cca70](https://github.com/betagouv/api-subventions-asso/commit/85cca702f72b79a62d55ecf986f64700e786aec5))
+* **api:** use batch of data in import process ([dccea4a](https://github.com/betagouv/api-subventions-asso/commit/dccea4a3cf9bc721f7c3bb086a6339323b4a54ef))
+* **dto:** common grant dto ([1c77f65](https://github.com/betagouv/api-subventions-asso/commit/1c77f654ec0e09ab69b67dca594e07942744a4ab))
+* **front:** hide subv percentage (potentially inaccurate) ([6e8fb3b](https://github.com/betagouv/api-subventions-asso/commit/6e8fb3bc4157f662bb0ecfbe5ec36448c02c4bb7))
+* **front:** return to intended url after login ([90e8c9a](https://github.com/betagouv/api-subventions-asso/commit/90e8c9ad96802dbb1df0e2b399645f2a2440d0a4))
+* **front:** wording no data in table ([9fa4846](https://github.com/betagouv/api-subventions-asso/commit/9fa48461af129ce99ecd37a3531f89b0d6936242))
+
+
+
+
+
 ## [0.26.2](https://github.com/betagouv/api-subventions-asso/compare/v0.26.1...v0.26.2) (2023-04-19)
 
 
