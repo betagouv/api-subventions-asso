@@ -47,6 +47,27 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
             ])
             .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
     }
+
+    findGroupedByUserIdentifierOnPeriod(start: Date, end: Date) {
+        return this.collection
+            .aggregate([
+                {
+                    $match: {
+                        date: {
+                            $gte: start,
+                            $lte: end,
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$userId",
+                        associationVisits: { $addToSet: "$$ROOT" },
+                    },
+                },
+            ])
+            .toArray() as Promise<{ _id: AssociationIdentifiers; associationVisits: AssociationVisitEntity[] }[]>;
+    }
 }
 
 const statsAssociationsVisitRepository = new StatsAssociationsVisitRepository();

@@ -42,23 +42,17 @@ export class StatsController extends Controller {
     /**
      * Permet de récupérer le nombre médian de requêtes sur un période donnée
      *
-     * @summary Permet de récupérer le nombre médian de requêtes sur un période donnée
+     * @summary Permet de récupérer le nombre médian de requêtes sur un période donnée (Les admins sont exclus)
      * @param start Timestamp starting date for the period
      * @param end Timestamp ending date for the period
-     * @param {string=} [includesAdmin = "false"] true if we include admin in stats, false for exclude admin (All value other of "true" will be considered as false)
      * @returns
      */
     @Get("/requests/median")
     async getMedianRequestOnPeriod(
         @Query() start: string,
         @Query() end: string,
-        @Query() includesAdmin = "false",
     ): Promise<StatsRequestsMedianDtoResponse> {
-        const result = await statsService.getMedianRequestsOnPeriod(
-            new Date(start),
-            new Date(end),
-            includesAdmin === "true",
-        );
+        const result = await statsService.getMedianVisitsOnPeriod(new Date(start), new Date(end));
         return { data: result };
     }
 

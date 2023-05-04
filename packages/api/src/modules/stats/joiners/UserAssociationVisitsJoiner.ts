@@ -49,13 +49,11 @@ export class UserAssociationVisitJoiner {
                         localField: userRepository.joinIndexes.associationVisits,
                         foreignField: statsAssociationsVisitRepository.joinIndexes.user,
                         as: "associationVisits",
-                        let: { visitDate: "$date" },
                         pipeline: [
                             {
                                 $match: {
-                                    visitDate: {
-                                        $gte: start,
-                                        $lte: end,
+                                    $expr: {
+                                        $and: [{ $gte: ["$date", start] }, { $lte: ["$date", end] }],
                                     },
                                 },
                             },
