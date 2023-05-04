@@ -14,26 +14,17 @@ export default class FonjepCliController extends CliController {
 
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
-    /**
-     * @example npm run cli fonjep parse ./Extraction\ du\ 30-12-2022.xlsx 2022-12-30
-     *
-     * @param file Path to the file
-     * @param logs is auto injected by cli controller
-     * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
-     *
-     */
+    // Called in CliController parse()
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
         if (!exportDate) throw new ExportDateError();
-        this.logger.logIC("\nStart parse file: ", file);
-        this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
+        console.info("\nStart parse file: ", file);
+        logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
 
         const { subventions, versements } = FonjepParser.parse(fileContent, exportDate);
 
-        fonjepService.useTemporyCollection(true);
-
-        this.logger.logIC("Start register in database ...");
+        console.info("Start register in database ...");
 
         const subventionRejected = [] as FonjepRejectedRequest[];
 
@@ -52,13 +43,13 @@ export default class FonjepCliController extends CliController {
             return result;
         }, Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>);
 
-        this.logger.logIC(`
+        console.info(`
             ${subventionsResult.length} subventions created
             ${subventionRejected.length} subventions not valid
         `);
 
         subventionRejected.forEach(result => {
-            this.logger.log(
+            logs.push(
                 `\n\nThis subvention is not registered because: ${result.message} \n`,
                 JSON.stringify(result.data, null, "\t"),
             );
@@ -80,18 +71,20 @@ export default class FonjepCliController extends CliController {
             return result;
         }, Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>);
 
-        this.logger.logIC(`
+        console.info(`
             ${versementsResult.length} versements created
             ${versementRejected.length} versements not valid
         `);
 
         versementRejected.forEach(result => {
-            this.logger.log(
+            logs.push(
                 `\n\nThis versement is not registered because: ${result.message} \n`,
                 JSON.stringify(result.data, null, "\t"),
             );
         });
+    }
 
-        await fonjepService.applyTemporyCollection();
+    public async drop() {
+        await fonjepService.dropCollection();
     }
 }

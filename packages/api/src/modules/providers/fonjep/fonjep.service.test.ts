@@ -239,4 +239,23 @@ describe("FonjepService", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("dropCollection()", () => {
+        const mockDrop = jest.spyOn(fonjepSubventionRepository, "drop");
+        it("return true if drop() succeed", async () => {
+            mockDrop.mockImplementationOnce(async () => true);
+            const exepected = true;
+            const actual = await fonjepService.dropCollection();
+            expect(actual).toEqual(exepected);
+        });
+
+        it("return false if drop() throws", async () => {
+            mockDrop.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const expected = false;
+            const actual = await fonjepService.dropCollection();
+            expect(actual).toEqual(expected);
+        });
+    });
 });
