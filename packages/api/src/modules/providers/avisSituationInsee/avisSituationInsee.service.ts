@@ -10,6 +10,7 @@ import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter"
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
+import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";
 
 export class AvisSituationInseeService implements DocumentProvider {
     provider = {
@@ -31,7 +32,7 @@ export class AvisSituationInseeService implements DocumentProvider {
         | false
     >(CACHE_TIMES.ONE_DAY);
 
-    private async getInseeEtablissements(identifier: StructureIdentifiers): Promise<
+    private async getInseeEtablissementsBySiren(siren: Siren): Promise<
         | {
               etablissements: {
                   nic: string;
@@ -40,11 +41,7 @@ export class AvisSituationInseeService implements DocumentProvider {
           }
         | false
     > {
-        const type = IdentifierHelper.getIdentifierType(identifier)?.toLocaleLowerCase();
-
-        if (!type) return false;
-
-        if (this.requestCache.has(identifier)) return this.requestCache.get(identifier)[0];
+        if (this.requestCache.has(siren)) return this.requestCache.get(siren)[0];
 
         try {
             const result = await axios.get<{
@@ -52,13 +49,13 @@ export class AvisSituationInseeService implements DocumentProvider {
                     nic: string;
                     etablissementSiege: boolean;
                 }[];
-            }>(`${AvisSituationInseeService.API_URL}/${type}/${identifier}`);
+            }>(`${AvisSituationInseeService.API_URL}/siren/${siren}`);
 
             if (result.status == 200) {
-                this.requestCache.add(identifier, result.data);
+                this.requestCache.add(siren, result.data);
                 return result.data;
             }
-            this.requestCache.add(identifier, false);
+            this.requestCache.add(siren, false);
             return false;
         } catch {
             return false;
@@ -68,7 +65,7 @@ export class AvisSituationInseeService implements DocumentProvider {
     isDocumentProvider = true;
 
     async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {
-        const data = await this.getInseeEtablissements(siren);
+        const data = await this.getInseeEtablissementsBySiren(siren);
 
         if (!data) return null;
 
@@ -96,9 +93,11 @@ export class AvisSituationInseeService implements DocumentProvider {
         ];
     }
     async getDocumentsBySiret(siret: Siret): Promise<Document[] | null> {
-        const data = await this.getInseeEtablissements(siret);
+        const data = await this.getInseeEtablissementsBySiren(siretToSiren(siret));
+        const codeNic = siretToNIC(siret);
 
-        if (!data) return null;
+        if (!data || !data.etablissements.find(e => e.nic === codeNic)) return null;
+
         return [
             {
                 type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),

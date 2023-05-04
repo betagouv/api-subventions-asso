@@ -6,8 +6,7 @@ import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import avisSituationInseeService from "./avisSituationInsee.service";
 
 describe("AvisSituationInseeService", () => {
-    describe("getInseeEtablissements", () => {
-        const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
+    describe("getInseeEtablissementsBySiren", () => {
         const axiosGetMock = jest.spyOn(axios, "get");
         // @ts-expect-error requestCache is private attribute
         const cacheGetMock = jest.spyOn(avisSituationInseeService.requestCache, "get");
@@ -21,112 +20,96 @@ describe("AvisSituationInseeService", () => {
             avisSituationInseeService.requestCache.collection.clear();
         });
 
-        it("should return false because type is not valid", async () => {
-            const expected = false;
-            getIdentifierTypeMock.mockImplementationOnce(() => null);
-
-            // @ts-expect-error getInseeEtablissements is private method
-            const actual = await avisSituationInseeService.getInseeEtablissements("");
-
-            expect(actual).toBe(expected);
-        });
 
         it("should return false because value is save in cache", async () => {
             const expected = false;
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheGetMock.mockImplementationOnce(() => [false]);
             cacheHasMock.mockImplementationOnce(() => true);
-            // @ts-expect-error getInseeEtablissements is private method
-            const actual = await avisSituationInseeService.getInseeEtablissements("");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren("");
 
             expect(actual).toBe(expected);
         });
 
         it("should return object because value is save in cache", async () => {
             const expected = { 42: "youpi" };
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheGetMock.mockImplementationOnce(() => [expected as unknown as any]);
             cacheHasMock.mockImplementationOnce(() => true);
-            // @ts-expect-error getInseeEtablissements is private method
-            const actual = await avisSituationInseeService.getInseeEtablissements("");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren("");
 
             expect(actual).toBe(expected);
         });
 
         it("should return false because axios throw error", async () => {
             const expected = false;
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(() => {
                 throw new Error();
             });
-            // @ts-expect-error getInseeEtablissements is private method
-            const actual = await avisSituationInseeService.getInseeEtablissements("");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren("");
 
             expect(actual).toBe(expected);
         });
 
         it("should return object returned by axios", async () => {
             const expected = { 42: "youpi" };
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
                 data: expected,
             }));
-            // @ts-expect-error getInseeEtablissements is private method
-            const actual = await avisSituationInseeService.getInseeEtablissements("");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren("");
 
             expect(actual).toBe(expected);
         });
 
         it("should save object in cache", async () => {
             const expected = { 42: "youpi" };
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 200,
                 data: expected,
             }));
-            // @ts-expect-error getInseeEtablissements is private method
-            await avisSituationInseeService.getInseeEtablissements("SIREN");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            await avisSituationInseeService.getInseeEtablissementsBySiren("SIREN");
 
             expect(cacheAddMock).toHaveBeenCalledWith("SIREN", expected);
         });
 
         it("should return false returned by axios", async () => {
             const expected = false;
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 404,
                 data: false,
             }));
-            // @ts-expect-error getInseeEtablissements is private method
-            const actual = await avisSituationInseeService.getInseeEtablissements("");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren("");
 
             expect(actual).toBe(expected);
         });
 
         it("should save false in cache", async () => {
             const expected = false;
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             cacheHasMock.mockImplementationOnce(() => false);
             axiosGetMock.mockImplementationOnce(async () => ({
                 status: 404,
                 data: expected,
             }));
-            // @ts-expect-error getInseeEtablissements is private method
-            await avisSituationInseeService.getInseeEtablissements("SIREN");
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
+            await avisSituationInseeService.getInseeEtablissementsBySiren("SIREN");
 
             expect(cacheAddMock).toHaveBeenCalledWith("SIREN", expected);
         });
     });
 
     describe("getDocumentsBySiren", () => {
-        const getInseeEtablissementsMock = jest.spyOn<
+        const getInseeEtablissementsBySirenMock = jest.spyOn<
             any,
-            // @ts-expect-error getInseeEtablissements is private method
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
             Promise<
                 | {
                       etablissements: {
@@ -136,10 +119,10 @@ describe("AvisSituationInseeService", () => {
                   }
                 | false
             >
-        >(avisSituationInseeService, "getInseeEtablissements");
+        >(avisSituationInseeService, "getInseeEtablissementsBySiren");
 
         it("should return null because file not found in insee", async () => {
-            getInseeEtablissementsMock.mockImplementationOnce(async () => false);
+            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => false);
 
             const expected = null;
 
@@ -149,7 +132,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return null because nic not found", async () => {
-            getInseeEtablissementsMock.mockImplementationOnce(async () => ({
+            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
                         etablissementSiege: false,
@@ -166,7 +149,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return null because nic not found", async () => {
-            getInseeEtablissementsMock.mockImplementationOnce(async () => ({
+            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
                         etablissementSiege: true,
@@ -205,9 +188,9 @@ describe("AvisSituationInseeService", () => {
     });
 
     describe("getDocumentsBySiret", () => {
-        const getInseeEtablissementsMock = jest.spyOn<
+        const getInseeEtablissementsBySirenMock = jest.spyOn<
             any,
-            // @ts-expect-error getInseeEtablissements is private method
+            // @ts-expect-error getInseeEtablissementsBySiren is private method
             Promise<
                 | {
                       etablissements: {
@@ -217,10 +200,10 @@ describe("AvisSituationInseeService", () => {
                   }
                 | false
             >
-        >(avisSituationInseeService, "getInseeEtablissements");
+        >(avisSituationInseeService, "getInseeEtablissementsBySiren");
 
         it("should return null because file not found in insee", async () => {
-            getInseeEtablissementsMock.mockImplementationOnce(async () => false);
+            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => false);
 
             const expected = null;
 
@@ -230,7 +213,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return null because nic not found", async () => {
-            getInseeEtablissementsMock.mockImplementationOnce(async () => ({
+            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
                         etablissementSiege: true,
