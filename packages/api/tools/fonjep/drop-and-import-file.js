@@ -12,11 +12,6 @@ if (process.argv.length < 5) {
     process.exit();
 }
 
-if (isNaN(new Date(dateString))) {
-    console.error("Date is not valid!");
-    process.exit();
-}
-
 console.log("Welcome to automation deploy fonjep file !\n");
 
 console.log(`Start extract on ${appName} ...\n`);
