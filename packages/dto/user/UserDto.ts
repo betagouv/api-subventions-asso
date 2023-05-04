@@ -6,7 +6,7 @@ export default interface UserDto {
     roles: string[];
     active: boolean;
     signupAt: Date;
-    stats: {
+    stats?: {
         searchCount: number;
         lastSearchDate: Date | null;
     };
@@ -22,7 +22,7 @@ export interface UserWithResetTokenDto {
     roles: string[];
     active: boolean;
     signupAt: Date;
-    stats: {
+    stats?: {
         searchCount: number;
         lastSearchDate: Date | null;
     };
