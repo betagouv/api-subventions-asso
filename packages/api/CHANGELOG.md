@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.26.3](https://github.com/betagouv/api-subventions-asso/compare/v0.26.2...v0.26.3) (2023-05-04)
+
+
+### Bug Fixes
+
+* **api:** change api call ([efab260](https://github.com/betagouv/api-subventions-asso/commit/efab2608bc594d5469c5289bdfa4354b785beae6))
+* **api:** change dauphin service instructor ([b699bc4](https://github.com/betagouv/api-subventions-asso/commit/b699bc4e55092d97b1c5c9153891ba3f0968d184))
+
+
+
+
+
 ## [0.26.2](https://github.com/betagouv/api-subventions-asso/compare/v0.26.1...v0.26.2) (2023-04-19)
 
 
