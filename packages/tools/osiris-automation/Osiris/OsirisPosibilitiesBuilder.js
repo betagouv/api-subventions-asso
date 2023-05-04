@@ -2,8 +2,9 @@ const qs = require("qs");
 const axios = require("axios");
 
 class OsirisPosibilitiesBuilder {
-    constructor(year, cookie, debug = false) {
+    constructor(year, reportName, cookie, debug = false) {
         this.year = year,
+        this.reportName = reportName;
         this.debug = debug;
         this.cookie = cookie;
         this.BASE_URL = "https://osiris.extranet.jeunesse-sports.gouv.fr";
@@ -48,7 +49,7 @@ class OsirisPosibilitiesBuilder {
             IncludeSs: "True",
             GestionnaireId: "",
             IsPluriannuel: "",
-            ReportName: "SuiviDossiers",
+            ReportName: this.reportName || "SuiviDossiers",
             TypeFederationId: "",
         }
 
@@ -70,16 +71,23 @@ class OsirisPosibilitiesBuilder {
     }
 
     __getPlurianual() {
-        return [
-            {
-                Value: "False",
-                Text: "Annuel"
-            },
-            {
-                Value: "True",
-                Text: "PluriAnnuel"
-            },
-        ]
+        if (this.reportName === "SuiviDossiers") {
+            return [
+                {
+                    Value: "False",
+                    Text: "Annuel"
+                },
+                {
+                    Value: "True",
+                    Text: "PluriAnnuel"
+                },
+            ]
+        }
+
+        return [{
+            Value: undefined,
+            Text: "Disabled"
+        }];
     }
 
     __getFederation() {

@@ -5,7 +5,7 @@ require("./jQueryNodeLoader");
 window._origin = "https://osiris.extranet.jeunesse-sports.gouv.fr"
 window.EventSource = require("eventsource");
 
-require("signalr");
+require("../cleaned_modules/signalR/jquery.signalR");
 
 
 class OsirisSignalrConnector {
@@ -22,7 +22,7 @@ class OsirisSignalrConnector {
             console.log("SignalR connection slow")
         })
         this.connection.error((e) => {
-            console.log("SignalR error :", e);
+            // console.log("SignalR error :", e);
             this.errorCallbacks.forEach(cb => cb(e));
         })
         this.connection.stateChanged((oldState) => {

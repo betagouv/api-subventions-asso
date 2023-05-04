@@ -38,7 +38,7 @@ class OsirisPuppeteer {
 
         if (this.page.url() === this.osirisUrl) { // We are on home this.page, so we are connected
             const cookies = await this.page.cookies();
-            // this.browser.close();
+            this.browser.close();
             return cookies;
         }
     
@@ -59,7 +59,7 @@ class OsirisPuppeteer {
             // check if we are in home this.page or in login this.page
             if (this.page.url() === this.osirisUrl) { // We are on home this.page, so we are connected
                 const cookies = await this.page.cookies();
-                // this.browser.close();
+                this.browser.close();
                 return cookies;
             }
             console.log(this.page.url());

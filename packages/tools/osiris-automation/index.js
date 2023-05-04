@@ -9,8 +9,7 @@ const OSIRIS_URL = process.env.OSIRIS_URL || "https://osiris.extranet.jeunesse-s
 const OSIRIS_EMAIL = process.env.OSIRIS_EMAIL || "";
 const OSIRIS_PASSWORD = process.env.OSIRIS_PASSWORD || "";
 const year = process.argv[2] || new Date().getFullYear().toString();
-const posibilitiesFile = process.argv[3] || null
-const skip = process.argv[4] || 0;
+const reportName = process.argv[3] || "SuiviDossiers";
 
 async function getCookie() {
     console.log("Getting cookies");
@@ -25,10 +24,12 @@ async function getCookie() {
 async function downloadPosibilities(year, posibilities, i) {
     if (!this.downloader) {
         console.log("Connect osiris extract downloader");
-        this.downloader = new OsirisExtractDownloader(await getCookie(), year, true);
+        this.downloader = new OsirisExtractDownloader(await getCookie(), year, reportName, false);
         await this.downloader.loadPromise;
         await new Promise(r => setTimeout(r), 1000);
         console.log("Downloader as init");
+    } else if (this.downloader.year != year) {
+        this.downloader.year = year;
     }
     const posibility = posibilities[i];
 
@@ -41,7 +42,8 @@ async function downloadPosibilities(year, posibilities, i) {
         console.log(`End to download ${i}/${posibilities.length}`);
 
         return await downloadPosibilities(year, posibilities, Number(i) + 1);
-    } catch {
+    } catch (e){
+        console.log(e);
         // Retry download but restart downloader
         this.downloader = null;
         console.log("Error retry to download current posibility");
@@ -51,14 +53,22 @@ async function downloadPosibilities(year, posibilities, i) {
 
 }
 
-async function startExtractOsiris(year) {
+async function startExtractOsiris(year, reportName) {
     let posibilities = [];
-    if (posibilitiesFile && fs.existsSync(posibilitiesFile)) {
-        posibilities = JSON.parse(fs.readFileSync(posibilitiesFile, { encoding: "utf-8" }));
+    const posibilitiesFileName = `./current-posibilities-${year}-${reportName}.json`;
+    if (fs.existsSync(posibilitiesFileName)) {
+        posibilities = JSON.parse(fs.readFileSync(posibilitiesFileName, { encoding: "utf-8" }));
     } else {
-        const osirisPosibilitiesBuilder = new OsirisPosibilitiesBuilder(year, await getCookie(), false);
+        const osirisPosibilitiesBuilder = new OsirisPosibilitiesBuilder(year, reportName, await getCookie(), false);
         posibilities = await osirisPosibilitiesBuilder.buildPosibilities();
-        fs.writeFileSync(`./current-posibilities-${year}.json`, JSON.stringify(posibilities));
+        fs.writeFileSync(posibilitiesFileName, JSON.stringify(posibilities));
+    }
+
+    let skip = 0;
+    const folderDownload = `./extract/${year}/${reportName}/`;
+    if (fs.existsSync(folderDownload)) {
+        const files = fs.readdirSync(folderDownload);
+        skip = files.length - 1;
     }
 
     await downloadPosibilities(year, posibilities, skip);
@@ -68,8 +78,19 @@ async function startExtractOsiris(year) {
 
 
 (async () => {
-    const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
+    // const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
+    if (/\d{4}-\d{4}/.test(year)) {
+        const [_, firstOccurence, lastOccurence] = year.match(/(\d{4})-(\d{4})/);
+        const start = Math.min(firstOccurence, lastOccurence);
+        const end = Math.max(firstOccurence, lastOccurence);
 
-    // await startExtractOsiris(year);
-    await osirisPuppeteer.extractDossiers(year);
+        for(let i = start; i <= end; i++) {
+            console.log("start extract year:", i);
+            await startExtractOsiris(i, reportName);
+        }
+    } else {
+        await startExtractOsiris(year, reportName);
+    }
+    process.exit();
+    // await osirisPuppeteer.extractDossiers(year);
 })();

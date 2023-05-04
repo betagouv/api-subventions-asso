@@ -3,15 +3,15 @@ const fs = require("fs");
 const axios = require("axios");
 const qs = require("qs");
 const OsirisSignalrConnector = require("./OsirisSignalrConnector");
-const { send } = require("process");
 
 class OsirisExtractDownloader {
-    constructor(cookie, year, debug = false) {
+    constructor(cookie, year, reportName, debug = false) {
         this.connector = new OsirisSignalrConnector(cookie, debug);
         this.BASE_URL = "https://osiris.extranet.jeunesse-sports.gouv.fr/";
         this.connectionCookies = cookie;
         this.debug = debug;
         this.year = year;
+        this.reportName = reportName;
 
         this.currentDownloadFileName = "";
         this.currentDownloadCallback = null;
@@ -28,7 +28,7 @@ class OsirisExtractDownloader {
             if (this.currentDownloadCallbackError) this.currentDownloadCallbackError(...args);
         });
 
-        this.__clearReportDir();
+        this.__clearReportDir(reportName);
         this.loadPromise = this.connector.connect();
     }
 
@@ -42,7 +42,9 @@ class OsirisExtractDownloader {
             this.currentDownloadCallback = resolve;
             this.currentDownloadCallbackError = reject;
 
-            await this.__sendExtarctOrder(posibility, getCookie);
+            const result = await this.__sendExtarctOrder(posibility, getCookie);
+
+            console.log(result.status);
         });
     }
 
@@ -80,30 +82,40 @@ class OsirisExtractDownloader {
 
     __onStatus(result) {
         if (this.isDisabled) return;
-
         this.reports.push({
             ...result,
             ChunkReceived: 0
         });
+
+        this.__checkToSave(result.Identifier);
     }
 
     __onContent(chunk) {
         if (this.isDisabled) return;
-        if (!chunk.Part) return;
+        if (!chunk.Part) {
+            console.log(chunk.Part);
+            return;
+        };
 
         this.chunks.push({
             ...chunk
         });
 
-        const report = this.reports.find(report => report.Identifier == chunk.ReportId);
+        this.__checkToSave(chunk.ReportId);
+    }
+
+    __checkToSave(id) {
+        let report = this.reports.find(report => report.Identifier == id);
         if (!report) return;
-        
-        const chunkReceived = this.chunks.filter(p => p.ReportId == chunk.ReportId);
+
+        const chunkReceived = this.chunks.filter(p => p.ReportId == id);
         report.ChunkReceived = chunkReceived.length;
 
-        if (!chunkReceived || chunkReceived.length != chunk.ChunkCount) return;
+        console.log(`ChunkReceived: ${chunkReceived.length}/${report.ChunkCount}`);
 
-        // File is complete
+        if (!chunkReceived || chunkReceived.length != report.ChunkCount) return;
+
+        console.log("File is complete");
         const contentArray = new Uint8Array(report.ReportSize);
     
         chunkReceived.forEach((item) => {
@@ -131,13 +143,16 @@ class OsirisExtractDownloader {
     }
 
     __save(name, byte) {
-        fs.writeFile(`./extract/${this.year}/` + this.currentDownloadFileName + name, byte, (err) => err && console.error(err));
+        if (!this.currentDownloadCallback) return;
+        console.log("Saving ...");
+        fs.writeFile(`./extract/${this.year}/${this.reportName}/` + this.currentDownloadFileName + name, byte, (err) => err && console.error(err));
         const cb = this.currentDownloadCallback;
         this.currentDownloadCallback = null;
+        console.log("Saved !");
         cb();
     };
 
-    __clearReportDir() {
+    __clearReportDir(reportName) {
         const dirPath = `./extract/`;
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath);
@@ -147,14 +162,9 @@ class OsirisExtractDownloader {
             fs.mkdirSync(dirPath + this.year);
         }
 
-        // fs.readdir(dirPath, (err, files) => {
-        //     if (err) throw err;
-        //     for (const file of files) {
-        //         fs.unlink(path.join(dirPath, file), err => {
-        //             if (err) throw err;
-        //         });
-        //     }
-        // });
+        if (!fs.existsSync(dirPath + this.year + '/' + reportName)) {
+            fs.mkdirSync(dirPath + this.year + '/' + reportName);
+        }
     }   
 }
 
