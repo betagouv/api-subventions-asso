@@ -17,7 +17,7 @@ export default class AnnouncementController {
         return `https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:${this.announcement.id}`;
     }
 
-    get publication() {
+    get publicationFile() {
         const year = this.bodaccNumber.substring(0, 4);
         return `https://www.bodacc.fr/telechargements/COMMERCIALES/PDF/${this.bodaccType}/${year}/${
             this.bodaccNumber
