@@ -6,7 +6,7 @@ describe("AnnouncementController", () => {
     describe("getter judgment", () => {
         it("should parse judgment in JSON", () => {
             const controller = new AnnouncementController(ANNOUNCEMENT);
-            const actual = controller.url;
+            const actual = controller.judgment;
             expect(actual).toMatchSnapshot();
         });
     });
