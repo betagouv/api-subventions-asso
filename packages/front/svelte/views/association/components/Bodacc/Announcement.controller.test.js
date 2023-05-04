@@ -1,12 +1,13 @@
 import AnnouncementController from "./Announcement.controller";
 
 describe("AnnouncementController", () => {
-    const ANNOUNCEMENT = { id: "A202202272158", jugement: '{"foo": "bar"}' };
+    const ANNOUNCEMENT = { id: "A202202272158", jugement: '{"complementJugement": "Judgment has text"}' };
 
     describe("getter judgment", () => {
-        it("should parse judgment in JSON", () => {
+        it("should return judgment", () => {
             const controller = new AnnouncementController(ANNOUNCEMENT);
             const actual = controller.judgment;
+            console.log(actual);
             expect(actual).toMatchSnapshot();
         });
     });
