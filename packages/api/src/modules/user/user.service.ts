@@ -23,6 +23,8 @@ import {
     NotFoundError,
     UnauthorizedError,
 } from "../../shared/errors/httpErrors";
+import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
+import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -423,8 +425,20 @@ export class UserService {
         return user.roles;
     }
 
+    public async getUsersWithStats() {
+        return (await userAssociationVisitJoiner.findUsersWithAssociationVisits()).map(user => {
+            const stats = {
+                lastSearchDate: getMostRecentDate(user.associationVisits.map(visit => visit.date)),
+                searchCount: user.associationVisits.length,
+            };
+            // remove associationVisits
+            const { associationVisits, ...userDbo } = user;
+            return { ...userDbo, stats };
+        });
+    }
+
     public async listUsers(): Promise<{ users: UserWithResetTokenDto[] }> {
-        const users = (await userRepository.find()).filter(user => user) as UserDto[];
+        const users = await this.getUsersWithStats();
         return {
             users: await Promise.all(
                 users.map(async user => {

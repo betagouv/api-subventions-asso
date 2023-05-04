@@ -21,7 +21,7 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 import consumerTokenRepository from "./repositories/consumer-token.repository";
-import userService, { UserServiceError, UserServiceErrors } from "./user.service";
+import userService, { UserServiceErrors } from "./user.service";
 import { ObjectId } from "mongodb";
 import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 import { RoleEnum } from "../../@enums/Roles";
@@ -46,6 +46,7 @@ describe("User Service", () => {
     const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken");
     const getUserWithSecretsByEmailMock = jest
         .spyOn(userRepository, "getUserWithSecretsByEmail")
+        // @ts-expect-error: mock
         .mockImplementation(async () => USER_DBO);
     const updateMock = jest.spyOn(userRepository, "update").mockImplementation(async () => USER_DBO);
 
@@ -131,6 +132,7 @@ describe("User Service", () => {
         });
 
         it("should throw an Error if user is not active", async () => {
+            // @ts-expect-error: mock
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => ({
                 ...USER_DBO,
                 active: false,
@@ -192,6 +194,7 @@ describe("User Service", () => {
         });
 
         it("should return UserDtoSuccessResponse user token", async () => {
+            // @ts-expect-error: mock
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => USER_DBO);
             const expected = USER_WITHOUT_SECRET;
             const actual = await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
@@ -199,6 +202,7 @@ describe("User Service", () => {
         });
 
         it("should return UserServiceError if user not active", async () => {
+            // @ts-expect-error: mock
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => ({ ...USER_DBO, active: false }));
             const expected = { message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
             const test = async () => await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
@@ -206,6 +210,7 @@ describe("User Service", () => {
         });
 
         it("should return UserServiceError if token has expired", async () => {
+            // @ts-expect-error: mock
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => USER_DBO);
             const expected = {
                 message: "JWT has expired, please login try again",

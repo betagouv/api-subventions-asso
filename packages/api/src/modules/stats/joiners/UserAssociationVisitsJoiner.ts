@@ -1,4 +1,5 @@
 import db from "../../../shared/MongoConnection";
+import UserDbo from "../../user/repositories/dbo/UserDbo";
 import userRepository from "../../user/repositories/user.repository";
 import { UserWithAssociationVistitsEntity } from "../entities/UserWithAssociationVisitsEntity";
 import statsAssociationsVisitRepository from "../repositories/statsAssociationsVisit.repository";
@@ -6,20 +7,41 @@ import statsAssociationsVisitRepository from "../repositories/statsAssociationsV
 export class UserAssociationVisitJoiner {
     userCollection = db.collection(userRepository.collectionName);
 
+    matchIncludesAdmin(includesAdmin) {
+        return {
+            $match: {
+                ...(includesAdmin
+                    ? {}
+                    : {
+                          roles: {
+                              $ne: "admin",
+                          },
+                      }),
+            },
+        };
+    }
+
+    // ajouter le lastSearchDate
+    findUsersWithAssociationVisits(includesAdmin = false) {
+        return this.userCollection
+            .aggregate<UserWithAssociationVistitsEntity>([
+                this.matchIncludesAdmin(includesAdmin),
+                {
+                    $lookup: {
+                        from: statsAssociationsVisitRepository.collectionName,
+                        localField: userRepository.joinIndexes.associationVisits,
+                        foreignField: statsAssociationsVisitRepository.joinIndexes.user,
+                        as: "associationVisits",
+                    },
+                },
+            ])
+            .toArray();
+    }
+
     findAssociationVisitsOnPeriodGroupedByUsers(start: Date, end: Date, includesAdmin = false) {
         return this.userCollection
             .aggregate<UserWithAssociationVistitsEntity>([
-                {
-                    $match: {
-                        ...(includesAdmin
-                            ? {}
-                            : {
-                                  roles: {
-                                      $ne: "admin",
-                                  },
-                              }),
-                    },
-                },
+                this.matchIncludesAdmin(includesAdmin),
                 {
                     $lookup: {
                         from: statsAssociationsVisitRepository.collectionName,
