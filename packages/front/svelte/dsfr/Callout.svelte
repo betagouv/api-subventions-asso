@@ -2,7 +2,7 @@
     import { getIconClass } from "./helper";
 
     export let title;
-    // [2, 3, 4, 5, 6, "p"]
+    // possible values for titleSize : [2, 3, 4, 5, 6, "p"]
     export let titleSize = 3;
     export let href = null;
     export let labelAction = null;
