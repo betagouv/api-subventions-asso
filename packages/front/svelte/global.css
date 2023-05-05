@@ -4,6 +4,11 @@ body {
     height: 100%;
 }
 
+/* same has fr-text--bold */
+b {
+    font-weight: 700 !important;
+}
+
 /* This is use to hide content only useful for accessibility
 https://webaim.org/techniques/css/invisiblecontent/#techniques */
 .sr-only {
