@@ -3,9 +3,7 @@ const MAX_ANNOUCEMENT_NUMBER_SIZE = 5;
 export default class AnnouncementController {
     constructor(announcement) {
         this.announcement = announcement;
-        this.bodaccType = this.announcement.id.substring(0, 1);
-        this.bodaccNumber = this.announcement.id.substring(1, 9);
-        this.announcementNumber = this.announcement.id.slice(9);
+
         this.judgmentObj = JSON.parse(this.announcement.jugement);
     }
 
@@ -18,12 +16,22 @@ export default class AnnouncementController {
     }
 
     get publicationFile() {
-        const year = this.bodaccNumber.substring(0, 4);
-        return `https://www.bodacc.fr/telechargements/COMMERCIALES/PDF/${this.bodaccType}/${year}/${
-            this.bodaccNumber
-        }/1/BODACC_A_PDF_Unitaire_${this.bodaccNumber}_${this.announcementNumber.padStart(
+        const { bodaccType, bodaccId, announcementId } = this._splitId();
+        const year = bodaccId.substring(0, 4);
+        return `https://www.bodacc.fr/telechargements/COMMERCIALES/PDF/${bodaccType}/${year}/${bodaccId}/1/BODACC_A_PDF_Unitaire_${bodaccId}_${announcementId.padStart(
             MAX_ANNOUCEMENT_NUMBER_SIZE,
             "0",
         )}.pdf`;
+    }
+
+    _splitId() {
+        return {
+            // bodacc type (A or B)
+            bodaccType: this.announcement.id.substring(0, 1),
+            // bodacc id (8 characters, seems to be year + 4 digits)
+            bodaccId: this.announcement.id.substring(1, 9),
+            // announcement id (up to 5 digits)
+            announcementId: this.announcement.id.slice(9),
+        };
     }
 }

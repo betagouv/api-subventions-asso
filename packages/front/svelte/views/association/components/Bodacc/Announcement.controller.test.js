@@ -21,6 +21,13 @@ describe("AnnouncementController", () => {
     });
 
     describe("getter publication", () => {
+        it("should call _splitId()", () => {
+            const controller = new AnnouncementController(ANNOUNCEMENT);
+            const spySplitId = jest.spyOn(controller, "_splitId");
+            controller.publicationFile;
+            expect(spySplitId).toHaveBeenCalledTimes(1);
+        });
+
         it("should return url", () => {
             const controller = new AnnouncementController(ANNOUNCEMENT);
             const actual = controller.publicationFile;
