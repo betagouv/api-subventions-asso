@@ -8,20 +8,26 @@
 </script>
 
 <div class="announcement">
-    <Callout title={announcement.familleavis_lib} titleSize="5" href={controller.url} labelAction="Voir l'annonce">
+    <Callout
+        title={controller.announcement.familleavis_lib}
+        titleSize="5"
+        href={controller.url}
+        labelAction="Voir l'annonce">
         <div>
-            <p class="fr-text--lead fr-mb-2v">{announcement.dateparution} - {announcement.typeavis_lib}</p>
+            <p class="fr-text--lead fr-mb-2v">
+                {controller.announcement.dateparution} - {controller.announcement.typeavis_lib}
+            </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Annonce déposée au :</b>
-                {announcement.tribunal}
+                {controller.announcement.tribunal}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Département :</b>
-                {announcement.numerodepartement} - {announcement.departement_nom_officiel}
+                {controller.announcement.numerodepartement} - {controller.announcement.departement_nom_officiel}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Région :</b>
-                {announcement.region_nom_officiel}
+                {controller.announcement.region_nom_officiel}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Jugement :</b>
