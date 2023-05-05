@@ -23,7 +23,7 @@ describe("AnnouncementController", () => {
     describe("getter publication", () => {
         it("should return url", () => {
             const controller = new AnnouncementController(ANNOUNCEMENT);
-            const actual = controller.publication;
+            const actual = controller.publicationFile;
             expect(actual).toMatchSnapshot();
         });
     });

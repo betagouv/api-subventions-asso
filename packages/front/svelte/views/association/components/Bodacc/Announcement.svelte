@@ -1,6 +1,6 @@
 <script>
-    import Callout from "@dsfr/Callout.svelte";
     import AnnouncementController from "./Announcement.controller";
+    import Callout from "@dsfr/Callout.svelte";
 
     export let announcement;
 
@@ -28,7 +28,9 @@
                 {controller.judgment}
             </p>
         </div>
-        <a class="fr-text--sm" href={controller.publication} target="_blank" rel="noreferrer">Témoin de publication</a>
+        <a class="fr-text--sm" href={controller.publicationFile} target="_blank" rel="noreferrer">
+            Témoin de publication
+        </a>
     </Callout>
 </div>
 
