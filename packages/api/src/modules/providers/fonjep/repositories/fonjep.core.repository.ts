@@ -1,7 +1,9 @@
-import { Collection } from "mongodb";
+import { Document } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 
-export abstract class FonjepCoreRepository<FonjepTypedDocument> extends MigrationRepository<FonjepTypedDocument> {
+export abstract class FonjepCoreRepository<
+    FonjepTypedDocument extends Document,
+> extends MigrationRepository<FonjepTypedDocument> {
     private tmpCollectionEnabled = false;
 
     async createIndexes() {
@@ -22,7 +24,6 @@ export abstract class FonjepCoreRepository<FonjepTypedDocument> extends Migratio
 
     protected get collection() {
         if (this.tmpCollectionEnabled) {
-            // @ts-expect-error mongodb dont like unsigned type
             return this.db.collection<FonjepTypedDocument>(this.collectionName + "-tmp-collection");
         }
 
@@ -30,11 +31,9 @@ export abstract class FonjepCoreRepository<FonjepTypedDocument> extends Migratio
     }
 
     private getTmpCollection() {
-        // @ts-expect-error mongodb dont like unsigned type
         return this.db.collection<FonjepTypedDocument>(this.collectionName + "-tmp-collection");
     }
     private getOldCollection() {
-        // @ts-expect-error mongodb dont like unsigned type
         return this.db.collection<FonjepTypedDocument>(this.collectionName + "-OLD");
     }
 }
