@@ -25,9 +25,12 @@ class StatsService {
     async getMedianVisitsOnPeriod(start: Date, end: Date) {
         if (!start || !isValidDate(start) || !end || !isValidDate(end)) throw new BadRequestError("Invalid Date");
 
-        // userAssociationVisitJoiner.findAssociationVisitsOnPeriodGroupedByUsers( // More true but not historical compute
+        // this does not calculate the "true" median, but is the historic computation
+        // true median computation should include users with 0 requests
+        // use userAssociationVisitJoiner.findAssociationVisitsOnPeriodGroupedByUsers
+        // instead of statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod
+        // f we need to have a more realistic median
         const visitsGroupedByUser = await statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod(
-            // Not true but is historic compute
             start,
             end,
         );
