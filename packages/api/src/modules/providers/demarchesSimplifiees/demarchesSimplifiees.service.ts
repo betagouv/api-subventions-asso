@@ -76,7 +76,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
             demarcheNumber: formId,
         });
 
-        if (!result) return;
+        if (!result || !result.data) return;
 
         const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
         await asyncForEach(entities, async entity => {
