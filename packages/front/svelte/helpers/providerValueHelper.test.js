@@ -15,7 +15,7 @@ describe("providerValueHelper", () => {
     yesterday.setDate(yesterday.getDate() - 1);
 
     describe("flatenProviderValue", () => {
-        describe("when value is a ProviderValues", () => {
+        describe("when given param is a ProviderValues", () => {
             const PROVIDER_VALUES = [
                 buildProviderValue("A", "PROVIDER A", today),
                 buildProviderValue("B", "PROVIDER A", yesterday),
