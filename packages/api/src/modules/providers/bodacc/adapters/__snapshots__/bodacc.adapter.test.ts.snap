@@ -3,23 +3,21 @@
 exports[`Bodacc Adapter toAssociation should return SIREN and BODACC 1`] = `
 Object {
   "bodacc": Array [
-    Array [
-      Object {
-        "last_update": 2022-01-01T00:00:00.000Z,
-        "provider": "Bodacc",
-        "type": "object",
-        "value": Object {
-          "record": Object {
-            "fields": Object {
-              "registre": Array [
-                "",
-                "123456789",
-              ],
-            },
+    Object {
+      "last_update": 2022-01-01T00:00:00.000Z,
+      "provider": "Bodacc",
+      "type": "object",
+      "value": Array [
+        Object {
+          "fields": Object {
+            "registre": Array [
+              "",
+              "123456789",
+            ],
           },
         },
-      },
-    ],
+      ],
+    },
   ],
   "siren": Array [
     Object {

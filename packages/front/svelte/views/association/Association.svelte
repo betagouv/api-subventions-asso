@@ -15,13 +15,18 @@
 
     activeBlueBanner();
 
-    const titles = ["Tableau de bord" /**, "Statistiques"*/, "Pièces administratives", "Établissements"];
+    const titles = ["Tableau de bord" /**, "Statistiques"*/, "Pièces administratives", "Établissements", "Bodacc"];
     let promise = associationService.getAssociation(id);
 </script>
 
 {#await promise}
     <FullPageSpinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
+    {#if !association}
+        <div class="fr-mb-3w">
+            <Alert type="warning" title="Attention">Nous n'avons pas connaissance de cette association</Alert>
+        </div>
+    {/if}
     {#if !association.rna && !isAssociation(association.categorie_juridique)}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">

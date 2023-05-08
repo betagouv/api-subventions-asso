@@ -2,12 +2,31 @@ import associationService from "./association.service";
 import associationPort from "./association.port";
 import { isRna, isStartOfSiret } from "@helpers/validatorHelper";
 import { siretToSiren } from "@helpers/sirenHelper";
+import * as providerValueHelper from "@helpers/providerValueHelper";
 
 jest.mock("@helpers/validatorHelper");
 jest.mock("@helpers/sirenHelper");
+jest.mock("@helpers/providerValueHelper", () => ({
+    flatenProviderValue: jest.fn(),
+}));
 
 describe("AssociationService", () => {
     const SIREN = "000000009";
+
+    describe("getAssociation", () => {
+        it("should return undefined if no association found", async () => {
+            jest.spyOn(associationPort, "getByRnaOrSiren").mockImplementationOnce(jest.fn());
+            const expected = undefined;
+            const actual = await associationService.getAssociation(SIREN);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should flaten data", async () => {
+            jest.spyOn(associationPort, "getByRnaOrSiren").mockImplementationOnce(async () => ({}));
+            await associationService.getAssociation(SIREN);
+            expect(providerValueHelper.flatenProviderValue).toHaveBeenCalledTimes(1);
+        });
+    });
 
     describe("incExtractData", () => {
         let mockPort;
