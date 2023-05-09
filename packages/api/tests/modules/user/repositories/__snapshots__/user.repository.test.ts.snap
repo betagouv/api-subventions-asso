@@ -14,9 +14,5 @@ Object {
     "user",
   ],
   "signupAt": Any<Date>,
-  "stats": Object {
-    "lastSearchDate": null,
-    "searchCount": 0,
-  },
 }
 `;

@@ -1,7 +1,4 @@
-import { ObjectId, WithId } from "mongodb";
-import { ONE_DAY_MS } from "./DateHelper";
 import * as UserHelper from "./UserHelper";
-import statsAssociationsVisitRepository from "../../modules/stats/repositories/statsAssociationsVisit.repository";
 import statsService from "../../modules/stats/stats.service";
 
 describe("UserHelper", () => {

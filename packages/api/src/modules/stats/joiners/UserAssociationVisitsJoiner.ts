@@ -21,7 +21,6 @@ export class UserAssociationVisitJoiner {
         };
     }
 
-    // ajouter le lastSearchDate
     findUsersWithAssociationVisits(includesAdmin = false) {
         return this.userCollection
             .aggregate<UserWithAssociationVistitsEntity>([
