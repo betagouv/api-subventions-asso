@@ -89,6 +89,7 @@ describe("Versements Adapter", () => {
             const BOP = undefined;
             const expected = undefined;
             const actual = VersementsAdapter._formatBop(BOP);
+            expect(actual).toEqual(expected);
         });
     });
 

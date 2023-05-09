@@ -1,5 +1,4 @@
 import axios from "axios";
-import UnauthorizedError from "../../errors/UnauthorizedError";
 import authPort from "./auth.port";
 import requestsService from "@services/requests.service";
 
