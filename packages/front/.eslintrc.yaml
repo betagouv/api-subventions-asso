@@ -53,3 +53,6 @@ settings:
         - .svelte
 rules:
   import/order: error
+  "@typescript-eslint/no-unused-vars":
+    - "warn"
+    -  destructuredArrayIgnorePattern: "^_"

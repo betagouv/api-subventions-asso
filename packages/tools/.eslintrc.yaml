@@ -17,3 +17,6 @@ ignorePatterns:
   - cleaned_modules
 rules:
   import/order: error
+  no-unused-vars:
+    - "warn"
+    -  destructuredArrayIgnorePattern: "^_"
