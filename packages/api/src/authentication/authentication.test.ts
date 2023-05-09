@@ -41,7 +41,6 @@ describe("expressAuthentication", () => {
                 roles: ["user"],
                 active: true,
                 signupAt: new Date(),
-                stats: { searchCount: 0, lastSearchDate: null },
                 _id: new ObjectId(),
             }),
         );
@@ -56,7 +55,6 @@ describe("expressAuthentication", () => {
                 roles: ["user", "admin"],
                 active: true,
                 signupAt: new Date(),
-                stats: { searchCount: 0, lastSearchDate: null },
                 _id: new ObjectId(),
             }),
         );

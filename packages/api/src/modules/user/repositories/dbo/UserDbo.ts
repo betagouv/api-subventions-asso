@@ -8,15 +8,9 @@ export default interface UserDbo {
     roles: string[];
     active: boolean;
     signupAt: Date;
-    stats: UserStats;
 }
 
 export interface JWT {
     token: string;
     expirateDate: Date;
-}
-
-export interface UserStats {
-    searchCount: number;
-    lastSearchDate: Date | null;
 }

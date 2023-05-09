@@ -1,6 +1,6 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import UserDbo from "../../user/repositories/dbo/UserDbo";
 import AssociationVisitEntity from "./AssociationVisitEntity";
 
-export interface UserWithAssociationVistitsEntity extends UserDto {
+export interface UserWithAssociationVistitsEntity extends UserDbo {
     associationVisits: AssociationVisitEntity[];
 }

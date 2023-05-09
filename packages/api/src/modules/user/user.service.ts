@@ -1,4 +1,3 @@
-import UserDto, { UserWithResetTokenDto } from "@api-subventions-asso/dto/user/UserDto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
@@ -9,6 +8,9 @@ import {
     ResetPasswordErrorCodes,
     SignupErrorCodes,
     UserErrorCodes,
+    UserWithResetTokenDto,
+    UserDto,
+    UserWithStatsDto,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -192,16 +194,10 @@ export class UserService {
             expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
-        const stats = {
-            searchCount: 0,
-            lastSearchDate: null,
-        };
-
         const user = new UserNotPersisted({
             ...partialUser,
             jwt: jwtParams,
             active: false,
-            stats,
         });
 
         const createdUser = await userRepository.create(user);
@@ -425,33 +421,33 @@ export class UserService {
         return user.roles;
     }
 
-    public async getUsersWithStats() {
-        return (await userAssociationVisitJoiner.findUsersWithAssociationVisits()).map(user => {
+    public async getUsersWithStats(): Promise<UserWithStatsDto[]> {
+        const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits();
+        const userWithStats = usersWithAssociationVisits.map(user => {
             const stats = {
                 lastSearchDate: getMostRecentDate(user.associationVisits.map(visit => visit.date)),
                 searchCount: user.associationVisits.length,
             };
             // remove associationVisits
             const { associationVisits, ...userDbo } = user;
-            return { ...userDbo, stats };
+            return { ...userDbo, stats } as UserWithStatsDto;
         });
+
+        return userWithStats;
     }
 
-    public async listUsers(): Promise<{ users: UserWithResetTokenDto[] }> {
+    public async listUsers(): Promise<UserWithResetTokenDto[]> {
         const users = await this.getUsersWithStats();
-        return {
-            users: await Promise.all(
-                users.map(async user => {
-                    const reset = await userResetRepository.findByUserId(user._id);
-                    return {
-                        ...user,
-                        _id: user._id.toString(),
-                        resetToken: reset?.token,
-                        resetTokenDate: reset?.createdAt,
-                    } as UserWithResetTokenDto;
-                }),
-            ),
-        };
+        return await Promise.all(
+            users.map(async user => {
+                const reset = await userResetRepository.findByUserId(user._id);
+                return {
+                    ...user,
+                    resetToken: reset?.token,
+                    resetTokenDate: reset?.createdAt,
+                };
+            }),
+        );
     }
 
     public isRoleValid(role: RoleEnum) {
