@@ -1,4 +1,3 @@
-const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
 const qs = require("qs");
@@ -34,8 +33,9 @@ class OsirisExtractDownloader {
 
     async download(posibility, getCookie) {
         await this.loadPromise;
-        if (this.currentDownloadCallback) throw new Error("Please download file one by one"); // Techniquement possible de télécharger plusieur fichiers en même temps, mais imposible de les nommés correctements
+        if (this.currentDownloadCallback) throw new Error("Please download file one by one"); // Techniquement possible de télécharger plusieurs fichiers en même temps, mais imposible de les nommer correctement
 
+        // eslint-disable-next-line no-async-promise-executor -- old code that works
         return new Promise(async (resolve, reject) => {
             this.currentDownloadFileName = this.__buildFileName(posibility);
 
@@ -49,30 +49,30 @@ class OsirisExtractDownloader {
     }
 
     async __sendExtarctOrder(posibility, getCookie) {
-        var url = 'Statistique/SuiviActionDossier/';
+        var url = "Statistique/SuiviActionDossier/";
         const sendRequest = () => {
             return axios.default.request({
                 url: this.BASE_URL + url,
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    Cookie: this.connectionCookies.map(c => `${c.name}=${c.value};`).join(" ")
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Cookie: this.connectionCookies.map(c => `${c.name}=${c.value};`).join(" "),
                 },
                 data: qs.stringify(posibility),
-                timeout: 0
-            })
-        }
-        
+                timeout: 0,
+            });
+        };
+
         try {
             return await sendRequest();
         } catch (e) {
-            console.log(e, "Retry send request, please wait 10s")
-            return new Promise((resolve) => {
+            console.log(e, "Retry send request, please wait 10s");
+            return new Promise(resolve => {
                 setTimeout(async () => {
                     this.connectionCookies = await getCookie();
                     resolve(await sendRequest());
                 }, 1000 * 10);
-            })
+            });
         }
     }
 
@@ -84,7 +84,7 @@ class OsirisExtractDownloader {
         if (this.isDisabled) return;
         this.reports.push({
             ...result,
-            ChunkReceived: 0
+            ChunkReceived: 0,
         });
 
         this.__checkToSave(result.Identifier);
@@ -95,10 +95,10 @@ class OsirisExtractDownloader {
         if (!chunk.Part) {
             console.log(chunk.Part);
             return;
-        };
+        }
 
         this.chunks.push({
-            ...chunk
+            ...chunk,
         });
 
         this.__checkToSave(chunk.ReportId);
@@ -117,8 +117,8 @@ class OsirisExtractDownloader {
 
         console.log("File is complete");
         const contentArray = new Uint8Array(report.ReportSize);
-    
-        chunkReceived.forEach((item) => {
+
+        chunkReceived.forEach(item => {
             const byteArray = this.__partToArrayBuffer(item.Part);
             for (var i = item.Offset; i < item.Offset + item.ChunkSize; i++) {
                 contentArray[i] = byteArray[i - item.Offset];
@@ -132,7 +132,8 @@ class OsirisExtractDownloader {
         this.__save(report.FileName, contentArray);
     }
 
-    __partToArrayBuffer(base64Content) { // this code come from Osiris web page
+    __partToArrayBuffer(base64Content) {
+        // this code comes from Osiris web page
         const binaryString = global.atob(base64Content);
         const binaryLen = binaryString.length;
         const bytes = new Uint8Array(binaryLen);
@@ -145,12 +146,16 @@ class OsirisExtractDownloader {
     __save(name, byte) {
         if (!this.currentDownloadCallback) return;
         console.log("Saving ...");
-        fs.writeFile(`./extract/${this.year}/${this.reportName}/` + this.currentDownloadFileName + name, byte, (err) => err && console.error(err));
+        fs.writeFile(
+            `./extract/${this.year}/${this.reportName}/` + this.currentDownloadFileName + name,
+            byte,
+            err => err && console.error(err),
+        );
         const cb = this.currentDownloadCallback;
         this.currentDownloadCallback = null;
         console.log("Saved !");
         cb();
-    };
+    }
 
     __clearReportDir(reportName) {
         const dirPath = `./extract/`;
@@ -162,10 +167,10 @@ class OsirisExtractDownloader {
             fs.mkdirSync(dirPath + this.year);
         }
 
-        if (!fs.existsSync(dirPath + this.year + '/' + reportName)) {
-            fs.mkdirSync(dirPath + this.year + '/' + reportName);
+        if (!fs.existsSync(dirPath + this.year + "/" + reportName)) {
+            fs.mkdirSync(dirPath + this.year + "/" + reportName);
         }
-    }   
+    }
 }
 
 module.exports = OsirisExtractDownloader;

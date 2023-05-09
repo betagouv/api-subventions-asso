@@ -1,9 +1,9 @@
-require('dotenv/config') // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+require("dotenv/config"); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 const fs = require("fs");
 const OsirisExtractDownloader = require("./Osiris/OsirisExtractDownloader");
 const OsirisPosibilitiesBuilder = require("./Osiris/OsirisPosibilitiesBuilder");
-const OsirisPuppeteer = require('./OsirisPuppeteer/OsirisPuppeteer');
+const OsirisPuppeteer = require("./OsirisPuppeteer/OsirisPuppeteer");
 
 const OSIRIS_URL = process.env.OSIRIS_URL || "https://osiris.extranet.jeunesse-sports.gouv.fr/";
 const OSIRIS_EMAIL = process.env.OSIRIS_EMAIL || "";
@@ -16,7 +16,7 @@ async function getCookie() {
     const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
 
     const cookies = await osirisPuppeteer.connect();
-    console.log("Cookies as found");
+    console.log("Cookies were found");
 
     return cookies;
 }
@@ -42,7 +42,7 @@ async function downloadPosibilities(year, posibilities, i) {
         console.log(`End to download ${i}/${posibilities.length}`);
 
         return await downloadPosibilities(year, posibilities, Number(i) + 1);
-    } catch (e){
+    } catch (e) {
         console.log(e);
         // Retry download but restart downloader
         this.downloader = null;
@@ -50,7 +50,6 @@ async function downloadPosibilities(year, posibilities, i) {
         await new Promise(r => setTimeout(r), 1000 * 60 * 10); // 10min for wait osiris restart;
         return await downloadPosibilities(year, posibilities, i);
     }
-
 }
 
 async function startExtractOsiris(year, reportName) {
@@ -74,8 +73,7 @@ async function startExtractOsiris(year, reportName) {
     await downloadPosibilities(year, posibilities, skip);
 
     console.log("End of download");
-} 
-
+}
 
 (async () => {
     // const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
@@ -84,7 +82,7 @@ async function startExtractOsiris(year, reportName) {
         const start = Math.min(firstOccurence, lastOccurence);
         const end = Math.max(firstOccurence, lastOccurence);
 
-        for(let i = start; i <= end; i++) {
+        for (let i = start; i <= end; i++) {
             console.log("start extract year:", i);
             await startExtractOsiris(i, reportName);
         }
