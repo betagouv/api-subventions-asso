@@ -161,10 +161,6 @@ class StatsService {
         return usersByStatus;
     }
 
-    getUserRequests(userId) {
-        return statsAssociationsVisitRepository.countUserRequests(userId);
-    }
-
     async getUserCountByStatus() {
         const users = await userRepository.findAll();
         return users.reduce(

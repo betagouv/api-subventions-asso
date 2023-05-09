@@ -740,17 +740,6 @@ describe("StatsService", () => {
         });
     });
 
-    describe("getUserRequests()", () => {
-        it("should call repository with userId", async () => {
-            const USER_ID = "USER_ID";
-            const spyCountUserRequests = jest
-                .spyOn(statsAssociationsVisitRepository, "countUserRequests")
-                .mockImplementationOnce(jest.fn());
-            await statsService.getUserRequests(USER_ID);
-            expect(spyCountUserRequests).toHaveBeenCalledWith(USER_ID);
-        });
-    });
-
     describe("getUserCountByStatus()", () => {
         it("should return UsersByStatus with empty users", async () => {
             jest.spyOn(userRepository, "findAll").mockImplementationOnce(async () => []);

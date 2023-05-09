@@ -4,20 +4,20 @@ exports[`UserController, /user GET /admin/list-users should return UserRequestsS
 Object {
   "users": Array [
     Object {
-      "_id": "6458fecfae950718c09e61c9",
+      "_id": Any<String>,
       "active": true,
       "email": "active.user@beta.gouv.fr",
-      "hashPassword": "$2b$10$zDbzAlSex6.1smwJPY8bsOLavZNq12UGlmjOhpJOYgcQZ0oZ6weqa",
+      "hashPassword": Any<String>,
       "jwt": Object {
-        "expirateDate": "2023-05-10T13:53:19.027Z",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFjdGl2ZS51c2VyQGJldGEuZ291di5mciIsImhhc2hQYXNzd29yZCI6IiQyYiQxMCR6RGJ6QWxTZXg2LjFzbXdKUFk4YnNPTGF2Wk5xMTJVR2xtak9ocEpPWWdjUVowb1o2d2VxYSIsInNpZ251cEF0IjoiMjAyMy0wNS0wOFQxMzo1MzoxOS4wMjdaIiwicm9sZXMiOlsidXNlciJdLCJub3ciOiIyMDIzLTA1LTA4VDEzOjUzOjE5LjAyN1oiLCJpYXQiOjE2ODM1NTM5OTksImV4cCI6MTg1NjM1Mzk5OX0.gERkvQUSaAXV9N4ExuCOZBh72i9CPBEuBaKne15m858",
+        "expirateDate": Any<String>,
+        "token": Any<String>,
       },
       "roles": Array [
         "user",
       ],
-      "signupAt": "2023-05-08T13:53:19.027Z",
+      "signupAt": Any<String>,
       "stats": Object {
-        "lastSearchDate": "2023-05-08T13:53:18.971Z",
+        "lastSearchDate": Any<String>,
         "searchCount": 3,
       },
     },
