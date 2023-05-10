@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FonjepCli parse() should create subventions 1`] = `2`;
+
+exports[`FonjepCli parse() should create versements 1`] = `8`;
+
 exports[`FonjepParser parse() should return an object with subventions and versements 1`] = `
 Object {
   "subventions": Array [

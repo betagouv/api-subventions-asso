@@ -24,7 +24,7 @@ export abstract class FonjepCoreRepository<
 
     protected get collection() {
         if (this.tmpCollectionEnabled) {
-            return this.db.collection<FonjepTypedDocument>(this.collectionName + "-tmp-collection");
+            return this.getTmpCollection();
         }
 
         return super.collection;
@@ -33,6 +33,7 @@ export abstract class FonjepCoreRepository<
     private getTmpCollection() {
         return this.db.collection<FonjepTypedDocument>(this.collectionName + "-tmp-collection");
     }
+
     private getOldCollection() {
         return this.db.collection<FonjepTypedDocument>(this.collectionName + "-OLD");
     }

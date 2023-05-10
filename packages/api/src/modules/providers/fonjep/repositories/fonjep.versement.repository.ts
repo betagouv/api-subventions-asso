@@ -6,8 +6,8 @@ export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersem
     readonly collectionName = "fonjepVersement";
 
     async createIndexes() {
+        super.createIndexes();
         await this.collection.createIndex({ "indexedInformations.code_poste": 1 });
-        await this.collection.createIndex({ "legalInformations.siret": 1 });
     }
 
     create(entity: FonjepVersementEntity) {
