@@ -27,6 +27,7 @@ import {
 } from "../../shared/errors/httpErrors";
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
+import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -92,7 +93,7 @@ export class UserService {
                     UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
                 );
         }
-        return userRepository.removeSecrets(user) as UserDto;
+        return removeSecrets(user) as UserDto;
     }
 
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {

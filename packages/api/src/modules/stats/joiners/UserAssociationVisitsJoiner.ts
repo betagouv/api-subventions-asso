@@ -1,7 +1,7 @@
 import db from "../../../shared/MongoConnection";
-import UserDbo from "../../user/repositories/dbo/UserDbo";
+import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import userRepository from "../../user/repositories/user.repository";
-import { UserWithAssociationVistitsEntity } from "../entities/UserWithAssociationVisitsEntity";
+import { UserWithAssociationVisitsEntity } from "../entities/UserWithAssociationVisitsEntity";
 import statsAssociationsVisitRepository from "../repositories/statsAssociationsVisit.repository";
 
 export class UserAssociationVisitJoiner {
@@ -21,9 +21,9 @@ export class UserAssociationVisitJoiner {
         };
     }
 
-    findUsersWithAssociationVisits(includesAdmin = false) {
-        return this.userCollection
-            .aggregate<UserWithAssociationVistitsEntity>([
+    async findUsersWithAssociationVisits(includesAdmin = false) {
+        const users = await this.userCollection
+            .aggregate<UserWithAssociationVisitsEntity>([
                 this.matchIncludesAdmin(includesAdmin),
                 {
                     $lookup: {
@@ -35,11 +35,13 @@ export class UserAssociationVisitJoiner {
                 },
             ])
             .toArray();
+
+        return users.map(user => removeSecrets(user));
     }
 
     findAssociationVisitsOnPeriodGroupedByUsers(start: Date, end: Date, includesAdmin = false) {
         return this.userCollection
-            .aggregate<UserWithAssociationVistitsEntity>([
+            .aggregate<UserWithAssociationVisitsEntity>([
                 this.matchIncludesAdmin(includesAdmin),
                 {
                     $lookup: {

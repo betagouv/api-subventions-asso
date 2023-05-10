@@ -12,7 +12,7 @@ import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
-import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
+import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import statsRepository from "./repositories/stats.repository";
@@ -174,7 +174,7 @@ class StatsService {
         );
     }
 
-    private async countUserAverageVisitsOnPeriod(user: UserWithAssociationVistitsEntity, start: Date, end: Date) {
+    private async countUserAverageVisitsOnPeriod(user: UserWithAssociationVisitsEntity, start: Date, end: Date) {
         const userStartDate = start.getTime() > user.signupAt.getTime() ? start : user.signupAt;
         const visits = user.associationVisits.map(visit => ({
             _id: visit.associationIdentifier,
