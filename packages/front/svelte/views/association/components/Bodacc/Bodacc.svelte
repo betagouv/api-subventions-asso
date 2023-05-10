@@ -1,7 +1,7 @@
 <script>
-    import Alert from "@dsfr/Alert.svelte";
     import Announcement from "./Announcement.svelte";
     import BodaccController from "./Bodacc.controller";
+    import Alert from "@dsfr/Alert.svelte";
 
     export let bodacc;
 
@@ -17,9 +17,14 @@
         Bulletin officiel des annonces civiles et commerciales (BODACC) dans le cadre de sa mission de service public de
         la transparence économique et financière.
     </Alert>
-    <div class="fr-mt-17v">
-        {#each announcements as announcement}
-            <Announcement {announcement} />
-        {/each}
-    </div>
+
+    {#if announcements}
+        <div class="fr-mt-17v">
+            {#each announcements as announcement}
+                <Announcement {announcement} />
+            {/each}
+        </div>
+    {:else}
+        <Alert type="info" title="Il n'y a pas de résultat pour cette association" />
+    {/if}
 </div>

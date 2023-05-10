@@ -4,6 +4,6 @@ export default class BodaccController {
     }
 
     get announcements() {
-        return this.bodacc.map(announcement => announcement.fields);
+        return this.bodacc?.map(announcement => announcement.fields);
     }
 }
