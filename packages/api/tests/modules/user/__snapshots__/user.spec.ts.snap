@@ -7,11 +7,6 @@ Object {
       "_id": Any<String>,
       "active": true,
       "email": "active.user@beta.gouv.fr",
-      "hashPassword": Any<String>,
-      "jwt": Object {
-        "expirateDate": Any<String>,
-        "token": Any<String>,
-      },
       "roles": Array [
         "user",
       ],

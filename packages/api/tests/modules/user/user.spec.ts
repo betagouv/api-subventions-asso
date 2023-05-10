@@ -183,11 +183,6 @@ describe("UserController, /user", () => {
                 users: [
                     {
                         _id: expect.any(String),
-                        hashPassword: expect.any(String),
-                        jwt: {
-                            token: expect.any(String),
-                            expirateDate: expect.any(String),
-                        },
                         signupAt: expect.any(String),
                         stats: {
                             lastSearchDate: expect.any(String),
