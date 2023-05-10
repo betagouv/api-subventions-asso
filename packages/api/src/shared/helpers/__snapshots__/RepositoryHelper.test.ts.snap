@@ -2,12 +2,12 @@
 
 exports[`removeSecrets should remove all secret in user 1`] = `
 Object {
-  "_id": "0000000199749031e7852d1e",
+  "_id": Any<ObjectId>,
   "active": false,
   "email": "test22@beta.gouv.fr",
   "roles": Array [
     "user",
   ],
-  "signupAt": 2023-05-10T08:39:38.462Z,
+  "signupAt": Any<Date>,
 }
 `;

@@ -14,6 +14,9 @@ const USER_DBO = {
 describe("removeSecrets", () => {
     it("should remove all secret in user", () => {
         const actual = RepositoryHelper.removeSecrets(USER_DBO);
-        expect(actual).toMatchSnapshot();
+        expect(actual).toMatchSnapshot({
+            _id: expect.any(ObjectId),
+            signupAt: expect.any(Date),
+        });
     });
 });
