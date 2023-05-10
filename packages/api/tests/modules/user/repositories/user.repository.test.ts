@@ -50,20 +50,6 @@ describe("UserRepository", () => {
         });
     });
 
-    describe("removeSecrets", () => {
-        it("should remove all secret in user", () => {
-            const user = new UserNotPersisted(defaultUser);
-
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            expect(userRepository.removeSecrets(user)).not.toHaveProperty("jwt");
-
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            expect(userRepository.removeSecrets(user)).not.toHaveProperty("hashPassword");
-        });
-    });
-
     describe("getUserWithSecretsByEmail", () => {
         beforeEach(async () => {
             await userService.createUser("test@beta.gouv.fr");

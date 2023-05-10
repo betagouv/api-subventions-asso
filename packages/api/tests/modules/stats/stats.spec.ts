@@ -13,6 +13,8 @@ import userRepository from "../../../src/modules/user/repositories/user.reposito
 
 const g = global as unknown as { app: unknown };
 
+const SIREN = "123456789";
+
 describe("/stats", () => {
     const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod");
 
@@ -301,14 +303,17 @@ describe("/stats", () => {
         });
 
         describe("/status", () => {
-            it("should return UsersByStatusSuccessResponse", async () => {
+            it("should return UserCountByStatusSuccessResponse", async () => {
                 const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
                 await createAndActiveUser(ACTIVE_USER_EMAIL);
                 await createAndActiveUser("idle.user@beta.gouv.fr");
                 await createUser("inactive.user@beta.gouv.fr");
                 const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-                ACTIVE_USER.stats.lastSearchDate = new Date();
-                await userRepository.update(ACTIVE_USER);
+                await statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: new Date(),
+                });
                 const expected = { data: { admin: 1, active: 1, idle: 1, inactive: 1 } };
                 await request(g.app)
                     .get(`/stats/users/status`)

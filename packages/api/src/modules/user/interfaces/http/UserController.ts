@@ -34,7 +34,9 @@ export class UserController extends Controller {
     @Get("/admin/list-users")
     @Security("jwt", ["admin"])
     public async listUsers(): Promise<UserListDtoResponse> {
-        return await userService.listUsers();
+        return {
+            users: await userService.listUsers(),
+        };
     }
 
     /**

@@ -11,6 +11,18 @@ export const isDateNewer = (a: string | Date, b: string | Date) => {
     else return false;
 };
 
+export const sortDatesAsc = (a: string | Date, b: string | Date) => {
+    return new Date(a).getTime() - new Date(b).getTime();
+};
+
+export const getMostRecentDate = (dates: Date[]) => {
+    return dates.sort(sortDatesAsc).at(-1);
+};
+
+export const getMostOldestDate = (dates: Date[]) => {
+    return dates.sort(sortDatesAsc)[0];
+};
+
 export const frenchToEnglishMonthsMap = {
     JANVIER: "january",
     FEVRIER: "february",

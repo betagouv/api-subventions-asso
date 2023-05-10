@@ -7,7 +7,6 @@ jest.mock("../../shared/helpers/UserHelper", () => {
     };
 });
 
-import * as UserHelper from "../../shared/helpers/UserHelper";
 import statsService from "./stats.service";
 import userService from "../user/user.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
@@ -19,7 +18,7 @@ import userRepository from "../user/repositories/user.repository";
 import UserDbo from "../user/repositories/dbo/UserDbo";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
-import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
+import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -686,50 +685,57 @@ describe("StatsService", () => {
             inactive: 0,
         };
 
-        it("should increment admin", () => {
+        it("should increment admin", async () => {
             const expected = DEFAULT_USERS_BY_STATUS.admin + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["admin"] },
-            ).admin;
+            );
+            const actual = stats.admin;
             expect(actual).toEqual(expected);
         });
 
-        it("should increment active", () => {
+        it("should increment active", async () => {
             mockIsUserActif.mockImplementationOnce(() => true);
             const expected = DEFAULT_USERS_BY_STATUS.active + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["user"] },
-            ).active;
+            );
+
+            const actual = stats.active;
             expect(actual).toEqual(expected);
         });
 
-        it("should increment idle", () => {
+        it("should increment idle", async () => {
             mockIsUserActif.mockImplementationOnce(() => false);
             const expected = DEFAULT_USERS_BY_STATUS.idle + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["user"], active: true },
-            ).idle;
+            );
+
+            const actual = stats.idle;
             expect(actual).toEqual(expected);
         });
 
-        it("should increment inactive", () => {
+        it("should increment inactive", async () => {
             mockIsUserActif.mockImplementationOnce(() => false);
             const expected = DEFAULT_USERS_BY_STATUS.inactive + 1;
             // @ts-expect-error: private method
-            const actual = statsService.reduceUsersToUsersByStatus(
-                { ...DEFAULT_USERS_BY_STATUS },
+            const stats = await statsService.reduceUsersToUsersByStatus(
+                Promise.resolve({ ...DEFAULT_USERS_BY_STATUS }),
                 // @ts-expect-error: partial object
                 { roles: ["user"], active: false },
-            ).inactive;
+            );
+
+            const actual = stats.inactive;
             expect(actual).toEqual(expected);
         });
     });
@@ -779,7 +785,7 @@ describe("StatsService", () => {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
                 associationVisits: [{ associationIdentifier: "test", test: true }],
-            } as unknown as UserWithAssociationVistitsEntity;
+            } as unknown as UserWithAssociationVisitsEntity;
             const expected = [{ _id: user.associationVisits[0].associationIdentifier, visits: user.associationVisits }];
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
@@ -797,7 +803,7 @@ describe("StatsService", () => {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
                 associationVisits: [],
-            } as unknown as UserWithAssociationVistitsEntity;
+            } as unknown as UserWithAssociationVisitsEntity;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
 
@@ -817,7 +823,7 @@ describe("StatsService", () => {
                 id: "USER_ID",
                 signupAt: new Date(2023, 0, 0),
                 associationVisits: [],
-            } as unknown as UserWithAssociationVistitsEntity;
+            } as unknown as UserWithAssociationVisitsEntity;
             const start = new Date(2023, 0, 5);
             const end = new Date(2024, 0, 0);
 
@@ -867,7 +873,7 @@ describe("StatsService", () => {
         });
 
         it("should call countUserAverageVisitsOnPeriod", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVisitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(1);
 
             await statsService.getUsersByRequest();
@@ -876,7 +882,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound :0", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVisitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(0.5);
 
             const actual = await statsService.getUsersByRequest();
@@ -886,7 +892,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 1:10", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVisitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(9);
 
             const actual = await statsService.getUsersByRequest();
@@ -896,7 +902,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 11:20", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVisitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(11);
 
             const actual = await statsService.getUsersByRequest();
@@ -906,7 +912,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 21:30", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVisitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(21);
 
             const actual = await statsService.getUsersByRequest();
@@ -916,7 +922,7 @@ describe("StatsService", () => {
         });
 
         it("should return one on bound 31:", async () => {
-            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVistitsEntity]);
+            findUsersMock.mockResolvedValueOnce([{ fake: "user" } as unknown as UserWithAssociationVisitsEntity]);
             countUserAverageVisitsOnPeriodMock.mockResolvedValueOnce(31);
 
             const actual = await statsService.getUsersByRequest();

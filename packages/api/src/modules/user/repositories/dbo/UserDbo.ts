@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
 
 export default interface UserDbo {
     _id: ObjectId;
@@ -8,15 +9,9 @@ export default interface UserDbo {
     roles: string[];
     active: boolean;
     signupAt: Date;
-    stats: UserStats;
 }
 
 export interface JWT {
     token: string;
     expirateDate: Date;
-}
-
-export interface UserStats {
-    searchCount: number;
-    lastSearchDate: Date | null;
 }

@@ -2,10 +2,16 @@ import request = require("supertest");
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import userService from "../../../src/modules/user/user.service";
 import { RoleEnum } from "../../../src/@enums/Roles";
+import { createAndActiveUser } from "../../__helpers__/userHelper";
+import userRepository from "../../../src/modules/user/repositories/user.repository";
+import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
+import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 
 const g = global as unknown as { app: unknown };
 
 describe("UserController, /user", () => {
+    const SIREN = "123456789";
+
     describe("POST /admin/roles", () => {
         it("should return 200", async () => {
             const response = await request(g.app)
@@ -142,6 +148,48 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(401);
+        });
+    });
+
+    describe("GET /admin/list-users", () => {
+        it("should return UserRequestsSuccessResponse", async () => {
+            const TODAY = new Date();
+            const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
+            await createAndActiveUser(ACTIVE_USER_EMAIL);
+            const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+            await statsAssociationsVisitRepository.add({
+                associationIdentifier: SIREN,
+                userId: ACTIVE_USER._id,
+                date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
+            });
+            await statsAssociationsVisitRepository.add({
+                associationIdentifier: SIREN,
+                userId: ACTIVE_USER._id,
+                date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
+            });
+            await statsAssociationsVisitRepository.add({
+                associationIdentifier: SIREN,
+                userId: ACTIVE_USER._id,
+                date: TODAY,
+            });
+
+            const response = await request(g.app)
+                .get(`/user/admin/list-users`)
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json")
+                .expect(200);
+
+            expect(response.body).toMatchSnapshot({
+                users: [
+                    {
+                        _id: expect.any(String),
+                        signupAt: expect.any(String),
+                        stats: {
+                            lastSearchDate: expect.any(String),
+                        },
+                    },
+                ],
+            });
         });
     });
 });

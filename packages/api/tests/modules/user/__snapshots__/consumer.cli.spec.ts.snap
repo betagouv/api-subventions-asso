@@ -13,10 +13,6 @@ Object {
     "consumer",
   ],
   "signupAt": Any<String>,
-  "stats": Object {
-    "lastSearchDate": null,
-    "searchCount": 0,
-  },
 }
 `;
 
@@ -30,9 +26,5 @@ Object {
     "consumer",
   ],
   "signupAt": Any<Date>,
-  "stats": Object {
-    "lastSearchDate": null,
-    "searchCount": 0,
-  },
 }
 `;
