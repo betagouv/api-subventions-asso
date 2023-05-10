@@ -239,4 +239,20 @@ describe("FonjepService", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("Database Management", () => {
+        describe("applyTemporyCollection()", () => {
+            it("should call applyTemporyCollection() on versement and subvention collection", async () => {
+                const spySubventionApplyTemporyCollection = jest
+                    .spyOn(fonjepSubventionRepository, "applyTemporyCollection")
+                    .mockImplementation(jest.fn());
+                const spyVersementApplyTemporyCollection = jest
+                    .spyOn(fonjepVersementRepository, "applyTemporyCollection")
+                    .mockImplementation(jest.fn());
+                await fonjepService.applyTemporyCollection();
+                expect(spySubventionApplyTemporyCollection).toHaveBeenCalledTimes(1);
+                expect(spyVersementApplyTemporyCollection).toHaveBeenCalledTimes(1);
+            });
+        });
+    });
 });
