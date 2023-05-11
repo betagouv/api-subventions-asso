@@ -7,24 +7,20 @@ import statsAssociationsVisitRepository from "../repositories/statsAssociationsV
 export class UserAssociationVisitJoiner {
     userCollection = db.collection(userRepository.collectionName);
 
-    matchIncludesAdmin(includesAdmin) {
+    excludeAdmins() {
         return {
             $match: {
-                ...(includesAdmin
-                    ? {}
-                    : {
-                          roles: {
-                              $ne: "admin",
-                          },
-                      }),
+                roles: {
+                    $ne: "admin",
+                },
             },
         };
     }
 
-    async findUsersWithAssociationVisits(includesAdmin = false) {
+    async findUsersWithAssociationVisits() {
         const users = await this.userCollection
             .aggregate<UserWithAssociationVisitsEntity>([
-                this.matchIncludesAdmin(includesAdmin),
+                this.excludeAdmins(),
                 {
                     $lookup: {
                         from: statsAssociationsVisitRepository.collectionName,
@@ -39,10 +35,10 @@ export class UserAssociationVisitJoiner {
         return users.map(user => removeSecrets(user));
     }
 
-    findAssociationVisitsOnPeriodGroupedByUsers(start: Date, end: Date, includesAdmin = false) {
+    findAssociationVisitsOnPeriodGroupedByUsers(start: Date, end: Date) {
         return this.userCollection
             .aggregate<UserWithAssociationVisitsEntity>([
-                this.matchIncludesAdmin(includesAdmin),
+                this.excludeAdmins(),
                 {
                     $lookup: {
                         from: statsAssociationsVisitRepository.collectionName,
@@ -58,7 +54,7 @@ export class UserAssociationVisitJoiner {
                                         $lte: end,
 
                                         // @VICTOR : tu voulais remplacer par les lignes du dessus en supprimant le let ligne 28 par ça :
-                                        // Mais on comprenais pas l'intérêt
+                                        // Mais on ne comprenait pas l'intérêt
                                         // $expr: {
                                         //     $and: [{ $gte: ["$date", start] }, { $lte: ["$date", end] }],
                                     },
