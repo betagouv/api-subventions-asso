@@ -1,8 +1,8 @@
 import axios from "axios";
 
-import { updateSearchHistory } from "../../services/storage.service";
-import documentService from "../../services/document.service";
 import { toAssociationView, toEtablissementComponent } from "./association.adapter";
+import { updateSearchHistory } from "@services/storage.service";
+import documentService from "@resources/documents/documents.service";
 
 export class AssociationService {
     basePath = "/association/";

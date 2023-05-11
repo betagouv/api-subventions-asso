@@ -1,9 +1,9 @@
 import axios from "axios";
-import { getObjectWithMetadata } from "../helpers/providerValueHelper";
+import { getObjectWithMetadata } from "@helpers/providerValueHelper";
 
 export const toDocumentComponent = getObjectWithMetadata;
 
-export class DocumentService {
+class DocumentService {
     async getDocuments(path) {
         const documentLabels = {
             RIB: "Télécharger le RIB",

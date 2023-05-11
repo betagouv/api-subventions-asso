@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toEtablissementComponent } from "../association/association.adapter";
-import documentService from "../../services/document.service";
-import { getValue } from "../../helpers/providerValueHelper";
+import documentService from "@resources/documents/documents.service";
+import { getValue } from "@helpers/providerValueHelper";
 
 export class EtablissementService {
     getContactsList(etablissement) {
