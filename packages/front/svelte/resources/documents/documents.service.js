@@ -1,9 +1,14 @@
 import axios from "axios";
+import documentPort from "@resources/documents/documents.port";
 import { getObjectWithMetadata } from "@helpers/providerValueHelper";
 
 export const toDocumentComponent = getObjectWithMetadata;
 
-class DocumentService {
+export class DocumentService {
+    getDauphinBlob(localDauphinDocUrl) {
+        return documentPort.getDauphinBlob(localDauphinDocUrl);
+    }
+
     async getDocuments(path) {
         const documentLabels = {
             RIB: "Télécharger le RIB",
