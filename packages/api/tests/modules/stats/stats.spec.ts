@@ -84,10 +84,10 @@ describe("/stats", () => {
             });
         });
 
-        describe("getMedianRequestOnPeriod", () => {
+        describe("getMedianVisitsOnPeriod", () => {
             const TODAY = new Date();
             const YESTERDAY = new Date(TODAY).setDate(TODAY.getDate() + 1);
-            const spyGetMedianRequestsOnPeriod = jest.spyOn(statsService, "getMedianRequestsOnPeriod");
+            const spyGetMedianRequestsOnPeriod = jest.spyOn(statsService, "getMedianVisitsOnPeriod");
 
             it("should return data with HTTP status code 200", async () => {
                 const DATA = 2;

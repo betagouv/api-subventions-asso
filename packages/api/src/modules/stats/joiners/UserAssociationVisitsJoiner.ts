@@ -56,6 +56,11 @@ export class UserAssociationVisitJoiner {
                                     visitDate: {
                                         $gte: start,
                                         $lte: end,
+
+                                        // @VICTOR : tu voulais remplacer par les lignes du dessus en supprimant le let ligne 28 par ça :
+                                        // Mais on comprenais pas l'intérêt
+                                        // $expr: {
+                                        //     $and: [{ $gte: ["$date", start] }, { $lte: ["$date", end] }],
                                     },
                                 },
                             },
