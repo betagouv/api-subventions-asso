@@ -6,7 +6,7 @@
 
     const controller = new SubventionsVersementsStatistiqueController(elements);
 
-    const { subventionsPercent, versementsAmount } = controller;
+    const { versementsAmount } = controller;
 
     $: elements, controller.updateElements(elements);
 </script>
