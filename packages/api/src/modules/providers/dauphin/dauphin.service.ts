@@ -1,3 +1,4 @@
+import { IncomingMessage } from "http";
 import axios from "axios";
 import qs from "qs";
 import { DemandeSubvention, Siren, Siret } from "@api-subventions-asso/dto";
@@ -162,6 +163,26 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     migrateDauphinCacheToDauphinGispro(logger) {
         return dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
+    }
+
+    // Documents
+
+    async getSpecificDocumentStream(docPath: string): Promise<IncomingMessage> {
+        const token = await this.getAuthToken();
+
+        return (
+            await axios.get(`https://agent-dauphin.cget.gouv.fr${docPath}`, {
+                responseType: "stream",
+                headers: {
+                    accept: "application/json, text/plain, */*, application/vnd.mgdis.tiers-3.19.0+json",
+                    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                    authorization: "Bearer " + token,
+                    "mg-authentication": "true",
+                    Referer: "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
+                    "Referrer-Policy": "strict-origin-when-cross-origin",
+                },
+            })
+        ).data;
     }
 
     // General
