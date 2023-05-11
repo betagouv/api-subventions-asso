@@ -81,13 +81,13 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("updateCache", () => {
+    describe("updateApplicationCache", () => {
         // @ts-expect-error spy private method
         const mockBuildSearchHeader = jest.spyOn(dauphinService, "buildSearchHeader");
         // @ts-expect-error spy private method
-        const mockBuildFetchFromDateQuery = jest.spyOn(dauphinService, "buildFetchFromDateQuery");
+        const mockBuildFetchFromDateQuery = jest.spyOn(dauphinService, "buildFetchApplicationFromDateQuery");
         // @ts-expect-error spy private method
-        const mockFormatAndReturnDto = jest.spyOn(dauphinService, "formatAndReturnDto");
+        const mockFormatAndReturnDto = jest.spyOn(dauphinService, "formatAndReturnApplicationDto");
         // @ts-expect-error: spy private method
         const mockSaveApplicationsInCache = jest.spyOn(dauphinService, "saveApplicationsInCache");
         // @ts-expect-error: spy private method
@@ -117,36 +117,36 @@ describe("Dauphin Service", () => {
         afterAll(() => mocks.map(mock => mock.mockRestore()));
 
         it("should call repository.getLastImportDate()", async () => {
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(dauphinGisproRepository.getLastImportDate).toHaveBeenCalledTimes(1);
         });
 
         it("should call getAuthToken", async () => {
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
         });
 
         it("should call buildFetchFromDateQuery", async () => {
             const DATE = new Date();
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockBuildFetchFromDateQuery).toHaveBeenCalledWith(DATE);
         });
 
         it("should build headers from token", async () => {
             const expected = TOKEN;
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockBuildSearchHeader).toHaveBeenCalledWith(expected);
         });
 
         it("should call axios with args", async () => {
             const DATE = new Date();
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             // @ts-expect-error: mock
             expect(axios.post.mock.calls[0]).toMatchSnapshot();
         });
 
         it("should call mockSaveApplicationsInCache", async () => {
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockSaveApplicationsInCache).toHaveBeenCalledTimes(1);
         });
     });
@@ -172,7 +172,7 @@ describe("Dauphin Service", () => {
                 beneficiaires: [beneficiaireFieldToKeep],
             };
             // @ts-expect-error: private method
-            const actual = dauphinService.formatAndReturnDto({
+            const actual = dauphinService.formatAndReturnApplicationDto({
                 _source: {
                     objectToKeep,
                     demandeur: { ...demandeurFieldToKeep, pieces: "", history: "", linkedUsers: "" },

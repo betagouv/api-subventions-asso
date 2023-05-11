@@ -2,7 +2,7 @@ import axios from "axios";
 import qs from "qs";
 import { DemandeSubvention, Siren, Siret } from "@api-subventions-asso/dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { DAUPHIN_USERNAME, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
+import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
 import Gispro from "../gispro/@types/Gispro";
@@ -22,6 +22,8 @@ export class DauphinService implements DemandesSubventionsProvider {
 
     isDemandesSubventionsProvider = true;
 
+    // Applications
+
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const applications = await dauphinGisproRepository.findBySiret(siret);
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
@@ -32,11 +34,11 @@ export class DauphinService implements DemandesSubventionsProvider {
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
-    async getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
-        return null;
+    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
+        return Promise.resolve(null);
     }
 
-    async updateCache() {
+    async updateApplicationCache() {
         const lastUpdateDate = await dauphinGisproRepository.getLastImportDate();
         console.log(`update cache from ${lastUpdateDate.toString()}`);
         const token = await this.getAuthToken();
@@ -49,7 +51,7 @@ export class DauphinService implements DemandesSubventionsProvider {
                 const result = (
                     await axios.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-                        { ...this.buildFetchFromDateQuery(lastUpdateDate), from: fetched },
+                        { ...this.buildFetchApplicationFromDateQuery(lastUpdateDate), from: fetched },
                         this.buildSearchHeader(token),
                     )
                 ).data;
@@ -68,7 +70,7 @@ export class DauphinService implements DemandesSubventionsProvider {
                     throw new Error("Something went wrong with dauphin results");
                 }
 
-                await this.saveApplicationsInCache(applications.map(this.formatAndReturnDto));
+                await this.saveApplicationsInCache(applications.map(this.formatAndReturnApplicationDto));
 
                 console.log(`fetched ${applications.length} applications`);
             } catch (e) {
@@ -85,34 +87,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         });
     }
 
-    private formatAndReturnDto(hit) {
-        const source = hit._source;
-
-        if ("demandeur" in source) {
-            delete source.demandeur.pieces;
-            delete source.demandeur.history;
-            delete source.demandeur.linkedUsers;
-        }
-
-        if ("beneficiaires" in source) {
-            source.beneficiaires.forEach(beneficiaire => {
-                delete beneficiaire.pieces;
-                delete beneficiaire.history;
-                delete beneficiaire.linkedUsers;
-            });
-        }
-
-        return source as DauphinSubventionDto;
-    }
-
-    private toDauphinDateString(date: Date) {
-        const year = date.getFullYear();
-        const month = formatIntToTwoDigits(date.getMonth() + 1);
-        const day = formatIntToTwoDigits(date.getDate());
-        return `${year}-${month}-${day}`;
-    }
-
-    private buildFetchFromDateQuery(date) {
+    private buildFetchApplicationFromDateQuery(date) {
         return {
             size: 1000,
             sort: [{ date: { order: "desc", missing: "_last", mode: "max" } }],
@@ -154,6 +129,48 @@ export class DauphinService implements DemandesSubventionsProvider {
             _source: [],
             aggs: {},
         };
+    }
+
+    private formatAndReturnApplicationDto(hit) {
+        const source = hit._source;
+
+        if ("demandeur" in source) {
+            delete source.demandeur.pieces;
+            delete source.demandeur.history;
+            delete source.demandeur.linkedUsers;
+        }
+
+        if ("beneficiaires" in source) {
+            source.beneficiaires.forEach(beneficiaire => {
+                delete beneficiaire.pieces;
+                delete beneficiaire.history;
+                delete beneficiaire.linkedUsers;
+            });
+        }
+
+        return source as DauphinSubventionDto;
+    }
+
+    async insertGisproApplicationEntity(gisproEntity: Gispro) {
+        const entity = await dauphinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
+
+        if (!entity) return;
+
+        entity.gispro = gisproEntity;
+        await dauphinGisproRepository.upsert(entity);
+    }
+
+    migrateDauphinCacheToDauphinGispro(logger) {
+        return dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
+    }
+
+    // General
+
+    private toDauphinDateString(date: Date) {
+        const year = date.getFullYear();
+        const month = formatIntToTwoDigits(date.getMonth() + 1);
+        const day = formatIntToTwoDigits(date.getDate());
+        return `${year}-${month}-${day}`;
     }
 
     private buildSearchHeader(token) {
@@ -206,22 +223,9 @@ export class DauphinService implements DemandesSubventionsProvider {
                     "Referrer-Policy": "strict-origin-when-cross-origin",
                 },
             })
-            .then(reslut => {
-                return reslut.data;
+            .then(result => {
+                return result.data;
             });
-    }
-
-    async insertGisproEntity(gisproEntity: Gispro) {
-        const entity = await dauphinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
-
-        if (!entity) return;
-
-        entity.gispro = gisproEntity;
-        await dauphinGisproRepository.upsert(entity);
-    }
-
-    migrateDauphinCacheToDauphinGispro(logger) {
-        return dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
     }
 }
 

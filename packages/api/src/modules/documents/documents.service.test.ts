@@ -194,8 +194,7 @@ describe("Documents Service", () => {
         it("should be return false", () => {
             const expected = false;
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error mock
             const actual = documentsService.isDocumentProvider({});
 
             expect(actual).toBe(expected);
