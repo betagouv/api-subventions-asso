@@ -30,12 +30,7 @@ export class StatsController extends Controller {
         @Query() nbReq: string,
         @Query() includesAdmin = "false",
     ): Promise<StatsRequestDtoResponse> {
-        const result = await statsService.getNbUsersByRequestsOnPeriod(
-            new Date(start),
-            new Date(end),
-            Number(nbReq),
-            includesAdmin === "true",
-        );
+        const result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq));
         return { data: result };
     }
 

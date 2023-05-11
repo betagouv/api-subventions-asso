@@ -18,8 +18,10 @@ import statsAssociationsVisitRepository from "./repositories/statsAssociationsVi
 import statsRepository from "./repositories/stats.repository";
 
 class StatsService {
-    getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number, includesAdmin: boolean) {
-        return statsRepository.countUsersByRequestNbOnPeriod(start, end, minReq, includesAdmin);
+    async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number) {
+        const users = await userAssociationVisitJoiner.findAssociationVisitsOnPeriodGroupedByUsers(start, end);
+        const filteredUsers = users.filter(user => user.associationVisits.length >= minReq);
+        return filteredUsers.length;
     }
 
     async getMedianVisitsOnPeriod(start: Date, end: Date) {
@@ -243,6 +245,7 @@ class StatsService {
             start,
             end,
         );
+
         const result = await usersWithAssociationVisits.reduce(async (acc, user) => {
             if (!user) return acc;
             const data = await acc;
