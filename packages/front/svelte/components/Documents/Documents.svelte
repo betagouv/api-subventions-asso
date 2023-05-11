@@ -34,6 +34,7 @@
                         url={document.url}
                         size="6"
                         endDetail={controller.getDateString(document.date)}
+                        onClick={e => controller.onClick(e, document)}
                         target="_blank">
                         <p>
                             {document.nom}
