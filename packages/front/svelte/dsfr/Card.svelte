@@ -7,6 +7,8 @@
     export let img = false;
     export let target = "";
     export let direction = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- default value
+    export let onClick = () => {};
 
     // second detail zone
     export let endIcon = undefined;
@@ -18,7 +20,9 @@
     <div class={`fr-card fr-enlarge-link${direction === "horizontal" ? " fr-card--horizontal" : ""}`}>
         <div class="fr-card__body">
             <div class="fr-card__content">
-                <h2 class="fr-card__title"><a href={url} class="fr-card__link" {target}>{title}</a></h2>
+                <h2 class="fr-card__title">
+                    <a href={url} on:click={onClick} class="fr-card__link" {target}>{title}</a>
+                </h2>
                 <p class="fr-card__desc">
                     <slot />
                 </p>
