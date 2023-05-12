@@ -1,7 +1,8 @@
 import { IncomingMessage } from "http";
 import axios from "axios";
 import qs from "qs";
-import { DemandeSubvention, Siren, Siret } from "@api-subventions-asso/dto";
+import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -9,11 +10,14 @@ import configurationsService from "../../configurations/configurations.service";
 import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
+import DocumentProvider from "../../documents/@types/DocumentsProvider";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 
-export class DauphinService implements DemandesSubventionsProvider {
+export class DauphinService implements DemandesSubventionsProvider, DocumentProvider {
     provider = {
         name: "Dauphin",
         type: ProviderEnum.api,
@@ -22,6 +26,7 @@ export class DauphinService implements DemandesSubventionsProvider {
     };
 
     isDemandesSubventionsProvider = true;
+    isDocumentProvider = true;
 
     // Applications
 
@@ -166,6 +171,56 @@ export class DauphinService implements DemandesSubventionsProvider {
     }
 
     // Documents
+
+    // no RIB document in dauphin
+
+    async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
+        const siren = await rnaSirenService.getSiren(rna);
+        if (!siren) return null;
+        return this.getDocumentsBySiren(siren);
+    }
+
+    async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {
+        const token = await this.getAuthToken();
+        const internalId = await this.findInternalId(siren);
+        if (!internalId) return null;
+
+        const result = (
+            await axios.get(
+                "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/41fPMDsxf8?expand=pieces.documents",
+                this.buildSearchHeader(token),
+            )
+        ).data.pieces;
+
+        return DauphinDtoAdapter.toDocuments(result);
+    }
+
+    getDocumentsBySiret(siret: Siret): Promise<Document[] | null> {
+        return this.getDocumentsBySiren(siretToSiren(siret));
+    }
+
+    private async findInternalId(siren: Siren): Promise<string | undefined> {
+        const query = {
+            from: 0,
+            size: 1,
+            type: "tiers",
+            query: siren,
+            facets: {
+                famille: ["Association"],
+                status: ["SUPPORTED"],
+            },
+        };
+        const token = await this.getAuthToken();
+
+        const res = (
+            await axios.post(
+                "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
+                query,
+                this.buildSearchHeader(token),
+            )
+        ).data;
+        return res?.hits?.hits?.[0]?._source?.id;
+    }
 
     async getSpecificDocumentStream(docPath: string): Promise<IncomingMessage> {
         const token = await this.getAuthToken();
