@@ -27,7 +27,7 @@ describe("Documents Service", () => {
             mockAggregateDocuments.mockClear();
         });
 
-        it("should be return list of document", async () => {
+        it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
@@ -37,7 +37,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return filtred list of document", async () => {
+        it("should return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() =>
@@ -49,7 +49,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return an empty list", async () => {
+        it("should return an empty list", async () => {
             const expected = 0;
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
@@ -93,7 +93,7 @@ describe("Documents Service", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should be return filtred list of document", async () => {
+        it("should return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() =>
@@ -105,7 +105,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return an empty list", async () => {
+        it("should return an empty list", async () => {
             const expected = 0;
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
@@ -135,7 +135,7 @@ describe("Documents Service", () => {
             mockAggregateDocuments.mockClear();
         });
 
-        it("should be return list of document", async () => {
+        it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
@@ -145,7 +145,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return filtred list of document", async () => {
+        it("should return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() =>
@@ -157,7 +157,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return an empty list", async () => {
+        it("should return an empty list", async () => {
             const expected = 0;
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
@@ -180,7 +180,7 @@ describe("Documents Service", () => {
     });
 
     describe("isDocumentProvider", () => {
-        it("should be return true", () => {
+        it("should return true", () => {
             const expected = true;
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -192,7 +192,7 @@ describe("Documents Service", () => {
             expect(actual).toBe(expected);
         });
 
-        it("should be return false", () => {
+        it("should return false", () => {
             const expected = false;
 
             // @ts-expect-error mock
