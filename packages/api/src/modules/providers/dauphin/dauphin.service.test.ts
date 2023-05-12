@@ -3,9 +3,11 @@ import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
+import SpyInstance = jest.SpyInstance;
 
 jest.mock("axios", () => ({
     post: jest.fn(),
+    get: jest.fn(),
 }));
 
 jest.mock("./repositories/dauphin-gispro.repository", () => ({
@@ -152,7 +154,7 @@ describe("Dauphin Service", () => {
     });
 
     describe("saveApplicationsInCache", () => {
-        it("should upsert entites asynchornously", async () => {
+        it("should upsert entities asynchronously", async () => {
             const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
             // @ts-expect-error: private method
             await dauphinService.saveApplicationsInCache(ENTITIES);
@@ -290,5 +292,51 @@ describe("Dauphin Service", () => {
 
             expect(actual).toEqual(expected);
         });
+    });
+
+    describe("getSpecificDocumentStream", () => {
+        let mockGetAuthToken: SpyInstance;
+        const DOC_PATH = "PATH";
+        const AXIOS_RES = "RES";
+
+        beforeAll(() => {
+            // @ts-expect-error: mock
+            mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken").mockImplementation(async () => TOKEN);
+            // @ts-expect-errors mocked
+            axios.get.mockResolvedValue({ data: AXIOS_RES });
+        });
+
+        it("should call getAuthToken", async () => {
+            await dauphinService.getSpecificDocumentStream(DOC_PATH);
+            expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call axios with args", async () => {
+            await dauphinService.getSpecificDocumentStream(DOC_PATH);
+            // @ts-expect-error: mock
+            expect(axios.get.mock.calls[0]).toMatchSnapshot();
+        });
+
+        it("should return stream from axios", async () => {
+            const expected = AXIOS_RES;
+            const actual = await dauphinService.getSpecificDocumentStream(DOC_PATH);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getDocumentsByRna", () => {
+        // TODO
+    });
+
+    describe("getDocumentsBySiren", () => {
+        // TODO
+    });
+
+    describe("getDocumentsBySiret", () => {
+        // TODO
+    });
+
+    describe("getInternalId", () => {
+        // TODO
     });
 });

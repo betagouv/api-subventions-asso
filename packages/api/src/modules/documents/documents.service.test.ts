@@ -5,6 +5,7 @@ import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+import dauphinService from "../providers/dauphin/dauphin.service";
 
 jest.mock("../../shared/helpers/IdentifierHelper", () => ({
     getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
@@ -378,6 +379,28 @@ describe("Documents Service", () => {
             // @ts-expect-error: private method
             const actual = await documentsService.aggregate(providers, "getDocuments", SIREN);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getDauphinDocumentStream", () => {
+        let dauphinServiceMock;
+        const RES = "RES";
+        const DOC_ID = "id";
+
+        beforeEach(
+            // @ts-expect-error mock
+            () => (dauphinServiceMock = jest.spyOn(dauphinService, "getSpecificDocumentStream").mockResolvedValue(RES)),
+        );
+
+        it("calls dauphin service", async () => {
+            await documentsService.getDauphinDocumentStream(DOC_ID);
+            expect(dauphinServiceMock).toHaveBeenCalledWith(DOC_ID);
+        });
+
+        it("returns stream from dauphin service", async () => {
+            const expected = RES;
+            const actual = await documentsService.getDauphinDocumentStream(DOC_ID);
+            expect(actual).toBe(expected);
         });
     });
 });

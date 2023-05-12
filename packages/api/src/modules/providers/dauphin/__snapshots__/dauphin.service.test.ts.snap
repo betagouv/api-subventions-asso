@@ -14,6 +14,23 @@ Object {
 }
 `;
 
+exports[`Dauphin Service getSpecificDocumentStream should call axios with args 1`] = `
+Array [
+  "https://agent-dauphin.cget.gouv.frPATH",
+  Object {
+    "headers": Object {
+      "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "accept": "application/json, text/plain, */*, application/vnd.mgdis.tiers-3.19.0+json",
+      "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+      "authorization": "Bearer FAKE_TOKEN",
+      "mg-authentication": "true",
+    },
+    "responseType": "stream",
+  },
+]
+`;
+
 exports[`Dauphin Service sendAuthRequest should call axios 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
