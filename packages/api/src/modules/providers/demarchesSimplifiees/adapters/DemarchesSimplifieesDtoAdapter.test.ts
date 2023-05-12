@@ -4,7 +4,7 @@ import DemarchesSimplifieesDtoAdapter from "./DemarchesSimplifieesDtoAdapter";
 describe("DemarchesSimplifieesDtoAdapter", () => {
     describe("toEntities", () => {
         const SIRET = "00000000000000";
-        it("should retrun valid entity", () => {
+        it("should return valid entity", () => {
             const actual = DemarchesSimplifieesDtoAdapter.toEntities(
                 {
                     data: {

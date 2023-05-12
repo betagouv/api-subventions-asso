@@ -11,7 +11,7 @@ import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueA
 import EventManager from "../../../../src/shared/EventManager";
 
 describe("OsirisService", () => {
-    it("should retrun an instance of osirisService", () => {
+    it("should return an instance of osirisService", () => {
         expect(osirisService).toBeInstanceOf(OsirisService);
     });
 

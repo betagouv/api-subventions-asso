@@ -29,7 +29,7 @@ describe("VersementsPort", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should retrun versements", async () => {
+        it("should return versements", async () => {
             const expected = [{ versement: 1 }, { versement: 2 }];
 
             getVersementsMock.mockImplementationOnce(() => expected);
@@ -65,7 +65,7 @@ describe("VersementsPort", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should retrun versements", async () => {
+        it("should return versements", async () => {
             const expected = [{ versement: 1 }, { versement: 2 }];
 
             getVersementsMock.mockImplementationOnce(() => expected);

@@ -214,7 +214,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockClear();
         });
 
-        it("Should not retrun provider", () => {
+        it("Should not return provider", () => {
             const expected = 0;
 
             isDocumentProviderMock.mockImplementation(() => false);
@@ -228,7 +228,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockClear();
         });
 
-        it("Should retrun providers", () => {
+        it("Should return providers", () => {
             const expected = Object.values(providers).length;
 
             isDocumentProviderMock.mockImplementation(() => true);
@@ -242,7 +242,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockClear();
         });
 
-        it("Should retrun part of providers", () => {
+        it("Should return part of providers", () => {
             const expected = Math.floor(Object.values(providers).length / 2);
             let i = 0;
             isDocumentProviderMock.mockImplementation(() => {
