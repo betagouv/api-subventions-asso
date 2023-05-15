@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DauphinDtoAdapter toDocuments return proper result 1`] = `
+Array [
+  Object {
+    "__meta__": Object {},
+    "nom": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "title1",
+    },
+    "type": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "test1",
+    },
+    "url": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "/document/dauphin/%2Fpath1",
+    },
+  },
+  Object {
+    "__meta__": Object {},
+    "nom": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "title2",
+    },
+    "type": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "test1",
+    },
+    "url": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "/document/dauphin/%2Fpath2",
+    },
+  },
+  Object {
+    "__meta__": Object {},
+    "nom": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "title1",
+    },
+    "type": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "test1",
+    },
+    "url": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "/document/dauphin/%2Fpath1",
+    },
+  },
+  Object {
+    "__meta__": Object {},
+    "nom": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "title2",
+    },
+    "type": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "test1",
+    },
+    "url": Object {
+      "last_update": 2022-02-01T00:00:00.000Z,
+      "provider": "Dauphin",
+      "type": "string",
+      "value": "/document/dauphin/%2Fpath2",
+    },
+  },
+]
+`;
