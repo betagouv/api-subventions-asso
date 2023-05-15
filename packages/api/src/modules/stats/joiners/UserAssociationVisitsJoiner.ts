@@ -42,25 +42,26 @@ export class UserAssociationVisitJoiner {
                 {
                     $lookup: {
                         from: statsAssociationsVisitRepository.collectionName,
-                        localField: userRepository.joinIndexes.associationVisits,
-                        foreignField: statsAssociationsVisitRepository.joinIndexes.user,
-                        as: "associationVisits",
-                        let: { visitDate: "$date" },
+                        let: { joinId: `$${userRepository.joinIndexes.associationVisits}` },
                         pipeline: [
                             {
                                 $match: {
-                                    visitDate: {
-                                        $gte: start,
-                                        $lte: end,
-
-                                        // @VICTOR : tu voulais remplacer par les lignes du dessus en supprimant le let ligne 28 par ça :
-                                        // Mais on ne comprenait pas l'intérêt
-                                        // $expr: {
-                                        //     $and: [{ $gte: ["$date", start] }, { $lte: ["$date", end] }],
+                                    $expr: {
+                                        $and: [
+                                            {
+                                                $eq: [
+                                                    `$${statsAssociationsVisitRepository.joinIndexes.user}`,
+                                                    "$$joinId",
+                                                ],
+                                            },
+                                            { $gte: ["$date", start] },
+                                            { $lte: ["$date", end] },
+                                        ],
                                     },
                                 },
                             },
                         ],
+                        as: "associationVisits",
                     },
                 },
             ])
