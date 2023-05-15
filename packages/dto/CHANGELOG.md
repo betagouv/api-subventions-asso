@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/betagouv/datasubvention/compare/v0.27.0...v0.28.0) (2023-05-15)
+
+
+### Features
+
+* **api, dto:** add /stats/user/requests route ([4dc4c61](https://github.com/betagouv/datasubvention/commit/4dc4c618041e38ded95496cdb3656647e551bcbd))
+* **api, dto:** create user stats from associationVisits collection ([78d9940](https://github.com/betagouv/datasubvention/commit/78d99400125f638f7d3e60593e61f0b7894812f1))
+* **api, dto:** remove old way to compute user.stats property ([a6d9a18](https://github.com/betagouv/datasubvention/commit/a6d9a18046f0bfb86783662bad0241039ae503e8))
+* **api, dto:** remove stats/users/requests route ([989bd1a](https://github.com/betagouv/datasubvention/commit/989bd1a8f2e2fc72c5a21044869df30a369635cc))
+* **front:** add bodacc tab ([71550aa](https://github.com/betagouv/datasubvention/commit/71550aaeac79b7b073234075dc35be3a2fa209c9))
+
+
+
+
+
 # [0.27.0](https://github.com/betagouv/datasubvention/compare/v0.26.2...v0.27.0) (2023-05-03)
 
 
