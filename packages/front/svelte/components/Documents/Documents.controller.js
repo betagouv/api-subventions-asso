@@ -68,5 +68,6 @@ export class DocumentsController {
         link.setAttribute("target", "_blank");
         document.body.appendChild(link);
         link.click();
+        window.URL.revokeObjectURL(url);
     }
 }
