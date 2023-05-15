@@ -5,9 +5,7 @@ import { StaticImplements } from "../../../../../decorators/staticImplements.dec
 import { CliStaticInterface } from "../../../../../@types";
 import CliController from "../../../../../shared/CliController";
 import GisproParser from "../../gispro.parser";
-import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
 import dauphinService from "../../../dauphin/dauphin.service";
-import { printAtSameLine } from "../../../../../shared/helpers/CliHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class GisproCliController extends CliController {
@@ -32,6 +30,7 @@ export default class GisproCliController extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- debug purposes
         const entities = GisproParser.parse(fileContent, () => true);
     }
 

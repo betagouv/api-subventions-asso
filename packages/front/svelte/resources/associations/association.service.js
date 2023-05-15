@@ -9,8 +9,9 @@ class AssociationService {
     }
 
     async getAssociation(identifier) {
-        const result = await associationPort.getByRnaOrSiren(identifier);
-        return flatenProviderValue(result.data.association);
+        const association = await associationPort.getByRnaOrSiren(identifier);
+        if (!association) return;
+        return flatenProviderValue(association);
     }
 
     async _searchByIdentifier(identifier) {
@@ -28,8 +29,8 @@ class AssociationService {
             {
                 rna: fullResult.rna,
                 siren: fullResult.siren,
-                name: fullResult.denomination_rna || fullResult.denomination_siren
-            }
+                name: fullResult.denomination_rna || fullResult.denomination_siren,
+            },
         ];
     }
 

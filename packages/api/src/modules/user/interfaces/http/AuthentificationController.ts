@@ -19,7 +19,7 @@ export class AuthentificationController extends Controller {
         const user = await userService.resetPassword(body.password, body.token);
 
         return {
-            user: { ...user, _id: user._id.toString() },
+            user,
         };
     }
 

@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/betagouv/api-subventions-asso/compare/v0.27.0...v0.28.0) (2023-05-15)
+
+
+### Bug Fixes
+
+* **api:** change api call ([efab260](https://github.com/betagouv/api-subventions-asso/commit/efab2608bc594d5469c5289bdfa4354b785beae6))
+* **api:** handle null result is démarches-simplifiées ([be3ac4a](https://github.com/betagouv/api-subventions-asso/commit/be3ac4a85cef2fd101133dc1e245b63463c378ac))
+* **api:** remove unused import ([b67aa10](https://github.com/betagouv/api-subventions-asso/commit/b67aa1028522a169d5a10a8d01335a38c2c0bd96))
+* **api:** update RepositoryHelper test ([07ba01c](https://github.com/betagouv/api-subventions-asso/commit/07ba01cad70e6cbd139e4e9a28eeb1bd71fd650b))
+
+
+### Features
+
+* **api, dto:** add /stats/user/requests route ([4dc4c61](https://github.com/betagouv/api-subventions-asso/commit/4dc4c618041e38ded95496cdb3656647e551bcbd))
+* **api, dto:** create user stats from associationVisits collection ([78d9940](https://github.com/betagouv/api-subventions-asso/commit/78d99400125f638f7d3e60593e61f0b7894812f1))
+* **api, dto:** remove old way to compute user.stats property ([a6d9a18](https://github.com/betagouv/api-subventions-asso/commit/a6d9a18046f0bfb86783662bad0241039ae503e8))
+* **api, dto:** remove stats/users/requests route ([989bd1a](https://github.com/betagouv/api-subventions-asso/commit/989bd1a8f2e2fc72c5a21044869df30a369635cc))
+* **api:** add and fix tests ([7033af9](https://github.com/betagouv/api-subventions-asso/commit/7033af9b55b492eab5d9ccb674454f15d32ce673))
+* **api:** add database management ([a4a18c1](https://github.com/betagouv/api-subventions-asso/commit/a4a18c1b7732dbc454bee65b3474740b1b1c7485))
+* **api:** add database management ([20becc3](https://github.com/betagouv/api-subventions-asso/commit/20becc3165c61e80a625bb7f48eacd26d10e4f1b))
+* **api:** add migration dauphin to dauphin gispro ([ea8a2c5](https://github.com/betagouv/api-subventions-asso/commit/ea8a2c567ccc2ea468e6bbb725f2f259628753c1))
+* **api:** add migration to remove persisted user.stats ([d8d2622](https://github.com/betagouv/api-subventions-asso/commit/d8d2622e06e8ab334c4ed388ad0f155ca1dc7d04))
+* **api:** add unit test on fonjepService.applyTemporyCollection ([f15448c](https://github.com/betagouv/api-subventions-asso/commit/f15448cd500634f0adf8bd22955cbd55e46d7803))
+* **api:** make generic type extends mongo Document ([e756287](https://github.com/betagouv/api-subventions-asso/commit/e7562875cbeb20133fb3194647bdfa4fff7b2f37))
+* **api:** remove duplicate method and add integ test ([39439a6](https://github.com/betagouv/api-subventions-asso/commit/39439a6b2975511ba7d92f05115959f5b8b59b22))
+* **api:** remove users secrets ([6bf5367](https://github.com/betagouv/api-subventions-asso/commit/6bf53672a4048eed557b2b9b02ffadd7cfa61a26))
+* **api:** revert change ([41b0dcc](https://github.com/betagouv/api-subventions-asso/commit/41b0dcc64914b0865a989501b5dfae5589162550))
+* **api:** update getMedianVisitsOnPeriod comment on median computing ([6d5040f](https://github.com/betagouv/api-subventions-asso/commit/6d5040f4a95a135f4aab82aa917d9e0a65a744b3))
+* **api:** update stats integ test with new method name ([85c6eb5](https://github.com/betagouv/api-subventions-asso/commit/85c6eb5aca73ee3cad2d61a76a75b44857a2ca60))
+* **api:** use service instead of repository in helper ([e20e324](https://github.com/betagouv/api-subventions-asso/commit/e20e324dd5e28d138abe65eba6aeb0387e9d9e91))
+* **api:** use statsAssociationVisit in isUserActif ([d8a6c44](https://github.com/betagouv/api-subventions-asso/commit/d8a6c44af3876805c379aea75ee7224e65d28140))
+* **api:** use visits for compute the stats ([d5aabb7](https://github.com/betagouv/api-subventions-asso/commit/d5aabb732300d77b4eb868cf54385fb251bd9142))
+* **front:** add bodacc tab ([71550aa](https://github.com/betagouv/api-subventions-asso/commit/71550aaeac79b7b073234075dc35be3a2fa209c9))
+
+
+
+
+
 # [0.27.0](https://github.com/betagouv/api-subventions-asso/compare/v0.26.2...v0.27.0) (2023-05-03)
 
 

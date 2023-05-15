@@ -1,8 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const rnaSirenService = require("../build/src/modules/open-data/rna-siren/rnaSiren.service").default;
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { connectDB } = require("../build/src/shared/MongoConnection");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { printProgress } = require("../build/src/shared/helpers/CliHelper");
 
 module.exports = {

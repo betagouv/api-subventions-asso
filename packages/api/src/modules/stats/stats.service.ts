@@ -12,7 +12,7 @@ import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
-import { UserWithAssociationVistitsEntity } from "./entities/UserWithAssociationVisitsEntity";
+import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import statsRepository from "./repositories/stats.repository";
@@ -22,8 +22,40 @@ class StatsService {
         return statsRepository.countUsersByRequestNbOnPeriod(start, end, minReq, includesAdmin);
     }
 
-    getMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean) {
-        return statsRepository.countMedianRequestsOnPeriod(start, end, includesAdmin);
+    async getMedianVisitsOnPeriod(start: Date, end: Date) {
+        if (!start || !isValidDate(start) || !end || !isValidDate(end)) throw new BadRequestError("Invalid Date");
+
+        /* 
+        this does not calculate the "true" median, but is the historic computation
+        true median computation should include users with 0 requests
+        use `userAssociationVisitJoiner.findAssociationVisitsOnPeriodGroupedByUsers`
+        instead of statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod
+        if we need to have a more realistic median
+        */
+        const visitsGroupedByUser = await statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod(
+            start,
+            end,
+        );
+
+        const uniqueVisitsByUserDesc = (
+            await Promise.all(
+                visitsGroupedByUser.map(
+                    async userVisits =>
+                        (
+                            await this.keepOneUserVisitByAssociationAndDate(userVisits.associationVisits)
+                        ).length,
+                ),
+            )
+        ).sort((a, b) => b - a);
+
+        if (!uniqueVisitsByUserDesc.length) return 0;
+        const middle = Math.floor(uniqueVisitsByUserDesc.length / 2);
+
+        if (uniqueVisitsByUserDesc.length % 2 === 0) {
+            return (uniqueVisitsByUserDesc[middle - 1] + uniqueVisitsByUserDesc[middle]) / 2;
+        }
+
+        return uniqueVisitsByUserDesc[middle];
     }
 
     async getRequestsPerMonthByYear(year: number, includesAdmin: boolean) {
@@ -118,6 +150,25 @@ class StatsService {
         return [...sortedVisitsMap.values()];
     }
 
+    private async keepOneUserVisitByAssociationAndDate(visits: AssociationVisitEntity[]) {
+        if (!visits.length) return [];
+        const visitsByAssociations = await this.groupAssociationVisitsByAssociation(
+            visits.map(v => ({ _id: v.associationIdentifier, visits: [v] })),
+        );
+
+        const visitsMaps = visitsByAssociations
+            .map(visitsByAssociation => {
+                return visitsByAssociation.visits.reduce(
+                    (acc, visit) =>
+                        acc.set(`${visit.date.getFullYear()}-${visit.date.getMonth()}-${visit.date.getDate()}`, visit),
+                    new Map(),
+                );
+            })
+            .flat();
+
+        return [...visitsMaps.values()];
+    }
+
     async getTopAssociationsByPeriod(limit: number, start: Date, end: Date) {
         if (!start || !isValidDate(start) || !end || !isValidDate(end)) throw new BadRequestError("Invalid Date");
 
@@ -152,9 +203,10 @@ class StatsService {
         return statsAssociationsVisitRepository.add(visit);
     }
 
-    private reduceUsersToUsersByStatus(usersByStatus: UserCountByStatus, user: WithId<UserDbo>) {
+    private async reduceUsersToUsersByStatus(acc: Promise<UserCountByStatus>, user: WithId<UserDbo>) {
+        const usersByStatus = await acc;
         if (user.roles.includes(RoleEnum.admin)) usersByStatus.admin++;
-        else if (isUserActif(user)) usersByStatus.active++;
+        else if (await isUserActif(user)) usersByStatus.active++;
         else if (user.active) usersByStatus.idle++;
         else usersByStatus.inactive++;
         return usersByStatus;
@@ -162,25 +214,21 @@ class StatsService {
 
     async getUserCountByStatus() {
         const users = await userRepository.findAll();
-        return users.reduce(this.reduceUsersToUsersByStatus, {
-            admin: 0,
-            active: 0,
-            idle: 0,
-            inactive: 0,
-        });
+        return users.reduce(
+            this.reduceUsersToUsersByStatus,
+            Promise.resolve({
+                admin: 0,
+                active: 0,
+                idle: 0,
+                inactive: 0,
+            }),
+        );
     }
 
-    private async countUserAverageVisitsOnPeriod(user: UserWithAssociationVistitsEntity, start: Date, end: Date) {
+    private async countUserAverageVisitsOnPeriod(user: UserWithAssociationVisitsEntity, start: Date, end: Date) {
         const userStartDate = start.getTime() > user.signupAt.getTime() ? start : user.signupAt;
-        const visits = user.associationVisits.map(visit => ({
-            _id: visit.associationIdentifier,
-            visits: [visit],
-        }));
-        const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(visits);
-        const visitsAssociation = visitsGroupedByAssociation
-            .map(associationVisit => this.keepOneVisitByUserAndDate(associationVisit.visits))
-            .flat();
 
+        const visitsAssociation = await this.keepOneUserVisitByAssociationAndDate(user.associationVisits);
         const months = DateHelper.computeMonthBetweenDates(userStartDate, end);
 
         return visitsAssociation.length / months;
@@ -225,6 +273,10 @@ class StatsService {
         const logs = await statsRepository.getLogsWithRegexUrl(/extract-data$/).toArray();
         const emailSet = new Set(logs.map(log => log?.meta?.req?.user?.email).filter(email => !!email));
         return [...emailSet];
+    }
+
+    async getUserLastSearchDate(userId) {
+        return statsAssociationsVisitRepository.getLastSearchDate(userId);
     }
 }
 

@@ -1,4 +1,4 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
 import { NextFunction, Response, Request } from "express";
 import userService from "../modules/user/user.service";
 
@@ -6,8 +6,6 @@ export default async function StatsSearchMiddleware(req: Request, res: Response,
     if (!req.user) return next();
     const user = req.user as UserDto;
 
-    user.stats.searchCount++;
-    user.stats.lastSearchDate = new Date();
     await userService.update(user);
 
     next();

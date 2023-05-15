@@ -1,6 +1,13 @@
 // TODO: make this file available to API and FRONT ? => Create a core/shared package ? Put it in DTO package because PV is related to DTO ?
 
 export const flatenProviderValue = providerValueObject => {
+    if (isProviderValue(providerValueObject)) {
+        console.error(
+            "You are not suppose to call flatenProviderValue with ProviderValue. Only ProviderValues and object containing ProviderValues are allowed",
+        );
+        return getValue(providerValueObject);
+    }
+
     const reduceProviderValues = (acc, prop) => {
         return {
             ...acc,
@@ -17,6 +24,7 @@ export const flatenProviderValue = providerValueObject => {
         return providerValueObject.map(ob => flatenProviderValue(ob));
     }
 
+    // Else we got an object of provider value(s)
     const providerValueObjectProps = Object.keys(providerValueObject);
     return providerValueObjectProps.reduce(reduceProviderValues, {});
 };

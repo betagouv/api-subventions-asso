@@ -1,12 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { connectDB } = require("../build/src/shared/MongoConnection");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const {
-    default: osirisActionRepository
+    default: osirisActionRepository,
 } = require("../build/src/modules/providers/osiris/repositories/osiris.action.repository");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const {
-    default: osirisRequestRepository
+    default: osirisRequestRepository,
 } = require("../build/src/modules/providers/osiris/repositories/osiris.request.repository");
 
 module.exports = {
@@ -19,5 +16,5 @@ module.exports = {
 
     async down() {
         // No empty function
-    }
+    },
 };

@@ -1,7 +1,8 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
 import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User from "../entities/UserNotPersisted";
+import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import UserDbo from "./dbo/UserDbo";
 
 export enum UserRepositoryErrors {
@@ -23,18 +24,18 @@ export class UserRepository {
     async findByEmail(email: string) {
         const user = await this.collection.findOne({ email: email });
         if (!user) return null;
-        return this.removeSecrets(user);
+        return removeSecrets(user);
     }
 
     async find(query: Filter<User> = {}) {
         const dbos = await this.collection.find(query).toArray();
-        return dbos.map(dbo => this.removeSecrets(dbo));
+        return dbos.map(dbo => removeSecrets(dbo));
     }
 
     async findById(userId: ObjectId | string) {
         const user = await this.collection.findOne({ _id: new ObjectId(userId) });
         if (!user) return null;
-        return this.removeSecrets(user);
+        return removeSecrets(user);
     }
 
     async findByPeriod(begin: Date, end: Date, withAdmin) {
@@ -57,7 +58,7 @@ export class UserRepository {
     async create(user: User) {
         const userDbo = { ...user, _id: new ObjectId() };
         const result = await this.collection.insertOne(userDbo);
-        return this.removeSecrets({ ...user, _id: result.insertedId });
+        return removeSecrets({ ...user, _id: result.insertedId });
     }
 
     async getUserWithSecretsByEmail(email: string): Promise<UserDbo | null> {
@@ -66,14 +67,6 @@ export class UserRepository {
 
     async getUserWithSecretsById(id: ObjectId): Promise<UserDbo | null> {
         return this.collection.findOne({ _id: id });
-    }
-
-    removeSecrets(user: UserDbo): UserDto | null {
-        if (!user) return null;
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { hashPassword, jwt, ...userWithoutSecret } = user;
-        return userWithoutSecret;
     }
 
     countTotalUsersOnDate(date, withAdmin: boolean) {

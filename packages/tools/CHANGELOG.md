@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/betagouv/api-subventions-asso/compare/v0.27.0...v0.28.0) (2023-05-15)
+
+
+### Features
+
+* **tool:** manage error on osiris extraction ([6f49ac2](https://github.com/betagouv/api-subventions-asso/commit/6f49ac2f391ccd388ab8601e707ed10c5f5fb26a))
+* **tools:** add save current-posibilities ([e657f36](https://github.com/betagouv/api-subventions-asso/commit/e657f36c38ac09b4c2881e69b6cb5141e753b386))
+* **tools:** better error management ([59f9ed8](https://github.com/betagouv/api-subventions-asso/commit/59f9ed824beacecfda2eec9b990dc674926b86b3))
+
+
+
+
+
 # [0.27.0](https://github.com/betagouv/api-subventions-asso/compare/v0.26.2...v0.27.0) (2023-05-03)
 
 **Note:** Version bump only for package tools

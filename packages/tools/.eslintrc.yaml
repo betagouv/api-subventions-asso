@@ -1,8 +1,11 @@
 env:
   node: true
+  es6: true
+  browser: true
 parser: "@typescript-eslint/parser"
 plugins:
   - "import"
+  - "jquery"
 extends:
   - eslint:recommended
   - plugin:import/recommended
@@ -11,5 +14,9 @@ extends:
   - prettier
 ignorePatterns:
   - node_modules
+  - cleaned_modules
 rules:
   import/order: error
+  no-unused-vars:
+    - "warn"
+    -  destructuredArrayIgnorePattern: "^_"

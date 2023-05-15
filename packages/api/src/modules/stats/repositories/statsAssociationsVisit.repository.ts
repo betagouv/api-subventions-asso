@@ -20,6 +20,12 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
         await this.collection.createIndex({ userId: 1 });
     }
 
+    async getLastSearchDate(userId) {
+        const result = await this.collection.find({ userId }).sort({ date: -1 }).toArray();
+        if (!result.length) return null;
+        return result[0].date;
+    }
+
     findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
         return this.collection
             .aggregate([
@@ -39,6 +45,27 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
                 },
             ])
             .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
+    }
+
+    findGroupedByUserIdentifierOnPeriod(start: Date, end: Date) {
+        return this.collection
+            .aggregate([
+                {
+                    $match: {
+                        date: {
+                            $gte: start,
+                            $lte: end,
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$userId",
+                        associationVisits: { $addToSet: "$$ROOT" },
+                    },
+                },
+            ])
+            .toArray() as Promise<{ _id: AssociationIdentifiers; associationVisits: AssociationVisitEntity[] }[]>;
     }
 }
 

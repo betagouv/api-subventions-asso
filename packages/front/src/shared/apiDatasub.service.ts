@@ -6,6 +6,7 @@ import {
     SignupDtoResponse,
     EtablissementDtoResponse,
 } from "@api-subventions-asso/dto";
+// eslint-disable-next-line import/no-named-as-default -- cheat double import
 import UserDto, { UserWithJWTDto } from "@api-subventions-asso/dto/user/UserDto";
 import { DATASUB_URL } from "./config";
 

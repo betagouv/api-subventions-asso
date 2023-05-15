@@ -240,22 +240,19 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("dropCollection()", () => {
-        const mockDrop = jest.spyOn(fonjepSubventionRepository, "drop");
-        it("return true if drop() succeed", async () => {
-            mockDrop.mockImplementationOnce(async () => true);
-            const exepected = true;
-            const actual = await fonjepService.dropCollection();
-            expect(actual).toEqual(exepected);
-        });
-
-        it("return false if drop() throws", async () => {
-            mockDrop.mockImplementationOnce(() => {
-                throw new Error();
+    describe("Database Management", () => {
+        describe("applyTemporyCollection()", () => {
+            it("should call applyTemporyCollection() on versement and subvention collection", async () => {
+                const spySubventionApplyTemporyCollection = jest
+                    .spyOn(fonjepSubventionRepository, "applyTemporyCollection")
+                    .mockImplementation(jest.fn());
+                const spyVersementApplyTemporyCollection = jest
+                    .spyOn(fonjepVersementRepository, "applyTemporyCollection")
+                    .mockImplementation(jest.fn());
+                await fonjepService.applyTemporyCollection();
+                expect(spySubventionApplyTemporyCollection).toHaveBeenCalledTimes(1);
+                expect(spyVersementApplyTemporyCollection).toHaveBeenCalledTimes(1);
             });
-            const expected = false;
-            const actual = await fonjepService.dropCollection();
-            expect(actual).toEqual(expected);
         });
     });
 });

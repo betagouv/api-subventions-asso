@@ -42,7 +42,7 @@
         {#each $elementsDataViews as element}
             {#if !element}
                 <tr>
-                    <TableCell colspan="3" position="center">Information actuellement indisponible</TableCell>
+                    <TableCell colspan="3" position="center">Nous ne disposons pas de cette information.</TableCell>
                 </tr>
             {:else}
                 <tr

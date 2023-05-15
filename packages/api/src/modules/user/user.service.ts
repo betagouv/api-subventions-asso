@@ -1,4 +1,3 @@
-import UserDto, { UserWithResetTokenDto } from "@api-subventions-asso/dto/user/UserDto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
@@ -9,6 +8,9 @@ import {
     ResetPasswordErrorCodes,
     SignupErrorCodes,
     UserErrorCodes,
+    UserWithResetTokenDto,
+    UserDto,
+    UserWithStatsDto,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -23,6 +25,9 @@ import {
     NotFoundError,
     UnauthorizedError,
 } from "../../shared/errors/httpErrors";
+import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
+import { getMostRecentDate } from "../../shared/helpers/DateHelper";
+import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -88,7 +93,7 @@ export class UserService {
                     UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
                 );
         }
-        return userRepository.removeSecrets(user) as UserDto;
+        return removeSecrets(user) as UserDto;
     }
 
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
@@ -190,16 +195,10 @@ export class UserService {
             expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
-        const stats = {
-            searchCount: 0,
-            lastSearchDate: null,
-        };
-
         const user = new UserNotPersisted({
             ...partialUser,
             jwt: jwtParams,
             active: false,
-            stats,
         });
 
         const createdUser = await userRepository.create(user);
@@ -423,21 +422,33 @@ export class UserService {
         return user.roles;
     }
 
-    public async listUsers(): Promise<{ users: UserWithResetTokenDto[] }> {
-        const users = (await userRepository.find()).filter(user => user) as UserDto[];
-        return {
-            users: await Promise.all(
-                users.map(async user => {
-                    const reset = await userResetRepository.findByUserId(user._id);
-                    return {
-                        ...user,
-                        _id: user._id.toString(),
-                        resetToken: reset?.token,
-                        resetTokenDate: reset?.createdAt,
-                    } as UserWithResetTokenDto;
-                }),
-            ),
-        };
+    public async getUsersWithStats(): Promise<UserWithStatsDto[]> {
+        const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits();
+        const userWithStats = usersWithAssociationVisits.map(user => {
+            const stats = {
+                lastSearchDate: getMostRecentDate(user.associationVisits.map(visit => visit.date)),
+                searchCount: user.associationVisits.length,
+            };
+            // remove associationVisits
+            const { associationVisits: _associationVisits, ...userDbo } = user;
+            return { ...userDbo, stats } as UserWithStatsDto;
+        });
+
+        return userWithStats;
+    }
+
+    public async listUsers(): Promise<UserWithResetTokenDto[]> {
+        const users = await this.getUsersWithStats();
+        return await Promise.all(
+            users.map(async user => {
+                const reset = await userResetRepository.findByUserId(user._id);
+                return {
+                    ...user,
+                    resetToken: reset?.token,
+                    resetTokenDate: reset?.createdAt,
+                };
+            }),
+        );
     }
 
     public isRoleValid(role: RoleEnum) {

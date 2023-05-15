@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/betagouv/datasubvention/compare/v0.27.0...v0.28.0) (2023-05-15)
+
+
+### Bug Fixes
+
+* **front:** bodacc when no data ([a3a31b0](https://github.com/betagouv/datasubvention/commit/a3a31b051cdf06120574353368e52731b5adf8d8))
+
+
+### Features
+
+* **api:** rename publication to publicationFile ([47ed5a7](https://github.com/betagouv/datasubvention/commit/47ed5a737eee7098ac9f076dcc80beab5bc2a44e))
+* **api:** use controller in Announcement view ([8750199](https://github.com/betagouv/datasubvention/commit/875019923f265fd6ca5f897469444e0592a70107))
+* **front:** add bodacc tab ([71550aa](https://github.com/betagouv/datasubvention/commit/71550aaeac79b7b073234075dc35be3a2fa209c9))
+* **front:** add console.error in flatenProviderValue ([5e6268b](https://github.com/betagouv/datasubvention/commit/5e6268b57439a5957734305febeacb973f5f6760))
+* **front:** add tests ([5e4f50d](https://github.com/betagouv/datasubvention/commit/5e4f50ddbe0e8d1367dc34a33392057f9f6a02db))
+* **front:** apply fr-text--bold to <b> tag ([17511fe](https://github.com/betagouv/datasubvention/commit/17511fef381b74f6707271e8a89d7f84a84bc846))
+* **front:** fix judgment getter test ([1083f77](https://github.com/betagouv/datasubvention/commit/1083f77b59a171afff9b4763767dd68c242deeec))
+* **front:** move announcement id split in method and add comment ([bea678a](https://github.com/betagouv/datasubvention/commit/bea678a7ea8fcf643c6d33b89a0f0040d11b9e88))
+* **front:** rename test ([5083aa7](https://github.com/betagouv/datasubvention/commit/5083aa769880b7c956f70c8c917f6710eccd3dad))
+* **front:** update callout comment on titleSize ([981667a](https://github.com/betagouv/datasubvention/commit/981667a8253abb4ca67c6e289a1337d5aacc980f))
+* **front:** use svelte:element in Callout ([f21e4ff](https://github.com/betagouv/datasubvention/commit/f21e4ffbdf4f3beb180f01c95ce37e4236bf673e))
+* **front:** wording ([2cb31e8](https://github.com/betagouv/datasubvention/commit/2cb31e8f6a92eff81f5550e1ac6a65924b516f9a))
+
+
+
+
+
 # [0.27.0](https://github.com/betagouv/datasubvention/compare/v0.26.2...v0.27.0) (2023-05-03)
 
 

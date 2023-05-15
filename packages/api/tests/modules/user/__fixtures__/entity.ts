@@ -13,10 +13,6 @@ export default [
         },
         roles: ["user"],
         signupAt: new Date("2021-11-15T09:58:30.525Z"),
-        stats: {
-            searchCount: 43,
-            lastSearchDate: new Date("2022-12-01T09:26:09.500Z"),
-        },
     },
     {
         _id: new ObjectId("618cc12530ac8003a603ad47"),

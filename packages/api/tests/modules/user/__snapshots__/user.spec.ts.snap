@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UserController, /user GET /admin/list-users should return UserRequestsSuccessResponse 1`] = `
+Object {
+  "users": Array [
+    Object {
+      "_id": Any<String>,
+      "active": true,
+      "email": "active.user@beta.gouv.fr",
+      "roles": Array [
+        "user",
+      ],
+      "signupAt": Any<String>,
+      "stats": Object {
+        "lastSearchDate": Any<String>,
+        "searchCount": 3,
+      },
+    },
+  ],
+}
+`;
+
 exports[`UserController, /user POST /admin/roles should reject because role not exist 1`] = `
 Object {
   "details": Object {

@@ -1,8 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { connectDB } = require("../build/src/shared/MongoConnection");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ACCEPTED_EMAIL_DOMAINS } = require("../build/src/configurations/auth.conf");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { CONFIGURATION_NAMES } = require("../build/src/modules/configurations/configurations.service.js");
 
 module.exports = {

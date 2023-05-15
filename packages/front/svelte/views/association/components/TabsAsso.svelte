@@ -4,6 +4,7 @@
     import Documents from "../../../components/Documents/Documents.svelte";
     import SubventionsVersementsDashboard from "../../../components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
     import Etablissements from "./Etablissements.svelte";
+    import Bodacc from "./Bodacc/Bodacc.svelte";
     // import Stats from "./Stats/Stats.svelte";
 
     export let titles;
@@ -21,8 +22,10 @@
                     <Stats /> -->
                 {:else if index === 1}
                     <Documents resource={association} />
-                {:else}
+                {:else if index === 2}
                     <Etablissements {associationIdentifier} {association} />
+                {:else}
+                    <Bodacc bodacc={association.bodacc} />
                 {/if}
             </TabContent>
         {/each}
