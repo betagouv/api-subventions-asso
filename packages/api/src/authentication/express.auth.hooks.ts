@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
 import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";

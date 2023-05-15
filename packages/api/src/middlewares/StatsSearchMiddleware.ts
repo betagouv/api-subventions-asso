@@ -1,4 +1,4 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
 import { NextFunction, Response, Request } from "express";
 import userService from "../modules/user/user.service";
 

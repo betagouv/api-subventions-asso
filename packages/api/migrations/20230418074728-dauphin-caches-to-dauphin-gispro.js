@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const {
     default: dauphinGisproRepository,
 } = require("../build/src/modules/providers/dauphin/repositories/dauphin-gispro.repository");

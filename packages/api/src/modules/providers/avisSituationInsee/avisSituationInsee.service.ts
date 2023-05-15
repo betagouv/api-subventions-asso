@@ -2,9 +2,7 @@ import axios from "axios";
 import { Siren, Siret, Rna } from "@api-subventions-asso/dto";
 
 import { Document } from "@api-subventions-asso/dto/search/Document";
-import * as IdentifierHelper from "../../../shared/helpers/IdentifierHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { StructureIdentifiers } from "../../../@types";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";

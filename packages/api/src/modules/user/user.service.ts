@@ -430,7 +430,7 @@ export class UserService {
                 searchCount: user.associationVisits.length,
             };
             // remove associationVisits
-            const { associationVisits, ...userDbo } = user;
+            const { associationVisits: _associationVisits, ...userDbo } = user;
             return { ...userDbo, stats } as UserWithStatsDto;
         });
 

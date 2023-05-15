@@ -1,4 +1,4 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
 import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User from "../entities/UserNotPersisted";

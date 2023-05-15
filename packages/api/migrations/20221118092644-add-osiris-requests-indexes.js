@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
 module.exports = {

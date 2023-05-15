@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
 
 export default interface UserDbo {
     _id: ObjectId;

@@ -29,7 +29,7 @@
         "lint-format": "lint-staged"
     },
     "lint-staged": {
-        "./**/*.{ts}": [
+        "./**/*.ts": [
             "npx prettier --write --loglevel warn",
             "npx eslint --fix --quiet"
         ]

@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const iconv = require("iconv-lite");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
 module.exports = {

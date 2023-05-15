@@ -1,5 +1,6 @@
 <script>
     import { getContext } from "svelte";
+
     const { getDescription, getRepo } = getContext("app");
 </script>
 
@@ -27,20 +28,38 @@
                 </p>
                 <ul class="fr-footer__content-list">
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">
+                        <a
+                            class="fr-footer__content-link"
+                            target="_blank"
+                            href="https://legifrance.gouv.fr"
+                            rel="noreferrer">
                             legifrance.gouv.fr
                         </a>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" target="_blank" href="https://www.numerique.gouv.fr/">
+                        <a
+                            class="fr-footer__content-link"
+                            target="_blank"
+                            href="https://www.numerique.gouv.fr/"
+                            rel="noreferrer">
                             numerique.gouv.fr
                         </a>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" target="_blank" href="https://beta.gouv.fr/">beta.gouv.fr</a>
+                        <a
+                            class="fr-footer__content-link"
+                            target="_blank"
+                            href="https://beta.gouv.fr/"
+                            rel="noreferrer">
+                            beta.gouv.fr
+                        </a>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a class="fr-footer__content-link" target="_blank" href="https://www.gouvernement.fr/">
+                        <a
+                            class="fr-footer__content-link"
+                            target="_blank"
+                            href="https://www.gouvernement.fr/"
+                            rel="noreferrer">
                             gouvernement.fr
                         </a>
                     </li>
