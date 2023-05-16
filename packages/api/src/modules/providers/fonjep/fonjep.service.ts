@@ -1,14 +1,17 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep, Rna } from "@api-subventions-asso/dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
+import GrantProvider from "../../grant/@types/GrantProvider";
+import { RawGrant } from "../../grant/@types/rawGrant";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import fonjepJoiner from "./joiners/fonjepJoiner";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1,
@@ -26,7 +29,10 @@ export class FonjepRejectedRequest extends Error {
 }
 
 export type CreateFonjepResponse = FonjepRejectedRequest | true;
-export class FonjepService implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider {
+
+export class FonjepService
+    implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider, GrantProvider
+{
     provider = {
         name: "Extranet FONJEP",
         type: ProviderEnum.raw,
@@ -192,6 +198,36 @@ export class FonjepService implements DemandesSubventionsProvider, Etablissement
 
     async getVersementsBySiren(siren: Siren) {
         return this.toVersementArray(await fonjepVersementRepository.findBySiren(siren));
+    }
+
+    /**
+     * |----------------------------|
+     * |  Grant Part                |
+     * |----------------------------|
+     */
+
+    isGrantProvider = true;
+
+    getRawGrantsByRna(_rna: Rna): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
+    }
+
+    async getRawGrantsBySiren(siren: Siren): Promise<RawGrant[] | null> {
+        return (await fonjepJoiner.getFullFonjepGrantsBySiren(siren)).map(grant => ({
+            provider: "fonjep", // TODO nomenclature
+            type: "fullGrant",
+            data: grant,
+            joinKey: grant.indexedInformations.code_poste,
+        }));
+    }
+
+    async getRawGrantsBySiret(siret: Siret): Promise<RawGrant[] | null> {
+        return (await fonjepJoiner.getFullFonjepGrantsBySiret(siret)).map(grant => ({
+            provider: "fonjep", // TODO nomenclature
+            type: "fullGrant",
+            data: grant,
+            joinKey: grant.indexedInformations.code_poste,
+        }));
     }
 
     /**

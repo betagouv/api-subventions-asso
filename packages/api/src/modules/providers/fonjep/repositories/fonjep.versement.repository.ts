@@ -5,6 +5,10 @@ import { FonjepCoreRepository } from "./fonjep.core.repository";
 export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersementEntity> {
     readonly collectionName = "fonjepVersement";
 
+    readonly joinIndexes = {
+        fonjepSubvention: "indexedInformations.code_poste",
+    };
+
     async createIndexes() {
         super.createIndexes();
         await this.collection.createIndex({ "indexedInformations.code_poste": 1 });
