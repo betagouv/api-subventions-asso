@@ -5,7 +5,7 @@ export default class DemarchesSimplifieesDtoAdapter {
     static toEntities(dto: DemarchesSimplifieesDto, formId: number): DemarchesSimplifieesDataEntity[] {
         return dto.data.demarche.dossiers.nodes
             .map(dossier => {
-                if (!dossier.demandeur.siret) return null;
+                if (!dossier?.demandeur?.siret) return null;
                 return {
                     demarcheId: formId,
                     siret: dossier.demandeur.siret,
