@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.28.2](https://github.com/betagouv/api-subventions-asso/compare/v0.28.1...v0.28.2) (2023-05-17)
+
+
+### Bug Fixes
+
+* **api:** 1334 use current budget in dauphin adapter ([dd2249d](https://github.com/betagouv/api-subventions-asso/commit/dd2249d1b164508c364dd574dc6bb09e3556ca4f))
+
+
+
+
+
 ## [0.28.1](https://github.com/betagouv/api-subventions-asso/compare/v0.28.0...v0.28.1) (2023-05-16)
 
 
