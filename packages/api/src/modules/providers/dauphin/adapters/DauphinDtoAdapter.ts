@@ -95,12 +95,9 @@ export default class DauphinDtoAdapter {
 
     private static getMontantAccorde(demande: DauphinSubventionDto) {
         return demande.planFinancement
-            .map(pf =>
-                pf.recette?.postes?.map(p =>
-                    p?.sousPostes?.map(s => s?.lignes?.map(l => l.financement?.montantVote?.ht)),
-                ),
-            )
-            .flat(3)
+            .find(pf => pf.current)
+            ?.recette?.postes?.map(p => p?.sousPostes?.map(s => s?.lignes?.map(l => l.financement?.montantVote?.ht)))
+            .flat(2)
             .filter(a => a)[0];
     }
 }
