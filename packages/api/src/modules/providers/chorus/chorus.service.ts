@@ -69,7 +69,7 @@ export class ChorusService implements VersementsProvider {
             return false;
         });
 
-        await chorusLineRepository.insertMany(acceptedEntities, dropedDb);
+        if (acceptedEntities.length) await chorusLineRepository.insertMany(acceptedEntities, dropedDb);
 
         return {
             rejected: entities.length - acceptedEntities.length,
