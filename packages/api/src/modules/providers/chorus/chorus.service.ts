@@ -25,6 +25,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
         type: ProviderEnum.raw,
         description:
             "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
+        id: "chorus",
     };
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
@@ -172,7 +173,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await chorusLineRepository.findBySiret(siret)).map(grant => ({
-            provider: "chorus", // TODO nomenclature
+            provider: this.provider.id,
             type: "payment",
             data: grant,
             joinKey: grant.indexedInformations.ej,
@@ -180,7 +181,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
     }
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await chorusLineRepository.findBySiren(siren)).map(grant => ({
-            provider: "chorus", // TODO nomenclature
+            provider: this.provider.id,
             type: "payment",
             data: grant,
             joinKey: grant.indexedInformations.ej,

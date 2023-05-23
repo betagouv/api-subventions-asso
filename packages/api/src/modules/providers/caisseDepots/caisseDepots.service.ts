@@ -14,6 +14,7 @@ export class CaisseDepotsService implements DemandesSubventionsProvider, GrantPr
         type: ProviderEnum.api,
         description:
             "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention.",
+        id: "caisseDepots",
     };
     isDemandesSubventionsProvider = true;
     isGrantProvider = true;
@@ -60,14 +61,14 @@ export class CaisseDepotsService implements DemandesSubventionsProvider, GrantPr
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(siret)).map(grant => ({
-            provider: "caissedépots", // TODO nomenclature
+            provider: this.provider.id,
             type: "fullGrant",
             data: grant,
         }));
     }
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(`${siren}*`)).map(grant => ({
-            provider: "caissedépots", // TODO nomenclature
+            provider: this.provider.id,
             type: "fullGrant",
             data: grant,
         }));

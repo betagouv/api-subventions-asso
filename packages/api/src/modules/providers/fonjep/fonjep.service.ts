@@ -38,6 +38,7 @@ export class FonjepService
         type: ProviderEnum.raw,
         description:
             "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
+        id: "fonjep",
     };
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
@@ -214,7 +215,7 @@ export class FonjepService
 
     async getRawGrantsBySiren(siren: Siren): Promise<RawGrant[] | null> {
         return (await fonjepJoiner.getFullFonjepGrantsBySiren(siren)).map(grant => ({
-            provider: "fonjep", // TODO nomenclature
+            provider: this.provider.id,
             type: "fullGrant",
             data: grant,
             joinKey: grant.indexedInformations.code_poste,
@@ -223,7 +224,7 @@ export class FonjepService
 
     async getRawGrantsBySiret(siret: Siret): Promise<RawGrant[] | null> {
         return (await fonjepJoiner.getFullFonjepGrantsBySiret(siret)).map(grant => ({
-            provider: "fonjep", // TODO nomenclature
+            provider: this.provider.id,
             type: "fullGrant",
             data: grant,
             joinKey: grant.indexedInformations.code_poste,

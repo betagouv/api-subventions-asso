@@ -38,6 +38,7 @@ export class OsirisService
         type: ProviderEnum.raw,
         description:
             "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
+        id: "osiris",
     };
 
     constructor() {
@@ -358,7 +359,7 @@ export class OsirisService
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await this.findBySiret(siret)).map(grant => ({
-            provider: "osiris", // TODO nomenclature
+            provider: this.provider.id,
             type: "application",
             data: grant,
             joinKey: grant?.providerInformations?.ej,
@@ -366,7 +367,7 @@ export class OsirisService
     }
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await this.findBySiren(siren)).map(grant => ({
-            provider: "osiris", // TODO nomenclature
+            provider: this.provider.id,
             type: "application",
             data: grant,
             joinKey: grant?.providerInformations?.ej,

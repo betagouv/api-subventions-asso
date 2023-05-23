@@ -25,6 +25,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
         type: ProviderEnum.api,
         description:
             "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
+        id: "dauphin",
     };
 
     /**
@@ -62,7 +63,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await dauphinGisproRepository.findBySiret(siret)).map(grant => ({
-            provider: "dauphin", // TODO nomenclature
+            provider: this.provider.id,
             type: "application",
             data: grant,
             joinKey: grant.gispro?.ej,
@@ -70,7 +71,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
     }
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await dauphinGisproRepository.findBySiren(siren)).map(grant => ({
-            provider: "dauphin", // TODO nomenclature
+            provider: this.provider.id,
             type: "application",
             data: grant,
             joinKey: grant.gispro?.ej,
