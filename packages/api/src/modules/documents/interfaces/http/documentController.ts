@@ -10,10 +10,10 @@ export class DocumentController extends Controller {
      * Télécharge un document dauphin
      * @param encodedDocPath dauphin internal doc Id
      */
-    @Get("dauphin/{encodedDocPath}")
+    @Get("/dauphin/{encodedDocPath}")
     @Response<HttpErrorInterface>("404")
     // tsoa workaround https://github.com/lukeautry/tsoa/issues/340#issuecomment-518229063
-    public async getDauphinDocument(encodedDocPath): Promise<unknown> {
+    public async getDauphinDocumentStream(encodedDocPath): Promise<unknown> {
         const stream = await documentService.getDauphinDocumentStream(decodeURIComponent(encodedDocPath));
         this.setHeader("Content-Type", stream.headers["content-type"] || "application/octet-stream");
         this.setHeader("Content-Disposition", "inline");

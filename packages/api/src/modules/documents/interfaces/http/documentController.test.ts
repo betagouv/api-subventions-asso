@@ -19,25 +19,25 @@ describe("DocumentController", () => {
 
     describe("getDauphinDocument", () => {
         it("calls document service", async () => {
-            await documentController.getDauphinDocument(ENCODED_PATH);
+            await documentController.getDauphinDocumentStream(ENCODED_PATH);
             expect(documentServiceMock).toHaveBeenCalledWith(DECODED_PATH);
         });
 
         it("sets headers", async () => {
-            await documentController.getDauphinDocument(ENCODED_PATH);
+            await documentController.getDauphinDocumentStream(ENCODED_PATH);
             expect(setHeaderMock).toHaveBeenCalledTimes(2);
             setHeaderMock.mockReset();
         });
 
         it("sets default header if none from stream", async () => {
             documentServiceMock.mockResolvedValueOnce({ headers: {} });
-            await documentController.getDauphinDocument(ENCODED_PATH);
+            await documentController.getDauphinDocumentStream(ENCODED_PATH);
             expect(setHeaderMock).toHaveBeenCalledTimes(2);
         });
 
         it("returns stream from document service", async () => {
             const expected = STREAM;
-            const actual = await documentController.getDauphinDocument(ENCODED_PATH);
+            const actual = await documentController.getDauphinDocumentStream(ENCODED_PATH);
             expect(actual).toEqual(expected);
         });
     });
