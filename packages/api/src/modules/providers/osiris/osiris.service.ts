@@ -14,6 +14,8 @@ import associationNameService from "../../association-name/associationName.servi
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
+import { RawGrant } from "../../grant/@types/rawGrant";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
@@ -28,7 +30,9 @@ export const VALID_REQUEST_ERROR_CODE = {
     INVALID_OSIRISID: 5,
 };
 
-export class OsirisService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
+export class OsirisService
+    implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider, GrantProvider
+{
     provider = {
         name: "OSIRIS",
         type: ProviderEnum.raw,
@@ -342,6 +346,34 @@ export class OsirisService implements ProviderRequestInterface, AssociationsProv
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
         return null;
+    }
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        return (await this.findBySiret(siret)).map(grant => ({
+            provider: "osiris", // TODO nomenclature
+            type: "application",
+            data: grant,
+            joinKey: grant?.providerInformations?.ej,
+        }));
+    }
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        return (await this.findBySiren(siren)).map(grant => ({
+            provider: "osiris", // TODO nomenclature
+            type: "application",
+            data: grant,
+            joinKey: grant?.providerInformations?.ej,
+        }));
+    }
+    getRawGrantsByRna(): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
     }
 }
 
