@@ -14,7 +14,55 @@ Object {
 }
 `;
 
-exports[`Dauphin Service getSpecificDocumentStream should call axios with args 1`] = `
+exports[`Dauphin Service documents findInternalId should call axios with args 1`] = `
+Array [
+  "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
+  Object {
+    "facets": Object {
+      "famille": Array [
+        "Association",
+      ],
+      "status": Array [
+        "SUPPORTED",
+      ],
+    },
+    "from": 0,
+    "query": "123456789",
+    "size": 1,
+    "type": "tiers",
+  },
+  Object {
+    "headers": Object {
+      "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
+      "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+      "authorization": "Bearer FAKE_TOKEN",
+      "content-type": "application/json;charset=UTF-8",
+      "mg-authentication": "true",
+    },
+  },
+]
+`;
+
+exports[`Dauphin Service documents getDocumentsBySiren should call axios with args 1`] = `
+Array [
+  "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/41fPMDsxf8?expand=pieces.documents",
+  Object {
+    "headers": Object {
+      "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
+      "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+      "authorization": "Bearer FAKE_TOKEN",
+      "content-type": "application/json;charset=UTF-8",
+      "mg-authentication": "true",
+    },
+  },
+]
+`;
+
+exports[`Dauphin Service documents getSpecificDocumentStream should call axios with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.frPATH",
   Object {

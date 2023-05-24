@@ -4,6 +4,9 @@ import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 import SpyInstance = jest.SpyInstance;
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import { Siret, Siren } from "@api-subventions-asso/dto";
+import * as sirenHelper from "../../../shared/helpers/SirenHelper";
 
 jest.mock("axios", () => ({
     post: jest.fn(),
@@ -19,7 +22,8 @@ jest.mock("./repositories/dauphin-gispro.repository", () => ({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const SIRET = "12345678912345";
+const SIRET: Siret = "12345678912345";
+const SIREN: Siren = "123456789";
 
 jest.mock("./../../../configurations/apis.conf", () => ({
     DAUPHIN_USERNAME: "DAUPHIN_USERNAME",
@@ -31,7 +35,7 @@ describe("Dauphin Service", () => {
 
     const DATA = [{ a: true }, { b: true }];
 
-    beforeEach(() => {
+    beforeAll(() => {
         mockedAxios.post.mockImplementation(async (url, search, headers) => ({
             data: {
                 hits: {
@@ -294,49 +298,195 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("getSpecificDocumentStream", () => {
+    describe("documents", () => {
+        const DOC = "";
         let mockGetAuthToken: SpyInstance;
-        const DOC_PATH = "PATH";
-        const AXIOS_RES = "RES";
 
         beforeAll(() => {
             // @ts-expect-error: mock
             mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken").mockImplementation(async () => TOKEN);
-            // @ts-expect-errors mocked
-            axios.get.mockResolvedValue({ data: AXIOS_RES });
+        });
+        afterAll(() => mockGetAuthToken.mockRestore());
+
+        describe("getSpecificDocumentStream", () => {
+            const DOC_PATH = "PATH";
+            const AXIOS_RES = "RES";
+
+            beforeAll(() => {
+                // @ts-expect-errors mocked
+                axios.get.mockResolvedValue({ data: AXIOS_RES });
+            });
+
+            it("should call getAuthToken", async () => {
+                await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+            });
+
+            it("should call axios with args", async () => {
+                await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                // @ts-expect-error: mock
+                expect(axios.get.mock.calls[0]).toMatchSnapshot();
+            });
+
+            it("should return stream from axios", async () => {
+                const expected = AXIOS_RES;
+                const actual = await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                expect(actual).toEqual(expected);
+            });
         });
 
-        it("should call getAuthToken", async () => {
-            await dauphinService.getSpecificDocumentStream(DOC_PATH);
-            expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+        describe("getDocumentsByRna", () => {
+            const RNA = "RNA";
+            let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
+
+            beforeAll(() => {
+                getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
+                // @ts-expect-error: mock
+                getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
+            });
+            afterAll(() => {
+                getSirenMock.mockRestore();
+                getBySirenMock.mockRestore();
+            });
+
+            it("gets siren", async () => {
+                await dauphinService.getDocumentsByRna(RNA);
+                expect(getSirenMock).toHaveBeenCalled();
+            });
+
+            it("does not get documents if no siren", async () => {
+                getSirenMock.mockResolvedValueOnce(null);
+                await dauphinService.getDocumentsByRna(RNA);
+                expect(getBySirenMock).not.toHaveBeenCalled();
+            });
+
+            it("gets documents with siren", async () => {
+                await dauphinService.getDocumentsByRna(RNA);
+                expect(getBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns document from siren method", async () => {
+                const expected = DOC;
+                const actual = await dauphinService.getDocumentsByRna(RNA);
+                expect(actual).toBe(expected);
+            });
         });
 
-        it("should call axios with args", async () => {
-            await dauphinService.getSpecificDocumentStream(DOC_PATH);
-            // @ts-expect-error: mock
-            expect(axios.get.mock.calls[0]).toMatchSnapshot();
+        describe("getDocumentsBySiren", () => {
+            let findIdMock: SpyInstance, documentAdapterMock: SpyInstance;
+            const RAW_DOCS = ["axios"];
+            const ADAPTED_DOCS = ["doc"];
+            const AXIOS_RES = { pieces: RAW_DOCS };
+            const ID = "DAUPHIN_ID";
+
+            beforeAll(() => {
+                console.log("a");
+                // @ts-expect-error: mock
+                findIdMock = jest.spyOn(dauphinService, "findInternalId").mockResolvedValue(ID);
+                // @ts-expect-errors mocked
+                axios.get.mockResolvedValue({ data: AXIOS_RES });
+                // @ts-expect-error: mock
+                documentAdapterMock = jest.spyOn(DauphinDtoAdapter, "toDocuments").mockResolvedValue(ADAPTED_DOCS);
+            });
+
+            afterAll(() => {
+                // @ts-expect-errors mocked
+                axios.get.mockRestore();
+                findIdMock.mockRestore();
+            });
+
+            it("gets internal id", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(findIdMock).toHaveBeenCalled();
+            });
+
+            it("does not call axios if no internal id", async () => {
+                findIdMock.mockResolvedValueOnce(null);
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(axios.get).not.toHaveBeenCalled();
+            });
+
+            it("should call getAuthToken", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+            });
+
+            it("should call axios with args", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                // @ts-expect-error: mock
+                expect(axios.get.mock.calls[0]).toMatchSnapshot();
+            });
+
+            it("should adapt result from axios", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(documentAdapterMock).toHaveBeenCalledWith(RAW_DOCS);
+            });
+
+            it("returns documents from axios", async () => {
+                const expected = ADAPTED_DOCS;
+                const actual = await dauphinService.getDocumentsBySiren(SIREN);
+                expect(actual).toEqual(expected);
+            });
         });
 
-        it("should return stream from axios", async () => {
-            const expected = AXIOS_RES;
-            const actual = await dauphinService.getSpecificDocumentStream(DOC_PATH);
-            expect(actual).toEqual(expected);
+        describe("getDocumentsBySiret", () => {
+            let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
+
+            beforeAll(() => {
+                getSirenMock = jest.spyOn(sirenHelper, "siretToSiren").mockReturnValue(SIREN);
+                // @ts-expect-error: mock
+                getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
+            });
+            afterAll(() => {
+                getSirenMock.mockRestore();
+                getBySirenMock.mockRestore();
+            });
+
+            it("gets siren", async () => {
+                await dauphinService.getDocumentsBySiret(SIRET);
+                expect(getSirenMock).toHaveBeenCalled();
+            });
+
+            it("gets documents with siren", async () => {
+                await dauphinService.getDocumentsBySiret(SIRET);
+                expect(getBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns document from siren method", async () => {
+                const expected = DOC;
+                const actual = await dauphinService.getDocumentsBySiret(SIRET);
+                expect(actual).toBe(expected);
+            });
         });
-    });
 
-    describe("getDocumentsByRna", () => {
-        // TODO
-    });
+        describe("findInternalId", () => {
+            const ID = "DAUPHIN_ID";
+            const AXIOS_RES = { hits: { hits: [{ _source: { id: ID } }] } };
 
-    describe("getDocumentsBySiren", () => {
-        // TODO
-    });
+            beforeAll(() => {
+                // @ts-expect-errors mocked
+                axios.post.mockResolvedValue({ data: AXIOS_RES });
+            });
 
-    describe("getDocumentsBySiret", () => {
-        // TODO
-    });
+            it("should call getAuthToken", async () => {
+                // @ts-expect-errors test private method
+                await dauphinService.findInternalId(SIREN);
+                expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+            });
 
-    describe("getInternalId", () => {
-        // TODO
+            it("should call axios with args", async () => {
+                // @ts-expect-errors test private method
+                await dauphinService.findInternalId(SIREN);
+                // @ts-expect-error: mock
+                expect(axios.post.mock.calls[0]).toMatchSnapshot();
+            });
+
+            it("returns documents from axios", async () => {
+                const expected = ID;
+                // @ts-expect-errors test private method
+                const actual = await dauphinService.findInternalId(SIREN);
+                expect(actual).toBe(expected);
+            });
+        });
     });
 });
