@@ -69,6 +69,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
             joinKey: grant.gispro?.ej,
         }));
     }
+
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await dauphinGisproRepository.findBySiren(siren)).map(grant => ({
             provider: this.provider.id,
