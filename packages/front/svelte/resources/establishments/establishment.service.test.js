@@ -1,5 +1,5 @@
-import establishmentService from "./establishment.service";
 import establishmentPort from "./establishment.port";
+import establishmentService from "./establishment.service";
 jest.mock("./establishment.port");
 
 describe("establishmentService", () => {
