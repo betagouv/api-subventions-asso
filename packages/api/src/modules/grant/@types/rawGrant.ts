@@ -7,7 +7,7 @@ export type RawGrant = {
 };
 
 export type JoinedRawGrant = {
-    fullGrant?: RawGrant;
+    fullGrants?: RawGrant[];
     payments?: RawGrant[];
-    application?: RawGrant;
+    applications?: RawGrant[];
 };

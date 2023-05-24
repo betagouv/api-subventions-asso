@@ -51,29 +51,22 @@ export class GrantService {
     }
 
     private joinGrants(rawGrants: RawGrant[]): JoinedRawGrant[] {
-        type JoiningGrant = { payments: RawGrant[]; applications: RawGrant[] };
-        const newJoiningGrant = () => ({ payments: [], applications: [] } as JoiningGrant);
-        const fullOrLonely: JoinedRawGrant[] = [];
-        const byKey: Record<string, JoiningGrant> = {};
+        const newJoiningGrant = () => ({ payments: [], applications: [], fullGrants: [] } as JoinedRawGrant);
+        const lonelyGrants: JoinedRawGrant[] = [];
+        const byKey: Record<string, JoinedRawGrant> = {};
 
         // organize results
         for (const rawGrant of rawGrants) {
-            if (rawGrant.type === "fullGrant" || !rawGrant.joinKey) {
-                fullOrLonely.push({ [rawGrant.type]: rawGrant });
+            if (!rawGrant.joinKey) {
+                lonelyGrants.push({ [`${rawGrant.type}s`]: [rawGrant] });
                 continue;
             }
             if (!(rawGrant.joinKey in byKey)) byKey[rawGrant.joinKey] = newJoiningGrant();
-            byKey[rawGrant.joinKey][`${rawGrant.type}s`].push(rawGrant);
+            byKey[rawGrant.joinKey][`${rawGrant.type}s`]?.push(rawGrant);
         }
 
-        // choose application TODO better than arbitrary application choice
-        const joined: JoinedRawGrant[] = Object.values(byKey).map(({ applications, payments }) => ({
-            payments,
-            application: applications?.[0],
-        }));
-
         // reunite joined, full and lonely grants
-        return [...joined, ...fullOrLonely];
+        return [...Object.values(byKey), ...lonelyGrants];
     }
 }
 
