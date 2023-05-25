@@ -382,7 +382,7 @@ describe("Dauphin Service", () => {
             beforeAll(() => {
                 console.log("a");
                 // @ts-expect-error: mock
-                findIdMock = jest.spyOn(dauphinService, "findInternalId").mockResolvedValue(ID);
+                findIdMock = jest.spyOn(dauphinService, "findDauphinInternalId").mockResolvedValue(ID);
                 // @ts-expect-errors mocked
                 axios.get.mockResolvedValue({ data: AXIOS_RES });
                 // @ts-expect-error: mock
@@ -459,7 +459,7 @@ describe("Dauphin Service", () => {
             });
         });
 
-        describe("findInternalId", () => {
+        describe("findDauphinInternalId", () => {
             const ID = "DAUPHIN_ID";
             const AXIOS_RES = { hits: { hits: [{ _source: { id: ID } }] } };
 
@@ -470,13 +470,13 @@ describe("Dauphin Service", () => {
 
             it("should call getAuthToken", async () => {
                 // @ts-expect-errors test private method
-                await dauphinService.findInternalId(SIREN);
+                await dauphinService.findDauphinInternalId(SIREN);
                 expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
             });
 
             it("should call axios with args", async () => {
                 // @ts-expect-errors test private method
-                await dauphinService.findInternalId(SIREN);
+                await dauphinService.findDauphinInternalId(SIREN);
                 // @ts-expect-error: mock
                 expect(axios.post.mock.calls[0]).toMatchSnapshot();
             });
@@ -484,7 +484,7 @@ describe("Dauphin Service", () => {
             it("returns documents from axios", async () => {
                 const expected = ID;
                 // @ts-expect-errors test private method
-                const actual = await dauphinService.findInternalId(SIREN);
+                const actual = await dauphinService.findDauphinInternalId(SIREN);
                 expect(actual).toBe(expected);
             });
         });

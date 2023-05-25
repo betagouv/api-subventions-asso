@@ -181,8 +181,12 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
     }
 
     async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {
-        const internalId = await this.findInternalId(siren);
-        if (!internalId) return null;
+        /*
+        the only way to get documents through dauphin API is to get them through their internal dauphin ID.
+        Because of that, we need a preliminary request to dauphin to get their internal id. cf issue #1004
+        */
+        const dauphinInternalId = await this.findDauphinInternalId(siren);
+        if (!dauphinInternalId) return null;
 
         const token = await this.getAuthToken();
         const result = (
@@ -199,7 +203,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
         return this.getDocumentsBySiren(siretToSiren(siret));
     }
 
-    private async findInternalId(siren: Siren): Promise<string | undefined> {
+    private async findDauphinInternalId(siren: Siren): Promise<string | undefined> {
         const query = {
             from: 0,
             size: 1,
