@@ -94,7 +94,7 @@ describe("ConfigurationService", () => {
                 expect(getByNameMock).toHaveBeenCalledWith(expected);
             });
 
-            it("should retrun null", async () => {
+            it("should return null", async () => {
                 const expected = { data: null };
                 getByNameMock.mockImplementationOnce(async () => expected);
 

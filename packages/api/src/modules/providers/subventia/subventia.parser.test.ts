@@ -29,7 +29,7 @@ describe("SubventiaParser", () => {
             expect(xlsParseMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should not retrun data (empty file)", () => {
+        it("should not return data (empty file)", () => {
             xlsParseMock.mockImplementationOnce(() => [[header]]);
 
             const expected = 0;

@@ -22,12 +22,12 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
         });
 
-        it("should be return user", async () => {
+        it("should return user", async () => {
             await expect(service.findByEmail("test@beta.gouv.fr")).resolves.toMatchObject({
                 email: "test@beta.gouv.fr",
             });
         });
-        it("should be return null", async () => {
+        it("should return null", async () => {
             await expect(service.findByEmail("testAA@beta.gouv.fr")).resolves.toBe(null);
         });
     });

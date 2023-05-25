@@ -1,8 +1,9 @@
-import { waitElementIsVisible } from "../../helpers/visibilityHelper";
 import associationService from "../../views/association/association.service";
 import { getSiegeSiret } from "../../views/association/association.helper";
 import etablissementService from "../../views/etablissement/etablissement.service";
 import Store from "../../core/Store";
+import { waitElementIsVisible } from "@helpers/visibilityHelper";
+import documentService from "@resources/documents/documents.service";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
@@ -48,5 +49,25 @@ export class DocumentsController {
         await waitElementIsVisible(this.element);
         const promise = this.getterByType[this.resourceType](this.resource);
         this.documentsPromise.set(promise);
+    }
+
+    isInternalLink(link) {
+        const isAbsoluteUrl = new RegExp("^(?:[a-z+]+:)?//", "i");
+        return !isAbsoluteUrl.test(link);
+    }
+
+    async onClick(event, doc) {
+        // authenticated calls to our api when provider have private access to files
+        if (!this.isInternalLink(doc.url)) return;
+        event.preventDefault();
+        const blob = await documentService.getDauphinBlob(doc.url);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", doc.nom);
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
     }
 }

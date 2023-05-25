@@ -1,10 +1,12 @@
-import { ApplicationStatus, DemandeSubvention } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 import { toStatusFactory } from "../../helper";
 import DauphinGisproDbo from "../repositories/dbo/DauphinGisproDbo";
+import DauphinDocumentDto from "../dto/DauphinDocumentDto";
 
 export default class DauphinDtoAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -63,7 +65,7 @@ export default class DauphinDtoAdapter {
 
         return {
             siret: toPV(dauphinData.demandeur.SIRET.complet),
-            service_instructeur: toPV("Dauphin"), // Dont use serviceInstructeur because it does not take into account the multifunders
+            service_instructeur: toPV("Dauphin"), // Does not use serviceInstructeur because it does not take into account  multi-funding
             dispositif: toPV(dispositif),
             ej: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
             versementKey: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
@@ -99,5 +101,24 @@ export default class DauphinDtoAdapter {
             ?.recette?.postes?.map(p => p?.sousPostes?.map(s => s?.lignes?.map(l => l.financement?.montantVote?.ht)))
             .flat(2)
             .filter(a => a)[0];
+    }
+
+    public static toDocuments(documentReferences: DauphinDocumentDto[]) {
+        const resultArray: Document[] = [];
+        let toPV: <T>(T) => ProviderValue<T>;
+        for (const reference of documentReferences) {
+            if (!reference.documents?.length) continue;
+            for (const doc of reference.documents) {
+                const date = new Date(doc.expand.properties["entity:document:date"].value);
+                toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.provider.name, new Date(date));
+                resultArray.push({
+                    type: toPV(reference.libelle.value),
+                    url: toPV(`/document/dauphin/${encodeURIComponent(doc.id)}`),
+                    nom: toPV(doc.title),
+                    __meta__: {},
+                });
+            }
+        }
+        return resultArray;
     }
 }

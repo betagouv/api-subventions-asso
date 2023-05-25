@@ -154,14 +154,14 @@ describe("ApiAssoService", () => {
                 findAssociationByRnaMock.mockRestore();
             });
 
-            it("should be return one association", async () => {
+            it("should return one association", async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getAssociationsBySiren("509221941");
 
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return one association, because rna structure not found", async () => {
+            it("should return one association, because rna structure not found", async () => {
                 const expected = 1;
                 getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
                 const actual = await apiAssoService.getAssociationsBySiren("509221941");
@@ -169,7 +169,7 @@ describe("ApiAssoService", () => {
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return two associations (With rna asso)", async () => {
+            it("should return two associations (With rna asso)", async () => {
                 const expected = 2;
                 getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
                 findAssociationByRnaMock.mockResolvedValueOnce(rnaStructureFixture);
@@ -178,14 +178,14 @@ describe("ApiAssoService", () => {
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return association", async () => {
+            it("should return association", async () => {
                 const expected = [sirenStructureFixture];
                 const actual = await apiAssoService.getAssociationsBySiren("509221941");
 
                 expect(actual).toEqual(expected);
             });
 
-            it("should be return null", async () => {
+            it("should return null", async () => {
                 const expected = null;
 
                 findAssociationBySirenMock.mockResolvedValueOnce(null);
@@ -208,21 +208,21 @@ describe("ApiAssoService", () => {
                 getAssociationsBySirenMock.mockRestore();
             });
 
-            it("should be return one association", async () => {
+            it("should return one association", async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getAssociationsBySiret("50922194100000");
 
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return association", async () => {
+            it("should return association", async () => {
                 const expected = [expect.objectContaining(sirenStructureFixture)];
                 const actual = await apiAssoService.getAssociationsBySiret("50922194100000");
 
                 expect(actual).toEqual(expected);
             });
 
-            it("should be return null", async () => {
+            it("should return null", async () => {
                 const expected = null;
                 getAssociationsBySirenMock.mockResolvedValue(expected);
                 const actual = await apiAssoService.getAssociationsBySiret("00");
@@ -257,14 +257,14 @@ describe("ApiAssoService", () => {
                 findAssociationBySirenMock.mockRestore();
             });
 
-            it("should be return one association", async () => {
+            it("should return one association", async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getAssociationsByRna("W000000000");
 
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return one association, because siren structure not found", async () => {
+            it("should return one association, because siren structure not found", async () => {
                 const expected = 1;
                 getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
                 const actual = await apiAssoService.getAssociationsByRna("W000000000");
@@ -272,7 +272,7 @@ describe("ApiAssoService", () => {
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return two associations (With siren asso)", async () => {
+            it("should return two associations (With siren asso)", async () => {
                 const expected = 2;
                 getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
                 findAssociationBySirenMock.mockResolvedValueOnce(sirenStructureFixture);
@@ -281,14 +281,14 @@ describe("ApiAssoService", () => {
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return association", async () => {
+            it("should return association", async () => {
                 const expected = [rnaStructureFixture];
                 const actual = await apiAssoService.getAssociationsByRna("W000000000");
 
                 expect(actual).toEqual(expected);
             });
 
-            it("should be return null", async () => {
+            it("should return null", async () => {
                 const expected = null;
 
                 findAssociationByRnaMock.mockResolvedValueOnce(null);
@@ -375,13 +375,13 @@ describe("ApiAssoService", () => {
                 getEtablissementsBySirenMock.mockRestore();
             });
 
-            it("should be return one etablissement", async () => {
+            it("should return one etablissement", async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getEtablissementsBySiret(SIRET);
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return null", async () => {
+            it("should return null", async () => {
                 const expected = null;
                 getEtablissementsBySirenMock.mockReturnValueOnce(null);
                 const actual = await apiAssoService.getEtablissementsBySiret(SIRET);
@@ -407,14 +407,14 @@ describe("ApiAssoService", () => {
                 findEtablissementsBySirenMock.mockRestore();
             });
 
-            it("should be return one etablissement", async () => {
+            it("should return one etablissement", async () => {
                 const expected = 1;
                 const actual = await apiAssoService.getEtablissementsBySiren(SIREN);
 
                 expect(actual).toHaveLength(expected);
             });
 
-            it("should be return null", async () => {
+            it("should return null", async () => {
                 const expected = null;
 
                 findEtablissementsBySirenMock.mockResolvedValueOnce(null);
@@ -457,7 +457,7 @@ describe("ApiAssoService", () => {
                 expect(sendRequestMock).toBeCalledTimes(1);
             });
 
-            it("should retrun null", async () => {
+            it("should return null", async () => {
                 sendRequestMock.mockResolvedValueOnce(null);
                 // @ts-ignore findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);

@@ -21,7 +21,7 @@ describe("AssociationService", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should flaten data", async () => {
+        it("should flatten data", async () => {
             jest.spyOn(associationPort, "getByRnaOrSiren").mockImplementationOnce(async () => ({}));
             await associationService.getAssociation(SIREN);
             expect(providerValueHelper.flatenProviderValue).toHaveBeenCalledTimes(1);

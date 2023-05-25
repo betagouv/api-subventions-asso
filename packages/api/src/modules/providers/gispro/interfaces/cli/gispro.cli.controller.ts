@@ -46,7 +46,7 @@ export default class GisproCliController extends CliController {
         this.logger.logIC("Start save entities");
 
         for await (const entity of tqdm(entities)) {
-            await dauphinService.insertGisproEntity(entity);
+            await dauphinService.insertGisproApplicationEntity(entity);
         }
 
         this.logger.logIC("\nEntities has been save");

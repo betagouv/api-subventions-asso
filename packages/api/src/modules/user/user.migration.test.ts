@@ -77,7 +77,7 @@ describe("UserMigration", () => {
     });
 
     describe("groupUsersByEmail", () => {
-        it("should be return grouped emails", () => {
+        it("should return grouped emails", () => {
             const users = [
                 {
                     email: "test@beta",
@@ -106,7 +106,7 @@ describe("UserMigration", () => {
     });
 
     describe("groupUsersByStatus", () => {
-        it("should be return grouped emails", () => {
+        it("should return grouped emails", () => {
             const users = [
                 {
                     email: "test@beta",

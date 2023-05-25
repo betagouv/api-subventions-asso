@@ -3,9 +3,14 @@ import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
+import SpyInstance = jest.SpyInstance;
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import { Siret, Siren } from "@api-subventions-asso/dto";
+import * as sirenHelper from "../../../shared/helpers/SirenHelper";
 
 jest.mock("axios", () => ({
     post: jest.fn(),
+    get: jest.fn(),
 }));
 
 jest.mock("./repositories/dauphin-gispro.repository", () => ({
@@ -17,7 +22,8 @@ jest.mock("./repositories/dauphin-gispro.repository", () => ({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const SIRET = "12345678912345";
+const SIRET: Siret = "12345678912345";
+const SIREN: Siren = "123456789";
 
 jest.mock("./../../../configurations/apis.conf", () => ({
     DAUPHIN_USERNAME: "DAUPHIN_USERNAME",
@@ -29,7 +35,7 @@ describe("Dauphin Service", () => {
 
     const DATA = [{ a: true }, { b: true }];
 
-    beforeEach(() => {
+    beforeAll(() => {
         mockedAxios.post.mockImplementation(async (url, search, headers) => ({
             data: {
                 hits: {
@@ -81,13 +87,13 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("updateCache", () => {
+    describe("updateApplicationCache", () => {
         // @ts-expect-error spy private method
         const mockBuildSearchHeader = jest.spyOn(dauphinService, "buildSearchHeader");
         // @ts-expect-error spy private method
-        const mockBuildFetchFromDateQuery = jest.spyOn(dauphinService, "buildFetchFromDateQuery");
+        const mockBuildFetchFromDateQuery = jest.spyOn(dauphinService, "buildFetchApplicationFromDateQuery");
         // @ts-expect-error spy private method
-        const mockFormatAndReturnDto = jest.spyOn(dauphinService, "formatAndReturnDto");
+        const mockFormatAndReturnDto = jest.spyOn(dauphinService, "formatAndReturnApplicationDto");
         // @ts-expect-error: spy private method
         const mockSaveApplicationsInCache = jest.spyOn(dauphinService, "saveApplicationsInCache");
         // @ts-expect-error: spy private method
@@ -117,42 +123,42 @@ describe("Dauphin Service", () => {
         afterAll(() => mocks.map(mock => mock.mockRestore()));
 
         it("should call repository.getLastImportDate()", async () => {
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(dauphinGisproRepository.getLastImportDate).toHaveBeenCalledTimes(1);
         });
 
         it("should call getAuthToken", async () => {
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
         });
 
         it("should call buildFetchFromDateQuery", async () => {
             const DATE = new Date();
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockBuildFetchFromDateQuery).toHaveBeenCalledWith(DATE);
         });
 
         it("should build headers from token", async () => {
             const expected = TOKEN;
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockBuildSearchHeader).toHaveBeenCalledWith(expected);
         });
 
         it("should call axios with args", async () => {
             const DATE = new Date();
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             // @ts-expect-error: mock
             expect(axios.post.mock.calls[0]).toMatchSnapshot();
         });
 
         it("should call mockSaveApplicationsInCache", async () => {
-            await dauphinService.updateCache();
+            await dauphinService.updateApplicationCache();
             expect(mockSaveApplicationsInCache).toHaveBeenCalledTimes(1);
         });
     });
 
     describe("saveApplicationsInCache", () => {
-        it("should upsert entites asynchornously", async () => {
+        it("should upsert entities asynchronously", async () => {
             const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
             // @ts-expect-error: private method
             await dauphinService.saveApplicationsInCache(ENTITIES);
@@ -172,7 +178,7 @@ describe("Dauphin Service", () => {
                 beneficiaires: [beneficiaireFieldToKeep],
             };
             // @ts-expect-error: private method
-            const actual = dauphinService.formatAndReturnDto({
+            const actual = dauphinService.formatAndReturnApplicationDto({
                 _source: {
                     objectToKeep,
                     demandeur: { ...demandeurFieldToKeep, pieces: "", history: "", linkedUsers: "" },
@@ -289,6 +295,198 @@ describe("Dauphin Service", () => {
             const actual = await dauphinService.sendAuthRequest();
 
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("documents", () => {
+        const DOC = "";
+        let mockGetAuthToken: SpyInstance;
+
+        beforeAll(() => {
+            // @ts-expect-error: mock
+            mockGetAuthToken = jest.spyOn(dauphinService, "getAuthToken").mockImplementation(async () => TOKEN);
+        });
+        afterAll(() => mockGetAuthToken.mockRestore());
+
+        describe("getSpecificDocumentStream", () => {
+            const DOC_PATH = "PATH";
+            const AXIOS_RES = "RES";
+
+            beforeAll(() => {
+                // @ts-expect-errors mocked
+                axios.get.mockResolvedValue({ data: AXIOS_RES });
+            });
+
+            it("should call getAuthToken", async () => {
+                await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+            });
+
+            it("should call axios with args", async () => {
+                await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                // @ts-expect-error: mock
+                expect(axios.get.mock.calls[0]).toMatchSnapshot();
+            });
+
+            it("should return stream from axios", async () => {
+                const expected = AXIOS_RES;
+                const actual = await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("getDocumentsByRna", () => {
+            const RNA = "RNA";
+            let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
+
+            beforeAll(() => {
+                getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
+                // @ts-expect-error: mock
+                getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
+            });
+            afterAll(() => {
+                getSirenMock.mockRestore();
+                getBySirenMock.mockRestore();
+            });
+
+            it("gets siren", async () => {
+                await dauphinService.getDocumentsByRna(RNA);
+                expect(getSirenMock).toHaveBeenCalled();
+            });
+
+            it("does not get documents if no siren", async () => {
+                getSirenMock.mockResolvedValueOnce(null);
+                await dauphinService.getDocumentsByRna(RNA);
+                expect(getBySirenMock).not.toHaveBeenCalled();
+            });
+
+            it("gets documents with siren", async () => {
+                await dauphinService.getDocumentsByRna(RNA);
+                expect(getBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns document from siren method", async () => {
+                const expected = DOC;
+                const actual = await dauphinService.getDocumentsByRna(RNA);
+                expect(actual).toBe(expected);
+            });
+        });
+
+        describe("getDocumentsBySiren", () => {
+            let findIdMock: SpyInstance, documentAdapterMock: SpyInstance;
+            const RAW_DOCS = ["axios"];
+            const ADAPTED_DOCS = ["doc"];
+            const AXIOS_RES = { pieces: RAW_DOCS };
+            const ID = "DAUPHIN_ID";
+
+            beforeAll(() => {
+                console.log("a");
+                // @ts-expect-error: mock
+                findIdMock = jest.spyOn(dauphinService, "findDauphinInternalId").mockResolvedValue(ID);
+                // @ts-expect-errors mocked
+                axios.get.mockResolvedValue({ data: AXIOS_RES });
+                // @ts-expect-error: mock
+                documentAdapterMock = jest.spyOn(DauphinDtoAdapter, "toDocuments").mockResolvedValue(ADAPTED_DOCS);
+            });
+
+            afterAll(() => {
+                // @ts-expect-errors mocked
+                axios.get.mockRestore();
+                findIdMock.mockRestore();
+            });
+
+            it("gets internal id", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(findIdMock).toHaveBeenCalled();
+            });
+
+            it("does not call axios if no internal id", async () => {
+                findIdMock.mockResolvedValueOnce(null);
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(axios.get).not.toHaveBeenCalled();
+            });
+
+            it("should call getAuthToken", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+            });
+
+            it("should call axios with args", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                // @ts-expect-error: mock
+                expect(axios.get.mock.calls[0]).toMatchSnapshot();
+            });
+
+            it("should adapt result from axios", async () => {
+                await dauphinService.getDocumentsBySiren(SIREN);
+                expect(documentAdapterMock).toHaveBeenCalledWith(RAW_DOCS);
+            });
+
+            it("returns documents from axios", async () => {
+                const expected = ADAPTED_DOCS;
+                const actual = await dauphinService.getDocumentsBySiren(SIREN);
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("getDocumentsBySiret", () => {
+            let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
+
+            beforeAll(() => {
+                getSirenMock = jest.spyOn(sirenHelper, "siretToSiren").mockReturnValue(SIREN);
+                // @ts-expect-error: mock
+                getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
+            });
+            afterAll(() => {
+                getSirenMock.mockRestore();
+                getBySirenMock.mockRestore();
+            });
+
+            it("gets siren", async () => {
+                await dauphinService.getDocumentsBySiret(SIRET);
+                expect(getSirenMock).toHaveBeenCalled();
+            });
+
+            it("gets documents with siren", async () => {
+                await dauphinService.getDocumentsBySiret(SIRET);
+                expect(getBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns document from siren method", async () => {
+                const expected = DOC;
+                const actual = await dauphinService.getDocumentsBySiret(SIRET);
+                expect(actual).toBe(expected);
+            });
+        });
+
+        describe("findDauphinInternalId", () => {
+            const ID = "DAUPHIN_ID";
+            const AXIOS_RES = { hits: { hits: [{ _source: { id: ID } }] } };
+
+            beforeAll(() => {
+                // @ts-expect-errors mocked
+                axios.post.mockResolvedValue({ data: AXIOS_RES });
+            });
+
+            it("should call getAuthToken", async () => {
+                // @ts-expect-errors test private method
+                await dauphinService.findDauphinInternalId(SIREN);
+                expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
+            });
+
+            it("should call axios with args", async () => {
+                // @ts-expect-errors test private method
+                await dauphinService.findDauphinInternalId(SIREN);
+                // @ts-expect-error: mock
+                expect(axios.post.mock.calls[0]).toMatchSnapshot();
+            });
+
+            it("returns documents from axios", async () => {
+                const expected = ID;
+                // @ts-expect-errors test private method
+                const actual = await dauphinService.findDauphinInternalId(SIREN);
+                expect(actual).toBe(expected);
+            });
         });
     });
 });
