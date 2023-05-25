@@ -1,6 +1,4 @@
-import axios from "axios";
-import documentPort from "@resources/documents/documents.port";
-import { getObjectWithMetadata } from "@helpers/providerValueHelper";
+import { getObjectWithMetadata } from "../helpers/providerValueHelper";
 
 export const toDocumentComponent = getObjectWithMetadata;
 
@@ -9,7 +7,7 @@ export class DocumentService {
         return documentPort.getDauphinBlob(localDauphinDocUrl);
     }
 
-    async getDocuments(path) {
+    async formatAndSortDocuments(documents) {
         const documentLabels = {
             RIB: "Télécharger le RIB",
             "Avis Situation Insee": "Télécharger l'avis de situation (INSEE)",
@@ -25,8 +23,6 @@ export class DocumentService {
             "Jeunesse et Education Populaire (JEP)": `Télécharger "L'agrément jeunesse et éducation populaire"`,
             Formation: `Télécharger "L'habilitation d'organisme de formation"`,
         };
-        const result = await axios.get(path);
-        const documents = result.data.documents.map(document => toDocumentComponent(document));
 
         const documentsByType = documents.reduce((acc, document) => {
             if (!acc[document.type]) acc[document.type] = [];

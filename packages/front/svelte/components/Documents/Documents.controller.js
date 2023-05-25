@@ -1,6 +1,6 @@
-import associationService from "../../views/association/association.service";
+import associationService from "@resources/associations/association.service";
 import { getSiegeSiret } from "../../views/association/association.helper";
-import etablissementService from "../../views/etablissement/etablissement.service";
+import establishmentService from "@resources/establishments/establishment.service";
 import Store from "../../core/Store";
 import { waitElementIsVisible } from "@helpers/visibilityHelper";
 import documentService from "@resources/documents/documents.service";
@@ -29,7 +29,7 @@ export class DocumentsController {
 
     get getterByType() {
         return {
-            etablissement: this.getEtablissementDocuments,
+            establishment: this.getEstablishmentDocuments,
             association: this.getAssociationDocuments,
         };
     }
@@ -41,8 +41,8 @@ export class DocumentsController {
         );
     }
 
-    getEtablissementDocuments(etablissement) {
-        return etablissementService.getDocuments(etablissement.siret);
+    getEstablishmentDocuments(establishment) {
+        return establishmentService.getDocuments(establishment.siret);
     }
 
     async onMount() {

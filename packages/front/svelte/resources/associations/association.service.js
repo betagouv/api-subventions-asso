@@ -1,7 +1,10 @@
 import associationPort from "./association.port";
 import { isRna, isStartOfSiret } from "@helpers/validatorHelper";
 import { siretToSiren } from "@helpers/sirenHelper";
-import { flatenProviderValue } from "@helpers/providerValueHelper";
+import { flatenProviderValue, getObjectWithMetadata } from "@helpers/providerValueHelper";
+import { updateSearchHistory } from "@services/storage.service";
+import { toEstablishmentComponent } from "@resources/establishments/establishment.adapter";
+import documentService from "@services/document.service";
 
 class AssociationService {
     incExtractData(identifier) {
@@ -9,9 +12,41 @@ class AssociationService {
     }
 
     async getAssociation(identifier) {
-        const association = await associationPort.getByRnaOrSiren(identifier);
-        if (!association) return;
-        return flatenProviderValue(association);
+        const result = await associationPort.getByIdentifier(identifier);
+        if (!result) return;
+        const association = flatenProviderValue(result);
+        updateSearchHistory({
+            rna: association.rna,
+            siren: association.siren,
+            name: association.denomination_rna || association.denomination_siren,
+            objectSocial: association.objet_social || "",
+        });
+        return association;
+    }
+
+    async getEstablishments(identifier) {
+        const result = await associationPort.getEstablishments(identifier);
+        console.log("getEstablishments", result);
+        const establishments = result.map(etablissement => toEstablishmentComponent(etablissement));
+        return establishments;
+    }
+
+    async getDocuments(identifier) {
+        const result = associationPort.getDocuments(identifier);
+        const documents = result.map(document => getObjectWithMetadata(document));
+        return documentService.formatAndSortDocuments(documents);
+    }
+
+    async search(lookup) {
+        let results = await this._searchByText(lookup);
+        if (results?.length) return results;
+
+        // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
+        if (isRna(lookup) || isStartOfSiret(lookup)) {
+            return await this._searchByIdentifier(lookup.toString());
+        }
+
+        return [];
     }
 
     async _searchByIdentifier(identifier) {
@@ -36,18 +71,6 @@ class AssociationService {
 
     _searchByText(lookup) {
         return associationPort.search(lookup);
-    }
-
-    async search(lookup) {
-        let results = await this._searchByText(lookup);
-        if (results?.length) return results;
-
-        // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
-        if (isRna(lookup) || isStartOfSiret(lookup)) {
-            return await this._searchByIdentifier(lookup.toString());
-        }
-
-        return [];
     }
 }
 

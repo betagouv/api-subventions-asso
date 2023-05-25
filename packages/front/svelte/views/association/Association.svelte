@@ -1,4 +1,5 @@
 <script>
+    import associationService from "@resources/associations/association.service";
     import { isAssociation } from "../../helpers/entrepriseHelper";
     import { activeBlueBanner } from "../../store/context.store";
 
@@ -9,7 +10,6 @@
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
-    import associationService from "./association.service.js";
 
     export let id;
 

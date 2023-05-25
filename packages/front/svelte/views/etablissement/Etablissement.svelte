@@ -2,13 +2,13 @@
     import DataNotFound from "../../components/DataNotFound.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
-    import associationService from "../association/association.service";
+    import associationService from "@resources/associations/association.service";
     import { siretToSiren } from "../../helpers/sirenHelper";
     import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
-    import etablissementService from "./etablissement.service";
     import TabsEtab from "./components/TabsEtab.svelte";
+    import establishmentService from "@resources/establishments/establishment.service";
 
     export let id;
 
@@ -16,7 +16,7 @@
 
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     const associationPromise = associationService.getAssociation(siretToSiren(id));
-    const etablissementPromise = etablissementService.getById(id);
+    const etablissementPromise = establishmentService.getBySiret(id);
 </script>
 
 <div class="fr-container">
