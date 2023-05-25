@@ -69,7 +69,7 @@ export class AssociationController extends Controller {
     @Get("/{identifier}/grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
-    public getFrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+    public getGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
         return grantService.getGrantsByAssociation(identifier);
     }
 

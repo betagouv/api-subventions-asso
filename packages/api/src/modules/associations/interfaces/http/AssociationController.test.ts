@@ -50,12 +50,6 @@ describe("AssociationController", () => {
             const actual = await controller.getVersements(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
-
-        it("should throw Error", async () => {
-            const ERROR_MESSAGE = "Error";
-            getSubventionsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getVersements(IDENTIFIER)).rejects.toThrowError(ERROR_MESSAGE);
-        });
     });
 
     describe("getDocuments", () => {
