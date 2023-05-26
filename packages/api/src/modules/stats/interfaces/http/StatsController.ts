@@ -14,27 +14,6 @@ import { BadRequestError } from "../../../../shared/errors/httpErrors";
 @Tags("Stats Controller")
 export class StatsController extends Controller {
     /**
-     * Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X requêtes sur une période données
-     *
-     * @summary Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X requêtes sur une période données
-     * @param start Timestamp starting date for the period
-     * @param end Timestamp ending date for the period
-     * @param nbReq Number minimal number of requests that user must have done in the defined period
-     * @param {string=} [includesAdmin = "false"] true if we include admin in stats, false for exlude admin (All value other of "true" will be considered as false)
-     * @returns {StatsRequestDtoResponse}
-     */
-    @Get("/requests")
-    async getNbUsersByRequestsOnPeriod(
-        @Query() start: string,
-        @Query() end: string,
-        @Query() nbReq: string,
-        @Query() includesAdmin = "false",
-    ): Promise<StatsRequestDtoResponse> {
-        const result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq));
-        return { data: result };
-    }
-
-    /**
      * Permet de récupérer le nombre médian de requêtes sur une période donnée
      *
      * @summary Permet de récupérer le nombre médian de requêtes sur une période donnée (Les admins sont exclus)
@@ -86,11 +65,30 @@ export class StatsController extends Controller {
      * Permet de récupérer le nombre d'utilisateur par statut
      * 4 statuts sont distingués : admin, actif (a fait une requête depuis moins de 7 jours), idle (est inactif depuis plus de 7 jours) et inactive (n'a pas activé son compte)
      *
-     * @summary Permet de récupérer le nombre d'utilisateur par statut
+     * @summary Permet de récupérer le nombre d'utilisateurs par statut
      */
     @Get("/users/status")
     async getUserCountByStatus(): Promise<UsersByStatusResponseDto> {
         const result = await statsService.getUserCountByStatus();
+        return { data: result };
+    }
+
+    /**
+     * Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X visites sur une période données
+     *
+     * @summary Permet de récupérer le nombre d'utilisateurs qui ont fait plus de X visites sur une période données
+     * @param start Timestamp starting date for the period
+     * @param end Timestamp ending date for the period
+     * @param nbReq Number minimal number of visits that user must have done in the defined period
+     * @returns {StatsRequestDtoResponse}
+     */
+    @Get("/users/min-visits-on-period")
+    async getNbUsersByRequestsOnPeriod(
+        @Query() start: string,
+        @Query() end: string,
+        @Query() nbReq: string,
+    ): Promise<StatsRequestDtoResponse> {
+        const result = await statsService.getNbUsersByRequestsOnPeriod(new Date(start), new Date(end), Number(nbReq));
         return { data: result };
     }
 
