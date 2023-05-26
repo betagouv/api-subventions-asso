@@ -53,6 +53,7 @@ module.exports = {
             return { identifier, visits: keepOneVisitByUser };
         });
 
+        await db.collection("unique-association-visit-by-day").createIndex({ identifier: 1 }, { unique: true });
         await db.collection("unique-association-visit-by-day").insertMany(associationsVisitsByDay);
         console.log("DB created");
     },
