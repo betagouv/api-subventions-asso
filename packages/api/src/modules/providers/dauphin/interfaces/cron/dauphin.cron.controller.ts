@@ -8,6 +8,6 @@ export class DauphinCronController implements CronController {
     // every day at 20PM
     @AsyncCron({ cronExpression: "0 20 * * *" })
     updateDauphinCache() {
-        return dauphinService.updateCache();
+        return dauphinService.updateApplicationCache();
     }
 }

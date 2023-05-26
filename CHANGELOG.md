@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.29.0](https://github.com/betagouv/api-subventions-asso/compare/v0.28.2...v0.29.0) (2023-05-26)
+
+
+### Bug Fixes
+
+* **api:** don't try to insert empty batches ([3011bad](https://github.com/betagouv/api-subventions-asso/commit/3011bad26c31945b80637612a6807a1cb5e6e1f9))
+* **api:** fix mongodb request ([e14b870](https://github.com/betagouv/api-subventions-asso/commit/e14b870cce2337759d64f240660e13bf94659e81))
+* **api:** stats.spec tests ([8d22ce7](https://github.com/betagouv/api-subventions-asso/commit/8d22ce76877719eecda1c1ed8969a866cc029adf))
+* **api:** workaround tsoa typing error ([1f0c492](https://github.com/betagouv/api-subventions-asso/commit/1f0c492a1ca9da679f975e20f24db14cda737aa3))
+* run lerna lint sequentially to not loose work ([4900572](https://github.com/betagouv/api-subventions-asso/commit/4900572d5fa3839812a1597afc49a61658f8d39f))
+
+
+### Features
+
+* **api:** caisse des dépôts raw grant provider ([389551e](https://github.com/betagouv/api-subventions-asso/commit/389551e758b0d7e7698564ec7308f45dd0cba911))
+* **api:** chorus raw grant provider ([bd1c22c](https://github.com/betagouv/api-subventions-asso/commit/bd1c22c9cac1168e4bd9a4a01ab4046d5c53eae2))
+* **api:** dauphin adapter to document ([7e37883](https://github.com/betagouv/api-subventions-asso/commit/7e378837fa4fd14578959717137c5a2220475e79))
+* **api:** dauphin document dto ([2e6c79b](https://github.com/betagouv/api-subventions-asso/commit/2e6c79b7433c9876bb2fea77a08656c8bb431771))
+* **api:** dauphin raw grant provider ([a8b2fad](https://github.com/betagouv/api-subventions-asso/commit/a8b2fad5f593670a94313115d50e94ba8a04d80f))
+* **api:** dauphin service implements document provider interface ([31b02f4](https://github.com/betagouv/api-subventions-asso/commit/31b02f4942a3dd2bca71531f297a608ac29249e6))
+* **api:** fonjep joiner to build raw format ([c2ac2d4](https://github.com/betagouv/api-subventions-asso/commit/c2ac2d458e9837f5a612e79a45ac3760fbde1e5a))
+* **api:** generic grant service and its types ([5a31e3c](https://github.com/betagouv/api-subventions-asso/commit/5a31e3cf9fc5ce48537fabdea8b227d69593860f))
+* **api:** get dauphin document stream ([0c88700](https://github.com/betagouv/api-subventions-asso/commit/0c887006a59c7428f56df199be9ccf0c0fb8d205))
+* **api:** http route to raw grant format ([544d8db](https://github.com/betagouv/api-subventions-asso/commit/544d8dbd16e2d483f6bc0ad7eff773d64154dc10))
+* **api:** more general joinedGrants ([6a16d77](https://github.com/betagouv/api-subventions-asso/commit/6a16d77f19e433cbe99fbf75e5950a2166531f99))
+* **api:** osiris raw grant provider ([962976e](https://github.com/betagouv/api-subventions-asso/commit/962976eb012a0fc345cf68a4498919c363bc237c))
+* **api:** remove admins from stats computing ([f7ac26c](https://github.com/betagouv/api-subventions-asso/commit/f7ac26cfb76587cdc85208980cf05cac5819ad09))
+* **api:** remove links from BodaccDto ([c7a76fc](https://github.com/betagouv/api-subventions-asso/commit/c7a76fc9da040d105b2d52cce1d763d2bb7283c0))
+* **api:** remove old method countUsersByRequestNbOnPeriod ([518a12c](https://github.com/betagouv/api-subventions-asso/commit/518a12c187c7038d2cf70371804b794faaacd979))
+* **api:** rename route ([c35ee99](https://github.com/betagouv/api-subventions-asso/commit/c35ee99372136417d59cd0a10f6017d6846416fc))
+* **api:** use associationVisits in stats/requests ([242bb9b](https://github.com/betagouv/api-subventions-asso/commit/242bb9b32b13b199ef33b1aefbb6f37a3fdd8035))
+* **api:** use homogenized system for provider id in raw grant service ([bb84c8c](https://github.com/betagouv/api-subventions-asso/commit/bb84c8c0a20149fea4d53c47c1bd1b82f34c9b19))
+* **front:** card has onClick prop ([f07d15c](https://github.com/betagouv/api-subventions-asso/commit/f07d15c1b33a1feb7f84718188c8a12637455628))
+* **front:** document card now handles stream download from api ([9f6f05c](https://github.com/betagouv/api-subventions-asso/commit/9f6f05c18eb73ead9d4cbf3010aa83e87272bbf0))
+* **front:** document service can get dauphin doc from api ([9490dd0](https://github.com/betagouv/api-subventions-asso/commit/9490dd0c5269875f33368a941b5ce627737882c2))
+
+
+### Performance Improvements
+
+* **front:** revoke object url ([08c7cef](https://github.com/betagouv/api-subventions-asso/commit/08c7cef639978aa931f03569b278e6cfe6a0edd8))
+
+
+
+## [0.26.3](https://github.com/betagouv/api-subventions-asso/compare/v0.27.0...v0.26.3) (2023-05-04)
+
+
+
+
+
 ## [0.28.2](https://github.com/betagouv/api-subventions-asso/compare/v0.28.1...v0.28.2) (2023-05-17)
 
 

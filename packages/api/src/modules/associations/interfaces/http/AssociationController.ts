@@ -11,6 +11,8 @@ import { AssociationIdentifiers, StructureIdentifiers } from "../../../../@types
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 
 import associationService from "../../associations.service";
+import grantService from "../../../grant/grant.service";
+import { JoinedRawGrant } from "../../../grant/@types/rawGrant";
 
 @Route("association")
 @Security("jwt")
@@ -46,15 +48,29 @@ export class AssociationController extends Controller {
     }
 
     /**
-     * Recherche les versements liées à une association
+     * Recherche les versements liés à une association
      *
-     * @summary Recherche les versements liées à une association
+     * @summary Recherche les versements liés à une association
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/versements")
     public async getVersements(identifier: AssociationIdentifiers): Promise<GetVersementsResponseDto> {
         const result = await associationService.getVersements(identifier);
         return { versements: result };
+    }
+
+    /**
+     * Recherche les subventions liées à une association, format brut
+     *
+     * @deprecated test purposes
+     * @summary Recherche les subventions liées à une association, format brut
+     * @param identifier Identifiant Siren ou Rna
+     */
+    @Get("/{identifier}/grants")
+    @Security("jwt", ["admin"])
+    @Response<HttpErrorInterface>("404")
+    public getGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+        return grantService.getGrantsByAssociation(identifier);
     }
 
     /**

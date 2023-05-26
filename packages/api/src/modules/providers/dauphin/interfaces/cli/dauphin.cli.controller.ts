@@ -17,6 +17,6 @@ export default class DauphinCliController {
     }
 
     async updateCache() {
-        await dauphinService.updateCache();
+        await dauphinService.updateApplicationCache();
     }
 }

@@ -18,7 +18,7 @@ const SIREN = "123456789";
 describe("/stats", () => {
     const spyGetNbUsersByRequestsOnPeriod = jest.spyOn(statsService, "getNbUsersByRequestsOnPeriod");
 
-    describe("/requests", () => {
+    describe("/users/min-visits-on-period", () => {
         describe("/", () => {
             const TODAY = new Date();
             const YESTERDAY = new Date(TODAY).setDate(TODAY.getDate() + 1);
@@ -29,7 +29,7 @@ describe("/stats", () => {
                 spyGetNbUsersByRequestsOnPeriod.mockImplementationOnce(async () => DATA);
                 const expected = { data: DATA };
                 const actual = await request(g.app)
-                    .get("/stats/requests")
+                    .get("/stats/users/min-visits-on-period")
                     .query({
                         nbReq: MIN_REQUESTS,
                         start: YESTERDAY.toString(),
@@ -48,7 +48,7 @@ describe("/stats", () => {
                 );
                 const expected = { message: ERROR_MESSAGE };
                 const actual = await request(g.app)
-                    .get("/stats/requests")
+                    .get("/stats/users/min-visits-on-period")
                     .query({
                         nbReq: MIN_REQUESTS,
                         start: YESTERDAY.toString(),
@@ -70,7 +70,7 @@ describe("/stats", () => {
                     message: "JWT does not contain required scope.",
                 };
                 const actual = await request(g.app)
-                    .get("/stats/requests")
+                    .get("/stats/users/min-visits-on-period")
                     .query({
                         nbReq: MIN_REQUESTS,
                         start: YESTERDAY.toString(),

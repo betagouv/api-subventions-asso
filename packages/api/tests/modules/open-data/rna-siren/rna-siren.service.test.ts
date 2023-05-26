@@ -46,7 +46,7 @@ describe("RnaSirenService", () => {
     });
 
     describe("getSiren", () => {
-        it("should retrun one siren", async () => {
+        it("should return one siren", async () => {
             expect(await rnaSirenService.getSiren(RnaSirenArray[0].rna)).toBe(RnaSirenArray[0].siren);
         });
 
@@ -56,7 +56,7 @@ describe("RnaSirenService", () => {
     });
 
     describe("getRna", () => {
-        it("should be retrun one rna", async () => {
+        it("should be return one rna", async () => {
             expect(await rnaSirenService.getRna("000000000")).toBe("W000000000");
         });
 

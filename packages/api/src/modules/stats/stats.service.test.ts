@@ -19,40 +19,56 @@ import UserDbo from "../user/repositories/dbo/UserDbo";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
+import { ObjectId } from "mongodb";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
-        const countUsersByRequestNbOnPeriodMock = jest.spyOn(statsRepository, "countUsersByRequestNbOnPeriod");
+        const mockFindAssociationVisitsOnPeriodGroupedByUsers = jest.spyOn(
+            userAssociationVisitJoiner,
+            "findAssociationVisitsOnPeriodGroupedByUsers",
+        );
 
         const TODAY = new Date();
-        const NB_REQUESTS = 5;
+        const NB_REQUESTS = 2;
         const START = new Date(TODAY);
         START.setDate(START.getDate() + -1);
         const END = new Date(TODAY);
         END.setDate(END.getDate() + 1);
 
+        const USERS_WITH_VISITS = [
+            {
+                _id: new ObjectId(1),
+                associationVisits: [{}, {}, {}],
+            },
+            {
+                _id: new ObjectId(2),
+                associationVisits: [{}],
+            },
+            {
+                _id: new ObjectId(3),
+                associationVisits: [{}, {}, {}, {}],
+            },
+            {
+                _id: new ObjectId(4),
+                associationVisits: [{}, {}],
+            },
+        ] as UserWithAssociationVisitsEntity[];
+
         beforeEach(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            countUsersByRequestNbOnPeriodMock.mockImplementationOnce((start, end, minReq) => Promise.resolve(7));
+            mockFindAssociationVisitsOnPeriodGroupedByUsers.mockImplementationOnce(() =>
+                Promise.resolve(USERS_WITH_VISITS),
+            );
         });
 
-        it("should call repository", async () => {
-            const expected = [START, END, NB_REQUESTS, false];
-            const actual = statsRepository.countUsersByRequestNbOnPeriod;
-            await statsService.getNbUsersByRequestsOnPeriod(START, END, NB_REQUESTS, false);
-            expect(actual).toHaveBeenCalledWith(...expected);
-        });
-
-        it("should call repository with includesAdmin", async () => {
-            const expected = [START, END, NB_REQUESTS, true];
-            const actual = statsRepository.countUsersByRequestNbOnPeriod;
-            await statsService.getNbUsersByRequestsOnPeriod(START, END, NB_REQUESTS, true);
-            expect(actual).toHaveBeenCalledWith(...expected);
+        it("should call userAssociationVisitJoiner", async () => {
+            const expected = [START, END];
+            await statsService.getNbUsersByRequestsOnPeriod(START, END, NB_REQUESTS);
+            expect(mockFindAssociationVisitsOnPeriodGroupedByUsers).toHaveBeenCalledWith(...expected);
         });
 
         it("should return result from repository", async () => {
-            const expected = 7;
-            const actual = await statsService.getNbUsersByRequestsOnPeriod(START, END, NB_REQUESTS, false);
+            const expected = 3;
+            const actual = await statsService.getNbUsersByRequestsOnPeriod(START, END, NB_REQUESTS);
             expect(actual).toBe(expected);
         });
     });

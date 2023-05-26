@@ -5,6 +5,7 @@ import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+import dauphinService from "../providers/dauphin/dauphin.service";
 
 jest.mock("../../shared/helpers/IdentifierHelper", () => ({
     getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
@@ -26,7 +27,7 @@ describe("Documents Service", () => {
             mockAggregateDocuments.mockClear();
         });
 
-        it("should be return list of document", async () => {
+        it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
@@ -36,7 +37,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return filtred list of document", async () => {
+        it("should return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() =>
@@ -48,7 +49,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return an empty list", async () => {
+        it("should return an empty list", async () => {
             const expected = 0;
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
@@ -92,7 +93,7 @@ describe("Documents Service", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should be return filtred list of document", async () => {
+        it("should return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() =>
@@ -104,7 +105,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return an empty list", async () => {
+        it("should return an empty list", async () => {
             const expected = 0;
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
@@ -134,7 +135,7 @@ describe("Documents Service", () => {
             mockAggregateDocuments.mockClear();
         });
 
-        it("should be return list of document", async () => {
+        it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
@@ -144,7 +145,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return filtred list of document", async () => {
+        it("should return filtred list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
             mockAggregateDocuments.mockImplementationOnce(() =>
@@ -156,7 +157,7 @@ describe("Documents Service", () => {
             expect(expected).toEqual(actual);
         });
 
-        it("should be return an empty list", async () => {
+        it("should return an empty list", async () => {
             const expected = 0;
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([null, null, null]));
@@ -179,7 +180,7 @@ describe("Documents Service", () => {
     });
 
     describe("isDocumentProvider", () => {
-        it("should be return true", () => {
+        it("should return true", () => {
             const expected = true;
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -191,11 +192,10 @@ describe("Documents Service", () => {
             expect(actual).toBe(expected);
         });
 
-        it("should be return false", () => {
+        it("should return false", () => {
             const expected = false;
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error mock
             const actual = documentsService.isDocumentProvider({});
 
             expect(actual).toBe(expected);
@@ -214,7 +214,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockClear();
         });
 
-        it("Should not retrun provider", () => {
+        it("Should not return provider", () => {
             const expected = 0;
 
             isDocumentProviderMock.mockImplementation(() => false);
@@ -228,7 +228,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockClear();
         });
 
-        it("Should retrun providers", () => {
+        it("Should return providers", () => {
             const expected = Object.values(providers).length;
 
             isDocumentProviderMock.mockImplementation(() => true);
@@ -242,7 +242,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockClear();
         });
 
-        it("Should retrun part of providers", () => {
+        it("Should return part of providers", () => {
             const expected = Math.floor(Object.values(providers).length / 2);
             let i = 0;
             isDocumentProviderMock.mockImplementation(() => {
@@ -379,6 +379,28 @@ describe("Documents Service", () => {
             // @ts-expect-error: private method
             const actual = await documentsService.aggregate(providers, "getDocuments", SIREN);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getDauphinDocumentStream", () => {
+        let dauphinServiceMock;
+        const RES = "RES";
+        const DOC_ID = "id";
+
+        beforeEach(
+            // @ts-expect-error mock
+            () => (dauphinServiceMock = jest.spyOn(dauphinService, "getSpecificDocumentStream").mockResolvedValue(RES)),
+        );
+
+        it("calls dauphin service", async () => {
+            await documentsService.getDauphinDocumentStream(DOC_ID);
+            expect(dauphinServiceMock).toHaveBeenCalledWith(DOC_ID);
+        });
+
+        it("returns stream from dauphin service", async () => {
+            const expected = RES;
+            const actual = await documentsService.getDauphinDocumentStream(DOC_ID);
+            expect(actual).toBe(expected);
         });
     });
 });

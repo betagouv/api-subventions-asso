@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.29.0](https://github.com/betagouv/datasubvention/compare/v0.28.2...v0.29.0) (2023-05-26)
+
+
+### Features
+
+* **front:** card has onClick prop ([f07d15c](https://github.com/betagouv/datasubvention/commit/f07d15c1b33a1feb7f84718188c8a12637455628))
+* **front:** document card now handles stream download from api ([9f6f05c](https://github.com/betagouv/datasubvention/commit/9f6f05c18eb73ead9d4cbf3010aa83e87272bbf0))
+* **front:** document service can get dauphin doc from api ([9490dd0](https://github.com/betagouv/datasubvention/commit/9490dd0c5269875f33368a941b5ce627737882c2))
+
+
+### Performance Improvements
+
+* **front:** revoke object url ([08c7cef](https://github.com/betagouv/datasubvention/commit/08c7cef639978aa931f03569b278e6cfe6a0edd8))
+
+
+
+
+
 # [0.28.0](https://github.com/betagouv/datasubvention/compare/v0.27.0...v0.28.0) (2023-05-15)
 
 

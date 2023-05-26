@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DemarchesSimplifieesDtoAdapter toEntities should retrun valid entity 1`] = `
+exports[`DemarchesSimplifieesDtoAdapter toEntities should return valid entity 1`] = `
 Array [
   Object {
     "demande": Object {

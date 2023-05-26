@@ -4,6 +4,7 @@ import fonjepSubventionRepository from "./repositories/fonjep.subvention.reposit
 import { SubventionEntity, VersementEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
+import fonjepJoiner from "./joiners/fonjepJoiner";
 
 const SIREN = "002034000";
 const SIRET = `${SIREN}32010`;
@@ -252,6 +253,82 @@ describe("FonjepService", () => {
                 await fonjepService.applyTemporyCollection();
                 expect(spySubventionApplyTemporyCollection).toHaveBeenCalledTimes(1);
                 expect(spyVersementApplyTemporyCollection).toHaveBeenCalledTimes(1);
+            });
+        });
+    });
+
+    describe("raw grant", () => {
+        const DATA = [{ indexedInformations: { code_poste: "EJ" } }];
+
+        describe("getRawGrantsBySiret", () => {
+            const SIRET = "12345678900000";
+            let findBySiretMock;
+            beforeAll(
+                () =>
+                    (findBySiretMock = jest
+                        .spyOn(fonjepJoiner, "getFullFonjepGrantsBySiret")
+                        // @ts-expect-error: mock
+                        .mockImplementation(jest.fn(() => DATA))),
+            );
+            afterAll(() => findBySiretMock.mockRestore());
+
+            it("should call findBySiret()", async () => {
+                await fonjepService.getRawGrantsBySiret(SIRET);
+                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
+            });
+
+            it("returns raw grant data", async () => {
+                const actual = await fonjepService.getRawGrantsBySiret(SIRET);
+                expect(actual).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "data": Object {
+                          "indexedInformations": Object {
+                            "code_poste": "EJ",
+                          },
+                        },
+                        "joinKey": "EJ",
+                        "provider": "fonjep",
+                        "type": "fullGrant",
+                      },
+                    ]
+                `);
+            });
+        });
+
+        describe("getRawGrantsBySiren", () => {
+            const SIREN = "123456789";
+            let findBySirenMock;
+            beforeAll(
+                () =>
+                    (findBySirenMock = jest
+                        .spyOn(fonjepJoiner, "getFullFonjepGrantsBySiren")
+                        // @ts-expect-error: mock
+                        .mockImplementation(jest.fn(() => DATA))),
+            );
+            afterAll(() => findBySirenMock.mockRestore());
+
+            it("should call findBySiren()", async () => {
+                await fonjepService.getRawGrantsBySiren(SIREN);
+                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns raw grant data", async () => {
+                const actual = await fonjepService.getRawGrantsBySiren(SIREN);
+                expect(actual).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "data": Object {
+                          "indexedInformations": Object {
+                            "code_poste": "EJ",
+                          },
+                        },
+                        "joinKey": "EJ",
+                        "provider": "fonjep",
+                        "type": "fullGrant",
+                      },
+                    ]
+                `);
             });
         });
     });

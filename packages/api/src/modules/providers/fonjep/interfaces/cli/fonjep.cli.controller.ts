@@ -18,7 +18,7 @@ export default class FonjepCliController extends CliController {
      * @example npm run cli fonjep parse ./Extraction\ du\ 30-12-2022.xlsx 2022-12-30
      *
      * @param file Path to the file
-     * @param logs is auto injected by cli controller
+     * @param logs is auto-injected by cli controller
      * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
      *
      */

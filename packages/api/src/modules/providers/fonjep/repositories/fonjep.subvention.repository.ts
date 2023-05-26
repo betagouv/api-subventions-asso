@@ -6,6 +6,10 @@ import { FonjepCoreRepository } from "./fonjep.core.repository";
 export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubventionEntity> {
     readonly collectionName = "fonjepSubvention";
 
+    readonly joinIndexes = {
+        fonjepVersement: "indexedInformations.code_poste",
+    };
+
     async create(entity: FonjepSubventionEntity) {
         return await this.collection.insertOne(entity);
     }

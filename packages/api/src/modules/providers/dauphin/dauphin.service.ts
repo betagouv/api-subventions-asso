@@ -1,26 +1,43 @@
+import { IncomingMessage } from "http";
 import axios from "axios";
 import qs from "qs";
-import { DemandeSubvention, Siren, Siret } from "@api-subventions-asso/dto";
+import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { DAUPHIN_USERNAME, DAUPHIN_PASSWORD } from "../../../configurations/apis.conf";
+import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
 import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
+import DocumentProvider from "../../documents/@types/DocumentsProvider";
+import GrantProvider from "../../grant/@types/GrantProvider";
+import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import { RawGrant } from "../../grant/@types/rawGrant";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 
-export class DauphinService implements DemandesSubventionsProvider {
+export class DauphinService implements DemandesSubventionsProvider, DocumentProvider, GrantProvider {
     provider = {
         name: "Dauphin",
         type: ProviderEnum.api,
         description:
             "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
+        id: "dauphin",
     };
 
+    /**
+     * |-------------------------|
+     * |   Demande Part          |
+     * |-------------------------|
+     */
+
     isDemandesSubventionsProvider = true;
+    isDocumentProvider = true;
+
+    // Applications
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const applications = await dauphinGisproRepository.findBySiret(siret);
@@ -32,11 +49,46 @@ export class DauphinService implements DemandesSubventionsProvider {
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
-    async getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
-        return null;
+    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
+        return Promise.resolve(null);
     }
 
-    async updateCache() {
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        return (await dauphinGisproRepository.findBySiret(siret)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+            joinKey: grant.gispro?.ej,
+        }));
+    }
+
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        return (await dauphinGisproRepository.findBySiren(siren)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+            joinKey: grant.gispro?.ej,
+        }));
+    }
+    getRawGrantsByRna(): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Caching Part          |
+     * |-------------------------|
+     */
+
+    async updateApplicationCache() {
         const lastUpdateDate = await dauphinGisproRepository.getLastImportDate();
         console.log(`update cache from ${lastUpdateDate.toString()}`);
         const token = await this.getAuthToken();
@@ -49,7 +101,7 @@ export class DauphinService implements DemandesSubventionsProvider {
                 const result = (
                     await axios.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-                        { ...this.buildFetchFromDateQuery(lastUpdateDate), from: fetched },
+                        { ...this.buildFetchApplicationFromDateQuery(lastUpdateDate), from: fetched },
                         this.buildSearchHeader(token),
                     )
                 ).data;
@@ -68,7 +120,7 @@ export class DauphinService implements DemandesSubventionsProvider {
                     throw new Error("Something went wrong with dauphin results");
                 }
 
-                await this.saveApplicationsInCache(applications.map(this.formatAndReturnDto));
+                await this.saveApplicationsInCache(applications.map(this.formatAndReturnApplicationDto));
 
                 console.log(`fetched ${applications.length} applications`);
             } catch (e) {
@@ -85,34 +137,7 @@ export class DauphinService implements DemandesSubventionsProvider {
         });
     }
 
-    private formatAndReturnDto(hit) {
-        const source = hit._source;
-
-        if ("demandeur" in source) {
-            delete source.demandeur.pieces;
-            delete source.demandeur.history;
-            delete source.demandeur.linkedUsers;
-        }
-
-        if ("beneficiaires" in source) {
-            source.beneficiaires.forEach(beneficiaire => {
-                delete beneficiaire.pieces;
-                delete beneficiaire.history;
-                delete beneficiaire.linkedUsers;
-            });
-        }
-
-        return source as DauphinSubventionDto;
-    }
-
-    private toDauphinDateString(date: Date) {
-        const year = date.getFullYear();
-        const month = formatIntToTwoDigits(date.getMonth() + 1);
-        const day = formatIntToTwoDigits(date.getDate());
-        return `${year}-${month}-${day}`;
-    }
-
-    private buildFetchFromDateQuery(date) {
+    private buildFetchApplicationFromDateQuery(date) {
         return {
             size: 1000,
             sort: [{ date: { order: "desc", missing: "_last", mode: "max" } }],
@@ -154,6 +179,122 @@ export class DauphinService implements DemandesSubventionsProvider {
             _source: [],
             aggs: {},
         };
+    }
+
+    private formatAndReturnApplicationDto(hit) {
+        const source = hit._source;
+
+        if ("demandeur" in source) {
+            delete source.demandeur.pieces;
+            delete source.demandeur.history;
+            delete source.demandeur.linkedUsers;
+        }
+
+        if ("beneficiaires" in source) {
+            source.beneficiaires.forEach(beneficiaire => {
+                delete beneficiaire.pieces;
+                delete beneficiaire.history;
+                delete beneficiaire.linkedUsers;
+            });
+        }
+
+        return source as DauphinSubventionDto;
+    }
+
+    async insertGisproApplicationEntity(gisproEntity: Gispro) {
+        const entity = await dauphinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
+
+        if (!entity) return;
+
+        entity.gispro = gisproEntity;
+        await dauphinGisproRepository.upsert(entity);
+    }
+
+    migrateDauphinCacheToDauphinGispro(logger) {
+        return dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
+    }
+
+    // Documents
+
+    // no RIB document in dauphin
+
+    async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
+        const siren = await rnaSirenService.getSiren(rna);
+        if (!siren) return null;
+        return this.getDocumentsBySiren(siren);
+    }
+
+    async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {
+        /*
+        the only way to get documents through dauphin API is to get them through their internal dauphin ID.
+        Because of that, we need a preliminary request to dauphin to get their internal id. cf issue #1004
+        */
+        const dauphinInternalId = await this.findDauphinInternalId(siren);
+        if (!dauphinInternalId) return null;
+
+        const token = await this.getAuthToken();
+        const result = (
+            await axios.get(
+                "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/41fPMDsxf8?expand=pieces.documents",
+                this.buildSearchHeader(token),
+            )
+        ).data.pieces;
+
+        return DauphinDtoAdapter.toDocuments(result);
+    }
+
+    getDocumentsBySiret(siret: Siret): Promise<Document[] | null> {
+        return this.getDocumentsBySiren(siretToSiren(siret));
+    }
+
+    private async findDauphinInternalId(siren: Siren): Promise<string | undefined> {
+        const query = {
+            from: 0,
+            size: 1,
+            type: "tiers",
+            query: siren,
+            facets: {
+                famille: ["Association"],
+                status: ["SUPPORTED"],
+            },
+        };
+        const token = await this.getAuthToken();
+
+        const res = (
+            await axios.post(
+                "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
+                query,
+                this.buildSearchHeader(token),
+            )
+        ).data;
+        return res?.hits?.hits?.[0]?._source?.id;
+    }
+
+    async getSpecificDocumentStream(docPath: string): Promise<IncomingMessage> {
+        const token = await this.getAuthToken();
+
+        return (
+            await axios.get(`https://agent-dauphin.cget.gouv.fr${docPath}`, {
+                responseType: "stream",
+                headers: {
+                    accept: "application/json, text/plain, */*, application/vnd.mgdis.tiers-3.19.0+json",
+                    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                    authorization: "Bearer " + token,
+                    "mg-authentication": "true",
+                    Referer: "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
+                    "Referrer-Policy": "strict-origin-when-cross-origin",
+                },
+            })
+        ).data;
+    }
+
+    // General
+
+    private toDauphinDateString(date: Date) {
+        const year = date.getFullYear();
+        const month = formatIntToTwoDigits(date.getMonth() + 1);
+        const day = formatIntToTwoDigits(date.getDate());
+        return `${year}-${month}-${day}`;
     }
 
     private buildSearchHeader(token) {
@@ -206,22 +347,9 @@ export class DauphinService implements DemandesSubventionsProvider {
                     "Referrer-Policy": "strict-origin-when-cross-origin",
                 },
             })
-            .then(reslut => {
-                return reslut.data;
+            .then(result => {
+                return result.data;
             });
-    }
-
-    async insertGisproEntity(gisproEntity: Gispro) {
-        const entity = await dauphinGisproRepository.findOneByDauphinId(gisproEntity.dauphinId);
-
-        if (!entity) return;
-
-        entity.gispro = gisproEntity;
-        await dauphinGisproRepository.upsert(entity);
-    }
-
-    migrateDauphinCacheToDauphinGispro(logger) {
-        return dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(logger);
     }
 }
 

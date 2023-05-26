@@ -26,7 +26,7 @@ describe("SubventionPort", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should retrun subventions", () => {
+        it("should return subventions", () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
 
             getSubventionStoreMock.mockImplementationOnce(() => expected);
@@ -62,7 +62,7 @@ describe("SubventionPort", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should retrun subventions", () => {
+        it("should return subventions", () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
 
             getSubventionStoreMock.mockImplementationOnce(() => expected);

@@ -4,6 +4,7 @@ import providers from "../providers";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import dauphinService from "../providers/dauphin/dauphin.service";
 import DocumentProvider from "./@types/DocumentsProvider";
 
 export class DocumentsService {
@@ -29,8 +30,8 @@ export class DocumentsService {
         return await this.aggregateRibs(siret);
     }
 
-    private isDocumentProvider(data: unknown): data is DocumentProvider {
-        return !!(data as DocumentProvider).isDocumentProvider;
+    private isDocumentProvider(provider): boolean {
+        return provider?.isDocumentProvider || false;
     }
 
     private getDocumentProviders() {
@@ -72,6 +73,10 @@ export class DocumentsService {
                 : "getDocumentsBySiret";
 
         return await this.aggregate(documentProviders, method, id);
+    }
+
+    getDauphinDocumentStream(docId: string) {
+        return dauphinService.getSpecificDocumentStream(docId);
     }
 }
 
