@@ -26,7 +26,6 @@ class AssociationService {
 
     async getEstablishments(identifier) {
         const result = await associationPort.getEstablishments(identifier);
-        console.log("getEstablishments", result);
         const establishments = result.map(etablissement => toEstablishmentComponent(etablissement));
         return establishments;
     }

@@ -1,8 +1,4 @@
 <script>
-    import associationService from "@resources/associations/association.service";
-    import { isAssociation } from "../../helpers/entrepriseHelper";
-    import { activeBlueBanner } from "../../store/context.store";
-
     import Alert from "../../dsfr/Alert.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
@@ -10,16 +6,15 @@
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
     import TabsAsso from "./components/TabsAsso.svelte";
+    import { AssociationController } from "./Association.controller";
 
     export let id;
 
-    activeBlueBanner();
-
-    const titles = ["Tableau de bord" /**, "Statistiques"*/, "Pièces administratives", "Établissements", "Bodacc"];
-    let promise = associationService.getAssociation(id);
+    const controller = new AssociationController(id);
+    const { association: associationPromise, titles } = controller;
 </script>
 
-{#await promise}
+{#await associationPromise}
     <FullPageSpinner description="Chargement de l'association {id} en cours ..." />
 {:then association}
     {#if !association}
@@ -27,7 +22,7 @@
             <Alert type="warning" title="Attention">Nous n'avons pas connaissance de cette association</Alert>
         </div>
     {/if}
-    {#if !association.rna && !isAssociation(association.categorie_juridique)}
+    {#if !controller.isAssociation()}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Il semblerait que vous cherchiez une entreprise et non une association
