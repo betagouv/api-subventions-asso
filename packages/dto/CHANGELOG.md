@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.29.0](https://github.com/betagouv/datasubvention/compare/v0.28.2...v0.29.0) (2023-05-26)
+
+
+### Features
+
+* **api:** generic grant service and its types ([5a31e3c](https://github.com/betagouv/datasubvention/commit/5a31e3cf9fc5ce48537fabdea8b227d69593860f))
+
+
+
+
+
 # [0.28.0](https://github.com/betagouv/datasubvention/compare/v0.27.0...v0.28.0) (2023-05-15)
 
 
