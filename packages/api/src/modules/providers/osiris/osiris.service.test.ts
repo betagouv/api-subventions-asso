@@ -2,8 +2,6 @@ import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import osirisService from "./osiris.service";
 import { osirisRequestRepository } from "./repositories";
 
-const MONGO_ID = "ID";
-const findByMongoIdMock = jest.spyOn(osirisRequestRepository, "findByMongoId");
 const toDemandeSubventionMock = jest.spyOn(OsirisRequestAdapter, "toDemandeSubvention");
 
 describe("OsirisService", () => {
@@ -48,6 +46,81 @@ describe("OsirisService", () => {
             toDemandeSubventionMock.mockImplementationOnce(entity => entity);
             await osirisService.getDemandeSubventionBySiren(SIREN);
             expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
+        });
+    });
+
+    describe("raw grants", () => {
+        const DATA = [{ providerInformations: { ej: "EJ" } }];
+        describe("getRawGrantsBySiret", () => {
+            const SIRET = "12345678900000";
+            let findBySiretMock;
+            beforeAll(
+                () =>
+                    (findBySiretMock = jest
+                        .spyOn(osirisService, "findBySiret")
+                        // @ts-expect-error: mock
+                        .mockImplementation(jest.fn(() => DATA))),
+            );
+            afterAll(() => findBySiretMock.mockRestore());
+
+            it("should call findBySiret()", async () => {
+                await osirisService.getRawGrantsBySiret(SIRET);
+                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
+            });
+
+            it("returns raw grant data", async () => {
+                const actual = await osirisService.getRawGrantsBySiret(SIRET);
+                expect(actual).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "data": Object {
+                          "providerInformations": Object {
+                            "ej": "EJ",
+                          },
+                        },
+                        "joinKey": "EJ",
+                        "provider": "osiris",
+                        "type": "application",
+                      },
+                    ]
+                `);
+            });
+        });
+
+        describe("getRawGrantsBySiren", () => {
+            const SIREN = "123456789";
+            let findBySirenMock;
+            beforeAll(
+                () =>
+                    (findBySirenMock = jest
+                        .spyOn(osirisService, "findBySiren")
+                        // @ts-expect-error: mock
+                        .mockImplementation(jest.fn(() => DATA))),
+            );
+            afterAll(() => findBySirenMock.mockRestore());
+
+            it("should call findBySiren()", async () => {
+                await osirisService.getRawGrantsBySiren(SIREN);
+                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns raw grant data", async () => {
+                const actual = await osirisService.getRawGrantsBySiren(SIREN);
+                expect(actual).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "data": Object {
+                          "providerInformations": Object {
+                            "ej": "EJ",
+                          },
+                        },
+                        "joinKey": "EJ",
+                        "provider": "osiris",
+                        "type": "application",
+                      },
+                    ]
+                `);
+            });
         });
     });
 });

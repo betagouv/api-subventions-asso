@@ -8,6 +8,8 @@ import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import { RawGrant } from "../../grant/@types/rawGrant";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -17,12 +19,13 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService implements VersementsProvider {
+export class ChorusService implements VersementsProvider, GrantProvider {
     provider = {
         name: "Chorus",
         type: ProviderEnum.raw,
         description:
-            "Chorus est un système d'information porté par l'AIFE pour les services de l'Etat qui permet de gérer les paiements des crédits Etat, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'Etat.",
+            "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
+        id: "chorus",
     };
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
@@ -158,6 +161,34 @@ export class ChorusService implements VersementsProvider {
         const requests = await chorusLineRepository.findByEJ(ej);
 
         return requests.map(r => ChorusAdapter.toVersement(r));
+    }
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        return (await chorusLineRepository.findBySiret(siret)).map(grant => ({
+            provider: this.provider.id,
+            type: "payment",
+            data: grant,
+            joinKey: grant.indexedInformations.ej,
+        }));
+    }
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        return (await chorusLineRepository.findBySiren(siren)).map(grant => ({
+            provider: this.provider.id,
+            type: "payment",
+            data: grant,
+            joinKey: grant.indexedInformations.ej,
+        }));
+    }
+    getRawGrantsByRna(_rna: string): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
     }
 }
 

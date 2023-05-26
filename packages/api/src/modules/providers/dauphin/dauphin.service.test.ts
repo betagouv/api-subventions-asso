@@ -46,6 +46,12 @@ describe("Dauphin Service", () => {
         }));
     });
 
+    /**
+     * |-------------------------|
+     * |   Demande Part          |
+     * |-------------------------|
+     */
+
     describe("getDemandeSubventionBySiret", () => {
         const mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
 
@@ -86,6 +92,94 @@ describe("Dauphin Service", () => {
             expect(expected).toBe(actual);
         });
     });
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    describe("raw grant", () => {
+        const DATA = [{ gispro: { ej: "EJ" } }];
+
+        describe("getRawGrantsBySiret", () => {
+            const SIRET = "12345678900000";
+            let findBySiretMock;
+            beforeAll(
+                () =>
+                    (findBySiretMock = jest
+                        .spyOn(dauphinGisproRepository, "findBySiret")
+                        // @ts-expect-error: mock
+                        .mockImplementation(jest.fn(() => DATA))),
+            );
+            afterAll(() => findBySiretMock.mockRestore());
+
+            it("should call findBySiret()", async () => {
+                await dauphinService.getRawGrantsBySiret(SIRET);
+                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
+            });
+
+            it("returns raw grant data", async () => {
+                const actual = await dauphinService.getRawGrantsBySiret(SIRET);
+                expect(actual).toMatchInlineSnapshot(`
+                                    Array [
+                                      Object {
+                                        "data": Object {
+                                          "gispro": Object {
+                                            "ej": "EJ",
+                                          },
+                                        },
+                                        "joinKey": "EJ",
+                                        "provider": "dauphin",
+                                        "type": "application",
+                                      },
+                                    ]
+                            `);
+            });
+        });
+
+        describe("getRawGrantsBySiren", () => {
+            const SIREN = "123456789";
+            let findBySirenMock;
+            beforeAll(
+                () =>
+                    (findBySirenMock = jest
+                        .spyOn(dauphinGisproRepository, "findBySiren")
+                        // @ts-expect-error: mock
+                        .mockImplementation(jest.fn(() => DATA))),
+            );
+            afterAll(() => findBySirenMock.mockRestore());
+
+            it("should call findBySiren()", async () => {
+                await dauphinService.getRawGrantsBySiren(SIREN);
+                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns raw grant data", async () => {
+                const actual = await dauphinService.getRawGrantsBySiren(SIREN);
+                expect(actual).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "data": Object {
+                          "gispro": Object {
+                            "ej": "EJ",
+                          },
+                        },
+                        "joinKey": "EJ",
+                        "provider": "dauphin",
+                        "type": "application",
+                      },
+                    ]
+                `);
+            });
+        });
+    });
+
+    /**
+     * |-------------------------|
+     * |   Caching Part          |
+     * |-------------------------|
+     */
 
     describe("updateApplicationCache", () => {
         // @ts-expect-error spy private method

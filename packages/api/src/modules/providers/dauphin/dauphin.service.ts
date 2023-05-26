@@ -11,19 +11,28 @@ import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import { RawGrant } from "../../grant/@types/rawGrant";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 
-export class DauphinService implements DemandesSubventionsProvider, DocumentProvider {
+export class DauphinService implements DemandesSubventionsProvider, DocumentProvider, GrantProvider {
     provider = {
         name: "Dauphin",
         type: ProviderEnum.api,
         description:
             "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
+        id: "dauphin",
     };
+
+    /**
+     * |-------------------------|
+     * |   Demande Part          |
+     * |-------------------------|
+     */
 
     isDemandesSubventionsProvider = true;
     isDocumentProvider = true;
@@ -43,6 +52,41 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
     getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
     }
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        return (await dauphinGisproRepository.findBySiret(siret)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+            joinKey: grant.gispro?.ej,
+        }));
+    }
+
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        return (await dauphinGisproRepository.findBySiren(siren)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+            joinKey: grant.gispro?.ej,
+        }));
+    }
+    getRawGrantsByRna(): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Caching Part          |
+     * |-------------------------|
+     */
 
     async updateApplicationCache() {
         const lastUpdateDate = await dauphinGisproRepository.getLastImportDate();

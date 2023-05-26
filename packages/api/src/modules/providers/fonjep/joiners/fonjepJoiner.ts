@@ -1,0 +1,37 @@
+import { Siren, Siret } from "@api-subventions-asso/dto";
+import fonjepVersementRepository from "../repositories/fonjep.versement.repository";
+import fonjepSubventionRepository from "../repositories/fonjep.subvention.repository";
+import db from "../../../../shared/MongoConnection";
+
+export class FonjepJoiner {
+    applicationCollection = db.collection(fonjepSubventionRepository.collectionName);
+
+    private get joinPipeline() {
+        return [
+            {
+                $lookup: {
+                    from: fonjepVersementRepository.collectionName,
+                    localField: fonjepSubventionRepository.joinIndexes[fonjepVersementRepository.collectionName],
+                    foreignField: fonjepVersementRepository.joinIndexes[fonjepSubventionRepository.collectionName],
+                    as: "payments",
+                },
+            },
+        ];
+    }
+
+    public getFullFonjepGrantsBySiret(siret: Siret) {
+        return this.applicationCollection
+            .aggregate([{ $match: { "legalInformations.siret": siret } }, ...this.joinPipeline])
+            .toArray();
+    }
+
+    public getFullFonjepGrantsBySiren(siren: Siren) {
+        return this.applicationCollection
+            .aggregate([{ $match: { "legalInformations.siret": { $regex: `^${siren}\\d{5}` } } }, ...this.joinPipeline])
+            .toArray();
+    }
+}
+
+const fonjepJoiner = new FonjepJoiner();
+
+export default fonjepJoiner;

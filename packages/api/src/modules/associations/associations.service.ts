@@ -79,8 +79,8 @@ export class AssociationsService {
         return subventionsService.getDemandesByAssociation(identifier);
     }
 
-    async getVersements(identifier: AssociationIdentifiers) {
-        return await versementsService.getVersementsByAssociation(identifier);
+    getVersements(identifier: AssociationIdentifiers) {
+        return versementsService.getVersementsByAssociation(identifier);
     }
 
     async getDocuments(identifier: AssociationIdentifiers) {
