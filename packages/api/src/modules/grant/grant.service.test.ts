@@ -1,8 +1,8 @@
 import grantService from "./grant.service";
-import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
-import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import { isSiret } from "../../shared/Validators";
 
 jest.mock("../providers", () => ({
     prov1: { isGrantProvider: true, name: "prov1" },
@@ -10,19 +10,22 @@ jest.mock("../providers", () => ({
     prov3: { isGrantProvider: false, name: "prov2" },
 }));
 
+jest.mock("../../shared/Validators");
+
+jest.mock("../../shared/helpers/IdentifierHelper");
+
 describe("GrantService", () => {
     const RAW = "RAW";
     const JOINED = "JOINED";
 
-    describe("getGrantsByAssociation", () => {
+    describe("getGrants", () => {
         const SIREN = "123456789";
         const RNA = "W1234567";
-        let identifierTypeMock, getSirenMock, getRawGrantMock, joinGrantsMock;
+        let getSirenMock, getRawGrantMock, joinGrantsMock;
 
         beforeAll(() => {
-            identifierTypeMock = jest
-                .spyOn(IdentifierHelper, "getIdentifierType")
-                .mockReturnValue(StructureIdentifiersEnum.siren);
+            // @ts-expect-error - mock
+            getIdentifierType.mockReturnValue(StructureIdentifiersEnum.siren);
             getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
             // @ts-expect-error - mock
             getRawGrantMock = jest.spyOn(grantService, "getRawGrantsByMethod").mockResolvedValue(RAW);
@@ -31,7 +34,8 @@ describe("GrantService", () => {
         });
 
         afterAll(() => {
-            identifierTypeMock.mockRestore();
+            // @ts-expect-error - mock
+            getIdentifierType.mockRestore();
             getSirenMock.mockRestore();
             getRawGrantMock.mockRestore();
             joinGrantsMock.mockRestore();
@@ -39,20 +43,23 @@ describe("GrantService", () => {
 
         it("identifies identifier type", async () => {
             await grantService.getGrantsByAssociation(SIREN);
-            expect(identifierTypeMock).toHaveBeenCalled();
+            expect(getIdentifierType).toHaveBeenCalled();
         });
         it("throws if incorrect identifier", async () => {
-            identifierTypeMock.mockReturnValueOnce(null);
+            // @ts-expect-error - mock
+            getIdentifierType.mockReturnValueOnce(null);
             const test = () => grantService.getGrantsByAssociation(SIREN);
-            await expect(test).rejects.toThrowError(new AssociationIdentifierError());
+            await expect(test).rejects.toThrow();
         });
         it("if rna, get siren", async () => {
-            identifierTypeMock.mockReturnValueOnce(StructureIdentifiersEnum.rna);
+            // @ts-expect-error - mock
+            getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.rna);
             await grantService.getGrantsByAssociation(RNA);
             expect(getSirenMock).toHaveBeenCalledWith(RNA);
         });
         it("if rna, get raw grants by given siren", async () => {
-            identifierTypeMock.mockReturnValueOnce(StructureIdentifiersEnum.rna);
+            // @ts-expect-error - mock
+            getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.rna);
             await grantService.getGrantsByAssociation(RNA);
             expect(getRawGrantMock).toHaveBeenCalledWith(SIREN, "SIREN");
         });
@@ -71,33 +78,49 @@ describe("GrantService", () => {
         });
     });
 
-    describe("getGrantsByEstablishment", () => {
-        let getRawGrantMock, joinGrantsMock;
+    describe.each`
+        testedMethod                  | siret    | not
+        ${"getGrantsByAssociation"}   | ${false} | ${""}
+        ${"getGrantsByEstablishment"} | ${true}  | ${" not"}
+    `("$testedMethod", ({ testedMethod, siret }) => {
+        let getGrantMock;
         const SIRET = "12345678901234";
 
         beforeAll(() => {
             // @ts-expect-error - mock
-            getRawGrantMock = jest.spyOn(grantService, "getRawGrantsByMethod").mockResolvedValue(RAW);
+            getGrantMock = jest.spyOn(grantService, "getGrants").mockResolvedValue(JOINED);
             // @ts-expect-error - mock
-            joinGrantsMock = jest.spyOn(grantService, "joinGrants").mockReturnValue(JOINED);
+            isSiret.mockReturnValue(siret);
+            // @ts-expect-error - mock
+            getIdentifierType.mockReturnValue(siret ? StructureIdentifiersEnum.siret : StructureIdentifiersEnum.rna);
         });
 
         afterAll(() => {
-            getRawGrantMock.mockRestore();
-            joinGrantsMock.mockRestore();
+            getGrantMock.mockRestore();
+            // @ts-expect-error - mock
+            getIdentifierType.mockRestore();
         });
 
-        it("get raw grants by given identifier", async () => {
-            await grantService.getGrantsByEstablishment(SIRET);
-            expect(getRawGrantMock).toHaveBeenCalledWith(SIRET, "SIRET");
+        it("tests if id is siret", async () => {
+            await grantService[testedMethod](SIRET);
+            expect(isSiret).toHaveBeenCalledWith(SIRET);
         });
-        it("join gotten grants", async () => {
-            await grantService.getGrantsByEstablishment(SIRET);
-            expect(joinGrantsMock).toHaveBeenCalledWith(RAW);
+
+        it("throws if id is$not siret", async () => {
+            // @ts-expect-error - mock
+            isSiret.mockReturnValueOnce(!siret);
+            const test = () => grantService[testedMethod](SIRET);
+            await expect(test).rejects.toThrow();
         });
-        it("return joined grants", async () => {
+
+        it("get grants by given identifier", async () => {
+            await grantService[testedMethod](SIRET);
+            expect(getGrantMock).toHaveBeenCalledWith(SIRET);
+        });
+
+        it("return grants", async () => {
             const expected = JOINED;
-            const actual = await grantService.getGrantsByEstablishment(SIRET);
+            const actual = await grantService[testedMethod](SIRET);
             expect(actual).toEqual(expected);
         });
     });

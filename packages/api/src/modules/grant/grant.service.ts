@@ -1,12 +1,15 @@
-import { Siret } from "@api-subventions-asso/dto";
+import { GrantDto, Siret } from "@api-subventions-asso/dto";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import providers from "../providers";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import { isSiret } from "../../shared/Validators";
+import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
+import commonGrantService from "./commonGrant.service";
 
 export class GrantService {
     static getRawMethodNameByIdType = {
@@ -14,9 +17,10 @@ export class GrantService {
         [StructureIdentifiersEnum.siren]: "getRawGrantsBySiren",
         [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
     };
-    async getGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+
+    async getGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
         let idType = getIdentifierType(id);
-        if (!idType) throw new AssociationIdentifierError();
+        if (!idType) throw new StructureIdentifiersError();
         if (idType === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(id);
             if (siren) {
@@ -29,9 +33,14 @@ export class GrantService {
         return this.joinGrants(rawGrants);
     }
 
+    async getGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+        if (isSiret(id)) throw new AssociationIdentifierError();
+        return this.getGrants(id);
+    }
+
     async getGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
-        const rawGrants = await this.getRawGrantsByMethod(siret, StructureIdentifiersEnum.siret);
-        return this.joinGrants(rawGrants);
+        if (!isSiret(siret)) throw new StructureIdentifiersError("SIRET expected");
+        return this.getGrants(siret);
     }
 
     private async getRawGrantsByMethod(id: StructureIdentifiers, idType): Promise<RawGrant[]> {
