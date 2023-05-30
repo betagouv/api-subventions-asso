@@ -8,7 +8,6 @@ export default class RouterController {
         this.crumbs = new Store([]);
         this.props = new Store();
         this.component = new Store();
-        this.query = new Store({});
         this.routes = routes;
     }
 
@@ -26,8 +25,10 @@ export default class RouterController {
                 if (path.includes("admin") && !isAdmin(user)) return RouterService.goToUrl("/");
             }
             this.crumbs.set(RouterService.buildBreadcrumbs(path));
-            this.query.set(this.getQueryParams(searchQuery));
-            this.props.set(RouterService.getProps(path, route.segments));
+            const props = RouterService.getProps(path, route.segments);
+            const query = this.getQueryParams(searchQuery);
+            if (Object.keys(query).length) props.query = query;
+            this.props.set(props);
         }
         this.component.set(route.component());
     }
