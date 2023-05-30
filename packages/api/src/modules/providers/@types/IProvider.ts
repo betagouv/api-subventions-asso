@@ -5,5 +5,6 @@ export default interface Provider {
         name: string;
         type: ProviderEnum;
         description: string;
+        id?: string;
     };
 }
