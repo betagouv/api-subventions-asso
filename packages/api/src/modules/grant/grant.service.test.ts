@@ -3,6 +3,7 @@ import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
+import commonGrantService from "./commonGrant.service";
 
 jest.mock("../providers", () => ({
     prov1: { isGrantProvider: true, name: "prov1" },
@@ -13,6 +14,7 @@ jest.mock("../providers", () => ({
 jest.mock("../../shared/Validators");
 
 jest.mock("../../shared/helpers/IdentifierHelper");
+jest.mock("./commonGrant.service");
 
 describe("GrantService", () => {
     const RAW = "RAW";
@@ -220,6 +222,44 @@ describe("GrantService", () => {
                 },
             ];
             tryAndTest(given);
+        });
+    });
+
+    describe("getCommonGrants", () => {
+        let getGrantsMock;
+        const ID = "ID";
+        beforeAll(() => {
+            // @ts-expect-error: mock
+            getGrantsMock = jest.spyOn(grantService, "getGrants").mockResolvedValue([1, 2]);
+            // @ts-expect-error: mock
+            commonGrantService.rawToCommon.mockImplementation(v => v);
+        });
+        afterAll(() => {
+            getGrantsMock.mockReset();
+            // @ts-expect-error: mock
+            commonGrantService.rawToCommon.mockReset();
+        });
+        it("gets raw grants", async () => {
+            await grantService.getCommonGrants(ID);
+            expect(getGrantsMock).toHaveBeenCalledWith(ID);
+        });
+        it("calls adapter as many times as necessary", async () => {
+            await grantService.getCommonGrants(ID);
+            expect(commonGrantService.rawToCommon).toHaveBeenCalledWith(1, false);
+            expect(commonGrantService.rawToCommon).toHaveBeenCalledTimes(2);
+        });
+
+        it("calls adapter as many times as necessary with publishable param", async () => {
+            await grantService.getCommonGrants(ID, true);
+            expect(commonGrantService.rawToCommon).toHaveBeenCalledWith(1, true);
+            expect(commonGrantService.rawToCommon).toHaveBeenCalledTimes(2);
+        });
+        it("returns adapted and filtered grants", async () => {
+            // @ts-expect-error: mock
+            commonGrantService.rawToCommon.mockReturnValueOnce(null);
+            const expected = [2];
+            const actual = await grantService.getCommonGrants(ID, true);
+            expect(actual).toEqual(expected);
         });
     });
 });

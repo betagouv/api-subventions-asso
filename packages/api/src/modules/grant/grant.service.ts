@@ -77,6 +77,13 @@ export class GrantService {
         // reunite joined, full and lonely grants
         return [...Object.values(byKey), ...lonelyGrants];
     }
+
+    async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<GrantDto[]> {
+        const raws = await this.getGrants(id);
+        return raws
+            .map(raw => commonGrantService.rawToCommon(raw, publishable))
+            .filter(adapted => !!adapted) as GrantDto[];
+    }
 }
 
 const grantService = new GrantService();
