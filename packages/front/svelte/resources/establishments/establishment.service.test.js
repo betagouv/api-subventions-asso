@@ -1,10 +1,10 @@
-import * as providerValuesHelper from "@helpers/providerValueHelper";
 jest.mock("../../helpers/providerValueHelper");
 import establishmentService from "./establishment.service";
 import establishmentPort from "./establishment.port";
 jest.mock("./establishment.port");
 import * as establishmentAdapter from "./establishment.adapter";
 jest.mock("./establishment.adapter");
+import * as providerValuesHelper from "@helpers/providerValueHelper";
 
 describe("establishmentService", () => {
     const SIRET = "00000000912345";

@@ -34,7 +34,7 @@
         "test:cov": "npm run test:unit -- --coverage",
         "dev:svelte": "webpack --config webpack.svelte.config.js",
         "lint": "eslint --fix --ext .js,.ts,.svelte",
-        "lint:all": "eslint --fix  --ext .js,.ts,.svelte ./{src,svelte,views}/**/*.{js,ts,svelte} ./{src,svelte,views}/*.{js,ts,svelte}",
+        "lint:all": "eslint --fix --ext .js,.ts,.svelte ./{src,svelte,views}/**/*.{js,ts,svelte} ./{src,svelte,views}/*.{js,ts,svelte}",
         "prettier": "prettier --write",
         "prettier:all": "prettier --write ./{src,svelte,views}/**/*.{js,ts,svelte}",
         "lint-format": "lint-staged"

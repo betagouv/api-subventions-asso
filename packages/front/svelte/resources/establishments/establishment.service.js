@@ -1,6 +1,6 @@
-import { getValue } from "@helpers/providerValueHelper";
-import establishmentPort from "./establishment.port";
 import { toEstablishmentComponent } from "./establishment.adapter";
+import establishmentPort from "./establishment.port";
+import { getValue } from "@helpers/providerValueHelper";
 
 class EstablishmentService {
     incExtractData(identifier) {
