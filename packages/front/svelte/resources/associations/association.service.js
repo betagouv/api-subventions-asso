@@ -1,10 +1,10 @@
 import associationPort from "./association.port";
 import { isRna, isStartOfSiret } from "@helpers/validatorHelper";
 import { siretToSiren } from "@helpers/sirenHelper";
-import { flatenProviderValue, getObjectWithMetadata } from "@helpers/providerValueHelper";
+import { flattenProviderValue, getObjectWithMetadata } from "@helpers/providerValueHelper";
 import { updateSearchHistory } from "@services/storage.service";
 import { toEstablishmentComponent } from "@resources/establishments/establishment.adapter";
-import documentService from "@services/document.service";
+import documentService from "@resources/documents/documents.service";
 
 class AssociationService {
     incExtractData(identifier) {
@@ -14,7 +14,7 @@ class AssociationService {
     async getAssociation(identifier) {
         const result = await associationPort.getByIdentifier(identifier);
         if (!result) return;
-        const association = flatenProviderValue(result);
+        const association = flattenProviderValue(result);
         updateSearchHistory({
             rna: association.rna,
             siren: association.siren,
@@ -31,7 +31,8 @@ class AssociationService {
     }
 
     async getDocuments(identifier) {
-        const result = associationPort.getDocuments(identifier);
+        const result = await associationPort.getDocuments(identifier);
+        console.log(result);
         const documents = result.map(document => getObjectWithMetadata(document));
         return documentService.formatAndSortDocuments(documents);
     }

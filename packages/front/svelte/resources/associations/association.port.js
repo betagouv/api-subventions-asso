@@ -13,13 +13,12 @@ class AssociationPort {
 
     async getEstablishments(identifier) {
         const path = `/association/${identifier}/etablissements`;
-        const result = await axios.get(path);
-        return result?.data?.etablissements;
+        return (await axios.get(path))?.data?.etablissements;
     }
 
     async getDocuments(identifier) {
         const path = `association/${identifier}/documents`;
-        return await axios.get(path)?.data?.documents;
+        return (await axios.get(path))?.data?.documents;
     }
 
     async search(lookup) {

@@ -1,5 +1,5 @@
 import { NotFoundError } from "../../errors";
-import { flatenProviderValue } from "../../helpers/providerValueHelper";
+import { flattenProviderValue } from "../../helpers/providerValueHelper";
 import requestsService from "@services/requests.service";
 
 class VersementsPort {
@@ -16,7 +16,7 @@ class VersementsPort {
         return requestsService
             .get(path)
             .then(result => {
-                return result.data.versements.map(versement => flatenProviderValue(versement));
+                return result.data.versements.map(versement => flattenProviderValue(versement));
             })
             .catch(e => {
                 if (e instanceof NotFoundError) return [];

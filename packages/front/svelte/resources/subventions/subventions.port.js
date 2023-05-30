@@ -1,6 +1,6 @@
 // Voir si il ne vaux mieux pas passer ça en adapteur
 import axios from "axios";
-import { flatenProviderValue } from "../../helpers/providerValueHelper";
+import { flattenProviderValue } from "../../helpers/providerValueHelper";
 import SSEConnector from "../../core/SseConnector";
 import Store from "../../core/Store";
 
@@ -30,7 +30,7 @@ class SubventionsPort {
             } else if (data.subventions) {
                 store.update(state => ({
                     ...state,
-                    subventions: state.subventions.concat(data.subventions.map(d => flatenProviderValue(d))),
+                    subventions: state.subventions.concat(data.subventions.map(d => flattenProviderValue(d))),
                     __meta__: {
                         ...state.__meta__,
                         providerAnswers: state.__meta__.providerAnswers + 1,
@@ -53,7 +53,7 @@ class SubventionsPort {
             const subventions = await this._getSubventionByHttp(type, identifier);
             store.update(state => ({
                 status: "close",
-                subventions: state.subventions.concat(subventions.map(d => flatenProviderValue(d))),
+                subventions: state.subventions.concat(subventions.map(d => flattenProviderValue(d))),
                 __meta__: {
                     providerCalls: 1,
                     providerAnswers: 1,

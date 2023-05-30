@@ -1,4 +1,5 @@
-import { getObjectWithMetadata } from "../helpers/providerValueHelper";
+import documentPort from "./documents.port";
+import { getObjectWithMetadata } from "@helpers/providerValueHelper";
 
 export const toDocumentComponent = getObjectWithMetadata;
 

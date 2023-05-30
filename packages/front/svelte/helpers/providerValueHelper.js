@@ -1,9 +1,9 @@
 // TODO: make this file available to API and FRONT ? => Create a core/shared package ? Put it in DTO package because PV is related to DTO ?
 
-export const flatenProviderValue = providerValueObject => {
+export const flattenProviderValue = providerValueObject => {
     if (isProviderValue(providerValueObject)) {
         console.error(
-            "You are not suppose to call flatenProviderValue with ProviderValue. Only ProviderValues and object containing ProviderValues are allowed",
+            "You are not suppose to call flattenProviderValue with ProviderValue. Only ProviderValues and object containing ProviderValues are allowed",
         );
         return getValue(providerValueObject);
     }
@@ -14,14 +14,14 @@ export const flatenProviderValue = providerValueObject => {
             [prop]:
                 isProviderValues(providerValueObject[prop]) || isProviderValue(providerValueObject[prop])
                     ? getValue(providerValueObject[prop])
-                    : flatenProviderValue(providerValueObject[prop]),
+                    : flattenProviderValue(providerValueObject[prop]),
         };
     };
 
     if (["number", "string"].includes(typeof providerValueObject) | !providerValueObject) return providerValueObject;
 
     if (Array.isArray(providerValueObject)) {
-        return providerValueObject.map(ob => flatenProviderValue(ob));
+        return providerValueObject.map(ob => flattenProviderValue(ob));
     }
 
     // Else we got an object of provider value(s)
@@ -32,7 +32,7 @@ export const flatenProviderValue = providerValueObject => {
 export const getObjectWithMetadata = providerValueObject => {
     if (typeof providerValueObject !== "object" || Array.isArray(providerValueObject)) return providerValueObject;
     return {
-        ...flatenProviderValue(providerValueObject),
+        ...flattenProviderValue(providerValueObject),
         provider: getProvider(providerValueObject.nom),
         date: new Date(getDate(providerValueObject.nom)),
     };

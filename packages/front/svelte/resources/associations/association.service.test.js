@@ -18,7 +18,7 @@ const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 import * as providerValueHelper from "@helpers/providerValueHelper";
 jest.mock("@helpers/providerValueHelper", () => {
     return {
-        flatenProviderValue: jest.fn(() => ASSOCIATIONS),
+        flattenProviderValue: jest.fn(() => ASSOCIATIONS),
     };
 });
 
@@ -41,9 +41,9 @@ describe("AssociationService", () => {
         });
 
         it("should flaten data", async () => {
-            associationPort.getByIdentifier.mockImplementationOnce(() => ASSOCIATIONS);
+            associationPort.getByIdentifier.mockImplementationOnce(async () => ASSOCIATIONS);
             await associationService.getAssociation(SIREN);
-            expect(providerValueHelper.flatenProviderValue).toHaveBeenCalledTimes(1);
+            expect(providerValueHelper.flattenProviderValue).toHaveBeenCalledTimes(1);
         });
     });
 

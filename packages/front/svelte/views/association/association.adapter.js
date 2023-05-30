@@ -1,8 +1,8 @@
-import { getDate, getProvider, flatenProviderValue } from "../../helpers/providerValueHelper";
+import { getDate, getProvider, flattenProviderValue } from "../../helpers/providerValueHelper";
 
 export const toDocumentComponent = document => {
     return {
-        ...flatenProviderValue(document),
+        ...flattenProviderValue(document),
         provider: getProvider(document.nom),
         date: new Date(getDate(document.nom)),
     };
