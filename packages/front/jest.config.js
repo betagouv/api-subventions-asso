@@ -5,7 +5,7 @@ module.exports = {
     transform: {
         "^.+\\.svelte$": "svelte-jester",
         "^.+\\.ts?$": "ts-jest",
-        "\\.jsx?$": "babel-jest"
+        "\\.jsx?$": "babel-jest",
     },
     modulePathIgnorePatterns: ["./build"],
     moduleFileExtensions: ["ts", "js", "svelte"],
@@ -16,13 +16,13 @@ module.exports = {
         "@core/(.*)$": "<rootDir>/svelte/core/$1",
         "@dsfr/(.*)$": "<rootDir>/svelte/dsfr/$1",
         "@helpers/(.*)$": "<rootDir>/svelte/helpers/$1",
-        "@services/(.*)$": "<rootDir>/svelte/services/$1"
+        "@services/(.*)$": "<rootDir>/svelte/services/$1",
+        "@store/(.*)$": "<rootDir>/svelte/store/$1",
     },
     globals: {
         $crisp: {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            push: () => {
-            }
-        }
-    }
+            push: () => {},
+        },
+    },
 };

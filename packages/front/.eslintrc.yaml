@@ -1,58 +1,60 @@
 extends:
-  - eslint:recommended
-  - plugin:import/recommended
-  - plugin:import/errors
-  - plugin:import/warnings
-  - plugin:import/typescript
-  - "plugin:@typescript-eslint/eslint-recommended"
-  - "plugin:@typescript-eslint/recommended"
-  - prettier
+    - eslint:recommended
+    - plugin:import/recommended
+    - plugin:import/errors
+    - plugin:import/warnings
+    - plugin:import/typescript
+    - "plugin:@typescript-eslint/eslint-recommended"
+    - "plugin:@typescript-eslint/recommended"
+    - prettier
 env:
-  es6: true
-  browser: true
-  jest: true
+    es6: true
+    browser: true
+    jest: true
 parser: "@typescript-eslint/parser"
-parserOptions: 
-  ecmaVersion: 2020
-  sourceType: module
-  extraFileExtensions: 
-    - .svelte
-overrides:
-  - files: 
-      - "*.svelte"
-    processor: svelte3/svelte3
-plugins:
-  - "@typescript-eslint"
-  - import
-  - svelte3
-ignorePatterns:
-  - "*.test.ts"
-  - "*.spec.ts"
-  - node_modules
-  - webpack.*
-  - views/index.js
-settings: 
-  svelte3/typescript: true
-  import/resolver:
-    alias: 
-      map:
-        - - "@resources"
-          - ./svelte/resources
-        - - "@components"
-          - ./svelte/components
-        - - "@dsfr"
-          - ./svelte/dsfr
-        - - "@core"
-          - ./svelte/core
-        - - "@helpers"
-          - ./svelte/helpers
-        - - "@services"
-          - ./svelte/services
-      extensions:
-        - .js
+parserOptions:
+    ecmaVersion: 2020
+    sourceType: module
+    extraFileExtensions:
         - .svelte
+overrides:
+    - files:
+          - "*.svelte"
+      processor: svelte3/svelte3
+plugins:
+    - "@typescript-eslint"
+    - import
+    - svelte3
+ignorePatterns:
+    - "*.test.ts"
+    - "*.spec.ts"
+    - node_modules
+    - webpack.*
+    - views/index.js
+settings:
+    svelte3/typescript: true
+    import/resolver:
+        alias:
+            map:
+                - - "@resources"
+                  - ./svelte/resources
+                - - "@components"
+                  - ./svelte/components
+                - - "@dsfr"
+                  - ./svelte/dsfr
+                - - "@core"
+                  - ./svelte/core
+                - - "@helpers"
+                  - ./svelte/helpers
+                - - "@services"
+                  - ./svelte/services
+                - - "@store"
+                  - ./svelte/store
+            extensions:
+                - .js
+                - .svelte
 rules:
-  import/order: error
-  "@typescript-eslint/no-unused-vars":
-    - "warn"
-    -  destructuredArrayIgnorePattern: "^_"
+    import/order: error
+    "@typescript-eslint/no-unused-vars":
+        - "warn"
+        - destructuredArrayIgnorePattern: "^_"
