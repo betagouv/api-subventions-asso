@@ -2,6 +2,8 @@ import caisseDepotsService from "./caisseDepots.service";
 import axios from "axios";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 
+jest.mock("./adapters/caisseDtoAdapter");
+
 describe("CaisseDepotsService", () => {
     const TOKEN = "TOKEN";
     const IDENTIFIER = "toto";
@@ -37,18 +39,18 @@ describe("CaisseDepotsService", () => {
     describe("getCaisseDepotsSubventions", () => {
         const IDENTIFIER = "toto";
         const RAW_RES = [1, 2];
-        let adapterSpy: jest.SpyInstance;
+
         beforeAll(() => {
             privateRawGetSpy.mockResolvedValue(RAW_RES);
-            adapterSpy = jest
-                .spyOn(CaisseDepotsDtoAdapter, "toDemandeSubvention")
+            CaisseDepotsDtoAdapter.toDemandeSubvention
                 // @ts-expect-error: mock
                 .mockImplementation(input => input.toString());
         });
 
         afterAll(() => {
             privateRawGetSpy.mockReset();
-            adapterSpy.mockReset();
+            // @ts-expect-error: mock
+            CaisseDepotsDtoAdapter.toDemandeSubvention.mockReset();
         });
 
         it("calls raw get method", async () => {
@@ -60,8 +62,8 @@ describe("CaisseDepotsService", () => {
         it("calls adapter with records from raw get", async () => {
             // @ts-expect-error: mock
             await caisseDepotsService.getCaisseDepotsSubventions(IDENTIFIER);
-            expect(adapterSpy).toBeCalledWith(1);
-            expect(adapterSpy).toBeCalledWith(2); //check two expect ok
+            expect(CaisseDepotsDtoAdapter.toDemandeSubvention).toBeCalledWith(1);
+            expect(CaisseDepotsDtoAdapter.toDemandeSubvention).toBeCalledWith(2); //check two expect ok
         });
 
         it("return result from adapter", async () => {
