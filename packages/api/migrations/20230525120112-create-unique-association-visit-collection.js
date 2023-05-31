@@ -5,7 +5,7 @@ const {
 } = require("../build/src/modules/stats/repositories/statsUniqueVisitByDay.repository.js");
 
 module.exports = {
-    async up(db) {
+    async up() {
         await connectDB();
         await statsUniqueVisitByDayRepository.createCollectionFromStatsAssociationVisits();
     },
