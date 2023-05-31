@@ -555,7 +555,11 @@ describe("Dauphin Service", () => {
 
         describe("findDauphinInternalId", () => {
             const ID = "DAUPHIN_ID";
-            const AXIOS_RES = { hits: { hits: [{ _source: { id: ID } }] } };
+            const AXIOS_RES = {
+                hits: {
+                    hits: [{ _source: { SIREN: "pas le bon" } }, { _source: { SIREN: SIREN }, _id: `cget-${ID}` }],
+                },
+            };
 
             beforeAll(() => {
                 // @ts-expect-errors mocked
@@ -575,7 +579,7 @@ describe("Dauphin Service", () => {
                 expect(axios.post.mock.calls[0]).toMatchSnapshot();
             });
 
-            it("returns documents from axios", async () => {
+            it("returns id from axios with proper siren", async () => {
                 const expected = ID;
                 // @ts-expect-errors test private method
                 const actual = await dauphinService.findDauphinInternalId(SIREN);
