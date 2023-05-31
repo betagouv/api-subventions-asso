@@ -2,7 +2,7 @@ import caisseDepotsService from "./caisseDepots.service";
 import axios from "axios";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 
-jest.mock("./adapters/caisseDtoAdapter");
+jest.mock("./adapters/caisseDepotsDtoAdapter");
 
 describe("CaisseDepotsService", () => {
     const TOKEN = "TOKEN";
@@ -141,6 +141,36 @@ describe("CaisseDepotsService", () => {
             privateRawGetSpy.mockResolvedValueOnce(RES);
             const actual = await caisseDepotsService[`getRawGrantsBy${identifierType}`](identifierCalled);
             expect(actual).toMatchObject(expected);
+        });
+    });
+
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            CaisseDepotsDtoAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            CaisseDepotsDtoAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            caisseDepotsService.rawToCommon({ data: RAW });
+            expect(CaisseDepotsDtoAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            CaisseDepotsDtoAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = caisseDepotsService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
         });
     });
 });

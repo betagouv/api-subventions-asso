@@ -76,6 +76,10 @@ export class CaisseDepotsService implements DemandesSubventionsProvider, GrantPr
     getRawGrantsByRna(_rna: string): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
     }
+
+    rawToCommon(rawGrant: RawGrant) {
+        return CaisseDepotsDtoAdapter.toCommon(rawGrant.data as CaisseDepotsSubventionDto);
+    }
 }
 
 const caisseDepotsService = new CaisseDepotsService();
