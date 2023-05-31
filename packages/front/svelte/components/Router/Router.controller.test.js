@@ -48,6 +48,14 @@ describe("RouterController", () => {
             expect(getQueryParamsMock).toHaveBeenCalledWith(expected);
         });
 
+        it("should not add query in props", () => {
+            const expected = undefined;
+            controller.loadRoute("", undefined);
+            const actual = controller.props.query;
+
+            expect(actual).toEqual(expected);
+        });
+
         it("should call buildBreadcrumbs", () => {
             const expected = "path";
             controller.loadRoute(expected, "");

@@ -15,10 +15,10 @@ describe("AssociationPort", () => {
         });
     });
 
-    describe("getByRnaOrSiren", () => {
+    describe("getByIdentifier", () => {
         it("calls axios get", async () => {
             const expected = `/association/${SIREN}`;
-            await associationPort.getByRnaOrSiren(SIREN);
+            await associationPort.getByIdentifier(SIREN);
             expect(axios.get).toHaveBeenCalledWith(expected);
         });
 
@@ -26,7 +26,7 @@ describe("AssociationPort", () => {
             const expected = "";
             const RES = { data: { association: expected } };
             axios.get.mockResolvedValueOnce(RES);
-            const actual = await associationPort.getByRnaOrSiren(SIREN);
+            const actual = await associationPort.getByIdentifier(SIREN);
             expect(actual).toBe(expected);
         });
     });

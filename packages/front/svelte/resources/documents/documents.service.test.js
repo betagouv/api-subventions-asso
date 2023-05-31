@@ -1,7 +1,6 @@
 import documentPort from "./documents.port";
-import documentService from "./documents.service";
-
 jest.mock("./documents.port");
+import documentService from "./documents.service";
 
 describe("DocumentService", () => {
     const DOC_URL = "/path";

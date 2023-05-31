@@ -14,7 +14,7 @@ describe("providerValueHelper", () => {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    describe("flatenProviderValue", () => {
+    describe("flattenProviderValue", () => {
         describe("when given param is a ProviderValues", () => {
             const PROVIDER_VALUES = [
                 buildProviderValue("A", "PROVIDER A", today),
@@ -23,7 +23,7 @@ describe("providerValueHelper", () => {
 
             it("should return an array of value", () => {
                 const expected = [PROVIDER_VALUES[0].value, PROVIDER_VALUES[1].value];
-                const actual = ProviderValueHelper.flatenProviderValue(PROVIDER_VALUES);
+                const actual = ProviderValueHelper.flattenProviderValue(PROVIDER_VALUES);
                 expect(actual).toEqual(expected);
             });
         });

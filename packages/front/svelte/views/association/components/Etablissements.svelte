@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import associationService from "../association.service.js";
+    import associationService from "@resources/associations/association.service";
 
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
@@ -18,7 +18,7 @@
 
     onMount(async () => {
         await waitElementIsVisible(element);
-        promise = associationService.getEtablissements(associationIdentifier);
+        promise = associationService.getEstablishments(associationIdentifier);
     });
 </script>
 

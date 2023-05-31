@@ -6,9 +6,19 @@ class AssociationPort {
         axios.get(path).catch(() => null);
     }
 
-    async getByRnaOrSiren(identifier) {
+    async getByIdentifier(identifier) {
         const path = `/association/${identifier}`;
         return (await axios.get(path))?.data?.association;
+    }
+
+    async getEstablishments(identifier) {
+        const path = `/association/${identifier}/etablissements`;
+        return (await axios.get(path))?.data?.etablissements;
+    }
+
+    async getDocuments(identifier) {
+        const path = `association/${identifier}/documents`;
+        return (await axios.get(path))?.data?.documents;
     }
 
     async search(lookup) {

@@ -1,96 +1,107 @@
 import associationService from "./association.service";
-import associationPort from "./association.port";
-import { isRna, isStartOfSiret } from "@helpers/validatorHelper";
-import { siretToSiren } from "@helpers/sirenHelper";
-import * as providerValueHelper from "@helpers/providerValueHelper";
 
-jest.mock("@helpers/validatorHelper");
-jest.mock("@helpers/sirenHelper");
-jest.mock("@helpers/providerValueHelper", () => ({
-    flatenProviderValue: jest.fn(),
+import associationPort from "./association.port";
+jest.mock("./association.port", () => ({
+    incExtractData: jest.fn(),
+    getByIdentifier: jest.fn(() => ({})),
+    getEstablishments: jest.fn(() => []),
+    search: jest.fn(() => []),
 }));
+
+import * as validatorHelper from "@helpers/validatorHelper";
+jest.mock("@helpers/validatorHelper");
+import * as sirenHelper from "@helpers/sirenHelper";
+jest.mock("@helpers/sirenHelper");
+
+const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
+
+import * as providerValueHelper from "@helpers/providerValueHelper";
+jest.mock("@helpers/providerValueHelper", () => {
+    return {
+        flattenProviderValue: jest.fn(() => ASSOCIATIONS),
+    };
+});
 
 describe("AssociationService", () => {
     const SIREN = "000000009";
 
+    describe("incExtractData", () => {
+        it("should call associationPort.extractData()", () => {
+            associationService.incExtractData(SIREN);
+            expect(associationPort.incExtractData).toHaveBeenCalledWith(SIREN);
+        });
+    });
+
     describe("getAssociation", () => {
         it("should return undefined if no association found", async () => {
-            jest.spyOn(associationPort, "getByRnaOrSiren").mockImplementationOnce(jest.fn());
             const expected = undefined;
+            associationPort.getByIdentifier.mockImplementationOnce(jest.fn());
             const actual = await associationService.getAssociation(SIREN);
             expect(actual).toEqual(expected);
         });
 
-        it("should flatten data", async () => {
-            jest.spyOn(associationPort, "getByRnaOrSiren").mockImplementationOnce(async () => ({}));
+        it("should flaten data", async () => {
+            associationPort.getByIdentifier.mockImplementationOnce(async () => ASSOCIATIONS);
             await associationService.getAssociation(SIREN);
-            expect(providerValueHelper.flatenProviderValue).toHaveBeenCalledTimes(1);
+            expect(providerValueHelper.flattenProviderValue).toHaveBeenCalledTimes(1);
         });
     });
 
-    describe("incExtractData", () => {
-        let mockPort;
-        beforeAll(() => {
-            mockPort = jest.spyOn(associationPort, "incExtractData").mockResolvedValue();
-        });
-        afterAll(() => {
-            mockPort.mockRestore();
-        });
-
-        it("should call associationPort.extractData()", () => {
-            associationService.incExtractData(SIREN);
-            expect(mockPort).toHaveBeenCalledWith(SIREN);
+    describe("getEstablishments", () => {
+        it("should call port", async () => {
+            await associationService.getEstablishments(SIREN);
+            expect(associationPort.getEstablishments).toHaveBeenCalledWith(SIREN);
         });
     });
 
     describe("_searchByIdentifier", () => {
-        let mockGetAsso;
+        const mockGetAssociation = jest.spyOn(associationService, "getAssociation");
+        beforeAll(() =>
+            mockGetAssociation.mockImplementation(() => ({
+                rna: ASSOCIATIONS[0].rna,
+                siren: ASSOCIATIONS[0].siren,
+                denomination_rna: "DENOMINATION",
+            })),
+        );
 
-        beforeAll(() => {
-            mockGetAsso = jest.spyOn(associationService, "getAssociation").mockResolvedValue({});
+        afterAll(() => {
+            associationPort.getByIdentifier.mockReset();
         });
-        afterAll(() => mockGetAsso.mockRestore());
 
         it("calls helper to identify start of siret", async () => {
             await associationService._searchByIdentifier(SIREN);
-            expect(isStartOfSiret).toHaveBeenCalledWith(SIREN);
+            expect(validatorHelper.isStartOfSiret).toHaveBeenCalledWith(SIREN);
         });
 
         it("transform to siren if start of siret", async () => {
-            isStartOfSiret.mockReturnValueOnce(true);
+            validatorHelper.isStartOfSiret.mockReturnValueOnce(true);
             await associationService._searchByIdentifier(SIREN);
-            expect(siretToSiren).toHaveBeenCalledWith(SIREN);
+            expect(sirenHelper.siretToSiren).toHaveBeenCalledWith(SIREN);
         });
 
-        it("gets association from computed siren", async () => {
+        it("call getAssociation()", async () => {
             const transformedSiren = "test";
-            isStartOfSiret.mockReturnValueOnce(true);
-            siretToSiren.mockReturnValueOnce(transformedSiren);
+            validatorHelper.isStartOfSiret.mockReturnValueOnce(true);
+            sirenHelper.siretToSiren.mockReturnValueOnce(transformedSiren);
             await associationService._searchByIdentifier(SIREN);
-            expect(mockGetAsso).toHaveBeenCalledWith(transformedSiren);
-        });
-
-        it("gets association from given identifier", async () => {
-            isStartOfSiret.mockReturnValueOnce(false);
-            await associationService._searchByIdentifier(SIREN);
-            expect(mockGetAsso).toHaveBeenCalledWith(SIREN);
+            expect(mockGetAssociation).toHaveBeenCalledWith(transformedSiren);
         });
 
         it("catch 404 and returns empty list", async () => {
-            mockGetAsso.mockRejectedValueOnce({ httpCode: 404 });
+            mockGetAssociation.mockRejectedValue({ httpCode: 404 });
             const expected = [];
             const actual = await associationService._searchByIdentifier(SIREN);
             expect(actual).toEqual(expected);
         });
 
         it("returns summarized result from port", async () => {
-            mockGetAsso.mockResolvedValue({
+            mockGetAssociation.mockImplementationOnce(() => ({
                 rna: "RNA",
                 siren: "SIREN",
                 denomination_rna: "NOM_RNA",
                 denomination_siren: "NOM_SIREN",
                 autre_valeur: "ratata",
-            });
+            }));
             const expected = [
                 {
                     rna: "RNA",
@@ -104,22 +115,14 @@ describe("AssociationService", () => {
     });
 
     describe("_searchByText", () => {
-        let mockPort;
-        beforeAll(() => {
-            mockPort = jest.spyOn(associationPort, "search").mockResolvedValue([]);
-        });
-        afterAll(() => {
-            mockPort.mockRestore();
-        });
-
         it("calls port", async () => {
             await associationService._searchByText(SIREN);
-            expect(mockPort).toHaveBeenCalledWith(SIREN);
+            expect(associationPort.search).toHaveBeenCalledWith(SIREN);
         });
 
         it("returns result from port", async () => {
             const expected = "test";
-            mockPort.mockReturnValueOnce(expected);
+            associationPort.search.mockReturnValueOnce(expected);
             const actual = await associationService._searchByText(SIREN);
             expect(actual).toBe(expected);
         });
@@ -156,31 +159,32 @@ describe("AssociationService", () => {
 
         it("calls identifier helpers if _searchByIdentifier is empty", async () => {
             await associationService.search(SIREN);
-            expect(isRna).toHaveBeenCalledWith(SIREN) && expect(isStartOfSiret).toHaveBeenCalledWith(SIREN);
+            expect(validatorHelper.isRna).toHaveBeenCalledWith(SIREN) &&
+                expect(validatorHelper.isStartOfSiret).toHaveBeenCalledWith(SIREN);
         });
 
         it("does not call _searchByIdentifier if arg is not an identifier", async () => {
-            isRna.mockReturnValueOnce(false);
-            isStartOfSiret.mockReturnValueOnce(false);
+            validatorHelper.isRna.mockReturnValueOnce(false);
+            validatorHelper.isStartOfSiret.mockReturnValueOnce(false);
             await associationService.search(SIREN);
             expect(mockByIdentifier).not.toHaveBeenCalled();
         });
 
         it("calls _searchByIdentifier if arg is an identifier", async () => {
-            isStartOfSiret.mockReturnValueOnce(true);
+            validatorHelper.isStartOfSiret.mockReturnValueOnce(true);
             await associationService.search(SIREN);
             expect(mockByIdentifier).toHaveBeenCalledWith(SIREN);
         });
 
         it("returns result from _searchByIdentifier if arg is an identifier", async () => {
-            isStartOfSiret.mockReturnValueOnce(true);
+            validatorHelper.isStartOfSiret.mockReturnValueOnce(true);
             await associationService.search(SIREN);
             expect(mockByIdentifier).toHaveBeenCalledWith(SIREN);
         });
 
         it("returns an empty list if arg is not an identifier and searchByText is empty-handed", async () => {
-            isRna.mockReturnValueOnce(false);
-            isStartOfSiret.mockReturnValueOnce(false);
+            validatorHelper.isRna.mockReturnValueOnce(false);
+            validatorHelper.isStartOfSiret.mockReturnValueOnce(false);
             const expected = [];
             const actual = await associationService.search(SIREN);
             expect(actual).toEqual(expected);

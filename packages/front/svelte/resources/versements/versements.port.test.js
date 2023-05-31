@@ -82,7 +82,7 @@ describe("VersementsPort", () => {
 
         beforeAll(() => {
             getMock = jest.spyOn(requestsService, "get");
-            flatenProviderValueMock = jest.spyOn(providerValueHelper, "flatenProviderValue");
+            flatenProviderValueMock = jest.spyOn(providerValueHelper, "flattenProviderValue");
         });
 
         afterAll(() => {

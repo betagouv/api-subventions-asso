@@ -9,7 +9,7 @@ const prod = mode === "production";
 
 module.exports = {
     entry: {
-        "build/bundle": ["./svelte/main.js"]
+        "build/bundle": ["./svelte/main.js"],
     },
     resolve: {
         alias: {
@@ -19,14 +19,15 @@ module.exports = {
             "@dsfr": path.resolve(__dirname, "svelte/dsfr"),
             "@core": path.resolve(__dirname, "svelte/core"),
             "@services": path.resolve(__dirname, "svelte/services"),
-            "@helpers": path.resolve(__dirname, "svelte/helpers")
+            "@helpers": path.resolve(__dirname, "svelte/helpers"),
+            "@store": path.resolve(__dirname, "svelte/store"),
         },
         extensions: [".mjs", ".js", ".svelte", ".ts"],
-        mainFields: ["svelte", "module", "main"]
+        mainFields: ["svelte", "module", "main"],
     },
     output: {
         path: path.join(__dirname, "/static/js"),
-        filename: "svelte.js"
+        filename: "svelte.js",
         // chunkFilename: '[name].[id].js'
     },
     module: {
@@ -37,39 +38,39 @@ module.exports = {
                     loader: "svelte-loader",
                     options: {
                         compilerOptions: {
-                            dev: !prod
+                            dev: !prod,
                         },
                         emitCss: prod,
-                        hotReload: !prod
-                    }
-                }
+                        hotReload: !prod,
+                    },
+                },
             },
             {
                 test: /\.tsx?$/,
                 use: "ts-loader",
-                exclude: [/node_modules/]
+                exclude: [/node_modules/],
             },
             {
                 test: /\.css$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader"]
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
             },
             {
                 // required to prevent errors from Svelte on Webpack 5+
                 test: /node_modules\/svelte\/.*\.mjs$/,
                 resolve: {
-                    fullySpecified: false
-                }
-            }
-        ]
+                    fullySpecified: false,
+                },
+            },
+        ],
     },
     mode,
     plugins: [
         new DefinePlugin({
-            "process.env": JSON.stringify({ DATASUB_URL: process.env.DATASUB_URL, ENV: process.env.ENV })
+            "process.env": JSON.stringify({ DATASUB_URL: process.env.DATASUB_URL, ENV: process.env.ENV }),
         }),
         new MiniCssExtractPlugin({
-            filename: "../css/svelte.css"
-        })
+            filename: "../css/svelte.css",
+        }),
     ],
-    devtool: prod ? false : "source-map"
+    devtool: prod ? false : "source-map",
 };
