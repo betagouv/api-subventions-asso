@@ -26,6 +26,21 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
         return result[0].date;
     }
 
+    _getGroupByAssociationIdentifierMatcher() {
+        return {
+            $group: {
+                _id: "$associationIdentifier",
+                visits: { $addToSet: "$$ROOT" },
+            },
+        };
+    }
+
+    findGroupedByAssociationIdentifier() {
+        return this.collection.aggregate([this._getGroupByAssociationIdentifierMatcher()]).toArray() as Promise<
+            { _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]
+        >;
+    }
+
     findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
         return this.collection
             .aggregate([
@@ -37,12 +52,7 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
                         },
                     },
                 },
-                {
-                    $group: {
-                        _id: "$associationIdentifier",
-                        visits: { $addToSet: "$$ROOT" },
-                    },
-                },
+                this._getGroupByAssociationIdentifierMatcher(),
             ])
             .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
     }

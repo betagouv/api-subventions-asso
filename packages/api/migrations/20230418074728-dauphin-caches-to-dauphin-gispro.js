@@ -15,7 +15,7 @@ module.exports = {
             return;
         }
 
-        await dauphinGisproRepository.migrateDauphinCacheToDauphinGispro();
+        await dauphinGisproRepository.migrateDauphinCacheToDauphinGispro(console.log);
     },
 
     async down() {
