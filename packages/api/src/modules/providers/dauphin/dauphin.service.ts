@@ -235,7 +235,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
         const token = await this.getAuthToken();
         const result = (
             await axios.get(
-                "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/41fPMDsxf8?expand=pieces.documents",
+                `https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/${dauphinInternalId}?expand=pieces.documents`,
                 this.buildSearchHeader(token),
             )
         ).data.pieces;
@@ -267,7 +267,8 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
                 this.buildSearchHeader(token),
             )
         ).data;
-        return res?.hits?.hits?.[0]?._source?.id;
+        const properHit = res?.hits?.hits?.find(asso => asso._source.SIREN === siren);
+        return properHit?._id?.match(/cget-(.*)/)?.[1];
     }
 
     async getSpecificDocumentStream(docPath: string): Promise<IncomingMessage> {

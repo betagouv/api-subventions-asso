@@ -47,7 +47,7 @@ Array [
 
 exports[`Dauphin Service documents getDocumentsBySiren should call axios with args 1`] = `
 Array [
-  "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/41fPMDsxf8?expand=pieces.documents",
+  "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/DAUPHIN_ID?expand=pieces.documents",
   Object {
     "headers": Object {
       "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
