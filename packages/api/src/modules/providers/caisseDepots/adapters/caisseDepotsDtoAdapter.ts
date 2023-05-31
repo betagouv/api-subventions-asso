@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention, FullGrantDto } from "@api-subventions-asso/dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import caisseDepotsService from "../caisseDepots.service";
 import CaisseDepotsSubventionDto from "../dto/CaisseDepotsSubventionDto";
@@ -34,6 +34,21 @@ export default class CaisseDepotsDtoAdapter {
             annee_demande: toPV(new Date(dto.fields.dateconvention).getFullYear()), // doubt
             pluriannualite: toPV(this._multiannuality(dto)),
             versementKey: toPV(dto.id),
+        };
+    }
+
+    public static toCommon(dto: CaisseDepotsSubventionDto): FullGrantDto {
+        return {
+            exercice: new Date(dto.fields.dateconvention).getFullYear(),
+            bop: "",
+            date_debut: new Date(dto.fields.datesversement_debut),
+            dispositif: "Caisse des dépôts", // business logic doubt here
+            montant_accorde: dto.fields.montant,
+            montant_verse: dto.fields.montant,
+            objet: "Caisse des dépôts",
+            service_instructeur: dto.fields.nomattribuant,
+            siret: dto.fields.idbeneficiaire,
+            statut: ApplicationStatus.GRANTED,
         };
     }
 }
