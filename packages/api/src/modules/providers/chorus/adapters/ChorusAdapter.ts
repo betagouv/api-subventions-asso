@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import { VersementChorus } from "@api-subventions-asso/dto";
+import { PaymentDto, VersementChorus } from "@api-subventions-asso/dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
@@ -31,6 +31,14 @@ export default class ChorusAdapter {
             compte: toPvOrUndefined(entity.indexedInformations.compte),
             type: toPvOrUndefined(entity.indexedInformations.typeOperation),
             bop: toPv(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4)),
+        };
+    }
+
+    public static toCommon(entity: ChorusLineEntity): PaymentDto {
+        return {
+            montant_verse: entity.indexedInformations.amount,
+            date_debut: entity.indexedInformations.dateOperation,
+            bop: entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4),
         };
     }
 }
