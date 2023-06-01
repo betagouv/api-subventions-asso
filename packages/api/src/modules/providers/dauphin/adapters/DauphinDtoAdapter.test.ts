@@ -1,7 +1,7 @@
-import DauphinDtoAdapter from "./DauphinDtoAdapter";
-
 const mockLabel = "NORMALIZED_LABEL";
 const mockToStatus = jest.fn(() => mockLabel);
+
+import DauphinDtoAdapter from "./DauphinDtoAdapter";
 
 jest.mock("../../helper", () => ({
     toStatusFactory: () => mockToStatus,

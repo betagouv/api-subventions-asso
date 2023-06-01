@@ -227,9 +227,11 @@ describe("Dauphin Service", () => {
         });
 
         it("should call buildFetchFromDateQuery", async () => {
+            jest.useFakeTimers();
             const DATE = new Date();
             await dauphinService.updateApplicationCache();
             expect(mockBuildFetchFromDateQuery).toHaveBeenCalledWith(DATE);
+            jest.useRealTimers();
         });
 
         it("should build headers from token", async () => {
