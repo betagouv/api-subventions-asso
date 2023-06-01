@@ -6,6 +6,8 @@ import * as Validators from "../../../shared/Validators";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 
+jest.mock("./adapters/FonjepEntityAdapter");
+
 const SIREN = "002034000";
 const SIRET = `${SIREN}32010`;
 const CODE_POSTE = "J00034";
@@ -330,6 +332,36 @@ describe("FonjepService", () => {
                     ]
                 `);
             });
+        });
+    });
+
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            FonjepEntityAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            FonjepEntityAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            fonjepService.rawToCommon({ data: RAW });
+            expect(FonjepEntityAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            FonjepEntityAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = fonjepService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
         });
     });
 });

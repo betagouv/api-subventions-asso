@@ -231,6 +231,10 @@ export class FonjepService
         }));
     }
 
+    rawToCommon(raw: RawGrant) {
+        return FonjepEntityAdapter.toCommon(raw.data);
+    }
+
     /**
      * |----------------------------|
      * |  Database Management      |
