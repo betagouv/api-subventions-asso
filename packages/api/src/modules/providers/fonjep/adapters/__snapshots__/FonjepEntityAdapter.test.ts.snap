@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FonjepEntityAdapter toCommon returns proper result 1`] = `
+Object {
+  "bop": "",
+  "date_debut": 2022-02-02T00:00:00.000Z,
+  "dispositif": "DISPOSITIF",
+  "exercice": 2023,
+  "montant_accorde": 43,
+  "montant_verse": 42,
+  "objet": "",
+  "service_instructeur": "INSTRUCTEUR",
+  "siret": "123456789",
+  "statut": "Accordé",
+}
+`;
+
 exports[`FonjepEntityAdapter toDemandeSubvention() should return a DemandeSubvention 1`] = `
 Object {
   "annee_demande": 2022,
