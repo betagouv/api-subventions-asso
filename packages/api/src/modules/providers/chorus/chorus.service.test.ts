@@ -1,5 +1,8 @@
 import chorusService from "./chorus.service";
 import chorusLineRepository from "./repositories/chorus.line.repository";
+import ChorusAdapter from "./adapters/ChorusAdapter";
+
+jest.mock("./adapters/ChorusAdapter");
 
 describe("chorusService", () => {
     describe("raw grant", () => {
@@ -75,6 +78,36 @@ describe("chorusService", () => {
                     ]
                 `);
             });
+        });
+    });
+
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            ChorusAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            ChorusAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            chorusService.rawToCommon({ data: RAW });
+            expect(ChorusAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            ChorusAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = chorusService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
         });
     });
 });

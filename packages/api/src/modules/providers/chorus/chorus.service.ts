@@ -1,4 +1,5 @@
 import { Siren, Siret } from "@api-subventions-asso/dto";
+import { WithId } from "mongodb";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -189,6 +190,10 @@ export class ChorusService implements VersementsProvider, GrantProvider {
     }
     getRawGrantsByRna(_rna: string): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
+    }
+
+    rawToCommon(raw: RawGrant) {
+        return ChorusAdapter.toCommon(raw.data as WithId<ChorusLineEntity>);
     }
 }
 
