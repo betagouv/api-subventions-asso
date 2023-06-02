@@ -215,32 +215,32 @@ describe("FonjepService", () => {
     describe("getVersementsByKey", () => {
         const findByCodeMock = jest.spyOn(fonjepVersementRepository, "findByCodePoste");
 
-        it("returns VersementFonjep[]", async () => {
+        it("calls adapter", async () => {
             // @ts-expect-error: mock
             findByCodeMock.mockImplementationOnce(async () => [VersementEntity]);
-            const actual = await fonjepService.getVersementsByKey(CODE_POSTE);
-            expect(actual).toMatchSnapshot();
+            await fonjepService.getVersementsByKey(CODE_POSTE);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
         });
     });
 
     describe("getVersementsBySiret", () => {
         const findBySiretMock = jest.spyOn(fonjepVersementRepository, "findBySiret");
 
-        it("returns VersementFonjep[]", async () => {
+        it("calls adapter", async () => {
             // @ts-expect-error: mock
             findBySiretMock.mockImplementationOnce(async () => [VersementEntity]);
-            const actual = await fonjepService.getVersementsBySiret(SIRET);
-            expect(actual).toMatchSnapshot();
+            await fonjepService.getVersementsBySiret(SIRET);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
         });
     });
 
     describe("getVersementsBySiren", () => {
         const findBySirenMock = jest.spyOn(fonjepVersementRepository, "findBySiren");
-        it("should return VersementFonjep[]", async () => {
+        it("calls adapter", async () => {
             // @ts-expect-error: mock
             findBySirenMock.mockImplementationOnce(async () => [VersementEntity]);
-            const actual = await fonjepService.getVersementsBySiren(SIREN);
-            expect(actual).toMatchSnapshot();
+            await fonjepService.getVersementsBySiren(SIREN);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
         });
     });
 
