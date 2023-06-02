@@ -20,6 +20,8 @@ jest.mock("./repositories/dauphin-gispro.repository", () => ({
     findBySiren: jest.fn(),
 }));
 
+jest.mock("./adapters/DauphinDtoAdapter");
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const SIRET: Siret = "12345678912345";
@@ -36,7 +38,7 @@ describe("Dauphin Service", () => {
     const DATA = [{ a: true }, { b: true }];
 
     beforeAll(() => {
-        mockedAxios.post.mockImplementation(async (url, search, headers) => ({
+        mockedAxios.post.mockImplementation(async (_url, _search, _headers) => ({
             data: {
                 hits: {
                     total: DATA.length,
@@ -53,9 +55,8 @@ describe("Dauphin Service", () => {
      */
 
     describe("getDemandeSubventionBySiret", () => {
-        const mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
-
-        afterEach(() => mockToDemandeSubvention.mockReset());
+        // @ts-expect-error mock
+        afterEach(() => DauphinDtoAdapter.toDemandeSubvention.mockReset());
 
         it("should return subventions", async () => {
             const APPLICATION_ENTITIES = [{ id: "A" }, { id: "B" }];
@@ -63,7 +64,7 @@ describe("Dauphin Service", () => {
             // @ts-expect-error: mock return value
             dauphinGisproRepository.findBySiret.mockImplementationOnce(async () => APPLICATION_ENTITIES);
             // @ts-expect-error: mock return value
-            mockToDemandeSubvention.mockImplementation(data => data);
+            DauphinDtoAdapter.toDemandeSubvention.mockImplementation(data => data);
 
             const actual = await dauphinService.getDemandeSubventionBySiret(SIRET);
 
@@ -72,14 +73,12 @@ describe("Dauphin Service", () => {
     });
 
     describe("getDemandeSubventionBySiren", () => {
-        const mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
-
         it("should return subventions", async () => {
             const expected = [{ fake: "data" }];
             // @ts-expect-error: mock return value
             dauphinGisproRepository.findBySiren.mockImplementationOnce(async () => expected);
             // @ts-expect-error: mock return value
-            mockToDemandeSubvention.mockImplementationOnce(data => data);
+            DauphinDtoAdapter.toDemandeSubvention.mockImplementationOnce(data => data);
             const actual = await dauphinService.getDemandeSubventionBySiren("FAKE_SIREN");
             expect(actual).toEqual(expected);
         });
@@ -175,6 +174,36 @@ describe("Dauphin Service", () => {
         });
     });
 
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            DauphinDtoAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            DauphinDtoAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            dauphinService.rawToCommon({ data: RAW });
+            expect(DauphinDtoAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            DauphinDtoAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = dauphinService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
+        });
+    });
+
     /**
      * |-------------------------|
      * |   Caching Part          |
@@ -241,7 +270,6 @@ describe("Dauphin Service", () => {
         });
 
         it("should call axios with args", async () => {
-            const DATE = new Date();
             await dauphinService.updateApplicationCache();
             // @ts-expect-error: mock
             expect(axios.post.mock.calls[0]).toMatchSnapshot();
@@ -368,7 +396,7 @@ describe("Dauphin Service", () => {
             setDauphinTokenMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error getAuthToken is private
-            const actual = await dauphinService.getAuthToken();
+            await dauphinService.getAuthToken();
 
             expect(setDauphinTokenMock).toHaveBeenCalledWith(TOKEN);
         });
@@ -469,7 +497,7 @@ describe("Dauphin Service", () => {
         });
 
         describe("getDocumentsBySiren", () => {
-            let findIdMock: SpyInstance, documentAdapterMock: SpyInstance;
+            let findIdMock: SpyInstance;
             const RAW_DOCS = ["axios"];
             const ADAPTED_DOCS = ["doc"];
             const AXIOS_RES = { pieces: RAW_DOCS };
@@ -482,7 +510,7 @@ describe("Dauphin Service", () => {
                 // @ts-expect-errors mocked
                 axios.get.mockResolvedValue({ data: AXIOS_RES });
                 // @ts-expect-error: mock
-                documentAdapterMock = jest.spyOn(DauphinDtoAdapter, "toDocuments").mockResolvedValue(ADAPTED_DOCS);
+                DauphinDtoAdapter.toDocuments.mockResolvedValue(ADAPTED_DOCS);
             });
 
             afterAll(() => {
@@ -515,7 +543,7 @@ describe("Dauphin Service", () => {
 
             it("should adapt result from axios", async () => {
                 await dauphinService.getDocumentsBySiren(SIREN);
-                expect(documentAdapterMock).toHaveBeenCalledWith(RAW_DOCS);
+                expect(DauphinDtoAdapter.toDocuments).toHaveBeenCalledWith(RAW_DOCS);
             });
 
             it("returns documents from axios", async () => {

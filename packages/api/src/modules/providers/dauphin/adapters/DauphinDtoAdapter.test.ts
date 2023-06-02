@@ -85,4 +85,27 @@ describe("DauphinDtoAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("toCommon", () => {
+        it("returns proper result", () => {
+            // @ts-expect-error: mock
+            jest.spyOn(DauphinDtoAdapter, "getMontantDemande").mockReturnValueOnce(43);
+            // @ts-expect-error: mock
+            jest.spyOn(DauphinDtoAdapter, "getMontantAccorde").mockReturnValueOnce(42);
+            // @ts-expect-error: mock
+            jest.spyOn(DauphinDtoAdapter, "getInstructorService").mockReturnValueOnce("Service");
+
+            const INPUT = {
+                dauphin: {
+                    exerciceBudgetaire: 2022,
+                    intituleProjet: "projet",
+                    demandeur: { SIRET: { complet: "123456789" } },
+                    thematique: { title: "titre" },
+                },
+            };
+            // @ts-expect-error mock
+            const actual = DauphinDtoAdapter.toCommon(INPUT);
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });

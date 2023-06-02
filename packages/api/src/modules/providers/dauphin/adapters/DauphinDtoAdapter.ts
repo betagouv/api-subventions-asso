@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
+import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
@@ -36,6 +36,32 @@ export default class DauphinDtoAdapter {
         },
     ];
 
+    private static getDispositif(dauphinData: DauphinSubventionDto) {
+        const baseDispositif = "Politique de la ville";
+        if (dauphinData.thematique?.title) return dauphinData.thematique?.title + " - " + baseDispositif;
+        return baseDispositif;
+    }
+
+    private static getInstructorService(dauphinData: DauphinSubventionDto) {
+        return "Dauphin";
+        // Does not use serviceInstructeur because it does not take into account  multi-funding
+
+        const serviceInstructeur = dauphinData.financeursPrivilegies?.[0].title || "";
+        if (serviceInstructeur.match(/^\d{2}-ETAT-POLITIQUE-VILLE/)) {
+            const part = serviceInstructeur.split("-");
+            return `Politique de la ville (Dept ${part[0]})`;
+        } else if (serviceInstructeur.match(/^POLITIQUE-VILLE-\d{2,3}/)) {
+            const part = serviceInstructeur.split("-");
+            return `Politique de la ville (Dept ${part[2]})`;
+        } else {
+            return capitalizeFirstLetter(serviceInstructeur.toLowerCase().replace(/-/g, " "));
+        }
+    }
+
+    private static getStatus(dauphinData: DauphinSubventionDto) {
+        return toStatusFactory(DauphinDtoAdapter._statusConversionArray)(dauphinData.virtualStatusLabel);
+    }
+
     public static toDemandeSubvention(dbo: DauphinGisproDbo): DemandeSubvention {
         const dauphinData = dbo.dauphin;
         const lastUpdateDate =
@@ -46,30 +72,19 @@ export default class DauphinDtoAdapter {
             dauphinService.provider.name,
             new Date(lastUpdateDate),
         );
-        const toStatus = toStatusFactory(DauphinDtoAdapter._statusConversionArray);
+
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dauphinData);
         const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dauphinData);
-        let dispositif = "Politique de la ville";
-        if (dauphinData.thematique?.title) dispositif = dauphinData.thematique?.title + " - " + dispositif;
-
-        let serviceInstructeur = dauphinData.financeursPrivilegies?.[0].title || "";
-        if (serviceInstructeur.match(/^\d{2}-ETAT-POLITIQUE-VILLE/)) {
-            const part = serviceInstructeur.split("-");
-            serviceInstructeur = `Politique de la ville (Dept ${part[0]})`;
-        } else if (serviceInstructeur.match(/^POLITIQUE-VILLE-\d{2,3}/)) {
-            const part = serviceInstructeur.split("-");
-            serviceInstructeur = `Politique de la ville (Dept ${part[2]})`;
-        } else {
-            serviceInstructeur = capitalizeFirstLetter(serviceInstructeur.toLowerCase().replace(/-/g, " "));
-        }
+        const dispositif = DauphinDtoAdapter.getDispositif(dauphinData);
+        const serviceInstructeur = this.getInstructorService(dauphinData);
 
         return {
             siret: toPV(dauphinData.demandeur.SIRET.complet),
-            service_instructeur: toPV("Dauphin"), // Does not use serviceInstructeur because it does not take into account  multi-funding
+            service_instructeur: toPV(serviceInstructeur),
             dispositif: toPV(dispositif),
             ej: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
             versementKey: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
-            statut_label: toPV(toStatus(dauphinData.virtualStatusLabel)),
+            statut_label: toPV(DauphinDtoAdapter.getStatus(dauphinData)),
             status: toPV(dauphinData.virtualStatusLabel),
             annee_demande: toPV(dauphinData.exerciceBudgetaire),
             montants: {
@@ -120,5 +135,19 @@ export default class DauphinDtoAdapter {
             }
         }
         return resultArray;
+    }
+
+    public static toCommon(dbo: DauphinGisproDbo): ApplicationDto {
+        const dauphinData = dbo.dauphin;
+        return {
+            dispositif: DauphinDtoAdapter.getDispositif(dauphinData),
+            exercice: dauphinData.exerciceBudgetaire,
+            montant_accorde: DauphinDtoAdapter.getMontantAccorde(dauphinData) || null,
+            montant_demande: DauphinDtoAdapter.getMontantDemande(dauphinData),
+            objet: dauphinData.intituleProjet,
+            service_instructeur: DauphinDtoAdapter.getInstructorService(dauphinData),
+            siret: dauphinData.demandeur.SIRET.complet,
+            statut: DauphinDtoAdapter.getStatus(dauphinData),
+        };
     }
 }

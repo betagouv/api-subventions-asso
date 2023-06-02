@@ -1,7 +1,7 @@
 import { IncomingMessage } from "http";
 import axios from "axios";
 import qs from "qs";
-import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -18,6 +18,7 @@ import { RawGrant } from "../../grant/@types/rawGrant";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
+import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService implements DemandesSubventionsProvider, DocumentProvider, GrantProvider {
     provider = {
@@ -80,6 +81,10 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
     }
     getRawGrantsByRna(): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
+    }
+
+    rawToCommon(rawGrant: RawGrant): ApplicationDto {
+        return DauphinDtoAdapter.toCommon(rawGrant.data as DauphinGisproDbo);
     }
 
     /**
