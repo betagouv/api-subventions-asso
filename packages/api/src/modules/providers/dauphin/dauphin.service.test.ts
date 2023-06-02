@@ -174,6 +174,36 @@ describe("Dauphin Service", () => {
         });
     });
 
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            DauphinDtoAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            DauphinDtoAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            dauphinService.rawToCommon({ data: RAW });
+            expect(DauphinDtoAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            DauphinDtoAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = dauphinService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
+        });
+    });
+
     /**
      * |-------------------------|
      * |   Caching Part          |
