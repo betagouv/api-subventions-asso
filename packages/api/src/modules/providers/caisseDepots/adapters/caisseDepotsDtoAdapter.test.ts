@@ -66,4 +66,12 @@ describe("CaisseDepotsDtoAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("toCommon", () => {
+        it("returns proper result", () => {
+            const INPUT = caisseDepotsEntity;
+            const actual = CaisseDepotsDtoAdapter.toCommon(INPUT);
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });

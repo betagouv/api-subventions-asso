@@ -20,3 +20,5 @@ rules:
   no-unused-vars:
     - "warn"
     -  destructuredArrayIgnorePattern: "^_"
+       argsIgnorePattern: "^_"
+       varsIgnorePattern: "^_"

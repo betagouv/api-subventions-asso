@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CaisseDepotsDtoAdapter toCommon returns proper result 1`] = `
+Object {
+  "bop": "",
+  "date_debut": 2019-02-07T00:00:00.000Z,
+  "dispositif": "Caisse des dépôts",
+  "exercice": 2019,
+  "montant_accorde": 23247,
+  "montant_verse": 23247,
+  "objet": "Caisse des dépôts",
+  "service_instructeur": "Caisse des dépôts et Consignations",
+  "siret": "09876543212345",
+  "statut": "Accordé",
+}
+`;
+
 exports[`CaisseDepotsDtoAdapter toDemandeSubvention returns proper value 1`] = `
 Object {
   "actions_proposee": Array [
