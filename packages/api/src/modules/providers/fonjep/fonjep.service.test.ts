@@ -12,8 +12,6 @@ const SIREN = "002034000";
 const SIRET = `${SIREN}32010`;
 const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.slice(0, 6);
-const toDemandeSubventionMock = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
-const toVersementMock = jest.spyOn(FonjepEntityAdapter, "toVersement");
 const isSiretMock = jest.spyOn(Validators, "isSiret");
 const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
 const isDatesMock = jest.spyOn(Validators, "isDates");
@@ -38,11 +36,12 @@ describe("FonjepService", () => {
 
     beforeAll(() => {
         // @ts-expect-error: mock
-        toDemandeSubventionMock.mockImplementation(entity => entity);
+        FonjepEntityAdapter.toDemandeSubvention.mockImplementation(entity => entity);
     });
 
     afterAll(() => {
-        toDemandeSubventionMock.mockRestore();
+        // @ts-expect-error: mock
+        FonjepEntityAdapter.toDemandeSubvention.mockRestore();
     });
 
     describe("validateEntity", () => {
@@ -193,9 +192,9 @@ describe("FonjepService", () => {
             // @ts-expect-error: mock;
             findBySiretMock.mockImplementationOnce(async () => [{}]);
             // @ts-expect-error: mock;
-            toDemandeSubventionMock.mockImplementationOnce(entity => entity);
+            FonjepEntityAdapter.toDemandeSubvention.mockImplementationOnce(entity => entity);
             await fonjepService.getDemandeSubventionBySiret(SIRET);
-            expect(toDemandeSubventionMock).toHaveBeenCalledTimes(1);
+            expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledTimes(1);
         });
 
         it("should return null", async () => {
@@ -207,8 +206,10 @@ describe("FonjepService", () => {
     });
 
     describe("toVersementArray()", () => {
-        fonjepService.toVersementArray([VersementEntity, VersementEntity]);
-        expect(toVersementMock).toHaveBeenCalledTimes(2);
+        it("should call adapter", () => {
+            fonjepService.toVersementArray([VersementEntity, VersementEntity]);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe("getVersementsByKey", () => {
