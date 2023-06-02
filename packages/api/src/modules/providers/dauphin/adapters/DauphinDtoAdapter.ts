@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
+import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
@@ -135,5 +135,19 @@ export default class DauphinDtoAdapter {
             }
         }
         return resultArray;
+    }
+
+    public static toCommon(dbo: DauphinGisproDbo): ApplicationDto {
+        const dauphinData = dbo.dauphin;
+        return {
+            dispositif: DauphinDtoAdapter.getDispositif(dauphinData),
+            exercice: dauphinData.exerciceBudgetaire,
+            montant_accorde: DauphinDtoAdapter.getMontantAccorde(dauphinData) || null,
+            montant_demande: DauphinDtoAdapter.getMontantDemande(dauphinData),
+            objet: dauphinData.intituleProjet,
+            service_instructeur: DauphinDtoAdapter.getInstructorService(dauphinData),
+            siret: dauphinData.demandeur.SIRET.complet,
+            statut: DauphinDtoAdapter.getStatus(dauphinData),
+        };
     }
 }
