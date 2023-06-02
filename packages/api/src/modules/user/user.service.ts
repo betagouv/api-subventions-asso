@@ -28,6 +28,7 @@ import {
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
+import LoginError from "../../shared/errors/LoginError";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -99,12 +100,10 @@ export class UserService {
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
         const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
 
-        if (!user) throw new UnauthorizedError("User not found", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
-        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
-
+        if (!user) throw new LoginError();
         const validPassword = await bcrypt.compare(password, user.hashPassword);
-        if (!validPassword)
-            throw new UnauthorizedError("Password does not match", LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
+        if (!validPassword) throw new LoginError();
+        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
         const updateJwt = async () => {
             // Generate new JTW Token

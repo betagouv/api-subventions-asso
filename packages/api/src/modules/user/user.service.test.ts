@@ -32,6 +32,7 @@ import userRepository from "./repositories/user.repository";
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
+import LoginError from "../../shared/errors/LoginError";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -122,10 +123,7 @@ describe("User Service", () => {
     describe("login", () => {
         it("should throw an Error if user not found", async () => {
             getUserWithSecretsByEmailMock.mockImplementationOnce(async () => null);
-            const expected = {
-                message: "User not found",
-                code: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
-            };
+            const expected = new LoginError();
             const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
         });
@@ -143,12 +141,9 @@ describe("User Service", () => {
             await expect(test).rejects.toMatchObject(expected);
         });
 
-        it("should throw an Error if password do not match", async () => {
+        it("should throw LoginError password do not match", async () => {
             bcryptCompareMock.mockImplementationOnce(async () => false);
-            const expected = {
-                message: "Password does not match",
-                code: LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH,
-            };
+            const expected = new LoginError();
             const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
         });
