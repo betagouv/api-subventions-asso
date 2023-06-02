@@ -1,4 +1,5 @@
 import {
+    ApplicationDto,
     ApplicationStatus,
     Association,
     DemandeSubvention,
@@ -33,6 +34,8 @@ export default class OsirisRequestAdapter {
             ],
         },
     ];
+
+    private static readonly toStatus = toStatusFactory(OsirisRequestAdapter._statusConversionArray);
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
@@ -139,7 +142,6 @@ export default class OsirisRequestAdapter {
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
-        const toStatus = toStatusFactory(OsirisRequestAdapter._statusConversionArray);
 
         const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
 
@@ -149,7 +151,7 @@ export default class OsirisRequestAdapter {
             service_instructeur: toPV(entity.providerInformations.service_instructeur),
             dispositif: toPV(entity.providerInformations.dispositif),
             sous_dispositif: toPV(entity.providerInformations.sous_dispositif),
-            statut_label: toPV(toStatus(entity.providerInformations.status)),
+            statut_label: toPV(OsirisRequestAdapter.toStatus(entity.providerInformations.status)),
             status: toPV(entity.providerInformations.status),
             pluriannualite: toPV(entity.providerInformations.pluriannualite),
             ej: EJ,
@@ -237,5 +239,18 @@ export default class OsirisRequestAdapter {
         }
 
         return data;
+    }
+
+    static toCommon(entity: OsirisRequestEntity): ApplicationDto {
+        return {
+            dispositif: entity.providerInformations.dispositif,
+            exercice: entity.providerInformations.extractYear,
+            montant_accorde: entity.providerInformations.montantsAccorde,
+            montant_demande: entity.providerInformations.montantsDemande,
+            objet: (entity.actions || []).map(action => action.indexedInformations.intitule).join(" – ") || "",
+            service_instructeur: entity.providerInformations.service_instructeur,
+            siret: entity.legalInformations.siret,
+            statut: OsirisRequestAdapter.toStatus(entity.providerInformations.status),
+        };
     }
 }

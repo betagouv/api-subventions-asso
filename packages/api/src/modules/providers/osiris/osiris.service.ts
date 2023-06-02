@@ -376,6 +376,10 @@ export class OsirisService
     getRawGrantsByRna(): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
     }
+
+    rawToCommon(raw: RawGrant) {
+        return OsirisRequestAdapter.toCommon(raw.data as OsirisRequestEntity);
+    }
 }
 
 const osirisService: OsirisService = new OsirisService();

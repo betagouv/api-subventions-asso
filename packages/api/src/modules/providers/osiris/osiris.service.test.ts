@@ -3,6 +3,7 @@ import osirisService from "./osiris.service";
 import { osirisRequestRepository } from "./repositories";
 
 const toDemandeSubventionMock = jest.spyOn(OsirisRequestAdapter, "toDemandeSubvention");
+jest.mock("./adapters/OsirisRequestAdapter");
 
 describe("OsirisService", () => {
     beforeAll(() => {
@@ -121,6 +122,36 @@ describe("OsirisService", () => {
                     ]
                 `);
             });
+        });
+    });
+
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            OsirisRequestAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            OsirisRequestAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            osirisService.rawToCommon({ data: RAW });
+            expect(OsirisRequestAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            OsirisRequestAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = osirisService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
         });
     });
 });

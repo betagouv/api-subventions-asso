@@ -1,8 +1,8 @@
-import OsirisRequestAdapter from "./OsirisRequestAdapter";
-import OsirisEntity from "../../../../../tests/modules/providers/osiris/__fixtures__/entity";
-
 const mockLabel = "NORMALIZED_LABEL";
 const mockToStatus = jest.fn(() => mockLabel);
+
+import OsirisRequestAdapter from "./OsirisRequestAdapter";
+import OsirisEntity from "../../../../../tests/modules/providers/osiris/__fixtures__/entity";
 
 jest.mock("../../helper", () => ({
     toStatusFactory: () => mockToStatus,
@@ -42,6 +42,33 @@ describe("OsirisRequestAdapter", () => {
             });
             const actual = res?.statut_label?.value;
             expect(actual).toBe(mockLabel);
+        });
+    });
+
+    describe("toCommon", () => {
+        it("returns proper result", () => {
+            const INPUT = {
+                providerInformations: {
+                    dispositif: "DISPOSITIF",
+                    extractYear: 2023,
+                    montantsAccorde: 42,
+                    montantsDemande: 43,
+                    service_instructeur: "INSTRUCTEUR",
+                    status: "NATIVE_STATUS",
+                },
+                legalInformations: { siret: "123456789" },
+                actions: [
+                    {
+                        indexedInformations: { intitule: "ACTION 1" },
+                    },
+                    {
+                        indexedInformations: { intitule: "ACTION 2" },
+                    },
+                ],
+            };
+            // @ts-expect-error mock
+            const actual = OsirisRequestAdapter.toCommon(INPUT);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

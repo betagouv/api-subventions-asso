@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`OsirisRequestAdapter toCommon returns proper result 1`] = `
+Object {
+  "dispositif": "DISPOSITIF",
+  "exercice": 2023,
+  "montant_accorde": 42,
+  "montant_demande": 43,
+  "objet": "ACTION 1 – ACTION 2",
+  "service_instructeur": "INSTRUCTEUR",
+  "siret": "123456789",
+  "statut": "NORMALIZED_LABEL",
+}
+`;
+
 exports[`OsirisRequestAdapter toDemandeSubvention() should return a DemandeSubvention 1`] = `
 Object {
   "actions_proposee": Array [],
