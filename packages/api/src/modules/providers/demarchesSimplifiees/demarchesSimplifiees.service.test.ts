@@ -375,4 +375,84 @@ describe("DemarchesSimplifieesService", () => {
             expect(demarchesSimplifieesMapperRepository.upsert).toBeCalledWith(expected);
         });
     });
+
+    describe("toRawGrants", () => {
+        const GRANTS = [
+            { demarcheId: 1, value: "a" },
+            { demarcheId: 2, value: "b" },
+        ];
+        let getSchemasMock;
+        beforeAll(
+            () =>
+                (getSchemasMock = jest
+                    // @ts-expect-error mock private
+                    .spyOn(demarchesSimplifieesService, "getSchemasByIds")
+                    // @ts-expect-error mock
+                    .mockResolvedValue({ 1: "s1" })),
+        );
+        afterAll(() => getSchemasMock.mockRestore());
+
+        it("gets schemas", async () => {
+            // @ts-expect-error mock
+            await demarchesSimplifieesService.toRawGrants(GRANTS);
+            expect(getSchemasMock).toHaveBeenCalled();
+        });
+
+        it("filter out grants if no schema to adapt it and add metadata", async () => {
+            // @ts-expect-error mock
+            const actual = await demarchesSimplifieesService.toRawGrants(GRANTS);
+            expect(actual).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "data": Object {
+                      "grant": Object {
+                        "demarcheId": 1,
+                        "value": "a",
+                      },
+                      "schema": "s1",
+                    },
+                    "provider": "demarchesSimplifiees",
+                    "type": "application",
+                  },
+                ]
+            `);
+        });
+    });
+
+    describe.each`
+        identifier | spyToCall
+        ${"Siren"} | ${demarchesSimplifieesDataRepository.findBySiren}
+        ${"Siret"} | ${demarchesSimplifieesDataRepository.findBySiret}
+    `("getRawGrantsBy$identifier", ({ identifier, spyToCall }) => {
+        const IDENTIFIER = "ID";
+        const DATA = ["G1", "G2"];
+        const RAW_DATA = ["g1", "g2"];
+        let toRawGrantsMock;
+
+        beforeAll(() => {
+            // @ts-expect-error mock private method
+            toRawGrantsMock = jest.spyOn(demarchesSimplifieesService, "toRawGrants").mockResolvedValue(RAW_DATA);
+            spyToCall.mockReturnValue(DATA);
+        });
+        afterAll(() => {
+            toRawGrantsMock.mockRestore();
+            spyToCall.mockReset();
+        });
+
+        it("gets data from repo", async () => {
+            await demarchesSimplifieesService[`getRawGrantsBy${identifier}`](IDENTIFIER);
+            expect(spyToCall).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("call private helper", async () => {
+            await demarchesSimplifieesService[`getRawGrantsBy${identifier}`](IDENTIFIER);
+            expect(toRawGrantsMock).toHaveBeenCalledWith(DATA);
+        });
+
+        it("returns data from helper", async () => {
+            const expected = RAW_DATA;
+            const actual = await demarchesSimplifieesService[`getRawGrantsBy${identifier}`](IDENTIFIER);
+            expect(actual).toEqual(expected);
+        });
+    });
 });
