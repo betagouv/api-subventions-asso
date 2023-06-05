@@ -455,4 +455,27 @@ describe("DemarchesSimplifieesService", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("rawToCommon", () => {
+        const RAW = { data: { grant: "GRANT", schema: "SCHEMA" } };
+        const COMMON = "adapted";
+
+        // @ts-expect-error mock
+        beforeAll(() => DemarchesSimplifieesEntityAdapter.toCommon.mockReturnValue(COMMON));
+        // @ts-expect-error mock
+        afterAll(() => DemarchesSimplifieesEntityAdapter.toCommon.mockReset());
+
+        it("calls adapter with proper arguments", () => {
+            // @ts-expect-error mock
+            demarchesSimplifieesService.rawToCommon(RAW);
+            expect(DemarchesSimplifieesEntityAdapter.toCommon).toHaveBeenCalledWith("GRANT", "SCHEMA");
+        });
+
+        it("returns result from adapter", () => {
+            const expected = COMMON;
+            // @ts-expect-error mock
+            const actual = demarchesSimplifieesService.rawToCommon(RAW);
+            expect(actual).toEqual(expected);
+        });
+    });
 });
