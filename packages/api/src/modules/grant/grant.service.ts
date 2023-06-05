@@ -60,6 +60,8 @@ export class GrantService {
     }
 
     private joinGrants(rawGrants: RawGrant[]): JoinedRawGrant[] {
+        // TODO maybe think about a more sophisticated system than joinKey to group grants
+        //  (specifically for dauphin/osiris joins with fonjep)
         const newJoiningGrant = () => ({ payments: [], applications: [], fullGrants: [] } as JoinedRawGrant);
         const lonelyGrants: JoinedRawGrant[] = [];
         const byKey: Record<string, JoinedRawGrant> = {};
