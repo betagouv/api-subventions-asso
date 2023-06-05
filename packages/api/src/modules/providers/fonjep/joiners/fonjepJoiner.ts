@@ -11,8 +11,21 @@ export class FonjepJoiner {
             {
                 $lookup: {
                     from: fonjepVersementRepository.collectionName,
-                    localField: fonjepSubventionRepository.joinIndexes[fonjepVersementRepository.collectionName],
-                    foreignField: fonjepVersementRepository.joinIndexes[fonjepSubventionRepository.collectionName],
+                    let: { joinId: fonjepSubventionRepository.joinIndexes[fonjepVersementRepository.collectionName] },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: [
+                                        fonjepVersementRepository.joinIndexes[
+                                            fonjepSubventionRepository.collectionName
+                                        ],
+                                        "$$joinId",
+                                    ],
+                                },
+                            },
+                        },
+                    ],
                     as: "payments",
                 },
             },
