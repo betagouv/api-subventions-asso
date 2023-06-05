@@ -53,5 +53,39 @@
             "from": "demande.demarche.title",
             "to": "dispositif"
         }
-    ]
+    ],
+  "commonSchema": [
+    {
+      "to": "siret",
+      "from": "siret"
+    },
+    {
+      "to": "service_instructeur",
+      "from": "demande.groupeInstructeur.label"
+    },
+    {
+      "to": "dispositif",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "montant_accorde",
+      "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value"
+    },
+    {
+      "to": "montant_demande",
+      "from": "demande.champs.Q2hhbXAtMjUwNjg0MA==.value"
+    },
+    {
+      "to": "objet",
+      "from": "demande.champs.Q2hhbXAtMjM2MzQwMg==.value"
+    },
+    {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    }
+  ]
 }
