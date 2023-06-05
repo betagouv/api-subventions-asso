@@ -11,11 +11,10 @@
 <div class="bodacc">
     <h2>Historique des publications</h2>
     <Alert type="info" title="Qu’est-ce que le BODACC ?">
-        La direction de l’information légale et administrative (DILA), service du Premier ministre, a pour mission de
-        publier et de diffuser les textes législatifs et réglementaires, les débats parlementaires ainsi que certaines
-        annonces officielles concernant les entreprises, les associations et les marchés publics. La DILA édite le
-        Bulletin officiel des annonces civiles et commerciales (BODACC) dans le cadre de sa mission de service public de
-        la transparence économique et financière.
+        Le Bulletin officiel des annonces civiles et commerciales (BODACC) est le journal d'annonces légales qui
+        répertorie les actes enregistrés au registre du commerce et des sociétés (RCS) : créations, immatriculations,
+        ventes et cessions, procédures collectives, procédures de conciliation, procédures de rétablissement
+        professionnel, modifications, radiations et dépôt des comptes.
     </Alert>
 
     {#if announcements}
