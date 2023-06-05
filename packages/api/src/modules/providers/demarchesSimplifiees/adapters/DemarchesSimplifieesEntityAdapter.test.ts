@@ -47,4 +47,23 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             );
         });
     });
+
+    describe("mapSchema", () => {
+        const ENTITY = { before: "a", siret: "SIRET" };
+        const MAPPER = { key: [{ to: "after.nested", from: "before" }] };
+        const KEY = "key";
+
+        it("adapts to proper format", () => {
+            // @ts-expect-error mock
+            const actual = DemarchesSimplifieesEntityAdapter.mapSchema(ENTITY, MAPPER, KEY);
+            expect(actual).toMatchInlineSnapshot(`
+                Object {
+                  "after": Object {
+                    "nested": "a",
+                  },
+                  "siret": "SIRET",
+                }
+            `);
+        });
+    });
 });
