@@ -1,13 +1,13 @@
 import moment from "moment";
 import * as lodash from "lodash";
-import { DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
+import { ApplicationDto, DemandeSubvention } from "@api-subventions-asso/dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
 import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMapperEntity";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
-import { DefaultObject } from "../../../../@types";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
+import { DefaultObject } from "../../../../@types";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static mapSchema<T>(
@@ -52,5 +52,18 @@ export class DemarchesSimplifieesEntityAdapter {
         Object.keys(subvention).map(key => (subvention[key] = toPv(subvention[key])));
 
         return subvention as unknown as DemandeSubvention;
+    }
+
+    static toCommon(entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity): ApplicationDto {
+        const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "commonSchema");
+
+        if (application.dateTransmitted)
+            application.exercice = new Date(application.dateTransmitted as string)?.getFullYear();
+        delete application.dateTransmitted;
+
+        // TODO transform status: missing business logic
+        delete application.providerStatus;
+
+        return application as unknown as ApplicationDto;
     }
 }

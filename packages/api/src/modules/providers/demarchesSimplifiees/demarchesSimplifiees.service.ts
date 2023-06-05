@@ -161,6 +161,10 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     getRawGrantsByRna(): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
     }
+
+    rawToCommon(raw: RawGrant) {
+        return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
+    }
 }
 
 const demarchesSimplifieesService = new DemarchesSimplifieesService();
