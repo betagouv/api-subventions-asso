@@ -1,3 +1,7 @@
+jest.mock("./repositories/demarchesSimplifieesMapper.repository");
+jest.mock("./repositories/demarchesSimplifieesData.repository");
+jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
+
 import { DemandeSubvention } from "@api-subventions-asso/dto";
 import axios from "axios";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -9,15 +13,10 @@ import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifi
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
 
 describe("DemarchesSimplifieesService", () => {
-    let mapperRepoFindAllMock: jest.SpyInstance;
-
-    beforeAll(() => {
-        mapperRepoFindAllMock = jest.spyOn(demarchesSimplifieesMapperRepository, "findAll");
-    });
-
     describe("getSchemasByIds", () => {
         beforeAll(() => {
-            mapperRepoFindAllMock.mockResolvedValue([
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.findAll.mockResolvedValue([
                 {
                     demarcheId: 1,
                     schema: [],
@@ -29,7 +28,7 @@ describe("DemarchesSimplifieesService", () => {
             // @ts-ignore getSchemasByIds is private method
             await demarchesSimplifieesService.getSchemasByIds();
 
-            expect(mapperRepoFindAllMock).toHaveBeenCalledTimes(1);
+            expect(demarchesSimplifieesMapperRepository.findAll).toHaveBeenCalledTimes(1);
         });
 
         it("should return good data", async () => {
@@ -49,19 +48,20 @@ describe("DemarchesSimplifieesService", () => {
 
     describe("entitiesToSubventions", () => {
         let getSchemasByIdsMock: jest.SpyInstance;
-        let entityAdatperToSubMock: jest.SpyInstance;
 
         beforeAll(() => {
             // @ts-ignore getSchemasByIds is private method
             getSchemasByIdsMock = jest.spyOn(demarchesSimplifieesService, "getSchemasByIds").mockResolvedValue({});
-            entityAdatperToSubMock = jest
-                .spyOn(DemarchesSimplifieesEntityAdapter, "toSubvention")
-                .mockImplementation(data => data as unknown as DemandeSubvention);
+            // @ts-expect-error mock
+            DemarchesSimplifieesEntityAdapter.toSubvention.mockImplementation(
+                data => data as unknown as DemandeSubvention,
+            );
         });
 
         afterAll(() => {
             getSchemasByIdsMock.mockRestore();
-            entityAdatperToSubMock.mockRestore();
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.upsert.mockRestore();
         });
 
         it("should call getSchemasByIds", async () => {
@@ -89,7 +89,7 @@ describe("DemarchesSimplifieesService", () => {
             // @ts-expect-error entitiesToSubventions is private method
             await demarchesSimplifieesService.entitiesToSubventions([expected[0]]);
 
-            expect(entityAdatperToSubMock).toBeCalledWith(...expected);
+            expect(DemarchesSimplifieesEntityAdapter.toSubvention).toBeCalledWith(...expected);
         });
 
         it("should return one sub", async () => {
@@ -131,12 +131,11 @@ describe("DemarchesSimplifieesService", () => {
 
     describe("getDemandeSubventionBySiren", () => {
         const SIREN = "000000000";
-
-        let findBySirenMock: jest.SpyInstance;
         let entitiesToSubMock: jest.SpyInstance;
 
         beforeAll(() => {
-            findBySirenMock = jest.spyOn(demarchesSimplifieesDataRepository, "findBySiren").mockResolvedValue([]);
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.findBySiren.mockResolvedValue([]);
             entitiesToSubMock = jest
                 // @ts-expect-error entitiesToSubventions is private method
                 .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
@@ -145,14 +144,15 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         afterAll(() => {
-            findBySirenMock.mockRestore();
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.findBySiren.mockRestore();
             entitiesToSubMock.mockRestore();
         });
 
         it("should call findBySiren", async () => {
             await demarchesSimplifieesService.getDemandeSubventionBySiren(SIREN);
-            expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
-            expect(findBySirenMock).toBeCalledTimes(1);
+            expect(demarchesSimplifieesDataRepository.findBySiren).toHaveBeenCalledWith(SIREN);
+            expect(demarchesSimplifieesDataRepository.findBySiren).toBeCalledTimes(1);
         });
 
         it("should call entitiesToSubventions", async () => {
@@ -163,7 +163,8 @@ describe("DemarchesSimplifieesService", () => {
 
         it("should return entities", async () => {
             const expected = [{ test: true }];
-            findBySirenMock.mockResolvedValueOnce(expected);
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.findBySiren.mockResolvedValueOnce(expected);
             const actual = await demarchesSimplifieesService.getDemandeSubventionBySiren(SIREN);
             expect(actual).toEqual(expected);
         });
@@ -171,12 +172,11 @@ describe("DemarchesSimplifieesService", () => {
 
     describe("getDemandeSubventionBySiret", () => {
         const SIRET = "00000000000000";
-
-        let findBySiret: jest.SpyInstance;
         let entitiesToSubMock: jest.SpyInstance;
 
         beforeAll(() => {
-            findBySiret = jest.spyOn(demarchesSimplifieesDataRepository, "findBySiret").mockResolvedValue([]);
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.findBySiret.mockResolvedValue([]);
             entitiesToSubMock = jest
                 // @ts-expect-error entitiesToSubventions is private method
                 .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
@@ -185,14 +185,15 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         afterAll(() => {
-            findBySiret.mockRestore();
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.findBySiret.mockRestore();
             entitiesToSubMock.mockRestore();
         });
 
         it("should call findBySiret", async () => {
             await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
-            expect(findBySiret).toHaveBeenCalledWith(SIRET);
-            expect(findBySiret).toBeCalledTimes(1);
+            expect(demarchesSimplifieesDataRepository.findBySiret).toHaveBeenCalledWith(SIRET);
+            expect(demarchesSimplifieesDataRepository.findBySiret).toBeCalledTimes(1);
         });
 
         it("should call entitiesToSubventions", async () => {
@@ -203,36 +204,37 @@ describe("DemarchesSimplifieesService", () => {
 
         it("should return entities", async () => {
             const expected = [{ test: true }];
-            findBySiret.mockResolvedValueOnce(expected);
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.findBySiret.mockResolvedValueOnce(expected);
             const actual = await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("updateAllForms", () => {
-        let getAcceptedDemarcheIdsMock: jest.SpyInstance;
         let updateDataByFormIdMock: jest.SpyInstance;
 
         beforeAll(() => {
-            getAcceptedDemarcheIdsMock = jest
-                .spyOn(demarchesSimplifieesMapperRepository, "getAcceptedDemarcheIds")
-                .mockResolvedValue([]);
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockResolvedValue([]);
             updateDataByFormIdMock = jest.spyOn(demarchesSimplifieesService, "updateDataByFormId").mockResolvedValue();
         });
 
         afterAll(() => {
-            getAcceptedDemarcheIdsMock.mockRestore();
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockRestore();
             updateDataByFormIdMock.mockRestore();
         });
 
         it("should get accepted forms ids", async () => {
             await demarchesSimplifieesService.updateAllForms();
-            expect(getAcceptedDemarcheIdsMock).toHaveBeenCalledTimes(1);
+            expect(demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds).toHaveBeenCalledTimes(1);
         });
 
         it("should throw error (ds is not configured)", async () => {
-            getAcceptedDemarcheIdsMock.mockResolvedValueOnce(null);
-            expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockResolvedValueOnce(null);
+            await expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
                 "DS is not configured on this env, please add mapper",
             );
         });
@@ -240,7 +242,8 @@ describe("DemarchesSimplifieesService", () => {
         it("should call updateDataByFormId with all formIds", async () => {
             const expected = [12345, 12346];
 
-            getAcceptedDemarcheIdsMock.mockResolvedValueOnce(expected);
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockResolvedValueOnce(expected);
 
             await demarchesSimplifieesService.updateAllForms();
 
@@ -254,19 +257,22 @@ describe("DemarchesSimplifieesService", () => {
 
         let sendQueryMock: jest.SpyInstance;
         let toEntitiesMock: jest.SpyInstance;
-        let upsertMock: jest.SpyInstance;
 
         beforeAll(() => {
             sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(null);
-            // @ts-expect-error disable ts form return type of toEntities
-            toEntitiesMock = jest.spyOn(DemarchesSimplifieesDtoAdapter, "toEntities").mockImplementation(data => [data]);
-            upsertMock = jest.spyOn(demarchesSimplifieesDataRepository, "upsert").mockResolvedValue();
+            toEntitiesMock = jest
+                .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
+                // @ts-expect-error disable ts form return type of toEntities
+                .mockImplementation(data => [data]);
+            // @ts-expect-error mock
+            demarchesSimplifieesDataRepository.upsert.mockResolvedValue();
         });
 
         afterAll(() => {
             sendQueryMock.mockRestore();
             toEntitiesMock.mockRestore();
-            upsertMock.mockRestore();
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.upsert.mockRestore();
         });
 
         it("should call sendQuery", async () => {
@@ -292,7 +298,7 @@ describe("DemarchesSimplifieesService", () => {
 
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
 
-            expect(upsertMock).toBeCalledWith(expected);
+            expect(demarchesSimplifieesDataRepository.upsert).toBeCalledWith(expected);
         });
     });
 
@@ -351,14 +357,14 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe("addSchemaMapper", () => {
-        let upsertMock: jest.SpyInstance;
-
         beforeAll(() => {
-            upsertMock = jest.spyOn(demarchesSimplifieesMapperRepository, "upsert").mockResolvedValue();
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.upsert.mockResolvedValue();
         });
 
         afterAll(() => {
-            upsertMock.mockRestore();
+            // @ts-expect-error mock
+            demarchesSimplifieesMapperRepository.upsert.mockRestore();
         });
 
         it("should call upsert", async () => {
@@ -366,7 +372,7 @@ describe("DemarchesSimplifieesService", () => {
 
             await demarchesSimplifieesService.addSchemaMapper(expected);
 
-            expect(upsertMock).toBeCalledWith(expected);
+            expect(demarchesSimplifieesMapperRepository.upsert).toBeCalledWith(expected);
         });
     });
 });
