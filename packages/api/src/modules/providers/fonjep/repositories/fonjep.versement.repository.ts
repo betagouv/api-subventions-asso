@@ -6,7 +6,10 @@ export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersem
     readonly collectionName = "fonjepVersement";
 
     readonly joinIndexes = {
-        fonjepSubvention: "indexedInformations.code_poste",
+        fonjepSubvention: {
+            code_poste: "$indexedInformations.code_poste",
+            year: { $year: "$indexedInformations.periode_debut" },
+        },
     };
 
     async createIndexes() {

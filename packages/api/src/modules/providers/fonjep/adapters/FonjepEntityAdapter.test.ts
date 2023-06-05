@@ -1,8 +1,10 @@
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
-import { SubventionEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
+import { SubventionEntity, VersementEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 
 describe("FonjepEntityAdapter", () => {
+    beforeAll(() => jest.useFakeTimers().setSystemTime(new Date("2022-01-01")));
+
     describe("toDemandeSubvention()", () => {
         const buildProviderValueAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
         it("should return a DemandeSubvention", () => {
@@ -12,12 +14,41 @@ describe("FonjepEntityAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("toVersement()", () => {
+        const buildProviderValueAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
+        it("should return a Versement", () => {
+            // @ts-expect-error: mock
+            buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
+            const actual = FonjepEntityAdapter.toVersement(VersementEntity);
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
     describe("toEtablissement()", () => {
         const buildProviderValuesAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValuesAdapter");
         it("should return an Etablissement", () => {
             // @ts-expect-error: mock
             buildProviderValuesAdapterMock.mockImplementationOnce(() => value => [value]);
             const actual = FonjepEntityAdapter.toEtablissement(SubventionEntity);
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("toCommon", () => {
+        it("returns proper result", () => {
+            const INPUT = {
+                indexedInformations: {
+                    date_versement: new Date("2022-02-02"),
+                    dispositif: "DISPOSITIF",
+                    annee_demande: 2023,
+                    montant_paye: 42,
+                    service_instructeur: "INSTRUCTEUR",
+                },
+                legalInformations: { siret: "123456789" },
+                data: { MontantSubvention: 43 },
+            };
+            const actual = FonjepEntityAdapter.toCommon(INPUT);
             expect(actual).toMatchSnapshot();
         });
     });

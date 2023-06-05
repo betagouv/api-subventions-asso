@@ -6,12 +6,12 @@ import * as Validators from "../../../shared/Validators";
 import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 
+jest.mock("./adapters/FonjepEntityAdapter");
+
 const SIREN = "002034000";
 const SIRET = `${SIREN}32010`;
 const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.slice(0, 6);
-const toDemandeSubventionMock = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
-const toVersementMock = jest.spyOn(FonjepEntityAdapter, "toVersement");
 const isSiretMock = jest.spyOn(Validators, "isSiret");
 const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
 const isDatesMock = jest.spyOn(Validators, "isDates");
@@ -36,11 +36,12 @@ describe("FonjepService", () => {
 
     beforeAll(() => {
         // @ts-expect-error: mock
-        toDemandeSubventionMock.mockImplementation(entity => entity);
+        FonjepEntityAdapter.toDemandeSubvention.mockImplementation(entity => entity);
     });
 
     afterAll(() => {
-        toDemandeSubventionMock.mockRestore();
+        // @ts-expect-error: mock
+        FonjepEntityAdapter.toDemandeSubvention.mockRestore();
     });
 
     describe("validateEntity", () => {
@@ -191,9 +192,9 @@ describe("FonjepService", () => {
             // @ts-expect-error: mock;
             findBySiretMock.mockImplementationOnce(async () => [{}]);
             // @ts-expect-error: mock;
-            toDemandeSubventionMock.mockImplementationOnce(entity => entity);
+            FonjepEntityAdapter.toDemandeSubvention.mockImplementationOnce(entity => entity);
             await fonjepService.getDemandeSubventionBySiret(SIRET);
-            expect(toDemandeSubventionMock).toHaveBeenCalledTimes(1);
+            expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledTimes(1);
         });
 
         it("should return null", async () => {
@@ -205,39 +206,41 @@ describe("FonjepService", () => {
     });
 
     describe("toVersementArray()", () => {
-        fonjepService.toVersementArray([VersementEntity, VersementEntity]);
-        expect(toVersementMock).toHaveBeenCalledTimes(2);
+        it("should call adapter", () => {
+            fonjepService.toVersementArray([VersementEntity, VersementEntity]);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe("getVersementsByKey", () => {
         const findByCodeMock = jest.spyOn(fonjepVersementRepository, "findByCodePoste");
 
-        it("returns VersementFonjep[]", async () => {
+        it("calls adapter", async () => {
             // @ts-expect-error: mock
             findByCodeMock.mockImplementationOnce(async () => [VersementEntity]);
-            const actual = await fonjepService.getVersementsByKey(CODE_POSTE);
-            expect(actual).toMatchSnapshot();
+            await fonjepService.getVersementsByKey(CODE_POSTE);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
         });
     });
 
     describe("getVersementsBySiret", () => {
         const findBySiretMock = jest.spyOn(fonjepVersementRepository, "findBySiret");
 
-        it("returns VersementFonjep[]", async () => {
+        it("calls adapter", async () => {
             // @ts-expect-error: mock
             findBySiretMock.mockImplementationOnce(async () => [VersementEntity]);
-            const actual = await fonjepService.getVersementsBySiret(SIRET);
-            expect(actual).toMatchSnapshot();
+            await fonjepService.getVersementsBySiret(SIRET);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
         });
     });
 
     describe("getVersementsBySiren", () => {
         const findBySirenMock = jest.spyOn(fonjepVersementRepository, "findBySiren");
-        it("should return VersementFonjep[]", async () => {
+        it("calls adapter", async () => {
             // @ts-expect-error: mock
             findBySirenMock.mockImplementationOnce(async () => [VersementEntity]);
-            const actual = await fonjepService.getVersementsBySiren(SIREN);
-            expect(actual).toMatchSnapshot();
+            await fonjepService.getVersementsBySiren(SIREN);
+            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
         });
     });
 
@@ -330,6 +333,36 @@ describe("FonjepService", () => {
                     ]
                 `);
             });
+        });
+    });
+
+    describe("rawToCommon", () => {
+        const RAW = "RAW";
+        const ADAPTED = {};
+
+        beforeAll(() => {
+            FonjepEntityAdapter.toCommon
+                // @ts-expect-error: mock
+                .mockImplementation(input => input.toString());
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: mock
+            FonjepEntityAdapter.toCommon.mockReset();
+        });
+
+        it("calls adapter with data from raw grant", () => {
+            // @ts-expect-error: mock
+            fonjepService.rawToCommon({ data: RAW });
+            expect(FonjepEntityAdapter.toCommon).toHaveBeenCalledWith(RAW);
+        });
+        it("returns result from adapter", () => {
+            // @ts-expect-error: mock
+            FonjepEntityAdapter.toCommon.mockReturnValueOnce(ADAPTED);
+            const expected = ADAPTED;
+            // @ts-expect-error: mock
+            const actual = fonjepService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
         });
     });
 });

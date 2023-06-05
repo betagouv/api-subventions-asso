@@ -1,4 +1,10 @@
-import { ApplicationStatus, DemandeSubvention, Etablissement, VersementFonjep } from "@api-subventions-asso/dto";
+import {
+    ApplicationStatus,
+    DemandeSubvention,
+    Etablissement,
+    FullGrantDto,
+    VersementFonjep,
+} from "@api-subventions-asso/dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
@@ -69,6 +75,21 @@ export default class FonjepEntityAdapter {
             periodeDebut: toPV(entity.indexedInformations.periode_debut),
             periodeFin: toPV(entity.indexedInformations.periode_fin),
             montantAPayer: toPV(entity.indexedInformations.montant_a_payer),
+        };
+    }
+
+    static toCommon(entity): FullGrantDto {
+        return {
+            bop: "", // TODO business logic
+            date_debut: entity.indexedInformations.date_versement,
+            dispositif: entity.indexedInformations.dispositif,
+            exercice: entity.indexedInformations.annee_demande,
+            montant_accorde: entity.data.MontantSubvention, // different to previous source
+            montant_verse: entity.indexedInformations.montant_paye,
+            objet: "",
+            service_instructeur: entity.indexedInformations.service_instructeur,
+            siret: entity.legalInformations.siret,
+            statut: ApplicationStatus.GRANTED,
         };
     }
 }

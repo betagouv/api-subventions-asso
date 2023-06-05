@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FonjepEntityAdapter toCommon returns proper result 1`] = `
+Object {
+  "bop": "",
+  "date_debut": 2022-02-02T00:00:00.000Z,
+  "dispositif": "DISPOSITIF",
+  "exercice": 2023,
+  "montant_accorde": 43,
+  "montant_verse": 42,
+  "objet": "",
+  "service_instructeur": "INSTRUCTEUR",
+  "siret": "123456789",
+  "statut": "Accordé",
+}
+`;
+
 exports[`FonjepEntityAdapter toDemandeSubvention() should return a DemandeSubvention 1`] = `
 Object {
   "annee_demande": 2022,
@@ -40,5 +55,19 @@ Object {
   "siret": Array [
     "00000000000002",
   ],
+}
+`;
+
+exports[`FonjepEntityAdapter toVersement() should return a Versement 1`] = `
+Object {
+  "amount": 1000,
+  "codePoste": "J00034",
+  "dateOperation": 2022-01-02T00:00:00.000Z,
+  "id": "unique_id",
+  "montantAPayer": 1000,
+  "periodeDebut": 2022-01-02T00:00:00.000Z,
+  "periodeFin": 2022-01-02T00:00:00.000Z,
+  "siret": "00000000000002",
+  "versementKey": "J00034",
 }
 `;
