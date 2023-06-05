@@ -4,6 +4,7 @@ exports[`ChorusAdapter toCommon returns proper result 1`] = `
 Object {
   "bop": "0BOP",
   "date_debut": 2022-02-02T00:00:00.000Z,
+  "exercice": 2022,
   "montant_verse": 42789,
 }
 `;

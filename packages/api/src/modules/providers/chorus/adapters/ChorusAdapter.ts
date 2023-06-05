@@ -39,6 +39,7 @@ export default class ChorusAdapter {
             montant_verse: entity.indexedInformations.amount,
             date_debut: entity.indexedInformations.dateOperation,
             bop: entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4),
+            exercice: entity.indexedInformations.dateOperation.getFullYear(),
         };
     }
 }

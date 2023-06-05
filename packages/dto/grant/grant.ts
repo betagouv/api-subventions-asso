@@ -13,6 +13,7 @@ export interface ApplicationDto {
 }
 
 export interface PaymentDto {
+    exercice: number;
     montant_verse: number;
     date_debut: Date;
     bop: string;
