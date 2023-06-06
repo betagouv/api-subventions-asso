@@ -34,7 +34,7 @@ export async function startServer(port = "8080", isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
-    Sentry.init({ release: process.env.npm_package_version });
+    if (process.env.ENV !== "dev") Sentry.init({ release: process.env.npm_package_version });
     app.use(Sentry.Handlers.requestHandler());
 
     app.use(
