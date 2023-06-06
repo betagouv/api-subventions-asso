@@ -1,5 +1,6 @@
 import axios from "axios";
 import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import * as Sentry from "@sentry/node";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
@@ -97,6 +98,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
 
             return result.data;
         } catch (e) {
+            Sentry.captureException(e);
             console.error(e);
             return null;
         }

@@ -1,6 +1,7 @@
 import { Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
 import axios from "axios";
 import { Document } from "@api-subventions-asso/dto/search/Document";
+import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
@@ -166,7 +167,9 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
     private filterActiveDacDocuments(documents: StructureDacDocumentDto[], structureIdentifier: StructureIdentifiers) {
         if (!Array.isArray(documents)) {
-            console.error("API-ASSO documents is not an array for structure " + structureIdentifier);
+            const errorMessage = "API-ASSO documents is not an array for structure " + structureIdentifier;
+            Sentry.captureException(new Error(errorMessage));
+            console.error(errorMessage);
             return [];
         }
         return documents.filter(document => document.meta.etat === "courant");

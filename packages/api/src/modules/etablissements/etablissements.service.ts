@@ -1,5 +1,6 @@
 import { ProviderValues, Siren, Siret, Etablissement } from "@api-subventions-asso/dto";
 
+import * as Sentry from "@sentry/node";
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablissementDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
@@ -13,9 +14,8 @@ import { isSiren } from "../../shared/Validators";
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import { NotFoundError } from "../../shared/errors/httpErrors";
+import { NotFoundError, BadRequestError } from "../../shared/errors/httpErrors";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { BadRequestError } from "../../shared/errors/httpErrors/BadRequestError";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import EtablissementProvider from "./@types/EtablissementProvider";
@@ -99,6 +99,7 @@ export class EtablissementsService {
 
         const promises = etablisementProviders.map(async provider => {
             const etabs = await provider[getter](id, true).catch(e => {
+                Sentry.captureException(e);
                 console.error(provider, e);
                 return null;
             });

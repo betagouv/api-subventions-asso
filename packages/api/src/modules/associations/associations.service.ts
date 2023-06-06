@@ -1,5 +1,6 @@
 import { ProviderValues, Association, Siret, Rna, Siren } from "@api-subventions-asso/dto";
 
+import * as Sentry from "@sentry/node";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../@types";
 
@@ -116,6 +117,7 @@ export class AssociationsService {
                 const assos = await provider[`getAssociationsBy${capitalizedId}`](id);
                 if (assos) return assos;
             } catch (e) {
+                Sentry.captureException(e);
                 console.error(provider, e);
             }
             return null;
