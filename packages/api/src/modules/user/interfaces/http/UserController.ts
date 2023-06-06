@@ -7,7 +7,7 @@ import {
 import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
-import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import userService from "../../user.service";
 
@@ -91,5 +91,19 @@ export class UserController extends Controller {
         @Body() body: { password: string },
     ): Promise<UserDtoResponse> {
         return await userService.updatePassword(req.user, body.password);
+    }
+
+    /**
+     * delete own's account
+     * @summary delete own's account
+     */
+    @Delete("/")
+    @Security("jwt", ["user"])
+    @Response<HttpErrorInterface>(400, "Bad Request")
+    public async deleteSelfUser(@Request() req: IdentifiedRequest): Promise<boolean> {
+        const success = await userService.delete(req.user._id.toString());
+        if (!success) throw new NotFoundError("user to delete not found");
+        this.setStatus(204);
+        return true;
     }
 }
