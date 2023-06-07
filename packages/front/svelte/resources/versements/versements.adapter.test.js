@@ -16,7 +16,7 @@ describe("Versements Adapter", () => {
     ];
 
     describe("toVersement()", () => {
-        const mockFormatBop = jest.spyOn(VersementsAdapter, "_formatBop");
+        const mockFormatBop = jest.spyOn(VersementsAdapter, "formatBop");
         const mockGetTotalPayment = jest.spyOn(VersementsAdapter, "_getTotalPayment");
 
         const mocks = [mockGetTotalPayment];
@@ -40,7 +40,7 @@ describe("Versements Adapter", () => {
             expect(mockGetTotalPayment).toHaveBeenCalledTimes(1);
         });
 
-        it("should call _formatBop()", () => {
+        it("should call formatBop()", () => {
             VersementsAdapter.toVersement(VERSEMENTS);
             expect(mockFormatBop).toHaveBeenCalledTimes(1);
         });
@@ -70,25 +70,25 @@ describe("Versements Adapter", () => {
         });
     });
 
-    describe("_fromatBop()", () => {
+    describe("fromatBop()", () => {
         it("should remove first character", () => {
             const BOP = "0163";
             const expected = "163";
-            const actual = VersementsAdapter._formatBop(BOP);
+            const actual = VersementsAdapter.formatBop(BOP);
             expect(actual).toEqual(expected);
         });
 
         it("should return untouched bop", () => {
             const BOP = 1267;
             const expected = BOP;
-            const actual = VersementsAdapter._formatBop(BOP);
+            const actual = VersementsAdapter.formatBop(BOP);
             expect(actual).toEqual(expected);
         });
 
         it("should return undefined", () => {
             const BOP = undefined;
             const expected = undefined;
-            const actual = VersementsAdapter._formatBop(BOP);
+            const actual = VersementsAdapter.formatBop(BOP);
             expect(actual).toEqual(expected);
         });
     });
