@@ -17,6 +17,7 @@ describe("Versements Adapter", () => {
 
     describe("toVersement()", () => {
         const mockFormatBop = jest.spyOn(VersementsAdapter, "formatBop");
+        const mockChooseBop = jest.spyOn(VersementsAdapter, "_chooseBop");
         const mockGetTotalPayment = jest.spyOn(VersementsAdapter, "_getTotalPayment");
 
         const mocks = [mockGetTotalPayment];
@@ -38,6 +39,11 @@ describe("Versements Adapter", () => {
         it("should call _getTotalPayment()", () => {
             VersementsAdapter.toVersement(VERSEMENTS);
             expect(mockGetTotalPayment).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call _chooseBop()", () => {
+            VersementsAdapter.toVersement(VERSEMENTS);
+            expect(mockChooseBop).toHaveBeenCalledTimes(1);
         });
 
         it("should call formatBop()", () => {
@@ -90,6 +96,43 @@ describe("Versements Adapter", () => {
             const expected = undefined;
             const actual = VersementsAdapter.formatBop(BOP);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("_chooseBop()", () => {
+        function testExpected(versements, expected) {
+            const actual = VersementsAdapter._chooseBop(versements);
+            expect(actual).toBe(expected);
+        }
+
+        it("returns general bop if any", () => {
+            testExpected(
+                [
+                    { bop: "1", amount: 2 },
+                    { bop: "1", amount: 1 },
+                ],
+                "1",
+            );
+        });
+
+        it("ignores falsy bops", () => {
+            testExpected(
+                [
+                    { bop: "1", amount: 2 },
+                    { bop: null, amount: 1 },
+                ],
+                "1",
+            );
+        });
+
+        it("returns 'multi-BOP' if multiple bops", () => {
+            testExpected(
+                [
+                    { bop: "1", amount: 2 },
+                    { bop: "2", amount: 1 },
+                ],
+                "multi-BOP",
+            );
         });
     });
 
