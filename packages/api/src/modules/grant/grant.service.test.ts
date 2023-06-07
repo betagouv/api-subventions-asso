@@ -1,7 +1,7 @@
 import grantService from "./grant.service";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
 import commonGrantService from "./commonGrant.service";
 

@@ -13,7 +13,7 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";

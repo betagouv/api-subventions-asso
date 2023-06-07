@@ -9,7 +9,7 @@ const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHel
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
 const {
     default: rnaSirenRepository,
-} = require("../build/src/modules/open-data/rna-siren/repositories/rnaSiren.repository");
+} = require("../build/src/modules/_open-data/rna-siren/repositories/rnaSiren.repository");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {

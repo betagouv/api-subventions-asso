@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import providers from "../providers";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";

@@ -4,7 +4,7 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import providers from "../providers";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";

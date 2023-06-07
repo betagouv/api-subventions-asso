@@ -5,7 +5,7 @@ import { Document } from "@api-subventions-asso/dto/search/Document";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";

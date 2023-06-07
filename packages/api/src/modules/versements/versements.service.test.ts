@@ -2,7 +2,7 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import versementsService from "./versements.service";
 
 describe("VersementsService", () => {

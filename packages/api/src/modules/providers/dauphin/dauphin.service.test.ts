@@ -4,7 +4,7 @@ import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 import SpyInstance = jest.SpyInstance;
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import { Siret, Siren } from "@api-subventions-asso/dto";
 import * as sirenHelper from "../../../shared/helpers/SirenHelper";
 

@@ -5,7 +5,7 @@ import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";

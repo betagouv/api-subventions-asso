@@ -1,5 +1,5 @@
 import associationNameService from "../../../src/modules/association-name/associationName.service";
-import rnaSirenService from "../../../src/modules/open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../../src/modules/_open-data/rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity";
 import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";

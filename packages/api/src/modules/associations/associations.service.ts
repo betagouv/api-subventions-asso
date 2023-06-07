@@ -19,7 +19,7 @@ import AssociationIdentifierError from "../../shared/errors/AssociationIdentifie
 import documentsService from "../documents/documents.service";
 import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import AssociationsProvider from "./@types/AssociationsProvider";

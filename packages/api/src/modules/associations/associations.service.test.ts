@@ -8,7 +8,7 @@ import { Etablissement, Versement } from "@api-subventions-asso/dto";
 import subventionService from "../subventions/subventions.service";
 import * as providers from "../providers";
 import etablissementService from "../etablissements/etablissements.service";
-import rnaSirenService from "../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";

@@ -1,4 +1,4 @@
-const rnaSirenService = require("../build/src/modules/open-data/rna-siren/rnaSiren.service").default;
+const rnaSirenService = require("../build/src/_modules/open-data/rna-siren/rnaSiren.service").default;
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printProgress } = require("../build/src/shared/helpers/CliHelper");
 

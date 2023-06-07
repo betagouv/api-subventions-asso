@@ -4,7 +4,7 @@ import { isAssociationName, isSiret, isCompteAssoId } from "../../../shared/Vali
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";

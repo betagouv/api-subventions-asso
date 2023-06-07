@@ -8,7 +8,7 @@ import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { waitPromise } from "../../../shared/helpers/WaitHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import associationNameService from "../../association-name/associationName.service";
 import AssociationDtoAdapter from "./adapters/AssociationDtoAdapter";
 import EntrepriseDtoAdapter from "./adapters/EntrepriseDtoAdapter";

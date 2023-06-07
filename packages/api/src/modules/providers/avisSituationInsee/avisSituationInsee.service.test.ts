@@ -2,7 +2,7 @@ import axios from "axios";
 import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import * as IdentifierHelper from "../../../shared/helpers/IdentifierHelper";
-import rnaSirenService from "../../open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import avisSituationInseeService from "./avisSituationInsee.service";
 
 describe("AvisSituationInseeService", () => {
@@ -19,7 +19,6 @@ describe("AvisSituationInseeService", () => {
             // @ts-expect-error requestCache is private attribute
             avisSituationInseeService.requestCache.collection.clear();
         });
-
 
         it("should return false because value is save in cache", async () => {
             const expected = false;
