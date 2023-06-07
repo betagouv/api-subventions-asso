@@ -68,6 +68,7 @@ export default class VersementTableController {
             activitee: valueOrHyphen(versement.activitee),
             centreFinancier: valueOrHyphen(versement.centreFinancier),
             date: withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8),
+            bop: valueOrHyphen(VersementsAdapter.formatBop(versement.bop)),
         };
     }
 
