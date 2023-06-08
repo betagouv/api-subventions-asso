@@ -1,8 +1,7 @@
-import { SignupErrorCodes } from "@api-subventions-asso/dto/build/auth/SignupDtoResponse";
+import { SignupErrorCodes } from "@api-subventions-asso/dto";
 import { getContext } from "svelte";
 import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
-// TODO update import after switch svelte to ts #330
 
 export default class SignupController {
     ERROR_MESSAGES = {
