@@ -20,6 +20,9 @@
     <div class={`fr-card fr-enlarge-link${direction === "horizontal" ? " fr-card--horizontal" : ""}`}>
         <div class="fr-card__body">
             <div class="fr-card__content">
+                <div class="fr-card__start">
+                    <slot name="card-start" />
+                </div>
                 <h2 class="fr-card__title">
                     <a href={url} on:click={onClick} class="fr-card__link" {target}>{title}</a>
                 </h2>
