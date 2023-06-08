@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.30.0](https://github.com/betagouv/datasubvention/compare/v0.29.1...v0.30.0) (2023-06-08)
+
+
+### Features
+
+* **api:** payment common dto includes exercice ([7183de0](https://github.com/betagouv/datasubvention/commit/7183de0680b147a4112b2d58f5c54171960b3141))
+* homogenizes lint config ([90b43d1](https://github.com/betagouv/datasubvention/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
+
+
+
+
+
 ## [0.29.1](https://github.com/betagouv/datasubvention/compare/v0.29.0...v0.29.1) (2023-05-31)
 
 **Note:** Version bump only for package dto

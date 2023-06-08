@@ -3,6 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.30.0](https://github.com/betagouv/api-subventions-asso/compare/v0.29.1...v0.30.0) (2023-06-08)
+
+
+### Bug Fixes
+
+* **api:** set default query ([749f093](https://github.com/betagouv/api-subventions-asso/commit/749f0930393e5885e45a686dfd7a2dce150ef773)), closes [#1227](https://github.com/betagouv/api-subventions-asso/issues/1227)
+* **front:** help to download dauphin document ([84cf125](https://github.com/betagouv/api-subventions-asso/commit/84cf1250f22cf94e856474f6019f9bffee31eda9))
+* **front:** lint error ([9641e48](https://github.com/betagouv/api-subventions-asso/commit/9641e4873a7e6ea51f8c5ab8efbf202c8662ba76))
+* **front:** send query even if empty ([7232c8d](https://github.com/betagouv/api-subventions-asso/commit/7232c8df0960bc9e25bc54dff9cfaf804637421e))
+
+
+### Features
+
+* **api, dto:** update login error message ([4048e43](https://github.com/betagouv/api-subventions-asso/commit/4048e430fa387694183c918826948639f91655a6))
+* **api:** add common dto schemas démarches simplifiées ([d7e82df](https://github.com/betagouv/api-subventions-asso/commit/d7e82dfd772799785986e2b4918c208d2443f977))
+* **api:** add migration to create unique-association-visits-by-day ([e419325](https://github.com/betagouv/api-subventions-asso/commit/e4193250f59efae2df5abae7f67cea40c2462c6d))
+* **api:** add optional id in provider's type ([b2ce3ad](https://github.com/betagouv/api-subventions-asso/commit/b2ce3ad0c17e029475cdf5a7670ad2f4dd2d2339))
+* **api:** add unique index on identifier ([dacd994](https://github.com/betagouv/api-subventions-asso/commit/dacd994837cdf996304d5a679408f2627c015062))
+* **api:** caisse depots adapter for common dto ([47ac185](https://github.com/betagouv/api-subventions-asso/commit/47ac18502aee36d423dbc0eb0c51d7722830e177))
+* **api:** caisse depots service for common dto ([7e5ade0](https://github.com/betagouv/api-subventions-asso/commit/7e5ade01d81f760d251df48e93da6a0b0bf4a5d4))
+* **api:** chorus adapter to grant common dto ([0f028e7](https://github.com/betagouv/api-subventions-asso/commit/0f028e7894b92776c058c6929e6f893d6bb4c742))
+* **api:** chorus service method to adapt to common dto ([ebdc9e9](https://github.com/betagouv/api-subventions-asso/commit/ebdc9e948244a089da37a0c81213cb75554c1eed))
+* **api:** common dto grant service ([3b885ec](https://github.com/betagouv/api-subventions-asso/commit/3b885ec95f0082ffc3d19be4dd137b2346a05f48))
+* **api:** cron controller logs to sentry ([9055526](https://github.com/betagouv/api-subventions-asso/commit/9055526b47794329ad5791e85231b549c7795b84))
+* **api:** dauphin service calls adapter to common ([5f5f0fd](https://github.com/betagouv/api-subventions-asso/commit/5f5f0fd4d462b7aaf33b10fbb7c749e93263d23d))
+* **api:** dauphin toCommon adapter ([78b5e89](https://github.com/betagouv/api-subventions-asso/commit/78b5e8969fd178480faca9380d5d4bf935205cbd))
+* **api:** demarches simplifiees common adapter ([cfeaf28](https://github.com/betagouv/api-subventions-asso/commit/cfeaf2874675a859a397ec27616d3679cd88eee5))
+* **api:** flaten result and test migration ([c0fbb97](https://github.com/betagouv/api-subventions-asso/commit/c0fbb975c338dec41330a4f13bbd0ace94278832))
+* **api:** fonjep join by year also to not have duplicate ([d125eb6](https://github.com/betagouv/api-subventions-asso/commit/d125eb6e7381a835d22005206a9a7199ef5f9838))
+* **api:** general grantService.getGrants method ([46ca5c5](https://github.com/betagouv/api-subventions-asso/commit/46ca5c583c353c3a3aba074f596266ac65660c40))
+* **api:** grantService function to get commonGrant format ([97ff60a](https://github.com/betagouv/api-subventions-asso/commit/97ff60a65a081cfa72f206d08f5683c3bbffde09))
+* **api:** no sentry in dev environment ([337650c](https://github.com/betagouv/api-subventions-asso/commit/337650cc68a2702482c723dca97d85d463555898))
+* **api:** open data grant routes ([9c6710b](https://github.com/betagouv/api-subventions-asso/commit/9c6710bc02816d6fc3dd8ddbb72077ae3af43ce3))
+* **api:** osiris adapter to common dto ([54d8d8d](https://github.com/betagouv/api-subventions-asso/commit/54d8d8d5afa9f107e61a20a09d57d78fa0515790))
+* **api:** osiris service method to adapt to common dto ([1164266](https://github.com/betagouv/api-subventions-asso/commit/1164266a618cea790e867d68862e00a7bafbd713))
+* **api:** payment common dto includes exercice ([7183de0](https://github.com/betagouv/api-subventions-asso/commit/7183de0680b147a4112b2d58f5c54171960b3141))
+* **api:** raw grant provider demarches simplifiees ([8b6b497](https://github.com/betagouv/api-subventions-asso/commit/8b6b497190321e598283f2ab22b30dec88a99483))
+* **api:** route to delete one's own account ([6b9c9cb](https://github.com/betagouv/api-subventions-asso/commit/6b9c9cbfffb0701d3c7c7b8b63e5efea6566ad1b)), closes [#1346](https://github.com/betagouv/api-subventions-asso/issues/1346)
+* **api:** sentry logs catched errors ([cea0787](https://github.com/betagouv/api-subventions-asso/commit/cea07877a2f020fb976e34610528027ddfaa7986))
+* **api:** tweak module's name to put open-data routes on top of the swagger ([47ba574](https://github.com/betagouv/api-subventions-asso/commit/47ba574f9dcc0abb19f78961b2f6d140823de8d3)), closes [#1350](https://github.com/betagouv/api-subventions-asso/issues/1350)
+* **front,api:** merge association services and establishment services ([5a4e933](https://github.com/betagouv/api-subventions-asso/commit/5a4e9334f9158752d33c9d6d9b0b7c2c68aace5b))
+* **front:** add AssociationController tests ([7437a38](https://github.com/betagouv/api-subventions-asso/commit/7437a383385c555926e4c8b0ceb26314df8fb8d9))
+* **front:** add store alise in eslint config ([b87a99f](https://github.com/betagouv/api-subventions-asso/commit/b87a99fddc4649c9c82202a8344279a432cf9f62))
+* **front:** apply stash and updates ([7747943](https://github.com/betagouv/api-subventions-asso/commit/7747943c4ab1ba1dd7b2c2b26f6edae045d8f3ed))
+* **front:** bodacc definition update ([3cf429e](https://github.com/betagouv/api-subventions-asso/commit/3cf429ea3233b3ac1083973a947ab804b830fa32)), closes [#1342](https://github.com/betagouv/api-subventions-asso/issues/1342)
+* **front:** component establishmentCard ([0fc839a](https://github.com/betagouv/api-subventions-asso/commit/0fc839a41dd2840811dd5748629d513aef62bd34))
+* **front:** dsfr badge and badgeGroup svelte component ([216ecd2](https://github.com/betagouv/api-subventions-asso/commit/216ecd29b9da4e9998ab90584b501bf091051cdc))
+* **front:** dsfr card component has slot for card-start ([92d41c8](https://github.com/betagouv/api-subventions-asso/commit/92d41c8ca851956480c4350ab520f54ae65fec14))
+* **front:** establishment preview state not about open/closed ([313125a](https://github.com/betagouv/api-subventions-asso/commit/313125abbb042335034fc8b741ce2b7b0b059e3f))
+* **front:** make router query optionnal ([a405d91](https://github.com/betagouv/api-subventions-asso/commit/a405d9141b8477103b94fa6ccea436adabfe0952))
+* **front:** merge association services and establishment services ([4899fed](https://github.com/betagouv/api-subventions-asso/commit/4899feddecf3f6cf62436b321c1dba34ac1da3eb))
+* **front:** payment's bop is multi-modal if multiple bops to aggregate ([cb1a4a2](https://github.com/betagouv/api-subventions-asso/commit/cb1a4a2d4ae6f3880c6158c52a16ad2a0b85c0f4))
+* **front:** rename flaten to flatten and fix tests ([3f1d75a](https://github.com/betagouv/api-subventions-asso/commit/3f1d75a8334facf0bd7e994da120ebd7560306e1))
+* **front:** shop bop in payment details modal ([aa79337](https://github.com/betagouv/api-subventions-asso/commit/aa79337a825f2f9d6b3c90c95c16b6a34ce25d76))
+* **front:** use new component establishment card ([3b00a72](https://github.com/betagouv/api-subventions-asso/commit/3b00a725fa707635f834fd5e7f5a7156371e0b80))
+* homogenizes lint config ([90b43d1](https://github.com/betagouv/api-subventions-asso/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
+
+
+
+
+
 ## [0.29.1](https://github.com/betagouv/api-subventions-asso/compare/v0.29.0...v0.29.1) (2023-05-31)
 
 

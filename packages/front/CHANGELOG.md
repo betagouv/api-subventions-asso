@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.30.0](https://github.com/betagouv/datasubvention/compare/v0.29.1...v0.30.0) (2023-06-08)
+
+
+### Bug Fixes
+
+* **front:** help to download dauphin document ([84cf125](https://github.com/betagouv/datasubvention/commit/84cf1250f22cf94e856474f6019f9bffee31eda9))
+* **front:** lint error ([9641e48](https://github.com/betagouv/datasubvention/commit/9641e4873a7e6ea51f8c5ab8efbf202c8662ba76))
+* **front:** send query even if empty ([7232c8d](https://github.com/betagouv/datasubvention/commit/7232c8df0960bc9e25bc54dff9cfaf804637421e))
+
+
+### Features
+
+* **front,api:** merge association services and establishment services ([5a4e933](https://github.com/betagouv/datasubvention/commit/5a4e9334f9158752d33c9d6d9b0b7c2c68aace5b))
+* **front:** add AssociationController tests ([7437a38](https://github.com/betagouv/datasubvention/commit/7437a383385c555926e4c8b0ceb26314df8fb8d9))
+* **front:** add store alise in eslint config ([b87a99f](https://github.com/betagouv/datasubvention/commit/b87a99fddc4649c9c82202a8344279a432cf9f62))
+* **front:** apply stash and updates ([7747943](https://github.com/betagouv/datasubvention/commit/7747943c4ab1ba1dd7b2c2b26f6edae045d8f3ed))
+* **front:** bodacc definition update ([3cf429e](https://github.com/betagouv/datasubvention/commit/3cf429ea3233b3ac1083973a947ab804b830fa32)), closes [#1342](https://github.com/betagouv/datasubvention/issues/1342)
+* **front:** component establishmentCard ([0fc839a](https://github.com/betagouv/datasubvention/commit/0fc839a41dd2840811dd5748629d513aef62bd34))
+* **front:** dsfr badge and badgeGroup svelte component ([216ecd2](https://github.com/betagouv/datasubvention/commit/216ecd29b9da4e9998ab90584b501bf091051cdc))
+* **front:** dsfr card component has slot for card-start ([92d41c8](https://github.com/betagouv/datasubvention/commit/92d41c8ca851956480c4350ab520f54ae65fec14))
+* **front:** establishment preview state not about open/closed ([313125a](https://github.com/betagouv/datasubvention/commit/313125abbb042335034fc8b741ce2b7b0b059e3f))
+* **front:** make router query optionnal ([a405d91](https://github.com/betagouv/datasubvention/commit/a405d9141b8477103b94fa6ccea436adabfe0952))
+* **front:** merge association services and establishment services ([4899fed](https://github.com/betagouv/datasubvention/commit/4899feddecf3f6cf62436b321c1dba34ac1da3eb))
+* **front:** payment's bop is multi-modal if multiple bops to aggregate ([cb1a4a2](https://github.com/betagouv/datasubvention/commit/cb1a4a2d4ae6f3880c6158c52a16ad2a0b85c0f4))
+* **front:** rename flaten to flatten and fix tests ([3f1d75a](https://github.com/betagouv/datasubvention/commit/3f1d75a8334facf0bd7e994da120ebd7560306e1))
+* **front:** shop bop in payment details modal ([aa79337](https://github.com/betagouv/datasubvention/commit/aa79337a825f2f9d6b3c90c95c16b6a34ce25d76))
+* **front:** use new component establishment card ([3b00a72](https://github.com/betagouv/datasubvention/commit/3b00a725fa707635f834fd5e7f5a7156371e0b80))
+* homogenizes lint config ([90b43d1](https://github.com/betagouv/datasubvention/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
+
+
+
+
+
 ## [0.29.1](https://github.com/betagouv/datasubvention/compare/v0.29.0...v0.29.1) (2023-05-31)
 
 **Note:** Version bump only for package front
