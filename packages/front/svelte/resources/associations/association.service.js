@@ -32,7 +32,6 @@ class AssociationService {
 
     async getDocuments(identifier) {
         const result = await associationPort.getDocuments(identifier);
-        console.log(result);
         const documents = result.map(document => getObjectWithMetadata(document));
         return documentService.formatAndSortDocuments(documents);
     }
