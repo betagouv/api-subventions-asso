@@ -1,5 +1,5 @@
-import { valueOrHyphen } from "@helpers/dataHelper";
 import { addressToString } from "../../views/association/association.helper";
+import { valueOrHyphen } from "@helpers/dataHelper";
 
 export class EstablishmentPreviewController {
     constructor(etab) {
@@ -10,7 +10,6 @@ export class EstablishmentPreviewController {
 
     getEtablissementStatus(etab) {
         if (etab.siege) return "Établissement siège";
-        if (!etab.ouvert) return "-- Établissement fermé --";
         return "Établissement secondaire";
     }
 }

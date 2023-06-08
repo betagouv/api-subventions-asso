@@ -1,14 +1,13 @@
 <script>
     import { onMount } from "svelte";
-    import associationService from "@resources/associations/association.service";
 
     import Spinner from "../../../components/Spinner.svelte";
     import ErrorAlert from "../../../components/ErrorAlert.svelte";
     import DataNotFound from "../../../components/DataNotFound.svelte";
+    import EstablishmentCard from "./EstablishmentCard.svelte";
+    import associationService from "@resources/associations/association.service";
 
     import { waitElementIsVisible } from "@helpers/visibilityHelper";
-    import Card from "@dsfr/Card.svelte";
-    import EstablishmentPreview from "@components/EstablishmentPreview/EstablishmentPreview.svelte";
 
     export let associationIdentifier;
     export let association;
@@ -30,11 +29,9 @@
             <h3>Les établissements rattachés à cette association</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each etablissements as etablissement}
-                    <Card
-                        title={association.denomination_rna || association.denomination_siren}
-                        url="/etablissement/{etablissement.siret}">
-                        <EstablishmentPreview establishment={etablissement} />
-                    </Card>
+                    <EstablishmentCard
+                        name={association.denomination_rna || association.denomination_siren}
+                        establishment={etablissement} />
                 {/each}
             </div>
         {:else}

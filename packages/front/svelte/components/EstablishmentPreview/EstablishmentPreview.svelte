@@ -20,6 +20,6 @@
 
 <style>
     .color {
-        color: var(--blue-france-sun-113-625);
+        color: var(--text-active-blue-france);
     }
 </style>
