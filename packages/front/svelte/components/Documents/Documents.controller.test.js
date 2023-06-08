@@ -36,12 +36,12 @@ describe("Documents.controller", () => {
             delete document.createElement;
             delete document.body;
             window.URL = {
-                createObjectURL: jest.fn((...args) => BLOB_URL),
+                createObjectURL: jest.fn((..._args) => BLOB_URL),
                 revokeObjectURL: jest.fn(),
             };
 
             document.body.appendChild = jest.fn();
-            document.createElement = jest.fn((...args) => ELEMENT);
+            document.createElement = jest.fn((..._args) => ELEMENT);
         });
 
         afterAll(() => {

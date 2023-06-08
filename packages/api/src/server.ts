@@ -62,10 +62,6 @@ export async function startServer(port = "8080", isTest = false) {
 
     RegisterRoutes(app); // TSOA Part
 
-    app.get("/debug-sentry", function mainHandler(req, res) {
-        throw new Error("My first Sentry error!");
-    });
-
     RegisterSSERoutes(app); // SSE Part
 
     app.use("/docs", ...(await docsMiddlewares()));
