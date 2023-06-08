@@ -5,6 +5,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
+import { RawGrant } from "../../grant/@types/rawGrant";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import DemarchesSimplifieesDto from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -12,6 +13,7 @@ import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifi
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
 import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
+import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 
 export class DemarchesSimplifieesService implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true;
@@ -19,6 +21,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         name: "Démarches Simplifiées",
         type: ProviderEnum.api,
         description: "", // TODO
+        id: "demarchesSimplifiees",
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -58,6 +61,12 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         const demandes = await demarchesSimplifieesDataRepository.findBySiret(siret);
         return this.entitiesToSubventions(demandes);
     }
+
+    /**
+     * |-------------------------|
+     * |   Cache Maintenance     |
+     * |-------------------------|
+     */
 
     async updateAllForms() {
         const formsIds = await demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds();
@@ -116,6 +125,45 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
 
     addSchemaMapper(schema: DemarchesSimplifieesMapperEntity) {
         return demarchesSimplifieesMapperRepository.upsert(schema);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    private async toRawGrants(providerGrants: DemarchesSimplifieesDataEntity[]): Promise<RawGrant[]> {
+        const schemasById = await this.getSchemasByIds();
+        const rawGrants = providerGrants.map(grant => {
+            if (!schemasById?.[grant.demarcheId]) return null;
+            return {
+                provider: this.provider.id,
+                type: "application",
+                data: { grant, schema: schemasById[grant.demarcheId] },
+            };
+        });
+        return rawGrants.filter(g => !!g) as RawGrant[];
+    }
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        const grants = await demarchesSimplifieesDataRepository.findBySiret(siret);
+        return await this.toRawGrants(grants);
+    }
+
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        const grants = await demarchesSimplifieesDataRepository.findBySiren(siren);
+        return await this.toRawGrants(grants);
+    }
+
+    getRawGrantsByRna(): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
+    }
+
+    rawToCommon(raw: RawGrant) {
+        return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
     }
 }
 
