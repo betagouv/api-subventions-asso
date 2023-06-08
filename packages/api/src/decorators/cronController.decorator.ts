@@ -5,12 +5,14 @@ import {
     LongIntervalJob,
     SimpleIntervalJob,
     SimpleIntervalSchedule,
-    Task
+    Task,
 } from "toad-scheduler";
 import axios from "axios";
+import * as Sentry from "@sentry/node";
 
 export const errorHandlerFactory = cronName => {
     return error => {
+        Sentry.captureException(error);
         console.error(`error during cron ${cronName}`);
         console.trace();
         return axios
@@ -18,7 +20,7 @@ export const errorHandlerFactory = cronName => {
                 text: `[${process.env.ENV}] Le cron \`${cronName}\` a échoué`,
                 username: "Police du Cron",
                 icon_emoji: "alarm_clock",
-                props: { card: `\`\`\`\n${new Error(error).stack}\n\`\`\`` }
+                props: { card: `\`\`\`\n${new Error(error).stack}\n\`\`\`` },
             })
             .catch(() => console.error("error sending mattermost log"));
     };
@@ -29,17 +31,28 @@ export const newJob = (schedule, JobClass, TaskClass) => {
     return function (target, propertyKey: string, descriptor) {
         if (!target[attributeName]) target[attributeName] = [];
         const cronName = `${target.constructor.name}.${propertyKey}`;
+        let message: string;
 
         const loggedFunction =
             TaskClass === AsyncTask
                 ? () => {
-                      console.log(`cron task started: ${cronName}`);
-                      return descriptor.value().then(() => console.log(`cron task ended successfully: ${cronName}`));
+                      message = `cron task started: ${cronName}`;
+                      console.log(message);
+                      Sentry.captureEvent({ level: "info", message });
+                      return descriptor.value().then(() => {
+                          message = `cron task ended successfully: ${cronName}`;
+                          Sentry.captureEvent({ level: "info", message });
+                          console.log(message);
+                      });
                   }
                 : () => {
-                      console.log(`cron task started: ${cronName}`);
+                      message = `cron task started: ${cronName}`;
+                      console.log(message);
+                      Sentry.captureEvent({ level: "info", message });
                       descriptor.value();
-                      console.log(`cron task ended successfully: ${cronName}`);
+                      message = `cron task ended successfully: ${cronName}`;
+                      console.log(message);
+                      Sentry.captureEvent({ level: "info", message });
                   };
         const task = new TaskClass(cronName, loggedFunction, errorHandlerFactory(cronName));
         target[attributeName].push(new JobClass(schedule, task, { preventOverrun: true }));

@@ -1,5 +1,6 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import axios from "axios";
+import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -33,6 +34,7 @@ export class CaisseDepotsService implements DemandesSubventionsProvider, GrantPr
 
             return result.data.records.map(({ record }) => record);
         } catch (e) {
+            Sentry.captureException(e);
             console.error(e);
             return [];
         }

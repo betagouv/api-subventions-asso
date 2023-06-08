@@ -1,5 +1,6 @@
 import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
+import * as Sentry from "@sentry/node";
 import providers from "../providers";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
@@ -50,6 +51,7 @@ export class DocumentsService {
         const result = await Promise.all(
             providers.map(provider =>
                 provider[method].call(provider, id).catch(e => {
+                    Sentry.captureException(e);
                     console.error(e);
                     return [];
                 }),

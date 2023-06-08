@@ -3,6 +3,7 @@ import axios from "axios";
 import qs from "qs";
 import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
 import { Document } from "@api-subventions-asso/dto/search/Document";
+import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -129,6 +130,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
 
                 console.log(`fetched ${applications.length} applications`);
             } catch (e) {
+                Sentry.captureException(e);
                 console.error(e);
                 return [];
             }

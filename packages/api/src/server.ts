@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import express, { NextFunction, Response } from "express";
 import passport from "passport";
+import * as Sentry from "@sentry/node";
 
 import cors from "cors";
 
@@ -33,6 +34,9 @@ export async function startServer(port = "8080", isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
+    if (process.env.ENV !== "dev") Sentry.init({ release: process.env.npm_package_version });
+    app.use(Sentry.Handlers.requestHandler());
+
     app.use(
         cors({
             origin: "*",
@@ -58,9 +62,15 @@ export async function startServer(port = "8080", isTest = false) {
 
     RegisterRoutes(app); // TSOA Part
 
+    app.get("/debug-sentry", function mainHandler(req, res) {
+        throw new Error("My first Sentry error!");
+    });
+
     RegisterSSERoutes(app); // SSE Part
 
     app.use("/docs", ...(await docsMiddlewares()));
+
+    app.use(Sentry.Handlers.errorHandler());
 
     app.use(errorHandler(isTest));
 
