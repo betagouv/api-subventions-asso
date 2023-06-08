@@ -2,12 +2,12 @@
     import DataNotFound from "../../components/DataNotFound.svelte";
     import ErrorAlert from "../../components/ErrorAlert.svelte";
     import InfosLegales from "../../components/InfosLegales/InfosLegales.svelte";
-    import associationService from "@resources/associations/association.service";
-    import { siretToSiren } from "../../helpers/sirenHelper";
     import { activeBlueBanner } from "../../store/context.store";
     import FullPageSpinner from "../../components/FullPageSpinner.svelte";
     import StructureTitle from "../../components/StructureTitle/StructureTitle.svelte";
     import TabsEtab from "./components/TabsEtab.svelte";
+    import { siretToSiren } from "@helpers/sirenHelper";
+    import associationService from "@resources/associations/association.service";
     import establishmentService from "@resources/establishments/establishment.service";
 
     export let id;
