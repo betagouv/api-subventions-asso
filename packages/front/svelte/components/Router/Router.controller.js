@@ -26,8 +26,7 @@ export default class RouterController {
             }
             this.crumbs.set(RouterService.buildBreadcrumbs(path));
             const props = RouterService.getProps(path, route.segments);
-            const query = this.getQueryParams(searchQuery);
-            if (Object.keys(query).length) props.query = query;
+            props.query = this.getQueryParams(searchQuery);
             this.props.set(props);
         }
         this.component.set(route.component());

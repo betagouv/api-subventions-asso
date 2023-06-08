@@ -48,10 +48,10 @@ describe("RouterController", () => {
             expect(getQueryParamsMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should not add query in props", () => {
-            const expected = undefined;
+        it("should add query in props even if empty", () => {
+            const expected = {};
             controller.loadRoute("", undefined);
-            const actual = controller.props.query;
+            const actual = controller.props.value.query;
 
             expect(actual).toEqual(expected);
         });
