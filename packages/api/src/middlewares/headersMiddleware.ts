@@ -4,6 +4,7 @@ const headers = {
     "Content-Security-Policy": "default-src 'none'",
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
     "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
 };
 
 export const headersMiddleware = (req: Request, res: Response, next: NextFunction) => {
