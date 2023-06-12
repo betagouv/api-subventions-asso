@@ -86,7 +86,11 @@ controllers.forEach(controllerClass => {
     });
 });
 
-app.get("*", function (req, res) {
+app.get("/statistiques", function (req, res) {
+    res.redirect(301, "https://blog.datasubvention.beta.gouv.fr/statistiques/");
+});
+
+app.get("/*", function (req, res) {
     res.sendFile(path.join(__dirname, "../static/svelte-index.html"));
 });
 
