@@ -14,6 +14,7 @@ import { DefaultObject } from "./@types/utils";
 import ControllerMethod, { ControllerRouteDEF } from "./@types/ControllerMethod";
 import EJSHelper from "./shared/helpers/EJSHelper";
 import * as Components from "./modules/global_components/index";
+import { headersMiddleware } from "./middlewares/headers.middleware";
 
 declare module "express-session" {
     interface Session {
@@ -29,6 +30,8 @@ const contactEmail = "contact@datasubvention.beta.gouv.fr";
 const port = process.env.PORT || 1235;
 
 const app = express();
+
+app.use(headersMiddleware);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
