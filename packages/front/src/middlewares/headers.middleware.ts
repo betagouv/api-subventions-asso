@@ -1,6 +1,25 @@
 import { NextFunction, Request, Response } from "express";
+import { DATASUB_URL } from "../shared/config";
 
-const headers = {};
+const cspHeaderValueByDirective = {
+    "default-src": "'self'",
+    "connect-src": `'self' ${DATASUB_URL} https://client.crisp.chat/ wss://client.relay.crisp.chat/w/b1/ https://storage.crisp.chat wss://stream.relay.crisp.chat`,
+    "font-src": "'self' https://client.crisp.chat",
+    "img-src": "'self' data: https://image.crisp.chat https://client.crisp.chat https://storage.crisp.chat",
+    "script-src": "'unsafe-inline' 'unsafe-eval' 'self' https://client.crisp.chat https://settings.crisp.chat",
+    "style-src": "'self' https://client.crisp.chat 'unsafe-inline'",
+    "frame-src": "'self' https://game.crisp.chat",
+};
+
+function toCspHeaderValue(dict: Record<string, string>) {
+    return Object.entries(dict)
+        .map(([directiveKey, directiveValue]) => `${directiveKey} ${directiveValue}`)
+        .join("; ");
+}
+
+const headers = {
+    "Content-Security-Policy": toCspHeaderValue(cspHeaderValueByDirective),
+};
 
 export const headersMiddleware = (req: Request, res: Response, next: NextFunction) => {
     for (const [headerKey, headerValue] of Object.entries(headers)) {
