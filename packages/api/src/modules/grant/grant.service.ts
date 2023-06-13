@@ -7,6 +7,8 @@ import StructureIdentifiersError from "../../shared/errors/StructureIdentifierEr
 import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
+import associationsService from "../associations/associations.service";
 import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 import commonGrantService from "./commonGrant.service";
@@ -21,15 +23,27 @@ export class GrantService {
     async getGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
         let idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
+
+        let isReallyAsso;
         if (idType === StructureIdentifiersEnum.rna) {
+            isReallyAsso = true;
             const siren = await rnaSirenService.getSiren(id);
             if (siren) {
                 id = siren;
                 idType = StructureIdentifiersEnum.siren;
             }
-        }
+        } // TODO update tests
+        if (!isReallyAsso) isReallyAsso = await associationsService.isSirenFromAsso(siretToSiren(id));
+        if (!isReallyAsso) throw new StructureIdentifiersError("identifier does not represent an association");
 
-        const rawGrants = await this.getRawGrantsByMethod(id, idType);
+        const providers = this.getGrantProviders();
+        const methodName = GrantService.getRawMethodNameByIdType[idType];
+        const rawGrants = [
+            ...(
+                await Promise.all(providers.map(p => p[methodName](id).then(g => (g || []) as RawGrant[]) || []))
+            ).flat(),
+        ];
+
         return this.joinGrants(rawGrants);
     }
 
