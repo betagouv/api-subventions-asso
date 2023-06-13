@@ -1,4 +1,4 @@
-import { ApplicationDto, GrantDto, PaymentDto } from "@api-subventions-asso/dto";
+import { ApplicationDto, ApplicationStatus, GrantDto, PaymentDto } from "@api-subventions-asso/dto";
 import providers from "../providers";
 import { JoinedRawGrant, RawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
@@ -71,6 +71,7 @@ export class CommonGrantService {
         }
 
         if (!application && !payment) return null;
+        if (publishable && application?.statut !== ApplicationStatus.GRANTED) return null;
         return { ...(payment || {}), ...(application || {}) } as GrantDto;
     }
 }
