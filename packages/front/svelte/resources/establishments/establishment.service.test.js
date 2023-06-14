@@ -22,8 +22,8 @@ describe("establishmentService", () => {
     });
 
     describe("getBySiret", () => {
-        const establishments = [{ contacts: CONTACTS }];
-        establishmentPort.getBySiret.mockImplementation(() => establishments);
+        const establishment = { contacts: CONTACTS };
+        establishmentPort.getBySiret.mockImplementation(() => establishment);
         establishmentAdapter.toEstablishmentComponent.mockImplementationOnce(establishment => establishment);
 
         it("should call EstablishmentPort", async () => {
@@ -37,13 +37,13 @@ describe("establishmentService", () => {
                 .mockImplementation(contact => contact);
 
             await establishmentService.getBySiret(SIRET);
-            expect(spyGetContactsValue).toHaveBeenCalledTimes(establishments.length);
+            expect(spyGetContactsValue).toHaveBeenCalledTimes(1);
             spyGetContactsValue.mockRestore();
         });
 
         it("should call toEstablishmentComponent for each establishment", async () => {
             await establishmentService.getBySiret(SIRET);
-            expect(establishmentAdapter.toEstablishmentComponent).toHaveBeenCalledTimes(establishments.length);
+            expect(establishmentAdapter.toEstablishmentComponent).toHaveBeenCalledTimes(1);
         });
     });
 
