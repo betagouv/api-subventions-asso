@@ -32,7 +32,7 @@ export class GrantService {
                 id = siren;
                 idType = StructureIdentifiersEnum.siren;
             }
-        } // TODO update tests
+        }
         if (!isReallyAsso) isReallyAsso = await associationsService.isSirenFromAsso(siretToSiren(id));
         if (!isReallyAsso) throw new StructureIdentifiersError("identifier does not represent an association");
 

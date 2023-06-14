@@ -5,6 +5,8 @@ import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
 import commonGrantService from "./commonGrant.service";
 import mocked = jest.mocked;
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
+import associationsService from "../associations/associations.service";
 
 jest.mock("../providers", () => ({
     prov1: { isGrantProvider: true, name: "prov1" },
@@ -15,6 +17,8 @@ jest.mock("../providers", () => ({
 jest.mock("../../shared/Validators");
 jest.mock("../../shared/helpers/IdentifierHelper");
 jest.mock("./commonGrant.service");
+jest.mock("../associations/associations.service");
+jest.mock("../../shared/helpers/SirenHelper");
 
 describe("GrantService", () => {
     const RAW = "RAW";
@@ -23,21 +27,40 @@ describe("GrantService", () => {
     describe("getGrants", () => {
         const SIREN = "123456789";
         const RNA = "W1234567";
-        let getSirenMock, getRawGrantMock, joinGrantsMock;
+        let getSirenMock, joinGrantsMock;
+        let getProvidersMock;
+        let mockedProviders: any;
+        const ID = "ID";
+
+        function generateProvider(name) {
+            return {
+                getRawGrantsByRna: jest.fn().mockResolvedValue(null),
+                getRawGrantsBySiren: jest.fn().mockResolvedValue(null),
+                getRawGrantsBySiret: jest.fn().mockResolvedValue(null),
+                provider: { name },
+            };
+        }
 
         beforeAll(() => {
             mocked(getIdentifierType).mockReturnValue(StructureIdentifiersEnum.siren);
             getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
-            // @ts-expect-error - mock
-            getRawGrantMock = jest.spyOn(grantService, "getRawGrantsByMethod").mockResolvedValue(RAW);
             joinGrantsMock = jest.spyOn(grantService as any, "joinGrants").mockReturnValue(JOINED);
+            mocked(associationsService.isSirenFromAsso).mockResolvedValue(true);
+
+            mockedProviders = [generateProvider("prov1"), generateProvider("prov2")];
+            getProvidersMock = jest.spyOn(grantService as any, "getGrantProviders").mockReturnValue(mockedProviders);
         });
 
         afterAll(() => {
             mocked(getIdentifierType).mockRestore();
             getSirenMock.mockRestore();
-            getRawGrantMock.mockRestore();
             joinGrantsMock.mockRestore();
+            getProvidersMock.mockRestore();
+        });
+
+        it("get providers", async () => {
+            await grantService.getGrants(SIREN);
+            expect(getProvidersMock).toHaveBeenCalled();
         });
 
         it("identifies identifier type", async () => {
@@ -57,20 +80,56 @@ describe("GrantService", () => {
             expect(getSirenMock).toHaveBeenCalledWith(RNA);
         });
 
-        it("if rna, get raw grants by given siren", async () => {
+        it("does not check if rna given", async () => {
             mocked(getIdentifierType).mockReturnValueOnce(StructureIdentifiersEnum.rna);
-            await grantService.getGrants(RNA);
-            expect(getRawGrantMock).toHaveBeenCalledWith(SIREN, "SIREN");
+            await grantService.getGrants(ID);
+            expect(associationsService.isSirenFromAsso).not.toHaveBeenCalled();
         });
 
-        it("get raw grants by given identifier", async () => {
-            await grantService.getGrants(SIREN);
-            expect(getRawGrantMock).toHaveBeenCalledWith(SIREN, "SIREN");
+        it("checks if siren is from asso", async () => {
+            mocked(getIdentifierType).mockReturnValueOnce(StructureIdentifiersEnum.siren);
+            mocked(siretToSiren).mockReturnValueOnce(SIREN);
+            await grantService.getGrants(ID);
+            expect(associationsService.isSirenFromAsso).toHaveBeenCalledWith(SIREN);
         });
 
-        it("join gotten grants", async () => {
-            await grantService.getGrants(RNA);
-            expect(joinGrantsMock).toHaveBeenCalledWith(RAW);
+        it("checks if siret is from asso", async () => {
+            mocked(getIdentifierType).mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            mocked(siretToSiren).mockReturnValueOnce(SIREN);
+            await grantService.getGrants(ID);
+            expect(associationsService.isSirenFromAsso).toHaveBeenCalledWith(SIREN);
+        });
+
+        it.each`
+            identifierType                    | methodName               | notFoundSirenFromRna | aboutFindingRna       | id
+            ${StructureIdentifiersEnum.siret} | ${"getRawGrantsBySiret"} | ${false}             | ${""}                 | ${ID}
+            ${StructureIdentifiersEnum.siren} | ${"getRawGrantsBySiren"} | ${false}             | ${""}                 | ${ID}
+            ${StructureIdentifiersEnum.rna}   | ${"getRawGrantsBySiren"} | ${false}             | ${" (siren found)"}   | ${SIREN}
+            ${StructureIdentifiersEnum.rna}   | ${"getRawGrantsByRna"}   | ${true}              | ${"(siren not found"} | ${ID}
+        `(
+            "calls appropriate method of provider by $identifierType$aboutFindingRna",
+            async ({ identifierType, methodName, notFoundSirenFromRna, id }) => {
+                mocked(getIdentifierType).mockReturnValueOnce(identifierType);
+                if (notFoundSirenFromRna) getSirenMock.mockResolvedValueOnce(null);
+                await grantService.getGrants(ID);
+                mockedProviders.map(provider => expect(provider[methodName]).toHaveBeenCalledWith(id));
+            },
+        );
+
+        it("join grants with flattened results from providers", async () => {
+            mockedProviders[0].getRawGrantsBySiren.mockResolvedValueOnce([1, 2]);
+            mockedProviders[1].getRawGrantsBySiren.mockResolvedValueOnce([3]);
+            const expected = [1, 2, 3];
+            await grantService.getGrants(ID);
+            expect(joinGrantsMock).toHaveBeenCalledWith(expected);
+        });
+
+        it("replaces falsy values with empty array", async () => {
+            mockedProviders[0].getRawGrantsBySiren.mockResolvedValueOnce(false);
+            mockedProviders[1].getRawGrantsBySiren.mockResolvedValueOnce([3]);
+            const expected = [3];
+            await grantService.getGrants(ID);
+            expect(joinGrantsMock).toHaveBeenCalledWith(expected);
         });
 
         it("return joined grants", async () => {
@@ -120,65 +179,6 @@ describe("GrantService", () => {
         it("return grants", async () => {
             const expected = JOINED;
             const actual = await grantService[testedMethod](SIRET);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getRawGrantsByMethod", () => {
-        let getProvidersMock;
-        let mockedProviders: any;
-        const ID = "ID";
-
-        function generateProvider(name) {
-            return {
-                getRawGrantsByRna: jest.fn().mockResolvedValue(null),
-                getRawGrantsBySiren: jest.fn().mockResolvedValue(null),
-                getRawGrantsBySiret: jest.fn().mockResolvedValue(null),
-                provider: { name },
-            };
-        }
-
-        beforeAll(() => {
-            mockedProviders = [generateProvider("prov1"), generateProvider("prov2")];
-            getProvidersMock = jest
-                // @ts-expect-error - mock
-                .spyOn(grantService, "getGrantProviders")
-                // @ts-expect-error - mock
-                .mockReturnValue(mockedProviders);
-        });
-
-        afterAll(() => {
-            getProvidersMock.mockRestore();
-        });
-
-        it("get providers", () => {});
-
-        it.each`
-            identifierType                    | methodName
-            ${StructureIdentifiersEnum.siret} | ${"getRawGrantsBySiret"}
-            ${StructureIdentifiersEnum.siren} | ${"getRawGrantsBySiren"}
-            ${StructureIdentifiersEnum.rna}   | ${"getRawGrantsByRna"}
-        `("calls appropriate method of provider by $identifierType", async ({ identifierType, methodName }) => {
-            // @ts-expect-error - mock
-            await grantService.getRawGrantsByMethod(ID, identifierType);
-            mockedProviders.map(provider => expect(provider[methodName]).toHaveBeenCalledWith(ID));
-        });
-
-        it("returns flattened results from providers", async () => {
-            mockedProviders[0].getRawGrantsBySiren.mockResolvedValueOnce([1, 2]);
-            mockedProviders[1].getRawGrantsBySiren.mockResolvedValueOnce([3]);
-            const expected = [1, 2, 3];
-            // @ts-expect-error - mock
-            const actual = await grantService.getRawGrantsByMethod(ID, StructureIdentifiersEnum.siren);
-            expect(actual).toEqual(expected);
-        });
-
-        it("replaces falsy values with empty array", async () => {
-            mockedProviders[0].getRawGrantsBySiren.mockResolvedValueOnce(false);
-            mockedProviders[1].getRawGrantsBySiren.mockResolvedValueOnce([3]);
-            const expected = [3];
-            // @ts-expect-error - mock
-            const actual = await grantService.getRawGrantsByMethod(ID, StructureIdentifiersEnum.siren);
             expect(actual).toEqual(expected);
         });
     });
