@@ -9,6 +9,7 @@ import { isSiret } from "../../shared/Validators";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import associationsService from "../associations/associations.service";
+import { BadRequestError } from "../../shared/errors/httpErrors";
 import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 import commonGrantService from "./commonGrant.service";
@@ -34,7 +35,7 @@ export class GrantService {
             }
         }
         if (!isReallyAsso) isReallyAsso = await associationsService.isSirenFromAsso(siretToSiren(id));
-        if (!isReallyAsso) throw new StructureIdentifiersError("identifier does not represent an association");
+        if (!isReallyAsso) throw new BadRequestError("identifier does not represent an association");
 
         const providers = this.getGrantProviders();
         const methodName = GrantService.getRawMethodNameByIdType[idType];
