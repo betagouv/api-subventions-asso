@@ -8,26 +8,27 @@ import { StructureIdentifiers } from "../../../../../@types";
 @Tags("Open Data")
 export class RnaSirenController extends Controller {
     /**
-     * Permet de récupérer le numéro RNA et le numéro Siren d'une association via l'un des deux (Rna ou Siren)
+     * Permet de récupérer le numéro RNA et le numéro Siren d'une association via un autre identifiant d'association
      *
-     * @summary Permet de récupérer le numéro RNA et le numéro Siren d'une association via l'un des deux (Rna ou Siren)
-     * @param rna_or_siren_or_siret Peut-être soit le Rna, soit le Siren d'une association ou bien le Siret d'un établissement
+     * @summary Permet de récupérer le numéro RNA et le numéro Siren d'une association via un autre identifiant d'association
+     * @param rna_ou_siren_ou_siret Peut-être soit le Rna, soit le Siren d'une association, soit le Siret d'un établissement
      */
-    @Get("{rna_or_siren_or_siret}")
+    @Get("{rna_ou_siren_ou_siret}")
     @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren", {
         rna: null,
         siren: null,
     })
-    public async findBySiret(rna_or_siren_or_siret: StructureIdentifiers): Promise<RnaSirenResponseDto> {
+    public async findBySiret(rna_ou_siren_ou_siret: StructureIdentifiers): Promise<RnaSirenResponseDto> {
+        const identifier = rna_ou_siren_ou_siret;
         let siren: null | Siren = null;
         let rna: null | Rna = null;
 
-        if (rna_or_siren_or_siret.startsWith("W")) {
-            rna = rna_or_siren_or_siret;
-            siren = await rnaSirenService.getSiren(rna_or_siren_or_siret);
+        if (identifier.startsWith("W")) {
+            rna = identifier;
+            siren = await rnaSirenService.getSiren(identifier);
         } else {
-            rna = await rnaSirenService.getRna(rna_or_siren_or_siret);
-            siren = siretToSiren(rna_or_siren_or_siret);
+            rna = await rnaSirenService.getRna(identifier);
+            siren = siretToSiren(identifier);
         }
 
         const match = !!(siren && rna);
