@@ -3,21 +3,21 @@ import { Siret } from "@api-subventions-asso/dto";
 import openDataGrantService from "../../openDataGrantService";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../../../../@types";
 
-@Route("open-data/grants")
+@Route("open-data/subventions")
 @Tags("Open Data")
 export class GrantController extends Controller {
-    @Get("/establishment/{siret}")
+    @Get("/etablissement/{siret}")
     async getOpenDataGrantsByEstablishment(siret: Siret) {
         return await openDataGrantService.getByStructure(siret);
     }
 
-    @Get("/association/{identifier}")
-    async getOpenDataGrantsByAssociation(identifier: AssociationIdentifiers) {
-        return await openDataGrantService.getByStructure(identifier);
+    @Get("/association/{siren_ou_rna}")
+    async getOpenDataGrantsByAssociation(siren_ou_rna: AssociationIdentifiers) {
+        return await openDataGrantService.getByStructure(siren_ou_rna);
     }
 
-    @Get("/structure/{identifier}")
-    async getOpenDataGrantsByStructure(identifier: StructureIdentifiers) {
-        return await openDataGrantService.getByStructure(identifier);
+    @Get("/structure/{siren_ou_siret_ou_rna}")
+    async getOpenDataGrantsByStructure(siren_ou_siret_ou_rna: StructureIdentifiers) {
+        return await openDataGrantService.getByStructure(siren_ou_siret_ou_rna);
     }
 }
