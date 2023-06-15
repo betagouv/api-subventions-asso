@@ -17,12 +17,20 @@ import AssociationIdentifierError from "../../shared/errors/AssociationIdentifie
 import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import { NotFoundError } from "../../shared/errors/httpErrors";
+import dataGouvService from "../providers/datagouv/datagouv.service";
+import dataEntrepriseService from "../providers/dataEntreprise/dataEntreprise.service";
+import mocked = jest.mocked;
 
 jest.mock("../providers/index");
 
+jest.mock("../../modules/providers/datagouv/datagouv.service");
+jest.mock("../../modules/providers/dataEntreprise/dataEntreprise.service");
+jest.mock("../../modules/_open-data/rna-siren/rnaSiren.service");
+jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
+
 const DEFAULT_PROVIDERS = providers.default;
 
-describe("AssociationService", () => {
+describe("associationsService", () => {
     const RNA = "W000000001";
     const SIREN = "100000001";
     const SIRET = SIREN + "00001";
@@ -297,6 +305,70 @@ describe("AssociationService", () => {
                 actual = (e as Error).message;
             }
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isSirenFromAsso", () => {
+        const SIREN = "123456789";
+
+        beforeAll(() => {
+            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValue(false);
+            mocked(rnaSirenService.getRna).mockResolvedValue(null);
+            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValue({
+                // @ts-expect-error: mock
+                categorie_juridique: [{ value: "not asso" }],
+            });
+        });
+
+        afterAll(() => {
+            mocked(dataGouvService.sirenIsEntreprise).mockRestore();
+            mocked(rnaSirenService.getRna).mockRestore();
+            mocked(dataEntrepriseService.findAssociationBySiren).mockRestore();
+        });
+
+        it("returns false if found by data gouv service as not an association", async () => {
+            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValueOnce(true);
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns true if found related rna", async () => {
+            mocked(rnaSirenService.getRna).mockResolvedValueOnce("RNA");
+            const expected = true;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns false if no structure found by dataEntrepriseService", async () => {
+            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValueOnce(null);
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns false if structure found by dataEntrepriseService has no categorie_juridique", async () => {
+            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValueOnce({});
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns false if structure found by dataEntrepriseService has incorrect categories_juridique", async () => {
+            // standard mocks
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns true if structure found by dataEntrepriseService has accepted categories_juridique", async () => {
+            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValueOnce({
+                // @ts-expect-error mock
+                categorie_juridique: [{ value: "asso" }],
+            });
+            const expected = true;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
         });
     });
 });

@@ -1,4 +1,4 @@
-import { ApplicationDto, GrantDto, PaymentDto } from "@api-subventions-asso/dto";
+import { ApplicationDto, ApplicationStatus, GrantDto, PaymentDto } from "@api-subventions-asso/dto";
 import providers from "../providers";
 import { JoinedRawGrant, RawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
@@ -62,6 +62,7 @@ export class CommonGrantService {
             const chosenRawApplication = this.chooseRawApplication(rawApplications);
             application = this.rawToCommonFragment(chosenRawApplication, publishable);
         }
+        if (publishable && application?.statut !== ApplicationStatus.GRANTED) application = undefined;
 
         let payment: PaymentDto | undefined = undefined;
         const rawPayments = [...this.filterAdaptable(joinedRawGrant?.payments), ...rawFullGrants];

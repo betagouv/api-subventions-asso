@@ -84,7 +84,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             };
         }
 
-        // Rna is not exported in CompteAsso so we search in api
+        // Rna is not exported in CompteAsso, so we search in api
         const rna = await rnaSirenService.getRna(partialEntity.legalInformations.siret, true);
         const asso = await dataEntrepriseService.findAssociationBySiren(
             siretToSiren(partialEntity.legalInformations.siret),
@@ -105,7 +105,7 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
             return {
                 state: "rejected",
                 result: {
-                    message: "The company is not in legal cateries accepted",
+                    message: "The company is not in legal categories accepted",
                     code: 10,
                     data: {
                         ...partialEntity.legalInformations,
