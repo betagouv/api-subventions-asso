@@ -129,7 +129,7 @@ export default class DauphinDtoAdapter {
                 resultArray.push({
                     type: toPV(reference.libelle.value),
                     url: toPV(`/document/dauphin/${encodeURIComponent(doc.id)}`),
-                    nom: toPV(doc.title),
+                    nom: toPV(doc.title || reference.libelle.value),
                     __meta__: {},
                 });
             }

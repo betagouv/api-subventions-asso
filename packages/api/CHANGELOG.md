@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.30.1](https://github.com/betagouv/api-subventions-asso/compare/v0.30.0...v0.30.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* **api:** actually use publishable param for open data ([89f3b37](https://github.com/betagouv/api-subventions-asso/commit/89f3b375ef6b8bd11ff4004a98abfd82770dd81f))
+* **api:** improve error message ([2b3e886](https://github.com/betagouv/api-subventions-asso/commit/2b3e886a9a38c2850bfb6a77c9c4b346b4cc4828))
+* **api:** include admin on list users ([3f2529d](https://github.com/betagouv/api-subventions-asso/commit/3f2529dd6a13cb80675eb1c9ecd9e4f351c15aca))
+* **api:** keep payments ([b041d48](https://github.com/betagouv/api-subventions-asso/commit/b041d4832090f13583c4708693be2e3d28d38369))
+* **api:** user libelle for dauphin document if document has no name ([8c04f58](https://github.com/betagouv/api-subventions-asso/commit/8c04f5800fcc8c2893f5b0005f73b341d4febb83))
+* **front:** change management of etabllishment getting data ([c5f599b](https://github.com/betagouv/api-subventions-asso/commit/c5f599b85ef240abe1a7e74a106e4bc65da49128))
+
+
+### Features
+
+* **api:** filter only assos before getting grants ([629a92d](https://github.com/betagouv/api-subventions-asso/commit/629a92dce168c4b7dd81e52a35ccea20ded5136d))
+* **api:** method to check is siren is from asso ([817d389](https://github.com/betagouv/api-subventions-asso/commit/817d38906fb625ad2cf72376a0916076bdb78e09))
+* **api:** publishable open data filter only granted grants ([5336ec5](https://github.com/betagouv/api-subventions-asso/commit/5336ec512e4fa5491cad19e655dce7bb47cf1012))
+
+
+
+
+
 # [0.30.0](https://github.com/betagouv/api-subventions-asso/compare/v0.29.1...v0.30.0) (2023-06-08)
 
 

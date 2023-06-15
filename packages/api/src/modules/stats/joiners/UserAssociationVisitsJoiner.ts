@@ -1,3 +1,4 @@
+import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
 import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import userRepository from "../../user/repositories/user.repository";
@@ -17,20 +18,23 @@ export class UserAssociationVisitJoiner {
         };
     }
 
-    async findUsersWithAssociationVisits() {
-        const users = await this.userCollection
-            .aggregate<UserWithAssociationVisitsEntity>([
-                this.excludeAdmins(),
-                {
-                    $lookup: {
-                        from: statsAssociationsVisitRepository.collectionName,
-                        localField: userRepository.joinIndexes.associationVisits,
-                        foreignField: statsAssociationsVisitRepository.joinIndexes.user,
-                        as: "associationVisits",
-                    },
+    async findUsersWithAssociationVisits(includesAdmin: boolean) {
+        const query: DefaultObject[] = [
+            {
+                $lookup: {
+                    from: statsAssociationsVisitRepository.collectionName,
+                    localField: userRepository.joinIndexes.associationVisits,
+                    foreignField: statsAssociationsVisitRepository.joinIndexes.user,
+                    as: "associationVisits",
                 },
-            ])
-            .toArray();
+            },
+        ];
+
+        if (!includesAdmin) {
+            query.unshift(this.excludeAdmins());
+        }
+
+        const users = await this.userCollection.aggregate<UserWithAssociationVisitsEntity>(query).toArray();
 
         return users.map(user => removeSecrets(user));
     }

@@ -421,8 +421,10 @@ export class UserService {
         return user.roles;
     }
 
-    public async getUsersWithStats(): Promise<UserWithStatsDto[]> {
-        const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits();
+    public async getUsersWithStats(includesAdmin = false): Promise<UserWithStatsDto[]> {
+        const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits(
+            includesAdmin,
+        );
         const userWithStats = usersWithAssociationVisits.map(user => {
             const stats = {
                 lastSearchDate: getMostRecentDate(user.associationVisits.map(visit => visit.date)),
@@ -437,7 +439,7 @@ export class UserService {
     }
 
     public async listUsers(): Promise<UserWithResetTokenDto[]> {
-        const users = await this.getUsersWithStats();
+        const users = await this.getUsersWithStats(true);
         return await Promise.all(
             users.map(async user => {
                 const reset = await userResetRepository.findByUserId(user._id);

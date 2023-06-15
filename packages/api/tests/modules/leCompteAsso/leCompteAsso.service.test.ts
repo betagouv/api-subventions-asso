@@ -196,7 +196,7 @@ describe("leCompteAssoService", () => {
                         name: "HELLO WORLD",
                         siret: "00000000000000",
                     },
-                    message: "The company is not in legal cateries accepted",
+                    message: "The company is not in legal categories accepted",
                 },
             });
         });

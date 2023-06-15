@@ -179,17 +179,15 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json")
                 .expect(200);
 
-            expect(response.body).toMatchSnapshot({
-                users: [
-                    {
-                        _id: expect.any(String),
-                        signupAt: expect.any(String),
-                        stats: {
-                            lastSearchDate: expect.any(String),
-                        },
+            expect(response.body.users[0]).toMatchSnapshot(
+                {
+                    _id: expect.any(String),
+                    signupAt: expect.any(String),
+                    stats: {
+                        lastSearchDate: expect.any(String),
                     },
-                ],
-            });
+                },
+            );
         });
     });
 });

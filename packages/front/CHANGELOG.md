@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.30.1](https://github.com/betagouv/datasubvention/compare/v0.30.0...v0.30.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* **front:** change management of etabllishment getting data ([c5f599b](https://github.com/betagouv/datasubvention/commit/c5f599b85ef240abe1a7e74a106e4bc65da49128))
+
+
+
+
+
 # [0.30.0](https://github.com/betagouv/datasubvention/compare/v0.29.1...v0.30.0) (2023-06-08)
 
 

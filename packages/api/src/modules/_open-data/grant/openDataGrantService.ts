@@ -3,7 +3,7 @@ import grantService from "../../grant/grant.service";
 
 class OpenDataGrantService {
     getByStructure(identifier: StructureIdentifiers) {
-        return grantService.getCommonGrants(identifier);
+        return grantService.getCommonGrants(identifier, true);
     }
 }
 

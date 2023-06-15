@@ -8,7 +8,7 @@ class EstablishmentPort {
 
     async getBySiret(identifier) {
         const path = `/etablissement/${identifier}`;
-        return await axios.get(path)?.data?.etablissement;
+        return (await axios.get(path))?.data?.etablissement;
     }
 
     getDocuments(identifier) {
