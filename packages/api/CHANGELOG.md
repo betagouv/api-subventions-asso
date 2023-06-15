@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.30.2](https://github.com/betagouv/api-subventions-asso/compare/v0.30.1...v0.30.2) (2023-06-15)
+
+
+### Features
+
+* **api:** french open-data grant routes' names ([8107086](https://github.com/betagouv/api-subventions-asso/commit/81070863672af28c3fd50f246b2ae22c685c241b))
+* **api:** french open-data provider route ([965df97](https://github.com/betagouv/api-subventions-asso/commit/965df9751ffcbdacf55b3d6cf9db9dab0ea1eff5))
+* **api:** french open-data rna-siren route arg name ([25d2bfe](https://github.com/betagouv/api-subventions-asso/commit/25d2bfef1b5fba110f598a363bca62ed31a208c6))
+
+
+
+
+
 ## [0.30.1](https://github.com/betagouv/api-subventions-asso/compare/v0.30.0...v0.30.1) (2023-06-15)
 
 
