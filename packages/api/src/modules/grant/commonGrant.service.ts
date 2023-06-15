@@ -62,6 +62,7 @@ export class CommonGrantService {
             const chosenRawApplication = this.chooseRawApplication(rawApplications);
             application = this.rawToCommonFragment(chosenRawApplication, publishable);
         }
+        if (publishable && application?.statut !== ApplicationStatus.GRANTED) application = undefined;
 
         let payment: PaymentDto | undefined = undefined;
         const rawPayments = [...this.filterAdaptable(joinedRawGrant?.payments), ...rawFullGrants];
@@ -71,7 +72,6 @@ export class CommonGrantService {
         }
 
         if (!application && !payment) return null;
-        if (publishable && application?.statut !== ApplicationStatus.GRANTED) return null;
         return { ...(payment || {}), ...(application || {}) } as GrantDto;
     }
 }
