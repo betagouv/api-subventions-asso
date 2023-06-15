@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`open-data/providers should return a list of providers with name, description and last update 1`] = `
+exports[`open-data/fournisseurs should return a list of providers with name, description and last update 1`] = `
 Object {
   "api": Array [
     Object {
