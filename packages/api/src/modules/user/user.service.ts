@@ -232,7 +232,13 @@ export class UserService {
 
         if (!user) return false;
 
-        return await userRepository.delete(user);
+        const deletePromises = [
+            userRepository.delete(user),
+            userResetRepository.removeAllByUserId(user._id),
+            consumerTokenRepository.deleteAllByUserId(user._id),
+        ];
+
+        return (await Promise.all(deletePromises)).every(success => success);
     }
 
     public async addUsersByCsv(content: Buffer) {

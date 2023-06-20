@@ -20,6 +20,10 @@ jest.mock("jsonwebtoken", () => ({
     },
 }));
 
+jest.mock("./repositories/user.repository");
+jest.mock("./repositories/user-reset.repository");
+jest.mock("./repositories/consumer-token.repository");
+
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceErrors } from "./user.service";
 import { ObjectId } from "mongodb";
@@ -33,6 +37,8 @@ import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import LoginError from "../../shared/errors/LoginError";
+import mocked = jest.mocked;
+import userResetRepository from "./repositories/user-reset.repository";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -215,6 +221,68 @@ describe("User Service", () => {
                     USER_SECRETS.jwt.token,
                 );
             await expect(test).rejects.toMatchObject(expected);
+        });
+    });
+
+    describe("delete", () => {
+        const ID = "ID";
+        const USER = { _id: ID };
+        beforeAll(() => {
+            // @ts-expect-error mock
+            mocked(userRepository.findById).mockResolvedValue(USER);
+            mocked(userRepository.delete).mockResolvedValue(true);
+            mocked(userResetRepository.removeAllByUserId).mockResolvedValue(true);
+            mocked(consumerTokenRepository.deleteAllByUserId).mockResolvedValue(true);
+        });
+
+        afterAll(() => {
+            mocked(userRepository.findById).mockReset();
+            mocked(userRepository.delete).mockReset();
+            mocked(userResetRepository.removeAllByUserId).mockReset();
+            mocked(consumerTokenRepository.deleteAllByUserId).mockReset();
+        });
+
+        it("gets user", async () => {
+            await userService.delete(ID);
+            expect(userRepository.findById).toHaveBeenCalledWith(ID);
+        });
+
+        it("returns false if no user without calling other repos", async () => {
+            mocked(userRepository.findById).mockResolvedValueOnce(null);
+            const expected = false;
+            const actual = await userService.delete(ID);
+            expect(actual).toBe(expected);
+            expect(userRepository.delete).not.toHaveBeenCalled();
+            expect(userResetRepository.removeAllByUserId).not.toHaveBeenCalled();
+            expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
+        });
+
+        it.each`
+            method                                       | methodName                                     | arg
+            ${userRepository.delete}                     | ${"userRepository.delete"}                     | ${USER}
+            ${userResetRepository.removeAllByUserId}     | ${"userResetRepository.removeAllByUserId"}     | ${USER._id}
+            ${consumerTokenRepository.deleteAllByUserId} | ${"consumerTokenRepository.deleteAllByUserId"} | ${USER._id}
+        `("calls $methodName", async ({ arg, method }) => {
+            await userService.delete(ID);
+            expect(method).toHaveBeenCalledWith(arg);
+        });
+
+        it.each`
+            method                                       | methodName
+            ${userRepository.delete}                     | ${"userRepository.delete"}
+            ${userResetRepository.removeAllByUserId}     | ${"userResetRepository.removeAllByUserId"}
+            ${consumerTokenRepository.deleteAllByUserId} | ${"consumerTokenRepository.deleteAllByUserId"}
+        `("returns false if $methodName returns false", async ({ method }) => {
+            mocked(method).mockResolvedValueOnce(false);
+            const expected = false;
+            const actual = await userService.delete(ID);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns true in case of success", async () => {
+            const expected = true;
+            const actual = await userService.delete(ID);
+            expect(actual).toBe(expected);
         });
     });
 
