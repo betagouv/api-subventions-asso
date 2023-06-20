@@ -23,7 +23,8 @@ export class UserResetRepository {
     }
 
     public async removeAllByUserId(userId: ObjectId) {
-        return this.collection.deleteMany({ userId });
+        const result = await this.collection.deleteMany({ userId });
+        return result.acknowledged;
     }
 }
 
