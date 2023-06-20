@@ -14,6 +14,7 @@ import NotFound from "./views/not-found/NotFound.svelte";
 import LegalNotice from "./views/LegalNotice.svelte";
 import Cgu from "./views/Cgu.svelte";
 import Contact from "./views/Contact.svelte";
+import Profile from "./views/user/profile/Profile.svelte";
 
 export default {
     "/404": {
@@ -46,7 +47,7 @@ export default {
     },
     "mentions-legales": {
         component: () => LegalNotice,
-        disableAuth: true
+        disableAuth: true,
     },
     cgu: {
         component: () => Cgu,
@@ -54,7 +55,7 @@ export default {
     },
     contact: {
         component: () => Contact,
-        disableAuth: true
+        disableAuth: true,
     },
     "auth/signup": {
         component: () => Signup,
@@ -71,5 +72,8 @@ export default {
     "auth/forget-password": {
         component: () => ForgetPwd,
         disableAuth: true,
+    },
+    "user/profile": {
+        component: () => Profile,
     },
 };
