@@ -27,6 +27,7 @@ const appVersion = designSystemVersion;
 const appDescription = "Les dernières informations sur les associations et leurs subventions";
 const appRepo = "https://github.com/betagouv/api-subventions-asso";
 const contactEmail = "contact@datasubvention.beta.gouv.fr";
+const statsUrl = process.env.STATS_URL || "";
 const port = process.env.PORT || 1235;
 
 const app = express();
@@ -89,7 +90,11 @@ controllers.forEach(controllerClass => {
     });
 });
 
-app.get("*", function (req, res) {
+app.get("/statistiques", function (req, res) {
+    res.redirect(301, statsUrl);
+});
+
+app.get("/*", function (req, res) {
     res.sendFile(path.join(__dirname, "../static/svelte-index.html"));
 });
 
