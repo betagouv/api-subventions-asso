@@ -17,6 +17,7 @@ import StatsSearchMiddleware, { StatsSearchRoutesRegex } from "./middlewares/Sta
 import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
+import { headersMiddleware } from "./middlewares/headersMiddleware";
 
 const appName = "api-subventions-asso";
 
@@ -59,6 +60,8 @@ export async function startServer(port = "8080", isTest = false) {
             factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware),
         ),
     );
+
+    app.use(headersMiddleware);
 
     RegisterRoutes(app); // TSOA Part
 
