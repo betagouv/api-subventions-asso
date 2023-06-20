@@ -1,6 +1,6 @@
 <script>
     import adminService from "../admin.service.js";
-    import userService from "../../../resources/users/users.service.js";
+    import userService from "../../../resources/users/user.service.js";
 
     import Widget from "../../../components/Widget.svelte";
     import Spinner from "../../../components/Spinner.svelte";

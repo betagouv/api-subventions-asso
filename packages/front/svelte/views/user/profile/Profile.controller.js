@@ -1,4 +1,5 @@
 import authService from "@resources/auth/auth.service";
+import userService from "@resources/users/user.service";
 import { goToUrl } from "@services/router.service";
 
 export class ProfileController {
@@ -8,7 +9,7 @@ export class ProfileController {
     }
 
     deleteUser() {
-        // add remove here when ready
+        userService.deleteCurrentUser();
         this.logout();
     }
 }

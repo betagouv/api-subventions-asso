@@ -1,6 +1,8 @@
 import { ProfileController } from "./Profile.controller";
 import * as routerService from "@services/router.service";
 import authService from "@resources/auth/auth.service";
+import userService from "@resources/users/user.service";
+jest.mock("@resources/users/user.service");
 
 describe("ProfileController", () => {
     let controller;
@@ -30,6 +32,11 @@ describe("ProfileController", () => {
     });
 
     describe("deleteUser()", () => {
+        it("should call userService.deleteCurrentUser()", () => {
+            controller.deleteUser();
+            expect(userService.deleteCurrentUser).toHaveBeenCalledTimes(1);
+        });
+
         it("should call logout", () => {
             const spyLogout = jest.spyOn(controller, "logout");
             controller.deleteUser();
