@@ -1,8 +1,9 @@
 <script>
     import { getContext } from "svelte";
     import packageInfo from "../../../package.json";
-    import authService from "../../resources/auth/auth.service";
     import HeaderController from "./Header.controller";
+    import authService from "@resources/auth/auth.service";
+    import Button from "@dsfr/Button.svelte";
 
     const user = authService.getCurrentUser();
     const { getName, getDescription, getEnv } = getContext("app");
@@ -82,9 +83,9 @@
                             {/if}
                             {#if user?.jwt}
                                 <li>
-                                    <button class="fr-btn fr-link--icon-left" on:click={() => controller.logout()}>
-                                        Se déconnecter
-                                    </button>
+                                    <Button on:click={controller.goToProfil} type="tertiary" icon="user-fill">
+                                        Profil
+                                    </Button>
                                 </li>
                             {/if}
                         </ul>
