@@ -1,4 +1,4 @@
-export interface UniteLegalHistoryRaw {
+export interface UniteLegalHistoryRow {
     activitePrincipaleUniteLegale: string;
     caractereEmployeurUniteLegale: "O" | "N" | null;
     categorieJuridiqueUniteLegale: number;

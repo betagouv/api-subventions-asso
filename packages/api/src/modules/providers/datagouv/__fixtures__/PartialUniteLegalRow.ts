@@ -1,4 +1,4 @@
-const PartialUniteLegalRaw = {
+const PartialUniteLegalRow = {
     changementEtatAdministratifUniteLegale: "false",
     changementNomUniteLegale: "false",
     changementNomUsageUniteLegale: "false",
@@ -12,4 +12,4 @@ const PartialUniteLegalRaw = {
     changementCaractereEmployeurUniteLegale: "false",
 };
 
-export default PartialUniteLegalRaw;
+export default PartialUniteLegalRow;

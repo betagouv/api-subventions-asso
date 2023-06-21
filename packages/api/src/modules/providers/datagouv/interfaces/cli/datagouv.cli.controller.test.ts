@@ -1,9 +1,9 @@
 import associationNameService from "../../../../association-name/associationName.service";
 import dataGouvService from "../../datagouv.service";
 import DataGouvCliController from "./datagouv.cli.controller";
-import PartialUniteLegalRaw from "../../__fixtures__/PartialUniteLegalRaw";
-import { AssociationRaw } from "../../__fixtures__/AssociationRawFixture";
-import { EntrepriseRaw } from "../../__fixtures__/EntrepriseRawFixutre";
+import PartialUniteLegalRow from "../../__fixtures__/PartialUniteLegalRow";
+import { AssociationRow } from "../../__fixtures__/AssociationRowFixture";
+import { EntrepriseRow } from "../../__fixtures__/EntrepriseRowFixture";
 import { UniteLegaleHistoriqueAdapter } from "../../adapter/UniteLegaleHistoriqueAdapter";
 
 describe("DataGouv Controller", () => {
@@ -12,15 +12,15 @@ describe("DataGouv Controller", () => {
         .spyOn(dataGouvService, "insertManyEntrepriseSiren")
         .mockImplementation(jest.fn());
 
-    const rawToAssociationNameMock = jest.spyOn(UniteLegaleHistoriqueAdapter, "rawToAssociationName");
-    const rawToEntrepriseSirenMock = jest.spyOn(UniteLegaleHistoriqueAdapter as any, "rawToEntrepriseSiren");
+    const rowToAssociationNameMock = jest.spyOn(UniteLegaleHistoriqueAdapter, "rowToAssociationName");
+    const rowToEntrepriseSirenMock = jest.spyOn(UniteLegaleHistoriqueAdapter as any, "rowToEntrepriseSiren");
 
     describe("isAssociation()", () => {
         it("should return true", () => {
             const controller = new DataGouvCliController();
             const expected = true;
             // @ts-expect-error: test private method
-            const actual = controller.isAssociation(AssociationRaw);
+            const actual = controller.isAssociation(AssociationRow);
             expect(actual).toEqual(expected);
         });
 
@@ -28,7 +28,7 @@ describe("DataGouv Controller", () => {
             const controller = new DataGouvCliController();
             const expected = false;
             // @ts-expect-error: test private method
-            const actual = controller.isAssociation(EntrepriseRaw);
+            const actual = controller.isAssociation(EntrepriseRow);
             expect(actual).toEqual(expected);
         });
     });
@@ -39,7 +39,7 @@ describe("DataGouv Controller", () => {
             const expected = true;
             // @ts-expect-error: test private method
             const actual = controller.shouldAssoBeSaved({
-                ...AssociationRaw,
+                ...AssociationRow,
                 changementDenominationUniteLegale: "true",
             });
             expect(actual).toEqual(expected);
@@ -50,8 +50,8 @@ describe("DataGouv Controller", () => {
             const expected = true;
             // @ts-expect-error: test private method
             const actual = controller.shouldAssoBeSaved({
-                ...AssociationRaw,
-                ...PartialUniteLegalRaw,
+                ...AssociationRow,
+                ...PartialUniteLegalRow,
             });
             expect(actual).toEqual(expected);
         });
@@ -61,8 +61,8 @@ describe("DataGouv Controller", () => {
             const expected = false;
             // @ts-expect-error: test private method
             const actual = controller.shouldAssoBeSaved({
-                ...AssociationRaw,
-                ...PartialUniteLegalRaw,
+                ...AssociationRow,
+                ...PartialUniteLegalRow,
                 changementEtatAdministratifUniteLegale: "true",
             });
             expect(actual).toEqual(expected);
@@ -74,7 +74,7 @@ describe("DataGouv Controller", () => {
             const controller = new DataGouvCliController();
             const expected = true;
             // @ts-expect-error: test private method
-            const actual = controller.isUniteLegaleNew(PartialUniteLegalRaw);
+            const actual = controller.isUniteLegaleNew(PartialUniteLegalRow);
             expect(actual).toEqual(expected);
         });
 
@@ -83,7 +83,7 @@ describe("DataGouv Controller", () => {
             const expected = false;
             // @ts-expect-error: test private method
             const actual = controller.isUniteLegaleNew({
-                ...PartialUniteLegalRaw,
+                ...PartialUniteLegalRow,
                 changementEtatAdministratifUniteLegale: "true",
             });
             expect(actual).toEqual(expected);
@@ -91,35 +91,35 @@ describe("DataGouv Controller", () => {
     });
 
     describe("saveAssociations()", () => {
-        it("should transform raws to associationNames", async () => {
+        it("should transform rows to associationNames", async () => {
             const controller = new DataGouvCliController();
             const expected = 1;
             // @ts-expect-error: test private method
-            await controller.saveAssociations([AssociationRaw]);
-            const actual = rawToAssociationNameMock.mock.calls.length;
+            await controller.saveAssociations([AssociationRow]);
+            const actual = rowToAssociationNameMock.mock.calls.length;
             expect(actual).toEqual(expected);
         });
 
         it("should save associationNames", async () => {
             const controller = new DataGouvCliController();
             // @ts-expect-error: test private method
-            await controller.saveAssociations([AssociationRaw, AssociationRaw]);
+            await controller.saveAssociations([AssociationRow, AssociationRow]);
             expect(addAssociationNameMock).toHaveBeenCalledTimes(2);
         });
     });
 
     describe("saveEntreprises()", () => {
-        it("should transform raws to entrepriseSiren", async () => {
+        it("should transform rows to entrepriseSiren", async () => {
             const controller = new DataGouvCliController();
             // @ts-expect-error: test private method
-            await controller.saveEntreprises([EntrepriseRaw]);
-            expect(rawToEntrepriseSirenMock).toHaveBeenCalledTimes(1);
+            await controller.saveEntreprises([EntrepriseRow]);
+            expect(rowToEntrepriseSirenMock).toHaveBeenCalledTimes(1);
         });
 
         it("should save entrepriseSirens", async () => {
             const controller = new DataGouvCliController();
             // @ts-expect-error: test private method
-            await controller.saveEntreprises([EntrepriseRaw, EntrepriseRaw]);
+            await controller.saveEntreprises([EntrepriseRow, EntrepriseRow]);
             expect(addManyEntrepriseSirenMock).toHaveBeenCalledTimes(1);
         });
     });

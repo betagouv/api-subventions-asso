@@ -1,9 +1,9 @@
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../../../../@types/Cli.interface";
+import { CliStaticInterface } from "../../../../../@types";
 import DataGouvParser, { SaveCallback } from "../../datagouv.parser";
 import dataGouvService from "../../datagouv.service";
 import CliController from "../../../../../shared/CliController";
-import { UniteLegalHistoryRaw } from "../../@types/UniteLegalHistoryRaw";
+import { UniteLegalHistoryRow } from "../../@types/UniteLegalHistoryRow";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
 import associationNameService from "../../../../association-name/associationName.service";
@@ -16,12 +16,12 @@ export default class DataGouvCliController extends CliController {
 
     protected logFileParsePath = "./logs/datagouv.parse.log.txt";
 
-    private isAssociation(entity: UniteLegalHistoryRaw) {
+    private isAssociation(entity: UniteLegalHistoryRow) {
         if (LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale))) return true;
         return false;
     }
 
-    private shouldAssoBeSaved(entity: UniteLegalHistoryRaw) {
+    private shouldAssoBeSaved(entity: UniteLegalHistoryRow) {
         return entity.changementDenominationUniteLegale === "true" || this.isUniteLegaleNew(entity);
     }
 
@@ -43,15 +43,15 @@ export default class DataGouvCliController extends CliController {
         return props.every(prop => entity[prop] === "false");
     }
 
-    private saveAssociations(raws: UniteLegalHistoryRaw[]) {
-        return asyncForEach(raws, async raw => {
-            const entity = UniteLegaleHistoriqueAdapter.rawToAssociationName(raw);
+    private saveAssociations(rows: UniteLegalHistoryRow[]) {
+        return asyncForEach(rows, async row => {
+            const entity = UniteLegaleHistoriqueAdapter.rowToAssociationName(row);
             await associationNameService.upsert(entity);
         });
     }
 
-    private saveEntreprises(raws: UniteLegalHistoryRaw[]) {
-        return dataGouvService.insertManyEntrepriseSiren(raws.map(UniteLegaleHistoriqueAdapter.rawToEntrepriseSiren));
+    private saveEntreprises(rows: UniteLegalHistoryRow[]) {
+        return dataGouvService.insertManyEntrepriseSiren(rows.map(UniteLegaleHistoriqueAdapter.rowToEntrepriseSiren));
     }
 
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
@@ -64,8 +64,8 @@ export default class DataGouvCliController extends CliController {
         const lastImportDate = await dataGouvService.getLastDateImport();
 
         let chunksInSave = 0;
-        const stackEntreprise: UniteLegalHistoryRaw[] = [];
-        const stackAssociation: UniteLegalHistoryRaw[] = [];
+        const stackEntreprise: UniteLegalHistoryRow[] = [];
+        const stackAssociation: UniteLegalHistoryRow[] = [];
 
         const saveEntity: SaveCallback = async (entity, streamPause, streamResume) => {
             if (this.isAssociation(entity)) {

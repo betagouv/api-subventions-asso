@@ -1,29 +1,29 @@
 import AssociationNameEntity from "../../../association-name/entities/AssociationNameEntity";
 import dataGouvService from "../datagouv.service";
 import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
-import { AssociationRaw } from "../__fixtures__/AssociationRawFixture";
-import { EntrepriseRaw } from "../__fixtures__/EntrepriseRawFixutre";
+import { AssociationRow } from "../__fixtures__/AssociationRowFixture";
+import { EntrepriseRow } from "../__fixtures__/EntrepriseRowFixture";
 import { UniteLegaleHistoriqueAdapter } from "./UniteLegaleHistoriqueAdapter";
 
 describe("UniteLegaleHistoriqueAdapter", () => {
-    describe("rawToAssociationName", () => {
+    describe("rowToAssociationName", () => {
         it("should return AssociationNameEntity", () => {
             const expected = new AssociationNameEntity(
                 null,
-                AssociationRaw.denominationUniteLegale,
+                AssociationRow.denominationUniteLegale,
                 dataGouvService.provider.name,
-                new Date(AssociationRaw.dateDebut),
-                AssociationRaw.siren,
+                new Date(AssociationRow.dateDebut),
+                AssociationRow.siren,
             );
-            const actual = UniteLegaleHistoriqueAdapter.rawToAssociationName(AssociationRaw);
+            const actual = UniteLegaleHistoriqueAdapter.rowToAssociationName(AssociationRow);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("rawToEntrepriseSiren", () => {
-        it("should return rawToEntrepriseSiren", () => {
-            const expected = new EntrepriseSirenEntity(EntrepriseRaw.siren);
-            const actual = UniteLegaleHistoriqueAdapter.rawToEntrepriseSiren(EntrepriseRaw);
+    describe("rowToEntrepriseSiren", () => {
+        it("should return rowToEntrepriseSiren", () => {
+            const expected = new EntrepriseSirenEntity(EntrepriseRow.siren);
+            const actual = UniteLegaleHistoriqueAdapter.rowToEntrepriseSiren(EntrepriseRow);
             expect(actual).toEqual(expected);
         });
     });
