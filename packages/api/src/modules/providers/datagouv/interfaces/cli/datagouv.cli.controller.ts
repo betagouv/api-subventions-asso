@@ -1,6 +1,6 @@
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
-import DataGouvParser, { SaveCallback } from "../../datagouv.parser";
+import DataGouvParser from "../../datagouv.parser";
 import dataGouvService from "../../datagouv.service";
 import CliController from "../../../../../shared/CliController";
 import { UniteLegalHistoryRow } from "../../@types/UniteLegalHistoryRow";
@@ -9,6 +9,7 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategories
 import associationNameService from "../../../../association-name/associationName.service";
 import { UniteLegaleHistoriqueAdapter } from "../../adapter/UniteLegaleHistoriqueAdapter";
 import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
+import { SaveCallback } from "../../@types";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataGouvCliController extends CliController {
@@ -17,8 +18,7 @@ export default class DataGouvCliController extends CliController {
     protected logFileParsePath = "./logs/datagouv.parse.log.txt";
 
     private isAssociation(entity: UniteLegalHistoryRow) {
-        if (LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale))) return true;
-        return false;
+        return LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale));
     }
 
     private shouldAssoBeSaved(entity: UniteLegalHistoryRow) {
@@ -67,7 +67,7 @@ export default class DataGouvCliController extends CliController {
         const stackEntreprise: UniteLegalHistoryRow[] = [];
         const stackAssociation: UniteLegalHistoryRow[] = [];
 
-        const saveEntity: SaveCallback = async (entity, streamPause, streamResume) => {
+        const saveEntity: SaveCallback<UniteLegalHistoryRow> = async (entity, streamPause, streamResume) => {
             if (this.isAssociation(entity)) {
                 if (this.shouldAssoBeSaved(entity)) {
                     stackAssociation.push(entity);

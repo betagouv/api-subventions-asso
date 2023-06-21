@@ -4,12 +4,9 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { isSiren } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
-import { IStreamAction } from "./@types";
+import { SaveCallback } from "./@types";
 import { UniteLegalHistoryRow } from "./@types/UniteLegalHistoryRow";
 
-export interface SaveCallback {
-    (entity: UniteLegalHistoryRow, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>;
-}
 export default class DataGouvParser {
     private static isDatesValid({
         periodStart,
@@ -29,7 +26,11 @@ export default class DataGouvParser {
         return true;
     }
 
-    static parseUniteLegalHistory(file: string, save: SaveCallback, lastImportDate: Date | null = null): Promise<void> {
+    static parseUniteLegalHistory(
+        file: string,
+        save: SaveCallback<UniteLegalHistoryRow>,
+        lastImportDate: Date | null = null,
+    ): Promise<void> {
         return new Promise((resolve, reject) => {
             let totalEntities = 0;
             let header: null | string[] = null;
