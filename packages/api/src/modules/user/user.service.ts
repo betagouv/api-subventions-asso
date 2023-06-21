@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import * as RandToken from "rand-token";
 import dedent from "dedent";
 import {
@@ -35,7 +35,7 @@ import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
 import UserNotPersisted from "./entities/UserNotPersisted";
 import UserReset from "./entities/UserReset";
-import UserDbo from "./repositories/dbo/UserDbo";
+import UserDbo, { UserDisableDbo } from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
@@ -176,7 +176,7 @@ export class UserService {
         await this.validateEmail(email.toLocaleLowerCase());
 
         if (await userRepository.findByEmail(email.toLocaleLowerCase()))
-            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
+            throw new ConflictError("User already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
@@ -233,6 +233,32 @@ export class UserService {
         if (!user) return false;
 
         return await userRepository.delete(user);
+    }
+
+    public async disable(userId: string) {
+        const user = await userRepository.findById(userId);
+        if (!user) return false;
+        const disabledUser = this.anonymize(user);
+        return !!(await userRepository.update(disabledUser));
+    }
+
+    /**
+     * Anonymize the user when it is beeing deleted to keep use stats consistent
+     *
+     * It keeps roles and signupAt in place to avoid breaking any stats
+     *
+     * @param user User to be deleted
+     * @returns Anonymized user
+     */
+    private anonymize(user: Omit<WithId<UserDbo>, "hashPassword" | "jwt">): UserDisableDbo {
+        return {
+            ...user,
+            active: false,
+            email: "",
+            jwt: null,
+            hashPassword: "",
+            disable: true,
+        };
     }
 
     public async addUsersByCsv(content: Buffer) {

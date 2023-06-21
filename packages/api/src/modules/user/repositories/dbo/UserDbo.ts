@@ -10,6 +10,10 @@ export default interface UserDbo {
     signupAt: Date;
 }
 
+export interface UserDisableDbo extends UserDbo {
+    disable: true;
+}
+
 export interface JWT {
     token: string;
     expirateDate: Date;

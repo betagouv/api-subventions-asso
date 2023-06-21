@@ -43,7 +43,7 @@ describe("user.service.ts", () => {
             await service.createUser("test@beta.gouv.fr");
             const test = async () => await service.createUser("test@beta.gouv.fr");
             await expect(test).rejects.toMatchObject({
-                message: "User is already exist",
+                message: "User already exist",
                 code: UserServiceErrors.CREATE_USER_ALREADY_EXIST,
             });
         });

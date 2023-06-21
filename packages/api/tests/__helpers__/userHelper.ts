@@ -15,10 +15,14 @@ export async function createAndActiveAdminUser() {
     await userService.activeUser(ADMIN_EMAIL);
 }
 
-export async function createUser(email = USER_EMAIL) {
-    await userService.createUser(email, [RoleEnum.user]);
+export function createUser(email = USER_EMAIL) {
+    return userService.createUser(email, [RoleEnum.user]);
 }
 
-export async function createAdminUser() {
-    await userService.createUser(ADMIN_EMAIL, [RoleEnum.user, RoleEnum.admin]);
+export function createAdminUser() {
+    return userService.createUser(ADMIN_EMAIL, [RoleEnum.user, RoleEnum.admin]);
+}
+
+export function getDefaultUser() {
+    return userService.findByEmail(USER_EMAIL);
 }

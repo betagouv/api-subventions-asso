@@ -29,6 +29,7 @@ import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import UserReset from "./entities/UserReset";
 import userRepository from "./repositories/user.repository";
+jest.mock("./repositories/user.repository");
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
@@ -42,7 +43,6 @@ describe("User Service", () => {
     const resetUserMock = jest.spyOn(userService, "resetUser");
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
-    const findByEmailMock = jest.spyOn(userService, "findByEmail");
     //@ts-expect-error: mock private method
     const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken");
     const getUserWithSecretsByEmailMock = jest
@@ -57,7 +57,6 @@ describe("User Service", () => {
         roles: ["user"],
         signupAt: new Date(),
         active: true,
-        stats: {},
     } as UserDto;
     const USER_SECRETS = {
         jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
@@ -72,6 +71,14 @@ describe("User Service", () => {
     const CONSUMER_JWT_PAYLOAD = {
         ...USER_WITHOUT_SECRET,
         isConsumerToken: true,
+    };
+    const ANONYMIZED_USER = {
+        ...USER_WITHOUT_SECRET,
+        active: false,
+        email: "",
+        jwt: null,
+        hashPassword: "",
+        disable: true,
     };
 
     beforeEach(() => {
@@ -275,6 +282,72 @@ describe("User Service", () => {
             const expected = CONSUMER_USER;
             createTokenMock.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer(EMAIL);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("disable", () => {
+        const USER_ID = USER_WITHOUT_SECRET._id.toString();
+        // @ts-expect-error: private method
+        const mockAnonymize = jest.spyOn(userService, "anonymize");
+        beforeAll(() => {
+            // @ts-expect-error: private method
+            mockAnonymize.mockImplementation(() => ANONYMIZED_USER);
+        });
+
+        beforeEach(() => {
+            // @ts-expect-error: mock
+            userRepository.findById.mockReset();
+            // @ts-expect-error: mock
+            userRepository.update.mockReset();
+        });
+
+        it("should fetch user from db", async () => {
+            await userService.disable(USER_ID);
+            // @ts-expect-error: mock
+            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            expect(userRepository.findById).toHaveBeenCalledWith(USER_ID);
+        });
+
+        it("should return false if user fetch failed", async () => {
+            // @ts-expect-error: mock
+            userRepository.findById.mockImplementationOnce(jest.fn());
+            const expected = false;
+            const actual = await userService.disable(USER_ID);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call anonymize()", async () => {
+            // @ts-expect-error: mock
+            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            await userService.disable(USER_ID);
+            expect(mockAnonymize).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
+        });
+
+        it("should call update", async () => {
+            // @ts-expect-error: mock
+            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            await userService.disable(USER_ID);
+            expect(userRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
+        });
+
+        it("should return true if update succeed", async () => {
+            // @ts-expect-error: mock
+            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            // @ts-expect-error: mock
+            userRepository.update.mockImplementationOnce(async () => ANONYMIZED_USER);
+            const expected = true;
+            const actual = await userService.disable(USER_ID);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("anonymize()", () => {
+        it("should return anonymized user", () => {
+            const expected = ANONYMIZED_USER;
+
+            // @ts-expect-error: private method
+            const actual = userService.anonymize(USER_WITHOUT_SECRET);
             expect(actual).toEqual(expected);
         });
     });
