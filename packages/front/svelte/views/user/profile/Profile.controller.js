@@ -15,6 +15,7 @@ export class ProfileController {
 
     async deleteUser() {
         try {
+            this.error.set(false);
             await userService.deleteCurrentUser();
             this.logout();
         } catch (e) {
