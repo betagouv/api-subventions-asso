@@ -3,7 +3,7 @@ import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import User from "../entities/UserNotPersisted";
 import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
-import UserDbo, { UserDisableDbo } from "./dbo/UserDbo";
+import UserDbo from "./dbo/UserDbo";
 
 export enum UserRepositoryErrors {
     UPDATE_FAIL = 1,

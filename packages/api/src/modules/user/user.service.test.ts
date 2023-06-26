@@ -295,47 +295,39 @@ describe("User Service", () => {
             mockAnonymize.mockImplementation(() => ANONYMIZED_USER);
         });
 
-        beforeEach(() => {
-            // @ts-expect-error: mock
-            userRepository.findById.mockReset();
-            // @ts-expect-error: mock
-            userRepository.update.mockReset();
+        afterEach(() => {
+            jest.mocked(userRepository.findById).mockReset();
+            jest.mocked(userRepository.update).mockReset();
         });
 
         it("should fetch user from db", async () => {
             await userService.disable(USER_ID);
-            // @ts-expect-error: mock
-            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
             expect(userRepository.findById).toHaveBeenCalledWith(USER_ID);
         });
 
         it("should return false if user fetch failed", async () => {
-            // @ts-expect-error: mock
-            userRepository.findById.mockImplementationOnce(jest.fn());
+            jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn());
             const expected = false;
             const actual = await userService.disable(USER_ID);
             expect(actual).toEqual(expected);
         });
 
         it("should call anonymize()", async () => {
-            // @ts-expect-error: mock
-            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
             await userService.disable(USER_ID);
             expect(mockAnonymize).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
 
         it("should call update", async () => {
-            // @ts-expect-error: mock
-            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
             await userService.disable(USER_ID);
             expect(userRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
         });
 
         it("should return true if update succeed", async () => {
-            // @ts-expect-error: mock
-            userRepository.findById.mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
-            // @ts-expect-error: mock
-            userRepository.update.mockImplementationOnce(async () => ANONYMIZED_USER);
+            jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
+            jest.mocked(userRepository.update).mockImplementationOnce(async () => ANONYMIZED_USER);
             const expected = true;
             const actual = await userService.disable(USER_ID);
             expect(actual).toEqual(expected);
