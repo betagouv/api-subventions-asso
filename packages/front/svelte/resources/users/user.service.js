@@ -1,4 +1,5 @@
 import userPort from "./user.port";
+import authService from "@resources/auth/auth.service";
 
 export class UsersService {
     SEVEN_DAYS_MS = 1000 * 60 * 60 * 24 * 7;
@@ -8,6 +9,7 @@ export class UsersService {
 
     deleteCurrentUser() {
         userPort.deleteSelfUser();
+        authService.logout();
     }
 }
 

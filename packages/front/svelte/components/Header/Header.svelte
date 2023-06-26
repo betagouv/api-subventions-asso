@@ -83,6 +83,11 @@
                             {/if}
                             {#if user?.jwt}
                                 <li>
+                                    <Button on:click={controller.logout} type="tertiary" outline={false}>
+                                        Se déconnecter
+                                    </Button>
+                                </li>
+                                <li>
                                     <Button on:click={controller.goToProfil} type="tertiary" icon="user-fill">
                                         Profil
                                     </Button>

@@ -32,14 +32,14 @@ describe("ProfileController", () => {
     });
 
     describe("deleteUser()", () => {
-        it("should call userService.deleteCurrentUser()", () => {
-            controller.deleteUser();
+        it("should call userService.deleteCurrentUser()", async () => {
+            await controller.deleteUser();
             expect(userService.deleteCurrentUser).toHaveBeenCalledTimes(1);
         });
 
-        it("should call logout", () => {
+        it("should call logout", async () => {
             const spyLogout = jest.spyOn(controller, "logout");
-            controller.deleteUser();
+            await controller.deleteUser();
             expect(spyLogout).toHaveBeenCalledTimes(1);
         });
     });

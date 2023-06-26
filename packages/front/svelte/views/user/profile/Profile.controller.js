@@ -1,15 +1,23 @@
+import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
 import userService from "@resources/users/user.service";
 import { goToUrl } from "@services/router.service";
 
 export class ProfileController {
+    constructor() {
+        this.error = new Store(false);
+    }
     logout() {
         authService.logout();
         goToUrl("/auth/login");
     }
 
-    deleteUser() {
-        userService.deleteCurrentUser();
-        this.logout();
+    async deleteUser() {
+        try {
+            await userService.deleteCurrentUser();
+            this.logout();
+        } catch (e) {
+            this.error.set(true);
+        }
     }
 }
