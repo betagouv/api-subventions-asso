@@ -101,7 +101,7 @@ export class UserController extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public async deleteSelfUser(@Request() req: IdentifiedRequest): Promise<boolean> {
-        const success = await userService.delete(req.user._id.toString());
+        const success = await userService.disable(req.user._id.toString());
         if (!success) throw new NotFoundError("user to delete not found");
         this.setStatus(204);
         return true;

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import * as RandToken from "rand-token";
 import dedent from "dedent";
 import {
@@ -176,7 +176,7 @@ export class UserService {
         await this.validateEmail(email.toLocaleLowerCase());
 
         if (await userRepository.findByEmail(email.toLocaleLowerCase()))
-            throw new ConflictError("User is already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
+            throw new ConflictError("User already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
@@ -233,6 +233,22 @@ export class UserService {
         if (!user) return false;
 
         return await userRepository.delete(user);
+    }
+
+    public async disable(userId: string) {
+        const user = await userRepository.findById(userId);
+        if (!user) return false;
+        // Anonymize the user when it is beeing deleted to keep use stats consistent
+        // It keeps roles and signupAt in place to avoid breaking any stats
+        const disabledUser = {
+            ...user,
+            active: false,
+            email: "",
+            jwt: null,
+            hashPassword: "",
+            disable: true,
+        };
+        return !!(await userRepository.update(disabledUser));
     }
 
     public async addUsersByCsv(content: Buffer) {

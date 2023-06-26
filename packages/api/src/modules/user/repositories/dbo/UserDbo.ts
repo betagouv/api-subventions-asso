@@ -8,6 +8,7 @@ export default interface UserDbo {
     roles: string[];
     active: boolean;
     signupAt: Date;
+    disable?: boolean;
 }
 
 export interface JWT {

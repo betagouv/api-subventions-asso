@@ -2,10 +2,11 @@ import request = require("supertest");
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import userService from "../../../src/modules/user/user.service";
 import { RoleEnum } from "../../../src/@enums/Roles";
-import { createAndActiveUser } from "../../__helpers__/userHelper";
+import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
 import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
+import { ObjectId } from "mongodb";
 
 const g = global as unknown as { app: unknown };
 
@@ -179,15 +180,28 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json")
                 .expect(200);
 
-            expect(response.body.users[0]).toMatchSnapshot(
-                {
-                    _id: expect.any(String),
-                    signupAt: expect.any(String),
-                    stats: {
-                        lastSearchDate: expect.any(String),
-                    },
+            expect(response.body.users[0]).toMatchSnapshot({
+                _id: expect.any(String),
+                signupAt: expect.any(String),
+                stats: {
+                    lastSearchDate: expect.any(String),
                 },
-            );
+            });
+        });
+    });
+
+    describe("DELETE", () => {
+        it("should anonymize user", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())?._id;
+            await request(g.app)
+                .delete("/user")
+                .set("x-access-token", token)
+                .set("Accept", "application/json")
+                .expect(204);
+
+            const user = await userRepository.findById(userId?.toString() as string);
+            expect(user).toMatchSnapshot({ signupAt: expect.any(Date), _id: expect.any(ObjectId) });
         });
     });
 });
