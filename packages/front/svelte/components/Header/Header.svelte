@@ -88,7 +88,7 @@
                                     </Button>
                                 </li>
                                 <li>
-                                    <Button on:click={controller.goToProfil} type="tertiary" icon="user-fill">
+                                    <Button on:click={controller.goToProfile} type="tertiary" icon="user-fill">
                                         Profil
                                     </Button>
                                 </li>

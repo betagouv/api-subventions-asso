@@ -8,12 +8,12 @@ describe("HeaderController", () => {
         controller = new HeaderController();
     });
 
-    describe("goToProfil()", () => {
+    describe("goToProfile()", () => {
         const routerServiceMock = jest.spyOn(routerService, "goToUrl");
 
         it("should call goToUrl", () => {
             routerServiceMock.mockReturnValue(null);
-            controller.goToProfil();
+            controller.goToProfile();
 
             expect(routerServiceMock).toHaveBeenCalledWith("/user/profile");
         });
