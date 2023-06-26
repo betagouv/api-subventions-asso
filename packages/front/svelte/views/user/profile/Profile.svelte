@@ -19,7 +19,7 @@
     </div>
     <div class="fr-grid-row fr-mt-8v">
         <div class="fr-col-3">
-            <Button type="secondary" on:click={controller.logout}>Se déconnecter</Button>
+            <Button type="secondary" on:click={() => controller.logout}>Se déconnecter</Button>
         </div>
     </div>
 </div>

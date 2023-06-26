@@ -7,6 +7,7 @@ export class ProfileController {
     constructor() {
         this.error = new Store(false);
     }
+
     logout() {
         authService.logout();
         goToUrl("/auth/login");
