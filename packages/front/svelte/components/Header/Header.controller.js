@@ -7,7 +7,7 @@ export default class HeaderController {
         goToUrl("/auth/login");
     }
 
-    goToProfil() {
+    goToProfile() {
         goToUrl("/user/profile");
     }
 }
