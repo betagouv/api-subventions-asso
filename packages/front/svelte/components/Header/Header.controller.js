@@ -6,4 +6,8 @@ export default class HeaderController {
         authService.logout();
         goToUrl("/auth/login");
     }
+
+    goToProfile() {
+        goToUrl("/user/profile");
+    }
 }

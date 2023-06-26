@@ -7,7 +7,6 @@ describe("AnnouncementController", () => {
         it("should return judgment", () => {
             const controller = new AnnouncementController(ANNOUNCEMENT);
             const actual = controller.judgment;
-            console.log(actual);
             expect(actual).toMatchSnapshot();
         });
     });

@@ -1,4 +1,6 @@
-import userService from "./users.service";
+import userService from "./user.service";
+import userPort from "./user.port";
+jest.mock("./user.port");
 
 describe("UsersService", () => {
     describe("isUserActif", () => {
@@ -24,6 +26,13 @@ describe("UsersService", () => {
             const actual = userService.isUserActif(user);
 
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("deleteCurrentUser", () => {
+        it("should call UserPort.deleteSelfUser", () => {
+            userService.deleteCurrentUser();
+            expect(userPort.deleteSelfUser).toHaveBeenCalledTimes(1);
         });
     });
 });

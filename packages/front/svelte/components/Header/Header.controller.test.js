@@ -1,6 +1,5 @@
 import * as routerService from "../../services/router.service";
 import HeaderController from "./Header.controller";
-import authService from "@resources/auth/auth.service";
 
 describe("HeaderController", () => {
     let controller;
@@ -9,25 +8,14 @@ describe("HeaderController", () => {
         controller = new HeaderController();
     });
 
-    describe("logout", () => {
-        const authServiceMock = jest.spyOn(authService, "logout");
+    describe("goToProfile()", () => {
         const routerServiceMock = jest.spyOn(routerService, "goToUrl");
 
-        it("should call authService", () => {
-            authServiceMock.mockReturnValueOnce({});
-            routerServiceMock.mockReturnValue(null);
-
-            controller.logout();
-
-            expect(authServiceMock).toHaveBeenCalledTimes(1);
-        });
-
         it("should call goToUrl", () => {
-            authServiceMock.mockReturnValueOnce(null);
             routerServiceMock.mockReturnValue(null);
-            controller.logout();
+            controller.goToProfile();
 
-            expect(routerServiceMock).toHaveBeenCalledTimes(1);
+            expect(routerServiceMock).toHaveBeenCalledWith("/user/profile");
         });
     });
 });
