@@ -84,6 +84,23 @@ describe("DauphinDtoAdapter", () => {
             const actual = DauphinDtoAdapter.toDocuments(DAUPHIN_DOC);
             expect(actual).toMatchSnapshot();
         });
+
+        it("ignore docs with errors", () => {
+            const actual = DauphinDtoAdapter.toDocuments([
+                {
+                    libelle: { value: "test1" },
+                    documents: [
+                        {
+                            id: "/path2",
+                            title: "title2",
+                            // @ts-expect-error -- mock
+                            error: "something",
+                        },
+                    ],
+                },
+            ]);
+            expect(actual).toMatchInlineSnapshot(`Array []`);
+        });
     });
 
     describe("toCommon", () => {

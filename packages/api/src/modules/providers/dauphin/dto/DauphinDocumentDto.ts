@@ -9,6 +9,7 @@ export default interface DauphinDocumentDto {
         href: string; // this only gets meta-data somehow
         title: string;
         rel: string;
+        error?: never;
         expand: {
             properties: {
                 "entity:document:date": { value: string }; // using this as "date de dépôt"
