@@ -21,7 +21,7 @@
                     {:else if index === 1}
                         <ContactEtab contacts={etablissement.contacts} siret={identifier} />
                     {:else if index === 2}
-                        <Documents resource={etablissement} resourceType="etablissement" />
+                        <Documents resource={etablissement} resourceType="establishment" />
                     {:else}
                         <InfosBancairesEtab elements={etablissement.information_banquaire} />
                     {/if}
