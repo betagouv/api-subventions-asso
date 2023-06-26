@@ -8,10 +8,7 @@ export default interface UserDbo {
     roles: string[];
     active: boolean;
     signupAt: Date;
-}
-
-export interface UserDisableDbo extends UserDbo {
-    disable: true;
+    disable?: boolean;
 }
 
 export interface JWT {

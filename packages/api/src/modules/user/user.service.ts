@@ -35,7 +35,7 @@ import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
 import UserNotPersisted from "./entities/UserNotPersisted";
 import UserReset from "./entities/UserReset";
-import UserDbo, { UserDisableDbo } from "./repositories/dbo/UserDbo";
+import UserDbo from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
@@ -250,7 +250,7 @@ export class UserService {
      * @param user User to be deleted
      * @returns Anonymized user
      */
-    private anonymize(user: Omit<WithId<UserDbo>, "hashPassword" | "jwt">): UserDisableDbo {
+    private anonymize(user: Omit<WithId<UserDbo>, "hashPassword" | "jwt">): UserDbo {
         return {
             ...user,
             active: false,
