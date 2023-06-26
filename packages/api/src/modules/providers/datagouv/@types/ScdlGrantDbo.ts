@@ -1,7 +1,7 @@
 import { Siret } from "@api-subventions-asso/dto";
 import { ObjectId } from "mongodb";
 
-export type ScdlEtalabDbo = {
+export type ScdlGrantDbo = {
     // in English as it is internal code
     _id: ObjectId;
     allocatorName: string;
