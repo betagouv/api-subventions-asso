@@ -1,5 +1,5 @@
 import SendInBlueProvider, { TemplateEnum } from "./sendinblue.provider";
-import { TransactionalEmailsApi } from "sib-api-v3-typescript";
+import { TransactionalEmailsApi } from "@sendinblue/client";
 
 jest.mock("sib-api-v3-typescript");
 
