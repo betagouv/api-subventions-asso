@@ -19,6 +19,7 @@ export default class ApiAssoDtoAdapter {
     static providerNameSiren = "SIREN";
 
     static apiDateToDate(stringDate: string) {
+        if (!stringDate) throw new TypeError("should be a string to become a date");
         const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
         return new Date(Date.UTC(year, month - 1, day));
     }
