@@ -114,3 +114,5 @@ export function ExcelDateToJSDate(serial: number) {
 
     return new Date(Date.UTC(Number(year), Number(month) - 1, Number(date), hours, minutes, seconds));
 }
+
+export const isEmptyRow = (row: string[]) => !row.map(column => column.trim()).filter(c => c).length;

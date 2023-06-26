@@ -2,6 +2,7 @@ import fs from "fs";
 import { ObjectId } from "mongodb";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { isSiret } from "../../../shared/Validators";
+import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
 import { SaveCallback } from "./@types";
 import { ScdlGrantDbo } from "./@types/ScdlGrantDbo";
 import ScdlGrantEntity from "./entities/ScdlGrantEntity";
@@ -16,7 +17,6 @@ export default class DataGouvScdlGrantParser {
 
             const streamPause = () => stream.pause();
             const streamResume = () => stream.resume();
-            const isEmptyRow = (row: string[]) => !row.map(column => column.trim()).filter(c => c).length;
 
             let logNumber = 1;
             let logTime = new Date();

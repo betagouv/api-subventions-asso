@@ -4,6 +4,7 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { isSiren } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
+import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
 import { SaveCallback } from "./@types";
 import { UniteLegalHistoryRow } from "./@types/UniteLegalHistoryRow";
 
@@ -39,7 +40,6 @@ export default class DataGouvHistoryLegalUnitParser {
 
             const streamPause = () => stream.pause();
             const streamResume = () => stream.resume();
-            const isEmptyRow = (row: string[]) => !row.map(column => column.trim()).filter(c => c).length;
 
             const now = new Date();
             let logNumber = 1;
