@@ -238,20 +238,9 @@ export class UserService {
     public async disable(userId: string) {
         const user = await userRepository.findById(userId);
         if (!user) return false;
-        const disabledUser = this.anonymize(user);
-        return !!(await userRepository.update(disabledUser));
-    }
-
-    /**
-     * Anonymize the user when it is beeing deleted to keep use stats consistent
-     *
-     * It keeps roles and signupAt in place to avoid breaking any stats
-     *
-     * @param user User to be deleted
-     * @returns Anonymized user
-     */
-    private anonymize(user: Omit<WithId<UserDbo>, "hashPassword" | "jwt">): UserDbo {
-        return {
+        // Anonymize the user when it is beeing deleted to keep use stats consistent
+        // It keeps roles and signupAt in place to avoid breaking any stats
+        const disabledUser = {
             ...user,
             active: false,
             email: "",
@@ -259,6 +248,7 @@ export class UserService {
             hashPassword: "",
             disable: true,
         };
+        return !!(await userRepository.update(disabledUser));
     }
 
     public async addUsersByCsv(content: Buffer) {

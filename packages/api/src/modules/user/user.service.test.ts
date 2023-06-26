@@ -288,12 +288,6 @@ describe("User Service", () => {
 
     describe("disable", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
-        // @ts-expect-error: private method
-        const mockAnonymize = jest.spyOn(userService, "anonymize");
-        beforeAll(() => {
-            // @ts-expect-error: private method
-            mockAnonymize.mockImplementation(() => ANONYMIZED_USER);
-        });
 
         afterEach(() => {
             jest.mocked(userRepository.findById).mockReset();
@@ -313,12 +307,6 @@ describe("User Service", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should call anonymize()", async () => {
-            jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
-            await userService.disable(USER_ID);
-            expect(mockAnonymize).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
-        });
-
         it("should call update", async () => {
             jest.mocked(userRepository.findById).mockImplementationOnce(jest.fn(async () => USER_WITHOUT_SECRET));
             await userService.disable(USER_ID);
@@ -330,16 +318,6 @@ describe("User Service", () => {
             jest.mocked(userRepository.update).mockImplementationOnce(async () => ANONYMIZED_USER);
             const expected = true;
             const actual = await userService.disable(USER_ID);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("anonymize()", () => {
-        it("should return anonymized user", () => {
-            const expected = ANONYMIZED_USER;
-
-            // @ts-expect-error: private method
-            const actual = userService.anonymize(USER_WITHOUT_SECRET);
             expect(actual).toEqual(expected);
         });
     });
