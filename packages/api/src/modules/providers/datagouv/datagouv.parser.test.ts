@@ -1,12 +1,12 @@
 import fs from "fs";
-import DataGouvParser from "./datagouv.parser";
+import DataGouvHistoryLegalUnitParser from "./dataGouvHistoryLegalUnitParser";
 
 describe("DataGouvParser", () => {
     const now = new Date();
     describe("isDatesValid", () => {
         it("should return false if periodStart is not valid", () => {
             // @ts-expect-error: private method
-            const actual = DataGouvParser.isDatesValid({
+            const actual = DataGouvHistoryLegalUnitParser.isDatesValid({
                 // @ts-expect-error: invalid date
                 periodStart: "2022-0a-02",
                 importDate: new Date("2022-10-01"),
@@ -22,7 +22,7 @@ describe("DataGouvParser", () => {
                 return date;
             })(new Date());
             // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({
+            const actual = DataGouvHistoryLegalUnitParser.isDatesValid({
                 periodStart,
                 importDate: null,
                 now,
@@ -32,7 +32,7 @@ describe("DataGouvParser", () => {
 
         it("should return false because periodStart < importDate", () => {
             // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({
+            const actual = DataGouvHistoryLegalUnitParser.isDatesValid({
                 periodStart: new Date("2022-11-01"),
                 importDate: new Date("2022-12-01"),
                 now,
@@ -51,7 +51,7 @@ describe("DataGouvParser", () => {
                 return date;
             })(new Date());
             // @ts-expect-error
-            const actual = DataGouvParser.isDatesValid({
+            const actual = DataGouvHistoryLegalUnitParser.isDatesValid({
                 periodStart,
                 importDate,
                 now,
@@ -116,7 +116,7 @@ describe("DataGouvParser", () => {
 
             const mock = jest.fn();
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock);
+            await DataGouvHistoryLegalUnitParser.parseUniteLegalHistory("FAKE_PATH", mock);
 
             expect(mock).toBeCalledTimes(1);
             expect(mock).toBeCalledWith(
@@ -141,7 +141,7 @@ describe("DataGouvParser", () => {
 
             const mock = jest.fn();
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", mock);
+            await DataGouvHistoryLegalUnitParser.parseUniteLegalHistory("FAKE_PATH", mock);
 
             expect(mock).toBeCalledTimes(10000);
         });
@@ -156,10 +156,13 @@ describe("DataGouvParser", () => {
 
             const mocks = buildStreamMock(buffer);
 
-            await DataGouvParser.parseUniteLegalHistory("FAKE_PATH", async (_, streamPause, streamResume) => {
-                streamPause();
-                streamResume();
-            });
+            await DataGouvHistoryLegalUnitParser.parseUniteLegalHistory(
+                "FAKE_PATH",
+                async (_, streamPause, streamResume) => {
+                    streamPause();
+                    streamResume();
+                },
+            );
 
             expect(mocks.mockPause).toBeCalledTimes(1);
             expect(mocks.mockResume).toBeCalledTimes(1);

@@ -1,7 +1,7 @@
 import { ParserInfo, ParserPath } from "../../../../@types";
-import { ScdlEtalabDbo } from "../@types/ScdlEtalabDbo";
+import { ScdlGrantDbo } from "../@types/ScdlGrantDbo";
 
-export default class DataGouvScdl {
+export default class ScdlGrantEntity {
     public provider = "data.gouv";
 
     // will have to be enriched on importing variants of SCDL
@@ -12,10 +12,7 @@ export default class DataGouvScdl {
         allocatorSiret: ["idAttribuant"],
         conventionDate: {
             path: ["dateConvention"],
-            adapter: value => {
-                if (!value) return value;
-                return new Date(value);
-            },
+            adapter: value => (value ? new Date(value) : value),
         },
         decisionReference: ["referenceDecision"],
         associationName: ["nomBeneficiaire"],
@@ -23,25 +20,16 @@ export default class DataGouvScdl {
         object: ["objet"],
         amount: {
             path: ["montant"],
-            adapter: value => {
-                if (!value) return value;
-                return parseFloat(value);
-            },
+            adapter: value => (value ? parseFloat(value) : value),
         },
         paymentConditions: ["conditionsVersement"],
         paymentStartDate: {
             path: ["datesPeriodeVersement"],
-            adapter: value => {
-                if (!value) return value;
-                return new Date(value.split("/")[0]);
-            },
+            adapter: value => (value ? new Date(value.split("/")[0]) : value),
         },
         paymentEndDate: {
             path: ["datesPeriodeVersement"],
-            adapter: value => {
-                if (!value) return value;
-                return new Date(value.split("/")[1]);
-            },
+            adapter: value => (value ? new Date(value.split("/")[1]) : value),
         },
         idRAE: ["idRAE"],
         UeNotification: {
@@ -54,12 +42,9 @@ export default class DataGouvScdl {
         },
         grantPercentage: {
             path: ["pourcentageSubvention"],
-            adapter: value => {
-                if (!value) return value;
-                return parseFloat(value);
-            },
+            adapter: value => (value ? parseFloat(value) : value),
         },
     };
 
-    constructor(public data: ScdlEtalabDbo, public dataEditor: string) {}
+    constructor(public data: ScdlGrantDbo, public dataEditor: string) {}
 }

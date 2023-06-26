@@ -1,6 +1,6 @@
 import { Siret } from "../shared/Siret";
 
-export type EtalabGrant = {
+export type ScdlGrantDto = {
     nomAttribuant: string;
     idAttribuant: string;
     dateConvention: string; // date formatted as 2027-06-06

@@ -1,13 +1,13 @@
 import fs from "fs";
 import { ObjectId } from "mongodb";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import { isSiren, isSiret } from "../../../shared/Validators";
+import { isSiret } from "../../../shared/Validators";
 import { SaveCallback } from "./@types";
-import { ScdlEtalabDbo } from "./@types/ScdlEtalabDbo";
-import ScdlEntity from "./entities/ScdlEntity";
+import { ScdlGrantDbo } from "./@types/ScdlGrantDbo";
+import ScdlGrantEntity from "./entities/ScdlGrantEntity";
 
-export default class DataGouvScdlParser {
-    static parseCsv(filePath: string, save: SaveCallback<ScdlEtalabDbo>, extractId: ObjectId): Promise<void> {
+export default class DataGouvScdlGrantParser {
+    static parseCsv(filePath: string, save: SaveCallback<ScdlGrantDbo>, extractId: ObjectId): Promise<void> {
         return new Promise((resolve, reject) => {
             let totalEntities = 0;
             let header: null | string[] = null;
@@ -41,15 +41,15 @@ export default class DataGouvScdlParser {
                     totalEntities++;
                     const parsedData = ParseHelper.linkHeaderToData(header as string[], csvRow);
 
-                    const savableData = ParseHelper.indexDataByPathObject(
-                        ScdlEntity.InformationsPath,
+                    const storableData = ParseHelper.indexDataByPathObject(
+                        ScdlGrantEntity.InformationsPath,
                         parsedData,
-                    ) as unknown as ScdlEtalabDbo;
+                    ) as unknown as ScdlGrantDbo;
 
-                    if (!savableData.associationSiret || !isSiret(savableData.associationSiret)) return;
-                    savableData.extractId = extractId;
+                    if (!storableData.associationSiret || !isSiret(storableData.associationSiret)) return;
+                    storableData.extractId = extractId;
 
-                    await save(savableData, streamPause, streamResume);
+                    await save(storableData, streamPause, streamResume);
                 }
             });
 

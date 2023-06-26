@@ -7,7 +7,7 @@ import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { SaveCallback } from "./@types";
 import { UniteLegalHistoryRow } from "./@types/UniteLegalHistoryRow";
 
-export default class DataGouvParser {
+export default class DataGouvHistoryLegalUnitParser {
     private static isDatesValid({
         periodStart,
         importDate,

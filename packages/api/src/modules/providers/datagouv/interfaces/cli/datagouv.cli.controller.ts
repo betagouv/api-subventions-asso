@@ -1,6 +1,6 @@
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
-import DataGouvParser from "../../datagouv.parser";
+import DataGouvHistoryLegalUnitParser from "../../dataGouvHistoryLegalUnitParser";
 import dataGouvService from "../../datagouv.service";
 import CliController from "../../../../../shared/CliController";
 import { UniteLegalHistoryRow } from "../../@types/UniteLegalHistoryRow";
@@ -97,7 +97,7 @@ export default class DataGouvCliController extends CliController {
             }
         };
 
-        await DataGouvParser.parseUniteLegalHistory(file, saveEntity, lastImportDate);
+        await DataGouvHistoryLegalUnitParser.parseUniteLegalHistory(file, saveEntity, lastImportDate);
         if (stackEntreprise.length) {
             await this.saveEntreprises(stackEntreprise);
         }
