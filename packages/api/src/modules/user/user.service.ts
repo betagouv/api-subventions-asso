@@ -232,8 +232,9 @@ export class UserService {
 
         if (!user) return false;
 
+        if (!(await userRepository.delete(user))) return false;
+
         const deletePromises = [
-            userRepository.delete(user),
             userResetRepository.removeAllByUserId(user._id),
             consumerTokenRepository.deleteAllByUserId(user._id),
         ];

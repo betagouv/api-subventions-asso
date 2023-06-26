@@ -267,9 +267,19 @@ describe("User Service", () => {
             expect(method).toHaveBeenCalledWith(arg);
         });
 
+        it("returns false  without other calls if userRepository.delete returns false", async () => {
+            mocked(userRepository.delete).mockResolvedValueOnce(false);
+
+            const expected = false;
+            const actual = await userService.delete(ID);
+            expect(actual).toBe(expected);
+
+            expect(userResetRepository.removeAllByUserId).not.toHaveBeenCalled();
+            expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
+        });
+
         it.each`
             method                                       | methodName
-            ${userRepository.delete}                     | ${"userRepository.delete"}
             ${userResetRepository.removeAllByUserId}     | ${"userResetRepository.removeAllByUserId"}
             ${consumerTokenRepository.deleteAllByUserId} | ${"consumerTokenRepository.deleteAllByUserId"}
         `("returns false if $methodName returns false", async ({ method }) => {
