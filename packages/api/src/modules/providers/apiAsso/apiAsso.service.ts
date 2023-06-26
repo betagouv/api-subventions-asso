@@ -177,7 +177,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
     private async fetchDocuments(identifier: AssociationIdentifiers) {
         const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifier}`);
-        return result?.asso.documents;
+        return result?.asso?.documents;
     }
 
     private async findRibs(identifier: AssociationIdentifiers) {

@@ -127,6 +127,14 @@ describe("ApiAssoService", () => {
             const actual = await apiAssoService.fetchDocuments(RNA);
             expect(actual).toEqual(expected);
         });
+
+        it("does not fail if no result from axios", async () => {
+            const expected = undefined;
+            sendRequestMock.mockImplementationOnce(async () => null);
+            // @ts-expect-error: private method
+            const test = async () => await apiAssoService.fetchDocuments(RNA);
+            await expect(test).resolves;
+        });
     });
 
     describe("Association Provider Part", () => {
