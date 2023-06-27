@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/betagouv/datasubvention/compare/v0.30.2...v0.31.0) (2023-06-27)
+
+
+### Features
+
+* **dto:** etalab scdl dto ([0a01110](https://github.com/betagouv/datasubvention/commit/0a0111066de4fdfe97f58226569dc7ef69f0be26))
+
+
+
+
+
 # [0.30.0](https://github.com/betagouv/datasubvention/compare/v0.29.1...v0.30.0) (2023-06-08)
 
 

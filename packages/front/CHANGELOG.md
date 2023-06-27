@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/betagouv/datasubvention/compare/v0.30.2...v0.31.0) (2023-06-27)
+
+
+### Bug Fixes
+
+* **front:** rename variable after git suggestion ([497f6e5](https://github.com/betagouv/datasubvention/commit/497f6e595085c65341e53ed2b7ffef95c8e61476))
+* **front:** use english variable name ([7a58cc8](https://github.com/betagouv/datasubvention/commit/7a58cc86882131e261c588a162b78d45fb4fa315))
+
+
+### Features
+
+* **api,front:** 30 minutes cache header ([fd669c4](https://github.com/betagouv/datasubvention/commit/fd669c416d41de4cc0d0f52b6ca14de8cfc5d662))
+* **api,front:** header middleware ([112a12d](https://github.com/betagouv/datasubvention/commit/112a12de7978ea1ba3e013aed47fbe7eb8f4f324))
+* **api,front:** set header prevent sniffing ([9beae46](https://github.com/betagouv/datasubvention/commit/9beae469842de8728555a3da4729b0a1dd66e2bd))
+* **api,front:** set HSTS header force HTTPS ([92c64b4](https://github.com/betagouv/datasubvention/commit/92c64b49fdabc712763825a231d6dbba7a8ebf9e))
+* **api,front:** set XFO header prevent being in frame ([dc6966d](https://github.com/betagouv/datasubvention/commit/dc6966db2d8daecd49e9156c15cef805bfc4a4cc))
+* **api:** clean from review 2 ([2129c46](https://github.com/betagouv/datasubvention/commit/2129c46aeb788ea1185064da147fbafd081133aa))
+* **api:** stats url in env var ([0b1af50](https://github.com/betagouv/datasubvention/commit/0b1af506e956c65857c46cd8a0a80823beeab9bf))
+* **front:** add delete user method and call it from Profile view ([bfb4ad3](https://github.com/betagouv/datasubvention/commit/bfb4ad366257abf1f1a4b056c6f9502248a50ab7))
+* **front:** add deleteUser and logout action ([42594b1](https://github.com/betagouv/datasubvention/commit/42594b14fc210433d927d5a0b868670c715335bf))
+* **front:** csp header ([671a301](https://github.com/betagouv/datasubvention/commit/671a3019945ecd298b81386b743968e61a2af7c9))
+* **front:** disable Alert when retry user deletion ([aff35d0](https://github.com/betagouv/datasubvention/commit/aff35d06e22ba871246900fe0b8b64239f8b6b8a))
+* **front:** init Profile view ([5b27827](https://github.com/betagouv/datasubvention/commit/5b27827da8b4b14da1ec24115c0614fdb2461775))
+* **front:** redirect stats to blog stats page ([63f5b32](https://github.com/betagouv/datasubvention/commit/63f5b32ae5c68c1882ef11bbb4d15bd6b37c9ec8))
+* **front:** remove double logout ([f2d7338](https://github.com/betagouv/datasubvention/commit/f2d7338d098706764d1f524befb51d628d0d7cbd))
+* **front:** renaming and cleaing from review ([cf5a287](https://github.com/betagouv/datasubvention/commit/cf5a28796e4a00cf0cf1018515507018a5d8803f))
+* **front:** replace logout with profile button ([0249289](https://github.com/betagouv/datasubvention/commit/0249289f1c4290a6e4adcb69d65bd1cc0b9ac07c))
+
+
+
+
+
 ## [0.30.2](https://github.com/betagouv/datasubvention/compare/v0.30.1...v0.30.2) (2023-06-15)
 
 

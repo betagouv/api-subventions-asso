@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/betagouv/api-subventions-asso/compare/v0.30.2...v0.31.0) (2023-06-27)
+
+
+### Bug Fixes
+
+* **api:** api Asso toDate rejects falsy values ([274d07e](https://github.com/betagouv/api-subventions-asso/commit/274d07e8d8c7ebea79abe12e9304fbcafa4c92fd)), closes [#1430](https://github.com/betagouv/api-subventions-asso/issues/1430)
+* **api:** apiAsso request rejects response with 200 and "error" message or without date ([b05f66f](https://github.com/betagouv/api-subventions-asso/commit/b05f66f5aa939bc61644e207b5ea46993255a820)), closes [#1432](https://github.com/betagouv/api-subventions-asso/issues/1432) [#1444](https://github.com/betagouv/api-subventions-asso/issues/1444)
+* **api:** check if actual result ([8f97f76](https://github.com/betagouv/api-subventions-asso/commit/8f97f7699e3686794a2c3d7b2f7f59dae99368e1)), closes [#1429](https://github.com/betagouv/api-subventions-asso/issues/1429)
+* **api:** dauphin document adapter ignores docs with errors ([dcd790a](https://github.com/betagouv/api-subventions-asso/commit/dcd790ad76a63fc4ab2323c5d7b2ff1375bfcc49)), closes [#1431](https://github.com/betagouv/api-subventions-asso/issues/1431)
+* **api:** fix test after accepting git suggestion ([f7d9acd](https://github.com/betagouv/api-subventions-asso/commit/f7d9acd5e02d7bea896e7df5afdb7307483f9ff5))
+* **front:** rename variable after git suggestion ([497f6e5](https://github.com/betagouv/api-subventions-asso/commit/497f6e595085c65341e53ed2b7ffef95c8e61476))
+* **front:** use english variable name ([7a58cc8](https://github.com/betagouv/api-subventions-asso/commit/7a58cc86882131e261c588a162b78d45fb4fa315))
+
+
+### Features
+
+* **api,front:** 30 minutes cache header ([fd669c4](https://github.com/betagouv/api-subventions-asso/commit/fd669c416d41de4cc0d0f52b6ca14de8cfc5d662))
+* **api,front:** header middleware ([112a12d](https://github.com/betagouv/api-subventions-asso/commit/112a12de7978ea1ba3e013aed47fbe7eb8f4f324))
+* **api,front:** set header prevent sniffing ([9beae46](https://github.com/betagouv/api-subventions-asso/commit/9beae469842de8728555a3da4729b0a1dd66e2bd))
+* **api,front:** set HSTS header force HTTPS ([92c64b4](https://github.com/betagouv/api-subventions-asso/commit/92c64b49fdabc712763825a231d6dbba7a8ebf9e))
+* **api,front:** set XFO header prevent being in frame ([dc6966d](https://github.com/betagouv/api-subventions-asso/commit/dc6966db2d8daecd49e9156c15cef805bfc4a4cc))
+* **api:** anonymize user instead of deleting it ([5b3d650](https://github.com/betagouv/api-subventions-asso/commit/5b3d65056e99c82eb01e78da5fccf810399fffdc))
+* **api:** clean from review 2 ([2129c46](https://github.com/betagouv/api-subventions-asso/commit/2129c46aeb788ea1185064da147fbafd081133aa))
+* **api:** cleaning from review ([72a9443](https://github.com/betagouv/api-subventions-asso/commit/72a944333fd7d0f777ad078559323e05736ee763))
+* **api:** csp header ([574c21c](https://github.com/betagouv/api-subventions-asso/commit/574c21c92a9d48432115dba6aec85d203da68957))
+* **api:** delete consumer token by userId and user reset token by userId ([5fb27f6](https://github.com/betagouv/api-subventions-asso/commit/5fb27f63efcdd057c250cdf67684e3c4b0b0dfcc))
+* **api:** delete user's tokens at delete ([d8f958e](https://github.com/betagouv/api-subventions-asso/commit/d8f958e7c732e48ec176a551e8ff75e102b63285))
+* **api:** etalab scdl csv parser ([c078909](https://github.com/betagouv/api-subventions-asso/commit/c078909627c566da9e51356a0ccb4ba62c1ff0cd))
+* **api:** etalab scdl dbo ([e5c5047](https://github.com/betagouv/api-subventions-asso/commit/e5c50476cc73ed83f24f0ab1d7ea620750d8ead8))
+* **api:** merge UserDisableDbo in UserDbo ([c76090b](https://github.com/betagouv/api-subventions-asso/commit/c76090b2504f071bc6567fd743d62f194b2e7c39))
+* **api:** remove anonymise() and put code in disable() ([958926a](https://github.com/betagouv/api-subventions-asso/commit/958926a0020f9b07db565f82df3cc6581de82236))
+* **api:** simpler scdl parser ([4850a09](https://github.com/betagouv/api-subventions-asso/commit/4850a09a074101db93924f607b5a936e96edb341))
+* **api:** stats url in env var ([0b1af50](https://github.com/betagouv/api-subventions-asso/commit/0b1af506e956c65857c46cd8a0a80823beeab9bf))
+* **api:** tries main deletion first ([aed71c3](https://github.com/betagouv/api-subventions-asso/commit/aed71c32d1a35c5fab7ba79f1a7223eb1ccc0343))
+* **dto:** datagouv metadata dbo ([b36d329](https://github.com/betagouv/api-subventions-asso/commit/b36d3293791fe69d06386955cc90e22de5e8eec3))
+* **dto:** etalab scdl dto ([0a01110](https://github.com/betagouv/api-subventions-asso/commit/0a0111066de4fdfe97f58226569dc7ef69f0be26))
+* **front:** add delete user method and call it from Profile view ([bfb4ad3](https://github.com/betagouv/api-subventions-asso/commit/bfb4ad366257abf1f1a4b056c6f9502248a50ab7))
+* **front:** add deleteUser and logout action ([42594b1](https://github.com/betagouv/api-subventions-asso/commit/42594b14fc210433d927d5a0b868670c715335bf))
+* **front:** csp header ([671a301](https://github.com/betagouv/api-subventions-asso/commit/671a3019945ecd298b81386b743968e61a2af7c9))
+* **front:** disable Alert when retry user deletion ([aff35d0](https://github.com/betagouv/api-subventions-asso/commit/aff35d06e22ba871246900fe0b8b64239f8b6b8a))
+* **front:** init Profile view ([5b27827](https://github.com/betagouv/api-subventions-asso/commit/5b27827da8b4b14da1ec24115c0614fdb2461775))
+* **front:** redirect stats to blog stats page ([63f5b32](https://github.com/betagouv/api-subventions-asso/commit/63f5b32ae5c68c1882ef11bbb4d15bd6b37c9ec8))
+* **front:** remove double logout ([f2d7338](https://github.com/betagouv/api-subventions-asso/commit/f2d7338d098706764d1f524befb51d628d0d7cbd))
+* **front:** renaming and cleaing from review ([cf5a287](https://github.com/betagouv/api-subventions-asso/commit/cf5a28796e4a00cf0cf1018515507018a5d8803f))
+* **front:** replace logout with profile button ([0249289](https://github.com/betagouv/api-subventions-asso/commit/0249289f1c4290a6e4adcb69d65bd1cc0b9ac07c))
+
+
+
+
+
 ## [0.30.2](https://github.com/betagouv/api-subventions-asso/compare/v0.30.1...v0.30.2) (2023-06-15)
 
 
