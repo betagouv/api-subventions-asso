@@ -130,8 +130,7 @@ export class UserService {
             if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now()) await updateJwt();
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { hashPassword, ...userWithoutPassword } = user;
+        const { hashPassword: _hashPwd, ...userWithoutPassword } = user;
         return userWithoutPassword;
     }
 

@@ -4,8 +4,7 @@ import { WithStringId } from "../WithStringId";
 import { DefaultObject } from "../../@types";
 
 export const removeSecrets = <T extends UserDbo>(user: T) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { hashPassword, jwt, ...userWithoutSecret } = user;
+    const { hashPassword: _hashPwd, jwt: _jwt, ...userWithoutSecret } = user;
     return userWithoutSecret;
 };
 
