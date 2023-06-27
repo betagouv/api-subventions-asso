@@ -100,6 +100,21 @@ describe("ApiAssoService", () => {
             expect(actual).toBe(expected);
         });
 
+        it("should return null (dummy error message in data and status 200)", async () => {
+            const expected = null;
+            axiosMock.mockImplementationOnce(() =>
+                Promise.resolve({
+                    status: 200,
+                    data: "Error",
+                }),
+            );
+            cacheHasMock.mockImplementationOnce(() => false);
+
+            // @ts-ignore
+            const actual = await apiAssoService.sendRequest("fake/route");
+            expect(actual).toBe(expected);
+        });
+
         it("should return null (error is throw)", async () => {
             const expected = null;
             axiosMock.mockImplementationOnce(() => {
@@ -126,6 +141,14 @@ describe("ApiAssoService", () => {
             // @ts-expect-error: private method
             const actual = await apiAssoService.fetchDocuments(RNA);
             expect(actual).toEqual(expected);
+        });
+
+        it("does not fail if no result from axios", async () => {
+            const expected = undefined;
+            sendRequestMock.mockImplementationOnce(async () => null);
+            // @ts-expect-error: private method
+            const test = async () => await apiAssoService.fetchDocuments(RNA);
+            await expect(test).resolves;
         });
     });
 
@@ -318,8 +341,17 @@ describe("ApiAssoService", () => {
                 expect(sendRequestMock).toHaveBeenCalledTimes(1);
             });
 
+            it("should return null if result without date", async () => {
+                const expected = null;
+                sendRequestMock.mockResolvedValue({ data: true });
+                // @ts-ignore findAssociationByRna is private method
+                const actual = await apiAssoService.findAssociationByRna(RNA);
+
+                expect(actual).toBe(expected);
+            });
+
             it("should use adapter", async () => {
-                const expected = { data: true };
+                const expected = { data: true, identite: { date_modif_rna: "smthg" } };
                 sendRequestMock.mockResolvedValue(expected);
                 // @ts-ignore findAssociationByRna is private method
                 await apiAssoService.findAssociationByRna(RNA);
@@ -348,8 +380,17 @@ describe("ApiAssoService", () => {
                 expect(sendRequestMock).toHaveBeenCalledTimes(1);
             });
 
+            it("should return null if result without date", async () => {
+                const expected = null;
+                sendRequestMock.mockResolvedValue({ data: true });
+                // @ts-ignore findAssociationByRna is private method
+                const actual = await apiAssoService.findAssociationBySiren(RNA);
+
+                expect(actual).toBe(expected);
+            });
+
             it("should use adapter", async () => {
-                const expected = { data: true };
+                const expected = { data: true, identite: { date_modif_siren: "smthg" } };
                 sendRequestMock.mockResolvedValue(expected);
                 // @ts-ignore findAssociationBySiren is private method
                 await apiAssoService.findAssociationBySiren(SIREN);

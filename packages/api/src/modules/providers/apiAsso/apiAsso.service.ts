@@ -47,7 +47,8 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                 },
             });
 
-            if (res.status === 200) {
+            // @ts-expect-error checks type because api sends 200 with error string
+            if (res.status === 200 && !res.data.includes("Error")) {
                 this.requestCache.add(route, res.data);
                 return res.data;
             }
@@ -61,6 +62,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna}`);
 
         if (!rnaStructure) return null;
+        if (!rnaStructure.identite?.date_modif_rna) return null; // sometimes an empty shell object if given by the api
         return ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructure);
     }
 
@@ -68,6 +70,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
 
         if (!sirenStructure) return null;
+        if (!sirenStructure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
@@ -75,6 +78,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
 
         if (!structure) return null;
+        if (!structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
 
         await this.saveStructureInAssociationName(structure);
 
@@ -177,7 +181,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
     private async fetchDocuments(identifier: AssociationIdentifiers) {
         const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifier}`);
-        return result?.asso.documents;
+        return result?.asso?.documents;
     }
 
     private async findRibs(identifier: AssociationIdentifiers) {

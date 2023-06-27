@@ -109,6 +109,12 @@ describe("ApiAssoDtoAdapter", () => {
     });
 
     describe("apiDateToDate", () => {
+        it("should throw if falsy value", () => {
+            const test = () => ApiAssoDtoAdapter.apiDateToDate("");
+
+            expect(test).toThrowError();
+        });
+
         it("should return valid date", () => {
             const actual = ApiAssoDtoAdapter.apiDateToDate("2022-12-23");
 

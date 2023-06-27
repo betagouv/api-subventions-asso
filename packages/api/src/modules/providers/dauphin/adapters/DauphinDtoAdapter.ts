@@ -124,6 +124,7 @@ export default class DauphinDtoAdapter {
         for (const reference of documentReferences) {
             if (!reference.documents?.length) continue;
             for (const doc of reference.documents) {
+                if (doc.error) continue;
                 const date = new Date(doc.expand.properties["entity:document:date"].value);
                 toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.provider.name, new Date(date));
                 resultArray.push({
