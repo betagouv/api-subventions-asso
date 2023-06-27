@@ -33,30 +33,11 @@ ignorePatterns:
     - views/index.js
 settings:
     svelte3/typescript: true
-    import/resolver:
-        alias:
-            map:
-                - - "@resources"
-                  - ./svelte/resources
-                - - "@components"
-                  - ./svelte/components
-                - - "@dsfr"
-                  - ./svelte/dsfr
-                - - "@core"
-                  - ./svelte/core
-                - - "@helpers"
-                  - ./svelte/helpers
-                - - "@services"
-                  - ./svelte/services
-                - - "@store"
-                  - ./svelte/store
-            extensions:
-                - .js
-                - .svelte
+    import/resolver: webpack
 rules:
     import/order: error
     "@typescript-eslint/no-unused-vars":
         - "warn"
-        -   destructuredArrayIgnorePattern: "^_"
-            argsIgnorePattern: "^_"
-            varsIgnorePattern: "^_"
+        - destructuredArrayIgnorePattern: "^_"
+          argsIgnorePattern: "^_"
+          varsIgnorePattern: "^_"
