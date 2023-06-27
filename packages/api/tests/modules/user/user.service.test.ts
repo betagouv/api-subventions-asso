@@ -39,12 +39,12 @@ describe("user.service.ts", () => {
                 code: UserServiceErrors.CREATE_INVALID_EMAIL,
             });
         });
-        it("should reject because user already exist", async () => {
+        it("should reject because user already exists", async () => {
             await service.createUser("test@beta.gouv.fr");
             const test = async () => await service.createUser("test@beta.gouv.fr");
             await expect(test).rejects.toMatchObject({
-                message: "User already exist",
-                code: UserServiceErrors.CREATE_USER_ALREADY_EXIST,
+                message: "User already exists",
+                code: UserServiceErrors.CREATE_USER_ALREADY_EXISTS,
             });
         });
 
@@ -54,35 +54,6 @@ describe("user.service.ts", () => {
                 active: false,
                 roles: ["user"],
             });
-        });
-    });
-
-    describe("addUsersByCsv", () => {
-        const csv = `test@beta.gouv.fr;\ntest2@beta.gouv.fr;`;
-        const buffer = Buffer.from(csv);
-
-        it("should call createUsersByList with 2 email", async () => {
-            const mock = jest.spyOn(service, "createUsersByList").mockImplementationOnce(() => null);
-
-            await service.addUsersByCsv(buffer);
-
-            expect(mock).toHaveBeenCalledWith(["test@beta.gouv.fr", "test2@beta.gouv.fr"]);
-            mock.mockClear();
-        });
-    });
-
-    describe("createUsersByList", () => {
-        it("should create two users", async () => {
-            const result = await service.createUsersByList(["test@beta.gouv.fr", "test2@beta.gouv.fr"]);
-            expect(result).toHaveLength(2);
-            expect(result.every(r => r != null)).toBe(true);
-        });
-
-        it("should create one user and reject one other user", async () => {
-            await service.createUser("test@beta.gouv.fr");
-            const result = await service.createUsersByList(["test@beta.gouv.fr", "test2@beta.gouv.fr"]);
-            expect(result).toHaveLength(1);
-            expect(result.every(r => r != null)).toBe(true);
         });
     });
 

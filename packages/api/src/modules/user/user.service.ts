@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import dedent from "dedent";
 import {
@@ -47,7 +47,7 @@ export enum UserServiceErrors {
     LOGIN_UPDATE_JWT_FAIL,
     USER_NOT_ACTIVE,
     CREATE_INVALID_EMAIL,
-    CREATE_USER_ALREADY_EXIST,
+    CREATE_USER_ALREADY_EXISTS,
     CREATE_USER_WRONG,
     FORMAT_PASSWORD_INVALID,
     USER_NOT_FOUND,
@@ -178,7 +178,7 @@ export class UserService {
         await this.validateEmail(email.toLocaleLowerCase());
 
         if (await userRepository.findByEmail(email.toLocaleLowerCase()))
-            throw new ConflictError("User already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
+            throw new ConflictError("User already exists", UserServiceErrors.CREATE_USER_ALREADY_EXISTS);
 
         const partialUser = {
             email: email.toLocaleLowerCase(),
@@ -258,26 +258,6 @@ export class UserService {
             disable: true,
         };
         return !!(await userRepository.update(disabledUser));
-    }
-
-    public async addUsersByCsv(content: Buffer) {
-        const data = content
-            .toString()
-            .split("\n") // Select line by line
-            .map(raw =>
-                raw
-                    .split(";")
-                    .map(r => r.split("\t"))
-                    .flat(),
-            ); // Parse column
-        const emails = data.map(line => line[0]).filter(email => email.length);
-
-        return this.createUsersByList(emails);
-    }
-
-    public async createUsersByList(emails: string[]) {
-        const promises = emails.map(email => this.signup(email.toLocaleLowerCase()).catch(() => null));
-        return (await Promise.all(promises)).filter(result => result != null);
     }
 
     public async signup(email: string, role = RoleEnum.user): Promise<string> {
