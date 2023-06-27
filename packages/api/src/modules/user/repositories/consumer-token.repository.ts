@@ -11,6 +11,11 @@ class ConsumerTokenRepository {
     async create(entity: ConsumerToken) {
         return (await this.collection.insertOne(entity)).acknowledged;
     }
+
+    async deleteAllByUserId(userId) {
+        const result = await this.collection.deleteMany({ userId });
+        return result.acknowledged;
+    }
 }
 
 const consumerTokenRepository = new ConsumerTokenRepository();

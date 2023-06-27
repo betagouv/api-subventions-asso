@@ -232,7 +232,14 @@ export class UserService {
 
         if (!user) return false;
 
-        return await userRepository.delete(user);
+        if (!(await userRepository.delete(user))) return false;
+
+        const deletePromises = [
+            userResetRepository.removeAllByUserId(user._id),
+            consumerTokenRepository.deleteAllByUserId(user._id),
+        ];
+
+        return (await Promise.all(deletePromises)).every(success => success);
     }
 
     public async disable(userId: string) {
