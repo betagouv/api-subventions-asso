@@ -5,6 +5,8 @@ export default UserDto;
 export interface FutureUserDto {
     email: string;
     roles?: string[];
+    firstName?: string;
+    lastName?: string;
 }
 
 export interface UserDto extends FutureUserDto {

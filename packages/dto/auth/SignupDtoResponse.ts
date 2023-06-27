@@ -1,3 +1,5 @@
+import { UserDto } from "../user";
+
 export enum SignupErrorCodes {
     EMAIL_NOT_VALID = 1,
     USER_ALREADY_EXISTS = 2,
@@ -7,7 +9,7 @@ export enum SignupErrorCodes {
 }
 
 export interface SignupDtoPositiveResponse {
-    email: string;
+    user: UserDto;
 }
 
 export interface SignupDtoNegativeResponse {

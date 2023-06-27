@@ -19,7 +19,7 @@ describe("user.service.ts", () => {
 
     describe("findByEmail", () => {
         beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
+            await service.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("should return user", async () => {
@@ -34,14 +34,14 @@ describe("user.service.ts", () => {
 
     describe("createUser", () => {
         it("should reject because email is not valid", async () => {
-            await expect(service.createUser("test[at]beta.gouv.fr")).rejects.toMatchObject({
+            await expect(service.createUser({ email: "test[at]beta.gouv.fr" })).rejects.toMatchObject({
                 message: "Email is not valid",
                 code: UserServiceErrors.CREATE_INVALID_EMAIL,
             });
         });
         it("should reject because user already exists", async () => {
-            await service.createUser("test@beta.gouv.fr");
-            const test = async () => await service.createUser("test@beta.gouv.fr");
+            await service.createUser({ email: "test@beta.gouv.fr" });
+            const test = async () => await service.createUser({ email: "test@beta.gouv.fr" });
             await expect(test).rejects.toMatchObject({
                 message: "User already exists",
                 code: UserServiceErrors.CREATE_USER_ALREADY_EXISTS,
@@ -49,7 +49,7 @@ describe("user.service.ts", () => {
         });
 
         it("should return created user", async () => {
-            await expect(service.createUser("test@beta.gouv.fr")).resolves.toMatchObject({
+            await expect(service.createUser({ email: "test@beta.gouv.fr" })).resolves.toMatchObject({
                 email: "test@beta.gouv.fr",
                 active: false,
                 roles: ["user"],
@@ -60,7 +60,7 @@ describe("user.service.ts", () => {
     describe("addRolesToUser", () => {
         const EMAIL = "test@beta.gouv.fr";
         beforeEach(async () => {
-            await service.createUser(EMAIL);
+            await service.createUser({ email: EMAIL });
         });
 
         it("should throw NotFoundError if user email not found", async () => {
@@ -97,7 +97,7 @@ describe("user.service.ts", () => {
 
     describe("activeUser", () => {
         beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
+            await service.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("should reject because user email not found", async () => {
@@ -123,7 +123,7 @@ describe("user.service.ts", () => {
 
     describe("refreshExpirationToken", () => {
         beforeEach(async () => {
-            await service.createUser("test@beta.gouv.fr");
+            await service.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("should update user (called with user)", async () => {
@@ -138,7 +138,7 @@ describe("user.service.ts", () => {
     describe("resetPassword", () => {
         let userId: ObjectId;
         beforeEach(async () => {
-            const user = await service.createUser("test@beta.gouv.fr");
+            const user = await service.createUser({ email: "test@beta.gouv.fr" });
             userId = user._id;
             await userResetRepository.create(new UserReset(userId, "token", new Date()));
         });
@@ -201,7 +201,7 @@ describe("user.service.ts", () => {
     describe("forgetPassword", () => {
         let userId: ObjectId;
         beforeEach(async () => {
-            const user = await service.createUser("test@beta.gouv.fr");
+            const user = await service.createUser({ email: "test@beta.gouv.fr" });
             userId = user._id;
         });
 
@@ -219,7 +219,7 @@ describe("user.service.ts", () => {
 
     describe("resetUser", () => {
         let user: UserDto;
-        beforeEach(() => (user = service.createUser("test@beta.gouv.fr")));
+        beforeEach(() => (user = service.createUser({ email: "test@beta.gouv.fr" })));
 
         it("should create a reset user", async () => {
             const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByUserId");

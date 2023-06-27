@@ -161,11 +161,14 @@ export class UserService {
         return userRepository.find(query);
     }
 
-    async createConsumer(email: string) {
-        const user = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
-        const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
+    async createConsumer(userObject) {
+        const user = await this.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
+        const consumerToken = this.buildJWTToken(
+            { ...user, [UserService.CONSUMER_TOKEN_PROP]: true },
+            { expiration: false },
+        );
         try {
-            await consumerTokenRepository.create(new ConsumerToken(user._id, token));
+            await consumerTokenRepository.create(new ConsumerToken(user._id, consumerToken));
             return user;
         } catch (e) {
             await this.delete(user._id.toString());
@@ -173,21 +176,29 @@ export class UserService {
         }
     }
 
-    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user]): Promise<UserDto> {
-        await this.validateEmail(email.toLocaleLowerCase());
+    async validateUser(user: FutureUserDto) {
+        await this.validateEmail(user.email);
 
-        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
+        if (await userRepository.findByEmail(user.email))
             throw new ConflictError("User already exists", UserServiceErrors.CREATE_USER_ALREADY_EXISTS);
 
+        if (!this.validRoles(user.roles || []))
+            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
+    }
+
+    async createUser(userObject: FutureUserDto): Promise<UserDto> {
+        // default values and ensures format
+        userObject.email = userObject.email.toLocaleLowerCase();
+        if (!userObject.roles) userObject.roles = [RoleEnum.user];
+
+        await this.validateUser(userObject);
+
         const partialUser = {
-            email: email.toLocaleLowerCase(),
+            email: userObject.email,
             hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
-            roles,
+            roles: userObject.roles || [RoleEnum.user], // ensures proper type
         };
-
-        if (!this.validRoles(roles))
-            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
 
         const now = new Date();
         const jwtParams = {
@@ -243,6 +254,29 @@ export class UserService {
         return (await Promise.all(deletePromises)).every(success => success);
     }
 
+    public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
+        userObject.email = userObject.email.toLocaleLowerCase();
+
+        let user;
+        if (role == RoleEnum.consumer) {
+            user = await this.createConsumer(userObject);
+        } else {
+            try {
+                user = await this.createUser(userObject);
+            } catch (e) {
+                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
+                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                throw e;
+            }
+        }
+
+        const resetResult = await this.resetUser(user);
+
+        await mailNotifierService.sendCreationMail(userObject.email, resetResult.token);
+
+        return user;
+    }
+
     public async disable(userId: string) {
         const user = await userRepository.findById(userId);
         if (!user) return false;
@@ -257,28 +291,6 @@ export class UserService {
             disable: true,
         };
         return !!(await userRepository.update(disabledUser));
-    }
-
-    public async signup(email: string, role = RoleEnum.user): Promise<string> {
-        let user;
-        const lowerCaseEmail = email.toLocaleLowerCase();
-        if (role == RoleEnum.consumer) {
-            user = await this.createConsumer(lowerCaseEmail);
-        } else {
-            try {
-                user = await this.createUser(lowerCaseEmail);
-            } catch (e) {
-                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
-                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
-                throw e;
-            }
-        }
-
-        const resetResult = await this.resetUser(user);
-
-        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.token);
-
-        return email;
     }
 
     async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
@@ -367,7 +379,7 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        mailNotifierService.sendForgetPasswordMail(email.toLocaleLowerCase(), resetResult.token);
+        await mailNotifierService.sendForgetPasswordMail(email.toLocaleLowerCase(), resetResult.token);
 
         return resetResult;
     }

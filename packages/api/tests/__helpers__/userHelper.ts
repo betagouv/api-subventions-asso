@@ -16,11 +16,11 @@ export async function createAndActiveAdminUser() {
 }
 
 export function createUser(email = USER_EMAIL) {
-    return userService.createUser(email, [RoleEnum.user]);
+    return userService.createUser({ email, roles: [RoleEnum.user] });
 }
 
 export function createAdminUser() {
-    return userService.createUser(ADMIN_EMAIL, [RoleEnum.user, RoleEnum.admin]);
+    return userService.createUser({ email: ADMIN_EMAIL, roles: [RoleEnum.user, RoleEnum.admin] });
 }
 
 export function getDefaultUser() {

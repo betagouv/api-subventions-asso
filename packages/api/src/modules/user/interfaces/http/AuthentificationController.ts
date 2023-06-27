@@ -1,5 +1,10 @@
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
-import { LoginDtoResponse, ResetPasswordDtoResponse, SignupDtoResponse } from "@api-subventions-asso/dto";
+import {
+    FutureUserDto,
+    LoginDtoResponse,
+    ResetPasswordDtoResponse,
+    SignupDtoResponse,
+} from "@api-subventions-asso/dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
@@ -44,10 +49,10 @@ export class AuthentificationController extends Controller {
 
     @Post("/signup")
     @SuccessResponse("201", "Signup successfully")
-    public async signup(@Body() body: { email: string }): Promise<SignupDtoResponse> {
-        const email = await userService.signup(body.email);
+    public async signup(@Body() body: FutureUserDto): Promise<SignupDtoResponse> {
+        const user = await userService.signup(body);
         this.setStatus(201);
-        return { email };
+        return { user };
     }
 
     @Get("/logout")

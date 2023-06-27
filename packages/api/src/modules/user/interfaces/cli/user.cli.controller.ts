@@ -11,7 +11,7 @@ export default class UserCliController {
 
     async create(email: string) {
         try {
-            await userService.createUser(email);
+            await userService.createUser({ email });
             console.info("User has been created");
         } catch (error: unknown) {
             const e = error as Error;

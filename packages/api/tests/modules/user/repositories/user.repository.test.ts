@@ -18,7 +18,7 @@ describe("UserRepository", () => {
     };
     describe("The methods must not return any secret", () => {
         beforeEach(async () => {
-            await userService.createUser("test@beta.gouv.fr");
+            await userService.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("findByEmail", async () => {
@@ -52,7 +52,7 @@ describe("UserRepository", () => {
 
     describe("getUserWithSecretsByEmail", () => {
         beforeEach(async () => {
-            await userService.createUser("test@beta.gouv.fr");
+            await userService.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("should return user", async () => {
