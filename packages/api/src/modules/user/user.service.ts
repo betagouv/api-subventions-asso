@@ -456,11 +456,11 @@ export class UserService {
         );
     }
 
-    public isRoleValid(role: RoleEnum) {
-        return Object.values(RoleEnum).includes(role);
+    public isRoleValid(role: string) {
+        return Object.values(RoleEnum).includes(role as RoleEnum);
     }
 
-    private validRoles(roles: RoleEnum[]) {
+    private validRoles(roles: string[]) {
         return roles.every(role => this.isRoleValid(role));
     }
 

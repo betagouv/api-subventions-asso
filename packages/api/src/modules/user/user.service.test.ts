@@ -411,7 +411,6 @@ describe("User Service", () => {
 
         it("should return false", () => {
             const expected = false;
-            // @ts-expect-error: test
             const actual = userService.isRoleValid("not-a-role");
             expect(actual).toEqual(expected);
         });
