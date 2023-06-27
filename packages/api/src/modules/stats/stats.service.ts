@@ -281,6 +281,14 @@ class StatsService {
     async getUserLastSearchDate(userId) {
         return statsAssociationsVisitRepository.getLastSearchDate(userId);
     }
+
+    getAllVisitsUser(userId: string) {
+        return statsAssociationsVisitRepository.findByUserId(userId);
+    }
+
+    getAllLogUser(email: string) {
+        return statsRepository.findByEmail(email);
+    }
 }
 
 const statsService = new StatsService();

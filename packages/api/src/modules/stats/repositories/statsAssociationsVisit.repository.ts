@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { AssociationIdentifiers } from "../../../@types";
 import MigrationRepository from "../../../shared/MigrationRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
@@ -76,6 +77,10 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
                 },
             ])
             .toArray() as Promise<{ _id: AssociationIdentifiers; associationVisits: AssociationVisitEntity[] }[]>;
+    }
+
+    findByUserId(userId: string) {
+        return this.collection.find({ userId: new ObjectId(userId) }).toArray();
     }
 }
 

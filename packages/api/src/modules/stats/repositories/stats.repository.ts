@@ -67,6 +67,14 @@ export class StatsRepository {
             "meta.req.url": regex,
         });
     }
+
+    public findByEmail(email: string) {
+        return this.collection
+            .find({
+                "meta.req.user.email": email,
+            })
+            .toArray();
+    }
 }
 
 const statsRepository = new StatsRepository();
