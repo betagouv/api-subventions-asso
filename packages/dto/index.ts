@@ -18,3 +18,4 @@ export * from "./shared/InformationBancaire";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
 export * from "./grant/grant";
+export * from "./grant/scdlGrantDto";

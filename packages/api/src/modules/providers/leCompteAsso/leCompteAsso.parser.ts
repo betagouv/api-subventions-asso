@@ -8,10 +8,10 @@ export default class LeCompteAssoParser {
     public static parse(content: Buffer): ILeCompteAssoPartialRequestEntity[] {
         const data = ParseHelper.csvParse(content);
         const header = data[0].map(h => h.trim());
-        const raws = data.slice(1);
-        return raws.reduce((entities, raw) => {
-            if (!raw.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = ParseHelper.linkHeaderToData(header, raw);
+        const rows = data.slice(1);
+        return rows.reduce((entities, row) => {
+            if (!row.map(column => column.trim()).filter(c => c).length) return entities;
+            const parsedData = ParseHelper.linkHeaderToData(header, row);
 
             const legalInformations = {
                 ...(ParseHelper.indexDataByPathObject(

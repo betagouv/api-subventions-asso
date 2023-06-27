@@ -4,13 +4,11 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { isSiren } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
-import { IStreamAction } from "./@types";
-import { UniteLegalHistoryRaw } from "./@types/UniteLegalHistoryRaw";
+import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
+import { SaveCallback } from "./@types";
+import { UniteLegalHistoryRow } from "./@types/UniteLegalHistoryRow";
 
-export interface SaveCallback {
-    (entity: UniteLegalHistoryRaw, streamPause: IStreamAction, streamResume: IStreamAction): Promise<void>;
-}
-export default class DataGouvParser {
+export default class DataGouvHistoryLegalUnitParser {
     private static isDatesValid({
         periodStart,
         importDate,
@@ -29,7 +27,11 @@ export default class DataGouvParser {
         return true;
     }
 
-    static parseUniteLegalHistory(file: string, save: SaveCallback, lastImportDate: Date | null = null): Promise<void> {
+    static parseUniteLegalHistory(
+        file: string,
+        save: SaveCallback<UniteLegalHistoryRow>,
+        lastImportDate: Date | null = null,
+    ): Promise<void> {
         return new Promise((resolve, reject) => {
             let totalEntities = 0;
             let header: null | string[] = null;
@@ -38,7 +40,6 @@ export default class DataGouvParser {
 
             const streamPause = () => stream.pause();
             const streamResume = () => stream.resume();
-            const isEmptyRaw = (raw: string[]) => !raw.map(column => column.trim()).filter(c => c).length;
 
             const now = new Date();
             let logNumber = 1;
@@ -58,14 +59,14 @@ export default class DataGouvParser {
                     parsedChunk = parsedChunk.slice(1);
                 }
 
-                await asyncForEach(parsedChunk, async raw => {
-                    if (isEmptyRaw(raw)) return;
+                await asyncForEach(parsedChunk, async row => {
+                    if (isEmptyRow(row)) return;
 
                     totalEntities++;
                     const parsedData = ParseHelper.linkHeaderToData(
                         header as string[],
-                        raw,
-                    ) as unknown as UniteLegalHistoryRaw;
+                        row,
+                    ) as unknown as UniteLegalHistoryRow;
                     if (!parsedData.siren || !isSiren(parsedData.siren)) return;
 
                     const periodStartDate = new Date(parsedData.dateDebut);

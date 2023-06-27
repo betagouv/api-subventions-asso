@@ -1,4 +1,4 @@
-export interface UniteLegalRaw {
+export interface UniteLegalRow {
     siren: string;
     statutDiffusionUniteLegale: string;
     unitePurgeeUniteLegale: string;

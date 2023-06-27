@@ -1,14 +1,15 @@
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../../../../@types/Cli.interface";
-import DataGouvParser, { SaveCallback } from "../../datagouv.parser";
+import { CliStaticInterface } from "../../../../../@types";
+import DataGouvHistoryLegalUnitParser from "../../dataGouvHistoryLegalUnitParser";
 import dataGouvService from "../../datagouv.service";
 import CliController from "../../../../../shared/CliController";
-import { UniteLegalHistoryRaw } from "../../@types/UniteLegalHistoryRaw";
+import { UniteLegalHistoryRow } from "../../@types/UniteLegalHistoryRow";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
 import associationNameService from "../../../../association-name/associationName.service";
 import { UniteLegaleHistoriqueAdapter } from "../../adapter/UniteLegaleHistoriqueAdapter";
 import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
+import { SaveCallback } from "../../@types";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataGouvCliController extends CliController {
@@ -16,12 +17,11 @@ export default class DataGouvCliController extends CliController {
 
     protected logFileParsePath = "./logs/datagouv.parse.log.txt";
 
-    private isAssociation(entity: UniteLegalHistoryRaw) {
-        if (LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale))) return true;
-        return false;
+    private isAssociation(entity: UniteLegalHistoryRow) {
+        return LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale));
     }
 
-    private shouldAssoBeSaved(entity: UniteLegalHistoryRaw) {
+    private shouldAssoBeSaved(entity: UniteLegalHistoryRow) {
         return entity.changementDenominationUniteLegale === "true" || this.isUniteLegaleNew(entity);
     }
 
@@ -43,15 +43,15 @@ export default class DataGouvCliController extends CliController {
         return props.every(prop => entity[prop] === "false");
     }
 
-    private saveAssociations(raws: UniteLegalHistoryRaw[]) {
-        return asyncForEach(raws, async raw => {
-            const entity = UniteLegaleHistoriqueAdapter.rawToAssociationName(raw);
+    private saveAssociations(rows: UniteLegalHistoryRow[]) {
+        return asyncForEach(rows, async row => {
+            const entity = UniteLegaleHistoriqueAdapter.rowToAssociationName(row);
             await associationNameService.upsert(entity);
         });
     }
 
-    private saveEntreprises(raws: UniteLegalHistoryRaw[]) {
-        return dataGouvService.insertManyEntrepriseSiren(raws.map(UniteLegaleHistoriqueAdapter.rawToEntrepriseSiren));
+    private saveEntreprises(rows: UniteLegalHistoryRow[]) {
+        return dataGouvService.insertManyEntrepriseSiren(rows.map(UniteLegaleHistoriqueAdapter.rowToEntrepriseSiren));
     }
 
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
@@ -64,10 +64,10 @@ export default class DataGouvCliController extends CliController {
         const lastImportDate = await dataGouvService.getLastDateImport();
 
         let chunksInSave = 0;
-        const stackEntreprise: UniteLegalHistoryRaw[] = [];
-        const stackAssociation: UniteLegalHistoryRaw[] = [];
+        const stackEntreprise: UniteLegalHistoryRow[] = [];
+        const stackAssociation: UniteLegalHistoryRow[] = [];
 
-        const saveEntity: SaveCallback = async (entity, streamPause, streamResume) => {
+        const saveEntity: SaveCallback<UniteLegalHistoryRow> = async (entity, streamPause, streamResume) => {
             if (this.isAssociation(entity)) {
                 if (this.shouldAssoBeSaved(entity)) {
                     stackAssociation.push(entity);
@@ -97,7 +97,7 @@ export default class DataGouvCliController extends CliController {
             }
         };
 
-        await DataGouvParser.parseUniteLegalHistory(file, saveEntity, lastImportDate);
+        await DataGouvHistoryLegalUnitParser.parseUniteLegalHistory(file, saveEntity, lastImportDate);
         if (stackEntreprise.length) {
             await this.saveEntreprises(stackEntreprise);
         }

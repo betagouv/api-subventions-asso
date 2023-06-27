@@ -12,9 +12,9 @@ export default class FonjepParser {
             const headers = page.slice(0, 1)[0] as string[];
             const trimHeaders = headers.map((h: string) => h.trim());
 
-            const raws = page.slice(1, page.length) as (string | number)[][]; // Delete Headers
+            const rows = page.slice(1, page.length) as (string | number)[][]; // Delete Headers
 
-            return raws.map(data => ParserHelper.linkHeaderToData(trimHeaders, data) as DefaultObject<string>);
+            return rows.map(data => ParserHelper.linkHeaderToData(trimHeaders, data) as DefaultObject<string>);
         });
     }
 

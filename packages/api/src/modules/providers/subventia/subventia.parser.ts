@@ -7,10 +7,10 @@ export default class SubventiaParser {
     static parse(fileContent: Buffer): SubventiaRequestEntity[] {
         const data = ParseHelper.xlsParse(fileContent)[0];
         const headers = data[0] as string[];
-        const raws = data.slice(1) as unknown[][];
+        const rows = data.slice(1) as unknown[][];
 
-        return raws.map(raw => {
-            const parsedData = ParseHelper.linkHeaderToData(headers, raw);
+        return rows.map(row => {
+            const parsedData = ParseHelper.linkHeaderToData(headers, row);
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 SubventiaRequestEntity.indexedProviderInformationsPath,
                 parsedData,

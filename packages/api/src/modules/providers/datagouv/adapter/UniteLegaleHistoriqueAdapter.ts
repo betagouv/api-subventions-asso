@@ -1,20 +1,20 @@
 import AssociationNameEntity from "../../../association-name/entities/AssociationNameEntity";
-import { UniteLegalHistoryRaw } from "../@types/UniteLegalHistoryRaw";
+import { UniteLegalHistoryRow } from "../@types/UniteLegalHistoryRow";
 import dataGouvService from "../datagouv.service";
 import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
 
 export class UniteLegaleHistoriqueAdapter {
-    static rawToAssociationName(raw: UniteLegalHistoryRaw) {
+    static rowToAssociationName(row: UniteLegalHistoryRow) {
         return new AssociationNameEntity(
             null,
-            raw.denominationUniteLegale,
+            row.denominationUniteLegale,
             dataGouvService.provider.name,
-            new Date(raw.dateDebut),
-            raw.siren,
+            new Date(row.dateDebut),
+            row.siren,
         );
     }
 
-    static rawToEntrepriseSiren(raw: UniteLegalHistoryRaw) {
-        return new EntrepriseSirenEntity(raw.siren);
+    static rowToEntrepriseSiren(row: UniteLegalHistoryRow) {
+        return new EntrepriseSirenEntity(row.siren);
     }
 }
