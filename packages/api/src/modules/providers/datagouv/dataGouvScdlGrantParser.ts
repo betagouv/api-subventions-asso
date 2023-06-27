@@ -6,10 +6,10 @@ import { ScdlGrantDbo } from "./@types/ScdlGrantDbo";
 import ScdlGrantEntity from "./entities/ScdlGrantEntity";
 
 export default class DataGouvScdlGrantParser {
-    static parseCsv(chunk: Buffer, extractId: ObjectId) {
-        let parsedChunk = ParseHelper.csvParse(chunk as Buffer);
-        const header: string[] = parsedChunk[0];
-        parsedChunk = parsedChunk.slice(1);
+    static parseCsv(chunk: Buffer, extractId: ObjectId): ScdlGrantDbo[] {
+        const parsedChunk = ParseHelper.csvParse(chunk);
+        const header = parsedChunk.shift();
+        if (!header) return [];
 
         const storableChunk: ScdlGrantDbo[] = [];
 
