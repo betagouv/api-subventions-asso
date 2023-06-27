@@ -16,29 +16,28 @@
 
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     const associationPromise = associationService.getAssociation(siretToSiren(id));
-    const etablissementPromise = establishmentService.getBySiret(id);
+    const establishmentPromise = establishmentService.getBySiret(id);
+    const promises = Promise.all([associationPromise, establishmentPromise]);
 </script>
 
 <div class="fr-container">
-    {#await associationPromise}
+    {#await promises}
         <FullPageSpinner description="Chargement de l'établissement {id} en cours ..." />
-    {:then association}
+    {:then result}
         <div class="fr-mb-3w">
-            <StructureTitle {association} siret={id} />
+            <StructureTitle association={result[0]} siret={id} />
         </div>
-        {#await etablissementPromise then etablissement}
-            <div class="fr-mb-6w">
-                <InfosLegales {association} {etablissement} />
-            </div>
-            <div class="fr-mb-6w">
-                <TabsEtab {etablissement} {titles} identifier={id} />
-            </div>
-        {:catch error}
-            {#if error.request && error.request.status === 404}
-                <DataNotFound />
-            {:else}
-                <ErrorAlert message={error.message} />
-            {/if}
-        {/await}
+        <div class="fr-mb-6w">
+            <InfosLegales association={result[0]} establishment={result[1]} />
+        </div>
+        <div class="fr-mb-6w">
+            <TabsEtab establishment={result[1]} {titles} identifier={id} />
+        </div>
+    {:catch error}
+        {#if error.request && error.request.status === 404}
+            <DataNotFound />
+        {:else}
+            <ErrorAlert message={error.message} />
+        {/if}
     {/await}
 </div>

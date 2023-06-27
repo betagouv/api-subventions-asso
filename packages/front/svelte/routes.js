@@ -1,5 +1,5 @@
 import Association from "./views/association/Association.svelte";
-import Etablissement from "./views/etablissement/Etablissement.svelte";
+import Establishment from "./views/establishment/Establishment.svelte";
 import AdminUsersAccount from "./views/admin/users/AdminUsersAccount.svelte";
 import AdminUsersCreate from "./views/admin/users/AdminUsersCreate.svelte";
 import Home from "./views/home/Home.svelte";
@@ -25,7 +25,7 @@ export default {
         component: () => Association,
     },
     "etablissement/:id": {
-        component: () => Etablissement,
+        component: () => Establishment,
     },
     "admin/users/list": {
         component: () => AdminUsersAccount,
