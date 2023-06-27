@@ -2,9 +2,9 @@
 
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { ObjectId } from "mongodb";
-import UserNotPersisted from "../../../../src/modules/user/entities/UserNotPersisted";
 import userRepository from "../../../../src/modules/user/repositories/user.repository";
 import userService from "../../../../src/modules/user/user.service";
+import { UserNotPersisted } from "../../../../src/modules/user/repositories/dbo/UserDbo";
 
 describe("UserRepository", () => {
     const defaultUser = {
@@ -41,7 +41,7 @@ describe("UserRepository", () => {
         });
 
         it("create", async () => {
-            await expect(userRepository.create(new UserNotPersisted(defaultUser))).resolves.toMatchObject(
+            await expect(userRepository.create(defaultUser as UserNotPersisted)).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
                     jwt: { token: expect.any(String), expirateDate: expect.any(Date) },

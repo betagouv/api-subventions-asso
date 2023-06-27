@@ -2,12 +2,17 @@ import { ObjectId } from "mongodb";
 
 export default UserDto;
 
-export interface UserDto {
-    _id: ObjectId;
+export interface FutureUserDto {
     email: string;
+    roles?: string[];
+}
+
+export interface UserDto extends FutureUserDto {
+    _id: ObjectId;
     roles: string[];
     active: boolean;
     signupAt: Date;
+    disable?: boolean;
 }
 
 export interface UserWithJWTDto extends UserDto {
@@ -29,7 +34,3 @@ export interface UserResetDto {
 export type UserWithStatsDto = UserDto & UserStatsDto;
 
 export type UserWithResetTokenDto = UserDto & UserResetDto & Partial<UserStatsDto>;
-
-export interface GetUserSuccessResponseDto {
-    user: UserDto;
-}

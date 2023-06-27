@@ -11,6 +11,7 @@ import {
     UserWithResetTokenDto,
     UserDto,
     UserWithStatsDto,
+    FutureUserDto,
     UserDataDto,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
@@ -35,9 +36,8 @@ import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
-import UserNotPersisted from "./entities/UserNotPersisted";
 import UserReset from "./entities/UserReset";
-import UserDbo from "./repositories/dbo/UserDbo";
+import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
@@ -195,11 +195,11 @@ export class UserService {
             expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
-        const user = new UserNotPersisted({
+        const user = {
             ...partialUser,
             jwt: jwtParams,
             active: false,
-        });
+        } as UserNotPersisted;
 
         const createdUser = await userRepository.create(user);
 
