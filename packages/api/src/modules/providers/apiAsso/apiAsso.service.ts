@@ -47,8 +47,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
                 },
             });
 
-            // @ts-expect-error checks type because api sends 200 with error string
-            if (res.status === 200 && !res.data.includes("Error")) {
+            if (res.status === 200 && (typeof res.data != "string" || !res.data.includes("Error"))) {
                 this.requestCache.add(route, res.data);
                 return res.data;
             }
