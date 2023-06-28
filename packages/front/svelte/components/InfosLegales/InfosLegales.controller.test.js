@@ -1,5 +1,5 @@
 import DEFAULT_ASSOCIATION from "../../views/association/__fixtures__/Association";
-import DEFAULT_ETABLISSEMENT from "../../views/etablissement/__fixtures__/Etablissement";
+import DEFAULT_ETABLISSEMENT from "../../views/establishment/__fixtures__/Etablissement";
 import InfosLegalesController from "./InfosLegales.controller";
 import { dateToDDMMYYYY } from "@helpers/dateHelper";
 

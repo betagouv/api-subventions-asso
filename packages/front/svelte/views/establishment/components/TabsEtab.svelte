@@ -6,7 +6,7 @@
     import ContactEtab from "./ContactEtab/ContactEtab.svelte";
     import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
 
-    export let etablissement;
+    export let establishment;
     export let titles;
     export let identifier;
 </script>
@@ -19,11 +19,11 @@
                     {#if index === 0}
                         <SubventionsVersementsDashboard {identifier} />
                     {:else if index === 1}
-                        <ContactEtab contacts={etablissement.contacts} siret={identifier} />
+                        <ContactEtab contacts={establishment.contacts} siret={identifier} />
                     {:else if index === 2}
-                        <Documents resource={etablissement} resourceType="establishment" />
+                        <Documents resource={establishment} resourceType="establishment" />
                     {:else}
-                        <InfosBancairesEtab elements={etablissement.information_banquaire} />
+                        <InfosBancairesEtab elements={establishment.information_banquaire} />
                     {/if}
                 </TabContent>
             {/each}
