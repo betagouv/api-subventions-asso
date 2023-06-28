@@ -17,7 +17,10 @@
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     const associationPromise = associationService.getAssociation(siretToSiren(id));
     const establishmentPromise = establishmentService.getBySiret(id);
-    const promises = Promise.all([associationPromise, establishmentPromise]);
+    const promises = Promise.all([associationPromise, establishmentPromise]).then(result => ({
+        association: result[0],
+        establishment: result[1],
+    }));
 </script>
 
 <div class="fr-container">
@@ -25,13 +28,13 @@
         <FullPageSpinner description="Chargement de l'établissement {id} en cours ..." />
     {:then result}
         <div class="fr-mb-3w">
-            <StructureTitle association={result[0]} siret={id} />
+            <StructureTitle association={result.association} siret={id} />
         </div>
         <div class="fr-mb-6w">
-            <InfosLegales association={result[0]} establishment={result[1]} />
+            <InfosLegales association={result.association} establishment={result.establishment} />
         </div>
         <div class="fr-mb-6w">
-            <TabsEtab establishment={result[1]} {titles} identifier={id} />
+            <TabsEtab establishment={result.establishment} {titles} identifier={id} />
         </div>
     {:catch error}
         {#if error.request && error.request.status === 404}
