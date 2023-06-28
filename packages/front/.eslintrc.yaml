@@ -34,6 +34,7 @@ ignorePatterns:
 settings:
     svelte3/typescript: true
     import/resolver: webpack
+        typescript: true
 rules:
     import/order: error
     "@typescript-eslint/no-unused-vars":
