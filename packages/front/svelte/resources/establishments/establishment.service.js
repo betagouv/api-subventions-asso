@@ -1,6 +1,7 @@
 import { toEstablishmentComponent } from "./establishment.adapter";
 import establishmentPort from "./establishment.port";
-import { getValue } from "@helpers/providerValueHelper";
+import documentService from "@resources/documents/documents.service";
+import { getObjectWithMetadata, getValue } from "@helpers/providerValueHelper";
 
 class EstablishmentService {
     incExtractData(identifier) {
@@ -22,8 +23,13 @@ class EstablishmentService {
         return contacts.map(contact => getValue(contact));
     }
 
-    getDocuments(siret) {
-        return establishmentPort.getDocuments(siret);
+    async getDocuments(identifier) {
+        const result = await establishmentPort.getDocuments(identifier);
+
+        if (!result) return [];
+        
+        const documents = result.map(document => getObjectWithMetadata(document));
+        return documentService.formatAndSortDocuments(documents);
     }
 }
 
