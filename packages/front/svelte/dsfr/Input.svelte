@@ -6,6 +6,7 @@
     export let type = "text";
     export let name = `input-${id}`;
     export let autocomplete = "false";
+    export let placeholder = "";
 
     let spellcheck = true;
 
@@ -33,6 +34,7 @@
         {name}
         {spellcheck}
         {autocomplete}
+        {placeholder}
         bind:value
         required={required ? "required" : undefined}
         use:typeAction />
