@@ -1,4 +1,5 @@
 import axios from "axios";
+import requestsService from "@services/requests.service";
 
 class EstablishmentPort {
     incExtractData(identifier) {
@@ -11,8 +12,9 @@ class EstablishmentPort {
         return (await axios.get(path))?.data?.etablissement;
     }
 
-    getDocuments(identifier) {
-        return axios.get(`/etablissement/${identifier}/documents`);
+    async getDocuments(identifier) {
+        const anwser = await requestsService.get(`/etablissement/${identifier}/documents`);
+        return anwser?.data?.documents;
     }
 }
 

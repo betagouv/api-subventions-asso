@@ -1,13 +1,13 @@
-import associationService from "@resources/associations/association.service";
 import { getSiegeSiret } from "../../views/association/association.helper";
-import establishmentService from "@resources/establishments/establishment.service";
 import Store from "../../core/Store";
+import associationService from "@resources/associations/association.service";
+import establishmentService from "@resources/establishments/establishment.service";
 import { waitElementIsVisible } from "@helpers/visibilityHelper";
 import documentService from "@resources/documents/documents.service";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
-    etablissement: "cet établissement",
+    establishment: "cet établissement",
 };
 
 export class DocumentsController {
