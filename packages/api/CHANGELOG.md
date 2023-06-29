@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.31.1](https://github.com/betagouv/api-subventions-asso/compare/v0.31.0...v0.31.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* **api:** check if response is string and if string containe error ([f8679ae](https://github.com/betagouv/api-subventions-asso/commit/f8679ae56a726f5250b59a51fcba939226be9dee))
+
+
+
+
+
 # [0.31.0](https://github.com/betagouv/api-subventions-asso/compare/v0.30.2...v0.31.0) (2023-06-27)
 
 

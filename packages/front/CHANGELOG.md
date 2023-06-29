@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.31.1](https://github.com/betagouv/datasubvention/compare/v0.31.0...v0.31.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* **front:** enhance promise naming in svelte file ([1aeafc2](https://github.com/betagouv/datasubvention/commit/1aeafc252dad2fb2e5ddfcaa59424564d461fd88))
+* **front:** wait for asso & estab to be download before rendering ([5f21200](https://github.com/betagouv/datasubvention/commit/5f2120037f093850dbd42b41e35430ab4e600592))
+
+
+
+
+
 # [0.31.0](https://github.com/betagouv/datasubvention/compare/v0.30.2...v0.31.0) (2023-06-27)
 
 
