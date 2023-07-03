@@ -38,14 +38,12 @@
             {/await}
             <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
                 <fieldset class="fr-fieldset fr-my-4w">
-                    <div class="fr-input-group">
-                        <Input
-                            label="Mot de passe :"
-                            id="password"
-                            bind:value={$password}
-                            required={true}
-                            type="password" />
-                    </div>
+                    <Input
+                        label="Mot de passe :"
+                        id="password"
+                        bind:value={$password}
+                        required={true}
+                        type="password" />
                 </fieldset>
                 <div class="fr-input-group fr-my-4w">
                     <Button type="submit" title="Valider" htmlType="submit" disabled={!isPasswordOk}>Valider</Button>

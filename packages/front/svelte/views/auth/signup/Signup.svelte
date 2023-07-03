@@ -46,9 +46,7 @@
 
 <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
     <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-        <div class="fr-input-group fr-ml-1w">
-            <Input label="Email professionnel:" id="signup-email" bind:value={$email} required={true} />
-        </div>
+        <Input label="Email professionnel:" id="signup-email" bind:value={$email} required={true} />
     </fieldset>
     <div class="fr-input-group">
         <Button type="submit" title="S'inscrire" htmlType="submit">Confirmer</Button>
