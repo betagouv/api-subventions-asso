@@ -193,11 +193,13 @@ export class UserService {
 
         await this.validateUser(userObject);
 
-        const partialUser = {
+        const partialUser: Record<string, unknown> = {
             email: userObject.email,
             hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
             roles: userObject.roles || [RoleEnum.user], // ensures proper type
+            firstName: userObject.firstName,
+            lastName: userObject.lastName,
         };
 
         const now = new Date();
