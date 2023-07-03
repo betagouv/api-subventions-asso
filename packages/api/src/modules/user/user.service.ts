@@ -17,7 +17,6 @@ import {
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
-import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import configurationsService from "../configurations/configurations.service";
 import {
     BadRequestError,
@@ -27,6 +26,8 @@ import {
     NotFoundError,
     UnauthorizedError,
 } from "../../shared/errors/httpErrors";
+import { NotificationType } from "../notify/@types/NotificationType";
+import notifyService from "../notify/notify.service";
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
@@ -285,7 +286,12 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        await mailNotifierService.sendCreationMail(userObject.email, resetResult.token);
+        await notifyService.notify(NotificationType.USER_CREATED, {
+            email: userObject.email,
+            token: resetResult.token,
+            active: user.active,
+            signupAt: user.signupAt,
+        });
 
         return user;
     }
@@ -394,7 +400,10 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        await mailNotifierService.sendForgetPasswordMail(email.toLocaleLowerCase(), resetResult.token);
+        notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
+            email: email.toLocaleLowerCase(),
+            token: resetResult.token,
+        });
 
         return resetResult;
     }
