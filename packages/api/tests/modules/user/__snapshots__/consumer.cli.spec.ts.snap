@@ -5,8 +5,10 @@ Object {
   "_id": Any<String>,
   "active": false,
   "email": "test@beta.gouv.fr",
+  "firstName": null,
   "iat": Any<Number>,
   "isConsumerToken": true,
+  "lastName": null,
   "now": Any<String>,
   "roles": Array [
     "user",
@@ -21,6 +23,8 @@ Object {
   "_id": Any<ObjectId>,
   "active": false,
   "email": "test@beta.gouv.fr",
+  "firstName": null,
+  "lastName": null,
   "roles": Array [
     "user",
     "consumer",

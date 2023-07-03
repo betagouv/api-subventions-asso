@@ -6,6 +6,8 @@ Object {
   "active": false,
   "disable": true,
   "email": "",
+  "firstName": null,
+  "lastName": null,
   "roles": Array [
     "user",
   ],
@@ -18,6 +20,8 @@ Object {
   "_id": Any<String>,
   "active": true,
   "email": "active.user@beta.gouv.fr",
+  "firstName": null,
+  "lastName": null,
   "roles": Array [
     "user",
   ],
