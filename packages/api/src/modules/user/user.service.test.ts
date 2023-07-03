@@ -1,13 +1,6 @@
 import { InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
 
-const bcryptCompareMock = jest.fn(async () => true);
-jest.mock("bcrypt", () => ({
-    __esModule: true, // this property makes it work
-    default: {
-        compare: bcryptCompareMock,
-    },
-}));
-import bcrypt from "bcrypt";
+jest.mock("bcrypt");
 
 const SIGNED_TOKEN = "SIGNED_TOKEN";
 const jwtVerifyMock = jest.fn();
@@ -23,6 +16,10 @@ jest.mock("jsonwebtoken", () => ({
 jest.mock("./repositories/user.repository");
 jest.mock("./repositories/user-reset.repository");
 jest.mock("./repositories/consumer-token.repository");
+jest.mock("../../configurations/jwt.conf", () => ({
+    JWT_EXPIRES_TIME: 123456789,
+    JWT_SECRET: "secret",
+}));
 
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceErrors } from "./user.service";
@@ -33,6 +30,7 @@ import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import UserReset from "./entities/UserReset";
 import userRepository from "./repositories/user.repository";
+
 jest.mock("./repositories/user.repository");
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
@@ -40,6 +38,7 @@ import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import LoginError from "../../shared/errors/LoginError";
 import mocked = jest.mocked;
 import userResetRepository from "./repositories/user-reset.repository";
+import bcrypt from "bcrypt";
 import statsService from "../stats/stats.service";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -51,7 +50,7 @@ describe("User Service", () => {
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
     //@ts-expect-error: mock private method
-    const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken");
+    const buildJWTTokenMock: SpyInstance = jest.spyOn(userService, "buildJWTToken");
     const getUserWithSecretsByEmailMock = jest
         .spyOn(userRepository, "getUserWithSecretsByEmail")
         .mockImplementation(async () => USER_DBO);
@@ -89,7 +88,7 @@ describe("User Service", () => {
     };
 
     beforeEach(() => {
-        // @ts-expect-error: mock
+        jest.mocked(bcrypt.compare).mockImplementation(async () => true);
         buildJWTTokenMock.mockImplementation(() => "SIGNED_TOKEN");
         jwtVerifyMock.mockImplementation(() => ({
             token: "TOKEN",
@@ -98,7 +97,7 @@ describe("User Service", () => {
     });
 
     afterEach(() => {
-        jwtVerifyMock.mockReset();
+        jwtVerifyMock.mockRestore();
     });
 
     describe("signup", () => {
@@ -156,7 +155,7 @@ describe("User Service", () => {
         });
 
         it("should throw LoginError password do not match", async () => {
-            bcryptCompareMock.mockImplementationOnce(async () => false);
+            jest.mocked(bcrypt.compare).mockImplementationOnce(async () => false);
             const expected = new LoginError();
             const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
@@ -562,7 +561,7 @@ describe("User Service", () => {
             expect(actual).toEqual(true);
         });
     });
-    
+
     describe("getAllData", () => {
         let findByIdSpy: jest.SpyInstance;
         let findUserResetByUserIdSpy: jest.SpyInstance;
