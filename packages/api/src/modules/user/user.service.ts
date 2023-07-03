@@ -31,6 +31,7 @@ import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJo
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
 import LoginError from "../../shared/errors/LoginError";
+import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import statsService from "../stats/stats.service";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
@@ -176,22 +177,31 @@ export class UserService {
         }
     }
 
-    async validateUser(user: FutureUserDto) {
+    /**
+     * validates and sanitizes in-place user. if newUser: check if no email duplicate
+     * @param user
+     * @param newUser
+     */
+    async validateSanitizeUser(user: FutureUserDto, newUser = true) {
+        user.email = user.email.toLocaleLowerCase();
+
         await this.validateEmail(user.email);
 
-        if (await userRepository.findByEmail(user.email))
+        if (newUser && (await userRepository.findByEmail(user.email)))
             throw new ConflictError("User already exists", UserServiceErrors.CREATE_USER_ALREADY_EXISTS);
 
         if (!this.validRoles(user.roles || []))
             throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
+
+        if (user.firstName) user.firstName = sanitizeToPlainText(user.firstName?.toString());
+        if (user.lastName) user.lastName = sanitizeToPlainText(user.lastName?.toString());
     }
 
     async createUser(userObject: FutureUserDto): Promise<UserDto> {
         // default values and ensures format
-        userObject.email = userObject.email.toLocaleLowerCase();
         if (!userObject.roles) userObject.roles = [RoleEnum.user];
 
-        await this.validateUser(userObject);
+        await this.validateSanitizeUser(userObject);
 
         const partialUser: Record<string, unknown> = {
             email: userObject.email,

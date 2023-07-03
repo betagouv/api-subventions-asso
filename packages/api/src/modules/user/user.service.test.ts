@@ -1,6 +1,7 @@
 import { InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
 
 jest.mock("bcrypt");
+jest.mock("../../shared/helpers/StringHelper");
 
 const SIGNED_TOKEN = "SIGNED_TOKEN";
 const jwtVerifyMock = jest.fn();
@@ -38,6 +39,8 @@ import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import LoginError from "../../shared/errors/LoginError";
 import mocked = jest.mocked;
 import userResetRepository from "./repositories/user-reset.repository";
+import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
+import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import bcrypt from "bcrypt";
 import statsService from "../stats/stats.service";
 
@@ -361,6 +364,108 @@ describe("User Service", () => {
             createTokenMock.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer({ email: EMAIL });
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("validateSanitizeUser", () => {
+        let validateEmailMock;
+        let validRolesMock;
+
+        beforeAll(() => {
+            jest.mocked(userRepository.findByEmail).mockResolvedValue(null);
+            jest.mocked(sanitizeToPlainText).mockReturnValue("safeString");
+            // @ts-expect-error private method
+            validateEmailMock = jest.spyOn(userService, "validateEmail").mockResolvedValue(undefined);
+            // @ts-expect-error private method
+            validRolesMock = jest.spyOn(userService, "validRoles").mockResolvedValue(true);
+        });
+
+        afterAll(() => {
+            jest.mocked(userRepository.findByEmail).mockReset();
+            validateEmailMock.mockRestore();
+            validRolesMock.mockRestore();
+            jest.mocked(sanitizeToPlainText).mockReset();
+        });
+
+        it("validates lowercase email", async () => {
+            const uppercaseEmail = "DEV@test.gouv.fr";
+            await userService.validateSanitizeUser({ email: uppercaseEmail });
+            expect(validateEmailMock).toHaveBeenCalledWith("dev@test.gouv.fr");
+        });
+
+        it("look for user with this email if newUser", async () => {
+            await userService.validateSanitizeUser({ email: USER_EMAIL }, true);
+            expect(userRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
+        });
+
+        it("does not look for user with this email if not newUser", async () => {
+            await userService.validateSanitizeUser({ email: USER_EMAIL }, false);
+            expect(userRepository.findByEmail).not.toHaveBeenCalled();
+        });
+
+        it("validates roles", async () => {
+            const roles = ["ratata", "tralala"];
+            await userService.validateSanitizeUser({ email: USER_EMAIL, roles }, false);
+            expect(validRolesMock).toHaveBeenCalledWith(roles);
+        });
+
+        it.each`
+            variableName
+            ${"firstName"}
+            ${"lastName"}
+        `("if $variableName is set, call sanitizer with it", async ({ variableName }) => {
+            await userService.validateSanitizeUser({ email: USER_EMAIL, [variableName]: "something" });
+            expect(sanitizeToPlainText).toHaveBeenCalledWith("something");
+        });
+    });
+
+    describe("createUser", () => {
+        let validateUserMock;
+        const FUTURE_USER = {
+            firstName: "Jocelyne",
+            lastName: "Dupontel",
+            email: USER_EMAIL,
+            roles: [RoleEnum.user],
+        };
+
+        beforeAll(() => {
+            jest.mocked(userRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
+            // @ts-expect-error - mock
+            jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
+            validateUserMock = jest.spyOn(userService, "validateSanitizeUser").mockImplementation(undefined);
+            buildJWTTokenMock.mockReturnValue(SIGNED_TOKEN);
+        });
+
+        afterAll(() => {
+            jest.mocked(userRepository.findByEmail).mockReset();
+            validateUserMock.mockReset();
+            jest.mocked(bcrypt.hash).mockReset();
+        });
+
+        it("sets default role", async () => {
+            await userService.createUser({ email: USER_EMAIL });
+            expect(validateUserMock).toHaveBeenCalledWith({ email: USER_EMAIL, roles: [RoleEnum.user] });
+        });
+
+        it("validates user object", async () => {
+            await userService.createUser(FUTURE_USER);
+            expect(validateUserMock).toHaveBeenCalledWith(FUTURE_USER);
+        });
+
+        it("calls repository creation with sanitized values", async () => {
+            validateUserMock.mockImplementation(async user => (user.firstName = "Jocelyne"));
+            await userService.createUser({ ...FUTURE_USER, firstName: "BadJocelyne" });
+            const expected = FUTURE_USER;
+            const actual = jest.mocked(userRepository.create).mock.calls[0][0];
+            expect(actual).toMatchObject(expected);
+        });
+
+        it("ignores properties that should not be saved", async () => {
+            // @ts-expect-error testing purposes
+            await userService.createUser({ ...FUTURE_USER, randomProperty: "lalala" });
+            const expected = FUTURE_USER;
+            const actual = jest.mocked(userRepository.create).mock.calls[0][0];
+            expect(actual).toMatchObject(expected);
         });
     });
 
