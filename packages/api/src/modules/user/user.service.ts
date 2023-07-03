@@ -208,8 +208,8 @@ export class UserService {
             hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
             roles: userObject.roles || [RoleEnum.user], // ensures proper type
-            firstName: userObject.firstName,
-            lastName: userObject.lastName,
+            firstName: userObject.firstName || null,
+            lastName: userObject.lastName || null,
         };
 
         const now = new Date();
@@ -236,14 +236,17 @@ export class UserService {
         if (!this.passwordValidator(password)) {
             throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
+        console.log({ userInServiceBefore: user });
 
-        return {
+        const res = {
             user: await userRepository.update({
                 ...user,
                 hashPassword: await bcrypt.hash(password, 10),
                 active: true,
             }),
         };
+        console.log({ res });
+        return res;
     }
 
     public async update(user: UserDto): Promise<UserDto> {
