@@ -236,17 +236,14 @@ export class UserService {
         if (!this.passwordValidator(password)) {
             throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
-        console.log({ userInServiceBefore: user });
 
-        const res = {
+        return {
             user: await userRepository.update({
                 ...user,
                 hashPassword: await bcrypt.hash(password, 10),
                 active: true,
             }),
         };
-        console.log({ res });
-        return res;
     }
 
     public async update(user: UserDto): Promise<UserDto> {

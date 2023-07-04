@@ -1,9 +1,7 @@
-import fs from "fs";
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { csvParse } from "../../../../shared/helpers/ParserHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
