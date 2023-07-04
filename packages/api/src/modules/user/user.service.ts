@@ -268,6 +268,7 @@ export class UserService {
 
     public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
         userObject.email = userObject.email.toLocaleLowerCase();
+        userObject.roles = [role];
 
         let user;
         if (role == RoleEnum.consumer) {
