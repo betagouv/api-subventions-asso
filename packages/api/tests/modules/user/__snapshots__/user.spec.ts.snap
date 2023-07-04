@@ -6,8 +6,8 @@ Object {
   "active": false,
   "disable": true,
   "email": "",
-  "firstName": null,
-  "lastName": null,
+  "firstName": "",
+  "lastName": "",
   "roles": Array [
     "user",
   ],

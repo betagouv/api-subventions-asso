@@ -65,6 +65,8 @@ describe("User Service", () => {
         email: EMAIL,
         roles: ["user"],
         signupAt: new Date(),
+        firstName: "",
+        lastName: "",
         active: true,
     } as UserDto;
     const USER_SECRETS = {

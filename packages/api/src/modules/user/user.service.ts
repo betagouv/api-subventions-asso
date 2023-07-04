@@ -302,6 +302,8 @@ export class UserService {
             jwt: null,
             hashPassword: "",
             disable: true,
+            firstName: "",
+            lastName: "",
         };
         return !!(await userRepository.update(disabledUser));
     }
