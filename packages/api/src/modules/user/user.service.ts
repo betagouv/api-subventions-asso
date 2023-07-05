@@ -207,7 +207,7 @@ export class UserService {
             email: userObject.email,
             hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
-            roles: userObject.roles || [RoleEnum.user], // ensures proper type
+            roles: userObject.roles,
             firstName: userObject.firstName || null,
             lastName: userObject.lastName || null,
         };
