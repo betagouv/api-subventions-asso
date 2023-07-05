@@ -15,6 +15,7 @@ import LegalNotice from "./views/LegalNotice.svelte";
 import Cgu from "./views/Cgu.svelte";
 import Contact from "./views/Contact.svelte";
 import Profile from "./views/user/profile/Profile.svelte";
+import SignupForm from "./views/auth/signup/SignupForm.svelte";
 
 export default {
     "/404": {
@@ -59,6 +60,11 @@ export default {
     },
     "auth/signup": {
         component: () => Signup,
+        disableAuth: true,
+    },
+    "auth/signup-form/:token": {
+        // route path to improve
+        component: () => SignupForm,
         disableAuth: true,
     },
     "auth/login": {
