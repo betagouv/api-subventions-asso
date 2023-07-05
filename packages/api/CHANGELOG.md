@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.31.3](https://github.com/betagouv/api-subventions-asso/compare/v0.31.2...v0.31.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* **api:** hotfix csp header ([12d6353](https://github.com/betagouv/api-subventions-asso/commit/12d6353e8231097531f2a570115cf7f4af23571b))
+
+
+
+
+
 ## [0.31.1](https://github.com/betagouv/api-subventions-asso/compare/v0.31.0...v0.31.1) (2023-06-29)
 
 
