@@ -10,11 +10,18 @@ import { UserService, UserServiceErrors } from "../../../src/modules/user/user.s
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import dedent from "dedent";
 import { BadRequestError, NotFoundError } from "../../../src/shared/errors/httpErrors";
+import notifyService from "../../../src/modules/notify/notify.service";
 
 describe("user.service.ts", () => {
+    const notifyMock = jest.spyOn(notifyService, "notify").mockImplementation(jest.fn());
     let service;
+
     beforeEach(async () => {
         service = new UserService();
+    });
+
+    afterAll(() => {
+        notifyMock.mockRestore();
     });
 
     describe("findByEmail", () => {

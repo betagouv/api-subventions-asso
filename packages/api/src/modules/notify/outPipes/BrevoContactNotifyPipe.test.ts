@@ -1,14 +1,14 @@
 import { API_SENDINBLUE_CONTACT_LIST } from "../../../configurations/apis.conf";
 import { NotificationType } from "../@types/NotificationType";
-import brevoContactNotify from "./BrevoContactNotify";
+import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
 
-describe("BrevoContactNotify", () => {
+describe("BrevoContactNotifyPipe", () => {
     describe("notify", () => {
         let userCreatedSpy: jest.SpyInstance;
 
         beforeAll(() => {
             // @ts-expect-error userCreated is private methode
-            userCreatedSpy = jest.spyOn(brevoContactNotify, "userCreated").mockResolvedValue(true);
+            userCreatedSpy = jest.spyOn(BrevoContactNotifyPipe, "userCreated").mockResolvedValue(true);
         });
 
         afterAll(() => {
@@ -16,13 +16,13 @@ describe("BrevoContactNotify", () => {
         });
 
         it("should call userCreated", () => {
-            brevoContactNotify.notify(NotificationType.USER_CREATED, {});
+            BrevoContactNotifyPipe.notify(NotificationType.USER_CREATED, {});
 
             expect(userCreatedSpy).toBeCalled();
         });
 
-        it("should call dont userCreated", () => {
-            brevoContactNotify.notify(NotificationType.TEST_EMAIL, {});
+        it("should not call userCreated", () => {
+            BrevoContactNotifyPipe.notify(NotificationType.TEST_EMAIL, {});
 
             expect(userCreatedSpy).not.toBeCalled();
         });
@@ -34,7 +34,7 @@ describe("BrevoContactNotify", () => {
         beforeAll(() => {
             createContactSpy = jest
                 // @ts-expect-error apiInstance is private attribute
-                .spyOn(brevoContactNotify.apiInstance, "createContact")
+                .spyOn(BrevoContactNotifyPipe.apiInstance, "createContact")
                 .mockResolvedValue({ body: { id: 1 } } as any);
         });
 
@@ -53,9 +53,9 @@ describe("BrevoContactNotify", () => {
                 },
                 listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
             };
-            // @ts-expect-error userCreated is private method
 
-            await brevoContactNotify.userCreated({
+            // @ts-expect-error userCreated is private method
+            await BrevoContactNotifyPipe.userCreated({
                 email: expected.email,
                 signupAt: expected.attributes.DATE_INSCRIPTION,
                 active: expected.attributes.COMPTE_ACTIVE,

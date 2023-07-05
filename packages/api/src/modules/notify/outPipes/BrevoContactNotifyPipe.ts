@@ -1,13 +1,11 @@
 import { ContactsApi, ContactsApiApiKeys } from "@sendinblue/client";
-import { NotificationDataType } from "../@types/NotificationDataType";
+import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { API_SENDINBLUE_CONTACT_LIST, API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
 
-export class BrevoContactNotify implements NotifyOutPipe {
-    accepts = [
-        NotificationType.USER_CREATED
-    ];
+export class BrevoContactNotifyPipe implements NotifyOutPipe {
+    accepts = [NotificationType.USER_CREATED];
 
     private apiInstance: ContactsApi;
 
@@ -25,7 +23,7 @@ export class BrevoContactNotify implements NotifyOutPipe {
         }
     }
 
-    private userCreated(data: NotificationDataType[NotificationType.USER_CREATED]) {
+    private userCreated(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
         return this.apiInstance
             .createContact({
                 email: data.email,
@@ -44,6 +42,6 @@ export class BrevoContactNotify implements NotifyOutPipe {
     }
 }
 
-const brevoContactNotify = new BrevoContactNotify();
+const brevoContactNotifyPipe = new BrevoContactNotifyPipe();
 
-export default brevoContactNotify;
+export default brevoContactNotifyPipe;

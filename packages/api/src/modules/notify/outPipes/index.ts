@@ -1,5 +1,5 @@
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
-import brevoMailNotify from "./BrevoMailNotify";
-import brevoContactNotify from "./BrevoContactNotify";
+import brevoMailNotifyPipe from "./BrevoMailNotifyPipe";
+import brevoContactNotifyPipe from "./BrevoContactNotifyPipe";
 
-export default [brevoMailNotify, brevoContactNotify] as NotifyOutPipe[];
+export default [brevoMailNotifyPipe, brevoContactNotifyPipe] as NotifyOutPipe[];

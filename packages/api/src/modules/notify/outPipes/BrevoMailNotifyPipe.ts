@@ -3,19 +3,15 @@ import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
 import { API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
-import { NotificationDataType } from "../@types/NotificationDataType";
+import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 
 export enum TemplateEnum {
     creation = 55,
     forgetPassword = 74,
 }
 
-export class BrevoMailNotify implements NotifyOutPipe {
-    accepts = [
-        NotificationType.USER_CREATED,
-        NotificationType.USER_FORGET_PASSWORD,
-        NotificationType.TEST_EMAIL
-    ];
+export class BrevoMailNotifyPipe implements NotifyOutPipe {
+    accepts = [NotificationType.USER_CREATED, NotificationType.USER_FORGET_PASSWORD, NotificationType.TEST_EMAIL];
 
     private apiInstance: TransactionalEmailsApi;
 
@@ -37,15 +33,15 @@ export class BrevoMailNotify implements NotifyOutPipe {
         }
     }
 
-    async sendTestMail(data: NotificationDataType[NotificationType.TEST_EMAIL]) {
+    async sendTestMail(data: NotificationDataTypes[NotificationType.TEST_EMAIL]) {
         return this.sendMail(data.email, {}, data.templateId);
     }
 
-    private async sendCreationMail(data: NotificationDataType[NotificationType.USER_CREATED]) {
+    private async sendCreationMail(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
         return this.sendMail(data.email, { token: data.token }, TemplateEnum.creation);
     }
 
-    private async sendForgetPasswordMail(data: NotificationDataType[NotificationType.USER_FORGET_PASSWORD]) {
+    private async sendForgetPasswordMail(data: NotificationDataTypes[NotificationType.USER_FORGET_PASSWORD]) {
         return this.sendMail(data.email, { token: data.token }, TemplateEnum.forgetPassword);
     }
 
@@ -70,6 +66,6 @@ export class BrevoMailNotify implements NotifyOutPipe {
     }
 }
 
-const brevoMailNotify = new BrevoMailNotify();
+const brevoMailNotifyPipe = new BrevoMailNotifyPipe();
 
-export default brevoMailNotify;
+export default brevoMailNotifyPipe;

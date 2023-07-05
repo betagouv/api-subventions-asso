@@ -1,10 +1,10 @@
-import { NotifyOutPipe, NotificationValidationType } from "./@types/NotifyOutPipe";
+import { NotifyOutPipe, NotifierMethodType } from "./@types/NotifyOutPipe";
 import outPipes from "./outPipes";
 
 export class NotifyService {
     private outPipes: NotifyOutPipe[] = outPipes;
 
-    get notify(): NotificationValidationType {
+    get notify(): NotifierMethodType {
         return (type, data) => {
             const pipesPromise = this.outPipes.map(pipe => {
                 if (!pipe.accepts.includes(type)) return;

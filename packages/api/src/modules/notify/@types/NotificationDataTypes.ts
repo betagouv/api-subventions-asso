@@ -1,6 +1,6 @@
 import { NotificationType } from "./NotificationType";
 
-export interface NotificationDataType {
+export interface NotificationDataTypes {
     [NotificationType.USER_CREATED]: {
         email: string;
         token: string;
