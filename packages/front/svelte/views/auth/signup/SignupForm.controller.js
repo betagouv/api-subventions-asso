@@ -14,11 +14,11 @@ export default class SignupFormController {
             title: "Titre exemple d'une étape",
         },
         job: { component: step1, next: "final", previous: "names", index: 2, title: "titre de l'étape 2" },
-    };
+    }; // TODO real steps
     finalStepIndex = 3;
 
     constructor() {
-        this.stepId = new Store("names");
+        this.stepId = new Store("names"); // set first step id here
         this.currentStepData = new Store({});
         this.stepsStateById = new Store({});
         this.step = new Store();
@@ -26,9 +26,9 @@ export default class SignupFormController {
 
         this.stepId.subscribe(value => {
             this.step.set(this.stepsById[value]);
-            this._updateNextStep();
+            this.nextStep.set(this.getNextStep());
         });
-        this.currentStepData.subscribe(() => this._updateNextStep());
+        this.currentStepData.subscribe(() => this.nextStep.set(this.getNextStep()));
     }
 
     // Our handlers
@@ -36,9 +36,7 @@ export default class SignupFormController {
     onSubmit = values => {
         // here we could do different things according to the step if needed
         // for instance do the actual submission at last step
-        if (!this.step.value.next) return;
-        if (typeof this.step.value.next === "function") this.toStep(this.step.value.next(values), values);
-        else this.toStep(this.step.value.next, values);
+        this.toStep(this.getNextStep(values), values);
     };
 
     // if this need to become asynchronous, you must add `await` in `AbstractStepController.init` when it is called
@@ -53,13 +51,10 @@ export default class SignupFormController {
         this.stepId.set(stepIdToGo);
     };
 
-    _updateNextStep() {
-        this.nextStep.set(
-            this.step.value.next
-                ? typeof this.step.value.next === "string"
-                    ? this.stepsById[this.step.value.next]
-                    : this.stepsById[this.step.value.next(this.currentStepData.value)]
-                : null,
-        );
+    getNextStep(values) {
+        if (!this.step?.value?.next) return;
+        if (values === undefined) values = this.currentStepData.value;
+        if (typeof this.step.value.next === "function") return this.step.value.next(values);
+        return this.step.value.next;
     }
 }
