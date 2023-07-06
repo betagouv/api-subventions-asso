@@ -9,8 +9,12 @@ export class UserResetRepository {
         return this.collection.findOne({ token });
     }
 
-    public async findByUserId(userId: ObjectId) {
-        return this.collection.findOne({ userId });
+    public async findByUserId(userId: ObjectId | string) {
+        return this.collection.find({ userId: new ObjectId(userId) }).toArray();
+    }
+
+    public async findOneByUserId(userId: ObjectId | string) {
+        return this.collection.findOne({ userId: new ObjectId(userId) });
     }
 
     public async create(reset: UserReset) {

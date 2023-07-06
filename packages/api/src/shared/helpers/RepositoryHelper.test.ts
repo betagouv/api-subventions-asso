@@ -20,3 +20,12 @@ describe("removeSecrets", () => {
         });
     });
 });
+
+describe("uniformizeId", () => {
+    it("should uniformizeId id ", () => {
+        const actual = RepositoryHelper.uniformizeId(USER_DBO);
+        expect(actual).toMatchObject({
+            _id: expect.any(String),
+        });
+    });
+});

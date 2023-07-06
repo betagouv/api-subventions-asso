@@ -1,6 +1,7 @@
 import {
     CreateUserDtoResponse,
     GetRolesDtoResponse,
+    UserDataDto,
     UserDtoResponse,
     UserListDtoResponse,
 } from "@api-subventions-asso/dto";
@@ -105,5 +106,15 @@ export class UserController extends Controller {
         if (!success) throw new NotFoundError("user to delete not found");
         this.setStatus(204);
         return true;
+    }
+
+    /**
+     * getting all data of user
+     * @summary getting all data of user
+     */
+    @Get("/data")
+    @Security("jwt", ["user"])
+    public async getData(@Request() req: IdentifiedRequest): Promise<UserDataDto> {
+        return userService.getAllData(req.user._id.toString());
     }
 }

@@ -1,4 +1,4 @@
-import { InternalServerError } from "../../shared/errors/httpErrors";
+import { InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
 
 const bcryptCompareMock = jest.fn(async () => true);
 jest.mock("bcrypt", () => ({
@@ -40,6 +40,7 @@ import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import LoginError from "../../shared/errors/LoginError";
 import mocked = jest.mocked;
 import userResetRepository from "./repositories/user-reset.repository";
+import statsService from "../stats/stats.service";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -562,4 +563,146 @@ describe("User Service", () => {
             expect(actual).toEqual(true);
         });
     });
+    
+    describe("getAllData", () => {
+        let findByIdSpy: jest.SpyInstance;
+        let findUserResetByUserIdSpy: jest.SpyInstance;
+        let findConsumerTokenSpy: jest.SpyInstance;
+        let getAllStatsVisitsByUserSpy: jest.SpyInstance;
+        let getAllLogUserSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            findByIdSpy = jest.spyOn(userRepository, "findById");
+            findUserResetByUserIdSpy = jest.spyOn(userResetRepository, "findByUserId");
+            findConsumerTokenSpy = jest.spyOn(consumerTokenRepository, "find");
+            getAllStatsVisitsByUserSpy = jest.spyOn(statsService, "getAllVisitsUser");
+            getAllLogUserSpy = jest.spyOn(statsService, "getAllLogUser");
+        });
+
+        afterAll(() => {
+            findByIdSpy.mockRestore();
+            findConsumerTokenSpy.mockRestore();
+            findUserResetByUserIdSpy.mockRestore();
+            getAllStatsVisitsByUserSpy.mockRestore();
+            getAllLogUserSpy.mockRestore();
+        })
+
+        it("should getting user", async () => {
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(findByIdSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+        })
+
+        it("should throw error when user is not found", async () => {
+            findByIdSpy.mockResolvedValueOnce(undefined);
+            const method = () => userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(method).rejects.toThrowError(NotFoundError)
+        })
+
+        it("should getting user resets", async () => {
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(findUserResetByUserIdSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+        })
+
+        it("should getting user consumer tokens", async () => {
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(findConsumerTokenSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+        })
+
+        it("should transform object id to stirng", async () => {
+            const USER_ID = new ObjectId();
+            const _ID = new ObjectId();
+
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([{
+                userId: USER_ID,
+                _id: _ID
+            }]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(actual).toEqual(expect.objectContaining({
+                tokens: expect.arrayContaining([
+                    expect.objectContaining({
+                        _id: _ID.toString(),
+                        userId: USER_ID.toString()
+                    })
+                ])
+            }));
+        })
+
+        it("should getting user visits stats", async () => {
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(getAllStatsVisitsByUserSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+        })
+
+        it("should getting return visits stats", async () => {
+            const expected = { userId: new ObjectId().toString() };
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([{ userId: new ObjectId(expected.userId)}]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(actual.statistics.associationVisit).toEqual(expect.arrayContaining([expected]));
+        })
+
+        it("should getting user logs", async () => {
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([]);
+
+            await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(getAllLogUserSpy).toBeCalledWith(USER_WITHOUT_SECRET.email);
+        })
+
+        it("should getting return logs", async () => {
+            const expected = { userId: new ObjectId() };
+            findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            findConsumerTokenSpy.mockResolvedValueOnce([]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
+            getAllLogUserSpy.mockResolvedValueOnce([expected]);
+
+            const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
+
+            expect(actual.logs).toEqual(expect.arrayContaining([expected]));
+        })
+    })
 });

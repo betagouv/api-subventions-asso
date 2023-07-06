@@ -11,6 +11,7 @@ import {
     UserWithResetTokenDto,
     UserDto,
     UserWithStatsDto,
+    UserDataDto,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -27,8 +28,9 @@ import {
 } from "../../shared/errors/httpErrors";
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
-import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
+import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
 import LoginError from "../../shared/errors/LoginError";
+import statsService from "../stats/stats.service";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -433,7 +435,7 @@ export class UserService {
     }
 
     async findUserResetByUserId(userId: ObjectId) {
-        return userResetRepository.findByUserId(userId);
+        return userResetRepository.findOneByUserId(userId);
     }
 
     private passwordValidator(password: string): boolean {
@@ -465,7 +467,7 @@ export class UserService {
         const users = await this.getUsersWithStats(true);
         return await Promise.all(
             users.map(async user => {
-                const reset = await userResetRepository.findByUserId(user._id);
+                const reset = await userResetRepository.findOneByUserId(user._id);
                 return {
                     ...user,
                     resetToken: reset?.token,
@@ -512,6 +514,33 @@ export class UserService {
 
     public countTotalUsersOnDate(date, withAdmin = false) {
         return userRepository.countTotalUsersOnDate(date, withAdmin);
+    }
+
+    public async getAllData(userId: string): Promise<UserDataDto> {
+        const user = await userRepository.findById(userId);
+
+        if (!user) throw new NotFoundError("User is not found");
+
+        const userIdToString = document => ({ ...document, userId: document.userId.toString() });
+
+        const tokens = [
+            ...(await userResetRepository.findByUserId(userId)),
+            ...(await consumerTokenRepository.find(userId)),
+        ]
+            .map(uniformizeId)
+            .map(userIdToString);
+
+        const associationVisits = await statsService.getAllVisitsUser(userId);
+        const userLogs = await statsService.getAllLogUser(user.email);
+
+        return {
+            user,
+            tokens,
+            logs: userLogs,
+            statistics: {
+                associationVisit: associationVisits.map(userIdToString),
+            },
+        };
     }
 }
 
