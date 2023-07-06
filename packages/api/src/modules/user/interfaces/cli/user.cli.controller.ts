@@ -1,9 +1,7 @@
-import fs from "fs";
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { csvParse } from "../../../../shared/helpers/ParserHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
@@ -11,7 +9,7 @@ export default class UserCliController {
 
     async create(email: string) {
         try {
-            await userService.createUser(email);
+            await userService.createUser({ email });
             console.info("User has been created");
         } catch (error: unknown) {
             const e = error as Error;
@@ -37,19 +35,5 @@ export default class UserCliController {
         } catch (e) {
             console.info("Active error : \n", (e as Error).message);
         }
-    }
-
-    async addList(file: string) {
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-
-        const fileContent = fs.readFileSync(file);
-        const emails = csvParse(fileContent).flat();
-
-        const results = await userService.createUsersByList(emails);
-        const failureCount = emails.length - results.length;
-
-        console.info(`${results.length} users added and ${failureCount} users rejected`);
     }
 }

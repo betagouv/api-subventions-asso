@@ -9,7 +9,7 @@ export default class ConsumerCliController {
 
     async create(email: string) {
         try {
-            await userService.signup(email, RoleEnum.consumer);
+            await userService.signup({ email }, RoleEnum.consumer);
             console.info("Consumer user has been created");
         } catch (error) {
             const e = error as Error;

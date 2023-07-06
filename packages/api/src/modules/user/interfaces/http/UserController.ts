@@ -1,5 +1,6 @@
 import {
     CreateUserDtoResponse,
+    FutureUserDto,
     GetRolesDtoResponse,
     UserDataDto,
     UserDtoResponse,
@@ -48,10 +49,10 @@ export class UserController extends Controller {
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     @Response<HttpErrorInterface>(409, "Unprocessable Entity")
-    public async createUser(@Body() body: { email: string }): Promise<CreateUserDtoResponse> {
-        const email = await userService.signup(body.email);
+    public async createUser(@Body() body: FutureUserDto): Promise<CreateUserDtoResponse> {
+        const user = await userService.signup(body);
         this.setStatus(201);
-        return { email };
+        return { user };
     }
 
     /**

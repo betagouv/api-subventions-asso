@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import dedent from "dedent";
 import {
@@ -11,6 +11,7 @@ import {
     UserWithResetTokenDto,
     UserDto,
     UserWithStatsDto,
+    FutureUserDto,
     UserDataDto,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
@@ -30,14 +31,14 @@ import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJo
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
 import LoginError from "../../shared/errors/LoginError";
+import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import statsService from "../stats/stats.service";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
-import UserNotPersisted from "./entities/UserNotPersisted";
 import UserReset from "./entities/UserReset";
-import UserDbo from "./repositories/dbo/UserDbo";
+import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
 import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
@@ -47,7 +48,7 @@ export enum UserServiceErrors {
     LOGIN_UPDATE_JWT_FAIL,
     USER_NOT_ACTIVE,
     CREATE_INVALID_EMAIL,
-    CREATE_USER_ALREADY_EXIST,
+    CREATE_USER_ALREADY_EXISTS,
     CREATE_USER_WRONG,
     FORMAT_PASSWORD_INVALID,
     USER_NOT_FOUND,
@@ -130,8 +131,7 @@ export class UserService {
             if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now()) await updateJwt();
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { hashPassword, ...userWithoutPassword } = user;
+        const { hashPassword: _hashPwd, ...userWithoutPassword } = user;
         return userWithoutPassword;
     }
 
@@ -162,11 +162,14 @@ export class UserService {
         return userRepository.find(query);
     }
 
-    async createConsumer(email: string) {
-        const user = await this.createUser(email, [RoleEnum.user, RoleEnum.consumer]);
-        const token = this.buildJWTToken({ ...user, [UserService.CONSUMER_TOKEN_PROP]: true }, { expiration: false });
+    async createConsumer(userObject) {
+        const user = await this.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
+        const consumerToken = this.buildJWTToken(
+            { ...user, [UserService.CONSUMER_TOKEN_PROP]: true },
+            { expiration: false },
+        );
         try {
-            await consumerTokenRepository.create(new ConsumerToken(user._id, token));
+            await consumerTokenRepository.create(new ConsumerToken(user._id, consumerToken));
             return user;
         } catch (e) {
             await this.delete(user._id.toString());
@@ -174,21 +177,40 @@ export class UserService {
         }
     }
 
-    async createUser(email: string, roles: RoleEnum[] = [RoleEnum.user]): Promise<UserDto> {
-        await this.validateEmail(email.toLocaleLowerCase());
+    /**
+     * validates and sanitizes in-place user. if newUser: check if no email duplicate
+     * @param user
+     * @param newUser
+     */
+    async validateSanitizeUser(user: FutureUserDto, newUser = true) {
+        user.email = user.email.toLocaleLowerCase();
 
-        if (await userRepository.findByEmail(email.toLocaleLowerCase()))
-            throw new ConflictError("User already exist", UserServiceErrors.CREATE_USER_ALREADY_EXIST);
+        await this.validateEmail(user.email);
 
-        const partialUser = {
-            email: email.toLocaleLowerCase(),
+        if (newUser && (await userRepository.findByEmail(user.email)))
+            throw new ConflictError("User already exists", UserServiceErrors.CREATE_USER_ALREADY_EXISTS);
+
+        if (!this.validRoles(user.roles || []))
+            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
+
+        if (user.firstName) user.firstName = sanitizeToPlainText(user.firstName?.toString());
+        if (user.lastName) user.lastName = sanitizeToPlainText(user.lastName?.toString());
+    }
+
+    async createUser(userObject: FutureUserDto): Promise<UserDto> {
+        // default values and ensures format
+        if (!userObject.roles) userObject.roles = [RoleEnum.user];
+
+        await this.validateSanitizeUser(userObject);
+
+        const partialUser: Record<string, unknown> = {
+            email: userObject.email,
             hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
             signupAt: new Date(),
-            roles,
+            roles: userObject.roles,
+            firstName: userObject.firstName || null,
+            lastName: userObject.lastName || null,
         };
-
-        if (!this.validRoles(roles))
-            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
 
         const now = new Date();
         const jwtParams = {
@@ -196,11 +218,11 @@ export class UserService {
             expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
-        const user = new UserNotPersisted({
+        const user = {
             ...partialUser,
             jwt: jwtParams,
             active: false,
-        });
+        } as UserNotPersisted;
 
         const createdUser = await userRepository.create(user);
 
@@ -244,6 +266,30 @@ export class UserService {
         return (await Promise.all(deletePromises)).every(success => success);
     }
 
+    public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
+        userObject.email = userObject.email.toLocaleLowerCase();
+        userObject.roles = [role];
+
+        let user;
+        if (role == RoleEnum.consumer) {
+            user = await this.createConsumer(userObject);
+        } else {
+            try {
+                user = await this.createUser(userObject);
+            } catch (e) {
+                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
+                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                throw e;
+            }
+        }
+
+        const resetResult = await this.resetUser(user);
+
+        await mailNotifierService.sendCreationMail(userObject.email, resetResult.token);
+
+        return user;
+    }
+
     public async disable(userId: string) {
         const user = await userRepository.findById(userId);
         if (!user) return false;
@@ -256,50 +302,10 @@ export class UserService {
             jwt: null,
             hashPassword: "",
             disable: true,
+            firstName: "",
+            lastName: "",
         };
         return !!(await userRepository.update(disabledUser));
-    }
-
-    public async addUsersByCsv(content: Buffer) {
-        const data = content
-            .toString()
-            .split("\n") // Select line by line
-            .map(raw =>
-                raw
-                    .split(";")
-                    .map(r => r.split("\t"))
-                    .flat(),
-            ); // Parse column
-        const emails = data.map(line => line[0]).filter(email => email.length);
-
-        return this.createUsersByList(emails);
-    }
-
-    public async createUsersByList(emails: string[]) {
-        const promises = emails.map(email => this.signup(email.toLocaleLowerCase()).catch(() => null));
-        return (await Promise.all(promises)).filter(result => result != null);
-    }
-
-    public async signup(email: string, role = RoleEnum.user): Promise<string> {
-        let user;
-        const lowerCaseEmail = email.toLocaleLowerCase();
-        if (role == RoleEnum.consumer) {
-            user = await this.createConsumer(lowerCaseEmail);
-        } else {
-            try {
-                user = await this.createUser(lowerCaseEmail);
-            } catch (e) {
-                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
-                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
-                throw e;
-            }
-        }
-
-        const resetResult = await this.resetUser(user);
-
-        await mailNotifierService.sendCreationMail(lowerCaseEmail, resetResult.token);
-
-        return email;
     }
 
     async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
@@ -388,7 +394,7 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        mailNotifierService.sendForgetPasswordMail(email.toLocaleLowerCase(), resetResult.token);
+        await mailNotifierService.sendForgetPasswordMail(email.toLocaleLowerCase(), resetResult.token);
 
         return resetResult;
     }
@@ -477,11 +483,11 @@ export class UserService {
         );
     }
 
-    public isRoleValid(role: RoleEnum) {
-        return Object.values(RoleEnum).includes(role);
+    public isRoleValid(role: string) {
+        return Object.values(RoleEnum).includes(role as RoleEnum);
     }
 
-    private validRoles(roles: RoleEnum[]) {
+    private validRoles(roles: string[]) {
         return roles.every(role => this.isRoleValid(role));
     }
 

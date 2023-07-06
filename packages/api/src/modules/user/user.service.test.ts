@@ -1,13 +1,7 @@
 import { InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
 
-const bcryptCompareMock = jest.fn(async () => true);
-jest.mock("bcrypt", () => ({
-    __esModule: true, // this property makes it work
-    default: {
-        compare: bcryptCompareMock,
-    },
-}));
-import bcrypt from "bcrypt";
+jest.mock("bcrypt");
+jest.mock("../../shared/helpers/StringHelper");
 
 const SIGNED_TOKEN = "SIGNED_TOKEN";
 const jwtVerifyMock = jest.fn();
@@ -23,6 +17,10 @@ jest.mock("jsonwebtoken", () => ({
 jest.mock("./repositories/user.repository");
 jest.mock("./repositories/user-reset.repository");
 jest.mock("./repositories/consumer-token.repository");
+jest.mock("../../configurations/jwt.conf", () => ({
+    JWT_EXPIRES_TIME: 123456789,
+    JWT_SECRET: "secret",
+}));
 
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userService, { UserServiceErrors } from "./user.service";
@@ -33,6 +31,7 @@ import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import mailNotifierService from "../mail-notifier/mail-notifier.service";
 import UserReset from "./entities/UserReset";
 import userRepository from "./repositories/user.repository";
+
 jest.mock("./repositories/user.repository");
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
@@ -40,6 +39,9 @@ import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import LoginError from "../../shared/errors/LoginError";
 import mocked = jest.mocked;
 import userResetRepository from "./repositories/user-reset.repository";
+import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
+import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
+import bcrypt from "bcrypt";
 import statsService from "../stats/stats.service";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -51,7 +53,7 @@ describe("User Service", () => {
     const createUserMock = jest.spyOn(userService, "createUser");
     const createConsumerMock = jest.spyOn(userService, "createConsumer");
     //@ts-expect-error: mock private method
-    const buildJWTTokenMock = jest.spyOn(userService, "buildJWTToken");
+    const buildJWTTokenMock: SpyInstance = jest.spyOn(userService, "buildJWTToken");
     const getUserWithSecretsByEmailMock = jest
         .spyOn(userRepository, "getUserWithSecretsByEmail")
         .mockImplementation(async () => USER_DBO);
@@ -63,6 +65,8 @@ describe("User Service", () => {
         email: EMAIL,
         roles: ["user"],
         signupAt: new Date(),
+        firstName: "",
+        lastName: "",
         active: true,
     } as UserDto;
     const USER_SECRETS = {
@@ -89,7 +93,7 @@ describe("User Service", () => {
     };
 
     beforeEach(() => {
-        // @ts-expect-error: mock
+        jest.mocked(bcrypt.compare).mockImplementation(async () => true);
         buildJWTTokenMock.mockImplementation(() => "SIGNED_TOKEN");
         jwtVerifyMock.mockImplementation(() => ({
             token: "TOKEN",
@@ -98,14 +102,14 @@ describe("User Service", () => {
     });
 
     afterEach(() => {
-        jwtVerifyMock.mockReset();
+        jwtVerifyMock.mockRestore();
     });
 
     describe("signup", () => {
         it("should create a consumer", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createConsumerMock.mockImplementationOnce(async () => ({} as UserDto));
-            await userService.signup(EMAIL, RoleEnum.consumer);
+            await userService.signup({ email: EMAIL }, RoleEnum.consumer);
             expect(createConsumerMock).toHaveBeenCalled();
         });
 
@@ -114,22 +118,22 @@ describe("User Service", () => {
         it("should create a reset token", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({} as UserDto));
-            await userService.signup(EMAIL);
+            await userService.signup({ email: EMAIL });
             expect(resetUserMock).toHaveBeenCalled();
         });
 
         it("should send a mail", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({} as UserDto));
-            await userService.signup(EMAIL);
+            await userService.signup({ email: EMAIL });
             expect(sendCreationMailMock).toHaveBeenCalled();
         });
 
-        it("should return an email", async () => {
-            const expected = EMAIL;
+        it("should return a user", async () => {
+            const expected = { email: EMAIL };
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
-            const actual = await userService.signup(EMAIL);
+            createUserMock.mockImplementationOnce(async () => expected as UserDto);
+            const actual = await userService.signup({ email: EMAIL });
             expect(actual).toEqual(expected);
         });
     });
@@ -156,7 +160,7 @@ describe("User Service", () => {
         });
 
         it("should throw LoginError password do not match", async () => {
-            bcryptCompareMock.mockImplementationOnce(async () => false);
+            jest.mocked(bcrypt.compare).mockImplementationOnce(async () => false);
             const expected = new LoginError();
             const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
@@ -331,27 +335,27 @@ describe("User Service", () => {
         it("should create a token ", async () => {
             const expected = CONSUMER_JWT_PAYLOAD;
             createUserMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
-            await userService.createConsumer(EMAIL);
+            await userService.createConsumer({ email: EMAIL });
             expect(buildJWTTokenMock).toHaveBeenCalledWith(expected, {
                 expiration: false,
             });
         });
 
         it("should call consumerTokenRepository.create", async () => {
-            await userService.createConsumer(EMAIL);
+            await userService.createConsumer({ email: EMAIL });
             expect(createTokenMock).toBeCalledTimes(1);
         });
 
         it("should delete user if token generation failed", async () => {
             createTokenMock.mockRejectedValueOnce(new Error());
             const id = USER_WITHOUT_SECRET._id.toString();
-            await userService.createConsumer(EMAIL).catch(() => {});
+            await userService.createConsumer({ email: EMAIL }).catch(() => {});
             expect(deleteUserMock).toHaveBeenCalledWith(id);
         });
 
         it("should throw if token generation failed", async () => {
             createTokenMock.mockRejectedValueOnce(new Error());
-            const test = () => userService.createConsumer(EMAIL);
+            const test = () => userService.createConsumer({ email: EMAIL });
             await expect(test).rejects.toMatchObject(
                 new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN),
             );
@@ -360,8 +364,110 @@ describe("User Service", () => {
         it("should return UserDtoSuccessResponse", async () => {
             const expected = CONSUMER_USER;
             createTokenMock.mockImplementationOnce(async () => true);
-            const actual = await userService.createConsumer(EMAIL);
+            const actual = await userService.createConsumer({ email: EMAIL });
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("validateSanitizeUser", () => {
+        let validateEmailMock;
+        let validRolesMock;
+
+        beforeAll(() => {
+            jest.mocked(userRepository.findByEmail).mockResolvedValue(null);
+            jest.mocked(sanitizeToPlainText).mockReturnValue("safeString");
+            // @ts-expect-error private method
+            validateEmailMock = jest.spyOn(userService, "validateEmail").mockResolvedValue(undefined);
+            // @ts-expect-error private method
+            validRolesMock = jest.spyOn(userService, "validRoles").mockResolvedValue(true);
+        });
+
+        afterAll(() => {
+            jest.mocked(userRepository.findByEmail).mockReset();
+            validateEmailMock.mockRestore();
+            validRolesMock.mockRestore();
+            jest.mocked(sanitizeToPlainText).mockReset();
+        });
+
+        it("validates lowercase email", async () => {
+            const uppercaseEmail = "DEV@test.gouv.fr";
+            await userService.validateSanitizeUser({ email: uppercaseEmail });
+            expect(validateEmailMock).toHaveBeenCalledWith("dev@test.gouv.fr");
+        });
+
+        it("look for user with this email if newUser", async () => {
+            await userService.validateSanitizeUser({ email: USER_EMAIL }, true);
+            expect(userRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
+        });
+
+        it("does not look for user with this email if not newUser", async () => {
+            await userService.validateSanitizeUser({ email: USER_EMAIL }, false);
+            expect(userRepository.findByEmail).not.toHaveBeenCalled();
+        });
+
+        it("validates roles", async () => {
+            const roles = ["ratata", "tralala"];
+            await userService.validateSanitizeUser({ email: USER_EMAIL, roles }, false);
+            expect(validRolesMock).toHaveBeenCalledWith(roles);
+        });
+
+        it.each`
+            variableName
+            ${"firstName"}
+            ${"lastName"}
+        `("if $variableName is set, call sanitizer with it", async ({ variableName }) => {
+            await userService.validateSanitizeUser({ email: USER_EMAIL, [variableName]: "something" });
+            expect(sanitizeToPlainText).toHaveBeenCalledWith("something");
+        });
+    });
+
+    describe("createUser", () => {
+        let validateUserMock;
+        const FUTURE_USER = {
+            firstName: "Jocelyne",
+            lastName: "Dupontel",
+            email: USER_EMAIL,
+            roles: [RoleEnum.user],
+        };
+
+        beforeAll(() => {
+            jest.mocked(userRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
+            // @ts-expect-error - mock
+            jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
+            validateUserMock = jest.spyOn(userService, "validateSanitizeUser").mockImplementation(undefined);
+            buildJWTTokenMock.mockReturnValue(SIGNED_TOKEN);
+        });
+
+        afterAll(() => {
+            jest.mocked(userRepository.findByEmail).mockReset();
+            validateUserMock.mockReset();
+            jest.mocked(bcrypt.hash).mockReset();
+        });
+
+        it("sets default role", async () => {
+            await userService.createUser({ email: USER_EMAIL });
+            expect(validateUserMock).toHaveBeenCalledWith({ email: USER_EMAIL, roles: [RoleEnum.user] });
+        });
+
+        it("validates user object", async () => {
+            await userService.createUser(FUTURE_USER);
+            expect(validateUserMock).toHaveBeenCalledWith(FUTURE_USER);
+        });
+
+        it("calls repository creation with sanitized values", async () => {
+            validateUserMock.mockImplementation(async user => (user.firstName = "Jocelyne"));
+            await userService.createUser({ ...FUTURE_USER, firstName: "BadJocelyne" });
+            const expected = FUTURE_USER;
+            const actual = jest.mocked(userRepository.create).mock.calls[0][0];
+            expect(actual).toMatchObject(expected);
+        });
+
+        it("ignores properties that should not be saved", async () => {
+            // @ts-expect-error testing purposes
+            await userService.createUser({ ...FUTURE_USER, randomProperty: "lalala" });
+            const expected = FUTURE_USER;
+            const actual = jest.mocked(userRepository.create).mock.calls[0][0];
+            expect(actual).toMatchObject(expected);
         });
     });
 
@@ -411,7 +517,6 @@ describe("User Service", () => {
 
         it("should return false", () => {
             const expected = false;
-            // @ts-expect-error: test
             const actual = userService.isRoleValid("not-a-role");
             expect(actual).toEqual(expected);
         });
@@ -563,7 +668,7 @@ describe("User Service", () => {
             expect(actual).toEqual(true);
         });
     });
-    
+
     describe("getAllData", () => {
         let findByIdSpy: jest.SpyInstance;
         let findUserResetByUserIdSpy: jest.SpyInstance;

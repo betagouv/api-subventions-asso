@@ -1,5 +1,7 @@
+import UserDto from "./UserDto";
+
 export interface CreateUserDtoSuccess {
-    email: string;
+    user: UserDto;
 }
 
 export type CreateUserDtoResponse = CreateUserDtoSuccess;
