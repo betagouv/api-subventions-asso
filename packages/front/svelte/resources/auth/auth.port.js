@@ -9,7 +9,7 @@ export class AuthPort {
         const defaultErrorCode = SignupErrorCodes.CREATION_ERROR;
         const path = `${this.BASE_PATH}/signup`;
         return axios
-            .post(path, { user: signupUser })
+            .post(path, { email: signupUser.email, lastName: signupUser.lastname, firstName: signupUser.firstname })
             .then(result => result.data.email)
             .catch(error => {
                 const errorCode = error?.response?.data?.code || defaultErrorCode;

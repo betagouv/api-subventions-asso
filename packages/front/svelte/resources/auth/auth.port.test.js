@@ -19,7 +19,11 @@ describe("AuthPort", () => {
             const PATH = "/auth/signup";
             axiosPostMock.mockResolvedValueOnce({ data: {} });
             await authPort.signup(USER);
-            expect(axiosPostMock).toBeCalledWith(PATH, { user: USER });
+            expect(axiosPostMock).toBeCalledWith(PATH, {
+                email: USER.email,
+                lastName: USER.lastname,
+                firstName: USER.firstname,
+            });
         });
 
         it("returns email if success", async () => {

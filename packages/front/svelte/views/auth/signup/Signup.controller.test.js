@@ -72,7 +72,7 @@ describe("SignupController", () => {
         const ctrl = new SignupController();
         const serviceMock = jest.spyOn(authService, "signup");
         const PROMISE = Promise.resolve();
-        const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
+        const USER = { email: "test@mail.fr", lastName: "", firstName: "" };
         let setPromiseMock;
         let setFirstSubmittedMock;
 
