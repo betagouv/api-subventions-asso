@@ -1,13 +1,8 @@
 import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
 import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
-import User from "../entities/UserNotPersisted";
 import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
-import UserDbo from "./dbo/UserDbo";
-
-export enum UserRepositoryErrors {
-    UPDATE_FAIL = 1,
-}
+import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository {
     collectionName = "users";
@@ -27,19 +22,19 @@ export class UserRepository {
         return removeSecrets(user);
     }
 
-    async find(query: Filter<User> = {}) {
+    async find(query: Filter<UserDbo> = {}): Promise<UserDto[]> {
         const dbos = await this.collection.find(query).toArray();
         return dbos.map(dbo => removeSecrets(dbo));
     }
 
-    async findById(userId: ObjectId | string) {
+    async findById(userId: ObjectId | string): Promise<UserDto | null> {
         const user = await this.collection.findOne({ _id: new ObjectId(userId) });
         if (!user) return null;
         return removeSecrets(user);
     }
 
-    async findByPeriod(begin: Date, end: Date, withAdmin) {
-        const query: Filter<User> = { signupAt: { $gte: begin, $lt: end } };
+    async findByPeriod(begin: Date, end: Date, withAdmin): Promise<UserDto[]> {
+        const query: Filter<UserDbo> = { signupAt: { $gte: begin, $lt: end } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.find(query);
     }
@@ -55,7 +50,7 @@ export class UserRepository {
         return result.acknowledged;
     }
 
-    async create(user: User) {
+    async create(user: UserNotPersisted): Promise<UserDto> {
         const userDbo = { ...user, _id: new ObjectId() };
         const result = await this.collection.insertOne(userDbo);
         return removeSecrets({ ...user, _id: result.insertedId });
@@ -70,7 +65,7 @@ export class UserRepository {
     }
 
     countTotalUsersOnDate(date, withAdmin: boolean) {
-        const query: Filter<User> = { signupAt: { $lt: date } };
+        const query: Filter<UserDbo> = { signupAt: { $lt: date } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.collection.find(query).count();
     }

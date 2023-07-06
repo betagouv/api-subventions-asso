@@ -1,17 +1,13 @@
-import { ObjectId } from "mongodb";
+import { UserDto } from "@api-subventions-asso/dto";
 
-export default interface UserDbo {
-    _id: ObjectId;
+export default interface UserDbo extends UserDto {
     jwt: JWT | null;
     hashPassword: string;
-    email: string;
-    roles: string[];
-    active: boolean;
-    signupAt: Date;
-    disable?: boolean;
 }
 
 export interface JWT {
     token: string;
     expirateDate: Date;
 }
+
+export type UserNotPersisted = Omit<UserDbo, "_id">;

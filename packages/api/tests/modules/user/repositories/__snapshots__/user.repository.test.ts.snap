@@ -5,11 +5,13 @@ Object {
   "_id": Any<ObjectId>,
   "active": false,
   "email": "test@beta.gouv.fr",
+  "firstName": null,
   "hashPassword": Any<String>,
   "jwt": Object {
     "expirateDate": Any<Date>,
     "token": Any<String>,
   },
+  "lastName": null,
   "roles": Array [
     "user",
   ],

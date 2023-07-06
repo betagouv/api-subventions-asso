@@ -5,8 +5,8 @@ const getToken = async (role = RoleEnum.user) => {
     const email = `${role}@beta.gouv.fr`;
     let user = await userService.findByEmail(email);
     if (!user) {
-        if (role == RoleEnum.consumer) user = await userService.createConsumer(email);
-        else user = await userService.createUser(email);
+        if (role == RoleEnum.consumer) user = await userService.createConsumer({ email: email });
+        else user = await userService.createUser({ email });
     }
 
     await userService.activeUser(user);

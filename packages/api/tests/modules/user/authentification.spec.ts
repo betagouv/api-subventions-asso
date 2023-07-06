@@ -44,7 +44,7 @@ describe("AuthentificationController, /auth", () => {
 
     describe("POST /reset-password", () => {
         it("should return 200", async () => {
-            await userService.createUser("test-reset@beta.gouv.fr");
+            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
             const response = await request(g.app)
@@ -62,7 +62,7 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because password is too weak", async () => {
-            await userService.createUser("test-reset@beta.gouv.fr");
+            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
             const response = await request(g.app)
@@ -94,7 +94,7 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because token is outdated", async () => {
-            await userService.createUser("test-reset@beta.gouv.fr");
+            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
             const oldResetTimout = UserService.RESET_TIMEOUT;
@@ -118,7 +118,7 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because user is deleted", async () => {
-            await userService.createUser("test-reset@beta.gouv.fr");
+            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
             const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
 
             await db.collection("users").deleteOne({ email: "test-reset@beta.gouv.fr" });
