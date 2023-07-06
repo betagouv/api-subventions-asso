@@ -55,7 +55,7 @@ describe("SignupController", () => {
 
         it.each`
             propertyName        | expected
-            ${"email"}          | ${""}
+            ${"signupUser"}     | ${{ lastname: null, firstname: null, email: null }}
             ${"firstSubmitted"} | ${false}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new SignupController();
@@ -68,11 +68,11 @@ describe("SignupController", () => {
         });
     });
 
-    describe("onSubmit", () => {
+    describe("signup()", () => {
         const ctrl = new SignupController();
         const serviceMock = jest.spyOn(authService, "signup");
         const PROMISE = Promise.resolve();
-        const EMAIL = "alice@test.fr";
+        const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
         let setPromiseMock;
         let setFirstSubmittedMock;
 
@@ -80,22 +80,22 @@ describe("SignupController", () => {
             serviceMock.mockReturnValue(PROMISE);
             setPromiseMock = jest.spyOn(ctrl.signupPromise, "set");
             setFirstSubmittedMock = jest.spyOn(ctrl.firstSubmitted, "set");
-            ctrl.email.value = EMAIL;
+            ctrl.signupUser.value = USER;
         });
         afterAll(() => serviceMock.mockRestore());
 
         it("calls service with value from controller", () => {
-            ctrl.onSubmit();
-            expect(serviceMock).toBeCalledWith(EMAIL);
+            ctrl.signup();
+            expect(serviceMock).toBeCalledWith(USER);
         });
 
         it("sets promise with value from service", () => {
-            ctrl.onSubmit();
+            ctrl.signup();
             expect(setPromiseMock).toBeCalledWith(PROMISE);
         });
 
         it("registers first submitted state", () => {
-            ctrl.onSubmit();
+            ctrl.signup();
             expect(setFirstSubmittedMock).toBeCalledWith(true);
         });
     });

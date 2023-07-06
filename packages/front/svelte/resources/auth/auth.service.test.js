@@ -16,7 +16,7 @@ describe("authService", () => {
     describe("signup()", () => {
         const portMock = jest.spyOn(authPort, "signup");
         const RES = {};
-        const EMAIL = "test@mail.fr";
+        const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
         beforeAll(() => portMock.mockResolvedValue(RES));
         afterAll(() => portMock.mockRestore());
@@ -27,13 +27,13 @@ describe("authService", () => {
         });
 
         it("calls port", async () => {
-            await authService.signup(EMAIL);
-            expect(portMock).toHaveBeenCalledWith(EMAIL);
+            await authService.signup(USER);
+            expect(portMock).toHaveBeenCalledWith(USER);
         });
 
         it("return result from port if success", async () => {
             const expected = RES;
-            const actual = await authService.signup(EMAIL);
+            const actual = await authService.signup(USER);
             expect(expected).toBe(actual);
         });
 
@@ -41,7 +41,7 @@ describe("authService", () => {
             const ERROR_CODE = 5;
             portMock.mockRejectedValueOnce({ message: ERROR_CODE.toString() });
             const expected = ERROR_CODE;
-            const actual = authService.signup(EMAIL);
+            const actual = authService.signup(USER);
             expect(actual).rejects.toBe(expected);
         });
     });

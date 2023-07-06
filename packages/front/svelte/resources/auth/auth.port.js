@@ -5,11 +5,11 @@ import requestsService from "@services/requests.service";
 export class AuthPort {
     BASE_PATH = "/auth";
 
-    signup(email) {
+    signup(signupUser) {
         const defaultErrorCode = SignupErrorCodes.CREATION_ERROR;
         const path = `${this.BASE_PATH}/signup`;
         return axios
-            .post(path, { email })
+            .post(path, { user: signupUser })
             .then(result => result.data.email)
             .catch(error => {
                 const errorCode = error?.response?.data?.code || defaultErrorCode;

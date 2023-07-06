@@ -13,19 +13,19 @@ jest.mock("@api-subventions-asso/dto", () => ({
 describe("AuthPort", () => {
     describe("signup()", () => {
         const axiosPostMock = jest.spyOn(axios, "post");
-        const EMAIL = "test@mail.fr";
+        const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
         it("calls signup route", async () => {
             const PATH = "/auth/signup";
             axiosPostMock.mockResolvedValueOnce({ data: {} });
-            await authPort.signup(EMAIL);
-            expect(axiosPostMock).toBeCalledWith(PATH, { email: EMAIL });
+            await authPort.signup(USER);
+            expect(axiosPostMock).toBeCalledWith(PATH, { user: USER });
         });
 
         it("returns email if success", async () => {
-            axiosPostMock.mockResolvedValueOnce({ data: { email: EMAIL } });
-            const actual = await authPort.signup(EMAIL);
-            const expected = EMAIL;
+            axiosPostMock.mockResolvedValueOnce({ data: { email: USER.email } });
+            const actual = await authPort.signup(USER);
+            const expected = USER.email;
             expect(actual).toBe(expected);
         });
 
@@ -33,13 +33,13 @@ describe("AuthPort", () => {
             const ERROR_CODE = 42;
             axiosPostMock.mockRejectedValueOnce({ response: { data: { code: ERROR_CODE } } });
             const expected = new Error(ERROR_CODE);
-            expect(async () => authPort.signup(EMAIL)).rejects.toThrowError(expected);
+            expect(async () => authPort.signup(USER)).rejects.toThrowError(expected);
         });
 
         it("throws error with default code if none received", () => {
             axiosPostMock.mockRejectedValueOnce(undefined);
             const expected = new Error(DEFAULT_ERROR_CODE);
-            expect(async () => authPort.signup(EMAIL)).rejects.toThrowError(expected);
+            expect(async () => authPort.signup(USER)).rejects.toThrowError(expected);
         });
     });
 
