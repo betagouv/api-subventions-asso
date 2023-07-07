@@ -5,6 +5,13 @@ import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
 describe("BrevoContactNotifyPipe", () => {
     const USER_EMAIL = "user@beta.gouv.fr";
 
+    // @ts-expect-error apiInstance is private attribute
+    const mockUpdateContact = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "updateContact");
+
+    beforeAll(() => {
+        mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as any);
+    });
+
     describe("notify", () => {
         let userCreatedSpy: jest.SpyInstance;
 
@@ -69,20 +76,34 @@ describe("BrevoContactNotifyPipe", () => {
     });
 
     describe("userActivated", () => {
-        let updateContactSpy: jest.SpyInstance;
-
-        beforeAll(() => {
-            updateContactSpy = jest
-                // @ts-expect-error apiInstance is private attribute
-                .spyOn(BrevoContactNotifyPipe.apiInstance, "updateContact")
-                .mockResolvedValue({ body: { id: 1 } } as any);
+        afterEach(() => {
+            mockUpdateContact.mockClear();
         });
 
         it("call updateContact()", async () => {
             // @ts-expect-error userCreated is private method
             await BrevoContactNotifyPipe.userActivated({ email: USER_EMAIL });
-            expect(updateContactSpy).toHaveBeenCalledWith(USER_EMAIL, {
+            expect(mockUpdateContact).toHaveBeenCalledWith(USER_EMAIL, {
                 attributes: { COMPTE_ACTIVE: true },
+                listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
+            });
+        });
+    });
+
+    describe("userLogged", () => {
+        afterEach(() => {
+            mockUpdateContact.mockClear();
+        });
+
+        it("should call updateContact()", async () => {
+            const email = "UserEmail";
+            const now = new Date();
+
+            // @ts-expect-error userLogged is private method
+            await BrevoContactNotifyPipe.userLogged({ email, date: now });
+
+            expect(mockUpdateContact).toHaveBeenCalledWith(email, {
+                attributes: { DERNIERE_CONNEXION: now },
                 listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
             });
         });

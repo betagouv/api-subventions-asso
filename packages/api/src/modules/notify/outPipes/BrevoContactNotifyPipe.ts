@@ -22,6 +22,8 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
                 return this.userCreated(data);
             case NotificationType.USER_ACTIVATED:
                 return this.userActivated(data);
+            case NotificationType.USER_LOGGED:
+                return this.userLogged(data);
             default:
                 return Promise.resolve(false);
         }
@@ -37,7 +39,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
                     SOURCE_IMPORT: "Data.Subvention",
                     LIEN_ACTIVATION: data.token,
                 },
-                listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
+                listIds: SENDIND_BLUE_CONTACT_LISTS,
             })
             .then(({ body }) => {
                 if (body.id) return true;
@@ -48,6 +50,16 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
     private userActivated(data: NotificationDataTypes[NotificationType.USER_ACTIVATED]) {
         const updateContact = new UpdateContact();
         updateContact.attributes = { COMPTE_ACTIVE: true };
+        updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
+        return this.apiInstance.updateContact(data.email, updateContact).then(({ body }) => {
+            if (body.id) return true;
+            return false;
+        });
+    }
+
+    private userLogged(data: NotificationDataTypes[NotificationType.USER_LOGGED]) {
+        const updateContact = new UpdateContact();
+        updateContact.attributes = { DERNIERE_CONNEXION: data.date };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance.updateContact(data.email, updateContact).then(({ body }) => {
             if (body.id) return true;

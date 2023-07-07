@@ -125,7 +125,7 @@ describe("User Service", () => {
             expect(resetUserMock).toHaveBeenCalled();
         });
 
-        it("should send a mail", async () => {
+        it("should notify USER_CREATED", async () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
@@ -189,6 +189,16 @@ describe("User Service", () => {
             const expected = USER_WITHOUT_PASSWORD;
             const actual = await userService.login(USER_DBO.email, "PASSWORD");
             expect(actual).toEqual(expected);
+        });
+
+        it("should notify USER_LOGGED", async () => {
+            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
+            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
+            await userService.login(USER_DBO.email, "PASSWORD");
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
+                email: USER_DBO.email,
+                date: expect.any(Date),
+            });
         });
     });
 
