@@ -1,28 +1,28 @@
-import SendInBlueProvider, { TemplateEnum } from "./sendinblue.provider";
+import { BrevoMailNotifyPipe, TemplateEnum } from "./BrevoMailNotifyPipe";
 import { TransactionalEmailsApi } from "@sendinblue/client";
 
 jest.mock("sib-api-v3-typescript");
 
-describe("sendinblue.provider", () => {
+describe("BrevoMailNotify", () => {
     const spySendTransacEmail = jest.spyOn(TransactionalEmailsApi.prototype, "sendTransacEmail");
     const mockSendMail = jest.fn();
-    let provider: SendInBlueProvider;
+    let provider: BrevoMailNotifyPipe;
     const EMAIL = "EMAIL";
 
     beforeEach(() => {
-        provider = new SendInBlueProvider();
+        provider = new BrevoMailNotifyPipe();
     });
 
     describe.each`
         method                      | templateId
         ${"sendCreationMail"}       | ${TemplateEnum.creation}
         ${"sendForgetPasswordMail"} | ${TemplateEnum.forgetPassword}
-    `("SendInBlueProvider custom template methods", ({ method, templateId }) => {
+    `("BrevoMailNotifyPipe custom template methods", ({ method, templateId }) => {
         beforeEach(() => (provider.sendMail = mockSendMail));
 
         it("should call sendMail with templateId", async () => {
             const expected = [EMAIL, {}, templateId];
-            await provider[method](EMAIL, {});
+            await provider[method]({ email: EMAIL });
             expect(mockSendMail).toHaveBeenCalledWith(...expected);
         });
     });
@@ -31,7 +31,7 @@ describe("sendinblue.provider", () => {
         const PARAMS = { foo: "bar" };
         const TEMPLATE_ID = 1;
         it("should call sendTransactionalEmail with params", async () => {
-            const provider = new SendInBlueProvider();
+            const provider = new BrevoMailNotifyPipe();
             const expected = {
                 templateId: TEMPLATE_ID,
                 sender: { email: process.env.MAIL_USER, name: "Data.Subvention" },

@@ -28,7 +28,7 @@ import { ObjectId } from "mongodb";
 import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
-import mailNotifierService from "../mail-notifier/mail-notifier.service";
+import notifyService from "../notify/notify.service";
 import UserReset from "./entities/UserReset";
 import userRepository from "./repositories/user.repository";
 
@@ -43,11 +43,12 @@ import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import bcrypt from "bcrypt";
 import statsService from "../stats/stats.service";
+import { NotificationType } from "../notify/@types/NotificationType";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
 describe("User Service", () => {
-    const sendCreationMailMock = jest.spyOn(mailNotifierService, "sendCreationMail").mockImplementationOnce(jest.fn());
+    const notifyMock = jest.spyOn(notifyService, "notify").mockImplementation(jest.fn());
     const createTokenMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
     const resetUserMock = jest.spyOn(userService, "resetUser");
     const createUserMock = jest.spyOn(userService, "createUser");
@@ -126,7 +127,10 @@ describe("User Service", () => {
             resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
             createUserMock.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: EMAIL });
-            expect(sendCreationMailMock).toHaveBeenCalled();
+            expect(notifyMock).toHaveBeenCalledWith(
+                NotificationType.USER_CREATED,
+                expect.objectContaining({ email: EMAIL }),
+            );
         });
 
         it("should return a user", async () => {
@@ -690,7 +694,7 @@ describe("User Service", () => {
             findUserResetByUserIdSpy.mockRestore();
             getAllStatsVisitsByUserSpy.mockRestore();
             getAllLogUserSpy.mockRestore();
-        })
+        });
 
         it("should getting user", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
@@ -702,14 +706,14 @@ describe("User Service", () => {
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(findByIdSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
-        })
+        });
 
         it("should throw error when user is not found", async () => {
             findByIdSpy.mockResolvedValueOnce(undefined);
             const method = () => userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
-            expect(method).rejects.toThrowError(NotFoundError)
-        })
+            expect(method).rejects.toThrowError(NotFoundError);
+        });
 
         it("should getting user resets", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
@@ -721,7 +725,7 @@ describe("User Service", () => {
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(findUserResetByUserIdSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
-        })
+        });
 
         it("should getting user consumer tokens", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
@@ -733,32 +737,36 @@ describe("User Service", () => {
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(findConsumerTokenSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
-        })
+        });
 
         it("should transform object id to stirng", async () => {
             const USER_ID = new ObjectId();
             const _ID = new ObjectId();
 
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([{
-                userId: USER_ID,
-                _id: _ID
-            }]);
+            findUserResetByUserIdSpy.mockResolvedValueOnce([
+                {
+                    userId: USER_ID,
+                    _id: _ID,
+                },
+            ]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
 
             const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
-            expect(actual).toEqual(expect.objectContaining({
-                tokens: expect.arrayContaining([
-                    expect.objectContaining({
-                        _id: _ID.toString(),
-                        userId: USER_ID.toString()
-                    })
-                ])
-            }));
-        })
+            expect(actual).toEqual(
+                expect.objectContaining({
+                    tokens: expect.arrayContaining([
+                        expect.objectContaining({
+                            _id: _ID.toString(),
+                            userId: USER_ID.toString(),
+                        }),
+                    ]),
+                }),
+            );
+        });
 
         it("should getting user visits stats", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
@@ -770,20 +778,20 @@ describe("User Service", () => {
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(getAllStatsVisitsByUserSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
-        })
+        });
 
         it("should getting return visits stats", async () => {
             const expected = { userId: new ObjectId().toString() };
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             findUserResetByUserIdSpy.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
-            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([{ userId: new ObjectId(expected.userId)}]);
+            getAllStatsVisitsByUserSpy.mockResolvedValueOnce([{ userId: new ObjectId(expected.userId) }]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
 
             const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(actual.statistics.associationVisit).toEqual(expect.arrayContaining([expected]));
-        })
+        });
 
         it("should getting user logs", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
@@ -795,7 +803,7 @@ describe("User Service", () => {
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(getAllLogUserSpy).toBeCalledWith(USER_WITHOUT_SECRET.email);
-        })
+        });
 
         it("should getting return logs", async () => {
             const expected = { userId: new ObjectId() };
@@ -808,6 +816,6 @@ describe("User Service", () => {
             const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(actual.logs).toEqual(expect.arrayContaining([expected]));
-        })
-    })
+        });
+    });
 });
