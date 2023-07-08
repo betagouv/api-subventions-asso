@@ -39,6 +39,8 @@ import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import LoginError from "../../shared/errors/LoginError";
 import mocked = jest.mocked;
 import userResetRepository from "./repositories/user-reset.repository";
+jest.mock("./repositories/user-reset.repository");
+const mockedUserResetRepository = jest.mocked(userResetRepository, true);
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import bcrypt from "bcrypt";
@@ -247,14 +249,14 @@ describe("User Service", () => {
             // @ts-expect-error mock
             mocked(userRepository.findById).mockResolvedValue(USER);
             mocked(userRepository.delete).mockResolvedValue(true);
-            mocked(userResetRepository.removeAllByUserId).mockResolvedValue(true);
+            mocked(mockedUserResetRepository.removeAllByUserId).mockResolvedValue(true);
             mocked(consumerTokenRepository.deleteAllByUserId).mockResolvedValue(true);
         });
 
         afterAll(() => {
             mocked(userRepository.findById).mockReset();
             mocked(userRepository.delete).mockReset();
-            mocked(userResetRepository.removeAllByUserId).mockReset();
+            mocked(mockedUserResetRepository.removeAllByUserId).mockReset();
             mocked(consumerTokenRepository.deleteAllByUserId).mockReset();
         });
 
@@ -269,15 +271,15 @@ describe("User Service", () => {
             const actual = await userService.delete(ID);
             expect(actual).toBe(expected);
             expect(userRepository.delete).not.toHaveBeenCalled();
-            expect(userResetRepository.removeAllByUserId).not.toHaveBeenCalled();
+            expect(mockedUserResetRepository.removeAllByUserId).not.toHaveBeenCalled();
             expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
         });
 
         it.each`
-            method                                       | methodName                                     | arg
-            ${userRepository.delete}                     | ${"userRepository.delete"}                     | ${USER}
-            ${userResetRepository.removeAllByUserId}     | ${"userResetRepository.removeAllByUserId"}     | ${USER._id}
-            ${consumerTokenRepository.deleteAllByUserId} | ${"consumerTokenRepository.deleteAllByUserId"} | ${USER._id}
+            method                                         | methodName                                       | arg
+            ${userRepository.delete}                       | ${"userRepository.delete"}                       | ${USER}
+            ${mockedUserResetRepository.removeAllByUserId} | ${"mockedUserResetRepository.removeAllByUserId"} | ${USER._id}
+            ${consumerTokenRepository.deleteAllByUserId}   | ${"consumerTokenRepository.deleteAllByUserId"}   | ${USER._id}
         `("calls $methodName", async ({ arg, method }) => {
             await userService.delete(ID);
             expect(method).toHaveBeenCalledWith(arg);
@@ -290,14 +292,14 @@ describe("User Service", () => {
             const actual = await userService.delete(ID);
             expect(actual).toBe(expected);
 
-            expect(userResetRepository.removeAllByUserId).not.toHaveBeenCalled();
+            expect(mockedUserResetRepository.removeAllByUserId).not.toHaveBeenCalled();
             expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
         });
 
         it.each`
-            method                                       | methodName
-            ${userResetRepository.removeAllByUserId}     | ${"userResetRepository.removeAllByUserId"}
-            ${consumerTokenRepository.deleteAllByUserId} | ${"consumerTokenRepository.deleteAllByUserId"}
+            method                                         | methodName
+            ${mockedUserResetRepository.removeAllByUserId} | ${"mockedUserResetRepository.removeAllByUserId"}
+            ${consumerTokenRepository.deleteAllByUserId}   | ${"consumerTokenRepository.deleteAllByUserId"}
         `("returns false if $methodName returns false", async ({ method }) => {
             mocked(method).mockResolvedValueOnce(false);
             const expected = false;
@@ -675,14 +677,12 @@ describe("User Service", () => {
 
     describe("getAllData", () => {
         let findByIdSpy: jest.SpyInstance;
-        let findUserResetByUserIdSpy: jest.SpyInstance;
         let findConsumerTokenSpy: jest.SpyInstance;
         let getAllStatsVisitsByUserSpy: jest.SpyInstance;
         let getAllLogUserSpy: jest.SpyInstance;
 
         beforeAll(() => {
             findByIdSpy = jest.spyOn(userRepository, "findById");
-            findUserResetByUserIdSpy = jest.spyOn(userResetRepository, "findByUserId");
             findConsumerTokenSpy = jest.spyOn(consumerTokenRepository, "find");
             getAllStatsVisitsByUserSpy = jest.spyOn(statsService, "getAllVisitsUser");
             getAllLogUserSpy = jest.spyOn(statsService, "getAllLogUser");
@@ -691,14 +691,13 @@ describe("User Service", () => {
         afterAll(() => {
             findByIdSpy.mockRestore();
             findConsumerTokenSpy.mockRestore();
-            findUserResetByUserIdSpy.mockRestore();
             getAllStatsVisitsByUserSpy.mockRestore();
             getAllLogUserSpy.mockRestore();
         });
 
         it("should getting user", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
@@ -717,19 +716,19 @@ describe("User Service", () => {
 
         it("should getting user resets", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
 
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
-            expect(findUserResetByUserIdSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            expect(mockedUserResetRepository.findByUserId).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
         it("should getting user consumer tokens", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
@@ -739,12 +738,13 @@ describe("User Service", () => {
             expect(findConsumerTokenSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
-        it("should transform object id to stirng", async () => {
+        it("should transform object id to string", async () => {
             const USER_ID = new ObjectId();
             const _ID = new ObjectId();
 
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([
+                // @ts-expect-error: mock return value
                 {
                     userId: USER_ID,
                     _id: _ID,
@@ -770,7 +770,7 @@ describe("User Service", () => {
 
         it("should getting user visits stats", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
@@ -783,7 +783,7 @@ describe("User Service", () => {
         it("should getting return visits stats", async () => {
             const expected = { userId: new ObjectId().toString() };
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([{ userId: new ObjectId(expected.userId) }]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
@@ -795,7 +795,7 @@ describe("User Service", () => {
 
         it("should getting user logs", async () => {
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([]);
@@ -808,7 +808,7 @@ describe("User Service", () => {
         it("should getting return logs", async () => {
             const expected = { userId: new ObjectId() };
             findByIdSpy.mockResolvedValueOnce(USER_WITHOUT_SECRET);
-            findUserResetByUserIdSpy.mockResolvedValueOnce([]);
+            mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
             getAllLogUserSpy.mockResolvedValueOnce([expected]);
