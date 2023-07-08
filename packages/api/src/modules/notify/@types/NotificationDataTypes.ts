@@ -10,9 +10,8 @@ export interface NotificationDataTypes {
     [NotificationType.USER_DELETED]: {
         email: string;
     };
-    [NotificationType.USER_UPDATED]: {
+    [NotificationType.USER_ACTIVATED]: {
         email: string;
-        active: boolean;
     };
     [NotificationType.USER_FORGET_PASSWORD]: {
         email: string;
