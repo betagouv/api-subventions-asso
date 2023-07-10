@@ -28,6 +28,8 @@ const appDescription = "Les dernières informations sur les associations et leur
 const appRepo = "https://github.com/betagouv/api-subventions-asso";
 const contactEmail = "contact@datasubvention.beta.gouv.fr";
 const statsUrl = process.env.STATS_URL || "";
+// Privacy Policy
+const privacyUrl = process.env.PRIVACY_POLICY_URL || "";
 const port = process.env.PORT || 1235;
 
 const app = express();
@@ -92,6 +94,10 @@ controllers.forEach(controllerClass => {
 
 app.get("/statistiques", function (req, res) {
     res.redirect(301, statsUrl);
+});
+
+app.get("/politique-de-confidentialite", function (req, res) {
+    res.redirect(301, privacyUrl);
 });
 
 app.get("/*", function (req, res) {

@@ -1,5 +1,6 @@
 <script>
     import { getContext } from "svelte";
+    import { STATS_URL, PRIVACY_POLICY_URL } from "../../src/shared/config";
 
     const { getDescription, getRepo } = getContext("app");
 </script>
@@ -72,11 +73,12 @@
                     <a class="fr-footer__bottom-link" href="/accessibilite">Accessibilité : non conforme</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a
-                        class="fr-footer__bottom-link"
-                        href="https://blog.datasubvention.beta.gouv.fr/statistiques/"
-                        target="_blank"
-                        rel="noreferrer">
+                    <a class="fr-footer__bottom-link" href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer">
+                        Politique de confidentialité
+                    </a>
+                </li>
+                <li class="fr-footer__bottom-item">
+                    <a class="fr-footer__bottom-link" href={STATS_URL} target="_blank" rel="noreferrer">
                         Statistiques d'usage
                     </a>
                 </li>
