@@ -3,6 +3,8 @@ import { NotificationType } from "../@types/NotificationType";
 import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
 
 describe("BrevoContactNotifyPipe", () => {
+    const USER_EMAIL = "user@beta.gouv.fr";
+
     describe("notify", () => {
         let userCreatedSpy: jest.SpyInstance;
 
@@ -44,7 +46,7 @@ describe("BrevoContactNotifyPipe", () => {
 
         it("should call create data", async () => {
             const expected = {
-                email: "UserEmail",
+                email: USER_EMAIL,
                 attributes: {
                     DATE_INSCRIPTION: new Date(),
                     COMPTE_ACTIVE: true,
@@ -63,6 +65,26 @@ describe("BrevoContactNotifyPipe", () => {
             });
 
             expect(createContactSpy).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe("userActivated", () => {
+        let updateContactSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            updateContactSpy = jest
+                // @ts-expect-error apiInstance is private attribute
+                .spyOn(BrevoContactNotifyPipe.apiInstance, "updateContact")
+                .mockResolvedValue({ body: { id: 1 } } as any);
+        });
+
+        it("call updateContact()", async () => {
+            // @ts-expect-error userCreated is private method
+            await BrevoContactNotifyPipe.userActivated({ email: USER_EMAIL });
+            expect(updateContactSpy).toHaveBeenCalledWith(USER_EMAIL, {
+                attributes: { COMPTE_ACTIVE: true },
+                listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
+            });
         });
     });
 });

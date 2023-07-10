@@ -238,13 +238,15 @@ export class UserService {
             throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
 
-        return {
-            user: await userRepository.update({
-                ...user,
-                hashPassword: await bcrypt.hash(password, 10),
-                active: true,
-            }),
-        };
+        const userUpdated = await userRepository.update({
+            ...user,
+            hashPassword: await bcrypt.hash(password, 10),
+            active: true,
+        });
+
+        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
+
+        return { user: userUpdated };
     }
 
     public async update(user: UserDto): Promise<UserDto> {
@@ -387,11 +389,15 @@ export class UserService {
 
         await userResetRepository.remove(reset);
 
-        return await userRepository.update({
+        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
+
+        const userUpdated = await userRepository.update({
             ...user,
             hashPassword,
             active: true,
         });
+
+        return userUpdated;
     }
 
     async forgetPassword(email: string): Promise<UserReset> {

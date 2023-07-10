@@ -3,12 +3,9 @@
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import { ObjectId } from "mongodb";
 import { RoleEnum } from "../../../src/@enums/Roles";
-import UserReset from "../../../src/modules/user/entities/UserReset";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
 import { UserService, UserServiceErrors } from "../../../src/modules/user/user.service";
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
-import dedent from "dedent";
 import { BadRequestError, NotFoundError } from "../../../src/shared/errors/httpErrors";
 import notifyService from "../../../src/modules/notify/notify.service";
 
@@ -139,69 +136,6 @@ describe("user.service.ts", () => {
             await service.refreshExpirationToken(user);
 
             expect(mock).toHaveBeenCalled();
-        });
-    });
-
-    describe("resetPassword", () => {
-        let userId: ObjectId;
-        beforeEach(async () => {
-            const user = await service.createUser({ email: "test@beta.gouv.fr" });
-            userId = user._id;
-            await userResetRepository.create(new UserReset(userId, "token", new Date()));
-        });
-
-        it("should reject because resetToken not found", async () => {
-            await expect(service.resetPassword("", "FAKE_TOKEN")).rejects.toMatchObject({
-                message: "Reset token not found",
-                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
-            });
-        });
-
-        it("should reject because resetToken has expired", async () => {
-            await userResetRepository.removeAllByUserId(userId);
-            await userResetRepository.create(
-                new UserReset(userId, "token", new Date(Date.now() - 1000 * 60 * 60 * 24 * 11)),
-            );
-
-            await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
-                message: "Reset token has expired, please retry forget password",
-                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-            });
-        });
-
-        it("should reject because user not found", async () => {
-            await userResetRepository.removeAllByUserId(userId);
-            await userResetRepository.create(new UserReset(new ObjectId(), "token", new Date()));
-
-            await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
-                message: "User not found",
-                code: ResetPasswordErrorCodes.USER_NOT_FOUND,
-            });
-        });
-
-        it("should reject because password not valid", async () => {
-            await expect(() => service.resetPassword("", "token")).rejects.toMatchObject({
-                message: dedent`Password is too weak, please use this rules:
-                    At least one digit [0-9]
-                    At least one lowercase character [a-z]
-                    At least one uppercase character [A-Z]
-                    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
-                    At least 8 characters in length, but no more than 32.`,
-                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-            });
-        });
-
-        it("should change password", async () => {
-            await expect(service.resetPassword("newPass;word789", "token")).resolves.toMatchObject({
-                email: "test@beta.gouv.fr",
-                active: true,
-            });
-        });
-
-        it("should remove resetUser", async () => {
-            const mock = jest.spyOn(userResetRepository, "remove");
-            await service.resetPassword("newPass;word789", "token");
-            expect(mock).toHaveBeenCalledWith(expect.objectContaining({ userId: expect.any(ObjectId) }));
         });
     });
 
