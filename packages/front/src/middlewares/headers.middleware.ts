@@ -3,10 +3,11 @@ import { DATASUB_URL } from "../shared/config";
 
 const cspHeaderValueByDirective = {
     "default-src": "'self'",
-    "connect-src": `'self' ${DATASUB_URL} https://client.crisp.chat/ wss://client.relay.crisp.chat/w/b1/ https://storage.crisp.chat wss://stream.relay.crisp.chat`,
+    "connect-src": `'self' ${DATASUB_URL} https://client.crisp.chat/ wss://client.relay.crisp.chat/w/b1/ https://storage.crisp.chat wss://stream.relay.crisp.chat https://stats.data.gouv.fr`,
     "font-src": "'self' https://client.crisp.chat",
     "img-src": "'self' data: https://image.crisp.chat https://client.crisp.chat https://storage.crisp.chat",
-    "script-src": "'unsafe-inline' 'unsafe-eval' 'self' https://client.crisp.chat https://settings.crisp.chat",
+    "script-src":
+        "'unsafe-inline' 'unsafe-eval' 'self' https://client.crisp.chat https://settings.crisp.chat https://stats.data.gouv.fr",
     "style-src": "'self' https://client.crisp.chat 'unsafe-inline'",
     "frame-src": "'self' https://game.crisp.chat",
 };
