@@ -49,7 +49,11 @@ export class UserController extends Controller {
     @Response<HttpErrorInterface>(400, "Bad Request")
     @Response<HttpErrorInterface>(409, "Unprocessable Entity")
     public async createUser(@Body() body: FutureUserDto): Promise<CreateUserDtoResponse> {
-        const user = await userService.signup(body);
+        const formatedBody = {
+            ...body,
+            email: body.email.toLocaleLowerCase(),
+        };
+        const user = await userService.signup(formatedBody);
         this.setStatus(201);
         return { user };
     }
