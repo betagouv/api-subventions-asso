@@ -1,42 +1,48 @@
 <script>
-    import { createEventDispatcher } from "svelte";
-    export let steps;
-    const dispatch = createEventDispatcher();
+    import Fieldset from "./Fieldset.svelte";
+
+    export let steps = [];
+    export let onSubmit;
+
     let currentStep = 0;
-    let values = {};
+    let mapStepToValues = steps.map(() => ({}));
 
-    function test(event) {
-        console.log(event);
-    }
+    $: values = mapStepToValues.reduce((acc, curr) => {
+        return { ...acc, ...curr };
+    }, {});
 
-    function submit(event) {
-        console.log("multi step submit", event);
-        dispatch("submit", {
-            values,
-        });
+    $: firstStep = currentStep == 0;
+    $: lastStep = currentStep == steps.length - 1;
+
+    function submit() {
+        onSubmit(values);
     }
 
     function next() {
-        if (currentStep == steps.length - 1) return;
+        if (lastStep) return;
         currentStep++;
     }
 
     function previous() {
-        if (currentStep == 0) return;
+        if (firstStep) return;
         currentStep--;
     }
 </script>
 
-Hello Form
-
 <form action="#" method="GET" on:submit|preventDefault={submit}>
     {#each steps as step, index}
-        {#if index === 0}
-            <svelte:component this={step} on:next={next} on:change={test} />
-        {:else if index === steps.length - 1}
-            <svelte:component this={step} on:previous={previous} />
-        {:else}
-            <svelte:component this={step} on:previous={previous} on:next={next} />
+        {#if firstStep && index == 0}
+            <Fieldset on:next={next} firstStep={true}>
+                <svelte:component this={step} bind:values={mapStepToValues[index]} />
+            </Fieldset>
+        {:else if lastStep && index == steps.length - 1}
+            <Fieldset on:previous={previous} lastStep={true}>
+                <svelte:component this={step} bind:values={mapStepToValues[index]} />
+            </Fieldset>
+        {:else if index == currentStep}
+            <Fieldset on:previous={previous} on:next={next}>
+                <svelte:component this={step} bind:values={mapStepToValues[index]} />
+            </Fieldset>
         {/if}
     {/each}
 </form>
