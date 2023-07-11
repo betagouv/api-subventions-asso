@@ -132,6 +132,11 @@ export class UserService {
             if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now()) await updateJwt();
         }
 
+        notifyService.notify(NotificationType.USER_LOGGED, {
+            email,
+            date: new Date(),
+        });
+
         const { hashPassword: _hashPwd, ...userWithoutPassword } = user;
         return userWithoutPassword;
     }
@@ -288,7 +293,7 @@ export class UserService {
 
         const resetResult = await this.resetUser(user);
 
-        await notifyService.notify(NotificationType.USER_CREATED, {
+        notifyService.notify(NotificationType.USER_CREATED, {
             email: userObject.email,
             token: resetResult.token,
             active: user.active,

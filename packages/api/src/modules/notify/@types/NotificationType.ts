@@ -4,4 +4,5 @@ export enum NotificationType {
     USER_DELETED,
     USER_ACTIVATED,
     USER_FORGET_PASSWORD,
+    USER_LOGGED,
 }

@@ -17,6 +17,10 @@ export interface NotificationDataTypes {
         email: string;
         token: string;
     };
+    [NotificationType.USER_LOGGED]: {
+        email: string;
+        date: Date;
+    };
     [NotificationType.TEST_EMAIL]: {
         email: string;
         templateId: number;

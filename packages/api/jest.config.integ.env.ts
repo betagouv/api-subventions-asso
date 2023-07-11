@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { scheduler } from "./src/cron";
 
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
+jest.mock("@sendinblue/client");
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
 
 import { existsSync, mkdirSync } from "fs";
+import { Server } from "http";
 
 import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { startServer } from "./src/server";
-import { Server } from "http";
+import { scheduler } from "./src/cron";
 import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 
@@ -20,7 +21,7 @@ const g = global as unknown as { app?: Server };
 
 const addBetaGouvEmailDomain = async () => {
     await configurationsRepository.upsert(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
-        data: [process.env.BETA_GOUV_DOMAIN]
+        data: [process.env.BETA_GOUV_DOMAIN],
     });
 };
 
@@ -51,5 +52,5 @@ afterEach(async () => {
 afterAll(async () => {
     await client.close();
     g.app?.close();
-    scheduler.stop()
+    scheduler.stop();
 });
