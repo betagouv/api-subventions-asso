@@ -16,17 +16,20 @@
             <div class="fr-mb-5w fr-mt-n4w">
                 <Spinner />
             </div>
-        {:then email}
+        {:then}
             {#if $firstSubmitted}
                 <Alert type="success">
-                    <p>Vous allez recevoir un mail pour réinitialiser votre mot de passe</p>
+                    <p>
+                        Si vous possédez déjà un compte sur Data.Subvention, vous recevrez un mail pour réinitialiser
+                        votre mot de passe.
+                    </p>
                     <p>
                         Retourner à la page <a class="fr-link" href="/auth/login">connexion</a>
                     </p>
                 </Alert>
             {/if}
-        {:catch error}
-            <Alert title="Attention" type="warning">Email incorrect</Alert>
+        {:catch}
+            <Alert title="Attention" type="warning">Une erreur est survenue. Veuillez réessayer plus tard.</Alert>
         {/await}
 
         <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>

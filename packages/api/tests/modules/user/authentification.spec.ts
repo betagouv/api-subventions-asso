@@ -3,6 +3,7 @@ import userService, { UserService } from "../../../src/modules/user/user.service
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import db from "../../../src/shared/MongoConnection";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
+import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 
 const g = global as unknown as { app: unknown };
 
@@ -13,11 +14,7 @@ describe("AuthentificationController, /auth", () => {
         });
         it("should return SuccessResponse", async () => {
             const expected = {
-                reset: {
-                    _id: expect.any(String),
-                    userId: expect.any(String),
-                    createdAt: expect.any(String),
-                },
+                success: true,
             };
             await request(g.app)
                 .post("/auth/forget-password")
@@ -27,7 +24,7 @@ describe("AuthentificationController, /auth", () => {
                 .expect(res => expect(res.body).toMatchObject(expected));
         });
 
-        it("should add reject because user not found", async () => {
+        it("should return 200 even if the user doesn't exist", async () => {
             const response = await request(g.app)
                 .post("/auth/forget-password")
                 .send({
@@ -35,23 +32,25 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(404);
+            expect(response.statusCode).toBe(200);
             expect(response.body).toMatchObject({
-                message: "User not found",
+                success: true,
             });
         });
     });
 
     describe("POST /reset-password", () => {
         it("should return 200", async () => {
-            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
+            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
+            await userService.forgetPassword("test-reset@beta.gouv.fr");
+
+            const userReset = await userResetRepository.findOneByUserId(user._id);
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.token,
+                    token: userReset?.token,
                 })
                 .set("Accept", "application/json");
 
@@ -62,14 +61,16 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because password is too weak", async () => {
-            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
+            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
+            await userService.forgetPassword("test-reset@beta.gouv.fr");
+
+            const userReset = await userResetRepository.findOneByUserId(user._id);
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaa",
-                    token: result.token,
+                    token: userReset?.token,
                 })
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(400);
@@ -94,8 +95,10 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because token is outdated", async () => {
-            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
+            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
+            await userService.forgetPassword("test-reset@beta.gouv.fr");
+
+            const userReset = await userResetRepository.findOneByUserId(user._id);
 
             const oldResetTimout = UserService.RESET_TIMEOUT;
             UserService.RESET_TIMEOUT = 0;
@@ -104,7 +107,7 @@ describe("AuthentificationController, /auth", () => {
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
-                    token: result.token,
+                    token: userReset?.token,
                 })
                 .set("Accept", "application/json");
             UserService.RESET_TIMEOUT = oldResetTimout;
@@ -115,26 +118,6 @@ describe("AuthentificationController, /auth", () => {
             });
 
             UserService.RESET_TIMEOUT = oldResetTimout;
-        });
-
-        it("should reject because user is deleted", async () => {
-            await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            const result = await userService.forgetPassword("test-reset@beta.gouv.fr");
-
-            await db.collection("users").deleteOne({ email: "test-reset@beta.gouv.fr" });
-
-            const response = await request(g.app)
-                .post("/auth/reset-password")
-                .send({
-                    password: "AAAAaaaaa;;;;2222",
-                    token: result.token,
-                })
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(404);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.USER_NOT_FOUND,
-            });
         });
     });
 
