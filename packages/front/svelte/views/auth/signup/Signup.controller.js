@@ -1,7 +1,9 @@
 import { SignupErrorCodes } from "@api-subventions-asso/dto";
 import { getContext } from "svelte";
+import { PRIVACY_POLICY_URL } from "../../../../src/shared/config";
 import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
+import { goToUrl } from "@services/router.service";
 
 export default class SignupController {
     ERROR_MESSAGES = {
@@ -15,14 +17,27 @@ export default class SignupController {
     constructor() {
         this.app = getContext("app");
         this.pageTitle = `Créer votre compte sur ${this.app.getName()}`;
-        this.email = new Store("");
+        this.signupUser = new Store({
+            lastname: null,
+            firstname: null,
+            email: null,
+        });
         this.signupPromise = new Store(Promise.resolve());
         this.firstSubmitted = new Store(false);
     }
 
-    onSubmit() {
-        this.signupPromise.set(authService.signup(this.email.value));
+    get privacyPolicyUrl() {
+        return PRIVACY_POLICY_URL;
+    }
+
+    signup() {
+        // TODO: check what format the new API create user is waiting for
+        this.signupPromise.set(authService.signup(this.signupUser.value));
         this.firstSubmitted.set(true);
+    }
+
+    signin() {
+        goToUrl("/auth/login");
     }
 
     getErrorMessage(code) {

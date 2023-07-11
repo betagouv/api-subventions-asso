@@ -6,7 +6,7 @@
     import Spinner from "@components/Spinner.svelte";
 
     const ctrl = new SignupController();
-    const { email, signupPromise, firstSubmitted } = ctrl;
+    const { signupUser, signupPromise, firstSubmitted } = ctrl;
 </script>
 
 <h1 class="fr-mb-6w fr-h2">
@@ -44,11 +44,76 @@
     title="Data.subvention étant réservé aux agents publics, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public."
     type="info" />
 
-<form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
-    <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-        <Input label="Email professionnel:" id="signup-email" bind:value={$email} required={true} />
-    </fieldset>
-    <div class="fr-input-group">
-        <Button type="submit" title="S'inscrire" htmlType="submit">Confirmer</Button>
-    </div>
-</form>
+<div class="signup fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-7v">
+    <form on:submit|preventDefault={() => ctrl.signup()}>
+        <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
+            <legend class="fr-fieldset__legend" id="login-1797-fieldset-legend">
+                <h5>Créer un compte</h5>
+            </legend>
+            <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
+                <Input label="Nom :" id="signup-family-name" bind:value={$signupUser.lastname} required={true} />
+            </div>
+            <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
+                <Input label="Prénom :" id="signup-given-name" bind:value={$signupUser.firstname} required={true} />
+            </div>
+            <div class="fr-fieldset__element fr-mt-4v">
+                <Input
+                    label="Adresse e-mail professionnelle :"
+                    id="signup-email"
+                    bind:value={$signupUser.email}
+                    required={true} />
+            </div>
+            <div class="fr-fieldset__element fr-mt-4v">
+                <ul class="fr-btns-group">
+                    <li>
+                        <Button title="Créer un compte" htmlType="submit">Créer un compte</Button>
+                    </li>
+                </ul>
+            </div>
+            <div class="policy">
+                <span>En vous inscrivant, vous acceptez la</span>
+                <span>
+                    <b>
+                        <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">
+                            politique de confidentialité
+                        </a>
+                    </b>
+                    de Data.Subvention.
+                </span>
+            </div>
+        </fieldset>
+    </form>
+    <div class="separator" />
+    <form on:submit|preventDefault={() => ctrl.signin()}>
+        <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
+            <legend class="fr-fieldset__legend" id="login-1797-fieldset-legend">
+                <h5>Vous avez déjà un compte ?</h5>
+            </legend>
+            <div class="fr-fieldset__element">
+                <ul class="fr-btns-group">
+                    <li>
+                        <Button type="secondary" title="Se connecter" htmlType="submit">Se connecter</Button>
+                    </li>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<style>
+    .policy {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .signup {
+        border: 2px solid var(--border-default-grey);
+    }
+
+    .separator {
+        width: 100%;
+        border-top: 2px solid var(--border-default-grey);
+    }
+</style>

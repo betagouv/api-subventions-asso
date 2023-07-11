@@ -10,10 +10,10 @@ import crispService from "@services/crisp.service";
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
 
-    signup(email) {
-        if (!email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
+    signup(signupUser) {
+        if (!signupUser?.email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
         return authPort
-            .signup(email)
+            .signup(signupUser)
             .then(data => data)
             .catch(error => Promise.reject(parseInt(error.message)));
     }

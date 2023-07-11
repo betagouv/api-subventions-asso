@@ -21,7 +21,7 @@ export default class RouterController {
                 const user = authService.getCurrentUser();
 
                 const queryUrl = encodeURIComponent(location.pathname);
-                if (!user || !user._id) return RouterService.goToUrl(`/auth/login?url=${queryUrl}`);
+                if (!user || !user._id) return RouterService.goToUrl(`/auth/signup?url=${queryUrl}`);
                 if (path.includes("admin") && !isAdmin(user)) return RouterService.goToUrl("/");
             }
             this.crumbs.set(RouterService.buildBreadcrumbs(path));
