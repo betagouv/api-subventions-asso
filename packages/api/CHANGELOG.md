@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.32.0](https://github.com/betagouv/api-subventions-asso/compare/v0.31.3...v0.32.0) (2023-07-11)
+
+
+### Bug Fixes
+
+* **api:** csp header back with specific for swagger ([0cb25f7](https://github.com/betagouv/api-subventions-asso/commit/0cb25f7b16e02e75873f9fbbf0c115e510c938ea))
+* **api:** default value for names are null ([fd3de9d](https://github.com/betagouv/api-subventions-asso/commit/fd3de9ddae1aa8e3b9132275ea4fd657579491c0))
+* **api:** disables also reset names ([d62c095](https://github.com/betagouv/api-subventions-asso/commit/d62c09594fd6c3bac9c5165c35add2157e188c33))
+* **api:** realistic types ([c8bcf27](https://github.com/betagouv/api-subventions-asso/commit/c8bcf27f73230ad85d73cd681d784e95c3810d3f))
+* **api:** review mistakes ([05a7aac](https://github.com/betagouv/api-subventions-asso/commit/05a7aac609faa9fe5e7d382264e811f591227d4d))
+* **api:** signup forces roles ([9f81531](https://github.com/betagouv/api-subventions-asso/commit/9f81531f69b77330474520c951bb6ae2106a230a))
+
+
+### Features
+
+* **api:** add endpoint for getting all user data ([488d0b2](https://github.com/betagouv/api-subventions-asso/commit/488d0b2db63b6c543c6469e63677209cd87d9519))
+* **api:** add endpoint for getting all user data ([5780b3c](https://github.com/betagouv/api-subventions-asso/commit/5780b3c338fc901428e12a74fa8c9e698fb40e37))
+* **api:** add notify service ([dbff346](https://github.com/betagouv/api-subventions-asso/commit/dbff346cc01ec0fe6a30999f84c4ee4a141fb124))
+* **api:** add user activate notification ([a5889a0](https://github.com/betagouv/api-subventions-asso/commit/a5889a0a83c010cb42358aa5be5a5fa48a428e7c))
+* **api:** add userActivated brevo notification ([f50c770](https://github.com/betagouv/api-subventions-asso/commit/f50c770bcbfd1a48f4bf55fc76e5dd008a8441b4))
+* **api:** consider names ([3a30bb6](https://github.com/betagouv/api-subventions-asso/commit/3a30bb69eecee5392b7327e6c6f3ccec914faedf))
+* **api:** mock userResetRepository at import stage ([6b21f3d](https://github.com/betagouv/api-subventions-asso/commit/6b21f3d8ddb833feaa6e3abaa8f29a65c3e64627))
+* **api:** proper sanitization ([771de74](https://github.com/betagouv/api-subventions-asso/commit/771de74ed223eb0aa3e127c5299a54a2029deb89))
+* **api:** remove await on notif trigger ([553c500](https://github.com/betagouv/api-subventions-asso/commit/553c50050968763182e2e3d650cd60ad71afbd0d))
+* **api:** sanitizer string helper ([a7a3f65](https://github.com/betagouv/api-subventions-asso/commit/a7a3f651680b9eeebd89ab9a5afe5dec185c1eb2))
+* **api:** update user last connection date in brevo after login ([c4260a7](https://github.com/betagouv/api-subventions-asso/commit/c4260a7faf4ad5dd8946632233d998024357cfa1))
+
+
+
+
+
 ## [0.31.3](https://github.com/betagouv/api-subventions-asso/compare/v0.31.2...v0.31.3) (2023-07-05)
 
 

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.32.0](https://github.com/betagouv/datasubvention/compare/v0.31.3...v0.32.0) (2023-07-11)
+
+
+### Bug Fixes
+
+* **front:** add authorize for matomo script ([e8276ae](https://github.com/betagouv/datasubvention/commit/e8276ae66d8af5d7b43cacc5d01694c54cbd9304))
+
+
+### Features
+
+* **front:** add input group to Input component ([2dcc62d](https://github.com/betagouv/datasubvention/commit/2dcc62db4c43199664ac47b7a84bacbc595eccbd))
+* **front:** add new signup page ([cb05cf2](https://github.com/betagouv/datasubvention/commit/cb05cf2f02390680d5db7c3984dbdd6fac1d466f))
+* **front:** add placeholder to input ([209010e](https://github.com/betagouv/datasubvention/commit/209010eb49fcabbbe5b5bcc1ce39456fea090048))
+* **front:** enable privacy policy link ([69bb72f](https://github.com/betagouv/datasubvention/commit/69bb72f8b705c2f91586bba79f1db03c69533979))
+* **front:** remove input group wrapper ([0a0bd42](https://github.com/betagouv/datasubvention/commit/0a0bd42c4a94e9debd004175c82e22dc46deed6f))
+* **front:** update nodemon config to not rebuild on test update ([f56a82d](https://github.com/betagouv/datasubvention/commit/f56a82d4459fb3c98e0ced42aafedf563d423700))
+* **front:** update signup with new API endpoint requirements ([aa82f49](https://github.com/betagouv/datasubvention/commit/aa82f4915124234fa8eb087869dcf11fb4ba0314))
+
+
+
+
+
 ## [0.31.4](https://github.com/betagouv/datasubvention/compare/v0.31.3...v0.31.4) (2023-07-10)
 
 

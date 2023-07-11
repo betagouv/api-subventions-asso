@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.32.0](https://github.com/betagouv/datasubvention/compare/v0.31.3...v0.32.0) (2023-07-11)
+
+
+### Features
+
+* **api:** add endpoint for getting all user data ([5780b3c](https://github.com/betagouv/datasubvention/commit/5780b3c338fc901428e12a74fa8c9e698fb40e37))
+
+
+
+
+
 # [0.31.0](https://github.com/betagouv/datasubvention/compare/v0.30.2...v0.31.0) (2023-06-27)
 
 
