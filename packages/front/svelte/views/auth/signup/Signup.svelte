@@ -70,14 +70,17 @@
                     </li>
                 </ul>
             </div>
-            <!-- TODO: add link to confidentiality policy view -->
-            <!-- <div class="policy">
+            <div class="policy">
                 <span>En vous inscrivant, vous acceptez la</span>
                 <span>
-                    <b><u>politique de confidentialité</u></b>
+                    <b>
+                        <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">
+                            politique de confidentialité
+                        </a>
+                    </b>
                     de Data.Subvention.
                 </span>
-            </div> -->
+            </div>
         </fieldset>
     </form>
     <div class="separator" />
@@ -98,12 +101,12 @@
 </div>
 
 <style>
-    /* .policy {
+    .policy {
         margin: auto;
         display: flex;
         flex-direction: column;
         align-items: center;
-    } */
+    }
 
     .signup {
         border: 2px solid var(--border-default-grey);

@@ -1,5 +1,6 @@
 import { SignupErrorCodes } from "@api-subventions-asso/dto";
 import { getContext } from "svelte";
+import { PRIVACY_POLICY_URL } from "../../../../src/shared/config";
 import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
 import { goToUrl } from "@services/router.service";
@@ -23,6 +24,10 @@ export default class SignupController {
         });
         this.signupPromise = new Store(Promise.resolve());
         this.firstSubmitted = new Store(false);
+    }
+
+    get privacyPolicyUrl() {
+        return PRIVACY_POLICY_URL;
     }
 
     signup() {
