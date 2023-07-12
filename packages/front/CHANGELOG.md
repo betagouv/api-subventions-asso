@@ -22,7 +22,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** update signup with new API endpoint requirements ([aa82f49](https://github.com/betagouv/datasubvention/commit/aa82f4915124234fa8eb087869dcf11fb4ba0314))
 
 
+## [0.31.5](https://github.com/betagouv/api-subventions-asso/compare/v0.31.4...v0.31.5) (2023-07-12)
 
+### Bug Fixes
+
+* **front:** change x frame option ([614bb9d](https://github.com/betagouv/api-subventions-asso/commit/614bb9dcaf7ae620a66bfe12753f9bdac5ec6eda))
 
 
 ## [0.31.4](https://github.com/betagouv/datasubvention/compare/v0.31.3...v0.31.4) (2023-07-10)
