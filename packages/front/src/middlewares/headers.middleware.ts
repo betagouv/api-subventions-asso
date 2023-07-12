@@ -21,7 +21,7 @@ function toCspHeaderValue(dict: Record<string, string>) {
 const headers = {
     "Content-Security-Policy": toCspHeaderValue(cspHeaderValueByDirective),
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-    "X-Frame-Options": "DENY",
+    "X-Frame-Options": "SAMEORIGIN",
     "X-Content-Type-Options": "nosniff",
     "Cache-Control": "max-age 1800",
 };
