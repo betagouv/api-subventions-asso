@@ -27,8 +27,8 @@ export class ResetPwdController {
         this.password = new Store("");
     }
 
-    getErrorMessage(code) {
-        return this.ERROR_MESSAGES[code] || this.DEFAULT_ERROR_MESSAGE;
+    getErrorMessage(error) {
+        return this.ERROR_MESSAGES[error.data.code] || this.DEFAULT_ERROR_MESSAGE;
     }
 
     onSubmit() {

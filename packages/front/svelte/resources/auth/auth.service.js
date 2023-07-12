@@ -12,18 +12,12 @@ export class AuthService {
 
     signup(signupUser) {
         if (!signupUser?.email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
-        return authPort
-            .signup(signupUser)
-            .then(data => data)
-            .catch(error => Promise.reject(parseInt(error.message)));
+        return authPort.signup(signupUser);
     }
 
     resetPassword(token, password) {
         if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
-        return authPort
-            .resetPassword(token, password)
-            .then(data => data)
-            .catch(error => Promise.reject(parseInt(error.message)));
+        return authPort.resetPassword(token, password);
     }
 
     forgetPassword(email) {
