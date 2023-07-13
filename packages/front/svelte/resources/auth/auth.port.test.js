@@ -12,14 +12,14 @@ jest.mock("@api-subventions-asso/dto", () => ({
 
 describe("AuthPort", () => {
     describe("signup()", () => {
-        const axiosPostMock = jest.spyOn(axios, "post");
+        const postMock = jest.spyOn(requestsService, "post");
         const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
         it("calls signup route", async () => {
             const PATH = "/auth/signup";
-            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            postMock.mockResolvedValueOnce({ data: {} });
             await authPort.signup(USER);
-            expect(axiosPostMock).toBeCalledWith(PATH, {
+            expect(postMock).toBeCalledWith(PATH, {
                 email: USER.email,
                 lastName: USER.lastname,
                 firstName: USER.firstname,
@@ -27,41 +27,28 @@ describe("AuthPort", () => {
         });
 
         it("returns email if success", async () => {
-            axiosPostMock.mockResolvedValueOnce({ data: { email: USER.email } });
+            postMock.mockResolvedValueOnce({ data: { email: USER.email } });
             const actual = await authPort.signup(USER);
             const expected = USER.email;
             expect(actual).toBe(expected);
         });
-
-        it("throws error with error code if any", () => {
-            const ERROR_CODE = 42;
-            axiosPostMock.mockRejectedValueOnce({ response: { data: { code: ERROR_CODE } } });
-            const expected = new Error(ERROR_CODE);
-            expect(async () => authPort.signup(USER)).rejects.toThrowError(expected);
-        });
-
-        it("throws error with default code if none received", () => {
-            axiosPostMock.mockRejectedValueOnce(undefined);
-            const expected = new Error(DEFAULT_ERROR_CODE);
-            expect(async () => authPort.signup(USER)).rejects.toThrowError(expected);
-        });
     });
 
     describe("resetPassword()", () => {
-        const axiosPostMock = jest.spyOn(axios, "post");
+        const postMock = jest.spyOn(requestsService, "post");
         const RES = true;
         const PASSWORD = "very secret";
         const TOKEN = "123";
 
         it("calls resetPassword route", async () => {
             const PATH = "/auth/reset-password";
-            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            postMock.mockResolvedValueOnce({ data: {} });
             await authPort.resetPassword(TOKEN, PASSWORD);
-            expect(axiosPostMock).toBeCalledWith(PATH, { token: TOKEN, password: PASSWORD });
+            expect(postMock).toBeCalledWith(PATH, { token: TOKEN, password: PASSWORD });
         });
 
         it("returns true if success", async () => {
-            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            postMock.mockResolvedValueOnce({ data: {} });
             const actual = await authPort.resetPassword(TOKEN, PASSWORD);
             const expected = RES;
             expect(actual).toBe(expected);
@@ -105,13 +92,6 @@ describe("AuthPort", () => {
             const expected = RES;
             const actual = await authPort.forgetPassword(EMAIL);
             expect(actual).toBe(expected);
-        });
-
-        it("returns axios promise if fails", () => {
-            const FAILURE = {};
-            const expected = FAILURE;
-            axiosPostMock.mockRejectedValueOnce(FAILURE);
-            expect(async () => authPort.forgetPassword(EMAIL)).rejects.toEqual(expected);
         });
     });
 });

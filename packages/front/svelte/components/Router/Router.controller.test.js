@@ -92,8 +92,8 @@ describe("RouterController", () => {
             expect(getCurrentUserMock).toHaveBeenCalledTimes(1);
         });
 
-        it("should call goToUrl with params: '/auth/signup' plus search query", () => {
-            const expected = "/auth/signup?url=%2Ftada";
+        it("should call goToUrl with params: '/auth/login' plus search query", () => {
+            const expected = "/auth/login?url=%2Ftada";
 
             const oldLocation = window.location;
             delete window.location;
