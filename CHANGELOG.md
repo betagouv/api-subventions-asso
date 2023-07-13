@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.32.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.32.2) (2023-07-13)
+
+
+### Bug Fixes
+
+* **front:** add link to signup in login view ([528cfb1](https://github.com/betagouv/api-subventions-asso/commit/528cfb1a561c92909a86b0e264886a32ab7d478c))
+
+
+
+## [0.31.5](https://github.com/betagouv/api-subventions-asso/compare/v0.32.0...v0.31.5) (2023-07-12)
+
+
+### Bug Fixes
+
+* **front:** change x frame option ([614bb9d](https://github.com/betagouv/api-subventions-asso/commit/614bb9dcaf7ae620a66bfe12753f9bdac5ec6eda))
+
+
+
+
+
 ## [0.32.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.0...v0.32.1) (2023-07-13)
 
 
