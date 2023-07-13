@@ -14,6 +14,11 @@
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col fr-col-lg-8">
             <h1>Connexion</h1>
+            <Alert type="info" title="Inscription">
+                <a class="fr-link" href="/auth/signup">
+                    Rendez-vous sur notre formulaire d'inscription (en cliquant sur ce lien)
+                </a>
+            </Alert>
             {#if $error != null}
                 <Alert title="Attention">
                     {$error}
