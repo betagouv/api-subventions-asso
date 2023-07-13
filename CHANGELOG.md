@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.32.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.0...v0.32.1) (2023-07-13)
+
+
+### Bug Fixes
+
+* fix v0.32 ([acdde25](https://github.com/betagouv/api-subventions-asso/commit/acdde252a0ec29382f7810e5fbaffbd00020e444))
+
+
+
+## [0.31.4](https://github.com/betagouv/api-subventions-asso/compare/v0.31.3...v0.31.4) (2023-07-10)
+
+
+### Bug Fixes
+
+* **front:** add authorize for matomo script ([7560913](https://github.com/betagouv/api-subventions-asso/commit/7560913f7e348584d6a7280712a6582149007d78))
+
+
+
+
+
 # [0.32.0](https://github.com/betagouv/api-subventions-asso/compare/v0.31.3...v0.32.0) (2023-07-11)
 
 

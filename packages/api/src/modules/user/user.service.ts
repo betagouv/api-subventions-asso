@@ -34,6 +34,7 @@ import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelp
 import LoginError from "../../shared/errors/LoginError";
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import statsService from "../stats/stats.service";
+import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -295,7 +296,9 @@ export class UserService {
 
         notifyService.notify(NotificationType.USER_CREATED, {
             email: userObject.email,
-            token: resetResult.token,
+            firstname: userObject.firstName,
+            lastname: userObject.lastName,
+            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}?active=true`,
             active: user.active,
             signupAt: user.signupAt,
         });
@@ -413,7 +416,7 @@ export class UserService {
 
         notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
             email: email.toLocaleLowerCase(),
-            token: resetResult.token,
+            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
         });
 
         return resetResult;

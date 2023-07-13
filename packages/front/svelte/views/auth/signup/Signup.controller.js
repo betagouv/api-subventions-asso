@@ -40,8 +40,8 @@ export default class SignupController {
         goToUrl("/auth/login");
     }
 
-    getErrorMessage(code) {
-        return this.ERROR_MESSAGES[code] || "Une erreur est survenue lors de la création de votre compte.";
+    getErrorMessage(error) {
+        return this.ERROR_MESSAGES[error.data.code] || "Une erreur est survenue lors de la création de votre compte.";
     }
 
     get contactEmail() {

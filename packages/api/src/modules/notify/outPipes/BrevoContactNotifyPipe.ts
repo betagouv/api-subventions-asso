@@ -37,7 +37,9 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
                     DATE_INSCRIPTION: data.signupAt,
                     COMPTE_ACTIVE: data.active,
                     SOURCE_IMPORT: "Data.Subvention",
-                    LIEN_ACTIVATION: data.token,
+                    LIEN_ACTIVATION: data.url,
+                    PRENOM: data.firstname,
+                    NOM: data.lastname,
                 },
                 listIds: SENDIND_BLUE_CONTACT_LISTS,
             })

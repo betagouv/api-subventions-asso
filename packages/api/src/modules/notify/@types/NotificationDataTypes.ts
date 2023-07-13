@@ -3,7 +3,9 @@ import { NotificationType } from "./NotificationType";
 export interface NotificationDataTypes {
     [NotificationType.USER_CREATED]: {
         email: string;
-        token: string;
+        firstname?: string;
+        lastname?: string;
+        url: string;
         signupAt: Date;
         active: boolean;
     };
@@ -15,7 +17,7 @@ export interface NotificationDataTypes {
     };
     [NotificationType.USER_FORGET_PASSWORD]: {
         email: string;
-        token: string;
+        url: string;
     };
     [NotificationType.USER_LOGGED]: {
         email: string;

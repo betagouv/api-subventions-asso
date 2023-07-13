@@ -68,7 +68,7 @@ describe("BrevoContactNotifyPipe", () => {
                 email: expected.email,
                 signupAt: expected.attributes.DATE_INSCRIPTION,
                 active: expected.attributes.COMPTE_ACTIVE,
-                token: expected.attributes.LIEN_ACTIVATION,
+                url: expected.attributes.LIEN_ACTIVATION,
             });
 
             expect(createContactSpy).toHaveBeenCalledWith(expected);

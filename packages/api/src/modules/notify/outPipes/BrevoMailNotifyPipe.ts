@@ -38,11 +38,11 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
     }
 
     private async sendCreationMail(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
-        return this.sendMail(data.email, { token: data.token }, TemplateEnum.creation);
+        return this.sendMail(data.email, { url: data.url }, TemplateEnum.creation);
     }
 
     private async sendForgetPasswordMail(data: NotificationDataTypes[NotificationType.USER_FORGET_PASSWORD]) {
-        return this.sendMail(data.email, { token: data.token }, TemplateEnum.forgetPassword);
+        return this.sendMail(data.email, { url: data.url }, TemplateEnum.forgetPassword);
     }
 
     async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {
