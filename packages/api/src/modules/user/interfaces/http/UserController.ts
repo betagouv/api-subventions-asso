@@ -24,7 +24,6 @@ export class UserController extends Controller {
     @Post("/admin/roles")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>(400, "Role Not Valid")
-    @Response<HttpErrorInterface>(422, "User Not Found")
     public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
         return await userService.addRolesToUser(body.email, body.roles);
     }

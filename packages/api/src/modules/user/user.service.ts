@@ -20,7 +20,6 @@ import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
 import configurationsService from "../configurations/configurations.service";
 import {
     BadRequestError,
-    ConflictError,
     ForbiddenError,
     InternalServerError,
     NotFoundError,
@@ -195,7 +194,7 @@ export class UserService {
         await this.validateEmail(user.email);
 
         if (newUser && (await userRepository.findByEmail(user.email)))
-            throw new ConflictError("User already exists", UserServiceErrors.CREATE_USER_ALREADY_EXISTS);
+            throw new InternalServerError("An error has occurred");
 
         if (!this.validRoles(user.roles || []))
             throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
@@ -328,7 +327,7 @@ export class UserService {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
             if (!foundUser) {
-                throw new NotFoundError("User Not Found", UserServiceErrors.USER_NOT_FOUND);
+                throw new InternalServerError("An error has occurred");
             }
             user = foundUser;
         }
