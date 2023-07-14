@@ -13,10 +13,10 @@ import { BadRequestError, InternalServerError } from "../../../../shared/errors/
 @Tags("Authentification Controller")
 export class AuthentificationController extends Controller {
     @Post("/forget-password")
-    public async forgetPassword(@Body() body: { email: string }) {
+    public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { token, ...reset } = await userService.forgetPassword(body.email);
-        return { reset };
+        await userService.forgetPassword(body.email);
+        return { success: true };
     }
 
     @Post("/reset-password")

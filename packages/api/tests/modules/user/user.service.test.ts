@@ -11,6 +11,7 @@ import notifyService from "../../../src/modules/notify/notify.service";
 
 describe("user.service.ts", () => {
     const notifyMock = jest.spyOn(notifyService, "notify").mockImplementation(jest.fn());
+    const findByEmailMock = jest.spyOn(userRepository, "findByEmail");
     let service;
 
     beforeEach(async () => {
@@ -146,15 +147,14 @@ describe("user.service.ts", () => {
             userId = user._id;
         });
 
-        it("should reject because user email not found", async () => {
-            await expect(service.forgetPassword("wrong@email.fr")).rejects.toMatchObject({
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND,
-            });
+        it("should check if user exist", async () => {
+            await service.forgetPassword("wrong@email.fr");
+            await expect(findByEmailMock).toHaveBeenCalledWith("wrong@email.fr");
         });
 
-        it("should update user (called with user)", async () => {
-            await expect(service.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({ userId: userId });
+        it("should send a notification", async () => {
+            await service.forgetPassword("test@beta.gouv.fr");
+            await expect(notifyMock).toHaveBeenCalled();
         });
     });
 

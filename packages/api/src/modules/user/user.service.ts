@@ -408,9 +408,9 @@ export class UserService {
         return userUpdated;
     }
 
-    async forgetPassword(email: string): Promise<UserReset> {
+    async forgetPassword(email: string) {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
-        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
+        if (!user) return; // Don't say user not found, for security reasons
 
         const resetResult = await this.resetUser(user);
 
@@ -418,8 +418,6 @@ export class UserService {
             email: email.toLocaleLowerCase(),
             url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
         });
-
-        return resetResult;
     }
 
     async resetUser(user: UserDto): Promise<UserReset> {
