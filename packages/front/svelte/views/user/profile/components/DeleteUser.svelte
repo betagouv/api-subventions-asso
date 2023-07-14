@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    import { action, modal, data } from "../../../../store/modal.store";
+    import { action, modal } from "../../../../store/modal.store";
     import ConfirmDeleteUserModal from "./ConfirmDeleteUserModal.svelte";
     import Button from "@dsfr/Button.svelte";
 
