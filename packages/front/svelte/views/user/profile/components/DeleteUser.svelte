@@ -1,11 +1,20 @@
 <script>
     import { createEventDispatcher } from "svelte";
+
+    import { action, modal } from "../../../../store/modal.store";
+    import ConfirmDeleteUserModal from "./ConfirmDeleteUserModal.svelte";
     import Button from "@dsfr/Button.svelte";
 
     const dispatch = createEventDispatcher();
 
-    function deleteUser() {
-        dispatch("delete-user");
+    function openConfirmationModal() {
+        action.set(() => {
+            dispatch("delete-user");
+            action.set(null);
+            modal.set(null);
+        });
+
+        modal.update(() => ConfirmDeleteUserModal);
     }
 </script>
 
@@ -15,7 +24,7 @@
         Vous souhaitez supprimer votre compte ?
     </p>
     <p>La suppression de votre compte entraine une suppression de toutes vos données et historique de recherche.</p>
-    <Button on:click={deleteUser} type="tertiary">Supprimer mon compte</Button>
+    <Button ariaControls="fr-modal" on:click={openConfirmationModal} type="tertiary">Supprimer mon compte</Button>
 </div>
 
 <style>

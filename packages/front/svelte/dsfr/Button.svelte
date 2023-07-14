@@ -6,6 +6,7 @@
     export let size = "medium";
     export let outline = true;
     export let disabled = false;
+    export let styleClass = "";
     export let title = "";
     export let icon = "";
     export let iconPosition = "";
@@ -47,7 +48,7 @@
     }
 
     const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
-     ${getSpecificIconClass()}`;
+     ${getSpecificIconClass()} ${styleClass}`;
 </script>
 
 <button
