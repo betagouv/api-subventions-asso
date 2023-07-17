@@ -606,7 +606,7 @@ describe("User Service", () => {
 
         it("should remove resetUser", async () => {
             await userService.resetPassword(PASSWORD, RESET_TOKEN);
-            expect(mockedUserResetRepository.remove).toHaveBeenCalledWith(RESET_DOCUMENT);
+            expect(mockedUserResetRepository.removeAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
         });
 
         it("should notify USER_ACTIVATED", async () => {

@@ -391,7 +391,7 @@ export class UserService {
 
         const hashPassword = await bcrypt.hash(password, 10);
 
-        await userResetRepository.remove(reset);
+        await userResetRepository.removeAllByUserId(user._id);
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
