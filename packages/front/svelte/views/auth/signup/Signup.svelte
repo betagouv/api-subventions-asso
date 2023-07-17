@@ -47,8 +47,8 @@
 <div class="signup fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-7v">
     <form on:submit|preventDefault={() => ctrl.signup()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-            <legend class="fr-fieldset__legend" id="login-1797-fieldset-legend">
-                <h5>Créer un compte</h5>
+            <legend class="fr-fieldset__legend">
+                <h2 class="fr-h5">Créer un compte</h2>
             </legend>
             <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
                 <Input label="Nom :" id="signup-family-name" bind:value={$signupUser.lastname} required={true} />
@@ -74,7 +74,7 @@
                 <span>
                     En vous inscrivant, vous acceptez la
                     <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">politique de confidentialité</a>
-                     de Data.Subvention.
+                    de Data.Subvention.
                 </span>
             </div>
         </fieldset>
@@ -82,7 +82,7 @@
     <div class="separator" />
     <form on:submit|preventDefault={() => ctrl.signin()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-            <legend class="fr-fieldset__legend" id="login-1797-fieldset-legend">
+            <legend class="fr-fieldset__legend">
                 <h5>Vous avez déjà un compte ?</h5>
             </legend>
             <div class="fr-fieldset__element">
