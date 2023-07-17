@@ -305,7 +305,7 @@ export class UserService {
     public async disable(userId: string) {
         const user = await userRepository.findById(userId);
         if (!user) return false;
-        // Anonymize the user when it is beeing deleted to keep use stats consistent
+        // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
         const disabledUser = {
             ...user,
@@ -395,13 +395,11 @@ export class UserService {
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
-        const userUpdated = await userRepository.update({
+        return await userRepository.update({
             ...user,
             hashPassword,
             active: true,
         });
-
-        return userUpdated;
     }
 
     async forgetPassword(email: string) {
