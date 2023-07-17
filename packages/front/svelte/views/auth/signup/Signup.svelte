@@ -70,15 +70,11 @@
                     </li>
                 </ul>
             </div>
-            <div class="policy">
-                <span>En vous inscrivant, vous acceptez la</span>
+            <div class="policy fr-mx-12w">
                 <span>
-                    <b>
-                        <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">
-                            politique de confidentialité
-                        </a>
-                    </b>
-                    de Data.Subvention.
+                    En vous inscrivant, vous acceptez la
+                    <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">politique de confidentialité</a>
+                     de Data.Subvention.
                 </span>
             </div>
         </fieldset>
@@ -102,10 +98,13 @@
 
 <style>
     .policy {
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        text-align: center;
+        color: var(--text-mention-grey);
+        font-weight: 700;
+    }
+
+    .policy a {
+        color: var(--text-default-grey);
     }
 
     .signup {
