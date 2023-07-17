@@ -65,6 +65,7 @@
         "express-session": "^1.17.2",
         "express-winston": "^4.2.0",
         "lodash": "^4.17.21",
+        "nanoid": "^4.0.2",
         "reflect-metadata": "^0.1.13",
         "string-similarity": "^4.0.4",
         "ts-jest": "^29.0.3",
