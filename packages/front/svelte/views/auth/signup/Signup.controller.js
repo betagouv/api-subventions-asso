@@ -29,6 +29,10 @@ export default class SignupController {
         return PRIVACY_POLICY_URL;
     }
 
+    get cguUrl() {
+        return "/cgu";
+    }
+
     signup() {
         // TODO: check what format the new API create user is waiting for
         this.signupPromise.set(authService.signup(this.signupUser.value));
