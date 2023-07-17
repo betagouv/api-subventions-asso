@@ -80,7 +80,7 @@ export class UserService {
 
     async authenticate(tokenPayload, token): Promise<UserDto> {
         // Find the user associated with the email provided by the user
-        const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email.toLocaleLowerCase());
+        const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email);
         if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
         if (!tokenPayload[UserService.CONSUMER_TOKEN_PROP]) {
@@ -102,7 +102,7 @@ export class UserService {
     }
 
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
-        const user = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
+        const user = await userRepository.getUserWithSecretsByEmail(email);
 
         if (!user) throw new LoginError();
         const validPassword = await bcrypt.compare(password, user.hashPassword);
@@ -142,7 +142,7 @@ export class UserService {
     }
 
     public async logout(user: UserDto) {
-        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email.toLocaleLowerCase());
+        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
 
         if (!userWithSecrets?.jwt) {
             // No jwt, so user is already disconnected
@@ -153,7 +153,7 @@ export class UserService {
     }
 
     findByEmail(email: string) {
-        return userRepository.findByEmail(email.toLocaleLowerCase());
+        return userRepository.findByEmail(email);
     }
 
     async findConsumerToken(userId: ObjectId): Promise<string> {
@@ -189,8 +189,6 @@ export class UserService {
      * @param newUser
      */
     async validateSanitizeUser(user: FutureUserDto, newUser = true) {
-        user.email = user.email.toLocaleLowerCase();
-
         await this.validateEmail(user.email);
 
         if (newUser && (await userRepository.findByEmail(user.email)))
@@ -275,7 +273,6 @@ export class UserService {
     }
 
     public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
-        userObject.email = userObject.email.toLocaleLowerCase();
         userObject.roles = [role];
 
         let user;
@@ -443,7 +440,7 @@ export class UserService {
 
     // Only used in tests
     async findJwtByEmail(email: string): Promise<{ jwt: { token: string; expirateDate: Date } }> {
-        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email.toLocaleLowerCase());
+        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(email);
         if (!userWithSecrets) {
             throw new Error("User not found");
         }

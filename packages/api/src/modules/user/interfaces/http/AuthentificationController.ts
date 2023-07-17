@@ -15,7 +15,7 @@ export class AuthentificationController extends Controller {
     @Post("/forget-password")
     public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        await userService.forgetPassword(body.email);
+        await userService.forgetPassword(body.email.toLocaleLowerCase());
         return { success: true };
     }
 
@@ -50,7 +50,11 @@ export class AuthentificationController extends Controller {
     @Post("/signup")
     @SuccessResponse("201", "Signup successfully")
     public async signup(@Body() body: FutureUserDto): Promise<SignupDtoResponse> {
-        const user = await userService.signup(body);
+        const formatedBody = {
+            ...body,
+            email: body.email.toLocaleLowerCase(),
+        };
+        const user = await userService.signup(formatedBody);
         this.setStatus(201);
         return { user };
     }
