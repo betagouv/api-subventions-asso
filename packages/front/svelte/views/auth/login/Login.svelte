@@ -28,7 +28,7 @@
 <div class="login fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-7v">
     <form on:submit|preventDefault={() => controller.submit()}>
         <fieldset class="fr-fieldset fr-mb-5w">
-            <legend class="fr-fieldset__legend" id="login-legend">Se connecter à son compte</legend>
+            <legend class="fr-fieldset__legend fr-h5" id="login-legend">Se connecter à son compte</legend>
             <div class="fr-fieldset__element fr-mt-4v">
                 <Input
                     type="email"
@@ -80,7 +80,7 @@
     <div class="separator" />
     <form on:submit|preventDefault={() => controller.signup()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-            <legend class="fr-fieldset__legend" id="signup">Vous n'avez pas de compte ?</legend>
+            <legend class="fr-fieldset__legend fr-h5" id="signup">Vous n'avez pas de compte ?</legend>
             <div class="fr-fieldset__element">
                 <ul class="fr-btns-group">
                     <li>
