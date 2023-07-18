@@ -1,29 +1,29 @@
-import axios from "axios";
+import requestsService from "@services/requests.service";
 
 class AssociationPort {
     incExtractData(identifier) {
         const path = `/association/${identifier}/extract-data`;
-        axios.get(path).catch(() => null);
+        requestsService.get(path).catch(() => null);
     }
 
     async getByIdentifier(identifier) {
         const path = `/association/${identifier}`;
-        return (await axios.get(path))?.data?.association;
+        return (await requestsService.get(path))?.data?.association;
     }
 
     async getEstablishments(identifier) {
         const path = `/association/${identifier}/etablissements`;
-        return (await axios.get(path))?.data?.etablissements;
+        return (await requestsService.get(path))?.data?.etablissements;
     }
 
     async getDocuments(identifier) {
         const path = `association/${identifier}/documents`;
-        return (await axios.get(path))?.data?.documents;
+        return (await requestsService.get(path))?.data?.documents;
     }
 
     async search(lookup) {
         const path = `/search/associations/${lookup}`;
-        return (await axios.get(path))?.data?.result;
+        return (await requestsService.get(path))?.data?.result;
     }
 }
 
