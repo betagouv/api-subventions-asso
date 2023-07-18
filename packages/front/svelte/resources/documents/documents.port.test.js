@@ -1,23 +1,23 @@
-import axios from "axios";
 import documentPort from "./documents.port";
+import requestsService from "@services/requests.service";
 
-jest.mock("axios");
+jest.mock("@services/requests.service");
 
 describe("DocumentsPort", () => {
-    beforeAll(() => axios.get.mockImplementation(() => Promise.resolve({ data: "" })));
+    beforeAll(() => requestsService.get.mockImplementation(() => Promise.resolve({ data: "" })));
     const DOC_URL = "/path";
 
     describe("search", () => {
-        it("calls axios get", async () => {
+        it("calls requestsService get", async () => {
             const expected = [DOC_URL, { responseType: "blob" }];
             await documentPort.getDauphinBlob(DOC_URL);
-            expect(axios.get).toHaveBeenCalledWith(...expected);
+            expect(requestsService.get).toHaveBeenCalledWith(...expected);
         });
 
-        it("return documents list from axios result", async () => {
+        it("return documents list from requestsService result", async () => {
             const expected = [];
             const RES = { data: expected };
-            axios.get.mockResolvedValueOnce(RES);
+            requestsService.get.mockResolvedValueOnce(RES);
             const actual = await documentPort.getDauphinBlob(DOC_URL);
             expect(actual).toBe(expected);
         });
