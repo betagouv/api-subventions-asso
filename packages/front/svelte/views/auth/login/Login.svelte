@@ -34,6 +34,7 @@
                     type="email"
                     label="Email professionnel"
                     id="email-input"
+                    autocomplete="email"
                     bind:value={controller.email}
                     required={true} />
             </div>
