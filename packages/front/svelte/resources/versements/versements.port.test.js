@@ -90,7 +90,7 @@ describe("VersementsPort", () => {
             flatenProviderValueMock.mockRestore();
         });
 
-        it("should call axios with fake value type in path", async () => {
+        it("should call requestService with fake value type in path", async () => {
             const expected = ["/FAKE/ID/versements"];
 
             getMock.mockImplementationOnce(async () => ({ data: { versements: [] } }));
