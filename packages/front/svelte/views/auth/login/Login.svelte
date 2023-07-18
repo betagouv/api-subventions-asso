@@ -25,7 +25,7 @@
         {successMessage}
     </Alert>
 {/if}
-<div class="login fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-7v">
+<div class="login fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
     <form on:submit|preventDefault={() => controller.submit()}>
         <fieldset class="fr-fieldset fr-mb-5w">
             <legend class="fr-fieldset__legend fr-h5" id="login-legend">Se connecter à son compte</legend>
