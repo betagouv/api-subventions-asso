@@ -1,9 +1,9 @@
-import axios from "axios";
 import establishmentPort from "./establishment.port";
 import requestsService from "@services/requests.service";
+jest.mock("@services/requests.service");
 
 describe("EstablishmentPort", () => {
-    axios.get.mockImplementation(() => ({ catch: jest.fn() }));
+    requestsService.get.mockImplementation(() => ({ catch: jest.fn() }));
 
     jest.spyOn(requestsService, "get");
     const SIRET = "SIRET";
@@ -11,7 +11,7 @@ describe("EstablishmentPort", () => {
         it("should call axios with route", () => {
             const expected = `/etablissement/${SIRET}/extract-data`;
             establishmentPort.incExtractData(SIRET);
-            expect(axios.get).toHaveBeenCalledWith(expected);
+            expect(requestsService.get).toHaveBeenCalledWith(expected);
         });
     });
 
@@ -19,7 +19,7 @@ describe("EstablishmentPort", () => {
         it("should call axios with route", () => {
             const expected = `/etablissement/${SIRET}`;
             establishmentPort.getBySiret(SIRET);
-            expect(axios.get).toHaveBeenCalledWith(expected);
+            expect(requestsService.get).toHaveBeenCalledWith(expected);
         });
     });
 
