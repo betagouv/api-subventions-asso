@@ -1,8 +1,8 @@
-// Voir si il ne vaux mieux pas passer ça en adapteur
-import axios from "axios";
-import { flattenProviderValue } from "../../helpers/providerValueHelper";
+// Voir s'il ne vaut mieux pas passer ça en adapter
 import SSEConnector from "../../core/SseConnector";
 import Store from "../../core/Store";
+import { flattenProviderValue } from "@helpers/providerValueHelper";
+import requestsService from "@services/requests.service";
 
 class SubventionsPort {
     _getSubventionsConnectedStore(identifier, type) {
@@ -66,7 +66,7 @@ class SubventionsPort {
 
     _getSubventionByHttp(type, identifier) {
         const pathHttp = `/${type}/${identifier}/subventions`;
-        return axios.get(pathHttp).then(result => {
+        return requestsService.get(pathHttp).then(result => {
             if (!result.data) return [];
             return result.data.subventions;
         });

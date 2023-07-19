@@ -1,4 +1,3 @@
-import axios from "axios";
 import requestsService from "@services/requests.service";
 
 export class AuthPort {
@@ -24,7 +23,7 @@ export class AuthPort {
 
     forgetPassword(email) {
         const path = `${this.BASE_PATH}/forget-password`;
-        return axios.post(path, { email }).then(() => true);
+        return requestsService.post(path, { email }).then(() => true);
     }
 }
 
