@@ -31,30 +31,31 @@
             <legend class="fr-fieldset__legend fr-h5" id="login-legend">Se connecter à son compte</legend>
             <div class="fr-fieldset__element fr-mt-4v">
                 <Input
+                    id="email-input"
                     type="email"
                     label="Email professionnel"
-                    id="email-input"
                     autocomplete="email"
                     bind:value={controller.email}
                     required={true} />
             </div>
             <div class="fr-fieldset__element fr-mt-4v">
+                <!-- do not use <Input /> because of display and accessibility specificities -->
                 <div class="fr-password" id="password">
-                    <!-- <label class="fr-label" for="password-input">Mot de passe</label> -->
-                    <!-- <div class="fr-input-wrap"> -->
-                    <Input
-                        bind:value={controller.password}
-                        required={true}
-                        type="password"
-                        label="Mot de passe"
-                        id="password-input"
-                        name="password"
-                        autocomplete="current-password"
-                        aria-required="true"
-                        aria-describedby="password-input-messages" />
-                    <!-- </div> -->
+                    <label class="fr-label" for="password-input">Mot de passe</label>
+                    <div class="fr-input-wrap">
+                        <input
+                            bind:value={controller.password}
+                            class="fr-password__input fr-input fr-password__input fr-input"
+                            aria-describedby="password-input-messages"
+                            aria-required="true"
+                            name="password"
+                            autocomplete="new-password"
+                            id="password-input"
+                            type="password"
+                            required />
+                    </div>
                     <div class="fr-messages-group" id="password-input-messages" aria-live="assertive" />
-                    <!-- <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
+                    <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
                         <input
                             aria-label="Afficher le mot de passe"
                             id="password-show"
@@ -62,12 +63,13 @@
                             aria-describedby="password-show-messages" />
                         <label class="fr-password__checkbox fr-label" for="password-show">Afficher</label>
                         <div class="fr-messages-group" id="password-show-messages" aria-live="assertive" />
-                    </div> -->
-                    <p>
-                        <a href={controller.forgetPasswordUrl} class="fr-link">Mot de passe oublié ?</a>
-                    </p>
+                    </div>
                 </div>
+                <p>
+                    <a href={controller.forgetPasswordUrl} class="fr-link">Mot de passe oublié ?</a>
+                </p>
             </div>
+
             <div class="fr-fieldset__element fr-mt-4v">
                 <ul class="fr-btns-group">
                     <li>
