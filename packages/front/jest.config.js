@@ -7,6 +7,7 @@ module.exports = {
         "^.+\\.ts?$": "ts-jest",
         "\\.jsx?$": "babel-jest",
     },
+    transformIgnorePatterns: ["/node-modules/(?!(nanoid)/)"],
     modulePathIgnorePatterns: ["./build"],
     moduleFileExtensions: ["ts", "js", "svelte"],
     testEnvironment: "jsdom",

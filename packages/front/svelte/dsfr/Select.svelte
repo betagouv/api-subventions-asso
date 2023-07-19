@@ -1,13 +1,14 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { nanoid } from "nanoid";
 
     export let options;
     export let selected = undefined;
     export let label = undefined;
     export let narrow = false;
-    export let id = "0";
+    export let id = nanoid(7);
 
-    const name = `input-text-${id}`;
+    const name = `select-${id}`;
 
     const dispatch = createEventDispatcher();
 
