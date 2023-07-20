@@ -1,7 +1,7 @@
 import { SignupErrorCodes } from "@api-subventions-asso/dto";
 import { getContext } from "svelte";
-import { PRIVACY_POLICY_URL } from "../../../../src/shared/config";
-import Store from "@core/Store";
+import { PRIVACY_POLICY_URL } from "$lib/config";
+import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service";
 

@@ -1,6 +1,6 @@
 import * as RouterService from "$lib/services/router.service";
 import { isAdmin } from "$lib/services/user.service";
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 
 export default class RouterController {

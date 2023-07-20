@@ -1,4 +1,4 @@
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 
 export class MonthlyGraphTooltipController {

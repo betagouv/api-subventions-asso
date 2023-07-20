@@ -1,6 +1,6 @@
 import Chart from "chart.js/auto";
 import { STATS_YEAR_CHOICES } from "$lib/helpers/dateHelper";
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 
 export class MonthlyGraphController {
     /**

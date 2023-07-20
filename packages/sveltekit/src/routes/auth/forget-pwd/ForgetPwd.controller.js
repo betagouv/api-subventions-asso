@@ -1,4 +1,4 @@
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 
 export default class ForgetPwdController {

@@ -1,5 +1,5 @@
 import Chart from "chart.js/auto";
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 import statsService from "$lib/resources/stats/stats.service";
 
 export default class UserDistributionController {

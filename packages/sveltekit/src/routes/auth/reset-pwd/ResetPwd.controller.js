@@ -1,5 +1,5 @@
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 
 export class ResetPwdController {

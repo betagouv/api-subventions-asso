@@ -1,7 +1,7 @@
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
 import { goToUrl } from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 
 export default class LoginController {
     constructor(query) {

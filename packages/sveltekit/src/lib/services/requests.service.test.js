@@ -1,8 +1,8 @@
 import axios from "axios";
-import { DATASUB_URL } from "../../src/shared/config";
+import { DATASUB_URL } from "$lib/config";
 import { NotFoundError } from "../errors";
 import errorsService from "../errors/errors.service";
-import requestsService from "$lib/s/requests.service";
+import requestsService from "$lib/services/requests.service";
 
 describe("RequestService", () => {
     describe("constructor", () => {

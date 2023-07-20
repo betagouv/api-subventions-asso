@@ -1,4 +1,4 @@
-import Store from "@core/Store";
+import Store from "$lib/core/Store";
 import statsService from "$lib/resources/stats/stats.service";
 import { getOneYearBeforeDate } from "@helpers/dateHelper";
 
