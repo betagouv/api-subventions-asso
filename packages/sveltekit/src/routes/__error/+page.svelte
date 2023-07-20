@@ -1,6 +1,6 @@
 <script>
     import NotFoundController from "./NotFound.controller";
-    import {svg404} from "$lib/assets/images/404.svg"
+    // import { svg404 } from "$lib/assets/images/svg404.svg"
 
     const ctrl = new NotFoundController();
 </script>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="same-size flex center fr-pl-8v fr-mx-8v">
-        <img src={svg404} alt="404 - Page non trouvée" />
+<!--        <img src={svg404} alt="404 - Page non trouvée" />-->
     </div>
 </div>
 

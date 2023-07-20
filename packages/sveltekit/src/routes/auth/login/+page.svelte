@@ -5,7 +5,7 @@
     import Button from "$lib/dsfr/Button.svelte";
 
     let form;
-    export let query;
+    export let query = {};
     const controller = new LoginController(query);
 
     const { error, showSuccessMessage, successMessage } = controller;
