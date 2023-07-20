@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersementTableController extractHeaders() return an array of header 1`] = `
+[
+  "Montant versé",
+  "Centre financier",
+  "Date du versement",
+  "BOP",
+]
+`;
