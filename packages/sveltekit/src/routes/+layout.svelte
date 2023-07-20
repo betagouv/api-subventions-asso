@@ -3,6 +3,7 @@
     import "../global.css";
     import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css"
     import "@gouvfr/dsfr/dist/utility/icons/icons.min.css"
+    import "@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js"
     import { displayBlueBanner } from "$lib/store/context.store";
 
     import Auth from "$lib/components/Auth/Auth.svelte";
@@ -20,6 +21,12 @@
         getContact: () => "contact@datasubvention.beta.gouv.fr",
         getRepo: () => "https://github.com/betagouv/api-subventions-asso",
     });
+
+    // Options disponibles à l'initialisation du DSFR
+    window.dsfr = {
+        verbose: false,
+        mode: "runtime"
+    };
 </script>
 
 <GenericModal />
