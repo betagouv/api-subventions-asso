@@ -1,4 +1,7 @@
 <script>
+    import light from "@gouvfr/dsfr/dist/artwork/light.svg"
+    import dark from "@gouvfr/dsfr/dist/artwork/dark.svg"
+    import system from "@gouvfr/dsfr/dist/artwork/system.svg"
 </script>
 
 <div>
@@ -27,7 +30,7 @@
                                                     name="fr-radios-theme" />
                                                 <label class="fr-label" for="fr-radios-theme-light">Thème clair</label>
                                                 <div class="fr-radio-rich__img" data-fr-inject-svg>
-                                                    <img src="@gouvfr/dsfr/dist/artwork/light.svg" alt="" />
+                                                    <img src={light} alt="" />
                                                     <!-- L’alternative de l’image (attribut alt) doit rester vide car l’image est illustrative et ne doit pas être restituée aux technologies d’assistance -->
                                                 </div>
                                             </div>
@@ -39,7 +42,7 @@
                                                     name="fr-radios-theme" />
                                                 <label class="fr-label" for="fr-radios-theme-dark">Thème sombre</label>
                                                 <div class="fr-radio-rich__img" data-fr-inject-svg>
-                                                    <img src="@gouvfr/dsfr/dist/artwork/dark.svg" alt="" />
+                                                    <img src={dark} alt="" />
                                                     <!-- L’alternative de l’image (attribut alt) doit rester vide car l’image est illustrative et ne doit pas être restituée aux technologies d’assistance -->
                                                 </div>
                                             </div>
@@ -54,7 +57,7 @@
                                                     <span class="fr-hint-text">Utilise les paramètres système.</span>
                                                 </label>
                                                 <div class="fr-radio-rich__img" data-fr-inject-svg>
-                                                    <img src="@gouvfr/dsfr/dist/artwork/system.svg" alt="" />
+                                                    <img src={system} alt="" />
                                                     <!-- L’alternative de l’image (attribut alt) doit rester vide car l’image est illustrative et ne doit pas être restituée aux technologies d’assistance -->
                                                 </div>
                                             </div>

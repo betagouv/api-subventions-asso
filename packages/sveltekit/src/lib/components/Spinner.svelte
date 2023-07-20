@@ -1,10 +1,11 @@
 <script>
     export let description = "";
+    import logo from "$lib/assets/images/logo-beta.png"
 </script>
 
 <div class="spinner-container">
     <p>{description}</p>
-    <img src="/static/images/logo-beta.png" class="spinner" alt="Chargement en cours" />
+    <img src={logo} class="spinner" alt="Chargement en cours" />
 </div>
 
 <style>

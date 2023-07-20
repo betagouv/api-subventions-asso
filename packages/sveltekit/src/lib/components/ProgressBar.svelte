@@ -1,6 +1,7 @@
 <script>
     export let percent = 0;
     export let loadingText = "";
+    import logo from "$lib/assets/images/logo-beta.png"
 </script>
 
 <div class="text-container">
@@ -12,7 +13,7 @@
             <span class="progress" style="width: {percent}%" />
         </span>
     </div>
-    <img src="/static/images/logo-beta.png" class="spinner" alt="Chargement en cours" />
+    <img src={logo} class="spinner" alt="Chargement en cours" />
 </div>
 
 <style>
