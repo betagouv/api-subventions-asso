@@ -1,6 +1,6 @@
 <script>
     import { setContext } from "svelte";
-    import "../../global.css";
+    import "../global.css";
     import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css"
     import "@gouvfr/dsfr/dist/utility/icons/icons.min.css"
     import { displayBlueBanner } from "$lib/store/context.store";
