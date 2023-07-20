@@ -6,8 +6,9 @@
     };
 </script>
 
-{Object.values(values)}
-<Input label="Email" bind:value={values.email} />
+<fieldset>
+    <Input label="Email" bind:value={values.email} />
+</fieldset>
 
 <style>
 </style>

@@ -1,66 +1,56 @@
 <script>
-    import Fieldset from "./Fieldset.svelte";
+    import MultiStepFormController from "./MultiStepForm.controller";
+    import Button from "@dsfr/Button.svelte";
 
     export let steps = [];
     export let onSubmit;
 
-    let currentStep = 1;
-    const nbSteps = steps.length;
-    let mapStepToValues = steps.map(() => ({}));
+    const controller = new MultiStepFormController(steps, onSubmit);
+    const { currentStepIndex, data } = controller;
 
-    $: values = mapStepToValues.reduce((acc, curr) => {
-        return { ...acc, ...curr };
-    }, {});
-
-    $: currentStepIndex = currentStep - 1;
-    $: firstStep = currentStep == 1;
-    $: lastStep = currentStep == nbSteps;
-
-    function submit() {
-        onSubmit(values);
-    }
-
-    function next() {
-        if (lastStep) return;
-        currentStep++;
-    }
-
-    function previous() {
-        if (firstStep) return;
-        currentStep--;
-    }
+    $: currentStep = $currentStepIndex + 1;
+    $: firstStep = $currentStepIndex == 0;
+    $: lastStep = $currentStepIndex == controller.nbSteps - 1;
 </script>
 
 <div class="fr-stepper">
     <h2 class="fr-stepper__title">
-        <span class="fr-stepper__state">Étape {currentStep} sur {nbSteps}</span>
-        {steps[currentStepIndex].name || ""}
+        <span class="fr-stepper__state">Étape {currentStep} sur {controller.nbSteps}</span>
+        {steps[$currentStepIndex].name}
     </h2>
-    <div class="fr-stepper__steps" data-fr-current-step={currentStep} data-fr-steps={nbSteps} />
+    <div class="fr-stepper__steps" data-fr-current-step={currentStep} data-fr-steps={controller.nbSteps} />
     {#if !lastStep}
         <p class="fr-stepper__details">
             <span class="fr-text--bold">Étape suivante :</span>
-            {steps[currentStepIndex + 1].name || `étape ${currentStep + 1}`}
+            {steps[$currentStepIndex + 1].name || `étape ${$currentStepIndex + 1}`}
         </p>
     {/if}
 </div>
 
-<form action="#" method="GET" on:submit|preventDefault={submit}>
+<form action="#" method="GET" on:submit|preventDefault={() => controller.submit()}>
     {#each steps as step, index}
         {#if firstStep && index == 0}
-            <Fieldset on:next={next} firstStep={true}>
-                <svelte:component this={step.component} bind:values={mapStepToValues[index]} />
-            </Fieldset>
-        {:else if lastStep && index == steps.length - 1}
-            <Fieldset on:previous={previous} lastStep={true}>
-                <svelte:component this={step.component} bind:values={mapStepToValues[index]} />
-            </Fieldset>
-        {:else if index == currentStepIndex}
-            <Fieldset on:previous={previous} on:next={next}>
-                <svelte:component this={step.component} bind:values={mapStepToValues[index]} />
-            </Fieldset>
+            <svelte:component this={step.component} bind:values={$data[index]} />
+        {:else if lastStep && index == controller.nbSteps - 1}
+            <svelte:component this={step.component} bind:values={$data[index]} />
+        {:else if index == $currentStepIndex}
+            <svelte:component this={step.component} bind:values={$data[index]} />
         {/if}
     {/each}
+    <div class="fr-mt-6v">
+        <Button
+            htmlType="button"
+            type="secondary"
+            on:click={() => controller.previous()}
+            disabled={firstStep ? true : false}>
+            Previous
+        </Button>
+        {#if lastStep}
+            <Button htmlType="submit">Submit</Button>
+        {:else}
+            <Button htmlType="button" type="secondary" on:click={() => controller.next()}>Next</Button>
+        {/if}
+    </div>
 </form>
 
 <style>
