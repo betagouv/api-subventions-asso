@@ -61,6 +61,10 @@ module.exports = {
                     fullySpecified: false,
                 },
             },
+            {
+                test: /\.svg$/,
+                loader: "svg-inline-loader",
+            },
         ],
     },
     mode,

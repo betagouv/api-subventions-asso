@@ -27,7 +27,7 @@ export const buildBreadcrumbs = path => {
         if (path.includes("stats")) crumbs.push({ label: PAGE_ADMIN_STATS_NAME });
     } else if (path.includes("auth")) {
         crumbs.push({ label: "Connexion", url: "/auth/login" });
-        if (path.includes("reset-password")) crumbs.push({ label: "Changement de mot de passe" });
+        if (path.includes("reset-password")) crumbs.push({ label: "Réinitialisation de mot de passe" });
         if (path.includes("forget-password")) crumbs.push({ label: "Mot de passe perdu" });
         if (path.includes("signup")) crumbs.push({ label: "Créer un compte" });
     }
