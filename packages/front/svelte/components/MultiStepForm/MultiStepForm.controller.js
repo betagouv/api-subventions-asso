@@ -9,23 +9,7 @@ export default class MultiStepFormController {
         this.data = new Store(this.steps.map(() => ({})));
     }
 
-    get nbSteps() {
-        return this.steps.length;
-    }
-
-    get currentStepName() {
-        return this.steps[this.currentStepIndex.value].name;
-    }
-
-    get nextStepName() {
-        return this.steps[this.currentStepIndex.value + 1].name || null;
-    }
-
-    // get currentStepComponent() {
-    //     return this.steps[this.currentStepIndex].component;
-    // }
-
-    get flattenedData() {
+    _getFlattenedData() {
         return this.data.value.reduce((acc, curr) => {
             return { ...acc, ...curr };
         }, {});
@@ -33,7 +17,7 @@ export default class MultiStepFormController {
 
     submit() {
         console.log("submit");
-        this.onSubmit(this.flattenedData);
+        this.onSubmit(this._getFlattenedData());
     }
 
     next() {

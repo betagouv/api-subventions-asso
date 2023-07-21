@@ -10,15 +10,15 @@
 
     $: currentStep = $currentStepIndex + 1;
     $: firstStep = $currentStepIndex == 0;
-    $: lastStep = $currentStepIndex == controller.nbSteps - 1;
+    $: lastStep = $currentStepIndex == steps.length - 1;
 </script>
 
 <div class="fr-stepper">
     <h2 class="fr-stepper__title">
-        <span class="fr-stepper__state">Étape {currentStep} sur {controller.nbSteps}</span>
+        <span class="fr-stepper__state">Étape {currentStep} sur {steps.length}</span>
         {steps[$currentStepIndex].name}
     </h2>
-    <div class="fr-stepper__steps" data-fr-current-step={currentStep} data-fr-steps={controller.nbSteps} />
+    <div class="fr-stepper__steps" data-fr-current-step={currentStep} data-fr-steps={steps.length} />
     {#if !lastStep}
         <p class="fr-stepper__details">
             <span class="fr-text--bold">Étape suivante :</span>
@@ -31,7 +31,7 @@
     {#each steps as step, index}
         {#if firstStep && index == 0}
             <svelte:component this={step.component} bind:values={$data[index]} />
-        {:else if lastStep && index == controller.nbSteps - 1}
+        {:else if lastStep && index == steps.length - 1}
             <svelte:component this={step.component} bind:values={$data[index]} />
         {:else if index == $currentStepIndex}
             <svelte:component this={step.component} bind:values={$data[index]} />
