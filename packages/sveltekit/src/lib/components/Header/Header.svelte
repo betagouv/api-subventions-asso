@@ -3,6 +3,7 @@
     import HeaderController from "./Header.controller";
     import authService from "$lib/resources/auth/auth.service";
     import Button from "$lib/dsfr/Button.svelte";
+    import { version } from "$app/environment";
 
     const user = authService.getCurrentUser();
     const { getName, getDescription, getEnv } = getContext("app");
@@ -40,7 +41,7 @@
                     <div class="fr-header__service">
                         <a href="/" title="Accueil - {name}">
                             <p class="fr-header__service-title">
-                                {name} - V{PKG.version}
+                                {name} - V{version}
                             </p>
                             {#if env != "prod"}
                                 <p class="stage">{env}</p>
