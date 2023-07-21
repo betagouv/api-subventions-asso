@@ -2,9 +2,9 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Input from "$lib/dsfr/Input.svelte";
-    import { PAGE_ADMIN_USERS_CREATE_NAME } from "../admin.constant";
+    import { PAGE_ADMIN_USERS_CREATE_NAME } from "../../admin.constant";
 
-    import adminService from "../admin.service";
+    import adminService from "../../admin.service";
 
     let email;
     let error = false;

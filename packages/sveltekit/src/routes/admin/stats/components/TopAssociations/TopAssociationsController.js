@@ -1,6 +1,6 @@
 import Store from "$lib/core/Store";
 import statsService from "$lib/resources/stats/stats.service";
-import { getOneYearBeforeDate } from "@helpers/dateHelper";
+import { getOneYearBeforeDate } from "$lib/helpers/dateHelper";
 
 export default class TopAssociationsController {
     constructor(limit = 5) {

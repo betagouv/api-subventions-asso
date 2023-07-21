@@ -1,7 +1,7 @@
 <script>
-    import { PAGE_ADMIN_USERS_METRICS_NAME } from "../admin.constant";
-    import MonthlyUserCountByYear from "./composents/MonthlyUserCountByYear/MonthlyUserCountByYear.svelte";
-    import UserDistribution from "./composents/UserDistribution/UserDistribution.svelte";
+    import { PAGE_ADMIN_USERS_METRICS_NAME } from "../../admin.constant";
+    import MonthlyUserCountByYear from "../composents/MonthlyUserCountByYear/MonthlyUserCountByYear.svelte";
+    import UserDistribution from "../composents/UserDistribution/UserDistribution.svelte";
 </script>
 
 <h1 class="fr-h2 fr-mb-6w">{PAGE_ADMIN_USERS_METRICS_NAME}</h1>
