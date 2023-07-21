@@ -4,6 +4,8 @@ import {
     PAGE_ADMIN_USERS_CREATE_NAME,
     PAGE_ADMIN_STATS_NAME,
 } from "../../routes/admin/admin.constant";
+import { goto } from "$app/navigation";
+
 if (![].at) {
     Array.prototype.at = function (pos) {
         return this.slice(pos, pos + 1)[0];
@@ -34,40 +36,8 @@ export const buildBreadcrumbs = path => {
     return crumbs;
 };
 
-export const mapSegments = path =>
-    path
-        .replace(/^\/+|\/+$/g, "")
-        .split("/")
-        .map(segment => ({
-            name: segment.replace(":", ""),
-            variable: segment.startsWith(":"),
-        }));
-
-export const getRouteSegments = routes =>
-    Object.entries(routes).map(([path, { component, disableAuth }]) => ({
-        path,
-        component,
-        disableAuth,
-        segments: mapSegments(path),
-    }));
-
-export const getSegments = path => path.replace(/^\/+|\/+$/g, "").split("/");
-
-export const getRoute = (routes, path) => {
-    const segments = path.replace(/^\/+|\/+$/g, "").split("/");
-    return getRouteSegments(routes).find(route => {
-        if (route.segments.length !== segments.length) return false;
-        return segments.every((s, i) => route.segments[i].name === s || route.segments[i].variable);
-    });
-};
-
-export const getProps = (path, routeSegments) => {
-    let props = {};
-    getSegments(path).forEach((s, i) => routeSegments[i].variable && (props[routeSegments[i].name] = s));
-    return props;
-};
-
 export const goToUrl = (url, saveHistory = true) => {
+    if (!url.includes("://")) return goto(url, {replaceState: !saveHistory})
     if (saveHistory) window.location.assign(url);
     else window.location.replace(url);
 };

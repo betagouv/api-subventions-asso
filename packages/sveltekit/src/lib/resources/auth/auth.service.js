@@ -1,11 +1,11 @@
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
-// import routes from "../../routes";
 import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
-import * as RouterService from "$lib/services/router.service";
 import requestsService from "$lib/services/requests.service";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
+import { get } from "svelte/store";
+import { page } from "$app/stores";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
@@ -27,7 +27,7 @@ export class AuthService {
 
     async login(email, password) {
         const user = await authPort.login(email, password);
-        // localStorage.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
+        localStorage.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
         crispService.setUserEmail(user.email);
 
         return user;
@@ -40,22 +40,19 @@ export class AuthService {
         if (user) crispService.setUserEmail(user.email);
 
         requestsService.addErrorHook(UnauthorizedError, () => {
-            // const current = RouterService.getRoute(routes, location.pathname);
-            // if (current.disableAuth) return;
-
             this.logout();
-            const queryUrl = encodeURIComponent(location.pathname);
+            const queryUrl = encodeURIComponent(get(page).url.pathname);
             goToUrl(`/auth/login?url=${queryUrl}`);
         });
     }
 
     logout() {
-        // localStorage.removeItem(this.USER_LOCAL_STORAGE_KEY);
+        localStorage.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
     }
 
     getCurrentUser() {
-        // return JSON.parse(localStorage.getItem(this.USER_LOCAL_STORAGE_KEY));
+        return JSON.parse(localStorage.getItem(this.USER_LOCAL_STORAGE_KEY));
     }
 }
 

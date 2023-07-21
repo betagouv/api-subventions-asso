@@ -13,6 +13,9 @@
     import Footer from "$lib/components/Footer.svelte";
     import Theme from "$lib/components/Theme.svelte";
     import { ENV } from "$lib/config";
+    import Breadcrumb from "$lib/dsfr/Breadcrumb.svelte";
+
+    export let data
 
     setContext("app", {
         getEnv: () => ENV,
@@ -38,6 +41,7 @@
         <Header />
         <div class="fr-container fr-mb-8w">
             <main id="content">
+                <Breadcrumb crumbs={data.crumbs} />
                 <slot></slot>
             </main>
         </div>

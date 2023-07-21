@@ -1,4 +1,4 @@
-import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../views/admin/admin.constant";
+import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../../routes/admin/admin.constant";
 import * as RouterService from "./router.service";
 
 describe("Router Service", () => {
