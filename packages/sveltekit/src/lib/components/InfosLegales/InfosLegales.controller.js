@@ -4,7 +4,7 @@ import {
     getImmatriculation,
     getModification,
     getSiegeSiret,
-} from "../../views/association/association.helper";
+} from "$lib/resources/associations/association.helper";
 import { modal, data } from "../../store/modal.store";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";

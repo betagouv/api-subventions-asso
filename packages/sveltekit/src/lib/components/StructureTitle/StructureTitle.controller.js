@@ -1,4 +1,4 @@
-import { getSiegeSiret } from "../../views/association/association.helper";
+import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
 
 export class StructureTitleController {

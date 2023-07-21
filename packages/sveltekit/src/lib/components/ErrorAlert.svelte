@@ -1,5 +1,5 @@
 <script>
-    import Alert from "$lib/dsfr/Alert";
+    import Alert from "$lib/dsfr/Alert.svelte";
 
     export let message;
 </script>

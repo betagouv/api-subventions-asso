@@ -3,7 +3,7 @@ import DEFAULT_ETABLISSEMENT from "../../views/establishment/__fixtures__/Etabli
 import InfosLegalesController from "./InfosLegales.controller";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
-jest.mock("../../views/association/association.helper", () => {
+jest.mock("$lib/resources/associations/association.helper", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const ASSOCIATION = require("../../views/association/__fixtures__/Association");
     return {

@@ -1,4 +1,4 @@
-import * as associationHelper from "../../views/association/association.helper";
+import * as associationHelper from "$lib/resources/associations/association.helper";
 import { StructureTitleController } from "./StructureTitle.controller";
 
 describe("StructureTitleController", () => {

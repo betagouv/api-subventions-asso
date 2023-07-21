@@ -1,4 +1,4 @@
-import { addressToString } from "../../views/association/association.helper";
+import { addressToString } from "$lib/resources/associations/association.helper";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
 
 export class EstablishmentPreviewController {
