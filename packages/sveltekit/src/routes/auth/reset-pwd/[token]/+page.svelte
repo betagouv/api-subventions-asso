@@ -5,7 +5,8 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
 
-    export let token;
+    export let data
+    const { token } = data.params;
 
     const ctrl = new ResetPwdController(token);
     const { promise, password } = ctrl;

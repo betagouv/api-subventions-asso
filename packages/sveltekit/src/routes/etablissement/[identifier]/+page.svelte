@@ -2,15 +2,16 @@
     import DataNotFound from "$lib/components/DataNotFound.svelte";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import InfosLegales from "$lib/components/InfosLegales/InfosLegales.svelte";
-    import { activeBlueBanner } from "../../store/context.store";
+    import { activeBlueBanner } from "$lib/store/context.store";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
     import TabsEtab from "$lib/components/TabsEtab.svelte";
-    import { siretToSiren } from "@helpers/sirenHelper";
+    import { siretToSiren } from "$lib/helpers/sirenHelper";
     import associationService from "$lib/resources/associations/association.service";
     import establishmentService from "$lib/resources/establishments/establishment.service";
 
-    export let id;
+    export let data
+    const { identifier } = data.params;
 
     activeBlueBanner();
 

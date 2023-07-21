@@ -1,21 +1,22 @@
 <script>
-    import Alert from "$lib/dsfr/Alert.svelte";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import InfosLegales from "$lib/components/InfosLegales/InfosLegales.svelte";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
+    import Alert from "$lib/dsfr/Alert.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
-    import TabsAsso from "$lib/components/TabsAsso.svelte";
+    import TabsAsso from "./components/TabsAsso.svelte";
     import { AssociationController } from "./Association.controller";
 
-    export let id;
+    export let data
+    const { identifier } = data.params;
 
-    const controller = new AssociationController(id);
+    const controller = new AssociationController(identifier);
     const { association: associationPromise, titles } = controller;
 </script>
 
 {#await associationPromise}
-    <FullPageSpinner description="Chargement de l'association {id} en cours ..." />
+    <FullPageSpinner description="Chargement de l'association {identifier} en cours ..." />
 {:then association}
     {#if !association}
         <div class="fr-mb-3w">
@@ -36,7 +37,7 @@
         <InfosLegales {association} />
     </div>
     <div class="fr-mb-6w">
-        <TabsAsso {titles} associationIdentifier={id} {association} />
+        <TabsAsso {titles} associationIdentifier={identifier} {association} />
     </div>
 {:catch error}
     {#if error.request && error.request.status == 404}

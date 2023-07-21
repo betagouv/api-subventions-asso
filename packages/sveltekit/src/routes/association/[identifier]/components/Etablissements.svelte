@@ -7,7 +7,7 @@
     import EstablishmentCard from "./EstablishmentCard.svelte";
     import associationService from "$lib/resources/associations/association.service";
 
-    import { waitElementIsVisible } from "@helpers/visibilityHelper";
+    import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
 
     export let associationIdentifier;
     export let association;
