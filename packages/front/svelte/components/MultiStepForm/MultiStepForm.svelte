@@ -27,6 +27,10 @@
     {/if}
 </div>
 
+{#if steps[$currentStepIndex].alert}
+    <svelte:component this={steps[$currentStepIndex].alert} />
+{/if}
+
 <form action="#" method="GET" on:submit|preventDefault={() => controller.submit()}>
     <svelte:component this={($currentStep.step).component} bind:values={$data[$currentStep.index]} />
     <div class="fr-mt-6v">
@@ -46,4 +50,11 @@
 </form>
 
 <style>
+    form {
+        width: 50%;
+    }
+
+    .fr-stepper {
+        margin-bottom: 0px;
+    }
 </style>

@@ -1,3 +1,4 @@
+import ActivateAccount from "./views/auth/activate-account/ActivateAccount.svelte";
 import Association from "./views/association/Association.svelte";
 import Establishment from "./views/establishment/Establishment.svelte";
 import AdminUsersAccount from "./views/admin/users/AdminUsersAccount.svelte";
@@ -15,7 +16,6 @@ import LegalNotice from "./views/LegalNotice.svelte";
 import Cgu from "./views/Cgu.svelte";
 import Contact from "./views/Contact.svelte";
 import Profile from "./views/user/profile/Profile.svelte";
-import DynamicMultiStepForm from "@components/MultiStepForm/DynamicMultiStepForm.svelte";
 
 export default {
     "/404": {
@@ -74,10 +74,11 @@ export default {
         component: () => ForgetPwd,
         disableAuth: true,
     },
+    "auth/activate/:token": {
+        component: () => ActivateAccount,
+        disableAuth: true,
+    },
     "user/profile": {
         component: () => Profile,
-    },
-    "test/form": {
-        component: () => DynamicMultiStepForm,
     },
 };
