@@ -2,7 +2,6 @@
     import DataNotFound from "$lib/components/DataNotFound.svelte";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import InfosLegales from "$lib/components/InfosLegales/InfosLegales.svelte";
-    import { activeBlueBanner } from "$lib/store/context.store";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
     import TabsEtab from "$lib/components/TabsEtab.svelte";
@@ -12,8 +11,6 @@
 
     export let data
     const { identifier } = data.params;
-
-    activeBlueBanner();
 
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     const associationPromise = associationService.getAssociation(siretToSiren(id));

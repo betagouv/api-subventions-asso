@@ -4,7 +4,6 @@
     import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css"
     import "@gouvfr/dsfr/dist/utility/icons/icons.min.css"
     import "@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js"
-    import { displayBlueBanner } from "$lib/store/context.store";
 
     import Auth from "$lib/components/Auth/Auth.svelte";
     import GenericModal from "$lib/dsfr/GenericModal.svelte";
@@ -14,6 +13,7 @@
     import Theme from "$lib/components/Theme.svelte";
     import { ENV } from "$lib/config";
     import Breadcrumb from "$lib/dsfr/Breadcrumb.svelte";
+    import { page } from "$app/stores";
 
     export let data
 
@@ -37,7 +37,7 @@
     {#if ENV?.toLowerCase() === "prod"}
         <Matomo />
     {/if}
-    <div class:main-view={$displayBlueBanner}>
+    <div class:main-view={$page.data.withBlueBanner}>
         <Header />
         <div class="fr-container fr-mb-8w">
             <main id="content">
