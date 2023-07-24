@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.33.0) (2023-07-24)
+
+
+### Bug Fixes
+
+* **front:** fix html semantic ([208fe7f](https://github.com/betagouv/api-subventions-asso/commit/208fe7f5b21862807cb41dc90067e68559ab04c6))
+
+
+### Features
+
+* **front:** add checkbox to display password ([f4ea6ab](https://github.com/betagouv/api-subventions-asso/commit/f4ea6abf6e5a6a4fcd4686c6809ef9862aa791b8))
+* **front:** add ModalFooter component and update ConfirmDeleteModal ([2e3a24a](https://github.com/betagouv/api-subventions-asso/commit/2e3a24a36ab1d83c89d37de83d183801556c701f))
+* **front:** generate default unique id in form inputs ([5534578](https://github.com/betagouv/api-subventions-asso/commit/5534578d8c2d1ab432dbd2f3179bf9a8865452ce))
+* **front:** ignore static svg files ([9bff81d](https://github.com/betagouv/api-subventions-asso/commit/9bff81df41e5cbd3f0c7f8c9e85671f08c4f0f8e))
+* **front:** increase margin top in signup and login ([8381a27](https://github.com/betagouv/api-subventions-asso/commit/8381a2708cb4c7cbe6bcc28effa7cd071c268224))
+* **front:** install nanoid ([2465158](https://github.com/betagouv/api-subventions-asso/commit/2465158ef05cb3c016a3a459319fe6f19fd83b09))
+* **front:** link to cgu ([f525855](https://github.com/betagouv/api-subventions-asso/commit/f5258553011e9b9121fc44fb0c9642b576a73c3f))
+* **front:** remove h5 tag in legend ([87eade2](https://github.com/betagouv/api-subventions-asso/commit/87eade22cb999072553125e495cf7b309281c9b4))
+* **front:** remove static svg ([d91d348](https://github.com/betagouv/api-subventions-asso/commit/d91d348faf8504325ed733ab06f8fea866a6d442))
+* **front:** rework reset password view ([aa683f0](https://github.com/betagouv/api-subventions-asso/commit/aa683f0061221d53a68c4b3107cf7d06767b2c3a))
+* **front:** style legend as h5 title ([28b2609](https://github.com/betagouv/api-subventions-asso/commit/28b2609d0c6866cf6146b59bbdc53827200cc2c0))
+* **front:** update signup conditions style ([e3b16a8](https://github.com/betagouv/api-subventions-asso/commit/e3b16a880624744079278f84095eef03ad402a8b))
+* **front:** use EmptySvg component to handle svg import in jest ([2f375b4](https://github.com/betagouv/api-subventions-asso/commit/2f375b47a704b7a9dedc297ee7f404e596cb9627))
+
+
+
+## [0.31.5](https://github.com/betagouv/api-subventions-asso/compare/v0.32.0...v0.31.5) (2023-07-12)
+
+
+### Bug Fixes
+
+* **front:** change x frame option ([614bb9d](https://github.com/betagouv/api-subventions-asso/commit/614bb9dcaf7ae620a66bfe12753f9bdac5ec6eda))
+
+
+### Features
+
+* **front:** add modal on user deleted action ([edf204d](https://github.com/betagouv/api-subventions-asso/commit/edf204d8657ca73184811d11dc7032690cebae43))
+
+
+
+
+
 ## [0.32.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.32.2) (2023-07-13)
 
 
