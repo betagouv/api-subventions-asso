@@ -1,4 +1,4 @@
-import DateHelper from "../../../../../src/shared/helpers/DateHelper";
+import { formatDate } from '$lib/helpers/dateHelper';
 import { getDate, getProvider, getValue } from "$lib/helpers/providerValueHelper";
 
 export class InfosBancairesEtabController {
@@ -11,7 +11,7 @@ export class InfosBancairesEtabController {
         return (
             informationBancaireEtab?.map(infoBancaireSourced => ({
                 ...getValue(infoBancaireSourced),
-                date: DateHelper.formatDate(getDate(infoBancaireSourced)),
+                date: formatDate(getDate(infoBancaireSourced)),
                 provider: getProvider(infoBancaireSourced),
             })) || []
         );
