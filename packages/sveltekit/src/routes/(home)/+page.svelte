@@ -7,7 +7,7 @@
     import { HomeController } from "./Home.controller";
 
     const ctrl = new HomeController();
-    const { input, isLoading, currentSearch, searchResult } = ctrl;
+    const { input, isLoading, currentSearch, searchResult, searchHistory } = ctrl;
 
     $: input && ctrl.onInput($input);
 </script>
@@ -72,7 +72,7 @@
     <div class="history fr-pt-5w">
         <h4 class="fr-py-3w">Vos dernières recherches</h4>
         <div class="fr-grid-row fr-grid-row--gutters">
-            <!--{#each ctrl.searchHistory as search}
+            {#each $searchHistory as search}
                 <Card
                     url={"/association/" + (search.rna || search.siren)}
                     title={search.name}
@@ -82,7 +82,7 @@
                         {search.objectSocial}
                     </div>
                 </Card>
-            {/each}-->
+            {/each}
         </div>
     </div>
 {/if}

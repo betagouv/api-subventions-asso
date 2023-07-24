@@ -6,6 +6,7 @@ import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import { get } from "svelte/store";
 import { page } from "$app/stores";
+import localStorageStore from "$lib/store/localStorage";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
@@ -27,7 +28,7 @@ export class AuthService {
 
     async login(email, password) {
         const user = await authPort.login(email, password);
-        localStorage.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
+        localStorageStore.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
         crispService.setUserEmail(user.email);
 
         return user;
@@ -47,12 +48,12 @@ export class AuthService {
     }
 
     logout() {
-        localStorage.removeItem(this.USER_LOCAL_STORAGE_KEY);
+        localStorageStore.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
     }
 
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem(this.USER_LOCAL_STORAGE_KEY));
+        return JSON.parse(get(localStorageStore.getItem(this.USER_LOCAL_STORAGE_KEY)) || null);
     }
 }
 
