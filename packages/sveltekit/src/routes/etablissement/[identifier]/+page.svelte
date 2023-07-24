@@ -10,7 +10,7 @@
     import establishmentService from "$lib/resources/establishments/establishment.service";
 
     export let data
-    const { identifier } = data.params;
+    const { identifier: id } = data.params;
 
     const titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     const associationPromise = associationService.getAssociation(siretToSiren(id));
