@@ -72,7 +72,7 @@
     <div class="history fr-pt-5w">
         <h4 class="fr-py-3w">Vos dernières recherches</h4>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {#each $searchHistory as search}
+            {#each $searchHistory.reverse() as search}
                 <Card
                     url={"/association/" + (search.rna || search.siren)}
                     title={search.name}
