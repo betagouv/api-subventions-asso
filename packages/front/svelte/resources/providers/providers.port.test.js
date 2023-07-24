@@ -1,22 +1,14 @@
-import axios from "axios";
 import providersPort from "./providers.port";
+import requestsService from "@services/requests.service";
+
+jest.mock("@services/requests.service");
 
 describe("ProvidersPort", () => {
     describe("getProviders", () => {
-        let axiosGetMock;
-
-        beforeAll(() => {
-            axiosGetMock = jest.spyOn(axios, "get");
-        });
-
-        afterAll(() => {
-            axiosGetMock.mockRestore();
-        });
-
         it("should return providers", async () => {
             const expected = [{ provider: 1 }, { provider: 2 }];
 
-            axiosGetMock.mockImplementationOnce(async () => ({ data: expected }));
+            requestsService.get.mockImplementationOnce(async () => ({ data: expected }));
 
             const actual = await providersPort.getProviders();
 

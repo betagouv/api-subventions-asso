@@ -9,58 +9,30 @@ describe("LoginController", () => {
 
     beforeEach(() => {
         controller = new LoginController({});
-        controller.formElt = {
-            email: "",
-            password: "",
-        };
     });
 
     describe("submit", () => {
+        beforeEach(() => {
+            controller.password = PASSWORD;
+            controller.email = EMAIL;
+        });
+
         const loginMock = jest.spyOn(authService, "login");
         const goToUrlMock = jest.spyOn(RouterService, "goToUrl");
-        const formDataMock = jest.spyOn(window, "FormData").mockImplementation(data => new Map(Object.entries(data)));
 
         const EMAIL = "test@datasubvention.beta.gouv.fr";
         const PASSWORD = "FAKE_PASSWORD";
 
-        const event = {
-            preventDefault: jest.fn(),
-        };
-
-        afterAll(() => {
-            formDataMock.mockRestore();
-        });
-
-        it("should not call login if form not set up", async () => {
-            controller.formElt = null;
-            await controller.submit(event);
-
-            expect(loginMock).toHaveBeenCalledTimes(0);
-        });
-
         it("should call login", async () => {
             loginMock.mockResolvedValueOnce({});
 
-            controller.formElt = {
-                email: EMAIL,
-                password: PASSWORD,
-            };
-
-            await controller.submit(event);
-
+            await controller.submit();
             expect(loginMock).toHaveBeenCalledWith(EMAIL, PASSWORD);
         });
 
         it("should call goToUrl", async () => {
             loginMock.mockResolvedValueOnce({});
-
-            controller.formElt = {
-                email: EMAIL,
-                password: PASSWORD,
-            };
-
-            await controller.submit(event);
-
+            await controller.submit();
             expect(goToUrlMock).toHaveBeenCalledWith("/");
         });
 
@@ -72,14 +44,7 @@ describe("LoginController", () => {
             const oldLocation = window.location;
             delete window.location;
             window.location = new URL(`${oldLocation.origin}${oldLocation.pathname}?url=${encodedUrl}`);
-
-            controller.formElt = {
-                email: EMAIL,
-                password: PASSWORD,
-            };
-
-            await controller.submit(event);
-
+            await controller.submit();
             expect(goToUrlMock).toHaveBeenCalledWith(url);
         });
 
@@ -87,13 +52,7 @@ describe("LoginController", () => {
             const expected = 1;
             loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: expected }));
             const getErrorMessageMock = jest.spyOn(controller, "_getErrorMessage").mockReturnValue("");
-            controller.formElt = {
-                email: EMAIL,
-                password: PASSWORD,
-            };
-
-            await controller.submit(event);
-
+            await controller.submit();
             expect(getErrorMessageMock).toHaveBeenCalledWith(expected);
         });
 
@@ -101,13 +60,7 @@ describe("LoginController", () => {
             const expected = "MESSAGE";
             loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: 1 }));
             jest.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(expected);
-            controller.formElt = {
-                email: EMAIL,
-                password: PASSWORD,
-            };
-
-            await controller.submit(event);
-
+            await controller.submit();
             expect(controller.error.value).toBe(expected);
         });
     });

@@ -24,7 +24,6 @@ export class UserController extends Controller {
     @Post("/admin/roles")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>(400, "Role Not Valid")
-    @Response<HttpErrorInterface>(422, "User Not Found")
     public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
         return await userService.addRolesToUser(body.email, body.roles);
     }
@@ -50,7 +49,11 @@ export class UserController extends Controller {
     @Response<HttpErrorInterface>(400, "Bad Request")
     @Response<HttpErrorInterface>(409, "Unprocessable Entity")
     public async createUser(@Body() body: FutureUserDto): Promise<CreateUserDtoResponse> {
-        const user = await userService.signup(body);
+        const formatedBody = {
+            ...body,
+            email: body.email.toLocaleLowerCase(),
+        };
+        const user = await userService.signup(formatedBody);
         this.setStatus(201);
         return { user };
     }

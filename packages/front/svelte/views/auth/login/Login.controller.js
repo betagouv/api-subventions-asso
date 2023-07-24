@@ -5,25 +5,27 @@ import Store from "@core/Store";
 
 export default class LoginController {
     constructor(query) {
+        this.email = null;
+        this.password = null;
         this._query = query;
-        this.formElt = null;
         this.error = new Store(null);
         this.showSuccessMessage = !!query.success;
         this.successMessage = this._getSuccessMessage();
+        this.pageTitle = `Se connecter à Data.Subvention`;
+        this.forgetPasswordUrl = "/auth/forget-password";
     }
 
-    async submit(e) {
-        e.preventDefault();
-        if (!this.formElt) return;
-        const { email, password } = Object.fromEntries(new FormData(this.formElt).entries());
+    signup() {
+        goToUrl("/auth/signup");
+    }
 
+    async submit() {
         try {
-            await authService.login(email, password);
+            await authService.login(this.email, this.password);
             const urlToGo = decodeURIComponent(location.search.match(/(\?|&)url=([^&]*)/)?.[2] || "/");
             goToUrl(urlToGo);
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
-
             this.error.set(message);
         }
     }

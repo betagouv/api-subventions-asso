@@ -504,7 +504,6 @@ describe("Dauphin Service", () => {
             const ID = "DAUPHIN_ID";
 
             beforeAll(() => {
-                console.log("a");
                 // @ts-expect-error: mock
                 findIdMock = jest.spyOn(dauphinService, "findDauphinInternalId").mockResolvedValue(ID);
                 // @ts-expect-errors mocked

@@ -6,11 +6,12 @@ import { RoleEnum } from "../../../src/@enums/Roles";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
 import { UserService, UserServiceErrors } from "../../../src/modules/user/user.service";
-import { BadRequestError, NotFoundError } from "../../../src/shared/errors/httpErrors";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../../src/shared/errors/httpErrors";
 import notifyService from "../../../src/modules/notify/notify.service";
 
 describe("user.service.ts", () => {
     const notifyMock = jest.spyOn(notifyService, "notify").mockImplementation(jest.fn());
+    const findByEmailMock = jest.spyOn(userRepository, "findByEmail");
     let service;
 
     beforeEach(async () => {
@@ -47,8 +48,7 @@ describe("user.service.ts", () => {
             await service.createUser({ email: "test@beta.gouv.fr" });
             const test = async () => await service.createUser({ email: "test@beta.gouv.fr" });
             await expect(test).rejects.toMatchObject({
-                message: "User already exists",
-                code: UserServiceErrors.CREATE_USER_ALREADY_EXISTS,
+                message: "An error has occurred",
             });
         });
 
@@ -67,8 +67,8 @@ describe("user.service.ts", () => {
             await service.createUser({ email: EMAIL });
         });
 
-        it("should throw NotFoundError if user email not found", async () => {
-            const expected = new NotFoundError("User Not Found");
+        it("should throw InternalServerError if user email not found", async () => {
+            const expected = new InternalServerError("An error has occurred");
             let actual;
             try {
                 actual = await service.addRolesToUser("wrong@email.fr", [RoleEnum.admin]);
@@ -146,15 +146,14 @@ describe("user.service.ts", () => {
             userId = user._id;
         });
 
-        it("should reject because user email not found", async () => {
-            await expect(service.forgetPassword("wrong@email.fr")).rejects.toMatchObject({
-                message: "User not found",
-                code: UserServiceErrors.USER_NOT_FOUND,
-            });
+        it("should check if user exist", async () => {
+            await service.forgetPassword("wrong@email.fr");
+            await expect(findByEmailMock).toHaveBeenCalledWith("wrong@email.fr");
         });
 
-        it("should update user (called with user)", async () => {
-            await expect(service.forgetPassword("test@beta.gouv.fr")).resolves.toMatchObject({ userId: userId });
+        it("should send a notification", async () => {
+            await service.forgetPassword("test@beta.gouv.fr");
+            await expect(notifyMock).toHaveBeenCalled();
         });
     });
 

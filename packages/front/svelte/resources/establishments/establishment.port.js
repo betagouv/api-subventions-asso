@@ -1,15 +1,14 @@
-import axios from "axios";
 import requestsService from "@services/requests.service";
 
 class EstablishmentPort {
     incExtractData(identifier) {
         const path = `/etablissement/${identifier}/extract-data`;
-        axios.get(path).catch(() => null);
+        requestsService.get(path).catch(() => null);
     }
 
     async getBySiret(identifier) {
         const path = `/etablissement/${identifier}`;
-        return (await axios.get(path))?.data?.etablissement;
+        return (await requestsService.get(path))?.data?.etablissement;
     }
 
     async getDocuments(identifier) {

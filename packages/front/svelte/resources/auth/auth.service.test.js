@@ -1,7 +1,7 @@
-import axios from "axios";
 import authPort from "@resources/auth/auth.port";
 import authService from "@resources/auth/auth.service";
 import crispService from "@services/crisp.service";
+import requestsService from "@services/requests.service";
 
 const DEFAULT_ERROR_CODE = 49;
 
@@ -11,6 +11,7 @@ jest.mock("@api-subventions-asso/dto", () => ({
     ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
     __esModule: true, // this property makes it work
 }));
+jest.mock("@services/requests.service");
 
 describe("authService", () => {
     describe("signup()", () => {
@@ -38,7 +39,7 @@ describe("authService", () => {
         });
 
         it("rejects with error code from port if given", () => {
-            const expected ={ message: 5 };
+            const expected = { message: 5 };
             portMock.mockRejectedValueOnce(expected);
             const actual = authService.signup(USER);
             expect(actual).rejects.toBe(expected);
@@ -56,7 +57,7 @@ describe("authService", () => {
 
         it("rejects with appropriate code if no token", () => {
             const test = () => authService.resetPassword();
-            // expect(test).rejects.toBe(DEFAULT_ERROR_CODE);
+            expect(test).rejects.toBe(DEFAULT_ERROR_CODE);
         });
 
         it("calls port", async () => {
@@ -143,14 +144,12 @@ describe("authService", () => {
             getCurrentUserMock.mockRestore();
         });
 
-        it("should be axios header", async () => {
-            const expected = "FAKE_TOKEN";
-            getCurrentUserMock.mockReturnValueOnce({ jwt: { token: expected } });
+        it("should call requestService initialisation", async () => {
+            const token = "FAKE_TOKEN";
+            getCurrentUserMock.mockReturnValueOnce({ jwt: { token } });
 
             await authService.initUserInApp();
-            const actual = axios.defaults.headers.common["x-access-token"];
-
-            expect(actual).toBe(expected);
+            expect(requestsService.initAuthentication).toHaveBeenCalledWith(token);
         });
 
         it("sets crisp email value", async () => {

@@ -18,7 +18,7 @@ export function authMocks(app: Express) {
             },
             async (email, password, done) => {
                 try {
-                    const user = await userService.login(email, password);
+                    const user = await userService.login(email.toLocaleLowerCase(), password);
                     return done(null, user, { message: "Logged in Successfully" });
                 } catch (e) {
                     done(e);

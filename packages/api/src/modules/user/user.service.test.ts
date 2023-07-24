@@ -402,12 +402,6 @@ describe("User Service", () => {
             jest.mocked(sanitizeToPlainText).mockReset();
         });
 
-        it("validates lowercase email", async () => {
-            const uppercaseEmail = "DEV@test.gouv.fr";
-            await userService.validateSanitizeUser({ email: uppercaseEmail });
-            expect(validateEmailMock).toHaveBeenCalledWith("dev@test.gouv.fr");
-        });
-
         it("look for user with this email if newUser", async () => {
             await userService.validateSanitizeUser({ email: USER_EMAIL }, true);
             expect(mockedUserRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);

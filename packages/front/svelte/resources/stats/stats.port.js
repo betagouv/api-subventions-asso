@@ -1,4 +1,4 @@
-import axios from "axios";
+import requestsService from "@services/requests.service";
 
 class StatsPort {
     BASE_PATH = "/stats";
@@ -6,7 +6,7 @@ class StatsPort {
         const query = { limit };
 
         const path = `${this.BASE_PATH}/associations`;
-        return axios
+        return requestsService
             .get(path, {
                 params: query,
             })
@@ -18,7 +18,7 @@ class StatsPort {
 
     getMonthlyUserCount(year) {
         const path = `${this.BASE_PATH}/users/monthly/${year}`;
-        return axios.get(path).then(result => {
+        return requestsService.get(path).then(result => {
             if (result.data.message) throw new Error(result.data.message);
             return result.data.data;
         });
@@ -26,7 +26,7 @@ class StatsPort {
 
     getUsersDistribution() {
         const path = `${this.BASE_PATH}/users/status`;
-        return axios.get(path).then(result => {
+        return requestsService.get(path).then(result => {
             if (!result.data.data) throw new Error(result.data.message);
             return result.data.data;
         });
@@ -34,7 +34,7 @@ class StatsPort {
 
     getMonthlyRequestCount(year) {
         const path = `${this.BASE_PATH}/requests/monthly/${year}`;
-        return axios.get(path).then(result => {
+        return requestsService.get(path).then(result => {
             if (result.data.message) throw new Error(result.data.message);
             return result.data;
         });

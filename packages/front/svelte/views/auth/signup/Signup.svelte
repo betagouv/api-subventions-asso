@@ -44,11 +44,11 @@
     title="Data.subvention étant réservé aux agents publics, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public."
     type="info" />
 
-<div class="signup fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-7v">
+<div class="signup fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
     <form on:submit|preventDefault={() => ctrl.signup()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-            <legend class="fr-fieldset__legend" id="login-1797-fieldset-legend">
-                <h5>Créer un compte</h5>
+            <legend class="fr-fieldset__legend">
+                <h2 class="fr-h5">Créer un compte</h2>
             </legend>
             <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
                 <Input label="Nom :" id="signup-family-name" bind:value={$signupUser.lastname} required={true} />
@@ -70,14 +70,12 @@
                     </li>
                 </ul>
             </div>
-            <div class="policy">
-                <span>En vous inscrivant, vous acceptez la</span>
+            <div class="policy fr-mx-12w">
                 <span>
-                    <b>
-                        <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">
-                            politique de confidentialité
-                        </a>
-                    </b>
+                    En vous inscrivant, vous acceptez la
+                    <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">politique de confidentialité</a>
+                    et les
+                    <a href={ctrl.cguUrl}>conditions générales d'utilisations</a>
                     de Data.Subvention.
                 </span>
             </div>
@@ -86,7 +84,7 @@
     <div class="separator" />
     <form on:submit|preventDefault={() => ctrl.signin()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-            <legend class="fr-fieldset__legend" id="login-1797-fieldset-legend">
+            <legend class="fr-fieldset__legend">
                 <h5>Vous avez déjà un compte ?</h5>
             </legend>
             <div class="fr-fieldset__element">
@@ -102,10 +100,13 @@
 
 <style>
     .policy {
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        text-align: center;
+        color: var(--text-mention-grey);
+        font-weight: 700;
+    }
+
+    .policy a {
+        color: var(--text-default-grey);
     }
 
     .signup {

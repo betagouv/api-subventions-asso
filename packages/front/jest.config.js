@@ -7,6 +7,7 @@ module.exports = {
         "^.+\\.ts?$": "ts-jest",
         "\\.jsx?$": "babel-jest",
     },
+    transformIgnorePatterns: ["/node-modules/(?!(nanoid)/)"],
     modulePathIgnorePatterns: ["./build"],
     moduleFileExtensions: ["ts", "js", "svelte"],
     testEnvironment: "jsdom",
@@ -18,6 +19,7 @@ module.exports = {
         "@helpers/(.*)$": "<rootDir>/svelte/helpers/$1",
         "@services/(.*)$": "<rootDir>/svelte/services/$1",
         "@store/(.*)$": "<rootDir>/svelte/store/$1",
+        "^.+\\.svg$": "<rootDir>/svelte/components/EmptySvg.svelte",
     },
     globals: {
         $crisp: {
