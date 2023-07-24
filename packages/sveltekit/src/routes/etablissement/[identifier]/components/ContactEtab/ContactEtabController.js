@@ -1,6 +1,6 @@
 import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import { formatPhoneNumber, valueOrHyphen } from "$lib/helpers/dataHelper";
-import Store from "../../../../core/Store";
+import Store from "$lib/core/Store";
 
 export default class ContactEtabController {
     constructor(contacts, siret) {

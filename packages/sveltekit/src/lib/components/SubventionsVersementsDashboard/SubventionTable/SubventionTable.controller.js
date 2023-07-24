@@ -1,6 +1,6 @@
 import Store from "../../../core/Store";
 
-import { modal, data } from "../../../store/modal.store";
+import { modal, data } from "$lib/store/modal.store";
 import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 

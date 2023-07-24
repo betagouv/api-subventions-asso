@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    import { action, data, modal } from "../../../../store/modal.store";
+    import { action, data, modal } from "$lib/store/modal.store";
     import adminService from "../../admin.service";
 
     import Button from "$lib/dsfr/Button.svelte";

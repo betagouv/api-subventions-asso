@@ -1,7 +1,7 @@
 <script>
     import Spinner from "../Spinner.svelte";
     import Button from "$lib/dsfr/Button.svelte";
-    import { modal } from "../../store/modal.store";
+    import { modal } from "$lib/store/modal.store";
     import Select from "$lib/dsfr/Select.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import ProgressBar from "../ProgressBar.svelte";

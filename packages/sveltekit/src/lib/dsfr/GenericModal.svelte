@@ -1,5 +1,5 @@
 <script>
-    import { modal } from "../store/modal.store";
+    import { modal } from "$lib/store/modal.store";
     import Button from "./Button.svelte";
 </script>
 

@@ -1,6 +1,6 @@
 <script>
-    import adminService from "../admin.service.js";
-    import userService from "../../../resources/users/user.service.js";
+    import adminService from "../../admin.service.js";
+    import userService from "$lib/resources/users/user.service.js";
 
     import Widget from "$lib/components/Widget.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
@@ -10,9 +10,9 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import Input from "$lib/dsfr/Input.svelte";
     import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
-    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../admin.constant.js";
-    import TableUsers from "./composents/TableUsers.svelte";
-    import SearchUsers from "./composents/SearchUsers.svelte";
+    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../../admin.constant.js";
+    import TableUsers from "../composents/TableUsers.svelte";
+    import SearchUsers from "../composents/SearchUsers.svelte";
 
     let users,
         domains = [];

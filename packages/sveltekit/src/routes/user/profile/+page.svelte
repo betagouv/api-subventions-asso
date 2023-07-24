@@ -1,7 +1,6 @@
 <script>
     import { ProfileController } from "./Profile.controller";
-    import DeleteUser from "$lib/components/DeleteUser.svelte";
-    import Button from "$lib/dsfr/Button.svelte";
+    import DeleteUser from "./components/DeleteUser.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
     const controller = new ProfileController();

@@ -1,5 +1,5 @@
 <script>
-    import { data } from "../../store/modal.store";
+    import { data } from "$lib/store/modal.store";
 
     import Alert from "$lib/dsfr/Alert.svelte";
     import ModalContent from "$lib/dsfr/ModalContent.svelte";

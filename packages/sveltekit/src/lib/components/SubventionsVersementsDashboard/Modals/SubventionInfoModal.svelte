@@ -1,5 +1,5 @@
 <script>
-    import { data } from "../../../store/modal.store";
+    import { data } from "$lib/store/modal.store";
     import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 </script>
 

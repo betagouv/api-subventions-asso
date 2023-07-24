@@ -4,7 +4,7 @@
     import InfosLegales from "$lib/components/InfosLegales/InfosLegales.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
-    import TabsEtab from "$lib/components/TabsEtab.svelte";
+    import TabsEtab from "./components/TabsEtab.svelte";
     import { siretToSiren } from "$lib/helpers/sirenHelper";
     import associationService from "$lib/resources/associations/association.service";
     import establishmentService from "$lib/resources/establishments/establishment.service";

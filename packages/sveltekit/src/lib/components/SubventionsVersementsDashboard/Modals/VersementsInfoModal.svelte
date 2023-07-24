@@ -3,7 +3,7 @@
     import TableHead from "../../Tables/TableHead.svelte";
     import StringTableCell from "../../Tables/StringTableCell.svelte";
 
-    import { data } from "../../../store/modal.store";
+    import { data } from "$lib/store/modal.store";
 </script>
 
 {#if $data.versements}

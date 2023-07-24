@@ -1,6 +1,6 @@
 <script>
     import Button from "$lib/dsfr/Button.svelte";
-    import { data, action } from "../../../../store/modal.store";
+    import { data, action } from "$lib/store/modal.store";
 </script>
 
 <div class="fr-modal__content">
