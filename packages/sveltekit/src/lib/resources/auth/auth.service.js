@@ -29,27 +29,31 @@ export class AuthService {
     async login(email, password) {
         const user = await authPort.login(email, password);
         localStorageStore.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
+        this.setUserInApp()
         crispService.setUserEmail(user.email);
 
         return user;
     }
 
-    initUserInApp() {
+    setUserInApp() {
         const user = this.getCurrentUser();
-
         requestsService.initAuthentication(user?.jwt?.token);
         if (user) crispService.setUserEmail(user.email);
+    }
 
+    initUserInApp() {
+        this.setUserInApp()
         requestsService.addErrorHook(UnauthorizedError, () => {
-            this.logout();
+            this.logout(false);
             const queryUrl = encodeURIComponent(get(page).url.pathname);
-            goToUrl(`/auth/login?url=${queryUrl}`);
+            goToUrl(`/auth/login?url=${queryUrl}`, true, true);
         });
     }
 
-    logout() {
+    logout(reload = true) {
         localStorageStore.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
+        if (reload) goToUrl("/auth/login", false, true)
     }
 
     getCurrentUser() {
