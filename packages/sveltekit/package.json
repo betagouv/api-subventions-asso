@@ -14,15 +14,17 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest"
 	},
-    "lint-staged": {
-        "./{src,svelte,views}/**/*.{js,ts,svelte}": [
-            "npx prettier --write --loglevel warn",
-            "npx eslint --fix --quiet"
-        ]
-    },
-    "dependencies": {
+	"lint-staged": {
+		"./{src,svelte,views}/**/*.{js,ts,svelte}": [
+			"npx prettier --write --loglevel warn",
+			"npx eslint --fix --quiet"
+		]
+	},
+	"dependencies": {
 		"@api-subventions-asso/dto": "../dto",
-        "@gouvfr/dsfr": "*"
+		"@gouvfr/dsfr": "*",
+		"chart.js": "^4.3.0",
+		"string-similarity": "^4.0.4"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
