@@ -8,8 +8,6 @@ const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
 const pkg = JSON.parse(json);
 
-console.log(process.env)
-
 /** @type {import("@sveltejs/kit").Config} */
 const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
@@ -26,6 +24,36 @@ const config = {
 			privatePrefix: 'PRIVATE_'
 		},
 		version: { name: pkg.version },
+		csp: {
+			directives: {
+				'default-src': ['self'],
+				'connect-src': [
+					'self',
+					process.env.DATASUB_URL,
+					'https://client.crisp.chat/ wss://client.relay.crisp.chat/w/b1/',
+					'https://storage.crisp.chat',
+					'wss://stream.relay.crisp.chat',
+					'https://stats.data.gouv.fr'
+				],
+				'font-src': ['self', 'https://client.crisp.chat'],
+				'img-src': [
+					'self',
+					'data: https://image.crisp.chat',
+					'https://client.crisp.chat',
+					'https://storage.crisp.chat'
+				],
+				'script-src': [
+					'unsafe-inline',
+					'unsafe-eval',
+					'self',
+					'https://client.crisp.chat',
+					'https://settings.crisp.chat',
+					'https://stats.data.gouv.fr'
+				],
+				'style-src': ['self', 'https://client.crisp.chat', 'unsafe-inline'],
+				'frame-src': ['self', 'https://game.crisp.chat']
+			}
+		}
 	}
 };
 
