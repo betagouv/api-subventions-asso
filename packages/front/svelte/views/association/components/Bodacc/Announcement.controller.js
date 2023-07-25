@@ -8,7 +8,7 @@ export default class AnnouncementController {
     }
 
     get judgment() {
-        return this.judgmentObj.complementJugement;
+        return this.judgmentObj?.complementJugement || "-";
     }
 
     get url() {
