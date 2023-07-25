@@ -9,12 +9,22 @@
     export let name = `input-${id}`;
     export let autocomplete = "false";
     export let placeholder = "";
+    export let error = false;
+    export let errorMsg = null;
 
     let spellcheck = true;
 
     // DSFR best practices
     if (["given-name", "family-name"].includes(name)) {
         spellcheck = false;
+    }
+
+    // define validation class
+    let inputGroupClasses = "fr-input-group";
+    let inputClasses = "fr-input";
+    if (error) {
+        inputGroupClasses = inputGroupClasses.concat(" ", "fr-input-group--error");
+        inputClasses = inputClasses.concat(" ", "fr-input--error");
     }
 
     /*
@@ -27,7 +37,7 @@
     }
 </script>
 
-<div class="fr-input-group">
+<div class={inputGroupClasses}>
     <label class="fr-label" for={name}>{label}</label>
     <input
         class="fr-input"
@@ -39,5 +49,9 @@
         {placeholder}
         bind:value
         required={required ? "required" : undefined}
-        use:typeAction />
+        use:typeAction
+        aria-describedby={errorMsg ? "text-input-error-desc-error" : undefined} />
+    {#if error && errorMsg}
+        <p id="text-input-error-desc-error" class="fr-error-text">{errorMsg}</p>
+    {/if}
 </div>
