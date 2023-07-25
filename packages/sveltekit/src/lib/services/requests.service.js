@@ -1,6 +1,6 @@
 import axios from "axios";
 import errorsService from "../errors/errors.service";
-import { DATASUB_URL } from "$lib/config";
+import { DATASUB_URL } from "~/config";
 
 class RequestsService {
     _errorHooks = [];

@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { PRIVACY_POLICY_URL } from "$lib/config";
+import { PRIVACY_POLICY_URL } from "~/config";
 
 export const ssr = true
 

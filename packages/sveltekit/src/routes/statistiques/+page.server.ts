@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { STATS_URL } from "$lib/config";
+import { STATS_URL } from "~/config";
 
 export const ssr = true
 

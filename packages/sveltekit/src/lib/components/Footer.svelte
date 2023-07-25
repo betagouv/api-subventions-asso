@@ -1,6 +1,6 @@
 <script>
     import { getContext } from "svelte";
-    import { STATS_URL, PRIVACY_POLICY_URL } from "$lib/config";
+    import { STATS_URL, PRIVACY_POLICY_URL } from "~/config";
 
     const { getDescription, getRepo } = getContext("app");
 </script>
