@@ -32,6 +32,13 @@
     };
 </script>
 
+<svelte:head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- TODO: rendre le nom dynamique -->
+    <title>Data.subvention</title>
+    <meta name="theme-color" content="#000091" />
+</svelte:head>
+
 <GenericModal />
 <Auth>
     {#if ENV?.toLowerCase() === "prod"}
