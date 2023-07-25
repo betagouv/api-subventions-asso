@@ -11,9 +11,9 @@
     import Header from "$lib/components/Header/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import Theme from "$lib/components/Theme.svelte";
-    import { ENV } from "~/config";
     import Breadcrumb from "$lib/dsfr/Breadcrumb.svelte";
     import { page } from "$app/stores";
+    import { ENV } from "$env/static/public";
 
     export let data
 

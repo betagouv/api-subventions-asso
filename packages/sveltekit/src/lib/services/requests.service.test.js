@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DATASUB_URL } from "~/config";
+import { DATASUB_URL } from "$env/static/public"
 import { NotFoundError } from "../errors";
 import errorsService from "../errors/errors.service";
 import requestsService from "$lib/services/requests.service";

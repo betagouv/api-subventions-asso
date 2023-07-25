@@ -1,3 +1,4 @@
+import "dotenv/config";
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
@@ -6,7 +7,8 @@ import { fileURLToPath } from 'url';
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
 const pkg = JSON.parse(json);
-console.log({ version: pkg.version })
+
+console.log(process.env)
 
 /** @type {import("@sveltejs/kit").Config} */
 const config = {
@@ -20,10 +22,10 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter(),
 		env: {
-			publicPrefix: "",
-			privatePrefix: "PRIVATE_"
+			publicPrefix: '',
+			privatePrefix: 'PRIVATE_'
 		},
-		version: {name: pkg.version}
+		version: { name: pkg.version },
 	}
 };
 
