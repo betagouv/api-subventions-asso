@@ -1,5 +1,5 @@
-import Store from "../../core/Store";
-import messagesService from "../../resources/messages/messages.service";
+import Store from "$lib/core/Store";
+import messagesService from "$lib/resources/messages/messages.service";
 
 export default class MessagesController {
     constructor() {

@@ -1,7 +1,7 @@
 import { isSiret } from "$lib/helpers/validatorHelper";
 
-import subventionsService from "../../resources/subventions/subventions.service";
-import versementsService from "../../resources/versements/versements.service";
+import subventionsService from "$lib/resources/subventions/subventions.service";
+import versementsService from "$lib/resources/versements/versements.service";
 
 import Store from "../../core/Store";
 import { mapSubventionsAndVersements, sortByPath } from "./helper";

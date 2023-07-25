@@ -1,5 +1,5 @@
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
-import Store from "../../core/Store";
+import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
