@@ -10,7 +10,7 @@
 
     onDestroy(() => controller.onDestroy());
 
-    const { currentStep, data } = controller;
+    const { currentStep, data, isStepBlocked} = controller;
 </script>
 
 <div class="fr-stepper">
@@ -27,12 +27,17 @@
     {/if}
 </div>
 
-{#if steps[$currentStepIndex].alert}
-    <svelte:component this={steps[$currentStepIndex].alert} />
+{#if ($currentStep.step).alert}
+    <svelte:component this={($currentStep.step).alert} />
 {/if}
 
 <form action="#" method="GET" on:submit|preventDefault={() => controller.submit()}>
-    <svelte:component this={($currentStep.step).component} bind:values={$data[$currentStep.index]} />
+    <svelte:component 
+        this={($currentStep.step).component} 
+        bind:values={$data[$currentStep.index]}
+        on:error={() => controller.blockStep()}
+        on:valid={() => controller.unblockStep()}
+    />
     <div class="fr-mt-6v">
         <Button
             htmlType="button"
@@ -42,7 +47,7 @@
             Previous
         </Button>
         {#if $currentStep.isLastStep}
-            <Button htmlType="submit">Submit</Button>
+            <Button htmlType="submit" disabled={$isStepBlocked}>Submit</Button>
         {:else}
             <Button htmlType="submit" type="secondary" on:click={() => controller.next()} on:submit={() => controller.next()}>Next</Button>
         {/if}

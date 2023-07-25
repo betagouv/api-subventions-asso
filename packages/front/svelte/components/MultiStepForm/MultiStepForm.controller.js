@@ -12,6 +12,7 @@ export default class MultiStepFormController {
             isLastStep: this.steps.length === 1
         });
 
+        this.isStepBlocked = new Store(false);
         // create an array of empty object that represent each step values
         this.data = new Store(this.steps.map(() => ({})));
     }
@@ -56,4 +57,11 @@ export default class MultiStepFormController {
         this._shift(-1);
     }
 
+    blockStep() {
+        this.isStepBlocked.set(true);
+    }
+
+    unblockStep() {
+        this.isStepBlocked.set(false);
+    }
 }
