@@ -30,22 +30,38 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
     }
 
     private userCreated(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
-        return this.apiInstance
-            .createContact({
+        const payload = {
+            attributes: {
+                DATE_INSCRIPTION: data.signupAt,
+                COMPTE_ACTIVE: data.active,
+                SOURCE_IMPORT: "Data.Subvention",
+                LIEN_ACTIVATION: data.url,
+                PRENOM: data.firstname,
+                NOM: data.lastname,
+            },
+            listIds: SENDIND_BLUE_CONTACT_LISTS,
+        };
+
+        const sendCreation = () =>
+            this.apiInstance.createContact({
                 email: data.email,
-                attributes: {
-                    DATE_INSCRIPTION: data.signupAt,
-                    COMPTE_ACTIVE: data.active,
-                    SOURCE_IMPORT: "Data.Subvention",
-                    LIEN_ACTIVATION: data.url,
-                    PRENOM: data.firstname,
-                    NOM: data.lastname,
-                },
-                listIds: SENDIND_BLUE_CONTACT_LISTS,
-            })
+                ...payload,
+            });
+
+        const sendUpdate = () => this.apiInstance.updateContact(data.email, payload);
+
+        return sendCreation()
             .then(({ body }) => {
                 if (body.id) return true;
                 return false;
+            })
+            .catch(() => {
+                // IF user exist in other list brevo throw an error so we update contact and we add in new list
+                return sendUpdate().then(({ response }) => {
+                    const status = response.statusCode || 0;
+                    if (status > 200 && status < 300) return true;
+                    return false;
+                });
             });
     }
 
