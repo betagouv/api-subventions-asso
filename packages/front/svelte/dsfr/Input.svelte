@@ -40,7 +40,7 @@
 <div class={inputGroupClasses}>
     <label class="fr-label" for={name}>{label}</label>
     <input
-        class="fr-input"
+        class={inputClasses}
         type="text"
         {id}
         {name}

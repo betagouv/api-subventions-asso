@@ -5,6 +5,9 @@
 
     export let steps = [];
     export let onSubmit;
+    export let submitLabel = "Submit";
+    export let nextLabel = "Next";
+    export let previousLabel = "Previous";
 
     const controller = new MultiStepFormController(steps, onSubmit);
 
@@ -15,7 +18,9 @@
 
 <div class="fr-stepper">
     <h2 class="fr-stepper__title">
-        <span class="fr-stepper__state">Étape {$currentStep.positionLabel} sur {steps.length}</span>
+        {#if steps.length > 1}
+            <span class="fr-stepper__state">Étape {$currentStep.positionLabel} sur {steps.length}</span>
+        {/if}
         {$currentStep.step.name}
     </h2>
     <div class="fr-stepper__steps" data-fr-current-step={$currentStep.positionLabel} data-fr-steps={steps.length} />
@@ -39,17 +44,19 @@
         on:valid={() => controller.unblockStep()}
     />
     <div class="fr-mt-6v">
-        <Button
-            htmlType="button"
-            type="secondary"
-            on:click={() => controller.previous()}
-            disabled={$currentStep.isFirstStep}>
-            Previous
-        </Button>
+        {#if $currentStep.isFirstStep} 
+            <Button
+                htmlType="button"
+                type="secondary"
+                on:click={() => controller.previous()}
+                disabled={$currentStep.isFirstStep}>
+                {previousLabel}
+            </Button>
+        {/if}
         {#if $currentStep.isLastStep}
-            <Button htmlType="submit" disabled={$isStepBlocked}>Submit</Button>
+            <Button htmlType="submit" disabled={$isStepBlocked}>{submitLabel}</Button>
         {:else}
-            <Button htmlType="submit" type="secondary" on:click={() => controller.next()} on:submit={() => controller.next()}>Next</Button>
+            <Button htmlType="submit" type="secondary" on:click={() => controller.next()} on:submit={() => controller.next()}>{nextLabel}</Button>
         {/if}
     </div>
 </form>

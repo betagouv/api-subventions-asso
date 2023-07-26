@@ -3,6 +3,7 @@
     import LoginController from "./Login.controller";
     import Input from "@dsfr/Input.svelte";
     import Button from "@dsfr/Button.svelte";
+    import PasswordInput from "@dsfr/PasswordInput.svelte";
 
     let form;
     export let query;
@@ -39,32 +40,7 @@
                     required={true} />
             </div>
             <div class="fr-fieldset__element fr-mt-4v">
-                <!-- do not use <Input /> because of display and accessibility specificities -->
-                <div class="fr-password" id="password">
-                    <label class="fr-label" for="password-input">Mot de passe</label>
-                    <div class="fr-input-wrap">
-                        <input
-                            bind:value={controller.password}
-                            class="fr-password__input fr-input fr-password__input fr-input"
-                            aria-describedby="password-input-messages"
-                            aria-required="true"
-                            name="password"
-                            autocomplete="new-password"
-                            id="password-input"
-                            type="password"
-                            required />
-                    </div>
-                    <div class="fr-messages-group" id="password-input-messages" aria-live="assertive" />
-                    <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
-                        <input
-                            aria-label="Afficher le mot de passe"
-                            id="password-show"
-                            type="checkbox"
-                            aria-describedby="password-show-messages" />
-                        <label class="fr-password__checkbox fr-label" for="password-show">Afficher</label>
-                        <div class="fr-messages-group" id="password-show-messages" aria-live="assertive" />
-                    </div>
-                </div>
+                <PasswordInput label="Mot de passe" bind:value={controller.password} />
                 <p>
                     <a href={controller.forgetPasswordUrl} class="fr-link">Mot de passe oublié ?</a>
                 </p>

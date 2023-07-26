@@ -11,4 +11,4 @@
 
 <h1>Créer votre compte</h1>
 
-<MultiStepForm steps={controller.steps} {onSubmit} />
+<MultiStepForm steps={controller.steps} {onSubmit} submitLabel="Valider l'inscription" />

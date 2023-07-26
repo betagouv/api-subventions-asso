@@ -1,6 +1,6 @@
 <script>
     import DefinePasswordController from "./DefinePassword.controller";
-    import Input from "@dsfr/Input.svelte";
+    import PasswordInput from "@dsfr/PasswordInput.svelte";
 
     export let values = {
         password: "",
@@ -15,10 +15,10 @@
 
 <fieldset class="fr-fieldset">
     <div class="fr-fieldset__element">
-        <Input label="Mot de passe" bind:value={values.password} required={true} type="password" />
+        <PasswordInput label="Mot de passe" bind:value={values.password} required={true} type="password" />
     </div>
     <div class="fr-fieldset__element">
-        <Input
+        <PasswordInput
             label="Confirmation de mot de passe"
             bind:value={values.confirm}
             error={$showConfirmError}
