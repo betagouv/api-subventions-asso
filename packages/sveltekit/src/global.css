@@ -60,3 +60,7 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
 .background-default {
     background-color: var(--background-default-grey);
 }
+
+html {
+    scroll-behavior: smooth;
+}
