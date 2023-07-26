@@ -1,0 +1,19 @@
+arrowParens: avoid
+singleQuote: false
+semi: true
+trailingComma: all
+printWidth: 120
+bracketSameLine: true
+htmlWhitespaceSensitivity: ignore
+tabWidth: 4
+plugins:
+  - prettier-plugin-svelte
+pluginSearchDirs:
+  - .
+overrides:
+  - files: '*.svelte'
+    options:
+      parser: svelte
+svelteSortOrder: options-scripts-markup-styles
+svelteStrictMode: false
+svelteIndentScriptAndStyle: true
