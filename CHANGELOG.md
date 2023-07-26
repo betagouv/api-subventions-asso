@@ -5,7 +5,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 # [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.33.0) (2023-07-24)
-## [0.32.3](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.32.3) (2023-07-26)
 
 
 ### Bug Fixes
@@ -28,6 +27,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** style legend as h5 title ([28b2609](https://github.com/betagouv/api-subventions-asso/commit/28b2609d0c6866cf6146b59bbdc53827200cc2c0))
 * **front:** update signup conditions style ([e3b16a8](https://github.com/betagouv/api-subventions-asso/commit/e3b16a880624744079278f84095eef03ad402a8b))
 * **front:** use EmptySvg component to handle svg import in jest ([2f375b4](https://github.com/betagouv/api-subventions-asso/commit/2f375b47a704b7a9dedc297ee7f404e596cb9627))
+
+
 ## [0.32.3](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.32.3) (2023-07-26)
 
 
