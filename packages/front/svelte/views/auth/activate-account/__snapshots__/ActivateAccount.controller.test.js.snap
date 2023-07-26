@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ActivateAccountController constructor should define form steps 1`] = `
+[
+  {
+    "alert": [Function],
+    "component": [Function],
+    "name": "Définir un mot de passe",
+  },
+]
+`;

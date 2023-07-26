@@ -1,8 +1,8 @@
 import DefinePassword from "../define-password/DefinePassword.svelte";
-import PasswordAlert from "../define-password/PasswordAlerte.svelte";
+import PasswordFormatAlert from "../define-password/PasswordFormatAlert.svelte";
 
 export default class ActivateAcountController {
     constructor() {
-        this.steps = [{ name: "Définir un mot de passe", component: DefinePassword, alert: PasswordAlert }];
+        this.steps = [{ name: "Définir un mot de passe", component: DefinePassword, alert: PasswordFormatAlert }];
     }
 }

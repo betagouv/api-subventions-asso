@@ -24,7 +24,8 @@ export class ResetPwdController {
         this.promise = new Store(
             token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND),
         );
-        this.password = new Store("");
+        this.values = new Store({ password: "", confirm: "" });
+        this.isFormDisabled = new Store(false);
     }
 
     getErrorMessage(error) {
@@ -32,7 +33,7 @@ export class ResetPwdController {
     }
 
     onSubmit() {
-        this.promise.set(authService.resetPassword(this.token, this.password.value));
+        this.promise.set(authService.resetPassword(this.token, this.values.value.password));
         return this.promise.value
             .then(() => {
                 window.location.assign(
@@ -42,7 +43,11 @@ export class ResetPwdController {
             .catch((_, ignore) => ignore());
     }
 
-    checkPassword(password) {
-        return this.PWD_REGEX.test(password);
+    disableForm() {
+        this.isFormDisabled.set(true);
+    }
+
+    enableForm() {
+        this.isFormDisabled.set(false);
     }
 }

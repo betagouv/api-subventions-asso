@@ -20,9 +20,9 @@ describe("ResetPwdController", () => {
 
     describe("constructor and static values", () => {
         it.each`
-            propertyName  | expected
-            ${"password"} | ${""}
-            ${"promise"}  | ${Promise.resolve()}
+            propertyName | expected
+            ${"values"}  | ${{ password: "", confirm: "" }}
+            ${"promise"} | ${Promise.resolve()}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new ResetPwdController(TOKEN);
             expect(ctrl[propertyName].value).toEqual(expected);
@@ -66,7 +66,7 @@ describe("ResetPwdController", () => {
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
             setPromiseMock = jest.spyOn(ctrl.promise, "set");
-            ctrl.password.value = PASSWORD;
+            ctrl.values.value.password = PASSWORD;
 
             delete window.location;
             window.location = { assign: jest.fn() };
@@ -107,37 +107,13 @@ describe("ResetPwdController", () => {
 
         it("returns value from dict if found", () => {
             const expected = FOUND_MESSAGE;
-            const actual = ctrl.getErrorMessage({ data: { code : 42 } });
+            const actual = ctrl.getErrorMessage({ data: { code: 42 } });
             expect(actual).toBe(expected);
         });
 
         it("returns default value if code not in dict", () => {
             const expected = "Une erreur est survenue lors de la création de votre compte.";
-            const actual = ctrl.getErrorMessage({ data: { code : 43 } });
-            expect(actual).toBe(expected);
-        });
-    });
-
-    describe("checkPassword", () => {
-        const ctrl = new ResetPwdController(TOKEN);
-
-        it.each`
-            condition                  | attemptedPwd
-            ${"digit"}                 | ${"testPassword."}
-            ${"lowercase letter"}      | ${"TESTPASS0RD."}
-            ${"uppercase letter"}      | ${"testpassw0rd."}
-            ${"special character"}     | ${"testPassw0rd"}
-            ${"at least 8 characters"} | ${"te5tPa."}
-            ${"at most 32 characters"} | ${"testPassw0rd.1234567890$poiuytre4"}
-        `("rejects that don't contain $condition", ({ attemptedPwd }) => {
-            const expected = false;
-            const actual = ctrl.checkPassword(attemptedPwd);
-            expect(actual).toBe(expected);
-        });
-
-        it("accepts proper password", () => {
-            const expected = true;
-            const actual = ctrl.checkPassword("testPass0rd.");
+            const actual = ctrl.getErrorMessage({ data: { code: 43 } });
             expect(actual).toBe(expected);
         });
     });

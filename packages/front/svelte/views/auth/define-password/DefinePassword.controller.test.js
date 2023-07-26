@@ -1,34 +1,118 @@
 import DefinePasswordController from "./DefinePassword.controller";
+import * as ValidatorService from "@services/validator.service";
+jest.mock("@services/validator.service");
+import Dispatch from "@core/Dispatch";
+jest.mock("@core/Dispatch", () => ({
+    getDispatcher: () => jest.fn(),
+}));
 
 describe("DefinePasswordController", () => {
     const VALUES = {
         password: "",
         confirm: "",
     };
-    describe("checkConfirm", () => {
-        it("should set showConfirmError to false with confirm empty", () => {
-            const expected = false;
+
+    describe("validatePassword", () => {
+        beforeEach(() => ValidatorService.checkPassword.mockImplementation(() => true));
+
+        it("should call ValidatorService.validatePassword()", () => {
             const values = { ...VALUES, password: "abc123DE!" };
             const controller = new DefinePasswordController(values);
-            controller.checkConfirm();
-            const actual = controller.showConfirmError.value;
-            expect(actual).toEqual(expected);
+            controller.validatePassword();
+            expect(ValidatorService.checkPassword).toHaveBeenCalledWith(values.password);
         });
 
-        it("should set showConfirmError to false when password equals confirm", () => {
-            const expected = false;
-            const values = { password: "abc123DE!", confirm: "abc123DE!" };
+        it("should call _onPasswordValid()", () => {
+            const values = { ...VALUES, password: "abc123DE!" };
             const controller = new DefinePasswordController(values);
-            controller.checkConfirm();
-            const actual = controller.showConfirmError.value;
-            expect(actual).toEqual(expected);
+            const mockOnPasswordValid = jest.spyOn(controller, "_onPasswordValid").mockImplementation(jest.fn());
+            controller.validatePassword();
+            expect(mockOnPasswordValid).toHaveBeenCalledTimes(1);
         });
 
-        it("should set showConfirmError to true when password does not equals confirm", () => {
+        it("should call _onPasswordError()", () => {
+            ValidatorService.checkPassword.mockImplementation(() => false);
+            const values = { ...VALUES, password: "abc12" };
+            const controller = new DefinePasswordController(values);
+            const mockOnPasswordError = jest.spyOn(controller, "_onPasswordError").mockImplementation(jest.fn());
+            controller.validatePassword();
+            expect(mockOnPasswordError).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("_onPasswordError()", () => {
+        let controller;
+        let spyHandleErrorDispatch;
+
+        beforeAll(() => {
+            spyHandleErrorDispatch = jest
+                .spyOn(DefinePasswordController.prototype, "_handleErrorDispatch")
+                .mockImplementation(jest.fn());
+            controller = new DefinePasswordController(VALUES);
+        });
+
+        it("should call _handleErrorDispatch()", () => {
+            const controller = new DefinePasswordController(VALUES);
+            controller._onPasswordError();
+            expect(spyHandleErrorDispatch).toHaveBeenCalledTimes(1);
+        });
+
+        it("should set showPasswordError to true", () => {
             const expected = true;
-            const values = { password: "abc123DE!", confirm: "abc123DE@" };
-            const controller = new DefinePasswordController(values);
-            controller.checkConfirm();
+            const controller = new DefinePasswordController(VALUES);
+            controller._onPasswordError();
+            const actual = controller.showPasswordError.value;
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("_onConfirmValid()", () => {
+        let controller;
+        let spyHandleValidDispatch;
+
+        beforeAll(() => {
+            spyHandleValidDispatch = jest
+                .spyOn(DefinePasswordController.prototype, "_handleValidDispatch")
+                .mockImplementation(jest.fn());
+            controller = new DefinePasswordController(VALUES);
+        });
+
+        it("should call _handleValidDispatch()", () => {
+            const controller = new DefinePasswordController(VALUES);
+            controller._onConfirmValid();
+            expect(spyHandleValidDispatch).toHaveBeenCalledTimes(1);
+        });
+
+        it("should set showConfirmError to false", () => {
+            const expected = false;
+            const controller = new DefinePasswordController(VALUES);
+            controller._onConfirmValid();
+            const actual = controller.showConfirmError.value;
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("_onConfirmError()", () => {
+        let controller;
+        let spyHandleErrorDispatch;
+
+        beforeAll(() => {
+            spyHandleErrorDispatch = jest
+                .spyOn(DefinePasswordController.prototype, "_handleErrorDispatch")
+                .mockImplementation(jest.fn());
+            controller = new DefinePasswordController(VALUES);
+        });
+
+        it("should call _handleErrorDispatch()", () => {
+            const controller = new DefinePasswordController(VALUES);
+            controller._onConfirmError();
+            expect(spyHandleErrorDispatch).toHaveBeenCalledTimes(1);
+        });
+
+        it("should set showConfirmError to true", () => {
+            const expected = true;
+            const controller = new DefinePasswordController(VALUES);
+            controller._onConfirmError();
             const actual = controller.showConfirmError.value;
             expect(actual).toEqual(expected);
         });
