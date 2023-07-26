@@ -1,6 +1,6 @@
 <script>
-    import { isHyphen } from "$lib/helpers/stringHelper";
     import TableCell from "./TableCell.svelte";
+    import { isHyphen } from "$lib/helpers/stringHelper";
 
     export let value;
     export let primary = false;

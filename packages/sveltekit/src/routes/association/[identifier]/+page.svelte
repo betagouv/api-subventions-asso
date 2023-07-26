@@ -1,14 +1,14 @@
 <script>
+    import TabsAsso from "./components/TabsAsso.svelte";
+    import { AssociationController } from "./Association.controller";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import InfosLegales from "$lib/components/InfosLegales/InfosLegales.svelte";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
-    import TabsAsso from "./components/TabsAsso.svelte";
-    import { AssociationController } from "./Association.controller";
 
-    export let data
+    export let data;
     const { identifier } = data.params;
 
     const controller = new AssociationController(identifier);

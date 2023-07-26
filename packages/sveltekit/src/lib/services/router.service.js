@@ -37,7 +37,7 @@ export const buildBreadcrumbs = path => {
 };
 
 export const goToUrl = (url, saveHistory = true, reload = false) => {
-    if (!reload && !url.includes("://")) return goto(url, { replaceState: !saveHistory })
+    if (!reload && !url.includes("://")) return goto(url, { replaceState: !saveHistory });
     if (saveHistory) window.location.assign(url);
     else window.location.replace(url);
 };

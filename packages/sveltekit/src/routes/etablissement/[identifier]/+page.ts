@@ -1,3 +1,3 @@
 export function load() {
-      return { withBlueBanner: true }
+    return { withBlueBanner: true };
 }

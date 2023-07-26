@@ -1,6 +1,6 @@
 <script>
     export let description = "";
-    import logo from "$lib/assets/images/logo-beta.png"
+    import logo from "$lib/assets/images/logo-beta.png";
 </script>
 
 <div class="spinner-container">

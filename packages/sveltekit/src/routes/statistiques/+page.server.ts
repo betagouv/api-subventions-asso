@@ -1,8 +1,8 @@
-import { STATS_URL } from '$env/static/public';
-import { redirect } from '@sveltejs/kit';
+import { redirect } from "@sveltejs/kit";
+import { STATS_URL } from "$env/static/public";
 
-export const ssr = true
+export const ssr = true;
 
 export function load() {
-      throw redirect(303, STATS_URL);
+    throw redirect(303, STATS_URL);
 }

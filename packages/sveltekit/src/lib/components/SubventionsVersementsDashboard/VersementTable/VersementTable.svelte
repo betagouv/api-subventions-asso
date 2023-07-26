@@ -1,12 +1,12 @@
 <script>
     import TableCell from "../../Tables/TableCell.svelte";
     import TableHead from "../../Tables/TableHead.svelte";
-    import Table from "$lib/dsfr/Table.svelte";
 
-    import { modal, data } from "$lib/store/modal.store";
     import VersementsInfoModal from "../Modals/VersementsInfoModal.svelte";
     import NumberTableCell from "../../Tables/NumberTableCell.svelte";
     import VersementTableController from "./VersementTable.controller";
+    import { modal, data } from "$lib/store/modal.store";
+    import Table from "$lib/dsfr/Table.svelte";
 
     export let sort;
     export let elements = [];

@@ -1,12 +1,12 @@
 <script>
-    import Alert from "$lib/dsfr/Alert.svelte";
     import LoginController from "./Login.controller";
+    import Alert from "$lib/dsfr/Alert.svelte";
     import Input from "$lib/dsfr/Input.svelte";
     import Button from "$lib/dsfr/Button.svelte";
 
     let form;
-    export let data
-    const {query } = data
+    export let data;
+    const { query } = data;
     const controller = new LoginController(query);
 
     const { error, showSuccessMessage, successMessage } = controller;

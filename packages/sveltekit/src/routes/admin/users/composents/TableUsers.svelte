@@ -1,11 +1,11 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    import { action, data, modal } from "$lib/store/modal.store";
     import adminService from "../../admin.service";
+    import RemoveUserModal from "./RemoveUserModal.svelte";
+    import { action, data, modal } from "$lib/store/modal.store";
 
     import Button from "$lib/dsfr/Button.svelte";
-    import RemoveUserModal from "./RemoveUserModal.svelte";
     import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
     import userService from "$lib/resources/users/user.service";
     import authService from "$lib/resources/auth/auth.service";

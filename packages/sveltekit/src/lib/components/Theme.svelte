@@ -1,7 +1,7 @@
 <script>
-    import light from "@gouvfr/dsfr/dist/artwork/light.svg"
-    import dark from "@gouvfr/dsfr/dist/artwork/dark.svg"
-    import system from "@gouvfr/dsfr/dist/artwork/system.svg"
+    import light from "@gouvfr/dsfr/dist/artwork/light.svg";
+    import dark from "@gouvfr/dsfr/dist/artwork/dark.svg";
+    import system from "@gouvfr/dsfr/dist/artwork/system.svg";
 </script>
 
 <div>

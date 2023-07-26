@@ -1,10 +1,10 @@
 <script>
     import { onMount } from "svelte";
 
+    import EstablishmentCard from "./EstablishmentCard.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
-    import EstablishmentCard from "./EstablishmentCard.svelte";
     import associationService from "$lib/resources/associations/association.service";
 
     import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";

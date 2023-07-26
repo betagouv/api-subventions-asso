@@ -1,8 +1,8 @@
 // Voir si il ne vaux mieux pas passer ça en adapteur
 import axios from "axios";
-import { flattenProviderValue } from "$lib/helpers/providerValueHelper";
 import SSEConnector from "../../core/SseConnector";
 import Store from "../../core/Store";
+import { flattenProviderValue } from "$lib/helpers/providerValueHelper";
 
 class SubventionsPort {
     _getSubventionsConnectedStore(identifier, type) {

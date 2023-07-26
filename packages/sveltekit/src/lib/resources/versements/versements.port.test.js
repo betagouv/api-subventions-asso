@@ -1,6 +1,6 @@
 import { NotFoundError } from "../../errors";
-import * as providerValueHelper from "$lib/helpers/providerValueHelper";
 import versementsPort from "./versements.port";
+import * as providerValueHelper from "$lib/helpers/providerValueHelper";
 import requestsService from "$lib/services/requests.service";
 
 describe("VersementsPort", () => {

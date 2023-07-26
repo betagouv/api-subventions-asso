@@ -1,9 +1,5 @@
 <script>
     import Spinner from "../Spinner.svelte";
-    import Button from "$lib/dsfr/Button.svelte";
-    import { modal } from "$lib/store/modal.store";
-    import Select from "$lib/dsfr/Select.svelte";
-    import Alert from "$lib/dsfr/Alert.svelte";
     import ProgressBar from "../ProgressBar.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
@@ -13,6 +9,10 @@
     import SubventionTable from "./SubventionTable/SubventionTable.svelte";
     import VersementTable from "./VersementTable/VersementTable.svelte";
     import ProviderModal from "./Modals/ProviderModal/ProviderModal.svelte";
+    import Alert from "$lib/dsfr/Alert.svelte";
+    import Select from "$lib/dsfr/Select.svelte";
+    import { modal } from "$lib/store/modal.store";
+    import Button from "$lib/dsfr/Button.svelte";
 
     export let identifier;
 

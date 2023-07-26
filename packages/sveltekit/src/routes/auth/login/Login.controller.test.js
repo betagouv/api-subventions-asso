@@ -1,7 +1,7 @@
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
-import * as RouterService from "$lib/services/router.service";
 import UnauthorizedError from "../../../errors/UnauthorizedError";
 import LoginController from "./Login.controller";
+import * as RouterService from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 
 describe("LoginController", () => {

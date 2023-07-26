@@ -3,8 +3,8 @@ jest.mock("$lib/store/modal.store", () => ({
     modal: { update: jest.fn() },
     data: { update: jest.fn() },
 }));
-import * as modalStore from "$lib/store/modal.store";
 import SubventionTableController from "./SubventionTable.controller";
+import * as modalStore from "$lib/store/modal.store";
 import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 

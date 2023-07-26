@@ -1,10 +1,10 @@
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { get } from "svelte/store";
 import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
 import requestsService from "$lib/services/requests.service";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
-import { get } from "svelte/store";
 import { page } from "$app/stores";
 import localStorageStore from "$lib/store/localStorage";
 
@@ -29,7 +29,7 @@ export class AuthService {
     async login(email, password) {
         const user = await authPort.login(email, password);
         localStorageStore.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
-        this.setUserInApp()
+        this.setUserInApp();
         crispService.setUserEmail(user.email);
 
         return user;
@@ -42,7 +42,7 @@ export class AuthService {
     }
 
     initUserInApp() {
-        this.setUserInApp()
+        this.setUserInApp();
         requestsService.addErrorHook(UnauthorizedError, () => {
             this.logout(false);
             const queryUrl = encodeURIComponent(get(page).url.pathname);
@@ -53,7 +53,7 @@ export class AuthService {
     logout(reload = true) {
         localStorageStore.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
-        if (reload) goToUrl("/auth/login", false, true)
+        if (reload) goToUrl("/auth/login", false, true);
     }
 
     getCurrentUser() {

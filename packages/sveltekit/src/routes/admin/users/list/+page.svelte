@@ -1,5 +1,8 @@
 <script>
     import adminService from "../../admin.service.js";
+    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../../admin.constant.js";
+    import TableUsers from "../composents/TableUsers.svelte";
+    import SearchUsers from "../composents/SearchUsers.svelte";
     import userService from "$lib/resources/users/user.service.js";
 
     import Widget from "$lib/components/Widget.svelte";
@@ -10,9 +13,6 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import Input from "$lib/dsfr/Input.svelte";
     import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
-    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../../admin.constant.js";
-    import TableUsers from "../composents/TableUsers.svelte";
-    import SearchUsers from "../composents/SearchUsers.svelte";
 
     let users,
         domains = [];
@@ -133,9 +133,9 @@
 {/await}
 
 <style>
-.admin-domain-ul {
-    columns: 2;
-    -webkit-columns: 2;
-    -moz-columns: 2;
-}
+    .admin-domain-ul {
+        columns: 2;
+        -webkit-columns: 2;
+        -moz-columns: 2;
+    }
 </style>

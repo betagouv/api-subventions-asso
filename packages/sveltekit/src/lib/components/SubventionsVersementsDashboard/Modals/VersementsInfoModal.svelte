@@ -1,7 +1,7 @@
 <script>
-    import Table from "$lib/dsfr/Table.svelte";
     import TableHead from "../../Tables/TableHead.svelte";
     import StringTableCell from "../../Tables/StringTableCell.svelte";
+    import Table from "$lib/dsfr/Table.svelte";
 
     import { data } from "$lib/store/modal.store";
 </script>

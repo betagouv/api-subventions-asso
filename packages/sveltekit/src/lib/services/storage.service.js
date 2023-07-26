@@ -1,5 +1,5 @@
-import localStorageStore from '$lib/store/localStorage';
 import { get } from "svelte/store";
+import localStorageStore from "$lib/store/localStorage";
 
 export const updateSearchHistory = ({ rna, siren, name, objectSocial }) => {
     let history = get(localStorageStore.getParsedItem("search-history")) || [];

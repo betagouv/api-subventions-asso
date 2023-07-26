@@ -1,9 +1,9 @@
 <script>
     import { setContext } from "svelte";
     import "../global.css";
-    import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css"
-    import "@gouvfr/dsfr/dist/utility/icons/icons.min.css"
-    import "@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js"
+    import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css";
+    import "@gouvfr/dsfr/dist/utility/icons/icons.min.css";
+    import "@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js";
 
     import Auth from "$lib/components/Auth/Auth.svelte";
     import GenericModal from "$lib/dsfr/GenericModal.svelte";
@@ -15,7 +15,7 @@
     import { page } from "$app/stores";
     import { ENV } from "$env/static/public";
 
-    export let data
+    export let data;
 
     setContext("app", {
         getEnv: () => ENV,
@@ -28,7 +28,7 @@
     // Options disponibles à l'initialisation du DSFR
     window.dsfr = {
         verbose: false,
-        mode: "runtime"
+        mode: "runtime",
     };
 </script>
 
@@ -49,7 +49,7 @@
         <div class="fr-container fr-mb-8w">
             <main id="content">
                 <Breadcrumb crumbs={data.crumbs} />
-                <slot></slot>
+                <slot />
             </main>
         </div>
         <Footer />

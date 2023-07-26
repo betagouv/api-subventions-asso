@@ -43,29 +43,27 @@ export function monthCapitalizedFromId(monthId) {
 }
 
 export function formatDate(value) {
-		const date = new Date(value);
+    const date = new Date(value);
 
-		const doubleNumber = (num) => ("0" + num).slice(-2);
+    const doubleNumber = num => ("0" + num).slice(-2);
 
-		return `${doubleNumber(date.getDate())}/${doubleNumber(date.getMonth() + 1)}/${date.getFullYear()}`.replace(
-				"  ",
-				" ",
-		);
+    return `${doubleNumber(date.getDate())}/${doubleNumber(date.getMonth() + 1)}/${date.getFullYear()}`.replace(
+        "  ",
+        " ",
+    );
 }
 
 export function formatDateWithHour(value) {
-		const date = new Date(value);
+    const date = new Date(value);
 
-		const doubleNumber = (num) => ("0" + num).slice(-2);
+    const doubleNumber = num => ("0" + num).slice(-2);
 
-		return `${formatDate(date.toString())} à ${doubleNumber(date.getHours())}:${doubleNumber(
-				date.getMinutes(),
-		)}h`;
+    return `${formatDate(date.toString())} à ${doubleNumber(date.getHours())}:${doubleNumber(date.getMinutes())}h`;
 }
 
 export function toProviderValueString(data) {
-		const value = getValue(data);
-		if (!value) return;
+    const value = getValue(data);
+    if (!value) return;
 
-		return formatDate(value);
+    return formatDate(value);
 }

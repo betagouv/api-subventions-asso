@@ -1,7 +1,7 @@
 <script>
     export let percent = 0;
     export let loadingText = "";
-    import logo from "$lib/assets/images/logo-beta.png"
+    import logo from "$lib/assets/images/logo-beta.png";
 </script>
 
 <div class="text-container">

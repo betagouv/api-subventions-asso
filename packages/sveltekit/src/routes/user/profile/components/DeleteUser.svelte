@@ -1,8 +1,8 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    import { action, modal } from "$lib/store/modal.store";
     import ConfirmDeleteUserModal from "./ConfirmDeleteUserModal.svelte";
+    import { action, modal } from "$lib/store/modal.store";
     import Button from "$lib/dsfr/Button.svelte";
 
     const dispatch = createEventDispatcher();

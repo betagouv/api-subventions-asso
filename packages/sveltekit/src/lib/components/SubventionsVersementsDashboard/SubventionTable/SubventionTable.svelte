@@ -1,9 +1,9 @@
 <script>
     import TableCell from "../../Tables/TableCell.svelte";
     import TableHead from "../../Tables/TableHead.svelte";
+    import SubventionTableController from "./SubventionTable.controller";
     import Table from "$lib/dsfr/Table.svelte";
 
-    import SubventionTableController from "./SubventionTable.controller";
     import StatusLabel from "$lib/components/SubventionsVersementsDashboard/SubventionTable/StatutLabel/StatusLabel.svelte";
 
     export let sort;

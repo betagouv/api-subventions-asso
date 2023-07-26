@@ -9,7 +9,7 @@ export const numberToEuro = value => {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: nbDigits,
-        minimumFractionDigits: nbDigits
+        minimumFractionDigits: nbDigits,
     });
 };
 

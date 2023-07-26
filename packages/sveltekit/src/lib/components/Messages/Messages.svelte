@@ -1,6 +1,6 @@
 <script>
-    import Callout from "$lib/dsfr/Callout.svelte";
     import MessagesController from "./Messages.controller";
+    import Callout from "$lib/dsfr/Callout.svelte";
 
     const controller = new MessagesController();
 

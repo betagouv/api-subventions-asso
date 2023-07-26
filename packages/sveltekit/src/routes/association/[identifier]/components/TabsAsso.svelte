@@ -1,10 +1,10 @@
 <script>
+    import Etablissements from "./Etablissements.svelte";
+    import Bodacc from "./Bodacc/Bodacc.svelte";
     import Tabs from "$lib/dsfr/Tabs.svelte";
     import TabContent from "$lib/dsfr/TabContent.svelte";
     import Documents from "$lib/components/Documents/Documents.svelte";
     import SubventionsVersementsDashboard from "$lib/components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
-    import Etablissements from "./Etablissements.svelte";
-    import Bodacc from "./Bodacc/Bodacc.svelte";
     // import Stats from "./Stats/Stats.svelte";
 
     export let titles;

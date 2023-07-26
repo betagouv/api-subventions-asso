@@ -38,7 +38,7 @@ describe("authService", () => {
         });
 
         it("rejects with error code from port if given", () => {
-            const expected ={ message: 5 };
+            const expected = { message: 5 };
             portMock.mockRejectedValueOnce(expected);
             const actual = authService.signup(USER);
             expect(actual).rejects.toBe(expected);

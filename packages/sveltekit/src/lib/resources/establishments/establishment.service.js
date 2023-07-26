@@ -27,7 +27,7 @@ class EstablishmentService {
         const result = await establishmentPort.getDocuments(identifier);
 
         if (!result) return [];
-        
+
         const documents = result.map(document => getObjectWithMetadata(document));
         return documentService.formatAndSortDocuments(documents);
     }

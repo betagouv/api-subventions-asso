@@ -4,8 +4,8 @@
     import Spinner from "../Spinner.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
     import DataNotFound from "../DataNotFound.svelte";
-    import Alert from "$lib/dsfr/Alert.svelte";
     import { DocumentsController } from "./Documents.controller";
+    import Alert from "$lib/dsfr/Alert.svelte";
     import Card from "$lib/dsfr/Card.svelte";
 
     export let resource;

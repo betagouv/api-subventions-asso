@@ -1,10 +1,10 @@
 <script>
+    import ContactEtabController from "./ContactEtabController";
     import ActionGroup from "$lib/components/ActionGroup.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Input from "$lib/dsfr/Input.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Table from "$lib/dsfr/Table.svelte";
-    import ContactEtabController from "./ContactEtabController";
 
     export let contacts = [];
     export let siret;

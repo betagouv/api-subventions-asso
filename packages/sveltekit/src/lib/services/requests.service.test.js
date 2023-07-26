@@ -1,7 +1,7 @@
 import axios from "axios";
-import { DATASUB_URL } from "$env/static/public"
 import { NotFoundError } from "../errors";
 import errorsService from "../errors/errors.service";
+import { DATASUB_URL } from "$env/static/public";
 import requestsService from "$lib/services/requests.service";
 
 describe("RequestService", () => {

@@ -1,5 +1,5 @@
-import * as routerService from "$lib/services/router.service";
 import HeaderController from "./Header.controller";
+import * as routerService from "$lib/services/router.service";
 
 describe("HeaderController", () => {
     let controller;

@@ -1,3 +1,4 @@
+import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import {
     addressToString,
     getAddress,
@@ -6,7 +7,6 @@ import {
     getSiegeSiret,
 } from "$lib/resources/associations/association.helper";
 import { modal, data } from "$lib/store/modal.store";
-import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 

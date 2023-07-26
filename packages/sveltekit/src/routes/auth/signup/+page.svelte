@@ -76,7 +76,7 @@
                     <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">politique de confidentialité</a>
                     et les
                     <a href={ctrl.cguUrl}>conditions générales d'utilisations</a>
-                     de Data.Subvention.
+                    de Data.Subvention.
                 </span>
             </div>
         </fieldset>

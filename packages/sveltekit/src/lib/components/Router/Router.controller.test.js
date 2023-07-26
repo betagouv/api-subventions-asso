@@ -1,5 +1,5 @@
-import * as routerService from "$lib/services/router.service";
 import RouterController from "./Router.controller";
+import * as routerService from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 
 describe("RouterController", () => {

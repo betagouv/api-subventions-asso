@@ -1,4 +1,4 @@
-import { formatDate } from '$lib/helpers/dateHelper';
+import { formatDate } from "$lib/helpers/dateHelper";
 import { getDate, getProvider, getValue } from "$lib/helpers/providerValueHelper";
 
 export class InfosBancairesEtabController {

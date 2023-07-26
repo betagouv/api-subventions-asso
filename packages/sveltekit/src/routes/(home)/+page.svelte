@@ -1,10 +1,10 @@
 <script>
+    import ResultCard from "./components/ResultCard.svelte";
+    import { HomeController } from "./Home.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Card from "$lib/dsfr/Card.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Messages from "$lib/components/Messages/Messages.svelte";
-    import ResultCard from "./components/ResultCard.svelte";
-    import { HomeController } from "./Home.controller";
 
     const ctrl = new HomeController();
     const { input, isLoading, currentSearch, searchResult, searchHistory } = ctrl;

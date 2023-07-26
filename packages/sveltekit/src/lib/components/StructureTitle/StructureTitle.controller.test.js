@@ -1,5 +1,5 @@
-import * as associationHelper from "$lib/resources/associations/association.helper";
 import { StructureTitleController } from "./StructureTitle.controller";
+import * as associationHelper from "$lib/resources/associations/association.helper";
 
 describe("StructureTitleController", () => {
     const ASSO = {

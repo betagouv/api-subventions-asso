@@ -1,35 +1,35 @@
 root: true
 extends:
-  - 'eslint:recommended'
-  - 'plugin:@typescript-eslint/recommended'
-  - 'plugin:svelte/recommended'
-  - prettier
-parser: '@typescript-eslint/parser'
+    - "eslint:recommended"
+    - "plugin:@typescript-eslint/recommended"
+    - "plugin:svelte/recommended"
+    - prettier
+parser: "@typescript-eslint/parser"
 plugins:
-  - '@typescript-eslint'
-  - import
+    - "@typescript-eslint"
+    - import
 parserOptions:
-  sourceType: module
-  ecmaVersion: 2020
-  extraFileExtensions:
-    - .svelte
+    sourceType: module
+    ecmaVersion: 2020
+    extraFileExtensions:
+        - .svelte
 env:
-  browser: true
-  es2017: true
-  node: true
+    browser: true
+    es2017: true
+    node: true
 overrides:
-  - files:
-      - '*.svelte'
-    parser: svelte-eslint-parser
-    parserOptions:
-      parser: '@typescript-eslint/parser'
+    - files:
+          - "*.svelte"
+      parser: svelte-eslint-parser
+      parserOptions:
+          parser: "@typescript-eslint/parser"
 rules:
     import/order: error
     "@typescript-eslint/no-unused-vars":
         - "warn"
-        -   destructuredArrayIgnorePattern: "^_"
-            argsIgnorePattern: "^_"
-            varsIgnorePattern: "^_"
+        - destructuredArrayIgnorePattern: "^_"
+          argsIgnorePattern: "^_"
+          varsIgnorePattern: "^_"
 #ignorePatterns:
 #    - "*.test.ts"
 #    - "*.spec.ts"

@@ -1,6 +1,6 @@
 <script>
-    import Button from "$lib/dsfr/Button.svelte";
     import InfosLegalesController from "./InfosLegales.controller";
+    import Button from "$lib/dsfr/Button.svelte";
 
     export let association;
     export let etablissement = undefined;

@@ -1,6 +1,6 @@
 <script>
     import NotFoundController from "./NotFound.controller";
-    import svg404 from "$lib/assets/images/svg404.svg"
+    import svg404 from "$lib/assets/images/svg404.svg";
 
     const ctrl = new NotFoundController();
 </script>
