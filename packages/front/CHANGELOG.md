@@ -5,7 +5,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.1...v0.33.0) (2023-07-24)
 
-
 ### Bug Fixes
 
 * **front:** fix html semantic ([208fe7f](https://github.com/betagouv/datasubvention/commit/208fe7f5b21862807cb41dc90067e68559ab04c6))
@@ -26,6 +25,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** style legend as h5 title ([28b2609](https://github.com/betagouv/datasubvention/commit/28b2609d0c6866cf6146b59bbdc53827200cc2c0))
 * **front:** update signup conditions style ([e3b16a8](https://github.com/betagouv/datasubvention/commit/e3b16a880624744079278f84095eef03ad402a8b))
 * **front:** use EmptySvg component to handle svg import in jest ([2f375b4](https://github.com/betagouv/datasubvention/commit/2f375b47a704b7a9dedc297ee7f404e596cb9627))
+## [0.32.3](https://github.com/betagouv/datasubvention/compare/v0.32.2...v0.32.3) (2023-07-26)
+
+
+### Bug Fixes
+
+* **front:** judgment may be null ([87221eb](https://github.com/betagouv/datasubvention/commit/87221ebf1666b143972d8f4a81372e518e3adc9a))
+
+
+
+
+
+## [0.32.2](https://github.com/betagouv/datasubvention/compare/v0.32.1...v0.32.2) (2023-07-13)
+
+
+### Bug Fixes
+
+* **front:** add link to signup in login view ([528cfb1](https://github.com/betagouv/datasubvention/commit/528cfb1a561c92909a86b0e264886a32ab7d478c))
 
 
 
@@ -94,12 +110,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** update nodemon config to not rebuild on test update ([f56a82d](https://github.com/betagouv/datasubvention/commit/f56a82d4459fb3c98e0ced42aafedf563d423700))
 * **front:** update signup with new API endpoint requirements ([aa82f49](https://github.com/betagouv/datasubvention/commit/aa82f4915124234fa8eb087869dcf11fb4ba0314))
 
-
-## [0.31.5](https://github.com/betagouv/api-subventions-asso/compare/v0.31.4...v0.31.5) (2023-07-12)
+## [0.31.5](https://github.com/betagouv/datasubvention/compare/v0.31.4...v0.31.5) (2023-07-12)
 
 ### Bug Fixes
 
-* **front:** change x frame option ([614bb9d](https://github.com/betagouv/api-subventions-asso/commit/614bb9dcaf7ae620a66bfe12753f9bdac5ec6eda))
+* **front:** change x frame option ([614bb9d](https://github.com/betagouv/datasubvention/commit/614bb9dcaf7ae620a66bfe12753f9bdac5ec6eda))
 
 
 ## [0.31.4](https://github.com/betagouv/datasubvention/compare/v0.31.3...v0.31.4) (2023-07-10)

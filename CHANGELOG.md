@@ -27,6 +27,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** update signup conditions style ([e3b16a8](https://github.com/betagouv/api-subventions-asso/commit/e3b16a880624744079278f84095eef03ad402a8b))
 * **front:** use EmptySvg component to handle svg import in jest ([2f375b4](https://github.com/betagouv/api-subventions-asso/commit/2f375b47a704b7a9dedc297ee7f404e596cb9627))
 
+## [0.32.3](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.32.3) (2023-07-26)
+
+### Bug Fixes
+
+* **front:** judgment may be null ([87221eb](https://github.com/betagouv/api-subventions-asso/commit/87221ebf1666b143972d8f4a81372e518e3adc9a))
+
+
+
+
+
+## [0.32.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.32.2) (2023-07-13)
+
+
+### Bug Fixes
+
+* **front:** add link to signup in login view ([528cfb1](https://github.com/betagouv/api-subventions-asso/commit/528cfb1a561c92909a86b0e264886a32ab7d478c))
+
 
 
 ## [0.31.5](https://github.com/betagouv/api-subventions-asso/compare/v0.32.0...v0.31.5) (2023-07-12)
