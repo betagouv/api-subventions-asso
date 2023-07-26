@@ -14,16 +14,16 @@ class RequestsService {
         );
     }
 
-    get(path, params) {
-        return this._sendRequest("get", path, params);
+    get(path, params, requestOption) {
+        return this._sendRequest("get", path, params, undefined, requestOption);
     }
 
-    post(path, data) {
-        return this._sendRequest("post", path, undefined, data);
+    post(path, data, requestOption) {
+        return this._sendRequest("post", path, undefined, data, requestOption);
     }
 
-    delete(path, params) {
-        return this._sendRequest("delete", path, params);
+    delete(path, params, requestOption) {
+        return this._sendRequest("delete", path, params, undefined, requestOption);
     }
 
     initAuthentication(apiToken) {
@@ -37,12 +37,19 @@ class RequestsService {
         });
     }
 
-    _sendRequest(type, path, params, data) {
+    _sendRequest(type, path, params, data, requestOption = {}) {
+        const axiosOption = {};
+
+        if (requestOption.responseType) {
+            axiosOption.responseType = requestOption.responseType;
+        }
+
         return axios.request({
             url: path,
             method: type,
             data,
             params,
+            ...axiosOption,
         });
     }
 

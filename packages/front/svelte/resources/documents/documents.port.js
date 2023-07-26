@@ -2,7 +2,7 @@ import requestsService from "@services/requests.service";
 
 class DocumentPort {
     async getDauphinBlob(localDauphinDocUrl) {
-        return (await requestsService.get(localDauphinDocUrl, { responseType: "blob" })).data;
+        return (await requestsService.get(localDauphinDocUrl, {}, { responseType: "blob" })).data;
     }
 }
 
