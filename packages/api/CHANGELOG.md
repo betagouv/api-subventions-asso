@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* **api:** update user when he is already in brevo list ([ab24943](https://github.com/betagouv/api-subventions-asso/commit/ab2494325bc183fcb453a76c05c1f8bfe9204ec7))
+* review cleaning ([7ef7eb5](https://github.com/betagouv/api-subventions-asso/commit/7ef7eb5f38f4acaea8e37bb11295c422960154a2))
+
+
+
+# [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+
+
+
+
 # [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.33.0) (2023-07-24)
 
 **Note:** Version bump only for package api
