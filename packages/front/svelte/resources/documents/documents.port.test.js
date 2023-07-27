@@ -9,7 +9,7 @@ describe("DocumentsPort", () => {
 
     describe("search", () => {
         it("calls requestsService get", async () => {
-            const expected = [DOC_URL, { responseType: "blob" }];
+            const expected = [DOC_URL, {}, { responseType: "blob" }];
             await documentPort.getDauphinBlob(DOC_URL);
             expect(requestsService.get).toHaveBeenCalledWith(...expected);
         });

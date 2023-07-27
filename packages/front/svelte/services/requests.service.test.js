@@ -31,7 +31,7 @@ describe("RequestService", () => {
                 const expectedParam = { test: true };
                 await requestsService.get(expectedPath, expectedParam);
 
-                expect(_sendRequestMock).toHaveBeenCalledWith("get", expectedPath, expectedParam);
+                expect(_sendRequestMock).toHaveBeenCalledWith("get", expectedPath, expectedParam, undefined, undefined);
             });
         });
 
@@ -41,7 +41,7 @@ describe("RequestService", () => {
                 const expectedBody = { test: true };
                 await requestsService.post(expectedPath, expectedBody);
 
-                expect(_sendRequestMock).toHaveBeenCalledWith("post", expectedPath, undefined, expectedBody);
+                expect(_sendRequestMock).toHaveBeenCalledWith("post", expectedPath, undefined, expectedBody, undefined);
             });
         });
 
@@ -51,7 +51,13 @@ describe("RequestService", () => {
                 const expectedParam = { test: true };
                 await requestsService.delete(expectedPath, expectedParam);
 
-                expect(_sendRequestMock).toHaveBeenCalledWith("delete", expectedPath, expectedParam);
+                expect(_sendRequestMock).toHaveBeenCalledWith(
+                    "delete",
+                    expectedPath,
+                    expectedParam,
+                    undefined,
+                    undefined,
+                );
             });
         });
     });
