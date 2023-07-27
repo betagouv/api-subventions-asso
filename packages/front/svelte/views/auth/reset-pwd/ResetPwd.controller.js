@@ -39,7 +39,6 @@ export class ResetPwdController {
                 "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"),
             );
         });
-        // .catch((_, ignore) => ignore());
     }
 
     disableForm() {

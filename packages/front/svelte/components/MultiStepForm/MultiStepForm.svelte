@@ -43,22 +43,20 @@
         on:error={() => controller.blockStep()}
         on:valid={() => controller.unblockStep()}
     />
-    <div class="fr-mt-6v">
-        {#if $currentStep.isFirstStep} 
-            <Button
-                htmlType="button"
-                type="secondary"
-                on:click={() => controller.previous()}
-                disabled={$currentStep.isFirstStep}>
-                {previousLabel}
-            </Button>
-        {/if}
-        {#if $currentStep.isLastStep}
-            <Button htmlType="submit" disabled={$isStepBlocked}>{submitLabel}</Button>
-        {:else}
-            <Button htmlType="submit" type="secondary" on:click={() => controller.next()} on:submit={() => controller.next()}>{nextLabel}</Button>
-        {/if}
-    </div>
+    {#if $currentStep.isFirstStep} 
+        <Button
+            htmlType="button"
+            type="secondary"
+            on:click={() => controller.previous()}
+            disabled={$currentStep.isFirstStep}>
+            {previousLabel}
+        </Button>
+    {/if}
+    {#if $currentStep.isLastStep}
+        <Button htmlType="submit" disabled={$isStepBlocked}>{submitLabel}</Button>
+    {:else}
+        <Button htmlType="submit" type="secondary" on:click={() => controller.next()} on:submit={() => controller.next()}>{nextLabel}</Button>
+    {/if}
 </form>
 
 <style>
