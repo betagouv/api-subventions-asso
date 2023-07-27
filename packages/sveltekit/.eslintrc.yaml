@@ -3,11 +3,14 @@ extends:
     - "eslint:recommended"
     - "plugin:@typescript-eslint/recommended"
     - "plugin:svelte/recommended"
+    - "plugin:vitest/recommended"
+    - "plugin:vitest-globals/recommended"
     - prettier
 parser: "@typescript-eslint/parser"
 plugins:
     - "@typescript-eslint"
     - import
+    - vitest
 parserOptions:
     sourceType: module
     ecmaVersion: 2020
@@ -23,6 +26,13 @@ overrides:
       parser: svelte-eslint-parser
       parserOptions:
           parser: "@typescript-eslint/parser"
+    - files:
+        - "**/*.test.{j,t}s?(x)"
+        - "**/*.spec.{j,t}s?(x)"
+      env:
+        "vitest-globals/env": true
+      globals:
+        vi: true
 rules:
     import/order: error
     "@typescript-eslint/no-unused-vars":

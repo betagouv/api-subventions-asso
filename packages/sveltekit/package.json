@@ -56,6 +56,8 @@
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.27.5",
         "eslint-plugin-svelte": "^2.30.0",
+        "eslint-plugin-vitest": "^0.2.6",
+        "eslint-plugin-vitest-globals": "^1.4.0",
         "lint-staged": "^13.2.3",
         "prettier": "^2.8.0",
         "prettier-plugin-svelte": "^2.10.1",

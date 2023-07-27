@@ -9,7 +9,8 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "lib": ["es5"]
+        "lib": ["es5"],
+        "types": ["vitest/globals"]
     }
     // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
     //
