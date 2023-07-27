@@ -32,7 +32,7 @@
                     on:error={() => ctrl.disableForm()}
                     on:valid={() => ctrl.enableForm()}
                     bind:values={$values} />
-                <div class="fr-input-group fr-my-4w">
+                <div class="fr-input-group">
                     <Button type="submit" title="Valider" htmlType="submit" disabled={$isFormDisabled}>Valider</Button>
                 </div>
             </form>

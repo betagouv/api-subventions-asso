@@ -34,13 +34,12 @@ export class ResetPwdController {
 
     onSubmit() {
         this.promise.set(authService.resetPassword(this.token, this.values.value.password));
-        return this.promise.value
-            .then(() => {
-                window.location.assign(
-                    "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"),
-                );
-            })
-            .catch((_, ignore) => ignore());
+        return this.promise.value.then(() => {
+            window.location.assign(
+                "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"),
+            );
+        });
+        // .catch((_, ignore) => ignore());
     }
 
     disableForm() {

@@ -4,18 +4,11 @@
 
     export let error;
 
-    const ctrl = PasswordErrorAlertController(error);
+    const ctrl = new PasswordErrorAlertController(error);
 </script>
-
-{error}
 
 {#if error}
     <Alert title="Attention" type="warning">
-        {@html ctrl.errorMessage()}
+        {@html ctrl.errorMessage}
     </Alert>
 {/if}
-
-<!-- markup (zero or more items) goes here -->
-<style>
-    /* your styles go here */
-</style>
