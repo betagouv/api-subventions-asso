@@ -1,4 +1,4 @@
-import Association from "../../association/__fixtures__/Association";
+import Association from "$lib/resources/associations/__fixtures__/Association";
 
 export default {
     siret: Association.siren,
