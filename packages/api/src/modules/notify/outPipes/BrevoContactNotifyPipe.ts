@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { ContactsApi, ContactsApiApiKeys, UpdateContact } from "@sendinblue/client";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
@@ -55,13 +56,27 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
                 if (body.id) return true;
                 return false;
             })
-            .catch(() => {
-                // IF user exist in other list brevo throw an error so we update contact and we add in new list
-                return sendUpdate().then(({ response }) => {
-                    const status = response.statusCode || 0;
-                    if (status > 200 && status < 300) return true;
-                    return false;
-                });
+            .catch(({ response, body: wrongBody }) => {
+                // The true body is contained in response.body, body of error is wrong
+                if (response.body.code === "duplicate_parameter") { 
+                    // It's error code for { code: 'duplicate_parameter', message: 'Contact already exist' }
+                    // If user exists in other list brevo throws an error so we update contact to add in good list
+                    return sendUpdate()
+                        .then(({ response }) => {
+                            const status = response.statusCode || 0;
+                            if (status > 200 && status < 300) return true;
+                            // Theoretically, this should never happen because mistakes should happen in "catch", but the lib seems to be behaving completely madly!
+                            Sentry.captureException({ response });
+                            return false;
+                        })
+                        .catch(e => {
+                            Sentry.captureException(e);
+                            return false;
+                        });
+                }
+
+                Sentry.captureException({ response, body: wrongBody }); // Don't send to sentry if error is already caught
+                return false;
             });
     }
 
