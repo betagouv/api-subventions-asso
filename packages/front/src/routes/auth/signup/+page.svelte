@@ -67,7 +67,9 @@
             <div class="fr-fieldset__element fr-mt-4v">
                 <ul class="fr-btns-group">
                     <li>
-                        <Button title="Créer un compte" htmlType="submit">Créer un compte</Button>
+                        <Button title="Créer un compte" htmlType="submit" trakerName="signup.form.submit">
+                            Créer un compte
+                        </Button>
                     </li>
                 </ul>
             </div>
@@ -91,7 +93,13 @@
             <div class="fr-fieldset__element">
                 <ul class="fr-btns-group">
                     <li>
-                        <Button type="secondary" title="Se connecter" htmlType="submit">Se connecter</Button>
+                        <Button
+                            type="secondary"
+                            title="Se connecter"
+                            htmlType="submit"
+                            trakerName="signup.form.login">
+                            Se connecter
+                        </Button>
                     </li>
                 </ul>
             </div>

@@ -7,13 +7,13 @@
 
     import Auth from "$lib/components/Auth/Auth.svelte";
     import GenericModal from "$lib/dsfr/GenericModal.svelte";
-    import Matomo from "$lib/components/Matomo.svelte";
     import Header from "$lib/components/Header/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import Theme from "$lib/components/Theme.svelte";
     import Breadcrumb from "$lib/dsfr/Breadcrumb.svelte";
     import { page } from "$lib/store/kit.store";
     import { ENV } from "$env/static/public";
+    import trackerService from "$lib/services/tracker.service";
 
     export let data;
 
@@ -30,6 +30,8 @@
         verbose: false,
         mode: "runtime",
     };
+
+    trackerService.init(ENV);
 </script>
 
 <svelte:head>
@@ -41,9 +43,6 @@
 
 <GenericModal />
 <Auth>
-    {#if ENV?.toLowerCase() === "prod"}
-        <Matomo />
-    {/if}
     <div class:main-view={$page.data.withBlueBanner}>
         <Header />
         <div class="fr-container fr-mb-8w">

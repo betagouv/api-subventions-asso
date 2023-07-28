@@ -18,7 +18,12 @@
         <h2>Contacts et représentants légaux</h2>
     </svelte:fragment>
     <svelte:fragment slot="action">
-        <Button on:click={() => controller.download()} type="secondary">Télécharger au format CSV</Button>
+        <Button
+            on:click={() => controller.download()}
+            type="secondary"
+            trakerName="etablissements.contacts.download-csv">
+            Télécharger au format CSV
+        </Button>
     </svelte:fragment>
 </ActionGroup>
 <div class="fr-grid-row fr-grid-row--gutters">

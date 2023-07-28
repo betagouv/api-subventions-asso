@@ -3,6 +3,7 @@ import Store from "../../../core/Store";
 import { modal, data } from "$lib/store/modal.store";
 import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
+import trackerService from "$lib/services/tracker.service";
 
 const ESTABLISHMENT = "Établissement";
 const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
@@ -97,6 +98,7 @@ export default class SubventionTableController {
 
     onRowClick(elementData) {
         if (!elementData) return;
+        trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
         data.update(() => ({
             subvention: elementData.subvention,
             montantDemande: elementData.montantsDemande,
