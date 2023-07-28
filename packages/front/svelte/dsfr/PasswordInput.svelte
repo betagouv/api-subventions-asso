@@ -4,10 +4,13 @@
     export let value;
     export let label;
     export let id = nanoid(7);
+    export let name = `password-input-${id}`;
     export let error = false;
     export let errorMsg = null;
 
+    const descErrorElement = `${name}-desc-error`;
     let showPassword = false;
+
     $: iconClasses = `fr-icon--sm ${showPassword ? "fr-icon-eye-line" : "fr-icon-eye-off-line"}`;
 
     // define validation class
@@ -26,30 +29,24 @@
             autocomplete="new-password"
             id="password-input-{id}"
             type="password"
-            aria-describedby={errorMsg ? `password--error-desc-${id}` : undefined}
+            aria-invalid={errorMsg ? "true" : undefined}
+            aria-errormessage={errorMsg ? descErrorElement : undefined}
             required />
         {#if error && errorMsg}
-            <p id="password--error-desc-{id}" class="fr-error-text">{errorMsg}</p>
+            <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
         {/if}
     </div>
     <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="assertive" />
     <div class="fr-password__checkbox fr-checkbox-group--sm">
         <input
-            class="checkbox"
+            class="sr-only"
             bind:checked={showPassword}
             aria-label="Afficher le mot de passe"
             id="password-show-{id}"
-            type="checkbox"
-            aria-describedby="password-show-messages-{id}" />
+            type="checkbox" />
         <label class="fr-password__checkbox fr-label" for="password-show-{id}">
             <span class={iconClasses} />
         </label>
         <div class="fr-messages-group" id="password-show-messages-{id}" aria-live="assertive" />
     </div>
 </div>
-
-<style>
-    .checkbox {
-        display: none;
-    }
-</style>

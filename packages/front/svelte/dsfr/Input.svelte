@@ -14,6 +14,8 @@
 
     let spellcheck = true;
 
+    const descErrorElement = `${name}-desc-error`;
+
     // DSFR best practices
     if (["given-name", "family-name"].includes(name)) {
         spellcheck = false;
@@ -50,8 +52,9 @@
         bind:value
         required={required ? "required" : undefined}
         use:typeAction
-        aria-describedby={errorMsg ? "text-input-error-desc-error" : undefined} />
+        aria-invalid={errorMsg ? "true" : undefined}
+        aria-errormessage={errorMsg ? descErrorElement : undefined} />
     {#if error && errorMsg}
-        <p id="text-input-error-desc-error" class="fr-error-text">{errorMsg}</p>
+        <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
     {/if}
 </div>
