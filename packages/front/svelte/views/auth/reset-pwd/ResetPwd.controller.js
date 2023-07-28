@@ -25,7 +25,7 @@ export class ResetPwdController {
             token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND),
         );
         this.values = new Store({ password: "", confirm: "" });
-        this.isFormDisabled = new Store(false);
+        this.isSubmitActive = new Store(true);
     }
 
     getErrorMessage(error) {
@@ -41,11 +41,11 @@ export class ResetPwdController {
         });
     }
 
-    disableForm() {
-        this.isFormDisabled.set(true);
+    disableSubmit() {
+        this.isSubmitActive.set(false);
     }
 
-    enableForm() {
-        this.isFormDisabled.set(false);
+    enableSubmit() {
+        this.isSubmitActive.set(true);
     }
 }

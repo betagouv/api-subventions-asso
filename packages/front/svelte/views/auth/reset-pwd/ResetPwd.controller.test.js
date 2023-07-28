@@ -117,4 +117,25 @@ describe("ResetPwdController", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("enableSubmit()", () => {
+        it("should set isSubmitActive to true", () => {
+            const expected = true;
+            const controller = new ResetPwdController(TOKEN);
+            controller.isSubmitActive.set(false);
+            controller.enableSubmit();
+            const actual = controller.isSubmitActive.value;
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("disableSubmit()", () => {
+        it("should set isSubmitActive to false", () => {
+            const expected = false;
+            const controller = new ResetPwdController(TOKEN);
+            controller.disableSubmit();
+            const actual = controller.isSubmitActive.value;
+            expect(actual).toEqual(expected);
+        });
+    });
 });

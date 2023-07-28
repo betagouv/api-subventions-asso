@@ -9,7 +9,7 @@
     export let token;
 
     const ctrl = new ResetPwdController(token);
-    const { promise, values, isFormDisabled } = ctrl;
+    const { promise, values, isSubmitActive } = ctrl;
 </script>
 
 <div class="fr-container fr-mb-8w">
@@ -29,11 +29,11 @@
 
             <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
                 <DefinePassword
-                    on:error={() => ctrl.disableForm()}
-                    on:valid={() => ctrl.enableForm()}
+                    on:error={() => ctrl.disableSubmit()}
+                    on:valid={() => ctrl.enableSubmit()}
                     bind:values={$values} />
                 <div class="fr-input-group">
-                    <Button type="submit" title="Valider" htmlType="submit" disabled={$isFormDisabled}>Valider</Button>
+                    <Button type="submit" title="Valider" htmlType="submit" disabled={!$isSubmitActive}>Valider</Button>
                 </div>
             </form>
         </div>
