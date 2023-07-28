@@ -4,12 +4,10 @@ export const docsMiddlewares = async () => [
     (_req, res, next) => {
         res.setHeader(
             "Content-Security-Policy",
-            "default-src 'none'; img-src 'self' data:; script-src 'unsafe-eval' 'self'; style-src 'self' 'unsafe-inline'",
+            "default-src 'none'; img-src 'self' data:; script-src 'unsafe-eval' 'self'; style-src 'self' 'unsafe-inline' ; connect-src 'self'",
         );
         next();
     },
-    // default-src 'none'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'
-    // default-src 'none'; img-src 'self' data:; script-src 'unsafe-eval' 'self' ; style-src 'self' 'unsafe-inline'
     swaggerUi.serve,
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     swaggerUi.setup(await import("../../tsoa/swagger.json"), {
