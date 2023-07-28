@@ -40,7 +40,7 @@ describe("MultiStepFormController", () => {
         it("should decrease currentStepIndex", () => {
             const expected = 0;
             const controller = new MultiStepFormController([{}, {}], jest.fn());
-            controller.next();
+            controller.currentStepIndex.set(1);
             controller.previous();
             const actual = controller.currentStep.value.index;
             expect(actual).toEqual(expected);
