@@ -261,7 +261,7 @@ describe("FonjepService", () => {
     });
 
     describe("raw grant", () => {
-        const DATA = [{ indexedInformations: { code_poste: "EJ" } }];
+        const DATA = [{ indexedInformations: { code_poste: "EJ", annee_demande: 2042 } }];
 
         describe("getRawGrantsBySiret", () => {
             const SIRET = "12345678900000";
@@ -287,10 +287,11 @@ describe("FonjepService", () => {
                       Object {
                         "data": Object {
                           "indexedInformations": Object {
+                            "annee_demande": 2042,
                             "code_poste": "EJ",
                           },
                         },
-                        "joinKey": "EJ",
+                        "joinKey": "EJ - 2042",
                         "provider": "fonjep",
                         "type": "fullGrant",
                       },
@@ -323,10 +324,11 @@ describe("FonjepService", () => {
                       Object {
                         "data": Object {
                           "indexedInformations": Object {
+                            "annee_demande": 2042,
                             "code_poste": "EJ",
                           },
                         },
-                        "joinKey": "EJ",
+                        "joinKey": "EJ - 2042",
                         "provider": "fonjep",
                         "type": "fullGrant",
                       },

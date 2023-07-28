@@ -27,6 +27,18 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.32.4](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.32.4) (2023-07-27)
+
+
+### Bug Fixes
+
+* **api:** csp allows calls to self from swagger ([749a5f6](https://github.com/betagouv/api-subventions-asso/commit/749a5f6943adf3806c71b6bf71862b058fa5c000))
+* **api:** open-data show all fonjep even if same EJ ([0617a3d](https://github.com/betagouv/api-subventions-asso/commit/0617a3d2730321c1b205dd4286ac023539379025))
+
+
+
+
+
 ## [0.32.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.32.2) (2023-07-13)
 
 **Note:** Version bump only for package api

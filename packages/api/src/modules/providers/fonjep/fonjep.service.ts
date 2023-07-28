@@ -218,7 +218,7 @@ export class FonjepService
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,
-            joinKey: grant.indexedInformations.code_poste,
+            joinKey: `${grant.indexedInformations.code_poste} - ${grant.indexedInformations.annee_demande}`,
         }));
     }
 
@@ -227,7 +227,7 @@ export class FonjepService
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,
-            joinKey: grant.indexedInformations.code_poste,
+            joinKey: `${grant.indexedInformations.code_poste} - ${grant.indexedInformations.annee_demande}`,
         }));
     }
 
