@@ -7,6 +7,7 @@ class OsirisPosibilitiesBuilder {
         this.reportName = reportName;
         this.debug = debug;
         this.cookie = cookie;
+        this.computedCookies = this.cookie.map(c => `${c.name}=${c.value};`).join(" ");
         this.BASE_URL = "https://osiris.extranet.jeunesse-sports.gouv.fr";
 
         this.cache = {};
@@ -17,22 +18,13 @@ class OsirisPosibilitiesBuilder {
     }
 
     async __sendGetRequest(url) {
-        if (this.cache[url]) {
-            console.log("CACHED");
-            return this.cache[url];
-        }
-
-        const result = await axios.default.request({
+        return axios.default.request({
             url: this.BASE_URL + url,
             method: "get",
             headers:{
-                Cookie: this.cookie.map(c => `${c.name}=${c.value};`).join(" "),
+                Cookie: this.computedCookies,
             } 
         })
-
-        this.cache[url] = result;
-
-        return result;
     }
 
     async __isValid(posibility) {

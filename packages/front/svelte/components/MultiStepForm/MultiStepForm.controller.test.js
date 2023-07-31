@@ -6,7 +6,7 @@ describe("MultiStepFormController", () => {
     describe("constructor", () => {
         it.each`
             property
-            ${"currentStepIndex"}
+            ${"currentStep"}
             ${"data"}
         `("should set Stores", ({ property }) => {
             const expected = Store;
@@ -31,7 +31,7 @@ describe("MultiStepFormController", () => {
             const expected = 1;
             const controller = new MultiStepFormController([{}, {}], jest.fn());
             controller.next();
-            const actual = controller.currentStepIndex.value;
+            const actual = controller.currentStep.value.index;
             expect(actual).toEqual(expected);
         });
     });
@@ -42,7 +42,7 @@ describe("MultiStepFormController", () => {
             const controller = new MultiStepFormController([{}, {}], jest.fn());
             controller.next();
             controller.previous();
-            const actual = controller.currentStepIndex.value;
+            const actual = controller.currentStep.value.index;
             expect(actual).toEqual(expected);
         });
     });

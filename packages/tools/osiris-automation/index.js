@@ -67,7 +67,7 @@ async function startExtractOsiris(year, reportName) {
     const folderDownload = `./extract/${year}/${reportName}/`;
     if (fs.existsSync(folderDownload)) {
         const files = fs.readdirSync(folderDownload);
-        skip = files.length - 1;
+        skip = files.length > 0 ? files.length - 1 : 0;
     }
 
     await downloadPosibilities(year, posibilities, skip);

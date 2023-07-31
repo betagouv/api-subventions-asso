@@ -1,4 +1,5 @@
 <script>
+    import { onDestroy } from "svelte";
     import MultiStepFormController from "./MultiStepForm.controller";
     import Button from "@dsfr/Button.svelte";
 
@@ -6,49 +7,40 @@
     export let onSubmit;
 
     const controller = new MultiStepFormController(steps, onSubmit);
-    const { currentStepIndex, data } = controller;
 
-    $: currentStep = $currentStepIndex + 1;
-    $: firstStep = $currentStepIndex == 0;
-    $: lastStep = $currentStepIndex == steps.length - 1;
+    onDestroy(() => controller.onDestroy());
+
+    const { currentStep, data } = controller;
 </script>
 
 <div class="fr-stepper">
     <h2 class="fr-stepper__title">
-        <span class="fr-stepper__state">Étape {currentStep} sur {steps.length}</span>
-        {steps[$currentStepIndex].name}
+        <span class="fr-stepper__state">Étape {$currentStep.positionLabel} sur {steps.length}</span>
+        {$currentStep.step.name}
     </h2>
-    <div class="fr-stepper__steps" data-fr-current-step={currentStep} data-fr-steps={steps.length} />
-    {#if !lastStep}
+    <div class="fr-stepper__steps" data-fr-current-step={$currentStep.positionLabel} data-fr-steps={steps.length} />
+    {#if !$currentStep.isLastStep}
         <p class="fr-stepper__details">
             <span class="fr-text--bold">Étape suivante :</span>
-            {steps[$currentStepIndex + 1].name || `étape ${$currentStepIndex + 1}`}
+            {($currentStep.step).name || `étape ${$currentStep.positionLabel}`}
         </p>
     {/if}
 </div>
 
 <form action="#" method="GET" on:submit|preventDefault={() => controller.submit()}>
-    {#each steps as step, index}
-        {#if firstStep && index == 0}
-            <svelte:component this={step.component} bind:values={$data[index]} />
-        {:else if lastStep && index == steps.length - 1}
-            <svelte:component this={step.component} bind:values={$data[index]} />
-        {:else if index == $currentStepIndex}
-            <svelte:component this={step.component} bind:values={$data[index]} />
-        {/if}
-    {/each}
+    <svelte:component this={($currentStep.step).component} bind:values={$data[$currentStep.index]} />
     <div class="fr-mt-6v">
         <Button
             htmlType="button"
             type="secondary"
             on:click={() => controller.previous()}
-            disabled={firstStep ? true : false}>
+            disabled={$currentStep.isFirstStep}>
             Previous
         </Button>
-        {#if lastStep}
+        {#if $currentStep.isLastStep}
             <Button htmlType="submit">Submit</Button>
         {:else}
-            <Button htmlType="button" type="secondary" on:click={() => controller.next()}>Next</Button>
+            <Button htmlType="submit" type="secondary" on:click={() => controller.next()} on:submit={() => controller.next()}>Next</Button>
         {/if}
     </div>
 </form>
