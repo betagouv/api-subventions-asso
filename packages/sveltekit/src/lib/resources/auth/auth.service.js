@@ -7,6 +7,8 @@ import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import { page } from "$app/stores";
 import localStorageStore from "$lib/store/localStorage";
+import AuthLevels from "$lib/resources/auth/authLevels";
+import { isAdmin } from "$lib/services/user.service.js";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
@@ -58,6 +60,18 @@ export class AuthService {
 
     getCurrentUser() {
         return JSON.parse(get(localStorageStore.getItem(this.USER_LOCAL_STORAGE_KEY)) || null);
+    }
+
+    controlAuth(requiredLevel = AuthLevels.USER) {
+        if (requiredLevel === AuthLevels.NONE) return;
+        const user = this.getCurrentUser();
+        if (!user) return this.redirectToLogin();
+        if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) goToUrl("/");
+    }
+
+    redirectToLogin() {
+        const queryUrl = encodeURIComponent(location.pathname);
+        return goToUrl(`/auth/login?url=${queryUrl}`);
     }
 }
 

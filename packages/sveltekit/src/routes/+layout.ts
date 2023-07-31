@@ -1,4 +1,5 @@
 import { buildBreadcrumbs } from "$lib/services/router.service";
+import AuthLevels from "$lib/resources/auth/authLevels";
 
 export const ssr = false;
 
@@ -7,6 +8,7 @@ export function load({ url, params }) {
         query: getQueryParams(url.searchParams),
         params,
         crumbs: buildBreadcrumbs(url.pathname),
+        authLevel: AuthLevels.USER,
     };
 }
 
