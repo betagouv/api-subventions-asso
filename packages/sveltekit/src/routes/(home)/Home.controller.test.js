@@ -1,8 +1,10 @@
 import { HomeController } from "./Home.controller";
 import { isRna, isSiren, isSiret, isStartOfSiret } from "$lib/helpers/validatorHelper";
 import associationService from "$lib/resources/associations/association.service";
+import { goto } from "$app/navigation";
 
-jest.mock("$lib/helpers/validatorHelper");
+vi.mock("$lib/helpers/validatorHelper");
+vi.mock("$app/navigation", () => ({ goto: vi.fn() }));
 
 describe("HomeController", () => {
     const INPUT = "je suis la recherche";
@@ -33,8 +35,8 @@ describe("HomeController", () => {
     describe("onInput", () => {
         let debounceLoadSpy, debounceSearchSpy;
         beforeAll(() => {
-            debounceLoadSpy = jest.spyOn(ctrl, "_debouncedInitSearch").mockImplementation(jest.fn());
-            debounceSearchSpy = jest.spyOn(ctrl, "_debouncedPerformSearch").mockImplementation(jest.fn());
+            debounceLoadSpy = vi.spyOn(ctrl, "_debouncedInitSearch").mockImplementation(vi.fn());
+            debounceSearchSpy = vi.spyOn(ctrl, "_debouncedPerformSearch").mockImplementation(vi.fn());
         });
         afterAll(() => {
             debounceSearchSpy.mockRestore();
@@ -62,14 +64,14 @@ describe("HomeController", () => {
         it("sets nothing if already loading", () => {
             ctrl = new HomeController();
             ctrl.isLoading.set(true);
-            const setLoadingSpy = jest.spyOn(ctrl.isLoading, "set");
+            const setLoadingSpy = vi.spyOn(ctrl.isLoading, "set");
             ctrl._initSearch();
             expect(setLoadingSpy).not.toHaveBeenCalled();
         });
 
         it("loads loading to true", () => {
             ctrl = new HomeController();
-            const setLoadingSpy = jest.spyOn(ctrl.isLoading, "set");
+            const setLoadingSpy = vi.spyOn(ctrl.isLoading, "set");
             ctrl._initSearch();
             expect(setLoadingSpy).toHaveBeenCalledWith(true);
         });
@@ -81,8 +83,8 @@ describe("HomeController", () => {
 
         beforeAll(() => {
             ctrl = new HomeController();
-            removeSpaceSpy = jest.spyOn(ctrl, "_removeSpaceFromIdentifier").mockReturnValue(INPUT_NO_SPACE);
-            setSearchSpy = jest.spyOn(ctrl.currentSearch, "set");
+            removeSpaceSpy = vi.spyOn(ctrl, "_removeSpaceFromIdentifier").mockReturnValue(INPUT_NO_SPACE);
+            setSearchSpy = vi.spyOn(ctrl.currentSearch, "set");
         });
         afterAll(() => {
             removeSpaceSpy.mockRestore();
@@ -112,8 +114,8 @@ describe("HomeController", () => {
             let searchSpy, finishSearchSpy;
 
             beforeAll(() => {
-                searchSpy = jest.spyOn(ctrl, "_searchAndCache").mockResolvedValue({});
-                finishSearchSpy = jest.spyOn(ctrl, "_finishSearch").mockImplementation(jest.fn());
+                searchSpy = vi.spyOn(ctrl, "_searchAndCache").mockResolvedValue({});
+                finishSearchSpy = vi.spyOn(ctrl, "_finishSearch").mockImplementation(vi.fn());
             });
             afterAll(() => {
                 searchSpy.mockRestore();
@@ -125,7 +127,8 @@ describe("HomeController", () => {
 
             function getPromise() {
                 ctrl._performSearch(INPUT);
-                return setSearchSpy.mock.calls[0].promise;
+                return ctrl.currentSearch.value.promise
+                // return setSearchSpy.mock.calls[0].promise;
             }
 
             it("calls searchAndCache", async () => {
@@ -147,8 +150,8 @@ describe("HomeController", () => {
         const RESULT = "result";
 
         beforeAll(() => {
-            setLoadingSpy = jest.spyOn(ctrl.isLoading, "set");
-            setResultSpy = jest.spyOn(ctrl.searchResult, "set");
+            setLoadingSpy = vi.spyOn(ctrl.isLoading, "set");
+            setResultSpy = vi.spyOn(ctrl.searchResult, "set");
         });
 
         it("sets nothing if text is different than current", () => {
@@ -185,21 +188,14 @@ describe("HomeController", () => {
 
     describe("onSubmit", () => {
         const IDENTIFIER = "identifier";
-        let oldLocation, mockedLocation;
 
         beforeAll(() => {
-            oldLocation = window.location;
-            delete window.location;
-            window.location = new URL("https://www.example.com");
-            mockedLocation = jest.spyOn(window.location, "href", "set").mockImplementation();
             isRna.mockReturnValue(false);
             isSiren.mockReturnValue(false);
             isSiret.mockReturnValue(false);
             ctrl.input.value = IDENTIFIER;
         });
         afterAll(() => {
-            delete window.location;
-            window.location = oldLocation;
             isRna.mockRestore();
             isSiren.mockRestore();
             isSiret.mockRestore();
@@ -213,7 +209,7 @@ describe("HomeController", () => {
         `("updates href to given $structure from $dataType", ({ expected, helper }) => {
             helper.mockReturnValueOnce(true);
             ctrl.onSubmit();
-            expect(mockedLocation).toHaveBeenCalledWith(expected);
+            expect(goto).toHaveBeenCalledWith(expected);
         });
 
         it.each`
@@ -224,7 +220,7 @@ describe("HomeController", () => {
             const expected = `/association/${IDENTIFIER}`;
             ctrl.searchResult.value = [{ [dataType]: IDENTIFIER }];
             ctrl.onSubmit();
-            expect(mockedLocation).toHaveBeenCalledWith(expected);
+            expect(goto).toHaveBeenCalledWith(expected);
         });
     });
 
@@ -232,10 +228,10 @@ describe("HomeController", () => {
         let spyHas, spyGet, spySet, spyService;
 
         beforeAll(() => {
-            spyHas = jest.spyOn(ctrl._searchCache, "has").mockReturnValue(false);
-            spyGet = jest.spyOn(ctrl._searchCache, "get");
-            spySet = jest.spyOn(ctrl._searchCache, "set");
-            spyService = jest.spyOn(associationService, "search").mockResolvedValue([]);
+            spyHas = vi.spyOn(ctrl._searchCache, "has").mockReturnValue(false);
+            spyGet = vi.spyOn(ctrl._searchCache, "get");
+            spySet = vi.spyOn(ctrl._searchCache, "set");
+            spyService = vi.spyOn(associationService, "search").mockResolvedValue([]);
         });
 
         afterAll(() => {

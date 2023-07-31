@@ -10,7 +10,7 @@ describe("VersementsPort", () => {
         const SIRET = "12345678900011";
 
         beforeAll(() => {
-            getVersementsMock = jest.spyOn(versementsPort, "_getVersements");
+            getVersementsMock = vi.spyOn(versementsPort, "_getVersements");
         });
 
         afterAll(() => {
@@ -46,7 +46,7 @@ describe("VersementsPort", () => {
         const SIREN = "123456789";
 
         beforeAll(() => {
-            getVersementsMock = jest.spyOn(versementsPort, "_getVersements");
+            getVersementsMock = vi.spyOn(versementsPort, "_getVersements");
         });
 
         afterAll(() => {
@@ -81,8 +81,8 @@ describe("VersementsPort", () => {
         let flatenProviderValueMock;
 
         beforeAll(() => {
-            getMock = jest.spyOn(requestsService, "get");
-            flatenProviderValueMock = jest.spyOn(providerValueHelper, "flattenProviderValue");
+            getMock = vi.spyOn(requestsService, "get");
+            flatenProviderValueMock = vi.spyOn(providerValueHelper, "flattenProviderValue");
         });
 
         afterAll(() => {

@@ -1,13 +1,14 @@
-jest.mock("$lib/helpers/dateHelper", () => {
+vi.mock("$lib/helpers/dateHelper", () => {
     return {
         __esModule: true, // this property makes it work
         STATS_YEAR_CHOICES: [2023, 2022],
     };
 });
-jest.mock("chart.js/auto", () =>
-    jest.fn(function () {
-        return {};
-    }),
+vi.mock("chart.js/auto", () => ({
+      default: vi.fn(function() {
+          return {};
+      }),
+  })
 );
 
 import Chart from "chart.js/auto";
@@ -15,7 +16,7 @@ import { MonthlyGraphController } from "./MonthlyGraph.controller";
 
 describe("MonthlyGraphController", () => {
     const TITLE = "titre";
-    const LOAD_DATA = jest.fn();
+    const LOAD_DATA = vi.fn();
     const RESOURCE_NAME = "trucs";
     describe("constructor", () => {
         it.each`
@@ -42,10 +43,10 @@ describe("MonthlyGraphController", () => {
 
     describe("init", () => {
         const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
-        const loadSpy = jest.spyOn(ctrl, "_load");
+        const loadSpy = vi.spyOn(ctrl, "_load");
 
         it("loads data", () => {
-            loadSpy.mockImplementationOnce(jest.fn());
+            loadSpy.mockImplementationOnce(vi.fn());
             ctrl.init();
             expect(loadSpy).toBeCalledWith(ctrl.year.value);
         });
@@ -57,7 +58,7 @@ describe("MonthlyGraphController", () => {
             monthlyData: MONTHLY_DATA,
             lastYearNbUser: 42,
         };
-        const LOAD_DATA = jest.fn(() => Promise.resolve(DATA));
+        const LOAD_DATA = vi.fn(() => Promise.resolve(DATA));
         const YEAR = 2022;
         let ctrl;
 
@@ -90,7 +91,7 @@ describe("MonthlyGraphController", () => {
         const TOOLTIP = {};
         const CHART = {};
         const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
-        let buildChartSpy = jest.spyOn(ctrl, "_buildChart").mockImplementation(() => (ctrl.chart = CHART));
+        let buildChartSpy = vi.spyOn(ctrl, "_buildChart").mockImplementation(() => (ctrl.chart = CHART));
         ctrl.dataPromise = Promise.resolve();
 
         it("calls _buildChart", async () => {
@@ -110,24 +111,24 @@ describe("MonthlyGraphController", () => {
         const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
 
         ctrl.chart = {
-            update: jest.fn(),
+            update: vi.fn(),
             __esModule: true, // this property makes it work
         };
-        const updateChartSpy = jest.spyOn(ctrl.chart, "update");
-        const setterSpy = jest.spyOn(ctrl, "chartData", "set");
-        const loadSpy = jest.spyOn(ctrl, "_load");
+        const updateChartSpy = vi.spyOn(ctrl.chart, "update");
+        const setterSpy = vi.spyOn(ctrl, "chartData", "set");
+        const loadSpy = vi.spyOn(ctrl, "_load");
 
         const YEAR_INDEX = 0;
         const YEAR = 2023;
         const DATA = [22, 30];
 
         beforeAll(() => {
-            setterSpy.mockImplementation(jest.fn());
-            loadSpy.mockImplementation(jest.fn());
+            setterSpy.mockImplementation(vi.fn());
+            loadSpy.mockImplementation(vi.fn());
         });
 
         it("calls _load with proper args", async () => {
-            loadSpy.mockImplementationOnce(jest.fn());
+            loadSpy.mockImplementationOnce(vi.fn());
             await ctrl.updateYear(YEAR_INDEX);
             expect(loadSpy).toBeCalledWith(YEAR);
         });
@@ -142,7 +143,7 @@ describe("MonthlyGraphController", () => {
         });
 
         it("updates chart", async () => {
-            loadSpy.mockImplementationOnce(jest.fn());
+            loadSpy.mockImplementationOnce(vi.fn());
             await ctrl.updateYear(YEAR_INDEX);
             expect(updateChartSpy).toBeCalled();
         });
@@ -164,10 +165,10 @@ describe("MonthlyGraphController", () => {
     describe("_buildChart", () => {
         const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
         const CHART = {};
-        const TOOLTIP = { $set: jest.fn() };
+        const TOOLTIP = { $set: vi.fn() };
         const CANVAS = {
             getContext: () => ({
-                createLinearGradient: () => ({ addColorStop: jest.fn() }),
+                createLinearGradient: () => ({ addColorStop: vi.fn() }),
             }),
         };
 

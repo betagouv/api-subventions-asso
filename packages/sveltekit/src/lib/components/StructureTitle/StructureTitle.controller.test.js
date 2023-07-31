@@ -12,7 +12,7 @@ describe("StructureTitleController", () => {
     const ETAB_SIRET = "10000000000000";
     const controllerAsso = new StructureTitleController(ASSO);
     const controllerEtab = new StructureTitleController(ASSO, ETAB_SIRET);
-    const mockBuildSiret = jest.spyOn(associationHelper, "getSiegeSiret");
+    const mockBuildSiret = vi.spyOn(associationHelper, "getSiegeSiret");
 
     beforeAll(() => mockBuildSiret.mockReturnValue(ETAB_SIRET));
 

@@ -1,6 +1,6 @@
 import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
-import UnauthorizedError from "../../../errors/UnauthorizedError";
 import LoginController from "./Login.controller";
+import UnauthorizedError from "$lib/errors/UnauthorizedError";
 import * as RouterService from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 
@@ -17,8 +17,8 @@ describe("LoginController", () => {
             controller.email = EMAIL;
         });
 
-        const loginMock = jest.spyOn(authService, "login");
-        const goToUrlMock = jest.spyOn(RouterService, "goToUrl");
+        const loginMock = vi.spyOn(authService, "login");
+        const goToUrlMock = vi.spyOn(RouterService, "goToUrl");
 
         const EMAIL = "test@datasubvention.beta.gouv.fr";
         const PASSWORD = "FAKE_PASSWORD";
@@ -33,7 +33,7 @@ describe("LoginController", () => {
         it("should call goToUrl", async () => {
             loginMock.mockResolvedValueOnce({});
             await controller.submit();
-            expect(goToUrlMock).toHaveBeenCalledWith("/");
+            expect(goToUrlMock).toHaveBeenCalledWith("/", true, true);
         });
 
         it("should call goToUrl with url from query", async () => {
@@ -45,13 +45,13 @@ describe("LoginController", () => {
             delete window.location;
             window.location = new URL(`${oldLocation.origin}${oldLocation.pathname}?url=${encodedUrl}`);
             await controller.submit();
-            expect(goToUrlMock).toHaveBeenCalledWith(url);
+            expect(goToUrlMock).toHaveBeenCalledWith(url, true, true);
         });
 
         it("should call getErrorMessage", async () => {
             const expected = 1;
             loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: expected }));
-            const getErrorMessageMock = jest.spyOn(controller, "_getErrorMessage").mockReturnValue("");
+            const getErrorMessageMock = vi.spyOn(controller, "_getErrorMessage").mockReturnValue("");
             await controller.submit();
             expect(getErrorMessageMock).toHaveBeenCalledWith(expected);
         });
@@ -59,7 +59,7 @@ describe("LoginController", () => {
         it("should call set message in error", async () => {
             const expected = "MESSAGE";
             loginMock.mockRejectedValueOnce(new UnauthorizedError({ code: 1 }));
-            jest.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(expected);
+            vi.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(expected);
             await controller.submit();
             expect(controller.error.value).toBe(expected);
         });

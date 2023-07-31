@@ -4,7 +4,7 @@ import requestsService from "$lib/services/requests.service";
 
 const DEFAULT_ERROR_CODE = 49;
 
-jest.mock("@api-subventions-asso/dto", () => ({
+vi.mock("@api-subventions-asso/dto", () => ({
     SignupErrorCodes: { CREATION_ERROR: DEFAULT_ERROR_CODE },
     ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
     __esModule: true, // this property makes it work
@@ -12,7 +12,7 @@ jest.mock("@api-subventions-asso/dto", () => ({
 
 describe("AuthPort", () => {
     describe("signup()", () => {
-        const postMock = jest.spyOn(requestsService, "post");
+        const postMock = vi.spyOn(requestsService, "post");
         const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
         it("calls signup route", async () => {
@@ -35,7 +35,7 @@ describe("AuthPort", () => {
     });
 
     describe("resetPassword()", () => {
-        const postMock = jest.spyOn(requestsService, "post");
+        const postMock = vi.spyOn(requestsService, "post");
         const RES = true;
         const PASSWORD = "very secret";
         const TOKEN = "123";
@@ -56,7 +56,7 @@ describe("AuthPort", () => {
     });
 
     describe("login()", () => {
-        const postMock = jest.spyOn(requestsService, "post");
+        const postMock = vi.spyOn(requestsService, "post");
         const EMAIL = "test@mail.fr";
         const PASSWORD = "FAKE_PASSWORD";
 
@@ -76,7 +76,7 @@ describe("AuthPort", () => {
     });
 
     describe("forgetPassword()", () => {
-        const axiosPostMock = jest.spyOn(axios, "post");
+        const axiosPostMock = vi.spyOn(axios, "post");
         const RES = true;
         const EMAIL = "test@mail.fr";
 

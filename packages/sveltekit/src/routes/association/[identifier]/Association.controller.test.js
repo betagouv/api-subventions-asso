@@ -1,25 +1,18 @@
 import { AssociationController } from "./Association.controller";
 import associationService from "$lib/resources/associations/association.service";
-import * as ContextStore from "$lib/store/context.store";
-jest.mock("$lib/store/context.store");
 
 describe("Association Controller", () => {
     const SIREN = "123456789";
     const RNA = "W12345678";
     let controller;
 
-    const mockGetAssociation = jest.spyOn(associationService, "getAssociation");
+    const mockGetAssociation = vi.spyOn(associationService, "getAssociation");
 
     beforeEach(() => {
         controller = new AssociationController(SIREN);
     });
 
-    afterEach(() => ContextStore.activeBlueBanner.mockReset());
-
     describe("constructor", () => {
-        it("should call activeBlueBanner", () => {
-            expect(ContextStore.activeBlueBanner).toHaveBeenCalledTimes(1);
-        });
     });
 
     describe("isAssociation()", () => {

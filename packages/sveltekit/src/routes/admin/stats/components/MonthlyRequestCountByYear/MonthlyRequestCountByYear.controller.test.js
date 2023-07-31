@@ -1,9 +1,9 @@
-import statsService from "../../../../../resources/stats/stats.service";
+import statsService from "$lib/resources/stats/stats.service";
 import { MonthlyRequestCountByYearController } from "./MonthlyRequestCountByYear.controller";
 
 describe("MonthlyRequestCountByYearController", () => {
     describe("loadData", () => {
-        const spyService = jest.spyOn(statsService, "getMonthlyRequestCount");
+        const spyService = vi.spyOn(statsService, "getMonthlyRequestCount");
         const DATA = {
             monthlyData: [23, 24],
             sum: 1,

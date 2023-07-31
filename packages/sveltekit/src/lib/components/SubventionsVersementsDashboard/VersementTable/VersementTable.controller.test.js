@@ -10,11 +10,11 @@ describe("VersementTableController", () => {
     });
 
     describe("extractRows()", () => {
-        const mockToVersement = jest.spyOn(VersementsAdapter, "toVersement");
+        const mockToVersement = vi.spyOn(VersementsAdapter, "toVersement");
 
         beforeAll(() =>
             mockToVersement.mockImplementation(
-                jest.fn(() => ({
+                vi.fn(() => ({
                     totalAmount: undefined,
                     centreFinancier: undefined,
                     lastVersementDate: undefined,

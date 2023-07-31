@@ -7,7 +7,7 @@ describe("SubventionPort", () => {
         const SIRET = "12345678900011";
 
         beforeAll(() => {
-            getSubventionStoreMock = jest.spyOn(subventionsPort, "_getSubventionsConnectedStore");
+            getSubventionStoreMock = vi.spyOn(subventionsPort, "_getSubventionsConnectedStore");
         });
 
         afterAll(() => {
@@ -43,7 +43,7 @@ describe("SubventionPort", () => {
         const SIREN = "123456789";
 
         beforeAll(() => {
-            getSubventionStoreMock = jest.spyOn(subventionsPort, "_getSubventionsConnectedStore");
+            getSubventionStoreMock = vi.spyOn(subventionsPort, "_getSubventionsConnectedStore");
         });
 
         afterAll(() => {

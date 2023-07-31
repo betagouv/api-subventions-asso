@@ -2,17 +2,20 @@ import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import { ResetPwdController } from "./ResetPwd.controller";
 import authService from "$lib/resources/auth/auth.service";
 
-jest.mock("@api-subventions-asso/dto", () => ({
-    ...jest.requireActual("@api-subventions-asso/dto"),
-    ResetPasswordErrorCodes: {
-        RESET_TOKEN_NOT_FOUND: 1,
-        RESET_TOKEN_EXPIRED: 2,
-        USER_NOT_FOUND: 3,
-        PASSWORD_FORMAT_INVALID: 4,
-        INTERNAL_ERROR: 5,
-    },
-    __esModule: true, // this property makes it work
-}));
+vi.mock("@api-subventions-asso/dto", async () => {
+    const actual  = await vi.importActual("@api-subventions-asso/dto")
+    return {
+        ...actual,
+        ResetPasswordErrorCodes: {
+            RESET_TOKEN_NOT_FOUND: 1,
+            RESET_TOKEN_EXPIRED: 2,
+            USER_NOT_FOUND: 3,
+            PASSWORD_FORMAT_INVALID: 4,
+            INTERNAL_ERROR: 5,
+        },
+        __esModule: true, // this property makes it work
+    };
+});
 
 describe("ResetPwdController", () => {
     const TOKEN = "123TOKEN";
@@ -59,17 +62,17 @@ describe("ResetPwdController", () => {
 
     describe("onSubmit", () => {
         const ctrl = new ResetPwdController(TOKEN);
-        const serviceMock = jest.spyOn(authService, "resetPassword");
+        const serviceMock = vi.spyOn(authService, "resetPassword");
         const PROMISE = Promise.resolve();
         let setPromiseMock;
 
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
-            setPromiseMock = jest.spyOn(ctrl.promise, "set");
+            setPromiseMock = vi.spyOn(ctrl.promise, "set");
             ctrl.password.value = PASSWORD;
 
             delete window.location;
-            window.location = { assign: jest.fn() };
+            window.location = { assign: vi.fn() };
         });
         afterAll(() => serviceMock.mockRestore());
 
@@ -95,7 +98,7 @@ describe("ResetPwdController", () => {
         });
 
         it("catches promise rejection", async () => {
-            const test = async () => await ctrl.onSubmit();
+            const test = ctrl.onSubmit();
             await expect(test).resolves;
         });
     });

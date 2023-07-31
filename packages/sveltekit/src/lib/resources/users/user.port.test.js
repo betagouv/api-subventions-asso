@@ -1,6 +1,6 @@
 import userPort from "./user.port";
 import requestsService from "$lib/services/requests.service";
-jest.mock("$lib/services/requests.service");
+vi.mock("$lib/services/requests.service");
 
 describe("UserPort", () => {
     describe("deleteSelfUser()", () => {

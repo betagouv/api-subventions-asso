@@ -7,28 +7,28 @@ import * as helper from "./helper";
 import SubventionTableController from "./SubventionTable/SubventionTable.controller";
 import VersementTableController from "./VersementTable/VersementTable.controller";
 import associationService from "$lib/resources/associations/association.service";
-jest.mock("$lib/resources/associations/association.service");
+vi.mock("$lib/resources/associations/association.service");
 import establishmentService from "$lib/resources/establishments/establishment.service";
-jest.mock("$lib/resources/establishments/establishment.service");
+vi.mock("$lib/resources/establishments/establishment.service");
 
-jest.mock("$lib/helpers/csvHelper", () => {
+vi.mock("$lib/helpers/csvHelper", () => {
     return {
         __esModule: true,
-        buildCsv: jest.fn(),
-        downloadCsv: jest.fn(),
+        buildCsv: vi.fn(),
+        downloadCsv: vi.fn(),
     };
 });
 import * as csvHelper from "$lib/helpers/csvHelper";
 
-jest.mock("$lib/helpers/validatorHelper", () => {
+vi.mock("$lib/helpers/validatorHelper", () => {
     return {
         __esModule: true,
-        isSiret: jest.fn(),
+        isSiret: vi.fn(),
     };
 });
 import * as validatorHelper from "$lib/helpers/validatorHelper";
 
-jest.mock("$lib/helpers/validatorHelper");
+vi.mock("$lib/helpers/validatorHelper");
 
 describe("SubventionsVersementsDashboardController", () => {
     const SIREN = "123456789";
@@ -45,11 +45,11 @@ describe("SubventionsVersementsDashboardController", () => {
     describe("load", () => {
         it("should call method _getSubventionsStoreFactory", async () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
-            const methodMock = jest
+            const methodMock = vi
                 .spyOn(controller, "_getSubventionsStoreFactory")
                 .mockImplementationOnce(() => () => new Store());
-            jest.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => jest.fn);
-            jest.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => jest.fn);
+            vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn());
+            vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn());
 
             await controller.load();
 
@@ -61,9 +61,9 @@ describe("SubventionsVersementsDashboardController", () => {
 
         it("should call method _getVersementsFactory", async () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
-            const methodMock = jest.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => jest.fn);
-            jest.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
-            jest.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => jest.fn);
+            const methodMock = vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn());
+            vi.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
+            vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn());
 
             await controller.load();
 
@@ -75,11 +75,11 @@ describe("SubventionsVersementsDashboardController", () => {
 
         it("should call method _onSubventionsStoreUpdate", async () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
-            const methodMock = jest
+            const methodMock = vi
                 .spyOn(controller, "_onSubventionsStoreUpdate")
-                .mockImplementationOnce(() => jest.fn);
-            jest.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => jest.fn);
-            jest.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
+                .mockImplementationOnce(() => vi.fn());
+            vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn());
+            vi.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
 
             await controller.load();
 
@@ -92,9 +92,9 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should set _versements", async () => {
             const expected = [{ versement: 1 }, { versement: 2 }];
             const controller = new SubventionsVersementsDashboardController(SIREN);
-            jest.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => jest.fn);
-            jest.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => () => expected);
-            jest.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
+            vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn);
+            vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn(() => expected));
+            vi.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
 
             await controller.load();
 
@@ -132,8 +132,8 @@ describe("SubventionsVersementsDashboardController", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = "other.column";
 
-            jest.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
+            vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
 
             controller.sort(expected);
 
@@ -146,8 +146,8 @@ describe("SubventionsVersementsDashboardController", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = "asc";
 
-            jest.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
+            vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
 
             controller.sort("other.column");
             const actual = controller.sortDirection.value;
@@ -158,8 +158,8 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should call sortByPath", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
 
-            const sortByPathMock = jest.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
+            const sortByPathMock = vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
 
             controller.sort("other.column");
             const actual = sortByPathMock.mock.calls.length;
@@ -171,8 +171,8 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should call _buildSortPath", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
 
-            jest.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
-            const _buildSortPathMock = jest.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
+            vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
+            const _buildSortPathMock = vi.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
 
             controller.sort("other.column");
             const actual = _buildSortPathMock.mock.calls.length;
@@ -186,7 +186,7 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should set selectedExercice", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
 
-            jest.spyOn(controller, "_filterElementsBySelectedExercice").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_filterElementsBySelectedExercice").mockImplementationOnce(() => []);
 
             const expected = 18;
             controller.updateSelectedExercice(expected);
@@ -198,7 +198,7 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should set selectedYear", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
 
-            jest.spyOn(controller, "_filterElementsBySelectedExercice").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_filterElementsBySelectedExercice").mockImplementationOnce(() => []);
 
             const expected = 2021;
             controller.exercices = [2020, 2021];
@@ -211,7 +211,7 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should call _filterElementsBySelectedExercice", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
 
-            const _filterElementsBySelectedExerciceMock = jest
+            const _filterElementsBySelectedExerciceMock = vi
                 .spyOn(controller, "_filterElementsBySelectedExercice")
                 .mockImplementationOnce(() => []);
 
@@ -224,10 +224,10 @@ describe("SubventionsVersementsDashboardController", () => {
     });
 
     describe("download()", () => {
-        const mockExtractVersementHeaders = jest.spyOn(VersementTableController, "extractHeaders");
-        const mockExtractVersementRows = jest.spyOn(VersementTableController, "extractRows");
-        const mockExtractSubventionHeaders = jest.spyOn(SubventionTableController, "extractHeaders");
-        const mockExtractSubventionRows = jest.spyOn(SubventionTableController, "extractRows");
+        const mockExtractVersementHeaders = vi.spyOn(VersementTableController, "extractHeaders");
+        const mockExtractVersementRows = vi.spyOn(VersementTableController, "extractRows");
+        const mockExtractSubventionHeaders = vi.spyOn(SubventionTableController, "extractHeaders");
+        const mockExtractSubventionRows = vi.spyOn(SubventionTableController, "extractRows");
 
         const spys = [
             mockExtractVersementHeaders,
@@ -247,10 +247,10 @@ describe("SubventionsVersementsDashboardController", () => {
 
         beforeEach(() => {
             ctrl = new SubventionsVersementsDashboardController(SIRET);
-            mockExtractSubventionHeaders.mockImplementation(jest.fn(() => SUBVENTION_HEADERS));
-            mockExtractSubventionRows.mockImplementation(jest.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
-            mockExtractVersementHeaders.mockImplementation(jest.fn(() => VERSEMENT_HEADERS));
-            mockExtractVersementRows.mockImplementation(jest.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
+            mockExtractSubventionHeaders.mockImplementation(vi.fn(() => SUBVENTION_HEADERS));
+            mockExtractSubventionRows.mockImplementation(vi.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
+            mockExtractVersementHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
+            mockExtractVersementRows.mockImplementation(vi.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
         });
         afterEach(() => spys.forEach(spy => spy.mockClear()));
 
@@ -318,9 +318,9 @@ describe("SubventionsVersementsDashboardController", () => {
 
             const expected = ["value"];
 
-            jest.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => expected);
-            jest.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
-            jest.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => expected);
+            vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
+            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => []);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -335,9 +335,9 @@ describe("SubventionsVersementsDashboardController", () => {
             const element2021 = { year: 2021 };
             const expected = [element2020, element2021];
 
-            jest.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
-            jest.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => expected);
+            vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
+            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => expected);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -352,9 +352,9 @@ describe("SubventionsVersementsDashboardController", () => {
             const element2021 = { year: 2021 };
             const expected = [element2020.year, element2021.year];
 
-            const _updateExercicesMock = jest.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
-            jest.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
-            jest.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => [element2020, element2021]);
+            const _updateExercicesMock = vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
+            vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
+            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => [element2020, element2021]);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -368,9 +368,9 @@ describe("SubventionsVersementsDashboardController", () => {
             const element2021 = { year: 2021 };
             const expected = [element2020.year, element2021.year];
 
-            const _updateExercicesMock = jest.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
-            jest.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
-            jest.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => [element2021, element2020]);
+            const _updateExercicesMock = vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
+            vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
+            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => [element2021, element2020]);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -384,8 +384,8 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should set exercices", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
 
-            jest.spyOn(controller, "updateSelectedExercice").mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildExercices").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "updateSelectedExercice").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_buildExercices").mockImplementationOnce(() => []);
 
             const expected = [{ exercice: 1 }, { exercice: 2 }];
             controller._updateExercices(expected);
@@ -398,8 +398,8 @@ describe("SubventionsVersementsDashboardController", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = [{ exercice: 1 }, { exercice: 2 }];
 
-            jest.spyOn(controller, "updateSelectedExercice").mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildExercices").mockImplementationOnce(() => expected);
+            vi.spyOn(controller, "updateSelectedExercice").mockImplementationOnce(() => []);
+            vi.spyOn(controller, "_buildExercices").mockImplementationOnce(() => expected);
 
             controller._updateExercices(expected);
             const actual = controller.exercicesOptions.value;
@@ -411,10 +411,10 @@ describe("SubventionsVersementsDashboardController", () => {
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const exercices = [{ exercice: 1 }, { exercice: 2 }];
 
-            const updateSelectedExerciceMock = jest
+            const updateSelectedExerciceMock = vi
                 .spyOn(controller, "updateSelectedExercice")
                 .mockImplementationOnce(() => []);
-            jest.spyOn(controller, "_buildExercices").mockImplementationOnce(() => exercices);
+            vi.spyOn(controller, "_buildExercices").mockImplementationOnce(() => exercices);
             controller._updateExercices(exercices);
             const actual = updateSelectedExerciceMock.mock.calls.length;
             const expected = 1;

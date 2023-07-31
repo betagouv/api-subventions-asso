@@ -1,6 +1,6 @@
 import { ProfileController } from "./Profile.controller";
 import userService from "$lib/resources/users/user.service";
-jest.mock("$lib/resources/users/user.service");
+vi.mock("$lib/resources/users/user.service");
 
 describe("ProfileController", () => {
     let controller;

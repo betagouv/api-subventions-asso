@@ -6,7 +6,7 @@ describe("ProvidersPort", () => {
         let axiosGetMock;
 
         beforeAll(() => {
-            axiosGetMock = jest.spyOn(axios, "get");
+            axiosGetMock = vi.spyOn(axios, "get");
         });
 
         afterAll(() => {

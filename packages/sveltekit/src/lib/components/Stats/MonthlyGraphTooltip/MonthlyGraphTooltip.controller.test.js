@@ -1,10 +1,10 @@
 import { MonthlyGraphTooltipController } from "./MonthlyGraphTooltip.controller";
 import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 
-jest.mock("$lib/helpers/stringHelper", () => {
+vi.mock("$lib/helpers/stringHelper", () => {
     return {
         __esModule: true, // this property makes it work
-        capitalizeFirstLetter: jest.fn(() => "Capitalized"),
+        capitalizeFirstLetter: vi.fn(() => "Capitalized"),
     };
 });
 
@@ -70,7 +70,7 @@ describe("MonthlyGraphTooltipController", () => {
             ${true}       | ${ctrlPreviousValue}   | ${3}
             ${false}      | ${ctrlNoPreviousValue} | ${2}
         `("behavior withPreviousValue = $previousValue", ({ ctrl, index }) => {
-            const normalizeSpy = jest.spyOn(ctrl, "_normalizedMonth0Index");
+            const normalizeSpy = vi.spyOn(ctrl, "_normalizedMonth0Index");
             normalizeSpy.mockReturnValue(2);
 
             it("calls _normalizedMonth0Index if not previous value", () => {
@@ -115,8 +115,8 @@ describe("MonthlyGraphTooltipController", () => {
 
             it("calls style setter with cssText", () => {
                 const STYLE = "style";
-                const styleSetterSpy = jest.spyOn(ctrl.style, "set");
-                const styleGetterSpy = jest.spyOn(ctrl._dynamicStyle, "cssText", "get");
+                const styleSetterSpy = vi.spyOn(ctrl.style, "set");
+                const styleGetterSpy = vi.spyOn(ctrl._dynamicStyle, "cssText", "get");
                 styleGetterSpy.mockReturnValue(STYLE);
                 ctrl.update(context);
                 expect(styleSetterSpy).toHaveBeenCalledWith(STYLE);
@@ -126,7 +126,7 @@ describe("MonthlyGraphTooltipController", () => {
         describe("does update tooltip", () => {
             const DATE_LABEL = "mars 2012";
             ctrl = new MonthlyGraphTooltipController(WITH_PREVIOUS_VALUE, YEAR);
-            const dateLabelSpy = jest.spyOn(ctrl, "_dateLabel");
+            const dateLabelSpy = vi.spyOn(ctrl, "_dateLabel");
             dateLabelSpy.mockReturnValue(DATE_LABEL);
 
             it("calls _dateLabel", () => {
@@ -135,13 +135,13 @@ describe("MonthlyGraphTooltipController", () => {
             });
 
             it("updates date with _dateLabel return value", () => {
-                const setDateSpy = jest.spyOn(ctrl.date, "set");
+                const setDateSpy = vi.spyOn(ctrl.date, "set");
                 ctrl.update({ tooltip: TOOLTIP_VISIBLE });
                 expect(setDateSpy).toHaveBeenCalledWith(DATE_LABEL);
             });
 
             it("updates number", () => {
-                const setNumberSpy = jest.spyOn(ctrl.number, "set");
+                const setNumberSpy = vi.spyOn(ctrl.number, "set");
                 ctrl.update({ tooltip: TOOLTIP_VISIBLE });
                 expect(setNumberSpy).toHaveBeenCalledWith(VALUE);
             });
@@ -158,8 +158,8 @@ describe("MonthlyGraphTooltipController", () => {
 
             it("calls style setter with cssText", () => {
                 const STYLE = "style";
-                const styleSetterSpy = jest.spyOn(ctrl.style, "set");
-                const styleGetterSpy = jest.spyOn(ctrl._dynamicStyle, "cssText", "get");
+                const styleSetterSpy = vi.spyOn(ctrl.style, "set");
+                const styleGetterSpy = vi.spyOn(ctrl._dynamicStyle, "cssText", "get");
                 styleGetterSpy.mockReturnValue(STYLE);
                 ctrl.update({ tooltip: TOOLTIP_VISIBLE });
                 expect(styleSetterSpy).toHaveBeenCalledWith(STYLE);

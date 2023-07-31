@@ -6,7 +6,7 @@ describe("StatsPort", () => {
         let axiosGetMock;
 
         beforeAll(() => {
-            axiosGetMock = jest.spyOn(axios, "get");
+            axiosGetMock = vi.spyOn(axios, "get");
         });
 
         afterAll(() => {
@@ -30,7 +30,7 @@ describe("StatsPort", () => {
             nombres_utilisateurs_avant_annee: 42,
             evolution_nombres_utilisateurs: [43, 44],
         };
-        beforeAll(() => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: { data: AXIOS_DATA } })));
+        beforeAll(() => (spyAxios = vi.spyOn(axios, "get").mockResolvedValue({ data: { data: AXIOS_DATA } })));
         afterAll(() => spyAxios.mockRestore());
 
         it("should call axios with proper path", async () => {
@@ -54,7 +54,7 @@ describe("StatsPort", () => {
             nb_requetes_moyen: 4.8,
             somme_nb_requetes: 90,
         };
-        beforeAll(() => (spyAxios = jest.spyOn(axios, "get").mockResolvedValue({ data: AXIOS_DATA })));
+        beforeAll(() => (spyAxios = vi.spyOn(axios, "get").mockResolvedValue({ data: AXIOS_DATA })));
         afterAll(() => spyAxios.mockRestore());
 
         it("should call axios with proper path", async () => {

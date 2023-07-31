@@ -1,6 +1,6 @@
 import { DocumentsController } from "$lib/components/Documents/Documents.controller";
 import documentService from "$lib/resources/documents/documents.service";
-jest.mock("$lib/resources/documents/documents.service");
+vi.mock("$lib/resources/documents/documents.service");
 
 describe("Documents.controller", () => {
     let documentController;
@@ -24,9 +24,9 @@ describe("Documents.controller", () => {
         let oldURL, oldCreateElement, oldAppendChild;
         const BLOB = "blob";
         const BLOB_URL = "/blob/url";
-        const EVENT = { preventDefault: jest.fn() };
+        const EVENT = { preventDefault: vi.fn() };
         const DOC = { url: "/path", nom: "name" };
-        const ELEMENT = { href: "", setAttribute: jest.fn(), click: jest.fn() };
+        const ELEMENT = { href: "", setAttribute: vi.fn(), click: vi.fn() };
         beforeAll(() => {
             documentService.getDauphinBlob.mockResolvedValue(BLOB);
             oldURL = window.URL;
@@ -36,12 +36,12 @@ describe("Documents.controller", () => {
             delete document.createElement;
             delete document.body;
             window.URL = {
-                createObjectURL: jest.fn((..._args) => BLOB_URL),
-                revokeObjectURL: jest.fn(),
+                createObjectURL: vi.fn((..._args) => BLOB_URL),
+                revokeObjectURL: vi.fn(),
             };
 
-            document.body.appendChild = jest.fn();
-            document.createElement = jest.fn((..._args) => ELEMENT);
+            document.body.appendChild = vi.fn();
+            document.createElement = vi.fn((..._args) => ELEMENT);
         });
 
         afterAll(() => {
@@ -80,8 +80,8 @@ describe("Documents.controller", () => {
         it("link attributes properly tested", async () => {
             await documentController.onClick(EVENT, DOC);
             expect(ELEMENT.href).toBe(BLOB_URL) &&
-                ELEMENT.setAttribute.toHaveBeenCalledWith("download", DOC.name) &&
-                ELEMENT.setAttribute.toHaveBeenCalledWith("target", "_blank");
+                expect(ELEMENT.setAttribute).toHaveBeenCalledWith("download", DOC.nom) &&
+                expect(ELEMENT.setAttribute).toHaveBeenCalledWith("target", "_blank");
         });
 
         it("clicks link", async () => {

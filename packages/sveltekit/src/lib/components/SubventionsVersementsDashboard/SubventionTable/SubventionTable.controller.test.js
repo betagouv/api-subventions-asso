@@ -1,7 +1,7 @@
-jest.mock("../helper");
-jest.mock("$lib/store/modal.store", () => ({
-    modal: { update: jest.fn() },
-    data: { update: jest.fn() },
+vi.mock("../helper");
+vi.mock("$lib/store/modal.store", () => ({
+    modal: { update: vi.fn() },
+    data: { update: vi.fn() },
 }));
 import SubventionTableController from "./SubventionTable.controller";
 import * as modalStore from "$lib/store/modal.store";
@@ -17,10 +17,10 @@ describe("SubventionTableController", () => {
     });
 
     describe("extractRows()", () => {
-        const mockToSubvention = jest.spyOn(SubventionsAdapter, "toSubvention");
+        const mockToSubvention = vi.spyOn(SubventionsAdapter, "toSubvention");
         beforeAll(() =>
             mockToSubvention.mockImplementation(
-                jest.fn(() => ({
+                vi.fn(() => ({
                     serviceInstructeur: undefined,
                     dispositif: undefined,
                     projectName: undefined,

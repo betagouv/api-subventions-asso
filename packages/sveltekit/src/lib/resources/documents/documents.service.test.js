@@ -1,5 +1,5 @@
 import documentPort from "./documents.port";
-jest.mock("./documents.port");
+vi.mock("./documents.port");
 import documentService from "./documents.service";
 
 describe("DocumentService", () => {
@@ -7,14 +7,14 @@ describe("DocumentService", () => {
 
     describe("getDauphinBlob", () => {
         it("should call port", async () => {
-            documentPort.getDauphinBlob.mockImplementationOnce(jest.fn());
+            vi.mocked(documentPort.getDauphinBlob).mockImplementationOnce(vi.fn());
             await documentService.getDauphinBlob(DOC_URL);
             expect(documentPort.getDauphinBlob).toHaveBeenCalledWith(DOC_URL);
         });
 
         it("should return data from port", async () => {
             const RES = "";
-            documentPort.getDauphinBlob.mockResolvedValueOnce(RES);
+            vi.mocked(documentPort.getDauphinBlob).mockResolvedValueOnce(RES);
             const expected = RES;
             const actual = await documentService.getDauphinBlob(DOC_URL);
             expect(actual).toBe(expected);

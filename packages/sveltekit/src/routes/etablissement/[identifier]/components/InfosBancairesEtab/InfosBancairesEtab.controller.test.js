@@ -55,7 +55,7 @@ describe("InfosBancairesEtabController", () => {
 
     beforeEach(() => {
         controller = new InfosBancairesEtabController(infosBanquairesRaw);
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     const testFlatten = (raw, expected) => {

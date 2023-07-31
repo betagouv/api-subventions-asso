@@ -3,7 +3,7 @@ import authService from "$lib/resources/auth/auth.service";
 
 describe("AuthController", () => {
     describe("init", () => {
-        const authServiceMock = jest.spyOn(authService, "initUserInApp");
+        const authServiceMock = vi.spyOn(authService, "initUserInApp");
 
         let controller;
 

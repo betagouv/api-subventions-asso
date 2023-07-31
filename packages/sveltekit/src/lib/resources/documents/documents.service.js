@@ -1,7 +1,4 @@
 import documentPort from "./documents.port";
-import { getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
-
-export const toDocumentComponent = getObjectWithMetadata;
 
 export class DocumentService {
     getDauphinBlob(localDauphinDocUrl) {

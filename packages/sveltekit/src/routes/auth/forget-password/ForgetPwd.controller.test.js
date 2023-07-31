@@ -10,13 +10,14 @@ describe("SignupController", () => {
             ${"firstSubmitted"} | ${false}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new ForgetPwdController();
+            // TODO separer promise et comparer valeur résolue ? ou match au lieu de equal
             expect(ctrl[propertyName].value).toEqual(expected);
         });
     });
 
     describe("onSubmit", () => {
         const ctrl = new ForgetPwdController();
-        const serviceMock = jest.spyOn(authService, "forgetPassword");
+        const serviceMock = vi.spyOn(authService, "forgetPassword");
         const PROMISE = Promise.resolve();
         const EMAIL = "alice@test.fr";
         let setPromiseMock;
@@ -24,8 +25,8 @@ describe("SignupController", () => {
 
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
-            setPromiseMock = jest.spyOn(ctrl.promise, "set");
-            setFirstSubmittedMock = jest.spyOn(ctrl.firstSubmitted, "set");
+            setPromiseMock = vi.spyOn(ctrl.promise, "set");
+            setFirstSubmittedMock = vi.spyOn(ctrl.firstSubmitted, "set");
             ctrl.email.value = EMAIL;
         });
         afterAll(() => serviceMock.mockRestore());

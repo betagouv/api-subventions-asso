@@ -2,8 +2,8 @@ import { getContext } from "svelte";
 import SignupController from "./Signup.controller";
 import authService from "$lib/resources/auth/auth.service";
 
-jest.mock("@api-subventions-asso/dto", () => ({
-    ...jest.requireActual("@api-subventions-asso/dto"),
+vi.mock("@api-subventions-asso/dto", () => ({
+    ...vi.importActual("@api-subventions-asso/dto"),
     SignupErrorCodes: {
         EMAIL_NOT_VALID: 1,
         USER_ALREADY_EXIST: 2,
@@ -16,16 +16,16 @@ jest.mock("@api-subventions-asso/dto", () => ({
 
 const NAME = "nom";
 
-jest.mock("svelte", () => ({
+vi.mock("svelte", () => ({
     __esModule: true, // this property makes it work
-    getContext: jest.fn(() => ({
-        getName: jest.fn(() => NAME),
+    getContext: vi.fn(() => ({
+        getName: vi.fn(() => NAME),
     })),
 }));
 
 describe("SignupController", () => {
     describe("constructor and static values", () => {
-        const APP = { getName: jest.fn() };
+        const APP = { getName: vi.fn() };
         afterAll(() => getContext.mockRestore());
 
         it("gets context", () => {
@@ -70,7 +70,7 @@ describe("SignupController", () => {
 
     describe("signup()", () => {
         const ctrl = new SignupController();
-        const serviceMock = jest.spyOn(authService, "signup");
+        const serviceMock = vi.spyOn(authService, "signup");
         const PROMISE = Promise.resolve();
         const USER = { email: "test@mail.fr", lastName: "", firstName: "" };
         let setPromiseMock;
@@ -78,8 +78,8 @@ describe("SignupController", () => {
 
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
-            setPromiseMock = jest.spyOn(ctrl.signupPromise, "set");
-            setFirstSubmittedMock = jest.spyOn(ctrl.firstSubmitted, "set");
+            setPromiseMock = vi.spyOn(ctrl.signupPromise, "set");
+            setFirstSubmittedMock = vi.spyOn(ctrl.firstSubmitted, "set");
             ctrl.signupUser.value = USER;
         });
         afterAll(() => serviceMock.mockRestore());
@@ -121,7 +121,7 @@ describe("SignupController", () => {
     describe("getter contact Email", () => {
         const ctrl = new SignupController();
         const MAIL = "contact@mail.fr";
-        const nameMock = jest.fn(() => MAIL);
+        const nameMock = vi.fn(() => MAIL);
         ctrl.app = { getContact: nameMock };
 
         it("gets email from app", () => {

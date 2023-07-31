@@ -1,9 +1,9 @@
 import * as dataHelper from "$lib/helpers/dataHelper";
-jest.mock("$lib/helpers/dataHelper");
+vi.mock("$lib/helpers/dataHelper");
 import * as dateHelper from "$lib/helpers/dateHelper";
-jest.mock("$lib/helpers/dateHelper");
+vi.mock("$lib/helpers/dateHelper");
 import * as subventionVersementHelper from "$lib/components/SubventionsVersementsDashboard/helper";
-jest.mock("$lib/components/SubventionsVersementsDashboard/helper");
+vi.mock("$lib/components/SubventionsVersementsDashboard/helper");
 
 import VersementsAdapter from "$lib/resources/versements/versements.adapter";
 
@@ -16,13 +16,13 @@ describe("Versements Adapter", () => {
     ];
 
     describe("toVersement()", () => {
-        const mockFormatBop = jest.spyOn(VersementsAdapter, "formatBop");
-        const mockChooseBop = jest.spyOn(VersementsAdapter, "_chooseBop");
-        const mockGetTotalPayment = jest.spyOn(VersementsAdapter, "_getTotalPayment");
+        const mockFormatBop = vi.spyOn(VersementsAdapter, "formatBop");
+        const mockChooseBop = vi.spyOn(VersementsAdapter, "_chooseBop");
+        const mockGetTotalPayment = vi.spyOn(VersementsAdapter, "_getTotalPayment");
 
         const mocks = [mockGetTotalPayment];
 
-        beforeAll(() => mocks.forEach(mock => mock.mockImplementation(jest.fn())));
+        beforeAll(() => mocks.forEach(mock => mock.mockImplementation(vi.fn())));
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
         afterAll(() => mocks.forEach(mock => mock.mockRestore()));
 
@@ -137,7 +137,7 @@ describe("Versements Adapter", () => {
     });
 
     describe("_getTotalPayment", () => {
-        const spyCountTotalVersement = jest.spyOn(VersementsAdapter, "_countTotalVersement");
+        const spyCountTotalVersement = vi.spyOn(VersementsAdapter, "_countTotalVersement");
         it("should call _countTotalVersement()", () => {
             VersementsAdapter._getTotalPayment(VERSEMENTS);
             expect(spyCountTotalVersement).toHaveBeenCalledTimes(1);

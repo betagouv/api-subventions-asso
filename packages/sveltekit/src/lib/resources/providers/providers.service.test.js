@@ -6,7 +6,7 @@ describe("providersService", () => {
         let portGetProvidersMock;
 
         beforeAll(() => {
-            portGetProvidersMock = jest.spyOn(providersPort, "getProviders");
+            portGetProvidersMock = vi.spyOn(providersPort, "getProviders");
         });
 
         afterAll(() => {

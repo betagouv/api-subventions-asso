@@ -1,7 +1,7 @@
 import axios from "axios";
 import documentPort from "./documents.port";
 
-jest.mock("axios");
+vi.mock("axios");
 
 describe("DocumentsPort", () => {
     beforeAll(() => axios.get.mockImplementation(() => Promise.resolve({ data: "" })));

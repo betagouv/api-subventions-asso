@@ -1,9 +1,9 @@
-jest.mock("$lib/helpers/providerValueHelper");
+vi.mock("$lib/helpers/providerValueHelper");
 import establishmentService from "./establishment.service";
 import establishmentPort from "./establishment.port";
-jest.mock("./establishment.port");
+vi.mock("./establishment.port");
 import * as establishmentAdapter from "./establishment.adapter";
-jest.mock("./establishment.adapter");
+vi.mock("./establishment.adapter");
 import * as providerValuesHelper from "$lib/helpers/providerValueHelper";
 
 describe("establishmentService", () => {
@@ -32,7 +32,7 @@ describe("establishmentService", () => {
         });
 
         it("should get contacts value for each establishment", async () => {
-            const spyGetContactsValue = jest
+            const spyGetContactsValue = vi
                 .spyOn(establishmentService, "getContactsValue")
                 .mockImplementation(contact => contact);
 
@@ -56,7 +56,7 @@ describe("establishmentService", () => {
 
     describe("getDocuments()", () => {
         it("should call EstablishmentPort", async () => {
-            const spyGetDocuments = jest.spyOn(establishmentPort, "getDocuments");
+            const spyGetDocuments = vi.spyOn(establishmentPort, "getDocuments");
             await establishmentService.getDocuments(SIRET);
             expect(spyGetDocuments).toHaveBeenCalledWith(SIRET);
         });

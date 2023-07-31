@@ -7,7 +7,7 @@ describe("statsService", () => {
         let portGetTopAssociationsMock;
 
         beforeAll(() => {
-            portGetTopAssociationsMock = jest.spyOn(statsPort, "getTopAssociations");
+            portGetTopAssociationsMock = vi.spyOn(statsPort, "getTopAssociations");
         });
 
         afterAll(() => {
@@ -38,8 +38,8 @@ describe("statsService", () => {
     });
 
     describe("getMonthlyUser", () => {
-        const spyPort = jest.spyOn(statsPort, "getMonthlyUserCount");
-        const spyAdapter = jest.spyOn(statsAdapter, "formatUserCount");
+        const spyPort = vi.spyOn(statsPort, "getMonthlyUserCount");
+        const spyAdapter = vi.spyOn(statsAdapter, "formatUserCount");
         const PORT_RES = "old value";
         const ADAPTER_RES = "new value";
         const YEAR = 2022;
@@ -71,8 +71,8 @@ describe("statsService", () => {
     });
 
     describe("getMonthlyRequest", () => {
-        const spyPort = jest.spyOn(statsPort, "getMonthlyRequestCount");
-        const spyAdapter = jest.spyOn(statsAdapter, "formatRequestCount");
+        const spyPort = vi.spyOn(statsPort, "getMonthlyRequestCount");
+        const spyAdapter = vi.spyOn(statsAdapter, "formatRequestCount");
         const PORT_RES = "old value";
         const ADAPTER_RES = "new value";
         const YEAR = 2022;

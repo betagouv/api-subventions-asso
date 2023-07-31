@@ -1,17 +1,17 @@
 const CONTACT = "contact@datasubvention.beta.gouv.fr";
 
-const mockGetContact = jest.fn(() => CONTACT);
+const mockGetContact = vi.fn(() => CONTACT);
 
-jest.mock("svelte", () => ({
+vi.mock("svelte", () => ({
     __esModule: true, // this property makes it work
-    // thanks to https://www.bam.tech/article/fix-jest-mock-cannot-access-before-initialization-error
-    getContext: jest.fn().mockImplementation(() => ({
+    // thanks to https://www.bam.tech/article/fix-vi-mock-cannot-access-before-initialization-error
+    getContext: vi.fn().mockImplementation(() => ({
         getContact: mockGetContact,
     })),
 }));
 import { getContext } from "svelte";
 
-jest.mock("$lib/services/router.service");
+vi.mock("$lib/services/router.service");
 import NotFoundController from "./NotFound.controller";
 
 describe("NotFoundController", () => {

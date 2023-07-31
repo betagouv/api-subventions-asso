@@ -1,10 +1,10 @@
 import associationPort from "./association.port";
 import requestsService from "$lib/services/requests.service";
 
-jest.mock("$lib/services/requests.service");
+vi.mock("$lib/services/requests.service");
 
 describe("AssociationPort", () => {
-    requestsService.get.mockImplementation(() => ({ catch: jest.fn() }));
+    requestsService.get.mockImplementation(() => ({ catch: vi.fn() }));
     const SIREN = "SIREN";
 
     describe("incExtractData", () => {

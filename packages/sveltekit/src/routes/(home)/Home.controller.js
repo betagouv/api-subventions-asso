@@ -4,6 +4,7 @@ import { isRna, isSiren, isSiret, isStartOfSiret } from "$lib/helpers/validatorH
 import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
 
 export class HomeController {
     constructor() {
@@ -51,11 +52,11 @@ export class HomeController {
 
     onSubmit() {
         if (isRna(this.input.value) || isSiren(this.input.value)) {
-            location.href = `/association/${this.input.value}`;
+            goto(`/association/${this.input.value}`);
         } else if (isSiret(this.input.value)) {
-            location.href = `/etablissement/${this.input.value}`;
+            goto(`/etablissement/${this.input.value}`);
         } else if (this.searchResult.value?.length) {
-            location.href = `/association/${this.searchResult.value[0].rna || this.searchResult.value[0].siren}`;
+            goto(`/association/${this.searchResult.value[0].rna || this.searchResult.value[0].siren}`);
         }
     }
 

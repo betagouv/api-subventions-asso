@@ -1,8 +1,8 @@
-jest.mock("chart.js/auto", () =>
-    jest.fn(function () {
+vi.mock("chart.js/auto", () => ({
+    default: vi.fn(function () {
         return {};
-    }),
-);
+    })
+}));
 
 import Chart from "chart.js/auto";
 import UserDistributionController from "./UserDistribution.controller";
@@ -10,7 +10,7 @@ import statsService from "$lib/resources/stats/stats.service";
 
 describe("UserDistributionController", () => {
     describe("init", () => {
-        const getUsersDistributionMock = jest.spyOn(statsService, "getUsersDistribution");
+        const getUsersDistributionMock = vi.spyOn(statsService, "getUsersDistribution");
         let controller;
 
         beforeEach(() => {
@@ -61,7 +61,7 @@ describe("UserDistributionController", () => {
 
         beforeEach(() => {
             controller = new UserDistributionController();
-            updateMock = jest.spyOn(controller, "_update");
+            updateMock = vi.spyOn(controller, "_update");
         });
 
         it("should don't save canvas if is falsy", () => {

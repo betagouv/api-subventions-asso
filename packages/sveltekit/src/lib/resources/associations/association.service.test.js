@@ -1,24 +1,29 @@
 import associationService from "./association.service";
 
 import associationPort from "./association.port";
-jest.mock("./association.port", () => ({
-    incExtractData: jest.fn(),
-    getByIdentifier: jest.fn(() => ({})),
-    getEstablishments: jest.fn(() => []),
-    search: jest.fn(() => []),
+vi.mock("./association.port", () => ({
+    default: {
+        incExtractData: vi.fn(),
+        getByIdentifier: vi.fn(() => ({})),
+        getEstablishments: vi.fn(() => []),
+        search: vi.fn(() => []),
+    },
 }));
+vi.mock("$lib/services/storage.service", () => ({
+    updateSearchHistory: vi.fn()
+}))
 
 import * as validatorHelper from "$lib/helpers/validatorHelper";
-jest.mock("$lib/helpers/validatorHelper");
+vi.mock("$lib/helpers/validatorHelper");
 import * as sirenHelper from "$lib/helpers/sirenHelper";
-jest.mock("$lib/helpers/sirenHelper");
+vi.mock("$lib/helpers/sirenHelper");
 
 const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 
 import * as providerValueHelper from "$lib/helpers/providerValueHelper";
-jest.mock("$lib/helpers/providerValueHelper", () => {
+vi.mock("$lib/helpers/providerValueHelper", () => {
     return {
-        flattenProviderValue: jest.fn(() => ASSOCIATIONS),
+        flattenProviderValue: vi.fn(() => ASSOCIATIONS),
     };
 });
 
@@ -33,14 +38,15 @@ describe("AssociationService", () => {
     });
 
     describe("getAssociation", () => {
+        // mock updateHistory
         it("should return undefined if no association found", async () => {
             const expected = undefined;
-            associationPort.getByIdentifier.mockImplementationOnce(jest.fn());
+            associationPort.getByIdentifier.mockImplementationOnce(vi.fn());
             const actual = await associationService.getAssociation(SIREN);
             expect(actual).toEqual(expected);
         });
 
-        it("should flaten data", async () => {
+        it("should flatten data", async () => {
             associationPort.getByIdentifier.mockImplementationOnce(async () => ASSOCIATIONS);
             await associationService.getAssociation(SIREN);
             expect(providerValueHelper.flattenProviderValue).toHaveBeenCalledTimes(1);
@@ -55,7 +61,7 @@ describe("AssociationService", () => {
     });
 
     describe("_searchByIdentifier", () => {
-        const mockGetAssociation = jest.spyOn(associationService, "getAssociation");
+        const mockGetAssociation = vi.spyOn(associationService, "getAssociation");
         beforeAll(() =>
             mockGetAssociation.mockImplementation(() => ({
                 rna: ASSOCIATIONS[0].rna,
@@ -131,8 +137,8 @@ describe("AssociationService", () => {
     describe("search", () => {
         let mockByText, mockByIdentifier;
         beforeAll(() => {
-            mockByText = jest.spyOn(associationService, "_searchByText").mockResolvedValue([]);
-            mockByIdentifier = jest.spyOn(associationService, "_searchByIdentifier").mockResolvedValue([]);
+            mockByText = vi.spyOn(associationService, "_searchByText").mockResolvedValue([]);
+            mockByIdentifier = vi.spyOn(associationService, "_searchByIdentifier").mockResolvedValue([]);
         });
         afterAll(() => {
             mockByText.mockRestore();

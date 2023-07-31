@@ -1,11 +1,11 @@
 import establishmentPort from "./establishment.port";
 import requestsService from "$lib/services/requests.service";
-jest.mock("$lib/services/requests.service");
+vi.mock("$lib/services/requests.service");
 
 describe("EstablishmentPort", () => {
-    requestsService.get.mockImplementation(() => ({ catch: jest.fn() }));
+    requestsService.get.mockImplementation(() => ({ catch: vi.fn() }));
 
-    jest.spyOn(requestsService, "get");
+    vi.spyOn(requestsService, "get");
     const SIRET = "SIRET";
     describe("incExtractData", () => {
         it("should call axios with route", () => {

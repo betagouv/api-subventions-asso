@@ -1,22 +1,22 @@
-/* global $crisp:readonly */
+vi.stubGlobal('$crisp', {
+  push: vi.fn(),
+})
 
-import crispService from "$lib/s/crisp.service";
+import crispService from "$lib/services/crisp.service";
 
 describe("crisp service", () => {
-    const crispPushSpy = jest.spyOn($crisp, "push").mockImplementation(jest.fn());
-
     describe("saveUserEmail", () => {
         const EMAIL = "a@b.c";
         it("calls crisp push with proper args", () => {
             crispService.setUserEmail(EMAIL);
-            expect(crispPushSpy).toBeCalledWith(["set", "user:email", [EMAIL]]);
+            expect($crisp.push).toBeCalledWith(["set", "user:email", [EMAIL]]);
         });
     });
 
     describe("resetSession", () => {
         it("calls crisp push with proper args", () => {
             crispService.resetSession();
-            expect(crispPushSpy).toBeCalledWith(["do", "session:reset"]);
+            expect($crisp.push).toBeCalledWith(["do", "session:reset"]);
         });
     });
 });

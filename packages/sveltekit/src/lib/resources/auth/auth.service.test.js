@@ -3,18 +3,25 @@ import authPort from "$lib/resources/auth/auth.port";
 import authService from "$lib/resources/auth/auth.service";
 import crispService from "$lib/services/crisp.service";
 
-const DEFAULT_ERROR_CODE = 49;
+const mocks = vi.hoisted(() => {
+  return {
+    DEFAULT_ERROR_CODE: 49,
+  }
+})
 
-jest.mock("@api-subventions-asso/dto", () => ({
-    ...jest.requireActual("@api-subventions-asso/dto"),
-    SignupErrorCodes: { EMAIL_NOT_VALID: DEFAULT_ERROR_CODE },
-    ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
-    __esModule: true, // this property makes it work
-}));
+vi.mock("@api-subventions-asso/dto", async () => {
+    const actual = await vi.importActual("@api-subventions-asso/dto")
+    return {
+        ...actual,
+        SignupErrorCodes: { EMAIL_NOT_VALID: mocks.DEFAULT_ERROR_CODE },
+        ResetPasswordErrorCodes: { INTERNAL_ERROR: mocks.DEFAULT_ERROR_CODE },
+        __esModule: true, // this property makes it work
+    }
+});
 
 describe("authService", () => {
     describe("signup()", () => {
-        const portMock = jest.spyOn(authPort, "signup");
+        const portMock = vi.spyOn(authPort, "signup");
         const RES = {};
         const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
@@ -23,7 +30,7 @@ describe("authService", () => {
 
         it("rejects with appropriate code if no email", () => {
             const test = () => authService.signup();
-            expect(test).rejects.toBe(DEFAULT_ERROR_CODE);
+            expect(test).rejects.toBe(mocks.DEFAULT_ERROR_CODE);
         });
 
         it("calls port", async () => {
@@ -46,7 +53,7 @@ describe("authService", () => {
     });
 
     describe("resetPassword()", () => {
-        const portMock = jest.spyOn(authPort, "resetPassword");
+        const portMock = vi.spyOn(authPort, "resetPassword");
         const RES = true;
         const PASSWORD = "very secret";
         const TOKEN = "123";
@@ -72,7 +79,7 @@ describe("authService", () => {
     });
 
     describe("forgetPassword()", () => {
-        const portMock = jest.spyOn(authPort, "forgetPassword");
+        const portMock = vi.spyOn(authPort, "forgetPassword");
         const RES = true;
         const EMAIL = "test@test.fr";
 
@@ -97,8 +104,8 @@ describe("authService", () => {
     });
 
     describe("login()", () => {
-        const crispServiceMock = jest.spyOn(crispService, "setUserEmail").mockImplementation(jest.fn());
-        const mockPort = jest.spyOn(authPort, "login");
+        const crispServiceMock = vi.spyOn(crispService, "setUserEmail").mockImplementation(vi.fn());
+        const mockPort = vi.spyOn(authPort, "login");
         it("should call port", async () => {
             const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
 
@@ -136,8 +143,8 @@ describe("authService", () => {
     });
 
     describe("initUserInApp", () => {
-        const crispServiceMock = jest.spyOn(crispService, "setUserEmail").mockImplementation(jest.fn());
-        const getCurrentUserMock = jest.spyOn(authService, "getCurrentUser");
+        const crispServiceMock = vi.spyOn(crispService, "setUserEmail").mockImplementation(vi.fn());
+        const getCurrentUserMock = vi.spyOn(authService, "getCurrentUser");
 
         afterAll(() => {
             getCurrentUserMock.mockRestore();
@@ -162,8 +169,8 @@ describe("authService", () => {
     });
 
     describe("logout", () => {
-        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-jest-tests
-        const localStorageMock = jest.spyOn(Storage.prototype, "removeItem");
+        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-vi-tests
+        const localStorageMock = vi.spyOn(Storage.prototype, "removeItem");
         it("should call removeItem on localStorage", () => {
             authService.logout();
 
@@ -171,15 +178,15 @@ describe("authService", () => {
         });
 
         it("resets crisp session", () => {
-            const crispServiceMock = jest.spyOn(crispService, "resetSession").mockImplementation(jest.fn());
+            const crispServiceMock = vi.spyOn(crispService, "resetSession").mockImplementation(vi.fn());
             authService.logout();
             expect(crispServiceMock).toBeCalled();
         });
     });
 
     describe("getCurrentUser", () => {
-        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-jest-tests
-        const localStorageMock = jest.spyOn(Storage.prototype, "getItem");
+        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-vi-tests
+        const localStorageMock = vi.spyOn(Storage.prototype, "getItem");
         it("should call getItem on localStorage", () => {
             authService.getCurrentUser();
 

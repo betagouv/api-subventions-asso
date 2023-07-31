@@ -4,6 +4,8 @@ import errorsService from "../errors/errors.service";
 import { DATASUB_URL } from "$env/static/public";
 import requestsService from "$lib/services/requests.service";
 
+vi.mock("axios")
+
 describe("RequestService", () => {
     describe("constructor", () => {
         it("should set baseUrl", () => {
@@ -15,7 +17,7 @@ describe("RequestService", () => {
         let _sendRequestMock;
 
         beforeAll(() => {
-            _sendRequestMock = jest.spyOn(requestsService, "_sendRequest").mockResolvedValue();
+            _sendRequestMock = vi.spyOn(requestsService, "_sendRequest").mockResolvedValue();
         });
         afterAll(() => {
             _sendRequestMock.mockRestore();
@@ -67,7 +69,7 @@ describe("RequestService", () => {
 
     describe("addErrorHooks", () => {
         it("should add hooks in errorHooks array", () => {
-            const expected = jest.fn();
+            const expected = vi.fn();
             requestsService.addErrorHook(NotFoundError, expected);
 
             expect(requestsService._errorHooks).toEqual([
@@ -85,8 +87,8 @@ describe("RequestService", () => {
         let errorServiceMock;
 
         beforeAll(() => {
-            axiosRequestMock = jest.spyOn(axios, "request").mockResolvedValue();
-            errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
+            axiosRequestMock = vi.spyOn(axios, "request").mockResolvedValue();
+            errorServiceMock = vi.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
         });
 
         afterAll(() => {
@@ -118,7 +120,7 @@ describe("RequestService", () => {
         let errorServiceMock;
 
         beforeAll(() => {
-            errorServiceMock = jest.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
+            errorServiceMock = vi.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
         });
 
         afterAll(() => {
@@ -148,7 +150,7 @@ describe("RequestService", () => {
                 },
             };
 
-            const callback = jest.fn();
+            const callback = vi.fn();
 
             requestsService._errorHooks.push({
                 ErrorClass: SomeError,

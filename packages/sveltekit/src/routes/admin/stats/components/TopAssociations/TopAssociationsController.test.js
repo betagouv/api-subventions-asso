@@ -7,7 +7,7 @@ describe("TopAssociationsController", () => {
         let controller;
 
         beforeAll(() => {
-            serviceGetTopAssociationsMock = jest.spyOn(statsService, "getTopAssociations");
+            serviceGetTopAssociationsMock = vi.spyOn(statsService, "getTopAssociations");
             controller = new TopAssociationsController();
         });
 

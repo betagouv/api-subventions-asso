@@ -8,7 +8,7 @@ describe("VersementsService", () => {
         let portGetEtablissementVersementsMock;
 
         beforeAll(() => {
-            portGetEtablissementVersementsMock = jest.spyOn(versementsPort, "getEtablissementVersements");
+            portGetEtablissementVersementsMock = vi.spyOn(versementsPort, "getEtablissementVersements");
         });
 
         afterAll(() => {
@@ -40,7 +40,7 @@ describe("VersementsService", () => {
         let portGetAssociationVersementsMock;
 
         beforeAll(() => {
-            portGetAssociationVersementsMock = jest.spyOn(versementsPort, "getAssociationVersements");
+            portGetAssociationVersementsMock = vi.spyOn(versementsPort, "getAssociationVersements");
         });
 
         afterAll(() => {

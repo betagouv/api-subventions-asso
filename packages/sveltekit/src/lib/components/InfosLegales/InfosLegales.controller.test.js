@@ -1,18 +1,17 @@
-import DEFAULT_ASSOCIATION from "../../views/association/__fixtures__/Association";
-import DEFAULT_ETABLISSEMENT from "../../views/establishment/__fixtures__/Etablissement";
 import InfosLegalesController from "./InfosLegales.controller";
+import DEFAULT_ASSOCIATION from "$lib/resources/associations/__fixtures__/Association";
+import DEFAULT_ETABLISSEMENT from "$lib/resources/establishments/__fixtures__/Etablissement";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
-jest.mock("$lib/resources/associations/association.helper", () => {
+vi.mock("$lib/resources/associations/association.helper", async () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const ASSOCIATION = require("../../views/association/__fixtures__/Association");
+    const ASSOCIATION = await import("$lib/resources/associations/__fixtures__/Association");
     return {
-        __esModule: true, // this property makes it work
         addressToString: address => address,
         getSiegeSiret: () => ASSOCIATION.default.siren + ASSOCIATION.default.nic_siege,
         getAddress: () => ASSOCIATION.default.adresse_siege_rna,
-        getImmatriculation: jest.fn(),
-        getModification: jest.fn(),
+        getImmatriculation: vi.fn(),
+        getModification: vi.fn(),
     };
 });
 

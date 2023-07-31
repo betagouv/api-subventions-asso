@@ -9,7 +9,7 @@ describe("HeaderController", () => {
     });
 
     describe("goToProfile()", () => {
-        const routerServiceMock = jest.spyOn(routerService, "goToUrl");
+        const routerServiceMock = vi.spyOn(routerService, "goToUrl");
 
         it("should call goToUrl", () => {
             routerServiceMock.mockReturnValue(null);

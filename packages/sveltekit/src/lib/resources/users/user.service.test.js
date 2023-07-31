@@ -1,6 +1,6 @@
 import userService from "./user.service";
 import userPort from "./user.port";
-jest.mock("./user.port");
+vi.mock("./user.port");
 
 describe("UsersService", () => {
     describe("isUserActif", () => {

@@ -1,7 +1,7 @@
 import SubventionsAdapter from "./subventions.adapter";
 import * as dataHelper from "$lib/helpers/dataHelper";
-jest.mock("$lib/helpers/dataHelper");
-jest.mock("$lib/helpers/stringHelper", () => ({
+vi.mock("$lib/helpers/dataHelper");
+vi.mock("$lib/helpers/stringHelper", () => ({
     capitalizeFirstLetter: value => value,
 }));
 
@@ -15,7 +15,7 @@ describe("Subventions Adapter", () => {
     const ELEMENT = { siret: SIRET, subvention: SUBVENTION };
 
     describe("toSubvention()", () => {
-        const mockGetProjectName = jest.spyOn(SubventionsAdapter, "_getProjectName");
+        const mockGetProjectName = vi.spyOn(SubventionsAdapter, "_getProjectName");
         beforeAll(() => mockGetProjectName.mockImplementation(name => name));
         afterAll(() => mockGetProjectName.mockRestore());
 

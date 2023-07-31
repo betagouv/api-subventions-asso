@@ -1,11 +1,14 @@
 import ContactEtabController from "./ContactEtabController";
 import { formatPhoneNumber, valueOrHyphen } from "$lib/helpers/dataHelper";
 
-jest.mock("$lib/helpers/dataHelper.js", () => ({
-    ...jest.requireActual("$lib/helpers/dataHelper.js"),
-    valueOrHyphen: jest.fn(v => v),
-    formatPhoneNumber: jest.fn(v => v),
-}));
+vi.mock("$lib/helpers/dataHelper.js", async () => {
+    const actual = vi.importActual("$lib/helpers/dataHelper.js")
+    return {
+        ...actual,
+        valueOrHyphen: vi.fn(v => v),
+        formatPhoneNumber: vi.fn(v => v),
+    };
+});
 
 describe("ContactEtabController", () => {
     const ROLES = ["Afficher tous les rôles", "Coordinatrice", "Président"];
@@ -45,7 +48,7 @@ describe("ContactEtabController", () => {
 
     beforeEach(() => {
         controller = new ContactEtabController(CONTACTS);
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe("_containsRole()", () => {
