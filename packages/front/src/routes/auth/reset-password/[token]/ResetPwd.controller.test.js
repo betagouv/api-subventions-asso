@@ -95,7 +95,7 @@ describe("ResetPwdController", () => {
 
         it("catches promise rejection", async () => {
             const test = ctrl.onSubmit();
-            await expect(test).resolves.toMatch(expect.anything());
+            await expect(test).resolves.not.toThrow();
         });
     });
 

@@ -87,11 +87,13 @@ describe("authService", () => {
     });
 
     describe("forgetPassword()", () => {
-        const portMock = vi.spyOn(authPort, "forgetPassword");
+        let portMock;
         const RES = true;
         const EMAIL = "test@test.fr";
 
-        beforeAll(() => portMock.mockResolvedValue(true));
+        beforeAll(() => {
+            portMock = vi.spyOn(authPort, "forgetPassword").mockResolvedValue(true);
+        });
         afterAll(() => portMock.mockRestore());
 
         it("rejects if no email", async () => {

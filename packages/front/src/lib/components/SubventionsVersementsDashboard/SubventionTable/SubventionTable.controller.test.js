@@ -3,6 +3,18 @@ vi.mock("$lib/store/modal.store", () => ({
     modal: { update: vi.fn() },
     data: { update: vi.fn() },
 }));
+vi.mock("$lib/resources/subventions/subventions.adapter", () => ({
+    default: {
+        toSubvention: vi.fn(() => ({
+            serviceInstructeur: undefined,
+            dispositif: undefined,
+            projectName: undefined,
+            montantsDemande: undefined,
+            montantsAccordeOrStatus: undefined,
+        })),
+    },
+}));
+
 import SubventionTableController from "./SubventionTable.controller";
 import * as modalStore from "$lib/store/modal.store";
 import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
@@ -17,27 +29,14 @@ describe("SubventionTableController", () => {
     });
 
     describe("extractRows()", () => {
-        const mockToSubvention = vi.spyOn(SubventionsAdapter, "toSubvention");
-        beforeAll(() =>
-            mockToSubvention.mockImplementation(
-                vi.fn(() => ({
-                    serviceInstructeur: undefined,
-                    dispositif: undefined,
-                    projectName: undefined,
-                    montantsDemande: undefined,
-                    montantsAccordeOrStatus: undefined,
-                })),
-            ),
-        );
-        afterAll(() => mockToSubvention.mockRestore());
         it("should call SubventionsAdapter.toSubvention for each element in array", () => {
             SubventionTableController.extractRows([{ subvention: {} }, { subvention: {} }]);
-            expect(mockToSubvention).toHaveBeenCalledTimes(2);
+            expect(SubventionsAdapter.toSubvention).toHaveBeenCalledTimes(2);
         });
 
         it("should not call SubventionsAdapter.toSubvention if no subvention", () => {
             SubventionTableController.extractRows([{ subvention: {} }, {}]);
-            expect(mockToSubvention).toHaveBeenCalledTimes(1);
+            expect(SubventionsAdapter.toSubvention).toHaveBeenCalledTimes(1);
         });
 
         it("should return an array", () => {

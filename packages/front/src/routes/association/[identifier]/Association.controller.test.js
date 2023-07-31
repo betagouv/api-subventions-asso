@@ -12,9 +12,12 @@ describe("Association Controller", () => {
         controller = new AssociationController(SIREN);
     });
 
-    // TODO
+    /* eslint-disable vitest/no-commented-out-tests -- because of TODO */
+    /* TODO
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     describe("constructor", () => {});
+    */
+    /* eslint-enable vitest/no-commented-out-tests -- because of TODO */
 
     describe("isAssociation()", () => {
         it("should return true", () => {

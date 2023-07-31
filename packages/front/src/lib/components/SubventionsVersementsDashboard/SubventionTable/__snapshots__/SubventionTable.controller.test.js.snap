@@ -11,15 +11,3 @@ exports[`SubventionTableController > extractHeaders() > return an array of heade
   "Statut de la demande",
 ]
 `;
-
-exports[`SubventionTableController extractHeaders() return an array of header 1`] = `
-[
-  "Établissement",
-  "Service instructeur",
-  "Dispositif",
-  "Intitulé de l'action",
-  "Montant demandé",
-  "Montant accordé",
-  "Statut de la demande",
-]
-`;

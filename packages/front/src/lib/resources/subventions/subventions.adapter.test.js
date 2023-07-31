@@ -15,8 +15,10 @@ describe("Subventions Adapter", () => {
     const ELEMENT = { siret: SIRET, subvention: SUBVENTION };
 
     describe("toSubvention()", () => {
-        const mockGetProjectName = vi.spyOn(SubventionsAdapter, "_getProjectName");
-        beforeAll(() => mockGetProjectName.mockImplementation(name => name));
+        let mockGetProjectName;
+        beforeAll(() => {
+            mockGetProjectName = vi.spyOn(SubventionsAdapter, "_getProjectName").mockImplementation(name => name);
+        });
         afterAll(() => mockGetProjectName.mockRestore());
 
         it("should return an object with properties", () => {
