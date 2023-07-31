@@ -3,7 +3,7 @@ import { ResetPwdController } from "./ResetPwd.controller";
 import authService from "$lib/resources/auth/auth.service";
 
 vi.mock("@api-subventions-asso/dto", async () => {
-    const actual  = await vi.importActual("@api-subventions-asso/dto")
+    const actual = await vi.importActual("@api-subventions-asso/dto");
     return {
         ...actual,
         ResetPasswordErrorCodes: {
@@ -31,33 +31,29 @@ describe("ResetPwdController", () => {
             expect(ctrl[propertyName].value).toEqual(expected);
         });
 
-        it("does not fail if no token given", () => {
+        it("does not fail if no token given", async () => {
             const test = () => {
                 const ctrl = new ResetPwdController();
                 return ctrl.promise.value;
             };
             const expected = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND;
-            expect(test).rejects.toEqual(expected);
+            await expect(test).rejects.toEqual(expected);
         });
 
+        // eslint-disable-next-line vitest/no-commented-out-tests
+        /*        TODO
         it.each`
             queryParam   | expected
             ${undefined} | ${false}
             ${"TRUE"}    | ${true}
         `(
             "gets active query param",
-            // TODO
-            // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
             ({ queryParam, expected }) => {},
         );
 
-        // TODO
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         it("sets title for activation according activation", () => {});
 
-        // TODO
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        it("sets title for reset according activation", () => {});
+        it("sets title for reset according activation", () => {});*/
     });
 
     describe("onSubmit", () => {
@@ -99,7 +95,7 @@ describe("ResetPwdController", () => {
 
         it("catches promise rejection", async () => {
             const test = ctrl.onSubmit();
-            await expect(test).resolves;
+            await expect(test).resolves.toMatch(expect.anything());
         });
     });
 

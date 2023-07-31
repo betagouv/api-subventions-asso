@@ -138,7 +138,7 @@ describe("VersementsPort", () => {
 
             const actual = versementsPort._getVersements("ID", "FAKE");
 
-            expect(actual).rejects.toThrow(FakeApiError);
+            await expect(actual).rejects.toThrow(FakeApiError);
         });
     });
 });

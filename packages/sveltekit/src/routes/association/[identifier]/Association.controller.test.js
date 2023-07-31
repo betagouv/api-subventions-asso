@@ -12,8 +12,9 @@ describe("Association Controller", () => {
         controller = new AssociationController(SIREN);
     });
 
-    describe("constructor", () => {
-    });
+    // TODO
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    describe("constructor", () => {});
 
     describe("isAssociation()", () => {
         it("should return true", () => {

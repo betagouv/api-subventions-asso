@@ -56,14 +56,14 @@ describe("Versements Adapter", () => {
             expect(dataHelper.valueOrHyphen).toHaveBeenCalledTimes(4);
         });
 
-        it("should call withTwoYearDigit() ", () => {
+        it("should call withTwoYearDigit()", () => {
             VersementsAdapter.toVersement(VERSEMENTS);
             expect(dateHelper.withTwoDigitYear).toHaveBeenCalledTimes(1);
         });
     });
 
     describe("_countTotalVersement", () => {
-        it("return 0 if versements array is empty ", () => {
+        it("return 0 if versements array is empty", () => {
             const expected = 0;
             const actual = VersementsAdapter._countTotalVersement([]);
             expect(actual).toEqual(expected);
@@ -100,6 +100,7 @@ describe("Versements Adapter", () => {
     });
 
     describe("_chooseBop()", () => {
+        /* eslint-disable vitest/expect-expect -- use helper */
         function testExpected(versements, expected) {
             const actual = VersementsAdapter._chooseBop(versements);
             expect(actual).toBe(expected);
@@ -134,6 +135,7 @@ describe("Versements Adapter", () => {
                 "multi-BOP",
             );
         });
+        /* eslint-enable vitest/expect-expect */
     });
 
     describe("_getTotalPayment", () => {

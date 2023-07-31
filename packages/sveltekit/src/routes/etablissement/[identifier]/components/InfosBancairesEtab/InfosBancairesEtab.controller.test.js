@@ -64,6 +64,7 @@ describe("InfosBancairesEtabController", () => {
     };
 
     describe("_formatBankElement()", () => {
+        /* eslint-disable vitest/expect-expect -- use helper */
         it("should format bank element", () => {
             testFlatten(infosBanquairesRaw, flatSourcedInfosBancaires);
         });
@@ -74,5 +75,6 @@ describe("InfosBancairesEtabController", () => {
             ${null}
             ${undefined}
         `("should return empty array", ({ raw }) => testFlatten(raw, []));
+        /* eslint-enable vitest/expect-expect */
     });
 });

@@ -47,7 +47,7 @@ describe("helper", () => {
 
         it("should return undefined", () => {
             const actual = Helper.getSubventionYear({ annee_demande: undefined });
-            expect(actual).toEqual(undefined);
+            expect(actual).toBeUndefined();
         });
     });
 
@@ -66,7 +66,7 @@ describe("helper", () => {
                 periodDebut: undefined,
                 dateOperation: undefined,
             });
-            expect(actual).toEqual(undefined);
+            expect(actual).toBeUndefined();
         });
     });
 });

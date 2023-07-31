@@ -96,7 +96,7 @@ describe("HomeController", () => {
             expect(removeSpaceSpy).toHaveBeenCalledWith(INPUT);
         });
 
-        it("it returns if text is identical", () => {
+        it("returns if text is identical", () => {
             ctrl.currentSearch.value = { text: INPUT_NO_SPACE };
             setSearchSpy.mockClear();
             ctrl._performSearch(INPUT);
@@ -127,7 +127,7 @@ describe("HomeController", () => {
 
             function getPromise() {
                 ctrl._performSearch(INPUT);
-                return ctrl.currentSearch.value.promise
+                return ctrl.currentSearch.value.promise;
                 // return setSearchSpy.mock.calls[0].promise;
             }
 

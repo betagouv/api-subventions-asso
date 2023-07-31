@@ -62,9 +62,9 @@ describe("SignupController", () => {
             expect(ctrl[propertyName].value).toEqual(expected);
         });
 
-        it("initializes correctly signupPromise store", () => {
+        it("initializes correctly signupPromise store", async () => {
             const ctrl = new SignupController();
-            expect(ctrl.signupPromise.value).resolves.toBeUndefined();
+            await expect(ctrl.signupPromise.value).resolves.toBeUndefined();
         });
     });
 

@@ -26,11 +26,14 @@
 <Card size="12" url="/association/{association.rna || association.siren}">
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col fr-col-lg-12">
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             <p class="fr-tag grey-text">SIREN: {@html htmlSiren}</p>
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             <p class="fr-tag grey-text">RNA: {@html htmlRna}</p>
         </div>
         <div class="fr-col fr-col-lg-12">
             <p class="association-name grey-text">
+                <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                 {@html htmlName}
             </p>
         </div>

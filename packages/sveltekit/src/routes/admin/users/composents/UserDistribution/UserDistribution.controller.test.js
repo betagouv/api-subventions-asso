@@ -1,7 +1,7 @@
 vi.mock("chart.js/auto", () => ({
     default: vi.fn(function () {
         return {};
-    })
+    }),
 }));
 
 import Chart from "chart.js/auto";
@@ -70,7 +70,7 @@ describe("UserDistributionController", () => {
             expect(controller._canvas).not.toBe(false);
         });
 
-        it("should save canvas ", () => {
+        it("should save canvas", () => {
             const expected = { test: true };
             updateMock.mockImplementationOnce(() => null);
             controller.canvas = expected;
@@ -78,7 +78,7 @@ describe("UserDistributionController", () => {
             expect(controller._canvas).toEqual(expected);
         });
 
-        it("should call _update ", () => {
+        it("should call _update", () => {
             updateMock.mockImplementationOnce(() => null);
             controller.canvas = { test: true };
 

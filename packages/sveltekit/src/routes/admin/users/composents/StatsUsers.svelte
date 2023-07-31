@@ -4,7 +4,6 @@
 
     export let users;
     let canvas;
-    let chart;
 
     const numberOfUsers = users.filter(u => !u.roles.includes("admin")).length;
     const numberOfActiveUsers = users.filter(u => !u.roles.includes("admin") && u.active).length;
@@ -15,7 +14,7 @@
     const stats = [notActived, numberOfActiveUsers, numberOfAdmin];
 
     onMount(() => {
-        chart = new Chart(canvas, {
+        new Chart(canvas, {
             type: "doughnut",
             option: {
                 responsive: true,

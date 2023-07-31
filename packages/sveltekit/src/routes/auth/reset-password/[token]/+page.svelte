@@ -34,6 +34,7 @@
                 </div>
             {:catch error}
                 <Alert title="Attention" type="warning">
+                    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                     {@html ctrl.getErrorMessage(error)}
                 </Alert>
             {/await}

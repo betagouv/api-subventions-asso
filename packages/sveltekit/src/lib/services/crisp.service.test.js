@@ -1,6 +1,8 @@
-vi.stubGlobal('$crisp', {
-  push: vi.fn(),
-})
+/* global $crisp:readonly */
+
+vi.stubGlobal("$crisp", {
+    push: vi.fn(),
+});
 
 import crispService from "$lib/services/crisp.service";
 

@@ -42,7 +42,7 @@
         </div>
     </div>
 {:else if $currentSearch}
-    {#await $currentSearch.promise then result}
+    {#await $currentSearch.promise then _result}
         {#if $searchResult.length}
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters search-result">
                 {#each $searchResult as association}
@@ -60,7 +60,7 @@
                 <p>Nous n'avons trouvé aucun résultat pour votre recherche</p>
             </Alert>
         {/if}
-    {:catch error}
+    {:catch _error}
         <div class="fr-mt-2w" />
         <Alert type="error" small={true}>
             <p>Une erreur est survenue</p>

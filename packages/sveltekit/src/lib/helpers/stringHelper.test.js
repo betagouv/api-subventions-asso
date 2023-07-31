@@ -2,6 +2,7 @@ import * as StringHelper from "./stringHelper";
 
 describe("StringHelper", () => {
     describe("isHyphen", () => {
+        /* eslint-disable vitest/expect-expect -- use helper */
         const testIsHyphen = ({ entry, expected }) => {
             const actual = StringHelper.isHyphen(entry);
             expect(actual).toEqual(expected);
@@ -14,6 +15,7 @@ describe("StringHelper", () => {
         `("should return false", testIsHyphen);
 
         it("should return true", () => testIsHyphen({ entry: "-", expected: true }));
+        /* eslint-enable vitest/expect-expect */
     });
 
     describe("capitalizeFirstLetter", () => {
