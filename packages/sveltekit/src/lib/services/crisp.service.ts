@@ -1,7 +1,8 @@
-/* global $crisp:readonly */
+// @ts-expect-error -- $crisp
+declare const $crisp;
 
 export class CrispService {
-    setUserEmail(email) {
+    setUserEmail(email: string) {
         $crisp.push(["set", "user:email", [email]]);
     }
 
