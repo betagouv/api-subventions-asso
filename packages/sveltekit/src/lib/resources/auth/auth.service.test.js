@@ -2,22 +2,25 @@ import axios from "axios";
 import authPort from "$lib/resources/auth/auth.port";
 import authService from "$lib/resources/auth/auth.service";
 import crispService from "$lib/services/crisp.service";
+import localStorageStore from "$lib/store/localStorage";
 
 const mocks = vi.hoisted(() => {
-  return {
-    DEFAULT_ERROR_CODE: 49,
-  }
-})
+    return {
+        DEFAULT_ERROR_CODE: 49,
+    };
+});
 
 vi.mock("@api-subventions-asso/dto", async () => {
-    const actual = await vi.importActual("@api-subventions-asso/dto")
+    const actual = await vi.importActual("@api-subventions-asso/dto");
     return {
         ...actual,
         SignupErrorCodes: { EMAIL_NOT_VALID: mocks.DEFAULT_ERROR_CODE },
         ResetPasswordErrorCodes: { INTERNAL_ERROR: mocks.DEFAULT_ERROR_CODE },
         __esModule: true, // this property makes it work
-    }
+    };
 });
+vi.mock("$lib/services/crisp.service");
+vi.mock("$lib/store/localStorage");
 
 describe("authService", () => {
     describe("signup()", () => {
@@ -25,12 +28,14 @@ describe("authService", () => {
         const RES = {};
         const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
-        beforeAll(() => portMock.mockResolvedValue(RES));
+        beforeAll(() => {
+            portMock.mockResolvedValue(RES);
+        });
         afterAll(() => portMock.mockRestore());
 
-        it("rejects with appropriate code if no email", () => {
+        it("rejects with appropriate code if no email", async () => {
             const test = () => authService.signup();
-            expect(test).rejects.toBe(mocks.DEFAULT_ERROR_CODE);
+            await expect(test).rejects.toBe(mocks.DEFAULT_ERROR_CODE);
         });
 
         it("calls port", async () => {
@@ -44,11 +49,11 @@ describe("authService", () => {
             expect(expected).toBe(actual);
         });
 
-        it("rejects with error code from port if given", () => {
+        it("rejects with error code from port if given", async () => {
             const expected = { message: 5 };
             portMock.mockRejectedValueOnce(expected);
             const actual = authService.signup(USER);
-            expect(actual).rejects.toBe(expected);
+            await expect(actual).rejects.toBe(expected);
         });
     });
 
@@ -58,12 +63,14 @@ describe("authService", () => {
         const PASSWORD = "very secret";
         const TOKEN = "123";
 
-        beforeAll(() => portMock.mockResolvedValue(true));
+        beforeAll(() => {
+            portMock.mockResolvedValue(true);
+        });
         afterAll(() => portMock.mockRestore());
 
-        it("rejects with appropriate code if no token", () => {
+        it("rejects with appropriate code if no token", async () => {
             const test = () => authService.resetPassword();
-            // expect(test).rejects.toBe(DEFAULT_ERROR_CODE);
+            await expect(test).rejects.toBe(mocks.DEFAULT_ERROR_CODE);
         });
 
         it("calls port", async () => {
@@ -86,9 +93,9 @@ describe("authService", () => {
         beforeAll(() => portMock.mockResolvedValue(true));
         afterAll(() => portMock.mockRestore());
 
-        it("rejects if no email", () => {
+        it("rejects if no email", async () => {
             const test = () => authService.forgetPassword();
-            expect(test).rejects.toBeUndefined();
+            await expect(test).rejects.toBeUndefined();
         });
 
         it("calls port", async () => {
@@ -104,7 +111,6 @@ describe("authService", () => {
     });
 
     describe("login()", () => {
-        const crispServiceMock = vi.spyOn(crispService, "setUserEmail").mockImplementation(vi.fn());
         const mockPort = vi.spyOn(authPort, "login");
         it("should call port", async () => {
             const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
@@ -116,20 +122,22 @@ describe("authService", () => {
         });
 
         it("should save user in local storage", async () => {
-            const expected = { _id: "USER_ID" };
+            const user = { _id: "USER_ID" };
 
-            mockPort.mockResolvedValueOnce(expected);
+            mockPort.mockResolvedValueOnce(user);
 
             await authService.login("", "");
-            const actual = JSON.parse(localStorage.getItem(authService.USER_LOCAL_STORAGE_KEY));
-            expect(actual).toEqual(expected);
+            expect(localStorageStore.setItem).toHaveBeenCalledWith(
+                authService.USER_LOCAL_STORAGE_KEY,
+                JSON.stringify(user),
+            );
         });
 
         it("sets crisp email value", async () => {
             const EMAIL = "a@b.c";
             mockPort.mockResolvedValueOnce({ email: EMAIL });
             await authService.login(EMAIL, "");
-            expect(crispServiceMock).toBeCalledWith(EMAIL);
+            expect(crispService.setUserEmail).toBeCalledWith(EMAIL);
         });
 
         it("should return user", async () => {
@@ -169,28 +177,23 @@ describe("authService", () => {
     });
 
     describe("logout", () => {
-        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-vi-tests
-        const localStorageMock = vi.spyOn(Storage.prototype, "removeItem");
         it("should call removeItem on localStorage", () => {
             authService.logout();
 
-            expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+            expect(localStorageStore.removeItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
 
         it("resets crisp session", () => {
-            const crispServiceMock = vi.spyOn(crispService, "resetSession").mockImplementation(vi.fn());
             authService.logout();
-            expect(crispServiceMock).toBeCalled();
+            expect(crispService.resetSession).toBeCalled();
         });
     });
 
     describe("getCurrentUser", () => {
-        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-vi-tests
-        const localStorageMock = vi.spyOn(Storage.prototype, "getItem");
         it("should call getItem on localStorage", () => {
             authService.getCurrentUser();
 
-            expect(localStorageMock).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+            expect(localStorageStore.getItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
     });
 });
