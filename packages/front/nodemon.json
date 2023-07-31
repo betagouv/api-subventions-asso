@@ -1,6 +1,0 @@
-{
-    "exec": "npm run dev:svelte && npx webpack && ts-node src/index.ts",
-    "watch": ["src", "svelte", "views"],
-    "ext": "ts, js, svelte, css",
-    "ignore": ["*.test.js"]
-}
