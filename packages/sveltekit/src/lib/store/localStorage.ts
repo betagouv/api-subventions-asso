@@ -15,14 +15,14 @@ export class LocalStorageStore {
     }
 
     getItem(key: string) {
-        return derived(this.localStore, storage => storage[key] || null);
+        return derived(this.localStore, storage => (storage as Record<string, string>)[key] || null);
     }
 
     getParsedItem(key: string) {
-        return derived(this.localStore, storage => JSON.parse(storage[key]));
+        return derived(this.localStore, storage => JSON.parse((storage as Record<string, string>)[key]));
     }
 
-    setItem(key: string, value) {
+    setItem(key: string, value: string) {
         localStorage.setItem(key, value);
         this._updateLocalStorage();
     }
