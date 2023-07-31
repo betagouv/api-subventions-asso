@@ -62,16 +62,17 @@ describe("AssociationService", () => {
 
     describe("_searchByIdentifier", () => {
         const mockGetAssociation = vi.spyOn(associationService, "getAssociation");
+
         beforeAll(() =>
-            mockGetAssociation.mockImplementation(() => ({
+            mockGetAssociation.mockResolvedValue({
                 rna: ASSOCIATIONS[0].rna,
                 siren: ASSOCIATIONS[0].siren,
                 denomination_rna: "DENOMINATION",
-            })),
+            }),
         );
 
         afterAll(() => {
-            associationPort.getByIdentifier.mockReset();
+            mockGetAssociation.mockReset();
         });
 
         it("calls helper to identify start of siret", async () => {
@@ -101,13 +102,13 @@ describe("AssociationService", () => {
         });
 
         it("returns summarized result from port", async () => {
-            mockGetAssociation.mockImplementationOnce(() => ({
+            mockGetAssociation.mockResolvedValueOnce({
                 rna: "RNA",
                 siren: "SIREN",
                 denomination_rna: "NOM_RNA",
                 denomination_siren: "NOM_SIREN",
                 autre_valeur: "ratata",
-            }));
+            });
             const expected = [
                 {
                     rna: "RNA",

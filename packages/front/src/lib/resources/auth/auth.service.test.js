@@ -21,6 +21,7 @@ vi.mock("@api-subventions-asso/dto", async () => {
 });
 vi.mock("$lib/services/crisp.service");
 vi.mock("$lib/store/localStorage");
+vi.mock("$lib/services/router.service");
 
 describe("authService", () => {
     describe("signup()", () => {
@@ -177,9 +178,6 @@ describe("authService", () => {
     });
 
     describe("logout", () => {
-        // TODO later
-        // Use Storage.prototype because localstorage mock not work. See https://stackoverflow.com/questions/32911630/how-do-i-deal-with-localstorage-in-vi-tests
-        const localStorageMock = vi.spyOn(Storage.prototype, "removeItem");
         it("should call removeItem on localStorage", () => {
             authService.logout();
 
