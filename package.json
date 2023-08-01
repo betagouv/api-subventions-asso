@@ -10,6 +10,7 @@
     "scripts": {
         "dev": "lerna run dev",
         "build": "lerna run build",
+        "scalingo-postbuild": "bash scalingo-build.bash",
         "generate": "lerna run generate",
         "lint": "lerna run lint:all",
         "prettier": "lerna run prettier:all",
