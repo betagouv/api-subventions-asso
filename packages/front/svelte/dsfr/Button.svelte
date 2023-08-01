@@ -53,6 +53,7 @@
 
 <button
     on:click={() => dispatch("click")}
+    on:submit={() => dispatch("submit")}
     class={classes}
     {disabled}
     {title}

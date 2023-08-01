@@ -15,6 +15,7 @@ import LegalNotice from "./views/LegalNotice.svelte";
 import Cgu from "./views/Cgu.svelte";
 import Contact from "./views/Contact.svelte";
 import Profile from "./views/user/profile/Profile.svelte";
+import DynamicMultiStepForm from "@components/MultiStepForm/DynamicMultiStepForm.svelte";
 
 export default {
     "/404": {
@@ -75,5 +76,8 @@ export default {
     },
     "user/profile": {
         component: () => Profile,
+    },
+    "test/form": {
+        component: () => DynamicMultiStepForm,
     },
 };

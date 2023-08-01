@@ -109,7 +109,7 @@ tsoa/
 
 # Osiris Extract folder
 extract/
-current-posibilities.json
+current-posibilities*.json
 
 # Jest tests parts
 .~lock*
