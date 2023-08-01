@@ -4,14 +4,14 @@
 
     export let values = {
         password: "",
-        confirm: "",
+        confirmPwd: "",
     };
 
     const controller = new DefinePasswordController(values);
     const { passwordErrorMsg, showPasswordError, confirmErrorMsg, showConfirmError } = controller;
 
     $: values.password, controller.validatePassword();
-    $: values.confirm, controller.checkConfirm();
+    $: values.confirmPwd, controller.checkConfirm();
 </script>
 
 <fieldset class="fr-fieldset">
@@ -25,7 +25,7 @@
     <div class="fr-fieldset__element">
         <PasswordInput
             label="Confirmation de mot de passe"
-            bind:value={values.confirm}
+            bind:value={values.confirmPwd}
             error={$showConfirmError}
             errorMsg={$showConfirmError ? confirmErrorMsg : undefined} />
     </div>

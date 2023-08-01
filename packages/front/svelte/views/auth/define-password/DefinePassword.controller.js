@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { checkPassword } from "@services/validator.service";
 import Store from "@core/Store";
 import Dispatch from "@core/Dispatch";
@@ -7,20 +8,22 @@ export default class DefinePasswordController {
         this.values = values;
         this.passwordErrorMsg = "Le mot de passe ne respecte pas le format demandé";
         this.showPasswordError = new Store(false);
-        this.confirmErrorMsg = "Le mot de passe doit être identique";
+        this.confirmPwdErrorMsg = "Le mot de passe doit être identique";
         this.showConfirmError = new Store(false);
         this.dispatch = Dispatch.getDispatcher();
+
+        this.validatePassword = _.debounce(() => this._validatePassword(), 200);
+        this.checkConfirm = _.debounce(() => this._checkConfirm(), 200);
     }
 
-    // TODO: debounce this
-    validatePassword() {
+    _validatePassword() {
         if (!this.values.password) return;
         if (checkPassword(this.values.password)) this._onPasswordValid();
         else this._onPasswordError();
     }
 
-    checkConfirm() {
-        if (!this.values.confirm || this.values.confirm === this.values.password) this._onConfirmValid();
+    _checkConfirm() {
+        if (!this.values.confirmPwd || this.values.confirmPwd === this.values.password) this._onConfirmValid();
         else this._onConfirmError();
     }
 

@@ -1,6 +1,7 @@
 import DefinePassword from "../define-password/DefinePassword.svelte";
 import PasswordFormatAlert from "../define-password/PasswordFormatAlert.svelte";
 import authService from "@resources/auth/auth.service";
+import { goToUrl } from "@services/router.service";
 
 export default class ActivateAcountController {
     constructor(token) {
@@ -11,7 +12,7 @@ export default class ActivateAcountController {
 
     onSubmit(values) {
         return authService.resetPassword(this.token, values.password).then(() => {
-            window.location.assign("/auth/login?success=ACCOUNT_ACTIVATED");
+            goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
         });
     }
 }

@@ -1,4 +1,5 @@
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { goToUrl } from "@services/router.service";
 import Store from "@core/Store";
 import authService from "@resources/auth/auth.service";
 
@@ -35,9 +36,7 @@ export class ResetPwdController {
     onSubmit() {
         this.promise.set(authService.resetPassword(this.token, this.values.value.password));
         return this.promise.value.then(() => {
-            window.location.assign(
-                "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"),
-            );
+            goToUrl("/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"));
         });
     }
 
