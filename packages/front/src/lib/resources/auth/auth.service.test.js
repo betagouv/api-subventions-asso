@@ -1,8 +1,8 @@
-import axios from "axios";
 import authPort from "$lib/resources/auth/auth.port";
 import authService from "$lib/resources/auth/auth.service";
 import crispService from "$lib/services/crisp.service";
 import localStorageStore from "$lib/store/localStorage";
+import requestsService from "$lib/services/requests.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -22,6 +22,7 @@ vi.mock("@api-subventions-asso/dto", async () => {
 vi.mock("$lib/services/crisp.service");
 vi.mock("$lib/store/localStorage");
 vi.mock("$lib/services/router.service");
+vi.mock("$lib/services/requests.service");
 
 describe("authService", () => {
     describe("signup()", () => {
@@ -161,14 +162,12 @@ describe("authService", () => {
             getCurrentUserMock.mockRestore();
         });
 
-        it("should be axios header", async () => {
-            const expected = "FAKE_TOKEN";
-            getCurrentUserMock.mockReturnValueOnce({ jwt: { token: expected } });
+        it("should call requestService initialisation", async () => {
+            const token = "FAKE_TOKEN";
+            getCurrentUserMock.mockReturnValueOnce({ jwt: { token } });
 
             await authService.initUserInApp();
-            const actual = axios.defaults.headers.common["x-access-token"];
-
-            expect(actual).toBe(expected);
+            expect(requestsService.initAuthentication).toHaveBeenCalledWith(token);
         });
 
         it("sets crisp email value", async () => {

@@ -1,4 +1,3 @@
-import axios from "axios";
 import authPort from "./auth.port";
 import requestsService from "$lib/services/requests.service";
 
@@ -10,16 +9,17 @@ vi.mock("@api-subventions-asso/dto", () => ({
     __esModule: true, // this property makes it work
 }));
 
+vi.mock("$lib/services/requests.service");
+
 describe("AuthPort", () => {
     describe("signup()", () => {
-        const postMock = vi.spyOn(requestsService, "post");
         const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
         it("calls signup route", async () => {
             const PATH = "/auth/signup";
-            postMock.mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
             await authPort.signup(USER);
-            expect(postMock).toBeCalledWith(PATH, {
+            expect(requestsService.post).toBeCalledWith(PATH, {
                 email: USER.email,
                 lastName: USER.lastname,
                 firstName: USER.firstname,
@@ -27,7 +27,7 @@ describe("AuthPort", () => {
         });
 
         it("returns email if success", async () => {
-            postMock.mockResolvedValueOnce({ data: { email: USER.email } });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { email: USER.email } });
             const actual = await authPort.signup(USER);
             const expected = USER.email;
             expect(actual).toBe(expected);
@@ -35,60 +35,57 @@ describe("AuthPort", () => {
     });
 
     describe("resetPassword()", () => {
-        const postMock = vi.spyOn(requestsService, "post");
         const RES = true;
         const PASSWORD = "very secret";
         const TOKEN = "123";
 
         it("calls resetPassword route", async () => {
             const PATH = "/auth/reset-password";
-            postMock.mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
             await authPort.resetPassword(TOKEN, PASSWORD);
-            expect(postMock).toBeCalledWith(PATH, { token: TOKEN, password: PASSWORD });
+            expect(requestsService.post).toBeCalledWith(PATH, { token: TOKEN, password: PASSWORD });
         });
 
         it("returns true if success", async () => {
-            postMock.mockResolvedValueOnce({ data: {} });
-            const actual = await authPort.resetPassword(TOKEN, PASSWORD);
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
             const expected = RES;
+            const actual = await authPort.resetPassword(TOKEN, PASSWORD);
             expect(actual).toBe(expected);
         });
     });
 
     describe("login()", () => {
-        const postMock = vi.spyOn(requestsService, "post");
         const EMAIL = "test@mail.fr";
         const PASSWORD = "FAKE_PASSWORD";
 
         it("calls signup route", async () => {
             const PATH = "/auth/login";
-            postMock.mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
             await authPort.login(EMAIL, PASSWORD);
-            expect(postMock).toBeCalledWith(PATH, { email: EMAIL, password: PASSWORD });
+            expect(requestsService.post).toBeCalledWith(PATH, { email: EMAIL, password: PASSWORD });
         });
 
         it("returns user if success", async () => {
             const expected = { email: EMAIL };
-            postMock.mockResolvedValueOnce({ data: { user: expected } });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { user: expected } });
             const actual = await authPort.login(EMAIL, PASSWORD);
             expect(actual).toBe(expected);
         });
     });
 
     describe("forgetPassword()", () => {
-        const axiosPostMock = vi.spyOn(axios, "post");
         const RES = true;
         const EMAIL = "test@mail.fr";
 
         it("calls forgetPassword route", async () => {
             const PATH = "/auth/forget-password";
-            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
             await authPort.forgetPassword(EMAIL);
-            expect(axiosPostMock).toBeCalledWith(PATH, { email: EMAIL });
+            expect(requestsService.post).toBeCalledWith(PATH, { email: EMAIL });
         });
 
         it("returns true if success", async () => {
-            axiosPostMock.mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
             const expected = RES;
             const actual = await authPort.forgetPassword(EMAIL);
             expect(actual).toBe(expected);

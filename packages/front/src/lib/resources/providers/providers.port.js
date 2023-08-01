@@ -1,10 +1,10 @@
-import axios from "axios";
+import requestsService from "$lib/services/requests.service";
 
 class ProvidersPort {
     getProviders() {
         const path = "/open-data/fournisseurs";
 
-        return axios.get(path).then(result => {
+        return requestsService.get(path).then(result => {
             if (result.data) return result.data;
             return result;
         });

@@ -3,10 +3,10 @@ const axios = require("axios");
 
 class OsirisPosibilitiesBuilder {
     constructor(year, reportName, cookie, debug = false) {
-        this.year = year,
-        this.reportName = reportName;
+        (this.year = year), (this.reportName = reportName);
         this.debug = debug;
         this.cookie = cookie;
+        this.computedCookies = this.cookie.map(c => `${c.name}=${c.value};`).join(" ");
         this.BASE_URL = "https://osiris.extranet.jeunesse-sports.gouv.fr";
 
         this.cache = {};
@@ -17,26 +17,19 @@ class OsirisPosibilitiesBuilder {
     }
 
     async __sendGetRequest(url) {
-        if (this.cache[url]) {
-            console.log("CACHED");
-            return this.cache[url];
-        }
-
-        const result = await axios.default.request({
+        return axios.default.request({
             url: this.BASE_URL + url,
             method: "get",
-            headers:{
-                Cookie: this.cookie.map(c => `${c.name}=${c.value};`).join(" "),
-            } 
-        })
-
-        this.cache[url] = result;
-
-        return result;
+            headers: {
+                Cookie: this.computedCookies,
+            },
+        });
     }
 
     async __isValid(posibility) {
-        const response = await this.__sendGetRequest('/Statistique/GetNombreSuiviActionDossier?' + qs.stringify(posibility));
+        const response = await this.__sendGetRequest(
+            "/Statistique/GetNombreSuiviActionDossier?" + qs.stringify(posibility),
+        );
         return response.data;
     }
 
@@ -51,8 +44,7 @@ class OsirisPosibilitiesBuilder {
             IsPluriannuel: "",
             ReportName: this.reportName || "SuiviDossiers",
             TypeFederationId: "",
-        }
-
+        };
     }
 
     async __getProgrammes() {
@@ -61,12 +53,18 @@ class OsirisPosibilitiesBuilder {
     }
 
     async __getSousTypeFinancement(programe) {
-        const response = await this.__sendGetRequest('/Statistique/GetSousTypeFinancement?programmeTypeFinancementId='+programe);
+        const response = await this.__sendGetRequest(
+            "/Statistique/GetSousTypeFinancement?programmeTypeFinancementId=" + programe,
+        );
         return response.data.filter(p => !p.Disabled);
     }
 
     async __getService(posibility) {
-        const response = await this.__sendGetRequest('/Referentiel/GetSelectListServicesEcritureParPtf/?ptf='+posibility.ProgrammeTypeFinancementId+"&addDefault=false");
+        const response = await this.__sendGetRequest(
+            "/Referentiel/GetSelectListServicesEcritureParPtf/?ptf=" +
+                posibility.ProgrammeTypeFinancementId +
+                "&addDefault=false",
+        );
         return response.data.filter(p => !p.Disabled);
     }
 
@@ -75,52 +73,54 @@ class OsirisPosibilitiesBuilder {
             return [
                 {
                     Value: "False",
-                    Text: "Annuel"
+                    Text: "Annuel",
                 },
                 {
                     Value: "True",
-                    Text: "PluriAnnuel"
+                    Text: "PluriAnnuel",
                 },
-            ]
+            ];
         }
 
-        return [{
-            Value: undefined,
-            Text: "Disabled"
-        }];
+        return [
+            {
+                Value: undefined,
+                Text: "Disabled",
+            },
+        ];
     }
 
     __getFederation() {
         return [
             {
                 Value: "1",
-                Text: "Affinitaires"
+                Text: "Affinitaires",
             },
             {
                 Value: "2",
-                Text: "Divers"
+                Text: "Divers",
             },
             {
                 Value: "3",
-                Text: "Groupements nationaux"
+                Text: "Groupements nationaux",
             },
             {
                 Value: "4",
-                Text: "Handicapés"
+                Text: "Handicapés",
             },
             {
                 Value: "5",
-                Text: "Non Olympiques"
+                Text: "Non Olympiques",
             },
             {
                 Value: "6",
-                Text: "Olympiques"
+                Text: "Olympiques",
             },
             {
                 Value: "7",
-                Text: "Scolaires Universitaires"
+                Text: "Scolaires Universitaires",
             },
-        ]
+        ];
     }
 
     async __getPosibilitiesTypeFinancement() {
@@ -132,7 +132,7 @@ class OsirisPosibilitiesBuilder {
 
         await programmes.reduce(async (acc, p) => {
             await acc;
-            console.log({posibilities: posibilities.length});
+            console.log({ posibilities: posibilities.length });
             const posibility = this.__buildDefaultPosibilty();
             posibility.ProgrammeTypeFinancementId = p.Value;
 
@@ -144,10 +144,7 @@ class OsirisPosibilitiesBuilder {
             posibilities.push(...(await this.__getPosibilitiesSousTypeFinancement(posibility)));
         }, Promise.resolve());
 
-        console.log(
-            "Total valid posibilities :",
-            posibilities.length,
-        );
+        console.log("Total valid posibilities :", posibilities.length);
 
         return posibilities;
     }
@@ -164,7 +161,7 @@ class OsirisPosibilitiesBuilder {
                 return posibilities;
             }
 
-            const result = (await this.__getPosibilitiesServices(subTypePosibility))
+            const result = await this.__getPosibilitiesServices(subTypePosibility);
             return posibilities.concat(result);
         }, Promise.resolve([]));
     }
@@ -188,8 +185,9 @@ class OsirisPosibilitiesBuilder {
     }
 
     async __getPosibilitiesPlurianual(posibility) {
-        if (posibility.ProgrammeTypeFinancementId == "1") { // Choice is disable in UI
-            return this.__getPosibilitiesTypeFederation(posibility)
+        if (posibility.ProgrammeTypeFinancementId == "1") {
+            // Choice is disable in UI
+            return this.__getPosibilitiesTypeFederation(posibility);
         }
         const selections = this.__getPlurianual();
 
@@ -208,7 +206,7 @@ class OsirisPosibilitiesBuilder {
     }
 
     async __getPosibilitiesTypeFederation(posibility) {
-        const available = ["15","16","21","22","23"];
+        const available = ["15", "16", "21", "22", "23"];
 
         if (!available.includes(posibility.ProgrammeTypeFinancementId)) return [];
 

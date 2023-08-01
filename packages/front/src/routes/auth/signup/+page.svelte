@@ -52,10 +52,10 @@
                 <h2 class="fr-h5">Créer un compte</h2>
             </legend>
             <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
-                <Input label="Nom :" id="signup-family-name" bind:value={$signupUser.lastname} required={true} />
+                <Input label="Prénom :" id="signup-given-name" bind:value={$signupUser.firstname} required={true} />
             </div>
             <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
-                <Input label="Prénom :" id="signup-given-name" bind:value={$signupUser.firstname} required={true} />
+                <Input label="NOM :" id="signup-family-name" bind:value={$signupUser.lastname} required={true} />
             </div>
             <div class="fr-fieldset__element fr-mt-4v">
                 <Input

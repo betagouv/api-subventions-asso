@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* **api:** update user when he is already in brevo list ([ab24943](https://github.com/betagouv/api-subventions-asso/commit/ab2494325bc183fcb453a76c05c1f8bfe9204ec7))
+* review cleaning ([7ef7eb5](https://github.com/betagouv/api-subventions-asso/commit/7ef7eb5f38f4acaea8e37bb11295c422960154a2))
+
+
+
+# [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+
+
+
+
+# [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.33.0) (2023-07-24)
+
+**Note:** Version bump only for package api
+
+
+
+
+
+## [0.32.4](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.32.4) (2023-07-27)
+
+
+### Bug Fixes
+
+* **api:** csp allows calls to self from swagger ([749a5f6](https://github.com/betagouv/api-subventions-asso/commit/749a5f6943adf3806c71b6bf71862b058fa5c000))
+* **api:** open-data show all fonjep even if same EJ ([0617a3d](https://github.com/betagouv/api-subventions-asso/commit/0617a3d2730321c1b205dd4286ac023539379025))
+
+
+
+
+
+## [0.32.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.32.2) (2023-07-13)
+
+**Note:** Version bump only for package api
+
+
+
+
+
 ## [0.32.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.0...v0.32.1) (2023-07-13)
 
 
