@@ -18,9 +18,9 @@
     const regex = new RegExp(value, "ig");
     const upperSearchedValue = value.toUpperCase();
 
-    const htmlName = name.replace(regex, `<span class="$lib/dsfr-black-bold">${upperSearchedValue}</span>`);
-    const htmlRna = rna.replace(regex, `<span class="$lib/dsfr-black-bold">${upperSearchedValue}</span>`);
-    const htmlSiren = siren.replace(regex, `<span class="$lib/dsfr-black-bold">${upperSearchedValue}</span>`);
+    const htmlName = name.replace(regex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
+    const htmlRna = rna.replace(regex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
+    const htmlSiren = siren.replace(regex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
 </script>
 
 <Card size="12" url="/association/{association.rna || association.siren}">

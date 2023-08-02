@@ -10,7 +10,6 @@ describe("SignupController", () => {
             ${"firstSubmitted"} | ${false}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new ForgetPwdController();
-            // TODO separer promise et comparer valeur résolue ? ou match au lieu de equal
             expect(ctrl[propertyName].value).toEqual(expected);
         });
     });

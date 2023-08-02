@@ -128,7 +128,6 @@ describe("HomeController", () => {
             function getPromise() {
                 ctrl._performSearch(INPUT);
                 return ctrl.currentSearch.value.promise;
-                // return setSearchSpy.mock.calls[0].promise;
             }
 
             it("calls searchAndCache", async () => {

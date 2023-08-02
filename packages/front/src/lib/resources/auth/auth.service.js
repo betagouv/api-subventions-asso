@@ -46,8 +46,8 @@ export class AuthService {
     initUserInApp() {
         this.setUserInApp();
         requestsService.addErrorHook(UnauthorizedError, () => {
-            this.logout(false);
             const queryUrl = encodeURIComponent(get(page).url.pathname);
+            this.logout(false);
             goToUrl(`/auth/login?url=${queryUrl}`, true, true);
         });
     }

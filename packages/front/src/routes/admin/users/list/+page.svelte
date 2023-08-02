@@ -135,7 +135,5 @@
 <style>
     .admin-domain-ul {
         columns: 2;
-        -webkit-columns: 2;
-        -moz-columns: 2;
     }
 </style>
