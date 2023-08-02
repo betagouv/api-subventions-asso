@@ -8,6 +8,14 @@ export default defineConfig({
         globals: true,
         environment: "jsdom",
         clearMocks: true,
-        setupFiles: ["src/setuptest.ts"]
+        setupFiles: ["src/setuptest.ts"],
+    },
+    optimizeDeps: {
+        include: ["@api-subventions-asso/dto"],
+    },
+    build: {
+        commonjsOptions: {
+            include: [/dto/, /node_modules/],
+        },
     },
 });

@@ -10,7 +10,7 @@
     "scripts": {
         "dev": "lerna run dev",
         "build": "lerna run build",
-        "scalingo-postbuild": "bash scalingo-build.bash",
+        "scalingo-postbuild": "bash ./scalingo-build.bash",
         "generate": "lerna run generate",
         "lint": "lerna run lint:all",
         "prettier": "lerna run prettier:all",
@@ -18,7 +18,7 @@
         "test:unit": "lerna run test:unit",
         "test:cov": "lerna run test:cov",
         "migration:apply": "lerna run migration:apply",
-        "postinstall": "lerna bootstrap && husky install",
+        "postinstall": "bash ./install.bash",
         "release": "lerna version --conventional-commits",
         "start": "node ./packages/api/build/src/index.js",
         "lint-format": "lerna run --concurrency 1 lint-format "

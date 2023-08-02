@@ -5,7 +5,8 @@
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/dto#readme",
     "license": "ISC",
-    "main": "./index.ts",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
     "directories": {
         "build": "./build",
         "test": "__tests__"
@@ -44,6 +45,7 @@
         "lint-staged": "^13.2.2",
         "mongodb": "^4.7.0",
         "prettier": "^2.8.4",
-        "typescript": "^4.6.3"
+        "typescript": "^4.6.3",
+        "@types/node": "^20.4.5"
     }
 }
