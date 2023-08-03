@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2022",
         "module": "commonjs",
         "outDir": "./build",
-        "declaration": true
+        "moduleResolution": "node",
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+        "declaration": true,
+
     },
     "exclude": []
 }
