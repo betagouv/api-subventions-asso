@@ -3,7 +3,7 @@ import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAl
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service";
 
-export default class ActivateAcountController {
+export default class ActivateAccountController {
     constructor(token) {
         this.token = token;
         // TODO: make a call to API to validate token and display error in case it is not valid or expired
