@@ -2,7 +2,7 @@ import associationPort from "./association.port";
 import { isRna, isStartOfSiret } from "$lib/helpers/validatorHelper";
 import { siretToSiren } from "$lib/helpers/sirenHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
-import { updateSearchHistory } from "$lib/services/storage.service";
+import { updateSearchHistory } from "$lib/services/searchHistory.service.js";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.adapter";
 import documentService from "$lib/resources/documents/documents.service";
 

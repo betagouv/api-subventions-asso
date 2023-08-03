@@ -5,7 +5,7 @@ import requestsService from "$lib/services/requests.service";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import { page } from "$lib/store/kit.store";
-import localStorageStore from "$lib/store/localStorage";
+import localStorageService from "$lib/services/localStorage.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { isAdmin } from "$lib/services/user.service.js";
 
@@ -29,7 +29,7 @@ export class AuthService {
 
     async login(email, password) {
         const user = await authPort.login(email, password);
-        localStorageStore.setItem(this.USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
+        localStorageService.setItem(this.USER_LOCAL_STORAGE_KEY, user);
         this.setUserInApp();
         crispService.setUserEmail(user.email);
 
@@ -52,13 +52,13 @@ export class AuthService {
     }
 
     logout(reload = true) {
-        localStorageStore.removeItem(this.USER_LOCAL_STORAGE_KEY);
+        localStorageService.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
         if (reload) goToUrl("/auth/login", false, true);
     }
 
     getCurrentUser() {
-        return localStorageStore.getParsedItem(this.USER_LOCAL_STORAGE_KEY).value;
+        return localStorageService.getItem(this.USER_LOCAL_STORAGE_KEY).value;
     }
 
     controlAuth(requiredLevel = AuthLevels.USER) {

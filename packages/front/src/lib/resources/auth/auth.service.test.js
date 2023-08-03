@@ -1,7 +1,7 @@
 import authPort from "$lib/resources/auth/auth.port";
 import authService from "$lib/resources/auth/auth.service";
 import crispService from "$lib/services/crisp.service";
-import localStorageStore from "$lib/store/localStorage";
+import localStorageService from "$lib/services/localStorage.service";
 import requestsService from "$lib/services/requests.service";
 import { ReadStore } from "$lib/core/Store";
 
@@ -21,10 +21,10 @@ vi.mock("@api-subventions-asso/dto", async () => {
     };
 });
 vi.mock("$lib/services/crisp.service");
-vi.mock("$lib/store/localStorage", async () => {
+vi.mock("$lib/services/localStorage.service", async () => {
     return {
         default: {
-            getParsedItem: vi.fn(() => new ReadStore(undefined)),
+            getItem: vi.fn(() => new ReadStore(undefined)),
             setItem: vi.fn(),
             removeItem: vi.fn(),
         },
@@ -140,10 +140,7 @@ describe("authService", () => {
             mockPort.mockResolvedValueOnce(user);
 
             await authService.login("", "");
-            expect(localStorageStore.setItem).toHaveBeenCalledWith(
-                authService.USER_LOCAL_STORAGE_KEY,
-                JSON.stringify(user),
-            );
+            expect(localStorageService.setItem).toHaveBeenCalledWith(authService.USER_LOCAL_STORAGE_KEY, user);
         });
 
         it("sets crisp email value", async () => {
@@ -190,7 +187,7 @@ describe("authService", () => {
         it("should call removeItem on localStorage", () => {
             authService.logout();
 
-            expect(localStorageStore.removeItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+            expect(localStorageService.removeItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
 
         it("resets crisp session", () => {
@@ -203,7 +200,7 @@ describe("authService", () => {
         it("should call getItem on localStorage", () => {
             authService.getCurrentUser();
 
-            expect(localStorageStore.getParsedItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+            expect(localStorageService.getItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
         });
     });
 });

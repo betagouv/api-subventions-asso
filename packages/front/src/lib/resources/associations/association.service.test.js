@@ -17,6 +17,7 @@ import * as validatorHelper from "$lib/helpers/validatorHelper";
 vi.mock("$lib/helpers/validatorHelper");
 import * as sirenHelper from "$lib/helpers/sirenHelper";
 vi.mock("$lib/helpers/sirenHelper");
+vi.mock("$lib/services/searchHistory.service");
 
 const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 
@@ -38,7 +39,6 @@ describe("AssociationService", () => {
     });
 
     describe("getAssociation", () => {
-        // mock updateHistory
         it("should return undefined if no association found", async () => {
             const expected = undefined;
             associationPort.getByIdentifier.mockImplementationOnce(vi.fn());
