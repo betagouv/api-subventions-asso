@@ -70,7 +70,7 @@ src
 │    │                                       
 │    └───resources                           // Contient les connecteurs (ports) HTTP
 │    │                                       
-│    └───services                            // Contient des services métiers qui ne sont pas liés à un composant
+│    └───services                            // Contient des services métiers qui ne sont pas liés à un composant ou à une ressource
 │    │                                       
 │    └───store                               // Contient une liste de stores globaux
 │                                            

@@ -10,7 +10,7 @@ export class HomeController {
     constructor() {
         this.isLoading = new Store(false);
         this.searchResult = new Store([]);
-        if (browser) this.searchHistory = getSearchHistory();
+        this.searchHistory = getSearchHistory();
         this.input = new Store("");
         this._searchCache = new Map();
         this.currentSearch = new Store(null);
