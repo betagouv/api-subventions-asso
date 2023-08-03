@@ -1,6 +1,6 @@
 <script>
     import NotFound from "$lib/components/errors/NotFound.svelte";
-    import { page } from "$app/stores";
+    import { page } from "$lib/store/kit.store";
 </script>
 
 {#if $page.status === 404}

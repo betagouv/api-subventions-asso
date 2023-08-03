@@ -12,7 +12,7 @@
     import Footer from "$lib/components/Footer.svelte";
     import Theme from "$lib/components/Theme.svelte";
     import Breadcrumb from "$lib/dsfr/Breadcrumb.svelte";
-    import { page } from "$app/stores";
+    import { page } from "$lib/store/kit.store";
     import { ENV } from "$env/static/public";
 
     export let data;

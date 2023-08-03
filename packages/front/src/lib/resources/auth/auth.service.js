@@ -1,11 +1,10 @@
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
-import { get } from "svelte/store";
 import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
 import requestsService from "$lib/services/requests.service";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
-import { page } from "$app/stores";
+import { page } from "$lib/store/kit.store";
 import localStorageStore from "$lib/store/localStorage";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { isAdmin } from "$lib/services/user.service.js";
@@ -46,7 +45,7 @@ export class AuthService {
     initUserInApp() {
         this.setUserInApp();
         requestsService.addErrorHook(UnauthorizedError, () => {
-            const queryUrl = encodeURIComponent(get(page).url.pathname);
+            const queryUrl = encodeURIComponent(page.value.url.pathname);
             this.logout(false);
             goToUrl(`/auth/login?url=${queryUrl}`, true, true);
         });
@@ -59,7 +58,7 @@ export class AuthService {
     }
 
     getCurrentUser() {
-        return JSON.parse(get(localStorageStore.getItem(this.USER_LOCAL_STORAGE_KEY)) || null);
+        return localStorageStore.getParsedItem(this.USER_LOCAL_STORAGE_KEY).value;
     }
 
     controlAuth(requiredLevel = AuthLevels.USER) {

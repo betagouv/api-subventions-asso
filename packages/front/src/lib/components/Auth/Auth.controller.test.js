@@ -1,8 +1,8 @@
-import { page } from "$app/stores";
+import { page } from "$lib/store/kit.store";
 import AuthController from "$lib/components/Auth/Auth.controller";
 import authService from "$lib/resources/auth/auth.service";
 
-vi.mock("$app/stores", () => ({ page: { subscribe: vi.fn() } }));
+vi.mock("$lib/store/kit.store", () => ({ page: { subscribe: vi.fn() } }));
 vi.mock("$lib/resources/auth/auth.service");
 
 describe("AuthController", () => {

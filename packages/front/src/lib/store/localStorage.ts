@@ -1,8 +1,9 @@
-import { derived } from "svelte/store";
-import Store from "$lib/core/Store";
+import Store, { derived } from "$lib/core/Store";
+
+type LocalStorageType = Record<string, string>;
 
 export class LocalStorageStore {
-    public localStore: Store;
+    public localStore: Store<LocalStorageType>;
 
     constructor() {
         const localStorageObject = JSON.parse(JSON.stringify(localStorage));
@@ -15,11 +16,11 @@ export class LocalStorageStore {
     }
 
     getItem(key: string) {
-        return derived(this.localStore, storage => (storage as Record<string, string>)[key] || null);
+        return derived(this.localStore, storage => (storage as LocalStorageType)[key] || null);
     }
 
     getParsedItem(key: string) {
-        return derived(this.localStore, storage => JSON.parse((storage as Record<string, string>)[key]));
+        return derived(this.localStore, storage => JSON.parse((storage as LocalStorageType)[key]));
     }
 
     setItem(key: string, value: string) {

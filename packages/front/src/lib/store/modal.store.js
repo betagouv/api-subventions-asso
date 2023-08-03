@@ -1,6 +1,5 @@
-import { writable } from "svelte/store";
 import Store from "$lib/core/Store";
 
-export const modal = writable(false);
-export const data = writable({});
+export const modal = new Store(false);
+export const data = new Store({});
 export const action = new Store(() => null);

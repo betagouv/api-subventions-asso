@@ -1,5 +1,5 @@
 import authService from "$lib/resources/auth/auth.service";
-import { page } from "$app/stores";
+import { page } from "$lib/store/kit.store";
 
 export default class AuthController {
     init() {
