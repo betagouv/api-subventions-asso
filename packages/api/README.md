@@ -107,9 +107,9 @@ Exemple : `const establishment = association.etablissement // retour API en fran
 
 ### MERGE vs REBASE
 
-`rebase` la branche fille depuis la branche mère si cette dernière a été modifiée.
-`merge` uniquement pour fusionner `develop` dans `main` et `main` dans `PROD`.
-Les `hotfix` sont à merger sur la branche mère. Les branches filles doivent ensuite se `rebase` depuis leur branche mère pour récupérer la modification.
+`rebase` uniquement dans des branches qui n'ont pas encore été mergées dans aucune des trois branches `develop`, `main` ni `PROD`
+`merge` pour fusionner `develop` dans `main` et `main` dans `PROD` mais aussi pour les `hotfix`.  Dans le cas de branches filles vers branche mère, penser à utiliser l'option git `--ff-only` pour mettre en lumière des potentielles incohérences d'historique.
+Les `hotfix` sont à merger sur la branche mère `PROD` ou `main`. Il faut esnuite merge successivement des branches mères vers les branches filles (`PROD` vers `main` puis `main` vers `dev`)
 
 ### Hooks
 
