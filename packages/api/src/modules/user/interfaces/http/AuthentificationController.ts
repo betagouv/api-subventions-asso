@@ -65,4 +65,15 @@ export class AuthentificationController extends Controller {
         if (!req.user) throw new BadRequestError();
         await userService.logout(req.user);
     }
+
+    @Post("/validate-token")
+    public async validateToken(@Body() body: { token?: string }) {
+        if (!body.token) throw new BadRequestError();
+
+        const isValidate = await userService.validateToken(body.token);
+
+        return {
+            valid: isValidate,
+        };
+    }
 }
