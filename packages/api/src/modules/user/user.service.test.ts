@@ -37,7 +37,7 @@ const mockedNotifyService = jest.mocked(notifyService, true);
 
 import mocked = jest.mocked;
 import userService, { UserService, UserServiceErrors } from "./user.service";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { RoleEnum } from "../../@enums/Roles";
 import UserDto from "@api-subventions-asso/dto/user/UserDto";
 import UserReset from "./entities/UserReset";
@@ -924,6 +924,75 @@ describe("User Service", () => {
             const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(actual.logs).toEqual(expect.arrayContaining([expected]));
+        });
+    });
+
+    describe("isExpiredReset", () => {
+        it("should return true", () => {
+            const reset = {
+                createdAt: new Date(2000),
+            } as unknown as UserReset;
+
+            // @ts-expect-error is ExpiredReset is private
+            const actual = userService.isExpiredReset(reset);
+
+            expect(actual).toBeTruthy();
+        });
+
+        it("should return false", () => {
+            const reset = {
+                createdAt: new Date(),
+            } as unknown as UserReset;
+
+            // @ts-expect-error is ExpiredReset is private
+            const actual = userService.isExpiredReset(reset);
+
+            expect(actual).toBeFalsy();
+        });
+    });
+
+    describe("validateToken", () => {
+        let findByToken: jest.SpyInstance;
+
+        const FAKE_TOKEN = "FAKE";
+        const validUserReset = {
+            createdAt: new Date(),
+        } as unknown as WithId<UserReset>;
+
+        beforeAll(() => {
+            findByToken = jest.spyOn(userResetRepository, "findByToken").mockResolvedValue(validUserReset);
+        });
+
+        afterAll(() => {
+            findByToken.mockRestore();
+        });
+
+        it("should call find by token", async () => {
+            await userService.validateToken(FAKE_TOKEN);
+
+            expect(findByToken).toBeCalledWith(FAKE_TOKEN);
+        });
+
+        it("should return true", async () => {
+            const actual = await userService.validateToken(FAKE_TOKEN);
+
+            expect(actual).toBeTruthy();
+        });
+
+        it("should return false (token not exist)", async () => {
+            findByToken.mockResolvedValueOnce(null);
+            const actual = await userService.validateToken(FAKE_TOKEN);
+
+            expect(actual).toBeFalsy();
+        });
+
+        it("should return false (token expired)", async () => {
+            findByToken.mockResolvedValueOnce({
+                createdAt: new Date(2000),
+            });
+            const actual = await userService.validateToken(FAKE_TOKEN);
+
+            expect(actual).toBeFalsy();
         });
     });
 });

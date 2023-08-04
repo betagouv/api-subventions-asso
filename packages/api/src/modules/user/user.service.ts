@@ -368,12 +368,24 @@ export class UserService {
         return await userRepository.update(userWithSecrets);
     }
 
+    private isExpiredReset(reset: UserReset) {
+        return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
+    }
+
+    async validateToken(resetToken: string): Promise<boolean> {
+        const reset = await userResetRepository.findByToken(resetToken);
+
+        if (!reset || this.isExpiredReset(reset)) return false;
+
+        return true;
+    }
+
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
         if (!reset) throw new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
 
-        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now())
+        if (this.isExpiredReset(reset))
             throw new BadRequestError(
                 "Reset token has expired, please retry forget password",
                 ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
