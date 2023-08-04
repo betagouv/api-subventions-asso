@@ -48,6 +48,8 @@ import LoginError from "../../shared/errors/LoginError";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import statsService from "../stats/stats.service";
 import { NotificationType } from "../notify/@types/NotificationType";
+import { TokenValidationDtoPositiveResponse } from "@api-subventions-asso/dto";
+import { TokenValidationType } from "@api-subventions-asso/dto";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -71,6 +73,7 @@ describe("User Service", () => {
         firstName: "",
         lastName: "",
         active: true,
+        profileCompleted: true,
     } as UserDto;
     const USER_SECRETS = {
         jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
@@ -953,18 +956,24 @@ describe("User Service", () => {
 
     describe("validateToken", () => {
         let findByToken: jest.SpyInstance;
+        let findUser: jest.SpyInstance;
 
         const FAKE_TOKEN = "FAKE";
         const validUserReset = {
             createdAt: new Date(),
         } as unknown as WithId<UserReset>;
+        const user = {
+            profileCompleted: false,
+        } as unknown as UserDto;
 
         beforeAll(() => {
             findByToken = jest.spyOn(userResetRepository, "findByToken").mockResolvedValue(validUserReset);
+            findUser = jest.spyOn(userRepository, "findById").mockResolvedValue(user);
         });
 
         afterAll(() => {
             findByToken.mockRestore();
+            findUser.mockRestore();
         });
 
         it("should call find by token", async () => {
@@ -976,14 +985,14 @@ describe("User Service", () => {
         it("should return true", async () => {
             const actual = await userService.validateToken(FAKE_TOKEN);
 
-            expect(actual).toBeTruthy();
+            expect(actual.valid).toBeTruthy();
         });
 
         it("should return false (token not exist)", async () => {
             findByToken.mockResolvedValueOnce(null);
             const actual = await userService.validateToken(FAKE_TOKEN);
 
-            expect(actual).toBeFalsy();
+            expect(actual.valid).toBeFalsy();
         });
 
         it("should return false (token expired)", async () => {
@@ -992,7 +1001,30 @@ describe("User Service", () => {
             });
             const actual = await userService.validateToken(FAKE_TOKEN);
 
-            expect(actual).toBeFalsy();
+            expect(actual.valid).toBeFalsy();
+        });
+
+        it("should return type is signup", async () => {
+            findByToken.mockResolvedValueOnce({
+                createdAt: new Date(),
+            });
+            const actual = (await userService.validateToken(FAKE_TOKEN)) as TokenValidationDtoPositiveResponse;
+
+            expect(actual.type).toBe(TokenValidationType.SIGNUP);
+        });
+
+        it("should return type is signup", async () => {
+            findByToken.mockResolvedValueOnce({
+                createdAt: new Date(),
+            });
+
+            findUser.mockResolvedValueOnce({
+                profileCompleted: true,
+            });
+
+            const actual = (await userService.validateToken(FAKE_TOKEN)) as TokenValidationDtoPositiveResponse;
+
+            expect(actual.type).toBe(TokenValidationType.FORGET_PASSWORD);
         });
     });
 });

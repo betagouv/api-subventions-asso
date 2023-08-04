@@ -8,6 +8,7 @@ const USER_DBO = {
     roles: ["user"],
     signupAt: new Date(),
     jwt: { token: "TOKEN", expirateDate: new Date() },
+    profileCompleted: true,
     active: false,
 };
 

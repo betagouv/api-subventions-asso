@@ -43,6 +43,7 @@ describe("express.auth.hooks", () => {
                     signupAt: new Date(),
                     jwt: { token: "", expirateDate: new Date() },
                     stats: { searchCount: 0, lastSearchDate: null },
+                    profileCompleted: true,
                 }),
             );
 
@@ -98,6 +99,7 @@ describe("express.auth.hooks", () => {
                 signupAt: new Date(),
                 jwt: { token: "", expirateDate: new Date() },
                 stats: { searchCount: 0, lastSearchDate: null },
+                profileCompleted: true,
                 _id: new ObjectId(),
             }));
 

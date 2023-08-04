@@ -14,6 +14,7 @@ export interface UserDto extends FutureUserDto {
     roles: string[];
     active: boolean;
     signupAt: Date;
+    profileCompleted: boolean;
     disable?: boolean;
 }
 

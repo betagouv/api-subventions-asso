@@ -13,6 +13,8 @@ import {
     UserWithStatsDto,
     FutureUserDto,
     UserDataDto,
+    TokenValidationDtoResponse,
+    TokenValidationType,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -214,6 +216,7 @@ export class UserService {
             roles: userObject.roles,
             firstName: userObject.firstName || null,
             lastName: userObject.lastName || null,
+            profileCompleted: false,
         };
 
         const now = new Date();
@@ -372,12 +375,19 @@ export class UserService {
         return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
     }
 
-    async validateToken(resetToken: string): Promise<boolean> {
+    async validateToken(resetToken: string): Promise<TokenValidationDtoResponse> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        if (!reset || this.isExpiredReset(reset)) return false;
+        if (!reset || this.isExpiredReset(reset)) return { valid: false };
 
-        return true;
+        const user = await userRepository.findById(reset.userId);
+
+        if (!user) return { valid: false };
+
+        return {
+            valid: true,
+            type: user.profileCompleted ? TokenValidationType.FORGET_PASSWORD : TokenValidationType.SIGNUP,
+        };
     }
 
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
@@ -411,6 +421,7 @@ export class UserService {
             ...user,
             hashPassword,
             active: true,
+            profileCompleted: true,
         });
 
         return userUpdated;
