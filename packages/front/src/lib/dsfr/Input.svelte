@@ -28,7 +28,7 @@
 </script>
 
 <div class="fr-input-group">
-    <label class="fr-label" for={name}>{label}</label>
+    <label class="fr-label" for={id}>{label}</label>
     <input
         class="fr-input"
         type="text"
