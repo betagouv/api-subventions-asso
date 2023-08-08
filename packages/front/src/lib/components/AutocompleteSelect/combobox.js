@@ -86,9 +86,9 @@ export class ComboboxAutocomplete {
         this.svelteStore = svelteStore;
     }
 
-    updateComboboxValueAndStore(value) {
-        this.comboboxNode.value = value;
-        if (this.svelteStore) this.svelteStore.set(value);
+    updateComboboxValueAndStore(element) {
+        this.comboboxNode.value = element?.textContent || "";
+        if (this.svelteStore) this.svelteStore.set(element?.getAttribute("data-option-value") || "");
     }
 
     getLowercaseContent(node) {
@@ -116,9 +116,9 @@ export class ComboboxAutocomplete {
         }
     }
 
-    setValue(value) {
-        this.filter = value;
-        this.updateComboboxValueAndStore(value);
+    setValueFromElement(element) {
+        this.filter = element?.textContent || "";
+        this.updateComboboxValueAndStore(element);
         this.comboboxNode.setSelectionRange(this.filter.length, this.filter.length);
         this.filterOptions();
     }
@@ -134,7 +134,7 @@ export class ComboboxAutocomplete {
             this.setActiveDescendant(this.option);
 
             if (this.isBoth) {
-                this.updateComboboxValueAndStore(this.option.textContent);
+                this.updateComboboxValueAndStore(this.option);
                 if (flag) {
                     this.comboboxNode.setSelectionRange(this.option.textContent.length, this.option.textContent.length);
                 } else {
@@ -296,7 +296,7 @@ export class ComboboxAutocomplete {
         switch (event.key) {
             case "Enter":
                 if (this.listboxHasVisualFocus) {
-                    this.setValue(this.option.textContent);
+                    this.setValueFromElement(this.option);
                 }
                 this.close(true);
                 this.setVisualFocusCombobox();
@@ -346,7 +346,7 @@ export class ComboboxAutocomplete {
                     this.filterOptions();
                     this.setVisualFocusCombobox();
                 } else {
-                    this.setValue("");
+                    this.setValueFromElement(null);
                 }
                 this.option = null;
                 flag = true;
@@ -356,7 +356,7 @@ export class ComboboxAutocomplete {
                 this.close(true);
                 if (this.listboxHasVisualFocus) {
                     if (this.option) {
-                        this.setValue(this.option.textContent);
+                        this.setValueFromElement(this.option);
                     }
                 }
                 break;
@@ -533,7 +533,7 @@ export class ComboboxAutocomplete {
     // Listbox Option Events
 
     onOptionClick(event) {
-        this.updateComboboxValueAndStore(event.target.textContent);
+        this.updateComboboxValueAndStore(event.target);
         this.close(true);
     }
 

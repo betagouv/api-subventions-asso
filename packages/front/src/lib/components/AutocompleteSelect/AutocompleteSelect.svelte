@@ -9,6 +9,9 @@
   This software or document includes material copied from or derived from [combobox-autocomplete](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-both/#sc1_label). Copyright © 2023 World Wide Web Consortium. https://www.w3.org/copyright/software-license-2023/
 
 */
+
+    // Careful : as it is, the svelte interface gives the *value* of the selected option
+    // whereas a standard form submission would submit its *label*
     import { nanoid } from "nanoid";
 
     import "./combobox.css";
@@ -61,7 +64,7 @@
 
         <ul id={listId} role="listbox" aria-label="States" bind:this={listElement}>
             {#each options as option, i}
-                <li role="option" aria-selected="false" id="{id}-option-{i}">
+                <li role="option" aria-selected="false" id="{id}-option-{i}" data-option-value={option.value}>
                     {option.label}
                 </li>
             {/each}
