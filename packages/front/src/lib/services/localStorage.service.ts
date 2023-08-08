@@ -1,9 +1,9 @@
 import Store, { derived } from "$lib/core/Store";
 
-type LocalStorageType = Record<string, string>;
+type LocalStorageType = Record<string, string | undefined>;
 
 export class LocalStorageService {
-    private _localStore: Store<LocalStorageType>;
+    private readonly _localStore: Store<LocalStorageType>;
 
     constructor() {
         const localStorageObject = JSON.parse(JSON.stringify(localStorage));
@@ -16,7 +16,7 @@ export class LocalStorageService {
     }
 
     getItem(key: string) {
-        return derived(this._localStore, storage => JSON.parse((storage as LocalStorageType)[key]));
+        return derived(this._localStore, storage => JSON.parse(storage[key] || "null"));
     }
 
     setItem(key: string, value: string) {
