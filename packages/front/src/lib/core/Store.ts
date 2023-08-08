@@ -63,6 +63,6 @@ export default class Store<T> extends CoreStore<T, Writable<T>> implements Writa
     }
 }
 
-export function derived<T>(refStores: Stores, callback: (values: StoresValues<unknown>) => T) {
+export function derived<S extends Stores, T>(refStores: S, callback: (values: StoresValues<S>) => T) {
     return ReadStore.fromSvelteStore(nativeDerived(refStores, callback));
 }
