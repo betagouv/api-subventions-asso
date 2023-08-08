@@ -8,6 +8,7 @@ import { isSiret } from "$lib/helpers/validatorHelper";
 import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import associationService from "$lib/resources/associations/association.service";
+import trackerService from "$lib/services/tracker.service";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {
@@ -61,9 +62,19 @@ export default class SubventionsVersementsDashboardController {
             this.sortDirection.update(currentDirection => (currentDirection == "asc" ? "desc" : "asc"));
             this.elements.update(elements => elements.reverse());
         }
+
+        trackerService.buttonClickEvent(
+            "association-etablissement.dashbord.sort-column",
+            `${column} direction: ${this.sortDirection.value}`,
+        );
     }
 
-    updateSelectedExercice(selectedExercice) {
+    updateSelectedExercice(selectedExercice, disableTracker) {
+        if (!disableTracker)
+            trackerService.buttonClickEvent(
+                "association-etablissement.dashbord.selected-exercice",
+                `old: ${this.selectedExercice.value}  -  new: ${selectedExercice}`,
+            );
         this.selectedExercice.set(selectedExercice);
         this.selectedYear.set(this.exercices[selectedExercice]);
         this._filterElementsBySelectedExercice();
@@ -87,6 +98,10 @@ export default class SubventionsVersementsDashboardController {
 
         const csvString = buildCsv(headers, datasub);
         downloadCsv(csvString, `DataSubvention-${this.identifier}`);
+
+        // Tracking Part
+        trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier);
+
         if (this.isEtab()) establishmentService.incExtractData(this.identifier);
         else associationService.incExtractData(this.identifier);
     }
@@ -112,7 +127,7 @@ export default class SubventionsVersementsDashboardController {
         this.exercices = exercices;
         this.exercicesOptions.set(this._buildExercices());
 
-        this.updateSelectedExercice(this.selectedExercice.value || this.exercices.length - 1);
+        this.updateSelectedExercice(this.selectedExercice.value || this.exercices.length - 1, true);
     }
 
     _buildExercices() {

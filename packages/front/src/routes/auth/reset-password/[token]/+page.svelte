@@ -48,7 +48,14 @@
                         type="password" />
                 </fieldset>
                 <div class="fr-input-group fr-my-4w">
-                    <Button type="submit" title="Valider" htmlType="submit" disabled={!isPasswordOk}>Valider</Button>
+                    <Button
+                        type="submit"
+                        title="Valider"
+                        htmlType="submit"
+                        disabled={!isPasswordOk}
+                        trakerName="reset-password.form.submit">
+                        Valider
+                    </Button>
                 </div>
             </form>
         </div>

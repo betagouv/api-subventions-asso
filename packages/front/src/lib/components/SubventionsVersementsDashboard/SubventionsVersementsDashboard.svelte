@@ -23,7 +23,9 @@
     const { loaderStateStore, elements, exercicesOptions, selectedExercice, selectedYear, sortDirection, sortColumn } =
         controller;
 
-    const displayModal = () => modal.update(() => ProviderModal);
+    const displayModal = () => {
+        modal.update(() => ProviderModal);
+    };
 </script>
 
 {#await promise}
@@ -37,6 +39,7 @@
                     on:click={() => controller.download()}
                     disabled={$loaderStateStore.status != "end"}
                     icon="download-line"
+                    trackingDisable={true}
                     iconPosition="right">
                     Télécharger les données - (BÊTA)
                 </Button>
@@ -52,7 +55,12 @@
                     options={$exercicesOptions} />
             {/if}
         </div>
-        <Button type="tertiary" outline={false} ariaControls="fr-modal" on:click={displayModal}>
+        <Button
+            type="tertiary"
+            outline={false}
+            ariaControls="fr-modal"
+            on:click={displayModal}
+            trakerName="association-etablissement.dashboard.display-provider-modal">
             Voir la liste des fournisseurs de données
         </Button>
     </div>

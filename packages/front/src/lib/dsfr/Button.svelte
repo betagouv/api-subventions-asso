@@ -1,7 +1,10 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { getIconClass } from "./helper";
+    import trackerService from "$lib/services/tracker.service";
 
+    export let trakerName;
+    export let trackingDisable = false;
     export let type = "primary";
     export let size = "medium";
     export let outline = true;
@@ -12,6 +15,8 @@
     export let iconPosition = "";
     export let ariaControls = "";
     export let htmlType = "";
+
+    if (!trakerName && !trackingDisable) console.error("Please add tracker name on button");
 
     const dispatch = createEventDispatcher();
 
@@ -49,11 +54,25 @@
 
     const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
      ${getSpecificIconClass()} ${styleClass}`;
+
+    function track() {
+        if (!trackingDisable) trackerService.buttonClickEvent(trakerName, title);
+    }
+
+    function onClick() {
+        dispatch("click");
+        track()
+    }
+
+    function onSubmit() {
+      dispatch('submit')
+      track()
+    }
 </script>
 
 <button
-    on:click={() => dispatch("click")}
-    on:submit={() => dispatch("submit")}
+    on:click={() => onClick()}
+    on:submit={() => onSubmit()}
     class={classes}
     {disabled}
     {title}
