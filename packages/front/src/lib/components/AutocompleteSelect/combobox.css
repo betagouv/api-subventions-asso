@@ -15,97 +15,68 @@
 }
 
 .combobox .group {
-  display: inline-flex;
-  padding: 4px;
   cursor: pointer;
 }
 
-.combobox input,
-.combobox button {
-  background-color: white;
-  color: black;
-  box-sizing: border-box;
-  height: 24px;
-  padding: 0;
-  margin: 0;
-  vertical-align: bottom;
-  border: 1px solid gray;
-  position: relative;
+.combobox .fr-input-wrap {
+  display: flex;
+}
+
+.combobox .fr-input-wrap .fr-input {
+  padding-right: 2.5rem !important;
   cursor: pointer;
 }
 
-.combobox input {
-  width: 150px;
-  border-right: none;
-  outline: none;
-  font-size: 87.5%;
-  padding: 1px 3px;
-}
-
 .combobox button {
-  width: 19px;
-  border-left: none;
-  outline: none;
-  color: rgb(0 90 156);
+  pointer-events: none;
+  position: absolute;
+  right: 0.75rem;
+  top: .5rem;
 }
 
-.combobox button[aria-expanded="true"] svg {
-  transform: rotate(180deg) translate(0, -3px);
+.combobox button[aria-expanded="true"] .icon::before {
+  transform: rotate(180deg);
 }
 
 ul[role="listbox"] {
   margin: 0;
   padding: 0;
   position: absolute;
-  left: 4px;
-  top: 28px;
   list-style: none;
-  background-color: white;
+  background-color: var(--background-default-grey);
   display: none;
   box-sizing: border-box;
-  border: 2px currentcolor solid;
+  border: 2px var(--border-default-grey) solid;
   max-height: 250px;
-  width: 168px;
+  width: 100%;
   overflow: scroll;
   overflow-x: hidden;
-  font-size: 87.5%;
-  cursor: pointer;
 }
 
 ul[role="listbox"] li[role="option"] {
   margin: 0;
   display: block;
-  padding-left: 3px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding: 0.5rem 1rem
 }
 
 /* focus and hover styling */
 
-.combobox .group.focus,
-.combobox .group:hover {
-  padding: 2px;
-  border: 2px solid currentcolor;
-  border-radius: 4px;
+[role="listbox"].focus [role="option"][aria-selected="true"] {
+  background-color: var(--background-default-grey-active);
 }
 
-.combobox .group.focus polygon,
-.combobox .group:hover polygon {
-  fill-opacity: 1;
-}
-
-.combobox .group.focus input,
-.combobox .group.focus button,
-.combobox .group input:hover,
-.combobox .group button:hover {
-  background-color: #def;
-}
-
-[role="listbox"].focus [role="option"][aria-selected="true"],
 [role="listbox"] [role="option"]:hover {
-  background-color: #def;
-  padding-top: 0;
-  padding-bottom: 0;
-  border-top: 2px solid currentcolor;
-  border-bottom: 2px solid currentcolor;
+  background-color: var(--background-default-grey-hover);
+}
+
+[role="listbox"].focus [role="option"][aria-selected="true"]:not(:last-child),
+[role="listbox"] [role="option"]:hover:not(:last-child) {
+  padding-bottom: calc(0.5rem - 2px);
+  border-bottom: 2px solid var(--border-default-grey);
+}
+
+[role="listbox"].focus [role="option"][aria-selected="true"]:not(:first-child),
+[role="listbox"] [role="option"]:hover:not(:first-child) {
+  padding-top: calc(0.5rem - 2px);
+  border-top: 2px solid var(--border-default-grey);
 }
