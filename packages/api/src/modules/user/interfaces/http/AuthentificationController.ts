@@ -4,6 +4,7 @@ import {
     LoginDtoResponse,
     ResetPasswordDtoResponse,
     SignupDtoResponse,
+    TokenValidationDtoResponse,
 } from "@api-subventions-asso/dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
@@ -67,13 +68,9 @@ export class AuthentificationController extends Controller {
     }
 
     @Post("/validate-token")
-    public async validateToken(@Body() body: { token?: string }) {
+    public async validateToken(@Body() body: { token?: string }): Promise<TokenValidationDtoResponse> {
         if (!body.token) throw new BadRequestError();
 
-        const isValidate = await userService.validateToken(body.token);
-
-        return {
-            valid: isValidate,
-        };
+        return userService.validateToken(body.token);
     }
 }
