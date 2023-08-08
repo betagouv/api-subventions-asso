@@ -7,11 +7,13 @@ import userRepository from "../../../src/modules/user/repositories/user.reposito
 import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import { ObjectId } from "mongodb";
+import notifyService from "../../../src/modules/notify/notify.service";
 
 const g = global as unknown as { app: unknown };
 
 describe("UserController, /user", () => {
     const SIREN = "123456789";
+    jest.spyOn(notifyService, "notify").mockResolvedValue(true);
 
     describe("POST /admin/roles", () => {
         it("should return 200", async () => {

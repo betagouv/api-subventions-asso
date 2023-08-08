@@ -1,6 +1,14 @@
 import { NotificationType } from "./NotificationType";
 
 export interface NotificationDataTypes {
+    [NotificationType.USER_ALREADY_EXIST]: {
+        email: string;
+        firstname?: string;
+        lastname?: string;
+        url?: string;
+        signupAt: Date;
+        active: boolean;
+    };
     [NotificationType.USER_CREATED]: {
         email: string;
         firstname?: string;

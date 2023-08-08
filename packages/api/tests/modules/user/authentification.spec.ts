@@ -1,13 +1,14 @@
 import request = require("supertest");
 import userService, { UserService } from "../../../src/modules/user/user.service";
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
-import db from "../../../src/shared/MongoConnection";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
+import notifyService from "../../../src/modules/notify/notify.service";
 
 const g = global as unknown as { app: unknown };
 
 describe("AuthentificationController, /auth", () => {
+    jest.spyOn(notifyService, "notify").mockResolvedValue(true);
     describe("POST /forget-password", () => {
         beforeEach(async () => {
             await createUser();

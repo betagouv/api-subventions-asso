@@ -577,6 +577,30 @@ export class UserService {
             },
         };
     }
+
+    async notifyAllUsersInSubTools() {
+        const users = await userRepository.findAll();
+
+        for (const user of users) {
+            if (user.disable) continue;
+
+            let reset: null | UserReset = null;
+            if (!user.active) {
+                reset = await userResetRepository.findOneByUserId(user._id);
+            }
+
+            const data = {
+                email: user.email,
+                firstname: user.firstName,
+                lastname: user.lastName,
+                url: reset ? `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}?active=true` : undefined,
+                active: user.active,
+                signupAt: user.signupAt,
+            };
+
+            await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
+        }
+    }
 }
 
 const userService = new UserService();

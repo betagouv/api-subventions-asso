@@ -5,4 +5,5 @@ export enum NotificationType {
     USER_ACTIVATED,
     USER_FORGET_PASSWORD,
     USER_LOGGED,
+    USER_ALREADY_EXIST,
 }

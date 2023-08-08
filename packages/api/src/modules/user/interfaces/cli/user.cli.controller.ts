@@ -36,4 +36,8 @@ export default class UserCliController {
             console.info("Active error : \n", (e as Error).message);
         }
     }
+
+    async notifyAllUsersInSubTools() {
+        await userService.notifyAllUsersInSubTools();
+    }
 }
