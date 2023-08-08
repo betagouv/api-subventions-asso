@@ -20,7 +20,7 @@
 
     export let id = nanoid(7);
     export let name = id;
-    export let options: { value: string; text: string }[];
+    export let options: { value: string; label: string }[];
     export const label = "";
 
     const listId = `list-${id}`;
@@ -62,7 +62,7 @@
         <ul id={listId} role="listbox" aria-label="States" bind:this={listElement}>
             {#each options as option, i}
                 <li role="option" aria-selected="false" id="{id}-option-{i}">
-                    {option.text}
+                    {option.label}
                 </li>
             {/each}
         </ul>
