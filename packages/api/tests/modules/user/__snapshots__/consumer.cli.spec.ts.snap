@@ -10,7 +10,7 @@ Object {
   "isConsumerToken": true,
   "lastName": null,
   "now": Any<String>,
-  "profileCompleted": false,
+  "profileToComplete": true,
   "roles": Array [
     "user",
     "consumer",
@@ -26,7 +26,7 @@ Object {
   "email": "test@beta.gouv.fr",
   "firstName": null,
   "lastName": null,
-  "profileCompleted": false,
+  "profileToComplete": true,
   "roles": Array [
     "user",
     "consumer",

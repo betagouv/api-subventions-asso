@@ -15,7 +15,7 @@ describe("UserRepository", () => {
         jwt: { token: "TOKEN", expirateDate: new Date() },
         active: false,
         stats: { searchCount: 0, lastSearchDate: null },
-        profileCompleted: true,
+        profileToComplete: false,
     };
     describe("The methods must not return any secret", () => {
         beforeEach(async () => {

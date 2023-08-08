@@ -216,7 +216,7 @@ export class UserService {
             roles: userObject.roles,
             firstName: userObject.firstName || null,
             lastName: userObject.lastName || null,
-            profileCompleted: false,
+            profileToComplete: true,
         };
 
         const now = new Date();
@@ -386,7 +386,7 @@ export class UserService {
 
         return {
             valid: true,
-            type: user.profileCompleted ? TokenValidationType.FORGET_PASSWORD : TokenValidationType.SIGNUP,
+            type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
         };
     }
 
@@ -421,7 +421,7 @@ export class UserService {
             ...user,
             hashPassword,
             active: true,
-            profileCompleted: true,
+            profileToComplete: false,
         });
 
         return userUpdated;

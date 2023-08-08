@@ -42,7 +42,7 @@ describe("expressAuthentication", () => {
                 active: true,
                 signupAt: new Date(),
                 _id: new ObjectId(),
-                profileCompleted: true,
+                profileToComplete: false,
             }),
         );
         findJwtByEmailMock.mockImplementation(() =>
@@ -57,7 +57,7 @@ describe("expressAuthentication", () => {
                 active: true,
                 signupAt: new Date(),
                 _id: new ObjectId(),
-                profileCompleted: true,
+                profileToComplete: false,
             }),
         );
         // @ts-expect-error: mock

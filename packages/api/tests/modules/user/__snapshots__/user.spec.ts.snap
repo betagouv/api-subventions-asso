@@ -8,7 +8,7 @@ Object {
   "email": "",
   "firstName": "",
   "lastName": "",
-  "profileCompleted": false,
+  "profileToComplete": true,
   "roles": Array [
     "user",
   ],
@@ -23,7 +23,7 @@ Object {
   "email": "active.user@beta.gouv.fr",
   "firstName": null,
   "lastName": null,
-  "profileCompleted": false,
+  "profileToComplete": true,
   "roles": Array [
     "user",
   ],

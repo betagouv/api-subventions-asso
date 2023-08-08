@@ -73,7 +73,7 @@ describe("User Service", () => {
         firstName: "",
         lastName: "",
         active: true,
-        profileCompleted: true,
+        profileToComplete: false,
     } as UserDto;
     const USER_SECRETS = {
         jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
@@ -963,7 +963,7 @@ describe("User Service", () => {
             createdAt: new Date(),
         } as unknown as WithId<UserReset>;
         const user = {
-            profileCompleted: false,
+            profileToComplete: true,
         } as unknown as UserDto;
 
         beforeAll(() => {
@@ -1004,7 +1004,7 @@ describe("User Service", () => {
             expect(actual.valid).toBeFalsy();
         });
 
-        it("should return type is signup", async () => {
+        it("should return type is SIGNUP", async () => {
             findByToken.mockResolvedValueOnce({
                 createdAt: new Date(),
             });
@@ -1013,13 +1013,13 @@ describe("User Service", () => {
             expect(actual.type).toBe(TokenValidationType.SIGNUP);
         });
 
-        it("should return type is signup", async () => {
+        it("should return type is FORGET_PASSWORD", async () => {
             findByToken.mockResolvedValueOnce({
                 createdAt: new Date(),
             });
 
             findUser.mockResolvedValueOnce({
-                profileCompleted: true,
+                profileToComplete: false,
             });
 
             const actual = (await userService.validateToken(FAKE_TOKEN)) as TokenValidationDtoPositiveResponse;

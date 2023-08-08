@@ -12,7 +12,7 @@ Object {
     "token": Any<String>,
   },
   "lastName": null,
-  "profileCompleted": false,
+  "profileToComplete": true,
   "roles": Array [
     "user",
   ],
