@@ -10,7 +10,7 @@ class CoreStore<T, SomeStore extends GenericStore<T>> implements Readable<T> {
         this._store = constructor(value);
     }
 
-    subscribe(callback: Subscriber<T>, invalidator: Invalidator<T>) {
+    subscribe(callback: Subscriber<T>, invalidator?: Invalidator<T>) {
         const unsubscriber = this._store.subscribe(callback, invalidator);
 
         return (...agrs: unknown[]) => unsubscriber(...(agrs as []));
