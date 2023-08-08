@@ -27,7 +27,7 @@
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
 
     const storeValue = new Store("");
-    $: value = storeValue.value; // cannot be in controller so that binding works
+    storeValue.subscribe(newV => (value = newV)); // cannot be in controller so that binding works
 
     onMount(() => new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue));
 </script>
