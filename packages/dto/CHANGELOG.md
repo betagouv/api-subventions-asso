@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
+
+
+### Bug Fixes
+
+* **dto:** fix swagger doc on open data ([93cb0fc](https://github.com/betagouv/datasubvention/commit/93cb0fc36dbd68773f3005922a94bcb8f45d1bf6))
+
+
+### Features
+
+* **api:** add token type information in validation token ([88408da](https://github.com/betagouv/datasubvention/commit/88408da9465d9adfd79a3ff9757a2193e6afe599))
+
+
+
+## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+
+# [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+
+
+
+
 ## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
 
 
