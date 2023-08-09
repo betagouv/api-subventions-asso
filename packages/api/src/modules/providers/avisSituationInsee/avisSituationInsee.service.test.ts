@@ -1,7 +1,5 @@
 import axios from "axios";
-import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
-import * as IdentifierHelper from "../../../shared/helpers/IdentifierHelper";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import avisSituationInseeService from "./avisSituationInsee.service";
 
@@ -165,7 +163,7 @@ describe("AvisSituationInseeService", () => {
                         expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
-                        `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        `https://api-avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
                         avisSituationInseeService.provider.name,
                         expect.any(Date),
                     ),
@@ -229,7 +227,7 @@ describe("AvisSituationInseeService", () => {
                         expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
-                        `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        `https://api-avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
                         avisSituationInseeService.provider.name,
                         expect.any(Date),
                     ),
