@@ -11,9 +11,9 @@ import { valueOrHyphen } from "@helpers/dataHelper";
 import { dateToDDMMYYYY } from "@helpers/dateHelper";
 
 export default class InfosLegalesController {
-    constructor(association, etablissement = undefined) {
+    constructor(association, establishment = undefined) {
         this.association = { ...association };
-        this.etablissement = etablissement ? { ...etablissement } : undefined;
+        this.establishment = establishment ? { ...establishment } : undefined;
         this._immatriculation = getImmatriculation(this.association);
         this._modification = getModification(this.association);
         this._modalData = this._buildModalData();
@@ -25,9 +25,9 @@ export default class InfosLegalesController {
 
     get siret() {
         let title, value;
-        if (this.etablissement) {
+        if (this.establishment) {
             title = "SIRET établissement";
-            value = this.etablissement.siret;
+            value = this.establishment.siret;
         } else {
             const siretSiege = getSiegeSiret(this.association);
             title = "SIRET du siège";
@@ -38,9 +38,9 @@ export default class InfosLegalesController {
 
     get address() {
         let title, value;
-        if (this.etablissement) {
+        if (this.establishment) {
             title = "Adresse établissement";
-            value = addressToString(this.etablissement.adresse);
+            value = addressToString(this.establishment.adresse);
         } else {
             title = "Adresse du siège";
             value = valueOrHyphen(getAddress(this.association));
