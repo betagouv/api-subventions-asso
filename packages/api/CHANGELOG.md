@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.4...v0.33.2) (2023-08-09)
+
+
+### Bug Fixes
+
+* **api:** insee avis situation changed api url ([857259d](https://github.com/betagouv/api-subventions-asso/commit/857259d2e65a2435da4425d53ea6081f50bd90a9))
+
+
+
+## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* **api:** update user when he is already in brevo list ([ab24943](https://github.com/betagouv/api-subventions-asso/commit/ab2494325bc183fcb453a76c05c1f8bfe9204ec7))
+* review cleaning ([7ef7eb5](https://github.com/betagouv/api-subventions-asso/commit/7ef7eb5f38f4acaea8e37bb11295c422960154a2))
+
+
+
+# [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+
+
+
+
 ## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
 
 

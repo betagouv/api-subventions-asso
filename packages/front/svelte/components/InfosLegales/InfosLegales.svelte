@@ -3,9 +3,9 @@
     import InfosLegalesController from "./InfosLegales.controller";
 
     export let association;
-    export let etablissement = undefined;
+    export let establishment = undefined;
 
-    const controller = new InfosLegalesController(association, etablissement);
+    const controller = new InfosLegalesController(association, establishment);
 </script>
 
 <div class="fr-grid-row fr-p-4w background-default">
@@ -40,7 +40,7 @@
                 </td>
             </tr>
         </table>
-        {#if !etablissement}
+        {#if !establishment}
             <Button
                 type="tertiary"
                 size="small"
