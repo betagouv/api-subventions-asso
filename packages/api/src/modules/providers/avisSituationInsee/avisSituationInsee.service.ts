@@ -18,7 +18,7 @@ export class AvisSituationInseeService implements DocumentProvider {
             "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
     };
 
-    static API_URL = "https://api.avis-situation-sirene.insee.fr/identification";
+    static API_URL = "https://api-avis-situation-sirene.insee.fr/identification";
 
     private requestCache = new CacheData<
         | {
@@ -55,7 +55,7 @@ export class AvisSituationInseeService implements DocumentProvider {
             }
             this.requestCache.add(siren, false);
             return false;
-        } catch {
+        } catch (e) {
             return false;
         }
     }
