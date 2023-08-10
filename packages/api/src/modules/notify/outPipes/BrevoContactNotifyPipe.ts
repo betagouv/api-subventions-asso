@@ -8,7 +8,12 @@ import { API_SENDINBLUE_CONTACT_LIST, API_SENDINBLUE_TOKEN } from "../../../conf
 const SENDIND_BLUE_CONTACT_LISTS = [Number(API_SENDINBLUE_CONTACT_LIST)];
 
 export class BrevoContactNotifyPipe implements NotifyOutPipe {
-    accepts = [NotificationType.USER_CREATED];
+    accepts = [
+        NotificationType.USER_CREATED,
+        NotificationType.USER_ACTIVATED,
+        NotificationType.USER_LOGGED,
+        NotificationType.USER_ALREADY_EXIST,
+    ];
 
     private apiInstance: ContactsApi;
 
@@ -21,6 +26,8 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         switch (type) {
             case NotificationType.USER_CREATED:
                 return this.userCreated(data);
+            case NotificationType.USER_ALREADY_EXIST:
+                return this.userCreated(data); // If user exist in datasub database so we create in brevo
             case NotificationType.USER_ACTIVATED:
                 return this.userActivated(data);
             case NotificationType.USER_LOGGED:

@@ -17,7 +17,7 @@
             <slot />
         </p>
         {#if action}
-            <Button on:click={action} disabled={actionDisable} icon="arrow-left-s-line" />
+            <Button on:click={action} disabled={actionDisable} icon="arrow-left-s-line" trackingDisable={true} />
         {/if}
     </div>
 </th>

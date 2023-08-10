@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.34.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.4...v0.34.0) (2023-08-09)
+
+
+
+## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+
+# [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+**Note:** Version bump only for package tools
+
+
+
+
+
 ## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
 
 

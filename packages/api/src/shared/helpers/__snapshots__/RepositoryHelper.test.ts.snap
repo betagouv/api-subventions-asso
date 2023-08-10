@@ -5,6 +5,7 @@ Object {
   "_id": Any<ObjectId>,
   "active": false,
   "email": "test22@beta.gouv.fr",
+  "profileToComplete": false,
   "roles": Array [
     "user",
   ],

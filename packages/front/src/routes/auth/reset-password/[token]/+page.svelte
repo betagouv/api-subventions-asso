@@ -33,8 +33,15 @@
                     on:error={() => ctrl.disableSubmit()}
                     on:valid={() => ctrl.enableSubmit()}
                     bind:values={$values} />
-                <div class="fr-input-group">
-                    <Button type="submit" title="Valider" htmlType="submit" disabled={!$isSubmitActive}>Valider</Button>
+                <div class="fr-input-group fr-my-4w">
+                    <Button
+                        type="submit"
+                        title="Valider"
+                        htmlType="submit"
+                        disabled={!$isSubmitActive}
+                        trakerName="reset-password.form.submit">
+                        Valider
+                    </Button>
                 </div>
             </form>
         </div>

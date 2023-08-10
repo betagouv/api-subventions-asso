@@ -12,6 +12,8 @@ export interface ApplicationDto {
     objet: string;
 }
 
+export type PublishableApplicationDto = Omit<ApplicationDto, "montant_demande">;
+
 export interface PaymentDto {
     exercice: number;
     montant_verse: number;
@@ -19,6 +21,12 @@ export interface PaymentDto {
     bop: string;
 }
 
+export type PublishablePaymentDto = PaymentDto; // already ready to manage not publishable data
+
 export type FullGrantDto = PaymentDto & ApplicationDto;
 
+export type PublishableFullGrantDto = PublishablePaymentDto & PublishableApplicationDto;
+
 export type GrantDto = PaymentDto | ApplicationDto | FullGrantDto;
+
+export type PublishableGrantDto = PublishableFullGrantDto | PublishablePaymentDto | PublishableApplicationDto;

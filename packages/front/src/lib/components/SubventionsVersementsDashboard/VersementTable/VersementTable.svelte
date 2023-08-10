@@ -7,6 +7,7 @@
     import VersementTableController from "./VersementTable.controller";
     import { modal, data } from "$lib/store/modal.store";
     import Table from "$lib/dsfr/Table.svelte";
+    import trackerService from "$lib/services/tracker.service";
 
     export let sort;
     export let elements = [];
@@ -18,6 +19,7 @@
     const { noVersements, elementsDataViews, columnDataViews } = controller;
 
     const displayModal = versements => {
+        trackerService.buttonClickEvent("association-etablissement.dashbord.versement.more_information");
         data.update(() => ({ versements }));
         modal.update(() => VersementsInfoModal);
     };

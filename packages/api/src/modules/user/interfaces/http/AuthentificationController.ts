@@ -4,6 +4,7 @@ import {
     LoginDtoResponse,
     ResetPasswordDtoResponse,
     SignupDtoResponse,
+    TokenValidationDtoResponse,
 } from "@api-subventions-asso/dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
@@ -64,5 +65,12 @@ export class AuthentificationController extends Controller {
     public async logout(@Request() req: IdentifiedRequest) {
         if (!req.user) throw new BadRequestError();
         await userService.logout(req.user);
+    }
+
+    @Post("/validate-token")
+    public async validateToken(@Body() body: { token?: string }): Promise<TokenValidationDtoResponse> {
+        if (!body.token) throw new BadRequestError();
+
+        return userService.validateToken(body.token);
     }
 }

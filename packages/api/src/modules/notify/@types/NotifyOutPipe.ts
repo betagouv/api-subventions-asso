@@ -14,6 +14,10 @@ export interface NotifierMethodType {
         data: NotificationDataTypes[NotificationType.USER_FORGET_PASSWORD],
     ): Promise<boolean>;
     (type: NotificationType.USER_LOGGED, data: NotificationDataTypes[NotificationType.USER_LOGGED]): Promise<boolean>;
+    (
+        type: NotificationType.USER_ALREADY_EXIST,
+        data: NotificationDataTypes[NotificationType.USER_ALREADY_EXIST],
+    ): Promise<boolean>;
 }
 
 export interface NotifyOutPipe {

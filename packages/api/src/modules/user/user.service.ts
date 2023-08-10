@@ -13,6 +13,8 @@ import {
     UserWithStatsDto,
     FutureUserDto,
     UserDataDto,
+    TokenValidationDtoResponse,
+    TokenValidationType,
 } from "@api-subventions-asso/dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -214,6 +216,7 @@ export class UserService {
             roles: userObject.roles,
             firstName: userObject.firstName || null,
             lastName: userObject.lastName || null,
+            profileToComplete: true,
         };
 
         const now = new Date();
@@ -368,12 +371,31 @@ export class UserService {
         return await userRepository.update(userWithSecrets);
     }
 
+    private isExpiredReset(reset: UserReset) {
+        return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
+    }
+
+    async validateToken(resetToken: string): Promise<TokenValidationDtoResponse> {
+        const reset = await userResetRepository.findByToken(resetToken);
+
+        if (!reset || this.isExpiredReset(reset)) return { valid: false };
+
+        const user = await userRepository.findById(reset.userId);
+
+        if (!user) return { valid: false };
+
+        return {
+            valid: true,
+            type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
+        };
+    }
+
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
         if (!reset) throw new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
 
-        if (reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now())
+        if (this.isExpiredReset(reset))
             throw new BadRequestError(
                 "Reset token has expired, please retry forget password",
                 ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
@@ -399,6 +421,7 @@ export class UserService {
             ...user,
             hashPassword,
             active: true,
+            profileToComplete: false,
         });
 
         return userUpdated;
@@ -564,6 +587,30 @@ export class UserService {
                 associationVisit: associationVisits.map(userIdToString),
             },
         };
+    }
+
+    async notifyAllUsersInSubTools() {
+        const users = await userRepository.findAll();
+
+        for (const user of users) {
+            if (user.disable) continue;
+
+            let reset: null | UserReset = null;
+            if (!user.active) {
+                reset = await userResetRepository.findOneByUserId(user._id);
+            }
+
+            const data = {
+                email: user.email,
+                firstname: user.firstName,
+                lastname: user.lastName,
+                url: reset ? `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}?active=true` : undefined,
+                active: user.active,
+                signupAt: user.signupAt,
+            };
+
+            await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
+        }
     }
 }
 
