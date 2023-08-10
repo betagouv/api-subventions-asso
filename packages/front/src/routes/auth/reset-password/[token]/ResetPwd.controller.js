@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes, TokenValidationType } from "@api-subventions-asso/dto";
 import { goToUrl } from "$lib/services/router.service";
 import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
@@ -20,13 +20,37 @@ export class ResetPwdController {
         this.token = token;
         const urlParams = new URLSearchParams(window.location.search);
         this.activation = urlParams.get("active");
-        this.title = this.activation ? "Activer mon compte en créant mon mot de passe" : "Modifier votre mot de passe";
+        this.title = new Store(
+            this.activation ? "Activer mon compte en créant mon mot de passe" : "Modifier votre mot de passe",
+        );
+        this.validatitonTokenStore = new Store("waiting");
+        this.resetType = new Store(null);
+        this.error = null;
 
         this.promise = new Store(
             token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND),
         );
         this.values = new Store({ password: "", confirm: "" });
         this.isSubmitActive = new Store(true);
+    }
+
+    async init() {
+        await this._checkTokenValidity();
+    }
+
+    async _checkTokenValidity() {
+        const tokenValidation = await authService.validateToken(this.token);
+        if (!tokenValidation.valid) {
+            this.error = { data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND } };
+            this.validatitonTokenStore.set("invalid");
+        } else {
+            this.validatitonTokenStore.set("valid");
+            this.resetType.set(tokenValidation.type);
+            this.title.value =
+                this.resetType.value === TokenValidationType.SIGNUP
+                    ? "Activer mon compte en créant mon mot de passe"
+                    : "Modifier votre mot de passe";
+        }
     }
 
     getErrorMessage(error) {

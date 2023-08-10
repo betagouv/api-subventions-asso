@@ -3,7 +3,6 @@
     import Alert from "$lib/dsfr/Alert.svelte";
 
     export let error;
-
     const ctrl = new PasswordErrorAlertController(error);
 </script>
 
