@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import "dotenv/config"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-
 import { mkdirSync, existsSync } from "fs";
+import "./configurations/env";
+
 import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import DataGouvCliController from "./modules/providers/datagouv/interfaces/cli/datagouv.cli.controller";
 import FonjepCliController from "./modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
