@@ -14,8 +14,16 @@ export class AdminStructureRepository {
         return (await this.collection.find({ agentType }).toArray()).map(document => this.toEntity(document));
     }
 
-    async insertMany(entities: AdminStructureEntity[]) {
+    insertMany(entities: AdminStructureEntity[]) {
         return this.collection.insertMany(entities, { ordered: false });
+    }
+
+    deleteAll() {
+        return this.collection.deleteMany({});
+    }
+
+    async findAll() {
+        return (await this.collection.find().toArray()).map(document => this.toEntity(document));
     }
 }
 

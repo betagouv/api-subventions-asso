@@ -57,4 +57,49 @@ describe("AdminStructureService", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("replaceAll", () => {
+        const NEW_ENTITIES = ["new1", "new2"];
+
+        it("saves old entries", async () => {
+            // @ts-expect-error mock
+            await adminStructureService.replaceAll(NEW_ENTITIES);
+            expect(adminStructureRepository.findAll).toHaveBeenCalled();
+        });
+
+        it("deletes all old entries", async () => {
+            // @ts-expect-error mock
+            await adminStructureService.replaceAll(NEW_ENTITIES);
+            expect(adminStructureRepository.deleteAll).toHaveBeenCalled();
+        });
+
+        it("inserts new entries", async () => {
+            // @ts-expect-error mock
+            await adminStructureService.replaceAll(NEW_ENTITIES);
+            expect(adminStructureRepository.insertMany).toHaveBeenCalledWith(NEW_ENTITIES);
+        });
+
+        describe("in case of failure", () => {
+            const ERROR = "ERROR";
+            const OLD_ENTRIES = ["old1", "old2"];
+
+            beforeEach(() => {
+                jest.mocked(adminStructureRepository.insertMany).mockRejectedValueOnce(ERROR);
+                // @ts-expect-error mock
+                jest.mocked(adminStructureRepository.findAll).mockResolvedValueOnce(OLD_ENTRIES);
+            });
+
+            it("restores old entries in case of failure", async () => {
+                // @ts-expect-error mock
+                await adminStructureService.replaceAll(NEW_ENTITIES).catch(() => {});
+                expect(adminStructureRepository.insertMany).toHaveBeenNthCalledWith(2, OLD_ENTRIES);
+            });
+
+            it("throws error back", async () => {
+                // @ts-expect-error mock
+                const test = async () => await adminStructureService.replaceAll(NEW_ENTITIES);
+                await expect(test).rejects.toBe(ERROR);
+            });
+        });
+    });
 });
