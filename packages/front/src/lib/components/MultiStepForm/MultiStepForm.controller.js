@@ -19,10 +19,6 @@ export default class MultiStepFormController {
         this.data = new Store(this.steps.map(() => ({})));
     }
 
-    onDestroy() {
-        this._unsubscribe();
-    }
-
     /**
      * Move in to direction to the "step"
      *
