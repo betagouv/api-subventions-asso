@@ -61,12 +61,12 @@
 
     function onClick() {
         dispatch("click");
-        track()
+        track();
     }
 
     function onSubmit() {
-      dispatch('submit')
-      track()
+        dispatch("submit");
+        track();
     }
 </script>
 

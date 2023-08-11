@@ -3,6 +3,153 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.34.1](https://github.com/betagouv/datasubvention/compare/v0.33.2...v0.34.1) (2023-08-11)
+
+
+### Bug Fixes
+
+* **front:** breadcrumbs when 404 inside route ([37c649b](https://github.com/betagouv/datasubvention/commit/37c649b595e2e88c65619976f3bbdf912e252646))
+* **front:** local storage get with default value ([728b6a5](https://github.com/betagouv/datasubvention/commit/728b6a572fa84773134a91a15060aa84a10a8d24))
+
+
+
+# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
+
+
+### Bug Fixes
+
+* **front:** local storage on parsing undefined ([6c94a2d](https://github.com/betagouv/datasubvention/commit/6c94a2ddd146ee907b8a9639f76edd71e519b062))
+
+
+### Features
+
+* **front:** add MultiStepFormController ([39af847](https://github.com/betagouv/datasubvention/commit/39af847560aa2b6c16cdc677544194bb758acd99))
+* **front:** add stepper ([3ac1ad8](https://github.com/betagouv/datasubvention/commit/3ac1ad85243d6ea220f23d648e460201f81a7dd8))
+* **front:** add traking ([62d61f4](https://github.com/betagouv/datasubvention/commit/62d61f442c73dca607f16204756d213df32a5541))
+* **front:** clean and add test ([c6af491](https://github.com/betagouv/datasubvention/commit/c6af4913a37ad1b3ec2f7f2ebdb63b04061fde34))
+* **front:** make the form dynamic ([3894feb](https://github.com/betagouv/datasubvention/commit/3894feb2b63efe8cee508049eb16a6d6e85ef521))
+* **front:** multi step form static ([32e7e99](https://github.com/betagouv/datasubvention/commit/32e7e9996790ff922b1f96f8ea02c5d0547af01b))
+
+
+
+
+
+# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
+
+
+### Bug Fixes
+
+* **front:** local storage on parsing undefined ([6c94a2d](https://github.com/betagouv/datasubvention/commit/6c94a2ddd146ee907b8a9639f76edd71e519b062))
+
+
+### Features
+
+* **front:** add traking ([62d61f4](https://github.com/betagouv/datasubvention/commit/62d61f442c73dca607f16204756d213df32a5541))
+
+
+
+## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* **front:** document dauphin are not a blob ([2cc7b30](https://github.com/betagouv/datasubvention/commit/2cc7b308b5050dfacf66d92943558bc176ad55fe))
+* review cleaning ([7ef7eb5](https://github.com/betagouv/datasubvention/commit/7ef7eb5f38f4acaea8e37bb11295c422960154a2))
+
+
+### Features
+
+* **front:** switch last and first name ([ce10056](https://github.com/betagouv/datasubvention/commit/ce100562ac4055daddba991cb44ef39a3f0a22f5))
+
+
+
+# [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+
+### Bug Fixes
+
+* **front:** fix html semantic ([208fe7f](https://github.com/betagouv/datasubvention/commit/208fe7f5b21862807cb41dc90067e68559ab04c6))
+
+
+### Features
+
+* **front:** add checkbox to display password ([f4ea6ab](https://github.com/betagouv/datasubvention/commit/f4ea6abf6e5a6a4fcd4686c6809ef9862aa791b8))
+* **front:** add modal on user deleted action ([edf204d](https://github.com/betagouv/datasubvention/commit/edf204d8657ca73184811d11dc7032690cebae43))
+* **front:** add ModalFooter component and update ConfirmDeleteModal ([2e3a24a](https://github.com/betagouv/datasubvention/commit/2e3a24a36ab1d83c89d37de83d183801556c701f))
+* **front:** add MultiStepFormController ([39af847](https://github.com/betagouv/datasubvention/commit/39af847560aa2b6c16cdc677544194bb758acd99))
+* **front:** add stepper ([3ac1ad8](https://github.com/betagouv/datasubvention/commit/3ac1ad85243d6ea220f23d648e460201f81a7dd8))
+* **front:** clean and add test ([c6af491](https://github.com/betagouv/datasubvention/commit/c6af4913a37ad1b3ec2f7f2ebdb63b04061fde34))
+* **front:** generate default unique id in form inputs ([5534578](https://github.com/betagouv/datasubvention/commit/5534578d8c2d1ab432dbd2f3179bf9a8865452ce))
+* **front:** ignore static svg files ([9bff81d](https://github.com/betagouv/datasubvention/commit/9bff81df41e5cbd3f0c7f8c9e85671f08c4f0f8e))
+* **front:** increase margin top in signup and login ([8381a27](https://github.com/betagouv/datasubvention/commit/8381a2708cb4c7cbe6bcc28effa7cd071c268224))
+* **front:** install nanoid ([2465158](https://github.com/betagouv/datasubvention/commit/2465158ef05cb3c016a3a459319fe6f19fd83b09))
+* **front:** link to cgu ([f525855](https://github.com/betagouv/datasubvention/commit/f5258553011e9b9121fc44fb0c9642b576a73c3f))
+* **front:** make the form dynamic ([3894feb](https://github.com/betagouv/datasubvention/commit/3894feb2b63efe8cee508049eb16a6d6e85ef521))
+* **front:** multi step form static ([32e7e99](https://github.com/betagouv/datasubvention/commit/32e7e9996790ff922b1f96f8ea02c5d0547af01b))
+* **front:** remove h5 tag in legend ([87eade2](https://github.com/betagouv/datasubvention/commit/87eade22cb999072553125e495cf7b309281c9b4))
+* **front:** remove static svg ([d91d348](https://github.com/betagouv/datasubvention/commit/d91d348faf8504325ed733ab06f8fea866a6d442))
+* **front:** rework reset password view ([aa683f0](https://github.com/betagouv/datasubvention/commit/aa683f0061221d53a68c4b3107cf7d06767b2c3a))
+* **front:** style legend as h5 title ([28b2609](https://github.com/betagouv/datasubvention/commit/28b2609d0c6866cf6146b59bbdc53827200cc2c0))
+* **front:** update signup conditions style ([e3b16a8](https://github.com/betagouv/datasubvention/commit/e3b16a880624744079278f84095eef03ad402a8b))
+* **front:** use EmptySvg component to handle svg import in jest ([2f375b4](https://github.com/betagouv/datasubvention/commit/2f375b47a704b7a9dedc297ee7f404e596cb9627))
+
+
+
+
+
+## [0.33.2](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.33.2) (2023-08-09)
+
+
+### Bug Fixes
+
+* **front:** etablissement -> establishment ([631fb08](https://github.com/betagouv/datasubvention/commit/631fb08781030590e0313810ca8032598dd6912e))
+
+
+
+## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* **front:** document dauphin are not a blob ([2cc7b30](https://github.com/betagouv/datasubvention/commit/2cc7b308b5050dfacf66d92943558bc176ad55fe))
+* review cleaning ([7ef7eb5](https://github.com/betagouv/datasubvention/commit/7ef7eb5f38f4acaea8e37bb11295c422960154a2))
+
+
+### Features
+
+* **front:** switch last and first name ([ce10056](https://github.com/betagouv/datasubvention/commit/ce100562ac4055daddba991cb44ef39a3f0a22f5))
+
+
+
+# [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.2...v0.33.0) (2023-07-24)
+
+
+### Bug Fixes
+
+* **front:** fix html semantic ([208fe7f](https://github.com/betagouv/datasubvention/commit/208fe7f5b21862807cb41dc90067e68559ab04c6))
+
+
+### Features
+
+* **front:** add checkbox to display password ([f4ea6ab](https://github.com/betagouv/datasubvention/commit/f4ea6abf6e5a6a4fcd4686c6809ef9862aa791b8))
+* **front:** add modal on user deleted action ([edf204d](https://github.com/betagouv/datasubvention/commit/edf204d8657ca73184811d11dc7032690cebae43))
+* **front:** add ModalFooter component and update ConfirmDeleteModal ([2e3a24a](https://github.com/betagouv/datasubvention/commit/2e3a24a36ab1d83c89d37de83d183801556c701f))
+* **front:** generate default unique id in form inputs ([5534578](https://github.com/betagouv/datasubvention/commit/5534578d8c2d1ab432dbd2f3179bf9a8865452ce))
+* **front:** ignore static svg files ([9bff81d](https://github.com/betagouv/datasubvention/commit/9bff81df41e5cbd3f0c7f8c9e85671f08c4f0f8e))
+* **front:** increase margin top in signup and login ([8381a27](https://github.com/betagouv/datasubvention/commit/8381a2708cb4c7cbe6bcc28effa7cd071c268224))
+* **front:** install nanoid ([2465158](https://github.com/betagouv/datasubvention/commit/2465158ef05cb3c016a3a459319fe6f19fd83b09))
+* **front:** link to cgu ([f525855](https://github.com/betagouv/datasubvention/commit/f5258553011e9b9121fc44fb0c9642b576a73c3f))
+* **front:** remove h5 tag in legend ([87eade2](https://github.com/betagouv/datasubvention/commit/87eade22cb999072553125e495cf7b309281c9b4))
+* **front:** remove static svg ([d91d348](https://github.com/betagouv/datasubvention/commit/d91d348faf8504325ed733ab06f8fea866a6d442))
+* **front:** rework reset password view ([aa683f0](https://github.com/betagouv/datasubvention/commit/aa683f0061221d53a68c4b3107cf7d06767b2c3a))
+* **front:** style legend as h5 title ([28b2609](https://github.com/betagouv/datasubvention/commit/28b2609d0c6866cf6146b59bbdc53827200cc2c0))
+* **front:** update signup conditions style ([e3b16a8](https://github.com/betagouv/datasubvention/commit/e3b16a880624744079278f84095eef03ad402a8b))
+* **front:** use EmptySvg component to handle svg import in jest ([2f375b4](https://github.com/betagouv/datasubvention/commit/2f375b47a704b7a9dedc297ee7f404e596cb9627))
+
+
+
+
+
 ## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
 
 

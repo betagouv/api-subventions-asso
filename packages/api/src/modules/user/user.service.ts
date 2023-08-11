@@ -297,7 +297,7 @@ export class UserService {
             email: userObject.email,
             firstname: userObject.firstName,
             lastname: userObject.lastName,
-            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}?active=true`,
+            url: `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`,
             active: user.active,
             signupAt: user.signupAt,
         });

@@ -1,6 +1,6 @@
 import InfosLegalesController from "./InfosLegales.controller";
 import DEFAULT_ASSOCIATION from "$lib/resources/associations/__fixtures__/Association";
-import DEFAULT_ETABLISSEMENT from "$lib/resources/establishments/__fixtures__/Etablissement";
+import DEFAULT_ESTABLISHMENT from "$lib/resources/establishments/__fixtures__/Etablissement";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
 vi.mock("$lib/resources/associations/association.helper", async () => {
@@ -19,8 +19,8 @@ function buildPartialAssociation() {
     return { ...DEFAULT_ASSOCIATION };
 }
 
-function buildPartialEtablissement() {
-    return { ...DEFAULT_ETABLISSEMENT };
+function buildPartialEstablishment() {
+    return { ...DEFAULT_ESTABLISHMENT };
 }
 
 describe("InfosLegales Controller", () => {
@@ -74,19 +74,19 @@ describe("InfosLegales Controller", () => {
         });
     });
 
-    describe("Etablissement view", () => {
-        const controller = new InfosLegalesController(buildPartialAssociation(), buildPartialEtablissement());
+    describe("Establishment view", () => {
+        const controller = new InfosLegalesController(buildPartialAssociation(), buildPartialEstablishment());
 
         describe("getter siret()", () => {
-            it("should return etablissement siret object", () => {
-                const expected = { title: "SIRET établissement", value: DEFAULT_ETABLISSEMENT.siret };
+            it("should return establishment siret object", () => {
+                const expected = { title: "SIRET établissement", value: DEFAULT_ESTABLISHMENT.siret };
                 const actual = controller.siret;
                 expect(actual).toEqual(expected);
             });
         });
         describe("getter address()", () => {
-            it("should return etablissement address object", () => {
-                const expected = { title: "Adresse établissement", value: DEFAULT_ETABLISSEMENT.adresse };
+            it("should return establishment address object", () => {
+                const expected = { title: "Adresse établissement", value: DEFAULT_ESTABLISHMENT.adresse };
                 const actual = controller.address;
                 expect(actual).toEqual(expected);
             });

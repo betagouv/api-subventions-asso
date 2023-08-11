@@ -93,11 +93,7 @@
             <div class="fr-fieldset__element">
                 <ul class="fr-btns-group">
                     <li>
-                        <Button
-                            type="secondary"
-                            title="Se connecter"
-                            htmlType="submit"
-                            trakerName="signup.form.login">
+                        <Button type="secondary" title="Se connecter" htmlType="submit" trakerName="signup.form.login">
                             Se connecter
                         </Button>
                     </li>
