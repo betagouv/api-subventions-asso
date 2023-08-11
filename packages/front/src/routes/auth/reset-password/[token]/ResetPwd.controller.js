@@ -20,11 +20,8 @@ export class ResetPwdController {
         this.token = token;
         const urlParams = new URLSearchParams(window.location.search);
         this.activation = urlParams.get("active");
-        this.title = new Store(
-            this.activation ? "Activer mon compte en créant mon mot de passe" : "Modifier votre mot de passe",
-        );
-        this.validatitonTokenStore = new Store("waiting");
-        this.resetType = new Store(null);
+        this.title = "Modifier votre mot de passe";
+        this.validationTokenStore = new Store("waiting");
         this.error = null;
 
         this.promise = new Store(
@@ -42,14 +39,13 @@ export class ResetPwdController {
         const tokenValidation = await authService.validateToken(this.token);
         if (!tokenValidation.valid) {
             this.error = { data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND } };
-            this.validatitonTokenStore.set("invalid");
+            this.validationTokenStore.set("invalid");
         } else {
-            this.validatitonTokenStore.set("valid");
-            this.resetType.set(tokenValidation.type);
-            this.title.value =
-                this.resetType.value === TokenValidationType.SIGNUP
-                    ? "Activer mon compte en créant mon mot de passe"
-                    : "Modifier votre mot de passe";
+            if (tokenValidation.type === TokenValidationType.SIGNUP) {
+                goToUrl(`/auth/activate/${this.token}`);
+            } else {
+                this.validationTokenStore.set("valid");
+            }
         }
     }
 

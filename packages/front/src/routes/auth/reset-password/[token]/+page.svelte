@@ -1,5 +1,4 @@
 <script>
-    import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
     import { ResetPwdController } from "./ResetPwd.controller";
     import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAlert.svelte";
     import PasswordErrorAlert from "$lib/components/DefinePassword/PasswordErrorAlert.svelte";
@@ -12,20 +11,20 @@
     const ctrl = new ResetPwdController(token);
 
     ctrl.init();
-    const { promise, values, isSubmitActive, validatitonTokenStore, title } = ctrl;
+    const { promise, values, isSubmitActive, validationTokenStore, title } = ctrl;
 </script>
 
 <div class="fr-container fr-mb-8w">
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col fr-col-lg-8">
-            {#if $validatitonTokenStore === "waiting"}
+            {#if $validationTokenStore === "waiting"}
                 <div class="fr-mb-5w fr-mt-n4w">
                     <Spinner />
                 </div>
-            {:else if $validatitonTokenStore === "invalid"}
+            {:else if $validationTokenStore === "invalid"}
                 <PasswordErrorAlert error={ctrl.error} />
             {:else}
-                <h1>{$title}</h1>
+                <h1>{title}</h1>
 
                 <PasswordFormatAlert />
 
