@@ -5,7 +5,7 @@ import adminStructureService from "../../adminStructure.service";
 import AdminStructureEntity from "../../entities/AdminStructureEntity";
 
 @Route("/admin-structures")
-// @Security("jwt")
+@Security("jwt")
 @Tags("Admin Structures Controller")
 export class AdminStructureController extends Controller {
     /**
