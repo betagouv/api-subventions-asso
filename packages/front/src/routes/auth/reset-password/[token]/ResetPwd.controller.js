@@ -1,4 +1,5 @@
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes, TokenValidationType } from "@api-subventions-asso/dto";
+import { goToUrl } from "$lib/services/router.service";
 import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 
@@ -19,12 +20,33 @@ export class ResetPwdController {
         this.token = token;
         const urlParams = new URLSearchParams(window.location.search);
         this.activation = urlParams.get("active");
-        this.title = this.activation ? "Activer mon compte en créant mon mot de passe" : "Modifier votre mot de passe";
+        this.title = "Modifier votre mot de passe";
+        this.validationTokenStore = new Store("waiting");
+        this.error = null;
 
         this.promise = new Store(
             token ? Promise.resolve() : Promise.reject(ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND),
         );
-        this.password = new Store("");
+        this.values = new Store({ password: "", confirm: "" });
+        this.isSubmitActive = new Store(true);
+    }
+
+    async init() {
+        await this._checkTokenValidity();
+    }
+
+    async _checkTokenValidity() {
+        const tokenValidation = await authService.validateToken(this.token);
+        if (!tokenValidation.valid) {
+            this.error = { data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND } };
+            this.validationTokenStore.set("invalid");
+        } else {
+            if (tokenValidation.type === TokenValidationType.SIGNUP) {
+                goToUrl(`/auth/activate/${this.token}`);
+            } else {
+                this.validationTokenStore.set("valid");
+            }
+        }
     }
 
     getErrorMessage(error) {
@@ -32,17 +54,17 @@ export class ResetPwdController {
     }
 
     onSubmit() {
-        this.promise.set(authService.resetPassword(this.token, this.password.value));
-        return this.promise.value
-            .then(() => {
-                window.location.assign(
-                    "/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"),
-                );
-            })
-            .catch((_, ignore) => ignore());
+        this.promise.set(authService.resetPassword(this.token, this.values.value.password));
+        return this.promise.value.then(() => {
+            goToUrl("/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"));
+        });
     }
 
-    checkPassword(password) {
-        return this.PWD_REGEX.test(password);
+    disableSubmit() {
+        this.isSubmitActive.set(false);
+    }
+
+    enableSubmit() {
+        this.isSubmitActive.set(true);
     }
 }

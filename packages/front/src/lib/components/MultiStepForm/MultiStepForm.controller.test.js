@@ -40,7 +40,9 @@ describe("MultiStepFormController", () => {
         it("should decrease currentStepIndex", () => {
             const expected = 0;
             const controller = new MultiStepFormController([{}, {}], vi.fn());
-            controller.next();
+            controller.currentStep.set({
+                index: 1,
+            });
             controller.previous();
             const actual = controller.currentStep.value.index;
             expect(actual).toEqual(expected);

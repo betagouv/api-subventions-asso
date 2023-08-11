@@ -72,6 +72,10 @@ export class AuthService {
         const queryUrl = encodeURIComponent(location.pathname);
         return goToUrl(`/auth/login?url=${queryUrl}`);
     }
+
+    validateToken(token) {
+        return authPort.validateToken(token);
+    }
 }
 
 const authService = new AuthService();

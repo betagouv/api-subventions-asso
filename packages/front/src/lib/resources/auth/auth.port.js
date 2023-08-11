@@ -25,6 +25,12 @@ export class AuthPort {
         const path = `${this.BASE_PATH}/forget-password`;
         return requestsService.post(path, { email }).then(() => true);
     }
+
+    async validateToken(token) {
+        const path = `${this.BASE_PATH}/validate-token`;
+        const response = await requestsService.post(path, { token });
+        return response.data;
+    }
 }
 
 const authPort = new AuthPort();

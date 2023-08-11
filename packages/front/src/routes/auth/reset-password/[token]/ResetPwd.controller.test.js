@@ -1,6 +1,7 @@
 import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
 import { ResetPwdController } from "./ResetPwd.controller";
 import authService from "$lib/resources/auth/auth.service";
+import { goToUrl } from "$lib/services/router.service.js";
 
 vi.mock("@api-subventions-asso/dto", async () => {
     const actual = await vi.importActual("@api-subventions-asso/dto");
@@ -16,6 +17,7 @@ vi.mock("@api-subventions-asso/dto", async () => {
         __esModule: true, // this property makes it work
     };
 });
+vi.mock("$lib/services/router.service");
 
 describe("ResetPwdController", () => {
     const TOKEN = "123TOKEN";
@@ -23,9 +25,9 @@ describe("ResetPwdController", () => {
 
     describe("constructor and static values", () => {
         it.each`
-            propertyName  | expected
-            ${"password"} | ${""}
-            ${"promise"}  | ${Promise.resolve()}
+            propertyName | expected
+            ${"values"}  | ${{ password: "", confirm: "" }}
+            ${"promise"} | ${Promise.resolve()}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new ResetPwdController(TOKEN);
             expect(ctrl[propertyName].value).toEqual(expected);
@@ -65,10 +67,7 @@ describe("ResetPwdController", () => {
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
             setPromiseMock = vi.spyOn(ctrl.promise, "set");
-            ctrl.password.value = PASSWORD;
-
-            delete window.location;
-            window.location = { assign: vi.fn() };
+            ctrl.values.value.password = PASSWORD;
         });
         afterAll(() => serviceMock.mockRestore());
 
@@ -90,7 +89,7 @@ describe("ResetPwdController", () => {
             ctrl.activation = active;
             const expected = `/auth/login?success=${queryParam}`;
             await ctrl.onSubmit();
-            expect(window.location.assign).toBeCalledWith(expected);
+            expect(goToUrl).toBeCalledWith(expected);
         });
 
         it("catches promise rejection", async () => {
@@ -117,27 +116,24 @@ describe("ResetPwdController", () => {
         });
     });
 
-    describe("checkPassword", () => {
-        const ctrl = new ResetPwdController(TOKEN);
-
-        it.each`
-            condition                  | attemptedPwd
-            ${"digit"}                 | ${"testPassword."}
-            ${"lowercase letter"}      | ${"TESTPASS0RD."}
-            ${"uppercase letter"}      | ${"testpassw0rd."}
-            ${"special character"}     | ${"testPassw0rd"}
-            ${"at least 8 characters"} | ${"te5tPa."}
-            ${"at most 32 characters"} | ${"testPassw0rd.1234567890$poiuytre4"}
-        `("rejects that don't contain $condition", ({ attemptedPwd }) => {
-            const expected = false;
-            const actual = ctrl.checkPassword(attemptedPwd);
-            expect(actual).toBe(expected);
-        });
-
-        it("accepts proper password", () => {
+    describe("enableSubmit()", () => {
+        it("should set isSubmitActive to true", () => {
             const expected = true;
-            const actual = ctrl.checkPassword("testPass0rd.");
-            expect(actual).toBe(expected);
+            const controller = new ResetPwdController(TOKEN);
+            controller.isSubmitActive.set(false);
+            controller.enableSubmit();
+            const actual = controller.isSubmitActive.value;
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("disableSubmit()", () => {
+        it("should set isSubmitActive to false", () => {
+            const expected = false;
+            const controller = new ResetPwdController(TOKEN);
+            controller.disableSubmit();
+            const actual = controller.isSubmitActive.value;
+            expect(actual).toEqual(expected);
         });
     });
 });
