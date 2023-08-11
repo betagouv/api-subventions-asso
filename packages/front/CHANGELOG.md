@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.34.1](https://github.com/betagouv/datasubvention/compare/v0.33.2...v0.34.1) (2023-08-11)
+
+
+### Bug Fixes
+
+* **front:** breadcrumbs when 404 inside route ([37c649b](https://github.com/betagouv/datasubvention/commit/37c649b595e2e88c65619976f3bbdf912e252646))
+* **front:** local storage get with default value ([728b6a5](https://github.com/betagouv/datasubvention/commit/728b6a572fa84773134a91a15060aa84a10a8d24))
+
+
+
+# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
+
+
+### Bug Fixes
+
+* **front:** local storage on parsing undefined ([6c94a2d](https://github.com/betagouv/datasubvention/commit/6c94a2ddd146ee907b8a9639f76edd71e519b062))
+
+
+### Features
+
+* **front:** add MultiStepFormController ([39af847](https://github.com/betagouv/datasubvention/commit/39af847560aa2b6c16cdc677544194bb758acd99))
+* **front:** add stepper ([3ac1ad8](https://github.com/betagouv/datasubvention/commit/3ac1ad85243d6ea220f23d648e460201f81a7dd8))
+* **front:** add traking ([62d61f4](https://github.com/betagouv/datasubvention/commit/62d61f442c73dca607f16204756d213df32a5541))
+* **front:** clean and add test ([c6af491](https://github.com/betagouv/datasubvention/commit/c6af4913a37ad1b3ec2f7f2ebdb63b04061fde34))
+* **front:** make the form dynamic ([3894feb](https://github.com/betagouv/datasubvention/commit/3894feb2b63efe8cee508049eb16a6d6e85ef521))
+* **front:** multi step form static ([32e7e99](https://github.com/betagouv/datasubvention/commit/32e7e9996790ff922b1f96f8ea02c5d0547af01b))
+
+
+
+
+
 # [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
 
 
