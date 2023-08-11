@@ -15,7 +15,6 @@ if (![].at) {
 // TODO: rendre dynamique (via une librairie de routing ?)
 export const buildBreadcrumbs = path => {
     const crumbs = [];
-    if (path.includes("404")) crumbs.push({ label: "Page introuvable" });
     if (path.includes("mentions-legales")) crumbs.push({ label: "Mentions Légales" });
     if (path.includes("cgu")) crumbs.push({ label: "Conditions générales d’utilisation" });
     if (path.includes("contact")) crumbs.push({ label: "Contactez-nous" });
