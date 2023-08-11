@@ -44,8 +44,8 @@
             <svelte:component
                 this={$currentStep.step.component}
                 bind:values={$data[$currentStep.index]}
-                on:error={() => controller.blockStep()}
-                on:valid={() => controller.unblockStep()} />
+                on:error={() => controller.updateValidation(false)}
+                on:valid={() => controller.updateValidation(true)} />
             {#if !$currentStep.isFirstStep}
                 <Button
                     htmlType="button"
