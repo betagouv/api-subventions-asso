@@ -23,7 +23,8 @@ export default class DefinePasswordController {
     }
 
     _checkConfirm() {
-        if (!this.values.confirmPwd || this.values.confirmPwd === this.values.password) this._onConfirmValid();
+        if (!this.values.confirmPwd) return;
+        if (this.values.confirmPwd === this.values.password) this._onConfirmValid();
         else this._onConfirmError();
     }
 
@@ -38,7 +39,8 @@ export default class DefinePasswordController {
     }
 
     _handleValidDispatch() {
-        if (!this.showPasswordError.value && !this.showConfirmError.value) this.dispatch("valid");
+        if (!this.values.password || !this.values.confirmPwd) return this.dispatch("error");
+        if (!this.showPasswordError.value && !this.showConfirmError.value) return this.dispatch("valid");
     }
 
     _onPasswordError() {
@@ -52,6 +54,6 @@ export default class DefinePasswordController {
     }
 
     _handleErrorDispatch() {
-        if (this.showPasswordError.value || this.showConfirmError.value) this.dispatch("error");
+        this.dispatch("error");
     }
 }
