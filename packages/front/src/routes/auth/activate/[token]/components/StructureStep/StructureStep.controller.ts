@@ -1,6 +1,7 @@
 import { AgentJobTypeEnum } from "@api-subventions-asso/dto";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
+import { isPhoneNumber } from "$lib/helpers/stringHelper";
 
 type Option = {
     value: AgentJobTypeEnum;
@@ -36,7 +37,7 @@ export default class StructureStepController {
             },
             phoneNumber: (number: string) => {
                 if (!number) return StructureStepController.errorMandatory;
-                if (!number.match(/09/)) return "Entrez un numéro de téléphone au format "; // TODO
+                if (!isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
             },
         };
         this.dirty = {

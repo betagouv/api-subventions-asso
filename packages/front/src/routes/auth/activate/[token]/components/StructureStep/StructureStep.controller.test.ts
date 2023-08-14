@@ -1,11 +1,13 @@
 import StructureStepController from "./StructureStep.controller";
 import Dispatch from "$lib/core/Dispatch";
+import { isPhoneNumber } from "$lib/helpers/stringHelper";
 
 vi.mock("$lib/core/Dispatch", () => ({
     default: {
         getDispatcher: vi.fn(() => vi.fn()),
     },
 }));
+vi.mock("$lib/helpers/stringHelper");
 
 describe("StructureStepController", () => {
     let ctrl: StructureStepController;
@@ -47,17 +49,24 @@ describe("StructureStepController", () => {
                 expect(actual).toBe(expected);
             });
 
-            it("wrong format phoneNumber returns error", () => {
+            it("returns error message if return from helper is false", () => {
+                vi.mocked(isPhoneNumber).mockReturnValueOnce(false);
                 // @ts-expect-error - mock private
                 const actual = ctrl.validators.phoneNumber("not a phone number");
-                expect(actual).toMatchInlineSnapshot('"Entrez un numéro de téléphone au format "');
+                expect(actual).toMatchInlineSnapshot('"Entrez un numéro de téléphone valide"');
+            });
+
+            it("returns undefined if return from helper is true", () => {
+                vi.mocked(isPhoneNumber).mockReturnValueOnce(true);
+                // @ts-expect-error - mock private
+                const actual = ctrl.validators.phoneNumber("a phone number");
+                expect(actual).toBeUndefined();
             });
 
             it.each`
-                varName          | correctValue
-                ${"service"}     | ${"something"}
-                ${"jobType"}     | ${["some1"]}
-                ${"phoneNumber"} | ${"09"}
+                varName      | correctValue
+                ${"service"} | ${"something"}
+                ${"jobType"} | ${["some1"]}
             `("filled $varName returns error", ({ varName, correctValue }) => {
                 // @ts-expect-error - test private
                 const actual = ctrl.validators[varName](correctValue);
