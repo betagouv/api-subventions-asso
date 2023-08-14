@@ -1,6 +1,6 @@
 import { ResetPasswordErrorCodes, TokenValidationType } from "@api-subventions-asso/dto";
-import AgentTypeStep from "./components/AgentTypeStep.svelte";
-import CollectedDataAlert from "./components/CollectedDataAlert.svelte";
+import AgentTypeStep from "./components/AgentTypeStep/AgentTypeStep.svelte";
+import CollectedDataAlert from "./components/AgentTypeStep/CollectedDataAlert.svelte";
 import DefinePassword from "$lib/components/DefinePassword/DefinePassword.svelte";
 import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAlert.svelte";
 import authService from "$lib/resources/auth/auth.service";
