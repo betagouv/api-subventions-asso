@@ -10,13 +10,16 @@
     export let name = `checkbox-${id}`;
     export let required = false;
     export let inline = false;
+    export let errorMsg = "";
+
+    const descErrorElement = `${id}-desc-error`;
 
     const dispatch = Dispatch.getDispatcher();
 
     // if hints are necessary refer to radio component
 </script>
 
-<fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages">
+<fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages" class:fr-fieldset--error={errorMsg}>
     <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{id}-legend">
         {label}
     </legend>
@@ -29,9 +32,12 @@
                     {name}
                     value={option.value}
                     {required}
+                    aria-required={required}
                     bind:group={value}
                     aria-describedby="{id}-messages"
-                    on:change={() => dispatch("change", option)} />
+                    on:change={() => dispatch("change", option)}
+                    aria-invalid={errorMsg ? "true" : undefined}
+                    aria-errormessage={errorMsg ? descErrorElement : undefined} />
                 <label class="fr-label" for="{id}-{i}">
                     {option.label}
                 </label>
@@ -39,5 +45,11 @@
             </div>
         </div>
     {/each}
-    <div class="fr-messages-group" id="{id}-messages" aria-live="assertive" />
+    <div class="fr-messages-group" id="{id}-messages" aria-live="assertive">
+        {#if errorMsg}
+            <p class="fr-message fr-message--error" id={descErrorElement}>
+                {errorMsg}
+            </p>
+        {/if}
+    </div>
 </fieldset>
