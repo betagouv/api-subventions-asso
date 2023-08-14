@@ -49,7 +49,6 @@ describe("AgentTypeStepController", () => {
                 // @ts-expect-error - mock
                 vi.mocked(derived).mockReturnValueOnce(expected);
                 ctrl = new AgentTypeStepController();
-                // @ts-expect-error - mock private
                 const actual = ctrl.options;
                 expect(actual).toBe(expected);
             });

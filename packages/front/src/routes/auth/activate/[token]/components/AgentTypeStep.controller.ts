@@ -14,7 +14,7 @@ export default class AgentTypeStepController {
 
     private readonly dispatch: (_: string) => void;
     private readonly showNoneMessage: Store<boolean>;
-    private readonly options: ReadStore<Option[]>;
+    public readonly options: ReadStore<Option[]>;
 
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
