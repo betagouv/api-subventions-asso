@@ -9,7 +9,7 @@ type Option = {
 };
 
 export default class AgentTypeStepController {
-    private static errorMessage =
+    private static htmlErrorMessage =
         'Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href="mailto:contact@datasubvention.beta.gouv.fr">contact@datasubvention.beta.gouv.fr</a>';
 
     private readonly dispatch: (_: string) => void;
@@ -30,7 +30,7 @@ export default class AgentTypeStepController {
             {
                 value: "none",
                 label: "Aucune des propositions ci-dessus",
-                hint: show ? AgentTypeStepController.errorMessage : undefined,
+                hintHtml: show ? AgentTypeStepController.htmlErrorMessage : undefined,
             },
         ]);
     }

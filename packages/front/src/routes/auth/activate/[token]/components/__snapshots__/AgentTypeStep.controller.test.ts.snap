@@ -19,7 +19,7 @@ exports[`AgentTypeStepController > constructor > inits option store > derived ca
     "value": "OPERATOR",
   },
   {
-    "hint": "Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href=\\"mailto:contact@datasubvention.beta.gouv.fr\\">contact@datasubvention.beta.gouv.fr</a>",
+    "hintHtml": "Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href=\\"mailto:contact@datasubvention.beta.gouv.fr\\">contact@datasubvention.beta.gouv.fr</a>",
     "label": "Aucune des propositions ci-dessus",
     "value": "none",
   },
@@ -45,7 +45,7 @@ exports[`AgentTypeStepController > constructor > inits option store > derived ca
     "value": "OPERATOR",
   },
   {
-    "hint": undefined,
+    "hintHtml": undefined,
     "label": "Aucune des propositions ci-dessus",
     "value": "none",
   },

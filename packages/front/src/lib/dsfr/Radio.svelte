@@ -5,10 +5,10 @@
     export let value: string;
 
     export let label: string;
-    export let options: { label: string; value: string; hint?: string }[] = [];
+    export let options: { label: string; value: string; hintHtml?: string }[] = [];
     export let id = nanoid(7);
     export let name = `radio-${id}`;
-    export let hint = "";
+    export let hintHtml = "";
     export let required = false;
     export let inline = false;
 
@@ -18,7 +18,7 @@
 <fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages">
     <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{id}-legend">
         {label}
-        {#if hint}<span class="fr-hint-text">{@html hint}</span>{/if}
+        {#if hintHtml}<span class="fr-hint-text">{@html hintHtml}</span>{/if}
     </legend>
     {#each options as option, i}
         <div class="fr-fieldset__element" class:fr-fieldset__element--inline={inline}>
@@ -33,7 +33,7 @@
                     on:change={() => dispatch("change", option)} />
                 <label class="fr-label" for="{id}-{i}">
                     {option.label}
-                    {#if option.hint}<span class="fr-hint-text">{@html option.hint}</span>{/if}
+                    {#if option.hintHtml}<span class="fr-hint-text">{@html option.hintHtml}</span>{/if}
                 </label>
             </div>
         </div>
