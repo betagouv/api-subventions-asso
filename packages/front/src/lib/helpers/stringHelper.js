@@ -13,3 +13,8 @@ export function isHyphen(str) {
 export function capitalizeFirstLetter(str) {
     return str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str;
 }
+
+export function isPhoneNumber(str) {
+    // https://stackoverflow.com/a/38484020
+    return /^(?:(?:\+|00)33|0)[\s-.]*[1-9](?:[\s.-]*\d{2}){4}$/.test(str);
+}

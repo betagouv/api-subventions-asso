@@ -1,4 +1,5 @@
 import * as StringHelper from "./stringHelper";
+import { isPhoneNumber } from "./stringHelper";
 
 describe("StringHelper", () => {
     describe("isHyphen", () => {
@@ -55,6 +56,40 @@ describe("StringHelper", () => {
             const expected = "re...";
             const actual = StringHelper.trim(STR, 5);
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("isPhoneNumber", () => {
+        it("accepts phone number with + and space", () => {
+            expect(isPhoneNumber("+33 1 00 00 00 00")).toBeTruthy();
+        });
+
+        it("accepts phone number with + and no separator", () => {
+            expect(isPhoneNumber("+33100000000")).toBeTruthy();
+        });
+
+        it("accepts phone number 0 and dash", () => {
+            expect(isPhoneNumber("01-00-00-00-00")).toBeTruthy();
+        });
+
+        it("accepts phone number 0 and dot", () => {
+            expect(isPhoneNumber("01.00.00.00.00")).toBeTruthy();
+        });
+
+        it("rejects letters", () => {
+            expect(isPhoneNumber("01.00.aa.00.00")).toBeFalsy();
+        });
+
+        it("rejects longer numbers", () => {
+            expect(isPhoneNumber("01.00.00.00.005")).toBeFalsy();
+        });
+
+        it("rejects shorter numbers", () => {
+            expect(isPhoneNumber("+331.00.00.00.0")).toBeFalsy();
+        });
+
+        it("rejects disorganized", () => {
+            expect(isPhoneNumber("+331.0000.0.00.00")).toBeFalsy();
         });
     });
 });
