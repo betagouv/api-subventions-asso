@@ -11,14 +11,14 @@
     export let hintHtml = "";
     export let required = false;
     export let inline = false;
-    export let errorMsg = "";
+    export let errorMsgHtml = "";
 
     const descErrorElement = `${id}-desc-error`;
 
     const dispatch = Dispatch.getDispatcher();
 </script>
 
-<fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages" class:fr-fieldset--error={errorMsg}>
+<fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages" class:fr-fieldset--error={errorMsgHtml}>
     <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{id}-legend">
         {label}
         {#if hintHtml}<span class="fr-hint-text">{@html hintHtml}</span>{/if}
@@ -37,8 +37,8 @@
                 <label
                     class="fr-label"
                     for="{id}-{i}"
-                    aria-invalid={errorMsg ? "true" : undefined}
-                    aria-errormessage={errorMsg ? descErrorElement : undefined}>
+                    aria-invalid={errorMsgHtml ? "true" : undefined}
+                    aria-errormessage={errorMsgHtml ? descErrorElement : undefined}>
                     {option.label}
                     {#if option.hintHtml}<span class="fr-hint-text">{@html option.hintHtml}</span>{/if}
                 </label>
@@ -46,9 +46,9 @@
         </div>
     {/each}
     <div class="fr-messages-group" id="{id}-messages" aria-live="assertive">
-        {#if errorMsg}
+        {#if errorMsgHtml}
             <p class="fr-message fr-message--error" id={descErrorElement}>
-                {errorMsg}
+                <span>{@html errorMsgHtml}</span>
             </p>
         {/if}
     </div>
