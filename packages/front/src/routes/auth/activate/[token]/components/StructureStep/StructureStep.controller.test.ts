@@ -29,7 +29,7 @@ describe("StructureStepController", () => {
 
         it.each`
             varName
-            ${"options"}
+            ${"jobTypeOptions"}
             ${"dirty"}
         `("inits $varName", ({ varName }) => {
             // @ts-expect-error - mock

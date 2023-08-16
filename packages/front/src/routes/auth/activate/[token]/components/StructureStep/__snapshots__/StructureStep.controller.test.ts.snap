@@ -8,7 +8,7 @@ exports[`StructureStepController > constructor > inits 'dirty' 1`] = `
 }
 `;
 
-exports[`StructureStepController > constructor > inits 'options' 1`] = `
+exports[`StructureStepController > constructor > inits 'jobTypeOptions' 1`] = `
 [
   {
     "label": "Gestionnaire administratif et financier",

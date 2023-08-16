@@ -8,7 +8,7 @@ export * from "./auth/LoginDtoResponse";
 export * from "./auth/ResetPasswordDtoResponse";
 export * from "./auth/SignupDtoResponse";
 export * from "./auth/TokenValidationDtoResponse";
-export * from "./auth/subscriptionForm/agentJobType";
+export * from "./auth/subscriptionForm";
 export * from "./search/DemandeSubvention";
 export * from "./shared/ProviderValue";
 export * from "./shared/Rna";

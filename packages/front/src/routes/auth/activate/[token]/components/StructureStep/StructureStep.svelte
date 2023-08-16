@@ -32,7 +32,7 @@
     </div>
     <div class="fr-fieldset__element fr-mb-0 fr-mt-4v">
         <Checkbox
-            options={ctrl.options}
+            options={ctrl.jobTypeOptions}
             label="Quel type de poste occupez-vous ?"
             errorMsg={$errors.jobType}
             on:change={() => ctrl.onUpdate(values, "jobType")}
@@ -51,6 +51,5 @@
             error={$errors.phoneNumber}
             on:blur={() => ctrl.onUpdate(values, "phoneNumber")}
             required={true} />
-        <!--        TODO placeholder phone careful format -->
     </div>
 </fieldset>

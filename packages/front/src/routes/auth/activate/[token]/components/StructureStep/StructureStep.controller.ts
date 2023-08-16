@@ -27,7 +27,7 @@ export default class StructureStepController {
         },
     };
 
-    public readonly options: Option[] = [
+    public readonly jobTypeOptions: Option[] = [
         { value: AgentJobTypeEnum.ADMINISTRATOR, label: "Gestionnaire administratif et financier" },
         {
             value: AgentJobTypeEnum.EXPERT,
@@ -40,11 +40,10 @@ export default class StructureStepController {
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
         this.errors = new Store({});
-        this.dirty = {
-            service: false,
-            jobType: false,
-            phoneNumber: false,
-        };
+        this.dirty = {};
+        for (const inputName of Object.keys(this.validators)) {
+            this.dirty[inputName] = false;
+        }
     }
 
     onUpdate(values: Record<string, unknown>, changedKey: string) {
