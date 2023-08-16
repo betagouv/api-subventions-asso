@@ -7,7 +7,7 @@
     "license": "MIT",
     "main": "lib/tools.js",
     "engines": {
-        "node": "16",
+        "node": "16.14",
         "npm": "8"
     },
     "repository": {
