@@ -1,5 +1,5 @@
 import { FindOneAndUpdateOptions, ObjectId } from "mongodb";
-import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret } from "dto";
 import db from "../../../../shared/MongoConnection";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 

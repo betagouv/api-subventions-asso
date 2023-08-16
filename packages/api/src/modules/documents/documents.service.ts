@@ -1,5 +1,4 @@
-import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
-import { Document } from "@api-subventions-asso/dto/search/Document";
+import { Rna, Siren, Siret, Document } from "dto";
 import * as Sentry from "@sentry/node";
 import providers from "../providers";
 import { StructureIdentifiers } from "../../@types";

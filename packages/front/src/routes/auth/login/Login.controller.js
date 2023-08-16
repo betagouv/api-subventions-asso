@@ -1,4 +1,4 @@
-import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes } from "dto";
 import { goToUrl } from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 import Store from "$lib/core/Store";

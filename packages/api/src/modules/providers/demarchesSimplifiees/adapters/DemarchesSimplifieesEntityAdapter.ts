@@ -1,6 +1,6 @@
 import moment from "moment";
 import * as lodash from "lodash";
-import { ApplicationDto, DemandeSubvention } from "@api-subventions-asso/dto";
+import { ApplicationDto, DemandeSubvention } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";

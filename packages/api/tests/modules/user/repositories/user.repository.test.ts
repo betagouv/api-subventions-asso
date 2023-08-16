@@ -1,6 +1,6 @@
 //TODO: transform this to unit test or integ test in user.spec
 
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import userRepository from "../../../../src/modules/user/repositories/user.repository";
 import userService from "../../../../src/modules/user/user.service";

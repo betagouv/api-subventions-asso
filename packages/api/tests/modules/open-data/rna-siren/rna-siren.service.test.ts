@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Association } from "@api-subventions-asso/dto";
+import { Association } from "dto";
 import leCompteAssoService from "../../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
 import osirisService from "../../../../src/modules/providers/osiris/osiris.service";
 import RnaSiren from "../../../../src/modules/_open-data/rna-siren/entities/RnaSirenEntity";

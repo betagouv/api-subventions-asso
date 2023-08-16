@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import { PaymentDto, VersementChorus } from "@api-subventions-asso/dto";
+import { PaymentDto, VersementChorus } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 

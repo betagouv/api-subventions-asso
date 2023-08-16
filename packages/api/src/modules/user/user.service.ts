@@ -15,7 +15,7 @@ import {
     UserDataDto,
     TokenValidationDtoResponse,
     TokenValidationType,
-} from "@api-subventions-asso/dto";
+} from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";

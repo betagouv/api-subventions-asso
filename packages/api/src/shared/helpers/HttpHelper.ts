@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 
 export function isRequestFromAdmin(req: Request) {
     if (!req.user) return false;

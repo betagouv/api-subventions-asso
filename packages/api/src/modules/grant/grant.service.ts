@@ -1,4 +1,4 @@
-import { GrantDto, Siret } from "@api-subventions-asso/dto";
+import { GrantDto, Siret } from "dto";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import providers from "../providers";

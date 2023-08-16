@@ -11,8 +11,8 @@ const mocks = vi.hoisted(() => {
     };
 });
 
-vi.mock("@api-subventions-asso/dto", async () => {
-    const actual = await vi.importActual("@api-subventions-asso/dto");
+vi.mock("dto", async () => {
+    const actual = await vi.importActual("dto");
     return {
         ...actual,
         SignupErrorCodes: { EMAIL_NOT_VALID: mocks.DEFAULT_ERROR_CODE },

@@ -1,4 +1,4 @@
-import { Siren } from "@api-subventions-asso/dto";
+import { Siren } from "dto";
 import axios from "axios";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";

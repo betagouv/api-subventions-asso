@@ -1,4 +1,4 @@
-import { Siren } from "@api-subventions-asso/dto";
+import { Siren } from "dto";
 
 interface MandataireSocial {
     type: string;

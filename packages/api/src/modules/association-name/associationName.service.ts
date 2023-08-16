@@ -1,4 +1,4 @@
-import { Rna, Siren } from "@api-subventions-asso/dto";
+import { Rna, Siren } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";

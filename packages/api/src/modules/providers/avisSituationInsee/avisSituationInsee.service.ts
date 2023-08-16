@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Siren, Siret, Rna } from "@api-subventions-asso/dto";
+import { Siren, Siret, Rna } from "dto";
 
-import { Document } from "@api-subventions-asso/dto/search/Document";
+import { Document } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";

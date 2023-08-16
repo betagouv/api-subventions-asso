@@ -1,4 +1,4 @@
-import { Rna, Siret } from "@api-subventions-asso/dto";
+import { Rna, Siret } from "dto";
 import { DefaultObject } from "../../../../@types";
 
 export default interface DemarchesSimplifieesDataEntity {

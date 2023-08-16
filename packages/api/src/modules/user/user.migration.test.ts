@@ -1,4 +1,4 @@
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import UserReset from "./entities/UserReset";

@@ -1,4 +1,4 @@
-import { Etablissement } from "@api-subventions-asso/dto";
+import { Etablissement } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import EtablisementDto from "../dto/EtablissementDto";
 

@@ -1,4 +1,4 @@
-import { Association, Etablissement, ProviderValues, Rna } from "@api-subventions-asso/dto";
+import { Association, Etablissement, ProviderValues, Rna } from "dto";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";

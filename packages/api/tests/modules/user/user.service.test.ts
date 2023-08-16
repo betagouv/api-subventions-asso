@@ -1,6 +1,6 @@
 //TODO: transform this in unit test (src/modules/user/user.service.test.ts) or move it to user.spec.ts
 
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";

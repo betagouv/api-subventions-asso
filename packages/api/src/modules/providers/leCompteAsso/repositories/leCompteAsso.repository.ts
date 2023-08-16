@@ -1,5 +1,5 @@
 import { FindOneAndUpdateOptions } from "mongodb";
-import { Rna, Siret, Siren } from "@api-subventions-asso/dto";
+import { Rna, Siret, Siren } from "dto";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 

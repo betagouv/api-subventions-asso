@@ -1,4 +1,4 @@
-import { Siret } from "@api-subventions-asso/dto";
+import { Siret } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";

@@ -1,4 +1,4 @@
-import { DemandeSubvention, Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import axios from "axios";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";

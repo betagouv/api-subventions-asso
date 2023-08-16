@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { DemandeSubvention } from "dto";
 import Flux from "../../../../shared/Flux";
 import associationsService from "../../associations.service";
 import { AssociationController } from "./AssociationController";

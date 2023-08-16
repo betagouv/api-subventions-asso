@@ -1,4 +1,4 @@
-import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret } from "dto";
 
 export interface StructureEtablissementDto {
     id_siret: Siret;

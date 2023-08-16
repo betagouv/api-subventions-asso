@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret, Association, Etablissement } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import EventManager from "../../../shared/EventManager";

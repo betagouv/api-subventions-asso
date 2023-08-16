@@ -1,4 +1,4 @@
-import { ProviderValues, Siren, Siret, Etablissement } from "@api-subventions-asso/dto";
+import { ProviderValues, Siren, Siret, Etablissement } from "dto";
 
 import * as Sentry from "@sentry/node";
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";

@@ -5,7 +5,7 @@ import {
     GetSubventionsResponseDto,
     GetVersementsResponseDto,
     Siret,
-} from "@api-subventions-asso/dto";
+} from "dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../etablissements.service";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";

@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { UserWithJWTDto, UserDto } from "@api-subventions-asso/dto/user/UserDto";
+import { UserWithJWTDto, UserDto } from "dto";
 import { IVerifyOptions } from "passport-local";
 
 export interface IdentifiedRequest extends Request {

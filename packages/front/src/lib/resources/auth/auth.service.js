@@ -1,4 +1,4 @@
-import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { SignupErrorCodes, ResetPasswordErrorCodes } from "dto";
 import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
 import requestsService from "$lib/services/requests.service";

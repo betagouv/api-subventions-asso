@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes } from "dto";
 
 const ERROR_MESSAGES = {
     [ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND]: `<p>Ce lien n'est pas valide, vérifiez que l'URL est bien celle envoyée par mail.</p>

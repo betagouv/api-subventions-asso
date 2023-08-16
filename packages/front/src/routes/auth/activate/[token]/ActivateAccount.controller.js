@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes, TokenValidationType } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes, TokenValidationType } from "dto";
 import StructureStep from "./components/StructureStep/StructureStep.svelte";
 import AgentTypeStep from "./components/AgentTypeStep/AgentTypeStep.svelte";
 import CollectedDataAlert from "./components/AgentTypeStep/CollectedDataAlert.svelte";

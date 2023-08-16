@@ -1,4 +1,4 @@
-import { Rna, Siren } from "@api-subventions-asso/dto";
+import { Rna, Siren } from "dto";
 
 export default class AssociationNameEntity {
     constructor(
