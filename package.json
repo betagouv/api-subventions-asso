@@ -4,11 +4,14 @@
     "description": "",
     "main": "index.js",
     "engines": {
-        "node": "16",
+        "node": "16.14",
         "npm": "8"
     },
     "scripts": {
         "dev": "lerna run dev",
+        "build:front": "lerna run build --scope=front",
+        "build:api": "lerna run build --scope=api",
+        "build:dto": "lerna run build --scope=dto",
         "build": "lerna run build",
         "scalingo-postbuild": "bash ./scalingo-build.bash",
         "generate": "lerna run generate",
