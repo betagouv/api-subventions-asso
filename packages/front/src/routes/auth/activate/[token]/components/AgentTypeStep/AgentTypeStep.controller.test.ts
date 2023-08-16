@@ -1,7 +1,6 @@
 import { beforeEach } from "vitest";
 import AgentTypeStepController from "./AgentTypeStep.controller";
 import Dispatch from "$lib/core/Dispatch";
-import { derived } from "$lib/core/Store";
 
 vi.mock("$lib/core/Dispatch", () => ({
     default: {
@@ -36,54 +35,32 @@ describe("AgentTypeStepController", () => {
             expect(actual).toBe(expected);
         });
 
-        it("inits showNoneMessage", () => {
-            const expected = false;
-            // @ts-expect-error - test private
-            const actual = ctrl.showNoneMessage.value;
+        it("inits errorMessage", () => {
+            const expected = "";
+            const actual = ctrl.errorMessage.value;
             expect(actual).toBe(expected);
         });
 
-        describe("inits option store", () => {
-            it("sets value from derived", () => {
-                const expected = "Function";
-                // @ts-expect-error - mock
-                vi.mocked(derived).mockReturnValueOnce(expected);
-                ctrl = new AgentTypeStepController();
-                const actual = ctrl.options;
-                expect(actual).toBe(expected);
-            });
-
-            it("derived depends on showNoneMessage", () => {
-                // @ts-expect-error - test private
-                expect(derived).toHaveBeenCalledWith(ctrl.showNoneMessage, expect.any(Function));
-            });
-
-            it.each`
-                arg      | label
-                ${true}  | ${"with"}
-                ${false} | ${"without"}
-            `("derived callback $label hint", ({ arg }) => {
-                const callback = vi.mocked(derived).mock.calls[0][1] as (show: boolean) => object[];
-                const actual = callback(arg);
-                expect(actual).toMatchSnapshot();
-            });
+        it("inits options", () => {
+            ctrl = new AgentTypeStepController();
+            const actual = ctrl.options;
+            expect(actual).toMatchSnapshot();
         });
     });
 
     describe.each`
-        withError | label              | event      | option
-        ${true}   | ${"with error"}    | ${"error"} | ${{ value: "none" }}
-        ${false}  | ${"without error"} | ${"valid"} | ${{ value: "some" }}
-    `("onUpdate", ({ withError, event, option }) => {
-        it("dispatches $event event", () => {
-            // @ts-expect-error - mock private
-            ctrl.showNoneMessage = { set: vi.fn() };
+        withError | event      | option
+        ${true}   | ${"error"} | ${{ value: "none" }}
+        ${false}  | ${"valid"} | ${{ value: "some" }}
+    `("onUpdate - case $event", ({ event, option }) => {
+        it("updates errorMessage store", () => {
+            // @ts-expect-error - mock readonly
+            ctrl.errorMessage = { set: vi.fn() };
             ctrl.onUpdate(option);
-            // @ts-expect-error - test private
-            expect(ctrl.showNoneMessage.set).toHaveBeenCalledWith(withError);
+            expect(ctrl.errorMessage.set).toMatchSnapshot();
         });
 
-        it("updates showNoneMessage store", () => {
+        it("dispatches event", () => {
             // @ts-expect-error - mock private
             ctrl.dispatch = vi.fn();
             ctrl.onUpdate(option);

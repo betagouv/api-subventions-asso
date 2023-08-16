@@ -1,11 +1,10 @@
 import { AgentTypeEnum } from "@api-subventions-asso/dto";
-import Store, { derived, ReadStore } from "$lib/core/Store";
+import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
 
 type Option = {
     value: AgentTypeEnum | "none";
     label: string;
-    hint?: string;
 };
 
 export default class AgentTypeStepController {
@@ -13,13 +12,13 @@ export default class AgentTypeStepController {
         'Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href="mailto:contact@datasubvention.beta.gouv.fr">contact@datasubvention.beta.gouv.fr</a>';
 
     private readonly dispatch: (_: string) => void;
-    private readonly showNoneMessage: Store<boolean>;
-    public readonly options: ReadStore<Option[]>;
+    public readonly errorMessage: Store<string>;
+    public readonly options: Option[];
 
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
-        this.showNoneMessage = new Store<boolean>(false);
-        this.options = derived(this.showNoneMessage, show => [
+        this.errorMessage = new Store("");
+        this.options = [
             { value: AgentTypeEnum.CENTRAL_ADMIN, label: "Agent public d’une administration centrale (État)" },
             {
                 value: AgentTypeEnum.DECONCENTRATED_ADMIN,
@@ -30,14 +29,13 @@ export default class AgentTypeStepController {
             {
                 value: "none",
                 label: "Aucune des propositions ci-dessus",
-                hintHtml: show ? AgentTypeStepController.htmlErrorMessage : undefined,
             },
-        ]);
+        ];
     }
 
     onUpdate(option: Option) {
         const error = option.value === "none";
-        this.showNoneMessage.set(error);
+        this.errorMessage.set(error ? AgentTypeStepController.htmlErrorMessage : "");
         this.dispatch(error ? "error" : "valid");
     }
 }

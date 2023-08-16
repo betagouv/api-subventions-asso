@@ -7,11 +7,12 @@
     };
 
     const ctrl = new AgentTypeStepController(values);
-    const { options } = ctrl;
+    const { errorMessage } = ctrl;
 </script>
 
 <Radio
-    options={$options}
+    options={ctrl.options}
     label="Vous êtes :"
     bind:value={values.agentType}
-    on:change={({ detail }) => ctrl.onUpdate(detail)} />
+    on:change={({ detail }) => ctrl.onUpdate(detail)}
+    errorMsgHtml={$errorMessage} />
