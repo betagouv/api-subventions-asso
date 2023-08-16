@@ -75,7 +75,7 @@
         "toad-scheduler": "^2.2.0",
         "tqdm": "^2.0.3",
         "ts-node": "^10.4.0",
-        "tsoa": "^3.2.1",
+        "tsoa": "^4.0.0",
         "winston": "^3.5.1",
         "winston-mongodb": "^5.0.7",
         "xss": "^1.0.14"
