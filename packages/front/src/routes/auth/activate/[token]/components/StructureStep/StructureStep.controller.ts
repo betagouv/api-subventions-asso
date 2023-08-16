@@ -10,36 +10,36 @@ type Option = {
 
 export default class StructureStepController {
     private readonly dispatch: (_: string) => void;
-    public readonly options: Option[];
     public readonly errors: Store<{ [key: string]: string | undefined }>;
     private static errorMandatory = "Ce champ est obligatoire";
-    private readonly validators: Record<string, (value: any) => string | undefined>;
     private readonly dirty: { [key: string]: boolean };
+
+    private readonly validators: Record<string, (value: any) => string | undefined> = {
+        service: (text: string) => {
+            if (!text) return StructureStepController.errorMandatory;
+        },
+        jobType: (jobs: string[] | null) => {
+            if (!jobs?.length) return StructureStepController.errorMandatory;
+        },
+        phoneNumber: (number: string) => {
+            if (!number) return StructureStepController.errorMandatory;
+            if (!isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
+        },
+    };
+
+    public readonly options: Option[] = [
+        { value: AgentJobTypeEnum.ADMINISTRATOR, label: "Gestionnaire administratif et financier" },
+        {
+            value: AgentJobTypeEnum.EXPERT,
+            label: "Chargé de mission / Expert métier",
+        },
+        { value: AgentJobTypeEnum.SERVICE_HEAD, label: "Responsable de service" },
+        { value: AgentJobTypeEnum.OTHER, label: "Autre" },
+    ];
 
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
-        this.options = [
-            { value: AgentJobTypeEnum.ADMINISTRATOR, label: "Gestionnaire administratif et financier" },
-            {
-                value: AgentJobTypeEnum.EXPERT,
-                label: "Chargé de mission / Expert métier",
-            },
-            { value: AgentJobTypeEnum.SERVICE_HEAD, label: "Responsable de service" },
-            { value: AgentJobTypeEnum.OTHER, label: "Autre" },
-        ];
         this.errors = new Store({});
-        this.validators = {
-            service: (text: string) => {
-                if (!text) return StructureStepController.errorMandatory;
-            },
-            jobType: (jobs: string[] | null) => {
-                if (!jobs?.length) return StructureStepController.errorMandatory;
-            },
-            phoneNumber: (number: string) => {
-                if (!number) return StructureStepController.errorMandatory;
-                if (!isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
-            },
-        };
         this.dirty = {
             service: false,
             jobType: false,
