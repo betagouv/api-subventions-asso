@@ -60,16 +60,15 @@
                 </Button>
             {/if}
             {#if $currentStep.isLastStep}
-                <Button 
+                <Button
                     htmlType="submit"
                     disabled={$isStepBlocked}
-                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}
-                >
+                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
                     {submitLabel}
                 </Button>
             {:else}
                 <Button
-                    htmlType="submit"
+                    htmlType="button"
                     type="secondary"
                     on:click={() => controller.next()}
                     on:submit={() => controller.next()}
