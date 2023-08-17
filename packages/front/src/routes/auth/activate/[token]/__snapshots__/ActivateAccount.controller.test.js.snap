@@ -12,5 +12,9 @@ exports[`ActivateAccountController > constructor > should define form steps 1`] 
     "component": [Function],
     "name": "Informations sur votre profil",
   },
+  {
+    "component": [Function],
+    "name": "Informations sur votre structure",
+  },
 ]
 `;
