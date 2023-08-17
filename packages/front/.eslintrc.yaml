@@ -40,6 +40,8 @@ rules:
         - destructuredArrayIgnorePattern: "^_"
           argsIgnorePattern: "^_"
           varsIgnorePattern: "^_"
+    "svelte/no-at-html-tags":
+      - warn
 #ignorePatterns:
 #    - "*.test.ts"
 #    - "*.spec.ts"
