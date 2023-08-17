@@ -16,6 +16,7 @@
     },
     "scripts": {
         "dev": "vite dev",
+        "vite:clean": "rm -r node_modules/.vite node_modules/.vitest",
         "start": "node ./build/index.js",
         "build": "vite build -l warn",
         "preview": "vite preview",
