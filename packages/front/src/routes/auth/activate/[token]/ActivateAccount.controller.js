@@ -20,10 +20,9 @@ export default class ActivateAccountController {
         ];
     }
 
-    onSubmit(values) {
-        return authService.resetPassword(this.token, values.password).then(() => {
-            goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
-        });
+    async onSubmit(values) {
+        await authService.resetPassword(this.token, values.password);
+        goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
     }
 
     async init() {
