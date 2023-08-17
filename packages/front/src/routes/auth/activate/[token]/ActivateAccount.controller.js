@@ -18,6 +18,7 @@ export default class ActivateAccountController {
             { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
             { name: "Informations sur votre structure", component: StructureStep },
         ];
+        this.buildContext = values => ({ agentType: values[1].agentType });
     }
 
     async onSubmit(values) {

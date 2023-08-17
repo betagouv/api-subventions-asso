@@ -8,9 +8,11 @@
     export let nextLabel = "Suivant";
     export let previousLabel = "Précédent";
     export let trackerFormName;
+    export let buildContext = () => ({});
 
-    const controller = new MultiStepFormController(steps, onSubmit);
-    const { currentStep, data, isStepBlocked } = controller;
+    const controller = new MultiStepFormController(steps, onSubmit, buildContext);
+
+    const { currentStep, data, isStepBlocked, context } = controller;
 </script>
 
 <div class="fr-grid-row">
@@ -43,6 +45,7 @@
             <svelte:component
                 this={$currentStep.step.component}
                 bind:values={$data[$currentStep.index]}
+                context={$context}
                 on:error={() => controller.blockStep()}
                 on:valid={() => controller.unblockStep()} />
             {#if !$currentStep.isFirstStep}
