@@ -50,13 +50,15 @@ export default class StructureStepController {
         this.dirty[changedKey] = true;
         const tempErrors: { [key: string]: string | undefined } = {};
         let currentError;
-        let error = false;
+        let shouldBlockStep = false;
+        // a step should sometimes be blocked even if we display no error to the user,
+        // typically when a required field was not filled at all
         for (const [key, validator] of Object.entries(this.validators)) {
             currentError = validator(values[key] as string);
-            if (currentError) error = true;
+            if (currentError) shouldBlockStep = true;
             if (this.dirty[key]) tempErrors[key] = currentError;
         }
         this.errors.set(tempErrors);
-        this.dispatch(error ? "error" : "valid");
+        this.dispatch(shouldBlockStep ? "error" : "valid");
     }
 }
