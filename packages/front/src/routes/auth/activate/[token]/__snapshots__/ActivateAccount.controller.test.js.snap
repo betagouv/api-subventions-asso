@@ -8,6 +8,11 @@ exports[`ActivateAccountController > constructor > should define form steps 1`] 
     "name": "Définir un mot de passe",
   },
   {
+    "alert": [Function],
+    "component": [Function],
+    "name": "Informations sur votre profil",
+  },
+  {
     "component": [Function],
     "name": "Informations sur votre structure",
   },
