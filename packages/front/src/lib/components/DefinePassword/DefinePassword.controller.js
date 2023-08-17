@@ -30,30 +30,30 @@ export default class DefinePasswordController {
 
     _onPasswordValid() {
         this.showPasswordError.set(false);
-        this._handleValidDispatch();
+        this._onOneFieldValid();
     }
 
     _onConfirmValid() {
         this.showConfirmError.set(false);
-        this._handleValidDispatch();
+        this._onOneFieldValid();
     }
 
-    _handleValidDispatch() {
-        if (!this.values.password || !this.values.confirmPwd) return this.dispatch("error");
+    _onOneFieldValid() {
+        if (!this.values.password || !this.values.confirmPwd) return this._dispatchError();
         if (!this.showPasswordError.value && !this.showConfirmError.value) return this.dispatch("valid");
     }
 
     _onPasswordError() {
         this.showPasswordError.set(true);
-        this._handleErrorDispatch();
+        this._dispatchError();
     }
 
     _onConfirmError() {
         this.showConfirmError.set(true);
-        this._handleErrorDispatch();
+        this._dispatchError();
     }
 
-    _handleErrorDispatch() {
+    _dispatchError() {
         this.dispatch("error");
     }
 }
