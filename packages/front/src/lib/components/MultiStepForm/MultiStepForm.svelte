@@ -1,5 +1,4 @@
 <script>
-    import { onDestroy } from "svelte";
     import MultiStepFormController from "./MultiStepForm.controller";
     import Button from "$lib/dsfr/Button.svelte";
 
@@ -11,9 +10,6 @@
     export let trackerFormName;
 
     const controller = new MultiStepFormController(steps, onSubmit);
-
-    onDestroy(() => controller.onDestroy());
-
     const { currentStep, data, isStepBlocked } = controller;
 </script>
 
