@@ -9,9 +9,8 @@ export class AdminStructureService {
     }
 
     async getAdminStructureByStringAgentType(agentType: string) {
-        if (!(Object.values(AgentTypeEnum) as string[]).includes(agentType))
-            throw new BadRequestError("Invalid AgentType");
-        return await this.getAdminStructureByAgentType(agentType as AgentTypeEnum);
+        if (!AgentTypeEnum[agentType]) throw new BadRequestError("Invalid AgentType");
+        return this.getAdminStructureByAgentType(agentType as AgentTypeEnum);
     }
 
     async replaceAll(entries: AdminStructureEntity[]) {

@@ -13,6 +13,13 @@ import AdminStructureEntity from "./entities/AdminStructureEntity";
  * and 2 (column 2 is only used if column 1 choice is "DECONCENTRATED_ADMIN")
  */
 export default class AdminStructureParser {
+    private static readonly csvToEnum = {
+        Opérateur: AgentTypeEnum.OPERATOR,
+        "Administration centrale": AgentTypeEnum.CENTRAL_ADMIN,
+        "Collectivité territoriale": AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+        "Administration déconcentrée": AgentTypeEnum.DECONCENTRATED_ADMIN,
+    };
+
     public static parseXls(content: Buffer): AdminStructureEntity[] {
         const data = ParseHelper.xlsParse(content)[0]; // single page
         const rows = data.slice(1);
@@ -26,13 +33,7 @@ export default class AdminStructureParser {
     }
 
     public static exportNameToAgentType(value: string) {
-        const csvToEnum = {
-            Opérateur: AgentTypeEnum.OPERATOR,
-            "Administration centrale": AgentTypeEnum.CENTRAL_ADMIN,
-            "Collectivité territoriale": AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
-            "Administration déconcentrée": AgentTypeEnum.DECONCENTRATED_ADMIN,
-        };
-        if (csvToEnum[value]) return csvToEnum[value];
+        if (AdminStructureParser.csvToEnum[value]) return AdminStructureParser.csvToEnum[value];
         throw new BadRequestError(
             `Valeur de première colonne "${value}" non conforme, mettre à jour \`csvNameToAgentType\` dans \`adminStructure.parser\`.`,
         );
