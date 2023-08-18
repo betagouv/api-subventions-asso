@@ -4,14 +4,14 @@
     "description": "",
     "main": "index.js",
     "engines": {
-        "node": "16.14",
-        "npm": "8"
+        "node": "18.17",
+        "npm": "9.6"
     },
     "scripts": {
         "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
         "start": "node ./build/src/index.js",
         "cli": "ts-node src/cli.ts",
-        "generate:docs": "tsoa swagger",
+        "generate:docs": "tsoa spec",
         "generate:routes": "tsoa routes",
         "generate": "npm run generate:routes && npm run generate:docs",
         "prebuild": "npm run generate",
