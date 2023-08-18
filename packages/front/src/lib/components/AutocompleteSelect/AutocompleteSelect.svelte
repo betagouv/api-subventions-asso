@@ -24,7 +24,7 @@
     export let id = nanoid(7);
     export let name = id;
     export let options: { value: string; label: string }[];
-    export const label = "";
+    export let label = "";
 
     const listId = `list-${id}`;
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
