@@ -1,5 +1,5 @@
 import { BrevoMailNotifyPipe, TemplateEnum } from "./BrevoMailNotifyPipe";
-import { TransactionalEmailsApi } from "@sendinblue/client";
+import { TransactionalEmailsApi } from "@getbrevo/brevo";
 
 jest.mock("sib-api-v3-typescript");
 

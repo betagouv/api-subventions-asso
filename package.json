@@ -40,15 +40,15 @@
     ],
     "dependencies": {
         "husky": "^7.0.4",
-        "ts-node": "^10.4.0",
-        "lerna": "^7.1.5"
+        "lerna": "^7.1.5",
+        "ts-node": "^10.4.0"
     },
     "devDependencies": {
-        "@types/node": "^18.0.0",
-        "@commitlint/cli": "^16.0.1",
+        "@commitlint/cli": "^17.7.1",
         "@commitlint/config-conventional": "^16.0.0",
         "@types/jest": "^27.4.1",
-        "standard-version": "^9.3.2",
-        "prettier": "^2.8.4"
+        "@types/node": "^18.0.0",
+        "prettier": "^2.8.4",
+        "standard-version": "^9.3.2"
     }
 }
