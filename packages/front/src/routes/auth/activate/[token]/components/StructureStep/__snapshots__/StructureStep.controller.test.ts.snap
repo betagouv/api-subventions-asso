@@ -2,9 +2,7 @@
 
 exports[`StructureStepController > constructor > inits 'dirty' 1`] = `
 {
-  "jobType": false,
   "phoneNumber": false,
-  "service": false,
 }
 `;
 

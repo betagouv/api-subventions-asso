@@ -15,9 +15,6 @@
 </script>
 
 <fieldset class="fr-fieldset">
-    <div class="fr-fieldset__element">
-        <span class="fr-hint-text">Sauf mention contraire, tous les champs sont obligatoires.</span>
-    </div>
     <div class="fr-fieldset__element fr-mt-4v">
         <Input
             id="service-input"
@@ -27,8 +24,7 @@
             bind:value={values.service}
             errorMsg={$errors.service}
             error={$errors.service}
-            on:blur={() => ctrl.onUpdate(values, "service")}
-            required={true} />
+            on:blur={() => ctrl.onUpdate(values, "service")} />
     </div>
     <div class="fr-fieldset__element fr-mb-0 fr-mt-4v">
         <Checkbox
@@ -49,7 +45,6 @@
             bind:value={values.phoneNumber}
             errorMsg={$errors.phoneNumber}
             error={$errors.phoneNumber}
-            on:blur={() => ctrl.onUpdate(values, "phoneNumber")}
-            required={true} />
+            on:blur={() => ctrl.onUpdate(values, "phoneNumber")} />
     </div>
 </fieldset>

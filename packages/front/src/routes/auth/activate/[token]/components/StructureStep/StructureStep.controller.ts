@@ -8,22 +8,28 @@ type Option = {
     label: string;
 };
 
+interface SubStep {
+    component: typeof SvelteComponent;
+    // valid: boolean
+}
+
 export default class StructureStepController {
     private readonly dispatch: (_: string) => void;
+
     public readonly errors: Store<{ [key: string]: string | undefined }>;
-    private static errorMandatory = "Ce champ est obligatoire";
+    // private static errorMandatory = "Ce champ est obligatoire";
     private readonly dirty: { [key: string]: boolean };
 
     private readonly validators: Record<string, (value: any) => string | undefined> = {
-        service: (text: string) => {
-            if (!text) return StructureStepController.errorMandatory;
-        },
-        jobType: (jobs: string[] | null) => {
-            if (!jobs?.length) return StructureStepController.errorMandatory;
-        },
+        // service: (text: string) => {
+        //     if (!text) return StructureStepController.errorMandatory;
+        // },
+        // jobType: (jobs: string[] | null) => {
+        //     if (!jobs?.length) return StructureStepController.errorMandatory;
+        // },
         phoneNumber: (number: string) => {
-            if (!number) return StructureStepController.errorMandatory;
-            if (!isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
+            // if (!number) return StructureStepController.errorMandatory;
+            if (number && !isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
         },
     };
 
@@ -44,6 +50,7 @@ export default class StructureStepController {
         for (const inputName of Object.keys(this.validators)) {
             this.dirty[inputName] = false;
         }
+        this.dispatch("valid") // no required field so default is valid
     }
 
     onUpdate(values: Record<string, unknown>, changedKey: string) {
