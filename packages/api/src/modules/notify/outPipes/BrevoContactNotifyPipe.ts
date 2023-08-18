@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { ContactsApi, ContactsApiApiKeys, UpdateContact } from "@getbrevo/brevo";
+import { ContactsApi, ContactsApiApiKeys, UpdateContact } from "@sendinblue/client";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";

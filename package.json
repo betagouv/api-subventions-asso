@@ -5,7 +5,7 @@
     "main": "index.js",
     "engines": {
         "node": "18.17",
-        "npm": "9.6"
+        "npm": "9.8.1"
     },
     "scripts": {
         "dev": "lerna run dev",
@@ -40,14 +40,11 @@
     ],
     "dependencies": {
         "husky": "^7.0.4",
-        "lerna": "^7.1.5",
-        "ts-node": "^10.4.0"
+        "lerna": "^7.1.5"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.7.1",
         "@commitlint/config-conventional": "^16.0.0",
-        "@types/jest": "^27.4.1",
-        "@types/node": "^18.0.0",
         "prettier": "^2.8.4",
         "standard-version": "^9.3.2"
     }

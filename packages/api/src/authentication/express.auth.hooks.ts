@@ -6,6 +6,7 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
 import userService from "../modules/user/user.service";
+import { IdentifiedRequest } from "../@types";
 
 export function authMocks(app: Express) {
     // A passport middleware to handle User login
@@ -56,26 +57,28 @@ export function authMocks(app: Express) {
     });
 
     app.post("/auth/login", (req, res, next) => {
+        const identifiedReq: IdentifiedRequest = req as IdentifiedRequest;
         passport.authenticate("login", (error, user, info: IVerifyOptions) => {
             if (error) return next(error);
             if (user) {
-                req.user = user;
+                identifiedReq.user = user;
             }
-            req.authInfo = info;
+            identifiedReq.authInfo = info;
 
             next();
-        })(req, res, next);
+        })(identifiedReq, res, next);
     });
 
     app.use((req, res, next) => {
-        if (req.authInfo) return next(); // if authInfo is not empty then the authentication is already check
+        const identifiedReq: IdentifiedRequest = req as IdentifiedRequest;
+        if (identifiedReq.authInfo) return next(); // if authInfo is not empty then the authentication is already check
         passport.authenticate("jwt", (error, user: UserDto, info: IVerifyOptions) => {
             if (user && !error) {
-                req.user = user;
+                identifiedReq.user = user;
             }
-            req.authInfo = info;
+            identifiedReq.authInfo = info;
 
             next();
-        })(req, res, next);
+        })(identifiedReq, res, next);
     });
 }
