@@ -13,7 +13,7 @@ describe("NotifyService", () => {
         it("should call outPipe notify", async () => {
             const fakeOutPipe: NotifyOutPipe = {
                 accepts: [NotificationType.TEST_EMAIL],
-                notify: jest.fn(),
+                notify: jest.fn(() => Promise.resolve(true)),
             };
 
             // @ts-expect-error outPipes is private attributes
