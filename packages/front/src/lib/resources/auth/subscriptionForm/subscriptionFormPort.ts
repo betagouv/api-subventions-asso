@@ -1,8 +1,8 @@
-import type { AgentTypeEnum } from "@api-subventions-asso/dto";
+import type { AdminStructureDto, AgentTypeEnum } from "@api-subventions-asso/dto";
 import requestsService from "$lib/services/requests.service";
 
 export class SubscriptionFormPort {
-    async getStructures(agentType: AgentTypeEnum) {
+    async getStructures(agentType: AgentTypeEnum): Promise<AdminStructureDto[]> {
         const path = `admin-structures/${agentType}`;
         const result = await requestsService.get(path);
         return result?.data || [];
