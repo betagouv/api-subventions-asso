@@ -8,11 +8,17 @@
         jobType: [],
         phoneNumber: "",
     };
+    export let context = {};
 
-    const ctrl = new StructureStepController(values);
+    const ctrl = new StructureStepController();
+    $: ctrl.onUpdateContext(context);
 
-    const { errors } = ctrl;
+    const { errors, subStep } = ctrl;
 </script>
+
+{#if $subStep}
+    <svelte:component this={$subStep.component} bind:values={values} />
+{/if}
 
 <fieldset class="fr-fieldset">
     <div class="fr-fieldset__element fr-mt-4v">

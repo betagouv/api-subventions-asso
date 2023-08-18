@@ -1,4 +1,6 @@
-import { AgentJobTypeEnum } from "dto";
+import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
+import type { SvelteComponent } from "svelte";
+import ExampleSubStep from "./ExampleSubStep/ExampleSubStep.svelte";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -7,6 +9,10 @@ type Option = {
     value: AgentJobTypeEnum;
     label: string;
 };
+
+interface Context {
+    agentType: AgentTypeEnum;
+}
 
 interface SubStep {
     component: typeof SvelteComponent;
@@ -43,8 +49,18 @@ export default class StructureStepController {
         { value: AgentJobTypeEnum.OTHER, label: "Autre" },
     ];
 
+    private static subStepByAgentType: Record<AgentTypeEnum, typeof SvelteComponent | undefined> = {
+        [AgentTypeEnum.CENTRAL_ADMIN]: ExampleSubStep,
+        [AgentTypeEnum.OPERATOR]: ExampleSubStep,
+        [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: ExampleSubStep,
+        [AgentTypeEnum.DECONCENTRATED_ADMIN]: ExampleSubStep,
+    };
+    public subStep: Store<SubStep | undefined>;
+
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
+        this.subStep = new Store(undefined);
+
         this.errors = new Store({});
         this.dirty = {};
         for (const inputName of Object.keys(this.validators)) {
@@ -67,5 +83,17 @@ export default class StructureStepController {
         }
         this.errors.set(tempErrors);
         this.dispatch(shouldBlockStep ? "error" : "valid");
+    }
+
+    async onUpdateContext(context: Context) {
+        const component = StructureStepController.subStepByAgentType[context.agentType];
+        this.subStep.set(
+            component
+                ? {
+                      component,
+                      // valid: false
+                  }
+                : undefined,
+        );
     }
 }
