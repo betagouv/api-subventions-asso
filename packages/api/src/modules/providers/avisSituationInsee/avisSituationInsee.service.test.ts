@@ -165,7 +165,7 @@ describe("AvisSituationInseeService", () => {
                         expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
-                        `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        `https://api-avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
                         avisSituationInseeService.provider.name,
                         expect.any(Date),
                     ),
@@ -229,7 +229,7 @@ describe("AvisSituationInseeService", () => {
                         expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
-                        `https://api.avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        `https://api-avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
                         avisSituationInseeService.provider.name,
                         expect.any(Date),
                     ),
