@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.3](https://github.com/betagouv/api-subventions-asso/compare/v0.33.2...v0.33.3) (2023-08-21)
+
+
+### Bug Fixes
+
+* **api:** match rna siren ([1f027f1](https://github.com/betagouv/api-subventions-asso/commit/1f027f12c3b85f9f95bef282c04c474e56ff96ef))
+
+
+
+
+
 ## [0.33.2](https://github.com/betagouv/api-subventions-asso/compare/v0.32.4...v0.33.2) (2023-08-09)
 
 
