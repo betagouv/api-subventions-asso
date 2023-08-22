@@ -14,7 +14,7 @@
                 <Button ariaControls="fr-modal">Annuler</Button>
             </li>
             <li>
-                <Button on:click={confirmAction} type="secondary" disabled={disableConfirm}>
+                <Button on:click={confirmAction} type="secondary" ariaControls="fr-modal" disabled={disableConfirm}>
                     {confirmLabel}
                 </Button>
             </li>
