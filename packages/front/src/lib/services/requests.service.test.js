@@ -133,6 +133,31 @@ describe("RequestService", () => {
             errorServiceMock.mockRestore();
         });
 
+        it("should add __nativeError__ to typedError", () => {
+            const fakeError = {
+                response: {
+                    data: {
+                        message: "",
+                        code: "",
+                    },
+                },
+            };
+
+            const callback = vi.fn();
+            const expected = "__nativeError__";
+
+            requestsService._errorHooks.push({
+                ErrorClass: SomeError,
+                callback,
+            });
+
+            try {
+                requestsService._errorCatcher(fakeError);
+            } catch (e) {
+                expect(e).toEqual(expect.objectContaining({ [expected]: expect.any(Object) }));
+            }
+        });
+
         it("should throw SomeError", () => {
             const fakeError = {
                 response: {
