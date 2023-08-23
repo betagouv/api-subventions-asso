@@ -60,8 +60,8 @@ class RequestsService {
         const typedError = new ErrorClass({
             message: error.response.data.message,
             code: error.response.data.code,
-            __nativeError__: error,
         });
+        typedError.__nativeError__ = error;
 
         if (hooks.length) {
             hooks.forEach(hook => {
