@@ -3,7 +3,6 @@ import { getSearchHistory } from "$lib/services/searchHistory.service.js";
 import { isRna, isSiren, isSiret, isStartOfSiret } from "$lib/helpers/validatorHelper";
 import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
-import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 
 export class HomeController {

@@ -68,7 +68,7 @@
     {/await}
 {/if}
 
-{#if !$isLoading && !$searchResult.length}
+{#if !$isLoading && !$searchResult.length && $searchHistory.length}
     <div class="history fr-pt-5w">
         <h4 class="fr-py-3w">Vos dernières recherches</h4>
         <div class="fr-grid-row fr-grid-row--gutters">
