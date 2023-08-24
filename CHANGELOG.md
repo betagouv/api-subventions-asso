@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.33.4](https://github.com/betagouv/api-subventions-asso/compare/v0.33.3...v0.33.4) (2023-08-24)
+
+
+### Bug Fixes
+
+* **api:** hotfix invalide sdfsdfgouv.fr ([157b1f8](https://github.com/betagouv/api-subventions-asso/commit/157b1f885d09262795f7f1aa090f8b9a45f9ad6a))
+
+
+
+
+
 ## [0.33.3](https://github.com/betagouv/api-subventions-asso/compare/v0.33.2...v0.33.3) (2023-08-21)
 
 
