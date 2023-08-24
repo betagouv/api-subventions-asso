@@ -1,9 +1,9 @@
 import * as Sentry from "@sentry/node";
-import { ContactsApi, ContactsApiApiKeys, UpdateContact } from "@sendinblue/client";
+import Brevo from "@getbrevo/brevo";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
-import { API_SENDINBLUE_CONTACT_LIST, API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
+import { API_SENDINBLUE_CONTACT_LIST } from "../../../configurations/apis.conf";
 
 const SENDIND_BLUE_CONTACT_LISTS = [Number(API_SENDINBLUE_CONTACT_LIST)];
 
@@ -15,11 +15,10 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         NotificationType.USER_ALREADY_EXIST,
     ];
 
-    private apiInstance: ContactsApi;
+    private apiInstance: Brevo.ContactsApi;
 
     constructor() {
-        this.apiInstance = new ContactsApi();
-        this.apiInstance.setApiKey(ContactsApiApiKeys.apiKey, API_SENDINBLUE_TOKEN as string);
+        this.apiInstance = new Brevo.ContactsApi();
     }
 
     notify(type, data) {
@@ -88,7 +87,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
     }
 
     private userActivated(data: NotificationDataTypes[NotificationType.USER_ACTIVATED]) {
-        const updateContact = new UpdateContact();
+        const updateContact = new Brevo.UpdateContact();
         updateContact.attributes = { COMPTE_ACTIVE: true };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance.updateContact(data.email, updateContact).then(({ body }) => {
@@ -98,7 +97,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
     }
 
     private userLogged(data: NotificationDataTypes[NotificationType.USER_LOGGED]) {
-        const updateContact = new UpdateContact();
+        const updateContact = new Brevo.UpdateContact();
         updateContact.attributes = { DERNIERE_CONNEXION: data.date };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance.updateContact(data.email, updateContact).then(({ body }) => {

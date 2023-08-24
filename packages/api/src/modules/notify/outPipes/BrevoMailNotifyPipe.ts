@@ -1,8 +1,7 @@
-import { SendSmtpEmail, TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@sendinblue/client";
+import Brevo from "@getbrevo/brevo";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
-import { API_SENDINBLUE_TOKEN } from "../../../configurations/apis.conf";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 
 export enum TemplateEnum {
@@ -13,11 +12,10 @@ export enum TemplateEnum {
 export class BrevoMailNotifyPipe implements NotifyOutPipe {
     accepts = [NotificationType.USER_CREATED, NotificationType.USER_FORGET_PASSWORD, NotificationType.TEST_EMAIL];
 
-    private apiInstance: TransactionalEmailsApi;
+    private apiInstance: Brevo.TransactionalEmailsApi;
 
     constructor() {
-        this.apiInstance = new TransactionalEmailsApi();
-        this.apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, API_SENDINBLUE_TOKEN as string);
+        this.apiInstance = new Brevo.TransactionalEmailsApi();
     }
 
     notify(type, data) {
@@ -46,12 +44,14 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
     }
 
     async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {
-        const sendSmtpEmail = new SendSmtpEmail();
+        const sendSmtpEmail = Brevo.SendSmtpEmail();
         sendSmtpEmail.templateId = templateId;
         sendSmtpEmail.sender = { name: "Data.Subvention", email: MAIL_USER };
         sendSmtpEmail.params = params;
         sendSmtpEmail.to = [{ email: email }];
         sendSmtpEmail.bcc = [{ name: "Data.Subvention Log", email: LOG_MAIL }];
+
+        console.log(this.apiInstance.sendTransacEmail);
 
         try {
             await this.apiInstance.sendTransacEmail(sendSmtpEmail, {

@@ -17,6 +17,7 @@ import StatsSearchMiddleware, { StatsSearchRoutesRegex } from "./middlewares/Sta
 import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
+import initBrevo from "./brevo";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
 
 const appName = "api-subventions-asso";
@@ -74,6 +75,7 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(errorHandler(isTest));
 
     initCron();
+    initBrevo();
 
     return app.listen(port, () => {
         if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);
