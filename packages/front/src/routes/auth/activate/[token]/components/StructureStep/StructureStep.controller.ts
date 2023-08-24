@@ -1,4 +1,4 @@
-import { AgentJobTypeEnum } from "@api-subventions-asso/dto";
+import { AgentJobTypeEnum } from "dto";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";

@@ -1,5 +1,5 @@
 import { Controller, Get, Route, Security, Tags, Response } from "tsoa";
-import { AgentTypeEnum } from "@api-subventions-asso/dto";
+import { AgentTypeEnum } from "dto";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import adminStructureService from "../../adminStructure.service";
 import AdminStructureEntity from "../../entities/AdminStructureEntity";

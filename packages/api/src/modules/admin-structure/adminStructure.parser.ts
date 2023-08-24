@@ -1,4 +1,4 @@
-import { AgentTypeEnum } from "@api-subventions-asso/dto";
+import { AgentTypeEnum } from "dto";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import * as ParseHelper from "../../shared/helpers/ParserHelper";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
