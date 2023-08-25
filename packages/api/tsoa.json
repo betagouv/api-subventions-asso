@@ -1,17 +1,27 @@
 {
     "swagger": {
-		"outputDirectory": ".",
-		"entryFile": "./src/index.ts"
-	},
-	"entryFile": "src/index.ts",
-	"noImplicitAdditionalProperties": "throw-on-extras",
-	"controllerPathGlobs": ["src/**/*Controller.ts"],
-	"spec": {
-		"outputDirectory": "tsoa",
-		"specVersion": 3
-	},
-	"routes": {
-		"routesDir": "tsoa",
-		"authenticationModule": "./src/authentication/authentication.ts"
-	}
+        "outputDirectory": ".",
+        "entryFile": "./src/index.ts"
+    },
+    "entryFile": "src/index.ts",
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "controllerPathGlobs": ["src/**/*Controller.ts"],
+    "spec": {
+        "outputDirectory": "tsoa",
+        "specVersion": 3,
+        "tags": [
+            {
+                "name": "Open Data",
+                "description": "Données ouvertes",
+                "externalDocs": {
+                    "description": "Plus de détails sur notre wiki",
+                    "url": "https://github.com/betagouv/api-subventions-asso/wiki/Données-ouvertes"
+                }
+            }
+        ]
+    },
+    "routes": {
+        "routesDir": "tsoa",
+        "authenticationModule": "./src/authentication/authentication.ts"
+    }
 }
