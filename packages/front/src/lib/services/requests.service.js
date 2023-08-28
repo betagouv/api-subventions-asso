@@ -57,11 +57,13 @@ class RequestsService {
         const ErrorClass = errorsService.axiosErrorToError(error);
 
         const hooks = this._errorHooks.filter(hook => hook.ErrorClass === ErrorClass);
-        const typedError = new ErrorClass({
-            message: error.response.data.message,
-            code: error.response.data.code,
-        });
-        typedError.__nativeError__ = error;
+        const typedError = new ErrorClass(
+            {
+                message: error.response.data.message,
+                code: error.response.data.code,
+            },
+            error,
+        );
 
         if (hooks.length) {
             hooks.forEach(hook => {
