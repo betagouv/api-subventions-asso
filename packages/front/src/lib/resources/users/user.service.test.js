@@ -1,6 +1,8 @@
 import userService from "./user.service";
 import userPort from "./user.port";
 vi.mock("./user.port");
+import { goToUrl } from "$lib/services/router.service";
+vi.mock("$lib/services/router.service");
 
 describe("UsersService", () => {
     describe("isUserActif", () => {
@@ -33,6 +35,11 @@ describe("UsersService", () => {
         it("should call UserPort.deleteSelfUser", () => {
             userService.deleteCurrentUser();
             expect(userPort.deleteSelfUser).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call goToUrl()", async () => {
+            await userService.deleteCurrentUser();
+            expect(goToUrl).toHaveBeenCalledTimes(1);
         });
     });
 });
