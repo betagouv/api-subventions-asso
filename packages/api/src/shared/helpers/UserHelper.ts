@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import UserDbo from "../../modules/user/repositories/dbo/UserDbo";
 import statsService from "../../modules/stats/stats.service";
 import { ONE_DAY_MS } from "./DateHelper";

@@ -3,7 +3,7 @@ import requestsService from "$lib/services/requests.service";
 
 const DEFAULT_ERROR_CODE = 49;
 
-vi.mock("@api-subventions-asso/dto", () => ({
+vi.mock("dto", () => ({
     SignupErrorCodes: { CREATION_ERROR: DEFAULT_ERROR_CODE },
     ResetPasswordErrorCodes: { INTERNAL_ERROR: DEFAULT_ERROR_CODE },
     __esModule: true, // this property makes it work

@@ -1,4 +1,4 @@
-import { BodaccRecordDto } from "@api-subventions-asso/dto";
+import { BodaccRecordDto } from "dto";
 
 export interface BodaccDto {
     total_count: number;

@@ -5,7 +5,7 @@ import {
     ResetPasswordDtoResponse,
     SignupDtoResponse,
     TokenValidationDtoResponse,
-} from "@api-subventions-asso/dto";
+} from "dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";

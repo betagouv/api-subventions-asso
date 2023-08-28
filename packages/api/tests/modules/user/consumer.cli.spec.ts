@@ -4,7 +4,7 @@ import { JWT_SECRET } from "../../../src/configurations/jwt.conf";
 import ConsumerCliController from "../../../src/modules/user/interfaces/cli/consumer.cli.controller";
 import consumerTokenRepository from "../../../src/modules/user/repositories/consumer-token.repository";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 
 describe("ConsumerCliController", () => {
     const cli = new ConsumerCliController();

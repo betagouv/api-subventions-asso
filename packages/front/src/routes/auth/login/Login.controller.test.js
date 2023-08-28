@@ -1,4 +1,4 @@
-import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes } from "dto";
 import LoginController from "./Login.controller";
 import UnauthorizedError from "$lib/errors/UnauthorizedError";
 import * as RouterService from "$lib/services/router.service";

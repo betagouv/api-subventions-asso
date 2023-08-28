@@ -1,4 +1,4 @@
-import { Siren, Siret, Versement, DemandeSubvention } from "@api-subventions-asso/dto";
+import { Siren, Siret, Versement, DemandeSubvention } from "dto";
 import providers from "../providers";
 import { AssociationIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";

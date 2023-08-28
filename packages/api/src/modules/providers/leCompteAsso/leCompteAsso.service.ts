@@ -1,4 +1,4 @@
-import { Rna, Siret, Siren, Association, Etablissement } from "@api-subventions-asso/dto";
+import { Rna, Siret, Siren, Association, Etablissement } from "dto";
 import ILegalInformations from "../../search/@types/ILegalInformations";
 import { isAssociationName, isSiret, isCompteAssoId } from "../../../shared/Validators";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";

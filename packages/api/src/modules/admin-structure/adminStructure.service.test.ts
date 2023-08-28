@@ -1,7 +1,7 @@
 import adminStructureService from "./adminStructure.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import adminStructureRepository from "./repositories/adminStructure.repository";
-import { AgentTypeEnum } from "@api-subventions-asso/dto";
+import { AgentTypeEnum } from "dto";
 
 jest.mock("./repositories/adminStructure.repository");
 

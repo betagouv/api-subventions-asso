@@ -1,4 +1,4 @@
-import { SignupErrorCodes } from "@api-subventions-asso/dto";
+import { SignupErrorCodes } from "dto";
 import { getContext } from "svelte";
 import { PRIVACY_POLICY_URL } from "$env/static/public";
 import Store from "$lib/core/Store";

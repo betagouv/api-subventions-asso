@@ -1,4 +1,4 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep, Rna } from "@api-subventions-asso/dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep, Rna } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";

@@ -1,4 +1,4 @@
-import { Rna, Siren } from "@api-subventions-asso/dto";
+import { Rna, Siren } from "dto";
 import { UpdateResult, WithId } from "mongodb";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import db from "../../../shared/MongoConnection";

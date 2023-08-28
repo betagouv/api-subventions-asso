@@ -1,8 +1,8 @@
 import axios, { AxiosError } from "axios";
 import qs from "qs";
 
-import { Association, Siren, Siret } from "@api-subventions-asso/dto";
-import { ExtraitRcsDto } from "@api-subventions-asso/dto/associations/ExtraitRcsDto";
+import { Association, Siren, Siret } from "dto";
+import { ExtraitRcsDto } from "dto";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";

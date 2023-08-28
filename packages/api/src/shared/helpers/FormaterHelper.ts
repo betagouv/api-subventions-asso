@@ -1,4 +1,4 @@
-import { ProviderValue, ProviderValues } from "@api-subventions-asso/dto";
+import { ProviderValue, ProviderValues } from "dto";
 import { DefaultObject } from "../../@types";
 import ProviderValueAdapter from "../adapters/ProviderValueAdapter";
 

@@ -1,4 +1,4 @@
-import { UserDto } from "@api-subventions-asso/dto";
+import { UserDto } from "dto";
 
 export default interface UserDbo extends UserDto {
     jwt: JWT | null;

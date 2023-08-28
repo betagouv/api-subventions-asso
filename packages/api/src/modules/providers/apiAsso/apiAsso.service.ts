@@ -1,6 +1,6 @@
-import { Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret, Association, Etablissement } from "dto";
 import axios from "axios";
-import { Document } from "@api-subventions-asso/dto/search/Document";
+import { Document } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";

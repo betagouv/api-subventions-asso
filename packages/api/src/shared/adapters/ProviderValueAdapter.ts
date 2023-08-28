@@ -1,4 +1,4 @@
-import { ProviderValue, ProviderValues } from "@api-subventions-asso/dto";
+import { ProviderValue, ProviderValues } from "dto";
 
 export default class ProviderValueAdapter {
     static isProviderValue(value: unknown): value is ProviderValue<unknown> {

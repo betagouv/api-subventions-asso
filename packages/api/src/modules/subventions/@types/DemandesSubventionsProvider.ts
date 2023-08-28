@@ -1,4 +1,4 @@
-import { Siren, Siret, Rna, DemandeSubvention } from "@api-subventions-asso/dto";
+import { Siren, Siret, Rna, DemandeSubvention } from "dto";
 import Provider from "../../providers/@types/IProvider";
 
 export default interface DemandesSubventionsProvider extends Provider {

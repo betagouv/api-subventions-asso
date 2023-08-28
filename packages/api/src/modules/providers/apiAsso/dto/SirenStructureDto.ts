@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "dto";
 
 export interface SirenStructureDto {
     identite: {

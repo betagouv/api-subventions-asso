@@ -1,5 +1,5 @@
-import { Etablissement, Association } from "@api-subventions-asso/dto";
-import { Document } from "@api-subventions-asso/dto/search/Document";
+import { Etablissement, Association } from "dto";
+import { Document } from "dto";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {

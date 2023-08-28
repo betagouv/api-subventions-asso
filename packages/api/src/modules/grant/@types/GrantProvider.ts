@@ -1,4 +1,4 @@
-import { Rna, Siren, Siret } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret } from "dto";
 import Provider from "../../providers/@types/IProvider";
 import { RawGrant } from "./rawGrant";
 

@@ -1,4 +1,4 @@
-import { AgentTypeEnum } from "@api-subventions-asso/dto";
+import { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
 

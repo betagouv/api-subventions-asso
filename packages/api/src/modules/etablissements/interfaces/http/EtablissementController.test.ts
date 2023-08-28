@@ -1,4 +1,4 @@
-import { DemandeSubvention, Etablissement } from "@api-subventions-asso/dto";
+import { DemandeSubvention, Etablissement } from "dto";
 import Flux from "../../../../shared/Flux";
 import etablissementsService from "../../etablissements.service";
 import { EtablissementController } from "./EtablissementController";

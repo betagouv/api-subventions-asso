@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "dto";
 import { WithId } from "mongodb";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";

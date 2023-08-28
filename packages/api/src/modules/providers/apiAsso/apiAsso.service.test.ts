@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Association, Etablissement } from "@api-subventions-asso/dto";
+import { Association, Etablissement } from "dto";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service";
 import { DacDtoDocument, DacSiret, DtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";

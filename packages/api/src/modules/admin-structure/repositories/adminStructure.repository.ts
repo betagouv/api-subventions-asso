@@ -1,4 +1,4 @@
-import { AgentTypeEnum } from "@api-subventions-asso/dto";
+import { AgentTypeEnum } from "dto";
 import { WithId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import AdminStructureEntity from "../entities/AdminStructureEntity";

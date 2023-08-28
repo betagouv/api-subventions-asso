@@ -1,4 +1,4 @@
-import { LoginDtoErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes } from "dto";
 import { UnauthorizedError } from "./httpErrors";
 
 export default class LoginError extends UnauthorizedError {

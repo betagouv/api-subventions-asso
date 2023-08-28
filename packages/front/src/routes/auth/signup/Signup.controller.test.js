@@ -2,8 +2,8 @@ import { getContext } from "svelte";
 import SignupController from "./Signup.controller";
 import authService from "$lib/resources/auth/auth.service";
 
-vi.mock("@api-subventions-asso/dto", () => ({
-    ...vi.importActual("@api-subventions-asso/dto"),
+vi.mock("dto", () => ({
+    ...vi.importActual("dto"),
     SignupErrorCodes: {
         EMAIL_NOT_VALID: 1,
         USER_ALREADY_EXIST: 2,

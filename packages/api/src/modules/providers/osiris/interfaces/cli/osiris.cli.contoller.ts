@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { Rna, Siret } from "@api-subventions-asso/dto";
+import { Rna, Siret } from "dto";
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
 import OsirisParser from "../../osiris.parser";

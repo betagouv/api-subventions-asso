@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "dto";
 import { UpdateFilter } from "mongodb";
 import MigrationRepository from "../../../../shared/MigrationRepository";
 import DauphinGisproDbo from "./dbo/DauphinGisproDbo";

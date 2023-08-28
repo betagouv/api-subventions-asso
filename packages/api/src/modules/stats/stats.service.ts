@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import { UserCountByStatus } from "@api-subventions-asso/dto";
+import { UserCountByStatus } from "dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import userService from "../user/user.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";

@@ -1,3 +1,4 @@
+export * from "./search/";
 export * from "./configurations";
 export * from "./stats";
 export * from "./user";
@@ -10,7 +11,6 @@ export * from "./auth/SignupDtoResponse";
 export * from "./auth/TokenValidationDtoResponse";
 export * from "./auth/subscriptionForm";
 export * from "./auth/subscriptionForm/agentType";
-export * from "./search/DemandeSubvention";
 export * from "./shared/ProviderValue";
 export * from "./shared/Rna";
 export * from "./shared/Siren";
