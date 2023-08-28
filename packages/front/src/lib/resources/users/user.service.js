@@ -1,5 +1,5 @@
+import authService from "../auth/auth.service";
 import userPort from "./user.port";
-import { goToUrl } from "$lib/services/router.service";
 
 export class UsersService {
     SEVEN_DAYS_MS = 1000 * 60 * 60 * 24 * 7;
@@ -9,7 +9,7 @@ export class UsersService {
 
     async deleteCurrentUser() {
         await userPort.deleteSelfUser();
-        goToUrl("/auth/signup", false);
+        authService.logout(true);
     }
 }
 
