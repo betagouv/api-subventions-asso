@@ -18,8 +18,7 @@ describe("StructureStepController", () => {
 
     describe("constructor", () => {
         it("inits dispatch", () => {
-            const expected = "Result From Dispatch";
-            // @ts-expect-error - mock
+            const expected = vi.fn();
             vi.mocked(Dispatch.getDispatcher).mockReturnValueOnce(expected);
             ctrl = new StructureStepController();
             // @ts-expect-error - mock private
