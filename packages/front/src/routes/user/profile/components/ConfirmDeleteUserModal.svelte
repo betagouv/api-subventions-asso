@@ -5,10 +5,6 @@
     import ModalContent from "$lib/dsfr/ModalContent.svelte";
     import ModalFooter from "$lib/dsfr/ModalFooter.svelte";
 
-    const deleteUser = () => {
-        action.value();
-    };
-
     let temporyDisabled = true;
 
     setTimeout(() => (temporyDisabled = false), 1000);
@@ -20,4 +16,4 @@
 <ModalFooter
     disableConfirm={temporyDisabled}
     confirmLabel="Je confirme la suppression de mon compte"
-    confirmAction={deleteUser} />
+    confirmAction={$action} />

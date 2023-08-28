@@ -1,3 +1,5 @@
+import authService from "../auth/auth.service";
+vi.mock("../auth/auth.service");
 import userService from "./user.service";
 import userPort from "./user.port";
 vi.mock("./user.port");
@@ -33,6 +35,11 @@ describe("UsersService", () => {
         it("should call UserPort.deleteSelfUser", () => {
             userService.deleteCurrentUser();
             expect(userPort.deleteSelfUser).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call authService.logout()", async () => {
+            await userService.deleteCurrentUser();
+            expect(authService.logout).toHaveBeenCalledTimes(1);
         });
     });
 });

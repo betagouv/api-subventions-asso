@@ -8,13 +8,8 @@
     const dispatch = createEventDispatcher();
 
     function openConfirmationModal() {
-        action.set(() => {
-            dispatch("delete-user");
-            action.set(null);
-            modal.set(null);
-        });
-
         modal.update(() => ConfirmDeleteUserModal);
+        action.update(() => () => dispatch("delete-user"));
     }
 </script>
 
@@ -25,9 +20,9 @@
     </p>
     <p>La suppression de votre compte entraine une suppression de toutes vos données et historique de recherche.</p>
     <Button
-        ariaControls="fr-modal"
         on:click={openConfirmationModal}
         type="tertiary"
+        ariaControls="fr-modal"
         trakerName="profile.delete-user.remove-acount">
         Supprimer mon compte
     </Button>

@@ -6,10 +6,10 @@ export class ProfileController {
         this.error = new Store(false);
     }
 
-    async deleteUser() {
+    deleteUser() {
         try {
             this.error.set(false);
-            await userService.deleteCurrentUser();
+            userService.deleteCurrentUser();
         } catch (e) {
             this.error.set(true);
         }
