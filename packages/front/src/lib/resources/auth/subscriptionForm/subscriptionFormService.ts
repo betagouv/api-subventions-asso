@@ -1,4 +1,4 @@
-import type { AgentTypeEnum } from "@api-subventions-asso/dto";
+import type { AgentTypeEnum } from "dto";
 import subscriptionFormPort from "$lib/resources/auth/subscriptionForm/subscriptionFormPort";
 
 export class SubscriptionFormService {

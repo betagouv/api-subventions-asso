@@ -1,4 +1,4 @@
-import type { AdminStructureDto, AgentTypeEnum } from "@api-subventions-asso/dto";
+import type { AdminStructureDto, AgentTypeEnum } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 export class SubscriptionFormPort {
