@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MattermostNotifyPipe userDeleted sends message with proper payload 1`] = `
+Object {
+  "channel": "datasubvention---bizdev",
+  "icon_emoji": "door",
+  "text": "Prénom NOM (email) a supprimé son compte, veuillez supprimer toutes ses données !",
+  "username": "Suppression de compte",
+}
+`;
