@@ -186,7 +186,7 @@ export class ComboboxAutocomplete {
 
         for (var i = 0; i < this.allOptions.length; i++) {
             option = this.allOptions[i];
-            if (filter.length === 0 || this.getLowercaseContent(option).indexOf(filter) === 0) {
+            if (filter.length === 0 || this.getLowercaseContent(option).indexOf(filter) !== -1) {
                 this.filteredOptions.push(option);
                 this.listboxNode.appendChild(option);
             }
