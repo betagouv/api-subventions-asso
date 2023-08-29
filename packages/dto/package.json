@@ -7,6 +7,10 @@
     "license": "ISC",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
+    "engines": {
+        "node": "18.17",
+        "npm": "9.6.7"
+    },
     "directories": {
         "build": "./build",
         "test": "__tests__"
