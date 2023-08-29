@@ -4,13 +4,17 @@
     "description": "",
     "main": "index.js",
     "engines": {
-        "node": "16",
-        "npm": "8"
+        "node": "18.17",
+        "npm": "9.8.1"
     },
     "scripts": {
         "dev": "lerna run dev",
+        "build:front": "lerna run build --scope=front",
+        "build:api": "lerna run build --scope=api",
+        "build:dto": "lerna run build --scope=dto",
         "build": "lerna run build",
-        "scalingo-postbuild": "bash ./scalingo-build.bash",
+        "scalingo-postbuild": "bash ./build.bash",
+        "postinstall": "bash ./post-install.bash",
         "generate": "lerna run generate",
         "lint": "lerna run lint:all",
         "prettier": "lerna run prettier:all",
@@ -18,7 +22,6 @@
         "test:unit": "lerna run test:unit",
         "test:cov": "lerna run test:cov",
         "migration:apply": "lerna run migration:apply",
-        "postinstall": "bash ./install.bash",
         "release": "lerna version --conventional-commits",
         "start": "node ./packages/api/build/src/index.js",
         "lint-format": "lerna run --concurrency 1 lint-format "
@@ -33,18 +36,17 @@
         "url": "https://github.com/betagouv/api-subventions-asso/issues"
     },
     "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
+    "workspaces": [
+        "packages/*"
+    ],
     "dependencies": {
         "husky": "^7.0.4",
-        "ts-node": "^10.4.0",
-        "lerna": "^5.5.1"
+        "lerna": "^7.1.5"
     },
     "devDependencies": {
-        "@commitlint/cli": "^16.0.1",
+        "@commitlint/cli": "^17.7.1",
         "@commitlint/config-conventional": "^16.0.0",
-        "@types/jest": "^27.4.1",
-        "concurrently": "^7.0.0",
-        "nodemon": "^2.0.15",
-        "standard-version": "^9.3.2",
-        "typescript": "^4.5.4"
+        "prettier": "^2.8.4",
+        "standard-version": "^9.3.2"
     }
 }

@@ -1,4 +1,4 @@
-import { Association, Etablissement } from "@api-subventions-asso/dto";
+import { Association, Etablissement } from "dto";
 import { getMonthFromFrenchStr } from "../../../../shared/helpers/DateHelper";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";

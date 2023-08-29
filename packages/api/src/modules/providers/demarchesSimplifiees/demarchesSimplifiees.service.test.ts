@@ -2,7 +2,7 @@ jest.mock("./repositories/demarchesSimplifieesMapper.repository");
 jest.mock("./repositories/demarchesSimplifieesData.repository");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 
-import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { DemandeSubvention } from "dto";
 import axios from "axios";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";

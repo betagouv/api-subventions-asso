@@ -6,7 +6,7 @@ import {
     Etablissement,
     ProviderValue,
     Rna,
-} from "@api-subventions-asso/dto";
+} from "dto";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";

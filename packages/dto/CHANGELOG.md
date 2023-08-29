@@ -3,184 +3,128 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
-
-
-### Bug Fixes
-
-* **dto:** fix swagger doc on open data ([93cb0fc](https://github.com/betagouv/datasubvention/commit/93cb0fc36dbd68773f3005922a94bcb8f45d1bf6))
-
+# [0.35.0](https://github.com/betagouv/datasubvention/compare/v0.33.4...v0.35.0) (2023-08-29)
 
 ### Features
 
-* **api:** add token type information in validation token ([88408da](https://github.com/betagouv/datasubvention/commit/88408da9465d9adfd79a3ff9757a2193e6afe599))
+-   **dto:** job type enum ([0e8ba24](https://github.com/betagouv/datasubvention/commit/0e8ba2435ee7681a30ff21e3d46a0b4688775c05))
+-   **dto:** user agent enum ([216f40a](https://github.com/betagouv/datasubvention/commit/216f40ae2097d0f3b5c58a887a7739dc8621dd66))
+-   **front,dto:** other review adjustments ([be93bf5](https://github.com/betagouv/datasubvention/commit/be93bf5bcbbb72346589dd413c35ceb7fc238c40))
 
+# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
 
+### Bug Fixes
+
+-   **dto:** fix swagger doc on open data ([93cb0fc](https://github.com/betagouv/datasubvention/commit/93cb0fc36dbd68773f3005922a94bcb8f45d1bf6))
+
+### Features
+
+-   **api:** add token type information in validation token ([88408da](https://github.com/betagouv/datasubvention/commit/88408da9465d9adfd79a3ff9757a2193e6afe599))
+
+# [0.34.0](https://github.com/betagouv/datasubvention/compare/v0.32.4...v0.34.0) (2023-08-09)
+
+### Bug Fixes
+
+-   **dto:** fix swagger doc on open data ([93cb0fc](https://github.com/betagouv/datasubvention/commit/93cb0fc36dbd68773f3005922a94bcb8f45d1bf6))
+
+### Features
+
+-   **api:** add token type information in validation token ([88408da](https://github.com/betagouv/datasubvention/commit/88408da9465d9adfd79a3ff9757a2193e6afe599))
 
 ## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
-
-
 
 # [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.2...v0.33.0) (2023-07-24)
 
-
-
-
-
 ## [0.33.1](https://github.com/betagouv/datasubvention/compare/v0.32.3...v0.33.1) (2023-07-27)
-
-
 
 # [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.2...v0.33.0) (2023-07-24)
 
 **Note:** Version bump only for package dto
-
-
-
-
 
 # [0.33.0](https://github.com/betagouv/datasubvention/compare/v0.32.1...v0.33.0) (2023-07-24)
 
 **Note:** Version bump only for package dto
 
-
-
-
-
 # [0.32.0](https://github.com/betagouv/datasubvention/compare/v0.31.3...v0.32.0) (2023-07-11)
-
 
 ### Features
 
-* **api:** add endpoint for getting all user data ([5780b3c](https://github.com/betagouv/datasubvention/commit/5780b3c338fc901428e12a74fa8c9e698fb40e37))
-
-
-
-
+-   **api:** add endpoint for getting all user data ([5780b3c](https://github.com/betagouv/datasubvention/commit/5780b3c338fc901428e12a74fa8c9e698fb40e37))
 
 # [0.31.0](https://github.com/betagouv/datasubvention/compare/v0.30.2...v0.31.0) (2023-06-27)
 
-
 ### Features
 
-* **dto:** etalab scdl dto ([0a01110](https://github.com/betagouv/datasubvention/commit/0a0111066de4fdfe97f58226569dc7ef69f0be26))
-
-
-
-
+-   **dto:** etalab scdl dto ([0a01110](https://github.com/betagouv/datasubvention/commit/0a0111066de4fdfe97f58226569dc7ef69f0be26))
 
 # [0.30.0](https://github.com/betagouv/datasubvention/compare/v0.29.1...v0.30.0) (2023-06-08)
 
-
 ### Features
 
-* **api:** payment common dto includes exercice ([7183de0](https://github.com/betagouv/datasubvention/commit/7183de0680b147a4112b2d58f5c54171960b3141))
-* homogenizes lint config ([90b43d1](https://github.com/betagouv/datasubvention/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
-
-
-
-
+-   **api:** payment common dto includes exercice ([7183de0](https://github.com/betagouv/datasubvention/commit/7183de0680b147a4112b2d58f5c54171960b3141))
+-   homogenizes lint config ([90b43d1](https://github.com/betagouv/datasubvention/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
 
 ## [0.29.1](https://github.com/betagouv/datasubvention/compare/v0.29.0...v0.29.1) (2023-05-31)
 
 **Note:** Version bump only for package dto
 
-
-
-
-
 # [0.29.0](https://github.com/betagouv/datasubvention/compare/v0.28.2...v0.29.0) (2023-05-26)
-
 
 ### Features
 
-* **api:** generic grant service and its types ([5a31e3c](https://github.com/betagouv/datasubvention/commit/5a31e3cf9fc5ce48537fabdea8b227d69593860f))
-
-
-
-
+-   **api:** generic grant service and its types ([5a31e3c](https://github.com/betagouv/datasubvention/commit/5a31e3cf9fc5ce48537fabdea8b227d69593860f))
 
 # [0.28.0](https://github.com/betagouv/datasubvention/compare/v0.27.0...v0.28.0) (2023-05-15)
 
-
 ### Features
 
-* **api, dto:** add /stats/user/requests route ([4dc4c61](https://github.com/betagouv/datasubvention/commit/4dc4c618041e38ded95496cdb3656647e551bcbd))
-* **api, dto:** create user stats from associationVisits collection ([78d9940](https://github.com/betagouv/datasubvention/commit/78d99400125f638f7d3e60593e61f0b7894812f1))
-* **api, dto:** remove old way to compute user.stats property ([a6d9a18](https://github.com/betagouv/datasubvention/commit/a6d9a18046f0bfb86783662bad0241039ae503e8))
-* **api, dto:** remove stats/users/requests route ([989bd1a](https://github.com/betagouv/datasubvention/commit/989bd1a8f2e2fc72c5a21044869df30a369635cc))
-* **front:** add bodacc tab ([71550aa](https://github.com/betagouv/datasubvention/commit/71550aaeac79b7b073234075dc35be3a2fa209c9))
-
-
-
-
+-   **api, dto:** add /stats/user/requests route ([4dc4c61](https://github.com/betagouv/datasubvention/commit/4dc4c618041e38ded95496cdb3656647e551bcbd))
+-   **api, dto:** create user stats from associationVisits collection ([78d9940](https://github.com/betagouv/datasubvention/commit/78d99400125f638f7d3e60593e61f0b7894812f1))
+-   **api, dto:** remove old way to compute user.stats property ([a6d9a18](https://github.com/betagouv/datasubvention/commit/a6d9a18046f0bfb86783662bad0241039ae503e8))
+-   **api, dto:** remove stats/users/requests route ([989bd1a](https://github.com/betagouv/datasubvention/commit/989bd1a8f2e2fc72c5a21044869df30a369635cc))
+-   **front:** add bodacc tab ([71550aa](https://github.com/betagouv/datasubvention/commit/71550aaeac79b7b073234075dc35be3a2fa209c9))
 
 # [0.27.0](https://github.com/betagouv/datasubvention/compare/v0.26.2...v0.27.0) (2023-05-03)
 
-
 ### Features
 
-* **dto:** common grant dto ([1c77f65](https://github.com/betagouv/datasubvention/commit/1c77f654ec0e09ab69b67dca594e07942744a4ab))
-
-
-
-
+-   **dto:** common grant dto ([1c77f65](https://github.com/betagouv/datasubvention/commit/1c77f654ec0e09ab69b67dca594e07942744a4ab))
 
 # [0.26.0](https://github.com/betagouv/datasubvention/compare/v0.25.1...v0.26.0) (2023-04-17)
 
 **Note:** Version bump only for package dto
 
-
-
-
-
 ## [0.25.1](https://github.com/betagouv/datasubvention/compare/v0.24.10...v0.25.1) (2023-04-17)
-
 
 ### Features
 
-* **api:** sends bop ([ae51da1](https://github.com/betagouv/datasubvention/commit/ae51da12d46da1d285bcbf74d7cf330b6d75a0b3))
-* **dto:** add BodaccRecordDto to AssociationDto ([e4e4941](https://github.com/betagouv/datasubvention/commit/e4e4941965ae13bd2a5fc7f7e2249dda1917745d))
-* **dto:** make Association Bodacc optionnal ([99486cc](https://github.com/betagouv/datasubvention/commit/99486cc6ec291f2cce23b75e3858e7ced6a7d84f))
-* **dto:** make Association bodacc prop a ProviderValues ([687cb75](https://github.com/betagouv/datasubvention/commit/687cb757d154a50847edceb0b4b82d37068f31df))
-
-
-
-
+-   **api:** sends bop ([ae51da1](https://github.com/betagouv/datasubvention/commit/ae51da12d46da1d285bcbf74d7cf330b6d75a0b3))
+-   **dto:** add BodaccRecordDto to AssociationDto ([e4e4941](https://github.com/betagouv/datasubvention/commit/e4e4941965ae13bd2a5fc7f7e2249dda1917745d))
+-   **dto:** make Association Bodacc optionnal ([99486cc](https://github.com/betagouv/datasubvention/commit/99486cc6ec291f2cce23b75e3858e7ced6a7d84f))
+-   **dto:** make Association bodacc prop a ProviderValues ([687cb75](https://github.com/betagouv/datasubvention/commit/687cb757d154a50847edceb0b4b82d37068f31df))
 
 # [0.25.0](https://github.com/betagouv/datasubvention/compare/v0.24.7...v0.25.0) (2023-04-04)
 
-
 ### Features
 
-* **api:** sends bop ([fa9d900](https://github.com/betagouv/datasubvention/commit/fa9d900a2898ba1cb5d14c7f7d831ab1f636a578))
-* **dto:** add BodaccRecordDto to AssociationDto ([7a975a6](https://github.com/betagouv/datasubvention/commit/7a975a6cdcbcb095ea481fec22f67442b1a5b6d1))
-* **dto:** make Association Bodacc optionnal ([0dd8447](https://github.com/betagouv/datasubvention/commit/0dd8447da230e8e1d8e701bdf615e27c2146b33b))
-* **dto:** make Association bodacc prop a ProviderValues ([84af61b](https://github.com/betagouv/datasubvention/commit/84af61b2e9cb9bbec220c6436617dbfb88021cac))
-
-
-
-
+-   **api:** sends bop ([fa9d900](https://github.com/betagouv/datasubvention/commit/fa9d900a2898ba1cb5d14c7f7d831ab1f636a578))
+-   **dto:** add BodaccRecordDto to AssociationDto ([7a975a6](https://github.com/betagouv/datasubvention/commit/7a975a6cdcbcb095ea481fec22f67442b1a5b6d1))
+-   **dto:** make Association Bodacc optionnal ([0dd8447](https://github.com/betagouv/datasubvention/commit/0dd8447da230e8e1d8e701bdf615e27c2146b33b))
+-   **dto:** make Association bodacc prop a ProviderValues ([84af61b](https://github.com/betagouv/datasubvention/commit/84af61b2e9cb9bbec220c6436617dbfb88021cac))
 
 # [0.24.0](https://github.com/betagouv/datasubvention/compare/v0.23.9...v0.24.0) (2023-03-21)
 
-
 ### Bug Fixes
 
-* **dto:** revert deleted file ([f67bfcb](https://github.com/betagouv/datasubvention/commit/f67bfcb574202e2f8945f506a9d019d7f3284a63))
-* **dto:** revert ResetPasswordErrorCodes removal ([eef731b](https://github.com/betagouv/datasubvention/commit/eef731bfdb2f388a7642bd015d8bcb46eb840850))
-
+-   **dto:** revert deleted file ([f67bfcb](https://github.com/betagouv/datasubvention/commit/f67bfcb574202e2f8945f506a9d019d7f3284a63))
+-   **dto:** revert ResetPasswordErrorCodes removal ([eef731b](https://github.com/betagouv/datasubvention/commit/eef731bfdb2f388a7642bd015d8bcb46eb840850))
 
 ### Features
 
-* **api, dto:** update error handling in UserController ([9b0c058](https://github.com/betagouv/datasubvention/commit/9b0c0587e01c80f4f1940511ceddf8e0f9417d91))
-* **dto:** normalized application status enum ([0551fb7](https://github.com/betagouv/datasubvention/commit/0551fb757ba365e77cc14fd6acdd97a0a27a57fb))
-* **dto:** update application dto with normalized status label ([37fa9a0](https://github.com/betagouv/datasubvention/commit/37fa9a08e0f0aad2d91faac7dd19ff025fd23de3))
-* **dto:** update application status enum ([46ee7d6](https://github.com/betagouv/datasubvention/commit/46ee7d6c9e8fd7424ed0cffde653404254d65e3e))
-
-
-
-
+-   **api, dto:** update error handling in UserController ([9b0c058](https://github.com/betagouv/datasubvention/commit/9b0c0587e01c80f4f1940511ceddf8e0f9417d91))
+-   **dto:** normalized application status enum ([0551fb7](https://github.com/betagouv/datasubvention/commit/0551fb757ba365e77cc14fd6acdd97a0a27a57fb))
+-   **dto:** update application dto with normalized status label ([37fa9a0](https://github.com/betagouv/datasubvention/commit/37fa9a08e0f0aad2d91faac7dd19ff025fd23de3))
+-   **dto:** update application status enum ([46ee7d6](https://github.com/betagouv/datasubvention/commit/46ee7d6c9e8fd7424ed0cffde653404254d65e3e))
 
 # [0.23.0](https://github.com/betagouv/datasubvention/compare/v0.22.0...v0.23.0) (2023-02-13)
 

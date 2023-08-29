@@ -1,4 +1,4 @@
-import { ApplicationStatus } from "@api-subventions-asso/dto";
+import { ApplicationStatus } from "dto";
 
 export function toStatusFactory(statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[]) {
     if (!Array.isArray(statusConversionArray)) return () => ApplicationStatus.UNKNWON;

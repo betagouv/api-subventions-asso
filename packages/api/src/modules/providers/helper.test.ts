@@ -1,5 +1,5 @@
 import { toStatusFactory } from "./helper";
-import { ApplicationStatus } from "@api-subventions-asso/dto";
+import { ApplicationStatus } from "dto";
 
 describe("toStatusFactory", () => {
     const PROVIDER_STATUS = "tata";

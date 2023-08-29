@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "dto";
 import FonjepVersementEntity from "../entities/FonjepVersementEntity";
 import { FonjepCoreRepository } from "./fonjep.core.repository";
 

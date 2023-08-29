@@ -1,4 +1,4 @@
-import { ApplicationStatus } from "@api-subventions-asso/dto";
+import { ApplicationStatus } from "dto";
 
 export class StatusLabelController {
     static cssClassByLabel = {

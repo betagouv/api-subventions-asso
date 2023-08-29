@@ -30,9 +30,3 @@
         </svelte:fragment>
     </Tabs>
 </div>
-
-<style>
-    .tabs-etab :global(.fr-tabs > .fr-tabs__list) {
-        justify-content: center;
-    }
-</style>

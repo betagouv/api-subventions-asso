@@ -1,4 +1,4 @@
-import { AddEmailDomainDto, GetEmailDomainsDto } from "@api-subventions-asso/dto";
+import { AddEmailDomainDto, GetEmailDomainsDto } from "dto";
 import { Controller, Get, Post, Route, Security, Tags, Response, Body, SuccessResponse } from "tsoa";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import configurationsService from "../../configurations.service";

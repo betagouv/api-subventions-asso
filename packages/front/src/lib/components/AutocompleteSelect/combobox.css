@@ -1,0 +1,82 @@
+/*
+ *   [combobox-autocomplete.css](https://www.w3.org/WAI/content-assets/wai-aria-practices/patterns/combobox/examples/css/combobox-autocomplete.css)
+
+    Copyright © 2023 World Wide Web Consortium. All Rights Reserved. This work is distributed under the W3C® Software and Document License [1] in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+    [1] https://www.w3.org/Consortium/Legal/copyright-software
+
+    This software or document includes material copied from or derived from [combobox-autocomplete.css](https://www.w3.org/WAI/content-assets/wai-aria-practices/patterns/combobox/examples/css/combobox-autocomplete.css). Copyright © 2023 World Wide Web Consortium. https://www.w3.org/copyright/software-license-2023/
+
+ */
+
+
+.combobox-list {
+  position: relative;
+}
+
+.combobox .group {
+  cursor: pointer;
+}
+
+.combobox .fr-input-wrap {
+  display: flex;
+}
+
+.combobox .fr-input-wrap .fr-input {
+  padding-right: 2.5rem !important;
+  cursor: pointer;
+}
+
+.combobox button {
+  pointer-events: none;
+  position: absolute;
+  right: 0.75rem;
+  top: .5rem;
+}
+
+.combobox button[aria-expanded="true"] .icon::before {
+  transform: rotate(180deg);
+}
+
+ul[role="listbox"] {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  list-style: none;
+  background-color: var(--background-default-grey);
+  display: none;
+  box-sizing: border-box;
+  border: 2px var(--border-default-grey) solid;
+  max-height: 250px;
+  width: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+ul[role="listbox"] li[role="option"] {
+  margin: 0;
+  display: block;
+  padding: 0.5rem 1rem
+}
+
+/* focus and hover styling */
+
+[role="listbox"].focus [role="option"][aria-selected="true"] {
+  background-color: var(--background-default-grey-active);
+}
+
+[role="listbox"] [role="option"]:hover {
+  background-color: var(--background-default-grey-hover);
+}
+
+[role="listbox"].focus [role="option"][aria-selected="true"]:not(:last-child),
+[role="listbox"] [role="option"]:hover:not(:last-child) {
+  padding-bottom: calc(0.5rem - 2px);
+  border-bottom: 2px solid var(--border-default-grey);
+}
+
+[role="listbox"].focus [role="option"][aria-selected="true"]:not(:first-child),
+[role="listbox"] [role="option"]:hover:not(:first-child) {
+  padding-top: calc(0.5rem - 2px);
+  border-top: 2px solid var(--border-default-grey);
+}

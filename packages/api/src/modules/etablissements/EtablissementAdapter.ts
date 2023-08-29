@@ -1,4 +1,4 @@
-import { Etablissement, SimplifiedEtablissement } from "@api-subventions-asso/dto";
+import { Etablissement, SimplifiedEtablissement } from "dto";
 
 export class EtablissementAdapter {
     static toSimplifiedEtablissement(etablissement: Etablissement) {

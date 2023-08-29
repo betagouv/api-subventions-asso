@@ -1,4 +1,4 @@
-import { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse } from "@api-subventions-asso/dto";
+import { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse } from "dto";
 import { Controller, Get, Route, Security, Tags, Response, Request } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";

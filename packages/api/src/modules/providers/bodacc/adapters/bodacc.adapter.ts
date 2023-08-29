@@ -1,4 +1,4 @@
-import { Association } from "@api-subventions-asso/dto";
+import { Association } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import bodaccService from "../bodacc.service";
 import { BodaccDto } from "../dto/BodaccDto";

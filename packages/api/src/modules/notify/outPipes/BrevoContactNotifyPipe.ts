@@ -60,7 +60,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
 
         return sendCreation()
             .then(({ body }) => {
-                if (body.id) return true;
+                if (body?.id) return true;
                 return false;
             })
             .catch(({ response, body: wrongBody }) => {
@@ -92,7 +92,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         updateContact.attributes = { COMPTE_ACTIVE: true };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance.updateContact(data.email, updateContact).then(({ body }) => {
-            if (body.id) return true;
+            if (body?.id) return true;
             return false;
         });
     }
@@ -102,7 +102,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         updateContact.attributes = { DERNIERE_CONNEXION: data.date };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance.updateContact(data.email, updateContact).then(({ body }) => {
-            if (body.id) return true;
+            if (body?.id) return true;
             return false;
         });
     }

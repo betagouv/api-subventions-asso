@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import "dotenv/config"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-
 import { mkdirSync, existsSync } from "fs";
+import "./configurations/env";
+
 import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import DataGouvCliController from "./modules/providers/datagouv/interfaces/cli/datagouv.cli.controller";
 import FonjepCliController from "./modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
@@ -19,6 +19,7 @@ import DemarchesSimplifieesCliController from "./modules/providers/demarchesSimp
 import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
 import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
 import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dauphin.cli.controller";
+import AdminStructureCliController from "./modules/admin-structure/interfaces/cli/adminStructureCliController";
 
 async function main() {
     await connectDB();
@@ -40,6 +41,7 @@ async function main() {
         CaisseDepotsCliController,
         GisproCliController,
         DauphinCliController,
+        AdminStructureCliController,
     ];
 
     const args = process.argv.slice(2);

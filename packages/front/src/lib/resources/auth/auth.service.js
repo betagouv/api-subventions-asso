@@ -1,4 +1,4 @@
-import { SignupErrorCodes, ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { SignupErrorCodes, ResetPasswordErrorCodes } from "dto";
 import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
 import requestsService from "$lib/services/requests.service";
@@ -44,7 +44,9 @@ export class AuthService {
 
     initUserInApp() {
         this.setUserInApp();
-        requestsService.addErrorHook(UnauthorizedError, () => {
+        requestsService.addErrorHook(UnauthorizedError, error => {
+            // if the unauthorized error is triggered from a login error, we do not redirect/reload to the /auth/login page
+            if (error.__nativeError__.request.responseURL.includes("/auth/login")) return;
             const queryUrl = encodeURIComponent(page.value.url.pathname);
             this.logout(false);
             goToUrl(`/auth/login?url=${queryUrl}`, true, true);
@@ -71,6 +73,10 @@ export class AuthService {
     redirectToLogin() {
         const queryUrl = encodeURIComponent(location.pathname);
         return goToUrl(`/auth/login?url=${queryUrl}`);
+    }
+
+    validateToken(token) {
+        return authPort.validateToken(token);
     }
 }
 

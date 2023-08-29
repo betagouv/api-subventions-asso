@@ -1,5 +1,5 @@
 import { Route, Get, Controller, Tags, Response } from "tsoa";
-import { Rna, Siren, RnaSirenResponseDto, GetRnaSirenErrorResponse } from "@api-subventions-asso/dto";
+import { Rna, Siren, RnaSirenResponseDto, GetRnaSirenErrorResponse } from "dto";
 import { siretToSiren } from "../../../../../shared/helpers/SirenHelper";
 import rnaSirenService from "../../rnaSiren.service";
 import { StructureIdentifiers } from "../../../../../@types";

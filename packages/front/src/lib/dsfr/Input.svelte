@@ -9,8 +9,13 @@
     export let name = `input-${id}`;
     export let autocomplete = "false";
     export let placeholder = "";
+    export let error = false;
+    export let errorMsg = null;
+    export let hint = "";
 
     let spellcheck = true;
+
+    const descErrorElement = `${name}-desc-error`;
 
     // DSFR best practices
     if (["given-name", "family-name"].includes(name)) {
@@ -27,10 +32,14 @@
     }
 </script>
 
-<div class="fr-input-group">
-    <label class="fr-label" for={name}>{label}</label>
+<div class="fr-input-group" class:fr-input-group--error={error}>
+    <label class="fr-label" for={id}>
+        {label}
+        <span class="fr-hint-text">{hint}</span>
+    </label>
     <input
         class="fr-input"
+        class:fr-input--error={error}
         type="text"
         {id}
         {name}
@@ -39,5 +48,12 @@
         {placeholder}
         bind:value
         required={required ? "required" : undefined}
-        use:typeAction />
+        use:typeAction
+        aria-invalid={errorMsg ? "true" : undefined}
+        aria-errormessage={errorMsg ? descErrorElement : undefined}
+        on:blur
+        on:input />
+    {#if error && errorMsg}
+        <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
+    {/if}
 </div>

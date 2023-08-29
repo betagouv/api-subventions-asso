@@ -10,8 +10,11 @@ export default class MultiStepFormController {
             step: steps[0],
             isFirstStep: true,
             isLastStep: this.steps.length === 1,
+            nextStepName: steps.length > 1 ? steps[1].name : null,
+            nextStepPositionLabel: steps.length > 1 ? 2 : null,
         });
 
+        this.isStepBlocked = new Store(true);
         // create an array of empty object that represent each step values
         this.data = new Store(this.steps.map(() => ({})));
     }
@@ -28,12 +31,15 @@ export default class MultiStepFormController {
     _shift(direction) {
         const oldStep = this.currentStep.value;
         const newIndex = oldStep.index + direction;
+        const nextIndex = newIndex + 1;
         this.currentStep.set({
             index: newIndex,
             positionLabel: oldStep.positionLabel + direction,
             step: this.steps[newIndex],
             isFirstStep: newIndex === 0,
-            isLastStep: this.steps.length === newIndex + 1,
+            isLastStep: this.steps.length === nextIndex,
+            nextStepName: this.steps.length > nextIndex ? this.steps[nextIndex].name : null,
+            nextStepPositionLabel: this.steps.length > nextIndex ? nextIndex + 1 : null,
         });
     }
 
@@ -53,5 +59,13 @@ export default class MultiStepFormController {
 
     previous() {
         this._shift(-1);
+    }
+
+    blockStep() {
+        this.isStepBlocked.set(true);
+    }
+
+    unblockStep() {
+        this.isStepBlocked.set(false);
     }
 }

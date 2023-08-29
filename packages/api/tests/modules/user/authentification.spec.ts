@@ -1,6 +1,6 @@
 import request = require("supertest");
 import userService, { UserService } from "../../../src/modules/user/user.service";
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import notifyService from "../../../src/modules/notify/notify.service";

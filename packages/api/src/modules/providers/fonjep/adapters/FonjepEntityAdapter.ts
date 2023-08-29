@@ -1,10 +1,4 @@
-import {
-    ApplicationStatus,
-    DemandeSubvention,
-    Etablissement,
-    FullGrantDto,
-    VersementFonjep,
-} from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention, Etablissement, FullGrantDto, VersementFonjep } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";

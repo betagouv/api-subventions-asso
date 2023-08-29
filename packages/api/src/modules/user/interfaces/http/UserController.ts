@@ -5,7 +5,7 @@ import {
     UserDataDto,
     UserDtoResponse,
     UserListDtoResponse,
-} from "@api-subventions-asso/dto";
+} from "dto";
 import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
