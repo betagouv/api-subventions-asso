@@ -51,6 +51,7 @@ ul[role="listbox"] {
   width: 100%;
   overflow: scroll;
   overflow-x: hidden;
+  z-index: 1;
 }
 
 ul[role="listbox"] li[role="option"] {
