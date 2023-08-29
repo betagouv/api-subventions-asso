@@ -265,12 +265,24 @@ export class UserService {
 
         if (!user) return false;
 
+        await notifyService.notify(NotificationType.USER_DELETED, {
+            email: user.email,
+            firstname: user.firstName,
+            lastname: user.lastName,
+        });
+
         if (!(await userRepository.delete(user))) return false;
 
         const deletePromises = [
             userResetRepository.removeAllByUserId(user._id),
             consumerTokenRepository.deleteAllByUserId(user._id),
         ];
+
+        await notifyService.notify(NotificationType.USER_DELETED, {
+            email: user.email,
+            firstname: user.firstName,
+            lastname: user.lastName,
+        });
 
         return (await Promise.all(deletePromises)).every(success => success);
     }
