@@ -21,23 +21,30 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         }
     }
 
-    private async userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {
-        const message = `${data.firstname || ""} ${data.lastname || ""} (${
-            data.email
-        }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`;
-
+    private async sendMessage(payload) {
         try {
             await axios.post(this.apiUrl, {
-                text: message,
-                channel: "datasubvention---canal-prive", // TODO choose proper channel
-                username: "Suppression de compte",
-                icon_emoji: "door",
+                ...payload,
+                text: `[${process.env.ENV}] ${payload.text}`,
             });
             return true;
         } catch {
             console.error("error sending mattermost log");
             return false;
         }
+    }
+
+    private userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {
+        const message = `${data.firstname || ""} ${data.lastname || ""} (${
+            data.email
+        }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`;
+
+        return this.sendMessage({
+            text: message,
+            channel: "datasubvention---bizdev", // TODO choose proper channel
+            username: "Suppression de compte",
+            icon_emoji: "door",
+        });
     }
 }
 
