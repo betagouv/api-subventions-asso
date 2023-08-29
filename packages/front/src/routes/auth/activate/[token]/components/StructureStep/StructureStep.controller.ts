@@ -1,6 +1,7 @@
 import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
 import type { SvelteComponent } from "svelte";
 import ExampleSubStep from "./ExampleSubStep/ExampleSubStep.svelte";
+import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
@@ -52,7 +53,7 @@ export default class StructureStepController {
 
     private static subStepByAgentType: Record<AgentTypeEnum, typeof SvelteComponent | undefined> = {
         [AgentTypeEnum.CENTRAL_ADMIN]: CentralSubStep,
-        [AgentTypeEnum.OPERATOR]: ExampleSubStep,
+        [AgentTypeEnum.OPERATOR]: OperatorSubStep,
         [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: ExampleSubStep,
         [AgentTypeEnum.DECONCENTRATED_ADMIN]: ExampleSubStep,
     };
