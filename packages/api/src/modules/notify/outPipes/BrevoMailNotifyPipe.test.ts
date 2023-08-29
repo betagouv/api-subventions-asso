@@ -4,6 +4,15 @@ import Brevo from "@getbrevo/brevo";
 jest.mock("@getbrevo/brevo", () => ({
     TransactionalEmailsApi: jest.fn(),
     SendSmtpEmail: jest.fn(() => ({ templateId: undefined })),
+    ApiClient: {
+        instance: {
+            authentications: {
+                "api-key": {
+                    apiKey: undefined,
+                },
+            },
+        },
+    },
 }));
 
 describe("BrevoMailNotify", () => {
