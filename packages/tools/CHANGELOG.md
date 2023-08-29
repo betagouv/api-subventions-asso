@@ -3,137 +3,81 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.35.0](https://github.com/betagouv/api-subventions-asso/compare/v0.33.4...v0.35.0) (2023-08-29)
+
+### Bug Fixes
+
+-   **chore:** bash loop error ([a44ce8f](https://github.com/betagouv/api-subventions-asso/commit/a44ce8f3d5535fe5bd036a87ce2336791f84f0c4))
+
 # [0.34.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.4...v0.34.0) (2023-08-09)
 
-
+# [0.34.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.4...v0.34.0) (2023-08-09)
 
 ## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
-
-
 
 # [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.33.0) (2023-07-24)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 ## [0.33.1](https://github.com/betagouv/api-subventions-asso/compare/v0.32.3...v0.33.1) (2023-07-27)
-
-
 
 # [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.2...v0.33.0) (2023-07-24)
 
 **Note:** Version bump only for package tools
-
-
-
-
 
 # [0.33.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.1...v0.33.0) (2023-07-24)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.32.0](https://github.com/betagouv/api-subventions-asso/compare/v0.31.3...v0.32.0) (2023-07-11)
 
 **Note:** Version bump only for package tools
-
-
-
-
 
 # [0.31.0](https://github.com/betagouv/api-subventions-asso/compare/v0.30.2...v0.31.0) (2023-06-27)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.30.0](https://github.com/betagouv/api-subventions-asso/compare/v0.29.1...v0.30.0) (2023-06-08)
-
 
 ### Features
 
-* homogenizes lint config ([90b43d1](https://github.com/betagouv/api-subventions-asso/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
-
-
-
-
+-   homogenizes lint config ([90b43d1](https://github.com/betagouv/api-subventions-asso/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
 
 ## [0.29.1](https://github.com/betagouv/api-subventions-asso/compare/v0.29.0...v0.29.1) (2023-05-31)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.29.0](https://github.com/betagouv/api-subventions-asso/compare/v0.28.2...v0.29.0) (2023-05-26)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.28.0](https://github.com/betagouv/api-subventions-asso/compare/v0.27.0...v0.28.0) (2023-05-15)
-
 
 ### Features
 
-* **tool:** manage error on osiris extraction ([6f49ac2](https://github.com/betagouv/api-subventions-asso/commit/6f49ac2f391ccd388ab8601e707ed10c5f5fb26a))
-* **tools:** add save current-posibilities ([e657f36](https://github.com/betagouv/api-subventions-asso/commit/e657f36c38ac09b4c2881e69b6cb5141e753b386))
-* **tools:** better error management ([59f9ed8](https://github.com/betagouv/api-subventions-asso/commit/59f9ed824beacecfda2eec9b990dc674926b86b3))
-
-
-
-
+-   **tool:** manage error on osiris extraction ([6f49ac2](https://github.com/betagouv/api-subventions-asso/commit/6f49ac2f391ccd388ab8601e707ed10c5f5fb26a))
+-   **tools:** add save current-posibilities ([e657f36](https://github.com/betagouv/api-subventions-asso/commit/e657f36c38ac09b4c2881e69b6cb5141e753b386))
+-   **tools:** better error management ([59f9ed8](https://github.com/betagouv/api-subventions-asso/commit/59f9ed824beacecfda2eec9b990dc674926b86b3))
 
 # [0.27.0](https://github.com/betagouv/api-subventions-asso/compare/v0.26.2...v0.27.0) (2023-05-03)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.26.0](https://github.com/betagouv/api-subventions-asso/compare/v0.25.1...v0.26.0) (2023-04-17)
 
 **Note:** Version bump only for package tools
-
-
-
-
 
 ## [0.25.1](https://github.com/betagouv/api-subventions-asso/compare/v0.24.10...v0.25.1) (2023-04-17)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.25.0](https://github.com/betagouv/api-subventions-asso/compare/v0.24.7...v0.25.0) (2023-04-04)
 
 **Note:** Version bump only for package tools
 
-
-
-
-
 # [0.24.0](https://github.com/betagouv/api-subventions-asso/compare/v0.23.9...v0.24.0) (2023-03-21)
 
 **Note:** Version bump only for package tools
-
-
-
-
 
 # [0.23.0](https://github.com/betagouv/api-subventions-asso/compare/v0.22.0...v0.23.0) (2023-02-13)
 
