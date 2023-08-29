@@ -25,6 +25,7 @@
     export let name = id;
     export let options: { value: string; label: string }[];
     export let label = "";
+    export let placeholder = "";
 
     const listId = `list-${id}`;
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
@@ -46,6 +47,7 @@
                 {id}
                 class="fr-input"
                 {name}
+                {placeholder}
                 type="text"
                 role="combobox"
                 aria-autocomplete="both"
