@@ -320,6 +320,13 @@ export class UserService {
             firstName: "",
             lastName: "",
         };
+
+        await notifyService.notify(NotificationType.USER_DELETED, {
+            email: user.email,
+            firstname: user.firstName,
+            lastname: user.lastName,
+        });
+
         return !!(await userRepository.update(disabledUser));
     }
 
