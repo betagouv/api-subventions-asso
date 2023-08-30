@@ -41,7 +41,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: "datasubvention---bizdev", // TODO choose proper channel
+            channel: "datasubvention---bizdev",
             username: "Suppression de compte",
             icon_emoji: "door",
         });
