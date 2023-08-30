@@ -13,3 +13,11 @@ export function isHyphen(str) {
 export function capitalizeFirstLetter(str) {
     return str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str;
 }
+
+export function isPhoneNumber(str) {
+    // https://stackoverflow.com/a/38484020
+    // uncomment below to restrict to French phone numbers
+    // const regex = /^(?:(?:\+|00)33|0)[\s-.]*[1-9](?:[\s.-]*\d{2}){4}$/;
+    const regex = /^\+?[0-9 .-]+$/;
+    return regex.test(str);
+}

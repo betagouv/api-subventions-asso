@@ -1,5 +1,4 @@
-import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue } from "@api-subventions-asso/dto";
-import { Document } from "@api-subventions-asso/dto/search/Document";
+import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, Document } from "dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";

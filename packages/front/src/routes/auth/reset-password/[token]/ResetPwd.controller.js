@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes, TokenValidationType } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes, TokenValidationType } from "dto";
 import { goToUrl } from "$lib/services/router.service";
 import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";

@@ -1,3 +1,4 @@
+import authService from "../auth/auth.service";
 import userPort from "./user.port";
 
 export class UsersService {
@@ -6,8 +7,9 @@ export class UsersService {
         return Date.now() - new Date(userDto.stats.lastSearchDate).getTime() <= this.SEVEN_DAYS_MS;
     }
 
-    deleteCurrentUser() {
-        return userPort.deleteSelfUser();
+    async deleteCurrentUser() {
+        await userPort.deleteSelfUser();
+        authService.logout(true);
     }
 }
 

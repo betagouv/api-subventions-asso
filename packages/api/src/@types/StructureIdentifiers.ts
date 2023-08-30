@@ -1,4 +1,4 @@
-import { Siret } from "@api-subventions-asso/dto";
+import { Siret } from "dto";
 import { AssociationIdentifiers } from "./AssociationIdentifiers";
 
 export type StructureIdentifiers = Siret | AssociationIdentifiers;

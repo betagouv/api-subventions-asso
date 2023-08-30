@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "@api-subventions-asso/dto";
+import { DemandeSubvention } from "dto";
 
 export interface SubventionsFlux {
     subventions?: DemandeSubvention[];

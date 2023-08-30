@@ -1,5 +1,5 @@
 import { Controller, Get, Route, Tags } from "tsoa";
-import { Siret, PublishableGrantDto } from "@api-subventions-asso/dto";
+import { Siret, PublishableGrantDto } from "dto";
 import openDataGrantService from "../../openDataGrantService";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../../../../@types";
 

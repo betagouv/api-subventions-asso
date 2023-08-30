@@ -1,4 +1,4 @@
-import { Siren, Siret } from "@api-subventions-asso/dto";
+import { Siren, Siret } from "dto";
 import fonjepVersementRepository from "../repositories/fonjep.versement.repository";
 import fonjepSubventionRepository from "../repositories/fonjep.subvention.repository";
 import db from "../../../../shared/MongoConnection";

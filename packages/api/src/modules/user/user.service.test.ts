@@ -39,17 +39,17 @@ import mocked = jest.mocked;
 import userService, { UserService, UserServiceErrors } from "./user.service";
 import { ObjectId, WithId } from "mongodb";
 import { RoleEnum } from "../../@enums/Roles";
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import UserReset from "./entities/UserReset";
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes, UserErrorCodes } from "@api-subventions-asso/dto";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes, UserErrorCodes } from "dto";
 import LoginError from "../../shared/errors/LoginError";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import statsService from "../stats/stats.service";
 import { NotificationType } from "../notify/@types/NotificationType";
-import { TokenValidationDtoPositiveResponse } from "@api-subventions-asso/dto";
-import { TokenValidationType } from "@api-subventions-asso/dto";
+import { TokenValidationDtoPositiveResponse } from "dto";
+import { TokenValidationType } from "dto";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 

@@ -1,4 +1,4 @@
-import { ProviderValues, Association, Siret, Rna, Siren } from "@api-subventions-asso/dto";
+import { ProviderValues, Association, Siret, Rna, Siren } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";

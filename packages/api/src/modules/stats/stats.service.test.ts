@@ -16,7 +16,7 @@ import statsAssociationsVisitRepository from "./repositories/statsAssociationsVi
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import userRepository from "../user/repositories/user.repository";
 import UserDbo from "../user/repositories/dbo/UserDbo";
-import UserDto from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import { ObjectId } from "mongodb";

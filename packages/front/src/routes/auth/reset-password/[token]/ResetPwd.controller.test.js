@@ -1,10 +1,10 @@
-import { ResetPasswordErrorCodes } from "@api-subventions-asso/dto";
+import { ResetPasswordErrorCodes } from "dto";
 import { ResetPwdController } from "./ResetPwd.controller";
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service.js";
 
-vi.mock("@api-subventions-asso/dto", async () => {
-    const actual = await vi.importActual("@api-subventions-asso/dto");
+vi.mock("dto", async () => {
+    const actual = await vi.importActual("dto");
     return {
         ...actual,
         ResetPasswordErrorCodes: {

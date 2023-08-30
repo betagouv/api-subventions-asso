@@ -1,4 +1,4 @@
-import { Siret, Siren } from "@api-subventions-asso/dto";
+import { Siret, Siren } from "dto";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisEvaluationEntity from "../entities/OsirisEvaluationEntity";
 import MigrationRepository from "../../../../shared/MigrationRepository";

@@ -1,6 +1,6 @@
-import { Rna, Siren, Siret, Association, Etablissement } from "@api-subventions-asso/dto";
+import { Rna, Siren, Siret, Association, Etablissement } from "dto";
 import axios from "axios";
-import { Document } from "@api-subventions-asso/dto/search/Document";
+import { Document } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
@@ -222,10 +222,16 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (!sirenAssociation) return null;
 
         const groupedIdentifier = await associationNameService.getGroupedIdentifiers(siren);
+        let rna = groupedIdentifier.rna || "";
 
-        if (!groupedIdentifier.rna) return [sirenAssociation];
+        if (!groupedIdentifier.rna) {
+            // Check if information rna <=> siren is save in apiRNA
+            const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
+            if (!structure?.identite.id_rna) return [sirenAssociation];
+            rna = structure.identite.id_rna;
+        }
 
-        const rnaAssociation = await this.findAssociationByRna(groupedIdentifier.rna);
+        const rnaAssociation = await this.findAssociationByRna(rna);
 
         if (!rnaAssociation) return [sirenAssociation];
 
@@ -243,9 +249,16 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         const groupedIdentifier = await associationNameService.getGroupedIdentifiers(rna);
 
-        if (!groupedIdentifier.siren) return [rnaAssociation];
+        let siren = groupedIdentifier.siren || "";
 
-        const sirenAssociation = await this.findAssociationBySiren(groupedIdentifier.siren);
+        if (!groupedIdentifier.siren) {
+            // Check if information rna <=> siren is save in apiRNA
+            const structure = await this.sendRequest<StructureDto>(`/api/structure/${rna}`);
+            if (!structure?.identite.id_siren) return [rnaAssociation];
+            siren = structure.identite.id_siren;
+        }
+
+        const sirenAssociation = await this.findAssociationBySiren(siren);
 
         if (!sirenAssociation) return [rnaAssociation];
 

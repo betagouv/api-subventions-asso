@@ -1,4 +1,4 @@
-import { ApplicationDto, ApplicationStatus, GrantDto, PaymentDto } from "@api-subventions-asso/dto";
+import { ApplicationDto, ApplicationStatus, GrantDto, PaymentDto } from "dto";
 import providers from "../providers";
 import { JoinedRawGrant, RawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";

@@ -1,5 +1,5 @@
 import { FindOneAndUpdateOptions } from "mongodb";
-import { Siren } from "@api-subventions-asso/dto";
+import { Siren } from "dto";
 import db from "../../../../shared/MongoConnection";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisActionEntityDbo from "../entities/OsirisActionEntityDbo";

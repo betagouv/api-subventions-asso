@@ -1,4 +1,4 @@
-import { Siret } from "@api-subventions-asso/dto";
+import { Siret } from "dto";
 
 export default interface IApiEntrepriseHeadcount {
     siret: Siret;

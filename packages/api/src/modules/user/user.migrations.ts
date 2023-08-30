@@ -1,4 +1,4 @@
-import { UserDto } from "@api-subventions-asso/dto/user/UserDto";
+import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";

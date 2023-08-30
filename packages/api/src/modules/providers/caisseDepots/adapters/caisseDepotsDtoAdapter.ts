@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, FullGrantDto } from "@api-subventions-asso/dto";
+import { ApplicationStatus, DemandeSubvention, FullGrantDto } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import caisseDepotsService from "../caisseDepots.service";
 import CaisseDepotsSubventionDto from "../dto/CaisseDepotsSubventionDto";

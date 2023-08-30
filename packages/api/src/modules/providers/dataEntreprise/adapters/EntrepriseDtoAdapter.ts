@@ -1,4 +1,4 @@
-import { Association } from "@api-subventions-asso/dto";
+import { Association } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import EntrepriseDto from "../dto/EntrepriseDto";
 

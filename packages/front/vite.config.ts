@@ -11,7 +11,7 @@ export default defineConfig({
         setupFiles: ["src/setuptest.ts"],
     },
     optimizeDeps: {
-        include: ["@api-subventions-asso/dto"],
+        include: ["dto"],
     },
     build: {
         commonjsOptions: {
