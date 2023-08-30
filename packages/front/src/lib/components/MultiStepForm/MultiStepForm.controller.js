@@ -1,7 +1,7 @@
-import Store from "$lib/core/Store";
+import Store, { derived } from "$lib/core/Store";
 
 export default class MultiStepFormController {
-    constructor(steps, onSubmit) {
+    constructor(steps, onSubmit, buildContext) {
         this.steps = steps;
         this.onSubmit = onSubmit;
         this.currentStep = new Store({
@@ -17,10 +17,7 @@ export default class MultiStepFormController {
         this.isStepBlocked = new Store(true);
         // create an array of empty object that represent each step values
         this.data = new Store(this.steps.map(() => ({})));
-    }
-
-    onDestroy() {
-        this._unsubscribe();
+        this.context = derived(this.data, data => buildContext(data));
     }
 
     /**

@@ -18,12 +18,12 @@ export default class ActivateAccountController {
             { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
             { name: "Informations sur votre structure", component: StructureStep },
         ];
+        this.buildContext = values => ({ agentType: values[1].agentType });
     }
 
-    onSubmit(values) {
-        return authService.resetPassword(this.token, values.password).then(() => {
-            goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
-        });
+    async onSubmit(values) {
+        await authService.resetPassword(this.token, values.password);
+        goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
     }
 
     async init() {

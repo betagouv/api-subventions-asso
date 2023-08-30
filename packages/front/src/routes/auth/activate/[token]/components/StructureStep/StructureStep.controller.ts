@@ -1,4 +1,6 @@
-import { AgentJobTypeEnum } from "dto";
+import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
+import type { SvelteComponent } from "svelte";
+import ExampleSubStep from "./ExampleSubStep/ExampleSubStep.svelte";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -8,22 +10,32 @@ type Option = {
     label: string;
 };
 
+interface Context {
+    agentType: AgentTypeEnum;
+}
+
+interface SubStep {
+    component: typeof SvelteComponent;
+    // valid: boolean
+}
+
 export default class StructureStepController {
     private readonly dispatch: (_: string) => void;
+
     public readonly errors: Store<{ [key: string]: string | undefined }>;
-    private static errorMandatory = "Ce champ est obligatoire";
+    // private static errorMandatory = "Ce champ est obligatoire";
     private readonly dirty: { [key: string]: boolean };
 
     private readonly validators: Record<string, (value: any) => string | undefined> = {
-        service: (text: string) => {
-            if (!text) return StructureStepController.errorMandatory;
-        },
-        jobType: (jobs: string[] | null) => {
-            if (!jobs?.length) return StructureStepController.errorMandatory;
-        },
+        // service: (text: string) => {
+        //     if (!text) return StructureStepController.errorMandatory;
+        // },
+        // jobType: (jobs: string[] | null) => {
+        //     if (!jobs?.length) return StructureStepController.errorMandatory;
+        // },
         phoneNumber: (number: string) => {
-            if (!number) return StructureStepController.errorMandatory;
-            if (!isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
+            // if (!number) return StructureStepController.errorMandatory;
+            if (number && !isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
         },
     };
 
@@ -37,13 +49,24 @@ export default class StructureStepController {
         { value: AgentJobTypeEnum.OTHER, label: "Autre" },
     ];
 
+    private static subStepByAgentType: Record<AgentTypeEnum, typeof SvelteComponent | undefined> = {
+        [AgentTypeEnum.CENTRAL_ADMIN]: ExampleSubStep,
+        [AgentTypeEnum.OPERATOR]: ExampleSubStep,
+        [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: ExampleSubStep,
+        [AgentTypeEnum.DECONCENTRATED_ADMIN]: ExampleSubStep,
+    };
+    public subStep: Store<SubStep | undefined>;
+
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
+        this.subStep = new Store(undefined);
+
         this.errors = new Store({});
         this.dirty = {};
         for (const inputName of Object.keys(this.validators)) {
             this.dirty[inputName] = false;
         }
+        this.dispatch("valid") // no required field so default is valid
     }
 
     onUpdate(values: Record<string, unknown>, changedKey: string) {
@@ -60,5 +83,17 @@ export default class StructureStepController {
         }
         this.errors.set(tempErrors);
         this.dispatch(shouldBlockStep ? "error" : "valid");
+    }
+
+    async onUpdateContext(context: Context) {
+        const component = StructureStepController.subStepByAgentType[context.agentType];
+        this.subStep.set(
+            component
+                ? {
+                      component,
+                      // valid: false
+                  }
+                : undefined,
+        );
     }
 }
