@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.35.1](https://github.com/betagouv/datasubvention/compare/v0.35.0...v0.35.1) (2023-08-30)
+
+### Bug Fixes
+
+-   **front:** remove step 2 and 3 from ActiveAccount until it is fully done ([de4f1ce](https://github.com/betagouv/datasubvention/commit/de4f1cec664c3fd0cef2316eb79166902b713181))
+-   package lock ([2765e7b](https://github.com/betagouv/datasubvention/commit/2765e7b7abc6fc5cc7d9369d61048df7b73c3d1c))
+
 # [0.35.0](https://github.com/betagouv/datasubvention/compare/v0.33.4...v0.35.0) (2023-08-29)
 
 ### Bug Fixes
