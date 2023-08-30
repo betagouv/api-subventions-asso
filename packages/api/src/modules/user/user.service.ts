@@ -265,12 +265,6 @@ export class UserService {
 
         if (!user) return false;
 
-        await notifyService.notify(NotificationType.USER_DELETED, {
-            email: user.email,
-            firstname: user.firstName,
-            lastname: user.lastName,
-        });
-
         if (!(await userRepository.delete(user))) return false;
 
         const deletePromises = [
