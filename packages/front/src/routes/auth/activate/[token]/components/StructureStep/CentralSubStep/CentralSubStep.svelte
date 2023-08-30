@@ -19,7 +19,7 @@
     <div class="fr-fieldset__element fr-mt-4v">
         <AutocompleteSelect
             options={$options}
-            bind:value={values.structure}
+            bind:value={values.centralAdmin}
             label="Dans quelle administration centrale travaillez-vous ?"
             placeholder="Ex : DIHAL (texte en autocomplétion)" />
     </div>
