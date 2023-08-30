@@ -1,6 +1,5 @@
 <script>
     import CentralSubStepController from "./CentralSubStep.controller";
-    import Input from "$lib/dsfr/Input.svelte";
     import AutocompleteSelect from "$lib/components/AutocompleteSelect/AutocompleteSelect.svelte";
 
     // when we will do validation, the substep will send the conclusion
