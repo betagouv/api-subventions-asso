@@ -37,7 +37,7 @@ describe("ActivateAccountController", () => {
             const PASSWORD = "qdjqd12334nHH!";
             controller = new ActivateAccountController(FAKE_TOKEN);
             await controller.onSubmit({ password: PASSWORD });
-            expect(goToUrl).toHaveBeenCalledWith("/auth/login?success=ACCOUNT_ACTIVATED");
+            expect(goToUrl).toHaveBeenCalledWith("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });
     });
 });
