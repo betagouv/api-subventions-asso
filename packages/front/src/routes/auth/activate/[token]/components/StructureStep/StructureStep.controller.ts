@@ -1,6 +1,7 @@
 import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
 import type { SvelteComponent } from "svelte";
 import ExampleSubStep from "./ExampleSubStep/ExampleSubStep.svelte";
+import TerritorialCollectivitySubStep from "./TerritorialCollectivitySubStep/TerritorialCollectivitySubStep.svelte";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -52,7 +53,7 @@ export default class StructureStepController {
     private static subStepByAgentType: Record<AgentTypeEnum, typeof SvelteComponent | undefined> = {
         [AgentTypeEnum.CENTRAL_ADMIN]: ExampleSubStep,
         [AgentTypeEnum.OPERATOR]: ExampleSubStep,
-        [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: ExampleSubStep,
+        [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: TerritorialCollectivitySubStep,
         [AgentTypeEnum.DECONCENTRATED_ADMIN]: ExampleSubStep,
     };
     public subStep: Store<SubStep | undefined>;
