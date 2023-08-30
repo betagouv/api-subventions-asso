@@ -15,14 +15,14 @@ export default class ActivateAccountController {
         this.error = null;
         this.steps = [
             { name: "Définir un mot de passe", component: DefinePassword, alert: PasswordFormatAlert },
-            { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
-            { name: "Informations sur votre structure", component: StructureStep },
+            // { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
+            // { name: "Informations sur votre structure", component: StructureStep },
         ];
     }
 
     onSubmit(values) {
         return authService.resetPassword(this.token, values.password).then(() => {
-            goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
+            goToUrl("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });
     }
 
