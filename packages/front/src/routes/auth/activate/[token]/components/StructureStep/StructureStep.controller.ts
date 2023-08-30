@@ -66,7 +66,7 @@ export default class StructureStepController {
         for (const inputName of Object.keys(this.validators)) {
             this.dirty[inputName] = false;
         }
-        this.dispatch("valid") // no required field so default is valid
+        this.dispatch("valid"); // no required field so default is valid
     }
 
     onUpdate(values: Record<string, unknown>, changedKey: string) {
