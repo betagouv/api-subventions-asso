@@ -14,7 +14,6 @@ export default class BrevoNotifyPipe {
 
         // Configure API key authorization: api-key
         const apiKey = this.client.authentications["api-key"];
-        console.log(API_SENDINBLUE_TOKEN);
         apiKey.apiKey = API_SENDINBLUE_TOKEN;
     }
 

@@ -16,7 +16,6 @@ jest.mock("@getbrevo/brevo", () => ({
 }));
 
 describe("BrevoMailNotify", () => {
-    // const spySendTransacEmail = jest.spyOn(Brevo, "TransactionalEmailsApi");
     const mockSendMail = jest.fn();
     const mockSendTransacEmail = jest.fn();
     Brevo.TransactionalEmailsApi.mockImplementation(() => ({ sendTransacEmail: mockSendTransacEmail }));

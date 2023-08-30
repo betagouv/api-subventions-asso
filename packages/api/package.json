@@ -46,7 +46,6 @@
     },
     "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
     "dependencies": {
-        "@api-subventions-asso/dto": "^0",
         "@getbrevo/brevo": "^1.0.1",
         "@sentry/node": "^7.54.0",
         "@types/bcrypt": "^5.0.0",
