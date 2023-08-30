@@ -3,6 +3,11 @@ import requestsService from "$lib/services/requests.service";
 vi.mock("$lib/services/requests.service");
 
 describe("GeoPort", () => {
+    //@ts-expect-error: mock
+    beforeAll(() => requestsService.get.mockImplementation(async () => ({ data: [] })));
+    //@ts-expect-error: mock
+    afterEach(() => requestsService.get.mockClear());
+
     describe("getRegions()", () => {
         it("should call requestService.get()", async () => {
             await geoPort.getRegions();
