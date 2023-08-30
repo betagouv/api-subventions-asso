@@ -1,6 +1,6 @@
 {
     "name": "tools",
-    "version": "0.34.0",
+    "version": "0.35.1",
     "description": "Tools that are not directly use by the Data.Subvention project",
     "author": "Maxime Silvère Meunier <mxmeunier@gmail.com>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/tools#readme",
@@ -8,7 +8,7 @@
     "main": "lib/tools.js",
     "engines": {
         "node": "18.17",
-        "npm": "9.8.1"
+        "npm": "9.6.7"
     },
     "repository": {
         "type": "git",

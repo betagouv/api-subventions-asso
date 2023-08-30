@@ -42,18 +42,18 @@ describe("DefinePasswordController", () => {
     });
 
     describe("_onPasswordError()", () => {
-        let spyHandleErrorDispatch;
+        let spyDispatchError;
 
         beforeAll(() => {
-            spyHandleErrorDispatch = vi
-                .spyOn(DefinePasswordController.prototype, "_handleErrorDispatch")
+            spyDispatchError = vi
+                .spyOn(DefinePasswordController.prototype, "_dispatchError")
                 .mockImplementation(vi.fn());
         });
 
-        it("should call _handleErrorDispatch()", () => {
+        it("should call _dispatchError()", () => {
             const controller = new DefinePasswordController(VALUES);
             controller._onPasswordError();
-            expect(spyHandleErrorDispatch).toHaveBeenCalledTimes(1);
+            expect(spyDispatchError).toHaveBeenCalledTimes(1);
         });
 
         it("should set showPasswordError to true", () => {
@@ -66,18 +66,18 @@ describe("DefinePasswordController", () => {
     });
 
     describe("_onConfirmValid()", () => {
-        let spyHandleValidDispatch;
+        let spyOneFieldValid;
 
         beforeAll(() => {
-            spyHandleValidDispatch = vi
-                .spyOn(DefinePasswordController.prototype, "_handleValidDispatch")
+            spyOneFieldValid = vi
+                .spyOn(DefinePasswordController.prototype, "_onOneFieldValid")
                 .mockImplementation(vi.fn());
         });
 
-        it("should call _handleValidDispatch()", () => {
+        it("should call _onOneFieldValid()", () => {
             const controller = new DefinePasswordController(VALUES);
             controller._onConfirmValid();
-            expect(spyHandleValidDispatch).toHaveBeenCalledTimes(1);
+            expect(spyOneFieldValid).toHaveBeenCalledTimes(1);
         });
 
         it("should set showConfirmError to false", () => {
@@ -90,18 +90,18 @@ describe("DefinePasswordController", () => {
     });
 
     describe("_onConfirmError()", () => {
-        let spyHandleErrorDispatch;
+        let spyDispatchError;
 
         beforeAll(() => {
-            spyHandleErrorDispatch = vi
-                .spyOn(DefinePasswordController.prototype, "_handleErrorDispatch")
+            spyDispatchError = vi
+                .spyOn(DefinePasswordController.prototype, "_dispatchError")
                 .mockImplementation(vi.fn());
         });
 
-        it("should call _handleErrorDispatch()", () => {
+        it("should call _dispatchError()", () => {
             const controller = new DefinePasswordController(VALUES);
             controller._onConfirmError();
-            expect(spyHandleErrorDispatch).toHaveBeenCalledTimes(1);
+            expect(spyDispatchError).toHaveBeenCalledTimes(1);
         });
 
         it("should set showConfirmError to true", () => {

@@ -2,7 +2,7 @@
 
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
-jest.mock("@sendinblue/client");
+jest.mock("@getbrevo/brevo");
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");

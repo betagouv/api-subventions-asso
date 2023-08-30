@@ -15,7 +15,7 @@
     import { nanoid } from "nanoid";
 
     import "./combobox.css";
-    import { onMount } from "svelte";
+    import { onMount, afterUpdate } from "svelte";
     import Store from "$lib/core/Store";
     import { ComboboxAutocomplete } from "$lib/components/AutocompleteSelect/combobox.js";
 
@@ -24,7 +24,8 @@
     export let id = nanoid(7);
     export let name = id;
     export let options: { value: string; label: string }[];
-    export const label = "";
+    export let label = "";
+    export let placeholder = "";
 
     const listId = `list-${id}`;
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
@@ -33,6 +34,7 @@
     storeValue.subscribe(newV => (value = newV)); // cannot be in controller so that binding works
 
     onMount(() => new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue));
+    afterUpdate(() => new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue));
 </script>
 
 <div class="combobox combobox-list">
@@ -45,6 +47,7 @@
                 {id}
                 class="fr-input"
                 {name}
+                {placeholder}
                 type="text"
                 role="combobox"
                 aria-autocomplete="both"

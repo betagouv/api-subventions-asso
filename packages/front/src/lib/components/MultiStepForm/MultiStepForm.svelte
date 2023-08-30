@@ -1,5 +1,4 @@
 <script>
-    import { onDestroy } from "svelte";
     import MultiStepFormController from "./MultiStepForm.controller";
     import Button from "$lib/dsfr/Button.svelte";
 
@@ -9,12 +8,11 @@
     export let nextLabel = "Suivant";
     export let previousLabel = "Précédent";
     export let trackerFormName;
+    export let buildContext = () => ({});
 
-    const controller = new MultiStepFormController(steps, onSubmit);
+    const controller = new MultiStepFormController(steps, onSubmit, buildContext);
 
-    onDestroy(() => controller.onDestroy());
-
-    const { currentStep, data, isStepBlocked } = controller;
+    const { currentStep, data, isStepBlocked, context } = controller;
 </script>
 
 <div class="fr-grid-row">
@@ -47,8 +45,9 @@
             <svelte:component
                 this={$currentStep.step.component}
                 bind:values={$data[$currentStep.index]}
-                on:error={() => controller.blockStep()}
-                on:valid={() => controller.unblockStep()} />
+                context={$context}
+                on:error={() => controller.updateValidation(false)}
+                on:valid={() => controller.updateValidation(true)} />
             {#if !$currentStep.isFirstStep}
                 <Button
                     htmlType="button"
@@ -60,16 +59,16 @@
                 </Button>
             {/if}
             {#if $currentStep.isLastStep}
-                <Button 
+                <Button
                     htmlType="submit"
                     disabled={$isStepBlocked}
-                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}
-                >
+                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
                     {submitLabel}
                 </Button>
             {:else}
                 <Button
-                    htmlType="submit"
+                    htmlType="button"
+                    disabled={$isStepBlocked}
                     type="secondary"
                     on:click={() => controller.next()}
                     on:submit={() => controller.next()}

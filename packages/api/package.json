@@ -1,11 +1,11 @@
 {
     "name": "api",
-    "version": "0.34.1",
+    "version": "0.35.1",
     "description": "",
     "main": "index.js",
     "engines": {
         "node": "18.17",
-        "npm": "9.8.1"
+        "npm": "9.6.7"
     },
     "scripts": {
         "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
@@ -46,7 +46,7 @@
     },
     "homepage": "https://github.com/betagouv/api-subventions-asso#readme",
     "dependencies": {
-        "@sendinblue/client": "^3.3.1",
+        "@getbrevo/brevo": "^1.0.1",
         "@sentry/node": "^7.54.0",
         "@types/bcrypt": "^5.0.0",
         "@types/cors": "^2.8.12",
@@ -66,7 +66,7 @@
         "croner": "^6.0.3",
         "dedent": "^0.7.0",
         "dotenv": "^14.3.2",
-        "dto": "*",
+        "dto": "^0.35.1",
         "express": "^4.17.2",
         "express-winston": "^4.2.0",
         "iconv-lite": "^0.6.3",
