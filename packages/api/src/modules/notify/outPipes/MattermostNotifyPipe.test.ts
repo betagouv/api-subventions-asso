@@ -54,7 +54,7 @@ describe("MattermostNotifyPipe", () => {
             expect(actual).toMatchInlineSnapshot(`
                 Object {
                   "somethingElse": "value",
-                  "text": "[undefined] something",
+                  "text": "[test] something",
                 }
             `);
         });
