@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.35.2](https://github.com/betagouv/api-subventions-asso/compare/v0.35.1...v0.35.2) (2023-08-30)
+
+### Bug Fixes
+
+-   **front:** update test for last commit ([f74bc49](https://github.com/betagouv/api-subventions-asso/commit/f74bc49f4bbf2865e0a41a018173249dbe30094e))
+
+### Reverts
+
+-   **front:** noscript tag deletion ([fa1987a](https://github.com/betagouv/api-subventions-asso/commit/fa1987a5e23311bde23ca5a775fbfe64e71f8d21))
+
 ## [0.35.1](https://github.com/betagouv/api-subventions-asso/compare/v0.35.0...v0.35.1) (2023-08-30)
 
 ### Bug Fixes
