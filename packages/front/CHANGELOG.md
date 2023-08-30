@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.35.2](https://github.com/betagouv/datasubvention/compare/v0.35.1...v0.35.2) (2023-08-30)
+
+### Bug Fixes
+
+-   **front:** update test for last commit ([f74bc49](https://github.com/betagouv/datasubvention/commit/f74bc49f4bbf2865e0a41a018173249dbe30094e))
+
+### Reverts
+
+-   **front:** noscript tag deletion ([fa1987a](https://github.com/betagouv/datasubvention/commit/fa1987a5e23311bde23ca5a775fbfe64e71f8d21))
+
+## [0.35.1](https://github.com/betagouv/datasubvention/compare/v0.35.0...v0.35.1) (2023-08-30)
+
+### Bug Fixes
+
+-   **front:** remove step 2 and 3 from ActiveAccount until it is fully done ([de4f1ce](https://github.com/betagouv/datasubvention/commit/de4f1cec664c3fd0cef2316eb79166902b713181))
+-   package lock ([2765e7b](https://github.com/betagouv/datasubvention/commit/2765e7b7abc6fc5cc7d9369d61048df7b73c3d1c))
+
 # [0.35.0](https://github.com/betagouv/datasubvention/compare/v0.33.4...v0.35.0) (2023-08-29)
 
 ### Bug Fixes
