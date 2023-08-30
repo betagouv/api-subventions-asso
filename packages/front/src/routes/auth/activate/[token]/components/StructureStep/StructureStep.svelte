@@ -26,7 +26,6 @@
             id="service-input"
             type="text"
             label="Quel est votre service ?"
-            placeholder="Ex : Mission hébergement"
             bind:value={values.service}
             errorMsg={$errors.service}
             error={$errors.service}
