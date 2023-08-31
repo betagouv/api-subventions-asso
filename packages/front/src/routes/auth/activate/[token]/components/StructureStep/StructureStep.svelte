@@ -21,7 +21,8 @@
 {/if}
 
 <fieldset class="fr-fieldset">
-    <div class="fr-fieldset__element fr-mt-4v">
+    <div class="fr-fieldset__element">
+        <!-- TODO check margins in other substeps -->
         <Input
             id="service-input"
             type="text"
