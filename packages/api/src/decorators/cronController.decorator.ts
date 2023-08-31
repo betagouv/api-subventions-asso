@@ -9,6 +9,7 @@ import {
 } from "toad-scheduler";
 import axios from "axios";
 import * as Sentry from "@sentry/node";
+import { ENV } from "../configurations/env.conf";
 
 export const errorHandlerFactory = cronName => {
     return error => {
@@ -17,7 +18,7 @@ export const errorHandlerFactory = cronName => {
         console.trace();
         return axios
             .post("https://mattermost.incubateur.net/hooks/qefuswbp9fybdjf97yqxo93cqr ", {
-                text: `[${process.env.ENV}] Le cron \`${cronName}\` a échoué`,
+                text: `[${ENV}] Le cron \`${cronName}\` a échoué`,
                 username: "Police du Cron",
                 icon_emoji: "alarm_clock",
                 props: { card: `\`\`\`\n${new Error(error).stack}\n\`\`\`` },

@@ -2,6 +2,7 @@ import axios from "axios";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
+import { ENV } from "../../../configurations/env.conf";
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
     accepts = [NotificationType.USER_DELETED];
@@ -25,7 +26,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         try {
             await axios.post(this.apiUrl, {
                 ...payload,
-                text: `[${process.env.ENV}] ${payload.text}`,
+                text: `[${ENV}] ${payload.text}`,
             });
             return true;
         } catch {
