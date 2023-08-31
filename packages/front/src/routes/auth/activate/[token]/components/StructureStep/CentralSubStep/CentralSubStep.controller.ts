@@ -3,7 +3,7 @@ import Store from "$lib/core/Store";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 
 export default class CentralSubStepController {
-    private options: Store<{ value: string; label: string }[]>;
+    public options: Store<{ value: string; label: string }[]>;
 
     constructor() {
         this.options = new Store([]);
