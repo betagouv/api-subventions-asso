@@ -8,6 +8,7 @@ export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
+    DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
 }
 
 export class ConfigurationsService {
@@ -82,6 +83,19 @@ export class ConfigurationsService {
         return persistedDomains.some(
             presistedDomain => domain == presistedDomain || domain.endsWith("." + presistedDomain),
         );
+    }
+
+    async getLastPublishDumpDate(): Promise<Date> {
+        return (
+            ((await configurationsRepository.getByName(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE))?.data as Date) ||
+            new Date(1970)
+        );
+    }
+
+    async setLastPublishDumpDate(date: Date) {
+        return configurationsRepository.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
+            data: date,
+        });
     }
 }
 

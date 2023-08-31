@@ -82,6 +82,17 @@ export class StatsAssociationsVisitRepository extends MigrationRepository<Associ
     findByUserId(userId: string) {
         return this.collection.find({ userId: new ObjectId(userId) }).toArray();
     }
+
+    findOnPeriod(start: Date, end: Date) {
+        return this.collection
+            .find({
+                date: {
+                    $gte: start,
+                    $lte: end,
+                },
+            })
+            .toArray();
+    }
 }
 
 const statsAssociationsVisitRepository = new StatsAssociationsVisitRepository();

@@ -75,6 +75,15 @@ export class StatsRepository {
             })
             .toArray();
     }
+
+    public getLogsOnPeriod(start: Date, end: Date) {
+        return this.collection.find({
+            timestamp: {
+                $gte: start,
+                $lte: end,
+            },
+        });
+    }
 }
 
 const statsRepository = new StatsRepository();

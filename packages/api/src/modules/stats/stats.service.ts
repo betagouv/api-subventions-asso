@@ -289,6 +289,21 @@ class StatsService {
     getAllLogUser(email: string) {
         return statsRepository.findByEmail(email);
     }
+
+    getAnonymizedLogsOnPeriod(start: Date, end: Date) {
+        return statsRepository.getLogsOnPeriod(start, end).map(log => {
+            if (log.meta.req?.body?.email) delete log.meta.req.body.email;
+            if (log.meta.req?.body?.firstName) delete log.meta.req.body.firstName;
+            if (log.meta.req?.body?.lastName) delete log.meta.req.body.lastName;
+            if (log.meta.req?.user) delete log.meta.req.user;
+
+            return log;
+        });
+    }
+
+    getAssociationsVisitsOnPeriod(start: Date, end: Date) {
+        return statsAssociationsVisitRepository.findOnPeriod(start, end);
+    }
 }
 
 const statsService = new StatsService();
