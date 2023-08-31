@@ -14,6 +14,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
         NotificationType.USER_ACTIVATED,
         NotificationType.USER_LOGGED,
         NotificationType.USER_ALREADY_EXIST,
+        NotificationType.USER_DELETED,
     ];
 
     private apiInstance: Brevo.ContactsApi;
@@ -33,6 +34,8 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 return this.userActivated(data);
             case NotificationType.USER_LOGGED:
                 return this.userLogged(data);
+            case NotificationType.USER_DELETED:
+                return this.userDeleted(data);
             default:
                 return Promise.resolve(false);
         }
@@ -113,6 +116,13 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 Sentry.captureException(error);
                 return false;
             });
+    }
+
+    private userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {
+        return this.apiInstance
+            .deleteContact(data.email)
+            .then(() => true)
+            .catch(() => false);
     }
 }
 
