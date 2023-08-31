@@ -3,6 +3,7 @@ import { NotificationType } from "../@types/NotificationType";
 import { MattermostNotifyPipe } from "./MattermostNotifyPipe";
 
 jest.mock("axios");
+jest.mock("../../../configurations/env.conf", () => ({ ENV: "test" }));
 
 describe("MattermostNotifyPipe", () => {
     let notifyPipe: MattermostNotifyPipe;
