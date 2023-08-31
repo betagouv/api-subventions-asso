@@ -15,7 +15,7 @@ export class DemarchesSimplifieesDataRepository extends MigrationRepository<Dema
             {
                 "demande.id": entity.demande.id,
             },
-            { $set: entity },
+            { $set: entity as Partial<DemarchesSimplifieesDataEntity> },
             { upsert: true },
         );
     }

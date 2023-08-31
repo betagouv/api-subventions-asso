@@ -40,8 +40,8 @@ export class UserRepository {
     }
 
     async update(user: UserDbo | UserDto): Promise<UserDto> {
-        if (user._id) await this.collection.updateOne({ _id: user._id }, { $set: user });
-        else await this.collection.updateOne({ email: user.email }, { $set: user });
+        if (user._id) await this.collection.updateOne({ _id: user._id }, { $set: user as Partial<UserDbo> });
+        else await this.collection.updateOne({ email: user.email }, { $set: user as Partial<UserDbo> });
         return user;
     }
 

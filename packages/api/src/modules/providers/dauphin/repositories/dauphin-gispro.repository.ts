@@ -20,7 +20,7 @@ export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDb
             {
                 "dauphin.reference": entity.dauphin.reference,
             },
-            { $set: entity },
+            { $set: entity as Partial<DauphinGisproDbo> },
             { upsert: true },
         );
     }
