@@ -1,6 +1,5 @@
 import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
 import type { SvelteComponent } from "svelte";
-import ExampleSubStep from "./ExampleSubStep/ExampleSubStep.svelte";
 import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
 import TerritorialCollectivitySubStep from "./TerritorialCollectivitySubStep/TerritorialCollectivitySubStep.svelte";
