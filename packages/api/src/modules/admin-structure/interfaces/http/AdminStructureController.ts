@@ -4,7 +4,6 @@ import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpErr
 import adminStructureService from "../../adminStructure.service";
 
 @Route("/admin-structures")
-@Security("jwt")
 @Tags("Admin Structures Controller")
 export class AdminStructureController extends Controller {
     /**
