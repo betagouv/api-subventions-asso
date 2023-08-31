@@ -4,6 +4,7 @@ import ExampleSubStep from "./ExampleSubStep/ExampleSubStep.svelte";
 import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
 import TerritorialCollectivitySubStep from "./TerritorialCollectivitySubStep/TerritorialCollectivitySubStep.svelte";
+import DecentralizedSubStep from "./DecentralizedSubStep/DecentralizedSubStep.svelte";
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -56,7 +57,7 @@ export default class StructureStepController {
         [AgentTypeEnum.CENTRAL_ADMIN]: CentralSubStep,
         [AgentTypeEnum.OPERATOR]: OperatorSubStep,
         [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: TerritorialCollectivitySubStep,
-        [AgentTypeEnum.DECONCENTRATED_ADMIN]: ExampleSubStep,
+        [AgentTypeEnum.DECONCENTRATED_ADMIN]: DecentralizedSubStep,
     };
     public subStep: Store<SubStep | undefined>;
 
