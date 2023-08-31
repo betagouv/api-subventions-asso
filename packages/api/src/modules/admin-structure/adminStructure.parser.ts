@@ -20,11 +20,10 @@ export default class AdminStructureParser {
         "Administration déconcentrée": AgentTypeEnum.DECONCENTRATED_ADMIN,
     };
 
-    private static readonly csvToTerritoryLevel: { [key: string]: AdminTerritorialLevel | "" } = {
+    private static readonly csvToTerritoryLevel: { [key: string]: AdminTerritorialLevel | undefined } = {
         Départementale: AdminTerritorialLevel.DEPARTMENTAL,
         Régionale: AdminTerritorialLevel.REGIONAL,
         "Collectivité d'outre-mer à statut particulier": AdminTerritorialLevel.OVERSEAS,
-        Autre: "",
     };
 
     public static parseXls(content: Buffer): AdminStructureEntity[] {
@@ -52,7 +51,7 @@ export default class AdminStructureParser {
         );
     }
 
-    private static exportNameToTerritoryLevel(value: string) {
+    private static exportNameToTerritoryLevel(value: string): AdminTerritorialLevel | undefined {
         if (AdminStructureParser.csvToTerritoryLevel[value]) return AdminStructureParser.csvToTerritoryLevel[value];
         throw new BadRequestError(
             `Valeur de seconde colonne "${value}" non conforme, mettre à jour \`csvNameToTerritoryLevel\` dans \`adminStructure.parser\` ou la valeur dans le document source.`,

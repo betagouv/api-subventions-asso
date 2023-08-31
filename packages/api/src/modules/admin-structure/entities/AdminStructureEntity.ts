@@ -1,5 +1,9 @@
-import { AgentTypeEnum } from "dto";
+import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
 
 export default class AdminStructureEntity {
-    constructor(public agentType: AgentTypeEnum, public territoryScope: string, public structure: string) {}
+    constructor(
+        public agentType: AgentTypeEnum,
+        public territorialLevel: AdminTerritorialLevel | undefined,
+        public structure: string,
+    ) {}
 }

@@ -45,7 +45,7 @@ export default class DecentralizedSubStepController {
     private filterStructureOptions(LEVEL: AdminTerritorialLevel) {
         this.structureOptions.set(
             this.allStructures
-                .filter(structure => structure.territoryScope === LEVEL)
+                .filter(structure => structure.territorialLevel === LEVEL)
                 .map(structure => ({
                     label: structure.structure,
                     value: structure.structure,
