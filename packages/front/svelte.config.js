@@ -34,6 +34,7 @@ const config = {
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",
                     "https://stats.data.gouv.fr",
+                  "https://geo.api.gouv.fr"
                 ],
                 "font-src": ["self", "https://client.crisp.chat"],
                 "img-src": [
