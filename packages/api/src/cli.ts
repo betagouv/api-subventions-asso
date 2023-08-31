@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { mkdirSync, existsSync } from "fs";
-import "./configurations/env";
+import "./configurations/env.conf";
 
 import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import DataGouvCliController from "./modules/providers/datagouv/interfaces/cli/datagouv.cli.controller";

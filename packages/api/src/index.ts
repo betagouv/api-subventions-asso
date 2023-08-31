@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import "./configurations/env";
+import "./configurations/env.conf";
 
 import { connectDB } from "./shared/MongoConnection";
 import { startServer } from "./server";
