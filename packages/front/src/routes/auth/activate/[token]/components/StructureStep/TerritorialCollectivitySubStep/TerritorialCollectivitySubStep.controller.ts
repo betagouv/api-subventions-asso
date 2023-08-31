@@ -1,7 +1,7 @@
 import { TerritorialScopeEnum } from "dto";
 
 export default class TerritorialCollectivitySubStepController {
-    private scopeOptions: { value: string; label: string }[] = [
+    public scopeOptions: { value: string; label: TerritorialScopeEnum }[] = [
         {
             label: "Régional",
             value: TerritorialScopeEnum.REGIONAL,
