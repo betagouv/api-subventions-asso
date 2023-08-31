@@ -1,6 +1,6 @@
 {
     "name": "front",
-    "version": "0.34.1",
+    "version": "0.35.2",
     "description": "> TODO: description",
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/front#readme",
@@ -8,7 +8,7 @@
     "private": true,
     "engines": {
         "node": "18.17",
-        "npm": "9.8.1"
+        "npm": "9.6.7"
     },
     "repository": {
         "type": "git",
@@ -49,7 +49,7 @@
         "axios": "^1.4.0",
         "chart.js": "^4.3.0",
         "dotenv": "^14.3.2",
-        "dto": "*",
+        "dto": "^0.35.1",
         "jsdom": "^22.1.0",
         "string-similarity": "^4.0.4",
         "svelte": "^4.0.5",

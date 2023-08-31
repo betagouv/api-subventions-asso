@@ -8,7 +8,7 @@
     };
 
     const controller = new DefinePasswordController(values);
-    const { passwordErrorMsg, showPasswordError, confirmErrorMsg, showConfirmError } = controller;
+    const { passwordErrorMsg, showPasswordError, confirmPwdErrorMsg, showConfirmError } = controller;
 
     $: values.password, controller.validatePassword();
     $: values.confirmPwd, controller.checkConfirm();
@@ -27,6 +27,6 @@
             label="Confirmation de mot de passe"
             bind:value={values.confirmPwd}
             error={$showConfirmError}
-            errorMsg={$showConfirmError ? confirmErrorMsg : undefined} />
+            errorMsg={$showConfirmError ? confirmPwdErrorMsg : undefined} />
     </div>
 </fieldset>

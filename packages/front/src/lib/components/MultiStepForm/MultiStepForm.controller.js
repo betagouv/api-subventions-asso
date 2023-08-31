@@ -14,7 +14,12 @@ export default class MultiStepFormController {
             nextStepPositionLabel: steps.length > 1 ? 2 : null,
         });
 
-        this.isStepBlocked = new Store(true);
+        this.stepsValidation = new Store(this.steps.map(_step => false));
+        this.isStepBlocked = derived(
+            [this.stepsValidation, this.currentStep],
+            ([validation, currentStep]) => !validation[currentStep.index],
+        );
+
         // create an array of empty object that represent each step values
         this.data = new Store(this.steps.map(() => ({})));
         this.context = derived(this.data, data => buildContext(data));
@@ -58,11 +63,10 @@ export default class MultiStepFormController {
         this._shift(-1);
     }
 
-    blockStep() {
-        this.isStepBlocked.set(true);
-    }
-
-    unblockStep() {
-        this.isStepBlocked.set(false);
+    updateValidation(isValid) {
+        this.stepsValidation.update(validation => {
+            validation[this.currentStep.value.index] = isValid;
+            return validation;
+        });
     }
 }

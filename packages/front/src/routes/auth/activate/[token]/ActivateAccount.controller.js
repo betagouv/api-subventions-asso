@@ -15,15 +15,16 @@ export default class ActivateAccountController {
         this.error = null;
         this.steps = [
             { name: "Définir un mot de passe", component: DefinePassword, alert: PasswordFormatAlert },
-            { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
-            { name: "Informations sur votre structure", component: StructureStep },
+            // { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
+            // { name: "Informations sur votre structure", component: StructureStep },
         ];
         this.buildContext = values => ({ agentType: values[1].agentType });
     }
 
-    async onSubmit(values) {
-        await authService.resetPassword(this.token, values.password);
-        goToUrl("/auth/login?success=ACCOUNT_ACTIVATED");
+    onSubmit(values) {
+        return authService.resetPassword(this.token, values.password).then(() => {
+            goToUrl("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
+        });
     }
 
     async init() {
