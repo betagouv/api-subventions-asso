@@ -13,7 +13,7 @@ export class DemarchesSimplifieesMapperRepository extends MigrationRepository<De
             {
                 demarcheId: entity.demarcheId,
             },
-            { $set: entity },
+            { $set: entity as Partial<DemarchesSimplifieesMapperEntity> },
             { upsert: true },
         );
     }
