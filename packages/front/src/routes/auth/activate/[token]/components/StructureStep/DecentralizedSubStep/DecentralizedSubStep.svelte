@@ -37,7 +37,7 @@
                 id="some-input"
                 type="text"
                 label="Quelle est votre collectivité d'outre-mer à statut particulier ?"
-                placeholder="TODO"
+                placeholder="Ex : Collectivité de Saint Martin"
                 bind:value={values.decentralizedTerritory} />
         </div>
     {:else if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
@@ -46,7 +46,7 @@
                 options={$departmentOptions}
                 bind:value={values.decentralizedTerritory}
                 label="Quel est votre département ?"
-                placeholder="TODO" />
+                placeholder="Ex : 01 - Ain" />
         </div>
     {:else if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL}
         <div class="fr-fieldset__element fr-mb-4v">
@@ -54,7 +54,7 @@
                 options={$regionOptions}
                 bind:value={values.decentralizedTerritory}
                 label="Quelle est votre région"
-                placeholder="TODO" />
+                placeholder="Ex : Occitanie" />
         </div>
     {/if}
 
