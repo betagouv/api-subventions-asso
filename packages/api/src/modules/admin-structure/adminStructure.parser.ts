@@ -53,7 +53,7 @@ export default class AdminStructureParser {
 
     private static exportNameToTerritoryLevel(value: string): AdminTerritorialLevel | undefined {
         if (AdminStructureParser.csvToTerritoryLevel[value]) return AdminStructureParser.csvToTerritoryLevel[value];
-        throw new BadRequestError(
+        console.warn(
             `Valeur de seconde colonne "${value}" non conforme, mettre à jour \`csvNameToTerritoryLevel\` dans \`adminStructure.parser\` ou la valeur dans le document source.`,
         );
     }
