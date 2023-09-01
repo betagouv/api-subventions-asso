@@ -58,7 +58,7 @@
                 bind:this={inputElement} />
             <button
                 type="button"
-                aria-label="States"
+                aria-label={label}
                 aria-expanded="false"
                 aria-controls={listId}
                 tabindex="-1"
@@ -67,7 +67,7 @@
             </button>
         </div>
 
-        <ul id={listId} role="listbox" aria-label="States" bind:this={listElement}>
+        <ul id={listId} role="listbox" aria-label={label} bind:this={listElement}>
             {#key options}
                 {#each options as option, i}
                     <li role="option" aria-selected="false" id="{id}-option-{i}" data-option-value={option.value}>
