@@ -18,6 +18,7 @@ import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewar
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
+import { ENV } from "./configurations/env.conf";
 
 const appName = "api-subventions-asso";
 
@@ -35,7 +36,7 @@ export async function startServer(port = "8080", isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
-    if (process.env.ENV !== "dev") Sentry.init({ release: process.env.npm_package_version });
+    if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
     app.use(Sentry.Handlers.requestHandler());
 
     app.use(

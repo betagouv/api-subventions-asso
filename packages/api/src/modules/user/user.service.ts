@@ -272,6 +272,12 @@ export class UserService {
             consumerTokenRepository.deleteAllByUserId(user._id),
         ];
 
+        await notifyService.notify(NotificationType.USER_DELETED, {
+            email: user.email,
+            firstname: user.firstName,
+            lastname: user.lastName,
+        });
+
         return (await Promise.all(deletePromises)).every(success => success);
     }
 
@@ -308,7 +314,7 @@ export class UserService {
     public async disable(userId: string) {
         const user = await userRepository.findById(userId);
         if (!user) return false;
-        // Anonymize the user when it is beeing deleted to keep use stats consistent
+        // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
         const disabledUser = {
             ...user,
@@ -320,6 +326,13 @@ export class UserService {
             firstName: "",
             lastName: "",
         };
+
+        await notifyService.notify(NotificationType.USER_DELETED, {
+            email: user.email,
+            firstname: user.firstName,
+            lastname: user.lastName,
+        });
+
         return !!(await userRepository.update(disabledUser));
     }
 
