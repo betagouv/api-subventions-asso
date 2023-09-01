@@ -56,22 +56,27 @@ export default class DecentralizedSubStepController {
     private async fillOptionsOnce(
         optionStore: Store<Option[]>,
         serviceMethod: () => Promise<{ code: string; nom: string }[]>,
+        transform: (reg: { code: string; nom: string }) => string,
     ) {
         if (optionStore.value.length) return;
-        const level = await serviceMethod();
+        const territories = await serviceMethod();
         optionStore.set(
-            level.map(reg => ({
-                label: reg.nom,
-                value: reg.code,
+            territories.map(territory => ({
+                label: transform(territory),
+                value: transform(territory),
             })),
         );
     }
 
     private async onChoosingDepartment() {
-        return this.fillOptionsOnce(this.departmentOptions, geoService.getDepartements);
+        return this.fillOptionsOnce(
+            this.departmentOptions,
+            geoService.getDepartements,
+            (dep: { code: string; nom: string }) => `${dep.code} - ${dep.nom}`,
+        );
     }
 
     private async onChoosingRegion() {
-        return this.fillOptionsOnce(this.regionOptions, geoService.getRegions);
+        return this.fillOptionsOnce(this.regionOptions, geoService.getRegions, (reg: { nom: string }) => reg.nom);
     }
 }
