@@ -68,7 +68,7 @@ export default class DecentralizedSubStepController {
         );
     }
 
-    private async onChoosingDepartment() {
+    private onChoosingDepartment() {
         return this.fillOptionsOnce(
             this.departmentOptions,
             geoService.getDepartements,
@@ -76,7 +76,7 @@ export default class DecentralizedSubStepController {
         );
     }
 
-    private async onChoosingRegion() {
+    private onChoosingRegion() {
         return this.fillOptionsOnce(this.regionOptions, geoService.getRegions, (reg: { nom: string }) => reg.nom);
     }
 }
