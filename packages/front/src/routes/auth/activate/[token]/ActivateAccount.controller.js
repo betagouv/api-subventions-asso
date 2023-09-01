@@ -14,7 +14,12 @@ export default class ActivateAccountController {
         this.validationTokenStore = new Store("waiting");
         this.error = null;
         this.steps = [
-            { name: "Définir un mot de passe", component: DefinePassword, alert: PasswordFormatAlert },
+            {
+                name: "Définir un mot de passe",
+                component: DefinePassword,
+                alert: PasswordFormatAlert,
+                needsValidation: true,
+            },
             // { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
             // { name: "Informations sur votre structure", component: StructureStep },
         ];
@@ -22,6 +27,13 @@ export default class ActivateAccountController {
     }
 
     onSubmit(values) {
+        /*
+        TODO call here a service that
+        - resets password
+        - removes data from step 3 substeps that aren't the final one
+        - flattens data from step 3 substep
+        - updates user
+        */
         return authService.resetPassword(this.token, values.password).then(() => {
             goToUrl("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });
