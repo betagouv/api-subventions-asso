@@ -31,16 +31,7 @@
     on:change={({ detail }) => ctrl.onChoosingLevel(detail)} />
 
 <fieldset class="fr-fieldset">
-    {#if values.decentralizedLevel === AdminTerritorialLevel.OVERSEAS}
-        <div class="fr-fieldset__element fr-mb-4v">
-            <Input
-                id="territory"
-                type="text"
-                label="Quelle est votre collectivité d'outre-mer à statut particulier ?"
-                placeholder="Ex : Collectivité de Saint Martin"
-                bind:value={values.decentralizedTerritory} />
-        </div>
-    {:else if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
+    {#if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
         <div class="fr-fieldset__element fr-mb-4v">
             <AutocompleteSelect
                 options={$departmentOptions}
