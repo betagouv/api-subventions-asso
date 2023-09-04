@@ -91,4 +91,15 @@ describe("AuthPort", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("activate", () => {
+        const FAKE_TOKEN = "activation token";
+        const DATA = { USER: "" };
+        it("calls activate route", async () => {
+            const PATH = "/auth/activate";
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
+            await authPort.activate(FAKE_TOKEN, DATA);
+            expect(requestsService.post).toBeCalledWith(PATH, { token: FAKE_TOKEN, data: DATA });
+        });
+    });
 });

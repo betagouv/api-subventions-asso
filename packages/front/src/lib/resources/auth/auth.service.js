@@ -78,6 +78,10 @@ export class AuthService {
     validateToken(token) {
         return authPort.validateToken(token);
     }
+
+    activate(token, data) {
+        return authPort.activate(token, data);
+    }
 }
 
 const authService = new AuthService();

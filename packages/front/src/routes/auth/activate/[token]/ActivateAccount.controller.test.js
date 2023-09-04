@@ -5,7 +5,7 @@ import { goToUrl } from "$lib/services/router.service.js";
 
 vi.mock("$lib/resources/auth/auth.service", () => ({
     default: {
-        resetPassword: vi.fn(async () => ({})),
+        activate: vi.fn(async () => ({})),
     },
 }));
 vi.mock("$lib/services/router.service");
@@ -26,11 +26,11 @@ describe("ActivateAccountController", () => {
     });
 
     describe("onSubmit", () => {
-        it("should call authService.resetPassword()", async () => {
+        it("should call authService.activate()", async () => {
             const PASSWORD = "qdjqd12334nHH!";
             controller = new ActivateAccountController(FAKE_TOKEN);
             await controller.onSubmit({ password: PASSWORD });
-            expect(authService.resetPassword).toHaveBeenCalledWith(FAKE_TOKEN, PASSWORD);
+            expect(authService.activate).toHaveBeenCalledWith(FAKE_TOKEN, PASSWORD);
         });
 
         it("should call window.location.assign", async () => {

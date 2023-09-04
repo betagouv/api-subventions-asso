@@ -31,6 +31,12 @@ export class AuthPort {
         const response = await requestsService.post(path, { token });
         return response.data;
     }
+
+    async activate(token, data) {
+        const path = `${this.BASE_PATH}/activate`;
+        await requestsService.post(path, { token, data });
+        return true;
+    }
 }
 
 const authPort = new AuthPort();
