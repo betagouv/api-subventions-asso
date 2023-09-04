@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import { AgentTypeEnum } from "dto";
 import ActivateAccountController from "./ActivateAccount.controller";
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service.js";
@@ -26,17 +27,21 @@ describe("ActivateAccountController", () => {
     });
 
     describe("onSubmit", () => {
-        it("should call authService.activate()", async () => {
-            const PASSWORD = "qdjqd12334nHH!";
+        const USER = {
+            agentType: AgentTypeEnum.OPERATOR,
+            operatorSomething: "something",
+            centralSomething: "something else",
+        };
+
+        it("should call authService.activate() with cleaned up user", async () => {
             controller = new ActivateAccountController(FAKE_TOKEN);
-            await controller.onSubmit({ password: PASSWORD });
-            expect(authService.activate).toHaveBeenCalledWith(FAKE_TOKEN, PASSWORD);
+            await controller.onSubmit(USER);
+            expect(authService.activate).toHaveBeenCalledWith(FAKE_TOKEN, USER);
         });
 
-        it("should call window.location.assign", async () => {
-            const PASSWORD = "qdjqd12334nHH!";
+        it("should redirect to successful login", async () => {
             controller = new ActivateAccountController(FAKE_TOKEN);
-            await controller.onSubmit({ password: PASSWORD });
+            await controller.onSubmit(USER);
             expect(goToUrl).toHaveBeenCalledWith("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });
     });
