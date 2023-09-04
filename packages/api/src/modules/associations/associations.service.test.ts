@@ -17,13 +17,13 @@ import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import dataGouvService from "../providers/datagouv/datagouv.service";
-import dataEntrepriseService from "../providers/dataEntreprise/dataEntreprise.service";
 import mocked = jest.mocked;
+import apiAssoService from "../providers/apiAsso/apiAsso.service";
 
 jest.mock("../providers/index");
 
 jest.mock("../../modules/providers/datagouv/datagouv.service");
-jest.mock("../../modules/providers/dataEntreprise/dataEntreprise.service");
+jest.mock("../providers/apiAsso/apiAsso.service");
 jest.mock("../../modules/_open-data/rna-siren/rnaSiren.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
 
@@ -313,7 +313,7 @@ describe("associationsService", () => {
         beforeAll(() => {
             mocked(dataGouvService.sirenIsEntreprise).mockResolvedValue(false);
             mocked(rnaSirenService.getRna).mockResolvedValue(null);
-            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValue({
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValue({
                 // @ts-expect-error: mock
                 categorie_juridique: [{ value: "not asso" }],
             });
@@ -322,7 +322,7 @@ describe("associationsService", () => {
         afterAll(() => {
             mocked(dataGouvService.sirenIsEntreprise).mockRestore();
             mocked(rnaSirenService.getRna).mockRestore();
-            mocked(dataEntrepriseService.findAssociationBySiren).mockRestore();
+            mocked(apiAssoService.findAssociationBySiren).mockRestore();
         });
 
         it("returns false if found by data gouv service as not an association", async () => {
@@ -339,29 +339,29 @@ describe("associationsService", () => {
             expect(actual).toBe(expected);
         });
 
-        it("returns false if no structure found by dataEntrepriseService", async () => {
-            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValueOnce(null);
+        it("returns false if no structure found by apiAssoService", async () => {
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValueOnce(null);
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
         });
 
-        it("returns false if structure found by dataEntrepriseService has no categorie_juridique", async () => {
-            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValueOnce({});
+        it("returns false if structure found by apiAssoService has no categorie_juridique", async () => {
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValueOnce({});
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
         });
 
-        it("returns false if structure found by dataEntrepriseService has incorrect categories_juridique", async () => {
+        it("returns false if structure found by apiAssoService has incorrect categories_juridique", async () => {
             // standard mocks
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
         });
 
-        it("returns true if structure found by dataEntrepriseService has accepted categories_juridique", async () => {
-            mocked(dataEntrepriseService.findAssociationBySiren).mockResolvedValueOnce({
+        it("returns true if structure found by apiAssoService has accepted categories_juridique", async () => {
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValueOnce({
                 // @ts-expect-error mock
                 categorie_juridique: [{ value: "asso" }],
             });

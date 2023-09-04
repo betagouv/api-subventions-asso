@@ -1,4 +1,3 @@
-import dataEntrepriseService from "./dataEntreprise/dataEntreprise.service";
 import leCompteAssoService from "./leCompteAsso/leCompteAsso.service";
 import osirisService from "./osiris/osiris.service";
 import fonjepService from "./fonjep/fonjep.service";
@@ -13,7 +12,6 @@ import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplif
 import bodaccService from "./bodacc/bodacc.service";
 
 export default {
-    dataEntrepriseService,
     osirisService,
     leCompteAssoService,
     fonjepService,

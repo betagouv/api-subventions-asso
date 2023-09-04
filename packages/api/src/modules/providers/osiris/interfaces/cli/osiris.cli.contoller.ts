@@ -132,7 +132,7 @@ export default class OsirisCliController {
 
             if (validation !== true && validation.code === 2) {
                 // RNA NOT FOUND // TODO: use const for decribe error
-                const rna = await rnaSirenService.getRna(osirisRequest.legalInformations.siret, true);
+                const rna = await rnaSirenService.getRna(osirisRequest.legalInformations.siret);
 
                 if (typeof rna !== "string") {
                     logs.push(

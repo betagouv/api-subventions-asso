@@ -1,10 +1,9 @@
 import associationNameService from "../../../src/modules/association-name/associationName.service";
 import rnaSirenService from "../../../src/modules/_open-data/rna-siren/rnaSiren.service";
-import dataEntrepriseService from "../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
+import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 import ILeCompteAssoPartialRequestEntity from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity";
 import ILeCompteAssoRequestInformations from "../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
 import leCompteAssoService from "../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
-import leCompteAssoRepository from "../../../src/modules/providers/leCompteAsso/repositories/leCompteAsso.repository";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 import EventManager from "../../../src/shared/EventManager";
 
@@ -79,17 +78,17 @@ describe("leCompteAssoService", () => {
         const eventManagerMock = jest
             .spyOn(EventManager, "call")
             .mockImplementation((name, value) => Promise.resolve({ name, value }));
-        let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
+        let apiAssoServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
         let associationNameUpsertMock: jest.SpyInstance;
         let rnaSirenServiceMock: jest.SpyInstance;
 
         beforeEach(() => {
-            dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
+            apiAssoServiceFindAssociationBySiren = jest.spyOn(apiAssoService, "findAssociationBySiren");
             associationNameUpsertMock.mockClear();
         });
 
         afterEach(() => {
-            dataEntrepriseServiceFindAssociationBySiren.mockClear();
+            apiAssoServiceFindAssociationBySiren.mockClear();
         });
 
         beforeAll(() => {
@@ -99,14 +98,14 @@ describe("leCompteAssoService", () => {
         });
 
         afterAll(() => {
-            dataEntrepriseServiceFindAssociationBySiren.mockReset();
+            apiAssoServiceFindAssociationBySiren.mockReset();
             eventManagerMock.mockReset();
             associationNameUpsertMock.mockRestore();
             rnaSirenServiceMock.mockRestore();
         });
 
         it("should find rna in localdb and save data in database", async () => {
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                     categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -128,7 +127,7 @@ describe("leCompteAssoService", () => {
         });
 
         it("should update in database", async () => {
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                     categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -159,7 +158,7 @@ describe("leCompteAssoService", () => {
                 data: {},
             };
 
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                     categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -181,7 +180,7 @@ describe("leCompteAssoService", () => {
                 data: {},
             };
 
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                     categorie_juridique: ProviderValueAdapter.toProviderValues("0000", "test", new Date()),
@@ -209,7 +208,7 @@ describe("leCompteAssoService", () => {
                 } as ILeCompteAssoRequestInformations,
                 data: {},
             };
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve(null));
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() => Promise.resolve(null));
 
             expect(await leCompteAssoService.addRequest(entity)).toMatchObject({
                 state: "rejected",
@@ -238,7 +237,7 @@ describe("leCompteAssoService", () => {
                 data: {},
             };
             rnaSirenServiceMock.mockResolvedValueOnce(RNA);
-            dataEntrepriseServiceFindAssociationBySiren.mockResolvedValueOnce({
+            apiAssoServiceFindAssociationBySiren.mockResolvedValueOnce({
                 categorie_juridique: [{ value: "9210" }],
             });
             await leCompteAssoService.addRequest(PARTIAL_ENTITY);
@@ -260,7 +259,7 @@ describe("leCompteAssoService", () => {
                 data: {},
             };
             rnaSirenServiceMock.mockResolvedValueOnce(RNA);
-            dataEntrepriseServiceFindAssociationBySiren.mockResolvedValueOnce({
+            apiAssoServiceFindAssociationBySiren.mockResolvedValueOnce({
                 categorie_juridique: [{ value: "9210" }],
             });
             await leCompteAssoService.addRequest(PARTIAL_ENTITY);
@@ -276,10 +275,10 @@ describe("leCompteAssoService", () => {
     });
 
     describe("findBySiret", () => {
-        let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
+        let apiAssoServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
         beforeEach(() => {
-            dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
+            apiAssoServiceFindAssociationBySiren = jest.spyOn(apiAssoService, "findAssociationBySiren");
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                     categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -288,11 +287,11 @@ describe("leCompteAssoService", () => {
         });
 
         afterEach(() => {
-            dataEntrepriseServiceFindAssociationBySiren.mockReset();
+            apiAssoServiceFindAssociationBySiren.mockReset();
         });
 
         afterAll(() => {
-            dataEntrepriseServiceFindAssociationBySiren.mockClear();
+            apiAssoServiceFindAssociationBySiren.mockClear();
         });
 
         it("should be found entity", async () => {
@@ -325,10 +324,10 @@ describe("leCompteAssoService", () => {
     });
 
     describe("findByRna", () => {
-        let dataEntrepriseServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
+        let apiAssoServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
         beforeEach(() => {
-            dataEntrepriseServiceFindAssociationBySiren = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
-            dataEntrepriseServiceFindAssociationBySiren.mockImplementation(() =>
+            apiAssoServiceFindAssociationBySiren = jest.spyOn(apiAssoService, "findAssociationBySiren");
+            apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
                 Promise.resolve({
                     rna: ProviderValueAdapter.toProviderValues("FAKE_RNA", "test", new Date()),
                     categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
@@ -337,11 +336,11 @@ describe("leCompteAssoService", () => {
         });
 
         afterEach(() => {
-            dataEntrepriseServiceFindAssociationBySiren.mockReset();
+            apiAssoServiceFindAssociationBySiren.mockReset();
         });
 
         afterAll(() => {
-            dataEntrepriseServiceFindAssociationBySiren.mockClear();
+            apiAssoServiceFindAssociationBySiren.mockClear();
         });
 
         it("should be found entity", async () => {

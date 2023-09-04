@@ -130,7 +130,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
         if (await dataGouvService.sirenIsEntreprise(siren)) return false;
-        if (await rnaSirenService.getRna(siren, true)) return true;
+        if (await rnaSirenService.getRna(siren)) return true;
 
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);
         if (chorusLine) return true;

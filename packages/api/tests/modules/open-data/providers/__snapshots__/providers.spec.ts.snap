@@ -4,10 +4,6 @@ exports[`open-data/fournisseurs should return a list of providers with name, des
 Object {
   "api": Array [
     Object {
-      "description": "L'API SIRENE données ouvertes est une API qui a été créée par la Dinum et s'appuie sur les données publiées en open data par l'INSEE sur les entreprises sur data.gouv. L'API RNA est une API portée par la Dinum exposant les données publiées en open data par le RNA sur data.gouv.",
-      "name": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
-    },
-    Object {
       "description": "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET.",
       "name": "Le Compte Asso",
     },

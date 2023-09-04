@@ -23,8 +23,6 @@ describe("ApiAssoService", () => {
     // @ts-expect-error: mock private method
     let sendRequestMock = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
     // @ts-expect-error: mock private method
-    let mockFetchDocuments = jest.spyOn(apiAssoService, "fetchDocuments") as jest.SpyInstance<any | null>;
-    // @ts-expect-error: mock private method
     const findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments") as jest.SpyInstance<any | null>;
 
     let associationNameUpsert: jest.SpyInstance;
@@ -160,14 +158,12 @@ describe("ApiAssoService", () => {
 
             beforeAll(() => {
                 findAssociationBySirenMock = jest
-                    // @ts-expect-error findAssociationBySiren is private method
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(sirenStructureFixture);
                 getGroupedIdentifiersMock = jest
                     .spyOn(associationNameService, "getGroupedIdentifiers")
                     .mockImplementation(async siren => ({ siren, rna: undefined }));
-                // @ts-expect-error findAssociationByRna is private method
                 findAssociationByRnaMock = jest.spyOn(apiAssoService, "findAssociationByRna").mockResolvedValue(null);
             });
 
@@ -260,7 +256,6 @@ describe("ApiAssoService", () => {
 
             beforeAll(() => {
                 findAssociationByRnaMock = jest
-                    // @ts-expect-error findAssociationBySiren is private method
                     .spyOn(apiAssoService, "findAssociationByRna")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(rnaStructureFixture);
@@ -268,7 +263,6 @@ describe("ApiAssoService", () => {
                     .spyOn(associationNameService, "getGroupedIdentifiers")
                     .mockImplementation(async rna => ({ siren: undefined, rna }));
                 findAssociationBySirenMock = jest
-                    // @ts-expect-error findAssociationByRna is private method
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(null);
