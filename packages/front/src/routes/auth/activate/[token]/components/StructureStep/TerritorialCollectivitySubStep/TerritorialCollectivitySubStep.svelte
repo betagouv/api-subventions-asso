@@ -7,7 +7,9 @@
     // about allowing to submit in this variable that should be bound by the parent
     // export let valid
 
-    export let values;
+    export let values = {
+        territorialStructure: "",
+    };
 
     const ctrl = new TerritorialCollectivitySubStepController();
 </script>
