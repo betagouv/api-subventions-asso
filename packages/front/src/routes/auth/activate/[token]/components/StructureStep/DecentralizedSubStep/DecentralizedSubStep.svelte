@@ -34,7 +34,7 @@
     {#if values.decentralizedLevel === AdminTerritorialLevel.OVERSEAS}
         <div class="fr-fieldset__element fr-mb-4v">
             <Input
-                id="some-input"
+                id="territory"
                 type="text"
                 label="Quelle est votre collectivité d'outre-mer à statut particulier ?"
                 placeholder="Ex : Collectivité de Saint Martin"
@@ -67,7 +67,7 @@
                 placeholder="Ex : DETS59, Préfecture" />
         {:else}
             <Input
-                id="some-input"
+                id="structure"
                 type="text"
                 bind:value={values.decentralizedStructure}
                 label="Quel est votre administration ?"
