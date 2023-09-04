@@ -14,14 +14,9 @@ export default class ActivateAccountController {
         this.validationTokenStore = new Store("waiting");
         this.error = null;
         this.steps = [
-            {
-                name: "Définir un mot de passe",
-                component: DefinePassword,
-                alert: PasswordFormatAlert,
-                needsValidation: true,
-            },
-            // { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
-            // { name: "Informations sur votre structure", component: StructureStep },
+            { name: "Définir un mot de passe", component: DefinePassword, alert: PasswordFormatAlert },
+            { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
+            { name: "Informations sur votre structure", component: StructureStep },
         ];
         this.buildContext = values => ({ agentType: values[1].agentType });
     }
