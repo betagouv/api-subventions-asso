@@ -21,6 +21,6 @@
             options={$options}
             bind:value={values.centralStructure}
             label="Dans quelle administration centrale travaillez-vous ?"
-            placeholder="Ex : DIHAL (texte en autocomplétion)" />
+            placeholder="Ex : DIHAL" />
     </div>
 </fieldset>
