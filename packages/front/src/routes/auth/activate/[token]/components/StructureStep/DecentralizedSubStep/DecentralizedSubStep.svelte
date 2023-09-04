@@ -63,14 +63,14 @@
             <AutocompleteSelect
                 options={$structureOptions}
                 bind:value={values.decentralizedStructure}
-                label="Quel est votre administration ?"
+                label="Quelle est votre administration ?"
                 placeholder="Ex : DETS59, Préfecture" />
         {:else}
             <Input
                 id="structure"
                 type="text"
                 bind:value={values.decentralizedStructure}
-                label="Quel est votre administration ?"
+                label="Quelle est votre administration ?"
                 placeholder="Ex : DETS59, Préfecture" />
         {/if}
     </div>
