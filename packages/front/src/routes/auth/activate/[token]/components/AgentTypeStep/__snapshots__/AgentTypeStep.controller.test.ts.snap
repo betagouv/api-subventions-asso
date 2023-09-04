@@ -8,7 +8,7 @@ exports[`AgentTypeStepController > constructor > inits options 1`] = `
   },
   {
     "label": "Agent public d’une administration déconcentrée (État)",
-    "value": "DECONCENTRATED_ADMIN",
+    "value": "DECONCENTRATED",
   },
   {
     "label": "Agent public d’une collectivité territoriale",
