@@ -2,13 +2,14 @@
 const child_process = require("child_process");
 
 const appName = process.argv[2];
-const osirisFile = process.argv[3];
-const yearOfFile = process.argv[4];
+const importType = process.argv[3];
+const osirisFile = process.argv[4];
+const yearOfFile = process.argv[5];
 const nessesaryMongoPlan = "mongo-business-2048";
 
-if (process.argv.length < 5) {
+if (process.argv.length < 6) {
     console.error(
-        "Please use command: node deploy-unite_legal.js [YOUR_APP_NAME] [LINK_TO_DATA_OSIRIS] [YEAR_OF_EXTRACT_FILE]",
+        "Please use command: node deploy-osiris-file.js [YOUR_APP_NAME] [OSIRS_FILE_TYPE] [LINK_TO_DATA_OSIRIS] [YEAR_OF_EXTRACT_FILE]",
     );
     process.exit();
 }
@@ -62,7 +63,7 @@ console.log(`Start deploy ${appName} ...\n`);
 
 scalingAsyncAppAction(
     "run",
-    `--size 2XL --file ${osirisFile} --env TMP_YEAR_OF_FILE=${yearOfFile} bash ./packages/api/tools/osiris/deploy-files-container.sh`,
+    `--size 2XL --file ${osirisFile} --env TMP_YEAR_OF_FILE=${yearOfFile} --env IMPORT_TYPE=${importType} bash ./packages/api/tools/osiris/deploy-files-container.sh`,
 ).then(() => {
     console.log("Extract end !");
 

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.35.3](https://github.com/betagouv/api-subventions-asso/compare/v0.35.2...v0.35.3) (2023-09-05)
+
+### Features
+
+-   **api:** add import type env in desploy osiris file tool ([26040ce](https://github.com/betagouv/api-subventions-asso/commit/26040ce2e5a49c1cb399cf66ca64cd08d9bb563c))
+
 ## [0.35.2](https://github.com/betagouv/api-subventions-asso/compare/v0.35.1...v0.35.2) (2023-08-30)
 
 ### Bug Fixes
