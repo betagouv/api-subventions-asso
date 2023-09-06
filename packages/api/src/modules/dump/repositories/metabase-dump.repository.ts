@@ -37,6 +37,11 @@ export class MetabaseDumpRepository {
     public addVisits(visits: unknown[]) {
         return this.db.collection("visits").insertMany(visits as Document[]);
     }
+
+    public async upsertUsers(users: unknown[]) {
+        await this.db.collection("users").deleteMany({});
+        return this.db.collection("users").insertMany(users as Document[]);
+    }
 }
 
 const metabaseDumpRepo = new MetabaseDumpRepository();

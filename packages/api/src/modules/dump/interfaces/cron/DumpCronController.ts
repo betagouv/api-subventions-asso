@@ -5,8 +5,8 @@ import dumpService from "../../dump.service";
 export class DumpCronController implements CronController {
     name = "dumpCron";
 
-    // every day at 20PM
-    @AsyncCron({ cronExpression: "0 20 * * *" })
+    // every Sunday at 00:00
+    @AsyncCron({ cronExpression: "0 0 * * 0" })
     publishStatsData() {
         return dumpService.publishStatsData();
     }

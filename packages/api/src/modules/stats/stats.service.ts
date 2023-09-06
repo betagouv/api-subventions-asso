@@ -295,7 +295,10 @@ class StatsService {
             if (log.meta.req?.body?.email) delete log.meta.req.body.email;
             if (log.meta.req?.body?.firstName) delete log.meta.req.body.firstName;
             if (log.meta.req?.body?.lastName) delete log.meta.req.body.lastName;
-            if (log.meta.req?.user) delete log.meta.req.user;
+            if (log.meta.req?.user) {
+                log.meta.req.userId = log.meta.req.user._id.toString(); // userId is needed for joins with an other table
+                delete log.meta.req.user;
+            }
 
             return log;
         });

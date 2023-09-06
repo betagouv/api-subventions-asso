@@ -1,12 +1,13 @@
 import { ENV } from "../../configurations/env.conf";
 import configurationsService from "../configurations/configurations.service";
 import statsService from "../stats/stats.service";
+import userService from "../user/user.service";
 import metabaseDumpRepo from "./repositories/metabase-dump.repository";
 
 export class DumpService {
     // Dump logs, stats tables
     async publishStatsData() {
-        if (ENV != 'prod') return;
+        if (ENV != "prod") return;
 
         await metabaseDumpRepo.connectToDumpDatabase();
 
@@ -35,7 +36,12 @@ export class DumpService {
 
         console.log("visits: ", lastAssociationVisits.length);
 
-        await metabaseDumpRepo.addVisits(lastAssociationVisits);
+        if (lastAssociationVisits.length) await metabaseDumpRepo.addVisits(lastAssociationVisits);
+
+        const users = await userService.findAnonymizedUsers();
+        console.log("users: ", users.length);
+
+        if (users.length) await metabaseDumpRepo.upsertUsers(users);
 
         await configurationsService.setLastPublishDumpDate(now);
     }
