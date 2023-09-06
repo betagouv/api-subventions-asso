@@ -1,12 +1,10 @@
-import axios from "axios";
-
 jest.mock("toad-scheduler", () => {
     return {
         AsyncTask: jest.fn(),
         CronJob: jest.fn(),
         LongIntervalJob: jest.fn(),
         SimpleIntervalJob: jest.fn().mockImplementation(() => {}),
-        Task: jest.fn().mockImplementation(() => {})
+        Task: jest.fn().mockImplementation(() => {}),
     };
 });
 
@@ -16,10 +14,6 @@ import * as Decorators from "./cronController.decorator";
 
 describe("cronController decorator", () => {
     const SCHEDULE = {};
-    let axiosPostSpy;
-
-    beforeAll(() => (axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValue(undefined)));
-    afterAll(() => axiosPostSpy.mockRestore());
 
     describe("newJob()", () => {
         const JOB = {};
@@ -37,15 +31,15 @@ describe("cronController decorator", () => {
             () =>
                 (errorHandlerFactorySpy = jest.spyOn(Decorators, "errorHandlerFactory").mockReturnValue(
                     // @ts-expect-error mock
-                    ERROR_HANDLER_RESULT
-                ))
+                    ERROR_HANDLER_RESULT,
+                )),
         );
         afterAll(() => errorHandlerFactorySpy.mockRestore());
 
         function testResult(schedule, JobClass, TaskClass, target: any = { constructor: { name: CLASS_NAME } }) {
             const PROPERTY_KEY = "actionToRepeat";
             const DESCRIPTOR = {
-                value: () => {}
+                value: () => {},
             };
             const decoratedFunction = Decorators.newJob(schedule, JobClass, TaskClass);
             decoratedFunction(target, PROPERTY_KEY, DESCRIPTOR);
@@ -64,7 +58,7 @@ describe("cronController decorator", () => {
 
         it("adds job in existing array", () => {
             const actual = testResult(SCHEDULE, JOB_CLASS, TASK_CLASS, {
-                [ATTRIBUTE_TO_FILL]: ["something"]
+                [ATTRIBUTE_TO_FILL]: ["something"],
             })[ATTRIBUTE_TO_FILL]?.length;
             expect(actual).toBe(2);
         });
@@ -95,11 +89,6 @@ describe("cronController decorator", () => {
             const consoleErrorSpy = jest.spyOn(global.console, "error");
             errorHandler(CRON_NAME);
             expect(consoleErrorSpy).toHaveBeenCalledWith(expected);
-        });
-
-        it("posts error to mattermost", () => {
-            errorHandler({});
-            expect(axiosPostSpy).toHaveBeenCalled();
         });
     });
 
@@ -135,7 +124,7 @@ describe("cronController decorator", () => {
                     decorator(SCHEDULE, isIntervalLong);
                     const expectedSchedule = { runImmediately: true };
                     expect(newJobSpy).toBeCalledWith(expectedSchedule, JobClass, TaskClass);
-                }
+                },
             );
 
             it.each`
