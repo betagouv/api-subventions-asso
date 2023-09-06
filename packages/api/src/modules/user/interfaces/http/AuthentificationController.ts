@@ -1,10 +1,12 @@
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
 import {
     FutureUserDto,
+    UserActivationInfoDto,
     LoginDtoResponse,
     ResetPasswordDtoResponse,
     SignupDtoResponse,
     TokenValidationDtoResponse,
+    ActivateDtoResponse,
 } from "dto";
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
@@ -56,6 +58,14 @@ export class AuthentificationController extends Controller {
             email: body.email.toLocaleLowerCase(),
         };
         const user = await userService.signup(formatedBody);
+        this.setStatus(201);
+        return { user };
+    }
+
+    @Post("/activate")
+    @SuccessResponse("201", "Account activation sucessfully")
+    public async activate(@Body() body: { token: string; data: UserActivationInfoDto }): Promise<ActivateDtoResponse> {
+        const user = await userService.activate(body.token, body.data);
         this.setStatus(201);
         return { user };
     }

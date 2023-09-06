@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import * as RepositoryHelper from "./RepositoryHelper";
+import { AgentTypeEnum } from "dto";
 
 const USER_DBO = {
     _id: new ObjectId(1),
@@ -10,6 +11,8 @@ const USER_DBO = {
     jwt: { token: "TOKEN", expirateDate: new Date() },
     profileToComplete: false,
     active: false,
+    agentType: AgentTypeEnum.CENTRAL_ADMIN,
+    jobType: [],
 };
 
 describe("removeSecrets", () => {

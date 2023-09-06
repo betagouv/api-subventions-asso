@@ -42,7 +42,8 @@ describe("UserRepository", () => {
         });
 
         it("create", async () => {
-            await expect(userRepository.create(defaultUser as UserNotPersisted)).resolves.toMatchObject(
+            // @ts-expect-error: light user
+            await expect(userRepository.create(defaultUser)).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
                     jwt: { token: expect.any(String), expirateDate: expect.any(Date) },

@@ -44,4 +44,18 @@ describe("ArrayHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("joinEnum", () => {
+        const ENUM = {
+            A: "A",
+            B: "B",
+            C: "C",
+        };
+
+        it("should join enum with comma", () => {
+            const expected = "A, B, C";
+            const actual = ArrayHelper.joinEnum(ENUM);
+            expect(actual).toEqual(expected);
+        });
+    });
 });

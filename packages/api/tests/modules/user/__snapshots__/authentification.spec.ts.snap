@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthentificationController, /auth POST /activate should return user 1`] = `
+Object {
+  "_id": Any<String>,
+  "active": false,
+  "agentType": "CENTRAL_ADMIN",
+  "email": "user@beta.gouv.fr",
+  "firstName": null,
+  "jobType": Array [],
+  "lastName": null,
+  "password": Any<String>,
+  "profileToComplete": true,
+  "roles": Array [
+    "user",
+  ],
+  "signupAt": Any<String>,
+  "structure": null,
+}
+`;

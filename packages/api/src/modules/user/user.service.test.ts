@@ -8,9 +8,7 @@ jest.mock("jsonwebtoken", () => ({
         sign: jwtSignMock,
     },
 }));
-
 import { BadRequestError, InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
-
 import bcrypt from "bcrypt";
 jest.mock("bcrypt");
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
@@ -22,6 +20,7 @@ jest.mock("../../configurations/jwt.conf", () => ({
 }));
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 jest.mock("./repositories/consumer-token.repository");
+const mockConsumerTokenRepository = jest.mocked(consumerTokenRepository, true);
 import userRepository from "./repositories/user.repository";
 jest.mock("./repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository, true);
@@ -50,57 +49,91 @@ import statsService from "../stats/stats.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
+import { AgentTypeEnum } from "dto";
+import { AgentJobTypeEnum, TerritorialScopeEnum } from "dto";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
-describe("User Service", () => {
-    const createTokenMock = jest.spyOn(consumerTokenRepository, "create").mockImplementation(jest.fn());
-    const resetUserMock = jest.spyOn(userService, "resetUser");
-    const createUserMock = jest.spyOn(userService, "createUser");
-    const createConsumerMock = jest.spyOn(userService, "createConsumer");
-    //@ts-expect-error: mock private method
-    const buildJWTTokenMock: SpyInstance = jest.spyOn(userService, "buildJWTToken");
-    const getUserWithSecretsByEmailMock = jest
-        .spyOn(mockedUserRepository, "getUserWithSecretsByEmail")
-        .mockImplementation(async () => USER_DBO);
-    const updateMock = jest.spyOn(mockedUserRepository, "update").mockImplementation(async () => USER_DBO);
+const USER_WITHOUT_SECRET = {
+    _id: new ObjectId("635132a527c9bfb8fc7c758e"),
+    email: USER_EMAIL,
+    roles: ["user"],
+    signupAt: new Date(),
+    firstName: "",
+    lastName: "",
+    active: true,
+    profileToComplete: false,
+} as UserDto;
 
-    const USER_WITHOUT_SECRET = {
-        _id: new ObjectId("635132a527c9bfb8fc7c758e"),
-        email: USER_EMAIL,
-        roles: ["user"],
-        signupAt: new Date(),
-        firstName: "",
-        lastName: "",
-        active: true,
-        profileToComplete: false,
-    } as UserDto;
-    const USER_SECRETS = {
-        jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
-        hashPassword: "HASH_PASSWORD",
-    };
-    const USER_DBO = { ...USER_WITHOUT_SECRET, ...USER_SECRETS };
-    const USER_WITHOUT_PASSWORD = {
-        ...USER_WITHOUT_SECRET,
-        jwt: USER_SECRETS.jwt,
-    };
-    const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
-    const CONSUMER_JWT_PAYLOAD = {
-        ...USER_WITHOUT_SECRET,
-        isConsumerToken: true,
-    };
-    const ANONYMIZED_USER = {
-        ...USER_WITHOUT_SECRET,
-        active: false,
-        email: "",
-        jwt: null,
-        hashPassword: "",
-        disable: true,
-    };
+const UNACTIVATED_USER = { ...USER_WITHOUT_SECRET, ...{ active: false, profileToComplete: true } };
+
+const USER_SECRETS = {
+    jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
+    hashPassword: "HASH_PASSWORD",
+};
+
+const USER_DBO = { ...USER_WITHOUT_SECRET, ...USER_SECRETS };
+
+const USER_WITHOUT_PASSWORD = {
+    ...USER_WITHOUT_SECRET,
+    jwt: USER_SECRETS.jwt,
+};
+
+const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
+
+const CONSUMER_JWT_PAYLOAD = {
+    ...USER_WITHOUT_SECRET,
+    isConsumerToken: true,
+};
+
+const ANONYMIZED_USER = {
+    ...USER_WITHOUT_SECRET,
+    active: false,
+    email: "",
+    jwt: null,
+    hashPassword: "",
+    disable: true,
+};
+
+const USER_ACTIVATION_INFO = {
+    password: "",
+    agentType: AgentTypeEnum.CENTRAL_ADMIN,
+    phoneNumber: "",
+    service: "",
+    jobType: [AgentJobTypeEnum.ADMINISTRATOR],
+};
+
+describe("User Service", () => {
+    /**
+     *          MOCK USER SERVICE METHODS
+     */
+
+    const mockCreateUser = jest.spyOn(userService, "createUser");
+    const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
+    const mockDeleteUser = jest.spyOn(userService, "delete");
+    const mockResetUser = jest.spyOn(userService, "resetUser");
+    const mockSanitizeActivationUserInfo = jest.spyOn(userService, "sanitizeActivationUserInfo");
+    // @ts-expect-error: mock private method
+    const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
+    // @ts-expect-error: mock private method
+    const mockGetHashPassword = jest.spyOn(userService, "getHashPassword");
+    //@ts-expect-error: mock private method
+    const mockBuildJWTToken: SpyInstance = jest.spyOn(userService, "buildJWTToken");
+    // @ts-expect-error: mock private method
+    const mockPasswordValidator = jest.spyOn(userService, "passwordValidator");
+    const mockValidateUserActivationInfo: jest.SpyInstance<boolean> = jest.spyOn(
+        userService,
+        // @ts-expect-error: mock private method
+        "validateUserActivationInfo",
+    );
+    // @ts-expect-error: mock private method
+    const mockValidateEmail = jest.spyOn(userService, "validateEmail");
+
+    beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
 
     beforeEach(() => {
         jest.mocked(bcrypt.compare).mockImplementation(async () => true);
-        buildJWTTokenMock.mockImplementation(() => "SIGNED_TOKEN");
+        mockBuildJWTToken.mockImplementation(() => "SIGNED_TOKEN");
         jwtVerifyMock.mockImplementation(() => ({
             token: "TOKEN",
             now: new Date(),
@@ -112,25 +145,28 @@ describe("User Service", () => {
     });
 
     describe("signup", () => {
+        const mockList = [mockCreateUser];
+        afterAll(() => mockList.forEach(mock => mock.mockReset()));
+
         it("should create a consumer", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createConsumerMock.mockImplementationOnce(async () => ({} as UserDto));
+            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateConsumer.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL }, RoleEnum.consumer);
-            expect(createConsumerMock).toHaveBeenCalled();
+            expect(mockCreateConsumer).toHaveBeenCalled();
         });
 
         it("should create a user", async () => {});
 
         it("should create a reset token", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
+            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
-            expect(resetUserMock).toHaveBeenCalled();
+            expect(mockResetUser).toHaveBeenCalled();
         });
 
         it("should notify USER_CREATED", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
+            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(
                 NotificationType.USER_CREATED,
@@ -140,23 +176,180 @@ describe("User Service", () => {
 
         it("should return a user", async () => {
             const expected = { email: USER_EMAIL };
-            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => expected as UserDto);
+            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userService.signup({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
         });
     });
 
+    describe("activate", () => {
+        const RESET_DOCUMENT = {
+            _id: new ObjectId(),
+            userId: new ObjectId(),
+            token: "qdqzd234234ffefsfsf!",
+            createdAt: new Date(),
+        };
+
+        const mockList = [
+            mockValidateUserActivationInfo,
+            mockSanitizeActivationUserInfo,
+            mockGetHashPassword,
+            mockedUserResetRepository.findByToken,
+        ];
+        beforeAll(() => {
+            // @ts-expect-error: mock
+            mockValidateUserActivationInfo.mockImplementation(() => ({
+                valid: true,
+            }));
+            // @ts-expect-error: mock
+            mockValidateResetToken.mockImplementation(token => ({ valid: true }));
+            mockSanitizeActivationUserInfo.mockImplementation(userInfo => userInfo);
+            // @ts-expect-error: unknown error
+            mockGetHashPassword.mockImplementation(async password => password);
+            mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
+            mockedUserRepository.findById.mockImplementation(async id => UNACTIVATED_USER);
+        });
+        afterAll(() => mockList.forEach(mock => mock.mockRestore()));
+
+        it("should set jobType to empty array", async () => {
+            // @ts-expect-error: do not respect DTO
+            await userService.activate("token", { ...USER_ACTIVATION_INFO, jobType: undefined });
+            expect(mockValidateUserActivationInfo).toHaveBeenCalledWith({ ...USER_ACTIVATION_INFO, jobType: [] });
+        });
+
+        it("should call userRepository.update()", async () => {
+            await userService.activate("token", USER_ACTIVATION_INFO);
+            expect(userRepository.update).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call validateAndSanitizeActivationUserInfo()", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userService.activate("token", USER_ACTIVATION_INFO);
+            expect(mockSanitizeActivationUserInfo).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe("validateUserActivationInfo()", () => {
+        describe("password", () => {
+            // @ts-expect-error: mock private method
+            beforeAll(() => mockPasswordValidator.mockImplementationOnce(() => false));
+            it("should throw password is wrong", () => {
+                try {
+                    // @ts-expect-error: private method
+                    userService.validateUserActivationInfo({
+                        password: "PA$$W0RD",
+                    });
+                } catch (e) {
+                    expect(e).toMatchSnapshot();
+                }
+            });
+        });
+
+        describe("agentType", () => {
+            const mockList = [mockPasswordValidator];
+            // @ts-expect-error: mock private method
+            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw if agentType is wrong", () => {
+                try {
+                    // @ts-expect-error: private method
+                    userService.validateUserActivationInfo({
+                        agentType: "WRONG_VALUE",
+                    });
+                } catch (e) {
+                    expect(e).toMatchSnapshot();
+                }
+            });
+        });
+
+        describe("typeJob", () => {
+            const mockList = [mockPasswordValidator];
+            // @ts-expect-error: mock private method
+            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                try {
+                    // @ts-expect-error: private method
+                    userService.validateUserActivationInfo({
+                        agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                        jobType: ["WRONG_TYPE"],
+                    });
+                } catch (e) {
+                    expect(e).toMatchSnapshot();
+                }
+            });
+        });
+
+        describe("structure", () => {
+            const mockList = [mockPasswordValidator];
+            // @ts-expect-error: mock private method
+            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                try {
+                    // @ts-expect-error: private method
+                    userService.validateUserActivationInfo({
+                        agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                        jobType: [AgentJobTypeEnum.EXPERT],
+                        structure: 6,
+                    });
+                } catch (e) {
+                    expect(e).toMatchSnapshot();
+                }
+            });
+        });
+
+        describe("structure", () => {
+            const mockList = [mockPasswordValidator];
+            // @ts-expect-error: mock private method
+            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                try {
+                    // @ts-expect-error: private method
+                    userService.validateUserActivationInfo({
+                        agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+                        jobType: [AgentJobTypeEnum.EXPERT],
+                        structure: "STRUCTURE",
+                        territorialScope: "WRONG_SCOPE",
+                    });
+                } catch (e) {
+                    expect(e).toMatchSnapshot();
+                }
+            });
+        });
+
+        it("should return true", () => {
+            const expected = { valid: true };
+            // @ts-expect-error: private method
+            const actual = userService.validateUserActivationInfo({
+                agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+                jobType: [AgentJobTypeEnum.EXPERT],
+                structure: "STRUCTURE",
+                territorialScope: TerritorialScopeEnum.COMMUNAL,
+            });
+        });
+    });
+
+    describe("sanitizeActivationUserInfo()", () => {
+        it("should call sanitizeToPlainText()", () => {
+            const expected = Object.keys(USER_ACTIVATION_INFO).length;
+            userService.sanitizeActivationUserInfo(USER_ACTIVATION_INFO);
+            expect(sanitizeToPlainText).toHaveBeenCalledTimes(expected);
+        });
+    });
+
     describe("login", () => {
         it("should throw an Error if user not found", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => null);
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
             const expected = new LoginError();
             const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should throw an Error if user is not active", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => ({
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
                 ...USER_DBO,
                 active: false,
             }));
@@ -176,7 +369,7 @@ describe("User Service", () => {
         });
 
         it("should generate new token and update user", async () => {
-            getUserWithSecretsByEmailMock.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
+            mockedUserRepository.getUserWithSecretsByEmail.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
             // minus two days
             const oldDate = new Date(Date.now() - 172800001);
             jwtVerifyMock.mockImplementation(() => ({
@@ -184,8 +377,8 @@ describe("User Service", () => {
                 now: oldDate,
             }));
             await userService.login(USER_DBO.email, "PASSWORD");
-            expect(buildJWTTokenMock).toHaveBeenCalledTimes(1);
-            expect(updateMock).toHaveBeenCalledTimes(1);
+            expect(mockBuildJWTToken).toHaveBeenCalledTimes(1);
+            expect(userRepository.update).toHaveBeenCalledTimes(1);
         });
 
         it("should return user", async () => {
@@ -195,8 +388,8 @@ describe("User Service", () => {
         });
 
         it("should notify USER_LOGGED", async () => {
-            resetUserMock.mockImplementationOnce(async () => ({} as UserReset));
-            createUserMock.mockImplementationOnce(async () => ({} as UserDto));
+            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.login(USER_DBO.email, "PASSWORD");
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
                 email: USER_DBO.email,
@@ -208,14 +401,14 @@ describe("User Service", () => {
     describe("authenticate", () => {
         const DECODED_TOKEN = { ...USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
         it("should throw error if user does not exist", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(jest.fn());
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(jest.fn());
             const expected = { message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
             const test = async () => await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should return UserDtoSuccessResponse consumer token", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(
                 async () => ({ ...CONSUMER_USER, ...USER_SECRETS } as UserDbo),
             );
             const expected = CONSUMER_USER;
@@ -224,21 +417,24 @@ describe("User Service", () => {
         });
 
         it("should return UserDtoSuccessResponse user token", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => USER_DBO);
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
             const expected = USER_WITHOUT_SECRET;
             const actual = await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             expect(actual).toEqual(expected);
         });
 
         it("should return UserServiceError if user not active", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => ({ ...USER_DBO, active: false }));
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+                ...USER_DBO,
+                active: false,
+            }));
             const expected = { message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
             const test = async () => await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should return UserServiceError if token has expired", async () => {
-            getUserWithSecretsByEmailMock.mockImplementationOnce(async () => USER_DBO);
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
             const expected = {
                 message: "JWT has expired, please login try again",
                 code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
@@ -334,52 +530,50 @@ describe("User Service", () => {
     });
 
     describe("createConsumer", () => {
-        let deleteUserMock;
-
         beforeAll(() => {
-            deleteUserMock = jest.spyOn(userService, "delete");
-            deleteUserMock.mockImplementation(jest.fn());
-            createUserMock.mockImplementation(async () => CONSUMER_USER);
-        });
-        afterAll(() => {
-            deleteUserMock.mockRestore();
-            createUserMock.mockRestore();
+            mockDeleteUser.mockImplementation(jest.fn());
+            mockCreateUser.mockImplementation(async () => CONSUMER_USER);
         });
 
-        it("should call mockedUserRepository.createUser", async () => {
+        afterAll(() => {
+            mockDeleteUser.mockReset();
+            mockCreateUser.mockReset();
+        });
+
+        it("should call createUser()", async () => {
             await userService.createConsumer(USER_EMAIL);
-            expect(createUserMock).toBeCalledTimes(1);
+            expect(mockCreateUser).toBeCalledTimes(1);
         });
 
         it("should not create consumer token if user creation failed", async () => {
-            createUserMock.mockRejectedValueOnce(new Error());
+            mockCreateUser.mockRejectedValueOnce(new Error());
             await userService.createConsumer(USER_EMAIL).catch(() => {});
-            expect(createUserMock).toBeCalledTimes(1);
+            expect(mockCreateUser).toBeCalledTimes(1);
         });
 
         it("should create a token ", async () => {
             const expected = CONSUMER_JWT_PAYLOAD;
-            createUserMock.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
+            mockCreateUser.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
             await userService.createConsumer({ email: USER_EMAIL });
-            expect(buildJWTTokenMock).toHaveBeenCalledWith(expected, {
+            expect(mockBuildJWTToken).toHaveBeenCalledWith(expected, {
                 expiration: false,
             });
         });
 
         it("should call consumerTokenRepository.create", async () => {
             await userService.createConsumer({ email: USER_EMAIL });
-            expect(createTokenMock).toBeCalledTimes(1);
+            expect(mockConsumerTokenRepository.create).toBeCalledTimes(1);
         });
 
         it("should delete user if token generation failed", async () => {
-            createTokenMock.mockRejectedValueOnce(new Error());
+            mockConsumerTokenRepository.create.mockRejectedValueOnce(new Error());
             const id = USER_WITHOUT_SECRET._id.toString();
             await userService.createConsumer({ email: USER_EMAIL }).catch(() => {});
-            expect(deleteUserMock).toHaveBeenCalledWith(id);
+            expect(mockDeleteUser).toHaveBeenCalledWith(id);
         });
 
         it("should throw if token generation failed", async () => {
-            createTokenMock.mockRejectedValueOnce(new Error());
+            mockConsumerTokenRepository.create.mockRejectedValueOnce(new Error());
             const test = () => userService.createConsumer({ email: USER_EMAIL });
             await expect(test).rejects.toMatchObject(
                 new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN),
@@ -388,28 +582,27 @@ describe("User Service", () => {
 
         it("should return UserDtoSuccessResponse", async () => {
             const expected = CONSUMER_USER;
-            createTokenMock.mockImplementationOnce(async () => true);
+            mockConsumerTokenRepository.create.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
         });
     });
 
     describe("validateSanitizeUser", () => {
-        let validateEmailMock;
         let validRolesMock;
 
         beforeAll(() => {
             jest.mocked(mockedUserRepository.findByEmail).mockResolvedValue(null);
             jest.mocked(sanitizeToPlainText).mockReturnValue("safeString");
-            // @ts-expect-error private method
-            validateEmailMock = jest.spyOn(userService, "validateEmail").mockResolvedValue(undefined);
+            // @ts-expect-error: mock
+            mockValidateEmail.mockResolvedValue(undefined);
             // @ts-expect-error private method
             validRolesMock = jest.spyOn(userService, "validRoles").mockResolvedValue(true);
         });
 
         afterAll(() => {
             jest.mocked(mockedUserRepository.findByEmail).mockReset();
-            validateEmailMock.mockRestore();
+            mockValidateEmail.mockRestore();
             validRolesMock.mockRestore();
             jest.mocked(sanitizeToPlainText).mockReset();
         });
@@ -450,11 +643,12 @@ describe("User Service", () => {
         };
 
         beforeAll(() => {
+            mockCreateUser.mockRestore();
             jest.mocked(mockedUserRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
             // @ts-expect-error - mock
             jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
             validateUserMock = jest.spyOn(userService, "validateSanitizeUser").mockImplementation(undefined);
-            buildJWTTokenMock.mockReturnValue(SIGNED_TOKEN);
+            mockBuildJWTToken.mockReturnValue(SIGNED_TOKEN);
         });
 
         afterAll(() => {
@@ -491,24 +685,19 @@ describe("User Service", () => {
     });
 
     describe("updatePassword", () => {
-        // @ts-expect-error: mock private method
-        const mockPasswordValidator = jest.spyOn(userService, "passwordValidator");
-        beforeEach(() => {
-            // @ts-expect-error: mock private method return value
-            mockPasswordValidator.mockReturnValue(true);
-        });
-
         const PASSWORD = "12345&#Data";
 
         it("should reject because password not valid", async () => {
             // @ts-expect-error: mock private method return value
-            mockPasswordValidator.mockReturnValueOnce(false);
+            mockPasswordValidator.mockReturnValue(false);
             expect(userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD)).rejects.toEqual(
                 new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD),
             );
         });
 
         it("should update user", async () => {
+            // @ts-expect-error: mock private method return value
+            mockPasswordValidator.mockReturnValue(true);
             await userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD);
             expect(mockedUserRepository.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
@@ -569,8 +758,6 @@ describe("User Service", () => {
         // @ts-expect-error: mock
         beforeAll(() => jest.mocked(bcrypt.hash).mockResolvedValue(PASSWORD));
 
-        // @ts-expect-error: mock private method
-        const mockPasswordValidator = jest.spyOn(userService, "passwordValidator");
         beforeEach(() => {
             mockedUserResetRepository.findByToken.mockResolvedValue(RESET_DOCUMENT);
             mockedUserRepository.findById.mockResolvedValue(USER_WITHOUT_SECRET);
@@ -582,7 +769,7 @@ describe("User Service", () => {
             jest.mocked(bcrypt.hash).mockReset();
             mockedUserResetRepository.findByToken.mockReset();
             mockedUserRepository.findById.mockReset();
-            mockPasswordValidator.mockRestore();
+            mockPasswordValidator.mockReset();
         });
 
         it("should reject because resetToken not found", async () => {
@@ -718,7 +905,7 @@ describe("User Service", () => {
 
     describe("buildJWTToken", () => {
         it("should set expiresIn", () => {
-            buildJWTTokenMock.mockRestore();
+            mockBuildJWTToken.mockRestore();
             const expected = {
                 expiresIn: JWT_CONF.JWT_EXPIRES_TIME,
             };
@@ -732,7 +919,7 @@ describe("User Service", () => {
         });
 
         it("should not set expiresIn", () => {
-            buildJWTTokenMock.mockRestore();
+            mockBuildJWTToken.mockRestore();
             const expected = {};
             // @ts-expect-error buildJWTToken is private
             userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: false });
@@ -752,7 +939,7 @@ describe("User Service", () => {
 
         // @ts-expect-error: mock return value
         beforeAll(() => mockedUserRepository.findByPeriod.mockResolvedValue(REPO_RETURN));
-        afterAll(() => mockedUserRepository.findByPeriod.mockRestore());
+        afterAll(() => mockedUserRepository.findByPeriod.mockReset());
 
         it("should call repo with given args", async () => {
             await userService.findByPeriod(BEGIN, END, WITH_ADMIN);
@@ -797,6 +984,8 @@ describe("User Service", () => {
     });
 
     describe("passwordValidator()", () => {
+        beforeAll(() => mockPasswordValidator.mockRestore());
+
         it("should accept #", () => {
             // @ts-expect-error: private method
             const actual = userService.passwordValidator("Aa12345#");

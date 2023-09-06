@@ -1,7 +1,8 @@
 import request = require("supertest");
 import userService, { UserService } from "../../../src/modules/user/user.service";
-import { ResetPasswordErrorCodes } from "dto";
+import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
+import { createResetToken } from "../../__helpers__/resetTokenHelper";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import notifyService from "../../../src/modules/notify/notify.service";
 
@@ -187,6 +188,97 @@ describe("AuthentificationController, /auth", () => {
                     .set("Accept", "application/json");
 
                 expect(response.statusCode).toBe(401);
+            });
+        });
+    });
+
+    describe("POST /activate", () => {
+        let user;
+        let userResetToken;
+
+        beforeEach(async () => {
+            user = await createUser();
+            userResetToken = await createResetToken(user._id);
+        });
+        it("should return user", async () => {
+            await request(g.app)
+                .post("/auth/activate")
+                .send({
+                    token: userResetToken.token,
+                    data: {
+                        password: DEFAULT_PASSWORD,
+                        agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                        jobType: [],
+                        structure: "",
+                    },
+                })
+                .set("Accept", "application/json")
+                .expect(201)
+                .expect(res =>
+                    expect(res.body.user).toMatchSnapshot({
+                        signupAt: expect.any(String),
+                        password: expect.any(String),
+                        _id: expect.any(String),
+                    }),
+                );
+        });
+
+        describe("404 NotFoundError", () => {
+            it("should return NotFoundError", async () => {
+                await request(g.app)
+                    .post("/auth/activate")
+                    .send({
+                        token: "qdqzdqzd1414ZD^$$*",
+                        data: {
+                            password: DEFAULT_PASSWORD,
+                            agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                            jobType: [],
+                        },
+                    })
+                    .set("Accept", "application/json")
+                    .expect(404);
+            });
+        });
+
+        describe("400 BadRequestError", () => {
+            const DATA = {
+                password: DEFAULT_PASSWORD,
+                agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                jobType: [],
+            };
+
+            const DATA_WITH_WRONG_PASSWORD = { ...DATA, password: "WRONG_PASSWORD!!" };
+            const DATA_WITH_WRONG_AGENT_TYPE = { ...DATA, agentType: "WRONG" };
+            const DATA_WITH_WRONG_JOB_TYPE = { ...DATA, password: "WRONG_PASSWORD!!" };
+            const DATA_WITH_WRONG_STRUCTURE = { ...DATA, structure: 9 };
+            const DATA_WITH_WRONG_TERRITORIAL_SCOPE = {
+                ...DATA,
+                agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+                territorialScope: "WRONG",
+            };
+            const DATA_WITH_WRONG_DECENTRALIZED_LEVEL = {
+                ...DATA,
+                agentType: AgentTypeEnum.DECONCENTRATED_ADMIN,
+                decentralizedLevel: "WRONG",
+            };
+
+            it.each`
+                data
+                ${DATA_WITH_WRONG_PASSWORD}
+                ${DATA_WITH_WRONG_AGENT_TYPE}
+                ${DATA_WITH_WRONG_JOB_TYPE}
+                ${DATA_WITH_WRONG_STRUCTURE}
+                ${DATA_WITH_WRONG_TERRITORIAL_SCOPE}
+                ${DATA_WITH_WRONG_DECENTRALIZED_LEVEL}
+            `("return a 404 BadRequestError'", async ({ data }) => {
+                await request(g.app)
+                    .post("/auth/activate")
+                    .send({
+                        token: userResetToken.token,
+                        data,
+                    })
+                    .set("Accept", "application/json")
+                    .expect(400);
             });
         });
     });
