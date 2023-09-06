@@ -1,7 +1,5 @@
-import etablissementService from "../../modules/etablissements/etablissements.service";
 import ApiAssoDtoAdapter from "../../modules/providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import ApiEntrepriseAdapter from "../../modules/providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import EtablissementDtoAdapter from "../../modules/providers/dataEntreprise/adapters/EtablissementDtoAdapter";
 import FonjepEntityAdapter from "../../modules/providers/fonjep/adapters/FonjepEntityAdapter";
 import LeCompteAssoRequestAdapter from "../../modules/providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 import OsirisRequestAdapter from "../../modules/providers/osiris/adapters/OsirisRequestAdapter";
@@ -10,7 +8,6 @@ import FormaterHelper from "./FormaterHelper";
 
 const PROVIDER_SCORE = {
     [ApiAssoDtoAdapter.providerNameSiren]: 1,
-    [EtablissementDtoAdapter.PROVIDER_NAME]: 1,
     [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
     [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
     [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,

@@ -2,7 +2,6 @@ import { ProviderValues, Siren, Siret, Etablissement } from "dto";
 
 import * as Sentry from "@sentry/node";
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
-import EtablissementDtoAdapter from "../providers/dataEntreprise/adapters/EtablissementDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
 import { DefaultObject } from "../../@types";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
@@ -23,7 +22,6 @@ import EtablissementProvider from "./@types/EtablissementProvider";
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoAdapter.providerNameSiren]: 1,
-        [EtablissementDtoAdapter.PROVIDER_NAME]: 1,
         [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,

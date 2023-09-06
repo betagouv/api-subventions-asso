@@ -1,5 +1,5 @@
 import path from "path";
-import dataEntrepriseService from "../../../../../src/modules/providers/dataEntreprise/dataEntreprise.service";
+import apiAssoService from "../../../../../src/modules/providers/apiAsso/apiAsso.service";
 import LeCompteAssoCliController from "../../../../../src/modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderValueAdapter";
 
@@ -78,7 +78,7 @@ describe("LeCompteAssoCliController", () => {
         let mock: jest.SpyInstance<Promise<unknown>>;
 
         beforeEach(() => {
-            mock = jest.spyOn(dataEntrepriseService, "findAssociationBySiren");
+            mock = jest.spyOn(apiAssoService, "findAssociationBySiren");
         });
 
         afterEach(() => {

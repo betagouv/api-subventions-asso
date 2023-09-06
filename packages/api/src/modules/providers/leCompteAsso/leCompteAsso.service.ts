@@ -4,8 +4,8 @@ import { isAssociationName, isSiret, isCompteAssoId } from "../../../shared/Vali
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import apiAssoService from "../apiAsso/apiAsso.service";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
-import dataEntrepriseService from "../dataEntreprise/dataEntreprise.service";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import EventManager from "../../../shared/EventManager";
@@ -85,10 +85,8 @@ export class LeCompteAssoService implements ProviderRequestInterface, Associatio
         }
 
         // Rna is not exported in CompteAsso, so we search in api
-        const rna = await rnaSirenService.getRna(partialEntity.legalInformations.siret, true);
-        const asso = await dataEntrepriseService.findAssociationBySiren(
-            siretToSiren(partialEntity.legalInformations.siret),
-        );
+        const rna = await rnaSirenService.getRna(partialEntity.legalInformations.siret);
+        const asso = await apiAssoService.findAssociationBySiren(siretToSiren(partialEntity.legalInformations.siret));
 
         if (!rna || !asso || !asso.categorie_juridique?.length) {
             return {

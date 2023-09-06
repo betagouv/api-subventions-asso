@@ -1,6 +1,5 @@
-import { Rna, Siren, Siret, Association, Etablissement } from "dto";
+import { Rna, Siren, Siret, Association, Etablissement, Document } from "dto";
 import axios from "axios";
-import { Document } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
@@ -57,7 +56,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         }
     }
 
-    private async findAssociationByRna(rna: Rna): Promise<Association | null> {
+    public async findAssociationByRna(rna: Rna): Promise<Association | null> {
         const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna}`);
 
         if (!rnaStructure) return null;
@@ -65,7 +64,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         return ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructure);
     }
 
-    private async findAssociationBySiren(siren: Siren): Promise<Association | null> {
+    public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
 
         if (!sirenStructure) return null;

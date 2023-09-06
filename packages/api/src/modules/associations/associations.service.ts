@@ -7,8 +7,6 @@ import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../
 import providers from "../providers";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
-import EntrepriseDtoAdapter from "../providers/dataEntreprise/adapters/EntrepriseDtoAdapter";
-import AssociationDtoAdapter from "../providers/dataEntreprise/adapters/AssociationDtoAdapter";
 import LeCompteAssoRequestAdapter from "../providers/leCompteAsso/adapters/LeCompteAssoRequestAdapter";
 
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
@@ -17,6 +15,7 @@ import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
+import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import documentsService from "../documents/documents.service";
 import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
@@ -24,7 +23,6 @@ import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import dataGouvService from "../providers/datagouv/datagouv.service";
-import dataEntrepriseService from "../providers/dataEntreprise/dataEntreprise.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
@@ -32,8 +30,6 @@ export class AssociationsService {
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoAdapter.providerNameSiren]: 1,
         [ApiAssoDtoAdapter.providerNameRna]: 1,
-        [EntrepriseDtoAdapter.PROVIDER_NAME]: 1,
-        [AssociationDtoAdapter.PROVIDER_NAME]: 1,
         [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
     };
@@ -142,7 +138,7 @@ export class AssociationsService {
         // what follows will be useless when #554 is done (then maybe the helper will be redundant)
         if (await rnaSirenService.getRna(siren)) return true;
 
-        const asso = await dataEntrepriseService.findAssociationBySiren(siren);
+        const asso = await apiAssoService.findAssociationBySiren(siren);
         if (!asso?.categorie_juridique?.[0]?.value) return false;
         return LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value);
     } // TODO tests

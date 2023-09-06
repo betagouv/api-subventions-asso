@@ -2,9 +2,9 @@ import { Siret, Siren, Rna } from "dto";
 import { WithId } from "mongodb";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 
+import apiAssoService from "../../providers/apiAsso/apiAsso.service";
 import osirisService from "../../providers/osiris/osiris.service";
 import leCompteAssoService from "../../providers/leCompteAsso/leCompteAsso.service";
-import dataEntrepriseService from "../../providers/dataEntreprise/dataEntreprise.service";
 import RequestEntity from "../../search/entities/RequestEntity";
 import EventManager from "../../../shared/EventManager";
 import RnaSiren from "./entities/RnaSirenEntity";
@@ -24,14 +24,14 @@ export class RnaSirenService {
         });
     }
 
-    async getRna(siren: Siret | Siren, withTimeout = false) {
+    async getRna(siren: Siret | Siren) {
         siren = siretToSiren(siren);
 
         const entity = await rnaSirenRepository.findBySiren(siren);
 
         if (entity) return entity.rna;
 
-        const rna = await this.findRnaBySiren(siren, withTimeout);
+        const rna = await this.findRnaBySiren(siren);
 
         if (rna) await this.add(rna, siren);
 
@@ -44,11 +44,11 @@ export class RnaSirenService {
         return new RnaSiren(entity.rna, entity.siren, entity.names);
     }
 
-    async getSiren(rna: Rna, withTimeout = false) {
+    async getSiren(rna: Rna) {
         const entity = await rnaSirenRepository.findByRna(rna);
         if (entity) return entity.siren;
 
-        const siren = await this.findSirenByRna(rna, withTimeout);
+        const siren = await this.findSirenByRna(rna);
 
         if (siren) await this.add(rna, siren);
 
@@ -70,7 +70,7 @@ export class RnaSirenService {
         await rnaSirenRepository.cleanDuplicate();
     }
 
-    private async findSirenByRna(rna: Rna, withTimeout = false) {
+    private async findSirenByRna(rna: Rna) {
         const providers = [osirisService, leCompteAssoService];
 
         const siret = await providers.reduce(async (acc, provider) => {
@@ -83,13 +83,13 @@ export class RnaSirenService {
 
         if (siret) return siretToSiren(siret);
 
-        const asso = await dataEntrepriseService.findAssociationByRna(rna, withTimeout);
+        const asso = await apiAssoService.findAssociationByRna(rna);
         if (!asso || !asso.siren || !asso.siren?.length) return null;
 
         return asso.siren[0].value;
     }
 
-    private async findRnaBySiren(siren: Siren, withTimeout = false) {
+    private async findRnaBySiren(siren: Siren) {
         const osirisAsso = await osirisService.getAssociationsBySiren(siren);
 
         if (osirisAsso && osirisAsso.length != 0 && osirisAsso.find(a => a.siren && a.siren.find(s => s.value))) {
@@ -114,7 +114,7 @@ export class RnaSirenService {
             }, null as null | Rna);
         }
 
-        const asso = await dataEntrepriseService.findAssociationBySiren(siren, withTimeout);
+        const asso = await apiAssoService.findAssociationBySiren(siren);
         if (!asso || !asso.rna || !asso.rna?.length) return null;
 
         return asso.rna[0].value;
