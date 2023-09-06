@@ -274,12 +274,6 @@ export class UserService {
             consumerTokenRepository.deleteAllByUserId(user._id),
         ];
 
-        await notifyService.notify(NotificationType.USER_DELETED, {
-            email: user.email,
-            firstname: user.firstName,
-            lastname: user.lastName,
-        });
-
         return (await Promise.all(deletePromises)).every(success => success);
     }
 
