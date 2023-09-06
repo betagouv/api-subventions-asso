@@ -327,6 +327,8 @@ describe("User Service", () => {
             await userService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
                 email: USER_WITHOUT_SECRET.email,
+                firstname: USER_WITHOUT_SECRET.firstName,
+                lastname: USER_WITHOUT_SECRET.lastName,
             });
         });
     });
