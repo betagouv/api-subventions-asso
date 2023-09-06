@@ -329,7 +329,7 @@ export class UserService {
             lastName: "",
         };
 
-        await notifyService.notify(NotificationType.USER_DELETED, { email: user.email });
+        notifyService.notify(NotificationType.USER_DELETED, { email: user.email });
 
         return !!(await userRepository.update(disabledUser));
     }
