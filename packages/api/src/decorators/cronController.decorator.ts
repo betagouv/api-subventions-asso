@@ -16,6 +16,8 @@ export const errorHandlerFactory = cronName => {
     };
 };
 
+// think about creating the cron monitor in sentry https://sentry.incubateur.net/organizations/betagouv/crons/
+
 export const newJob = (schedule, JobClass, TaskClass) => {
     const attributeName = JobClass === CronJob ? "__cronJobs__" : "__intervalJobs__";
     return function (target, propertyKey: string, descriptor) {
