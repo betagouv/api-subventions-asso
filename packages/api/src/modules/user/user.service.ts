@@ -272,7 +272,7 @@ export class UserService {
             consumerTokenRepository.deleteAllByUserId(user._id),
         ];
 
-        await notifyService.notify(NotificationType.USER_DELETED, {
+        notifyService.notify(NotificationType.USER_DELETED, {
             email: user.email,
             firstname: user.firstName,
             lastname: user.lastName,
@@ -327,11 +327,7 @@ export class UserService {
             lastName: "",
         };
 
-        await notifyService.notify(NotificationType.USER_DELETED, {
-            email: user.email,
-            firstname: user.firstName,
-            lastname: user.lastName,
-        });
+        notifyService.notify(NotificationType.USER_DELETED, { email: user.email });
 
         return !!(await userRepository.update(disabledUser));
     }

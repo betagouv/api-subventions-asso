@@ -322,6 +322,15 @@ describe("User Service", () => {
             const actual = await userService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
         });
+
+        it("should notify USER_DELETED", async () => {
+            await userService.delete(USER_WITHOUT_SECRET._id.toString());
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
+                email: USER_WITHOUT_SECRET.email,
+                firstname: USER_WITHOUT_SECRET.firstName,
+                lastname: USER_WITHOUT_SECRET.lastName,
+            });
+        });
     });
 
     describe("createConsumer", () => {
@@ -508,6 +517,8 @@ describe("User Service", () => {
     describe("disable", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
 
+        beforeEach(() => mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
+
         afterEach(() => {
             mockedUserRepository.findById.mockReset();
             mockedUserRepository.update.mockReset();
@@ -515,7 +526,6 @@ describe("User Service", () => {
 
         it("should fetch user from db", async () => {
             await userService.disable(USER_ID);
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             expect(mockedUserRepository.findById).toHaveBeenCalledWith(USER_ID);
         });
 
@@ -527,17 +537,22 @@ describe("User Service", () => {
         });
 
         it("should call update", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             await userService.disable(USER_ID);
             expect(mockedUserRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
         });
 
         it("should return true if update succeed", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
             const expected = true;
             const actual = await userService.disable(USER_ID);
             expect(actual).toEqual(expected);
+        });
+
+        it("should call notify USER_DELETED", async () => {
+            await userService.disable(USER_ID);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
+                email: USER_WITHOUT_SECRET.email,
+            });
         });
     });
 
