@@ -19,6 +19,8 @@ export interface NotificationDataTypes {
     };
     [NotificationType.USER_DELETED]: {
         email: string;
+        firstname?: string;
+        lastname?: string;
     };
     [NotificationType.USER_ACTIVATED]: {
         email: string;
