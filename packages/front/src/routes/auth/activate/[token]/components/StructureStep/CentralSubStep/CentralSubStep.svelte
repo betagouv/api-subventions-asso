@@ -7,12 +7,11 @@
     // export let valid
 
     export let values = { centralStructure: "" };
-    export let agentType;
 
     const ctrl = new CentralSubStepController();
     const { options } = ctrl;
 
-    ctrl.init(agentType);
+    ctrl.init();
 </script>
 
 <fieldset class="fr-fieldset">

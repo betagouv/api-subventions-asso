@@ -14,14 +14,11 @@
         decentralizedTerritory: "",
         decentralizedStructure: "",
     };
-    // allows the substep to make the calls to the API to fill autocomplete fields
-    // the call is not made by the parent because half substeps don't need it
-    export let agentType;
 
     const ctrl = new DecentralizedSubStepController();
     const { departmentOptions, regionOptions, structureOptions } = ctrl;
 
-    ctrl.init(agentType);
+    ctrl.init();
 </script>
 
 <Radio

@@ -1,5 +1,5 @@
-import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
 import type { AdminStructureDto } from "dto";
+import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
@@ -26,8 +26,8 @@ export default class DecentralizedSubStepController {
         this.allStructures = [];
     }
 
-    async init(agentType: AgentTypeEnum): Promise<void> {
-        this.allStructures = await subscriptionFormService.getStructures(agentType);
+    async init(): Promise<void> {
+        this.allStructures = await subscriptionFormService.getStructures(AgentTypeEnum.DECONCENTRATED_ADMIN);
     }
 
     public onChoosingLevel(option: { label: string; value: AdminTerritorialLevel }) {

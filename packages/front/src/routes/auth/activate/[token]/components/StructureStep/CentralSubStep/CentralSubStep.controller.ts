@@ -1,4 +1,4 @@
-import type { AgentTypeEnum } from "dto";
+import { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 
@@ -9,8 +9,8 @@ export default class CentralSubStepController {
         this.options = new Store([]);
     }
 
-    async init(agentType: AgentTypeEnum): Promise<void> {
-        const structures = await subscriptionFormService.getStructures(agentType);
+    async init(): Promise<void> {
+        const structures = await subscriptionFormService.getStructures(AgentTypeEnum.CENTRAL_ADMIN);
         this.options.set(
             structures.map(structure => ({
                 label: structure.structure,

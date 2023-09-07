@@ -53,20 +53,18 @@ describe("DecentralizedSubStep", () => {
     });
 
     describe("init", () => {
-        const agentType = AgentTypeEnum.OPERATOR;
-
         beforeAll(() => {
             vi.mocked(subscriptionFormService.getStructures).mockResolvedValue(STRUCTURES);
             ctrl = new DecentralizedSubStepController();
         });
 
-        it("gets structures by agentType", async () => {
-            await ctrl.init(agentType);
-            expect(subscriptionFormService.getStructures).toHaveBeenCalled();
+        it("gets structures with proper agentType", async () => {
+            await ctrl.init();
+            expect(subscriptionFormService.getStructures).toHaveBeenCalledWith(AgentTypeEnum.DECONCENTRATED_ADMIN);
         });
 
         it("updates allStructures thanks to call", async () => {
-            await ctrl.init(agentType);
+            await ctrl.init();
             const expected = STRUCTURES;
             // @ts-expect-error test private
             const actual = ctrl.allStructures;

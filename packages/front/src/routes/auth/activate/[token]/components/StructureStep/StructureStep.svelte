@@ -17,7 +17,7 @@
 </script>
 
 {#if $subStep}
-    <svelte:component this={$subStep.component} bind:values agentType={context.agentType} />
+    <svelte:component this={$subStep.component} bind:values />
 {/if}
 
 <fieldset class="fr-fieldset">
