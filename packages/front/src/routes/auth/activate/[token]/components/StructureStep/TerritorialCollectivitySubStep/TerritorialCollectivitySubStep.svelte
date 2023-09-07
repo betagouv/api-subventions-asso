@@ -8,7 +8,8 @@
     // export let valid
 
     export let values = {
-        territorialStructure: "",
+        structure: "",
+        territorialScope: "",
     };
 
     const ctrl = new TerritorialCollectivitySubStepController();
@@ -23,6 +24,6 @@
             type="text"
             label="Pour quelle collectivité territoriale travaillez-vous ?"
             placeholder="Ex : Ville de Paris, Département des Landes, Communauté de Communes Terre d'Auge..."
-            bind:value={values.territorialStructure} />
+            bind:value={values.structure} />
     </div>
 </fieldset>

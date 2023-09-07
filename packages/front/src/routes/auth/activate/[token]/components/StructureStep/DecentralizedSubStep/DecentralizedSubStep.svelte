@@ -12,7 +12,7 @@
     export let values = {
         decentralizedLevel: "",
         decentralizedTerritory: "",
-        decentralizedStructure: "",
+        structure: "",
     };
 
     const ctrl = new DecentralizedSubStepController();
@@ -50,14 +50,14 @@
         {#if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL || values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
             <AutocompleteSelect
                 options={$structureOptions}
-                bind:value={values.decentralizedStructure}
+                bind:value={values.structure}
                 label="Quelle est votre administration ?"
                 placeholder="Ex : DETS59, Préfecture" />
         {:else}
             <Input
                 id="structure"
                 type="text"
-                bind:value={values.decentralizedStructure}
+                bind:value={values.structure}
                 label="Quelle est votre administration ?"
                 placeholder="Ex : DETS59, Préfecture" />
         {/if}
