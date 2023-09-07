@@ -6,6 +6,7 @@ exports[`ActivateAccountController > constructor > should define form steps 1`] 
     "alert": [Function],
     "component": [Function],
     "name": "Définir un mot de passe",
+    "needsValidation": true,
   },
 ]
 `;

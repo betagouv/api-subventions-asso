@@ -60,18 +60,7 @@ export class ComboboxAutocomplete {
         this.listboxNode.addEventListener("pointerover", this.onListboxPointerover.bind(this));
         this.listboxNode.addEventListener("pointerout", this.onListboxPointerout.bind(this));
 
-        // Traverse the element children of domNode: configure each with
-        // option role behavior and store reference in.options array.
-        var nodes = this.listboxNode.getElementsByTagName("LI");
-
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            this.allOptions.push(node);
-
-            node.addEventListener("click", this.onOptionClick.bind(this));
-            node.addEventListener("pointerover", this.onOptionPointerover.bind(this));
-            node.addEventListener("pointerout", this.onOptionPointerout.bind(this));
-        }
+        this.initOptionsEvents();
 
         this.filterOptions();
 
@@ -545,5 +534,20 @@ export class ComboboxAutocomplete {
     onOptionPointerout() {
         this.hasHover = false;
         setTimeout(this.close.bind(this, false), 300);
+    }
+
+    initOptionsEvents() {
+        // Traverse the element children of domNode: configure each with
+        // option role behavior and store reference in.options array.
+        var nodes = this.listboxNode.getElementsByTagName("LI");
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            this.allOptions.push(node);
+
+            node.addEventListener("click", this.onOptionClick.bind(this));
+            node.addEventListener("pointerover", this.onOptionPointerover.bind(this));
+            node.addEventListener("pointerout", this.onOptionPointerout.bind(this));
+        }
     }
 }

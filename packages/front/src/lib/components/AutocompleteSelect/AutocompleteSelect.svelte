@@ -15,7 +15,7 @@
     import { nanoid } from "nanoid";
 
     import "./combobox.css";
-    import { onMount, afterUpdate } from "svelte";
+    import { onMount, afterUpdate, tick } from "svelte";
     import Store from "$lib/core/Store";
     import { ComboboxAutocomplete } from "$lib/components/AutocompleteSelect/combobox.js";
 
@@ -33,8 +33,10 @@
     const storeValue = new Store("");
     storeValue.subscribe(newV => (value = newV)); // cannot be in controller so that binding works
 
-    onMount(() => new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue));
-    afterUpdate(() => new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue));
+    let ctrl: ComboboxAutocomplete;
+
+    onMount(() => (ctrl = new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue)));
+    $: options, tick().then(() => ctrl.initOptionsEvents());
 </script>
 
 <div class="combobox combobox-list">
@@ -56,7 +58,7 @@
                 bind:this={inputElement} />
             <button
                 type="button"
-                aria-label="States"
+                aria-label={label}
                 aria-expanded="false"
                 aria-controls={listId}
                 tabindex="-1"
@@ -65,12 +67,14 @@
             </button>
         </div>
 
-        <ul id={listId} role="listbox" aria-label="States" bind:this={listElement}>
-            {#each options as option, i}
-                <li role="option" aria-selected="false" id="{id}-option-{i}" data-option-value={option.value}>
-                    {option.label}
-                </li>
-            {/each}
+        <ul id={listId} role="listbox" aria-label={label} bind:this={listElement}>
+            {#key options}
+                {#each options as option, i}
+                    <li role="option" aria-selected="false" id="{id}-option-{i}" data-option-value={option.value}>
+                        {option.label}
+                    </li>
+                {/each}
+            {/key}
         </ul>
     </div>
 </div>

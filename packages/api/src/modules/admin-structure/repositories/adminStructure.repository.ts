@@ -7,7 +7,7 @@ export class AdminStructureRepository {
     private readonly collection = db.collection<AdminStructureEntity>("admin-structures");
 
     private toEntity(document: WithId<AdminStructureEntity>) {
-        return new AdminStructureEntity(document.agentType, document.territoryScope, document.structure);
+        return new AdminStructureEntity(document.agentType, document.territorialLevel, document.structure);
     }
 
     async findAllByAgentType(agentType: AgentTypeEnum) {

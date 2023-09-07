@@ -14,7 +14,7 @@ export default class MultiStepFormController {
             nextStepPositionLabel: steps.length > 1 ? 2 : null,
         });
 
-        this.stepsValidation = new Store(this.steps.map(_step => false));
+        this.stepsValidation = new Store(this.steps.map(step => !step.needsValidation));
         this.isStepBlocked = derived(
             [this.stepsValidation, this.currentStep],
             ([validation, currentStep]) => !validation[currentStep.index],
