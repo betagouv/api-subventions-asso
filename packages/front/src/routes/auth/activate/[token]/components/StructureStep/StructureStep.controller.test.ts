@@ -1,3 +1,6 @@
+import { AgentTypeEnum } from "dto";
+import type { MockInstance } from "vitest";
+import { beforeEach } from "vitest";
 import StructureStepController from "./StructureStep.controller";
 import Dispatch from "$lib/core/Dispatch";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -141,6 +144,68 @@ describe("StructureStepController", () => {
 
             ctrl.onUpdate({}, "someField");
             expect(dispatchSpy).toHaveBeenCalledWith(expectedEvent);
+        });
+    });
+
+    describe("onUpdateContext", () => {
+        const CONTEXT = { agentType: AgentTypeEnum.OPERATOR };
+        const values = { field: "value" };
+        let cleanerSpy: MockInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error mock
+            cleanerSpy = vi.spyOn(ctrl, "cleanSubStepValues").mockImplementation(vi.fn());
+            // @ts-expect-error private
+            ctrl.currentAgentType = AgentTypeEnum.OPERATOR;
+        });
+
+        it("does nothing if no change of context agentType", () => {
+            // @ts-expect-error mock
+            const substepSetSpy = vi.spyOn(ctrl.subStep, "set").mockImplementation(vi.fn());
+            ctrl.onUpdateContext(CONTEXT, values);
+            expect(cleanerSpy).not.toHaveBeenCalled();
+            expect(substepSetSpy).not.toHaveBeenCalled();
+        });
+
+        it("updates currentAgentType", () => {
+            // @ts-expect-error private
+            ctrl.currentAgentType = AgentTypeEnum.CENTRAL_ADMIN;
+            const expected = AgentTypeEnum.OPERATOR;
+            ctrl.onUpdateContext(CONTEXT, values);
+            // @ts-expect-error private
+            const actual = ctrl.currentAgentType;
+            expect(actual).toBe(expected);
+        });
+
+        it("calls cleanSubStepValues", () => {
+            // @ts-expect-error private
+            ctrl.currentAgentType = AgentTypeEnum.CENTRAL_ADMIN;
+            ctrl.onUpdateContext(CONTEXT, values);
+            expect(cleanerSpy).toHaveBeenCalledWith(values, AgentTypeEnum.OPERATOR);
+        });
+    });
+
+    describe("cleanSubStepValues", () => {
+        let values: Record<string, any>;
+
+        beforeEach(() => {
+            values = {
+                operatorSomething: "something",
+                centralSomething: "something else",
+                structure: "old value",
+            };
+        });
+
+        it("structure is set to empty string", () => {
+            const expected = "";
+            ctrl.cleanSubStepValues(values, AgentTypeEnum.OPERATOR);
+            const actual = values.structure;
+            expect(actual).toBe(expected);
+        });
+
+        it("remove values from other substeps", () => {
+            ctrl.cleanSubStepValues(values, AgentTypeEnum.OPERATOR);
+            expect(values.centralSomething).toBeUndefined();
         });
     });
 });

@@ -11,7 +11,7 @@
     export let context = {};
 
     const ctrl = new StructureStepController();
-    $: ctrl.onUpdateContext(context);
+    $: ctrl.onUpdateContext(context, values);
 
     const { errors, subStep } = ctrl;
 </script>

@@ -9,13 +9,6 @@ import { goToUrl } from "$lib/services/router.service";
 import Store from "$lib/core/Store";
 
 export default class ActivateAccountController {
-    subFieldsPrefixByAgentType = {
-        [AgentTypeEnum.CENTRAL_ADMIN]: "central",
-        [AgentTypeEnum.OPERATOR]: "operator",
-        [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: "territorial",
-        [AgentTypeEnum.DECONCENTRATED_ADMIN]: "decentralized",
-    };
-
     constructor(token) {
         this.token = token;
         this.validationTokenStore = new Store("waiting");
@@ -29,24 +22,6 @@ export default class ActivateAccountController {
     }
 
     onSubmit(values) {
-        /*
-        TODO call here a service that
-        - resets password
-        - removes data from step 3 substeps that aren't the final one
-        - flattens data from step 3 substep
-        - updates user
-        */
-        const prefixes = [];
-        for (const [agentType, prefix] of Object.entries(this.subFieldsPrefixByAgentType)) {
-            if (agentType === values.agentType) continue;
-            prefixes.push(prefix);
-        }
-        const regex = new RegExp(`^(${prefixes.join("|")})`);
-
-        for (const key of Object.keys(values)) {
-            if (regex.test(key)) delete values[key];
-        }
-
         return authService.activate(this.token, values).then(() => {
             goToUrl("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });

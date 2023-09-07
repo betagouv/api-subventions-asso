@@ -29,11 +29,10 @@ describe("ActivateAccountController", () => {
     describe("onSubmit", () => {
         const USER = {
             agentType: AgentTypeEnum.OPERATOR,
-            operatorSomething: "something",
-            centralSomething: "something else",
+            something: "something",
         };
 
-        it("should call authService.activate() with cleaned up user", async () => {
+        it("should call authService.activate() with given values", async () => {
             controller = new ActivateAccountController(FAKE_TOKEN);
             await controller.onSubmit(USER);
             expect(authService.activate).toHaveBeenCalledWith(FAKE_TOKEN, USER);
