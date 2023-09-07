@@ -22,7 +22,6 @@
 
 <fieldset class="fr-fieldset">
     <div class="fr-fieldset__element">
-        <!-- TODO check margins in other substeps -->
         <Input
             id="service-input"
             type="text"
