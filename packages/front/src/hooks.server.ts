@@ -4,12 +4,13 @@ import type { Handle } from "@sveltejs/kit";
 import { ENV } from "$env/static/public";
 import { version } from "$app/environment";
 
-Sentry.init({
-    dsn: "https://5d47efb730804541a53e916f0bd27cea@sentry.incubateur.net/101",
-    tracesSampleRate: 1,
-    environment: ENV,
-    release: version,
-});
+if (ENV !== "dev")
+    Sentry.init({
+        dsn: "https://5d47efb730804541a53e916f0bd27cea@sentry.incubateur.net/101",
+        tracesSampleRate: 1,
+        environment: ENV,
+        release: version,
+    });
 
 export const handle = sequence(Sentry.sentryHandle(), (async ({ event, resolve }) => {
     event.setHeaders({
