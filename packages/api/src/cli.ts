@@ -20,6 +20,7 @@ import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDe
 import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
 import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dauphin.cli.controller";
 import AdminStructureCliController from "./modules/admin-structure/interfaces/cli/adminStructureCliController";
+import DumpCliController from "./modules/dump/interfaces/cli/DumpCliController";
 
 async function main() {
     await connectDB();
@@ -42,6 +43,7 @@ async function main() {
         GisproCliController,
         DauphinCliController,
         AdminStructureCliController,
+        DumpCliController,
     ];
 
     const args = process.argv.slice(2);

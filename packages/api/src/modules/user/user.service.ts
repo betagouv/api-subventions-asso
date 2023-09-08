@@ -166,6 +166,20 @@ export class UserService {
         return token;
     }
 
+    async findAnonymizedUsers(query: DefaultObject = {}) {
+        const users = await this.find(query);
+
+        return users.map(user => {
+            return {
+                ...user,
+                _id: user._id.toString(),
+                email: undefined,
+                firstName: undefined,
+                lastName: undefined
+            }
+        })
+    }
+
     find(query: DefaultObject = {}) {
         return userRepository.find(query);
     }
