@@ -13,6 +13,7 @@ export const handle = sequence(Sentry.sentryHandle(), (async ({ event, resolve }
         "X-Frame-Options": "SAMEORIGIN",
         "X-Content-Type-Options": "nosniff",
         "Cache-Control": "max-age 1800",
+        "Access-Control-Allow-Origin": "*",
     });
     return resolve(event);
 }) satisfies Handle);

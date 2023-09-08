@@ -7,7 +7,8 @@ export default defineConfig({
         sourceMapsUploadOptions: {
             org: "betagouv",
             project: "data-subvention-front",
-            url: "https://sentry.incubateur.net/"
+            url: "https://sentry.incubateur.net/",
+            authToken: process.env.SENTRY_AUTH_TOKEN,
         }
     }), sveltekit()],
     test: {
