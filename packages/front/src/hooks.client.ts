@@ -1,5 +1,7 @@
 import { handleErrorWithSentry, Replay } from "@sentry/sveltekit";
 import * as Sentry from "@sentry/sveltekit";
+import { ENV } from "$env/static/public";
+import { version } from "$app/environment";
 
 Sentry.init({
     dsn: "https://5d47efb730804541a53e916f0bd27cea@sentry.incubateur.net/101",
@@ -15,6 +17,8 @@ Sentry.init({
 
     // If you don't want to use Session Replay, just remove the line below:
     integrations: [new Replay()],
+    environment: ENV,
+    release: version,
 });
 
 // If you have a custom error handler, pass it to `handleErrorWithSentry`
