@@ -14,6 +14,7 @@
     import { page } from "$lib/store/kit.store";
     import { ENV } from "$env/static/public";
     import trackerService from "$lib/services/tracker.service";
+    import SkipLinks from "$lib/dsfr/SkipLinks.svelte";
 
     export let data;
 
@@ -42,6 +43,12 @@
 </svelte:head>
 
 <GenericModal />
+<SkipLinks
+    links={[
+        { anchor: "content", label: "Contenu" },
+        { anchor: "header-navigation", label: "Menu" },
+        { anchor: "footer", label: "Pied de page" },
+    ]} />
 <Auth>
     <div class:main-view={$page.data.withBlueBanner}>
         <Header />
