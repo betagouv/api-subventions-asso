@@ -75,7 +75,11 @@ describe("Validators", () => {
     });
 
     describe("isInObjectValues()", () => {
-        it("should return false if object is empty", () => {});
+        it("should return false if object is empty", () => {
+            const expected = false;
+            const actual = validators.isInObjectValues({}, "morgane");
+            expect(actual).toEqual(expected);
+        });
 
         it("should return false if not in object", () => {
             const expected = false;
