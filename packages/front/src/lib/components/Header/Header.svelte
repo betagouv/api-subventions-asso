@@ -14,7 +14,7 @@
     const controller = new HeaderController();
 </script>
 
-<header class="fr-header">
+<header class="fr-header" id="header-navigation">
     <div class="fr-header__body">
         <div class="fr-container">
             <div class="fr-header__body-row">
