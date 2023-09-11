@@ -8,6 +8,7 @@ import { page } from "$lib/store/kit.store";
 import localStorageService from "$lib/services/localStorage.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { isAdmin } from "$lib/services/user.service.js";
+import { clearSearchHistory } from "$lib/services/searchHistory.service.js";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
@@ -56,6 +57,7 @@ export class AuthService {
     logout(reload = true) {
         localStorageService.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
+        clearSearchHistory();
         if (reload) goToUrl("/auth/login", false, true);
     }
 
