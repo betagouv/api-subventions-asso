@@ -8,4 +8,8 @@ export const updateSearchHistory = ({ rna, siren, name, objectSocial }) => {
     localStorageService.setItem("search-history", history);
 };
 
+export function clearSearchHistory() {
+    localStorageService.setItem("search-history", []);
+}
+
 export const getSearchHistory = () => localStorageService.getItem("search-history", []);
