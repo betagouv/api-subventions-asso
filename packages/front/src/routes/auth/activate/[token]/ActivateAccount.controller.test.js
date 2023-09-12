@@ -30,12 +30,14 @@ describe("ActivateAccountController", () => {
         const USER = {
             agentType: AgentTypeEnum.OPERATOR,
             something: "something",
+            confirmPwd: "duplicate password",
         };
 
-        it("should call authService.activate() with given values", async () => {
+        it("should call authService.activate() with given values but with confirmPwd removed", async () => {
+            const { confirmPwd: _confirmPwd, ...userWithoutConfirmPwd } = USER;
             controller = new ActivateAccountController(FAKE_TOKEN);
             await controller.onSubmit(USER);
-            expect(authService.activate).toHaveBeenCalledWith(FAKE_TOKEN, USER);
+            expect(authService.activate).toHaveBeenCalledWith(FAKE_TOKEN, userWithoutConfirmPwd);
         });
 
         it("should redirect to successful login", async () => {

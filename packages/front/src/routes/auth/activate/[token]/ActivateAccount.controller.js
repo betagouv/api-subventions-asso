@@ -32,7 +32,8 @@ export default class ActivateAccountController {
     }
 
     onSubmit(values) {
-        return authService.activate(this.token, values).then(() => {
+        const { confirmPwd: _confirmPwd, ...noConfirmValues } = values;
+        return authService.activate(this.token, noConfirmValues).then(() => {
             goToUrl("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });
     }
