@@ -334,7 +334,7 @@ describe("User Service", () => {
 
     describe("sanitizeActivationUserInfo()", () => {
         it("should call sanitizeToPlainText()", () => {
-            const expected = Object.keys(USER_ACTIVATION_INFO).length;
+            const expected = 4;
             userService.sanitizeActivationUserInfo(USER_ACTIVATION_INFO);
             expect(sanitizeToPlainText).toHaveBeenCalledTimes(expected);
         });

@@ -323,13 +323,13 @@ export class UserService {
         return user;
     }
 
-    sanitizeActivationUserInfo(userInfo) {
-        return Object.keys(userInfo).reduce((acc, key) => {
-            const prop = userInfo[key];
-            if (key === "jobType") acc[key] = prop.map(type => sanitizeToPlainText(type?.toString()));
-            else acc[key] = sanitizeToPlainText(prop?.toString()) || null;
-            return acc;
-        }, {}) as UserActivationInfoDto;
+    sanitizeActivationUserInfo(unsafeUserInfo) {
+        const filedToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
+        const sanitizedUserInfo = { ...unsafeUserInfo };
+        filedToSanitize.forEach(field => {
+            sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
+        });
+        return sanitizedUserInfo;
     }
 
     public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
