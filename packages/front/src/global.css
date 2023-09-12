@@ -64,3 +64,8 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
 html {
     scroll-behavior: smooth;
 }
+
+.bordered-frame {
+    padding: 2.5rem;
+    border: 1px solid var(--border-default-grey);
+}
