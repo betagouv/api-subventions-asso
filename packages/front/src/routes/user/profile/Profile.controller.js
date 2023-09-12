@@ -18,7 +18,7 @@ export class ProfileController {
     deleteUser() {
         try {
             this.error.set(false);
-            userService.deleteCurrentUser();
+            return userService.deleteCurrentUser();
         } catch (e) {
             this.error.set(true);
         }
