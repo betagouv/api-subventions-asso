@@ -63,10 +63,10 @@ export class AuthentificationController extends Controller {
     }
 
     @Post("/activate")
-    @SuccessResponse("201", "Account activation sucessfully")
+    @SuccessResponse("200", "Account activation successfully")
     public async activate(@Body() body: { token: string; data: UserActivationInfoDto }): Promise<ActivateDtoResponse> {
         const user = await userService.activate(body.token, body.data);
-        this.setStatus(201);
+        this.setStatus(200);
         return { user };
     }
 

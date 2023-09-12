@@ -213,7 +213,7 @@ describe("AuthentificationController, /auth", () => {
                     },
                 })
                 .set("Accept", "application/json")
-                .expect(201)
+                .expect(200)
                 .expect(res =>
                     expect(res.body.user).toMatchSnapshot({
                         signupAt: expect.any(String),
