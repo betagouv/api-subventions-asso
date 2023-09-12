@@ -209,7 +209,6 @@ describe("AuthentificationController, /auth", () => {
                         password: DEFAULT_PASSWORD,
                         agentType: AgentTypeEnum.CENTRAL_ADMIN,
                         jobType: [],
-                        structure: "",
                     },
                 })
                 .set("Accept", "application/json")

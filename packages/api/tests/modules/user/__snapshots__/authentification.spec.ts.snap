@@ -5,16 +5,19 @@ Object {
   "_id": Any<String>,
   "active": false,
   "agentType": "CENTRAL_ADMIN",
+  "decentralizedTerritory": "",
   "email": "user@beta.gouv.fr",
   "firstName": null,
   "jobType": Array [],
   "lastName": null,
   "password": Any<String>,
+  "phoneNumber": "",
   "profileToComplete": true,
   "roles": Array [
     "user",
   ],
+  "service": "",
   "signupAt": Any<String>,
-  "structure": null,
+  "structure": "",
 }
 `;

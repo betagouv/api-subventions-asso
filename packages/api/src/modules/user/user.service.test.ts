@@ -279,6 +279,19 @@ describe("User Service", () => {
                     expect(e).toMatchSnapshot();
                 }
             });
+
+            it.each`
+                jobType
+                ${[]}
+                ${[AgentJobTypeEnum.ADMINISTRATOR]}
+                ${[AgentJobTypeEnum.ADMINISTRATOR, AgentJobTypeEnum.OTHER]}
+            `("should throw an error", ({ jobType }) => {
+                // @ts-expect-error: private method
+                userService.validateUserActivationInfo({
+                    agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                    jobType,
+                });
+            });
         });
 
         describe("structure", () => {

@@ -251,7 +251,6 @@ export class UserService {
     }
 
     public async updatePassword(user: UserDto, password: string): Promise<{ user: UserDto }> {
-        console.log(this.passwordValidator(password));
         if (!this.passwordValidator(password)) {
             throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
@@ -387,7 +386,7 @@ export class UserService {
                 value: jobType,
                 method: jobType => {
                     if (jobType.length === 0) return true;
-                    jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
+                    return !!jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
                     Les valeurs possibles sont ${joinEnum(AgentJobTypeEnum)}
