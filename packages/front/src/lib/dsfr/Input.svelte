@@ -5,6 +5,7 @@
     export let value;
     export let id = nanoid(7);
     export let required = false;
+    export let disabled = false;
     export let type = "text";
     export let name = `input-${id}`;
     export let autocomplete = "false";
@@ -48,6 +49,7 @@
         {placeholder}
         bind:value
         required={required ? "required" : undefined}
+        disabled={disabled ? "disabled" : undefined}
         use:typeAction
         aria-invalid={errorMsg ? "true" : undefined}
         aria-errormessage={errorMsg ? descErrorElement : undefined}
