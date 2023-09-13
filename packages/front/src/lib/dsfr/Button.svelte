@@ -3,7 +3,7 @@
     import { getIconClass } from "./helper";
     import trackerService from "$lib/services/tracker.service";
 
-    export let trakerName;
+    export let trackerName;
     export let trackingDisable = false;
     export let type = "primary";
     export let size = "medium";
@@ -16,7 +16,7 @@
     export let ariaControls = "";
     export let htmlType = "";
 
-    if (!trakerName && !trackingDisable) console.error("Please add tracker name on button");
+    if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
 
     const dispatch = createEventDispatcher();
 
@@ -56,7 +56,7 @@
      ${getSpecificIconClass()} ${styleClass}`;
 
     function track() {
-        if (!trackingDisable) trackerService.buttonClickEvent(trakerName, title);
+        if (!trackingDisable) trackerService.buttonClickEvent(trackerName, title);
     }
 
     function onClick() {

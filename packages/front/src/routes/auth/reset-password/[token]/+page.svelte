@@ -47,7 +47,7 @@
                             title="Valider"
                             htmlType="submit"
                             disabled={!$isSubmitActive}
-                            trakerName="reset-password.form.submit">
+                            trackerName="reset-password.form.submit">
                             Valider
                         </Button>
                     </div>

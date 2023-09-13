@@ -87,7 +87,7 @@
                                         on:click={controller.logout}
                                         type="tertiary"
                                         outline={false}
-                                        trakerName="header.logout">
+                                        trackerName="header.logout">
                                         Se déconnecter
                                     </Button>
                                 </li>
@@ -96,7 +96,7 @@
                                         on:click={controller.goToProfile}
                                         type="tertiary"
                                         icon="user-fill"
-                                        trakerName="header.profil">
+                                        trackerName="header.profil">
                                         Profil
                                     </Button>
                                 </li>

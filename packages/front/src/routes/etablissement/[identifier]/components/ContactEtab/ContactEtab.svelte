@@ -21,7 +21,7 @@
         <Button
             on:click={() => controller.download()}
             type="secondary"
-            trakerName="etablissements.contacts.download-csv">
+            trackerName="etablissements.contacts.download-csv">
             Télécharger au format CSV
         </Button>
     </svelte:fragment>

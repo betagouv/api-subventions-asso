@@ -15,7 +15,7 @@
                             ariaControls="fr-modal"
                             type="tertiary"
                             outline={false}
-                            trakerName="modals.close"
+                            trackerName="modals.close"
                             title="Fermer la fenêtre modale">
                             Fermer
                         </Button>
