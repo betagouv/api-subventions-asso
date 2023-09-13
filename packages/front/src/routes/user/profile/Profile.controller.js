@@ -3,7 +3,7 @@ import userService from "$lib/resources/users/user.service";
 
 export class ProfileController {
     constructor() {
-        this.error = new Store(false);
+        this.deleteError = new Store(false);
         this.user = new Store({});
     }
 
@@ -17,10 +17,10 @@ export class ProfileController {
 
     deleteUser() {
         try {
-            this.error.set(false);
+            this.deleteError.set(false);
             return userService.deleteCurrentUser();
         } catch (e) {
-            this.error.set(true);
+            this.deleteError.set(true);
         }
     }
 }

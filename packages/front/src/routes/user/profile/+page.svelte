@@ -6,7 +6,7 @@
     import Input from "$lib/dsfr/Input.svelte";
 
     const controller = new ProfileController();
-    const { error, user } = controller;
+    const { deleteError, user } = controller;
 
     controller.init();
 </script>
@@ -55,7 +55,7 @@
             </div>
 
             <div class="fr-grid-row fr-mt-6w">
-                {#if $error}
+                {#if $deleteError}
                     <Alert title="La suppression a échouée, veuillez réessayer plus tard ou nous contacter." />
                 {/if}
                 <DeleteUser on:delete-user={() => controller.deleteUser()} />
