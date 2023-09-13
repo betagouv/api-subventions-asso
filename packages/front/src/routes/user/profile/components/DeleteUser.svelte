@@ -23,7 +23,7 @@
         on:click={openConfirmationModal}
         type="tertiary"
         ariaControls="fr-modal"
-        trackerName="profile.delete-user.remove-acount">
+        trackerName="profile.delete-user.remove-account">
         Supprimer mon compte
     </Button>
 </div>
