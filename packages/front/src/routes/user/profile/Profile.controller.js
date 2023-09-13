@@ -8,6 +8,10 @@ export class ProfileController {
         this.saveStatus = new Store(""); // "changed", "saved" or "error"
     }
 
+    onMount(saveAlertElement) {
+        this.saveAlertElement = saveAlertElement;
+    }
+
     genOnChange() {
         let firstDone = false;
         return () => {
@@ -28,6 +32,7 @@ export class ProfileController {
         } catch (_e) {
             this.saveStatus.set("error");
         }
+        if (this.saveAlertElement) this.saveAlertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
 
     deleteUser() {
