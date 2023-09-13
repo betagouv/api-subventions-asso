@@ -352,8 +352,13 @@ export class UserService {
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = this.sanitizeActivationUserInfo(userInfo);
-        safeUserInfo.password = await this.getHashPassword(safeUserInfo.password);
-        return await userRepository.update({ ...user, ...safeUserInfo });
+        safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
+        delete safeUserInfo.password;
+        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
+        console.log(updatedUser);
+        // @ts-expect-error: TODO prob with DTO
+        delete updatedUser.hashPassword;
+        return updatedUser;
     }
 
     private validateUserActivationInfo(userInfo): { valid: false; error: Error } | { valid: true } {
@@ -553,6 +558,8 @@ export class UserService {
             profileToComplete: false,
         });
 
+        // @ts-expect-error: TODO prob with DTO
+        delete userUpdated.hashPassword;
         return userUpdated;
     }
 

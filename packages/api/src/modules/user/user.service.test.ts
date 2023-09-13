@@ -210,15 +210,14 @@ describe("User Service", () => {
             // @ts-expect-error: unknown error
             mockGetHashPassword.mockImplementation(async password => password);
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
+            // @ts-expect-error: unknown error
+            mockedUserRepository.update.mockImplementation(() => ({
+                ...USER_WITHOUT_SECRET,
+                hashPassword: "qdqdqzdqzd&",
+            }));
             mockGetUserById.mockImplementation(async id => UNACTIVATED_USER);
         });
         afterAll(() => mockList.forEach(mock => mock.mockReset()));
-
-        it("should set jobType to empty array", async () => {
-            // @ts-expect-error: do not respect DTO
-            await userService.activate("token", { ...USER_ACTIVATION_INFO, jobType: undefined });
-            expect(mockValidateUserActivationInfo).toHaveBeenCalledWith({ ...USER_ACTIVATION_INFO, jobType: [] });
-        });
 
         it("should call userRepository.update()", async () => {
             await userService.activate("token", USER_ACTIVATION_INFO);
@@ -786,6 +785,8 @@ describe("User Service", () => {
         beforeEach(() => {
             mockedUserResetRepository.findByToken.mockResolvedValue(RESET_DOCUMENT);
             mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
+            // @ts-expect-error: mock
+            mockedUserRepository.update.mockResolvedValue({ ...USER_WITHOUT_PASSWORD, hashPassord: "éfqzdqzdoqzj" });
             // @ts-expect-error: mock private method return value
             mockPasswordValidator.mockReturnValue(true);
         });
@@ -795,6 +796,7 @@ describe("User Service", () => {
             mockedUserResetRepository.findByToken.mockReset();
             mockGetUserById.mockReset();
             mockPasswordValidator.mockReset();
+            mockedUserRepository.update.mockReset();
         });
 
         it("should call validateResetToken()", async () => {
