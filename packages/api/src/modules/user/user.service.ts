@@ -530,7 +530,6 @@ export class UserService {
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        // TODO: validate reset token
         const tokenValidation = this.validateResetToken(reset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
