@@ -355,7 +355,7 @@ export class UserService {
         safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
-        // @ts-expect-error: TODO prob with DTO
+        // @ts-expect-error: TODO workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
         delete updatedUser.hashPassword;
         return updatedUser;
     }
@@ -556,7 +556,7 @@ export class UserService {
             profileToComplete: false,
         });
 
-        // @ts-expect-error: TODO prob with DTO
+        //@ts-expect-error: workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
         delete userUpdated.hashPassword;
         return userUpdated;
     }
