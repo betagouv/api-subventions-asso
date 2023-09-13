@@ -325,9 +325,9 @@ export class UserService {
     }
 
     sanitizeActivationUserInfo(unsafeUserInfo) {
-        const filedToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
+        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
         const sanitizedUserInfo = { ...unsafeUserInfo };
-        filedToSanitize.forEach(field => {
+        fieldsToSanitize.forEach(field => {
             sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
         });
         return sanitizedUserInfo;
