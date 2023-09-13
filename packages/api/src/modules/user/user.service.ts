@@ -31,6 +31,8 @@ import {
     InternalServerError,
     NotFoundError,
     UnauthorizedError,
+    UserNotFoundError,
+    ResetTokenNotFoundError,
 } from "../../shared/errors/httpErrors";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
@@ -272,7 +274,7 @@ export class UserService {
     }
 
     public async delete(userId: string): Promise<boolean> {
-        const user = await userRepository.findById(userId);
+        const user = await this.getUserById(userId);
 
         if (!user) return false;
 
@@ -331,15 +333,18 @@ export class UserService {
         return sanitizedUserInfo;
     }
 
+    public getUserById(userId) {
+        return userRepository.findById(userId);
+    }
+
     public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
         const userReset = await userResetRepository.findByToken(resetToken);
 
         const tokenValidation = this.validateResetToken(userReset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
-        const user = await userRepository.findById((userReset as UserReset).userId);
-
-        if (!user) throw new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND);
+        const user = await this.getUserById((userReset as UserReset).userId);
+        if (!user) throw new UserNotFoundError();
 
         if (!userInfo.jobType) userInfo.jobType = [];
 
@@ -349,19 +354,6 @@ export class UserService {
         const safeUserInfo = this.sanitizeActivationUserInfo(userInfo);
         safeUserInfo.password = await this.getHashPassword(safeUserInfo.password);
         return await userRepository.update({ ...user, ...safeUserInfo });
-    }
-
-    private validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
-        let error: Error | null = null;
-        if (!userReset)
-            error = new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
-        else if (this.isExpiredReset(userReset as UserReset))
-            error = new BadRequestError(
-                "Reset token has expired, please retry forget password",
-                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-            );
-
-        return error ? { valid: false, error } : { valid: true };
     }
 
     private validateUserActivationInfo(userInfo): { valid: false; error: Error } | { valid: true } {
@@ -386,7 +378,7 @@ export class UserService {
                 value: jobType,
                 method: jobType => {
                     if (jobType.length === 0) return true;
-                    return !!jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
+                    return !jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
                     Les valeurs possibles sont ${joinEnum(AgentJobTypeEnum)}
@@ -433,7 +425,7 @@ export class UserService {
     }
 
     public async disable(userId: string) {
-        const user = await userRepository.findById(userId);
+        const user = await this.getUserById(userId);
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
@@ -505,17 +497,29 @@ export class UserService {
         return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
     }
 
-    async validateToken(resetToken: string): Promise<TokenValidationDtoResponse> {
+    private validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
+        let error: Error | null = null;
+        if (!userReset) error = new ResetTokenNotFoundError();
+        else if (this.isExpiredReset(userReset as UserReset))
+            error = new BadRequestError(
+                "Reset token has expired, please retry forget password",
+                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
+            );
+
+        return error ? { valid: false, error } : { valid: true };
+    }
+
+    async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
         const reset = await userResetRepository.findByToken(resetToken);
+        const tokenValidation = this.validateResetToken(reset);
+        console.log(tokenValidation);
+        if (!tokenValidation.valid) return tokenValidation;
 
-        if (!reset || this.isExpiredReset(reset)) return { valid: false };
-
-        const user = await userRepository.findById(reset.userId);
-
+        const user = await this.getUserById((reset as UserReset).userId);
         if (!user) return { valid: false };
 
         return {
-            valid: true,
+            ...tokenValidation,
             type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
         };
     }
@@ -523,17 +527,12 @@ export class UserService {
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        if (!reset) throw new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
+        // TODO: validate reset token
+        const tokenValidation = this.validateResetToken(reset);
+        if (!tokenValidation.valid) throw tokenValidation.error;
 
-        if (this.isExpiredReset(reset))
-            throw new BadRequestError(
-                "Reset token has expired, please retry forget password",
-                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-            );
-
-        const user = await userRepository.findById(reset.userId);
-
-        if (!user) throw new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND);
+        const user = await this.getUserById((reset as UserReset).userId);
+        if (!user) throw new UserNotFoundError();
 
         if (!this.passwordValidator(password))
             throw new BadRequestError(
@@ -543,7 +542,7 @@ export class UserService {
 
         const hashPassword = await this.getHashPassword(password);
 
-        await userResetRepository.remove(reset);
+        await userResetRepository.remove(reset as UserReset);
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
@@ -693,7 +692,7 @@ export class UserService {
     }
 
     public async getAllData(userId: string): Promise<UserDataDto> {
-        const user = await userRepository.findById(userId);
+        const user = await this.getUserById(userId);
 
         if (!user) throw new NotFoundError("User is not found");
 

@@ -128,6 +128,7 @@ describe("User Service", () => {
     );
     // @ts-expect-error: mock private method
     const mockValidateEmail = jest.spyOn(userService, "validateEmail");
+    const mockGetUserById = jest.spyOn(userService, "getUserById");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
 
@@ -196,6 +197,7 @@ describe("User Service", () => {
             mockSanitizeActivationUserInfo,
             mockGetHashPassword,
             mockedUserResetRepository.findByToken,
+            mockValidateResetToken,
         ];
         beforeAll(() => {
             // @ts-expect-error: mock
@@ -208,9 +210,9 @@ describe("User Service", () => {
             // @ts-expect-error: unknown error
             mockGetHashPassword.mockImplementation(async password => password);
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
-            mockedUserRepository.findById.mockImplementation(async id => UNACTIVATED_USER);
+            mockGetUserById.mockImplementation(async id => UNACTIVATED_USER);
         });
-        afterAll(() => mockList.forEach(mock => mock.mockRestore()));
+        afterAll(() => mockList.forEach(mock => mock.mockReset()));
 
         it("should set jobType to empty array", async () => {
             // @ts-expect-error: do not respect DTO
@@ -231,6 +233,10 @@ describe("User Service", () => {
     });
 
     describe("validateUserActivationInfo()", () => {
+        beforeAll(() => mockValidateUserActivationInfo.mockRestore());
+        // @ts-expect-error: mock
+        afterAll(() => mockValidateUserActivationInfo.mockImplementation(() => ({ valid: true })));
+
         describe("password", () => {
             // @ts-expect-error: mock private method
             beforeAll(() => mockPasswordValidator.mockImplementationOnce(() => false));
@@ -313,7 +319,7 @@ describe("User Service", () => {
             });
         });
 
-        describe("structure", () => {
+        describe("territorialScope", () => {
             const mockList = [mockPasswordValidator];
             // @ts-expect-error: mock private method
             beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
@@ -331,21 +337,23 @@ describe("User Service", () => {
                     expect(e).toMatchSnapshot();
                 }
             });
-        });
-
-        it("should return true", () => {
-            const expected = { valid: true };
-            // @ts-expect-error: private method
-            const actual = userService.validateUserActivationInfo({
-                agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
-                jobType: [AgentJobTypeEnum.EXPERT],
-                structure: "STRUCTURE",
-                territorialScope: TerritorialScopeEnum.COMMUNAL,
+            it("should return true", () => {
+                const expected = { valid: true };
+                // @ts-expect-error: private method
+                const actual = userService.validateUserActivationInfo({
+                    agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+                    jobType: [AgentJobTypeEnum.EXPERT],
+                    structure: "STRUCTURE",
+                    territorialScope: TerritorialScopeEnum.COMMUNAL,
+                });
+                console.log(actual);
+                expect(actual).toEqual(expected);
             });
         });
     });
 
     describe("sanitizeActivationUserInfo()", () => {
+        beforeAll(() => mockSanitizeActivationUserInfo.mockRestore());
         it("should call sanitizeToPlainText()", () => {
             const expected = 4;
             userService.sanitizeActivationUserInfo(USER_ACTIVATION_INFO);
@@ -466,14 +474,14 @@ describe("User Service", () => {
 
     describe("delete", () => {
         beforeAll(() => {
-            mockedUserRepository.findById.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
             mockedUserRepository.delete.mockResolvedValue(true);
             mocked(mockedUserResetRepository.removeAllByUserId).mockResolvedValue(true);
             mocked(consumerTokenRepository.deleteAllByUserId).mockResolvedValue(true);
         });
 
         afterAll(() => {
-            mockedUserRepository.findById.mockReset();
+            mockGetUserById.mockReset();
             mockedUserRepository.delete.mockReset();
             mocked(mockedUserResetRepository.removeAllByUserId).mockReset();
             mocked(consumerTokenRepository.deleteAllByUserId).mockReset();
@@ -481,11 +489,11 @@ describe("User Service", () => {
 
         it("gets user", async () => {
             await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedUserRepository.findById).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id.toString());
+            expect(mockGetUserById).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
         it("returns false if no user without calling other repos", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(null);
+            mockGetUserById.mockResolvedValueOnce(null);
             const expected = false;
             const actual = await userService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
@@ -719,20 +727,20 @@ describe("User Service", () => {
     describe("disable", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
 
-        beforeEach(() => mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
+        beforeEach(() => mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
 
         afterEach(() => {
-            mockedUserRepository.findById.mockReset();
+            mockGetUserById.mockReset();
             mockedUserRepository.update.mockReset();
         });
 
         it("should fetch user from db", async () => {
             await userService.disable(USER_ID);
-            expect(mockedUserRepository.findById).toHaveBeenCalledWith(USER_ID);
+            expect(mockGetUserById).toHaveBeenCalledWith(USER_ID);
         });
 
         it("should return false if user fetch failed", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(null);
+            mockGetUserById.mockResolvedValueOnce(null);
             const expected = false;
             const actual = await userService.disable(USER_ID);
             expect(actual).toEqual(expected);
@@ -768,12 +776,16 @@ describe("User Service", () => {
             createdAt: new Date(),
         };
 
-        // @ts-expect-error: mock
-        beforeAll(() => jest.mocked(bcrypt.hash).mockResolvedValue(PASSWORD));
+        beforeAll(() => {
+            // @ts-expect-error: mock
+            jest.mocked(bcrypt.hash).mockResolvedValue(PASSWORD);
+            // @ts-expect-error: mock
+            mockValidateResetToken.mockImplementation(() => ({ valid: true }));
+        });
 
         beforeEach(() => {
             mockedUserResetRepository.findByToken.mockResolvedValue(RESET_DOCUMENT);
-            mockedUserRepository.findById.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
             // @ts-expect-error: mock private method return value
             mockPasswordValidator.mockReturnValue(true);
         });
@@ -781,31 +793,17 @@ describe("User Service", () => {
         afterAll(() => {
             jest.mocked(bcrypt.hash).mockReset();
             mockedUserResetRepository.findByToken.mockReset();
-            mockedUserRepository.findById.mockReset();
+            mockGetUserById.mockReset();
             mockPasswordValidator.mockReset();
         });
 
-        it("should reject because resetToken not found", async () => {
-            mockedUserResetRepository.findByToken.mockResolvedValueOnce(null);
-            expect(userService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
-                new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND),
-            );
-        });
-
-        it("should reject because resetToken has expired", async () => {
-            const originalTimeout = UserService.RESET_TIMEOUT;
-            UserService.RESET_TIMEOUT = -1;
-            await expect(userService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
-                new BadRequestError(
-                    "Reset token has expired, please retry forget password",
-                    ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-                ),
-            );
-            UserService.RESET_TIMEOUT = originalTimeout;
+        it("should call validateResetToken()", async () => {
+            await userService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockValidateResetToken).toHaveBeenCalledTimes(1);
         });
 
         it("should reject because user not found", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(null);
+            mockGetUserById.mockResolvedValueOnce(null);
             expect(userService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
                 new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND),
             );
@@ -835,6 +833,8 @@ describe("User Service", () => {
         });
 
         it("should update user", async () => {
+            //@ts-expect-error: mock
+            mockGetHashPassword.mockResolvedValueOnce(PASSWORD);
             await userService.resetPassword(PASSWORD, RESET_TOKEN);
             expect(mockedUserRepository.update).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,
@@ -1024,7 +1024,7 @@ describe("User Service", () => {
         });
 
         it("should getting user", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
@@ -1032,18 +1032,18 @@ describe("User Service", () => {
 
             await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
-            expect(mockedUserRepository.findById).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            expect(mockGetUserById).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
         it("should throw error when user is not found", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(null);
+            mockGetUserById.mockResolvedValueOnce(null);
             const method = () => userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
             expect(method).rejects.toThrowError(NotFoundError);
         });
 
         it("should getting user resets", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
@@ -1055,7 +1055,7 @@ describe("User Service", () => {
         });
 
         it("should getting user consumer tokens", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
@@ -1070,7 +1070,7 @@ describe("User Service", () => {
             const USER_ID = new ObjectId();
             const _ID = new ObjectId();
 
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([
                 // @ts-expect-error: mock return value
                 {
@@ -1097,7 +1097,7 @@ describe("User Service", () => {
         });
 
         it("should getting user visits stats", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
@@ -1110,7 +1110,7 @@ describe("User Service", () => {
 
         it("should getting return visits stats", async () => {
             const expected = { userId: new ObjectId().toString() };
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([{ userId: new ObjectId(expected.userId) }]);
@@ -1122,7 +1122,7 @@ describe("User Service", () => {
         });
 
         it("should getting user logs", async () => {
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
@@ -1135,7 +1135,7 @@ describe("User Service", () => {
 
         it("should getting return logs", async () => {
             const expected = { userId: new ObjectId() };
-            mockedUserRepository.findById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValueOnce([]);
             findConsumerTokenSpy.mockResolvedValueOnce([]);
             getAllStatsVisitsByUserSpy.mockResolvedValueOnce([]);
@@ -1171,12 +1171,10 @@ describe("User Service", () => {
         });
     });
 
-    describe("validateToken", () => {
-        let findByToken: jest.SpyInstance;
-        let findUser: jest.SpyInstance;
-
+    describe("validateTokenAndGetType", () => {
         const FAKE_TOKEN = "FAKE";
         const validUserReset = {
+            // userId: "1FR13J414N",
             createdAt: new Date(),
         } as unknown as WithId<UserReset>;
         const user = {
@@ -1184,62 +1182,61 @@ describe("User Service", () => {
         } as unknown as UserDto;
 
         beforeAll(() => {
-            findByToken = jest.spyOn(userResetRepository, "findByToken").mockResolvedValue(validUserReset);
-            findUser = jest.spyOn(userRepository, "findById").mockResolvedValue(user);
+            mockedUserResetRepository.findByToken.mockResolvedValue(validUserReset);
+            // @ts-expect-error: mock
+            mockValidateResetToken.mockImplementation(() => ({ valid: true }));
+            mockGetUserById.mockResolvedValue(user);
         });
 
         afterAll(() => {
-            findByToken.mockRestore();
-            findUser.mockRestore();
+            mockedUserResetRepository.findByToken.mockReset();
+            mockValidateResetToken.mockReset();
+            mockGetUserById.mockReset();
         });
 
         it("should call find by token", async () => {
-            await userService.validateToken(FAKE_TOKEN);
+            await userService.validateTokenAndGetType(FAKE_TOKEN);
 
-            expect(findByToken).toBeCalledWith(FAKE_TOKEN);
+            expect(mockedUserResetRepository.findByToken).toBeCalledWith(FAKE_TOKEN);
         });
 
         it("should return true", async () => {
-            const actual = await userService.validateToken(FAKE_TOKEN);
-
+            const actual = await userService.validateTokenAndGetType(FAKE_TOKEN);
             expect(actual.valid).toBeTruthy();
         });
 
-        it("should return false (token not exist)", async () => {
-            findByToken.mockResolvedValueOnce(null);
-            const actual = await userService.validateToken(FAKE_TOKEN);
+        it("should call validateResetToken", async () => {
+            await userService.validateTokenAndGetType(FAKE_TOKEN);
 
-            expect(actual.valid).toBeFalsy();
-        });
-
-        it("should return false (token expired)", async () => {
-            findByToken.mockResolvedValueOnce({
-                createdAt: new Date(2000),
-            });
-            const actual = await userService.validateToken(FAKE_TOKEN);
-
-            expect(actual.valid).toBeFalsy();
+            expect(mockValidateResetToken).toHaveBeenCalledWith(validUserReset);
         });
 
         it("should return type is SIGNUP", async () => {
-            findByToken.mockResolvedValueOnce({
+            //@ts-expect-error: mock
+            mockedUserResetRepository.findByToken.mockResolvedValueOnce({
                 createdAt: new Date(),
             });
-            const actual = (await userService.validateToken(FAKE_TOKEN)) as TokenValidationDtoPositiveResponse;
+            const actual = (await userService.validateTokenAndGetType(
+                FAKE_TOKEN,
+            )) as TokenValidationDtoPositiveResponse;
 
             expect(actual.type).toBe(TokenValidationType.SIGNUP);
         });
 
         it("should return type is FORGET_PASSWORD", async () => {
-            findByToken.mockResolvedValueOnce({
+            // @ts-expect-error: mock
+            mockedUserResetRepository.findByToken.mockResolvedValueOnce({
                 createdAt: new Date(),
             });
 
-            findUser.mockResolvedValueOnce({
+            // @ts-expect-error: mock
+            mockGetUserById.mockResolvedValueOnce({
                 profileToComplete: false,
             });
 
-            const actual = (await userService.validateToken(FAKE_TOKEN)) as TokenValidationDtoPositiveResponse;
+            const actual = (await userService.validateTokenAndGetType(
+                FAKE_TOKEN,
+            )) as TokenValidationDtoPositiveResponse;
 
             expect(actual.type).toBe(TokenValidationType.FORGET_PASSWORD);
         });

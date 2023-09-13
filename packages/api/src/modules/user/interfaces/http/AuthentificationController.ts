@@ -81,6 +81,6 @@ export class AuthentificationController extends Controller {
     public async validateToken(@Body() body: { token?: string }): Promise<TokenValidationDtoResponse> {
         if (!body.token) throw new BadRequestError();
 
-        return userService.validateToken(body.token);
+        return userService.validateTokenAndGetType(body.token);
     }
 }
