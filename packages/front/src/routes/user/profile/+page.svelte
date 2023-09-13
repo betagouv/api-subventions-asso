@@ -6,7 +6,7 @@
     import Input from "$lib/dsfr/Input.svelte";
 
     const controller = new ProfileController();
-    const { deleteError, user } = controller;
+    const { deleteError, user, saveStatus } = controller;
 
     controller.init();
 </script>
@@ -17,6 +17,20 @@
             <h1 class="fr-h2">Bienvenue sur votre compte</h1>
             <div class="fr-grid-row">
                 <form on:submit|preventDefault={() => controller.onSubmit()} class="bordered-frame">
+                    <div>
+                        {#if $saveStatus === "changed"}
+                            <Alert type="warning" small={true}>
+                                Des champs ont été modifiés, n’oubliez pas d’enregistrer les modifications avant de
+                                quitter cette page.
+                            </Alert>
+                        {:else if $saveStatus === "saved"}
+                            <Alert type="success" small={true}>Vos modifications ont bien été enregistrées.</Alert>
+                        {:else if $saveStatus === "error"}
+                            <Alert type="error" small={true}>
+                                Une erreur est survenue lors de l'enregistrement de vos données.
+                            </Alert>
+                        {/if}
+                    </div>
                     <fieldset class="fr-fieldset">
                         <legend class="fr-fieldset__legend">
                             <h2 class="fr-h5">Vos informations de profil</h2>

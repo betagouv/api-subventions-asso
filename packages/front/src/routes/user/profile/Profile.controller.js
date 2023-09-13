@@ -5,14 +5,29 @@ export class ProfileController {
     constructor() {
         this.deleteError = new Store(false);
         this.user = new Store({});
+        this.saveStatus = new Store(""); // "changed", "saved" or "error"
+    }
+
+    genOnChange() {
+        let firstDone = false;
+        return () => {
+            if (!firstDone) return (firstDone = true);
+            this.saveStatus.set("changed");
+        };
     }
 
     init() {
         this.user.set({ firstname: "Lucile", lastname: "DUPOND", email: "name@mail.gouv.fr" }); // TODO get infos about user
+        this.user.subscribe(this.genOnChange());
     }
 
     onSubmit() {
-        // TODO call to update
+        try {
+            // TODO call to update
+            this.saveStatus.set("saved");
+        } catch (_e) {
+            this.saveStatus.set("error");
+        }
     }
 
     deleteUser() {
