@@ -355,7 +355,6 @@ export class UserService {
         safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
-        console.log(updatedUser);
         // @ts-expect-error: TODO prob with DTO
         delete updatedUser.hashPassword;
         return updatedUser;
@@ -517,7 +516,6 @@ export class UserService {
     async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
         const reset = await userResetRepository.findByToken(resetToken);
         const tokenValidation = this.validateResetToken(reset);
-        console.log(tokenValidation);
         if (!tokenValidation.valid) return tokenValidation;
 
         const user = await this.getUserById((reset as UserReset).userId);
