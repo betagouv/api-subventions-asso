@@ -60,7 +60,7 @@
             outline={false}
             ariaControls="fr-modal"
             on:click={displayModal}
-            trakerName="association-etablissement.dashboard.display-provider-modal">
+            trackerName="association-etablissement.dashboard.display-provider-modal">
             Voir la liste des fournisseurs de données
         </Button>
     </div>

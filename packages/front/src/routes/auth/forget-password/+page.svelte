@@ -51,7 +51,7 @@
                     <Button
                         title="Demander un nouveau mot de passe"
                         htmlType="submit"
-                        trakerName="forget-password.form.submit">
+                        trackerName="forget-password.form.submit">
                         Demander un nouveau mot de passe
                     </Button>
                 </div>

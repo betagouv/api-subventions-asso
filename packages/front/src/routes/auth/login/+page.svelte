@@ -50,7 +50,7 @@
             <div class="fr-fieldset__element fr-mt-4v">
                 <ul class="fr-btns-group">
                     <li>
-                        <Button title="Se connecter" htmlType="submit" trakerName="login.form.submit">
+                        <Button title="Se connecter" htmlType="submit" trackerName="login.form.submit">
                             Se connecter
                         </Button>
                     </li>
@@ -69,7 +69,7 @@
                             type="secondary"
                             title="Créer un compte"
                             htmlType="submit"
-                            trakerName="login.form.signup">
+                            trackerName="login.form.signup">
                             Créer un compte
                         </Button>
                     </li>

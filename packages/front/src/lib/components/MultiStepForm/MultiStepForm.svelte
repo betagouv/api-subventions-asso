@@ -54,7 +54,7 @@
                     type="secondary"
                     on:click={() => controller.previous()}
                     disabled={$currentStep.isFirstStep}
-                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.previous`}>
+                    trackerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.previous`}>
                     {previousLabel}
                 </Button>
             {/if}
@@ -62,7 +62,7 @@
                 <Button
                     htmlType="submit"
                     disabled={$isStepBlocked}
-                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
+                    trackerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
                     {submitLabel}
                 </Button>
             {:else}
@@ -72,7 +72,7 @@
                     type="secondary"
                     on:click={() => controller.next()}
                     on:submit={() => controller.next()}
-                    trakerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.next`}>
+                    trackerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.next`}>
                     {nextLabel}
                 </Button>
             {/if}
