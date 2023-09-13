@@ -68,7 +68,9 @@
                         </div>
                     </fieldset>
 
-                    <Button trakerName="profile.save">Enregistrer les modifications</Button>
+                    <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
+                        Enregistrer les modifications
+                    </Button>
                 </form>
             </div>
 
