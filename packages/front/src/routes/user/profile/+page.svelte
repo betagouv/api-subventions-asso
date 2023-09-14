@@ -21,6 +21,7 @@
             <h1 class="fr-h2">Bienvenue sur votre compte</h1>
             <div class="fr-grid-row">
                 <form on:submit|preventDefault={() => controller.onSubmit()} class="bordered-frame">
+                    <h2 class="fr-h5">Vos informations de profil</h2>
                     <div bind:this={saveAlertElement}>
                         {#if $saveStatus === "changed"}
                             <Alert type="warning" small={true}>
@@ -35,11 +36,7 @@
                             </Alert>
                         {/if}
                     </div>
-
-                    <fieldset class="fr-fieldset">
-                        <legend class="fr-fieldset__legend">
-                            <h2 class="fr-h5">Vos informations de profil</h2>
-                        </legend>
+                    <fieldset class="fr-fieldset fr-mt-6w">
                         <SignupModule bind:user={$user} />
                     </fieldset>
 
