@@ -5,6 +5,7 @@
     import SignupModule from "./SignupModule.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Button from "$lib/dsfr/Button.svelte";
+    import Select from "$lib/dsfr/Select.svelte";
 
     let saveAlertElement;
 
@@ -41,6 +42,16 @@
                     </fieldset>
 
                     <div class="separator fr-mb-6w fr-mt-4w" />
+
+                    <fieldset class="fr-fieldset">
+                        <div
+                            class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
+                            <Select
+                                options={controller.agentTypeOptions}
+                                label="Vous êtes : "
+                                bind:selected={$user.agentType} />
+                        </div>
+                    </fieldset>
 
                     <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
                         Enregistrer les modifications
