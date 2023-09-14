@@ -12,16 +12,13 @@
     export let values = {
         decentralizedLevel: "",
         decentralizedTerritory: "",
-        decentralizedStructure: "",
+        structure: "",
     };
-    // allows the substep to make the calls to the API to fill autocomplete fields
-    // the call is not made by the parent because half substeps don't need it
-    export let agentType;
 
     const ctrl = new DecentralizedSubStepController();
     const { departmentOptions, regionOptions, structureOptions } = ctrl;
 
-    ctrl.init(agentType);
+    ctrl.init();
 </script>
 
 <Radio
@@ -31,16 +28,7 @@
     on:change={({ detail }) => ctrl.onChoosingLevel(detail)} />
 
 <fieldset class="fr-fieldset">
-    {#if values.decentralizedLevel === AdminTerritorialLevel.OVERSEAS}
-        <div class="fr-fieldset__element fr-mb-4v">
-            <Input
-                id="territory"
-                type="text"
-                label="Quelle est votre collectivité d'outre-mer à statut particulier ?"
-                placeholder="Ex : Collectivité de Saint Martin"
-                bind:value={values.decentralizedTerritory} />
-        </div>
-    {:else if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
+    {#if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
         <div class="fr-fieldset__element fr-mb-4v">
             <AutocompleteSelect
                 options={$departmentOptions}
@@ -62,15 +50,15 @@
         {#if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL || values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
             <AutocompleteSelect
                 options={$structureOptions}
-                bind:value={values.decentralizedStructure}
-                label="Quel est votre administration ?"
+                bind:value={values.structure}
+                label="Quelle est votre administration ?"
                 placeholder="Ex : DETS59, Préfecture" />
         {:else}
             <Input
                 id="structure"
                 type="text"
-                bind:value={values.decentralizedStructure}
-                label="Quel est votre administration ?"
+                bind:value={values.structure}
+                label="Quelle est votre administration ?"
                 placeholder="Ex : DETS59, Préfecture" />
         {/if}
     </div>

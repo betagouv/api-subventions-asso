@@ -2,7 +2,7 @@
     import { nanoid } from "nanoid";
     import Dispatch from "$lib/core/Dispatch";
 
-    export let value: string[];
+    export let value: string[] = [];
 
     export let label: string;
     export let options: { label: string; value: string; hint?: string }[] = [];

@@ -537,6 +537,7 @@ export class ComboboxAutocomplete {
     }
 
     initOptionsEvents() {
+        this.allOptions = [];
         // Traverse the element children of domNode: configure each with
         // option role behavior and store reference in.options array.
         var nodes = this.listboxNode.getElementsByTagName("LI");

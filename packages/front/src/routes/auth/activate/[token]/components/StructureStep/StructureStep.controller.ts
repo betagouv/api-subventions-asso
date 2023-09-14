@@ -58,11 +58,27 @@ export default class StructureStepController {
         [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: TerritorialCollectivitySubStep,
         [AgentTypeEnum.DECONCENTRATED_ADMIN]: DecentralizedSubStep,
     };
+
+    private static subFieldsPrefixByAgentType = {
+        [AgentTypeEnum.CENTRAL_ADMIN]: "central",
+        [AgentTypeEnum.OPERATOR]: "operator",
+        [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: "territorial",
+        [AgentTypeEnum.DECONCENTRATED_ADMIN]: "decentralized",
+    };
+
     public subStep: Store<SubStep | undefined>;
+    public subStepValues: Store<Record<AgentTypeEnum, Record<string, string | undefined>>>;
+    private currentAgentType: AgentTypeEnum | undefined;
 
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
         this.subStep = new Store(undefined);
+        this.subStepValues = new Store({
+            [AgentTypeEnum.CENTRAL_ADMIN]: {},
+            [AgentTypeEnum.OPERATOR]: {},
+            [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: {},
+            [AgentTypeEnum.DECONCENTRATED_ADMIN]: {},
+        });
 
         this.errors = new Store({});
         this.dirty = {};
@@ -88,7 +104,24 @@ export default class StructureStepController {
         this.dispatch(shouldBlockStep ? "error" : "valid");
     }
 
-    async onUpdateContext(context: Context) {
+    cleanSubStepValues(values: Record<string, any>, contextAgentType: AgentTypeEnum) {
+        const prefixes = [];
+        for (const [agentType, prefix] of Object.entries(StructureStepController.subFieldsPrefixByAgentType)) {
+            if (agentType === contextAgentType) continue;
+            prefixes.push(prefix);
+        }
+        const regex = new RegExp(`^(${prefixes.join("|")})`);
+
+        for (const key of Object.keys(values)) {
+            if (regex.test(key)) delete values[key];
+        }
+        values["structure"] = "";
+    }
+
+    onUpdateContext(context: Context, values: Record<string, any>) {
+        if (context.agentType === this.currentAgentType) return;
+        this.currentAgentType = context.agentType;
+        this.cleanSubStepValues(values, context.agentType);
         const component = StructureStepController.subStepByAgentType[context.agentType];
         this.subStep.set(
             component

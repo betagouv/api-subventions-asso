@@ -6,7 +6,7 @@
     // export let valid
 
     export let values = {
-        operatorStructure: "",
+        structure: "",
     };
 </script>
 
@@ -16,7 +16,7 @@
             id="operator-input"
             type="text"
             label="Pour quel opérateur de l’État travaillez-vous ?"
-            bind:value={values.operatorStructure}
+            bind:value={values.structure}
             placeholder="Ex : ANCT" />
     </div>
 </fieldset>

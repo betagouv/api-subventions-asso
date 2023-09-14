@@ -11,18 +11,17 @@
     export let context = {};
 
     const ctrl = new StructureStepController();
-    $: ctrl.onUpdateContext(context);
+    $: ctrl.onUpdateContext(context, values);
 
     const { errors, subStep } = ctrl;
 </script>
 
 {#if $subStep}
-    <svelte:component this={$subStep.component} bind:values agentType={context.agentType} />
+    <svelte:component this={$subStep.component} bind:values />
 {/if}
 
 <fieldset class="fr-fieldset">
     <div class="fr-fieldset__element">
-        <!-- TODO check margins in other substeps -->
         <Input
             id="service-input"
             type="text"

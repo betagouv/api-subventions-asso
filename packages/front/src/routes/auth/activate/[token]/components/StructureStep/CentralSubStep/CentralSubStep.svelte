@@ -6,21 +6,20 @@
     // about allowing to submit in this variable that should be bound by the parent
     // export let valid
 
-    export let values;
-    export let agentType;
+    export let values = { structure: "" };
 
     const ctrl = new CentralSubStepController();
     const { options } = ctrl;
 
-    ctrl.init(agentType);
+    ctrl.init();
 </script>
 
 <fieldset class="fr-fieldset">
     <div class="fr-fieldset__element fr-mt-4v">
         <AutocompleteSelect
             options={$options}
-            bind:value={values.centralAdmin}
+            bind:value={values.structure}
             label="Dans quelle administration centrale travaillez-vous ?"
-            placeholder="Ex : DIHAL (texte en autocomplétion)" />
+            placeholder="Ex : DIHAL" />
     </div>
 </fieldset>

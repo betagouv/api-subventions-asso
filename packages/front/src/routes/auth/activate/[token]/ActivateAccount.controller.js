@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes, TokenValidationType } from "dto";
+import { AgentTypeEnum, ResetPasswordErrorCodes, TokenValidationType } from "dto";
 import StructureStep from "./components/StructureStep/StructureStep.svelte";
 import AgentTypeStep from "./components/AgentTypeStep/AgentTypeStep.svelte";
 import CollectedDataAlert from "./components/AgentTypeStep/CollectedDataAlert.svelte";
@@ -20,21 +20,20 @@ export default class ActivateAccountController {
                 alert: PasswordFormatAlert,
                 needsValidation: true,
             },
-            // { name: "Informations sur votre profil", component: AgentTypeStep, alert: CollectedDataAlert },
-            // { name: "Informations sur votre structure", component: StructureStep },
+            {
+                name: "Informations sur votre profil",
+                component: AgentTypeStep,
+                alert: CollectedDataAlert,
+                needsValidation: true,
+            },
+            { name: "Informations sur votre structure", component: StructureStep },
         ];
         this.buildContext = values => ({ agentType: values[1].agentType });
     }
 
     onSubmit(values) {
-        /*
-        TODO call here a service that
-        - resets password
-        - removes data from step 3 substeps that aren't the final one
-        - flattens data from step 3 substep
-        - updates user
-        */
-        return authService.resetPassword(this.token, values.password).then(() => {
+        const { confirmPwd: _confirmPwd, ...noConfirmValues } = values;
+        return authService.activate(this.token, noConfirmValues).then(() => {
             goToUrl("/auth/login?success=ACCOUNT_ACTIVATED", false, true);
         });
     }

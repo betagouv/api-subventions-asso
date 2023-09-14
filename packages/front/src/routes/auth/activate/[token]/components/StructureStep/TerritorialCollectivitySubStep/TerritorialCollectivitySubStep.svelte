@@ -7,7 +7,10 @@
     // about allowing to submit in this variable that should be bound by the parent
     // export let valid
 
-    export let values;
+    export let values = {
+        structure: "",
+        territorialScope: "",
+    };
 
     const ctrl = new TerritorialCollectivitySubStepController();
 </script>
@@ -21,6 +24,6 @@
             type="text"
             label="Pour quelle collectivité territoriale travaillez-vous ?"
             placeholder="Ex : Ville de Paris, Département des Landes, Communauté de Communes Terre d'Auge..."
-            bind:value={values.territorialStructure} />
+            bind:value={values.structure} />
     </div>
 </fieldset>
