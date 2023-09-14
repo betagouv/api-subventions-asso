@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import StructureStep from "../../auth/activate/[token]/components/StructureStep/StructureStep.svelte";
     import { ProfileController } from "./Profile.controller";
     import DeleteUser from "./components/DeleteUser.svelte";
     import SignupModule from "./SignupModule.svelte";
@@ -52,6 +53,7 @@
                                 bind:selected={$user.agentType} />
                         </div>
                     </fieldset>
+                    <StructureStep bind:values={$user} context={{ agentType: $user.agentType }} />
 
                     <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
                         Enregistrer les modifications
