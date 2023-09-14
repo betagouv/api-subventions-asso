@@ -10,7 +10,6 @@ Object {
   "firstName": null,
   "jobType": Array [],
   "lastName": null,
-  "password": Any<String>,
   "phoneNumber": "",
   "profileToComplete": true,
   "roles": Array [

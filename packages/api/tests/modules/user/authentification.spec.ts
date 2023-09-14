@@ -216,7 +216,6 @@ describe("AuthentificationController, /auth", () => {
                 .expect(res =>
                     expect(res.body.user).toMatchSnapshot({
                         signupAt: expect.any(String),
-                        password: expect.any(String),
                         _id: expect.any(String),
                     }),
                 );
