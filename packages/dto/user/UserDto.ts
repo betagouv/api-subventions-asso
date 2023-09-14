@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum, TerritorialScopeEnum } from "../auth";
 
 export default UserDto;
 
@@ -9,13 +10,26 @@ export interface FutureUserDto {
     lastName?: string;
 }
 
-export interface UserDto extends FutureUserDto {
+export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "password"> {
     _id: ObjectId;
     roles: string[];
     active: boolean;
     signupAt: Date;
     profileToComplete: boolean;
     disable?: boolean;
+}
+
+export interface UserActivationInfoDto {
+    password: string;
+    agentType: AgentTypeEnum;
+    jobType: AgentJobTypeEnum[];
+    service?: string;
+    phoneNumber?: string;
+    structure?: string;
+    decentralizedLevel?: AdminTerritorialLevel;
+    // TODO: verify from GEO API
+    decentralizedTerritory?: string;
+    territorialScope?: TerritorialScopeEnum;
 }
 
 export interface UserWithJWTDto extends UserDto {

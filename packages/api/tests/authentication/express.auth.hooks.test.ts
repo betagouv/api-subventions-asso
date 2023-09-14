@@ -34,6 +34,7 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
+            // @ts-expect-error: mock user
             jest.spyOn(userService, "login").mockImplementation(email =>
                 Promise.resolve({
                     _id: new ObjectId(),
@@ -92,6 +93,7 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
+            // @ts-expect-error: mock user
             jest.spyOn(userService, "authenticate").mockImplementation(async user => ({
                 email: user.email,
                 roles: [],

@@ -55,3 +55,7 @@ export function isNumbersValid(numbers: unknown[]) {
 export function isCP(cp: string) {
     return typeof cp === "string" && /[0-9]{5}/.test(cp);
 }
+
+export function isInObjectValues(obj, value) {
+    return Object.values(obj).includes(value);
+}

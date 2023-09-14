@@ -8,6 +8,7 @@ import userRepository from "../modules/user/repositories/user.repository";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
 import { RoleEnum } from "../@enums/Roles";
+import { AgentTypeEnum } from "dto";
 
 describe("expressAuthentication", () => {
     // Spys
@@ -43,6 +44,10 @@ describe("expressAuthentication", () => {
                 signupAt: new Date(),
                 _id: new ObjectId(),
                 profileToComplete: false,
+                agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                service: "",
+                phoneNumber: "",
+                jobType: [],
             }),
         );
         findJwtByEmailMock.mockImplementation(() =>
@@ -58,6 +63,10 @@ describe("expressAuthentication", () => {
                 signupAt: new Date(),
                 _id: new ObjectId(),
                 profileToComplete: false,
+                agentType: AgentTypeEnum.CENTRAL_ADMIN,
+                service: "",
+                phoneNumber: "",
+                jobType: [],
             }),
         );
         // @ts-expect-error: mock

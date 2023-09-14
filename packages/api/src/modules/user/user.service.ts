@@ -15,6 +15,11 @@ import {
     UserDataDto,
     TokenValidationDtoResponse,
     TokenValidationType,
+    UserActivationInfoDto,
+    AgentTypeEnum,
+    AgentJobTypeEnum,
+    TerritorialScopeEnum,
+    AdminTerritorialLevel,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -26,16 +31,20 @@ import {
     InternalServerError,
     NotFoundError,
     UnauthorizedError,
+    UserNotFoundError,
+    ResetTokenNotFoundError,
 } from "../../shared/errors/httpErrors";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
+import { isInObjectValues } from "../../shared/Validators";
 import LoginError from "../../shared/errors/LoginError";
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import statsService from "../stats/stats.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
+import { joinEnum } from "../../shared/helpers/ArrayHelper";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import { UserUpdateError } from "./repositories/errors/UserUpdateError";
@@ -79,6 +88,10 @@ export class UserService {
         At least 8 characters in length, but no more than 32.`;
 
     private static CONSUMER_TOKEN_PROP = "isConsumerToken";
+
+    private async getHashPassword(password: string) {
+        return bcrypt.hash(password, 10);
+    }
 
     async authenticate(tokenPayload, token): Promise<UserDto> {
         // Find the user associated with the email provided by the user
@@ -225,7 +238,7 @@ export class UserService {
 
         const partialUser: Record<string, unknown> = {
             email: userObject.email,
-            hashPassword: await bcrypt.hash(DEFAULT_PWD, 10),
+            hashPassword: await this.getHashPassword(DEFAULT_PWD),
             signupAt: new Date(),
             roles: userObject.roles,
             firstName: userObject.firstName || null,
@@ -260,7 +273,7 @@ export class UserService {
 
         const userUpdated = await userRepository.update({
             ...user,
-            hashPassword: await bcrypt.hash(password, 10),
+            hashPassword: await this.getHashPassword(password),
             active: true,
         });
 
@@ -275,7 +288,7 @@ export class UserService {
     }
 
     public async delete(userId: string): Promise<boolean> {
-        const user = await userRepository.findById(userId);
+        const user = await this.getUserById(userId);
 
         if (!user) return false;
 
@@ -325,8 +338,112 @@ export class UserService {
         return user;
     }
 
+    sanitizeActivationUserInfo(unsafeUserInfo) {
+        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
+        const sanitizedUserInfo = { ...unsafeUserInfo };
+        fieldsToSanitize.forEach(field => {
+            sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
+        });
+        return sanitizedUserInfo;
+    }
+
+    public getUserById(userId) {
+        return userRepository.findById(userId);
+    }
+
+    public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
+        const userReset = await userResetRepository.findByToken(resetToken);
+
+        const tokenValidation = this.validateResetToken(userReset);
+        if (!tokenValidation.valid) throw tokenValidation.error;
+
+        const user = await this.getUserById((userReset as UserReset).userId);
+        if (!user) throw new UserNotFoundError();
+
+        if (!userInfo.jobType) userInfo.jobType = [];
+
+        const userInfoValidation = this.validateUserActivationInfo(userInfo);
+        if (!userInfoValidation.valid) throw userInfoValidation.error;
+
+        const safeUserInfo = this.sanitizeActivationUserInfo(userInfo);
+        safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
+        delete safeUserInfo.password;
+        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
+        // @ts-expect-error: TODO workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
+        delete updatedUser.hashPassword;
+        return updatedUser;
+    }
+
+    private validateUserActivationInfo(userInfo): { valid: false; error: Error } | { valid: true } {
+        const { password, agentType, jobType, structure } = userInfo;
+        const validations = [
+            {
+                value: password,
+                method: this.passwordValidator,
+                error: new BadRequestError(
+                    UserService.PASSWORD_VALIDATOR_MESSAGE,
+                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+                ),
+            },
+            {
+                value: agentType,
+                method: value => isInObjectValues(AgentTypeEnum, value),
+                error: new BadRequestError(dedent`Mauvaise valeur pour le type d'agent.
+                    Les valeurs possibles sont ${joinEnum(AgentTypeEnum)}
+                `),
+            },
+            {
+                value: jobType,
+                method: jobType => {
+                    if (jobType.length === 0) return true;
+                    return !jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
+                },
+                error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
+                    Les valeurs possibles sont ${joinEnum(AgentJobTypeEnum)}
+                `),
+            },
+        ];
+
+        /**
+         *          AGENT TYPE SPECIFIC VALUES
+         */
+
+        if (structure) {
+            validations.push({
+                value: structure,
+                method: value => typeof value == "string",
+                error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
+            });
+        }
+
+        if (agentType === AgentTypeEnum.TERRITORIAL_COLLECTIVITY)
+            validations.push({
+                value: userInfo.territorialScope,
+                method: value => isInObjectValues(TerritorialScopeEnum, value),
+                error: new BadRequestError(dedent`Mauvaise valeur pour le périmètre
+                Les valeurs possibles sont ${joinEnum(TerritorialScopeEnum)}`),
+            });
+
+        if (agentType === AgentTypeEnum.DECONCENTRATED_ADMIN)
+            validations.push({
+                value: userInfo.decentralizedLevel,
+                method: value => isInObjectValues(AdminTerritorialLevel, value),
+                error: new BadRequestError(dedent`Mauvaise valeur pour le niveau territorial
+                Les valeurs possibles sont ${joinEnum(AdminTerritorialLevel)}`),
+            });
+
+        let error: Error | undefined;
+        for (const validation of validations) {
+            if (!validation.method(validation.value)) {
+                error = validation.error;
+                break;
+            }
+        }
+        return error ? { valid: false, error: error as BadRequestError } : { valid: true };
+    }
+
     public async disable(userId: string) {
-        const user = await userRepository.findById(userId);
+        const user = await this.getUserById(userId);
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
@@ -398,17 +515,28 @@ export class UserService {
         return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
     }
 
-    async validateToken(resetToken: string): Promise<TokenValidationDtoResponse> {
+    private validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
+        let error: Error | null = null;
+        if (!userReset) error = new ResetTokenNotFoundError();
+        else if (this.isExpiredReset(userReset as UserReset))
+            error = new BadRequestError(
+                "Reset token has expired, please retry forget password",
+                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
+            );
+
+        return error ? { valid: false, error } : { valid: true };
+    }
+
+    async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
         const reset = await userResetRepository.findByToken(resetToken);
+        const tokenValidation = this.validateResetToken(reset);
+        if (!tokenValidation.valid) return tokenValidation;
 
-        if (!reset || this.isExpiredReset(reset)) return { valid: false };
-
-        const user = await userRepository.findById(reset.userId);
-
+        const user = await this.getUserById((reset as UserReset).userId);
         if (!user) return { valid: false };
 
         return {
-            valid: true,
+            ...tokenValidation,
             type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
         };
     }
@@ -416,17 +544,11 @@ export class UserService {
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        if (!reset) throw new NotFoundError("Reset token not found", ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND);
+        const tokenValidation = this.validateResetToken(reset);
+        if (!tokenValidation.valid) throw tokenValidation.error;
 
-        if (this.isExpiredReset(reset))
-            throw new BadRequestError(
-                "Reset token has expired, please retry forget password",
-                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-            );
-
-        const user = await userRepository.findById(reset.userId);
-
-        if (!user) throw new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND);
+        const user = await this.getUserById((reset as UserReset).userId);
+        if (!user) throw new UserNotFoundError();
 
         if (!this.passwordValidator(password))
             throw new BadRequestError(
@@ -434,9 +556,9 @@ export class UserService {
                 ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
             );
 
-        const hashPassword = await bcrypt.hash(password, 10);
+        const hashPassword = await this.getHashPassword(password);
 
-        await userResetRepository.remove(reset);
+        await userResetRepository.remove(reset as UserReset);
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
@@ -447,6 +569,8 @@ export class UserService {
             profileToComplete: false,
         });
 
+        //@ts-expect-error: workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
+        delete userUpdated.hashPassword;
         return userUpdated;
     }
 
@@ -586,7 +710,7 @@ export class UserService {
     }
 
     public async getAllData(userId: string): Promise<UserDataDto> {
-        const user = await userRepository.findById(userId);
+        const user = await this.getUserById(userId);
 
         if (!user) throw new NotFoundError("User is not found");
 

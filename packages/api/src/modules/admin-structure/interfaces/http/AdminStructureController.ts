@@ -1,4 +1,4 @@
-import { Controller, Get, Route, Security, Tags, Response } from "tsoa";
+import { Controller, Get, Route, Tags, Response } from "tsoa";
 import { AdminStructureDto, AgentTypeEnum } from "dto";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import adminStructureService from "../../adminStructure.service";

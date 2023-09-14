@@ -37,3 +37,5 @@ export const compare = (a, b) => {
     }
     return 0;
 };
+
+export const joinEnum = obj => Object.values(obj).join(", ");

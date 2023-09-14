@@ -4,7 +4,9 @@ exports[`removeSecrets should remove all secret in user 1`] = `
 Object {
   "_id": Any<ObjectId>,
   "active": false,
+  "agentType": "CENTRAL_ADMIN",
   "email": "test22@beta.gouv.fr",
+  "jobType": Array [],
   "profileToComplete": false,
   "roles": Array [
     "user",
