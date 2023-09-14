@@ -3,6 +3,7 @@
     import { ProfileController } from "./Profile.controller";
     import DeleteUser from "./components/DeleteUser.svelte";
     import SignupModule from "./SignupModule.svelte";
+    import ResetPwdModule from "./components/ResetPwdModule/ResetPwdModule.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Button from "$lib/dsfr/Button.svelte";
 
@@ -38,9 +39,15 @@
                     </div>
                     <fieldset class="fr-fieldset fr-mt-6w">
                         <SignupModule bind:user={$user} />
+                        <div class="fr-fieldset__element fr-mt-4v">
+                            <ResetPwdModule email={$user.email} />
+                        </div>
                     </fieldset>
 
-                    <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
+                    <Button
+                        trakerName="profile.save"
+                        disabled={$saveStatus !== "changed" && $saveStatus !== "error"}
+                        type="submit">
                         Enregistrer les modifications
                     </Button>
                 </form>
