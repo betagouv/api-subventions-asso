@@ -175,9 +175,10 @@ export class UserService {
                 _id: user._id.toString(),
                 email: undefined,
                 firstName: undefined,
-                lastName: undefined
-            }
-        })
+                lastName: undefined,
+                phoneNumber: undefined,
+            };
+        });
     }
 
     find(query: DefaultObject = {}) {
