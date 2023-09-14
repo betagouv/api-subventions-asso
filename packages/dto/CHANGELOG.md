@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/betagouv/datasubvention/compare/v0.35.3...v0.36.0) (2023-09-14)
+
+### Features
+
+-   **api, dto:** create activate user route ([e6ee186](https://github.com/betagouv/datasubvention/commit/e6ee186126786b82cd6548949479180a4ff6be73))
+-   **dto,front:** better dto value DECONCENTRATED ([e7abc33](https://github.com/betagouv/datasubvention/commit/e7abc332c26ec98b398dc9165f30b593e362745d))
+-   **dto:** admin structure dto ([1290ae3](https://github.com/betagouv/datasubvention/commit/1290ae356ad09f2477e76e3565b81a5bf536874c))
+-   **dto:** admin territorial level ([c3823ac](https://github.com/betagouv/datasubvention/commit/c3823ac22990e247dcfdd91b5e6c9f9951084c48))
+-   **dto:** territorial scope enum ([22e897e](https://github.com/betagouv/datasubvention/commit/22e897e917268039268136cc2263b3ca596f85b4))
+
 ## [0.35.1](https://github.com/betagouv/datasubvention/compare/v0.35.0...v0.35.1) (2023-08-30)
 
 **Note:** Version bump only for package dto

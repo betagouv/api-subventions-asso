@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/betagouv/api-subventions-asso/compare/v0.35.3...v0.36.0) (2023-09-14)
+
+### Bug Fixes
+
+-   **api:** accept undefined in column 2 ([1993b1e](https://github.com/betagouv/api-subventions-asso/commit/1993b1eb7717237a4ea5dc636bcc4a0f5c38f914))
+-   **api:** clean from review ([fe542eb](https://github.com/betagouv/api-subventions-asso/commit/fe542eb0203521359a80e410dc4690802afd1393))
+-   **api:** fix ts error on mongodb update ([6b2694a](https://github.com/betagouv/api-subventions-asso/commit/6b2694a0bb93096ec56347c1bc387732cdbf2c93))
+-   **api:** no auth to access admin structures ([e4da1cb](https://github.com/betagouv/api-subventions-asso/commit/e4da1cb7c1085034cf3358d5dec9f148eefd051a))
+
+### Features
+
+-   **api, dto:** create activate user route ([e6ee186](https://github.com/betagouv/api-subventions-asso/commit/e6ee186126786b82cd6548949479180a4ff6be73))
+-   **api:** add metabase dump ([cfecdfe](https://github.com/betagouv/api-subventions-asso/commit/cfecdfe7bb1939930d2f5d8ec75610620f88ad42))
+-   **api:** anonymize phoneNumber in metabase ([505d4c6](https://github.com/betagouv/api-subventions-asso/commit/505d4c63be64653920ab8bd2e7b6b4201c05136c))
+-   **api:** call notify on user deletion by admin ([842c5e5](https://github.com/betagouv/api-subventions-asso/commit/842c5e57120e0020c5019e8182096044d2560bc6))
+-   **api:** call notify on user self-deletion ([ac5c727](https://github.com/betagouv/api-subventions-asso/commit/ac5c727a842d154fb17a703e118df673943b4846))
+-   **api:** clean from review ([1c50352](https://github.com/betagouv/api-subventions-asso/commit/1c5035284060350346e152112e2a5035ed326b6d))
+-   **api:** clean from review 2 wip ([43dea7a](https://github.com/betagouv/api-subventions-asso/commit/43dea7a982185340afe6277889659f7c3691733c))
+-   **api:** delete brevo contact after account deletion ([f28d852](https://github.com/betagouv/api-subventions-asso/commit/f28d85232b6731d5a445d60a7ea881bb02a5b0b3))
+-   **api:** extract axios call and append env ([a421903](https://github.com/betagouv/api-subventions-asso/commit/a4219032d09f35c15f49f2a5941c40b478d99e22))
+-   **api:** fix typo ([a0121c3](https://github.com/betagouv/api-subventions-asso/commit/a0121c38169cb771ad707d1a908710d58d7321f9))
+-   **api:** init brevo in BrevoNotifyPipe class ([8218f3e](https://github.com/betagouv/api-subventions-asso/commit/8218f3ea5b00892eff84061899bf3b161d0e8a84))
+-   **api:** mattermost notify out pipe ([243b928](https://github.com/betagouv/api-subventions-asso/commit/243b928444af1ef62e6412c00ccfc7e349d1cbe1))
+-   **api:** notify deleted_user type has names ([c0e5c4b](https://github.com/betagouv/api-subventions-asso/commit/c0e5c4b4bd685fa6d58a7f3616a941db10663ebe))
+-   **api:** only sanitize unchecked user info ([01e1c98](https://github.com/betagouv/api-subventions-asso/commit/01e1c98279b4ae175eb331bcfa91a4bd4c9f8b8d))
+-   **api:** parse structures territory level with enum not initial string ([50302b7](https://github.com/betagouv/api-subventions-asso/commit/50302b7d8d6f0211544f3080ad1e28bba45dd627))
+-   **api:** remove console.log ([3bcd616](https://github.com/betagouv/api-subventions-asso/commit/3bcd616c8a4dc3eee6d1e7de3cf879e96e47ad8a))
+-   **api:** remove hashPassword from returned user ([d8be6bc](https://github.com/betagouv/api-subventions-asso/commit/d8be6bc35634a23b446b388c4f5c5e1656006e3c))
+-   **api:** remove optionnal first and last name in USER_DELETE notify pipe ([c86b8f2](https://github.com/betagouv/api-subventions-asso/commit/c86b8f25b82823eacf2db5d0dc8f28951da7ea35))
+-   **api:** remove useless TODO ([b7a0822](https://github.com/betagouv/api-subventions-asso/commit/b7a08225dc0438575af2ddb2c36ad2b9a9ed5e11))
+-   **api:** sentry checkIn instead of captureEvent ([ee39473](https://github.com/betagouv/api-subventions-asso/commit/ee39473eb3c7d597881dd0bd78c0a1d3f37dd38a))
+-   **api:** update todo comment messages ([c6a6a36](https://github.com/betagouv/api-subventions-asso/commit/c6a6a36d24e2bb464883fd4cd21aa981c3278d34))
+-   **api:** use 200 http code for success on activate ([9e444f6](https://github.com/betagouv/api-subventions-asso/commit/9e444f67a9ac865bdc8af51dd0f4216c5029db76))
+-   **dto:** admin structure dto ([1290ae3](https://github.com/betagouv/api-subventions-asso/commit/1290ae356ad09f2477e76e3565b81a5bf536874c))
+
+### Reverts
+
+-   **api:** make lastname and firstname optionnal again ([ffcaa70](https://github.com/betagouv/api-subventions-asso/commit/ffcaa7062eae984bde398d3ec04964aa61ea8558))
+
 ## [0.35.3](https://github.com/betagouv/api-subventions-asso/compare/v0.35.2...v0.35.3) (2023-09-05)
 
 ### Features
