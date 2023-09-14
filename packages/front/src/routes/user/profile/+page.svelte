@@ -40,6 +40,8 @@
                         <SignupModule bind:user={$user} />
                     </fieldset>
 
+                    <div class="separator fr-mb-6w fr-mt-4w" />
+
                     <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
                         Enregistrer les modifications
                     </Button>
