@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.1](https://github.com/betagouv/api-subventions-asso/compare/v0.36.0...v0.36.1) (2023-09-14)
+
+### Bug Fixes
+
+-   **api:** update import env -> env.conf ([24bcee7](https://github.com/betagouv/api-subventions-asso/commit/24bcee795586feab2311c94e168f753931d9e85e))
+
 # [0.36.0](https://github.com/betagouv/api-subventions-asso/compare/v0.35.3...v0.36.0) (2023-09-14)
 
 ### Bug Fixes
