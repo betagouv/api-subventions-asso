@@ -1,7 +1,7 @@
 import { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
-import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService.js";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
@@ -25,7 +25,13 @@ export class ProfileController {
     }
 
     init() {
-        this.user.set({ firstname: "Lucile", lastname: "DUPOND", email: "name@mail.gouv.fr" }); // TODO get infos about user
+        this.user.set({
+            firstname: "Lucile",
+            lastname: "DUPOND",
+            email: "name@mail.gouv.fr",
+            service: "some service",
+            agentType: AgentTypeEnum.OPERATOR,
+        }); // TODO get infos about user
         this.user.subscribe(this.genOnChange());
     }
 
