@@ -69,3 +69,8 @@ html {
     padding: 2.5rem;
     border: 1px solid var(--border-default-grey);
 }
+
+.separator {
+    width: 100%;
+    border-top: 2px solid var(--border-default-grey);
+}
