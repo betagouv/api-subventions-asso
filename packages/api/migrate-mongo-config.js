@@ -1,5 +1,5 @@
 
-require("./build/src/configurations/env")
+require("./build/src/configurations/env.conf")
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mongoConf = require("./build/src/configurations/mongo.conf")
 
