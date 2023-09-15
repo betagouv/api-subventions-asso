@@ -34,7 +34,10 @@ export class ProfileController {
             service: "some service",
             agentType: AgentTypeEnum.OPERATOR,
         }); // TODO get infos about user
-        this.user.subscribe(this.genOnChange());
+    }
+
+    showAlert() {
+        if (this.saveAlertElement) this.saveAlertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
 
     onSubmit() {
@@ -44,7 +47,7 @@ export class ProfileController {
         } catch (_e) {
             this.saveStatus.set("error");
         }
-        if (this.saveAlertElement) this.saveAlertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
+        this.showAlert();
     }
 
     updateValidation(isValid) {
