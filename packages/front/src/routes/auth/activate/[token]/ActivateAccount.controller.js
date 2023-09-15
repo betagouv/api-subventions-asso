@@ -1,7 +1,7 @@
 import { AgentTypeEnum, ResetPasswordErrorCodes, TokenValidationType } from "dto";
-import StructureStep from "./components/StructureStep/StructureStep.svelte";
 import AgentTypeStep from "./components/AgentTypeStep/AgentTypeStep.svelte";
 import CollectedDataAlert from "./components/AgentTypeStep/CollectedDataAlert.svelte";
+import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
 import DefinePassword from "$lib/components/DefinePassword/DefinePassword.svelte";
 import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAlert.svelte";
 import authService from "$lib/resources/auth/auth.service";
@@ -26,7 +26,7 @@ export default class ActivateAccountController {
                 alert: CollectedDataAlert,
                 needsValidation: true,
             },
-            { name: "Informations sur votre structure", component: StructureStep },
+            { name: "Informations sur votre structure", component: StructureFormStep },
         ];
         this.buildContext = values => ({ agentType: values[1].agentType });
     }

@@ -1,5 +1,5 @@
 <script>
-    import StructureStepController from "./StructureStep.controller";
+    import StructureFormStepController from "./StructureFormStep.controller";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Input from "$lib/dsfr/Input.svelte";
 
@@ -10,7 +10,7 @@
     };
     export let context = {};
 
-    const ctrl = new StructureStepController();
+    const ctrl = new StructureFormStepController();
     $: ctrl.onUpdateContext(context, values);
 
     const { errors, subStep } = ctrl;

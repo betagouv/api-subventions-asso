@@ -22,7 +22,7 @@ interface SubStep {
     // valid: boolean
 }
 
-export default class StructureStepController {
+export default class StructureFormStepController {
     private readonly dispatch: (_: string) => void;
 
     public readonly errors: Store<{ [key: string]: string | undefined }>;
@@ -31,13 +31,13 @@ export default class StructureStepController {
 
     private readonly validators: Record<string, (value: any) => string | undefined> = {
         // service: (text: string) => {
-        //     if (!text) return StructureStepController.errorMandatory;
+        //     if (!text) return StructureFormStepController.errorMandatory;
         // },
         // jobType: (jobs: string[] | null) => {
-        //     if (!jobs?.length) return StructureStepController.errorMandatory;
+        //     if (!jobs?.length) return StructureFormStepController.errorMandatory;
         // },
         phoneNumber: (number: string) => {
-            // if (!number) return StructureStepController.errorMandatory;
+            // if (!number) return StructureFormStepController.errorMandatory;
             if (number && !isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
         },
     };
@@ -107,7 +107,7 @@ export default class StructureStepController {
 
     cleanSubStepValues(values: Record<string, any>, contextAgentType: AgentTypeEnum) {
         const prefixes = [];
-        for (const [agentType, prefix] of Object.entries(StructureStepController.subFieldsPrefixByAgentType)) {
+        for (const [agentType, prefix] of Object.entries(StructureFormStepController.subFieldsPrefixByAgentType)) {
             if (agentType === contextAgentType) continue;
             prefixes.push(prefix);
         }
@@ -123,7 +123,7 @@ export default class StructureStepController {
         if (context.agentType === this.currentAgentType) return;
         this.currentAgentType = context.agentType;
         this.cleanSubStepValues(values, context.agentType);
-        const component = StructureStepController.subStepByAgentType[context.agentType];
+        const component = StructureFormStepController.subStepByAgentType[context.agentType];
         this.subStep.set(
             component
                 ? {
