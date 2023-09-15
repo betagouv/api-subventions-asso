@@ -17,7 +17,7 @@
 </script>
 
 {#if $subStep}
-    <svelte:component this={$subStep.component} bind:values />
+    <svelte:component this={$subStep.component} bind:values on:change />
 {/if}
 
 <fieldset class="fr-fieldset">
@@ -29,6 +29,7 @@
             bind:value={values.service}
             errorMsg={$errors.service}
             error={$errors.service}
+            on:change
             on:blur={() => ctrl.onUpdate(values, "service")} />
     </div>
     <div class="fr-fieldset__element fr-mb-0 fr-mt-4v">
@@ -50,6 +51,7 @@
             bind:value={values.phoneNumber}
             errorMsg={$errors.phoneNumber}
             error={$errors.phoneNumber}
+            on:change
             on:blur={() => ctrl.onUpdate(values, "phoneNumber")} />
     </div>
 </fieldset>

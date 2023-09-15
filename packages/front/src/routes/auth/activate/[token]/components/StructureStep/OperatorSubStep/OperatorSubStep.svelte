@@ -17,6 +17,7 @@
             type="text"
             label="Pour quel opérateur de l’État travaillez-vous ?"
             bind:value={values.structure}
+            on:change
             placeholder="Ex : ANCT" />
     </div>
 </fieldset>

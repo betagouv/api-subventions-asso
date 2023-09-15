@@ -54,7 +54,8 @@
         aria-invalid={errorMsg ? "true" : undefined}
         aria-errormessage={errorMsg ? descErrorElement : undefined}
         on:blur
-        on:input />
+        on:input
+        on:change />
     {#if error && errorMsg}
         <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
     {/if}

@@ -20,6 +20,7 @@
             options={$options}
             bind:value={values.structure}
             label="Dans quelle administration centrale travaillez-vous ?"
+            on:change
             placeholder="Ex : DIHAL" />
     </div>
 </fieldset>

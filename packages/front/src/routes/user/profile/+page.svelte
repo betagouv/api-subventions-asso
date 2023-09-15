@@ -39,7 +39,7 @@
                         {/if}
                     </div>
                     <fieldset class="fr-fieldset fr-mt-6w">
-                        <SignupModule bind:user={$user} />
+                        <SignupModule bind:user={$user} on:change={() => controller.onChange()} />
                     </fieldset>
 
                     <div class="separator fr-mb-6w fr-mt-4w" />
@@ -50,10 +50,14 @@
                             <Select
                                 options={controller.agentTypeOptions}
                                 label="Vous êtes : "
-                                bind:selected={$user.agentType} />
+                                bind:selected={$user.agentType}
+                                on:change={() => controller.onChange()} />
                         </div>
                     </fieldset>
-                    <StructureStep bind:values={$user} context={{ agentType: $user.agentType }} />
+                    <StructureStep
+                        bind:values={$user}
+                        context={{ agentType: $user.agentType }}
+                        on:change={() => controller.onChange()} />
 
                     <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
                         Enregistrer les modifications

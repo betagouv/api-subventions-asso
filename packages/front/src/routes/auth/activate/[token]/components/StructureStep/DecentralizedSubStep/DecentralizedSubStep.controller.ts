@@ -1,8 +1,10 @@
 import type { AdminStructureDto } from "dto";
 import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
+import type { EventDispatcher } from "svelte";
 import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import Dispatch from "$lib/core/Dispatch";
 
 type Option = { value: string; label: string };
 
@@ -18,12 +20,14 @@ export default class DecentralizedSubStepController {
         { value: AdminTerritorialLevel.INTERREGIONAL, label: "Interrégional" },
         { value: AdminTerritorialLevel.OVERSEAS, label: "Collectivité d'outre-mer à statut particulier" },
     ];
+    private dispatch: EventDispatcher<any>;
 
     constructor() {
         this.departmentOptions = new Store([]);
         this.regionOptions = new Store([]);
         this.structureOptions = new Store([]);
         this.allStructures = [];
+        this.dispatch = Dispatch.getDispatcher();
     }
 
     async init(): Promise<void> {
@@ -31,6 +35,7 @@ export default class DecentralizedSubStepController {
     }
 
     public onChoosingLevel(option: { label: string; value: AdminTerritorialLevel }) {
+        this.dispatch("change");
         const level: AdminTerritorialLevel = option.value;
         if (level === AdminTerritorialLevel.DEPARTMENTAL) {
             this.onChoosingDepartment();

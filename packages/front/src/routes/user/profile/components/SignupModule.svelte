@@ -10,10 +10,17 @@
         autocomplete="firstname"
         id="signup-given-name"
         bind:value={user.firstname}
+        on:change
         required={true} />
 </div>
 <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
-    <Input label="NOM :" autocomplete="lastname" id="signup-family-name" bind:value={user.lastname} required={true} />
+    <Input
+        label="NOM :"
+        autocomplete="lastname"
+        id="signup-family-name"
+        bind:value={user.lastname}
+        required={true}
+        on:change />
 </div>
 <div class="fr-fieldset__element fr-mt-4v">
     <Input
@@ -22,5 +29,6 @@
         hint="A ce jour, l’adresse e-mail n’est pas modifiable."
         value={user.email}
         required={true}
+        on:change
         disabled={true} />
 </div>

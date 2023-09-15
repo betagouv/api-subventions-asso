@@ -55,6 +55,7 @@
                 aria-autocomplete="both"
                 aria-expanded="false"
                 aria-controls={listId}
+                on:change
                 bind:this={inputElement} />
             <button
                 type="button"

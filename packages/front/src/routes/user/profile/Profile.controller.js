@@ -16,12 +16,8 @@ export class ProfileController {
         this.saveAlertElement = saveAlertElement;
     }
 
-    genOnChange() {
-        let firstDone = false;
-        return () => {
-            if (!firstDone) return (firstDone = true);
-            this.saveStatus.set("changed");
-        };
+    onChange() {
+        this.saveStatus.set("changed");
     }
 
     init() {

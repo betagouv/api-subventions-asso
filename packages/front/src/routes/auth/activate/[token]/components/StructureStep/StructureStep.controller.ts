@@ -101,6 +101,7 @@ export default class StructureStepController {
             if (this.dirty[key]) tempErrors[key] = currentError;
         }
         this.errors.set(tempErrors);
+        this.dispatch("change");
         this.dispatch(shouldBlockStep ? "error" : "valid");
     }
 
