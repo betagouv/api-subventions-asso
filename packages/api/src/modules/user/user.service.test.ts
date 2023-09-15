@@ -213,6 +213,7 @@ describe("User Service", () => {
             // @ts-expect-error: unknown error
             mockedUserRepository.update.mockImplementation(() => ({
                 ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
                 hashPassword: "qdqdqzdqzd&",
             }));
             mockGetUserById.mockImplementation(async id => UNACTIVATED_USER);
@@ -222,6 +223,14 @@ describe("User Service", () => {
         it("should call userRepository.update()", async () => {
             await userService.activate("token", USER_ACTIVATION_INFO);
             expect(userRepository.update).toHaveBeenCalledTimes(1);
+        });
+
+        it("should notify user updated", async () => {
+            await userService.activate("token", USER_ACTIVATION_INFO);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, {
+                ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
+            });
         });
 
         it("should call validateAndSanitizeActivationUserInfo()", async () => {

@@ -1,3 +1,4 @@
+import { FutureUserDto, UserActivationInfoDto, UserDto } from "dto";
 import { NotificationType } from "./NotificationType";
 
 export interface NotificationDataTypes {
@@ -33,6 +34,7 @@ export interface NotificationDataTypes {
         email: string;
         date: Date;
     };
+    [NotificationType.USER_UPDATED]: Omit<UserActivationInfoDto, "password"> & FutureUserDto;
     [NotificationType.TEST_EMAIL]: {
         email: string;
         templateId: number;
