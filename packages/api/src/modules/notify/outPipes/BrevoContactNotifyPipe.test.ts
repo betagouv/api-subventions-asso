@@ -1,3 +1,4 @@
+import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum, TerritorialScopeEnum } from "dto";
 import { API_SENDINBLUE_CONTACT_LIST } from "../../../configurations/apis.conf";
 import { NotificationType } from "../@types/NotificationType";
 import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
@@ -106,6 +107,30 @@ describe("BrevoContactNotifyPipe", () => {
                 attributes: { DERNIERE_CONNEXION: now },
                 listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
             });
+        });
+    });
+
+    describe("userUpdated", () => {
+        const UPDATE_PAYLOAD = {
+            agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+            service: "SERVICE",
+            phoneNumber: "+33625859685",
+            jobType: [AgentJobTypeEnum.ADMINISTRATOR, AgentJobTypeEnum.EXPERT],
+            centralStructure: "ADMIN_CENTRALE",
+            decentralizedLevel: AdminTerritorialLevel.INTERDEPARTMENTAL,
+            decentralizedTerritory: "ECHELON_TERRITORIAL",
+            decentralizedStructure: "SERVICE_DECONCENTRE",
+            operatorStructure: "OPERATEUR",
+            territorialStructure: "COLLECTIVITES",
+            territorialScope: TerritorialScopeEnum.DEPARTMENTAL,
+            lastname: "NOM",
+            firstname: "PRENOM",
+        };
+
+        it("should call updateContact()", async () => {
+            //@ts-expect-error: private method
+            await BrevoContactNotifyPipe.userUpdated({ email: "test@datasubvention.gouv.fr", ...UPDATE_PAYLOAD });
+            expect(mockUpdateContact.mock.calls[0]).toMatchSnapshot();
         });
     });
 });
