@@ -63,7 +63,7 @@
                 aria-controls={listId}
                 tabindex="-1"
                 bind:this={buttonElement}>
-                <span class="fr-icon-arrow-down-s-line icon fr-icon--sm" aria-hidden="true" />
+                <span class="fr-icon-arrow-down-s-line icon" aria-hidden="true" />
             </button>
         </div>
 
