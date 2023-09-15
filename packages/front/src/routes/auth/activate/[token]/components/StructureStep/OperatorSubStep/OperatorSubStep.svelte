@@ -11,7 +11,7 @@
 </script>
 
 <fieldset class="fr-fieldset">
-    <div class="fr-fieldset__element fr-mt-4v">
+    <div class="fr-fieldset__element">
         <Input
             id="operator-input"
             type="text"
