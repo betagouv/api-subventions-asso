@@ -1,5 +1,5 @@
 import { AgentTypeEnum } from "dto";
-import Store from "$lib/core/Store";
+import Store, { derived } from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 
@@ -10,6 +10,12 @@ export class ProfileController {
         this.deleteError = new Store(false);
         this.user = new Store({});
         this.saveStatus = new Store(""); // "changed", "saved" or "error"
+        this.saveValidation = new Store(true);
+        this.isSubmitBlocked = derived(
+            [this.saveStatus, this.saveValidation],
+            ([status, validation]) => (status !== "changed" && status !== "error") || !validation,
+        );
+        // beforeNavigate(() => {})
     }
 
     onMount(saveAlertElement) {
@@ -39,6 +45,10 @@ export class ProfileController {
             this.saveStatus.set("error");
         }
         if (this.saveAlertElement) this.saveAlertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
+    }
+
+    updateValidation(isValid) {
+        this.saveValidation.set(isValid);
     }
 
     deleteUser() {

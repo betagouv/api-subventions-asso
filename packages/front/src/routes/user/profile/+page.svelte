@@ -11,7 +11,7 @@
     let saveAlertElement;
 
     const controller = new ProfileController();
-    const { deleteError, user, saveStatus } = controller;
+    const { deleteError, user, saveStatus, isSubmitBlocked } = controller;
 
     controller.init();
     onMount(() => controller.onMount(saveAlertElement));
@@ -57,11 +57,10 @@
                     <StructureFormStep
                         bind:values={$user}
                         context={{ agentType: $user.agentType }}
-                        on:change={() => controller.onChange()} />
-
-                    <Button trakerName="profile.save" disabled={$saveStatus !== "changed" && $saveStatus !== "error"}>
-                        Enregistrer les modifications
-                    </Button>
+                        on:change={() => controller.onChange()}
+                        on:valid={() => controller.updateValidation(true)}
+                        on:error={() => controller.updateValidation(false)} />
+                    <Button trakerName="profile.save" disabled={$isSubmitBlocked}>Enregistrer les modifications</Button>
                 </form>
             </div>
 
