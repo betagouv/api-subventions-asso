@@ -1,4 +1,4 @@
-import { AgentTypeEnum, ResetPasswordErrorCodes, TokenValidationType } from "dto";
+import { ResetPasswordErrorCodes, TokenValidationType } from "dto";
 import AgentTypeStep from "./components/AgentTypeStep/AgentTypeStep.svelte";
 import CollectedDataAlert from "./components/AgentTypeStep/CollectedDataAlert.svelte";
 import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
