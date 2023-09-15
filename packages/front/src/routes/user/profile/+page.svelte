@@ -3,6 +3,7 @@
     import { ProfileController } from "./Profile.controller";
     import DeleteUser from "./components/DeleteUser.svelte";
     import SignupModule from "./components/SignupModule.svelte";
+    import ResetPwdModule from "./components/ResetPwdModule/ResetPwdModule.svelte";
     import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Button from "$lib/dsfr/Button.svelte";
@@ -40,6 +41,9 @@
                     </div>
                     <fieldset class="fr-fieldset fr-mt-6w">
                         <SignupModule bind:user={$user} on:change={() => controller.onChange()} />
+                        <div class="fr-fieldset__element fr-mt-4v">
+                            <ResetPwdModule email={$user.email} />
+                        </div>
                     </fieldset>
 
                     <div class="separator fr-mb-6w fr-mt-4w" />
@@ -60,7 +64,9 @@
                         on:change={() => controller.onChange()}
                         on:valid={() => controller.updateValidation(true)}
                         on:error={() => controller.updateValidation(false)} />
-                    <Button trakerName="profile.save" disabled={$isSubmitBlocked}>Enregistrer les modifications</Button>
+                    <Button trakerName="profile.save" disabled={$isSubmitBlocked} type="submit">
+                        Enregistrer les modifications
+                    </Button>
                 </form>
             </div>
 
