@@ -14,7 +14,13 @@ export default class AgentTypeStepController {
 
     private readonly dispatch: (_: string) => void;
     public readonly errorMessage: Store<string>;
-    public readonly options: Option[] = subscriptionFormService.agentTypeOptions;
+    public readonly options: Option[] = [
+        ...subscriptionFormService.agentTypeOptions,
+        {
+            label: "Aucune des propositions ci-dessus",
+            value: "none",
+        },
+    ];
 
     constructor() {
         this.dispatch = Dispatch.getDispatcher();
