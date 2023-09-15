@@ -3,7 +3,7 @@
     import StructureStep from "../../auth/activate/[token]/components/StructureStep/StructureStep.svelte";
     import { ProfileController } from "./Profile.controller";
     import DeleteUser from "./components/DeleteUser.svelte";
-    import SignupModule from "./SignupModule.svelte";
+    import SignupModule from "./components/SignupModule.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
