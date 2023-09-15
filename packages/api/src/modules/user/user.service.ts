@@ -373,7 +373,7 @@ export class UserService {
         // @ts-expect-error: TODO workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
         delete updatedUser.hashPassword;
 
-        console.log(safeUserInfo);
+        
         notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
 
         return updatedUser;
