@@ -2,6 +2,7 @@ import { AgentTypeEnum } from "dto";
 import Store, { derived } from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import { beforeNavigate } from "$app/navigation";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
@@ -15,7 +16,12 @@ export class ProfileController {
             [this.saveStatus, this.saveValidation],
             ([status, validation]) => (status !== "changed" && status !== "error") || !validation,
         );
-        // beforeNavigate(() => {})
+        beforeNavigate(({ cancel }) => {
+            if (this.saveStatus.value === "changed") {
+                cancel();
+                this.showAlert();
+            }
+        });
     }
 
     onMount(saveAlertElement) {
