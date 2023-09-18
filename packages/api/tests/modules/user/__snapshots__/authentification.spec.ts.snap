@@ -3,7 +3,7 @@
 exports[`AuthentificationController, /auth POST /activate should return user 1`] = `
 Object {
   "_id": Any<String>,
-  "active": false,
+  "active": true,
   "agentType": "CENTRAL_ADMIN",
   "decentralizedTerritory": "",
   "email": "user@beta.gouv.fr",

@@ -10,6 +10,7 @@ Array [
       "CATEGORIE": "Agent public d’une collectivité territoriale",
       "COLLECTIVITES": "COLLECTIVITES",
       "COMPETENCE_TERRITORIALE": "Interdépartemental",
+      "COMPTE_ACTIVE": true,
       "ECHELON_COLLECTIVITE": "Départemental",
       "ECHELON_TERRITORIAL": "ECHELON_TERRITORIAL",
       "NOM": "NOM",
