@@ -9,7 +9,7 @@
         label="Prénom :"
         autocomplete="firstname"
         id="signup-given-name"
-        bind:value={user.firstname}
+        bind:value={user.firstName}
         on:change
         required={true} />
 </div>
@@ -18,7 +18,7 @@
         label="NOM :"
         autocomplete="lastname"
         id="signup-family-name"
-        bind:value={user.lastname}
+        bind:value={user.lastName}
         required={true}
         on:change />
 </div>
