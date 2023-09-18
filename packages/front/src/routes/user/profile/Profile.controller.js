@@ -32,14 +32,8 @@ export class ProfileController {
         this.saveStatus.set("changed");
     }
 
-    init() {
-        this.user.set({
-            firstname: "Lucile",
-            lastname: "DUPOND",
-            email: "name@mail.gouv.fr",
-            service: "some service",
-            agentType: AgentTypeEnum.OPERATOR,
-        }); // TODO get infos about user
+    async init() {
+        this.user.set(await userService.getSelfUser());
     }
 
     showAlert() {
