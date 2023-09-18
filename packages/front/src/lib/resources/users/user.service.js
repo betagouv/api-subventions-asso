@@ -11,6 +11,10 @@ export class UsersService {
         await userPort.deleteSelfUser();
         authService.logout(true);
     }
+
+    getSelfUser() {
+        return userPort.getSelfUser();
+    }
 }
 
 const userService = new UsersService();
