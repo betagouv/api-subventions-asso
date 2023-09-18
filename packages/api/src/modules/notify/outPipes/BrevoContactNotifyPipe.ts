@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import Brevo from "@getbrevo/brevo";
+import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum, TerritorialScopeEnum } from "dto";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
@@ -15,6 +16,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
         NotificationType.USER_LOGGED,
         NotificationType.USER_ALREADY_EXIST,
         NotificationType.USER_DELETED,
+        NotificationType.USER_UPDATED,
     ];
 
     private apiInstance: Brevo.ContactsApi;
@@ -36,6 +38,8 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 return this.userLogged(data);
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
+            case NotificationType.USER_UPDATED:
+                return this.userUpdated(data);
             default:
                 return Promise.resolve(false);
         }
@@ -122,7 +126,96 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
         return this.apiInstance
             .deleteContact(data.email)
             .then(() => true)
-            .catch(() => false);
+            .catch(error => {
+                Sentry.captureException(error);
+                return false;
+            });
+    }
+
+    private userUpdated(data: NotificationDataTypes[NotificationType.USER_UPDATED]) {
+        // TODO: get keys from a new shared DTO
+        const JOB_TYPE_LABEL_MAPPING = {
+            [AgentJobTypeEnum.ADMINISTRATOR]: "Gestionnaire administratif et financier",
+            [AgentJobTypeEnum.EXPERT]: "Chargé de mission / Expert métier",
+            [AgentJobTypeEnum.SERVICE_HEAD]: "Responsable de service",
+            [AgentJobTypeEnum.OTHER]: "Autre",
+        };
+
+        // TODO: get keys from a new shared DTO
+        const AGENT_TYPE_LABEL_MAPPING = {
+            [AgentTypeEnum.OPERATOR]: "Agent public d’un opérateur de l’État",
+            [AgentTypeEnum.CENTRAL_ADMIN]: "Agent public d’une administration centrale (État)",
+            [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: "Agent public d’une collectivité territoriale",
+            [AgentTypeEnum.DECONCENTRATED_ADMIN]: "Agent public d’une administration déconcentrée (État)",
+        };
+
+        const ADMIN_TERRITORIAL_LEVEL_LABEL_MAPPING = {
+            [AdminTerritorialLevel.DEPARTMENTAL]: "Départemental",
+            [AdminTerritorialLevel.INTERDEPARTMENTAL]: "Interdépartemental",
+            [AdminTerritorialLevel.REGIONAL]: "Régional",
+            [AdminTerritorialLevel.INTERREGIONAL]: "Interrégional",
+            [AdminTerritorialLevel.OVERSEAS]: "Collectivité d'outre-mer à statut particulier",
+        };
+
+        const TERRITORIAL_SCOPE_LABEL_MAPPING = {
+            [TerritorialScopeEnum.REGIONAL]: "Régional",
+            [TerritorialScopeEnum.DEPARTMENTAL]: "Départemental",
+            [TerritorialScopeEnum.INTERCOMMUNAL]: "Intercommunal (EPCI)",
+            [TerritorialScopeEnum.COMMUNAL]: "Communal",
+            [TerritorialScopeEnum.OTHER]: "Autre",
+        };
+
+        const ATTRIBUTES_MAPPING = {
+            agentType: "CATEGORIE",
+            service: "SERVICE",
+            phoneNumber: "TELEPHONE",
+            jobType: "BUYER_PERSONNAE",
+            centralStructure: "ADMIN_CENTRALE",
+            decentralizedLevel: "COMPETENCE_TERRITORIALE",
+            decentralizedTerritory: "ECHELON_TERRITORIAL",
+            decentralizedStructure: "SERVICE_DECONCENTRE",
+            operatorStructure: "OPERATEUR",
+            territorialStructure: "COLLECTIVITES",
+            territorialScope: "ECHELON_COLLECTIVITE",
+            lastname: "NOM",
+            firstname: "PRENOM",
+        };
+
+        function buildAttributesObject(data) {
+            return Object.keys(data).reduce((acc, key) => {
+                switch (key) {
+                    case "agentType":
+                        acc[ATTRIBUTES_MAPPING[key]] = AGENT_TYPE_LABEL_MAPPING[data[key]];
+                        break;
+                    case "jobType":
+                        acc[ATTRIBUTES_MAPPING[key]] = data[key].map(job => JOB_TYPE_LABEL_MAPPING[job]).join(",");
+                        break;
+                    case "decentralizedLevel":
+                        acc[ATTRIBUTES_MAPPING[key]] = ADMIN_TERRITORIAL_LEVEL_LABEL_MAPPING[data[key]];
+                        break;
+                    case "territorialScope":
+                        acc[ATTRIBUTES_MAPPING[key]] = TERRITORIAL_SCOPE_LABEL_MAPPING[data[key]];
+                        break;
+                    default:
+                        if (Object.keys(ATTRIBUTES_MAPPING).includes(key)) acc[ATTRIBUTES_MAPPING[key]] = data[key];
+                }
+                return acc;
+            }, {});
+        }
+
+        const updateContact = new Brevo.UpdateContact();
+        const attributes: Record<string, string | boolean> = buildAttributesObject(data);
+        attributes.COMPTE_ACTIVE = true;
+        updateContact.attributes = attributes;
+        updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
+        console.log({ email: data.email, updateContact });
+        return this.apiInstance
+            .updateContact(data.email, updateContact)
+            .then(() => true)
+            .catch(error => {
+                Sentry.captureException(error);
+                return false;
+            });
     }
 }
 

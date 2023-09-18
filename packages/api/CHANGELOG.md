@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.2](https://github.com/betagouv/api-subventions-asso/compare/v0.36.1...v0.36.2) (2023-09-18)
+
+### Bug Fixes
+
+-   **api:** activate actually activates user ([54d4026](https://github.com/betagouv/api-subventions-asso/commit/54d4026cdcaea9c2e35346739da560d8a213c321))
+
+### Features
+
+-   **api:** update contact in brevo after activating account ([12c19f5](https://github.com/betagouv/api-subventions-asso/commit/12c19f5a2d30eb245ad5c41c38ca1ba29f8488a9))
+
 ## [0.36.1](https://github.com/betagouv/api-subventions-asso/compare/v0.36.0...v0.36.1) (2023-09-14)
 
 ### Bug Fixes

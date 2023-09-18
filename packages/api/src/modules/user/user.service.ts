@@ -369,9 +369,12 @@ export class UserService {
         const safeUserInfo = this.sanitizeActivationUserInfo(userInfo);
         safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
-        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
+        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo, active: true });
         // @ts-expect-error: TODO workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
         delete updatedUser.hashPassword;
+
+        notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
+
         return updatedUser;
     }
 
@@ -759,6 +762,12 @@ export class UserService {
 
             await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
         }
+    }
+
+    async getUserWithoutSecret(email: string) {
+        const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
+        if (!withSecrets) throw new NotFoundError("User not found");
+        return removeSecrets(withSecrets);
     }
 }
 
