@@ -30,12 +30,12 @@ export default class DecentralizedSubStepController {
         this.dispatch = Dispatch.getDispatcher();
     }
 
-    async init(data): Promise<void> {
+    async init(data: Record<string, any> = {}): Promise<void> {
         this.allStructures = await subscriptionFormService.getStructures(AgentTypeEnum.DECONCENTRATED_ADMIN);
-        if (data.decentralizedLevel) this.settingOptions(data.decentralizedLevel);
+        if (data.decentralizedLevel) this.setOptions(data.decentralizedLevel);
     }
 
-    public settingOptions(level: AdminTerritorialLevel) {
+    private setOptions(level: AdminTerritorialLevel) {
         if (level === AdminTerritorialLevel.DEPARTMENTAL) {
             this.onChoosingDepartment();
             this.filterStructureOptions(AdminTerritorialLevel.DEPARTMENTAL);
@@ -49,7 +49,7 @@ export default class DecentralizedSubStepController {
     public onChoosingLevel(option: { label: string; value: AdminTerritorialLevel }) {
         this.dispatch("change");
         const level: AdminTerritorialLevel = option.value;
-        this.settingOptions(level);
+        this.setOptions(level);
     }
 
     private filterStructureOptions(LEVEL: AdminTerritorialLevel) {

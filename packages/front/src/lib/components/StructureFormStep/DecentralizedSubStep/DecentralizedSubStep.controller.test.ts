@@ -58,26 +58,62 @@ describe("DecentralizedSubStep", () => {
     });
 
     describe("init", () => {
+        const INITIAL_VALUES = { decentralizedLevel: AdminTerritorialLevel.OVERSEAS };
+        let setOptionsMock: MockInstance;
+
         beforeAll(() => {
             vi.mocked(subscriptionFormService.getStructures).mockResolvedValue(STRUCTURES);
             ctrl = new DecentralizedSubStepController();
+            // @ts-expect-error private
+            setOptionsMock = vi.spyOn(ctrl, "setOptions");
         });
 
         it("gets structures with proper agentType", async () => {
-            await ctrl.init();
+            await ctrl.init(INITIAL_VALUES);
             expect(subscriptionFormService.getStructures).toHaveBeenCalledWith(AgentTypeEnum.DECONCENTRATED_ADMIN);
         });
 
         it("updates allStructures thanks to call", async () => {
-            await ctrl.init();
+            await ctrl.init(INITIAL_VALUES);
             const expected = STRUCTURES;
             // @ts-expect-error test private
             const actual = ctrl.allStructures;
             expect(actual).toEqual(expected);
         });
+
+        it("initializes options", async () => {
+            await ctrl.init(INITIAL_VALUES);
+            expect(setOptionsMock).toHaveBeenCalled();
+        });
+
+        it("doesn't initialize options if unknown territorial level", async () => {
+            await ctrl.init();
+            expect(setOptionsMock).not.toHaveBeenCalled();
+        });
     });
 
     describe("onChoosingLevel", () => {
+        const LEVEL = AdminTerritorialLevel.DEPARTMENTAL;
+        let setOptionsMock: MockInstance;
+
+        beforeAll(() => {
+            ctrl = new DecentralizedSubStepController();
+            // @ts-expect-error private
+            setOptionsMock = vi.spyOn(ctrl, "setOptions").mockImplementation(vi.fn());
+        });
+
+        afterAll(() => {
+            ctrl = new DecentralizedSubStepController();
+            setOptionsMock.mockRestore();
+        });
+
+        it("calls setOptions with proper arg", () => {
+            ctrl.onChoosingLevel({ label: "anything", value: LEVEL });
+            expect(setOptionsMock).toHaveBeenCalledWith(LEVEL);
+        });
+    });
+
+    describe("setOptions", () => {
         beforeAll(() => {
             ctrl = new DecentralizedSubStepController();
         });
@@ -100,13 +136,16 @@ describe("DecentralizedSubStep", () => {
                 terrSpy.mockReset();
                 filterStructuresSpy.mockReset();
             });
+
             it("calls filterStructureOptions with proper arg", () => {
-                ctrl.onChoosingLevel({ label: "anything", value: terrLevel });
+                // @ts-expect-error private
+                ctrl.setOptions(terrLevel);
                 expect(filterStructuresSpy).toHaveBeenCalledWith(terrLevel);
             });
 
             it("calls specific method to update territory options", () => {
-                ctrl.onChoosingLevel({ label: "anything", value: terrLevel });
+                // @ts-expect-error private
+                ctrl.setOptions(terrLevel);
                 expect(terrSpy).toHaveBeenCalled();
             });
         });
