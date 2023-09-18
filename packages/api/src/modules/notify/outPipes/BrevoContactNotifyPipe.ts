@@ -204,9 +204,11 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
         }
 
         const updateContact = new Brevo.UpdateContact();
-        const attributes = buildAttributesObject(data);
+        const attributes: Record<string, string | boolean> = buildAttributesObject(data);
+        attributes.COMPTE_ACTIVE = true;
         updateContact.attributes = attributes;
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
+        console.log({ email: data.email, updateContact });
         return this.apiInstance
             .updateContact(data.email, updateContact)
             .then(() => true)
