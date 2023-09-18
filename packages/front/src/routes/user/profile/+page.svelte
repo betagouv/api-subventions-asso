@@ -14,8 +14,8 @@
     const controller = new ProfileController();
     const { deleteError, user, saveStatus, isSubmitBlocked } = controller;
 
-    controller.init();
     onMount(() => controller.onMount(saveAlertElement));
+    controller.init();
 </script>
 
 <div class="fr-container">

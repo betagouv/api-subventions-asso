@@ -18,7 +18,7 @@
     const ctrl = new DecentralizedSubStepController();
     const { departmentOptions, regionOptions, structureOptions } = ctrl;
 
-    ctrl.init();
+    ctrl.init(values);
 </script>
 
 <Radio
