@@ -3,6 +3,7 @@ import {
     FutureUserDto,
     GetRolesDtoResponse,
     UserDataDto,
+    UserDto,
     UserDtoResponse,
     UserListDtoResponse,
 } from "dto";
@@ -110,6 +111,17 @@ export class UserController extends Controller {
         if (!success) throw new NotFoundError("user to delete not found");
         this.setStatus(204);
         return true;
+    }
+
+    /**
+     * get own's account
+     * @summary get own's account
+     */
+    @Get("/me")
+    @Security("jwt", ["user"])
+    @Response<HttpErrorInterface>(400, "Bad Request")
+    public getSelfUser(@Request() req: IdentifiedRequest): Promise<UserDto> {
+        return userService.getUserWithoutSecret(req.user.email);
     }
 
     /**
