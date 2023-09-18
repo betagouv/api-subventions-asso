@@ -7,7 +7,7 @@
 <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
     <Input
         label="Prénom :"
-        autocomplete="firstname"
+        autocomplete="given-name"
         id="signup-given-name"
         bind:value={user.firstName}
         on:change
@@ -16,7 +16,7 @@
 <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
     <Input
         label="NOM :"
-        autocomplete="lastname"
+        autocomplete="family-name"
         id="signup-family-name"
         bind:value={user.lastName}
         required={true}
