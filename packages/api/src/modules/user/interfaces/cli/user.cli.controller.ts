@@ -31,7 +31,7 @@ export default class UserCliController {
     async active(email: string) {
         try {
             await userService.activeUser(email);
-            console.info("User has been actived");
+            console.info("User has been activated");
         } catch (e) {
             console.info("Active error : \n", (e as Error).message);
         }

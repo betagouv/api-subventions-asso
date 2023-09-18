@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Service getUserWithoutSecret return without secrets 1`] = `
+Object {
+  "_id": "635132a527c9bfb8fc7c758e",
+  "active": true,
+  "email": "user@beta.gouv.fr",
+  "firstName": "",
+  "lastName": "",
+  "profileToComplete": false,
+  "roles": Array [
+    "user",
+  ],
+  "signupAt": 2022-01-01T00:00:00.000Z,
+}
+`;

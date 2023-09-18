@@ -763,6 +763,12 @@ export class UserService {
             await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
         }
     }
+
+    async getUserWithoutSecret(email: string) {
+        const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
+        if (!withSecrets) throw new NotFoundError("User not found");
+        return removeSecrets(withSecrets);
+    }
 }
 
 const userService = new UserService();
