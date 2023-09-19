@@ -170,12 +170,9 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             service: "SERVICE",
             phoneNumber: "TELEPHONE",
             jobType: "BUYER_PERSONNAE",
-            centralStructure: "ADMIN_CENTRALE",
+            structure: "STRUCTURE",
             decentralizedLevel: "COMPETENCE_TERRITORIALE",
             decentralizedTerritory: "ECHELON_TERRITORIAL",
-            decentralizedStructure: "SERVICE_DECONCENTRE",
-            operatorStructure: "OPERATEUR",
-            territorialStructure: "COLLECTIVITES",
             territorialScope: "ECHELON_COLLECTIVITE",
             lastname: "NOM",
             firstname: "PRENOM",
@@ -205,7 +202,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
 
         const updateContact = new Brevo.UpdateContact();
         const attributes: Record<string, string | boolean> = buildAttributesObject(data);
-        attributes.COMPTE_ACTIVE = true;
+        attributes.COMPTE_ACTIVE = true; // TODO le rendre configurable ?
         updateContact.attributes = attributes;
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance

@@ -5,19 +5,15 @@ Array [
   "test@datasubvention.gouv.fr",
   exports {
     "attributes": Object {
-      "ADMIN_CENTRALE": "ADMIN_CENTRALE",
       "BUYER_PERSONNAE": "Gestionnaire administratif et financier,Chargé de mission / Expert métier",
       "CATEGORIE": "Agent public d’une collectivité territoriale",
-      "COLLECTIVITES": "COLLECTIVITES",
       "COMPETENCE_TERRITORIALE": "Interdépartemental",
       "COMPTE_ACTIVE": true,
       "ECHELON_COLLECTIVITE": "Départemental",
       "ECHELON_TERRITORIAL": "ECHELON_TERRITORIAL",
       "NOM": "NOM",
-      "OPERATEUR": "OPERATEUR",
       "PRENOM": "PRENOM",
       "SERVICE": "SERVICE",
-      "SERVICE_DECONCENTRE": "SERVICE_DECONCENTRE",
       "TELEPHONE": "+33625859685",
     },
     "listIds": Array [
