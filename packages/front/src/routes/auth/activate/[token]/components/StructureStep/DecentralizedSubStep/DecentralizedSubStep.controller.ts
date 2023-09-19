@@ -57,15 +57,16 @@ export default class DecentralizedSubStepController {
         optionStore: Store<Option[]>,
         serviceMethod: () => Promise<{ code: string; nom: string }[]>,
         transform: (reg: { code: string; nom: string }) => string,
+        sort = false,
     ) {
         if (optionStore.value.length) return;
         const territories = await serviceMethod();
-        optionStore.set(
-            territories.map(territory => ({
-                label: transform(territory),
-                value: transform(territory),
-            })),
-        );
+        let options = territories.map(territory => ({
+            label: transform(territory),
+            value: transform(territory),
+        }));
+        if (sort) options = options.sort((a, b) => a.label.localeCompare(b.label));
+        optionStore.set(options);
     }
 
     private onChoosingDepartment() {
@@ -77,6 +78,6 @@ export default class DecentralizedSubStepController {
     }
 
     private onChoosingRegion() {
-        return this.fillOptionsOnce(this.regionOptions, geoService.getRegions, (reg: { nom: string }) => reg.nom);
+        return this.fillOptionsOnce(this.regionOptions, geoService.getRegions, (reg: { nom: string }) => reg.nom, true);
     }
 }
