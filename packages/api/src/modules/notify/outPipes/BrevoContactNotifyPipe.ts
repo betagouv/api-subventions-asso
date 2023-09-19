@@ -138,6 +138,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             [AgentJobTypeEnum.ADMINISTRATOR]: "Gestionnaire administratif et financier",
             [AgentJobTypeEnum.EXPERT]: "Chargé de mission / Expert métier",
             [AgentJobTypeEnum.SERVICE_HEAD]: "Responsable de service",
+            [AgentJobTypeEnum.CONTROLLER]: "Contrôleur / Inspecteur",
             [AgentJobTypeEnum.OTHER]: "Autre",
         };
 
