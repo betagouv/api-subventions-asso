@@ -420,7 +420,7 @@ export class UserService {
         if (structure) {
             validations.push({
                 value: structure,
-                method: value => typeof value == "string",
+                method: value => !value || typeof value == "string",
                 error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
             });
         }
@@ -428,7 +428,7 @@ export class UserService {
         if (agentType === AgentTypeEnum.TERRITORIAL_COLLECTIVITY)
             validations.push({
                 value: userInfo.territorialScope,
-                method: value => isInObjectValues(TerritorialScopeEnum, value),
+                method: value => !value || isInObjectValues(TerritorialScopeEnum, value),
                 error: new BadRequestError(dedent`Mauvaise valeur pour le périmètre
                 Les valeurs possibles sont ${joinEnum(TerritorialScopeEnum)}`),
             });
@@ -436,7 +436,7 @@ export class UserService {
         if (agentType === AgentTypeEnum.DECONCENTRATED_ADMIN)
             validations.push({
                 value: userInfo.decentralizedLevel,
-                method: value => isInObjectValues(AdminTerritorialLevel, value),
+                method: value => !value || isInObjectValues(AdminTerritorialLevel, value),
                 error: new BadRequestError(dedent`Mauvaise valeur pour le niveau territorial
                 Les valeurs possibles sont ${joinEnum(AdminTerritorialLevel)}`),
             });
