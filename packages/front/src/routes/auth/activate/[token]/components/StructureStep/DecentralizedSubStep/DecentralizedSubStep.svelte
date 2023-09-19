@@ -23,7 +23,7 @@
 
 <Radio
     options={ctrl.levelOptions}
-    label="Vous êtes :"
+    label="Sélectionnez votre périmètre :"
     bind:value={values.decentralizedLevel}
     on:change={({ detail }) => ctrl.onChoosingLevel(detail)} />
 
@@ -41,7 +41,7 @@
             <AutocompleteSelect
                 options={$regionOptions}
                 bind:value={values.decentralizedTerritory}
-                label="Quelle est votre région"
+                label="Quelle est votre région ?"
                 placeholder="Ex : Occitanie" />
         </div>
     {/if}
@@ -52,14 +52,14 @@
                 options={$structureOptions}
                 bind:value={values.structure}
                 label="Quelle est votre administration ?"
-                placeholder="Ex : DETS59, Préfecture" />
+                placeholder="Ex : DDETS59, Préfecture" />
         {:else}
             <Input
                 id="structure"
                 type="text"
                 bind:value={values.structure}
                 label="Quelle est votre administration ?"
-                placeholder="Ex : DETS59, Préfecture" />
+                placeholder="Ex : DDETS59, Préfecture" />
         {/if}
     </div>
 </fieldset>
