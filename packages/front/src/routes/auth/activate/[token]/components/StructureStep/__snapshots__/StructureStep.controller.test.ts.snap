@@ -21,6 +21,10 @@ exports[`StructureStepController > constructor > inits 'jobTypeOptions' 1`] = `
     "value": "SERVICE_HEAD",
   },
   {
+    "label": "Contrôleur / Inspecteur",
+    "value": "CONTROLLER",
+  },
+  {
     "label": "Autre",
     "value": "OTHER",
   },
