@@ -86,7 +86,7 @@
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a class="fr-footer__bottom-link" href="/cgu">Conditions générales d’utilisation</a>
+                    <a class="fr-footer__bottom-link" href="/cgu" target="_blank">Conditions générales d’utilisation</a>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>

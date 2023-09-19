@@ -78,7 +78,7 @@
                     En vous inscrivant, vous acceptez la
                     <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">politique de confidentialité</a>
                     et les
-                    <a href={ctrl.cguUrl}>conditions générales d'utilisations</a>
+                    <a href={ctrl.cguUrl} target="_blank">conditions générales d'utilisations</a>
                     de Data.Subvention.
                 </span>
             </div>
