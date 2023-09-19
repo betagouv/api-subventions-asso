@@ -208,7 +208,6 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
         attributes.COMPTE_ACTIVE = true;
         updateContact.attributes = attributes;
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
-        console.log({ email: data.email, updateContact });
         return this.apiInstance
             .updateContact(data.email, updateContact)
             .then(() => true)

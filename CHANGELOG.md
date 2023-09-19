@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.3](https://github.com/betagouv/api-subventions-asso/compare/v0.36.2...v0.36.3) (2023-09-19)
+
+### Bug Fixes
+
+-   **api:** sets profileToComplete and clean ([ad8612d](https://github.com/betagouv/api-subventions-asso/commit/ad8612d39ed3d4daa0e5fecec9c5da38086f8c7f))
+
 ## [0.36.2](https://github.com/betagouv/api-subventions-asso/compare/v0.36.1...v0.36.2) (2023-09-18)
 
 ### Bug Fixes
