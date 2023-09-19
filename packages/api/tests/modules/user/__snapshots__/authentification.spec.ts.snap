@@ -11,7 +11,7 @@ Object {
   "jobType": Array [],
   "lastName": null,
   "phoneNumber": "",
-  "profileToComplete": true,
+  "profileToComplete": false,
   "roles": Array [
     "user",
   ],
