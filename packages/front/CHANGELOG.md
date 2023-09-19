@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.4](https://github.com/betagouv/datasubvention/compare/v0.36.3...v0.36.4) (2023-09-19)
+
+### Bug Fixes
+
+-   **front:** wording ([ad0087a](https://github.com/betagouv/datasubvention/commit/ad0087a049cac982a2bac56cd3098cbdf5f48821))
+
+### Features
+
+-   **api,dto,front:** new job type ([aa49f98](https://github.com/betagouv/datasubvention/commit/aa49f983c28575d0ea3bf8cb71098a7d8d7e3571))
+-   **front:** cgu in new tab ([db65ecc](https://github.com/betagouv/datasubvention/commit/db65eccca04381879afbd982fef8394acb0094c1))
+-   **front:** sort regions ([c1ff756](https://github.com/betagouv/datasubvention/commit/c1ff7560cd0e6865c8c7b660c8bc3214ba83ab47))
+
 # [0.36.0](https://github.com/betagouv/datasubvention/compare/v0.35.3...v0.36.0) (2023-09-14)
 
 ### Bug Fixes
