@@ -262,6 +262,19 @@ describe("User Service", () => {
                 });
                 expect(actual).toMatchSnapshot();
             });
+
+            it("does not check password if arg does not require it ", () => {
+                const expected = { valid: true };
+                // @ts-expect-error: private method
+                const actual = userService.validateUserActivationInfo(
+                    {
+                        ...validInput,
+                        password: "PA$$W0RD",
+                    },
+                    false,
+                );
+                expect(actual).toEqual(expected);
+            });
         });
 
         describe("agentType", () => {

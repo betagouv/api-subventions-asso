@@ -383,17 +383,12 @@ export class UserService {
         return updatedUser;
     }
 
-    private validateUserActivationInfo(userInfo): { valid: false; error: Error } | { valid: true } {
+    private validateUserActivationInfo(
+        userInfo,
+        withPassword = true,
+    ): { valid: false; error: Error } | { valid: true } {
         const { password, agentType, jobType, structure } = userInfo;
         const validations = [
-            {
-                value: password,
-                method: this.passwordValidator,
-                error: new BadRequestError(
-                    UserService.PASSWORD_VALIDATOR_MESSAGE,
-                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-                ),
-            },
             {
                 value: agentType,
                 method: value => isInObjectValues(AgentTypeEnum, value),
@@ -411,19 +406,26 @@ export class UserService {
                     Les valeurs possibles sont ${joinEnum(AgentJobTypeEnum)}
                 `),
             },
+            {
+                value: structure,
+                method: value => !value || typeof value == "string",
+                error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
+            },
         ];
+
+        if (withPassword)
+            validations.push({
+                value: password,
+                method: this.passwordValidator,
+                error: new BadRequestError(
+                    UserService.PASSWORD_VALIDATOR_MESSAGE,
+                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+                ),
+            });
 
         /**
          *          AGENT TYPE SPECIFIC VALUES
          */
-
-        if (structure) {
-            validations.push({
-                value: structure,
-                method: value => !value || typeof value == "string",
-                error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
-            });
-        }
 
         if (agentType === AgentTypeEnum.TERRITORIAL_COLLECTIVITY)
             validations.push({
