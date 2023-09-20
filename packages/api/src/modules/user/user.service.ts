@@ -343,7 +343,7 @@ export class UserService {
         const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
-            sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
+            if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
         });
         return sanitizedUserInfo;
     }

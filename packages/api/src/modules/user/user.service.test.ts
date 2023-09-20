@@ -364,9 +364,17 @@ describe("User Service", () => {
     describe("sanitizeActivationUserInfo()", () => {
         beforeAll(() => mockSanitizeActivationUserInfo.mockRestore());
         it("should call sanitizeToPlainText()", () => {
-            const expected = 4;
+            const expected = 2;
             userService.sanitizeActivationUserInfo(USER_ACTIVATION_INFO);
             expect(sanitizeToPlainText).toHaveBeenCalledTimes(expected);
+        });
+
+        it("does not add field", () => {
+            jest.mocked(sanitizeToPlainText).mockReturnValueOnce("santitized");
+            const expected = 1;
+            const sanitized = userService.sanitizeActivationUserInfo({ service: "smth" });
+            const actual = Object.keys(sanitized).length;
+            expect(actual).toBe(expected);
         });
     });
 
