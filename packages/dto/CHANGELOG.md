@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.5](https://github.com/betagouv/datasubvention/compare/v0.36.3...v0.36.5) (2023-09-20)
+
+### Features
+
+-   **api,dto,front:** new job type ([1969dcf](https://github.com/betagouv/datasubvention/commit/1969dcf7a9a7f82e235bea923f53aa5ee6e3d5fb))
+
 ## [0.36.4](https://github.com/betagouv/datasubvention/compare/v0.36.3...v0.36.4) (2023-09-19)
 
 ### Features

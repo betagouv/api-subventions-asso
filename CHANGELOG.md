@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.5](https://github.com/betagouv/api-subventions-asso/compare/v0.36.3...v0.36.5) (2023-09-20)
+
+### Bug Fixes
+
+-   **api:** activate validation allows empty values ([00fefc1](https://github.com/betagouv/api-subventions-asso/commit/00fefc17f4058dfee4ec547fa2431bea4d3c4645))
+-   **api:** brevo structure mapping ([033921e](https://github.com/betagouv/api-subventions-asso/commit/033921ebd1c53c1f2b322a14512df026cc737101))
+-   **api:** sometimes user is defined but not a user ([b3e1b8e](https://github.com/betagouv/api-subventions-asso/commit/b3e1b8e299b1b63be88089430f56e58990b1baf9))
+-   **front:** wording ([632362b](https://github.com/betagouv/api-subventions-asso/commit/632362b84fd24c95c96ec0d9e2e0b4c09b3dcf07))
+
+### Features
+
+-   **api,dto,front:** new job type ([1969dcf](https://github.com/betagouv/api-subventions-asso/commit/1969dcf7a9a7f82e235bea923f53aa5ee6e3d5fb))
+-   **api:** route get own's user ([71a5e22](https://github.com/betagouv/api-subventions-asso/commit/71a5e22d59b35dec89e685c32a6297498ba4b3ee))
+-   **api:** service get user no secret ([a2c1c3e](https://github.com/betagouv/api-subventions-asso/commit/a2c1c3ed219fa12ec40891f828c7873bb765f10e))
+-   **front:** cgu in new tab ([c1198c9](https://github.com/betagouv/api-subventions-asso/commit/c1198c9e1cad5ae43be3b53aa51b41f4fa426065))
+-   **front:** sort regions ([713982e](https://github.com/betagouv/api-subventions-asso/commit/713982ef78446b4600ed869de13f982c7f5ec60c))
+
 ## [0.36.4](https://github.com/betagouv/api-subventions-asso/compare/v0.36.3...v0.36.4) (2023-09-19)
 
 ### Bug Fixes
