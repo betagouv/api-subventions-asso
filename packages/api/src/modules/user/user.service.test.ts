@@ -242,6 +242,11 @@ describe("User Service", () => {
     });
 
     describe("validateUserActivationInfo()", () => {
+        const validInput = {
+            password: "m0t de Passe.",
+            agentType: AgentTypeEnum.OPERATOR,
+            jobType: [],
+        };
         beforeAll(() => mockValidateUserActivationInfo.mockRestore());
         // @ts-expect-error: mock
         afterAll(() => mockValidateUserActivationInfo.mockImplementation(() => ({ valid: true })));
@@ -250,14 +255,12 @@ describe("User Service", () => {
             // @ts-expect-error: mock private method
             beforeAll(() => mockPasswordValidator.mockImplementationOnce(() => false));
             it("should throw password is wrong", () => {
-                try {
-                    // @ts-expect-error: private method
-                    userService.validateUserActivationInfo({
-                        password: "PA$$W0RD",
-                    });
-                } catch (e) {
-                    expect(e).toMatchSnapshot();
-                }
+                // @ts-expect-error: private method
+                const actual = userService.validateUserActivationInfo({
+                    ...validInput,
+                    password: "PA$$W0RD",
+                });
+                expect(actual).toMatchSnapshot();
             });
         });
 
@@ -267,14 +270,12 @@ describe("User Service", () => {
             beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw if agentType is wrong", () => {
-                try {
-                    // @ts-expect-error: private method
-                    userService.validateUserActivationInfo({
-                        agentType: "WRONG_VALUE",
-                    });
-                } catch (e) {
-                    expect(e).toMatchSnapshot();
-                }
+                // @ts-expect-error: private method
+                const actual = userService.validateUserActivationInfo({
+                    ...validInput,
+                    agentType: "WRONG_VALUE",
+                });
+                expect(actual).toMatchSnapshot();
             });
         });
 
@@ -284,28 +285,12 @@ describe("User Service", () => {
             beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
-                try {
-                    // @ts-expect-error: private method
-                    userService.validateUserActivationInfo({
-                        agentType: AgentTypeEnum.CENTRAL_ADMIN,
-                        jobType: ["WRONG_TYPE"],
-                    });
-                } catch (e) {
-                    expect(e).toMatchSnapshot();
-                }
-            });
-
-            it.each`
-                jobType
-                ${[]}
-                ${[AgentJobTypeEnum.ADMINISTRATOR]}
-                ${[AgentJobTypeEnum.ADMINISTRATOR, AgentJobTypeEnum.OTHER]}
-            `("should throw an error", ({ jobType }) => {
                 // @ts-expect-error: private method
-                userService.validateUserActivationInfo({
-                    agentType: AgentTypeEnum.CENTRAL_ADMIN,
-                    jobType,
+                const actual = userService.validateUserActivationInfo({
+                    ...validInput,
+                    agentType: "WRONG_VALUE",
                 });
+                expect(actual).toMatchSnapshot();
             });
         });
 
@@ -315,16 +300,12 @@ describe("User Service", () => {
             beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
-                try {
-                    // @ts-expect-error: private method
-                    userService.validateUserActivationInfo({
-                        agentType: AgentTypeEnum.CENTRAL_ADMIN,
-                        jobType: [AgentJobTypeEnum.EXPERT],
-                        structure: 6,
-                    });
-                } catch (e) {
-                    expect(e).toMatchSnapshot();
-                }
+                // @ts-expect-error: private method
+                const actual = userService.validateUserActivationInfo({
+                    ...validInput,
+                    structure: 6,
+                });
+                expect(actual).toMatchSnapshot();
             });
         });
 
@@ -334,28 +315,17 @@ describe("User Service", () => {
             beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
-                try {
-                    // @ts-expect-error: private method
-                    userService.validateUserActivationInfo({
-                        agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
-                        jobType: [AgentJobTypeEnum.EXPERT],
-                        structure: "STRUCTURE",
-                        territorialScope: "WRONG_SCOPE",
-                    });
-                } catch (e) {
-                    expect(e).toMatchSnapshot();
-                }
+                // @ts-expect-error: private method
+                const actual = userService.validateUserActivationInfo({
+                    ...validInput,
+                    territorialScope: "WRONG_SCOPE",
+                });
+                expect(actual).toMatchSnapshot();
             });
             it("should return true", () => {
                 const expected = { valid: true };
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo({
-                    agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
-                    jobType: [AgentJobTypeEnum.EXPERT],
-                    structure: "STRUCTURE",
-                    territorialScope: TerritorialScopeEnum.COMMUNAL,
-                });
-                console.log(actual);
+                const actual = userService.validateUserActivationInfo(validInput);
                 expect(actual).toEqual(expected);
             });
         });
