@@ -209,7 +209,7 @@ describe("User Service", () => {
             mockValidateResetToken.mockImplementation(token => ({ valid: true }));
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             // @ts-expect-error: unknown error
-            mockGetHashPassword.mockImplementation(async password => password);
+            mockGetHashPassword.mockImplementation(async password => Promise.resolve(password));
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
             // @ts-expect-error: unknown error
             mockedUserRepository.update.mockImplementation(() => ({
@@ -232,6 +232,12 @@ describe("User Service", () => {
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
             });
+        });
+
+        it("should call validateUserProfileData()", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userService.activate("token", USER_ACTIVATION_INFO);
+            expect(mockValidateUserProfileDataUser).toHaveBeenCalledWith(expected);
         });
 
         it("should call validateAndSanitizeActivationUserInfo()", async () => {
