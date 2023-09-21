@@ -113,7 +113,7 @@ describe("User Service", () => {
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
     const mockDeleteUser = jest.spyOn(userService, "delete");
     const mockResetUser = jest.spyOn(userService, "resetUser");
-    const mockSanitizeActivationUserInfo = jest.spyOn(userService, "sanitizeActivationUserInfo");
+    const mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
     // @ts-expect-error: mock private method
     const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
     // @ts-expect-error: mock private method
@@ -122,10 +122,10 @@ describe("User Service", () => {
     const mockBuildJWTToken: SpyInstance = jest.spyOn(userService, "buildJWTToken");
     // @ts-expect-error: mock private method
     const mockPasswordValidator = jest.spyOn(userService, "passwordValidator");
-    const mockValidateUserActivationInfo: jest.SpyInstance<boolean> = jest.spyOn(
+    const mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
         userService,
         // @ts-expect-error: mock private method
-        "validateUserActivationInfo",
+        "validateUserProfileData",
     );
     // @ts-expect-error: mock private method
     const mockValidateEmail = jest.spyOn(userService, "validateEmail");
@@ -194,20 +194,20 @@ describe("User Service", () => {
         };
 
         const mockList = [
-            mockValidateUserActivationInfo,
-            mockSanitizeActivationUserInfo,
+            mockValidateUserProfileDataUser,
+            mockSanitizeUserProfileData,
             mockGetHashPassword,
             mockedUserResetRepository.findByToken,
             mockValidateResetToken,
         ];
         beforeAll(() => {
             // @ts-expect-error: mock
-            mockValidateUserActivationInfo.mockImplementation(() => ({
+            mockValidateUserProfileDataUser.mockImplementation(() => ({
                 valid: true,
             }));
             // @ts-expect-error: mock
             mockValidateResetToken.mockImplementation(token => ({ valid: true }));
-            mockSanitizeActivationUserInfo.mockImplementation(userInfo => userInfo);
+            mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             // @ts-expect-error: unknown error
             mockGetHashPassword.mockImplementation(async password => password);
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
@@ -237,26 +237,26 @@ describe("User Service", () => {
         it("should call validateAndSanitizeActivationUserInfo()", async () => {
             const expected = USER_ACTIVATION_INFO;
             await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockSanitizeActivationUserInfo).toHaveBeenCalledWith(expected);
+            expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
         });
     });
 
-    describe("validateUserActivationInfo()", () => {
+    describe("validateUserProfileData()", () => {
         const validInput = {
             password: "m0t de Passe.",
             agentType: AgentTypeEnum.OPERATOR,
             jobType: [],
         };
-        beforeAll(() => mockValidateUserActivationInfo.mockRestore());
+        beforeAll(() => mockValidateUserProfileDataUser.mockRestore());
         // @ts-expect-error: mock
-        afterAll(() => mockValidateUserActivationInfo.mockImplementation(() => ({ valid: true })));
+        afterAll(() => mockValidateUserProfileDataUser.mockImplementation(() => ({ valid: true })));
 
         describe("password", () => {
             // @ts-expect-error: mock private method
             beforeAll(() => mockPasswordValidator.mockImplementationOnce(() => false));
             it("should throw password is wrong", () => {
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo({
+                const actual = userService.validateUserProfileData({
                     ...validInput,
                     password: "PA$$W0RD",
                 });
@@ -266,7 +266,7 @@ describe("User Service", () => {
             it("does not check password if arg does not require it ", () => {
                 const expected = { valid: true };
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo(
+                const actual = userService.validateUserProfileData(
                     {
                         ...validInput,
                         password: "PA$$W0RD",
@@ -284,7 +284,7 @@ describe("User Service", () => {
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw if agentType is wrong", () => {
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo({
+                const actual = userService.validateUserProfileData({
                     ...validInput,
                     agentType: "WRONG_VALUE",
                 });
@@ -299,7 +299,7 @@ describe("User Service", () => {
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo({
+                const actual = userService.validateUserProfileData({
                     ...validInput,
                     agentType: "WRONG_VALUE",
                 });
@@ -314,7 +314,7 @@ describe("User Service", () => {
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo({
+                const actual = userService.validateUserProfileData({
                     ...validInput,
                     structure: 6,
                 });
@@ -329,7 +329,7 @@ describe("User Service", () => {
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo({
+                const actual = userService.validateUserProfileData({
                     ...validInput,
                     territorialScope: "WRONG_SCOPE",
                 });
@@ -338,24 +338,24 @@ describe("User Service", () => {
             it("should return true", () => {
                 const expected = { valid: true };
                 // @ts-expect-error: private method
-                const actual = userService.validateUserActivationInfo(validInput);
+                const actual = userService.validateUserProfileData(validInput);
                 expect(actual).toEqual(expected);
             });
         });
     });
 
     describe("sanitizeActivationUserInfo()", () => {
-        beforeAll(() => mockSanitizeActivationUserInfo.mockRestore());
+        beforeAll(() => mockSanitizeUserProfileData.mockRestore());
         it("should call sanitizeToPlainText()", () => {
             const expected = 2;
-            userService.sanitizeActivationUserInfo(USER_ACTIVATION_INFO);
+            userService.sanitizeUserProfileData(USER_ACTIVATION_INFO);
             expect(sanitizeToPlainText).toHaveBeenCalledTimes(expected);
         });
 
         it("does not add field", () => {
             jest.mocked(sanitizeToPlainText).mockReturnValueOnce("santitized");
             const expected = 1;
-            const sanitized = userService.sanitizeActivationUserInfo({ service: "smth" });
+            const sanitized = userService.sanitizeUserProfileData({ service: "smth" });
             const actual = Object.keys(sanitized).length;
             expect(actual).toBe(expected);
         });

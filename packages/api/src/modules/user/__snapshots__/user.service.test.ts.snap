@@ -15,7 +15,7 @@ Object {
 }
 `;
 
-exports[`User Service validateUserActivationInfo() agentType should throw if agentType is wrong 1`] = `
+exports[`User Service validateUserProfileData() agentType should throw if agentType is wrong 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour le type d'agent.
 Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DECONCENTRATED],
@@ -23,7 +23,7 @@ Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DE
 }
 `;
 
-exports[`User Service validateUserActivationInfo() password should throw password is wrong 1`] = `
+exports[`User Service validateUserProfileData() password should throw password is wrong 1`] = `
 Object {
   "error": [Error: Password is too weak, please use this rules:
 At least one digit [0-9]
@@ -35,20 +35,20 @@ At least 8 characters in length, but no more than 32.],
 }
 `;
 
-exports[`User Service validateUserActivationInfo() structure should throw an error 1`] = `
+exports[`User Service validateUserProfileData() structure should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour la structure.],
   "valid": false,
 }
 `;
 
-exports[`User Service validateUserActivationInfo() territorialScope should throw an error 1`] = `
+exports[`User Service validateUserProfileData() territorialScope should throw an error 1`] = `
 Object {
   "valid": true,
 }
 `;
 
-exports[`User Service validateUserActivationInfo() typeJob should throw an error 1`] = `
+exports[`User Service validateUserProfileData() typeJob should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour le type d'agent.
 Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DECONCENTRATED],

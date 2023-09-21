@@ -339,7 +339,7 @@ export class UserService {
         return user;
     }
 
-    sanitizeActivationUserInfo(unsafeUserInfo) {
+    sanitizeUserProfileData(unsafeUserInfo) {
         const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
@@ -363,10 +363,10 @@ export class UserService {
 
         if (!userInfo.jobType) userInfo.jobType = [];
 
-        const userInfoValidation = this.validateUserActivationInfo(userInfo);
+        const userInfoValidation = this.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const safeUserInfo = this.sanitizeActivationUserInfo(userInfo);
+        const safeUserInfo = this.sanitizeUserProfileData(userInfo);
         safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
         const updatedUser = await userRepository.update({
@@ -383,10 +383,7 @@ export class UserService {
         return updatedUser;
     }
 
-    private validateUserActivationInfo(
-        userInfo,
-        withPassword = true,
-    ): { valid: false; error: Error } | { valid: true } {
+    private validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
         const { password, agentType, jobType, structure } = userInfo;
         const validations = [
             {
