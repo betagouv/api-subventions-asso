@@ -1251,6 +1251,41 @@ describe("User Service", () => {
         });
     });
 
+    describe("profileUpdate", () => {
+        const mockList = [mockValidateUserProfileDataUser, mockSanitizeUserProfileData];
+        beforeAll(() => {
+            // @ts-expect-error: mock
+            mockValidateUserProfileDataUser.mockReturnValue({ valid: true });
+            mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
+            mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
+        });
+        afterAll(() => mockList.forEach(mock => mock.mockReset()));
+
+        it("should call validateUserProfileData() without testing password", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(mockValidateUserProfileDataUser).toHaveBeenCalledWith(expected, false);
+        });
+
+        it("should call sanitizeUserProfileData()", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
+        });
+
+        it("should call userRepository.update() with sanitized data", async () => {
+            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(userRepository.update).toHaveBeenCalledWith({ ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO });
+        });
+
+        it("should notify user updated", async () => {
+            // @ts-expect-error test
+            jest.mocked(userRepository.update).mockResolvedValue({ field: "updated" });
+            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, { field: "updated" });
+        });
+    });
+
     describe("getUserWithoutSecret", () => {
         const EMAIL = "user@mail.fr";
 
