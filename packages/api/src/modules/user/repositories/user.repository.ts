@@ -2,6 +2,7 @@ import { UserDto } from "dto";
 import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
+import { InternalServerError } from "../../../shared/errors/httpErrors";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository {
@@ -39,10 +40,16 @@ export class UserRepository {
         return this.find(query);
     }
 
-    async update(user: UserDbo | UserDto): Promise<UserDto> {
-        if (user._id) await this.collection.updateOne({ _id: user._id }, { $set: user as Partial<UserDbo> });
-        else await this.collection.updateOne({ email: user.email }, { $set: user as Partial<UserDbo> });
-        return user;
+    async update(user: Partial<UserDbo>): Promise<UserDbo> {
+        const res = user._id
+            ? await this.collection.findOneAndUpdate({ _id: user._id }, { $set: user }, { returnDocument: "after" })
+            : await this.collection.findOneAndUpdate(
+                  { email: user.email },
+                  { $set: user },
+                  { returnDocument: "after" },
+              );
+        if (!res.value) throw new InternalServerError("User update failed");
+        return res.value;
     }
 
     async delete(user: UserDto): Promise<boolean> {

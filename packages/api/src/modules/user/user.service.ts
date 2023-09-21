@@ -280,10 +280,10 @@ export class UserService {
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
-        return { user: userUpdated };
+        return { user: removeSecrets(userUpdated) };
     }
 
-    public async update(user: UserDto): Promise<UserDto> {
+    public async update(user: Partial<UserDbo> & Pick<UserDbo, "email">): Promise<UserDbo> {
         await this.validateEmail(user.email);
         return await userRepository.update(user);
     }
@@ -375,12 +375,12 @@ export class UserService {
             active: true,
             profileToComplete: false,
         });
-        // @ts-expect-error: TODO workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
-        delete updatedUser.hashPassword;
 
-        notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
+        const safeUpdatedUser = removeSecrets(updatedUser);
 
-        return updatedUser;
+        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
+
+        return safeUpdatedUser;
     }
 
     private validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -488,7 +488,7 @@ export class UserService {
 
         user.roles = [...new Set([...user.roles, ...roles])];
 
-        return { user: await userRepository.update(user) };
+        return { user: removeSecrets(await userRepository.update(user)) };
     }
 
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
@@ -502,7 +502,7 @@ export class UserService {
 
         user.active = true;
 
-        return { user: await userRepository.update(user) };
+        return { user: removeSecrets(await userRepository.update(user)) };
     }
 
     async refreshExpirationToken(user: UserDto) {
@@ -577,9 +577,7 @@ export class UserService {
             profileToComplete: false,
         });
 
-        //@ts-expect-error: workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
-        delete userUpdated.hashPassword;
-        return userUpdated;
+        return removeSecrets(userUpdated);
     }
 
     async forgetPassword(email: string) {
