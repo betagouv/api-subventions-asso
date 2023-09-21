@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.6](https://github.com/betagouv/api-subventions-asso/compare/v0.36.5...v0.36.6) (2023-09-21)
+
+### Bug Fixes
+
+-   **api:** recursive log censoring ([0ecea7e](https://github.com/betagouv/api-subventions-asso/commit/0ecea7efaefbd95ae211ac9db5464f288a1b0303))
+
 ## [0.36.5](https://github.com/betagouv/api-subventions-asso/compare/v0.36.3...v0.36.5) (2023-09-20)
 
 ### Bug Fixes
