@@ -20,6 +20,7 @@ import {
     AgentJobTypeEnum,
     TerritorialScopeEnum,
     AdminTerritorialLevel,
+    UpdatableUser,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -340,7 +341,7 @@ export class UserService {
     }
 
     sanitizeUserProfileData(unsafeUserInfo) {
-        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
+        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
             if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
@@ -764,6 +765,20 @@ export class UserService {
 
             await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
         }
+    }
+
+    async profileUpdate(user: UserDto, data: Partial<UpdatableUser>): Promise<UserDto> {
+        if (!user) throw new UserNotFoundError();
+
+        const userInfoValidation = this.validateUserProfileData(data, false);
+        if (!userInfoValidation.valid) throw userInfoValidation.error;
+
+        const safeUserInfo = this.sanitizeUserProfileData(data);
+        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
+
+        const safeUpdatedUser = removeSecrets(updatedUser);
+        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
+        return safeUpdatedUser;
     }
 
     async getUserWithoutSecret(email: string) {

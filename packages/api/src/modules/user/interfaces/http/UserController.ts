@@ -2,12 +2,13 @@ import {
     CreateUserDtoResponse,
     FutureUserDto,
     GetRolesDtoResponse,
+    UpdatableUser,
     UserDataDto,
     UserDto,
     UserDtoResponse,
     UserListDtoResponse,
 } from "dto";
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response } from "tsoa";
+import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response, Patch } from "tsoa";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
@@ -122,6 +123,17 @@ export class UserController extends Controller {
     @Response<HttpErrorInterface>(400, "Bad Request")
     public getSelfUser(@Request() req: IdentifiedRequest): Promise<UserDto> {
         return userService.getUserWithoutSecret(req.user.email);
+    }
+
+    /**
+     * update own's account
+     * @summary update own's account
+     */
+    @Patch("/")
+    @Security("jwt", ["user"])
+    @Response<HttpErrorInterface>(400, "Bad Request")
+    public updateProfile(@Request() req: IdentifiedRequest, @Body() body: UpdatableUser): Promise<UserDto> {
+        return userService.profileUpdate(req.user, body);
     }
 
     /**
