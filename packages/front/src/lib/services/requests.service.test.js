@@ -47,6 +47,22 @@ describe("RequestService", () => {
             });
         });
 
+        describe("patch", () => {
+            it("should call _sendRequest", async () => {
+                const expectedPath = "POST_PATH";
+                const expectedBody = { test: true };
+                await requestsService.patch(expectedPath, expectedBody);
+
+                expect(_sendRequestMock).toHaveBeenCalledWith(
+                    "patch",
+                    expectedPath,
+                    undefined,
+                    expectedBody,
+                    undefined,
+                );
+            });
+        });
+
         describe("delete", () => {
             it("should call _sendRequest", async () => {
                 const expectedPath = "DELETE_PATH";
