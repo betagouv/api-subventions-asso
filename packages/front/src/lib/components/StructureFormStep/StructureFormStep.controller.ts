@@ -122,8 +122,8 @@ export default class StructureFormStepController {
 
     onUpdateContext(context: Context, values: Record<string, any>) {
         if (context.agentType === this.currentAgentType) return;
+        if (this.currentAgentType) this.cleanSubStepValues(values, context.agentType);
         this.currentAgentType = context.agentType;
-        this.cleanSubStepValues(values, context.agentType);
         const component = StructureFormStepController.subStepByAgentType[context.agentType];
         this.subStep.set(
             component
