@@ -1,4 +1,3 @@
-import { AgentTypeEnum } from "dto";
 import Store, { derived } from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
