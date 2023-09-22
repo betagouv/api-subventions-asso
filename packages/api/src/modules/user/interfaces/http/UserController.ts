@@ -132,7 +132,7 @@ export class UserController extends Controller {
     @Patch("/")
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
-    public updateProfile(@Request() req: IdentifiedRequest, @Body() body: UpdatableUser): Promise<UserDto> {
+    public updateProfile(@Request() req: IdentifiedRequest, @Body() body: Partial<UpdatableUser>): Promise<UserDto> {
         return userService.profileUpdate(req.user, body);
     }
 
