@@ -40,9 +40,9 @@ export class ProfileController {
         if (this.saveAlertElement) this.saveAlertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
 
-    onSubmit() {
+    async onSubmit(data) {
         try {
-            // TODO call to update
+            await userService.updateProfile(data);
             this.saveStatus.set("saved");
         } catch (_e) {
             this.saveStatus.set("error");

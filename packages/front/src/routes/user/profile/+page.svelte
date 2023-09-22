@@ -23,7 +23,7 @@
         <div class=" fr-col-offset-2 fr-col-8">
             <h1 class="fr-h2">Bienvenue sur votre compte</h1>
             <div class="fr-grid-row">
-                <form on:submit|preventDefault={() => controller.onSubmit()} class="bordered-frame">
+                <form on:submit|preventDefault={() => controller.onSubmit($user)} class="bordered-frame">
                     <h2 class="fr-h5">Vos informations de profil</h2>
                     <div bind:this={saveAlertElement}>
                         {#if $saveStatus === "changed"}
