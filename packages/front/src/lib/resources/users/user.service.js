@@ -15,6 +15,10 @@ export class UsersService {
     getSelfUser() {
         return userPort.getSelfUser();
     }
+
+    updateProfile(data) {
+        return userPort.updateProfile(data);
+    }
 }
 
 const userService = new UsersService();
