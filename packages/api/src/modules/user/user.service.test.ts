@@ -1262,7 +1262,7 @@ describe("User Service", () => {
         afterAll(() => mockList.forEach(mock => mock.mockReset()));
 
         it("should call validateUserProfileData() without testing password", async () => {
-            const expected = USER_ACTIVATION_INFO;
+            const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
             await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
             expect(mockValidateUserProfileDataUser).toHaveBeenCalledWith(expected, false);
         });

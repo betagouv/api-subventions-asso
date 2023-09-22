@@ -397,7 +397,7 @@ export class UserService {
             {
                 value: jobType,
                 method: jobType => {
-                    if (jobType.length === 0) return true;
+                    if (!jobType?.length) return true;
                     return !jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
@@ -770,7 +770,9 @@ export class UserService {
     async profileUpdate(user: UserDto, data: Partial<UpdatableUser>): Promise<UserDto> {
         if (!user) throw new UserNotFoundError();
 
-        const userInfoValidation = this.validateUserProfileData(data, false);
+        const toBeUpdatedUser = { ...user, ...data };
+
+        const userInfoValidation = this.validateUserProfileData(toBeUpdatedUser, false);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = this.sanitizeUserProfileData(data);
