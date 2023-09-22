@@ -24,6 +24,7 @@ describe("UserMigration", () => {
         const userServiceDeleteMock = jest.spyOn(userService, "delete");
 
         it("should update user", async () => {
+            // @ts-expect-error -- mock
             userServiceUpdateMock.mockImplementationOnce(user => Promise.resolve(user));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
