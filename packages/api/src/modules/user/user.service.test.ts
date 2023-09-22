@@ -215,7 +215,6 @@ describe("User Service", () => {
             mockedUserRepository.update.mockImplementation(() => ({
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
-                hashPassword: "qdqdqzdqzd&",
             }));
             mockGetUserById.mockImplementation(async id => UNACTIVATED_USER);
         });

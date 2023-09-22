@@ -40,7 +40,7 @@ export class UserRepository {
         return this.find(query);
     }
 
-    async update(user: Partial<UserDbo>): Promise<UserDbo> {
+    async update(user: Partial<UserDbo>): Promise<UserDto> {
         const res = user._id
             ? await this.collection.findOneAndUpdate({ _id: user._id }, { $set: user }, { returnDocument: "after" })
             : await this.collection.findOneAndUpdate(
@@ -48,8 +48,9 @@ export class UserRepository {
                   { $set: user },
                   { returnDocument: "after" },
               );
+
         if (!res.value) throw new InternalServerError("User update failed");
-        return res.value;
+        return removeSecrets(res.value);
     }
 
     async delete(user: UserDto): Promise<boolean> {

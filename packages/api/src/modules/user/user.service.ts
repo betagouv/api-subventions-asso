@@ -281,10 +281,10 @@ export class UserService {
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
-        return { user: removeSecrets(userUpdated) };
+        return { user: userUpdated };
     }
 
-    public async update(user: Partial<UserDbo> & Pick<UserDbo, "email">): Promise<UserDbo> {
+    public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
         await this.validateEmail(user.email);
         return await userRepository.update(user);
     }
@@ -377,11 +377,9 @@ export class UserService {
             profileToComplete: false,
         });
 
-        const safeUpdatedUser = removeSecrets(updatedUser);
+        notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
 
-        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
-
-        return safeUpdatedUser;
+        return updatedUser;
     }
 
     private validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -489,7 +487,7 @@ export class UserService {
 
         user.roles = [...new Set([...user.roles, ...roles])];
 
-        return { user: removeSecrets(await userRepository.update(user)) };
+        return { user: await userRepository.update(user) };
     }
 
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
@@ -503,7 +501,7 @@ export class UserService {
 
         user.active = true;
 
-        return { user: removeSecrets(await userRepository.update(user)) };
+        return { user: await userRepository.update(user) };
     }
 
     async refreshExpirationToken(user: UserDto) {
@@ -578,7 +576,7 @@ export class UserService {
             profileToComplete: false,
         });
 
-        return removeSecrets(userUpdated);
+        return userUpdated;
     }
 
     async forgetPassword(email: string) {
