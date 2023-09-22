@@ -113,7 +113,7 @@ describe("User Service", () => {
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
     const mockDeleteUser = jest.spyOn(userService, "delete");
     const mockResetUser = jest.spyOn(userService, "resetUser");
-    const mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
+    let mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
     // @ts-expect-error: mock private method
     const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
     // @ts-expect-error: mock private method
@@ -122,7 +122,7 @@ describe("User Service", () => {
     const mockBuildJWTToken: SpyInstance = jest.spyOn(userService, "buildJWTToken");
     // @ts-expect-error: mock private method
     const mockPasswordValidator = jest.spyOn(userService, "passwordValidator");
-    const mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
+    let mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
         userService,
         // @ts-expect-error: mock private method
         "validateUserProfileData",
@@ -254,8 +254,17 @@ describe("User Service", () => {
             jobType: [],
         };
         beforeAll(() => mockValidateUserProfileDataUser.mockRestore());
-        // @ts-expect-error: mock
-        afterAll(() => mockValidateUserProfileDataUser.mockImplementation(() => ({ valid: true })));
+        afterAll(
+            () =>
+                (mockValidateUserProfileDataUser = jest
+                    .spyOn(
+                        userService,
+                        // @ts-expect-error: mock private method
+                        "validateUserProfileData",
+                    )
+                    // @ts-expect-error: mock signature
+                    .mockImplementation(() => ({ valid: true }))),
+        );
 
         describe("password", () => {
             // @ts-expect-error: mock private method
@@ -352,6 +361,7 @@ describe("User Service", () => {
 
     describe("sanitizeActivationUserInfo()", () => {
         beforeAll(() => mockSanitizeUserProfileData.mockRestore());
+        afterAll(() => (mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData")));
         it("should call sanitizeToPlainText()", () => {
             const expected = 2;
             userService.sanitizeUserProfileData(USER_ACTIVATION_INFO);
@@ -631,7 +641,7 @@ describe("User Service", () => {
             jest.mocked(mockedUserRepository.findByEmail).mockReset();
             mockValidateEmail.mockRestore();
             validRolesMock.mockRestore();
-            jest.mocked(sanitizeToPlainText).mockReset();
+            jest.mocked(sanitizeToPlainText).mockRestore();
         });
 
         it("look for user with this email if newUser", async () => {
