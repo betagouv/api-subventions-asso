@@ -18,7 +18,7 @@
     const ctrl = new DecentralizedSubStepController();
     const { departmentOptions, regionOptions, structureOptions } = ctrl;
 
-    ctrl.init();
+    ctrl.init(values);
 </script>
 
 <Radio
@@ -34,6 +34,7 @@
                 options={$departmentOptions}
                 bind:value={values.decentralizedTerritory}
                 label="Quel est votre département ?"
+                on:change
                 placeholder="Ex : 01 - Ain" />
         </div>
     {:else if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL}
@@ -42,6 +43,7 @@
                 options={$regionOptions}
                 bind:value={values.decentralizedTerritory}
                 label="Quelle est votre région ?"
+                on:change
                 placeholder="Ex : Occitanie" />
         </div>
     {/if}
@@ -52,6 +54,7 @@
                 options={$structureOptions}
                 bind:value={values.structure}
                 label="Quelle est votre administration ?"
+                on:change
                 placeholder="Ex : DDETS59, Préfecture" />
         {:else}
             <Input
@@ -59,6 +62,7 @@
                 type="text"
                 bind:value={values.structure}
                 label="Quelle est votre administration ?"
+                on:change
                 placeholder="Ex : DDETS59, Préfecture" />
         {/if}
     </div>

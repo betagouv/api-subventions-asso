@@ -1,6 +1,7 @@
-import { AgentTypeEnum } from "dto";
+import type { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 
 type Option = {
     value: AgentTypeEnum | "none";
@@ -14,16 +15,10 @@ export default class AgentTypeStepController {
     private readonly dispatch: (_: string) => void;
     public readonly errorMessage: Store<string>;
     public readonly options: Option[] = [
-        { value: AgentTypeEnum.CENTRAL_ADMIN, label: "Agent public d’une administration centrale (État)" },
+        ...subscriptionFormService.agentTypeOptions,
         {
-            value: AgentTypeEnum.DECONCENTRATED_ADMIN,
-            label: "Agent public d’une administration déconcentrée (État)",
-        },
-        { value: AgentTypeEnum.TERRITORIAL_COLLECTIVITY, label: "Agent public d’une collectivité territoriale" },
-        { value: AgentTypeEnum.OPERATOR, label: "Agent public d’un opérateur de l’État" },
-        {
-            value: "none",
             label: "Aucune des propositions ci-dessus",
+            value: "none",
         },
     ];
 

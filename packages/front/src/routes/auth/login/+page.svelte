@@ -27,7 +27,7 @@
         {successMessage}
     </Alert>
 {/if}
-<div class="login fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
+<div class="bordered-frame fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
     <form on:submit|preventDefault={() => controller.submit()}>
         <fieldset class="fr-fieldset fr-mb-5w">
             <legend class="fr-fieldset__legend fr-h5" id="login-legend">Se connecter à son compte</legend>
@@ -78,14 +78,3 @@
         </fieldset>
     </form>
 </div>
-
-<style>
-    .login {
-        border: 2px solid var(--border-default-grey);
-    }
-
-    .separator {
-        width: 100%;
-        border-top: 2px solid var(--border-default-grey);
-    }
-</style>

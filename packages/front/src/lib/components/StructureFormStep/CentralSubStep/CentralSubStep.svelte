@@ -15,11 +15,12 @@
 </script>
 
 <fieldset class="fr-fieldset">
-    <div class="fr-fieldset__element fr-mt-4v">
+    <div class="fr-fieldset__element">
         <AutocompleteSelect
             options={$options}
             bind:value={values.structure}
             label="Dans quelle administration centrale travaillez-vous ?"
+            on:change
             placeholder="Ex : DIHAL" />
     </div>
 </fieldset>

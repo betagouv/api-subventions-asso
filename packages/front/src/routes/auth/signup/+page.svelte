@@ -45,7 +45,7 @@
     title="Data.subvention étant réservé aux agents publics, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public."
     type="info" />
 
-<div class="signup fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
+<div class="bordered-frame fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
     <form on:submit|preventDefault={() => ctrl.signup()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
             <legend class="fr-fieldset__legend">
@@ -112,14 +112,5 @@
 
     .policy a {
         color: var(--text-default-grey);
-    }
-
-    .signup {
-        border: 2px solid var(--border-default-grey);
-    }
-
-    .separator {
-        width: 100%;
-        border-top: 2px solid var(--border-default-grey);
     }
 </style>

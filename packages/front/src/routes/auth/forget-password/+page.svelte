@@ -12,7 +12,7 @@
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-p-8v">
-    <div class="forget-pwd fr-col-6 fr-p-8v">
+    <div class="fr-col-6 fr-p-8v fr-m-auto bordered-frame">
         <div class="svg">
             <img src={padlockSvg} alt="" />
         </div>
@@ -70,10 +70,5 @@
         width: 80px;
         height: 80px;
         margin: auto;
-    }
-
-    .forget-pwd {
-        margin: auto;
-        border: 2px solid var(--border-default-grey);
     }
 </style>

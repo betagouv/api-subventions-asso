@@ -30,7 +30,7 @@
 .combobox button {
   pointer-events: none;
   position: absolute;
-  right: 0.75rem;
+  right: 0.25rem;
   top: .5rem;
 }
 

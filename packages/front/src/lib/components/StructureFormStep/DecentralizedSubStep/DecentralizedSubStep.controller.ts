@@ -1,8 +1,10 @@
 import type { AdminStructureDto } from "dto";
 import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
+import type { EventDispatcher } from "svelte";
 import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import Dispatch from "$lib/core/Dispatch";
 
 type Option = { value: string; label: string };
 
@@ -18,20 +20,22 @@ export default class DecentralizedSubStepController {
         { value: AdminTerritorialLevel.INTERREGIONAL, label: "Interrégional" },
         { value: AdminTerritorialLevel.OVERSEAS, label: "Collectivité d'outre-mer à statut particulier" },
     ];
+    private dispatch: EventDispatcher<any>;
 
     constructor() {
         this.departmentOptions = new Store([]);
         this.regionOptions = new Store([]);
         this.structureOptions = new Store([]);
         this.allStructures = [];
+        this.dispatch = Dispatch.getDispatcher();
     }
 
-    async init(): Promise<void> {
+    async init(data: Record<string, any> = {}): Promise<void> {
         this.allStructures = await subscriptionFormService.getStructures(AgentTypeEnum.DECONCENTRATED_ADMIN);
+        if (data.decentralizedLevel) this.setOptions(data.decentralizedLevel);
     }
 
-    public onChoosingLevel(option: { label: string; value: AdminTerritorialLevel }) {
-        const level: AdminTerritorialLevel = option.value;
+    private setOptions(level: AdminTerritorialLevel) {
         if (level === AdminTerritorialLevel.DEPARTMENTAL) {
             this.onChoosingDepartment();
             this.filterStructureOptions(AdminTerritorialLevel.DEPARTMENTAL);
@@ -40,6 +44,12 @@ export default class DecentralizedSubStepController {
             this.onChoosingRegion();
             this.filterStructureOptions(AdminTerritorialLevel.REGIONAL);
         }
+    }
+
+    public onChoosingLevel(option: { label: string; value: AdminTerritorialLevel }) {
+        this.dispatch("change");
+        const level: AdminTerritorialLevel = option.value;
+        this.setOptions(level);
     }
 
     private filterStructureOptions(LEVEL: AdminTerritorialLevel) {

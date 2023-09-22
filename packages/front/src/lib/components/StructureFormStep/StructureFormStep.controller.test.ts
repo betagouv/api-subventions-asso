@@ -1,7 +1,7 @@
 import { AgentTypeEnum } from "dto";
 import type { MockInstance } from "vitest";
 import { beforeEach } from "vitest";
-import StructureStepController from "./StructureStep.controller";
+import StructureFormStepController from "./StructureFormStep.controller";
 import Dispatch from "$lib/core/Dispatch";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
 
@@ -12,18 +12,18 @@ vi.mock("$lib/core/Dispatch", () => ({
 }));
 vi.mock("$lib/helpers/stringHelper");
 
-describe("StructureStepController", () => {
-    let ctrl: StructureStepController;
+describe("StructureFormStepController", () => {
+    let ctrl: StructureFormStepController;
 
     beforeEach(() => {
-        ctrl = new StructureStepController();
+        ctrl = new StructureFormStepController();
     });
 
     describe("constructor", () => {
         it("inits dispatch", () => {
             const expected = vi.fn();
             vi.mocked(Dispatch.getDispatcher).mockReturnValueOnce(expected);
-            ctrl = new StructureStepController();
+            ctrl = new StructureFormStepController();
             // @ts-expect-error - mock private
             const actual = ctrl.dispatch;
             expect(actual).toBe(expected);
