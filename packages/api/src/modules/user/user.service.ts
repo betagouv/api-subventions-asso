@@ -20,6 +20,7 @@ import {
     AgentJobTypeEnum,
     TerritorialScopeEnum,
     AdminTerritorialLevel,
+    UpdatableUser,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -283,7 +284,7 @@ export class UserService {
         return { user: userUpdated };
     }
 
-    public async update(user: UserDto): Promise<UserDto> {
+    public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
         await this.validateEmail(user.email);
         return await userRepository.update(user);
     }
@@ -339,11 +340,11 @@ export class UserService {
         return user;
     }
 
-    sanitizeActivationUserInfo(unsafeUserInfo) {
-        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory"];
+    sanitizeUserProfileData(unsafeUserInfo) {
+        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
-            sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
+            if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
         });
         return sanitizedUserInfo;
     }
@@ -363,32 +364,27 @@ export class UserService {
 
         if (!userInfo.jobType) userInfo.jobType = [];
 
-        const userInfoValidation = this.validateUserActivationInfo(userInfo);
+        const userInfoValidation = this.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const safeUserInfo = this.sanitizeActivationUserInfo(userInfo);
+        const safeUserInfo = this.sanitizeUserProfileData(userInfo);
         safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
-        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo, active: true });
-        // @ts-expect-error: TODO workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
-        delete updatedUser.hashPassword;
+        const updatedUser = await userRepository.update({
+            ...user,
+            ...safeUserInfo,
+            active: true,
+            profileToComplete: false,
+        });
 
         notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
 
         return updatedUser;
     }
 
-    private validateUserActivationInfo(userInfo): { valid: false; error: Error } | { valid: true } {
+    private validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
         const { password, agentType, jobType, structure } = userInfo;
         const validations = [
-            {
-                value: password,
-                method: this.passwordValidator,
-                error: new BadRequestError(
-                    UserService.PASSWORD_VALIDATOR_MESSAGE,
-                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-                ),
-            },
             {
                 value: agentType,
                 method: value => isInObjectValues(AgentTypeEnum, value),
@@ -399,31 +395,38 @@ export class UserService {
             {
                 value: jobType,
                 method: jobType => {
-                    if (jobType.length === 0) return true;
+                    if (!jobType?.length) return true;
                     return !jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
                     Les valeurs possibles sont ${joinEnum(AgentJobTypeEnum)}
                 `),
             },
+            {
+                value: structure,
+                method: value => !value || typeof value == "string",
+                error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
+            },
         ];
+
+        if (withPassword)
+            validations.push({
+                value: password,
+                method: this.passwordValidator,
+                error: new BadRequestError(
+                    UserService.PASSWORD_VALIDATOR_MESSAGE,
+                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+                ),
+            });
 
         /**
          *          AGENT TYPE SPECIFIC VALUES
          */
 
-        if (structure) {
-            validations.push({
-                value: structure,
-                method: value => typeof value == "string",
-                error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
-            });
-        }
-
         if (agentType === AgentTypeEnum.TERRITORIAL_COLLECTIVITY)
             validations.push({
                 value: userInfo.territorialScope,
-                method: value => isInObjectValues(TerritorialScopeEnum, value),
+                method: value => !value || isInObjectValues(TerritorialScopeEnum, value),
                 error: new BadRequestError(dedent`Mauvaise valeur pour le périmètre
                 Les valeurs possibles sont ${joinEnum(TerritorialScopeEnum)}`),
             });
@@ -431,7 +434,7 @@ export class UserService {
         if (agentType === AgentTypeEnum.DECONCENTRATED_ADMIN)
             validations.push({
                 value: userInfo.decentralizedLevel,
-                method: value => isInObjectValues(AdminTerritorialLevel, value),
+                method: value => !value || isInObjectValues(AdminTerritorialLevel, value),
                 error: new BadRequestError(dedent`Mauvaise valeur pour le niveau territorial
                 Les valeurs possibles sont ${joinEnum(AdminTerritorialLevel)}`),
             });
@@ -573,8 +576,6 @@ export class UserService {
             profileToComplete: false,
         });
 
-        //@ts-expect-error: workaround because userRepository.update return UserDto and hashPassword is only on UserDbo
-        delete userUpdated.hashPassword;
         return userUpdated;
     }
 
@@ -762,6 +763,22 @@ export class UserService {
 
             await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
         }
+    }
+
+    async profileUpdate(user: UserDto, data: Partial<UpdatableUser>): Promise<UserDto> {
+        if (!user) throw new UserNotFoundError();
+
+        const toBeUpdatedUser = { ...user, ...data };
+
+        const userInfoValidation = this.validateUserProfileData(toBeUpdatedUser, false);
+        if (!userInfoValidation.valid) throw userInfoValidation.error;
+
+        const safeUserInfo = this.sanitizeUserProfileData(data);
+        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
+
+        const safeUpdatedUser = removeSecrets(updatedUser);
+        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
+        return safeUpdatedUser;
     }
 
     async getUserWithoutSecret(email: string) {

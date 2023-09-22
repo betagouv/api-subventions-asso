@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.6](https://github.com/betagouv/api-subventions-asso/compare/v0.36.5...v0.36.6) (2023-09-21)
+
+### Bug Fixes
+
+-   **api:** recursive log censoring ([0ecea7e](https://github.com/betagouv/api-subventions-asso/commit/0ecea7efaefbd95ae211ac9db5464f288a1b0303))
+
+## [0.36.5](https://github.com/betagouv/api-subventions-asso/compare/v0.36.3...v0.36.5) (2023-09-20)
+
+### Bug Fixes
+
+-   **api:** activate validation allows empty values ([00fefc1](https://github.com/betagouv/api-subventions-asso/commit/00fefc17f4058dfee4ec547fa2431bea4d3c4645))
+-   **api:** brevo structure mapping ([033921e](https://github.com/betagouv/api-subventions-asso/commit/033921ebd1c53c1f2b322a14512df026cc737101))
+-   **api:** sometimes user is defined but not a user ([b3e1b8e](https://github.com/betagouv/api-subventions-asso/commit/b3e1b8e299b1b63be88089430f56e58990b1baf9))
+
+### Features
+
+-   **api,dto,front:** new job type ([1969dcf](https://github.com/betagouv/api-subventions-asso/commit/1969dcf7a9a7f82e235bea923f53aa5ee6e3d5fb))
+-   **api:** route get own's user ([71a5e22](https://github.com/betagouv/api-subventions-asso/commit/71a5e22d59b35dec89e685c32a6297498ba4b3ee))
+-   **api:** service get user no secret ([a2c1c3e](https://github.com/betagouv/api-subventions-asso/commit/a2c1c3ed219fa12ec40891f828c7873bb765f10e))
+
+## [0.36.4](https://github.com/betagouv/api-subventions-asso/compare/v0.36.3...v0.36.4) (2023-09-19)
+
+### Bug Fixes
+
+-   **api:** activate validation allows empty values ([3dbfb2f](https://github.com/betagouv/api-subventions-asso/commit/3dbfb2f4f2be5dcca87eb66ffb57d26998cd8215))
+-   **api:** brevo structure mapping ([b4b542e](https://github.com/betagouv/api-subventions-asso/commit/b4b542e1d82fc89135b3aad607a04663a372ce93))
+
+### Features
+
+-   **api,dto,front:** new job type ([aa49f98](https://github.com/betagouv/api-subventions-asso/commit/aa49f983c28575d0ea3bf8cb71098a7d8d7e3571))
+
+## [0.36.3](https://github.com/betagouv/api-subventions-asso/compare/v0.36.2...v0.36.3) (2023-09-19)
+
+### Bug Fixes
+
+-   **api:** sets profileToComplete and clean ([ad8612d](https://github.com/betagouv/api-subventions-asso/commit/ad8612d39ed3d4daa0e5fecec9c5da38086f8c7f))
+
 ## [0.36.2](https://github.com/betagouv/api-subventions-asso/compare/v0.36.1...v0.36.2) (2023-09-18)
 
 ### Bug Fixes

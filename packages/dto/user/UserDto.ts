@@ -32,6 +32,20 @@ export interface UserActivationInfoDto {
     territorialScope?: TerritorialScopeEnum;
 }
 
+export interface UpdatableUser {
+    firstName?: string;
+    lastName?: string;
+    agentType: AgentTypeEnum;
+    jobType: AgentJobTypeEnum[];
+    service?: string;
+    phoneNumber?: string;
+    structure?: string;
+    decentralizedLevel?: AdminTerritorialLevel;
+    // TODO: verify from GEO API
+    decentralizedTerritory?: string;
+    territorialScope?: TerritorialScopeEnum;
+}
+
 export interface UserWithJWTDto extends UserDto {
     jwt: { token: string; expirateDate: Date };
 }

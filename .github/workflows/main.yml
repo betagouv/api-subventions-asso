@@ -8,6 +8,10 @@ on:
     pull_request:
         branches: [main, develop]
 
+env:
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  ENV: test
+
 jobs:
     build:
         runs-on: ubuntu-latest

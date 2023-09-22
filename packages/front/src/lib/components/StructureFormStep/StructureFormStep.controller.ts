@@ -49,6 +49,7 @@ export default class StructureFormStepController {
             label: "Chargé de mission / Expert métier",
         },
         { value: AgentJobTypeEnum.SERVICE_HEAD, label: "Responsable de service" },
+        { value: AgentJobTypeEnum.CONTROLLER, label: "Contrôleur / Inspecteur" },
         { value: AgentJobTypeEnum.OTHER, label: "Autre" },
     ];
 
