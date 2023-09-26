@@ -1,7 +1,7 @@
 import { UserDto } from "dto";
 import { Filter, ObjectId } from "mongodb";
 import db from "../../../shared/MongoConnection";
-import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
+import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
@@ -40,7 +40,7 @@ export class UserRepository {
         return this.find(query);
     }
 
-    async update(user: Partial<UserDbo>): Promise<UserDto> {
+    async update(user: Partial<UserDbo>, withJwt = false): Promise<UserDto | Omit<UserDbo, "hashPassword">> {
         const res = user._id
             ? await this.collection.findOneAndUpdate({ _id: user._id }, { $set: user }, { returnDocument: "after" })
             : await this.collection.findOneAndUpdate(
@@ -50,7 +50,7 @@ export class UserRepository {
               );
 
         if (!res.value) throw new InternalServerError("User update failed");
-        return removeSecrets(res.value);
+        return withJwt ? removeHashPassword(res.value) : removeSecrets(res.value);
     }
 
     async delete(user: UserDto): Promise<boolean> {
