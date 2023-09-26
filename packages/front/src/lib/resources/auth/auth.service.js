@@ -20,7 +20,7 @@ export class AuthService {
 
     resetPassword(token, password) {
         if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
-        return authPort.resetPassword(token, password);
+        return authPort.resetPassword(token, password).then(user => this.loginByUser(user));
     }
 
     forgetPassword(email) {
@@ -86,7 +86,7 @@ export class AuthService {
     }
 
     activate(token, data) {
-        return authPort.activate(token, data);
+        return authPort.activate(token, data).then(user => this.loginByUser(user));
     }
 }
 
