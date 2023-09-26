@@ -117,6 +117,23 @@ export class UserService {
         return removeSecrets(user) as UserDto;
     }
 
+    async updateJwt(user: Omit<UserDbo, "hashPassword">): Promise<UserWithJWTDto> {
+        // Generate new JTW Token
+        const now = new Date();
+
+        const updatedJwt = {
+            token: this.buildJWTToken(user as unknown as DefaultObject),
+            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
+        };
+
+        try {
+            user.jwt = updatedJwt;
+            return (await userRepository.update(user, true)) as UserWithJWTDto;
+        } catch (e) {
+            throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
+        }
+    }
+
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
         const user = await userRepository.getUserWithSecretsByEmail(email);
 
@@ -125,36 +142,14 @@ export class UserService {
         if (!validPassword) throw new LoginError();
         if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
-        const updateJwt = async () => {
-            // Generate new JTW Token
-            const now = new Date();
-
-            const updatedJwt = {
-                token: this.buildJWTToken(user as unknown as DefaultObject),
-                expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
-            };
-
-            try {
-                user.jwt = updatedJwt;
-                await userRepository.update(user);
-            } catch (e) {
-                throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
-            }
-        };
-
-        if (!user.jwt) await updateJwt();
-        else {
-            const tokenPayload = jwt.verify(user.jwt.token, JWT_SECRET) as jwt.JwtPayload;
-            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now()) await updateJwt();
-        }
+        const updatedUser = await this.updateJwt(user);
 
         notifyService.notify(NotificationType.USER_LOGGED, {
             email,
             date: new Date(),
         });
 
-        const { hashPassword: _hashPwd, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        return updatedUser;
     }
 
     public async logout(user: UserDto) {
