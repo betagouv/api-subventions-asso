@@ -21,6 +21,7 @@ import {
     TerritorialScopeEnum,
     AdminTerritorialLevel,
     UpdatableUser,
+    UserWithJWTDto,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -365,16 +366,21 @@ export class UserService {
         const safeUserInfo = this.sanitizeUserProfileData(userInfo);
         safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
-        const updatedUser = await userRepository.update({
-            ...user,
-            ...safeUserInfo,
-            active: true,
-            profileToComplete: false,
-        });
+        const activeUser = (await userRepository.update(
+            {
+                ...user,
+                ...safeUserInfo,
+                active: true,
+                profileToComplete: false,
+            },
+            true,
+        )) as Omit<UserDbo, "hashPassword">;
 
-        notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
+        const userWithJwt = await this.updateJwt(activeUser);
 
-        return updatedUser;
+        notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
+
+        return userWithJwt;
     }
 
     private validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -564,14 +570,16 @@ export class UserService {
 
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
-        const userUpdated = await userRepository.update({
-            ...user,
-            hashPassword,
-            active: true,
-            profileToComplete: false,
-        });
-
-        return userUpdated;
+        const userUpdated = (await userRepository.update(
+            {
+                ...user,
+                hashPassword,
+                active: true,
+                profileToComplete: false,
+            },
+            true,
+        )) as Omit<UserDbo, "hashPassword">;
+        return await this.updateJwt(userUpdated);
     }
 
     async forgetPassword(email: string) {
