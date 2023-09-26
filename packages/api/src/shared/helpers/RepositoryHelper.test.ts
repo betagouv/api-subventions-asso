@@ -25,6 +25,16 @@ describe("removeSecrets", () => {
     });
 });
 
+describe("removeHashPassword", () => {
+    it("should remove only hash password in user", () => {
+        const actual = RepositoryHelper.removeHashPassword(USER_DBO);
+        expect(actual).toMatchSnapshot({
+            _id: expect.any(ObjectId),
+            signupAt: expect.any(Date),
+        });
+    });
+});
+
 describe("uniformizeId", () => {
     it("should uniformizeId id ", () => {
         const actual = RepositoryHelper.uniformizeId(USER_DBO);
