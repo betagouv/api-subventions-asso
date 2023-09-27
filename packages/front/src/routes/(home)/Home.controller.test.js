@@ -15,8 +15,9 @@ describe("HomeController", () => {
         beforeEach(() => (ctrl = new HomeController()));
 
         it.each`
-            parameterName     | expected
-            ${"_searchCache"} | ${new Map()}
+            parameterName       | expected
+            ${"_searchCache"}   | ${new Map()}
+            ${"successMessage"} | ${undefined}
         `("initializes correctly $parameterName", ({ parameterName, expected }) => {
             expect(ctrl[parameterName]).toEqual(expected);
         });
@@ -29,6 +30,11 @@ describe("HomeController", () => {
             ${"currentSearch"} | ${null}
         `("initializes correctly $parameterName store", ({ parameterName, expected }) => {
             expect(ctrl[parameterName].value).toEqual(expected);
+        });
+
+        it("initializes correctly $parameterName store", () => {
+            ctrl = new HomeController({ success: "something" });
+            expect(ctrl.successMessage).toBe("something");
         });
     });
 

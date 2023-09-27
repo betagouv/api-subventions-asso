@@ -6,7 +6,7 @@ import associationService from "$lib/resources/associations/association.service"
 import { goto } from "$app/navigation";
 
 export class HomeController {
-    constructor(query) {
+    constructor(query = {}) {
         this.isLoading = new Store(false);
         this.searchResult = new Store([]);
         this.searchHistory = getSearchHistory();
