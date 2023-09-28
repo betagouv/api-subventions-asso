@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MattermostNotifyPipe badEmailDomain sends message with proper payload 1`] = `
+Object {
+  "channel": "datasubvention---bizdev",
+  "icon_emoji": "no_entry",
+  "text": "Un utilisateur some@email.fr) a échoué à créer son compte car le nom de domaine de l'adresse n'est pas accepté. !",
+  "username": "Nom de domaine pas reconnu",
+}
+`;
+
 exports[`MattermostNotifyPipe userDeleted sends message with proper payload 1`] = `
 Object {
   "channel": "datasubvention---bizdev",

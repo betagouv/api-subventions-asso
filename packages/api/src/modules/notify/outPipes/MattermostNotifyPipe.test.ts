@@ -88,4 +88,16 @@ describe("MattermostNotifyPipe", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("badEmailDomain", () => {
+        it("sends message with proper payload", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.badEmailDomain({ email: "some@email.fr" });
+            // @ts-expect-error -- private method does not expect calls
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
