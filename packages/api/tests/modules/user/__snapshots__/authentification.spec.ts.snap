@@ -8,6 +8,10 @@ Object {
   "email": "user@beta.gouv.fr",
   "firstName": null,
   "jobType": Array [],
+  "jwt": Object {
+    "expirateDate": "2023-09-30T09:40:23.675Z",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTE1NGEwNzNmN2FjNGVkODhmMzk4YjkiLCJlbWFpbCI6InVzZXJAYmV0YS5nb3V2LmZyIiwic2lnbnVwQXQiOiIyMDIzLTA5LTI4VDA5OjQwOjIzLjU4NloiLCJyb2xlcyI6WyJ1c2VyIl0sImZpcnN0TmFtZSI6bnVsbCwibGFzdE5hbWUiOm51bGwsInByb2ZpbGVUb0NvbXBsZXRlIjpmYWxzZSwiYWN0aXZlIjp0cnVlLCJhZ2VudFR5cGUiOiJDRU5UUkFMX0FETUlOIiwiam9iVHlwZSI6W10sIm5vdyI6IjIwMjMtMDktMjhUMDk6NDA6MjMuNjc1WiIsImlhdCI6MTY5NTg5NDAyMywiZXhwIjoxODY4Njk0MDIzfQ.C7UEv7ECzE3XH6-9FmsC2yk1nTbv0cZTCrDQHbrZHlQ",
+  },
   "lastName": null,
   "profileToComplete": false,
   "roles": Array [
