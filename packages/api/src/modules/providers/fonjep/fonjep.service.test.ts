@@ -44,6 +44,17 @@ describe("FonjepService", () => {
         FonjepEntityAdapter.toDemandeSubvention.mockRestore();
     });
 
+    describe("getBopFromFounderCode", () => {
+        it.each`
+            code         | expected
+            ${"10012"}   | ${361}
+            ${undefined} | ${undefined}
+        `("return bop", ({ code, expected }) => {
+            const actual = fonjepService.getBopFromFounderCode(code);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("validateEntity", () => {
         it("should validate entity", () => {
             const entity = { ...SubventionEntity };

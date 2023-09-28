@@ -28,6 +28,17 @@ export class FonjepRejectedRequest extends Error {
     }
 }
 
+const FONEJP_BOP_MAP = {
+    "10004": 163,
+    "10005": 163,
+    "10008": 147,
+    "10009": 163,
+    "10010": 209,
+    "10012": 361,
+    "10016": 163,
+    "10017": 163,
+};
+
 export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
@@ -40,6 +51,10 @@ export class FonjepService
             "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
         id: "fonjep",
     };
+
+    public getBopFromFounderCode(code: string) {
+        return FONEJP_BOP_MAP[code];
+    }
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
         const validation = this.validateEntity(entity);
