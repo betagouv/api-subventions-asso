@@ -49,7 +49,28 @@ export default class FonjepSubventionEntity {
         },
         contact: ["Association", "ContactEmail"],
         plein_temps: ["PleinTemps"],
+        bop: {
+            path: ["FinanceurPrincipalCode"],
+            adapter: code => {
+                if (!code) return code;
+                return this.getBopFromFounderCode(code);
+            },
+        },
     };
+
+    private static getBopFromFounderCode(code: string) {
+        const fonjepBopMap = {
+            "10004": 163,
+            "10005": 163,
+            "10008": 147,
+            "10009": 163,
+            "10010": 209,
+            "10012": 361,
+            "10016": 163,
+            "10017": 163,
+        };
+        return fonjepBopMap[code];
+    }
 
     constructor(
         public legalInformations: {

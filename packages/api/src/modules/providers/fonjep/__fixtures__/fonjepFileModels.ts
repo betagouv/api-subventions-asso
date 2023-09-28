@@ -56,7 +56,7 @@ export const DATA_WITH_HEADER = [
             DispositifId: 2,
             PstStatutPosteLibelle: "Attribué",
             PstRaisonStatutLibelle: "Reconduction",
-            FinanceurPrincipalCode: "16DIV",
+            FinanceurPrincipalCode: "10004",
             FinanceurAttributeurCode: "16DIV",
             AssociationBeneficiaireCode: "E920",
             AssociationImplantationCode: "E920",
@@ -141,7 +141,7 @@ export const RAW_DATA = [
             "PleinTemps",
             "DoublementUniteCompte",
         ],
-        ["J10540", 3, "Attribué", "Reconduction", "1234", 1234, 1234, 1234, 2017, 6666, 43465, "FONJEP", "Oui", "Non"],
+        ["J10540", 3, "Attribué", "Reconduction", "10004", 1234, 1234, 1234, 2017, 6666, 43465, "FONJEP", "Oui", "Non"],
     ],
     // TODO: add versements
     [
@@ -162,9 +162,9 @@ export const RAW_DATA = [
         [2, "FONJEP Cohésion sociale", 10005],
         [3, "FONJEP Politique de la ville", 10008],
         [4, "FONJEP Guid'Asso", 10009],
-        [5, "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)", 100010],
-        [6, "FONJEP Culture", 100012],
-        [7, "FONJEP Centre de ressources et d'information des bénévoles", 100016],
-        [8, "FONJEP Jeunes", 100017],
+        [5, "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)", 10010],
+        [6, "FONJEP Culture", 10012],
+        [7, "FONJEP Centre de ressources et d'information des bénévoles", 10016],
+        [8, "FONJEP Jeunes", 10017],
     ],
 ];

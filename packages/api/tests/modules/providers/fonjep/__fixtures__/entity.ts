@@ -22,6 +22,7 @@ export const SubventionEntity = new FonjepEntity(
         contact: "contact@beta.gouv.fr",
         type_post: "POSTE",
         dispositif: "Dispositif",
+        bop: 163,
     },
     {},
 );

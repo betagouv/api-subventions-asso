@@ -59,6 +59,7 @@ Object {
       },
       "indexedInformations": Object {
         "annee_demande": 2017,
+        "bop": 163,
         "code_postal": "00000",
         "code_poste": "J10540",
         "contact": "exemple@beta.gouv.fr",
@@ -131,6 +132,7 @@ Object {
       },
       "indexedInformations": Object {
         "annee_demande": 2017,
+        "bop": 163,
         "code_postal": "00000",
         "code_poste": "J02924",
         "contact": "exemple@beta.gouv.fr",
