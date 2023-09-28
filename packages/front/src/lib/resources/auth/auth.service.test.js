@@ -129,7 +129,9 @@ describe("authService", () => {
         const mockPort = vi.spyOn(authPort, "login");
         let mockServiceLogin;
 
-        beforeAll(() => (mockServiceLogin = vi.spyOn(authService, "loginByUser").mockImplementation(vi.fn())));
+        beforeAll(() => {
+            mockServiceLogin = vi.spyOn(authService, "loginByUser").mockImplementation(vi.fn());
+        });
         afterAll(() => mockServiceLogin.mockRestore());
 
         it("should call port", async () => {
