@@ -28,6 +28,17 @@ export class FonjepRejectedRequest extends Error {
     }
 }
 
+export const FOUNDER_CODE_TO_BOP_MAPPER = {
+    "10004": 163,
+    "10005": 163,
+    "10008": 147,
+    "10009": 163,
+    "10010": 209,
+    "10012": 361,
+    "10016": 163,
+    "10017": 163,
+};
+
 export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
@@ -107,6 +118,10 @@ export class FonjepService
         }
 
         return true;
+    }
+
+    public getBopFromFounderCode(code: string | number) {
+        return FOUNDER_CODE_TO_BOP_MAPPER[code];
     }
 
     async createVersementEntity(entity: FonjepVersementEntity): Promise<CreateFonjepResponse> {

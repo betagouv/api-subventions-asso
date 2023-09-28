@@ -18,6 +18,7 @@ export default class FonjepVersementEntity {
         unique_id: ["id"],
         updated_at: ["updated_at"],
         code_poste: ["PosteCode"],
+        bop: ["bop"],
         periode_debut: {
             path: ["PeriodeDebut"],
             adapter: value => {

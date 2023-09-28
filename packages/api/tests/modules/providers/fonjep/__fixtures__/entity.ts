@@ -22,7 +22,6 @@ export const SubventionEntity = new FonjepEntity(
         contact: "contact@beta.gouv.fr",
         type_post: "POSTE",
         dispositif: "Dispositif",
-        bop: 163,
     },
     {},
 );
@@ -40,6 +39,7 @@ export const VersementEntity = new FonjepVersementEntity(
         date_versement: new Date("2022-01-02"),
         montant_paye: 1000,
         montant_a_payer: 1000,
+        bop: 163,
     },
     {},
 );

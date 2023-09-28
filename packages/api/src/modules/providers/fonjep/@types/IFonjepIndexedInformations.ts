@@ -14,5 +14,4 @@ export default interface IFonjepIndexedInformations {
     code_postal?: string;
     contact: string;
     dispositif: string;
-    bop: number;
 }
