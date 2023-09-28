@@ -19,6 +19,7 @@ export interface NotifierMethodType {
         data: NotificationDataTypes[NotificationType.USER_ALREADY_EXIST],
     ): Promise<boolean>;
     (type: NotificationType.USER_UPDATED, data: NotificationDataTypes[NotificationType.USER_UPDATED]);
+    (type: NotificationType.SIGNUP_BAD_DOMAIN, data: NotificationDataTypes[NotificationType.SIGNUP_BAD_DOMAIN]);
 }
 
 export interface NotifyOutPipe {
