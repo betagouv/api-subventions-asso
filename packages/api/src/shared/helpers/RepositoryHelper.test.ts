@@ -31,6 +31,7 @@ describe("removeHashPassword", () => {
         expect(actual).toMatchSnapshot({
             _id: expect.any(ObjectId),
             signupAt: expect.any(Date),
+            jwt: { expirateDate: expect.any(Date) },
         });
     });
 });
