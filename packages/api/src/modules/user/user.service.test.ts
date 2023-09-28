@@ -38,7 +38,7 @@ import mocked = jest.mocked;
 import userService, { UserService, UserServiceErrors } from "./user.service";
 import { ObjectId, WithId } from "mongodb";
 import { RoleEnum } from "../../@enums/Roles";
-import { UserDto } from "dto";
+import { SignupErrorCodes, UserDto } from "dto";
 import UserReset from "./entities/UserReset";
 import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
@@ -182,6 +182,21 @@ describe("User Service", () => {
             mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userService.signup({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
+        });
+
+        it("should notify bad domain error", async () => {
+            const error = mockCreateUser.mockRejectedValueOnce(
+                new BadRequestError("mock", UserServiceErrors.CREATE_EMAIL_GOUV),
+            );
+            try {
+                await userService.signup({ email: USER_EMAIL });
+            } catch (_e) {
+            } finally {
+                expect(mockedNotifyService.notify).toHaveBeenCalledWith(
+                    NotificationType.SIGNUP_BAD_DOMAIN,
+                    expect.objectContaining({ email: USER_EMAIL }),
+                );
+            }
         });
     });
 
