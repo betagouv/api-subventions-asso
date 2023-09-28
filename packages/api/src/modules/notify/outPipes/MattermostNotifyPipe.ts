@@ -52,14 +52,14 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
     }
 
     private badEmailDomain(data: FutureUserDto) {
-        const message = `Un utilisateur ${
+        const message = `L'inscription de l'utilisateur ${
             data.email || ""
-        }) a échoué à créer son compte car le nom de domaine de l'adresse n'est pas accepté.\xA0!`;
+        } a échouée car le nom de domaine de l'adresse mail n'est pas accepté.`;
 
         return this.sendMessage({
             text: message,
             channel: "datasubvention---bizdev",
-            username: "Nom de domaine pas reconnu",
+            username: "Nom de domaine rejeté",
             icon_emoji: "no_entry",
         });
     }

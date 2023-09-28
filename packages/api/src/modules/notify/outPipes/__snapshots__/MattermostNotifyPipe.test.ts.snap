@@ -4,8 +4,8 @@ exports[`MattermostNotifyPipe badEmailDomain sends message with proper payload 1
 Object {
   "channel": "datasubvention---bizdev",
   "icon_emoji": "no_entry",
-  "text": "Un utilisateur some@email.fr) a échoué à créer son compte car le nom de domaine de l'adresse n'est pas accepté. !",
-  "username": "Nom de domaine pas reconnu",
+  "text": "L'inscription de l'utilisateur some@email.fr a échouée car le nom de domaine de l'adresse mail n'est pas accepté.",
+  "username": "Nom de domaine rejeté",
 }
 `;
 
