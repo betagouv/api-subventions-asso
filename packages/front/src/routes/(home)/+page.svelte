@@ -17,12 +17,10 @@
 
 <Messages />
 
-{#if ctrl.successMessage === "ACCOUNT_ACTIVATED"}
-    <Alert type="success" title="Bravo, votre compte a été créé !">
-        Vous pouvez commencer à effectuer vos recherches
+{#if ctrl.successMessage}
+    <Alert type="success" title={ctrl.successMessage.title}>
+        {ctrl.successMessage.content}
     </Alert>
-{:else if ctrl.successMessage === "PWD_RESET"}
-    <Alert type="success" title="Bravo, votre mot de passe a bien été modifié !" />
 {/if}
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">

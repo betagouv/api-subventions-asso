@@ -32,9 +32,15 @@ describe("HomeController", () => {
             expect(ctrl[parameterName].value).toEqual(expected);
         });
 
-        it("initializes correctly $parameterName store", () => {
-            ctrl = new HomeController({ success: "something" });
-            expect(ctrl.successMessage).toBe("something");
+        it("initializes correctly successMessage", () => {
+            ctrl = new HomeController({ success: "ACCOUNT_ACTIVATED" });
+            const actual = ctrl.successMessage;
+            expect(actual).toMatchInlineSnapshot(`
+              {
+                "content": "Vous pouvez commencer à effectuer vos recherches",
+                "title": "Bravo, votre compte a été créé !",
+              }
+            `);
         });
     });
 
