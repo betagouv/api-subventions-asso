@@ -7,5 +7,5 @@ export default interface IFonjepVersementIndexedInformations {
     date_versement: Date;
     montant_a_payer: number;
     montant_paye: number;
-    bop: string | number;
+    bop: number;
 }

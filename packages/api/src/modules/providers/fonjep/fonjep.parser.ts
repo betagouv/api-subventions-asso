@@ -82,7 +82,7 @@ export default class FonjepParser {
                 this.createFonjepVersementEntity({
                     ...versement,
                     siret: association ? association["SiretOuRidet"] : undefined,
-                    bop: fonjepService.getBopFromFounderCode(poste["FinanceurPrincipalCode"]),
+                    bop: fonjepService.getBopFromFounderCode(Number(poste["FinanceurPrincipalCode"])),
                     updated_at: currentDate,
                     id: versementId,
                 }),

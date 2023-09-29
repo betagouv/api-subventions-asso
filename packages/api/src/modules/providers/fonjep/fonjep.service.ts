@@ -120,7 +120,7 @@ export class FonjepService
         return true;
     }
 
-    public getBopFromFounderCode(code: string | number) {
+    public getBopFromFounderCode(code: number) {
         return FOUNDER_CODE_TO_BOP_MAPPER[code];
     }
 
