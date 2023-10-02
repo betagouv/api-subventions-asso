@@ -156,6 +156,17 @@ describe("FonjepService", () => {
         });
     });
 
+    describe("getBopFromFounderCode", () => {
+        it.each`
+            code         | expected
+            ${"10012"}   | ${361}
+            ${undefined} | ${undefined}
+        `("should return value", ({ code, expected }) => {
+            const actual = fonjepService.getBopFromFounderCode(code);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("createVersementEntity", () => {
         it("should throw error if siret invalid", async () => {
             // copy with spread operator doesn't work for nested object (indexedInformations)

@@ -5,6 +5,7 @@ import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepVersementIndexedInformations from "./@types/IFonjepVersementIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import fonjepService from "./fonjep.service";
 
 export default class FonjepParser {
     private static mapHeaderToData(pages: unknown[][]) {
@@ -81,6 +82,7 @@ export default class FonjepParser {
                 this.createFonjepVersementEntity({
                     ...versement,
                     siret: association ? association["SiretOuRidet"] : undefined,
+                    bop: fonjepService.getBopFromFounderCode(Number(poste["FinanceurPrincipalCode"])),
                     updated_at: currentDate,
                     id: versementId,
                 }),
