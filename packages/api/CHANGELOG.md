@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/betagouv/api-subventions-asso/compare/v0.36.3...v0.37.0) (2023-10-02)
+
+### Bug Fixes
+
+-   **api:** activate validation allows empty values ([00fefc1](https://github.com/betagouv/api-subventions-asso/commit/00fefc17f4058dfee4ec547fa2431bea4d3c4645))
+-   **api:** brevo structure mapping ([033921e](https://github.com/betagouv/api-subventions-asso/commit/033921ebd1c53c1f2b322a14512df026cc737101))
+-   **api:** controller accepts partial update ([e8bdeec](https://github.com/betagouv/api-subventions-asso/commit/e8bdeec30b871f8aab1f95ac5ca7a302b7738271))
+-   **api:** recursive log censoring ([1e20dfd](https://github.com/betagouv/api-subventions-asso/commit/1e20dfde3f8aa0820b56d1a2bcb8d6b54e272acd))
+-   **api:** remove secrets inside repo update method and fix test ([cb80db0](https://github.com/betagouv/api-subventions-asso/commit/cb80db075cd57f7b1ad59351b8ae3cef3c8ca68a))
+-   **api:** sometimes user is defined but not a user ([5ecef7a](https://github.com/betagouv/api-subventions-asso/commit/5ecef7a58a048abd69ea03e27602945b0c089b4e))
+-   **api:** test profile/activate validation ([2789e98](https://github.com/betagouv/api-subventions-asso/commit/2789e98f3cdce2e048732d0216d2f41212cc7429))
+-   **api:** userRepo update and removeSecrets typing ([764ab49](https://github.com/betagouv/api-subventions-asso/commit/764ab49616377792185d9338c2a827ecbe5c2568))
+-   **api:** validate full user ont only update data ([4e05d7c](https://github.com/betagouv/api-subventions-asso/commit/4e05d7c40c222287c201d4df4ee3f7534a73e647))
+
+### Features
+
+-   **api,dto,front:** new job type ([1969dcf](https://github.com/betagouv/api-subventions-asso/commit/1969dcf7a9a7f82e235bea923f53aa5ee6e3d5fb))
+-   **api:** profile update service & controller ([23e2e55](https://github.com/betagouv/api-subventions-asso/commit/23e2e5581a29b29c03483d1b8c192caddc31238e))
+-   **api:** profile validation does not add field ([d428a7c](https://github.com/betagouv/api-subventions-asso/commit/d428a7c28128e0f9c5eb0fc4c66f62db6e9afab2))
+-   **api:** profile validation optionally tests password ([29d8c88](https://github.com/betagouv/api-subventions-asso/commit/29d8c886cdd4ea9bda7d78016c48a8db29bf05a6))
+-   **api:** rename reusable validation and sanitization ([1f97f2d](https://github.com/betagouv/api-subventions-asso/commit/1f97f2df16eea8a2b77c62317a67aeb28f6826da))
+-   **api:** route get own's user ([71a5e22](https://github.com/betagouv/api-subventions-asso/commit/71a5e22d59b35dec89e685c32a6297498ba4b3ee))
+-   **api:** service get user no secret ([a2c1c3e](https://github.com/betagouv/api-subventions-asso/commit/a2c1c3ed219fa12ec40891f828c7873bb765f10e))
+
 ## [0.36.6](https://github.com/betagouv/api-subventions-asso/compare/v0.36.5...v0.36.6) (2023-09-21)
 
 ### Bug Fixes
