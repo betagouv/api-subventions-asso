@@ -4,6 +4,7 @@ import { DefaultObject } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import UserReset from "./entities/UserReset";
 import userService from "./user.service";
+import userAuthService from "./services/auth/user.auth.service";
 
 export enum EmailToLowerCaseAction {
     UPDATE = 1,
@@ -112,7 +113,7 @@ export default class UserMigrations {
         const jwtUsers = await Promise.all(
             users.map(async user => ({
                 user,
-                jwt: (await userService.findJwtByUser(user)) as {
+                jwt: (await userAuthService.findJwtByUser(user)) as {
                     token: string;
                     expirateDate: Date;
                 },
