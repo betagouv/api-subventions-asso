@@ -6,13 +6,22 @@
     import Spinner from "$lib/components/Spinner.svelte";
     import Messages from "$lib/components/Messages/Messages.svelte";
 
-    const ctrl = new HomeController();
+    export let data;
+    const { query } = data;
+
+    const ctrl = new HomeController(query);
     const { input, isLoading, currentSearch, searchResult, searchHistory } = ctrl;
 
     $: input && ctrl.onInput($input);
 </script>
 
 <Messages />
+
+{#if ctrl.successMessage}
+    <Alert type="success" title={ctrl.successMessage.title}>
+        {ctrl.successMessage.content}
+    </Alert>
+{/if}
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">

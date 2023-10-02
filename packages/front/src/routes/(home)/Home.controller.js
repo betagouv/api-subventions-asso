@@ -6,13 +6,14 @@ import associationService from "$lib/resources/associations/association.service"
 import { goto } from "$app/navigation";
 
 export class HomeController {
-    constructor() {
+    constructor(query = {}) {
         this.isLoading = new Store(false);
         this.searchResult = new Store([]);
         this.searchHistory = getSearchHistory();
         this.input = new Store("");
         this._searchCache = new Map();
         this.currentSearch = new Store(null);
+        this.successMessage = this._getSuccessMessage(query.success);
     }
 
     onInput(input) {
@@ -70,5 +71,19 @@ export class HomeController {
         const textWithoutSpace = text.replaceAll(" ", "");
         if (isStartOfSiret(textWithoutSpace) || isRna(textWithoutSpace)) return textWithoutSpace;
         return text;
+    }
+
+    _getSuccessMessage(successKey) {
+        if (!successKey) return undefined;
+        if (successKey === "ACCOUNT_ACTIVATED")
+            return {
+                title: "Bravo, votre compte a été créé !",
+                content: "Vous pouvez commencer à effectuer vos recherches",
+            };
+        if (successKey === "PWD_RESET")
+            return {
+                title: "Bravo, votre mot de passe a bien été modifié !",
+                content: "",
+            };
     }
 }

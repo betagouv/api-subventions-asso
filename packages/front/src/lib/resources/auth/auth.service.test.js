@@ -127,37 +127,44 @@ describe("authService", () => {
 
     describe("login()", () => {
         const mockPort = vi.spyOn(authPort, "login");
+        let mockServiceLogin;
+
+        beforeAll(() => {
+            mockServiceLogin = vi.spyOn(authService, "loginByUser").mockImplementation(vi.fn());
+        });
+        afterAll(() => mockServiceLogin.mockRestore());
+
         it("should call port", async () => {
             const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
-
             mockPort.mockResolvedValueOnce({});
-
             await authService.login(...expected);
             expect(mockPort).toHaveBeenCalledWith(...expected);
         });
 
+        it("should call front login with given user", async () => {
+            const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
+            mockPort.mockResolvedValueOnce({});
+            await authService.login(...expected);
+            expect(mockPort).toHaveBeenCalledWith(...expected);
+        });
+    });
+
+    describe("loginByUser()", () => {
+        const EMAIL = "a@b.c";
+        const user = { _id: "USER_ID", email: EMAIL };
         it("should save user in local storage", async () => {
-            const user = { _id: "USER_ID" };
-
-            mockPort.mockResolvedValueOnce(user);
-
-            await authService.login("", "");
+            await authService.loginByUser(user);
             expect(localStorageService.setItem).toHaveBeenCalledWith(authService.USER_LOCAL_STORAGE_KEY, user);
         });
 
         it("sets crisp email value", async () => {
-            const EMAIL = "a@b.c";
-            mockPort.mockResolvedValueOnce({ email: EMAIL });
-            await authService.login(EMAIL, "");
+            await authService.loginByUser(user);
             expect(crispService.setUserEmail).toBeCalledWith(EMAIL);
         });
 
         it("should return user", async () => {
-            const expected = { _id: "USER_ID" };
-
-            mockPort.mockResolvedValueOnce(expected);
-
-            const actual = await authService.login("", "");
+            const expected = user;
+            const actual = await authService.loginByUser(user);
             expect(actual).toEqual(expected);
         });
     });

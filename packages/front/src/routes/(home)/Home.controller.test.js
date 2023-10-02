@@ -15,8 +15,9 @@ describe("HomeController", () => {
         beforeEach(() => (ctrl = new HomeController()));
 
         it.each`
-            parameterName     | expected
-            ${"_searchCache"} | ${new Map()}
+            parameterName       | expected
+            ${"_searchCache"}   | ${new Map()}
+            ${"successMessage"} | ${undefined}
         `("initializes correctly $parameterName", ({ parameterName, expected }) => {
             expect(ctrl[parameterName]).toEqual(expected);
         });
@@ -29,6 +30,17 @@ describe("HomeController", () => {
             ${"currentSearch"} | ${null}
         `("initializes correctly $parameterName store", ({ parameterName, expected }) => {
             expect(ctrl[parameterName].value).toEqual(expected);
+        });
+
+        it("initializes correctly successMessage", () => {
+            ctrl = new HomeController({ success: "ACCOUNT_ACTIVATED" });
+            const actual = ctrl.successMessage;
+            expect(actual).toMatchInlineSnapshot(`
+              {
+                "content": "Vous pouvez commencer à effectuer vos recherches",
+                "title": "Bravo, votre compte a été créé !",
+              }
+            `);
         });
     });
 

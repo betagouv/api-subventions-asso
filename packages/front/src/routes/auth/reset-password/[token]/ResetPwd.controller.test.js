@@ -82,14 +82,13 @@ describe("ResetPwdController", () => {
         });
 
         it.each`
-            active   | queryParam             | case
-            ${true}  | ${"ACCOUNT_ACTIVATED"} | ${"activation"}
-            ${false} | ${"PASSWORD_CHANGED"}  | ${"reset"}
+            active   | queryParam     | case
+            ${false} | ${"PWD_RESET"} | ${"reset"}
         `("redirects if success with proper query in $case case", async ({ active, queryParam }) => {
             ctrl.activation = active;
-            const expected = `/auth/login?success=${queryParam}`;
+            const expected = `/?success=${queryParam}`;
             await ctrl.onSubmit();
-            expect(goToUrl).toBeCalledWith(expected);
+            expect(goToUrl).toBeCalledWith(expected, true, true);
         });
 
         it("catches promise rejection", async () => {

@@ -9,6 +9,12 @@ export const removeSecrets = <T extends Partial<UserDbo>>(user: T) => {
     return userWithoutSecret;
 };
 
+export const removeHashPassword = <T extends Partial<UserDbo>>(user: T) => {
+    if (!user) return user;
+    const { hashPassword: _hashPwd, ...userWithoutPwd } = user;
+    return userWithoutPwd;
+};
+
 export function uniformizeId<T>(document: WithId<T>): WithStringId<T> {
     const documentCopy = { ...document } as unknown as DefaultObject;
     documentCopy._id = document._id.toString();

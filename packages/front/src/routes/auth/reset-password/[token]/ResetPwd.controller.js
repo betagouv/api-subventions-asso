@@ -56,7 +56,7 @@ export class ResetPwdController {
     onSubmit() {
         this.promise.set(authService.resetPassword(this.token, this.values.value.password));
         return this.promise.value.then(() => {
-            goToUrl("/auth/login?success=" + (this.activation ? "ACCOUNT_ACTIVATED" : "PASSWORD_CHANGED"));
+            goToUrl("/?success=PWD_RESET", true, true);
         });
     }
 

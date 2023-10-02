@@ -20,7 +20,7 @@ export class AuthService {
 
     resetPassword(token, password) {
         if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
-        return authPort.resetPassword(token, password);
+        return authPort.resetPassword(token, password).then(user => this.loginByUser(user));
     }
 
     forgetPassword(email) {
@@ -30,6 +30,10 @@ export class AuthService {
 
     async login(email, password) {
         const user = await authPort.login(email, password);
+        return this.loginByUser(user);
+    }
+
+    loginByUser(user) {
         localStorageService.setItem(this.USER_LOCAL_STORAGE_KEY, user);
         this.setUserInApp();
         crispService.setUserEmail(user.email);
@@ -82,7 +86,7 @@ export class AuthService {
     }
 
     activate(token, data) {
-        return authPort.activate(token, data);
+        return authPort.activate(token, data).then(user => this.loginByUser(user));
     }
 }
 

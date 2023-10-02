@@ -8,6 +8,10 @@ Object {
   "email": "user@beta.gouv.fr",
   "firstName": null,
   "jobType": Array [],
+  "jwt": Object {
+    "expirateDate": Any<String>,
+    "token": Any<String>,
+  },
   "lastName": null,
   "profileToComplete": false,
   "roles": Array [
