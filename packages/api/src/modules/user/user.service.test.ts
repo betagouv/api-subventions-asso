@@ -36,6 +36,9 @@ const mockedNotifyService = jest.mocked(notifyService, true);
 import userCheckService from "./services/check/user.check.service";
 jest.mock("./services/check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
+import userAuthService from "./services/auth/user.auth.service";
+jest.mock("./services/auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService, true);
 
 import mocked = jest.mocked;
 import userService, { UserService, UserServiceErrors } from "./user.service";
@@ -117,8 +120,6 @@ describe("User Service", () => {
     let mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
     // @ts-expect-error: mock private method
     const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
-    // @ts-expect-error: mock private method
-    const mockGetHashPassword = jest.spyOn(userService, "getHashPassword");
     //@ts-expect-error: mock private method
     const mockBuildJWTToken: SpyInstance = jest.spyOn(userService, "buildJWTToken");
     let mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
@@ -209,7 +210,6 @@ describe("User Service", () => {
         const mockList = [
             mockValidateUserProfileDataUser,
             mockSanitizeUserProfileData,
-            mockGetHashPassword,
             mockedUserResetRepository.findByToken,
             mockValidateResetToken,
             mockUpdateJwt,
@@ -220,8 +220,7 @@ describe("User Service", () => {
             // @ts-expect-error: mock
             mockValidateResetToken.mockImplementation(token => ({ valid: true }));
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
-            // @ts-expect-error: unknown error
-            mockGetHashPassword.mockImplementation(async password => Promise.resolve(password));
+            mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
             // @ts-expect-error: unknown error
             mockedUserRepository.update.mockImplementation(() => ({
@@ -730,8 +729,12 @@ describe("User Service", () => {
 
         it("should update user", async () => {
             mockedUserCheckService.passwordValidator.mockReturnValue(true);
+            mockedUserAuthService.getHashPassword.mockImplementationOnce(async PASSWORD => PASSWORD);
             await userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
+            expect(mockedUserRepository.update).toHaveBeenCalledWith({
+                ...USER_WITHOUT_SECRET,
+                hashPassword: PASSWORD,
+            });
         });
     });
 
@@ -846,8 +849,7 @@ describe("User Service", () => {
         });
 
         it("should update user", async () => {
-            //@ts-expect-error: mock
-            mockGetHashPassword.mockResolvedValueOnce(PASSWORD);
+            mockedUserAuthService.getHashPassword.mockResolvedValueOnce(PASSWORD);
             await userService.resetPassword(PASSWORD, RESET_TOKEN);
             expect(mockedUserRepository.update).toHaveBeenCalledWith(
                 {

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
+
 import dedent from "dedent";
 import {
     LoginDtoErrorCodes,
@@ -52,7 +53,7 @@ import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
 import UserReset from "./entities/UserReset";
 import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
-
+import userAuthService from "./services/auth/user.auth.service";
 import userRepository from "./repositories/user.repository";
 import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
@@ -90,10 +91,6 @@ export class UserService {
         At least 8 characters in length, but no more than 32.`;
 
     private static CONSUMER_TOKEN_PROP = "isConsumerToken";
-
-    private async getHashPassword(password: string) {
-        return bcrypt.hash(password, 10);
-    }
 
     async authenticate(tokenPayload, token): Promise<UserDto> {
         // Find the user associated with the email provided by the user
@@ -217,8 +214,8 @@ export class UserService {
         const sanitizedUser = await userCheckService.validateSanitizeUser(userObject);
 
         const partialUser: Record<string, unknown> = {
-            email: sanitizedUser.email,
-            hashPassword: await this.getHashPassword(DEFAULT_PWD),
+            email: userObject.email,
+            hashPassword: await userAuthService.getHashPassword(DEFAULT_PWD),
             signupAt: new Date(),
             roles: sanitizedUser.roles,
             firstName: sanitizedUser.firstName || null,
@@ -253,7 +250,7 @@ export class UserService {
 
         const userUpdated = await userRepository.update({
             ...user,
-            hashPassword: await this.getHashPassword(password),
+            hashPassword: await userAuthService.getHashPassword(password),
             active: true,
         });
 
@@ -348,7 +345,7 @@ export class UserService {
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = this.sanitizeUserProfileData(userInfo);
-        safeUserInfo.hashPassword = await this.getHashPassword(safeUserInfo.password);
+        safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
         const activeUser = (await userRepository.update(
             {
@@ -548,7 +545,7 @@ export class UserService {
                 ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
             );
 
-        const hashPassword = await this.getHashPassword(password);
+        const hashPassword = await userAuthService.getHashPassword(password);
 
         await userResetRepository.remove(reset as UserReset);
 
