@@ -7,7 +7,6 @@ import {
     LoginDtoErrorCodes,
     ResetPasswordErrorCodes,
     SignupErrorCodes,
-    UserErrorCodes,
     UserWithResetTokenDto,
     UserDto,
     UserWithStatsDto,
@@ -240,22 +239,6 @@ export class UserService {
             throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
 
         return createdUser;
-    }
-
-    public async updatePassword(user: UserDto, password: string): Promise<{ user: UserDto }> {
-        if (!userCheckService.passwordValidator(password)) {
-            throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
-        }
-
-        const userUpdated = await userRepository.update({
-            ...user,
-            hashPassword: await userAuthService.getHashPassword(password),
-            active: true,
-        });
-
-        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
-
-        return { user: userUpdated };
     }
 
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {

@@ -1,3 +1,4 @@
+import dedent from "dedent";
 import { FutureUserDto } from "dto";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
@@ -7,6 +8,13 @@ import userRepository from "../../repositories/user.repository";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 
 export class UserCheckService {
+    public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
+    At least one digit [0-9]
+    At least one lowercase character [a-z]
+    At least one uppercase character [A-Z]
+    At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
+    At least 8 characters in length, but no more than 32.`;
+
     passwordValidator(password: string): boolean {
         return REGEX_PASSWORD.test(password);
     }

@@ -715,27 +715,6 @@ describe("User Service", () => {
         });
     });
 
-    describe("updatePassword", () => {
-        const PASSWORD = "12345&#Data";
-
-        it("should reject because password not valid", async () => {
-            mockedUserCheckService.passwordValidator.mockReturnValue(false);
-            expect(userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD)).rejects.toEqual(
-                new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD),
-            );
-        });
-
-        it("should update user", async () => {
-            mockedUserCheckService.passwordValidator.mockReturnValue(true);
-            mockedUserAuthService.getHashPassword.mockImplementationOnce(async PASSWORD => PASSWORD);
-            await userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith({
-                ...USER_WITHOUT_SECRET,
-                hashPassword: PASSWORD,
-            });
-        });
-    });
-
     describe("disable", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
 

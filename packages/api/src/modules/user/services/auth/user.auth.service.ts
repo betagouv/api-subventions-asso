@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserDto } from "dto";
+import { UserDto, UserErrorCodes } from "dto";
 import userRepository from "../../repositories/user.repository";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
 import UserDbo from "../../repositories/dbo/UserDbo";
+import notifyService from "../../../notify/notify.service";
+import { NotificationType } from "../../../notify/@types/NotificationType";
+import userCheckService, { UserCheckService } from "../check/user.check.service";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -43,6 +46,22 @@ export class UserAuthService {
         }
 
         return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
+    }
+
+    public async updatePassword(user: UserDto, password: string): Promise<{ user: UserDto }> {
+        if (!userCheckService.passwordValidator(password)) {
+            throw new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
+        }
+
+        const userUpdated = await userRepository.update({
+            ...user,
+            hashPassword: await userAuthService.getHashPassword(password),
+            active: true,
+        });
+
+        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
+
+        return { user: userUpdated };
     }
 }
 
