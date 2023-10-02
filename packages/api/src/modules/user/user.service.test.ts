@@ -33,6 +33,9 @@ jest.mock("../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService, true);
+import userCheckService from "./services/check/user.check.service";
+jest.mock("./services/check/user.check.service");
+const mockedUserCheckService = jest.mocked(userCheckService);
 
 import mocked = jest.mocked;
 import userService, { UserService, UserServiceErrors } from "./user.service";
@@ -120,8 +123,6 @@ describe("User Service", () => {
     const mockGetHashPassword = jest.spyOn(userService, "getHashPassword");
     //@ts-expect-error: mock private method
     const mockBuildJWTToken: SpyInstance = jest.spyOn(userService, "buildJWTToken");
-    // @ts-expect-error: mock private method
-    const mockPasswordValidator = jest.spyOn(userService, "passwordValidator");
     let mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
         userService,
         // @ts-expect-error: mock private method
@@ -286,8 +287,7 @@ describe("User Service", () => {
         );
 
         describe("password", () => {
-            // @ts-expect-error: mock private method
-            beforeAll(() => mockPasswordValidator.mockImplementationOnce(() => false));
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementationOnce(() => false));
             it("should throw password is wrong", () => {
                 // @ts-expect-error: private method
                 const actual = userService.validateUserProfileData({
@@ -312,9 +312,8 @@ describe("User Service", () => {
         });
 
         describe("agentType", () => {
-            const mockList = [mockPasswordValidator];
-            // @ts-expect-error: mock private method
-            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw if agentType is wrong", () => {
                 // @ts-expect-error: private method
@@ -327,9 +326,8 @@ describe("User Service", () => {
         });
 
         describe("typeJob", () => {
-            const mockList = [mockPasswordValidator];
-            // @ts-expect-error: mock private method
-            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
                 // @ts-expect-error: private method
@@ -342,9 +340,8 @@ describe("User Service", () => {
         });
 
         describe("structure", () => {
-            const mockList = [mockPasswordValidator];
-            // @ts-expect-error: mock private method
-            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
                 // @ts-expect-error: private method
@@ -357,9 +354,8 @@ describe("User Service", () => {
         });
 
         describe("territorialScope", () => {
-            const mockList = [mockPasswordValidator];
-            // @ts-expect-error: mock private method
-            beforeAll(() => mockPasswordValidator.mockImplementation(() => true));
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
             it("should throw an error", () => {
                 // @ts-expect-error: private method
@@ -760,16 +756,14 @@ describe("User Service", () => {
         const PASSWORD = "12345&#Data";
 
         it("should reject because password not valid", async () => {
-            // @ts-expect-error: mock private method return value
-            mockPasswordValidator.mockReturnValue(false);
+            mockedUserCheckService.passwordValidator.mockReturnValue(false);
             expect(userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD)).rejects.toEqual(
                 new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD),
             );
         });
 
         it("should update user", async () => {
-            // @ts-expect-error: mock private method return value
-            mockPasswordValidator.mockReturnValue(true);
+            mockedUserCheckService.passwordValidator.mockReturnValue(true);
             await userService.updatePassword(USER_WITHOUT_SECRET, PASSWORD);
             expect(mockedUserRepository.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
@@ -838,8 +832,7 @@ describe("User Service", () => {
             mockedUserResetRepository.findByToken.mockResolvedValue(RESET_DOCUMENT);
             mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
             mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_PASSWORD);
-            // @ts-expect-error: mock private method return value
-            mockPasswordValidator.mockReturnValue(true);
+            mockedUserCheckService.passwordValidator.mockReturnValue(true);
             mockUpdateJwt.mockImplementation(jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })));
         });
 
@@ -847,7 +840,7 @@ describe("User Service", () => {
             jest.mocked(bcrypt.hash).mockReset();
             mockedUserResetRepository.findByToken.mockReset();
             mockGetUserById.mockReset();
-            mockPasswordValidator.mockReset();
+            mockedUserCheckService.passwordValidator.mockReset();
             mockedUserRepository.update.mockReset();
             mockUpdateJwt.mockReset();
         });
@@ -865,8 +858,7 @@ describe("User Service", () => {
         });
 
         it("should reject because password not valid", async () => {
-            // @ts-expect-error: mock private method return value
-            mockPasswordValidator.mockReturnValueOnce(false);
+            mockedUserCheckService.passwordValidator.mockReturnValueOnce(false);
             expect(userService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
                 new BadRequestError(
                     UserService.PASSWORD_VALIDATOR_MESSAGE,
@@ -1068,16 +1060,6 @@ describe("User Service", () => {
             const expected = REPO_RETURN;
             const actual = await userService.countTotalUsersOnDate(DATE);
             expect(actual).toBe(expected);
-        });
-    });
-
-    describe("passwordValidator()", () => {
-        beforeAll(() => mockPasswordValidator.mockRestore());
-
-        it("should accept #", () => {
-            // @ts-expect-error: private method
-            const actual = userService.passwordValidator("Aa12345#");
-            expect(actual).toEqual(true);
         });
     });
 

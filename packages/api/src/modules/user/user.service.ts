@@ -55,7 +55,8 @@ import UserReset from "./entities/UserReset";
 import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
-import { REGEX_MAIL, REGEX_PASSWORD, DEFAULT_PWD } from "./user.constant";
+import { REGEX_MAIL, DEFAULT_PWD } from "./user.constant";
+import userCheckService from "./services/check/user.check.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -265,7 +266,7 @@ export class UserService {
     }
 
     public async updatePassword(user: UserDto, password: string): Promise<{ user: UserDto }> {
-        if (!this.passwordValidator(password)) {
+        if (!userCheckService.passwordValidator(password)) {
             throw new BadRequestError(UserService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
 
@@ -413,7 +414,7 @@ export class UserService {
         if (withPassword)
             validations.push({
                 value: password,
-                method: this.passwordValidator,
+                method: userCheckService.passwordValidator,
                 error: new BadRequestError(
                     UserService.PASSWORD_VALIDATOR_MESSAGE,
                     ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
@@ -558,7 +559,7 @@ export class UserService {
         const user = await this.getUserById((reset as UserReset).userId);
         if (!user) throw new UserNotFoundError();
 
-        if (!this.passwordValidator(password))
+        if (!userCheckService.passwordValidator(password))
             throw new BadRequestError(
                 UserService.PASSWORD_VALIDATOR_MESSAGE,
                 ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
@@ -637,10 +638,6 @@ export class UserService {
 
     async findUserResetByUserId(userId: ObjectId) {
         return userResetRepository.findOneByUserId(userId);
-    }
-
-    private passwordValidator(password: string): boolean {
-        return REGEX_PASSWORD.test(password);
     }
 
     public getRoles(user: UserDto) {

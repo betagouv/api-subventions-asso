@@ -172,38 +172,4 @@ describe("user.service.ts", () => {
             expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ active: false }));
         });
     });
-
-    describe("passwordValidator", () => {
-        it("should reject because no number in password", () => {
-            expect(service.passwordValidator("AAAAAAAaaaaaa;;;;")).toBe(false);
-        });
-
-        it("should reject because no char (Uppercase) in password", () => {
-            expect(service.passwordValidator("11111aaaaaa;;;;")).toBe(false);
-        });
-
-        it("should reject because no char (Lowercase) in password", () => {
-            expect(service.passwordValidator("11111AAAAA;;;;")).toBe(false);
-        });
-
-        it("should reject because no special char in password", () => {
-            expect(service.passwordValidator("11111AAAAAaaaaaa")).toBe(false);
-        });
-
-        it("should reject because length is to short in password", () => {
-            expect(service.passwordValidator("Aa1;")).toBe(false);
-        });
-
-        it("should reject because length is to big in password", () => {
-            expect(
-                service.passwordValidator(
-                    "Aa1;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                ),
-            ).toBe(false);
-        });
-
-        it("should accept", () => {
-            expect(service.passwordValidator("SUPER;test::12345678")).toBe(true);
-        });
-    });
 });
