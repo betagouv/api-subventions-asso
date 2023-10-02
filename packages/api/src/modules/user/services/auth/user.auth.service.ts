@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
-
+import jwt from "jsonwebtoken";
 import { UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
+import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
+import UserDbo from "../../repositories/dbo/UserDbo";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -27,6 +29,20 @@ export class UserAuthService {
     public async findJwtByUser(user: UserDto) {
         const userDbo = await userRepository.getUserWithSecretsById(user._id);
         return userDbo?.jwt;
+    }
+
+    public buildJWTToken(
+        user: Omit<UserDbo, "hashPassword"> | UserDto,
+        options: { expiration: boolean } = { expiration: true },
+    ) {
+        const jwtContent = { ...user, now: new Date() };
+        const jwtOption: jwt.SignOptions = {};
+
+        if (options.expiration) {
+            jwtOption.expiresIn = JWT_EXPIRES_TIME;
+        }
+
+        return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
     }
 }
 
