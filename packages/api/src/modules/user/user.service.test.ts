@@ -120,8 +120,6 @@ describe("User Service", () => {
     let mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
     // @ts-expect-error: mock private method
     const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
-    //@ts-expect-error: mock private method
-    const mockBuildJWTToken: SpyInstance = jest.spyOn(userService, "buildJWTToken");
     let mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
         userService,
         // @ts-expect-error: mock private method
@@ -134,7 +132,7 @@ describe("User Service", () => {
 
     beforeEach(() => {
         jest.mocked(bcrypt.compare).mockImplementation(async () => true);
-        mockBuildJWTToken.mockImplementation(() => "SIGNED_TOKEN");
+        mockedUserAuthService.buildJWTToken.mockImplementation(() => "SIGNED_TOKEN");
         jwtVerifyMock.mockImplementation(() => ({
             token: "TOKEN",
             now: new Date(),
@@ -414,7 +412,7 @@ describe("User Service", () => {
                 now: oldDate,
             }));
             await userService.updateJwt(USER_DBO);
-            expect(mockBuildJWTToken).toHaveBeenCalledTimes(1);
+            expect(mockedUserAuthService.buildJWTToken).toHaveBeenCalledTimes(1);
             expect(userRepository.update).toHaveBeenCalledTimes(1);
         });
 
@@ -619,13 +617,13 @@ describe("User Service", () => {
         });
 
         it("should call createUser()", async () => {
-            await userService.createConsumer(USER_EMAIL);
+            await userService.createConsumer({ email: USER_EMAIL });
             expect(mockCreateUser).toBeCalledTimes(1);
         });
 
         it("should not create consumer token if user creation failed", async () => {
             mockCreateUser.mockRejectedValueOnce(new Error());
-            await userService.createConsumer(USER_EMAIL).catch(() => {});
+            await userService.createConsumer({ email: USER_EMAIL }).catch(() => {});
             expect(mockCreateUser).toBeCalledTimes(1);
         });
 
@@ -633,7 +631,7 @@ describe("User Service", () => {
             const expected = CONSUMER_JWT_PAYLOAD;
             mockCreateUser.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
             await userService.createConsumer({ email: USER_EMAIL });
-            expect(mockBuildJWTToken).toHaveBeenCalledWith(expected, {
+            expect(mockedUserAuthService.buildJWTToken).toHaveBeenCalledWith(expected, {
                 expiration: false,
             });
         });
@@ -680,7 +678,7 @@ describe("User Service", () => {
             // @ts-expect-error - mock
             jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
             mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
-            mockBuildJWTToken.mockReturnValue(SIGNED_TOKEN);
+            mockedUserAuthService.buildJWTToken.mockReturnValue(SIGNED_TOKEN);
         });
 
         afterAll(() => {
@@ -907,34 +905,6 @@ describe("User Service", () => {
             const expected = false;
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("buildJWTToken", () => {
-        it("should set expiresIn", () => {
-            mockBuildJWTToken.mockRestore();
-            const expected = {
-                expiresIn: JWT_CONF.JWT_EXPIRES_TIME,
-            };
-            // @ts-expect-error buildJWTToken is private
-            userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: true });
-            expect(jwtSignMock).toHaveBeenCalledWith(
-                { ...USER_WITHOUT_SECRET, now: new Date() },
-                expect.any(String),
-                expected,
-            );
-        });
-
-        it("should not set expiresIn", () => {
-            mockBuildJWTToken.mockRestore();
-            const expected = {};
-            // @ts-expect-error buildJWTToken is private
-            userService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: false });
-            expect(jwtSignMock).toHaveBeenCalledWith(
-                { ...USER_WITHOUT_SECRET, now: new Date() },
-                expect.any(String),
-                expected,
-            );
         });
     });
 

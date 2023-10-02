@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 
@@ -26,7 +25,7 @@ import {
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
-import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
+import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 import {
     BadRequestError,
     ForbiddenError,
@@ -120,7 +119,7 @@ export class UserService {
         const now = new Date();
 
         const updatedJwt = {
-            token: this.buildJWTToken(user as unknown as DefaultObject),
+            token: userAuthService.buildJWTToken(user),
             expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
@@ -192,9 +191,9 @@ export class UserService {
         return userRepository.find(query);
     }
 
-    async createConsumer(userObject) {
+    async createConsumer(userObject: FutureUserDto) {
         const user = await this.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
-        const consumerToken = this.buildJWTToken(
+        const consumerToken = userAuthService.buildJWTToken(
             { ...user, [UserService.CONSUMER_TOKEN_PROP]: true },
             { expiration: false },
         );
@@ -213,9 +212,8 @@ export class UserService {
 
         const sanitizedUser = await userCheckService.validateSanitizeUser(userObject);
 
-        const partialUser: Record<string, unknown> = {
+        const partialUser = {
             email: userObject.email,
-            hashPassword: await userAuthService.getHashPassword(DEFAULT_PWD),
             signupAt: new Date(),
             roles: sanitizedUser.roles,
             firstName: sanitizedUser.firstName || null,
@@ -225,13 +223,14 @@ export class UserService {
 
         const now = new Date();
         const jwtParams = {
-            token: this.buildJWTToken(partialUser),
+            token: userAuthService.buildJWTToken(partialUser as UserDto),
             expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
         };
 
         const user = {
             ...partialUser,
             jwt: jwtParams,
+            hashPassword: await userAuthService.getHashPassword(DEFAULT_PWD),
             active: false,
         } as UserNotPersisted;
 
@@ -642,19 +641,6 @@ export class UserService {
 
     public validRoles(roles: string[]) {
         return roles.every(role => this.isRoleValid(role));
-    }
-
-    private buildJWTToken(user: DefaultObject, options: { expiration: boolean } = { expiration: true }) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { jwt: jwtSubObject, ...userWithoutToken } = user;
-        const jwtContent = { ...userWithoutToken, now: new Date() };
-        const jwtOption: jwt.SignOptions = {};
-
-        if (options.expiration) {
-            jwtOption.expiresIn = JWT_EXPIRES_TIME;
-        }
-
-        return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
     }
 
     public findByPeriod(begin: Date, end: Date, withAdmin = false) {
