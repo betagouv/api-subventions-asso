@@ -1,7 +1,17 @@
-import type { AgentTypeEnum } from "dto";
+import { AgentTypeEnum } from "dto";
 import subscriptionFormPort from "$lib/resources/auth/subscriptionForm/subscriptionFormPort";
 
 export class SubscriptionFormService {
+    public agentTypeOptions = [
+        { value: AgentTypeEnum.CENTRAL_ADMIN, label: "Agent public d’une administration centrale (État)" },
+        {
+            value: AgentTypeEnum.DECONCENTRATED_ADMIN,
+            label: "Agent public d’une administration déconcentrée (État)",
+        },
+        { value: AgentTypeEnum.TERRITORIAL_COLLECTIVITY, label: "Agent public d’une collectivité territoriale" },
+        { value: AgentTypeEnum.OPERATOR, label: "Agent public d’un opérateur de l’État" },
+    ];
+
     getStructures(agentType: AgentTypeEnum) {
         return subscriptionFormPort.getStructures(agentType);
     }

@@ -34,7 +34,8 @@ const config = {
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",
                     "https://stats.data.gouv.fr",
-                  "https://geo.api.gouv.fr"
+                    "https://geo.api.gouv.fr",
+                    "https://sentry.incubateur.net",
                 ],
                 "font-src": ["self", "https://client.crisp.chat"],
                 "img-src": [
@@ -50,9 +51,14 @@ const config = {
                     "https://client.crisp.chat",
                     "https://settings.crisp.chat",
                     "https://stats.data.gouv.fr",
+                    "https://sentry.incubateur.net",
+                    "sha256-+X7Z1KW2Vcl9pendYbp0FYL6F0HZek43aBP/14cwq+U=", // https://github.com/getsentry/sentry-javascript/issues/8925
                 ],
                 "style-src": ["self", "https://client.crisp.chat", "unsafe-inline"],
                 "frame-src": ["self", "https://game.crisp.chat"],
+                "report-uri": ["https://sentry.incubateur.net"],
+                "report-to": ["'csp-endpoint'"],
+                "worker-src": ["blob:"],
             },
         },
     },

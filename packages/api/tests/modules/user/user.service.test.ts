@@ -159,7 +159,7 @@ describe("user.service.ts", () => {
 
     describe("resetUser", () => {
         let user: UserDto;
-        beforeEach(() => (user = service.createUser({ email: "test@beta.gouv.fr" })));
+        beforeEach(async () => (user = await service.createUser({ email: "test@beta.gouv.fr" })));
 
         it("should create a reset user", async () => {
             const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByUserId");

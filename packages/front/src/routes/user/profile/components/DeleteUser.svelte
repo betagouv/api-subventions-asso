@@ -13,7 +13,7 @@
     }
 </script>
 
-<div class="fr-p-8v">
+<div class="bordered-frame">
     <p class="red">
         <span class="fr-icon-close-line" />
         Vous souhaitez supprimer votre compte ?
@@ -31,9 +31,5 @@
 <style>
     p.red {
         color: var(--text-title-red-marianne);
-    }
-
-    div {
-        border: 1px solid var(--border-default-grey);
     }
 </style>

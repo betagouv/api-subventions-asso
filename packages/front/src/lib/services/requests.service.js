@@ -22,6 +22,10 @@ class RequestsService {
         return this._sendRequest("post", path, undefined, data, requestOption);
     }
 
+    patch(path, data, requestOption) {
+        return this._sendRequest("patch", path, undefined, data, requestOption);
+    }
+
     delete(path, params, requestOption) {
         return this._sendRequest("delete", path, params, undefined, requestOption);
     }

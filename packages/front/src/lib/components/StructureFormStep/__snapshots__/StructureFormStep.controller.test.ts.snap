@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`StructureStepController > constructor > inits 'dirty' 1`] = `
+exports[`StructureFormStepController > constructor > inits 'dirty' 1`] = `
 {
   "phoneNumber": false,
 }
 `;
 
-exports[`StructureStepController > constructor > inits 'jobTypeOptions' 1`] = `
+exports[`StructureFormStepController > constructor > inits 'jobTypeOptions' 1`] = `
 [
   {
     "label": "Gestionnaire administratif et financier",

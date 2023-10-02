@@ -57,7 +57,7 @@ describe("expressAuthentication", () => {
         );
         updateMock.mockImplementation(user =>
             Promise.resolve({
-                email: user.email,
+                email: user.email || "email.domain.fr",
                 roles: ["user", "admin"],
                 active: true,
                 signupAt: new Date(),
@@ -67,6 +67,8 @@ describe("expressAuthentication", () => {
                 service: "",
                 phoneNumber: "",
                 jobType: [],
+                hashPassword: "fqskfyqfdkq",
+                jwt: { token: "dsdsgfd", expirateDate: new Date() },
             }),
         );
         // @ts-expect-error: mock
