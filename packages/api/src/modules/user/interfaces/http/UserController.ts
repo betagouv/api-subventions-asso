@@ -14,6 +14,7 @@ import { IdentifiedRequest } from "../../../../@types";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import userService from "../../user.service";
+import userAuthService from "../../services/auth/user.auth.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -97,7 +98,7 @@ export class UserController extends Controller {
         @Request() req: IdentifiedRequest,
         @Body() body: { password: string },
     ): Promise<UserDtoResponse> {
-        return await userService.updatePassword(req.user, body.password);
+        return await userAuthService.updatePassword(req.user, body.password);
     }
 
     /**

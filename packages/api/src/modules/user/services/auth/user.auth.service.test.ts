@@ -1,15 +1,21 @@
 import userAuthService from "./user.auth.service";
-import { UserDto } from "dto";
+import { UserDto, UserErrorCodes } from "dto";
 import { ObjectId } from "mongodb";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import bcrypt from "bcrypt";
 jest.mock("bcrypt");
 import jwt from "jsonwebtoken";
-jest.mock("jwt");
+jest.mock("jsonwebtoken");
 
 import userRepository from "../../repositories/user.repository";
-import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 jest.mock("../../repositories/user.repository");
+import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { BadRequestError } from "../../../../shared/errors/httpErrors";
+jest.mock("../../repositories/user.repository");
+
+import userCheckService, { UserCheckService } from "../check/user.check.service";
+jest.mock("../check/user.check.service");
+const mockedUserCheckService = jest.mocked(userCheckService);
 
 describe("user auth service", () => {
     const USER_ID = new ObjectId();
@@ -50,6 +56,32 @@ describe("user auth service", () => {
                 expect.any(String),
                 expected,
             );
+        });
+    });
+
+    describe("updatePassword", () => {
+        // @ts
+        // console.log(userAuthService);
+        const PASSWORD = "12345&#Data";
+        const mockGetHashPassword = jest.spyOn(userAuthService, "getHashPassword");
+
+        beforeAll(() => mockGetHashPassword.mockImplementation(async PASSWORD => PASSWORD));
+        afterAll(() => mockGetHashPassword.mockRestore());
+
+        it("should reject because password not valid", async () => {
+            mockedUserCheckService.passwordValidator.mockReturnValue(false);
+            expect(userAuthService.updatePassword(USER_WITHOUT_SECRET, PASSWORD)).rejects.toEqual(
+                new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD),
+            );
+        });
+
+        it("should update user", async () => {
+            mockedUserCheckService.passwordValidator.mockReturnValue(true);
+            await userAuthService.updatePassword(USER_WITHOUT_SECRET, PASSWORD);
+            expect(userRepository.update).toHaveBeenCalledWith({
+                ...USER_WITHOUT_SECRET,
+                hashPassword: PASSWORD,
+            });
         });
     });
 });
