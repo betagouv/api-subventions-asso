@@ -597,11 +597,6 @@ export class UserService {
         return createdReset;
     }
 
-    async findJwtByUser(user: UserDto) {
-        const userDbo = await userRepository.getUserWithSecretsById(user._id);
-        return userDbo?.jwt;
-    }
-
     async findUserResetByUserId(userId: ObjectId) {
         return userResetRepository.findOneByUserId(userId);
     }

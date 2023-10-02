@@ -11,7 +11,7 @@ import { RoleEnum } from "../@enums/Roles";
 import { AgentTypeEnum } from "dto";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
 jest.mock("../modules/user/services/auth/user.auth.service");
-const mockedUserAuthService = jest.mocked(userAuthService);
+const mockedUserAuthService = jest.mocked(userAuthService, true);
 
 describe("expressAuthentication", () => {
     // Spys

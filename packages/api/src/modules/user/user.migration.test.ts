@@ -4,6 +4,9 @@ import { DefaultObject } from "../../@types";
 import UserReset from "./entities/UserReset";
 import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
 import userService from "./user.service";
+import userAuthService from "./services/auth/user.auth.service";
+jest.mock("./services/auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService, true);
 
 describe("UserMigration", () => {
     const userMigration = new UserMigrations();
@@ -299,10 +302,8 @@ describe("UserMigration", () => {
     });
 
     describe("findLastConnectedUser", () => {
-        const findJwtByUserMock = jest.spyOn(userService, "findJwtByUser");
-
         beforeEach(() => {
-            findJwtByUserMock.mockReset();
+            mockedUserAuthService.findJwtByUser.mockReset();
         });
 
         it("should return last reset user", async () => {
@@ -324,7 +325,7 @@ describe("UserMigration", () => {
                     expirateDate: new Date(2020, 9, 9),
                 },
             };
-            findJwtByUserMock.mockImplementation(async user => tokens[user._id.toString()]);
+            mockedUserAuthService.findJwtByUser.mockImplementation(async user => tokens[user._id.toString()]);
 
             const expected = users[0];
             // @ts-expect-error findLastConnectedUser is private methods

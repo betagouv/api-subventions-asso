@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 
+import { UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
 
@@ -21,6 +22,11 @@ export class UserAuthService {
         }
 
         return { jwt: userWithSecrets.jwt };
+    }
+
+    public async findJwtByUser(user: UserDto) {
+        const userDbo = await userRepository.getUserWithSecretsById(user._id);
+        return userDbo?.jwt;
     }
 }
 
