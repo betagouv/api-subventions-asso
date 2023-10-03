@@ -14,6 +14,9 @@ const mockedStringHelper = jest.mocked(stringHelper);
 import userService from "../../user.service";
 jest.mock("../../user.service");
 const mockedUserService = jest.mocked(userService);
+import userRolesService from "../roles/user.roles.service";
+jest.mock("../roles/user.roles.service");
+const mockedUserRolesService = jest.mocked(userRolesService);
 
 describe("user check service", () => {
     describe("passwordValidator", () => {
@@ -91,13 +94,13 @@ describe("user check service", () => {
             mockedUserRepository.findByEmail.mockResolvedValue(null);
             mockedStringHelper.sanitizeToPlainText.mockReturnValue("safeString");
             mockValidateEmail.mockResolvedValue(undefined);
-            mockedUserService.validRoles.mockReturnValue(true);
+            mockedUserRolesService.validRoles.mockReturnValue(true);
         });
 
         afterAll(() => {
             jest.mocked(mockedUserRepository.findByEmail).mockReset();
             mockValidateEmail.mockRestore();
-            mockedUserService.validRoles.mockRestore();
+            mockedUserRolesService.validRoles.mockRestore();
             mockedStringHelper.sanitizeToPlainText.mockRestore();
         });
 
@@ -114,7 +117,7 @@ describe("user check service", () => {
         it("validates roles", async () => {
             const roles = ["ratata", "tralala"];
             await userCheckService.validateSanitizeUser({ email: USER_EMAIL, roles }, false);
-            expect(mockedUserService.validRoles).toHaveBeenCalledWith(roles);
+            expect(mockedUserRolesService.validRoles).toHaveBeenCalledWith(roles);
         });
 
         it.each`

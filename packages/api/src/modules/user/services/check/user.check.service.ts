@@ -6,6 +6,7 @@ import configurationsService from "../../../configurations/configurations.servic
 import userService, { UserServiceErrors } from "../../user.service";
 import userRepository from "../../repositories/user.repository";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
+import userRolesService from "../roles/user.roles.service";
 
 export class UserCheckService {
     public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
@@ -40,7 +41,7 @@ export class UserCheckService {
         if (newUser && (await userRepository.findByEmail(user.email)))
             throw new InternalServerError("An error has occurred");
 
-        if (!userService.validRoles(user.roles || []))
+        if (!userRolesService.validRoles(user.roles || []))
             throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
 
         const sanitizedUser = { ...user };
