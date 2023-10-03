@@ -86,30 +86,7 @@ export class UserService {
         At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\]
         At least 8 characters in length, but no more than 32.`;
 
-    private static CONSUMER_TOKEN_PROP = "isConsumerToken";
-
-    async authenticate(tokenPayload, token): Promise<UserDto> {
-        // Find the user associated with the email provided by the user
-        const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email);
-        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
-
-        if (!tokenPayload[UserService.CONSUMER_TOKEN_PROP]) {
-            if (!user.active) throw new ForbiddenError("User is not active", UserServiceErrors.USER_NOT_ACTIVE);
-
-            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
-                throw new UnauthorizedError(
-                    "JWT has expired, please login try again",
-                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
-                );
-
-            if (user.jwt?.token !== token)
-                throw new UnauthorizedError(
-                    "JWT has expired, please login try again",
-                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
-                );
-        }
-        return removeSecrets(user) as UserDto;
-    }
+    public static CONSUMER_TOKEN_PROP = "isConsumerToken";
 
     findByEmail(email: string) {
         return userRepository.findByEmail(email);

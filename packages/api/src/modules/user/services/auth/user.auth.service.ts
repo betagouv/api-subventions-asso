@@ -4,6 +4,7 @@ import { LoginDtoErrorCodes, UserDto, UserErrorCodes, UserWithJWTDto } from "dto
 import userRepository from "../../repositories/user.repository";
 import {
     BadRequestError,
+    ForbiddenError,
     InternalServerError,
     NotFoundError,
     UnauthorizedError,
@@ -13,9 +14,10 @@ import UserDbo from "../../repositories/dbo/UserDbo";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import { UserServiceErrors } from "../../user.service";
+import { UserService, UserServiceErrors } from "../../user.service";
 import { UserUpdateError } from "../../repositories/errors/UserUpdateError";
 import LoginError from "../../../../shared/errors/LoginError";
+import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -116,6 +118,29 @@ export class UserAuthService {
         });
 
         return updatedUser;
+    }
+
+    async authenticate(tokenPayload, token): Promise<UserDto> {
+        // Find the user associated with the email provided by the user
+        const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email);
+        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
+
+        if (!tokenPayload[UserService.CONSUMER_TOKEN_PROP]) {
+            if (!user.active) throw new ForbiddenError("User is not active", UserServiceErrors.USER_NOT_ACTIVE);
+
+            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
+                throw new UnauthorizedError(
+                    "JWT has expired, please login try again",
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
+                );
+
+            if (user.jwt?.token !== token)
+                throw new UnauthorizedError(
+                    "JWT has expired, please login try again",
+                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
+                );
+        }
+        return removeSecrets(user) as UserDto;
     }
 }
 
