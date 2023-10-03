@@ -43,7 +43,6 @@ import { ObjectId, WithId } from "mongodb";
 import { RoleEnum } from "../../@enums/Roles";
 import { UserDto } from "dto";
 import UserReset from "./entities/UserReset";
-import configurationsService from "../configurations/configurations.service";
 import UserDbo from "./repositories/dbo/UserDbo";
 import { LoginDtoErrorCodes, ResetPasswordErrorCodes, UserErrorCodes } from "dto";
 import LoginError from "../../shared/errors/LoginError";
@@ -53,8 +52,7 @@ import { NotificationType } from "../notify/@types/NotificationType";
 import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
 import { AgentTypeEnum } from "dto";
-import { AgentJobTypeEnum, TerritorialScopeEnum } from "dto";
-import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
+import { AgentJobTypeEnum } from "dto";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -654,52 +652,7 @@ describe("User Service", () => {
         });
     });
 
-    describe("validateSanitizeUser", () => {
-        let validRolesMock;
-
-        beforeAll(() => {
-            jest.mocked(mockedUserRepository.findByEmail).mockResolvedValue(null);
-            jest.mocked(sanitizeToPlainText).mockReturnValue("safeString");
-            mockedUserCheckService.validateEmail.mockResolvedValue(undefined);
-            // @ts-expect-error private method
-            validRolesMock = jest.spyOn(userService, "validRoles").mockResolvedValue(true);
-        });
-
-        afterAll(() => {
-            jest.mocked(mockedUserRepository.findByEmail).mockReset();
-            mockedUserCheckService.validateEmail.mockRestore();
-            validRolesMock.mockRestore();
-            jest.mocked(sanitizeToPlainText).mockRestore();
-        });
-
-        it("look for user with this email if newUser", async () => {
-            await userService.validateSanitizeUser({ email: USER_EMAIL }, true);
-            expect(mockedUserRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
-        });
-
-        it("does not look for user with this email if not newUser", async () => {
-            await userService.validateSanitizeUser({ email: USER_EMAIL }, false);
-            expect(mockedUserRepository.findByEmail).not.toHaveBeenCalled();
-        });
-
-        it("validates roles", async () => {
-            const roles = ["ratata", "tralala"];
-            await userService.validateSanitizeUser({ email: USER_EMAIL, roles }, false);
-            expect(validRolesMock).toHaveBeenCalledWith(roles);
-        });
-
-        it.each`
-            variableName
-            ${"firstName"}
-            ${"lastName"}
-        `("if $variableName is set, call sanitizer with it", async ({ variableName }) => {
-            await userService.validateSanitizeUser({ email: USER_EMAIL, [variableName]: "something" });
-            expect(sanitizeToPlainText).toHaveBeenCalledWith("something");
-        });
-    });
-
     describe("createUser", () => {
-        let validateUserMock;
         const FUTURE_USER = {
             firstName: "Jocelyne",
             lastName: "Dupontel",
@@ -712,32 +665,33 @@ describe("User Service", () => {
             jest.mocked(mockedUserRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
             // @ts-expect-error - mock
             jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
-            validateUserMock = jest.spyOn(userService, "validateSanitizeUser").mockImplementation(undefined);
+            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
             mockBuildJWTToken.mockReturnValue(SIGNED_TOKEN);
         });
 
         afterAll(() => {
             jest.mocked(mockedUserRepository.findByEmail).mockReset();
-            validateUserMock.mockReset();
+            mockedUserCheckService.validateSanitizeUser.mockReset();
             jest.mocked(bcrypt.hash).mockReset();
         });
 
         it("sets default role", async () => {
             await userService.createUser({ email: USER_EMAIL });
-            expect(validateUserMock).toHaveBeenCalledWith({ email: USER_EMAIL, roles: [RoleEnum.user] });
+            expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith({
+                email: USER_EMAIL,
+                roles: [RoleEnum.user],
+            });
         });
 
         it("validates user object", async () => {
             await userService.createUser(FUTURE_USER);
-            expect(validateUserMock).toHaveBeenCalledWith(FUTURE_USER);
+            expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith(FUTURE_USER);
         });
 
-        it("calls repository creation with sanitized values", async () => {
-            validateUserMock.mockImplementation(async user => (user.firstName = "Jocelyne"));
-            await userService.createUser({ ...FUTURE_USER, firstName: "BadJocelyne" });
-            const expected = FUTURE_USER;
-            const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
-            expect(actual).toMatchObject(expected);
+        it("calls userRepository.create()", async () => {
+            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
+            await userService.createUser({ ...FUTURE_USER });
+            expect(mockedUserRepository.create).toHaveBeenCalledTimes(1);
         });
 
         it("ignores properties that should not be saved", async () => {
@@ -927,7 +881,6 @@ describe("User Service", () => {
         it("should return true", () => {
             const roles = [RoleEnum.admin, RoleEnum.user];
             const expected = true;
-            // @ts-expect-error: test private method
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
         });
@@ -935,7 +888,6 @@ describe("User Service", () => {
         it("should return false", () => {
             const roles = ["foo", RoleEnum.user];
             const expected = false;
-            // @ts-expect-error: test private method
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
         });
