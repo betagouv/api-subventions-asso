@@ -26,7 +26,6 @@ import {
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../configurations/jwt.conf";
-import configurationsService from "../configurations/configurations.service";
 import {
     BadRequestError,
     ForbiddenError,
@@ -55,7 +54,7 @@ import UserReset from "./entities/UserReset";
 import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
 
 import userRepository from "./repositories/user.repository";
-import { REGEX_MAIL, DEFAULT_PWD } from "./user.constant";
+import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
 
 export enum UserServiceErrors {
@@ -211,37 +210,19 @@ export class UserService {
         }
     }
 
-    /**
-     * validates and sanitizes in-place user. if newUser: check if no email duplicate
-     * @param user
-     * @param newUser
-     */
-    async validateSanitizeUser(user: FutureUserDto, newUser = true) {
-        await userCheckService.validateEmail(user.email);
-
-        if (newUser && (await userRepository.findByEmail(user.email)))
-            throw new InternalServerError("An error has occurred");
-
-        if (!this.validRoles(user.roles || []))
-            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
-
-        if (user.firstName) user.firstName = sanitizeToPlainText(user.firstName?.toString());
-        if (user.lastName) user.lastName = sanitizeToPlainText(user.lastName?.toString());
-    }
-
     async createUser(userObject: FutureUserDto): Promise<UserDto> {
         // default values and ensures format
         if (!userObject.roles) userObject.roles = [RoleEnum.user];
 
-        await this.validateSanitizeUser(userObject);
+        const sanitizedUser = await userCheckService.validateSanitizeUser(userObject);
 
         const partialUser: Record<string, unknown> = {
-            email: userObject.email,
+            email: sanitizedUser.email,
             hashPassword: await this.getHashPassword(DEFAULT_PWD),
             signupAt: new Date(),
-            roles: userObject.roles,
-            firstName: userObject.firstName || null,
-            lastName: userObject.lastName || null,
+            roles: sanitizedUser.roles,
+            firstName: sanitizedUser.firstName || null,
+            lastName: sanitizedUser.lastName || null,
             profileToComplete: true,
         };
 
@@ -681,7 +662,7 @@ export class UserService {
         return Object.values(RoleEnum).includes(role as RoleEnum);
     }
 
-    private validRoles(roles: string[]) {
+    public validRoles(roles: string[]) {
         return roles.every(role => this.isRoleValid(role));
     }
 

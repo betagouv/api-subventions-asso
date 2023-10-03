@@ -1,9 +1,19 @@
 import userCheckService from "./user.check.service";
 import { UserServiceErrors } from "../../user.service";
-import configurationsService from "../../../configurations/configurations.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
+import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 const mockedConfigurationsService = jest.mocked(configurationsService);
+import userRepository from "../../repositories/user.repository";
+jest.mock("../../repositories/user.repository");
+const mockedUserRepository = jest.mocked(userRepository);
+import * as stringHelper from "../../../../shared/helpers/StringHelper";
+jest.mock("../../../../shared/helpers/StringHelper");
+const mockedStringHelper = jest.mocked(stringHelper);
+import userService from "../../user.service";
+jest.mock("../../user.service");
+const mockedUserService = jest.mocked(userService);
 
 describe("user check service", () => {
     describe("passwordValidator", () => {
@@ -71,6 +81,49 @@ describe("user check service", () => {
             };
             const test = () => userCheckService.validateEmail(EMAIL);
             await expect(test).rejects.toMatchObject(expected);
+        });
+    });
+
+    describe("validateSanitizeUser", () => {
+        const mockValidateEmail = jest.spyOn(userCheckService, "validateEmail");
+
+        beforeAll(() => {
+            mockedUserRepository.findByEmail.mockResolvedValue(null);
+            mockedStringHelper.sanitizeToPlainText.mockReturnValue("safeString");
+            mockValidateEmail.mockResolvedValue(undefined);
+            mockedUserService.validRoles.mockReturnValue(true);
+        });
+
+        afterAll(() => {
+            jest.mocked(mockedUserRepository.findByEmail).mockReset();
+            mockValidateEmail.mockRestore();
+            mockedUserService.validRoles.mockRestore();
+            mockedStringHelper.sanitizeToPlainText.mockRestore();
+        });
+
+        it("look for user with this email if newUser", async () => {
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL }, true);
+            expect(mockedUserRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
+        });
+
+        it("does not look for user with this email if not newUser", async () => {
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL }, false);
+            expect(mockedUserRepository.findByEmail).not.toHaveBeenCalled();
+        });
+
+        it("validates roles", async () => {
+            const roles = ["ratata", "tralala"];
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, roles }, false);
+            expect(mockedUserService.validRoles).toHaveBeenCalledWith(roles);
+        });
+
+        it.each`
+            variableName
+            ${"firstName"}
+            ${"lastName"}
+        `("if $variableName is set, call sanitizer with it", async ({ variableName }) => {
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, [variableName]: "something" });
+            expect(mockedStringHelper.sanitizeToPlainText).toHaveBeenCalledWith("something");
         });
     });
 });
