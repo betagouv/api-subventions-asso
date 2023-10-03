@@ -68,7 +68,14 @@ export class AssociationsService {
 
     async getAssociationByRna(rna: Rna) {
         const siren = await rnaSirenService.getSiren(rna);
-        if (siren) return this.getAssociationBySiren(siren);
+        if (siren) {
+            try {
+                const association = await this.getAssociationBySiren(siren);
+                return association;
+            } catch {
+                // if no association found by siren search by rna
+            }
+        }
 
         const data = await this.aggregate(rna);
         if (!data.length) throw new NotFoundError("Association not found");
