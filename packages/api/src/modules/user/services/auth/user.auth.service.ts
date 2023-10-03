@@ -1,8 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
+import { LoginDtoErrorCodes, UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
 import userRepository from "../../repositories/user.repository";
-import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
+import {
+    BadRequestError,
+    InternalServerError,
+    NotFoundError,
+    UnauthorizedError,
+} from "../../../../shared/errors/httpErrors";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
 import UserDbo from "../../repositories/dbo/UserDbo";
 import notifyService from "../../../notify/notify.service";
@@ -10,6 +15,7 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { UserServiceErrors } from "../../user.service";
 import { UserUpdateError } from "../../repositories/errors/UserUpdateError";
+import LoginError from "../../../../shared/errors/LoginError";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -92,6 +98,24 @@ export class UserAuthService {
         } catch (e) {
             throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
         }
+    }
+
+    async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
+        const user = await userRepository.getUserWithSecretsByEmail(email);
+
+        if (!user) throw new LoginError();
+        const validPassword = await bcrypt.compare(password, user.hashPassword);
+        if (!validPassword) throw new LoginError();
+        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
+
+        const updatedUser = await userAuthService.updateJwt(user);
+
+        notifyService.notify(NotificationType.USER_LOGGED, {
+            email,
+            date: new Date(),
+        });
+
+        return updatedUser;
     }
 }
 

@@ -111,24 +111,6 @@ export class UserService {
         return removeSecrets(user) as UserDto;
     }
 
-    async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
-        const user = await userRepository.getUserWithSecretsByEmail(email);
-
-        if (!user) throw new LoginError();
-        const validPassword = await bcrypt.compare(password, user.hashPassword);
-        if (!validPassword) throw new LoginError();
-        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
-
-        const updatedUser = await userAuthService.updateJwt(user);
-
-        notifyService.notify(NotificationType.USER_LOGGED, {
-            email,
-            date: new Date(),
-        });
-
-        return updatedUser;
-    }
-
     findByEmail(email: string) {
         return userRepository.findByEmail(email);
     }
