@@ -1,4 +1,5 @@
 import { Siren } from "dto";
+import { MongoServerError } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import Provider from "../@types/IProvider";
 import associationNameService from "../../association-name/associationName.service";
@@ -20,7 +21,15 @@ export class DataGouvService implements Provider {
     }
 
     async insertManyEntrepriseSiren(entities: EntrepriseSirenEntity[]) {
-        return entrepriseSirenRepository.insertMany(entities);
+        if (!entities.length) return;
+        try {
+            const result = await entrepriseSirenRepository.insertMany(entities);
+            return result;
+        } catch (error: unknown) {
+            if (error instanceof MongoServerError && error.code === "E11000") return;
+
+            throw error;
+        }
     }
 
     async sirenIsEntreprise(siren: Siren) {
