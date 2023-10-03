@@ -29,7 +29,7 @@ export class UserController extends Controller {
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>(400, "Role Not Valid")
     public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
-        return await userService.addRolesToUser(body.email, body.roles);
+        return await userRolesService.addRolesToUser(body.email, body.roles);
     }
 
     /**
