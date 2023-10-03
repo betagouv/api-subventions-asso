@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.7](https://github.com/betagouv/api-subventions-asso/compare/v0.36.6...v0.36.7) (2023-10-03)
+
+### Bug Fixes
+
+-   **api:** fix when api not found structure by siren end point ([c109a7c](https://github.com/betagouv/api-subventions-asso/commit/c109a7cab975f475b869bc5313817a22a62dde45))
+
 ## [0.36.6](https://github.com/betagouv/api-subventions-asso/compare/v0.36.5...v0.36.6) (2023-09-21)
 
 ### Bug Fixes
