@@ -20,20 +20,31 @@ import jwt from "jsonwebtoken";
 import userRepository from "../../repositories/user.repository";
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
-import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import {
+    CONSUMER_USER,
+    SIGNED_TOKEN,
+    USER_DBO,
+    USER_SECRETS,
+    USER_WITHOUT_SECRET,
+} from "../../__fixtures__/user.fixture";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
 jest.mock("../../repositories/user.repository");
-
+import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
+    removeSecrets: jest.fn(user => user),
+    uniformizeId: jest.fn(token => token),
+}));
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import LoginError from "../../../../shared/errors/LoginError";
 import UserReset from "../../entities/UserReset";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
-import userService from "../../user.service";
+import userService, { UserServiceErrors } from "../../user.service";
 jest.mock("../../user.service");
 const mockedUserService = jest.mocked(userService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
+import UserDbo from "../../repositories/dbo/UserDbo";
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -210,6 +221,57 @@ describe("user auth service", () => {
                 email: USER_DBO.email,
                 date: expect.any(Date),
             });
+        });
+    });
+
+    describe("authenticate", () => {
+        const DECODED_TOKEN = { ...USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
+        it("should throw error if user does not exist", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(jest.fn());
+            const expected = { message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            const test = async () => await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
+            await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("should call removeSecrets() when consumer", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(
+                async () => ({ ...CONSUMER_USER, ...USER_SECRETS } as UserDbo),
+            );
+            await userAuthService.authenticate({ ...DECODED_TOKEN, ...CONSUMER_USER }, USER_SECRETS.jwt.token);
+            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
+        });
+
+        it("should call removeSecrets() when user", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
+            await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
+            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
+        });
+
+        it("should return UserServiceError if user not active", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+                ...USER_DBO,
+                active: false,
+            }));
+            const expected = { message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            const test = async () => await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
+            await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("should return UserServiceError if token has expired", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
+            const expected = {
+                message: "JWT has expired, please login try again",
+                code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
+            };
+            const test = () =>
+                userAuthService.authenticate(
+                    {
+                        ...DECODED_TOKEN,
+                        now: (d => new Date(d.setDate(d.getDate() - 3)))(new Date()),
+                    },
+                    USER_SECRETS.jwt.token,
+                );
+            await expect(test).rejects.toMatchObject(expected);
         });
     });
 });

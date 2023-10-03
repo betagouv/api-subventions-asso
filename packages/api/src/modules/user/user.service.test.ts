@@ -40,9 +40,7 @@ import { ObjectId, WithId } from "mongodb";
 import { RoleEnum } from "../../@enums/Roles";
 import { UserDto } from "dto";
 import UserReset from "./entities/UserReset";
-import UserDbo from "./repositories/dbo/UserDbo";
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "dto";
-import LoginError from "../../shared/errors/LoginError";
+import { ResetPasswordErrorCodes } from "dto";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import statsService from "../stats/stats.service";
 import { NotificationType } from "../notify/@types/NotificationType";
@@ -50,7 +48,7 @@ import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
 import { AgentTypeEnum } from "dto";
 import { AgentJobTypeEnum } from "dto";
-import { SIGNED_TOKEN, USER_DBO, USER_SECRETS, USER_WITHOUT_SECRET } from "./__fixtures__/user.fixture";
+import { CONSUMER_USER, SIGNED_TOKEN, USER_DBO, USER_SECRETS, USER_WITHOUT_SECRET } from "./__fixtures__/user.fixture";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -60,8 +58,6 @@ const USER_WITHOUT_PASSWORD = {
     ...USER_WITHOUT_SECRET,
     jwt: USER_SECRETS.jwt,
 };
-
-const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
 
 const CONSUMER_JWT_PAYLOAD = {
     ...USER_WITHOUT_SECRET,
@@ -352,57 +348,6 @@ describe("User Service", () => {
             const sanitized = userService.sanitizeUserProfileData({ service: "smth" });
             const actual = Object.keys(sanitized).length;
             expect(actual).toBe(expected);
-        });
-    });
-
-    describe("authenticate", () => {
-        const DECODED_TOKEN = { ...USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
-        it("should throw error if user does not exist", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(jest.fn());
-            const expected = { message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
-            const test = async () => await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
-            await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("should call removeSecrets() when consumer", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(
-                async () => ({ ...CONSUMER_USER, ...USER_SECRETS } as UserDbo),
-            );
-            await userService.authenticate({ ...DECODED_TOKEN, ...CONSUMER_USER }, USER_SECRETS.jwt.token);
-            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
-        });
-
-        it("should call removeSecrets() when user", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
-            await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
-            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
-        });
-
-        it("should return UserServiceError if user not active", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
-                ...USER_DBO,
-                active: false,
-            }));
-            const expected = { message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
-            const test = async () => await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
-            await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("should return UserServiceError if token has expired", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
-            const expected = {
-                message: "JWT has expired, please login try again",
-                code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
-            };
-            const test = () =>
-                userService.authenticate(
-                    {
-                        ...DECODED_TOKEN,
-                        now: (d => new Date(d.setDate(d.getDate() - 3)))(new Date()),
-                    },
-                    USER_SECRETS.jwt.token,
-                );
-            await expect(test).rejects.toMatchObject(expected);
         });
     });
 
