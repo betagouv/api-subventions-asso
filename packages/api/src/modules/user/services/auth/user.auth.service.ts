@@ -63,6 +63,17 @@ export class UserAuthService {
 
         return { user: userUpdated };
     }
+
+    public async logout(user: UserDto) {
+        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
+
+        if (!userWithSecrets?.jwt) {
+            // No jwt, so user is already disconnected
+            return user;
+        }
+
+        return userRepository.update({ ...user, jwt: null });
+    }
 }
 
 const userAuthService = new UserAuthService();
