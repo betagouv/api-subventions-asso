@@ -9,11 +9,12 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 import userAuthService from "./user.auth.service";
-import { UserDto, UserErrorCodes } from "dto";
+import { LoginDtoErrorCodes, UserDto, UserErrorCodes } from "dto";
 import { ObjectId } from "mongodb";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import bcrypt from "bcrypt";
 jest.mock("bcrypt");
+const mockedBcrypt = jest.mocked(bcrypt);
 import jwt from "jsonwebtoken";
 
 import userRepository from "../../repositories/user.repository";
@@ -24,8 +25,19 @@ import { BadRequestError } from "../../../../shared/errors/httpErrors";
 jest.mock("../../repositories/user.repository");
 
 import userCheckService, { UserCheckService } from "../check/user.check.service";
+import LoginError from "../../../../shared/errors/LoginError";
+import UserReset from "../../entities/UserReset";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
+import userService from "../../user.service";
+jest.mock("../../user.service");
+const mockedUserService = jest.mocked(userService);
+import { NotificationType } from "../../../notify/@types/NotificationType";
+import notifyService from "../../../notify/notify.service";
+jest.mock("../../../notify/notify.service", () => ({
+    notify: jest.fn(),
+}));
+const mockedNotifyService = jest.mocked(notifyService);
 
 describe("user auth service", () => {
     const USER_ID = new ObjectId();
@@ -139,6 +151,65 @@ describe("user auth service", () => {
         it("should call userRepository.update()", async () => {
             await userAuthService.logout(USER_WITHOUT_SECRET);
             expect(mockedUserRepository.update).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("login", () => {
+        const mockUpdateJwt = jest.spyOn(userAuthService, "updateJwt");
+
+        beforeEach(() => {
+            mockedBcrypt.compare.mockImplementation(() => true);
+            // @ts-expect-error: test mock
+            mockUpdateJwt.mockResolvedValue("USER WITH JWT");
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO);
+        });
+
+        afterEach(() => {
+            mockUpdateJwt.mockReset();
+            mockedUserRepository.getUserWithSecretsByEmail.mockReset();
+        });
+
+        it("should throw an Error if user not found", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
+            const expected = new LoginError();
+            const test = async () => await userAuthService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("should throw an Error if user is not active", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+                ...USER_DBO,
+                active: false,
+            }));
+            const expected = {
+                message: "User is not active",
+                code: LoginDtoErrorCodes.USER_NOT_ACTIVE,
+            };
+            const test = async () => await userAuthService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("should throw LoginError password do not match", async () => {
+            jest.mocked(bcrypt.compare).mockImplementationOnce(async () => false);
+            const expected = new LoginError();
+            const test = async () => await userAuthService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("should return user", async () => {
+            const expected = "USER WITH JWT";
+            const actual = await userAuthService.login(USER_DBO.email, "PASSWORD");
+            expect(actual).toEqual(expected);
+        });
+
+        it("should notify USER_LOGGED", async () => {
+            mockedUserService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserService.createUser.mockImplementationOnce(async () => ({} as UserDto));
+            await userAuthService.login(USER_DBO.email, "PASSWORD");
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
+                email: USER_DBO.email,
+                date: expect.any(Date),
+            });
         });
     });
 });

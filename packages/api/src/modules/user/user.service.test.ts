@@ -355,55 +355,6 @@ describe("User Service", () => {
         });
     });
 
-    describe("login", () => {
-        // @ts-expect-error test mock
-        beforeEach(() => mockedUserAuthService.updateJwt.mockResolvedValue("USER WITH JWT"));
-        afterEach(() => mockedUserAuthService.updateJwt.mockReset());
-
-        it("should throw an Error if user not found", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
-            const expected = new LoginError();
-            const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
-            await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("should throw an Error if user is not active", async () => {
-            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
-                ...USER_DBO,
-                active: false,
-            }));
-            const expected = {
-                message: "User is not active",
-                code: LoginDtoErrorCodes.USER_NOT_ACTIVE,
-            };
-            const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
-            await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("should throw LoginError password do not match", async () => {
-            jest.mocked(bcrypt.compare).mockImplementationOnce(async () => false);
-            const expected = new LoginError();
-            const test = async () => await userService.login(USER_DBO.email, "PASSWORD");
-            await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("should return user", async () => {
-            const expected = "USER WITH JWT";
-            const actual = await userService.login(USER_DBO.email, "PASSWORD");
-            expect(actual).toEqual(expected);
-        });
-
-        it("should notify USER_LOGGED", async () => {
-            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
-            await userService.login(USER_DBO.email, "PASSWORD");
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
-                email: USER_DBO.email,
-                date: expect.any(Date),
-            });
-        });
-    });
-
     describe("authenticate", () => {
         const DECODED_TOKEN = { ...USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
         it("should throw error if user does not exist", async () => {
