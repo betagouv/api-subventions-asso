@@ -27,7 +27,6 @@ export class DataGouvService implements Provider {
             return result;
         } catch (error: unknown) {
             if (error instanceof MongoServerError && error.code === "E11000") return; // One or many entities already exist in database but other entities have been saved
-
             throw error;
         }
     }
