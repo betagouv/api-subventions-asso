@@ -9,6 +9,7 @@ jest.mock("jsonwebtoken");
 
 import userRepository from "../../repositories/user.repository";
 jest.mock("../../repositories/user.repository");
+const mockedUserRepository = jest.mocked(userRepository);
 import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
 jest.mock("../../repositories/user.repository");
@@ -82,6 +83,28 @@ describe("user auth service", () => {
                 ...USER_WITHOUT_SECRET,
                 hashPassword: PASSWORD,
             });
+        });
+    });
+
+    describe("logout", () => {
+        beforeAll(() =>
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => ({
+                ...USER_WITHOUT_SECRET,
+                jwt: { token: "", expirateDate: new Date() },
+                hashPassword: "",
+            })),
+        );
+
+        afterAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockReset());
+
+        it("should call userRepository.getUserWithSecretsByEmail()", async () => {
+            await userAuthService.logout(USER_WITHOUT_SECRET);
+            expect(mockedUserRepository.getUserWithSecretsByEmail).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call userRepository.update()", async () => {
+            await userAuthService.logout(USER_WITHOUT_SECRET);
+            expect(mockedUserRepository.update).toHaveBeenCalledTimes(1);
         });
     });
 });

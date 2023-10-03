@@ -11,6 +11,7 @@ import {
 import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
+import userAuthService from "../../services/auth/user.auth.service";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -74,7 +75,7 @@ export class AuthentificationController extends Controller {
     @Security("jwt")
     public async logout(@Request() req: IdentifiedRequest) {
         if (!req.user) throw new BadRequestError();
-        await userService.logout(req.user);
+        await userAuthService.logout(req.user);
     }
 
     @Post("/validate-token")
