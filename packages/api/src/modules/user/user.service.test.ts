@@ -128,8 +128,6 @@ describe("User Service", () => {
         // @ts-expect-error: mock private method
         "validateUserProfileData",
     );
-    // @ts-expect-error: mock private method
-    const mockValidateEmail = jest.spyOn(userService, "validateEmail");
     const mockGetUserById = jest.spyOn(userService, "getUserById");
     let mockUpdateJwt = jest.spyOn(userService, "updateJwt");
 
@@ -662,15 +660,14 @@ describe("User Service", () => {
         beforeAll(() => {
             jest.mocked(mockedUserRepository.findByEmail).mockResolvedValue(null);
             jest.mocked(sanitizeToPlainText).mockReturnValue("safeString");
-            // @ts-expect-error: mock
-            mockValidateEmail.mockResolvedValue(undefined);
+            mockedUserCheckService.validateEmail.mockResolvedValue(undefined);
             // @ts-expect-error private method
             validRolesMock = jest.spyOn(userService, "validRoles").mockResolvedValue(true);
         });
 
         afterAll(() => {
             jest.mocked(mockedUserRepository.findByEmail).mockReset();
-            mockValidateEmail.mockRestore();
+            mockedUserCheckService.validateEmail.mockRestore();
             validRolesMock.mockRestore();
             jest.mocked(sanitizeToPlainText).mockRestore();
         });
@@ -941,45 +938,6 @@ describe("User Service", () => {
             // @ts-expect-error: test private method
             const actual = userService.validRoles(roles);
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("validateEmail()", () => {
-        const isDomainAcceptedMock = jest
-            .spyOn(configurationsService, "isDomainAccepted")
-            .mockImplementation(async () => true);
-        const EMAIL = "daemon.targaryen@ac-pentos.ws";
-
-        it("should verify domain", async () => {
-            //@ts-expect-error: private method
-            await userService.validateEmail(EMAIL);
-            expect(isDomainAcceptedMock).toHaveBeenCalledWith(EMAIL);
-        });
-
-        it("should return if email is correct", async () => {
-            //@ts-expect-error: private method
-            await userService.validateEmail(EMAIL);
-        });
-
-        it("should throw error if not well formatted", async () => {
-            const expected = {
-                message: "Email is not valid",
-                code: UserServiceErrors.CREATE_INVALID_EMAIL,
-            };
-            //@ts-expect-error: private method
-            const test = () => userService.validateEmail();
-            await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("should throw error if domain not accepted", async () => {
-            isDomainAcceptedMock.mockImplementationOnce(async () => false);
-            const expected = {
-                message: "Email domain is not accepted",
-                code: UserServiceErrors.CREATE_EMAIL_GOUV,
-            };
-            //@ts-expect-error: private method
-            const test = () => userService.validateEmail(EMAIL);
-            await expect(test).rejects.toMatchObject(expected);
         });
     });
 
