@@ -20,10 +20,10 @@ export default class DataGouvHistoryLegalUnitParser {
     }) {
         // date de début invalide
         if (!isValidDate(periodStart)) return false;
-        // modification non effective
-        if (periodStart > now) return false;
         // entrée déjà persistée
         if (importDate && periodStart < importDate) return false;
+        // modification non effective
+        if (periodStart > now) return false;
         return true;
     }
 
