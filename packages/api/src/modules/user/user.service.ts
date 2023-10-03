@@ -20,7 +20,6 @@ import {
     TerritorialScopeEnum,
     AdminTerritorialLevel,
     UpdatableUser,
-    UserWithJWTDto,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -47,7 +46,6 @@ import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import { joinEnum } from "../../shared/helpers/ArrayHelper";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
-import { UserUpdateError } from "./repositories/errors/UserUpdateError";
 import userResetRepository from "./repositories/user-reset.repository";
 import UserReset from "./entities/UserReset";
 import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
@@ -113,23 +111,6 @@ export class UserService {
         return removeSecrets(user) as UserDto;
     }
 
-    async updateJwt(user: Omit<UserDbo, "hashPassword">): Promise<UserWithJWTDto> {
-        // Generate new JTW Token
-        const now = new Date();
-
-        const updatedJwt = {
-            token: userAuthService.buildJWTToken(user),
-            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
-        };
-
-        try {
-            user.jwt = updatedJwt;
-            return (await userRepository.update(user, true)) as UserWithJWTDto;
-        } catch (e) {
-            throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
-        }
-    }
-
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
         const user = await userRepository.getUserWithSecretsByEmail(email);
 
@@ -138,7 +119,7 @@ export class UserService {
         if (!validPassword) throw new LoginError();
         if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
-        const updatedUser = await this.updateJwt(user);
+        const updatedUser = await userAuthService.updateJwt(user);
 
         notifyService.notify(NotificationType.USER_LOGGED, {
             email,
@@ -326,7 +307,7 @@ export class UserService {
             true,
         )) as Omit<UserDbo, "hashPassword">;
 
-        const userWithJwt = await this.updateJwt(activeUser);
+        const userWithJwt = await userAuthService.updateJwt(activeUser);
 
         notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
 
@@ -529,7 +510,7 @@ export class UserService {
             },
             true,
         )) as Omit<UserDbo, "hashPassword">;
-        return await this.updateJwt(userUpdated);
+        return await userAuthService.updateJwt(userUpdated);
     }
 
     async forgetPassword(email: string) {
