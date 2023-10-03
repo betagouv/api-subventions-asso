@@ -1,10 +1,8 @@
-import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 
 import dedent from "dedent";
 import {
-    LoginDtoErrorCodes,
     ResetPasswordErrorCodes,
     SignupErrorCodes,
     UserWithResetTokenDto,
@@ -26,10 +24,8 @@ import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 import {
     BadRequestError,
-    ForbiddenError,
     InternalServerError,
     NotFoundError,
-    UnauthorizedError,
     UserNotFoundError,
     ResetTokenNotFoundError,
 } from "../../shared/errors/httpErrors";
@@ -39,7 +35,6 @@ import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJo
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
 import { isInObjectValues } from "../../shared/Validators";
-import LoginError from "../../shared/errors/LoginError";
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import statsService from "../stats/stats.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
@@ -539,14 +534,6 @@ export class UserService {
                 };
             }),
         );
-    }
-
-    public isRoleValid(role: string) {
-        return Object.values(RoleEnum).includes(role as RoleEnum);
-    }
-
-    public validRoles(roles: string[]) {
-        return roles.every(role => this.isRoleValid(role));
     }
 
     public findByPeriod(begin: Date, end: Date, withAdmin = false) {

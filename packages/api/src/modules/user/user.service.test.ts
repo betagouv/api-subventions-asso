@@ -682,37 +682,6 @@ describe("User Service", () => {
         });
     });
 
-    describe("isRoleValid", () => {
-        it("should return true", () => {
-            const expected = true;
-            const role = RoleEnum.consumer;
-            const actual = userService.isRoleValid(role);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return false", () => {
-            const expected = false;
-            const actual = userService.isRoleValid("not-a-role");
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("validRoles", () => {
-        it("should return true", () => {
-            const roles = [RoleEnum.admin, RoleEnum.user];
-            const expected = true;
-            const actual = userService.validRoles(roles);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return false", () => {
-            const roles = ["foo", RoleEnum.user];
-            const expected = false;
-            const actual = userService.validRoles(roles);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("findAndSortByPeriod()", () => {
         const REPO_RETURN = {};
         const END = new Date();
