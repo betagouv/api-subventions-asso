@@ -2,6 +2,7 @@ import { StaticImplements } from "../../../../decorators/staticImplements.decora
 import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
+import userRolesService from "../../services/roles/user.roles.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
@@ -19,7 +20,7 @@ export default class UserCliController {
 
     async setRoles(email: string, ...roles: RoleEnum[]) {
         try {
-            await userService.addRolesToUser(email, roles);
+            await userRolesService.addRolesToUser(email, roles);
         } catch (e) {
             console.info("Roles upgarde error : \n", (e as Error).message);
             return;

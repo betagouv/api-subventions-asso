@@ -356,26 +356,6 @@ export class UserService {
         return !!(await userRepository.update(disabledUser));
     }
 
-    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
-        if (typeof user === "string") {
-            const foundUser = await userRepository.findByEmail(user);
-            if (!foundUser) {
-                throw new InternalServerError("An error has occurred");
-            }
-            user = foundUser;
-        }
-
-        const roleEnumValues = Object.values(RoleEnum);
-        const invalidRole = roles.find(role => !roleEnumValues.includes(role));
-        if (invalidRole) {
-            throw new BadRequestError(`Role ${invalidRole} is not valid`, UserServiceErrors.ROLE_NOT_FOUND);
-        }
-
-        user.roles = [...new Set([...user.roles, ...roles])];
-
-        return { user: await userRepository.update(user) };
-    }
-
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
