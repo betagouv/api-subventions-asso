@@ -217,7 +217,7 @@ export class UserService {
      * @param newUser
      */
     async validateSanitizeUser(user: FutureUserDto, newUser = true) {
-        await this.validateEmail(user.email);
+        await userCheckService.validateEmail(user.email);
 
         if (newUser && (await userRepository.findByEmail(user.email)))
             throw new InternalServerError("An error has occurred");
@@ -282,7 +282,7 @@ export class UserService {
     }
 
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
-        await this.validateEmail(user.email);
+        await userCheckService.validateEmail(user.email);
         return await userRepository.update(user);
     }
 
@@ -683,16 +683,6 @@ export class UserService {
 
     private validRoles(roles: string[]) {
         return roles.every(role => this.isRoleValid(role));
-    }
-
-    private async validateEmail(email: string): Promise<void> {
-        if (!REGEX_MAIL.test(email)) {
-            throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
-        }
-
-        if (!(await configurationsService.isDomainAccepted(email))) {
-            throw new BadRequestError("Email domain is not accepted", UserServiceErrors.CREATE_EMAIL_GOUV);
-        }
     }
 
     private buildJWTToken(user: DefaultObject, options: { expiration: boolean } = { expiration: true }) {
