@@ -1,19 +1,8 @@
-const SIGNED_TOKEN = "SIGNED_TOKEN";
-const jwtVerifyMock = jest.fn();
-const jwtSignMock = jest.fn(() => SIGNED_TOKEN);
-jest.mock("jsonwebtoken", () => ({
-    __esModule: true, // this property makes it work
-    default: {
-        verify: jwtVerifyMock,
-        sign: jwtSignMock,
-    },
-}));
 import { BadRequestError, InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
 import bcrypt from "bcrypt";
 jest.mock("bcrypt");
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 jest.mock("../../shared/helpers/StringHelper");
-import * as JWT_CONF from "../../configurations/jwt.conf";
 jest.mock("../../configurations/jwt.conf", () => ({
     JWT_EXPIRES_TIME: 123456789,
     JWT_SECRET: "secret",
@@ -39,6 +28,11 @@ const mockedUserCheckService = jest.mocked(userCheckService);
 import userAuthService from "./services/auth/user.auth.service";
 jest.mock("./services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, true);
+import * as repositoryHelper from "../../shared/helpers/RepositoryHelper";
+jest.mock("../../shared/helpers/RepositoryHelper", () => ({
+    removeSecrets: jest.fn(user => user),
+    uniformizeId: jest.fn(token => token),
+}));
 
 import mocked = jest.mocked;
 import userService, { UserService, UserServiceErrors } from "./user.service";
@@ -47,7 +41,7 @@ import { RoleEnum } from "../../@enums/Roles";
 import { SignupErrorCodes, UserDto } from "dto";
 import UserReset from "./entities/UserReset";
 import UserDbo from "./repositories/dbo/UserDbo";
-import { LoginDtoErrorCodes, ResetPasswordErrorCodes, UserErrorCodes } from "dto";
+import { LoginDtoErrorCodes, ResetPasswordErrorCodes } from "dto";
 import LoginError from "../../shared/errors/LoginError";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import statsService from "../stats/stats.service";
@@ -56,28 +50,11 @@ import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
 import { AgentTypeEnum } from "dto";
 import { AgentJobTypeEnum } from "dto";
+import { SIGNED_TOKEN, USER_DBO, USER_SECRETS, USER_WITHOUT_SECRET } from "./__fixtures__/user.fixture";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
-const USER_WITHOUT_SECRET = {
-    _id: new ObjectId("635132a527c9bfb8fc7c758e"),
-    email: USER_EMAIL,
-    roles: ["user"],
-    signupAt: new Date(),
-    firstName: "",
-    lastName: "",
-    active: true,
-    profileToComplete: false,
-} as UserDto;
-
 const UNACTIVATED_USER = { ...USER_WITHOUT_SECRET, ...{ active: false, profileToComplete: true } };
-
-const USER_SECRETS = {
-    jwt: { token: SIGNED_TOKEN, expirateDate: new Date() },
-    hashPassword: "HASH_PASSWORD",
-};
-
-const USER_DBO = { ...USER_WITHOUT_SECRET, ...USER_SECRETS };
 
 const USER_WITHOUT_PASSWORD = {
     ...USER_WITHOUT_SECRET,
@@ -126,21 +103,12 @@ describe("User Service", () => {
         "validateUserProfileData",
     );
     const mockGetUserById = jest.spyOn(userService, "getUserById");
-    let mockUpdateJwt = jest.spyOn(userService, "updateJwt");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
 
     beforeEach(() => {
         jest.mocked(bcrypt.compare).mockImplementation(async () => true);
         mockedUserAuthService.buildJWTToken.mockImplementation(() => "SIGNED_TOKEN");
-        jwtVerifyMock.mockImplementation(() => ({
-            token: "TOKEN",
-            now: new Date(),
-        }));
-    });
-
-    afterEach(() => {
-        jwtVerifyMock.mockRestore();
     });
 
     describe("signup", () => {
@@ -210,7 +178,7 @@ describe("User Service", () => {
             mockSanitizeUserProfileData,
             mockedUserResetRepository.findByToken,
             mockValidateResetToken,
-            mockUpdateJwt,
+            mockedUserAuthService.updateJwt,
         ];
         beforeAll(() => {
             // @ts-expect-error: mock
@@ -226,7 +194,9 @@ describe("User Service", () => {
                 ...USER_ACTIVATION_INFO,
             }));
             mockGetUserById.mockImplementation(async id => UNACTIVATED_USER);
-            mockUpdateJwt.mockImplementation(jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })));
+            mockedUserAuthService.updateJwt.mockImplementation(
+                jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })),
+            );
         });
         afterAll(() => mockList.forEach(mock => mock.mockReset()));
 
@@ -258,7 +228,7 @@ describe("User Service", () => {
 
         it("update user's jwt", async () => {
             await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockUpdateJwt).toHaveBeenCalledWith({
+            expect(mockedUserAuthService.updateJwt).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
             });
@@ -400,35 +370,10 @@ describe("User Service", () => {
         });
     });
 
-    describe("updateJwt", () => {
-        beforeAll(() => mockUpdateJwt.mockRestore());
-        afterAll(() => (mockUpdateJwt = jest.spyOn(userService, "updateJwt")));
-        it("should generate new token and update user", async () => {
-            mockedUserRepository.update.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
-            // minus two days
-            const oldDate = new Date(Date.now() - 172800001);
-            jwtVerifyMock.mockImplementation(() => ({
-                token: "TOKEN",
-                now: oldDate,
-            }));
-            await userService.updateJwt(USER_DBO);
-            expect(mockedUserAuthService.buildJWTToken).toHaveBeenCalledTimes(1);
-            expect(userRepository.update).toHaveBeenCalledTimes(1);
-        });
-
-        it("should return user", async () => {
-            // @ts-expect-error test mock
-            mockedUserRepository.update.mockResolvedValueOnce("USER WITH JWT");
-            const expected = "USER WITH JWT";
-            const actual = await userService.updateJwt(USER_DBO);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("login", () => {
         // @ts-expect-error test mock
-        beforeEach(() => mockUpdateJwt.mockResolvedValue("USER WITH JWT"));
-        afterEach(() => mockUpdateJwt.mockReset());
+        beforeEach(() => mockedUserAuthService.updateJwt.mockResolvedValue("USER WITH JWT"));
+        afterEach(() => mockedUserAuthService.updateJwt.mockReset());
 
         it("should throw an Error if user not found", async () => {
             mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
@@ -483,20 +428,18 @@ describe("User Service", () => {
             await expect(test).rejects.toMatchObject(expected);
         });
 
-        it("should return UserDtoSuccessResponse consumer token", async () => {
+        it("should call removeSecrets() when consumer", async () => {
             mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(
                 async () => ({ ...CONSUMER_USER, ...USER_SECRETS } as UserDbo),
             );
-            const expected = CONSUMER_USER;
-            const actual = await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
-            expect(actual).toEqual(expected);
+            await userService.authenticate({ ...DECODED_TOKEN, ...CONSUMER_USER }, USER_SECRETS.jwt.token);
+            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
         });
 
-        it("should return UserDtoSuccessResponse user token", async () => {
+        it("should call removeSecrets() when user", async () => {
             mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
-            const expected = USER_WITHOUT_SECRET;
-            const actual = await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
-            expect(actual).toEqual(expected);
+            await userService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
+            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
         });
 
         it("should return UserServiceError if user not active", async () => {
@@ -779,7 +722,9 @@ describe("User Service", () => {
             mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
             mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_PASSWORD);
             mockedUserCheckService.passwordValidator.mockReturnValue(true);
-            mockUpdateJwt.mockImplementation(jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })));
+            mockedUserAuthService.updateJwt.mockImplementation(
+                jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })),
+            );
         });
 
         afterAll(() => {
@@ -788,7 +733,7 @@ describe("User Service", () => {
             mockGetUserById.mockReset();
             mockedUserCheckService.passwordValidator.mockReset();
             mockedUserRepository.update.mockReset();
-            mockUpdateJwt.mockReset();
+            mockedUserAuthService.updateJwt.mockReset();
         });
 
         it("should call validateResetToken()", async () => {
@@ -840,7 +785,7 @@ describe("User Service", () => {
 
         it("update user's jwt", async () => {
             await userService.resetPassword(PASSWORD, RESET_TOKEN);
-            expect(mockUpdateJwt).toHaveBeenCalledWith({
+            expect(mockedUserAuthService.updateJwt).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,
                 jwt: USER_SECRETS.jwt,
             });
@@ -999,7 +944,7 @@ describe("User Service", () => {
             expect(findConsumerTokenSpy).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
-        it("should transform object id to string", async () => {
+        it("should call uniformizeId()", async () => {
             const USER_ID = new ObjectId();
             const _ID = new ObjectId();
 
@@ -1017,16 +962,7 @@ describe("User Service", () => {
 
             const actual = await userService.getAllData(USER_WITHOUT_SECRET._id.toString());
 
-            expect(actual).toEqual(
-                expect.objectContaining({
-                    tokens: expect.arrayContaining([
-                        expect.objectContaining({
-                            _id: _ID.toString(),
-                            userId: USER_ID.toString(),
-                        }),
-                    ]),
-                }),
-            );
+            expect(repositoryHelper.uniformizeId).toHaveBeenCalledTimes(1);
         });
 
         it("should getting user visits stats", async () => {
@@ -1203,10 +1139,9 @@ describe("User Service", () => {
         });
 
         it("should notify user updated", async () => {
-            // @ts-expect-error test
-            jest.mocked(userRepository.update).mockResolvedValue({ field: "updated" });
+            mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_SECRET);
             await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, { field: "updated" });
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, USER_WITHOUT_SECRET);
         });
     });
 
@@ -1219,10 +1154,10 @@ describe("User Service", () => {
             expect(userRepository.getUserWithSecretsByEmail).toHaveBeenCalledWith(EMAIL);
         });
 
-        it("return without secrets", async () => {
+        it("should call removeSecrets()", async () => {
             jest.mocked(userRepository.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
             const actual = await userService.getUserWithoutSecret(EMAIL);
-            expect(actual).toMatchSnapshot();
+            expect(repositoryHelper.removeSecrets).toHaveBeenCalledTimes(1);
         });
 
         it("throws not found if noe found", async () => {

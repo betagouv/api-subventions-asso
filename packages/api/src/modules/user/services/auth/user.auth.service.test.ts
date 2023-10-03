@@ -1,3 +1,13 @@
+const jwtVerifyMock = jest.fn();
+const jwtSignMock = jest.fn(() => SIGNED_TOKEN);
+jest.mock("jsonwebtoken", () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        verify: jwtVerifyMock,
+        sign: jwtSignMock,
+    },
+}));
+
 import userAuthService from "./user.auth.service";
 import { UserDto, UserErrorCodes } from "dto";
 import { ObjectId } from "mongodb";
@@ -5,12 +15,11 @@ import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import bcrypt from "bcrypt";
 jest.mock("bcrypt");
 import jwt from "jsonwebtoken";
-jest.mock("jsonwebtoken");
 
 import userRepository from "../../repositories/user.repository";
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
-import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
 jest.mock("../../repositories/user.repository");
 
@@ -43,7 +52,7 @@ describe("user auth service", () => {
             };
             userAuthService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: true });
             expect(jwt.sign).toHaveBeenCalledWith(
-                { ...USER_WITHOUT_SECRET, now: new Date() },
+                { ...USER_WITHOUT_SECRET, now: expect.any(Date) },
                 expect.any(String),
                 expected,
             );
@@ -53,7 +62,7 @@ describe("user auth service", () => {
             const expected = {};
             userAuthService.buildJWTToken(USER_WITHOUT_SECRET, { expiration: false });
             expect(jwt.sign).toHaveBeenCalledWith(
-                { ...USER_WITHOUT_SECRET, now: new Date() },
+                { ...USER_WITHOUT_SECRET, now: expect.any(Date) },
                 expect.any(String),
                 expected,
             );
@@ -83,6 +92,31 @@ describe("user auth service", () => {
                 ...USER_WITHOUT_SECRET,
                 hashPassword: PASSWORD,
             });
+        });
+    });
+
+    describe("updateJwt", () => {
+        const mockBuildJWTToken = jest.spyOn(userAuthService, "buildJWTToken");
+
+        it("should generate new token and update user", async () => {
+            mockedUserRepository.update.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
+            // minus two days
+            const oldDate = new Date(Date.now() - 172800001);
+            jwtVerifyMock.mockImplementation(() => ({
+                token: "TOKEN",
+                now: oldDate,
+            }));
+            await userAuthService.updateJwt(USER_DBO);
+            expect(mockBuildJWTToken).toHaveBeenCalledTimes(1);
+            expect(userRepository.update).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return user", async () => {
+            // @ts-expect-error test mock
+            mockedUserRepository.update.mockResolvedValueOnce("USER WITH JWT");
+            const expected = "USER WITH JWT";
+            const actual = await userAuthService.updateJwt(USER_DBO);
+            expect(actual).toEqual(expected);
         });
     });
 
