@@ -510,10 +510,6 @@ export class UserService {
         return userResetRepository.findOneByUserId(userId);
     }
 
-    public getRoles(user: UserDto) {
-        return user.roles;
-    }
-
     public async getUsersWithStats(includesAdmin = false): Promise<UserWithStatsDto[]> {
         const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits(
             includesAdmin,

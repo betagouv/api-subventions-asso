@@ -15,6 +15,7 @@ import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpEr
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
 import userService from "../../user.service";
 import userAuthService from "../../services/auth/user.auth.service";
+import userRolesService from "../../services/roles/user.roles.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -85,7 +86,7 @@ export class UserController extends Controller {
     @Get("/roles")
     @Security("jwt", ["user"])
     public async getRoles(@Request() req: IdentifiedRequest): Promise<GetRolesDtoResponse> {
-        return { roles: await userService.getRoles(req.user) };
+        return { roles: await userRolesService.getRoles(req.user) };
     }
 
     /**
