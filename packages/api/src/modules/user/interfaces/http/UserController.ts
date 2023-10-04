@@ -16,6 +16,7 @@ import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpErr
 import userService from "../../user.service";
 import userAuthService from "../../services/auth/user.auth.service";
 import userRolesService from "../../services/roles/user.roles.service";
+import userRgpdService from "../../services/rgpd/user.rgpd.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -145,6 +146,6 @@ export class UserController extends Controller {
     @Get("/data")
     @Security("jwt", ["user"])
     public async getData(@Request() req: IdentifiedRequest): Promise<UserDataDto> {
-        return userService.getAllData(req.user._id.toString());
+        return userRgpdService.getAllData(req.user._id.toString());
     }
 }

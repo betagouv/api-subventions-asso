@@ -524,33 +524,6 @@ export class UserService {
         return userRepository.countTotalUsersOnDate(date, withAdmin);
     }
 
-    public async getAllData(userId: string): Promise<UserDataDto> {
-        const user = await this.getUserById(userId);
-
-        if (!user) throw new NotFoundError("User is not found");
-
-        const userIdToString = document => ({ ...document, userId: document.userId.toString() });
-
-        const tokens = [
-            ...(await userResetRepository.findByUserId(userId)),
-            ...(await consumerTokenRepository.find(userId)),
-        ]
-            .map(uniformizeId)
-            .map(userIdToString);
-
-        const associationVisits = await statsService.getAllVisitsUser(userId);
-        const userLogs = await statsService.getAllLogUser(user.email);
-
-        return {
-            user,
-            tokens,
-            logs: userLogs,
-            statistics: {
-                associationVisit: associationVisits.map(userIdToString),
-            },
-        };
-    }
-
     async notifyAllUsersInSubTools() {
         const users = await userRepository.findAll();
 
