@@ -3,7 +3,7 @@ import { FutureUserDto } from "dto";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
 import configurationsService from "../../../configurations/configurations.service";
-import userService, { UserServiceErrors } from "../../user.service";
+import { UserServiceErrors } from "../../user.service";
 import userRepository from "../../repositories/user.repository";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRolesService from "../roles/user.roles.service";

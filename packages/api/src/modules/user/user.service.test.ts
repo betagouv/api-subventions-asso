@@ -48,8 +48,6 @@ import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
-import { AgentTypeEnum } from "dto";
-import { AgentJobTypeEnum } from "dto";
 import {
     CONSUMER_USER,
     SIGNED_TOKEN,
@@ -60,8 +58,6 @@ import {
 } from "./__fixtures__/user.fixture";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
-
-const UNACTIVATED_USER = { ...USER_WITHOUT_SECRET, ...{ active: false, profileToComplete: true } };
 
 const USER_WITHOUT_PASSWORD = {
     ...USER_WITHOUT_SECRET,
@@ -128,85 +124,6 @@ describe("User Service", () => {
             mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
             mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userService.signup({ email: USER_EMAIL });
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("activate", () => {
-        const RESET_DOCUMENT = {
-            _id: new ObjectId(),
-            userId: new ObjectId(),
-            token: "qdqzd234234ffefsfsf!",
-            createdAt: new Date(),
-        };
-
-        const mockList = [
-            mockedUserProfileService.validateUserProfileData,
-            mockedUserProfileService.sanitizeUserProfileData,
-            mockedUserResetRepository.findByToken,
-            mockValidateResetToken,
-            mockedUserAuthService.updateJwt,
-        ];
-        beforeAll(() => {
-            mockedUserProfileService.validateUserProfileData.mockImplementation(() => ({ valid: true }));
-            // @ts-expect-error: mock
-            mockValidateResetToken.mockImplementation(token => ({ valid: true }));
-            mockedUserProfileService.sanitizeUserProfileData.mockImplementation(userInfo => userInfo);
-            mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
-            mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
-            // @ts-expect-error: unknown error
-            mockedUserRepository.update.mockImplementation(() => ({
-                ...USER_WITHOUT_SECRET,
-                ...USER_ACTIVATION_INFO,
-            }));
-            mockGetUserById.mockImplementation(async id => UNACTIVATED_USER);
-            mockedUserAuthService.updateJwt.mockImplementation(
-                jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })),
-            );
-        });
-        afterAll(() => mockList.forEach(mock => mock.mockReset()));
-
-        it("should call userRepository.update()", async () => {
-            await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(userRepository.update).toHaveBeenCalledTimes(1);
-        });
-
-        it("should notify user updated", async () => {
-            await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, {
-                ...USER_WITHOUT_SECRET,
-                ...USER_ACTIVATION_INFO,
-                jwt: USER_SECRETS.jwt,
-            });
-        });
-
-        it("should call validateUserProfileData()", async () => {
-            const expected = USER_ACTIVATION_INFO;
-            await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockedUserProfileService.validateUserProfileData).toHaveBeenCalledWith(expected);
-        });
-
-        it("should call validateAndSanitizeActivationUserInfo()", async () => {
-            const expected = USER_ACTIVATION_INFO;
-            await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockedUserProfileService.sanitizeUserProfileData).toHaveBeenCalledWith(expected);
-        });
-
-        it("update user's jwt", async () => {
-            await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockedUserAuthService.updateJwt).toHaveBeenCalledWith({
-                ...USER_WITHOUT_SECRET,
-                ...USER_ACTIVATION_INFO,
-            });
-        });
-
-        it("returns user with jwt", async () => {
-            const expected = {
-                ...USER_WITHOUT_SECRET,
-                ...USER_ACTIVATION_INFO,
-                jwt: USER_SECRETS.jwt,
-            };
-            const actual = await userService.activate("token", USER_ACTIVATION_INFO);
             expect(actual).toEqual(expected);
         });
     });

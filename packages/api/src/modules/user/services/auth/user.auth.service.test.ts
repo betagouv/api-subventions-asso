@@ -93,8 +93,6 @@ describe("user auth service", () => {
     });
 
     describe("updatePassword", () => {
-        // @ts
-        // console.log(userAuthService);
         const PASSWORD = "12345&#Data";
         const mockGetHashPassword = jest.spyOn(userAuthService, "getHashPassword");
 
