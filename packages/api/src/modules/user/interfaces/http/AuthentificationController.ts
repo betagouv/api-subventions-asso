@@ -12,6 +12,7 @@ import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import userAuthService from "../../services/auth/user.auth.service";
+import userProfileService from "../../services/profile/user.profile.service";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -66,7 +67,7 @@ export class AuthentificationController extends Controller {
     @Post("/activate")
     @SuccessResponse("200", "Account activation successfully")
     public async activate(@Body() body: { token: string; data: UserActivationInfoDto }): Promise<ActivateDtoResponse> {
-        const user = await userService.activate(body.token, body.data);
+        const user = await userProfileService.activate(body.token, body.data);
         this.setStatus(200);
         return { user };
     }

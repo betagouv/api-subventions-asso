@@ -40,3 +40,5 @@ export const USER_ACTIVATION_INFO = {
     service: "",
     jobType: [AgentJobTypeEnum.ADMINISTRATOR],
 };
+
+export const UNACTIVATED_USER = { ...USER_WITHOUT_SECRET, ...{ active: false, profileToComplete: true } };

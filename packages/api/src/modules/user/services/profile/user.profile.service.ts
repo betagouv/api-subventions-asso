@@ -6,18 +6,23 @@ import {
     ResetPasswordErrorCodes,
     TerritorialScopeEnum,
     UpdatableUser,
+    UserActivationInfoDto,
     UserDto,
 } from "dto";
 import { isInObjectValues } from "../../../../shared/Validators";
 import { BadRequestError, UserNotFoundError } from "../../../../shared/errors/httpErrors";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService from "../check/user.check.service";
-import { UserService } from "../../user.service";
+import userService, { UserService } from "../../user.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRepository from "../../repositories/user.repository";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+import userResetRepository from "../../repositories/user-reset.repository";
+import UserReset from "../../entities/UserReset";
+import userAuthService from "../auth/user.auth.service";
+import UserDbo from "../../repositories/dbo/UserDbo";
 
 export class UserProfileService {
     validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -110,6 +115,40 @@ export class UserProfileService {
         const safeUpdatedUser = removeSecrets(updatedUser);
         notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
         return safeUpdatedUser;
+    }
+
+    public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
+        const userReset = await userResetRepository.findByToken(resetToken);
+
+        const tokenValidation = userService.validateResetToken(userReset);
+        if (!tokenValidation.valid) throw tokenValidation.error;
+
+        const user = await userService.getUserById((userReset as UserReset).userId);
+        if (!user) throw new UserNotFoundError();
+
+        if (!userInfo.jobType) userInfo.jobType = [];
+
+        const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
+        if (!userInfoValidation.valid) throw userInfoValidation.error;
+
+        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo);
+        safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
+        delete safeUserInfo.password;
+        const activeUser = (await userRepository.update(
+            {
+                ...user,
+                ...safeUserInfo,
+                active: true,
+                profileToComplete: false,
+            },
+            true,
+        )) as Omit<UserDbo, "hashPassword">;
+
+        const userWithJwt = await userAuthService.updateJwt(activeUser);
+
+        notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
+
+        return userWithJwt;
     }
 }
 

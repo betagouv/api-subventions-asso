@@ -12,7 +12,6 @@ import {
     TokenValidationDtoResponse,
     TokenValidationType,
     UserActivationInfoDto,
-    UpdatableUser,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -219,40 +218,6 @@ export class UserService {
         return userRepository.findById(userId);
     }
 
-    public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
-        const userReset = await userResetRepository.findByToken(resetToken);
-
-        const tokenValidation = this.validateResetToken(userReset);
-        if (!tokenValidation.valid) throw tokenValidation.error;
-
-        const user = await this.getUserById((userReset as UserReset).userId);
-        if (!user) throw new UserNotFoundError();
-
-        if (!userInfo.jobType) userInfo.jobType = [];
-
-        const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
-        if (!userInfoValidation.valid) throw userInfoValidation.error;
-
-        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo);
-        safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
-        delete safeUserInfo.password;
-        const activeUser = (await userRepository.update(
-            {
-                ...user,
-                ...safeUserInfo,
-                active: true,
-                profileToComplete: false,
-            },
-            true,
-        )) as Omit<UserDbo, "hashPassword">;
-
-        const userWithJwt = await userAuthService.updateJwt(activeUser);
-
-        notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
-
-        return userWithJwt;
-    }
-
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
@@ -285,7 +250,7 @@ export class UserService {
         return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
     }
 
-    private validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
+    public validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
         let error: Error | null = null;
         if (!userReset) error = new ResetTokenNotFoundError();
         else if (this.isExpiredReset(userReset as UserReset))

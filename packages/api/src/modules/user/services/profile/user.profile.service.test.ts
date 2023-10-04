@@ -1,17 +1,34 @@
+import {
+    UNACTIVATED_USER,
+    USER_ACTIVATION_INFO,
+    USER_DBO,
+    USER_SECRETS,
+    USER_WITHOUT_SECRET,
+} from "../../__fixtures__/user.fixture";
 import { AgentTypeEnum } from "dto";
 import userProfileService from "./user.profile.service";
-import userCheckService from "../check/user.check.service";
+
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
-import { USER_ACTIVATION_INFO, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
+import userService from "../../user.service";
+jest.mock("../../user.service");
+const mockedUserService = jest.mocked(userService);
+import userAuthService from "../auth/user.auth.service";
+jest.mock("../auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService);
+import userCheckService from "../check/user.check.service";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
-import userRepository from "../../repositories/user.repository";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+import userRepository from "../../repositories/user.repository";
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
+import userResetRepository from "../../repositories/user-reset.repository";
+jest.mock("../../repositories/user-reset.repository");
+const mockedUserResetRepository = jest.mocked(userResetRepository);
 import notifyService from "../../../notify/notify.service";
+import { ObjectId } from "mongodb";
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -124,18 +141,22 @@ describe("user profile service", () => {
     });
 
     describe("profileUpdate", () => {
-        const mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
-        const mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
-
-        const mockList = [mockValidateUserProfileData, mockSanitizeUserProfileData];
+        let mockValidateUserProfileData: jest.SpyInstance;
+        let mockSanitizeUserProfileData: jest.SpyInstance;
 
         beforeAll(() => {
+            mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
+            mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
             mockValidateUserProfileData.mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
         });
 
-        afterAll(() => mockList.forEach(mock => mock.mockRestore()));
+        afterAll(() => {
+            mockValidateUserProfileData.mockRestore();
+            mockSanitizeUserProfileData.mockRestore();
+            mockedUserRepository.update.mockReset();
+        });
 
         it("should call validateUserProfileData() without testing password", async () => {
             const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
@@ -158,6 +179,92 @@ describe("user profile service", () => {
             mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_SECRET);
             await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, USER_WITHOUT_SECRET);
+        });
+    });
+
+    describe("activate", () => {
+        const RESET_DOCUMENT = {
+            _id: new ObjectId(),
+            userId: new ObjectId(),
+            token: "qdqzd234234ffefsfsf!",
+            createdAt: new Date(),
+        };
+
+        let mockValidateUserProfileData: jest.SpyInstance;
+        let mockSanitizeUserProfileData: jest.SpyInstance;
+
+        const mockResetList = [
+            mockedUserResetRepository.findByToken,
+            mockedUserService.validateResetToken,
+            mockedUserAuthService.updateJwt,
+        ];
+
+        beforeAll(() => {
+            mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
+            mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
+            mockValidateUserProfileData.mockReturnValue({ valid: true });
+            mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
+
+            mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
+            mockedUserService.getUserById.mockImplementation(async id => UNACTIVATED_USER);
+            mockedUserService.validateResetToken.mockImplementation(token => ({ valid: true }));
+            mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
+            // @ts-expect-error: unknown error
+            mockedUserRepository.update.mockImplementation(() => ({
+                ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
+            }));
+            mockedUserAuthService.updateJwt.mockImplementation(async user => ({ ...user, jwt: USER_SECRETS.jwt }));
+        });
+
+        afterAll(() => {
+            mockValidateUserProfileData.mockRestore();
+            mockSanitizeUserProfileData.mockRestore();
+            mockResetList.forEach(mock => mock.mockReset());
+        });
+
+        it("should call userRepository.update()", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(userRepository.update).toHaveBeenCalledTimes(1);
+        });
+
+        it("should notify user updated", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, {
+                ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
+                jwt: USER_SECRETS.jwt,
+            });
+        });
+
+        it("should call validateUserProfileData()", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(mockValidateUserProfileData).toHaveBeenCalledWith(expected);
+        });
+
+        it("should call validateAndSanitizeActivationUserInfo()", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
+        });
+
+        it("update user's jwt", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(mockedUserAuthService.updateJwt).toHaveBeenCalledWith({
+                ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
+            });
+        });
+
+        it("returns user with jwt", async () => {
+            const expected = {
+                ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
+                jwt: USER_SECRETS.jwt,
+            };
+            const actual = await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(actual).toEqual(expected);
         });
     });
 });
