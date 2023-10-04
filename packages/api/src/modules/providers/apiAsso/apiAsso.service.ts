@@ -71,7 +71,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
             const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren}`);
-            if (!structure) return null;
+            if (!structure || !structure.identite?.date_modif_siren) return null;
             return ApiAssoDtoAdapter.sirenStructureToAssociation(structure);
         }
         if (!sirenStructure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
