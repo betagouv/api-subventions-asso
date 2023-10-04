@@ -9,14 +9,9 @@ import {
     UserDto,
     UserWithStatsDto,
     FutureUserDto,
-    UserDataDto,
     TokenValidationDtoResponse,
     TokenValidationType,
     UserActivationInfoDto,
-    AgentTypeEnum,
-    AgentJobTypeEnum,
-    TerritorialScopeEnum,
-    AdminTerritorialLevel,
     UpdatableUser,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
@@ -33,12 +28,9 @@ import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
-import { removeSecrets, uniformizeId } from "../../shared/helpers/RepositoryHelper";
-import { isInObjectValues } from "../../shared/Validators";
+import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
 import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
-import statsService from "../stats/stats.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
-import { joinEnum } from "../../shared/helpers/ArrayHelper";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userResetRepository from "./repositories/user-reset.repository";
@@ -48,6 +40,7 @@ import userAuthService from "./services/auth/user.auth.service";
 import userRepository from "./repositories/user.repository";
 import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
+import userProfileService from "./services/profile/user.profile.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -247,7 +240,7 @@ export class UserService {
 
         if (!userInfo.jobType) userInfo.jobType = [];
 
-        const userInfoValidation = this.validateUserProfileData(userInfo);
+        const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = this.sanitizeUserProfileData(userInfo);
@@ -268,73 +261,6 @@ export class UserService {
         notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
 
         return userWithJwt;
-    }
-
-    private validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
-        const { password, agentType, jobType, structure } = userInfo;
-        const validations = [
-            {
-                value: agentType,
-                method: value => isInObjectValues(AgentTypeEnum, value),
-                error: new BadRequestError(dedent`Mauvaise valeur pour le type d'agent.
-                    Les valeurs possibles sont ${joinEnum(AgentTypeEnum)}
-                `),
-            },
-            {
-                value: jobType,
-                method: jobType => {
-                    if (!jobType?.length) return true;
-                    return !jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
-                },
-                error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
-                    Les valeurs possibles sont ${joinEnum(AgentJobTypeEnum)}
-                `),
-            },
-            {
-                value: structure,
-                method: value => !value || typeof value == "string",
-                error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
-            },
-        ];
-
-        if (withPassword)
-            validations.push({
-                value: password,
-                method: userCheckService.passwordValidator,
-                error: new BadRequestError(
-                    UserService.PASSWORD_VALIDATOR_MESSAGE,
-                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-                ),
-            });
-
-        /**
-         *          AGENT TYPE SPECIFIC VALUES
-         */
-
-        if (agentType === AgentTypeEnum.TERRITORIAL_COLLECTIVITY)
-            validations.push({
-                value: userInfo.territorialScope,
-                method: value => !value || isInObjectValues(TerritorialScopeEnum, value),
-                error: new BadRequestError(dedent`Mauvaise valeur pour le périmètre
-                Les valeurs possibles sont ${joinEnum(TerritorialScopeEnum)}`),
-            });
-
-        if (agentType === AgentTypeEnum.DECONCENTRATED_ADMIN)
-            validations.push({
-                value: userInfo.decentralizedLevel,
-                method: value => !value || isInObjectValues(AdminTerritorialLevel, value),
-                error: new BadRequestError(dedent`Mauvaise valeur pour le niveau territorial
-                Les valeurs possibles sont ${joinEnum(AdminTerritorialLevel)}`),
-            });
-
-        let error: Error | undefined;
-        for (const validation of validations) {
-            if (!validation.method(validation.value)) {
-                error = validation.error;
-                break;
-            }
-        }
-        return error ? { valid: false, error: error as BadRequestError } : { valid: true };
     }
 
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
@@ -534,7 +460,7 @@ export class UserService {
 
         const toBeUpdatedUser = { ...user, ...data };
 
-        const userInfoValidation = this.validateUserProfileData(toBeUpdatedUser, false);
+        const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser, false);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = this.sanitizeUserProfileData(data);
