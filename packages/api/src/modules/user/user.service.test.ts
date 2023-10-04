@@ -28,6 +28,9 @@ const mockedUserCheckService = jest.mocked(userCheckService);
 import userAuthService from "./services/auth/user.auth.service";
 jest.mock("./services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, true);
+import userProfileService from "./services/profile/user.profile.service";
+jest.mock("./services/profile/user.profile.service");
+const mockedUserProfileService = jest.mocked(userProfileService);
 import * as repositoryHelper from "../../shared/helpers/RepositoryHelper";
 jest.mock("../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
@@ -42,7 +45,6 @@ import { UserDto } from "dto";
 import UserReset from "./entities/UserReset";
 import { ResetPasswordErrorCodes } from "dto";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
-import statsService from "../stats/stats.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
@@ -84,11 +86,6 @@ describe("User Service", () => {
     let mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
     // @ts-expect-error: mock private method
     const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
-    let mockValidateUserProfileDataUser: jest.SpyInstance<boolean> = jest.spyOn(
-        userService,
-        // @ts-expect-error: mock private method
-        "validateUserProfileData",
-    );
     const mockGetUserById = jest.spyOn(userService, "getUserById");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
@@ -146,15 +143,14 @@ describe("User Service", () => {
         };
 
         const mockList = [
-            mockValidateUserProfileDataUser,
+            mockedUserProfileService.validateUserProfileData,
             mockSanitizeUserProfileData,
             mockedUserResetRepository.findByToken,
             mockValidateResetToken,
             mockedUserAuthService.updateJwt,
         ];
         beforeAll(() => {
-            // @ts-expect-error: mock
-            mockValidateUserProfileDataUser.mockImplementation(() => ({ valid: true }));
+            mockedUserProfileService.validateUserProfileData.mockImplementation(() => ({ valid: true }));
             // @ts-expect-error: mock
             mockValidateResetToken.mockImplementation(token => ({ valid: true }));
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
@@ -189,7 +185,7 @@ describe("User Service", () => {
         it("should call validateUserProfileData()", async () => {
             const expected = USER_ACTIVATION_INFO;
             await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockValidateUserProfileDataUser).toHaveBeenCalledWith(expected);
+            expect(mockedUserProfileService.validateUserProfileData).toHaveBeenCalledWith(expected);
         });
 
         it("should call validateAndSanitizeActivationUserInfo()", async () => {
@@ -213,113 +209,6 @@ describe("User Service", () => {
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
                 jwt: USER_SECRETS.jwt,
-            });
-        });
-    });
-
-    describe("validateUserProfileData()", () => {
-        const validInput = {
-            password: "m0t de Passe.",
-            agentType: AgentTypeEnum.OPERATOR,
-            jobType: [],
-        };
-        beforeAll(() => mockValidateUserProfileDataUser.mockRestore());
-        afterAll(
-            () =>
-                (mockValidateUserProfileDataUser = jest
-                    .spyOn(
-                        userService,
-                        // @ts-expect-error: mock private method
-                        "validateUserProfileData",
-                    )
-                    // @ts-expect-error: mock signature
-                    .mockImplementation(() => ({ valid: true }))),
-        );
-
-        describe("password", () => {
-            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementationOnce(() => false));
-            it("should throw password is wrong", () => {
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData({
-                    ...validInput,
-                    password: "PA$$W0RD",
-                });
-                expect(actual).toMatchSnapshot();
-            });
-
-            it("does not check password if arg does not require it ", () => {
-                const expected = { valid: true };
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData(
-                    {
-                        ...validInput,
-                        password: "PA$$W0RD",
-                    },
-                    false,
-                );
-                expect(actual).toEqual(expected);
-            });
-        });
-
-        describe("agentType", () => {
-            const mockList = [mockedUserCheckService.passwordValidator];
-            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
-            afterAll(() => mockList.forEach(mock => mock.mockReset()));
-            it("should throw if agentType is wrong", () => {
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData({
-                    ...validInput,
-                    agentType: "WRONG_VALUE",
-                });
-                expect(actual).toMatchSnapshot();
-            });
-        });
-
-        describe("typeJob", () => {
-            const mockList = [mockedUserCheckService.passwordValidator];
-            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
-            afterAll(() => mockList.forEach(mock => mock.mockReset()));
-            it("should throw an error", () => {
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData({
-                    ...validInput,
-                    agentType: "WRONG_VALUE",
-                });
-                expect(actual).toMatchSnapshot();
-            });
-        });
-
-        describe("structure", () => {
-            const mockList = [mockedUserCheckService.passwordValidator];
-            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
-            afterAll(() => mockList.forEach(mock => mock.mockReset()));
-            it("should throw an error", () => {
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData({
-                    ...validInput,
-                    structure: 6,
-                });
-                expect(actual).toMatchSnapshot();
-            });
-        });
-
-        describe("territorialScope", () => {
-            const mockList = [mockedUserCheckService.passwordValidator];
-            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
-            afterAll(() => mockList.forEach(mock => mock.mockReset()));
-            it("should throw an error", () => {
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData({
-                    ...validInput,
-                    territorialScope: "WRONG_SCOPE",
-                });
-                expect(actual).toMatchSnapshot();
-            });
-            it("should return true", () => {
-                const expected = { valid: true };
-                // @ts-expect-error: private method
-                const actual = userService.validateUserProfileData(validInput);
-                expect(actual).toEqual(expected);
             });
         });
     });
@@ -779,10 +668,9 @@ describe("User Service", () => {
     });
 
     describe("profileUpdate", () => {
-        const mockList = [mockValidateUserProfileDataUser, mockSanitizeUserProfileData];
+        const mockList = [mockedUserProfileService.validateUserProfileData, mockSanitizeUserProfileData];
         beforeAll(() => {
-            // @ts-expect-error: mock
-            mockValidateUserProfileDataUser.mockReturnValue({ valid: true });
+            mockedUserProfileService.validateUserProfileData.mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
         });
@@ -791,7 +679,7 @@ describe("User Service", () => {
         it("should call validateUserProfileData() without testing password", async () => {
             const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
             await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(mockValidateUserProfileDataUser).toHaveBeenCalledWith(expected, false);
+            expect(mockedUserProfileService.validateUserProfileData).toHaveBeenCalledWith(expected, false);
         });
 
         it("should call sanitizeUserProfileData()", async () => {
