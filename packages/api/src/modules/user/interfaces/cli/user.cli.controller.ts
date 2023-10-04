@@ -3,6 +3,7 @@ import { CliStaticInterface } from "../../../../@types";
 import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userRolesService from "../../services/roles/user.roles.service";
+import userStatsService from "../../services/stats/user.stats.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
@@ -39,6 +40,6 @@ export default class UserCliController {
     }
 
     async notifyAllUsersInSubTools() {
-        await userService.notifyAllUsersInSubTools();
+        await userStatsService.notifyAllUsersInSubTools();
     }
 }
