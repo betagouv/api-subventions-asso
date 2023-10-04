@@ -227,20 +227,6 @@ export class UserService {
         return { user: await userRepository.update(user) };
     }
 
-    async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
-        const reset = await userResetRepository.findByToken(resetToken);
-        const tokenValidation = userActivationService.validateResetToken(reset);
-        if (!tokenValidation.valid) return tokenValidation;
-
-        const user = await this.getUserById((reset as UserReset).userId);
-        if (!user) return { valid: false };
-
-        return {
-            ...tokenValidation,
-            type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
-        };
-    }
-
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 

@@ -4,11 +4,17 @@ import { USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import { UserServiceErrors } from "../../user.service";
 import UserReset from "../../entities/UserReset";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { BadRequestError, ResetTokenNotFoundError } from "../../../../shared/errors/httpErrors";
-import { ResetPasswordErrorCodes } from "dto";
+import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
+import userResetRepository from "../../repositories/user-reset.repository";
+jest.mock("../../repositories/user-reset.repository");
+const mockedUserResetRepository = jest.mocked(userResetRepository);
+import userService from "../../user.service";
+jest.mock("../../user.service");
+const mockedUserService = jest.mocked(userService);
 
 jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
 
@@ -123,6 +129,78 @@ describe("user activation service", () => {
             const expected = true;
             const actual = userActivationService.validateResetToken(USER_RESET).valid;
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("validateTokenAndGetType", () => {
+        const FAKE_TOKEN = "FAKE";
+        const validUserReset = {
+            // userId: "1FR13J414N",
+            createdAt: new Date(),
+        } as unknown as WithId<UserReset>;
+        const user = {
+            profileToComplete: true,
+        } as unknown as UserDto;
+
+        let mockValidateResetToken: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockValidateResetToken = jest.spyOn(userActivationService, "validateResetToken");
+            mockValidateResetToken.mockImplementation(() => ({ valid: true }));
+            mockedUserResetRepository.findByToken.mockResolvedValue(validUserReset);
+            mockedUserService.getUserById.mockResolvedValue(user);
+        });
+
+        afterAll(() => {
+            mockedUserResetRepository.findByToken.mockReset();
+            mockValidateResetToken.mockRestore();
+            mockedUserService.getUserById.mockReset();
+        });
+
+        it("should call find by token", async () => {
+            await userActivationService.validateTokenAndGetType(FAKE_TOKEN);
+            expect(mockedUserResetRepository.findByToken).toBeCalledWith(FAKE_TOKEN);
+        });
+
+        it("should return true", async () => {
+            const actual = await userActivationService.validateTokenAndGetType(FAKE_TOKEN);
+            expect(actual.valid).toBeTruthy();
+        });
+
+        it("should call validateResetToken", async () => {
+            await userActivationService.validateTokenAndGetType(FAKE_TOKEN);
+
+            expect(mockValidateResetToken).toHaveBeenCalledWith(validUserReset);
+        });
+
+        it("should return type is SIGNUP", async () => {
+            //@ts-expect-error: mock
+            mockedUserResetRepository.findByToken.mockResolvedValueOnce({
+                createdAt: new Date(),
+            });
+            const actual = (await userActivationService.validateTokenAndGetType(
+                FAKE_TOKEN,
+            )) as TokenValidationDtoPositiveResponse;
+
+            expect(actual.type).toBe(TokenValidationType.SIGNUP);
+        });
+
+        it("should return type is FORGET_PASSWORD", async () => {
+            // @ts-expect-error: mock
+            mockedUserResetRepository.findByToken.mockResolvedValueOnce({
+                createdAt: new Date(),
+            });
+
+            // @ts-expect-error: mock
+            mockedUserService.getUserById.mockResolvedValueOnce({
+                profileToComplete: false,
+            });
+
+            const actual = (await userActivationService.validateTokenAndGetType(
+                FAKE_TOKEN,
+            )) as TokenValidationDtoPositiveResponse;
+
+            expect(actual.type).toBe(TokenValidationType.FORGET_PASSWORD);
         });
     });
 });
