@@ -662,42 +662,6 @@ describe("User Service", () => {
         });
     });
 
-    describe("profileUpdate", () => {
-        const mockList = [
-            mockedUserProfileService.validateUserProfileData,
-            mockedUserProfileService.sanitizeUserProfileData,
-        ];
-        beforeAll(() => {
-            mockedUserProfileService.validateUserProfileData.mockReturnValue({ valid: true });
-            mockedUserProfileService.sanitizeUserProfileData.mockImplementation(userInfo => userInfo);
-            mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
-        });
-        afterAll(() => mockList.forEach(mock => mock.mockReset()));
-
-        it("should call validateUserProfileData() without testing password", async () => {
-            const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
-            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(mockedUserProfileService.validateUserProfileData).toHaveBeenCalledWith(expected, false);
-        });
-
-        it("should call sanitizeUserProfileData()", async () => {
-            const expected = USER_ACTIVATION_INFO;
-            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(mockedUserProfileService.sanitizeUserProfileData).toHaveBeenCalledWith(expected);
-        });
-
-        it("should call userRepository.update() with sanitized data", async () => {
-            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(userRepository.update).toHaveBeenCalledWith({ ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO });
-        });
-
-        it("should notify user updated", async () => {
-            mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_SECRET);
-            await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, USER_WITHOUT_SECRET);
-        });
-    });
-
     describe("getUserWithoutSecret", () => {
         const EMAIL = "user@mail.fr";
 

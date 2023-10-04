@@ -445,22 +445,6 @@ export class UserService {
         }
     }
 
-    async profileUpdate(user: UserDto, data: Partial<UpdatableUser>): Promise<UserDto> {
-        if (!user) throw new UserNotFoundError();
-
-        const toBeUpdatedUser = { ...user, ...data };
-
-        const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser, false);
-        if (!userInfoValidation.valid) throw userInfoValidation.error;
-
-        const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
-        const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
-
-        const safeUpdatedUser = removeSecrets(updatedUser);
-        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
-        return safeUpdatedUser;
-    }
-
     async getUserWithoutSecret(email: string) {
         const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
         if (!withSecrets) throw new NotFoundError("User not found");
