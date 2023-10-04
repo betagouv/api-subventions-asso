@@ -92,7 +92,7 @@ class StatsService {
     async getMonthlyUserNbByYear(year: number) {
         const start = firstDayOfPeriod(year);
         const init_count = await userStatsService.countTotalUsersOnDate(start);
-        const users = await userService.findByPeriod(start, oneYearAfterPeriod(year));
+        const users = await userStatsService.findByPeriod(start, oneYearAfterPeriod(year));
 
         const now = new Date();
         const lastMonth = now.getFullYear() === year ? now.getMonth() + 1 : now.getFullYear() < year ? 0 : 12;
