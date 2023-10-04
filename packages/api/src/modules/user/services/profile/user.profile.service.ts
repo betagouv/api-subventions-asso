@@ -11,6 +11,7 @@ import { BadRequestError } from "../../../../shared/errors/httpErrors";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService from "../check/user.check.service";
 import { UserService } from "../../user.service";
+import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 
 export class UserProfileService {
     validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -78,6 +79,15 @@ export class UserProfileService {
             }
         }
         return error ? { valid: false, error: error as BadRequestError } : { valid: true };
+    }
+
+    sanitizeUserProfileData(unsafeUserInfo) {
+        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
+        const sanitizedUserInfo = { ...unsafeUserInfo };
+        fieldsToSanitize.forEach(field => {
+            if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
+        });
+        return sanitizedUserInfo;
     }
 }
 

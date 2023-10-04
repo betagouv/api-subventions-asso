@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { UserDto } from "dto";
+import { AgentJobTypeEnum, AgentTypeEnum, UserDto } from "dto";
 import { USER_EMAIL } from "../../../../tests/__helpers__/userHelper";
 
 export const SIGNED_TOKEN = "SIGNED_TOKEN";
@@ -31,4 +31,12 @@ export const ANONYMIZED_USER = {
     jwt: null,
     hashPassword: "",
     disable: true,
+};
+
+export const USER_ACTIVATION_INFO = {
+    password: "",
+    agentType: AgentTypeEnum.CENTRAL_ADMIN,
+    phoneNumber: "",
+    service: "",
+    jobType: [AgentJobTypeEnum.ADMINISTRATOR],
 };
