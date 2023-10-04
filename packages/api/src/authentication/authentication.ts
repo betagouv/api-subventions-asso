@@ -1,7 +1,7 @@
 import { IVerifyOptions } from "passport-local";
 import { LoginRequest } from "../@types";
-import userService from "../modules/user/user.service";
 import { UnauthorizedError } from "../shared/errors/httpErrors";
+import userActivationService from "../modules/user/services/activation/user.activation.service";
 
 export function expressAuthentication(req: LoginRequest, securityName = "jwt", scopes: string[] = []) {
     if (securityName !== "jwt") {
@@ -23,6 +23,6 @@ export function expressAuthentication(req: LoginRequest, securityName = "jwt", s
             return reject(new UnauthorizedError("JWT does not contain required scope."));
         }
 
-        resolve(userService.refreshExpirationToken(user));
+        resolve(userActivationService.refreshExpirationToken(user));
     });
 }
