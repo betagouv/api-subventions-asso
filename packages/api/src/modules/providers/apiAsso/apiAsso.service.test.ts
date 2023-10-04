@@ -384,7 +384,7 @@ describe("ApiAssoService", () => {
             });
 
             it("should use adapter", async () => {
-                const expected = { data: true, identite: { date_modif_siren: "smthg" } };
+                const expected = { data: true, identite: { date_modif_siren: "smthg" }, etablissement: { length: 1 } };
                 sendRequestMock.mockResolvedValue(expected);
                 // @ts-ignore findAssociationBySiren is private method
                 await apiAssoService.findAssociationBySiren(SIREN);

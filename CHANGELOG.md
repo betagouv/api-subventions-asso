@@ -66,6 +66,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** sort regions ([713982e](https://github.com/betagouv/api-subventions-asso/commit/713982ef78446b4600ed869de13f982c7f5ec60c))
 -   **front:** transmit onChange event ([88ecd94](https://github.com/betagouv/api-subventions-asso/commit/88ecd94d7530fb58e67f2f97017f4fd875291f42))
 -   **front:** update profile port and service ([dda5172](https://github.com/betagouv/api-subventions-asso/commit/dda51729ffbd977b3aec1830771cc1d2306d21f8))
+## [0.36.7](https://github.com/betagouv/api-subventions-asso/compare/v0.36.6...v0.36.7) (2023-10-03)
+
+### Bug Fixes
+
+-   **api:** fix when api not found structure by siren end point ([c109a7c](https://github.com/betagouv/api-subventions-asso/commit/c109a7cab975f475b869bc5313817a22a62dde45))
 
 ## [0.36.6](https://github.com/betagouv/api-subventions-asso/compare/v0.36.5...v0.36.6) (2023-09-21)
 
