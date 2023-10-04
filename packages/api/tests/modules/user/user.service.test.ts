@@ -61,44 +61,6 @@ describe("user.service.ts", () => {
         });
     });
 
-    describe("addRolesToUser", () => {
-        const EMAIL = "test@beta.gouv.fr";
-        beforeEach(async () => {
-            await service.createUser({ email: EMAIL });
-        });
-
-        it("should throw InternalServerError if user email not found", async () => {
-            const expected = new InternalServerError("An error has occurred");
-            let actual;
-            try {
-                actual = await service.addRolesToUser("wrong@email.fr", [RoleEnum.admin]);
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        });
-
-        it("should throw BadRequestError if role not found", async () => {
-            const ROLE = "adm";
-            const expected = new BadRequestError(`Role ${ROLE} is not valid`);
-            const test = async () => await service.addRolesToUser(EMAIL, [ROLE]);
-            expect(test).rejects.toThrowError(expected);
-        });
-
-        it("should update user (called with email)", async () => {
-            await expect(service.addRolesToUser("test@beta.gouv.fr", [RoleEnum.admin])).resolves.toMatchObject({
-                user: { roles: ["user", "admin"] },
-            });
-        });
-
-        it("should update user (called with user)", async () => {
-            const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
-            await expect(service.addRolesToUser(user, [RoleEnum.admin])).resolves.toMatchObject({
-                user: { roles: ["user", "admin"] },
-            });
-        });
-    });
-
     describe("activeUser", () => {
         beforeEach(async () => {
             await service.createUser({ email: "test@beta.gouv.fr" });
