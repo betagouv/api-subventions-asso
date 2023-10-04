@@ -1,7 +1,31 @@
 import userStatsService from "./user.stats.service";
+import userRepository from "../../repositories/user.repository";
+jest.mock("../../repositories/user.repository");
+const mockedUserRepository = jest.mocked(userRepository);
 
 describe("user stats service", () => {
-    it("should test", () => {
-        expect(true).toBeTruthy();
+    describe("countTotalUsersOnDate()", () => {
+        const REPO_RETURN = 5;
+        const DATE = new Date();
+        const WITH_ADMIN = true;
+
+        beforeAll(() => mockedUserRepository.countTotalUsersOnDate.mockResolvedValue(REPO_RETURN));
+        afterAll(() => mockedUserRepository.countTotalUsersOnDate.mockRestore());
+
+        it("should call repo with given args", async () => {
+            await userStatsService.countTotalUsersOnDate(DATE, WITH_ADMIN);
+            expect(mockedUserRepository.countTotalUsersOnDate).toBeCalledWith(DATE, WITH_ADMIN);
+        });
+
+        it("should call repo with default", async () => {
+            await userStatsService.countTotalUsersOnDate(DATE);
+            expect(mockedUserRepository.countTotalUsersOnDate).toBeCalledWith(DATE, false);
+        });
+
+        it("should return repo's return value", async () => {
+            const expected = REPO_RETURN;
+            const actual = await userStatsService.countTotalUsersOnDate(DATE);
+            expect(actual).toBe(expected);
+        });
     });
 });
