@@ -29,7 +29,6 @@ import notifyService from "../notify/notify.service";
 import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
-import { sanitizeToPlainText } from "../../shared/helpers/StringHelper";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
@@ -216,15 +215,6 @@ export class UserService {
         return user;
     }
 
-    sanitizeUserProfileData(unsafeUserInfo) {
-        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
-        const sanitizedUserInfo = { ...unsafeUserInfo };
-        fieldsToSanitize.forEach(field => {
-            if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
-        });
-        return sanitizedUserInfo;
-    }
-
     public getUserById(userId) {
         return userRepository.findById(userId);
     }
@@ -243,7 +233,7 @@ export class UserService {
         const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const safeUserInfo = this.sanitizeUserProfileData(userInfo);
+        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo);
         safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
         delete safeUserInfo.password;
         const activeUser = (await userRepository.update(
@@ -463,7 +453,7 @@ export class UserService {
         const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser, false);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const safeUserInfo = this.sanitizeUserProfileData(data);
+        const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
 
         const safeUpdatedUser = removeSecrets(updatedUser);

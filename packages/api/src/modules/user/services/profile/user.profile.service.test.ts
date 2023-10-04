@@ -1,6 +1,10 @@
 import { AgentTypeEnum } from "dto";
 import userProfileService from "./user.profile.service";
 import userCheckService from "../check/user.check.service";
+import * as stringHelper from "../../../../shared/helpers/StringHelper";
+import { USER_ACTIVATION_INFO } from "../../__fixtures__/user.fixture";
+jest.mock("../../../../shared/helpers/StringHelper");
+const mockedStringHelper = jest.mocked(stringHelper);
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
 
@@ -91,6 +95,22 @@ describe("user profile service", () => {
                 const actual = userProfileService.validateUserProfileData(validInput);
                 expect(actual).toEqual(expected);
             });
+        });
+    });
+
+    describe("sanitizeActivationUserInfo()", () => {
+        it("should call sanitizeToPlainText()", () => {
+            const expected = 2;
+            userProfileService.sanitizeUserProfileData(USER_ACTIVATION_INFO);
+            expect(mockedStringHelper.sanitizeToPlainText).toHaveBeenCalledTimes(expected);
+        });
+
+        it("does not add field", () => {
+            mockedStringHelper.sanitizeToPlainText.mockReturnValueOnce("santitized");
+            const expected = 1;
+            const sanitized = userProfileService.sanitizeUserProfileData({ service: "smth" });
+            const actual = Object.keys(sanitized).length;
+            expect(actual).toBe(expected);
         });
     });
 });

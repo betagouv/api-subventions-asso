@@ -50,7 +50,14 @@ import { TokenValidationDtoPositiveResponse } from "dto";
 import { TokenValidationType } from "dto";
 import { AgentTypeEnum } from "dto";
 import { AgentJobTypeEnum } from "dto";
-import { CONSUMER_USER, SIGNED_TOKEN, USER_DBO, USER_SECRETS, USER_WITHOUT_SECRET } from "./__fixtures__/user.fixture";
+import {
+    CONSUMER_USER,
+    SIGNED_TOKEN,
+    USER_ACTIVATION_INFO,
+    USER_DBO,
+    USER_SECRETS,
+    USER_WITHOUT_SECRET,
+} from "./__fixtures__/user.fixture";
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -66,14 +73,6 @@ const CONSUMER_JWT_PAYLOAD = {
     isConsumerToken: true,
 };
 
-const USER_ACTIVATION_INFO = {
-    password: "",
-    agentType: AgentTypeEnum.CENTRAL_ADMIN,
-    phoneNumber: "",
-    service: "",
-    jobType: [AgentJobTypeEnum.ADMINISTRATOR],
-};
-
 describe("User Service", () => {
     /**
      *          MOCK USER SERVICE METHODS
@@ -83,7 +82,6 @@ describe("User Service", () => {
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
     const mockDeleteUser = jest.spyOn(userService, "delete");
     const mockResetUser = jest.spyOn(userService, "resetUser");
-    let mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData");
     // @ts-expect-error: mock private method
     const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
     const mockGetUserById = jest.spyOn(userService, "getUserById");
@@ -159,7 +157,7 @@ describe("User Service", () => {
 
         const mockList = [
             mockedUserProfileService.validateUserProfileData,
-            mockSanitizeUserProfileData,
+            mockedUserProfileService.sanitizeUserProfileData,
             mockedUserResetRepository.findByToken,
             mockValidateResetToken,
             mockedUserAuthService.updateJwt,
@@ -168,7 +166,7 @@ describe("User Service", () => {
             mockedUserProfileService.validateUserProfileData.mockImplementation(() => ({ valid: true }));
             // @ts-expect-error: mock
             mockValidateResetToken.mockImplementation(token => ({ valid: true }));
-            mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
+            mockedUserProfileService.sanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
             // @ts-expect-error: unknown error
@@ -206,7 +204,7 @@ describe("User Service", () => {
         it("should call validateAndSanitizeActivationUserInfo()", async () => {
             const expected = USER_ACTIVATION_INFO;
             await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
+            expect(mockedUserProfileService.sanitizeUserProfileData).toHaveBeenCalledWith(expected);
         });
 
         it("update user's jwt", async () => {
@@ -218,31 +216,13 @@ describe("User Service", () => {
         });
 
         it("returns user with jwt", async () => {
-            const expected = USER_ACTIVATION_INFO;
-            const actual = await userService.activate("token", USER_ACTIVATION_INFO);
-            expect(actual).toEqual({
+            const expected = {
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
                 jwt: USER_SECRETS.jwt,
-            });
-        });
-    });
-
-    describe("sanitizeActivationUserInfo()", () => {
-        beforeAll(() => mockSanitizeUserProfileData.mockRestore());
-        afterAll(() => (mockSanitizeUserProfileData = jest.spyOn(userService, "sanitizeUserProfileData")));
-        it("should call sanitizeToPlainText()", () => {
-            const expected = 2;
-            userService.sanitizeUserProfileData(USER_ACTIVATION_INFO);
-            expect(sanitizeToPlainText).toHaveBeenCalledTimes(expected);
-        });
-
-        it("does not add field", () => {
-            jest.mocked(sanitizeToPlainText).mockReturnValueOnce("santitized");
-            const expected = 1;
-            const sanitized = userService.sanitizeUserProfileData({ service: "smth" });
-            const actual = Object.keys(sanitized).length;
-            expect(actual).toBe(expected);
+            };
+            const actual = await userService.activate("token", USER_ACTIVATION_INFO);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -683,10 +663,13 @@ describe("User Service", () => {
     });
 
     describe("profileUpdate", () => {
-        const mockList = [mockedUserProfileService.validateUserProfileData, mockSanitizeUserProfileData];
+        const mockList = [
+            mockedUserProfileService.validateUserProfileData,
+            mockedUserProfileService.sanitizeUserProfileData,
+        ];
         beforeAll(() => {
             mockedUserProfileService.validateUserProfileData.mockReturnValue({ valid: true });
-            mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
+            mockedUserProfileService.sanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
         });
         afterAll(() => mockList.forEach(mock => mock.mockReset()));
@@ -700,7 +683,7 @@ describe("User Service", () => {
         it("should call sanitizeUserProfileData()", async () => {
             const expected = USER_ACTIVATION_INFO;
             await userService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
+            expect(mockedUserProfileService.sanitizeUserProfileData).toHaveBeenCalledWith(expected);
         });
 
         it("should call userRepository.update() with sanitized data", async () => {
