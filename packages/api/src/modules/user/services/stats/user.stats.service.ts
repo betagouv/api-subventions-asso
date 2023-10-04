@@ -2,6 +2,11 @@ import { UserWithStatsDto } from "dto";
 import userRepository from "../../repositories/user.repository";
 import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../../../shared/helpers/DateHelper";
+import UserReset from "../../entities/UserReset";
+import userResetRepository from "../../repositories/user-reset.repository";
+import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+import { NotificationType } from "../../../notify/@types/NotificationType";
+import notifyService from "../../../notify/notify.service";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
@@ -27,6 +32,30 @@ export class UserStatsService {
         });
 
         return userWithStats;
+    }
+
+    async notifyAllUsersInSubTools() {
+        const users = await userRepository.findAll();
+
+        for (const user of users) {
+            if (user.disable) continue;
+
+            let reset: null | UserReset = null;
+            if (!user.active) {
+                reset = await userResetRepository.findOneByUserId(user._id);
+            }
+
+            const data = {
+                email: user.email,
+                firstname: user.firstName,
+                lastname: user.lastName,
+                url: reset ? `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}?active=true` : undefined,
+                active: user.active,
+                signupAt: user.signupAt,
+            };
+
+            await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
+        }
     }
 }
 
