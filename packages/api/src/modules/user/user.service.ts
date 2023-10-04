@@ -7,11 +7,9 @@ import {
     SignupErrorCodes,
     UserWithResetTokenDto,
     UserDto,
-    UserWithStatsDto,
     FutureUserDto,
     TokenValidationDtoResponse,
     TokenValidationType,
-    UserActivationInfoDto,
 } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
@@ -25,8 +23,6 @@ import {
 } from "../../shared/errors/httpErrors";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
-import userAssociationVisitJoiner from "../stats/joiners/UserAssociationVisitsJoiner";
-import { getMostRecentDate } from "../../shared/helpers/DateHelper";
 import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import { ConsumerToken } from "./entities/ConsumerToken";
@@ -38,7 +34,6 @@ import userAuthService from "./services/auth/user.auth.service";
 import userRepository from "./repositories/user.repository";
 import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
-import userProfileService from "./services/profile/user.profile.service";
 import userStatsService from "./services/stats/user.stats.service";
 
 export enum UserServiceErrors {
@@ -229,20 +224,6 @@ export class UserService {
         user.active = true;
 
         return { user: await userRepository.update(user) };
-    }
-
-    async refreshExpirationToken(user: UserDto) {
-        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
-        if (!userWithSecrets?.jwt) {
-            return {
-                message: "User is not active",
-                code: UserServiceErrors.USER_NOT_ACTIVE,
-            };
-        }
-
-        userWithSecrets.jwt.expirateDate = new Date(Date.now() + JWT_EXPIRES_TIME);
-
-        return await userRepository.update(userWithSecrets);
     }
 
     private isExpiredReset(reset: UserReset) {

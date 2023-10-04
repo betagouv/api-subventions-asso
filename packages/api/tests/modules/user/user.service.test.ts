@@ -87,20 +87,6 @@ describe("user.service.ts", () => {
         });
     });
 
-    describe("refreshExpirationToken", () => {
-        beforeEach(async () => {
-            await service.createUser({ email: "test@beta.gouv.fr" });
-        });
-
-        it("should update user (called with user)", async () => {
-            const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
-            const mock = jest.spyOn(userRepository, "update");
-            await service.refreshExpirationToken(user);
-
-            expect(mock).toHaveBeenCalled();
-        });
-    });
-
     describe("forgetPassword", () => {
         let userId: ObjectId;
         beforeEach(async () => {
