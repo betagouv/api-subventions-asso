@@ -23,3 +23,12 @@ export const USER_SECRETS = {
 export const USER_DBO = { ...USER_WITHOUT_SECRET, ...USER_SECRETS };
 
 export const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
+
+export const ANONYMIZED_USER = {
+    ...USER_WITHOUT_SECRET,
+    active: false,
+    email: "",
+    jwt: null,
+    hashPassword: "",
+    disable: true,
+};

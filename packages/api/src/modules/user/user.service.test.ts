@@ -64,15 +64,6 @@ const CONSUMER_JWT_PAYLOAD = {
     isConsumerToken: true,
 };
 
-const ANONYMIZED_USER = {
-    ...USER_WITHOUT_SECRET,
-    active: false,
-    email: "",
-    jwt: null,
-    hashPassword: "",
-    disable: true,
-};
-
 const USER_ACTIVATION_INFO = {
     password: "",
     agentType: AgentTypeEnum.CENTRAL_ADMIN,
@@ -536,48 +527,6 @@ describe("User Service", () => {
             const expected = FUTURE_USER;
             const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
-        });
-    });
-
-    describe("disable", () => {
-        const USER_ID = USER_WITHOUT_SECRET._id.toString();
-
-        beforeEach(() => mockGetUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
-
-        afterEach(() => {
-            mockGetUserById.mockReset();
-            mockedUserRepository.update.mockReset();
-        });
-
-        it("should fetch user from db", async () => {
-            await userService.disable(USER_ID);
-            expect(mockGetUserById).toHaveBeenCalledWith(USER_ID);
-        });
-
-        it("should return false if user fetch failed", async () => {
-            mockGetUserById.mockResolvedValueOnce(null);
-            const expected = false;
-            const actual = await userService.disable(USER_ID);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call update", async () => {
-            await userService.disable(USER_ID);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
-        });
-
-        it("should return true if update succeed", async () => {
-            mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
-            const expected = true;
-            const actual = await userService.disable(USER_ID);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call notify USER_DELETED", async () => {
-            await userService.disable(USER_ID);
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
-                email: USER_WITHOUT_SECRET.email,
-            });
         });
     });
 

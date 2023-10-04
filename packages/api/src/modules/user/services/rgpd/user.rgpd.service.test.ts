@@ -8,13 +8,22 @@ const mockedStatsService = jest.mocked(statsService);
 import userService from "../../user.service";
 jest.mock("../../user.service");
 const mockedUserService = jest.mocked(userService);
-import userResetRepository from "../../repositories/user-reset.repository";
-import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { ANONYMIZED_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import { ObjectId } from "mongodb";
+import userResetRepository from "../../repositories/user-reset.repository";
 jest.mock("../../repositories/user-reset.repository");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
+import userRepository from "../../repositories/user.repository";
+jest.mock("../../repositories/user.repository");
+const mockedUserRepository = jest.mocked(userRepository);
+import notifyService from "../../../notify/notify.service";
+jest.mock("../../../notify/notify.service", () => ({
+    notify: jest.fn(),
+}));
+const mockedNotifyService = jest.mocked(notifyService);
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+import { NotificationType } from "../../../notify/@types/NotificationType";
 jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
     uniformizeId: jest.fn(token => token),
@@ -98,6 +107,48 @@ describe("user rgpd service", () => {
             mockedStatsService.getAllLogUser.mockResolvedValueOnce(expected);
             const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString())).logs;
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("disable", () => {
+        const USER_ID = USER_WITHOUT_SECRET._id.toString();
+
+        beforeEach(() => mockedUserService.getUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
+
+        afterEach(() => {
+            mockedUserService.getUserById.mockReset();
+            mockedUserRepository.update.mockReset();
+        });
+
+        it("should fetch user from db", async () => {
+            await userRgpdService.disable(USER_ID);
+            expect(mockedUserService.getUserById).toHaveBeenCalledWith(USER_ID);
+        });
+
+        it("should return false if user fetch failed", async () => {
+            mockedUserService.getUserById.mockResolvedValueOnce(null);
+            const expected = false;
+            const actual = await userRgpdService.disable(USER_ID);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call update", async () => {
+            await userRgpdService.disable(USER_ID);
+            expect(mockedUserRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
+        });
+
+        it("should return true if update succeed", async () => {
+            mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
+            const expected = true;
+            const actual = await userRgpdService.disable(USER_ID);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call notify USER_DELETED", async () => {
+            await userRgpdService.disable(USER_ID);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
+                email: USER_WITHOUT_SECRET.email,
+            });
         });
     });
 });
