@@ -42,3 +42,7 @@ export const USER_ACTIVATION_INFO = {
 };
 
 export const UNACTIVATED_USER = { ...USER_WITHOUT_SECRET, ...{ active: false, profileToComplete: true } };
+export const USER_WITHOUT_PASSWORD = {
+    ...USER_WITHOUT_SECRET,
+    jwt: USER_SECRETS.jwt,
+};

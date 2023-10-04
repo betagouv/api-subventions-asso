@@ -27,7 +27,7 @@ export class AuthentificationController extends Controller {
 
     @Post("/reset-password")
     public async resetPassword(@Body() body: { password: string; token: string }): Promise<ResetPasswordDtoResponse> {
-        const user = await userService.resetPassword(body.password, body.token);
+        const user = await userActivationService.resetPassword(body.password, body.token);
 
         return {
             user,
