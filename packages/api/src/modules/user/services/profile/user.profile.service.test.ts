@@ -2,11 +2,20 @@ import { AgentTypeEnum } from "dto";
 import userProfileService from "./user.profile.service";
 import userCheckService from "../check/user.check.service";
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
-import { USER_ACTIVATION_INFO } from "../../__fixtures__/user.fixture";
+import { USER_ACTIVATION_INFO, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
+import userRepository from "../../repositories/user.repository";
+import { NotificationType } from "../../../notify/@types/NotificationType";
+jest.mock("../../repositories/user.repository");
+const mockedUserRepository = jest.mocked(userRepository);
+import notifyService from "../../../notify/notify.service";
+jest.mock("../../../notify/notify.service", () => ({
+    notify: jest.fn(),
+}));
+const mockedNotifyService = jest.mocked(notifyService);
 
 describe("user profile service", () => {
     describe("validateUserProfileData()", () => {
@@ -111,6 +120,44 @@ describe("user profile service", () => {
             const sanitized = userProfileService.sanitizeUserProfileData({ service: "smth" });
             const actual = Object.keys(sanitized).length;
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("profileUpdate", () => {
+        const mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
+        const mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
+
+        const mockList = [mockValidateUserProfileData, mockSanitizeUserProfileData];
+
+        beforeAll(() => {
+            mockValidateUserProfileData.mockReturnValue({ valid: true });
+            mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
+            mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
+        });
+
+        afterAll(() => mockList.forEach(mock => mock.mockRestore()));
+
+        it("should call validateUserProfileData() without testing password", async () => {
+            const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
+            await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(mockValidateUserProfileData).toHaveBeenCalledWith(expected, false);
+        });
+
+        it("should call sanitizeUserProfileData()", async () => {
+            const expected = USER_ACTIVATION_INFO;
+            await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
+        });
+
+        it("should call userRepository.update() with sanitized data", async () => {
+            await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(userRepository.update).toHaveBeenCalledWith({ ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO });
+        });
+
+        it("should notify user updated", async () => {
+            mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_SECRET);
+            await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, USER_WITHOUT_SECRET);
         });
     });
 });

@@ -17,6 +17,7 @@ import userService from "../../user.service";
 import userAuthService from "../../services/auth/user.auth.service";
 import userRolesService from "../../services/roles/user.roles.service";
 import userRgpdService from "../../services/rgpd/user.rgpd.service";
+import userProfileService from "../../services/profile/user.profile.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -136,7 +137,7 @@ export class UserController extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public updateProfile(@Request() req: IdentifiedRequest, @Body() body: Partial<UpdatableUser>): Promise<UserDto> {
-        return userService.profileUpdate(req.user, body);
+        return userProfileService.profileUpdate(req.user, body);
     }
 
     /**
