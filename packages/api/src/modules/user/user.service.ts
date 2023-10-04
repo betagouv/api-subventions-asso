@@ -337,27 +337,6 @@ export class UserService {
         return error ? { valid: false, error: error as BadRequestError } : { valid: true };
     }
 
-    public async disable(userId: string) {
-        const user = await this.getUserById(userId);
-        if (!user) return false;
-        // Anonymize the user when it is being deleted to keep use stats consistent
-        // It keeps roles and signupAt in place to avoid breaking any stats
-        const disabledUser = {
-            ...user,
-            active: false,
-            email: "",
-            jwt: null,
-            hashPassword: "",
-            disable: true,
-            firstName: "",
-            lastName: "",
-        };
-
-        notifyService.notify(NotificationType.USER_DELETED, { email: user.email });
-
-        return !!(await userRepository.update(disabledUser));
-    }
-
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
         if (typeof user === "string") {
             const foundUser = await userRepository.findByEmail(user);
