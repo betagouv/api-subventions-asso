@@ -35,6 +35,7 @@ import userRepository from "./repositories/user.repository";
 import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
 import userStatsService from "./services/stats/user.stats.service";
+import userActivationService from "./services/activation/user.activation.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -228,25 +229,9 @@ export class UserService {
         return { user: await userRepository.update(user) };
     }
 
-    private isExpiredReset(reset: UserReset) {
-        return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
-    }
-
-    public validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
-        let error: Error | null = null;
-        if (!userReset) error = new ResetTokenNotFoundError();
-        else if (this.isExpiredReset(userReset as UserReset))
-            error = new BadRequestError(
-                "Reset token has expired, please retry forget password",
-                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-            );
-
-        return error ? { valid: false, error } : { valid: true };
-    }
-
     async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
         const reset = await userResetRepository.findByToken(resetToken);
-        const tokenValidation = this.validateResetToken(reset);
+        const tokenValidation = userActivationService.validateResetToken(reset);
         if (!tokenValidation.valid) return tokenValidation;
 
         const user = await this.getUserById((reset as UserReset).userId);
@@ -261,7 +246,7 @@ export class UserService {
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
         const reset = await userResetRepository.findByToken(resetToken);
 
-        const tokenValidation = this.validateResetToken(reset);
+        const tokenValidation = userActivationService.validateResetToken(reset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
         const user = await this.getUserById((reset as UserReset).userId);

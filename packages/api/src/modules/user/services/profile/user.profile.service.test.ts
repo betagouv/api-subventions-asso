@@ -20,6 +20,9 @@ const mockedUserAuthService = jest.mocked(userAuthService);
 import userCheckService from "../check/user.check.service";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
+import userActivationService from "../activation/user.activation.service";
+jest.mock("../activation/user.activation.service");
+const mockedUserActivationService = jest.mocked(userActivationService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userRepository from "../../repositories/user.repository";
 jest.mock("../../repositories/user.repository");
@@ -195,7 +198,7 @@ describe("user profile service", () => {
 
         const mockResetList = [
             mockedUserResetRepository.findByToken,
-            mockedUserService.validateResetToken,
+            mockedUserActivationService.validateResetToken,
             mockedUserAuthService.updateJwt,
         ];
 
@@ -207,7 +210,7 @@ describe("user profile service", () => {
 
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
             mockedUserService.getUserById.mockImplementation(async id => UNACTIVATED_USER);
-            mockedUserService.validateResetToken.mockImplementation(token => ({ valid: true }));
+            mockedUserActivationService.validateResetToken.mockImplementation(token => ({ valid: true }));
             mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
             // @ts-expect-error: unknown error
             mockedUserRepository.update.mockImplementation(() => ({

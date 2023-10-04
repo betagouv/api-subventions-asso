@@ -31,6 +31,9 @@ const mockedUserAuthService = jest.mocked(userAuthService, true);
 import userProfileService from "./services/profile/user.profile.service";
 jest.mock("./services/profile/user.profile.service");
 const mockedUserProfileService = jest.mocked(userProfileService);
+import userActivationService from "./services/activation/user.activation.service";
+jest.mock("./services/activation/user.activation.service");
+const mockedUserActivationService = jest.mocked(userActivationService);
 import * as repositoryHelper from "../../shared/helpers/RepositoryHelper";
 jest.mock("../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
@@ -78,8 +81,6 @@ describe("User Service", () => {
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
     const mockDeleteUser = jest.spyOn(userService, "delete");
     const mockResetUser = jest.spyOn(userService, "resetUser");
-    // @ts-expect-error: mock private method
-    const mockValidateResetToken: jest.SpyInstance<boolean> = jest.spyOn(userService, "validateResetToken");
     const mockGetUserById = jest.spyOn(userService, "getUserById");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
@@ -344,8 +345,7 @@ describe("User Service", () => {
         beforeAll(() => {
             // @ts-expect-error: mock
             jest.mocked(bcrypt.hash).mockResolvedValue(PASSWORD);
-            // @ts-expect-error: mock
-            mockValidateResetToken.mockImplementation(() => ({ valid: true }));
+            mockedUserActivationService.validateResetToken.mockImplementation(() => ({ valid: true }));
         });
 
         beforeEach(() => {
@@ -369,7 +369,7 @@ describe("User Service", () => {
 
         it("should call validateResetToken()", async () => {
             await userService.resetPassword(PASSWORD, RESET_TOKEN);
-            expect(mockValidateResetToken).toHaveBeenCalledTimes(1);
+            expect(mockedUserActivationService.validateResetToken).toHaveBeenCalledTimes(1);
         });
 
         it("should reject because user not found", async () => {
@@ -432,30 +432,6 @@ describe("User Service", () => {
         });
     });
 
-    describe("isExpiredReset", () => {
-        it("should return true", () => {
-            const reset = {
-                createdAt: new Date(2000),
-            } as unknown as UserReset;
-
-            // @ts-expect-error is ExpiredReset is private
-            const actual = userService.isExpiredReset(reset);
-
-            expect(actual).toBeTruthy();
-        });
-
-        it("should return false", () => {
-            const reset = {
-                createdAt: new Date(),
-            } as unknown as UserReset;
-
-            // @ts-expect-error is ExpiredReset is private
-            const actual = userService.isExpiredReset(reset);
-
-            expect(actual).toBeFalsy();
-        });
-    });
-
     describe("validateTokenAndGetType", () => {
         const FAKE_TOKEN = "FAKE";
         const validUserReset = {
@@ -468,14 +444,13 @@ describe("User Service", () => {
 
         beforeAll(() => {
             mockedUserResetRepository.findByToken.mockResolvedValue(validUserReset);
-            // @ts-expect-error: mock
-            mockValidateResetToken.mockImplementation(() => ({ valid: true }));
+            mockedUserActivationService.validateResetToken.mockImplementation(() => ({ valid: true }));
             mockGetUserById.mockResolvedValue(user);
         });
 
         afterAll(() => {
             mockedUserResetRepository.findByToken.mockReset();
-            mockValidateResetToken.mockReset();
+            mockedUserActivationService.validateResetToken.mockReset();
             mockGetUserById.mockReset();
         });
 
@@ -493,7 +468,7 @@ describe("User Service", () => {
         it("should call validateResetToken", async () => {
             await userService.validateTokenAndGetType(FAKE_TOKEN);
 
-            expect(mockValidateResetToken).toHaveBeenCalledWith(validUserReset);
+            expect(mockedUserActivationService.validateResetToken).toHaveBeenCalledWith(validUserReset);
         });
 
         it("should return type is SIGNUP", async () => {
