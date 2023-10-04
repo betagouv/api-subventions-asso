@@ -39,6 +39,7 @@ import userRepository from "./repositories/user.repository";
 import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
 import userProfileService from "./services/profile/user.profile.service";
+import userStatsService from "./services/stats/user.stats.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -347,25 +348,8 @@ export class UserService {
         return userResetRepository.findOneByUserId(userId);
     }
 
-    public async getUsersWithStats(includesAdmin = false): Promise<UserWithStatsDto[]> {
-        const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits(
-            includesAdmin,
-        );
-        const userWithStats = usersWithAssociationVisits.map(user => {
-            const stats = {
-                lastSearchDate: getMostRecentDate(user.associationVisits.map(visit => visit.date)),
-                searchCount: user.associationVisits.length,
-            };
-            // remove associationVisits
-            const { associationVisits: _associationVisits, ...userDbo } = user;
-            return { ...userDbo, stats } as UserWithStatsDto;
-        });
-
-        return userWithStats;
-    }
-
     public async listUsers(): Promise<UserWithResetTokenDto[]> {
-        const users = await this.getUsersWithStats(true);
+        const users = await userStatsService.getUsersWithStats(true);
         return await Promise.all(
             users.map(async user => {
                 const reset = await userResetRepository.findOneByUserId(user._id);
