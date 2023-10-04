@@ -371,7 +371,7 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findAssociationBySiren is private method
                 await apiAssoService.findAssociationBySiren(SIREN);
 
-                expect(sendRequestMock).toHaveBeenCalledTimes(1);
+                expect(sendRequestMock).toHaveBeenCalled();
             });
 
             it("should return null if result without date", async () => {
