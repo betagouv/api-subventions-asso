@@ -380,10 +380,6 @@ export class UserService {
         return userRepository.findByPeriod(begin, end, withAdmin);
     }
 
-    public countTotalUsersOnDate(date, withAdmin = false) {
-        return userRepository.countTotalUsersOnDate(date, withAdmin);
-    }
-
     async notifyAllUsersInSubTools() {
         const users = await userRepository.findAll();
 

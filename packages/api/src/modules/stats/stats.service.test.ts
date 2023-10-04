@@ -20,6 +20,7 @@ import { UserDto } from "dto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import { ObjectId } from "mongodb";
+import userStatsService from "../user/services/stats/user.stats.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -182,7 +183,7 @@ describe("StatsService", () => {
     });
 
     describe("getMonthlyUserNbByYear()", () => {
-        const initCountMock = jest.spyOn(userService, "countTotalUsersOnDate");
+        const initCountMock = jest.spyOn(userStatsService, "countTotalUsersOnDate");
         const getUsersMock = jest.spyOn(userService, "findByPeriod");
         const firstDayMock = jest.spyOn(DateHelper, "firstDayOfPeriod");
         const oneYearLaterMock = jest.spyOn(DateHelper, "oneYearAfterPeriod");
