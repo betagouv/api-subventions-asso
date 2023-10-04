@@ -23,6 +23,7 @@ import userResetRepository from "../../repositories/user-reset.repository";
 import UserReset from "../../entities/UserReset";
 import userAuthService from "../auth/user.auth.service";
 import UserDbo from "../../repositories/dbo/UserDbo";
+import userActivationService from "../activation/user.activation.service";
 
 export class UserProfileService {
     validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -120,7 +121,7 @@ export class UserProfileService {
     public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
         const userReset = await userResetRepository.findByToken(resetToken);
 
-        const tokenValidation = userService.validateResetToken(userReset);
+        const tokenValidation = userActivationService.validateResetToken(userReset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
         const user = await userService.getUserById((userReset as UserReset).userId);
