@@ -1,11 +1,11 @@
 import userActivationService from "./user.activation.service";
 import userRepository from "../../repositories/user.repository";
-import { USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
-import { UserServiceErrors } from "../../user.service";
+import { UserService, UserServiceErrors } from "../../user.service";
 import UserReset from "../../entities/UserReset";
 import { ObjectId, WithId } from "mongodb";
-import { BadRequestError, ResetTokenNotFoundError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, NotFoundError, ResetTokenNotFoundError } from "../../../../shared/errors/httpErrors";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
@@ -15,6 +15,19 @@ const mockedUserResetRepository = jest.mocked(userResetRepository);
 import userService from "../../user.service";
 jest.mock("../../user.service");
 const mockedUserService = jest.mocked(userService);
+import userCheckService from "../check/user.check.service";
+jest.mock("../check/user.check.service");
+const mockedUserCheckService = jest.mocked(userCheckService);
+import userAuthService from "../auth/user.auth.service";
+jest.mock("../auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService);
+import notifyService from "../../../notify/notify.service";
+import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
+import { NotificationType } from "../../../notify/@types/NotificationType";
+jest.mock("../../../notify/notify.service", () => ({
+    notify: jest.fn(),
+}));
+const mockedNotifyService = jest.mocked(notifyService);
 
 jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
 
@@ -201,6 +214,106 @@ describe("user activation service", () => {
             )) as TokenValidationDtoPositiveResponse;
 
             expect(actual.type).toBe(TokenValidationType.FORGET_PASSWORD);
+        });
+    });
+
+    describe("resetPassword", () => {
+        const PASSWORD = "12345&#Data";
+        const RESET_TOKEN = "azeazdazçè!è78789dqzdqDqzd";
+        const RESET_DOCUMENT = {
+            _id: new ObjectId(),
+            userId: new ObjectId(),
+            token: "qdqzd234234ffefsfsf!",
+            createdAt: new Date(),
+        };
+
+        let mockValidateResetToken: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockValidateResetToken = jest.spyOn(userActivationService, "validateResetToken");
+            mockValidateResetToken.mockImplementation(() => ({ valid: true }));
+        });
+
+        beforeEach(() => {
+            mockedUserResetRepository.findByToken.mockResolvedValue(RESET_DOCUMENT);
+            mockedUserService.getUserById.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_PASSWORD);
+            mockedUserCheckService.passwordValidator.mockReturnValue(true);
+            mockedUserAuthService.updateJwt.mockImplementation(
+                jest.fn(user => Promise.resolve({ ...user, jwt: USER_SECRETS.jwt })),
+            );
+        });
+
+        afterAll(() => {
+            mockedUserResetRepository.findByToken.mockReset();
+            mockedUserService.getUserById.mockReset();
+            mockedUserCheckService.passwordValidator.mockReset();
+            mockedUserRepository.update.mockReset();
+            mockedUserAuthService.updateJwt.mockReset();
+        });
+
+        it("should call validateResetToken()", async () => {
+            await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockValidateResetToken).toHaveBeenCalledTimes(1);
+        });
+
+        it("should reject because user not found", async () => {
+            mockedUserService.getUserById.mockResolvedValueOnce(null);
+            expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
+                new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND),
+            );
+        });
+
+        it("should reject because password not valid", async () => {
+            mockedUserCheckService.passwordValidator.mockReturnValueOnce(false);
+            expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
+                new BadRequestError(
+                    UserService.PASSWORD_VALIDATOR_MESSAGE,
+                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+                ),
+            );
+        });
+
+        it("should remove resetUser", async () => {
+            await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockedUserResetRepository.remove).toHaveBeenCalledWith(RESET_DOCUMENT);
+        });
+
+        it("should notify USER_ACTIVATED", async () => {
+            await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_ACTIVATED, {
+                email: USER_EMAIL,
+            });
+        });
+
+        it("should update user", async () => {
+            mockedUserAuthService.getHashPassword.mockResolvedValueOnce(PASSWORD);
+            await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockedUserRepository.update).toHaveBeenCalledWith(
+                {
+                    ...USER_WITHOUT_SECRET,
+                    hashPassword: PASSWORD,
+                    active: true,
+                },
+                true,
+            );
+        });
+
+        it("update user's jwt", async () => {
+            await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockedUserAuthService.updateJwt).toHaveBeenCalledWith({
+                ...USER_WITHOUT_SECRET,
+                jwt: USER_SECRETS.jwt,
+            });
+        });
+
+        it("returns user with jwt", async () => {
+            const expected = {
+                ...USER_WITHOUT_SECRET,
+                jwt: USER_SECRETS.jwt,
+            };
+            const actual = await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(actual).toEqual(expected);
         });
     });
 });

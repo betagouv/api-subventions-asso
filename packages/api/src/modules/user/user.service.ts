@@ -227,39 +227,6 @@ export class UserService {
         return { user: await userRepository.update(user) };
     }
 
-    async resetPassword(password: string, resetToken: string): Promise<UserDto> {
-        const reset = await userResetRepository.findByToken(resetToken);
-
-        const tokenValidation = userActivationService.validateResetToken(reset);
-        if (!tokenValidation.valid) throw tokenValidation.error;
-
-        const user = await this.getUserById((reset as UserReset).userId);
-        if (!user) throw new UserNotFoundError();
-
-        if (!userCheckService.passwordValidator(password))
-            throw new BadRequestError(
-                UserService.PASSWORD_VALIDATOR_MESSAGE,
-                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-            );
-
-        const hashPassword = await userAuthService.getHashPassword(password);
-
-        await userResetRepository.remove(reset as UserReset);
-
-        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
-
-        const userUpdated = (await userRepository.update(
-            {
-                ...user,
-                hashPassword,
-                active: true,
-                profileToComplete: false,
-            },
-            true,
-        )) as Omit<UserDbo, "hashPassword">;
-        return await userAuthService.updateJwt(userUpdated);
-    }
-
     async forgetPassword(email: string) {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
         if (!user) return; // Don't say user not found, for security reasons

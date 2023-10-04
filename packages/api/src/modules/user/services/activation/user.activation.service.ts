@@ -3,8 +3,13 @@ import userRepository from "../../repositories/user.repository";
 import userService, { UserService, UserServiceErrors } from "../../user.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
-import { BadRequestError, ResetTokenNotFoundError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, ResetTokenNotFoundError, UserNotFoundError } from "../../../../shared/errors/httpErrors";
 import userResetRepository from "../../repositories/user-reset.repository";
+import notifyService from "../../../notify/notify.service";
+import userAuthService from "../auth/user.auth.service";
+import userCheckService from "../check/user.check.service";
+import { NotificationType } from "../../../notify/@types/NotificationType";
+import UserDbo from "../../repositories/dbo/UserDbo";
 
 export class UserActivationService {
     async refreshExpirationToken(user: UserDto) {
@@ -49,6 +54,39 @@ export class UserActivationService {
             ...tokenValidation,
             type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
         };
+    }
+
+    async resetPassword(password: string, resetToken: string): Promise<UserDto> {
+        const reset = await userResetRepository.findByToken(resetToken);
+
+        const tokenValidation = userActivationService.validateResetToken(reset);
+        if (!tokenValidation.valid) throw tokenValidation.error;
+
+        const user = await userService.getUserById((reset as UserReset).userId);
+        if (!user) throw new UserNotFoundError();
+
+        if (!userCheckService.passwordValidator(password))
+            throw new BadRequestError(
+                UserService.PASSWORD_VALIDATOR_MESSAGE,
+                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+            );
+
+        const hashPassword = await userAuthService.getHashPassword(password);
+
+        await userResetRepository.remove(reset as UserReset);
+
+        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
+
+        const userUpdated = (await userRepository.update(
+            {
+                ...user,
+                hashPassword,
+                active: true,
+                profileToComplete: false,
+            },
+            true,
+        )) as Omit<UserDbo, "hashPassword">;
+        return await userAuthService.updateJwt(userUpdated);
     }
 }
 
