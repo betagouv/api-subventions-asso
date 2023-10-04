@@ -13,6 +13,7 @@ import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import userAuthService from "../../services/auth/user.auth.service";
 import userProfileService from "../../services/profile/user.profile.service";
+import userActivationService from "../../services/activation/user.activation.service";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -83,6 +84,6 @@ export class AuthentificationController extends Controller {
     public async validateToken(@Body() body: { token?: string }): Promise<TokenValidationDtoResponse> {
         if (!body.token) throw new BadRequestError();
 
-        return userService.validateTokenAndGetType(body.token);
+        return userActivationService.validateTokenAndGetType(body.token);
     }
 }

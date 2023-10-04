@@ -1,9 +1,10 @@
-import { ResetPasswordErrorCodes, UserDto } from "dto";
+import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
-import { UserService, UserServiceErrors } from "../../user.service";
+import userService, { UserService, UserServiceErrors } from "../../user.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import { BadRequestError, ResetTokenNotFoundError } from "../../../../shared/errors/httpErrors";
+import userResetRepository from "../../repositories/user-reset.repository";
 
 export class UserActivationService {
     async refreshExpirationToken(user: UserDto) {
@@ -34,6 +35,20 @@ export class UserActivationService {
 
     private isExpiredReset(reset: UserReset) {
         return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
+    }
+
+    async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
+        const reset = await userResetRepository.findByToken(resetToken);
+        const tokenValidation = userActivationService.validateResetToken(reset);
+        if (!tokenValidation.valid) return tokenValidation;
+
+        const user = await userService.getUserById((reset as UserReset).userId);
+        if (!user) return { valid: false };
+
+        return {
+            ...tokenValidation,
+            type: user.profileToComplete ? TokenValidationType.SIGNUP : TokenValidationType.FORGET_PASSWORD,
+        };
     }
 }
 
