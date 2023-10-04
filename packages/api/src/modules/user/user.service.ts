@@ -376,10 +376,6 @@ export class UserService {
         );
     }
 
-    public findByPeriod(begin: Date, end: Date, withAdmin = false) {
-        return userRepository.findByPeriod(begin, end, withAdmin);
-    }
-
     async notifyAllUsersInSubTools() {
         const users = await userRepository.findAll();
 

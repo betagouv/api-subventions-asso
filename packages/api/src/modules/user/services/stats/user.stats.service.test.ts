@@ -28,4 +28,31 @@ describe("user stats service", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("findByPeriod()", () => {
+        const REPO_RETURN = {};
+        const END = new Date();
+        const BEGIN = new Date(END.getFullYear() - 1, END.getMonth(), END.getDay() + 1);
+        const WITH_ADMIN = true;
+
+        // @ts-expect-error: mock return value
+        beforeAll(() => mockedUserRepository.findByPeriod.mockResolvedValue(REPO_RETURN));
+        afterAll(() => mockedUserRepository.findByPeriod.mockReset());
+
+        it("should call repo with given args", async () => {
+            await userStatsService.findByPeriod(BEGIN, END, WITH_ADMIN);
+            expect(mockedUserRepository.findByPeriod).toBeCalledWith(BEGIN, END, WITH_ADMIN);
+        });
+
+        it("should call repo with default", async () => {
+            await userStatsService.findByPeriod(BEGIN, END);
+            expect(mockedUserRepository.findByPeriod).toBeCalledWith(BEGIN, END, false);
+        });
+
+        it("should return repo's return value", async () => {
+            const expected = REPO_RETURN;
+            const actual = await userStatsService.findByPeriod(BEGIN, END);
+            expect(actual).toBe(expected);
+        });
+    });
 });
