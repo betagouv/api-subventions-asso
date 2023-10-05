@@ -1,26 +1,11 @@
 import { ObjectId } from "mongodb";
-import * as RandToken from "rand-token";
 
 import dedent from "dedent";
-import {
-    ResetPasswordErrorCodes,
-    SignupErrorCodes,
-    UserWithResetTokenDto,
-    UserDto,
-    FutureUserDto,
-    TokenValidationDtoResponse,
-    TokenValidationType,
-} from "dto";
+import { SignupErrorCodes, UserWithResetTokenDto, UserDto, FutureUserDto } from "dto";
 import { RoleEnum } from "../../@enums/Roles";
 import { DefaultObject } from "../../@types";
 import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
-import {
-    BadRequestError,
-    InternalServerError,
-    NotFoundError,
-    UserNotFoundError,
-    ResetTokenNotFoundError,
-} from "../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../shared/errors/httpErrors";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import { removeSecrets } from "../../shared/helpers/RepositoryHelper";
@@ -28,8 +13,7 @@ import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import { ConsumerToken } from "./entities/ConsumerToken";
 import consumerTokenRepository from "./repositories/consumer-token.repository";
 import userResetRepository from "./repositories/user-reset.repository";
-import UserReset from "./entities/UserReset";
-import UserDbo, { UserNotPersisted } from "./repositories/dbo/UserDbo";
+import { UserNotPersisted } from "./repositories/dbo/UserDbo";
 import userAuthService from "./services/auth/user.auth.service";
 import userRepository from "./repositories/user.repository";
 import { DEFAULT_PWD } from "./user.constant";
@@ -197,7 +181,7 @@ export class UserService {
             }
         }
 
-        const resetResult = await this.resetUser(user);
+        const resetResult = await userActivationService.resetUser(user);
 
         notifyService.notify(NotificationType.USER_CREATED, {
             email: userObject.email,
@@ -227,28 +211,6 @@ export class UserService {
         user.active = true;
 
         return { user: await userRepository.update(user) };
-    }
-
-    async resetUser(user: UserDto): Promise<UserReset> {
-        await userResetRepository.removeAllByUserId(user._id);
-
-        const token = RandToken.generate(32);
-        const reset = new UserReset(user._id, token, new Date());
-
-        const createdReset = await userResetRepository.create(reset);
-
-        if (!createdReset) {
-            throw new InternalServerError(
-                "The user reset password could not be created",
-                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG,
-            );
-        }
-
-        user.active = false;
-
-        await userRepository.update(user);
-
-        return createdReset;
     }
 
     public async listUsers(): Promise<UserWithResetTokenDto[]> {

@@ -49,6 +49,9 @@ jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
+import userActivationService from "../activation/user.activation.service";
+jest.mock("../activation/user.activation.service");
+const mockedUserActivationService = jest.mocked(userActivationService);
 
 describe("user auth service", () => {
     const USER_ID = new ObjectId();
@@ -212,7 +215,7 @@ describe("user auth service", () => {
         });
 
         it("should notify USER_LOGGED", async () => {
-            mockedUserService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
             mockedUserService.createUser.mockImplementationOnce(async () => ({} as UserDto));
             await userAuthService.login(USER_DBO.email, "PASSWORD");
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
