@@ -9,6 +9,7 @@ import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";
+import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -125,7 +126,7 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
-            const userUpdated = await userService.findByEmail("user@beta.gouv.fr");
+            const userUpdated = await userCrudService.findByEmail("user@beta.gouv.fr");
 
             expect(userUpdated).toMatchObject(user);
         });

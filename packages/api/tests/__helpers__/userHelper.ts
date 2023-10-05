@@ -1,5 +1,6 @@
 import { RoleEnum } from "../../src/@enums/Roles";
 import userActivationService from "../../src/modules/user/services/activation/user.activation.service";
+import userCrudService from "../../src/modules/user/services/crud/user.crud.service";
 import userService from "../../src/modules/user/user.service";
 
 export const ADMIN_EMAIL = "admin@beta.gouv.fr";
@@ -25,5 +26,5 @@ export function createAdminUser() {
 }
 
 export function getDefaultUser() {
-    return userService.findByEmail(USER_EMAIL);
+    return userCrudService.findByEmail(USER_EMAIL);
 }

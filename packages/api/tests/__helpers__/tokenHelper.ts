@@ -3,10 +3,11 @@ import userService from "../../src/modules/user/user.service";
 import userAuthService from "../../src/modules/user/services/auth/user.auth.service";
 import userRolesService from "../../src/modules/user/services/roles/user.roles.service";
 import userActivationService from "../../src/modules/user/services/activation/user.activation.service";
+import userCrudService from "../../src/modules/user/services/crud/user.crud.service";
 
 const getToken = async (role = RoleEnum.user) => {
     const email = `${role}@beta.gouv.fr`;
-    let user = await userService.findByEmail(email);
+    let user = await userCrudService.findByEmail(email);
     if (!user) {
         if (role == RoleEnum.consumer) user = await userService.createConsumer({ email: email });
         else user = await userService.createUser({ email });

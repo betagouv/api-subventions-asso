@@ -55,10 +55,6 @@ export class UserService {
 
     public static CONSUMER_TOKEN_PROP = "isConsumerToken";
 
-    findByEmail(email: string) {
-        return userRepository.findByEmail(email);
-    }
-
     async findConsumerToken(userId: ObjectId): Promise<string> {
         const token = await consumerTokenRepository.findToken(userId);
         if (!token) {
