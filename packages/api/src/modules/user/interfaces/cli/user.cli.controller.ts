@@ -4,6 +4,7 @@ import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userRolesService from "../../services/roles/user.roles.service";
 import userStatsService from "../../services/stats/user.stats.service";
+import userActivationService from "../../services/activation/user.activation.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
@@ -32,7 +33,7 @@ export default class UserCliController {
 
     async active(email: string) {
         try {
-            await userService.activeUser(email);
+            await userActivationService.activeUser(email);
             console.info("User has been activated");
         } catch (e) {
             console.info("Active error : \n", (e as Error).message);

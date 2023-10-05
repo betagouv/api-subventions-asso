@@ -410,4 +410,49 @@ describe("user activation service", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("activeUser", () => {
+        const INACTIVE_USER = { ...USER_WITHOUT_SECRET, active: false };
+        beforeAll(() => {
+            mockedUserRepository.findByEmail.mockResolvedValue(INACTIVE_USER);
+            mockedUserRepository.update.mockResolvedValue({ ...INACTIVE_USER, active: true });
+        });
+
+        afterAll(() => {
+            mockedUserRepository.findByEmail.mockReset();
+            mockedUserRepository.update.mockReset();
+        });
+
+        it("should call userRepository.findByEmail()", async () => {
+            await userActivationService.activeUser(USER_EMAIL);
+            expect(mockedUserRepository.findByEmail).toHaveBeenCalledTimes(1);
+        });
+
+        it("should not call userRepository.findByEmail()", async () => {
+            await userActivationService.activeUser(INACTIVE_USER);
+            expect(mockedUserRepository.findByEmail).not.toHaveBeenCalled();
+        });
+
+        it("should throw NotFoundError if user not found", async () => {
+            mockedUserRepository.findByEmail.mockResolvedValueOnce(null);
+            const expected = new NotFoundError("User email does not correspond to a user");
+            expect(() => userActivationService.activeUser(USER_EMAIL)).rejects.toThrowError(expected);
+        });
+
+        it("should call userRepository.update()", async () => {
+            await userActivationService.activeUser(USER_EMAIL);
+            expect(mockedUserRepository.update).toHaveBeenCalledTimes(1);
+        });
+
+        it("should active user", async () => {
+            await userActivationService.activeUser(USER_EMAIL);
+            expect(mockedUserRepository.update).toHaveBeenCalledWith({ ...INACTIVE_USER, active: true });
+        });
+
+        it("should return user", async () => {
+            const expected = { user: { ...INACTIVE_USER, active: true } };
+            const actual = await userActivationService.activeUser(INACTIVE_USER);
+            expect(actual).toEqual(expected);
+        });
+    });
 });

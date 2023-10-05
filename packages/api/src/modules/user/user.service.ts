@@ -197,20 +197,6 @@ export class UserService {
         return userRepository.findById(userId);
     }
 
-    async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
-        if (typeof user === "string") {
-            const foundUser = await userRepository.findByEmail(user);
-            if (!foundUser) {
-                throw new NotFoundError("User email does not correspond to a user");
-            }
-            user = foundUser;
-        }
-
-        user.active = true;
-
-        return { user: await userRepository.update(user) };
-    }
-
     public async listUsers(): Promise<UserWithResetTokenDto[]> {
         const users = await userStatsService.getUsersWithStats(true);
         return await Promise.all(

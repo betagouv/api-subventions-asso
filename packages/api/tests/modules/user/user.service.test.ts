@@ -60,30 +60,4 @@ describe("user.service.ts", () => {
             });
         });
     });
-
-    describe("activeUser", () => {
-        beforeEach(async () => {
-            await service.createUser({ email: "test@beta.gouv.fr" });
-        });
-
-        it("should reject because user email not found", async () => {
-            const expected = new NotFoundError("User email does not correspond to a user");
-            expect(() => service.activeUser("wrong@email.fr")).rejects.toThrowError(expected);
-        });
-
-        it("should update user (called with email)", async () => {
-            const expected = {
-                user: { active: true },
-            };
-            const actual = await service.activeUser("test@beta.gouv.fr");
-            expect(actual).toMatchObject(expected);
-        });
-
-        it("should update user (called with user)", async () => {
-            const expected = { user: { active: true } };
-            const user = (await service.findByEmail("test@beta.gouv.fr")) as UserDto;
-            const actual = await service.activeUser(user);
-            expect(actual).toMatchObject(expected);
-        });
-    });
 });
