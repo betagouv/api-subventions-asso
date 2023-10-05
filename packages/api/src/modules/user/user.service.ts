@@ -130,11 +130,6 @@ export class UserService {
         return createdUser;
     }
 
-    public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
-        await userCheckService.validateEmail(user.email);
-        return await userRepository.update(user);
-    }
-
     public async delete(userId: string): Promise<boolean> {
         const user = await this.getUserById(userId);
 

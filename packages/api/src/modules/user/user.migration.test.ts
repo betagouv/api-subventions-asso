@@ -26,12 +26,11 @@ describe("UserMigration", () => {
         // @ts-expect-error toLowerCaseUsers is private method
         const findUsersActionMock: jest.SpyInstance = jest.spyOn(userMigration, "findUsersAction");
 
-        const userServiceUpdateMock = jest.spyOn(userService, "update");
         const userServiceDeleteMock = jest.spyOn(userService, "delete");
 
         it("should update user", async () => {
             // @ts-expect-error -- mock
-            userServiceUpdateMock.mockImplementationOnce(user => Promise.resolve(user));
+            mockedUserCrudService.update.mockImplementationOnce(user => Promise.resolve(user));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.UPDATE,
@@ -54,7 +53,7 @@ describe("UserMigration", () => {
 
             const expected = "test@datasubvention.beta.gou.fr";
 
-            expect(userServiceUpdateMock).toBeCalledWith(expect.objectContaining({ email: expected }));
+            expect(mockedUserCrudService.update).toBeCalledWith(expect.objectContaining({ email: expected }));
         });
 
         it("should delete user", async () => {
