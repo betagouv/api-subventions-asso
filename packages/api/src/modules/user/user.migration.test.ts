@@ -5,6 +5,7 @@ import UserReset from "./entities/UserReset";
 import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
 import userService from "./user.service";
 import userAuthService from "./services/auth/user.auth.service";
+import userActivationService from "./services/activation/user.activation.service";
 jest.mock("./services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, true);
 
@@ -264,7 +265,7 @@ describe("UserMigration", () => {
     });
 
     describe("findLastCreatedUser", () => {
-        const findUserResetByUserIdMock = jest.spyOn(userService, "findUserResetByUserId");
+        const findUserResetByUserIdMock = jest.spyOn(userActivationService, "findUserResetByUserId");
 
         beforeEach(() => {
             findUserResetByUserIdMock.mockReset();

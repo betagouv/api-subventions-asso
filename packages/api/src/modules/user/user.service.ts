@@ -251,10 +251,6 @@ export class UserService {
         return createdReset;
     }
 
-    async findUserResetByUserId(userId: ObjectId) {
-        return userResetRepository.findOneByUserId(userId);
-    }
-
     public async listUsers(): Promise<UserWithResetTokenDto[]> {
         const users = await userStatsService.getUsersWithStats(true);
         return await Promise.all(

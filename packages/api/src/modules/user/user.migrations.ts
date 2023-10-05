@@ -5,6 +5,7 @@ import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import UserReset from "./entities/UserReset";
 import userService from "./user.service";
 import userAuthService from "./services/auth/user.auth.service";
+import userActivationService from "./services/activation/user.activation.service";
 
 export enum EmailToLowerCaseAction {
     UPDATE = 1,
@@ -100,7 +101,7 @@ export default class UserMigrations {
 
     private async findLastCreatedUser(users: UserDto[]) {
         const resetUsers = await Promise.all(
-            users.map(user => userService.findUserResetByUserId(user._id as ObjectId)),
+            users.map(user => userActivationService.findUserResetByUserId(user._id as ObjectId)),
         );
         const ordered = (resetUsers.filter(reset => reset) as UserReset[]).sort(
             (resetA, resetB) => resetB.createdAt.getTime() - resetA.createdAt.getTime(),

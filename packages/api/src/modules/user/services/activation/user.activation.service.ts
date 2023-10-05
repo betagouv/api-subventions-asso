@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
 import userService, { UserService, UserServiceErrors } from "../../user.service";
@@ -100,6 +101,10 @@ export class UserActivationService {
             email: email.toLocaleLowerCase(),
             url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
         });
+    }
+
+    async findUserResetByUserId(userId: ObjectId) {
+        return userResetRepository.findOneByUserId(userId);
     }
 }
 
