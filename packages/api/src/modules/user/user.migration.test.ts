@@ -8,12 +8,14 @@ import userAuthService from "./services/auth/user.auth.service";
 import userActivationService from "./services/activation/user.activation.service";
 jest.mock("./services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, true);
+import userCrudService from "./services/crud/user.crud.service";
+jest.mock("./services/crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 
 describe("UserMigration", () => {
     const userMigration = new UserMigrations();
 
     describe("migrationUserEmailToLowerCase", () => {
-        const usersFindMock = jest.spyOn(userService, "find");
         // @ts-expect-error toLowerCaseUsers is private method
         const toLowerCaseUsersMock: jest.SpyInstance<UserDto[]> = jest.spyOn(userMigration, "toLowerCaseUsers");
         const groupUsersByEmailMock: jest.SpyInstance<DefaultObject<UserDto[]>> = jest.spyOn(
@@ -36,7 +38,7 @@ describe("UserMigration", () => {
                     user,
                 })),
             );
-            usersFindMock.mockImplementationOnce(async () => [
+            mockedUserCrudService.find.mockImplementationOnce(async () => [
                 {
                     email: "test@datasubvention.beta.gou.fr",
                 } as unknown as WithId<UserDto>,
@@ -67,7 +69,7 @@ describe("UserMigration", () => {
                     user,
                 })),
             );
-            usersFindMock.mockImplementationOnce(async () => [user]);
+            mockedUserCrudService.find.mockImplementationOnce(async () => [user]);
             toLowerCaseUsersMock.mockImplementationOnce((a: UserDto[]) => a);
             groupUsersByEmailMock.mockImplementationOnce(users => {
                 return {

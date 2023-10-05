@@ -20,6 +20,7 @@ import { DEFAULT_PWD } from "./user.constant";
 import userCheckService from "./services/check/user.check.service";
 import userStatsService from "./services/stats/user.stats.service";
 import userActivationService from "./services/activation/user.activation.service";
+import userCrudService from "./services/crud/user.crud.service";
 
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
@@ -64,7 +65,7 @@ export class UserService {
     }
 
     async findAnonymizedUsers(query: DefaultObject = {}) {
-        const users = await this.find(query);
+        const users = await userCrudService.find(query);
 
         return users.map(user => {
             return {
@@ -76,10 +77,6 @@ export class UserService {
                 phoneNumber: undefined,
             };
         });
-    }
-
-    find(query: DefaultObject = {}) {
-        return userRepository.find(query);
     }
 
     async createConsumer(userObject: FutureUserDto) {

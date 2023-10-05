@@ -6,6 +6,7 @@ import UserReset from "./entities/UserReset";
 import userService from "./user.service";
 import userAuthService from "./services/auth/user.auth.service";
 import userActivationService from "./services/activation/user.activation.service";
+import userCrudService from "./services/crud/user.crud.service";
 
 export enum EmailToLowerCaseAction {
     UPDATE = 1,
@@ -14,7 +15,7 @@ export enum EmailToLowerCaseAction {
 
 export default class UserMigrations {
     public async migrationUserEmailToLowerCase() {
-        const users = await userService.find();
+        const users = await userCrudService.find();
         const lowerCaseUsers = this.toLowerCaseUsers(users.filter(u => u) as UserDto[]);
         const groupedUser = this.groupUsersByEmail(lowerCaseUsers);
         const usersAction = (
