@@ -26,6 +26,9 @@ const mockedUserCheckService = jest.mocked(userCheckService);
 import userAuthService from "../auth/user.auth.service";
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
+import userCrudService from "../crud/user.crud.service";
+jest.mock("../crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 import notifyService from "../../../notify/notify.service";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
@@ -171,13 +174,13 @@ describe("user activation service", () => {
             mockValidateResetToken = jest.spyOn(userActivationService, "validateResetToken");
             mockValidateResetToken.mockImplementation(() => ({ valid: true }));
             mockedUserResetRepository.findByToken.mockResolvedValue(validUserReset);
-            mockedUserService.getUserById.mockResolvedValue(user);
+            mockedUserCrudService.getUserById.mockResolvedValue(user);
         });
 
         afterAll(() => {
             mockedUserResetRepository.findByToken.mockReset();
             mockValidateResetToken.mockRestore();
-            mockedUserService.getUserById.mockReset();
+            mockedUserCrudService.getUserById.mockReset();
         });
 
         it("should call find by token", async () => {
@@ -215,7 +218,7 @@ describe("user activation service", () => {
             });
 
             // @ts-expect-error: mock
-            mockedUserService.getUserById.mockResolvedValueOnce({
+            mockedUserCrudService.getUserById.mockResolvedValueOnce({
                 profileToComplete: false,
             });
 
@@ -246,7 +249,7 @@ describe("user activation service", () => {
 
         beforeEach(() => {
             mockedUserResetRepository.findByToken.mockResolvedValue(RESET_DOCUMENT);
-            mockedUserService.getUserById.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockedUserCrudService.getUserById.mockResolvedValue(USER_WITHOUT_SECRET);
             mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_PASSWORD);
             mockedUserCheckService.passwordValidator.mockReturnValue(true);
             mockedUserAuthService.updateJwt.mockImplementation(
@@ -256,7 +259,7 @@ describe("user activation service", () => {
 
         afterAll(() => {
             mockedUserResetRepository.findByToken.mockReset();
-            mockedUserService.getUserById.mockReset();
+            mockedUserCrudService.getUserById.mockReset();
             mockedUserCheckService.passwordValidator.mockReset();
             mockedUserRepository.update.mockReset();
             mockedUserAuthService.updateJwt.mockReset();
@@ -268,7 +271,7 @@ describe("user activation service", () => {
         });
 
         it("should reject because user not found", async () => {
-            mockedUserService.getUserById.mockResolvedValueOnce(null);
+            mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
             expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
                 new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND),
             );

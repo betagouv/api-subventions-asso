@@ -89,7 +89,7 @@ export class UserService {
             await consumerTokenRepository.create(new ConsumerToken(user._id, consumerToken));
             return user;
         } catch (e) {
-            await this.delete(user._id.toString());
+            await userCrudService.delete(user._id.toString());
             throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
         }
     }
@@ -130,27 +130,6 @@ export class UserService {
         return createdUser;
     }
 
-    public async delete(userId: string): Promise<boolean> {
-        const user = await this.getUserById(userId);
-
-        if (!user) return false;
-
-        if (!(await userRepository.delete(user))) return false;
-
-        const deletePromises = [
-            userResetRepository.removeAllByUserId(user._id),
-            consumerTokenRepository.deleteAllByUserId(user._id),
-        ];
-
-        notifyService.notify(NotificationType.USER_DELETED, {
-            email: user.email,
-            firstname: user.firstName,
-            lastname: user.lastName,
-        });
-
-        return (await Promise.all(deletePromises)).every(success => success);
-    }
-
     public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
         userObject.roles = [role];
 
@@ -181,10 +160,6 @@ export class UserService {
         });
 
         return user;
-    }
-
-    public getUserById(userId) {
-        return userRepository.findById(userId);
     }
 
     public async listUsers(): Promise<UserWithResetTokenDto[]> {

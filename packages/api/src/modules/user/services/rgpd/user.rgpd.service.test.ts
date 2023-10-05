@@ -5,9 +5,9 @@ const mockedConsumerTokenRepository = jest.mocked(consumerTokenRepository);
 import statsService from "../../../stats/stats.service";
 jest.mock("../../../stats/stats.service");
 const mockedStatsService = jest.mocked(statsService);
-import userService from "../../user.service";
-jest.mock("../../user.service");
-const mockedUserService = jest.mocked(userService);
+import userCrudService from "../crud/user.crud.service";
+jest.mock("../crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 import { ANONYMIZED_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import { ObjectId } from "mongodb";
@@ -32,7 +32,7 @@ jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
 describe("user rgpd service", () => {
     describe("getAllData", () => {
         beforeEach(() => {
-            mockedUserService.getUserById.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockedUserCrudService.getUserById.mockResolvedValue(USER_WITHOUT_SECRET);
             mockedUserResetRepository.findByUserId.mockResolvedValue([]);
             mockedConsumerTokenRepository.find.mockResolvedValue([]);
             mockedStatsService.getAllVisitsUser.mockResolvedValue([]);
@@ -47,11 +47,11 @@ describe("user rgpd service", () => {
 
         it("should call userService.getUserById()", async () => {
             await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedUserService.getUserById).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            expect(mockedUserCrudService.getUserById).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
         it("should throw error when user not found", async () => {
-            mockedUserService.getUserById.mockResolvedValueOnce(null);
+            mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
             const method = () => userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
             expect(method).rejects.toThrowError(NotFoundError);
         });
@@ -113,20 +113,20 @@ describe("user rgpd service", () => {
     describe("disable", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
 
-        beforeEach(() => mockedUserService.getUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
+        beforeEach(() => mockedUserCrudService.getUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
 
         afterEach(() => {
-            mockedUserService.getUserById.mockReset();
+            mockedUserCrudService.getUserById.mockReset();
             mockedUserRepository.update.mockReset();
         });
 
         it("should fetch user from db", async () => {
             await userRgpdService.disable(USER_ID);
-            expect(mockedUserService.getUserById).toHaveBeenCalledWith(USER_ID);
+            expect(mockedUserCrudService.getUserById).toHaveBeenCalledWith(USER_ID);
         });
 
         it("should return false if user fetch failed", async () => {
-            mockedUserService.getUserById.mockResolvedValueOnce(null);
+            mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
             const expected = false;
             const actual = await userRgpdService.disable(USER_ID);
             expect(actual).toEqual(expected);

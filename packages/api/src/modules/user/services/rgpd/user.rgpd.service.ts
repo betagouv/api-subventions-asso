@@ -1,5 +1,4 @@
 import { UserDataDto } from "dto";
-import userService from "../../user.service";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import userResetRepository from "../../repositories/user-reset.repository";
 import consumerTokenRepository from "../../repositories/consumer-token.repository";
@@ -8,10 +7,11 @@ import statsService from "../../../stats/stats.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userRepository from "../../repositories/user.repository";
+import userCrudService from "../crud/user.crud.service";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
-        const user = await userService.getUserById(userId);
+        const user = await userCrudService.getUserById(userId);
 
         if (!user) throw new NotFoundError("User is not found");
 
@@ -38,7 +38,7 @@ export class UserRgpdService {
     }
 
     public async disable(userId: string) {
-        const user = await userService.getUserById(userId);
+        const user = await userCrudService.getUserById(userId);
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats

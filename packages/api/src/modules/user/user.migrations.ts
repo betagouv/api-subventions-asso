@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import UserReset from "./entities/UserReset";
-import userService from "./user.service";
 import userAuthService from "./services/auth/user.auth.service";
 import userActivationService from "./services/activation/user.activation.service";
 import userCrudService from "./services/crud/user.crud.service";
@@ -25,7 +24,7 @@ export default class UserMigrations {
         await asyncForEach(usersAction, async userAction => {
             if (userAction.action === EmailToLowerCaseAction.UPDATE) await userCrudService.update(userAction.user);
             else if (userAction.action === EmailToLowerCaseAction.DELETE)
-                await userService.delete(userAction.user._id.toString());
+                await userCrudService.delete(userAction.user._id.toString());
         });
     }
 

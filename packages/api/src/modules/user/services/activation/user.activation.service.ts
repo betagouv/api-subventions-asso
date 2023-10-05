@@ -19,6 +19,7 @@ import userCheckService from "../check/user.check.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import UserDbo from "../../repositories/dbo/UserDbo";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+import userCrudService from "../crud/user.crud.service";
 
 export class UserActivationService {
     async refreshExpirationToken(user: UserDto) {
@@ -56,7 +57,7 @@ export class UserActivationService {
         const tokenValidation = userActivationService.validateResetToken(reset);
         if (!tokenValidation.valid) return tokenValidation;
 
-        const user = await userService.getUserById((reset as UserReset).userId);
+        const user = await userCrudService.getUserById((reset as UserReset).userId);
         if (!user) return { valid: false };
 
         return {
@@ -71,7 +72,7 @@ export class UserActivationService {
         const tokenValidation = userActivationService.validateResetToken(reset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
-        const user = await userService.getUserById((reset as UserReset).userId);
+        const user = await userCrudService.getUserById((reset as UserReset).userId);
         if (!user) throw new UserNotFoundError();
 
         if (!userCheckService.passwordValidator(password))

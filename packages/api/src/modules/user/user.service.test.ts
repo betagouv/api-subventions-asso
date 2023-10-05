@@ -40,7 +40,6 @@ jest.mock("../../shared/helpers/RepositoryHelper", () => ({
     uniformizeId: jest.fn(token => token),
 }));
 
-import mocked = jest.mocked;
 import userService, { UserServiceErrors } from "./user.service";
 import { RoleEnum } from "../../@enums/Roles";
 import { SignupErrorCodes, UserDto } from "dto";
@@ -48,6 +47,9 @@ import UserReset from "./entities/UserReset";
 import { USER_EMAIL } from "../../../tests/__helpers__/userHelper";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { CONSUMER_USER, SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "./__fixtures__/user.fixture";
+import userCrudService from "./services/crud/user.crud.service";
+jest.mock("./services/crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 
 jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
 
@@ -57,14 +59,8 @@ const CONSUMER_JWT_PAYLOAD = {
 };
 
 describe("User Service", () => {
-    /**
-     *          MOCK USER SERVICE METHODS
-     */
-
     const mockCreateUser = jest.spyOn(userService, "createUser");
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
-    const mockDeleteUser = jest.spyOn(userService, "delete");
-    const mockGetUserById = jest.spyOn(userService, "getUserById");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
 
@@ -127,92 +123,14 @@ describe("User Service", () => {
         });
     });
 
-    describe("delete", () => {
-        beforeAll(() => {
-            mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
-            mockedUserRepository.delete.mockResolvedValue(true);
-            mocked(mockedUserResetRepository.removeAllByUserId).mockResolvedValue(true);
-            mocked(consumerTokenRepository.deleteAllByUserId).mockResolvedValue(true);
-        });
-
-        afterAll(() => {
-            mockGetUserById.mockReset();
-            mockedUserRepository.delete.mockReset();
-            mocked(mockedUserResetRepository.removeAllByUserId).mockReset();
-            mocked(consumerTokenRepository.deleteAllByUserId).mockReset();
-        });
-
-        it("gets user", async () => {
-            await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(mockGetUserById).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id.toString());
-        });
-
-        it("returns false if no user without calling other repos", async () => {
-            mockGetUserById.mockResolvedValueOnce(null);
-            const expected = false;
-            const actual = await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(actual).toBe(expected);
-            expect(mockedUserRepository.delete).not.toHaveBeenCalled();
-            expect(mockedUserResetRepository.removeAllByUserId).not.toHaveBeenCalled();
-            expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
-        });
-
-        it.each`
-            method                                         | methodName                                       | arg
-            ${mockedUserRepository.delete}                 | ${"mockedUserRepository.delete"}                 | ${USER_WITHOUT_SECRET}
-            ${mockedUserResetRepository.removeAllByUserId} | ${"mockedUserResetRepository.removeAllByUserId"} | ${USER_WITHOUT_SECRET._id}
-            ${consumerTokenRepository.deleteAllByUserId}   | ${"consumerTokenRepository.deleteAllByUserId"}   | ${USER_WITHOUT_SECRET._id}
-        `("calls $methodName", async ({ arg, method }) => {
-            await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(method).toHaveBeenCalledWith(arg);
-        });
-
-        it("returns false without other calls if mockedUserRepository.delete returns false", async () => {
-            mockedUserRepository.delete.mockResolvedValueOnce(false);
-
-            const expected = false;
-            const actual = await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(actual).toBe(expected);
-
-            expect(mockedUserResetRepository.removeAllByUserId).not.toHaveBeenCalled();
-            expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
-        });
-
-        it.each`
-            method                                         | methodName
-            ${mockedUserResetRepository.removeAllByUserId} | ${"mockedUserResetRepository.removeAllByUserId"}
-            ${consumerTokenRepository.deleteAllByUserId}   | ${"consumerTokenRepository.deleteAllByUserId"}
-        `("returns false if $methodName returns false", async ({ method }) => {
-            mocked(method).mockResolvedValueOnce(false);
-            const expected = false;
-            const actual = await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(actual).toBe(expected);
-        });
-
-        it("returns true in case of success", async () => {
-            const expected = true;
-            const actual = await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(actual).toBe(expected);
-        });
-
-        it("should notify USER_DELETED", async () => {
-            await userService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
-                email: USER_WITHOUT_SECRET.email,
-                firstname: USER_WITHOUT_SECRET.firstName,
-                lastname: USER_WITHOUT_SECRET.lastName,
-            });
-        });
-    });
-
     describe("createConsumer", () => {
         beforeAll(() => {
-            mockDeleteUser.mockImplementation(jest.fn());
+            mockedUserCrudService.delete.mockImplementation(jest.fn());
             mockCreateUser.mockImplementation(async () => CONSUMER_USER);
         });
 
         afterAll(() => {
-            mockDeleteUser.mockReset();
+            mockedUserCrudService.delete.mockReset();
             mockCreateUser.mockReset();
         });
 
@@ -245,7 +163,7 @@ describe("User Service", () => {
             mockConsumerTokenRepository.create.mockRejectedValueOnce(new Error());
             const id = USER_WITHOUT_SECRET._id.toString();
             await userService.createConsumer({ email: USER_EMAIL }).catch(() => {});
-            expect(mockDeleteUser).toHaveBeenCalledWith(id);
+            expect(mockedUserCrudService.delete).toHaveBeenCalledWith(id);
         });
 
         it("should throw if token generation failed", async () => {

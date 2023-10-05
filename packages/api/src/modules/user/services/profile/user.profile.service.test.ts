@@ -11,9 +11,6 @@ import userProfileService from "./user.profile.service";
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
-import userService from "../../user.service";
-jest.mock("../../user.service");
-const mockedUserService = jest.mocked(userService);
 import userAuthService from "../auth/user.auth.service";
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
@@ -23,6 +20,9 @@ const mockedUserCheckService = jest.mocked(userCheckService);
 import userActivationService from "../activation/user.activation.service";
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
+import userCrudService from "../crud/user.crud.service";
+jest.mock("../crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userRepository from "../../repositories/user.repository";
 jest.mock("../../repositories/user.repository");
@@ -209,7 +209,7 @@ describe("user profile service", () => {
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
 
             mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
-            mockedUserService.getUserById.mockImplementation(async id => UNACTIVATED_USER);
+            mockedUserCrudService.getUserById.mockImplementation(async id => UNACTIVATED_USER);
             mockedUserActivationService.validateResetToken.mockImplementation(token => ({ valid: true }));
             mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
             // @ts-expect-error: unknown error

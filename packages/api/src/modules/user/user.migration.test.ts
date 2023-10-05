@@ -3,7 +3,6 @@ import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import UserReset from "./entities/UserReset";
 import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
-import userService from "./user.service";
 import userAuthService from "./services/auth/user.auth.service";
 import userActivationService from "./services/activation/user.activation.service";
 jest.mock("./services/auth/user.auth.service");
@@ -25,8 +24,6 @@ describe("UserMigration", () => {
         );
         // @ts-expect-error toLowerCaseUsers is private method
         const findUsersActionMock: jest.SpyInstance = jest.spyOn(userMigration, "findUsersAction");
-
-        const userServiceDeleteMock = jest.spyOn(userService, "delete");
 
         it("should update user", async () => {
             // @ts-expect-error -- mock
@@ -61,7 +58,7 @@ describe("UserMigration", () => {
                 email: "test@datasubvention.beta.gou.fr",
                 _id: new ObjectId(),
             } as unknown as WithId<UserDto>;
-            userServiceDeleteMock.mockImplementationOnce(user => Promise.resolve(true));
+            mockedUserCrudService.delete.mockImplementationOnce(user => Promise.resolve(true));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.DELETE,
@@ -78,7 +75,7 @@ describe("UserMigration", () => {
 
             await userMigration.migrationUserEmailToLowerCase();
 
-            expect(userServiceDeleteMock).toBeCalledWith(user._id.toString());
+            expect(mockedUserCrudService.delete).toBeCalledWith(user._id.toString());
         });
     });
 

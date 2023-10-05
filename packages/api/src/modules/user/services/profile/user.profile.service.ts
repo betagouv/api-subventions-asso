@@ -24,6 +24,7 @@ import UserReset from "../../entities/UserReset";
 import userAuthService from "../auth/user.auth.service";
 import UserDbo from "../../repositories/dbo/UserDbo";
 import userActivationService from "../activation/user.activation.service";
+import userCrudService from "../crud/user.crud.service";
 
 export class UserProfileService {
     validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
@@ -124,7 +125,7 @@ export class UserProfileService {
         const tokenValidation = userActivationService.validateResetToken(userReset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
-        const user = await userService.getUserById((userReset as UserReset).userId);
+        const user = await userCrudService.getUserById((userReset as UserReset).userId);
         if (!user) throw new UserNotFoundError();
 
         if (!userInfo.jobType) userInfo.jobType = [];

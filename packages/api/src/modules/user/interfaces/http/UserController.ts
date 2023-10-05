@@ -18,6 +18,7 @@ import userAuthService from "../../services/auth/user.auth.service";
 import userRolesService from "../../services/roles/user.roles.service";
 import userRgpdService from "../../services/rgpd/user.rgpd.service";
 import userProfileService from "../../services/profile/user.profile.service";
+import userCrudService from "../../services/crud/user.crud.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -78,7 +79,7 @@ export class UserController extends Controller {
             throw new BadRequestError("Cannot delete its own account");
         }
 
-        return await userService.delete(id);
+        return await userCrudService.delete(id);
     }
 
     /**
