@@ -60,7 +60,7 @@ export class UserController extends Controller {
             ...body,
             email: body.email.toLocaleLowerCase(),
         };
-        const user = await userService.signup(formatedBody);
+        const user = await userCrudService.signup(formatedBody);
         this.setStatus(201);
         return { user };
     }

@@ -1,4 +1,4 @@
-import { FutureUserDto, UserDto, UserWithResetTokenDto } from "dto";
+import { FutureUserDto, SignupErrorCodes, UserDto, UserWithResetTokenDto } from "dto";
 import { DefaultObject } from "../../../../@types";
 import userRepository from "../../repositories/user.repository";
 import userCheckService from "../check/user.check.service";
@@ -12,8 +12,11 @@ import userAuthService from "../auth/user.auth.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import { DEFAULT_PWD } from "../../user.constant";
 import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
-import { InternalServerError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { UserServiceErrors } from "../../user.service";
+import userConsumerService from "../consumer/user.consumer.service";
+import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+import userActivationService from "../activation/user.activation.service";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
@@ -102,6 +105,36 @@ export class UserCrudService {
             throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
 
         return createdUser;
+    }
+
+    public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
+        userObject.roles = [role];
+
+        let user;
+        if (role == RoleEnum.consumer) {
+            user = await userConsumerService.createConsumer(userObject);
+        } else {
+            try {
+                user = await userCrudService.createUser(userObject);
+            } catch (e) {
+                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
+                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                throw e;
+            }
+        }
+
+        const resetResult = await userActivationService.resetUser(user);
+
+        notifyService.notify(NotificationType.USER_CREATED, {
+            email: userObject.email,
+            firstname: userObject.firstName,
+            lastname: userObject.lastName,
+            url: `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`,
+            active: user.active,
+            signupAt: user.signupAt,
+        });
+
+        return user;
     }
 }
 

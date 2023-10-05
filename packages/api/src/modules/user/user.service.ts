@@ -79,53 +79,6 @@ export class UserService {
         });
     }
 
-    async createConsumer(userObject: FutureUserDto) {
-        const user = await userCrudService.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
-        const consumerToken = userAuthService.buildJWTToken(
-            { ...user, [UserService.CONSUMER_TOKEN_PROP]: true },
-            { expiration: false },
-        );
-        try {
-            await consumerTokenRepository.create(new ConsumerToken(user._id, consumerToken));
-            return user;
-        } catch (e) {
-            await userCrudService.delete(user._id.toString());
-            throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
-        }
-    }
-
-    public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
-        userObject.roles = [role];
-
-        let user;
-        if (role == RoleEnum.consumer) {
-            user = await this.createConsumer(userObject);
-        } else {
-            try {
-                user = await userCrudService.createUser(userObject);
-            } catch (e) {
-                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
-                    notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, userObject);
-                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
-                }
-                throw e;
-            }
-        }
-
-        const resetResult = await userActivationService.resetUser(user);
-
-        notifyService.notify(NotificationType.USER_CREATED, {
-            email: userObject.email,
-            firstname: userObject.firstName,
-            lastname: userObject.lastName,
-            url: `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`,
-            active: user.active,
-            signupAt: user.signupAt,
-        });
-
-        return user;
-    }
-
     async getUserWithoutSecret(email: string) {
         const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
         if (!withSecrets) throw new NotFoundError("User not found");

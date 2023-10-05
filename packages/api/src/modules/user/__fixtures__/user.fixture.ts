@@ -46,3 +46,8 @@ export const USER_WITHOUT_PASSWORD = {
     ...USER_WITHOUT_SECRET,
     jwt: USER_SECRETS.jwt,
 };
+
+export const CONSUMER_JWT_PAYLOAD = {
+    ...USER_WITHOUT_SECRET,
+    isConsumerToken: true,
+};

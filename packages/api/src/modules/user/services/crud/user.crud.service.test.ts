@@ -9,6 +9,9 @@ const mockedUserRepository = jest.mocked(userRepository);
 import userCheckService from "../check/user.check.service";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
+import userActivationService from "../activation/user.activation.service";
+jest.mock("../activation/user.activation.service");
+const mockedUserActivationService = jest.mocked(userActivationService);
 import userResetRepository from "../../repositories/user-reset.repository";
 jest.mock("../../repositories/user-reset.repository");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
@@ -19,8 +22,13 @@ const mockedConsumerTokenRepository = jest.mocked(consumerTokenRepository);
 import userAuthService from "../auth/user.auth.service";
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
+import userConsumerService from "../consumer/user.consumer.service";
+jest.mock("../consumer/user.consumer.service");
+const mockedUserConsumerService = jest.mocked(userConsumerService);
 import notifyService from "../../../notify/notify.service";
 import { RoleEnum } from "../../../../@enums/Roles";
+import { UserDto } from "dto";
+import UserReset from "../../entities/UserReset";
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -190,6 +198,49 @@ describe("user crud service", () => {
             const expected = FUTURE_USER;
             const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
+        });
+    });
+
+    describe("signup", () => {
+        let mockCreateUser: jest.SpyInstance;
+        beforeAll(() => {
+            mockCreateUser = jest.spyOn(userCrudService, "createUser").mockResolvedValue(USER_WITHOUT_SECRET);
+        });
+
+        afterAll(() => mockCreateUser.mockRestore());
+
+        it("should create a consumer", async () => {
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserConsumerService.createConsumer.mockImplementationOnce(async () => ({} as UserDto));
+            await userCrudService.signup({ email: USER_EMAIL }, RoleEnum.consumer);
+            expect(mockedUserConsumerService.createConsumer).toHaveBeenCalled();
+        });
+
+        it("should create a user", async () => {});
+
+        it("should create a reset token", async () => {
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            await userCrudService.signup({ email: USER_EMAIL });
+            expect(mockedUserActivationService.resetUser).toHaveBeenCalled();
+        });
+
+        it("should notify USER_CREATED", async () => {
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            await userCrudService.signup({ email: USER_EMAIL });
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(
+                NotificationType.USER_CREATED,
+                expect.objectContaining({ email: USER_EMAIL }),
+            );
+        });
+
+        it("should return a user", async () => {
+            const expected = { email: USER_EMAIL };
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
+            const actual = await userCrudService.signup({ email: USER_EMAIL });
+            expect(actual).toEqual(expected);
         });
     });
 });

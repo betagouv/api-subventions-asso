@@ -8,12 +8,12 @@ import {
     TokenValidationDtoResponse,
     ActivateDtoResponse,
 } from "dto";
-import userService from "../../user.service";
 import { IdentifiedRequest, LoginRequest } from "../../../../@types";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import userAuthService from "../../services/auth/user.auth.service";
 import userProfileService from "../../services/profile/user.profile.service";
 import userActivationService from "../../services/activation/user.activation.service";
+import userCrudService from "../../services/crud/user.crud.service";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -60,7 +60,7 @@ export class AuthentificationController extends Controller {
             ...body,
             email: body.email.toLocaleLowerCase(),
         };
-        const user = await userService.signup(formatedBody);
+        const user = await userCrudService.signup(formatedBody);
         this.setStatus(201);
         return { user };
     }
