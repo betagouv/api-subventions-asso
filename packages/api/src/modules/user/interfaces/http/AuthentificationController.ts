@@ -21,7 +21,7 @@ export class AuthentificationController extends Controller {
     @Post("/forget-password")
     public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        await userService.forgetPassword(body.email.toLocaleLowerCase());
+        await userActivationService.forgetPassword(body.email.toLocaleLowerCase());
         return { success: true };
     }
 
