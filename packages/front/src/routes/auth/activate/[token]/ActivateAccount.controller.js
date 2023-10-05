@@ -7,6 +7,7 @@ import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAl
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service";
 import Store from "$lib/core/Store";
+import trackerService from "$lib/services/tracker.service";
 
 export default class ActivateAccountController {
     constructor(token) {
@@ -33,9 +34,15 @@ export default class ActivateAccountController {
 
     onSubmit(values) {
         const { confirmPwd: _confirmPwd, ...noConfirmValues } = values;
-        return authService.activate(this.token, noConfirmValues).then(() => {
+        return authService
+            .activate(this.token, noConfirmValues)
+            .then(() => {
+                trackerService.buttonClickEvent("activate.form.step.submit-success");
             goToUrl("/?success=ACCOUNT_ACTIVATED", true, true);
-        });
+            })
+            .catch(e => {
+                trackerService.buttonClickEvent("activate.form.submit-error", e?.message);
+            });
     }
 
     async init() {

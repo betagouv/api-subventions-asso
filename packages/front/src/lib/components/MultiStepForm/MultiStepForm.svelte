@@ -7,6 +7,7 @@
     export let submitLabel = "Confirmer";
     export let nextLabel = "Suivant";
     export let previousLabel = "Précédent";
+    export let customSubmitTracking = false;
     export let trackerFormName;
     export let buildContext = () => ({});
 
@@ -62,7 +63,10 @@
                 <Button
                     htmlType="submit"
                     disabled={$isStepBlocked}
-                    trackerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
+                    trackingDisable={customSubmitTracking}
+                    trackerName={customSubmitTracking
+                        ? undefined
+                        : `${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
                     {submitLabel}
                 </Button>
             {:else}
