@@ -1,11 +1,16 @@
 import axios from "axios";
+import { FutureUserDto } from "dto";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { ENV } from "../../../configurations/env.conf";
 
+enum MattermostChannels {
+    BIZDEV = "datasubvention---bizdev",
+}
+
 export class MattermostNotifyPipe implements NotifyOutPipe {
-    accepts = [NotificationType.USER_DELETED];
+    accepts = [NotificationType.USER_DELETED, NotificationType.SIGNUP_BAD_DOMAIN];
 
     private readonly apiUrl: string;
 
@@ -17,6 +22,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         switch (type) {
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
+            case NotificationType.SIGNUP_BAD_DOMAIN:
+                return this.badEmailDomain(data);
             default:
                 return Promise.resolve(false);
         }
@@ -42,9 +49,22 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: "datasubvention---bizdev",
+            channel: MattermostChannels.BIZDEV,
             username: "Suppression de compte",
             icon_emoji: "door",
+        });
+    }
+
+    private badEmailDomain(data: FutureUserDto) {
+        const message = `L'inscription de l'utilisateur ${
+            data.email || ""
+        } a échouée car le nom de domaine de l'adresse mail n'est pas accepté.`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.BIZDEV,
+            username: "Nom de domaine rejeté",
+            icon_emoji: "no_entry",
         });
     }
 }

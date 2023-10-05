@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MattermostNotifyPipe badEmailDomain sends message with proper payload 1`] = `
+Object {
+  "channel": "datasubvention---bizdev",
+  "icon_emoji": "no_entry",
+  "text": "L'inscription de l'utilisateur some@email.fr a échouée car le nom de domaine de l'adresse mail n'est pas accepté.",
+  "username": "Nom de domaine rejeté",
+}
+`;
+
 exports[`MattermostNotifyPipe userDeleted sends message with proper payload 1`] = `
 Object {
   "channel": "datasubvention---bizdev",

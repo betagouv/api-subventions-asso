@@ -316,8 +316,10 @@ export class UserService {
             try {
                 user = await this.createUser(userObject);
             } catch (e) {
-                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
+                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
+                    notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, userObject);
                     throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                }
                 throw e;
             }
         }

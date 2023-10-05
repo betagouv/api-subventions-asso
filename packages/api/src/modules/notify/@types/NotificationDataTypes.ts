@@ -35,6 +35,7 @@ export interface NotificationDataTypes {
         date: Date;
     };
     [NotificationType.USER_UPDATED]: Omit<UserActivationInfoDto, "password"> & FutureUserDto;
+    [NotificationType.SIGNUP_BAD_DOMAIN]: FutureUserDto;
     [NotificationType.TEST_EMAIL]: {
         email: string;
         templateId: number;
