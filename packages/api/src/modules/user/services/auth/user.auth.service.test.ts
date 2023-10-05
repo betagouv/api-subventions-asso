@@ -39,7 +39,6 @@ import LoginError from "../../../../shared/errors/LoginError";
 import UserReset from "../../entities/UserReset";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
-import { UserServiceErrors } from "../../user.service";
 import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
@@ -51,6 +50,7 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import userActivationService from "../activation/user.activation.service";
+import { UserServiceErrors } from "../../user.enum";
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 

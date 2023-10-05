@@ -14,10 +14,11 @@ import UserDbo from "../../repositories/dbo/UserDbo";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import { UserService, UserServiceErrors } from "../../user.service";
 import { UserUpdateError } from "../../repositories/errors/UserUpdateError";
 import LoginError from "../../../../shared/errors/LoginError";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { UserConsumerService } from "../consumer/user.consumer.service";
+import { UserServiceErrors } from "../../user.enum";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -125,7 +126,7 @@ export class UserAuthService {
         const user = await userRepository.getUserWithSecretsByEmail(tokenPayload.email);
         if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
-        if (!tokenPayload[UserService.CONSUMER_TOKEN_PROP]) {
+        if (!tokenPayload[UserConsumerService.CONSUMER_TOKEN_PROP]) {
             if (!user.active) throw new ForbiddenError("User is not active", UserServiceErrors.USER_NOT_ACTIVE);
 
             if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())

@@ -1,7 +1,6 @@
 import { WithId } from "mongodb";
 import { UserCountByStatus } from "dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
-import userService from "../user/user.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { AssociationIdentifiers } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";

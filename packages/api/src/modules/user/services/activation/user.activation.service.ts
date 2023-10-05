@@ -2,7 +2,6 @@ import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
-import userService, { UserService, UserServiceError, UserServiceErrors } from "../../user.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import {
@@ -15,13 +14,17 @@ import {
 import userResetRepository from "../../repositories/user-reset.repository";
 import notifyService from "../../../notify/notify.service";
 import userAuthService from "../auth/user.auth.service";
-import userCheckService from "../check/user.check.service";
+import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import UserDbo from "../../repositories/dbo/UserDbo";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userCrudService from "../crud/user.crud.service";
+import { UserServiceErrors } from "../../user.enum";
+import { UserServiceError } from "../../@types/UserServiceError";
 
 export class UserActivationService {
+    public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
+
     async refreshExpirationToken(user: UserDto) {
         const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
@@ -49,7 +52,7 @@ export class UserActivationService {
     }
 
     private isExpiredReset(reset: UserReset) {
-        return reset.createdAt.getTime() + UserService.RESET_TIMEOUT < Date.now();
+        return reset.createdAt.getTime() + UserActivationService.RESET_TIMEOUT < Date.now();
     }
 
     async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
@@ -77,7 +80,7 @@ export class UserActivationService {
 
         if (!userCheckService.passwordValidator(password))
             throw new BadRequestError(
-                UserService.PASSWORD_VALIDATOR_MESSAGE,
+                UserCheckService.PASSWORD_VALIDATOR_MESSAGE,
                 ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
             );
 

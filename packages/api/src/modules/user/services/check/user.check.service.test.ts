@@ -1,5 +1,4 @@
 import userCheckService from "./user.check.service";
-import { UserServiceErrors } from "../../user.service";
 import { BadRequestError } from "../../../../shared/errors/httpErrors";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import configurationsService from "../../../configurations/configurations.service";
@@ -11,10 +10,8 @@ const mockedUserRepository = jest.mocked(userRepository);
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
-import userService from "../../user.service";
-jest.mock("../../user.service");
-const mockedUserService = jest.mocked(userService);
 import userRolesService from "../roles/user.roles.service";
+import { UserServiceErrors } from "../../user.enum";
 jest.mock("../roles/user.roles.service");
 const mockedUserRolesService = jest.mocked(userRolesService);
 

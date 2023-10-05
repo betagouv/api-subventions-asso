@@ -12,11 +12,12 @@ import userAuthService from "../auth/user.auth.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import { DEFAULT_PWD } from "../../user.constant";
 import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
-import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
-import { UserServiceErrors } from "../../user.service";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
+import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { UserServiceErrors } from "../../user.enum";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
@@ -135,6 +136,12 @@ export class UserCrudService {
         });
 
         return user;
+    }
+
+    async getUserWithoutSecret(email: string) {
+        const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
+        if (!withSecrets) throw new NotFoundError("User not found");
+        return removeSecrets(withSecrets);
     }
 }
 

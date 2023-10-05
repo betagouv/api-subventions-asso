@@ -3,10 +3,10 @@ import { FutureUserDto } from "dto";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
 import configurationsService from "../../../configurations/configurations.service";
-import { UserServiceErrors } from "../../user.service";
 import userRepository from "../../repositories/user.repository";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRolesService from "../roles/user.roles.service";
+import { UserServiceErrors } from "../../user.enum";
 
 export class UserCheckService {
     public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:

@@ -8,6 +8,7 @@ import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userRepository from "../../repositories/user.repository";
 import userCrudService from "../crud/user.crud.service";
+import { DefaultObject } from "../../../../@types";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
@@ -56,6 +57,21 @@ export class UserRgpdService {
         notifyService.notify(NotificationType.USER_DELETED, { email: user.email });
 
         return !!(await userRepository.update(disabledUser));
+    }
+
+    async findAnonymizedUsers(query: DefaultObject = {}) {
+        const users = await userCrudService.find(query);
+
+        return users.map(user => {
+            return {
+                ...user,
+                _id: user._id.toString(),
+                email: undefined,
+                firstName: undefined,
+                lastName: undefined,
+                phoneNumber: undefined,
+            };
+        });
     }
 }
 

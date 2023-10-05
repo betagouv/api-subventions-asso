@@ -2,8 +2,6 @@ import { RoleEnum } from "../../../../@enums/Roles";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import userRolesService from "./user.roles.service";
 import userRepository from "../../repositories/user.repository";
-import userService from "../../user.service";
-import { UserDto } from "dto";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 jest.mock("../../repositories/user.repository");

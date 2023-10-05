@@ -1,6 +1,5 @@
 import request = require("supertest");
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import userService from "../../../src/modules/user/user.service";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
 import userRepository from "../../../src/modules/user/repositories/user.repository";

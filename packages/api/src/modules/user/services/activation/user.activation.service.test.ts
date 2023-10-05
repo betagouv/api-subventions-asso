@@ -2,7 +2,6 @@ import userActivationService from "./user.activation.service";
 import userRepository from "../../repositories/user.repository";
 import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
-import { UserService, UserServiceErrors } from "../../user.service";
 import UserReset from "../../entities/UserReset";
 import { ObjectId, WithId } from "mongodb";
 import {
@@ -17,10 +16,7 @@ const mockedUserRepository = jest.mocked(userRepository);
 import userResetRepository from "../../repositories/user-reset.repository";
 jest.mock("../../repositories/user-reset.repository");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
-import userService from "../../user.service";
-jest.mock("../../user.service");
-const mockedUserService = jest.mocked(userService);
-import userCheckService from "../check/user.check.service";
+import userCheckService, { UserCheckService } from "../check/user.check.service";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
 import userAuthService from "../auth/user.auth.service";
@@ -38,6 +34,7 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import RandToken from "rand-token";
+import { UserServiceErrors } from "../../user.enum";
 jest.mock("rand-token", () => ({
     generate: () => "RAND_TOKEN",
 }));
@@ -281,7 +278,7 @@ describe("user activation service", () => {
             mockedUserCheckService.passwordValidator.mockReturnValueOnce(false);
             expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
                 new BadRequestError(
-                    UserService.PASSWORD_VALIDATOR_MESSAGE,
+                    UserCheckService.PASSWORD_VALIDATOR_MESSAGE,
                     ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
                 ),
             );

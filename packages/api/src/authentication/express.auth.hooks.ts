@@ -5,7 +5,6 @@ import { UserDto } from "dto";
 import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
-import userService from "../modules/user/user.service";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
 
 export function authMocks(app: Express) {

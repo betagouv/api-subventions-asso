@@ -13,7 +13,6 @@ import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
-import userService from "../../user.service";
 import userAuthService from "../../services/auth/user.auth.service";
 import userRolesService from "../../services/roles/user.roles.service";
 import userRgpdService from "../../services/rgpd/user.rgpd.service";
@@ -127,7 +126,7 @@ export class UserController extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public getSelfUser(@Request() req: IdentifiedRequest): Promise<UserDto> {
-        return userService.getUserWithoutSecret(req.user.email);
+        return userCrudService.getUserWithoutSecret(req.user.email);
     }
 
     /**

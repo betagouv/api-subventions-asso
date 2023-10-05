@@ -8,7 +8,6 @@ jest.mock("../../shared/helpers/UserHelper", () => {
 });
 
 import statsService from "./stats.service";
-import userService from "../user/user.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import associationNameService from "../association-name/associationName.service";
 import statsRepository from "./repositories/stats.repository";

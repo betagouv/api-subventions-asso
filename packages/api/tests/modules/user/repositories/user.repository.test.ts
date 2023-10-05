@@ -3,8 +3,6 @@
 import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import userRepository from "../../../../src/modules/user/repositories/user.repository";
-import userService from "../../../../src/modules/user/user.service";
-import { UserNotPersisted } from "../../../../src/modules/user/repositories/dbo/UserDbo";
 import userCrudService from "../../../../src/modules/user/services/crud/user.crud.service";
 
 describe("UserRepository", () => {

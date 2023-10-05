@@ -12,8 +12,7 @@ import {
 import { isInObjectValues } from "../../../../shared/Validators";
 import { BadRequestError, UserNotFoundError } from "../../../../shared/errors/httpErrors";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
-import userCheckService from "../check/user.check.service";
-import userService, { UserService } from "../../user.service";
+import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRepository from "../../repositories/user.repository";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
@@ -59,7 +58,7 @@ export class UserProfileService {
                 value: password,
                 method: userCheckService.passwordValidator,
                 error: new BadRequestError(
-                    UserService.PASSWORD_VALIDATOR_MESSAGE,
+                    UserCheckService.PASSWORD_VALIDATOR_MESSAGE,
                     ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
                 ),
             });
