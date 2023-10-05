@@ -8,6 +8,7 @@ import statsAssociationsVisitRepository from "../../../src/modules/stats/reposit
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
+import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -113,7 +114,7 @@ describe("UserController, /user", () => {
 
         it("should change password", async () => {
             const user = await userService.createUser({ email: "user@beta.gouv.fr" });
-            await userService.activeUser(user);
+            await userActivationService.activeUser(user);
 
             const response = await request(g.app)
                 .put("/user/password")

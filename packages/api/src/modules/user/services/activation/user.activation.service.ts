@@ -2,12 +2,13 @@ import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
-import userService, { UserService, UserServiceErrors } from "../../user.service";
+import userService, { UserService, UserServiceError, UserServiceErrors } from "../../user.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import {
     BadRequestError,
     InternalServerError,
+    NotFoundError,
     ResetTokenNotFoundError,
     UserNotFoundError,
 } from "../../../../shared/errors/httpErrors";
@@ -132,6 +133,20 @@ export class UserActivationService {
         await userRepository.update(user);
 
         return createdReset;
+    }
+
+    async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
+        if (typeof user === "string") {
+            const foundUser = await userRepository.findByEmail(user);
+            if (!foundUser) {
+                throw new NotFoundError("User email does not correspond to a user");
+            }
+            user = foundUser;
+        }
+
+        user.active = true;
+
+        return { user: await userRepository.update(user) };
     }
 }
 
