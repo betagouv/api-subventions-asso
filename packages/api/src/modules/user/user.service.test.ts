@@ -64,7 +64,6 @@ describe("User Service", () => {
     const mockCreateUser = jest.spyOn(userService, "createUser");
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
     const mockDeleteUser = jest.spyOn(userService, "delete");
-    const mockResetUser = jest.spyOn(userService, "resetUser");
     const mockGetUserById = jest.spyOn(userService, "getUserById");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
@@ -79,7 +78,7 @@ describe("User Service", () => {
         afterAll(() => mockList.forEach(mock => mock.mockReset()));
 
         it("should create a consumer", async () => {
-            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
             mockCreateConsumer.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL }, RoleEnum.consumer);
             expect(mockCreateConsumer).toHaveBeenCalled();
@@ -88,14 +87,14 @@ describe("User Service", () => {
         it("should create a user", async () => {});
 
         it("should create a reset token", async () => {
-            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
             mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
-            expect(mockResetUser).toHaveBeenCalled();
+            expect(mockedUserActivationService.resetUser).toHaveBeenCalled();
         });
 
         it("should notify USER_CREATED", async () => {
-            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
             mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(
@@ -106,7 +105,7 @@ describe("User Service", () => {
 
         it("should return a user", async () => {
             const expected = { email: USER_EMAIL };
-            mockResetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
             mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userService.signup({ email: USER_EMAIL });
             expect(actual).toEqual(expected);

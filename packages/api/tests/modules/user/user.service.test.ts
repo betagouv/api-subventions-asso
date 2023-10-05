@@ -86,20 +86,4 @@ describe("user.service.ts", () => {
             expect(actual).toMatchObject(expected);
         });
     });
-
-    describe("resetUser", () => {
-        let user: UserDto;
-        beforeEach(async () => (user = await service.createUser({ email: "test@beta.gouv.fr" })));
-
-        it("should create a reset user", async () => {
-            const mockRemoveAll = jest.spyOn(userResetRepository, "removeAllByUserId");
-            const mockCreate = jest.spyOn(userResetRepository, "create");
-            const mockUpdate = jest.spyOn(userRepository, "update");
-
-            await expect(service.resetUser(user)).resolves.toMatchObject({ userId: user._id });
-            expect(mockRemoveAll).toHaveBeenCalledWith(user._id);
-            expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ userId: user._id }));
-            expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ active: false }));
-        });
-    });
 });

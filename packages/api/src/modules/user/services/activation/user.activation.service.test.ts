@@ -5,7 +5,12 @@ import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import { UserService, UserServiceErrors } from "../../user.service";
 import UserReset from "../../entities/UserReset";
 import { ObjectId, WithId } from "mongodb";
-import { BadRequestError, NotFoundError, ResetTokenNotFoundError } from "../../../../shared/errors/httpErrors";
+import {
+    BadRequestError,
+    InternalServerError,
+    NotFoundError,
+    ResetTokenNotFoundError,
+} from "../../../../shared/errors/httpErrors";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
@@ -29,6 +34,10 @@ jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
+import RandToken from "rand-token";
+jest.mock("rand-token", () => ({
+    generate: () => "RAND_TOKEN",
+}));
 
 jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
 
@@ -320,14 +329,18 @@ describe("user activation service", () => {
 
     describe("forgetPassword", () => {
         const TOKEN = "MyTOK3N&64qzd4qs5d4z";
+        let mockResetUser: jest.SpyInstance;
         beforeAll(() => {
+            mockResetUser = jest.spyOn(userActivationService, "resetUser");
             mockedUserRepository.findByEmail.mockResolvedValue(USER_WITHOUT_SECRET);
-            mockedUserService.resetUser.mockResolvedValue({
+            mockResetUser.mockResolvedValue({
                 userId: USER_WITHOUT_SECRET._id,
                 token: TOKEN,
                 createdAt: new Date(),
             });
         });
+
+        afterAll(() => mockResetUser.mockRestore());
 
         it("should call userRepository.findByEmail()", async () => {
             await userActivationService.forgetPassword(USER_EMAIL);
@@ -341,9 +354,9 @@ describe("user activation service", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should call userService.resetUser()", async () => {
+        it("should call resetUser()", async () => {
             await userActivationService.forgetPassword(USER_EMAIL);
-            expect(mockedUserService.resetUser).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
+            expect(mockResetUser).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
 
         it("should call notifyService.notify()", async () => {
@@ -352,6 +365,49 @@ describe("user activation service", () => {
                 email: USER_EMAIL.toLocaleLowerCase(),
                 url: `${FRONT_OFFICE_URL}/auth/reset-password/${TOKEN}`,
             });
+        });
+    });
+
+    describe("resetUser", () => {
+        const USER_RESET = new UserReset(USER_WITHOUT_SECRET._id, new ObjectId().toString(), new Date());
+        beforeAll(() => {
+            mockedUserResetRepository.create.mockResolvedValue(USER_RESET);
+        });
+
+        afterAll(() => {
+            mockedUserResetRepository.create.mockReset();
+        });
+
+        it("should call userResetRepository.removeAllByUserId()", async () => {
+            await userActivationService.resetUser(USER_WITHOUT_SECRET);
+            expect(mockedUserResetRepository.removeAllByUserId).toHaveBeenCalledTimes(1);
+        });
+
+        it("should throw an error if reset token generation failed", async () => {
+            // @ts-expect-error: test edge case
+            mockedUserResetRepository.create.mockResolvedValueOnce(null);
+            expect(() => userActivationService.resetUser(USER_WITHOUT_SECRET)).rejects.toThrowError(
+                new InternalServerError(
+                    "The user reset password could not be created",
+                    UserServiceErrors.CREATE_RESET_PASSWORD_WRONG,
+                ),
+            );
+        });
+
+        it("should call userRepository.update()", async () => {
+            await userActivationService.resetUser(USER_WITHOUT_SECRET);
+            expect(mockedUserRepository.update).toHaveBeenCalledTimes(1);
+        });
+
+        it("should deactivate user", async () => {
+            await userActivationService.resetUser(USER_WITHOUT_SECRET);
+            expect(mockedUserRepository.update).toHaveBeenCalledWith({ ...USER_WITHOUT_SECRET, active: false });
+        });
+
+        it("should return created UserReset", async () => {
+            const expected = USER_RESET;
+            const actual = await userActivationService.resetUser(USER_WITHOUT_SECRET);
+            expect(actual).toEqual(expected);
         });
     });
 });

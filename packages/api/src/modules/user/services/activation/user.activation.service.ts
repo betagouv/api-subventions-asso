@@ -1,10 +1,16 @@
 import { ObjectId } from "mongodb";
+import * as RandToken from "rand-token";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
 import userService, { UserService, UserServiceErrors } from "../../user.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
-import { BadRequestError, ResetTokenNotFoundError, UserNotFoundError } from "../../../../shared/errors/httpErrors";
+import {
+    BadRequestError,
+    InternalServerError,
+    ResetTokenNotFoundError,
+    UserNotFoundError,
+} from "../../../../shared/errors/httpErrors";
 import userResetRepository from "../../repositories/user-reset.repository";
 import notifyService from "../../../notify/notify.service";
 import userAuthService from "../auth/user.auth.service";
@@ -95,7 +101,7 @@ export class UserActivationService {
         const user = await userRepository.findByEmail(email.toLocaleLowerCase());
         if (!user) return; // Don't say user not found, for security reasons
 
-        const resetResult = await userService.resetUser(user);
+        const resetResult = await this.resetUser(user);
 
         notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
             email: email.toLocaleLowerCase(),
@@ -105,6 +111,27 @@ export class UserActivationService {
 
     async findUserResetByUserId(userId: ObjectId) {
         return userResetRepository.findOneByUserId(userId);
+    }
+
+    async resetUser(user: UserDto): Promise<UserReset> {
+        await userResetRepository.removeAllByUserId(user._id);
+
+        const token = RandToken.generate(32);
+        const reset = new UserReset(user._id, token, new Date());
+
+        const createdReset = await userResetRepository.create(reset);
+        if (!createdReset) {
+            throw new InternalServerError(
+                "The user reset password could not be created",
+                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG,
+            );
+        }
+
+        user.active = false;
+
+        await userRepository.update(user);
+
+        return createdReset;
     }
 }
 
