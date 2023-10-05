@@ -10,6 +10,7 @@ import userAuthService from "../auth/user.auth.service";
 import userCheckService from "../check/user.check.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import UserDbo from "../../repositories/dbo/UserDbo";
+import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
 export class UserActivationService {
     async refreshExpirationToken(user: UserDto) {
@@ -87,6 +88,18 @@ export class UserActivationService {
             true,
         )) as Omit<UserDbo, "hashPassword">;
         return await userAuthService.updateJwt(userUpdated);
+    }
+
+    async forgetPassword(email: string) {
+        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
+        if (!user) return; // Don't say user not found, for security reasons
+
+        const resetResult = await userService.resetUser(user);
+
+        notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
+            email: email.toLocaleLowerCase(),
+            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
+        });
     }
 }
 

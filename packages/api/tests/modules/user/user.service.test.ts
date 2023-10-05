@@ -87,24 +87,6 @@ describe("user.service.ts", () => {
         });
     });
 
-    describe("forgetPassword", () => {
-        let userId: ObjectId;
-        beforeEach(async () => {
-            const user = await service.createUser({ email: "test@beta.gouv.fr" });
-            userId = user._id;
-        });
-
-        it("should check if user exist", async () => {
-            await service.forgetPassword("wrong@email.fr");
-            await expect(findByEmailMock).toHaveBeenCalledWith("wrong@email.fr");
-        });
-
-        it("should send a notification", async () => {
-            await service.forgetPassword("test@beta.gouv.fr");
-            await expect(notifyMock).toHaveBeenCalled();
-        });
-    });
-
     describe("resetUser", () => {
         let user: UserDto;
         beforeEach(async () => (user = await service.createUser({ email: "test@beta.gouv.fr" })));

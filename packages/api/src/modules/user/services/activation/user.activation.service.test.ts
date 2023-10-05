@@ -24,6 +24,7 @@ const mockedUserAuthService = jest.mocked(userAuthService);
 import notifyService from "../../../notify/notify.service";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -314,6 +315,43 @@ describe("user activation service", () => {
             };
             const actual = await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("forgetPassword", () => {
+        const TOKEN = "MyTOK3N&64qzd4qs5d4z";
+        beforeAll(() => {
+            mockedUserRepository.findByEmail.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockedUserService.resetUser.mockResolvedValue({
+                userId: USER_WITHOUT_SECRET._id,
+                token: TOKEN,
+                createdAt: new Date(),
+            });
+        });
+
+        it("should call userRepository.findByEmail()", async () => {
+            await userActivationService.forgetPassword(USER_EMAIL);
+            expect(mockedUserRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
+        });
+
+        it("should return undefined if user not found", async () => {
+            mockedUserRepository.findByEmail.mockResolvedValueOnce(null);
+            const expected = undefined;
+            const actual = await userActivationService.forgetPassword(USER_EMAIL);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call userService.resetUser()", async () => {
+            await userActivationService.forgetPassword(USER_EMAIL);
+            expect(mockedUserService.resetUser).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
+        });
+
+        it("should call notifyService.notify()", async () => {
+            await userActivationService.forgetPassword(USER_EMAIL);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_FORGET_PASSWORD, {
+                email: USER_EMAIL.toLocaleLowerCase(),
+                url: `${FRONT_OFFICE_URL}/auth/reset-password/${TOKEN}`,
+            });
         });
     });
 });

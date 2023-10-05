@@ -227,18 +227,6 @@ export class UserService {
         return { user: await userRepository.update(user) };
     }
 
-    async forgetPassword(email: string) {
-        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
-        if (!user) return; // Don't say user not found, for security reasons
-
-        const resetResult = await this.resetUser(user);
-
-        notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
-            email: email.toLocaleLowerCase(),
-            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
-        });
-    }
-
     async resetUser(user: UserDto): Promise<UserReset> {
         await userResetRepository.removeAllByUserId(user._id);
 
