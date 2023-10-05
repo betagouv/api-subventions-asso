@@ -5,6 +5,10 @@ import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { ENV } from "../../../configurations/env.conf";
 
+enum MattermostChannels {
+    BIZDEV = "datasubvention---bizdev",
+}
+
 export class MattermostNotifyPipe implements NotifyOutPipe {
     accepts = [NotificationType.USER_DELETED, NotificationType.SIGNUP_BAD_DOMAIN];
 
@@ -45,7 +49,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: "datasubvention---bizdev",
+            channel: MattermostChannels.BIZDEV,
             username: "Suppression de compte",
             icon_emoji: "door",
         });
@@ -58,7 +62,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: "datasubvention---bizdev",
+            channel: MattermostChannels.BIZDEV,
             username: "Nom de domaine rejeté",
             icon_emoji: "no_entry",
         });
