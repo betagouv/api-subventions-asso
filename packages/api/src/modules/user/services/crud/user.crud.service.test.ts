@@ -1,7 +1,9 @@
 import userCrudService from "./user.crud.service";
 import userRepository from "../../repositories/user.repository";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
-import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { SIGNED_TOKEN, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import bcrypt from "bcrypt";
+jest.mock("bcrypt");
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
 import userCheckService from "../check/user.check.service";
@@ -14,7 +16,11 @@ import consumerTokenRepository from "../../repositories/consumer-token.repositor
 import { NotificationType } from "../../../notify/@types/NotificationType";
 jest.mock("../../repositories/consumer-token.repository");
 const mockedConsumerTokenRepository = jest.mocked(consumerTokenRepository);
+import userAuthService from "../auth/user.auth.service";
+jest.mock("../auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService);
 import notifyService from "../../../notify/notify.service";
+import { RoleEnum } from "../../../../@enums/Roles";
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -131,6 +137,59 @@ describe("user crud service", () => {
                 firstname: USER_WITHOUT_SECRET.firstName,
                 lastname: USER_WITHOUT_SECRET.lastName,
             });
+        });
+    });
+
+    describe("createUser", () => {
+        const FUTURE_USER = {
+            firstName: "Jocelyne",
+            lastName: "Dupontel",
+            email: USER_EMAIL,
+            roles: [RoleEnum.user],
+        };
+
+        let mockCreateUser: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockCreateUser = jest.spyOn(userCrudService, "createUser");
+            jest.mocked(mockedUserRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
+            // @ts-expect-error - mock
+            jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
+            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
+            mockedUserAuthService.buildJWTToken.mockReturnValue(SIGNED_TOKEN);
+        });
+
+        afterAll(() => {
+            jest.mocked(mockedUserRepository.findByEmail).mockReset();
+            mockedUserCheckService.validateSanitizeUser.mockReset();
+            jest.mocked(bcrypt.hash).mockReset();
+        });
+
+        it("sets default role", async () => {
+            await userCrudService.createUser({ email: USER_EMAIL });
+            expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith({
+                email: USER_EMAIL,
+                roles: [RoleEnum.user],
+            });
+        });
+
+        it("validates user object", async () => {
+            await userCrudService.createUser(FUTURE_USER);
+            expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith(FUTURE_USER);
+        });
+
+        it("calls userRepository.create()", async () => {
+            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
+            await userCrudService.createUser({ ...FUTURE_USER });
+            expect(mockedUserRepository.create).toHaveBeenCalledTimes(1);
+        });
+
+        it("ignores properties that should not be saved", async () => {
+            // @ts-expect-error testing purposes
+            await userCrudService.createUser({ ...FUTURE_USER, randomProperty: "lalala" });
+            const expected = FUTURE_USER;
+            const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
+            expect(actual).toMatchObject(expected);
         });
     });
 });

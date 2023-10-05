@@ -10,7 +10,7 @@ const getToken = async (role = RoleEnum.user) => {
     let user = await userCrudService.findByEmail(email);
     if (!user) {
         if (role == RoleEnum.consumer) user = await userService.createConsumer({ email: email });
-        else user = await userService.createUser({ email });
+        else user = await userCrudService.createUser({ email });
     }
 
     await userActivationService.activeUser(user);

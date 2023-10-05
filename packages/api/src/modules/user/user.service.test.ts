@@ -59,7 +59,6 @@ const CONSUMER_JWT_PAYLOAD = {
 };
 
 describe("User Service", () => {
-    const mockCreateUser = jest.spyOn(userService, "createUser");
     const mockCreateConsumer = jest.spyOn(userService, "createConsumer");
 
     beforeAll(() => mockedUserRepository.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO));
@@ -70,7 +69,7 @@ describe("User Service", () => {
     });
 
     describe("signup", () => {
-        const mockList = [mockCreateUser];
+        const mockList = [mockedUserCrudService.createUser];
         afterAll(() => mockList.forEach(mock => mock.mockReset()));
 
         it("should create a consumer", async () => {
@@ -84,14 +83,14 @@ describe("User Service", () => {
 
         it("should create a reset token", async () => {
             mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserCrudService.createUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
             expect(mockedUserActivationService.resetUser).toHaveBeenCalled();
         });
 
         it("should notify USER_CREATED", async () => {
             mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserCrudService.createUser.mockImplementationOnce(async () => ({} as UserDto));
             await userService.signup({ email: USER_EMAIL });
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(
                 NotificationType.USER_CREATED,
@@ -102,7 +101,7 @@ describe("User Service", () => {
         it("should return a user", async () => {
             const expected = { email: USER_EMAIL };
             mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
+            mockedUserCrudService.createUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userService.signup({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
         });
@@ -126,28 +125,28 @@ describe("User Service", () => {
     describe("createConsumer", () => {
         beforeAll(() => {
             mockedUserCrudService.delete.mockImplementation(jest.fn());
-            mockCreateUser.mockImplementation(async () => CONSUMER_USER);
+            mockedUserCrudService.createUser.mockImplementation(async () => CONSUMER_USER);
         });
 
         afterAll(() => {
             mockedUserCrudService.delete.mockReset();
-            mockCreateUser.mockReset();
+            mockedUserCrudService.createUser.mockReset();
         });
 
         it("should call createUser()", async () => {
             await userService.createConsumer({ email: USER_EMAIL });
-            expect(mockCreateUser).toBeCalledTimes(1);
+            expect(mockedUserCrudService.createUser).toBeCalledTimes(1);
         });
 
         it("should not create consumer token if user creation failed", async () => {
-            mockCreateUser.mockRejectedValueOnce(new Error());
+            mockedUserCrudService.createUser.mockRejectedValueOnce(new Error());
             await userService.createConsumer({ email: USER_EMAIL }).catch(() => {});
-            expect(mockCreateUser).toBeCalledTimes(1);
+            expect(mockedUserCrudService.createUser).toBeCalledTimes(1);
         });
 
         it("should create a token ", async () => {
             const expected = CONSUMER_JWT_PAYLOAD;
-            mockCreateUser.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
+            mockedUserCrudService.createUser.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
             await userService.createConsumer({ email: USER_EMAIL });
             expect(mockedUserAuthService.buildJWTToken).toHaveBeenCalledWith(expected, {
                 expiration: false,
@@ -179,57 +178,6 @@ describe("User Service", () => {
             mockConsumerTokenRepository.create.mockImplementationOnce(async () => true);
             const actual = await userService.createConsumer({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("createUser", () => {
-        const FUTURE_USER = {
-            firstName: "Jocelyne",
-            lastName: "Dupontel",
-            email: USER_EMAIL,
-            roles: [RoleEnum.user],
-        };
-
-        beforeAll(() => {
-            mockCreateUser.mockRestore();
-            jest.mocked(mockedUserRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
-            // @ts-expect-error - mock
-            jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
-            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
-            mockedUserAuthService.buildJWTToken.mockReturnValue(SIGNED_TOKEN);
-        });
-
-        afterAll(() => {
-            jest.mocked(mockedUserRepository.findByEmail).mockReset();
-            mockedUserCheckService.validateSanitizeUser.mockReset();
-            jest.mocked(bcrypt.hash).mockReset();
-        });
-
-        it("sets default role", async () => {
-            await userService.createUser({ email: USER_EMAIL });
-            expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith({
-                email: USER_EMAIL,
-                roles: [RoleEnum.user],
-            });
-        });
-
-        it("validates user object", async () => {
-            await userService.createUser(FUTURE_USER);
-            expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith(FUTURE_USER);
-        });
-
-        it("calls userRepository.create()", async () => {
-            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
-            await userService.createUser({ ...FUTURE_USER });
-            expect(mockedUserRepository.create).toHaveBeenCalledTimes(1);
-        });
-
-        it("ignores properties that should not be saved", async () => {
-            // @ts-expect-error testing purposes
-            await userService.createUser({ ...FUTURE_USER, randomProperty: "lalala" });
-            const expected = FUTURE_USER;
-            const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
-            expect(actual).toMatchObject(expected);
         });
     });
 

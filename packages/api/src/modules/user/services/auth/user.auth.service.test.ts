@@ -39,9 +39,10 @@ import LoginError from "../../../../shared/errors/LoginError";
 import UserReset from "../../entities/UserReset";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
-import userService, { UserServiceErrors } from "../../user.service";
-jest.mock("../../user.service");
-const mockedUserService = jest.mocked(userService);
+import { UserServiceErrors } from "../../user.service";
+import userCrudService from "../crud/user.crud.service";
+jest.mock("../crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import UserDbo from "../../repositories/dbo/UserDbo";
@@ -216,7 +217,7 @@ describe("user auth service", () => {
 
         it("should notify USER_LOGGED", async () => {
             mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockedUserService.createUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserCrudService.createUser.mockImplementationOnce(async () => ({} as UserDto));
             await userAuthService.login(USER_DBO.email, "PASSWORD");
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
                 email: USER_DBO.email,

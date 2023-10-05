@@ -1,4 +1,4 @@
-import { UserDto, UserWithResetTokenDto } from "dto";
+import { FutureUserDto, UserDto, UserWithResetTokenDto } from "dto";
 import { DefaultObject } from "../../../../@types";
 import userRepository from "../../repositories/user.repository";
 import userCheckService from "../check/user.check.service";
@@ -7,6 +7,13 @@ import consumerTokenRepository from "../../repositories/consumer-token.repositor
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userStatsService from "../stats/user.stats.service";
+import { RoleEnum } from "../../../../@enums/Roles";
+import userAuthService from "../auth/user.auth.service";
+import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
+import { DEFAULT_PWD } from "../../user.constant";
+import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
+import { InternalServerError } from "../../../../shared/errors/httpErrors";
+import { UserServiceErrors } from "../../user.service";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
@@ -59,6 +66,42 @@ export class UserCrudService {
                 };
             }),
         );
+    }
+
+    async createUser(userObject: FutureUserDto): Promise<UserDto> {
+        // default values and ensures format
+        if (!userObject.roles) userObject.roles = [RoleEnum.user];
+
+        const sanitizedUser = await userCheckService.validateSanitizeUser(userObject);
+
+        const partialUser = {
+            email: userObject.email,
+            signupAt: new Date(),
+            roles: sanitizedUser.roles,
+            firstName: sanitizedUser.firstName || null,
+            lastName: sanitizedUser.lastName || null,
+            profileToComplete: true,
+        };
+
+        const now = new Date();
+        const jwtParams = {
+            token: userAuthService.buildJWTToken(partialUser as UserDto),
+            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
+        };
+
+        const user = {
+            ...partialUser,
+            jwt: jwtParams,
+            hashPassword: await userAuthService.getHashPassword(DEFAULT_PWD),
+            active: false,
+        } as UserNotPersisted;
+
+        const createdUser = await userRepository.create(user);
+
+        if (!createdUser)
+            throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
+
+        return createdUser;
     }
 }
 

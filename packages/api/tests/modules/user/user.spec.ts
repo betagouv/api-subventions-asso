@@ -35,7 +35,7 @@ describe("UserController, /user", () => {
         });
 
         it("should add role", async () => {
-            await userService.createUser({ email: "futur-admin@beta.gouv.fr" });
+            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
 
             const response = await request(g.app)
                 .post("/user/admin/roles")
@@ -56,7 +56,7 @@ describe("UserController, /user", () => {
         });
 
         it("should reject because role not exist", async () => {
-            await userService.createUser({ email: "futur-admin@beta.gouv.fr" });
+            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
 
             const response = await request(g.app)
                 .post("/user/admin/roles")
@@ -114,7 +114,7 @@ describe("UserController, /user", () => {
         });
 
         it("should change password", async () => {
-            const user = await userService.createUser({ email: "user@beta.gouv.fr" });
+            const user = await userCrudService.createUser({ email: "user@beta.gouv.fr" });
             await userActivationService.activeUser(user);
 
             const response = await request(g.app)

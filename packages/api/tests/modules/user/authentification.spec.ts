@@ -6,6 +6,7 @@ import { createResetToken } from "../../__helpers__/resetTokenHelper";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";
+import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -44,7 +45,7 @@ describe("AuthentificationController, /auth", () => {
 
     describe("POST /reset-password", () => {
         it("should return 200", async () => {
-            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
             const userReset = await userResetRepository.findOneByUserId(user._id);
@@ -64,7 +65,7 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because password is too weak", async () => {
-            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
             const userReset = await userResetRepository.findOneByUserId(user._id);
@@ -98,7 +99,7 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because token is outdated", async () => {
-            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
             const userReset = await userResetRepository.findOneByUserId(user._id);

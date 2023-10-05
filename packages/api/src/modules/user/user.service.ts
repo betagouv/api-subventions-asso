@@ -80,7 +80,7 @@ export class UserService {
     }
 
     async createConsumer(userObject: FutureUserDto) {
-        const user = await this.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
+        const user = await userCrudService.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
         const consumerToken = userAuthService.buildJWTToken(
             { ...user, [UserService.CONSUMER_TOKEN_PROP]: true },
             { expiration: false },
@@ -94,42 +94,6 @@ export class UserService {
         }
     }
 
-    async createUser(userObject: FutureUserDto): Promise<UserDto> {
-        // default values and ensures format
-        if (!userObject.roles) userObject.roles = [RoleEnum.user];
-
-        const sanitizedUser = await userCheckService.validateSanitizeUser(userObject);
-
-        const partialUser = {
-            email: userObject.email,
-            signupAt: new Date(),
-            roles: sanitizedUser.roles,
-            firstName: sanitizedUser.firstName || null,
-            lastName: sanitizedUser.lastName || null,
-            profileToComplete: true,
-        };
-
-        const now = new Date();
-        const jwtParams = {
-            token: userAuthService.buildJWTToken(partialUser as UserDto),
-            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
-        };
-
-        const user = {
-            ...partialUser,
-            jwt: jwtParams,
-            hashPassword: await userAuthService.getHashPassword(DEFAULT_PWD),
-            active: false,
-        } as UserNotPersisted;
-
-        const createdUser = await userRepository.create(user);
-
-        if (!createdUser)
-            throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
-
-        return createdUser;
-    }
-
     public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
         userObject.roles = [role];
 
@@ -138,7 +102,7 @@ export class UserService {
             user = await this.createConsumer(userObject);
         } else {
             try {
-                user = await this.createUser(userObject);
+                user = await userCrudService.createUser(userObject);
             } catch (e) {
                 if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
                     notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, userObject);

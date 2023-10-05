@@ -1,10 +1,10 @@
 import { StaticImplements } from "../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../@types";
-import userService from "../../user.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userRolesService from "../../services/roles/user.roles.service";
 import userStatsService from "../../services/stats/user.stats.service";
 import userActivationService from "../../services/activation/user.activation.service";
+import userCrudService from "../../services/crud/user.crud.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCliController {
@@ -12,7 +12,7 @@ export default class UserCliController {
 
     async create(email: string) {
         try {
-            await userService.createUser({ email });
+            await userCrudService.createUser({ email });
             console.info("User has been created");
         } catch (error: unknown) {
             const e = error as Error;
