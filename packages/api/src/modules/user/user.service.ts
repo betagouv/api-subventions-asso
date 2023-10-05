@@ -162,20 +162,6 @@ export class UserService {
         return user;
     }
 
-    public async listUsers(): Promise<UserWithResetTokenDto[]> {
-        const users = await userStatsService.getUsersWithStats(true);
-        return await Promise.all(
-            users.map(async user => {
-                const reset = await userResetRepository.findOneByUserId(user._id);
-                return {
-                    ...user,
-                    resetToken: reset?.token,
-                    resetTokenDate: reset?.createdAt,
-                };
-            }),
-        );
-    }
-
     async getUserWithoutSecret(email: string) {
         const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
         if (!withSecrets) throw new NotFoundError("User not found");

@@ -43,7 +43,7 @@ export class UserController extends Controller {
     @Security("jwt", ["admin"])
     public async listUsers(): Promise<UserListDtoResponse> {
         return {
-            users: await userService.listUsers(),
+            users: await userCrudService.listUsers(),
         };
     }
 

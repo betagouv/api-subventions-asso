@@ -1,4 +1,4 @@
-import { UserDto } from "dto";
+import { UserDto, UserWithResetTokenDto } from "dto";
 import { DefaultObject } from "../../../../@types";
 import userRepository from "../../repositories/user.repository";
 import userCheckService from "../check/user.check.service";
@@ -6,6 +6,7 @@ import userResetRepository from "../../repositories/user-reset.repository";
 import consumerTokenRepository from "../../repositories/consumer-token.repository";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+import userStatsService from "../stats/user.stats.service";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
@@ -44,6 +45,20 @@ export class UserCrudService {
         });
 
         return (await Promise.all(deletePromises)).every(success => success);
+    }
+
+    public async listUsers(): Promise<UserWithResetTokenDto[]> {
+        const users = await userStatsService.getUsersWithStats(true);
+        return await Promise.all(
+            users.map(async user => {
+                const reset = await userResetRepository.findOneByUserId(user._id);
+                return {
+                    ...user,
+                    resetToken: reset?.token,
+                    resetTokenDate: reset?.createdAt,
+                };
+            }),
+        );
     }
 }
 
