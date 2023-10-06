@@ -7,23 +7,17 @@ import {
     SimpleIntervalSchedule,
     Task,
 } from "toad-scheduler";
-import axios from "axios";
 import * as Sentry from "@sentry/node";
-import { ENV } from "../configurations/env.conf";
+import notifyService from "../modules/notify/notify.service";
+import { NotificationType } from "../modules/notify/@types/NotificationType";
 
-export const errorHandlerFactory = cronName => {
-    return error => {
+export const errorHandlerFactory = (cronName: string) => {
+    return (error: Error) => {
         Sentry.captureException(error);
         console.error(`error during cron ${cronName}`);
         console.trace();
-        return axios
-            .post("https://mattermost.incubateur.net/hooks/qefuswbp9fybdjf97yqxo93cqr ", {
-                text: `[${ENV}] Le cron \`${cronName}\` a échoué`,
-                username: "Police du Cron",
-                icon_emoji: "alarm_clock",
-                props: { card: `\`\`\`\n${new Error(error).stack}\n\`\`\`` },
-            })
-            .catch(() => console.error("error sending mattermost log"));
+        notifyService.notify(NotificationType.FAILED_CRON, { cronName, error });
+        return;
     };
 };
 

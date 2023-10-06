@@ -24,6 +24,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.userDeleted(data);
             case NotificationType.SIGNUP_BAD_DOMAIN:
                 return this.badEmailDomain(data);
+            case NotificationType.FAILED_CRON:
+                return this.failedCron(data);
             default:
                 return Promise.resolve(false);
         }
@@ -66,6 +68,20 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             username: "Nom de domaine rejeté",
             icon_emoji: "no_entry",
         });
+    }
+
+    private async failedCron({ cronName, error }) {
+        try {
+            return await this.sendMessage({
+                text: `[${ENV}] Le cron \`${cronName}\` a échoué`,
+                username: "Police du Cron",
+                icon_emoji: "alarm_clock",
+                props: { card: `\`\`\`\n${new Error(error).stack}\n\`\`\`` },
+            });
+        } catch {
+            console.error("error sending mattermost log");
+            return false;
+        }
     }
 }
 

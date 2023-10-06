@@ -20,6 +20,7 @@ export interface NotifierMethodType {
     ): Promise<boolean>;
     (type: NotificationType.USER_UPDATED, data: NotificationDataTypes[NotificationType.USER_UPDATED]);
     (type: NotificationType.SIGNUP_BAD_DOMAIN, data: NotificationDataTypes[NotificationType.SIGNUP_BAD_DOMAIN]);
+    (type: NotificationType.FAILED_CRON, data: NotificationDataTypes[NotificationType.FAILED_CRON]);
 }
 
 export interface NotifyOutPipe {
