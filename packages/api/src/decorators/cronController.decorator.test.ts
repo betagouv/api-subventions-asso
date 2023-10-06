@@ -1,3 +1,5 @@
+import axios from "axios";
+
 jest.mock("toad-scheduler", () => {
     return {
         AsyncTask: jest.fn(),
@@ -14,6 +16,10 @@ import * as Decorators from "./cronController.decorator";
 
 describe("cronController decorator", () => {
     const SCHEDULE = {};
+    let axiosPostSpy;
+
+    beforeAll(() => (axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValue(undefined)));
+    afterAll(() => axiosPostSpy.mockRestore());
 
     describe("newJob()", () => {
         const JOB = {};
@@ -89,6 +95,11 @@ describe("cronController decorator", () => {
             const consoleErrorSpy = jest.spyOn(global.console, "error");
             errorHandler(CRON_NAME);
             expect(consoleErrorSpy).toHaveBeenCalledWith(expected);
+        });
+
+        it("posts error to mattermost", () => {
+            errorHandler({});
+            expect(axiosPostSpy).toHaveBeenCalled();
         });
     });
 
