@@ -1,37 +1,13 @@
 <script>
-    import adminService from "../../admin.service";
-    import RemoveUserModal from "./RemoveUserModal.svelte";
-    import { action, data, modal } from "$lib/store/modal.store";
+    import TableUsersController from "./TableUsers.controller";
 
     import Button from "$lib/dsfr/Button.svelte";
-    import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
     import userService from "$lib/resources/users/user.service";
-    import authService from "$lib/resources/auth/auth.service";
 
     export let usersStore;
-    let selectedUserId;
 
-    const currentUser = authService.getCurrentUser();
-
-    const displayModal = user => {
-        selectedUserId = user._id;
-        data.update(() => user.email);
-        modal.update(() => RemoveUserModal);
-        action.update(() => deleteUser);
-    };
-
-    const deleteUser = async () => {
-        try {
-            await adminService.deleteUser(selectedUserId);
-            const index = usersStore.value.findIndex(user => user._id === selectedUserId);
-            usersStore.value.splice(index, 1);
-            // force child update by affecting a new array
-            usersStore.set([...usersStore.value]);
-        } catch (e) {
-            console.log("Something went wrong! Could not delete user...");
-        }
-        selectedUserId = undefined;
-    };
+    const ctrl = new TableUsersController(usersStore);
+    const { users } = ctrl;
 </script>
 
 <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
@@ -51,13 +27,13 @@
                 </tr>
             </thead>
             <tbody>
-                {#each $usersStore as user}
+                {#each $users as user}
                     <tr>
                         <td>
                             {user.email}
                         </td>
                         <td>
-                            {user.roles.map(r => capitalizeFirstLetter(r)).join(", ")}
+                            {ctrl.prettyUserRoles(user)}
                         </td>
                         <td>
                             {#if !user.active}
@@ -101,11 +77,11 @@
                         {/if}
                         <td>
                             <Button
-                                disabled={user.email == currentUser.email}
+                                disabled={ctrl.isUserDisabled(user)}
                                 type="tertiary"
                                 icon="delete-fill"
                                 ariaControls="fr-modal"
-                                on:click={() => displayModal(user)} />
+                                on:click={() => ctrl.displayModal(user)} />
                         </td>
                     </tr>
                 {/each}
