@@ -13,7 +13,6 @@ import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMi
 import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
 import RegisterSSERoutes from "./sse";
-import StatsSearchMiddleware, { StatsSearchRoutesRegex } from "./middlewares/StatsSearchMiddleware";
 import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
@@ -55,7 +54,6 @@ export async function startServer(port = "8080", isTest = false) {
 
     authMocks(app); // Passport Part
 
-    StatsSearchRoutesRegex.forEach(route => app.use(route, StatsSearchMiddleware));
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>
             factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware),
