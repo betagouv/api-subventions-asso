@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <TableUsers users={$users} on:userDeleted={e => ctrl.removeUser(e)} />
+                <TableUsers usersStore={users} />
             </Widget>
         </div>
     </div>

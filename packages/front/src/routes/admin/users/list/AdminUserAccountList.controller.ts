@@ -32,14 +32,6 @@ export default class AdminUserAccountListController {
         }
     }
 
-    removeUser(event: KeyboardEvent) {
-        const id = event.detail;
-        const index = this.users.value.findIndex(user => user._id === id);
-        this.users.value.splice(index, 1);
-        // force child update by affecting a new array
-        this.users.set([...this.users.value]);
-    }
-
     downloadUsersCsv() {
         const csvRows = this.users.value.map(user => [
             user.email,

@@ -1,6 +1,4 @@
 <script>
-    import { createEventDispatcher } from "svelte";
-
     import adminService from "../../admin.service";
     import RemoveUserModal from "./RemoveUserModal.svelte";
     import { action, data, modal } from "$lib/store/modal.store";
@@ -10,12 +8,10 @@
     import userService from "$lib/resources/users/user.service";
     import authService from "$lib/resources/auth/auth.service";
 
-    export let users;
+    export let usersStore;
     let selectedUserId;
 
     const currentUser = authService.getCurrentUser();
-
-    const dispatch = createEventDispatcher();
 
     const displayModal = user => {
         selectedUserId = user._id;
@@ -27,7 +23,10 @@
     const deleteUser = async () => {
         try {
             await adminService.deleteUser(selectedUserId);
-            dispatch("userDeleted", selectedUserId);
+            const index = usersStore.value.findIndex(user => user._id === selectedUserId);
+            usersStore.value.splice(index, 1);
+            // force child update by affecting a new array
+            usersStore.set([...usersStore.value]);
         } catch (e) {
             console.log("Something went wrong! Could not delete user...");
         }
@@ -52,7 +51,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each users as user}
+                {#each $usersStore as user}
                     <tr>
                         <td>
                             {user.email}
