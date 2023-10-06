@@ -34,6 +34,7 @@ export const newJob = (schedule, JobClass, TaskClass) => {
     return function (target, propertyKey: string, descriptor) {
         if (!target[attributeName]) target[attributeName] = [];
         const cronName = `${target.constructor.name}.${propertyKey}`;
+        const sentryCronSlug = `${target.constructor.name}-${propertyKey}`.toLowerCase();
         let message: string;
 
         const loggedFunction =
@@ -42,19 +43,56 @@ export const newJob = (schedule, JobClass, TaskClass) => {
                       message = `cron task started: ${cronName}`;
                       console.log(message);
                       Sentry.captureEvent({ level: "info", message });
-                      return descriptor.value().then(() => {
-                          message = `cron task ended successfully: ${cronName}`;
-                          Sentry.captureEvent({ level: "info", message });
-                          console.log(message);
+                      const checkInId = Sentry.captureCheckIn({
+                          monitorSlug: sentryCronSlug,
+                          status: "in_progress",
                       });
+                      return descriptor
+                          .value()
+                          .then(() => {
+                              message = `cron task ended successfully: ${cronName}`;
+                              Sentry.captureEvent({ level: "info", message });
+                              Sentry.captureCheckIn({
+                                  checkInId,
+                                  monitorSlug: sentryCronSlug,
+                                  status: "ok",
+                              });
+                              console.log(message);
+                          })
+                          .catch(e => {
+                              Sentry.captureCheckIn({
+                                  checkInId,
+                                  monitorSlug: sentryCronSlug,
+                                  status: "error",
+                              });
+                              throw e;
+                          });
                   }
                 : () => {
                       message = `cron task started: ${cronName}`;
                       console.log(message);
                       Sentry.captureEvent({ level: "info", message });
-                      descriptor.value();
+                      const checkInId = Sentry.captureCheckIn({
+                          monitorSlug: sentryCronSlug,
+                          status: "in_progress",
+                      });
+                      try {
+                          descriptor.value();
+                      } catch (e) {
+                          Sentry.captureCheckIn({
+                              checkInId,
+                              monitorSlug: sentryCronSlug,
+                              status: "error",
+                          });
+                          throw e;
+                      }
                       message = `cron task ended successfully: ${cronName}`;
                       console.log(message);
+                      Sentry.captureCheckIn({
+                          checkInId,
+                          monitorSlug: sentryCronSlug,
+                          status: "ok",
+                      });
                       Sentry.captureEvent({ level: "info", message });
                   };
         const task = new TaskClass(cronName, loggedFunction, errorHandlerFactory(cronName));
