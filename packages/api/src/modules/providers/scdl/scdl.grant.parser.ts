@@ -2,10 +2,10 @@ import { ObjectId } from "mongodb";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { isSiret } from "../../../shared/Validators";
 import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
-import { ScdlGrantDbo } from "./@types/ScdlGrantDbo";
-import ScdlGrantEntity from "./entities/ScdlGrantEntity";
+import { ScdlGrantDbo } from "../datagouv/@types/ScdlGrantDbo";
+import ScdlGrantEntity from "./ScdlGrantEntity";
 
-export default class DataGouvScdlGrantParser {
+export default class ScdlGrantParser {
     static parseCsv(chunk: Buffer, extractId: ObjectId): ScdlGrantDbo[] {
         const parsedChunk = ParseHelper.csvParse(chunk);
         const header = parsedChunk.shift();

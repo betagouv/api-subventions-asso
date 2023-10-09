@@ -1,5 +1,5 @@
-import { ParserInfo, ParserPath } from "../../../../@types";
-import { ScdlGrantDbo } from "../@types/ScdlGrantDbo";
+import { ParserInfo, ParserPath } from "../../../@types";
+import { ScdlGrantDbo } from "../datagouv/@types/ScdlGrantDbo";
 
 export default class ScdlGrantEntity {
     public provider = "data.gouv";
