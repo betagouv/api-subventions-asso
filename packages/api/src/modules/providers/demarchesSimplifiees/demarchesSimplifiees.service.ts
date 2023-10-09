@@ -81,19 +81,25 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     }
 
     async updateDataByFormId(formId: number) {
-        const result = await this.sendQuery(GetDossiersByDemarcheId, {
-            demarcheNumber: formId,
-        });
+        let result: DemarchesSimplifieesDto;
+        let nextCursor: string | undefined = undefined;
+        do {
+            result = await this.sendQuery(GetDossiersByDemarcheId, {
+                demarcheNumber: formId,
+                after: nextCursor,
+            });
 
-        if (result?.errors?.length)
-            throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
-        if (!result || !result.data)
-            throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
+            if (result?.errors?.length)
+                throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
+            if (!result || !result.data)
+                throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
 
-        const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
-        await asyncForEach(entities, async entity => {
-            await demarchesSimplifieesDataRepository.upsert(entity);
-        });
+            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
+            await asyncForEach(entities, async entity => {
+                await demarchesSimplifieesDataRepository.upsert(entity);
+            });
+            nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
+        } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {

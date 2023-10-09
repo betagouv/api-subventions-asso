@@ -42,6 +42,11 @@ export default interface DemarchesSimplifieesDto {
                         }[];
                     },
                 ];
+                pageInfo: {
+                    endCursor: string;
+                    hasNextPage: boolean;
+                    hasPreviousPage: boolean;
+                };
             };
         };
     } | null;
