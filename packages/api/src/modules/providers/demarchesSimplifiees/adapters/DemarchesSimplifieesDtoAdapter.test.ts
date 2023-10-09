@@ -1,4 +1,4 @@
-import DemarchesSimplifieesDto from "../dto/DemarchesSimplifieesDto";
+import { DemarchesSimplifieesSuccessDto } from "../dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./DemarchesSimplifieesDtoAdapter";
 
 describe("DemarchesSimplifieesDtoAdapter", () => {
@@ -34,7 +34,7 @@ describe("DemarchesSimplifieesDtoAdapter", () => {
                             },
                         },
                     },
-                } as unknown as DemarchesSimplifieesDto,
+                } as unknown as DemarchesSimplifieesSuccessDto,
                 12345,
             );
 

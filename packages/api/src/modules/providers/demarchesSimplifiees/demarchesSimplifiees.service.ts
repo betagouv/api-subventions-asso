@@ -8,7 +8,7 @@ import { DefaultObject } from "../../../@types";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
-import DemarchesSimplifieesDto from "./dto/DemarchesSimplifieesDto";
+import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";

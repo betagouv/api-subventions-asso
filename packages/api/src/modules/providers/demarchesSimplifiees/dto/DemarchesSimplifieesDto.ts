@@ -1,6 +1,6 @@
 import { Rna, Siret } from "dto";
 
-export default interface DemarchesSimplifieesDto {
+export interface DemarchesSimplifieesSuccessDto {
     data: {
         demarche: {
             dossiers: {
@@ -49,6 +49,13 @@ export default interface DemarchesSimplifieesDto {
                 };
             };
         };
-    } | null;
-    errors: { message: string }[] | null;
+    };
+    errors: undefined;
 }
+
+export interface DemarchesSimplifieesErrorDto {
+    data: null;
+    errors: { message: string }[];
+}
+
+export type DemarchesSimplifieesDto = DemarchesSimplifieesErrorDto | DemarchesSimplifieesSuccessDto;
