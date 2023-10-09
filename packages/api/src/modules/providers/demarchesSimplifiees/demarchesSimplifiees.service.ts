@@ -1,12 +1,12 @@
 import axios from "axios";
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
-import * as Sentry from "@sentry/node";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
 import { RawGrant } from "../../grant/@types/rawGrant";
+import { InternalServerError } from "../../../shared/errors/httpErrors";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import DemarchesSimplifieesDto from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -85,7 +85,10 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
             demarcheNumber: formId,
         });
 
-        if (!result || !result.data) return;
+        if (result?.errors?.length)
+            throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
+        if (!result || !result.data)
+            throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
 
         const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
         await asyncForEach(entities, async entity => {
@@ -94,6 +97,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
+        if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
         try {
             const result = await axios.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
@@ -106,9 +110,8 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
 
             return result.data;
         } catch (e) {
-            Sentry.captureException(e);
             console.error(e);
-            return null;
+            throw e;
         }
     }
 

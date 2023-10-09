@@ -339,12 +339,13 @@ describe("DemarchesSimplifieesService", () => {
             expect(buildSearchHeaderMock).toBeCalledTimes(1);
         });
 
-        it("should return null when axios throws error", async () => {
-            postMock.mockRejectedValueOnce(new Error("axios not happy"));
+        it("should throw when axios throws error", async () => {
+            const ERROR = new Error("axios not happy");
+            postMock.mockRejectedValueOnce(ERROR);
 
-            const actual = await demarchesSimplifieesService.sendQuery("", {});
+            const test = () => demarchesSimplifieesService.sendQuery("", {});
 
-            expect(actual).toBe(null);
+            await expect(test).rejects.toThrow(ERROR);
         });
 
         it("should return data", async () => {

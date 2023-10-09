@@ -45,4 +45,5 @@ export default interface DemarchesSimplifieesDto {
             };
         };
     } | null;
+    errors: { message: string }[] | null;
 }
