@@ -25,8 +25,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         id: "demarchesSimplifiees",
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
+    getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
     }
 
@@ -39,11 +38,11 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         }, {});
     }
 
-    private async entitiesToSubventions(entities) {
+    private async entitiesToSubventions(entities: DemarchesSimplifieesDataEntity[]) {
         const schemasByIds = await this.getSchemasByIds();
 
         return entities
-            .map(demande => {
+            .map((demande: DemarchesSimplifieesDataEntity) => {
                 const schema = schemasByIds[demande.demarcheId];
 
                 if (!schema) return null;
@@ -113,7 +112,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         }
     }
 
-    private buildSearchHeader(token) {
+    private buildSearchHeader(token: string) {
         return {
             headers: {
                 accept: "application/json, text/plain, */*",

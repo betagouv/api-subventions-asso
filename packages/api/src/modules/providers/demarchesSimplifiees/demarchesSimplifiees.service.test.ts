@@ -259,7 +259,8 @@ describe("DemarchesSimplifieesService", () => {
         let toEntitiesMock: jest.SpyInstance;
 
         beforeAll(() => {
-            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(null);
+            // @ts-expect-error mock
+            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue({ data: {} });
             toEntitiesMock = jest
                 .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
                 // @ts-expect-error disable ts form return type of toEntities
