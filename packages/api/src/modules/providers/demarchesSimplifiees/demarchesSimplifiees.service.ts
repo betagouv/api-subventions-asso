@@ -1,4 +1,6 @@
-import axios from "axios";
+import * as https from "https";
+import * as http from "http";
+import axios, { AxiosInstance } from "axios";
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -24,6 +26,14 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         description: "", // TODO
         id: "demarchesSimplifiees",
     };
+    axiosInstance: AxiosInstance;
+
+    constructor() {
+        this.axiosInstance = axios.create({
+            httpAgent: new http.Agent({ keepAlive: true }),
+            httpsAgent: new https.Agent({ keepAlive: true }),
+        });
+    }
 
     getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
@@ -105,7 +115,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     async sendQuery(query: string, vars: DefaultObject) {
         if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
         try {
-            const result = await axios.post<DemarchesSimplifieesDto>(
+            const result = await this.axiosInstance.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,

@@ -308,7 +308,7 @@ describe("DemarchesSimplifieesService", () => {
         let buildSearchHeaderMock: jest.SpyInstance;
 
         beforeAll(() => {
-            postMock = jest.spyOn(axios, "post").mockResolvedValue({ data: 1 });
+            postMock = jest.spyOn(demarchesSimplifieesService.axiosInstance, "post").mockResolvedValue({ data: 1 });
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });
