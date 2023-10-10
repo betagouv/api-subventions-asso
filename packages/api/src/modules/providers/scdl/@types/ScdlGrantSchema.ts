@@ -1,18 +1,18 @@
-import { ParserInfo, ParserPath } from "../../../../@types";
+import { ParserScheme } from "../../../../@types";
 
 export type ScdlGrantSchema = {
-    allocatorName: ParserPath | ParserInfo;
-    allocatorSiret: ParserPath | ParserInfo;
-    conventionDate?: ParserPath | ParserInfo;
-    decisionReference?: ParserPath | ParserInfo;
-    associationName?: ParserPath | ParserInfo;
-    associationSiret: ParserPath | ParserInfo;
-    object?: ParserPath | ParserInfo;
-    amount: ParserPath | ParserInfo;
-    paymentConditions?: ParserPath | ParserInfo;
-    paymentStartDate?: ParserPath | ParserInfo;
-    paymentEndDate?: ParserPath | ParserInfo;
-    idRAE?: ParserPath | ParserInfo;
-    UeNotification?: ParserPath | ParserInfo;
-    grantPercentage?: ParserPath | ParserInfo;
+    allocatorName: ParserScheme;
+    allocatorSiret: ParserScheme;
+    conventionDate?: ParserScheme;
+    decisionReference?: ParserScheme;
+    associationName?: ParserScheme;
+    associationSiret: ParserScheme;
+    object?: ParserScheme;
+    amount: ParserScheme;
+    paymentConditions?: ParserScheme;
+    paymentStartDate?: ParserScheme;
+    paymentEndDate?: ParserScheme;
+    idRAE?: ParserScheme;
+    UeNotification?: ParserScheme;
+    grantPercentage?: ParserScheme;
 };
