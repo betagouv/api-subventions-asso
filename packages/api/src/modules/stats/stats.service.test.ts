@@ -8,7 +8,6 @@ jest.mock("../../shared/helpers/UserHelper", () => {
 });
 
 import statsService from "./stats.service";
-import userService from "../user/user.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import associationNameService from "../association-name/associationName.service";
 import statsRepository from "./repositories/stats.repository";
@@ -20,6 +19,7 @@ import { UserDto } from "dto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import { ObjectId } from "mongodb";
+import userStatsService from "../user/services/stats/user.stats.service";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -182,8 +182,8 @@ describe("StatsService", () => {
     });
 
     describe("getMonthlyUserNbByYear()", () => {
-        const initCountMock = jest.spyOn(userService, "countTotalUsersOnDate");
-        const getUsersMock = jest.spyOn(userService, "findByPeriod");
+        const initCountMock = jest.spyOn(userStatsService, "countTotalUsersOnDate");
+        const getUsersMock = jest.spyOn(userStatsService, "findByPeriod");
         const firstDayMock = jest.spyOn(DateHelper, "firstDayOfPeriod");
         const oneYearLaterMock = jest.spyOn(DateHelper, "oneYearAfterPeriod");
 

@@ -1,10 +1,13 @@
 import request = require("supertest");
-import userService, { UserService } from "../../../src/modules/user/user.service";
 import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import { createResetToken } from "../../__helpers__/resetTokenHelper";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
 import notifyService from "../../../src/modules/notify/notify.service";
+import userActivationService, {
+    UserActivationService,
+} from "../../../src/modules/user/services/activation/user.activation.service";
+import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -43,8 +46,8 @@ describe("AuthentificationController, /auth", () => {
 
     describe("POST /reset-password", () => {
         it("should return 200", async () => {
-            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            await userService.forgetPassword("test-reset@beta.gouv.fr");
+            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
             const userReset = await userResetRepository.findOneByUserId(user._id);
 
@@ -63,8 +66,8 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because password is too weak", async () => {
-            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            await userService.forgetPassword("test-reset@beta.gouv.fr");
+            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
             const userReset = await userResetRepository.findOneByUserId(user._id);
 
@@ -97,13 +100,13 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because token is outdated", async () => {
-            const user = await userService.createUser({ email: "test-reset@beta.gouv.fr" });
-            await userService.forgetPassword("test-reset@beta.gouv.fr");
+            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
             const userReset = await userResetRepository.findOneByUserId(user._id);
 
-            const oldResetTimout = UserService.RESET_TIMEOUT;
-            UserService.RESET_TIMEOUT = 0;
+            const oldResetTimout = UserActivationService.RESET_TIMEOUT;
+            UserActivationService.RESET_TIMEOUT = 0;
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
@@ -112,14 +115,14 @@ describe("AuthentificationController, /auth", () => {
                     token: userReset?.token,
                 })
                 .set("Accept", "application/json");
-            UserService.RESET_TIMEOUT = oldResetTimout;
+            UserActivationService.RESET_TIMEOUT = oldResetTimout;
 
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
                 code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
             });
 
-            UserService.RESET_TIMEOUT = oldResetTimout;
+            UserActivationService.RESET_TIMEOUT = oldResetTimout;
         });
     });
 

@@ -3,13 +3,18 @@ import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import UserReset from "./entities/UserReset";
 import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
-import userService from "./user.service";
+import userAuthService from "./services/auth/user.auth.service";
+import userActivationService from "./services/activation/user.activation.service";
+jest.mock("./services/auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService, true);
+import userCrudService from "./services/crud/user.crud.service";
+jest.mock("./services/crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
 
 describe("UserMigration", () => {
     const userMigration = new UserMigrations();
 
     describe("migrationUserEmailToLowerCase", () => {
-        const usersFindMock = jest.spyOn(userService, "find");
         // @ts-expect-error toLowerCaseUsers is private method
         const toLowerCaseUsersMock: jest.SpyInstance<UserDto[]> = jest.spyOn(userMigration, "toLowerCaseUsers");
         const groupUsersByEmailMock: jest.SpyInstance<DefaultObject<UserDto[]>> = jest.spyOn(
@@ -20,19 +25,16 @@ describe("UserMigration", () => {
         // @ts-expect-error toLowerCaseUsers is private method
         const findUsersActionMock: jest.SpyInstance = jest.spyOn(userMigration, "findUsersAction");
 
-        const userServiceUpdateMock = jest.spyOn(userService, "update");
-        const userServiceDeleteMock = jest.spyOn(userService, "delete");
-
         it("should update user", async () => {
             // @ts-expect-error -- mock
-            userServiceUpdateMock.mockImplementationOnce(user => Promise.resolve(user));
+            mockedUserCrudService.update.mockImplementationOnce(user => Promise.resolve(user));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.UPDATE,
                     user,
                 })),
             );
-            usersFindMock.mockImplementationOnce(async () => [
+            mockedUserCrudService.find.mockImplementationOnce(async () => [
                 {
                     email: "test@datasubvention.beta.gou.fr",
                 } as unknown as WithId<UserDto>,
@@ -48,7 +50,7 @@ describe("UserMigration", () => {
 
             const expected = "test@datasubvention.beta.gou.fr";
 
-            expect(userServiceUpdateMock).toBeCalledWith(expect.objectContaining({ email: expected }));
+            expect(mockedUserCrudService.update).toBeCalledWith(expect.objectContaining({ email: expected }));
         });
 
         it("should delete user", async () => {
@@ -56,14 +58,14 @@ describe("UserMigration", () => {
                 email: "test@datasubvention.beta.gou.fr",
                 _id: new ObjectId(),
             } as unknown as WithId<UserDto>;
-            userServiceDeleteMock.mockImplementationOnce(user => Promise.resolve(true));
+            mockedUserCrudService.delete.mockImplementationOnce(user => Promise.resolve(true));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.DELETE,
                     user,
                 })),
             );
-            usersFindMock.mockImplementationOnce(async () => [user]);
+            mockedUserCrudService.find.mockImplementationOnce(async () => [user]);
             toLowerCaseUsersMock.mockImplementationOnce((a: UserDto[]) => a);
             groupUsersByEmailMock.mockImplementationOnce(users => {
                 return {
@@ -73,7 +75,7 @@ describe("UserMigration", () => {
 
             await userMigration.migrationUserEmailToLowerCase();
 
-            expect(userServiceDeleteMock).toBeCalledWith(user._id.toString());
+            expect(mockedUserCrudService.delete).toBeCalledWith(user._id.toString());
         });
     });
 
@@ -261,7 +263,7 @@ describe("UserMigration", () => {
     });
 
     describe("findLastCreatedUser", () => {
-        const findUserResetByUserIdMock = jest.spyOn(userService, "findUserResetByUserId");
+        const findUserResetByUserIdMock = jest.spyOn(userActivationService, "findUserResetByUserId");
 
         beforeEach(() => {
             findUserResetByUserIdMock.mockReset();
@@ -299,10 +301,8 @@ describe("UserMigration", () => {
     });
 
     describe("findLastConnectedUser", () => {
-        const findJwtByUserMock = jest.spyOn(userService, "findJwtByUser");
-
         beforeEach(() => {
-            findJwtByUserMock.mockReset();
+            mockedUserAuthService.findJwtByUser.mockReset();
         });
 
         it("should return last reset user", async () => {
@@ -324,7 +324,7 @@ describe("UserMigration", () => {
                     expirateDate: new Date(2020, 9, 9),
                 },
             };
-            findJwtByUserMock.mockImplementation(async user => tokens[user._id.toString()]);
+            mockedUserAuthService.findJwtByUser.mockImplementation(async user => tokens[user._id.toString()]);
 
             const expected = users[0];
             // @ts-expect-error findLastConnectedUser is private methods

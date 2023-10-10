@@ -3,7 +3,7 @@ import { Controller, Get, Route, Security, Tags, Response, Request } from "tsoa"
 import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
-import userService from "../../user.service";
+import userConsumerService from "../../services/consumer/user.consumer.service";
 
 @Route("consumer")
 @Tags("Consumer Controller")
@@ -20,7 +20,7 @@ export class ConsumerController extends Controller {
     @Response<HttpErrorInterface>(404, "Aucun token d'authentification n'a été trouvé")
     @Response<HttpErrorInterface>(401, "L'utilisateur n'a pas le rôle CONSUMER")
     public async getToken(@Request() req: IdentifiedRequest): Promise<ConsumerTokenDtoResponse> {
-        const token = await userService.findConsumerToken(req.user._id);
+        const token = await userConsumerService.findConsumerToken(req.user._id);
         return { token };
     }
 }

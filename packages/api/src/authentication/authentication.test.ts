@@ -3,19 +3,22 @@ import * as express from "express";
 
 import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
-import userService from "../../src/modules/user/user.service";
 import userRepository from "../modules/user/repositories/user.repository";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
 import { RoleEnum } from "../@enums/Roles";
 import { AgentTypeEnum } from "dto";
+import userAuthService from "../modules/user/services/auth/user.auth.service";
+import userActivationService from "../modules/user/services/activation/user.activation.service";
+import userCrudService from "../modules/user/services/crud/user.crud.service";
+jest.mock("../modules/user/services/auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService, true);
 
 describe("expressAuthentication", () => {
     // Spys
     const verifyMock = jest.spyOn(jwt, "verify");
-    const refreshExpirationTokenMock = jest.spyOn(userService, "refreshExpirationToken");
-    const findByEmailMock = jest.spyOn(userService, "findByEmail");
-    const findJwtByEmailMock = jest.spyOn(userService, "findJwtByEmail");
+    const refreshExpirationTokenMock = jest.spyOn(userActivationService, "refreshExpirationToken");
+    const findByEmailMock = jest.spyOn(userCrudService, "findByEmail");
     const updateMock = jest.spyOn(userRepository, "update");
     const SPYS = [verifyMock, findByEmailMock, findByEmailMock, refreshExpirationTokenMock, updateMock];
 
@@ -50,7 +53,7 @@ describe("expressAuthentication", () => {
                 jobType: [],
             }),
         );
-        findJwtByEmailMock.mockImplementation(() =>
+        mockedUserAuthService.findJwtByEmail.mockImplementation(() =>
             Promise.resolve({
                 jwt: { token: DEFAULT_TOKEN, expirateDate: new Date() },
             }),

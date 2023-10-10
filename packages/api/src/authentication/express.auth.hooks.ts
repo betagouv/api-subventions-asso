@@ -5,7 +5,7 @@ import { UserDto } from "dto";
 import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
-import userService from "../modules/user/user.service";
+import userAuthService from "../modules/user/services/auth/user.auth.service";
 
 export function authMocks(app: Express) {
     // A passport middleware to handle User login
@@ -18,7 +18,7 @@ export function authMocks(app: Express) {
             },
             async (email, password, done) => {
                 try {
-                    const user = await userService.login(email.toLocaleLowerCase(), password);
+                    const user = await userAuthService.login(email.toLocaleLowerCase(), password);
                     return done(null, user, { message: "Logged in Successfully" });
                 } catch (e) {
                     done(e);
@@ -37,7 +37,7 @@ export function authMocks(app: Express) {
             },
             async (req: Request, tokenPayload, done) => {
                 try {
-                    const user = await userService.authenticate(tokenPayload, getJtwTokenFromRequest(req));
+                    const user = await userAuthService.authenticate(tokenPayload, getJtwTokenFromRequest(req));
                     if (user) return done(null, user, { message: "Logged in Successfully" });
                     return done();
                 } catch (e) {

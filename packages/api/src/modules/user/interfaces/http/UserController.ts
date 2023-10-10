@@ -13,7 +13,11 @@ import { RoleEnum } from "../../../../@enums/Roles";
 import { IdentifiedRequest } from "../../../../@types";
 import { BadRequestError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
-import userService from "../../user.service";
+import userAuthService from "../../services/auth/user.auth.service";
+import userRolesService from "../../services/roles/user.roles.service";
+import userRgpdService from "../../services/rgpd/user.rgpd.service";
+import userProfileService from "../../services/profile/user.profile.service";
+import userCrudService from "../../services/crud/user.crud.service";
 
 @Route("user")
 @Tags("User Controller")
@@ -27,7 +31,7 @@ export class UserController extends Controller {
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>(400, "Role Not Valid")
     public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
-        return await userService.addRolesToUser(body.email, body.roles);
+        return await userRolesService.addRolesToUser(body.email, body.roles);
     }
 
     /**
@@ -38,7 +42,7 @@ export class UserController extends Controller {
     @Security("jwt", ["admin"])
     public async listUsers(): Promise<UserListDtoResponse> {
         return {
-            users: await userService.listUsers(),
+            users: await userCrudService.listUsers(),
         };
     }
 
@@ -55,7 +59,7 @@ export class UserController extends Controller {
             ...body,
             email: body.email.toLocaleLowerCase(),
         };
-        const user = await userService.signup(formatedBody);
+        const user = await userCrudService.signup(formatedBody);
         this.setStatus(201);
         return { user };
     }
@@ -74,7 +78,7 @@ export class UserController extends Controller {
             throw new BadRequestError("Cannot delete its own account");
         }
 
-        return await userService.delete(id);
+        return await userCrudService.delete(id);
     }
 
     /**
@@ -84,7 +88,7 @@ export class UserController extends Controller {
     @Get("/roles")
     @Security("jwt", ["user"])
     public async getRoles(@Request() req: IdentifiedRequest): Promise<GetRolesDtoResponse> {
-        return { roles: await userService.getRoles(req.user) };
+        return { roles: await userRolesService.getRoles(req.user) };
     }
 
     /**
@@ -97,7 +101,7 @@ export class UserController extends Controller {
         @Request() req: IdentifiedRequest,
         @Body() body: { password: string },
     ): Promise<UserDtoResponse> {
-        return await userService.updatePassword(req.user, body.password);
+        return await userAuthService.updatePassword(req.user, body.password);
     }
 
     /**
@@ -108,7 +112,7 @@ export class UserController extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public async deleteSelfUser(@Request() req: IdentifiedRequest): Promise<boolean> {
-        const success = await userService.disable(req.user._id.toString());
+        const success = await userRgpdService.disable(req.user._id.toString());
         if (!success) throw new NotFoundError("user to delete not found");
         this.setStatus(204);
         return true;
@@ -122,7 +126,7 @@ export class UserController extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public getSelfUser(@Request() req: IdentifiedRequest): Promise<UserDto> {
-        return userService.getUserWithoutSecret(req.user.email);
+        return userCrudService.getUserWithoutSecret(req.user.email);
     }
 
     /**
@@ -133,7 +137,7 @@ export class UserController extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public updateProfile(@Request() req: IdentifiedRequest, @Body() body: Partial<UpdatableUser>): Promise<UserDto> {
-        return userService.profileUpdate(req.user, body);
+        return userProfileService.profileUpdate(req.user, body);
     }
 
     /**
@@ -143,6 +147,6 @@ export class UserController extends Controller {
     @Get("/data")
     @Security("jwt", ["user"])
     public async getData(@Request() req: IdentifiedRequest): Promise<UserDataDto> {
-        return userService.getAllData(req.user._id.toString());
+        return userRgpdService.getAllData(req.user._id.toString());
     }
 }

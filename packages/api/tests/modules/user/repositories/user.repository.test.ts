@@ -3,8 +3,7 @@
 import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import userRepository from "../../../../src/modules/user/repositories/user.repository";
-import userService from "../../../../src/modules/user/user.service";
-import { UserNotPersisted } from "../../../../src/modules/user/repositories/dbo/UserDbo";
+import userCrudService from "../../../../src/modules/user/services/crud/user.crud.service";
 
 describe("UserRepository", () => {
     const defaultUser = {
@@ -19,7 +18,7 @@ describe("UserRepository", () => {
     };
     describe("The methods must not return any secret", () => {
         beforeEach(async () => {
-            await userService.createUser({ email: "test@beta.gouv.fr" });
+            await userCrudService.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("findByEmail", async () => {
@@ -54,7 +53,7 @@ describe("UserRepository", () => {
 
     describe("getUserWithSecretsByEmail", () => {
         beforeEach(async () => {
-            await userService.createUser({ email: "test@beta.gouv.fr" });
+            await userCrudService.createUser({ email: "test@beta.gouv.fr" });
         });
 
         it("should return user", async () => {
