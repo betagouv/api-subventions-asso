@@ -26,6 +26,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** rename reusable validation and sanitization ([1f97f2d](https://github.com/betagouv/api-subventions-asso/commit/1f97f2df16eea8a2b77c62317a67aeb28f6826da))
 -   **api:** route get own's user ([71a5e22](https://github.com/betagouv/api-subventions-asso/commit/71a5e22d59b35dec89e685c32a6297498ba4b3ee))
 -   **api:** service get user no secret ([a2c1c3e](https://github.com/betagouv/api-subventions-asso/commit/a2c1c3ed219fa12ec40891f828c7873bb765f10e))
+## [0.36.8](https://github.com/betagouv/api-subventions-asso/compare/v0.36.7...v0.36.8) (2023-10-10)
+
+### Bug Fixes
+
+-   **api:** custom axios instance to avoid ETIMEDOUT error ([79049b5](https://github.com/betagouv/api-subventions-asso/commit/79049b5dbf7a1e9d69aea9ac045ae4df1e2e1fbf))
+-   **api:** fetch all DS result's pages ([ed4eb2f](https://github.com/betagouv/api-subventions-asso/commit/ed4eb2ffb5cf59167697c3cbce7d0552462a0a8a))
+-   **api:** types DS results ([e38b6d8](https://github.com/betagouv/api-subventions-asso/commit/e38b6d83275dc08bb130f4e02db35dab9382e8ed))
+
 ## [0.36.7](https://github.com/betagouv/api-subventions-asso/compare/v0.36.6...v0.36.7) (2023-10-03)
 
 ### Bug Fixes

@@ -356,11 +356,16 @@ describe("ApiAssoService", () => {
 
         describe("findAssociationBySiren", () => {
             const SIREN = "000000000";
+            const ASSO_WITH_STRUCTURES = {
+                data: true,
+                identite: { date_modif_siren: "smthg" },
+                etablissement: { length: 1 },
+            };
             let sendRequestMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-ignore sendRequest is private Method
-                sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
+                sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(ASSO_WITH_STRUCTURES);
             });
 
             afterAll(() => {
@@ -368,27 +373,27 @@ describe("ApiAssoService", () => {
             });
 
             it("should send a request", async () => {
-                // @ts-ignore findAssociationBySiren is private method
                 await apiAssoService.findAssociationBySiren(SIREN);
+                expect(sendRequestMock).toHaveBeenCalledTimes(1);
+            });
 
-                expect(sendRequestMock).toHaveBeenCalled();
+            it("should call /structures if no establishment found", async () => {
+                const expected = null;
+                sendRequestMock.mockResolvedValueOnce({ data: true, identite: { date_modif_siren: "smthg" } });
+                await apiAssoService.findAssociationBySiren(RNA);
+                expect(sendRequestMock).toHaveBeenCalledTimes(2);
             });
 
             it("should return null if result without date", async () => {
                 const expected = null;
-                sendRequestMock.mockResolvedValue({ data: true });
-                // @ts-ignore findAssociationByRna is private method
+                sendRequestMock.mockResolvedValueOnce({ data: true, etablissement: { length: 1 } });
                 const actual = await apiAssoService.findAssociationBySiren(RNA);
-
                 expect(actual).toBe(expected);
             });
 
             it("should use adapter", async () => {
-                const expected = { data: true, identite: { date_modif_siren: "smthg" }, etablissement: {length: 1} };
-                sendRequestMock.mockResolvedValue(expected);
-                // @ts-ignore findAssociationBySiren is private method
+                const expected = ASSO_WITH_STRUCTURES;
                 await apiAssoService.findAssociationBySiren(SIREN);
-
                 expect(ApiAssoDtoAdapter.sirenStructureToAssociation).toBeCalledWith(expected);
             });
         });

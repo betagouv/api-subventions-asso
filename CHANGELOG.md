@@ -66,6 +66,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** sort regions ([713982e](https://github.com/betagouv/api-subventions-asso/commit/713982ef78446b4600ed869de13f982c7f5ec60c))
 -   **front:** transmit onChange event ([88ecd94](https://github.com/betagouv/api-subventions-asso/commit/88ecd94d7530fb58e67f2f97017f4fd875291f42))
 -   **front:** update profile port and service ([dda5172](https://github.com/betagouv/api-subventions-asso/commit/dda51729ffbd977b3aec1830771cc1d2306d21f8))
+## [0.36.8](https://github.com/betagouv/api-subventions-asso/compare/v0.36.7...v0.36.8) (2023-10-10)
+
+### Bug Fixes
+
+-   **api:** custom axios instance to avoid ETIMEDOUT error ([79049b5](https://github.com/betagouv/api-subventions-asso/commit/79049b5dbf7a1e9d69aea9ac045ae4df1e2e1fbf))
+-   **api:** fetch all DS result's pages ([ed4eb2f](https://github.com/betagouv/api-subventions-asso/commit/ed4eb2ffb5cf59167697c3cbce7d0552462a0a8a))
+-   **api:** types DS results ([e38b6d8](https://github.com/betagouv/api-subventions-asso/commit/e38b6d83275dc08bb130f4e02db35dab9382e8ed))
+
 ## [0.36.7](https://github.com/betagouv/api-subventions-asso/compare/v0.36.6...v0.36.7) (2023-10-03)
 
 ### Bug Fixes
