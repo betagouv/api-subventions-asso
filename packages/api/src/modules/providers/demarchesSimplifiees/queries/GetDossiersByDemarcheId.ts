@@ -1,8 +1,13 @@
 import dedent from "dedent";
 
-export default dedent`query getDemarche($demarcheNumber: Int!) { 
+export default dedent`query getDemarche($demarcheNumber: Int!, $after: String) { 
     demarche(number: $demarcheNumber) { 
-        dossiers {             
+        dossiers(after: $after) {              
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+                endCursor
+            }    
             nodes { 
                 id demandeur { 
                     ... on PersonneMorale { 
