@@ -3,7 +3,7 @@
   "schema": [
     {
       "from": "demande.groupeInstructeur.label",
-      "to": "TODO c'est marqué défaut partout"
+      "value": "DREETS AURA"
     },
     {
       "from": "siret",
@@ -18,7 +18,7 @@
       "to": "actions_proposee[0].intitule"
     },
     {
-      "from": "demande.champs.Q2hhbXAtMzIyNDkxMw==.value",
+      "from": "demande.champs.Q2hhbXAtMjcxNjY1Ng==.value",
       "to": "actions_proposee[0].objectifs"
     },
     {
@@ -46,10 +46,6 @@
       "to": "versementKey"
     },
     {
-      "from": "demande.annotations.Q2hhbXAtMjY3NDMwNA==.value",
-      "to": "date_commision"
-    },
-    {
       "from": "demande.dateDepot",
       "to": "transmis_le"
     },
@@ -62,7 +58,7 @@
       "to": "date_fin"
     },
     {
-      "from": "demande.demarche.title",
+      "value": "Pacte des solidarités Auvergne Rhône Alpes",
       "to": "dispositif"
     }
   ],
@@ -73,11 +69,11 @@
     },
     {
       "to": "service_instructeur",
-      "from": "TODO"
+      "value": "DREETS AURA"
     },
     {
       "to": "dispositif",
-      "from": "demande.demarche.title"
+      "value": "Pacte des solidarités Auvergne Rhône Alpes"
     },
     {
       "to": "montant_accorde",

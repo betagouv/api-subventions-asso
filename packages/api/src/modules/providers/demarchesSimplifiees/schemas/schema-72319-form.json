@@ -2,8 +2,8 @@
   "demarcheId": 72319,
   "schema": [
     {
-      "from": "demande.groupeInstructeur.label",
-      "to": "TODO c'est marqué défaut partout"
+      "to": "service_instructeur",
+      "value": "DIHAL"
     },
     {
       "from": "siret",
@@ -54,7 +54,7 @@
       "to": "versementKey"
     },
     {
-      "from": "demande.annotations.Q2hhbXAtMjY3NDMwNA==.value",
+      "from": "demande.annotations.Q2hhbXAtMjY3NDI3Ng==.value",
       "to": "date_commision"
     },
     {
@@ -62,7 +62,7 @@
       "to": "transmis_le"
     },
     {
-      "from": "demande.demarche.title",
+      "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »",
       "to": "dispositif"
     }
   ],
@@ -73,18 +73,18 @@
     },
     {
       "to": "service_instructeur",
-      "from": "TODO"
+      "value": "DIHAL"
     },
     {
       "to": "dispositif",
-      "from": "demande.demarche.title"
+      "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »"
     },
     {
-      "to": "montant_accorde",
+      "to": "montants.accorde",
       "from": "demande.annotations.Q2hhbXAtMjcxNzMwNA==.value"
     },
     {
-      "to": "montant_demande",
+      "to": "montants.demande",
       "from": "demande.champs.Q2hhbXAtMzEzMzI0MQ==.value"
     },
     {
