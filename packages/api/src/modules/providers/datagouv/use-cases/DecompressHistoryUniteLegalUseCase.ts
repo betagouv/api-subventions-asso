@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 
-export default function DecompressHistoryUniteeLegalUseCase(archivePath: string): Promise<string> {
+export default function DecompressHistoryUniteLegalUseCase(archivePath: string): Promise<string> {
     return new Promise(resolve => {
         console.log("Start decompress");
         exec(`unzip ${archivePath} -d ./output`, async () => {

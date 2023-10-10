@@ -1,7 +1,7 @@
 import fs from "fs";
 import https from "https";
 
-export default function DownloadHistoryUniteeLegalUseCase(): Promise<string> {
+export default function DownloadHistoryUniteLegalUseCase(): Promise<string> {
     return new Promise(resolve => {
         console.log("Start Download");
         const file = fs.createWriteStream("StockUniteLegaleHistorique_utf8.zip");
