@@ -1,3 +1,5 @@
+import axios from "axios";
+
 jest.mock("toad-scheduler", () => {
     return {
         AsyncTask: jest.fn(),
@@ -7,13 +9,20 @@ jest.mock("toad-scheduler", () => {
         Task: jest.fn().mockImplementation(() => {}),
     };
 });
+jest.mock("../modules/notify/notify.service", () => ({ notify: jest.fn() }));
 
 import { AsyncTask, CronJob, LongIntervalJob, SimpleIntervalJob, Task } from "toad-scheduler";
 import * as Decorators from "./cronController.decorator";
+import notifyService from "../modules/notify/notify.service";
+import { NotificationType } from "../modules/notify/@types/NotificationType";
 // about mocking the module : https://github.com/facebook/jest/issues/936#issuecomment-545080082 use arrow functions
 
 describe("cronController decorator", () => {
     const SCHEDULE = {};
+    let axiosPostSpy;
+
+    beforeAll(() => (axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValue(undefined)));
+    afterAll(() => axiosPostSpy.mockRestore());
 
     describe("newJob()", () => {
         const JOB = {};
@@ -83,12 +92,21 @@ describe("cronController decorator", () => {
     describe("errorHandlerFactory's result", () => {
         const CRON_NAME = "name";
         const errorHandler = Decorators.errorHandlerFactory(CRON_NAME);
+        const ERROR = new Error();
 
         it("logs error with proper cron name", () => {
             const expected = "error during cron name";
             const consoleErrorSpy = jest.spyOn(global.console, "error");
-            errorHandler(CRON_NAME);
+            errorHandler(ERROR);
             expect(consoleErrorSpy).toHaveBeenCalledWith(expected);
+        });
+
+        it("notifies error", () => {
+            errorHandler(ERROR);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.FAILED_CRON, {
+                cronName: CRON_NAME,
+                error: ERROR,
+            });
         });
     });
 

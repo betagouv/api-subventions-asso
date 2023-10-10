@@ -8,11 +8,16 @@ import {
     Task,
 } from "toad-scheduler";
 import * as Sentry from "@sentry/node";
+import notifyService from "../modules/notify/notify.service";
+import { NotificationType } from "../modules/notify/@types/NotificationType";
 
-export const errorHandlerFactory = cronName => {
-    return _error => {
+export const errorHandlerFactory = (cronName: string) => {
+    return (error: Error) => {
+        Sentry.captureException(error);
         console.error(`error during cron ${cronName}`);
         console.trace();
+        notifyService.notify(NotificationType.FAILED_CRON, { cronName, error });
+        return;
     };
 };
 
@@ -31,6 +36,7 @@ export const newJob = (schedule, JobClass, TaskClass) => {
                 ? () => {
                       message = `cron task started: ${cronName}`;
                       console.log(message);
+                      Sentry.captureEvent({ level: "info", message });
                       const checkInId = Sentry.captureCheckIn({
                           monitorSlug: sentryCronSlug,
                           status: "in_progress",
@@ -39,6 +45,7 @@ export const newJob = (schedule, JobClass, TaskClass) => {
                           .value()
                           .then(() => {
                               message = `cron task ended successfully: ${cronName}`;
+                              Sentry.captureEvent({ level: "info", message });
                               Sentry.captureCheckIn({
                                   checkInId,
                                   monitorSlug: sentryCronSlug,
@@ -58,6 +65,7 @@ export const newJob = (schedule, JobClass, TaskClass) => {
                 : () => {
                       message = `cron task started: ${cronName}`;
                       console.log(message);
+                      Sentry.captureEvent({ level: "info", message });
                       const checkInId = Sentry.captureCheckIn({
                           monitorSlug: sentryCronSlug,
                           status: "in_progress",
@@ -79,6 +87,7 @@ export const newJob = (schedule, JobClass, TaskClass) => {
                           monitorSlug: sentryCronSlug,
                           status: "ok",
                       });
+                      Sentry.captureEvent({ level: "info", message });
                   };
         const task = new TaskClass(cronName, loggedFunction, errorHandlerFactory(cronName));
         target[attributeName].push(new JobClass(schedule, task, { preventOverrun: true }));

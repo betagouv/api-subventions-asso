@@ -40,4 +40,8 @@ export interface NotificationDataTypes {
         email: string;
         templateId: number;
     };
+    [NotificationType.FAILED_CRON]: {
+        cronName: string;
+        error: Error;
+    };
 }
