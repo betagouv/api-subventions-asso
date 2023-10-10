@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.8](https://github.com/betagouv/api-subventions-asso/compare/v0.36.7...v0.36.8) (2023-10-10)
+
+### Bug Fixes
+
+-   **api:** custom axios instance to avoid ETIMEDOUT error ([79049b5](https://github.com/betagouv/api-subventions-asso/commit/79049b5dbf7a1e9d69aea9ac045ae4df1e2e1fbf))
+-   **api:** fetch all DS result's pages ([ed4eb2f](https://github.com/betagouv/api-subventions-asso/commit/ed4eb2ffb5cf59167697c3cbce7d0552462a0a8a))
+-   **api:** types DS results ([e38b6d8](https://github.com/betagouv/api-subventions-asso/commit/e38b6d83275dc08bb130f4e02db35dab9382e8ed))
+
 ## [0.36.7](https://github.com/betagouv/api-subventions-asso/compare/v0.36.6...v0.36.7) (2023-10-03)
 
 ### Bug Fixes
