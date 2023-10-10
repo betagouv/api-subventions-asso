@@ -1,8 +1,8 @@
-import DemarchesSimplifieesDto from "../dto/DemarchesSimplifieesDto";
+import { DemarchesSimplifieesSuccessDto } from "../dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
 
 export default class DemarchesSimplifieesDtoAdapter {
-    static toEntities(dto: DemarchesSimplifieesDto, formId: number): DemarchesSimplifieesDataEntity[] {
+    static toEntities(dto: DemarchesSimplifieesSuccessDto, formId: number): DemarchesSimplifieesDataEntity[] {
         return dto.data.demarche.dossiers.nodes
             .map(dossier => {
                 if (!dossier?.demandeur?.siret) return null;

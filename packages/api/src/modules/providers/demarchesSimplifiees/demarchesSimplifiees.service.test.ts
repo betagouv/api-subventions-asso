@@ -259,7 +259,8 @@ describe("DemarchesSimplifieesService", () => {
         let toEntitiesMock: jest.SpyInstance;
 
         beforeAll(() => {
-            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(null);
+            // @ts-expect-error mock
+            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue({ data: {} });
             toEntitiesMock = jest
                 .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
                 // @ts-expect-error disable ts form return type of toEntities
@@ -307,7 +308,7 @@ describe("DemarchesSimplifieesService", () => {
         let buildSearchHeaderMock: jest.SpyInstance;
 
         beforeAll(() => {
-            postMock = jest.spyOn(axios, "post").mockResolvedValue({ data: 1 });
+            postMock = jest.spyOn(demarchesSimplifieesService.axiosInstance, "post").mockResolvedValue({ data: 1 });
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });
@@ -338,12 +339,13 @@ describe("DemarchesSimplifieesService", () => {
             expect(buildSearchHeaderMock).toBeCalledTimes(1);
         });
 
-        it("should return null when axios throws error", async () => {
-            postMock.mockRejectedValueOnce(new Error("axios not happy"));
+        it("should throw when axios throws error", async () => {
+            const ERROR = new Error("axios not happy");
+            postMock.mockRejectedValueOnce(ERROR);
 
-            const actual = await demarchesSimplifieesService.sendQuery("", {});
+            const test = () => demarchesSimplifieesService.sendQuery("", {});
 
-            expect(actual).toBe(null);
+            await expect(test).rejects.toThrow(ERROR);
         });
 
         it("should return data", async () => {

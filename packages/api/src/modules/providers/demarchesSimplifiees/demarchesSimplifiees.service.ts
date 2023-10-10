@@ -1,14 +1,16 @@
-import axios from "axios";
+import * as https from "https";
+import * as http from "http";
+import axios, { AxiosInstance } from "axios";
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
-import * as Sentry from "@sentry/node";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
 import { RawGrant } from "../../grant/@types/rawGrant";
+import { InternalServerError } from "../../../shared/errors/httpErrors";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
-import DemarchesSimplifieesDto from "./dto/DemarchesSimplifieesDto";
+import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
@@ -24,9 +26,16 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         description: "", // TODO
         id: "demarchesSimplifiees",
     };
+    axiosInstance: AxiosInstance;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
+    constructor() {
+        this.axiosInstance = axios.create({
+            httpAgent: new http.Agent({ keepAlive: true }),
+            httpsAgent: new https.Agent({ keepAlive: true }),
+        });
+    }
+
+    getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
     }
 
@@ -39,11 +48,11 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         }, {});
     }
 
-    private async entitiesToSubventions(entities) {
+    private async entitiesToSubventions(entities: DemarchesSimplifieesDataEntity[]) {
         const schemasByIds = await this.getSchemasByIds();
 
         return entities
-            .map(demande => {
+            .map((demande: DemarchesSimplifieesDataEntity) => {
                 const schema = schemasByIds[demande.demarcheId];
 
                 if (!schema) return null;
@@ -82,21 +91,31 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     }
 
     async updateDataByFormId(formId: number) {
-        const result = await this.sendQuery(GetDossiersByDemarcheId, {
-            demarcheNumber: formId,
-        });
+        let result: DemarchesSimplifieesDto;
+        let nextCursor: string | undefined = undefined;
+        do {
+            result = await this.sendQuery(GetDossiersByDemarcheId, {
+                demarcheNumber: formId,
+                after: nextCursor,
+            });
 
-        if (!result || !result.data) return;
+            if (result?.errors?.length)
+                throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
+            if (!result || !result.data)
+                throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
 
-        const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
-        await asyncForEach(entities, async entity => {
-            await demarchesSimplifieesDataRepository.upsert(entity);
-        });
+            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
+            await asyncForEach(entities, async entity => {
+                await demarchesSimplifieesDataRepository.upsert(entity);
+            });
+            nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
+        } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
+        if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
         try {
-            const result = await axios.post<DemarchesSimplifieesDto>(
+            const result = await this.axiosInstance.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,
@@ -107,13 +126,12 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
 
             return result.data;
         } catch (e) {
-            Sentry.captureException(e);
             console.error(e);
-            return null;
+            throw e;
         }
     }
 
-    private buildSearchHeader(token) {
+    private buildSearchHeader(token: string) {
         return {
             headers: {
                 accept: "application/json, text/plain, */*",
