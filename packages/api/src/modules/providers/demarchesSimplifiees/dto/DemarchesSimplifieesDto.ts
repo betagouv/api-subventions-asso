@@ -43,6 +43,10 @@ export default interface DemarchesSimplifieesDto {
                     },
                 ];
             };
+            service: {
+                nom: string;
+                organisme: string;
+            };
         };
     };
 }

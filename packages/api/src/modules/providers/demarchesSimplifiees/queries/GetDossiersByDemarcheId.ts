@@ -42,5 +42,9 @@ export default dedent`query getDemarche($demarcheNumber: Int!) {
                 }
             }
         } 
+        service {
+            nom
+            organisme
+        }
     } 
 }`;

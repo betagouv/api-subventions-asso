@@ -33,4 +33,8 @@ export default interface DemarchesSimplifieesDataEntity {
         champs: DefaultObject<string>;
         annotations: DefaultObject<string>;
     };
+    service: {
+        nom: string;
+        organisme: string;
+    };
 }
