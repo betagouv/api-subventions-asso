@@ -1,4 +1,5 @@
 import associationNameService from "./associationName.service";
+import AssociationNameEntity from "./entities/AssociationNameEntity";
 import associationNameRepository from "./repositories/associationName.repository";
 import { ObjectId } from "mongodb";
 
@@ -120,6 +121,23 @@ describe("associationName.service", () => {
             const expected = { rna: RNA, siren: SIREN };
             const actual = await associationNameService.getGroupedIdentifiers(SIRET);
 
+            expect(actual).toEqual(expected);
+        });
+    });
+    describe("getAllStartingWith", () => {
+        it("return an array AssociationNameEntity", async () => {
+            const INPUT = "";
+            const LAST_UPDATE = new Date();
+            const associationNameEntity = new AssociationNameEntity(
+                "W75000000",
+                "0000000000",
+                "FAKE NAME",
+                LAST_UPDATE,
+                null,
+            );
+            jest.spyOn(associationNameRepository, "findAllStartingWith").mockResolvedValue([associationNameEntity]);
+            const expected = [associationNameEntity];
+            const actual = await associationNameService.getAllStartingWith(INPUT);
             expect(actual).toEqual(expected);
         });
     });
