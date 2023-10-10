@@ -1,12 +1,12 @@
 import { UserDto } from "dto";
 import { NextFunction, Response, Request } from "express";
-import userService from "../modules/user/user.service";
+import userCrudService from "../modules/user/services/crud/user.crud.service";
 
 export default async function StatsSearchMiddleware(req: Request, res: Response, next: NextFunction) {
     if (!req.user) return next();
     const user = req.user as UserDto;
 
-    await userService.update(user);
+    await userCrudService.update(user);
 
     next();
 }

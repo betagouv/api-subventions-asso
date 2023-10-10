@@ -69,6 +69,7 @@ export default class FonjepEntityAdapter {
             periodeDebut: toPV(entity.indexedInformations.periode_debut),
             periodeFin: toPV(entity.indexedInformations.periode_fin),
             montantAPayer: toPV(entity.indexedInformations.montant_a_payer),
+            bop: toPV(entity.indexedInformations.bop),
         };
     }
 

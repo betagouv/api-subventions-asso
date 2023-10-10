@@ -3,7 +3,9 @@ import { ObjectId } from "mongodb";
 import { DefaultObject } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import UserReset from "./entities/UserReset";
-import userService from "./user.service";
+import userAuthService from "./services/auth/user.auth.service";
+import userActivationService from "./services/activation/user.activation.service";
+import userCrudService from "./services/crud/user.crud.service";
 
 export enum EmailToLowerCaseAction {
     UPDATE = 1,
@@ -12,7 +14,7 @@ export enum EmailToLowerCaseAction {
 
 export default class UserMigrations {
     public async migrationUserEmailToLowerCase() {
-        const users = await userService.find();
+        const users = await userCrudService.find();
         const lowerCaseUsers = this.toLowerCaseUsers(users.filter(u => u) as UserDto[]);
         const groupedUser = this.groupUsersByEmail(lowerCaseUsers);
         const usersAction = (
@@ -20,9 +22,9 @@ export default class UserMigrations {
         ).flat();
 
         await asyncForEach(usersAction, async userAction => {
-            if (userAction.action === EmailToLowerCaseAction.UPDATE) await userService.update(userAction.user);
+            if (userAction.action === EmailToLowerCaseAction.UPDATE) await userCrudService.update(userAction.user);
             else if (userAction.action === EmailToLowerCaseAction.DELETE)
-                await userService.delete(userAction.user._id.toString());
+                await userCrudService.delete(userAction.user._id.toString());
         });
     }
 
@@ -99,7 +101,7 @@ export default class UserMigrations {
 
     private async findLastCreatedUser(users: UserDto[]) {
         const resetUsers = await Promise.all(
-            users.map(user => userService.findUserResetByUserId(user._id as ObjectId)),
+            users.map(user => userActivationService.findUserResetByUserId(user._id as ObjectId)),
         );
         const ordered = (resetUsers.filter(reset => reset) as UserReset[]).sort(
             (resetA, resetB) => resetB.createdAt.getTime() - resetA.createdAt.getTime(),
@@ -112,7 +114,7 @@ export default class UserMigrations {
         const jwtUsers = await Promise.all(
             users.map(async user => ({
                 user,
-                jwt: (await userService.findJwtByUser(user)) as {
+                jwt: (await userAuthService.findJwtByUser(user)) as {
                     token: string;
                     expirateDate: Date;
                 },

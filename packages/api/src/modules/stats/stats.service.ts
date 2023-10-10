@@ -1,7 +1,6 @@
 import { WithId } from "mongodb";
 import { UserCountByStatus } from "dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
-import userService from "../user/user.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { AssociationIdentifiers } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
@@ -11,6 +10,7 @@ import { RoleEnum } from "../../@enums/Roles";
 import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
+import userStatsService from "../user/services/stats/user.stats.service";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
@@ -90,8 +90,8 @@ class StatsService {
 
     async getMonthlyUserNbByYear(year: number) {
         const start = firstDayOfPeriod(year);
-        const init_count = await userService.countTotalUsersOnDate(start);
-        const users = await userService.findByPeriod(start, oneYearAfterPeriod(year));
+        const init_count = await userStatsService.countTotalUsersOnDate(start);
+        const users = await userStatsService.findByPeriod(start, oneYearAfterPeriod(year));
 
         const now = new Date();
         const lastMonth = now.getFullYear() === year ? now.getMonth() + 1 : now.getFullYear() < year ? 0 : 12;

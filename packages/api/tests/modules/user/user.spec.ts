@@ -1,6 +1,5 @@
 import request = require("supertest");
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import userService from "../../../src/modules/user/user.service";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
@@ -8,6 +7,8 @@ import statsAssociationsVisitRepository from "../../../src/modules/stats/reposit
 import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
+import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";
+import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -33,7 +34,7 @@ describe("UserController, /user", () => {
         });
 
         it("should add role", async () => {
-            await userService.createUser({ email: "futur-admin@beta.gouv.fr" });
+            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
 
             const response = await request(g.app)
                 .post("/user/admin/roles")
@@ -54,7 +55,7 @@ describe("UserController, /user", () => {
         });
 
         it("should reject because role not exist", async () => {
-            await userService.createUser({ email: "futur-admin@beta.gouv.fr" });
+            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
 
             const response = await request(g.app)
                 .post("/user/admin/roles")
@@ -112,8 +113,8 @@ describe("UserController, /user", () => {
         });
 
         it("should change password", async () => {
-            const user = await userService.createUser({ email: "user@beta.gouv.fr" });
-            await userService.activeUser(user);
+            const user = await userCrudService.createUser({ email: "user@beta.gouv.fr" });
+            await userActivationService.activeUser(user);
 
             const response = await request(g.app)
                 .put("/user/password")
@@ -124,7 +125,7 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
-            const userUpdated = await userService.findByEmail("user@beta.gouv.fr");
+            const userUpdated = await userCrudService.findByEmail("user@beta.gouv.fr");
 
             expect(userUpdated).toMatchObject(user);
         });

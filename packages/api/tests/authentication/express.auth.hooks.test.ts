@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import passport = require("passport");
 import { Express } from "express";
 import passportLocal = require("passport-local");
 import passportJwt = require("passport-jwt");
-import userService from "../../src/modules/user/user.service";
 import { authMocks } from "../../src/authentication/express.auth.hooks";
 import { ObjectId } from "mongodb";
+import userAuthService from "../../src/modules/user/services/auth/user.auth.service";
 
 describe("express.auth.hooks", () => {
     let passportMock: jest.SpyInstance;
@@ -35,7 +34,7 @@ describe("express.auth.hooks", () => {
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
             // @ts-expect-error: mock user
-            jest.spyOn(userService, "login").mockImplementation(email =>
+            jest.spyOn(userAuthService, "login").mockImplementation(email =>
                 Promise.resolve({
                     _id: new ObjectId(),
                     email,
@@ -69,8 +68,7 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            jest.spyOn(userService, "login").mockRejectedValue(ERROR);
+            jest.spyOn(userAuthService, "login").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name !== "login") return;
@@ -93,8 +91,8 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            // @ts-expect-error: mock user
-            jest.spyOn(userService, "authenticate").mockImplementation(async user => ({
+            // @ts-expect-error
+            jest.spyOn(userAuthService, "authenticate").mockImplementation(async user => ({
                 email: user.email,
                 roles: [],
                 active: true,
@@ -130,7 +128,7 @@ describe("express.auth.hooks", () => {
             }
 
             jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            jest.spyOn(userService, "authenticate").mockRejectedValue(ERROR);
+            jest.spyOn(userAuthService, "authenticate").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name === "login") return;
