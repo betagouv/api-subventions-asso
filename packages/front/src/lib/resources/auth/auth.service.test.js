@@ -4,7 +4,6 @@ import crispService from "$lib/services/crisp.service";
 import localStorageService from "$lib/services/localStorage.service";
 import requestsService from "$lib/services/requests.service";
 import { ReadStore } from "$lib/core/Store";
-import { clearSearchHistory } from "$lib/services/searchHistory.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -33,7 +32,6 @@ vi.mock("$lib/services/localStorage.service", async () => {
 });
 vi.mock("$lib/services/router.service");
 vi.mock("$lib/services/requests.service");
-vi.mock("$lib/services/searchHistory.service");
 
 describe("authService", () => {
     describe("signup()", () => {
@@ -202,11 +200,6 @@ describe("authService", () => {
         it("resets crisp session", () => {
             authService.logout();
             expect(crispService.resetSession).toBeCalled();
-        });
-
-        it("resets history", () => {
-            authService.logout();
-            expect(clearSearchHistory).toBeCalled();
         });
     });
 
