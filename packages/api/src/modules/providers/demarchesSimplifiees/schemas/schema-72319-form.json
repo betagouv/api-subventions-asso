@@ -3,7 +3,7 @@
   "schema": [
     {
       "to": "service_instructeur",
-      "value": "DIHAL"
+      "from": "service.organisme"
     },
     {
       "from": "siret",
@@ -12,14 +12,6 @@
     {
       "from": "demande.state",
       "to": "status"
-    },
-    {
-      "from": "demande.champs.Q2hhbXAtMzYzNTA0.value",
-      "to": "contact.email"
-    },
-    {
-      "from": "demande.champs.Q2hhbXAtMzYzNTAz.value",
-      "to": "contact.telephone"
     },
     {
       "from": "demande.champs.Q2hhbXAtMzYzNDkz.value",
@@ -73,7 +65,7 @@
     },
     {
       "to": "service_instructeur",
-      "value": "DIHAL"
+      "from": "service.organisme"
     },
     {
       "to": "dispositif",

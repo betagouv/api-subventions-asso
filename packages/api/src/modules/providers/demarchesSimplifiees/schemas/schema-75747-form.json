@@ -2,7 +2,7 @@
   "demarcheId": 75747,
   "schema": [
     {
-      "from": "demande.groupeInstructeur.label",
+      "from": "service.nom",
       "to": "service_instructeur"
     },
     {
@@ -38,14 +38,6 @@
       "to": "montants.accorde"
     },
     {
-      "from": "demande.champs.Q2hhbXAtMjMzNzMwNA==.value",
-      "to": "contact.email"
-    },
-    {
-      "from": "demande.champs.Q2hhbXAtMjM2MzM2Nw==.value",
-      "to": "contact.telephone"
-    },
-    {
       "from": "demande.dateDepot",
       "to": "transmis_le"
     },
@@ -69,7 +61,7 @@
     },
     {
       "to": "service_instructeur",
-      "from": "demande.groupeInstructeur.label"
+      "from": "service.nom"
     },
     {
       "to": "dispositif",
