@@ -1,12 +1,12 @@
 import request from "supertest";
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import etablissementService from "../../../src/modules/etablissements/etablissements.service";
-import statsService from "../../../src/modules/stats/stats.service";
-import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
-import associationsService from "../../../src/modules/associations/associations.service";
-import { BadRequestError } from "../../../src/shared/errors/httpErrors";
-import OsirisRequestEntityFixture from "../providers/osiris/__fixtures__/entity";
-import { osirisRequestRepository } from "../../../src/modules/providers/osiris/repositories";
+import { createAndGetAdminToken, createAndGetUserToken } from "../__helpers__/tokenHelper";
+import etablissementService from "../../src/modules/etablissements/etablissements.service";
+import statsService from "../../src/modules/stats/stats.service";
+import { siretToSiren } from "../../src/shared/helpers/SirenHelper";
+import associationsService from "../../src/modules/associations/associations.service";
+import { BadRequestError } from "../../src/shared/errors/httpErrors";
+import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
+import { osirisRequestRepository } from "../../src/modules/providers/osiris/repositories";
 
 const g = global as unknown as { app: unknown };
 

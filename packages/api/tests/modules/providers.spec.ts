@@ -1,8 +1,8 @@
 import request = require("supertest");
-import osirisRequestRepository from "../../../../src/modules/providers/osiris/repositories/osiris.request.repository";
-import fonjepSubventionRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
-import { SubventionEntity as FonjepEntityFixture } from "../../providers/fonjep/__fixtures__/entity";
-import OsirisRequestEntityFixture from "../../providers/osiris/__fixtures__/entity";
+import osirisRequestRepository from "../../src/modules/providers/osiris/repositories/osiris.request.repository";
+import fonjepSubventionRepository from "../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
+import { SubventionEntity as FonjepEntityFixture } from "./providers/fonjep/__fixtures__/entity";
+import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
 
 const g = global as unknown as { app: unknown };
 

@@ -1,15 +1,15 @@
 import request = require("supertest");
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import statsService from "../../../src/modules/stats/stats.service";
-import UserDbo from "../../../src/modules/user/repositories/dbo/UserDbo";
-import userFixture from "../user/__fixtures__/entity";
-import db from "../../../src/shared/MongoConnection";
-import visitsFixture, { THIS_MONTH, TODAY } from "../association-visits/__fixtures__/entity";
-import nameFixture from "../association-name/__fixtures__/entity";
-import statsAssociationsVisitRepository from "../../../src/modules/stats/repositories/statsAssociationsVisit.repository";
-import { DefaultObject } from "../../../src/@types";
-import { createAndActiveUser, createUser } from "../../__helpers__/userHelper";
-import userRepository from "../../../src/modules/user/repositories/user.repository";
+import { createAndGetAdminToken, createAndGetUserToken } from "../__helpers__/tokenHelper";
+import statsService from "../../src/modules/stats/stats.service";
+import UserDbo from "../../src/modules/user/repositories/dbo/UserDbo";
+import userFixture from "./user/__fixtures__/entity";
+import db from "../../src/shared/MongoConnection";
+import visitsFixture, { THIS_MONTH, TODAY } from "../__fixtures__/association-visits.fixture";
+import nameFixture from "../__fixtures__/association-name.fixture";
+import statsAssociationsVisitRepository from "../../src/modules/stats/repositories/statsAssociationsVisit.repository";
+import { DefaultObject } from "../../src/@types";
+import { createAndActiveUser, createUser } from "../__helpers__/userHelper";
+import userRepository from "../../src/modules/user/repositories/user.repository";
 
 const g = global as unknown as { app: unknown };
 

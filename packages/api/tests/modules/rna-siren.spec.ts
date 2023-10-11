@@ -1,6 +1,6 @@
 import request = require("supertest");
-import { createAndGetUserToken } from "../../../../../__helpers__/tokenHelper";
-import rnaSirenService from "../../../../../../src/modules/_open-data/rna-siren/rnaSiren.service";
+import { createAndGetUserToken } from "../__helpers__/tokenHelper";
+import rnaSirenService from "../../src/modules/_open-data/rna-siren/rnaSiren.service";
 
 const g = global as unknown as { app: unknown };
 

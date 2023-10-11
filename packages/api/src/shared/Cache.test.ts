@@ -1,4 +1,4 @@
-import CacheData from "../../src/shared/Cache";
+import CacheData from "./Cache";
 
 describe("CacheData", () => {
     it("should save in cache", () => {
