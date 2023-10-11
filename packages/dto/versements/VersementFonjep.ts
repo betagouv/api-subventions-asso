@@ -5,4 +5,5 @@ export interface VersementFonjep extends BaseVersement {
     periodeDebut: ProviderValue<Date>;
     periodeFin: ProviderValue<Date>;
     montantAPayer: ProviderValue<number>;
+    bop: ProviderValue<number>;
 }
