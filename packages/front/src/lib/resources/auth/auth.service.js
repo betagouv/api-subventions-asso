@@ -8,6 +8,7 @@ import { page } from "$lib/store/kit.store";
 import localStorageService from "$lib/services/localStorage.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { isAdmin } from "$lib/services/user.service.js";
+import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service.js";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
@@ -33,6 +34,7 @@ export class AuthService {
     }
 
     loginByUser(user) {
+        checkOrDropSearchHistory(user._id);
         localStorageService.setItem(this.USER_LOCAL_STORAGE_KEY, user);
         this.setUserInApp();
         crispService.setUserEmail(user.email);

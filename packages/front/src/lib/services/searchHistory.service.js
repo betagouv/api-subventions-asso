@@ -13,3 +13,11 @@ export function clearSearchHistory() {
 }
 
 export const getSearchHistory = () => localStorageService.getItem("search-history", []);
+
+export const checkOrDropSearchHistory = newUserId => {
+    localStorageService.getItem("search-history", []);
+    const previousUserId = localStorageService.getItem("previous-user-id").value;
+    if (previousUserId === newUserId) return;
+    clearSearchHistory();
+    localStorageService.setItem("previous-user-id", newUserId);
+};

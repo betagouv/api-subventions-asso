@@ -4,6 +4,7 @@ import crispService from "$lib/services/crisp.service";
 import localStorageService from "$lib/services/localStorage.service";
 import requestsService from "$lib/services/requests.service";
 import { ReadStore } from "$lib/core/Store";
+import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -32,6 +33,7 @@ vi.mock("$lib/services/localStorage.service", async () => {
 });
 vi.mock("$lib/services/router.service");
 vi.mock("$lib/services/requests.service");
+vi.mock("$lib/services/searchHistory.service");
 
 describe("authService", () => {
     describe("signup()", () => {
@@ -150,6 +152,12 @@ describe("authService", () => {
     describe("loginByUser()", () => {
         const EMAIL = "a@b.c";
         const user = { _id: "USER_ID", email: EMAIL };
+
+        it("calls checkOrDropSearchHistory", async () => {
+            await authService.loginByUser(user);
+            expect(checkOrDropSearchHistory).toHaveBeenCalledWith(user._id);
+        });
+
         it("should save user in local storage", async () => {
             await authService.loginByUser(user);
             expect(localStorageService.setItem).toHaveBeenCalledWith(authService.USER_LOCAL_STORAGE_KEY, user);
