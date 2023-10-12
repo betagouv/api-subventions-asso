@@ -1,4 +1,4 @@
-import { getShortISODate, shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { shortISOPeriodRegExp, shortISORegExp } from "../../../shared/helpers/DateHelper";
 
 export const SCDL_MAPPER = {
     allocatorName: ["Nom attributaire*"],
@@ -22,7 +22,11 @@ export const SCDL_MAPPER = {
     },
     paymentEndDate: {
         path: ["Date de versement"],
-        adapter: value => (value ? new Date(value.split("/")[1]) : value),
+        adapter: value => {
+            if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1]);
+            else if (shortISORegExp.test(value)) return new Date(value);
+            else return null;
+        },
     },
     idRAE: ["Numéro de référencement au répertoire des entreprises"],
     UeNotification: {

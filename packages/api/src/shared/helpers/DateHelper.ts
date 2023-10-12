@@ -66,3 +66,5 @@ export const sameDateNextYear = (date: Date): Date => new Date(date.getFullYear(
 export const getShortISODate = (date: Date) => date.toISOString().substring(0, 10);
 
 export const shortISORegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d/);
+
+export const shortISOPeriodRegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d\/\d{4}-[01]\d-[0-3]\d/);
