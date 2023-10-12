@@ -6,12 +6,15 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { NotFoundError } from "../../shared/errors/httpErrors";
+import associationsService from "../associations/associations.service";
 import VersementsProvider from "./@types/VersementsProvider";
 
 export class VersementsService {
     async getVersementsByAssociation(identifier: AssociationIdentifiers) {
         const type = getIdentifierType(identifier);
         if (!type || type === StructureIdentifiersEnum.siret) throw new AssociationIdentifierError();
+
+        await associationsService.validateIdentifierFromAsso(identifier, type);
 
         let siren = type === StructureIdentifiersEnum.siren ? identifier : null;
         if (!siren) {

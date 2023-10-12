@@ -95,8 +95,8 @@ describe("EtablissementsService", () => {
         const getDemandesByEtablissementMock = jest.spyOn(subventionsService, "getDemandesByEtablissement");
 
         it("should call DemandeSubventionService.getByAssociation()", async () => {
-            getDemandesByEtablissementMock.mockImplementationOnce(() => new Flux<SubventionsFlux>());
-            etablissementService.getSubventions(SIREN);
+            getDemandesByEtablissementMock.mockResolvedValueOnce(new Flux<SubventionsFlux>());
+            await etablissementService.getSubventions(SIREN);
             expect(getDemandesByEtablissementMock).toHaveBeenCalledWith(SIREN);
         });
     });
