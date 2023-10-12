@@ -106,4 +106,28 @@ describe("DateHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getShortISODate", () => {
+        it("should return AAAA-MM-JJ date", () => {
+            const expected = "2023-10-12";
+            const DATE = new Date(expected);
+            const actual = DateHelper.getShortISODate(DATE);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("shortISORegExp", () => {
+        const regex = DateHelper.shortISORegExp();
+        it("should match", () => {
+            const expected = true;
+            const actual = regex.test("2023-10-12");
+            expect(actual).toEqual(expected);
+        });
+
+        it("should not match", () => {
+            const expected = false;
+            const actual = regex.test("2023/10/12");
+            expect(actual).toEqual(expected);
+        });
+    });
 });

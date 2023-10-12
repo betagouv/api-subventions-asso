@@ -1,3 +1,5 @@
+import { getShortISODate, shortISORegExp } from "../../../shared/helpers/DateHelper";
+
 export const SCDL_MAPPER = {
     allocatorName: ["Nom attributaire*"],
     allocatorSiret: ["Identification de l'attributaire*"],
@@ -16,7 +18,7 @@ export const SCDL_MAPPER = {
     paymentConditions: ["Conditions de versement*"],
     paymentStartDate: {
         path: ["Date de versement"],
-        adapter: value => (value ? new Date(value.split("/")[0]) : value),
+        adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0]) : value),
     },
     paymentEndDate: {
         path: ["Date de versement"],

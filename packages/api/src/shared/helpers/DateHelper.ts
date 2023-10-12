@@ -62,3 +62,7 @@ export const computeMonthBetweenDates = (dateA: Date, dateB: Date): number => {
 };
 
 export const sameDateNextYear = (date: Date): Date => new Date(date.getFullYear() + 1, date.getMonth(), date.getDate());
+
+export const getShortISODate = (date: Date) => date.toISOString().substring(0, 10);
+
+export const shortISORegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d/);
