@@ -1,13 +1,15 @@
 export default class MiscScdlEditorEntity {
     editorName: string;
     lastUpdate: Date;
-    reference: string;
-    datasetList: string[];
+    // Data.Gouv provider ID
+    idSource: string;
+    // Data.Gouv provider dataset IDs
+    datasetList?: string[];
 
     constructor({ editorName, lastUpdate, reference, datasetList }) {
         this.editorName = editorName;
         this.lastUpdate = lastUpdate;
-        this.reference = reference;
-        this.datasetList = datasetList;
+        this.idSource = reference;
+        this.datasetList = datasetList || [];
     }
 }
