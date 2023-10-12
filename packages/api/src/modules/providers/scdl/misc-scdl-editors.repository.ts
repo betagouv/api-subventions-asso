@@ -1,9 +1,8 @@
 import MigrationRepository from "../../../shared/MigrationRepository";
-import MiscScdlEditorEntity from "./entities/MiscScdlEditorEntity";
+import MiscScdlEditorEntity from "./entities/MiscScdlProducerEntity";
 
 export class MiscScdlEditorsRepository extends MigrationRepository<MiscScdlEditorEntity> {
-    readonly collectionName = "misc-scdl-editors";
-    readonly collectionImportName = "misc-scdl-editors-IMPORT";
+    readonly collectionName = "misc-scdl-producers";
 
     public async create(entity: MiscScdlEditorEntity) {
         this.collection.insertOne(entity);
