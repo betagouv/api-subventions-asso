@@ -1,4 +1,4 @@
-export const DILCRAH_2019_MAPPER = {
+export const SCDL_MAPPER = {
     allocatorName: ["Nom attributaire*"],
     allocatorSiret: ["Identification de l'attributaire*"],
     conventionDate: {
