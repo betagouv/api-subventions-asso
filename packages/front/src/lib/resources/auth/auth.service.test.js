@@ -4,7 +4,7 @@ import crispService from "$lib/services/crisp.service";
 import localStorageService from "$lib/services/localStorage.service";
 import requestsService from "$lib/services/requests.service";
 import { ReadStore } from "$lib/core/Store";
-import { clearSearchHistory } from "$lib/services/searchHistory.service";
+import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -152,6 +152,12 @@ describe("authService", () => {
     describe("loginByUser()", () => {
         const EMAIL = "a@b.c";
         const user = { _id: "USER_ID", email: EMAIL };
+
+        it("calls checkOrDropSearchHistory", async () => {
+            await authService.loginByUser(user);
+            expect(checkOrDropSearchHistory).toHaveBeenCalledWith(user._id);
+        });
+
         it("should save user in local storage", async () => {
             await authService.loginByUser(user);
             expect(localStorageService.setItem).toHaveBeenCalledWith(authService.USER_LOCAL_STORAGE_KEY, user);
@@ -202,11 +208,6 @@ describe("authService", () => {
         it("resets crisp session", () => {
             authService.logout();
             expect(crispService.resetSession).toBeCalled();
-        });
-
-        it("resets history", () => {
-            authService.logout();
-            expect(clearSearchHistory).toBeCalled();
         });
     });
 
