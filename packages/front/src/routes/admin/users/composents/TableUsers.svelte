@@ -66,7 +66,7 @@
                                     class="fr-link"
                                     target="_blank"
                                     rel="noreferrer">
-                                    Copiez-moi !
+                                    Lien d'activation
                                 </a>
                             </td>
                             <td>
