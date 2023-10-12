@@ -21,9 +21,11 @@ import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
 import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
-import { NotFoundError } from "../../shared/errors/httpErrors";
+import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
 import dataGouvService from "../providers/datagouv/datagouv.service";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
 export class AssociationsService {
@@ -137,6 +139,20 @@ export class AssociationsService {
 
     private getAssociationProviders() {
         return Object.values(providers).filter(p => this.isAssociationsProvider(p)) as AssociationsProvider[];
+    }
+
+    async isIdentifierFromAsso(identifier: StructureIdentifiers, knownIdType?: StructureIdentifiersEnum) {
+        const idType = knownIdType || getIdentifierType(identifier);
+        if (!idType) throw new StructureIdentifiersError();
+
+        if (idType === StructureIdentifiersEnum.rna) return true;
+        // from there it is either siren or siret
+        return await this.isSirenFromAsso(identifier);
+    }
+
+    async validateIdentifierFromAsso(identifier: StructureIdentifiers, knownIdType?: StructureIdentifiersEnum) {
+        if (!(await this.isIdentifierFromAsso(identifier, knownIdType)))
+            throw new BadRequestError("identifier does not represent an association");
     }
 
     async isSirenFromAsso(siren: Siren): Promise<boolean> {
