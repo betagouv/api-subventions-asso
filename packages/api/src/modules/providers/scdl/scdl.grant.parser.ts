@@ -2,12 +2,12 @@ import { ObjectId } from "mongodb";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { isSiret } from "../../../shared/Validators";
 import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
-import { ScdlGrantDbo } from "./@types/ScdlGrantDbo";
-import ScdlGrantEntity from "./entities/ScdlGrantEntity";
+import { ScdlGrantDbo } from "../datagouv/@types/ScdlGrantDbo";
+import { SCDL_MAPPER } from "./scdl.mapper";
 
-export default class DataGouvScdlGrantParser {
+export default class ScdlGrantParser {
     static parseCsv(chunk: Buffer, extractId: ObjectId): ScdlGrantDbo[] {
-        const parsedChunk = ParseHelper.csvParse(chunk);
+        const parsedChunk = ParseHelper.csvParse(chunk, ";");
         const header = parsedChunk.shift();
         if (!header) return [];
 
@@ -15,13 +15,8 @@ export default class DataGouvScdlGrantParser {
 
         for (const csvRow of parsedChunk) {
             if (isEmptyRow(csvRow)) continue;
-
             const parsedData = ParseHelper.linkHeaderToData(header, csvRow);
-
-            const storableData = ParseHelper.indexDataByPathObject(
-                ScdlGrantEntity.InformationsPath,
-                parsedData,
-            ) as unknown as ScdlGrantDbo;
+            const storableData = ParseHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlGrantDbo;
 
             if (!storableData.associationSiret || !isSiret(storableData.associationSiret)) continue;
             storableData.extractId = extractId;

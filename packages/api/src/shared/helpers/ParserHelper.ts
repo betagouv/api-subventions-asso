@@ -45,8 +45,8 @@ export function indexDataByPathObject(
     }, {} as unknown) as DefaultObject<string | number>;
 }
 
-export function linkHeaderToData(header: string[], data: unknown[]) {
-    return header.reduce((acc, header, key) => {
+export function linkHeaderToData(headers: string[], data: unknown[]) {
+    return headers.reduce((acc, header, key) => {
         const value = typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
         const trimedHeader = typeof header === "string" ? header.trim() : header;
         acc[trimedHeader] = value || "";
@@ -69,11 +69,12 @@ export function findFiles(file: string) {
     return files;
 }
 
-export function csvParse(content: Buffer) {
+export function csvParse(content: Buffer, delimiter = ";,") {
+    const CSV_DELIMITER = new RegExp(`[\t${delimiter}]`);
     return content
         .toString()
         .split("\n") // Select line by line
-        .map(raw => raw.split(/[\t;,]/).flat()); // Parse column
+        .map(raw => raw.split(CSV_DELIMITER).flat()); // Parse column
 }
 
 export function xlsParse(content: Buffer) {
