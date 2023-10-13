@@ -45,7 +45,7 @@ describe("GrantService", () => {
             mocked(getIdentifierType).mockReturnValue(StructureIdentifiersEnum.siren);
             getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
             joinGrantsMock = jest.spyOn(grantService as any, "joinGrants").mockReturnValue(JOINED);
-            mocked(associationsService.isSirenFromAsso).mockResolvedValue(true);
+            mocked(associationsService.validateIdentifierFromAsso).mockResolvedValue(undefined);
 
             mockedProviders = [generateProvider("prov1"), generateProvider("prov2")];
             getProvidersMock = jest.spyOn(grantService as any, "getGrantProviders").mockReturnValue(mockedProviders);
@@ -56,11 +56,6 @@ describe("GrantService", () => {
             getSirenMock.mockRestore();
             joinGrantsMock.mockRestore();
             getProvidersMock.mockRestore();
-        });
-
-        it("get providers", async () => {
-            await grantService.getGrants(SIREN);
-            expect(getProvidersMock).toHaveBeenCalled();
         });
 
         it("identifies identifier type", async () => {
@@ -80,24 +75,18 @@ describe("GrantService", () => {
             expect(getSirenMock).toHaveBeenCalledWith(RNA);
         });
 
-        it("does not check if rna given", async () => {
-            mocked(getIdentifierType).mockReturnValueOnce(StructureIdentifiersEnum.rna);
-            await grantService.getGrants(ID);
-            expect(associationsService.isSirenFromAsso).not.toHaveBeenCalled();
-        });
-
         it("checks if siren is from asso", async () => {
             mocked(getIdentifierType).mockReturnValueOnce(StructureIdentifiersEnum.siren);
-            mocked(siretToSiren).mockReturnValueOnce(SIREN);
             await grantService.getGrants(ID);
-            expect(associationsService.isSirenFromAsso).toHaveBeenCalledWith(SIREN);
+            expect(associationsService.validateIdentifierFromAsso).toHaveBeenCalledWith(
+                ID,
+                StructureIdentifiersEnum.siren,
+            );
         });
 
-        it("checks if siret is from asso", async () => {
-            mocked(getIdentifierType).mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            mocked(siretToSiren).mockReturnValueOnce(SIREN);
-            await grantService.getGrants(ID);
-            expect(associationsService.isSirenFromAsso).toHaveBeenCalledWith(SIREN);
+        it("get providers", async () => {
+            await grantService.getGrants(SIREN);
+            expect(getProvidersMock).toHaveBeenCalled();
         });
 
         it.each`
