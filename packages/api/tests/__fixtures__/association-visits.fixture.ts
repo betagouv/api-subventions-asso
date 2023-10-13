@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import AssociationVisitEntity from "../../../../src/modules/stats/entities/AssociationVisitEntity";
+import AssociationVisitEntity from "../../src/modules/stats/entities/AssociationVisitEntity";
 
 const now = new Date();
 export const TODAY = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 15));

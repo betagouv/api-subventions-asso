@@ -1,4 +1,4 @@
-import ProviderValueFactory from "../../src/shared/ProviderValueFactory";
+import ProviderValueFactory from "./ProviderValueFactory";
 
 describe("ProviderValueFactory", () => {
     describe("buildProviderValueAdapter", () => {

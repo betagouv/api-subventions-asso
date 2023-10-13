@@ -1,6 +1,6 @@
 import request = require("supertest");
-import { createAndGetAdminToken } from "../../__helpers__/tokenHelper";
-import { BadRequestErrorCode, BadRequestErrorMessage } from "../../../src/shared/errors/httpErrors";
+import { createAndGetAdminToken } from "../__helpers__/tokenHelper";
+import { BadRequestErrorCode, BadRequestErrorMessage } from "../../src/shared/errors/httpErrors";
 
 const g = global as unknown as { app: unknown };
 

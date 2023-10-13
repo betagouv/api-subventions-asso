@@ -1,9 +1,9 @@
 import request = require("supertest");
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import associationNameRepository from "../../../src/modules/association-name/repositories/associationName.repository";
-import AssociationNameFixture from "../association-name/__fixtures__/entity";
-import apiEntrepriseService from "../../../src/modules/providers/apiEntreprise/apiEntreprise.service";
-import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
+import { createAndGetUserToken } from "../__helpers__/tokenHelper";
+import associationNameRepository from "../../src/modules/association-name/repositories/associationName.repository";
+import AssociationNameFixture from "../__fixtures__/association-name.fixture";
+import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
+import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
 
 const g = global as unknown as { app: unknown };
 

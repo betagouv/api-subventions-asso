@@ -1,4 +1,4 @@
-import AssociationNameEntity from "../../../../src/modules/association-name/entities/AssociationNameEntity";
+import AssociationNameEntity from "../../src/modules/association-name/entities/AssociationNameEntity";
 
 export default [
     {

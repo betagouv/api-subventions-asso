@@ -1,4 +1,4 @@
-import * as SirenHelper from "../../../src/shared/helpers/SirenHelper";
+import * as SirenHelper from "./SirenHelper";
 
 describe("SirenHelper", () => {
     describe("siretToSiren", () => {

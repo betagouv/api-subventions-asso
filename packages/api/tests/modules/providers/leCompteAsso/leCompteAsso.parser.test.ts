@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import LeCompteAssoParser from "../../../src/modules/providers//leCompteAsso/leCompteAsso.parser";
+import LeCompteAssoParser from "../../../../src/modules/providers/leCompteAsso/leCompteAsso.parser";
 
 describe("leCompteAsso.parser", () => {
     it("should parse file", () => {

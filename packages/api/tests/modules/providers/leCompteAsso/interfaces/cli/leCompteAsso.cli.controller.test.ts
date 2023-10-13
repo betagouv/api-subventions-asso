@@ -1,7 +1,7 @@
 import path from "path";
-import apiAssoService from "../../../../../src/modules/providers/apiAsso/apiAsso.service";
-import LeCompteAssoCliController from "../../../../../src/modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
-import ProviderValueAdapter from "../../../../../src/shared/adapters/ProviderValueAdapter";
+import apiAssoService from "../../../../../../src/modules/providers/apiAsso/apiAsso.service";
+import LeCompteAssoCliController from "../../../../../../src/modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
+import ProviderValueAdapter from "../../../../../../src/shared/adapters/ProviderValueAdapter";
 
 describe("LeCompteAssoCliController", () => {
     const testWrongFilePath = path.resolve(__dirname, "../../__fixtures__/le-compte-asso-export-tests.csv");
