@@ -31,6 +31,15 @@ describe("DemarchesSimplifieesDtoAdapter", () => {
                                         ],
                                     },
                                 ],
+                                pageInfo: {
+                                    hasPreviousPage: false,
+                                    hasNextPage: false,
+                                    endCursor: "MTM",
+                                },
+                            },
+                            service: {
+                                nom: "Service jeunesse et prévention, Direction des affaires maritimes ",
+                                organisme: "mairie de Mours, préfecture de l'Oise, ministère de la Culture",
                             },
                         },
                     },

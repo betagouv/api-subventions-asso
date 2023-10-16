@@ -21,6 +21,10 @@ Array [
       },
     },
     "demarcheId": 12345,
+    "service": Object {
+      "nom": "Service jeunesse et prévention, Direction des affaires maritimes ",
+      "organisme": "mairie de Mours, préfecture de l'Oise, ministère de la Culture",
+    },
     "siret": "00000000000000",
   },
 ]

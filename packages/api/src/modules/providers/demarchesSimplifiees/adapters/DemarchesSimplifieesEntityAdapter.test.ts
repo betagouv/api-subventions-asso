@@ -74,7 +74,12 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
 
     describe("mapSchema", () => {
         const ENTITY = { before: "a", siret: "SIRET" };
-        const MAPPER = { key: [{ to: "after.nested", from: "before" }] };
+        const MAPPER = {
+            key: [
+                { to: "after.nested", from: "before" },
+                { to: "after.same", value: "toujoursPareil" },
+            ],
+        };
         const KEY = "key";
 
         it("adapts to proper format", () => {
@@ -84,6 +89,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
                 Object {
                   "after": Object {
                     "nested": "a",
+                    "same": "toujoursPareil",
                   },
                   "siret": "SIRET",
                 }

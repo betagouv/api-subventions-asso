@@ -18,6 +18,8 @@ export class DemarchesSimplifieesEntityAdapter {
         const subvention = { siret: entity.siret };
 
         mapper[schemaId].forEach(property => {
+            if (property.value) return lodash.set(subvention, property.to, property.value);
+
             let value = lodash.get(entity, property.from);
             const valueDate = [
                 moment(value, "DD MMMM YYYY", "fr", true).toDate(), // Use moment for read French date

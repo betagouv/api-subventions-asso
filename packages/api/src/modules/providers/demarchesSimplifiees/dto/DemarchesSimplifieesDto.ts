@@ -48,6 +48,10 @@ export interface DemarchesSimplifieesSuccessDto {
                     hasPreviousPage: boolean;
                 };
             };
+            service: {
+                nom: string;
+                organisme: string;
+            };
         };
     };
     errors: undefined;

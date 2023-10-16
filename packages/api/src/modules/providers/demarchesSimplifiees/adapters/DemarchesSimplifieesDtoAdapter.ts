@@ -26,6 +26,7 @@ export default class DemarchesSimplifieesDtoAdapter {
                             return acc;
                         }, {}),
                     },
+                    service: dto.data.demarche.service,
                 };
             })
             .filter(entity => entity) as DemarchesSimplifieesDataEntity[];
