@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/betagouv/datasubvention/compare/v0.36.8...v0.38.0) (2023-10-16)
+
+### Bug Fixes
+
+-   **api:** modal typing (review) ([90d34fa](https://github.com/betagouv/datasubvention/commit/90d34fab73b42f20b3c0ec117029ce46fcfa87da))
+-   **front:** no longer clear at logout ([baf7c65](https://github.com/betagouv/datasubvention/commit/baf7c656b8c46dcdd50ff9a100ecef8215829619))
+
+### Features
+
+-   **front:** allow to disable tracking multiStepForm submit ([ecd35cf](https://github.com/betagouv/datasubvention/commit/ecd35cfb9aeb70f61053d95bcd69705f61ebe19c))
+-   **front:** more precise tracking according to submit success ([3138754](https://github.com/betagouv/datasubvention/commit/313875441ba09a3a8205246028e7d2119dec1734))
+-   **front:** only clear history if different user logs in ([f814c96](https://github.com/betagouv/datasubvention/commit/f814c96aa572c5410a8a34e0e153e51b56bb8b98))
+-   **front:** wording activation link ([1643f72](https://github.com/betagouv/datasubvention/commit/1643f728a235c578286e797a3118678724375b10))
+
+# [0.37.0](https://github.com/betagouv/datasubvention/compare/v0.36.6...v0.37.0) (2023-10-02)
+
+### Bug Fixes
+
+-   **front:** .env should not contain env=dev ([2def61e](https://github.com/betagouv/datasubvention/commit/2def61e8b3304d9694ee88ea0d819038884bffe3))
+-   **front:** autocomplete label ([f610a09](https://github.com/betagouv/datasubvention/commit/f610a0944fb1ed748ad7af85e62b65eccd479e5e))
+-   **front:** case first/last name ([fa367ef](https://github.com/betagouv/datasubvention/commit/fa367ef41dde1047405ef18cb8e3d310c9e8751b))
+-   **front:** combobox style matches select style ([fe137b5](https://github.com/betagouv/datasubvention/commit/fe137b53de1b70d5e0ac7f26aec9d6593145e72e))
+-   **front:** get all env vars in vite ([86e5345](https://github.com/betagouv/datasubvention/commit/86e5345a9b5040d0b35d3c44d27ebc25859ab505))
+-   **front:** keep structure in initial load ([7cf38cb](https://github.com/betagouv/datasubvention/commit/7cf38cb9b9681d9c7d31fc448fcdd18173d70707))
+-   **front:** layout title-alert order ([4896d36](https://github.com/betagouv/datasubvention/commit/4896d3669c29ef46bc17750d9cd1f521a8cdddf4))
+-   **front:** misplaced component ([b6891c1](https://github.com/betagouv/datasubvention/commit/b6891c1670d1d20672dfe132175941f04d63c749))
+-   **front:** regression ([be48578](https://github.com/betagouv/datasubvention/commit/be4857817a180d74f6fdbcce05742a347261f067))
+-   **front:** setup options during init ([4de6040](https://github.com/betagouv/datasubvention/commit/4de6040923abf1a20b08b183e73b8cc62b319874))
+-   **front:** substep consistent spacing ([5f09831](https://github.com/betagouv/datasubvention/commit/5f09831f735ffd3ea2f478f63b2b1278ad72c9a5))
+-   **front:** types and mock ([af52f79](https://github.com/betagouv/datasubvention/commit/af52f79dcb93e1b2a0d685bce67e2f5feb247016))
+-   **front:** weird auto import ([ac08372](https://github.com/betagouv/datasubvention/commit/ac083728b3259d2018d227e005ca6234099ed59c))
+
+### Features
+
+-   **front:** agent type field in profile ([fc8c66d](https://github.com/betagouv/datasubvention/commit/fc8c66daa1f4a8f298685f18e353da726de2a89c))
+-   **front:** basic sentry setup ([f1b7d9f](https://github.com/betagouv/datasubvention/commit/f1b7d9f81fd726f2ee092d0062d8b16db22c5144))
+-   **front:** block profile save about validation ([45e641a](https://github.com/betagouv/datasubvention/commit/45e641a9ea8826785fbe0989949858047ceb2fa6))
+-   **front:** configure headers and token for sentry ([2906a44](https://github.com/betagouv/datasubvention/commit/2906a442406fb73691b6cb92e17e02825eb4bbe3))
+-   **front:** disable save button if no modification ([13d4375](https://github.com/betagouv/datasubvention/commit/13d437593a78315d43fe845de2d46d715104913c))
+-   **front:** get self user port & service ([d26853e](https://github.com/betagouv/datasubvention/commit/d26853e87531faacb7d5ab1242dad7baddc45329))
+-   **front:** get user data ([0091377](https://github.com/betagouv/datasubvention/commit/0091377163d3443a7bff787e0096a1ca06032053))
+-   **front:** input disabled state ([871947c](https://github.com/betagouv/datasubvention/commit/871947cb0c18ea22e1a3be960285d3c7423cf17c))
+-   **front:** integrate password in layout ([8019db9](https://github.com/betagouv/datasubvention/commit/8019db91786a23d4d0513d18883120799214fa2b))
+-   **front:** layout and logic for names and email ([d9ad9bb](https://github.com/betagouv/datasubvention/commit/d9ad9bbe856cb6b2928a7fc543d2042b7b6945cf))
+-   **front:** prevent leaving page ([9a7cdfb](https://github.com/betagouv/datasubvention/commit/9a7cdfbd91bb9e83b96cf848909fbf47f268ff5e))
+-   **front:** profile call user service ([ad2fba4](https://github.com/betagouv/datasubvention/commit/ad2fba4125ded7c1ad1f90f36d0212e259a40f00))
+-   **front:** profile insert step 3 part ([7e82367](https://github.com/betagouv/datasubvention/commit/7e8236745d0869d02fe4b7e95fd75b9843261db5))
+-   **front:** profile ResetPwdModule ([5c4c838](https://github.com/betagouv/datasubvention/commit/5c4c8380d7ba26f91b24af9f10ccdeca1b6bc0af))
+-   **front:** profile separator ([f6f3a38](https://github.com/betagouv/datasubvention/commit/f6f3a38c6ddac30553123890ff03677ffeeecf9b))
+-   **front:** refactor show alert ([0a8275e](https://github.com/betagouv/datasubvention/commit/0a8275e6a06c3f57ecdae29a9763993536203375))
+-   **front:** requestsService patch ([1771dfe](https://github.com/betagouv/datasubvention/commit/1771dfed8f6b42797d24f4a79358fb40bd980b28))
+-   **front:** reset pwd & activate logs user in ([e0a65a8](https://github.com/betagouv/datasubvention/commit/e0a65a8d4be2d5e097b74633748a886c19953aa8))
+-   **front:** reset pwd & activate redirects to Home with success alert ([49b7b9a](https://github.com/betagouv/datasubvention/commit/49b7b9a09c3c3128e648519b99717fa4d64c70aa))
+-   **front:** review ([9307980](https://github.com/betagouv/datasubvention/commit/9307980522313d12e730f12ffccd5e701d986091))
+-   **front:** scroll to alert on save ([5bdb471](https://github.com/betagouv/datasubvention/commit/5bdb471af78d1ff49e1d124e9d7e57029111f6ff))
+-   **front:** sentry track disabled in dev ([c21f1d6](https://github.com/betagouv/datasubvention/commit/c21f1d66a665252a8d007557af92e4c377b83d6c))
+-   **front:** sentry track release and env ([7149839](https://github.com/betagouv/datasubvention/commit/7149839e30b706b244d38daf22cc5caacc29e63c))
+-   **front:** transmit onChange event ([88ecd94](https://github.com/betagouv/datasubvention/commit/88ecd94d7530fb58e67f2f97017f4fd875291f42))
+-   **front:** update profile port and service ([dda5172](https://github.com/betagouv/datasubvention/commit/dda51729ffbd977b3aec1830771cc1d2306d21f8))
+
 # [0.37.0](https://github.com/betagouv/datasubvention/compare/v0.36.3...v0.37.0) (2023-10-02)
 
 ### Bug Fixes

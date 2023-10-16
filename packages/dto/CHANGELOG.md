@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/betagouv/datasubvention/compare/v0.36.8...v0.38.0) (2023-10-16)
+
+### Bug Fixes
+
+-   **api:** add fonjep bop in adapter ([59c9d29](https://github.com/betagouv/datasubvention/commit/59c9d29d0113afd88471162be22945df288fd0d1))
+
+# [0.37.0](https://github.com/betagouv/datasubvention/compare/v0.36.6...v0.37.0) (2023-10-02)
+
+### Features
+
+-   **dto:** interface to update user ([b234417](https://github.com/betagouv/datasubvention/commit/b2344177b3c61d3b015971bb91f23a73ab404903))
+
 # [0.37.0](https://github.com/betagouv/datasubvention/compare/v0.36.3...v0.37.0) (2023-10-02)
 
 ### Features
