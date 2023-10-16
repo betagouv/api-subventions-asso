@@ -7,12 +7,15 @@ export type ScdlGrant = {
     decisionReference?: string;
     associationName?: string;
     associationSiret: string;
+    associationRna: string;
     object?: string;
     amount: number;
+    paymentNature: string;
     paymentConditions?: string;
-    paymentStartDate?: string;
-    paymentEndDate?: string;
+    paymentStartDate?: Date;
+    paymentEndDate?: Date;
     idRAE?: string;
     UeNotification?: boolean;
     grantPercentage?: number;
+    aidSystem: string;
 };
