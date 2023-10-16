@@ -8,7 +8,7 @@
     const ctrl = new ResultCardController(association, searchValue);
 </script>
 
-<Card size="12" url={ctrl.url}>
+<Card size="12" url={ctrl.url} @click={ctrl.onClick}>
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col fr-col-lg-12">
             <!-- eslint-disable-next-line svelte/no-at-html-tags -->

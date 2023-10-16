@@ -27,4 +27,8 @@ export class ResultCardController {
         this.htmlRna = rna.replace(searchValueRegex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
         this.htmlSiren = siren.replace(searchValueRegex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
     }
+
+    onClick() {
+        trackerService.buttonClickEvent("home.history.click");
+    }
 }
