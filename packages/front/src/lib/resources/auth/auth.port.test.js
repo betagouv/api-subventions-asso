@@ -40,15 +40,15 @@ describe("AuthPort", () => {
 
         it("calls resetPassword route", async () => {
             const PATH = "/auth/reset-password";
-            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { user: {} } });
             await authPort.resetPassword(TOKEN, PASSWORD);
             expect(requestsService.post).toBeCalledWith(PATH, { token: TOKEN, password: PASSWORD });
         });
 
         it("returns user if success", async () => {
-            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { user: {} } });
             const actual = await authPort.resetPassword(TOKEN, PASSWORD);
-            expect(actual).toEqual({ data: {} });
+            expect(actual).toEqual({});
         });
     });
 
@@ -98,15 +98,15 @@ describe("AuthPort", () => {
 
         it("calls activate route", async () => {
             const PATH = "/auth/activate";
-            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { user: {} } });
             await authPort.activate(FAKE_TOKEN, DATA);
             expect(requestsService.post).toBeCalledWith(PATH, { token: FAKE_TOKEN, data: DATA });
         });
 
         it("returns user if success", async () => {
-            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
+            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { user: {} } });
             const actual = await authPort.activate(FAKE_TOKEN, DATA);
-            expect(actual).toEqual({ data: {} });
+            expect(actual).toEqual({});
         });
     });
 });
