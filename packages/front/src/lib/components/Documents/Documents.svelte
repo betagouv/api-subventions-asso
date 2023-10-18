@@ -7,7 +7,6 @@
     import { DocumentsController } from "./Documents.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Card from "$lib/dsfr/Card.svelte";
-    import documentService from "$lib/resources/documents/documents.service";
 
     export let resource;
     export let resourceType = "association";
@@ -43,17 +42,6 @@
                         <p class="fr-text--sm">
                             Fournisseur du fichier: <b>{document.provider}</b>
                         </p>
-
-                        {#if documentService.isInternalLink(document.url)}
-                            <p class="fr-text--sm" style="font-style: italic">
-                                <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true" />
-                                Faire un clic gauche pour télécharger la pièce
-                            </p>
-                        {/if}
-
-                        <div slot="card-end">
-                            <p class="fr-card__detail">{controller.getDateString(document.date)}</p>
-                        </div>
                     </Card>
                 {/each}
             </div>
