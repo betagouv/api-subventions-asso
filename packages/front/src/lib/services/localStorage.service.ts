@@ -17,11 +17,14 @@ export class LocalStorageService {
 
     getItem(key: string, defaultValue = null) {
         return derived(this._localStore, storage =>
-            storage[key] !== undefined ? JSON.parse(storage[key] as string) : defaultValue,
+            storage[key] !== undefined && storage[key] !== "undefined"
+                ? JSON.parse(storage[key] as string)
+                : defaultValue,
         );
     }
 
     setItem(key: string, value: string) {
+        if (value === undefined) return this.removeItem(key);
         localStorage.setItem(key, JSON.stringify(value));
         this._updateLocalStorage();
     }
