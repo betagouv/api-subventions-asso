@@ -1,7 +1,7 @@
 import MiscScdlDataEntity from "./entities/MiscScdlDataEntity";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
-import miscScdlDataRepository from "./miscScdlData.repository";
-import miscScdlProducersRepository from "./miscScdlProducer.repository";
+import miscScdlDataRepository from "./repositories/miscScdlData.repository";
+import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
 
 export class ScdlService {
     createProducer(entity: MiscScdlProducerEntity) {

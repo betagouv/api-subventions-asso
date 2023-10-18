@@ -1,7 +1,7 @@
 import scdlService from "./scdl.service";
-import miscScdlDataRepository from "./miscScdlData.repository";
+import miscScdlDataRepository from "./repositories/miscScdlData.repository";
 jest.mock("./miscScdlData.repository");
-import miscScdlProducersRepository from "./miscScdlProducer.repository";
+import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
 jest.mock("./miscScdlProducer.repository");
 
 import MiscScdlDataFixture from "./__fixtures__/MiscScdlData";

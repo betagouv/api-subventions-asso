@@ -1,5 +1,5 @@
-import MigrationRepository from "../../../shared/MigrationRepository";
-import MiscScdlDataEntity from "./entities/MiscScdlDataEntity";
+import MigrationRepository from "../../../../shared/MigrationRepository";
+import MiscScdlDataEntity from "../entities/MiscScdlDataEntity";
 
 export class MiscScdlDataRepository extends MigrationRepository<MiscScdlDataEntity> {
     readonly collectionName = "misc-scdl-data";
