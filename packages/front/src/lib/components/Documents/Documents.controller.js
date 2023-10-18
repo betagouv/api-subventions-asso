@@ -3,7 +3,6 @@ import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
-import documentService from "$lib/resources/documents/documents.service";
 import trackerService from "$lib/services/tracker.service";
 
 const resourceNameWithDemonstrativeByType = {
@@ -54,18 +53,5 @@ export class DocumentsController {
 
     async onClick(event, doc) {
         trackerService.buttonClickEvent("association-etablissement.documents.download", doc.url);
-
-        // authenticated calls to our api when provider have private access to files
-        if (!this.isInternalLink(doc.url)) return;
-        event.preventDefault();
-        const blob = await documentService.getDauphinBlob(doc.url);
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", doc.nom);
-        link.setAttribute("target", "_blank");
-        document.body.appendChild(link);
-        link.click();
-        window.URL.revokeObjectURL(url);
     }
 }
