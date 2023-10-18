@@ -5,7 +5,6 @@ module.exports = {
         const result = await db
             .collection("fonjepSubvention")
             .aggregate([
-                { $match: {} },
                 {
                     $group: {
                         _id: "$data.Dispositif.FinanceurCode",

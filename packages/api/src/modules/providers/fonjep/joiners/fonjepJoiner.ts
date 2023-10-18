@@ -32,10 +32,6 @@ export class FonjepJoiner {
         ];
     }
 
-    public getAllFullGrants() {
-        return this.applicationCollection.aggregate([{ $match: {} }, ...this.joinPipeline]);
-    }
-
     public getFullFonjepGrantsBySiret(siret: Siret) {
         return this.applicationCollection
             .aggregate([{ $match: { "legalInformations.siret": siret } }, ...this.joinPipeline])
