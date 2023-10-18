@@ -5,6 +5,11 @@ export class DocumentService {
         return documentPort.getDauphinBlob(localDauphinDocUrl);
     }
 
+    isInternalLink(link) {
+        const isAbsoluteUrl = new RegExp("^(?:[a-z+]+:)?//", "i");
+        return !isAbsoluteUrl.test(link);
+    }
+
     async formatAndSortDocuments(documents) {
         const documentLabels = {
             RIB: "Télécharger le RIB",

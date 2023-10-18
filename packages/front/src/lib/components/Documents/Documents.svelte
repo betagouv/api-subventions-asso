@@ -7,6 +7,7 @@
     import { DocumentsController } from "./Documents.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Card from "$lib/dsfr/Card.svelte";
+    import documentService from "$lib/resources/documents/documents.service";
 
     export let resource;
     export let resourceType = "association";
@@ -43,7 +44,7 @@
                             Fournisseur du fichier: <b>{document.provider}</b>
                         </p>
 
-                        {#if controller.isInternalLink(document.url)}
+                        {#if documentService.isInternalLink(document.url)}
                             <p class="fr-text--sm" style="font-style: italic">
                                 <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true" />
                                 Faire un clic gauche pour télécharger la pièce
