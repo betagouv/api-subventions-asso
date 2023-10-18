@@ -52,11 +52,6 @@ export class DocumentsController {
         this.documentsPromise.set(promise);
     }
 
-    isInternalLink(link) {
-        const isAbsoluteUrl = new RegExp("^(?:[a-z+]+:)?//", "i");
-        return !isAbsoluteUrl.test(link);
-    }
-
     async onClick(event, doc) {
         trackerService.buttonClickEvent("association-etablissement.documents.download", doc.url);
 

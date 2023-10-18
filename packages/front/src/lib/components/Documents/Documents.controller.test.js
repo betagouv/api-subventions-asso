@@ -6,20 +6,6 @@ describe("Documents.controller", () => {
     let documentController;
     beforeAll(() => (documentController = new DocumentsController("association")));
 
-    describe("isInternalLink", () => {
-        it("returns false for absolute url", () => {
-            const expected = false;
-            const actual = documentController.isInternalLink("https://google.fr");
-            expect(actual).toBe(expected);
-        });
-
-        it("returns true for absolute local url", () => {
-            const expected = true;
-            const actual = documentController.isInternalLink("/path");
-            expect(actual).toBe(expected);
-        });
-    });
-
     describe("onClick", () => {
         let oldURL, oldCreateElement, oldAppendChild;
         const BLOB = "blob";
