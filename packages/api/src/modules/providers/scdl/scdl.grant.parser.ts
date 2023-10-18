@@ -17,7 +17,6 @@ export default class ScdlGrantParser {
             if (isEmptyRow(csvRow)) continue;
             const parsedData = ParseHelper.linkHeaderToData(header, csvRow);
             const storableData = ParseHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlGrantDbo;
-            console.log(storableData);
 
             if (!storableData.associationSiret || !isSiret(storableData.associationSiret)) continue;
             storableData.extractId = extractId;
