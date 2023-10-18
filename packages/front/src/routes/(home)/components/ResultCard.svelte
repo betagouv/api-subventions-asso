@@ -1,40 +1,25 @@
 <script>
+    import { ResultCardController } from "./ResultCard.controller";
     import Card from "$lib/dsfr/Card.svelte";
-    import { siretToSiren } from "$lib/helpers/sirenHelper";
-    import { isStartOfSiret } from "$lib/helpers/validatorHelper";
 
     export let association;
     export let searchValue;
 
-    let value = searchValue.trim();
-    if (isStartOfSiret(searchValue)) {
-        value = siretToSiren(searchValue);
-    }
-
-    const name = association.name || "-";
-    const rna = association.rna || "INCONNU";
-    const siren = association.siren || "INCONNU";
-
-    const regex = new RegExp(value, "ig");
-    const upperSearchedValue = value.toUpperCase();
-
-    const htmlName = name.replace(regex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
-    const htmlRna = rna.replace(regex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
-    const htmlSiren = siren.replace(regex, `<span class="dsfr-black-bold">${upperSearchedValue}</span>`);
+    const ctrl = new ResultCardController(association, searchValue);
 </script>
 
-<Card size="12" url="/association/{association.rna || association.siren}">
+<Card size="12" url={ctrl.url} @click={ctrl.onClick}>
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col fr-col-lg-12">
             <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-            <p class="fr-tag grey-text">SIREN: {@html htmlSiren}</p>
+            <p class="fr-tag grey-text">SIREN: {@html ctrl.htmlSiren}</p>
             <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-            <p class="fr-tag grey-text">RNA: {@html htmlRna}</p>
+            <p class="fr-tag grey-text">RNA: {@html ctrl.htmlRna}</p>
         </div>
         <div class="fr-col fr-col-lg-12">
             <p class="association-name grey-text">
                 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                {@html htmlName}
+                {@html ctrl.htmlName}
             </p>
         </div>
     </div>
