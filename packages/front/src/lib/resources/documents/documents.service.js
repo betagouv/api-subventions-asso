@@ -1,4 +1,6 @@
 import documentPort from "./documents.port";
+import { DATASUB_URL } from "$env/static/public";
+import authService from "$lib/resources/auth/auth.service";
 
 export class DocumentService {
     getDauphinBlob(localDauphinDocUrl) {
@@ -40,12 +42,19 @@ export class DocumentService {
         }, {});
 
         // sort
-        return Object.entries(documentsByType)
+        const sortedFlatDocs = Object.entries(documentsByType)
             .sort(([keyA], [keyB]) => (keyA > keyB ? 1 : -1)) // Sort by type
             .map(
                 ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same types sort by date
             )
             .flat();
+
+        // internal link : add api domain and token
+        const token = (await authService.getCurrentUser()).jwt.token;
+        return sortedFlatDocs.map(doc => {
+            if (this.isInternalLink(doc.url)) doc.url = `${DATASUB_URL}${doc.url}?token=${token}`;
+            return doc;
+        });
     }
 }
 
