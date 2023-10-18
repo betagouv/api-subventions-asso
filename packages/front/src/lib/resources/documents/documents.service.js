@@ -27,6 +27,7 @@ export class DocumentService {
             Formation: `Télécharger "L'habilitation d'organisme de formation"`,
         };
 
+        // label documents
         const documentsByType = documents.reduce((acc, document) => {
             if (!acc[document.type]) acc[document.type] = [];
 
@@ -38,16 +39,13 @@ export class DocumentService {
             return acc;
         }, {});
 
-        return (
-            Object.entries(documentsByType)
-                .sort(([keyA], [keyB]) => (keyA > keyB ? 1 : -1)) // Sort by type
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                .map(
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same type sort by date
-                )
-                .flat()
-        );
+        // sort
+        return Object.entries(documentsByType)
+            .sort(([keyA], [keyB]) => (keyA > keyB ? 1 : -1)) // Sort by type
+            .map(
+                ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same types sort by date
+            )
+            .flat();
     }
 }
 
