@@ -2,24 +2,26 @@ const { default: fonjepService } = require("../build/src/modules/providers/fonje
 
 module.exports = {
     async up(db) {
-        const cursor = await db.collection("fonjepVersement").find({});
+        const result = await db
+            .collection("fonjepSubvention")
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$data.Dispositif.FinanceurCode",
+                        subs: { $addToSet: "$indexedInformations.code_poste" },
+                    },
+                },
+            ])
+            .toArray();
 
-        let nbVersementUpdated = 0;
-        while (await cursor.hasNext()) {
-            const versement = await cursor.next();
-            if (versement.indexedInformations.bop) continue;
-            const subvention = (
-                await db
-                    .collection("fonjepSubvention")
-                    .find({ "indexedInformations.code_poste": versement.indexedInformations.code_poste })
-                    .toArray()
-            )[0];
-            versement.indexedInformations.bop = fonjepService.getBopFromFounderCode(
-                subvention.data["FinanceurPrincipalCode"],
-            );
-            await db.collection("fonjepVersement").updateOne({ _id: versement._id }, { $set: versement });
-            nbVersementUpdated++;
-            if (nbVersementUpdated % 100 === 0) console.log(`100 bop ajoutés`);
+        for (const obj of result) {
+            const bop = fonjepService.getBopFromFounderCode(obj._id);
+            await db
+                .collection("fonjepVersement")
+                .updateMany(
+                    { "indexedInformations.code_poste": { $in: obj.subs } },
+                    { $set: { "indexedInformations.bop": bop } },
+                );
         }
     },
 };
