@@ -1,6 +1,6 @@
 import { Siret } from "dto";
 
-export type ScdlGrant = {
+export type ScdlGrantEntity = {
     allocatorName: string;
     allocatorSiret: Siret;
     conventionDate?: Date;

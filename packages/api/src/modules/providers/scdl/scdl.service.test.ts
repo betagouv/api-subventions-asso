@@ -1,10 +1,10 @@
 import scdlService from "./scdl.service";
-import miscScdlDataRepository from "./repositories/miscScdlData.repository";
-jest.mock("./miscScdlData.repository");
+import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
+jest.mock("./repositories/miscScdlGrant.repository");
 import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
-jest.mock("./miscScdlProducer.repository");
+jest.mock("./repositories/miscScdlProducer.repository");
 
-import MiscScdlDataFixture from "./__fixtures__/MiscScdlData";
+import MiscScdlGrantFixture from "./__fixtures__/MiscScdlGrant";
 import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
 
 describe("ScdlService", () => {
@@ -16,10 +16,10 @@ describe("ScdlService", () => {
         });
     });
     describe("createData", () => {
-        it("should call miscScdlDataRepository.create()", async () => {
-            const DATA = { ...MiscScdlDataFixture };
-            await scdlService.createData(DATA);
-            expect(miscScdlDataRepository.create).toHaveBeenCalledWith(DATA);
+        it("should call miscScdlGrantRepository.createMany()", async () => {
+            const GRANTS = [{ ...MiscScdlGrantFixture, producerId: "" }];
+            await scdlService.createManyGrants(GRANTS);
+            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith(GRANTS);
         });
     });
 });

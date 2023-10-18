@@ -1,6 +1,6 @@
-import MiscScdlDataEntity from "./entities/MiscScdlDataEntity";
+import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
-import miscScdlDataRepository from "./repositories/miscScdlData.repository";
+import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
 import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
 
 export class ScdlService {
@@ -8,8 +8,8 @@ export class ScdlService {
         return miscScdlProducersRepository.create(entity);
     }
 
-    createData(entity: MiscScdlDataEntity) {
-        return miscScdlDataRepository.create(entity);
+    createManyGrants(entities: MiscScdlGrantEntity[]) {
+        return miscScdlGrantRepository.createMany(entities);
     }
 }
 
