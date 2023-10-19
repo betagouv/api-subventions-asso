@@ -56,6 +56,18 @@
     {
       "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »",
       "to": "dispositif"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzYzNDg5.value",
+      "to": "date_debut"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjM2MzQ5Ng==.value",
+      "to": "date_fin"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
     }
   ],
   "commonSchema": [
@@ -90,6 +102,10 @@
     {
       "to": "dateTransmitted",
       "from": "demande.dateDepot"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
     }
   ]
 }
