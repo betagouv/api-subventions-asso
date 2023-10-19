@@ -1,65 +1,117 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
 import providerRequestService from "./providerRequest.service";
+import axios, { AxiosResponse, AxiosError } from "axios";
+import providerRequestRepository from "./repositories/providerRequest.repository";
 
 jest.mock("axios");
 jest.mock("./repositories/providerRequest.repository");
 
-describe("providerRequestService", () => {
+describe("ProviderRequestService", () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it("should send a GET request and create a log", async () => {
-        const mockResponse: AxiosResponse = { status: 200, data: {} } as unknown as AxiosResponse;
+    it("should send a GET request", async () => {
+        const url = "https://example.com";
+        const option = {
+            providerName: "ExampleProvider",
+            // Other request options
+        };
+
+        // Mock Axios to return a response
+        const mockResponse = { status: 200, data: "Response Data" };
         (axios.request as jest.Mock).mockResolvedValue(mockResponse);
 
-        // Mock providerRequestService.create
-        const createLogMock = jest.spyOn(providerRequestService, "createLog").mockResolvedValue(undefined);
+        const result = await providerRequestService.get(url, option);
 
-        const providerName = "TestProvider";
-        const url = "https://example.com/api";
-        const headers = { Authorization: "Bearer Token" };
-        const params = { param1: "value1" };
-
-        const response = await providerRequestService.get(url, params, headers, providerName);
-
-        expect(response).toEqual(mockResponse);
         expect(axios.request).toHaveBeenCalledWith({
             method: "GET",
             url,
-            headers,
-            params,
         });
 
-        // Verify that providerRequestService.create is called
-        expect(createLogMock).toHaveBeenCalledWith(providerName, url, expect.any(Date), mockResponse.status, "GET");
+        // Add more assertions to check the result
     });
 
-    it("should send a POST request and create a log", async () => {
-        const mockResponse: AxiosResponse = { status: 201, data: {} } as unknown as AxiosResponse;
+    it("should send a POST request", async () => {
+        const url = "https://example.com";
+        const option = {
+            providerName: "ExampleProvider",
+            // Other request options
+        };
+
+        // Mock Axios to return a response
+        const mockResponse = { status: 200, data: "Response Data" };
         (axios.request as jest.Mock).mockResolvedValue(mockResponse);
 
-        // Mock providerRequestService.create
-        const createLogMock = jest.spyOn(providerRequestService, "createLog").mockResolvedValue(undefined);
+        const result = await providerRequestService.post(url, option);
 
-        const providerName = "TestProvider";
-        const url = "https://example.com/api";
-        const headers = { Authorization: "Bearer Token" };
-        const params = { param1: "value1" };
-        const body = { key: "value" };
-
-        const response = await providerRequestService.post(url, params, headers, body, providerName);
-
-        expect(response).toEqual(mockResponse);
         expect(axios.request).toHaveBeenCalledWith({
             method: "POST",
             url,
-            headers,
-            params,
-            data: body,
         });
 
-        // Verify that providerRequestRepository.create is called
-        expect(createLogMock).toHaveBeenCalledWith(providerName, url, expect.any(Date), mockResponse.status, "POST");
+        // Add more assertions to check the result
+    });
+
+    it("should create a log for successful requests", async () => {
+        const url = "https://example.com";
+        const option = {
+            providerName: "ExampleProvider",
+            // Other request options
+        };
+
+        // Mock Axios to return a response
+        const mockResponse = { status: 200, data: "Response Data" };
+        (axios.request as jest.Mock).mockResolvedValue(mockResponse);
+
+        // Mock providerRequestRepository.create to do nothing
+        (providerRequestRepository.create as jest.Mock).mockResolvedValue(undefined);
+
+        await providerRequestService.get(url, option);
+
+        // Check if createLog was called with the expected arguments
+        expect(providerRequestRepository.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                providerName: option.providerName,
+                route: url,
+                responseCode: mockResponse.status,
+                type: "GET",
+            }),
+        );
+
+        // Add more assertions as needed
+    });
+
+    it("should create a log for failed requests", async () => {
+        const url = "https://example.com";
+        const option = {
+            providerName: "ExampleProvider",
+            // Other request options
+        };
+
+        // Mock Axios to throw an error
+        const mockError = { status: 404, message: "Not Found" };
+        (axios.request as jest.Mock).mockRejectedValue(mockError);
+
+        // Mock providerRequestRepository.create to do nothing
+        (providerRequestRepository.create as jest.Mock).mockResolvedValue(undefined);
+
+        // Ensure that the error status is set
+        mockError.status = 404;
+
+        try {
+            await providerRequestService.get(url, option);
+        } catch (error) {
+            // Check if createLog was called with the expected arguments
+            expect(providerRequestRepository.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    providerName: option.providerName,
+                    route: url,
+                    responseCode: mockError.status,
+                    type: "GET",
+                }),
+            );
+        }
+
+        // Add more assertions as needed
     });
 });

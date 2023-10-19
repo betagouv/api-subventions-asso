@@ -3,7 +3,6 @@ jest.mock("./repositories/demarchesSimplifieesData.repository");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 
 import { DemandeSubvention } from "dto";
-import axios from "axios";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
@@ -11,6 +10,8 @@ import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMap
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
+import providerRequestService from "../../provider-request/providerRequest.service";
+import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 
 describe("DemarchesSimplifieesService", () => {
     describe("getSchemasByIds", () => {
@@ -308,7 +309,9 @@ describe("DemarchesSimplifieesService", () => {
         let buildSearchHeaderMock: jest.SpyInstance;
 
         beforeAll(() => {
-            postMock = jest.spyOn(demarchesSimplifieesService.axiosInstance, "post").mockResolvedValue({ data: 1 });
+            postMock = jest
+                .spyOn(providerRequestService, "post")
+                .mockResolvedValue({ data: 1 } as RequestResponse<unknown>);
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });
@@ -320,17 +323,19 @@ describe("DemarchesSimplifieesService", () => {
 
         it("should send request with good query and vars", async () => {
             const expected = {
-                query: "I'm a query",
-                variables: {
-                    we: "",
-                    are: "",
-                    vars: "",
+                data: {
+                    query: "I'm a query",
+                    variables: {
+                        we: "",
+                        are: "",
+                        vars: "",
+                    },
                 },
             };
 
-            await demarchesSimplifieesService.sendQuery(expected.query, expected.variables);
+            await demarchesSimplifieesService.sendQuery(expected.data.query, expected.data.variables);
 
-            expect(postMock).toHaveBeenCalledWith(expect.any(String), expected, expect.any(Object));
+            expect(postMock).toHaveBeenCalledWith(expect.any(String), expect.objectContaining(expected));
         });
 
         it("should call buildSearchHeader", async () => {

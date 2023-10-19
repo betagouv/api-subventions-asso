@@ -1,45 +1,37 @@
 import axios, { AxiosError } from "axios";
 import ProviderRequestLog from "./entities/ProviderRequestLog";
 import providerRequestRepository from "./repositories/providerRequest.repository";
+import RequestConfig from "./@types/RequestConfig";
+import { RequestResponse } from "./@types/RequestResponse";
+import RequestConfigAdapter from "./adapters/RequestConfigAdapter";
+import RequestResponseAdapter from "./adapters/RequestResponseAdapter";
 
 class ProviderRequestService {
-    get(url: string, params: Record<string, string>, headers: Record<string, string>, providerName: string) {
-        return this._sendRequest("GET", url, headers, params, undefined, providerName);
+    get<T = any>(url: string, option: RequestConfig) {
+        return this._sendRequest<T>("GET", url, option);
     }
 
-    post(
-        url: string,
-        params: Record<string, string>,
-        headers: Record<string, string>,
-        body: unknown,
-        providerName: string,
-    ) {
-        return this._sendRequest("POST", url, headers, params, body, providerName);
+    post<T = any>(url: string, option: RequestConfig) {
+        return this._sendRequest<T>("POST", url, option);
     }
 
-    _sendRequest(
-        type: "GET" | "POST",
-        url: string,
-        headers: Record<string, string>,
-        params: Record<string, string>,
-        body: unknown,
-        providerName: string,
-    ) {
+    _sendRequest<T>(type: "GET" | "POST", url: string, option: RequestConfig): Promise<RequestResponse<T>> {
         const date = new Date();
+
+        const axiosOption = RequestConfigAdapter.toAxiosRequestConfig(option);
+
         return axios
-            .request({
+            .request<T>({
                 method: type,
                 url,
-                data: body,
-                headers,
-                params,
+                ...axiosOption,
             })
             .then(async response => {
-                await this.createLog(providerName, url, date, response.status, type);
-                return response;
+                await this.createLog(option.providerName, url, date, response.status, type);
+                return RequestResponseAdapter.toRequestReponse(response);
             })
             .catch(async (error: AxiosError) => {
-                if (error.status) await this.createLog(providerName, url, date, error.status, type);
+                if (error.status) await this.createLog(option.providerName, url, date, error.status, type);
                 throw error;
             });
     }

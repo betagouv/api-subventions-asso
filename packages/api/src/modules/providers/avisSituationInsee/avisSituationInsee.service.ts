@@ -1,7 +1,5 @@
-import axios from "axios";
-import { Siren, Siret, Rna } from "dto";
+import { Siren, Siret, Rna, Document } from "dto";
 
-import { Document } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
@@ -9,6 +7,7 @@ import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";
+import providerRequestService from "../../provider-request/providerRequest.service";
 
 export class AvisSituationInseeService implements DocumentProvider {
     provider = {
@@ -42,12 +41,14 @@ export class AvisSituationInseeService implements DocumentProvider {
         if (this.requestCache.has(siren)) return this.requestCache.get(siren)[0];
 
         try {
-            const result = await axios.get<{
+            const result = await providerRequestService.get<{
                 etablissements: {
                     nic: string;
                     etablissementSiege: boolean;
                 }[];
-            }>(`${AvisSituationInseeService.API_URL}/siren/${siren}`);
+            }>(`${AvisSituationInseeService.API_URL}/siren/${siren}`, {
+                providerName: this.provider.name,
+            });
 
             if (result.status == 200) {
                 this.requestCache.add(siren, result.data);

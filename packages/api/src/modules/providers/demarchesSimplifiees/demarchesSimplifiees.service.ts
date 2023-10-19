@@ -1,7 +1,5 @@
-import * as https from "https";
-import * as http from "http";
-import axios, { AxiosInstance } from "axios";
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
+import providerRequestService from "../../provider-request/providerRequest.service";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
@@ -26,14 +24,6 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
         description: "", // TODO
         id: "demarchesSimplifiees",
     };
-    axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = axios.create({
-            httpAgent: new http.Agent({ keepAlive: true }),
-            httpsAgent: new https.Agent({ keepAlive: true }),
-        });
-    }
 
     getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
@@ -115,13 +105,17 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     async sendQuery(query: string, vars: DefaultObject) {
         if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
         try {
-            const result = await this.axiosInstance.post<DemarchesSimplifieesDto>(
+            const result = await providerRequestService.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
-                    query,
-                    variables: vars,
+                    data: {
+                        query,
+                        variables: vars,
+                    },
+                    ...this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
+                    keepAlive: true,
+                    providerName: this.provider.name,
                 },
-                this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
             );
 
             return result.data;

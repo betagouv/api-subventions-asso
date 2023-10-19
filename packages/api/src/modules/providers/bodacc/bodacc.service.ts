@@ -1,8 +1,8 @@
 import { Siren } from "dto";
-import axios from "axios";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
+import providerRequestService from "../../provider-request/providerRequest.service";
 import BodaccAdapter from "./adapters/bodacc.adapter";
 import { BodaccDto } from "./dto/BodaccDto";
 
@@ -19,8 +19,11 @@ export class BodaccService implements AssociationsProvider {
 
     async sendRequest(siren: Siren) {
         try {
-            const result = await axios.get<BodaccDto>(
+            const result = await providerRequestService.get<BodaccDto>(
                 `${this.apiUrl}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren}`,
+                {
+                    providerName: this.provider.name,
+                },
             );
             return result.data;
         } catch (e) {

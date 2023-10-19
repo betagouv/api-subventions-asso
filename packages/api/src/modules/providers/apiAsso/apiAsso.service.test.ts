@@ -9,6 +9,7 @@ import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 import * as ObjectHelper from "../../../shared/helpers/ObjectHelper";
+import providerRequestService from "../../provider-request/providerRequest.service";
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
@@ -23,7 +24,7 @@ jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
 }));
 
 describe("ApiAssoService", () => {
-    let axiosMock = jest.spyOn(axios, "get");
+    let providerRequestSpy: jest.SpyInstance;
     // @ts-expect-error: mock private method
     let sendRequestMock = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
     // @ts-expect-error: mock private method
@@ -44,6 +45,7 @@ describe("ApiAssoService", () => {
     beforeAll(() => {
         // @ts-expect-error  mock mongodb return value
         associationNameUpsert = jest.spyOn(associationNameService, "upsert").mockResolvedValue({});
+        providerRequestSpy = jest.spyOn(providerRequestService, "get");
     });
 
     afterAll(() => {
@@ -74,12 +76,10 @@ describe("ApiAssoService", () => {
 
         it("should return api data", async () => {
             const expected = "FAKEDATA";
-            axiosMock.mockImplementationOnce(() =>
-                Promise.resolve({
-                    status: 200,
-                    data: expected,
-                }),
-            );
+            providerRequestSpy.mockResolvedValueOnce({
+                status: 200,
+                data: expected,
+            });
             cacheHasMock.mockImplementationOnce(() => false);
 
             // @ts-ignore
@@ -89,7 +89,7 @@ describe("ApiAssoService", () => {
 
         it("should return null (wrong status code)", async () => {
             const expected = null;
-            axiosMock.mockImplementationOnce(() =>
+            providerRequestSpy.mockImplementationOnce(() =>
                 Promise.resolve({
                     status: 404,
                     data: 1,
@@ -104,7 +104,7 @@ describe("ApiAssoService", () => {
 
         it("should return null (dummy error message in data and status 200)", async () => {
             const expected = null;
-            axiosMock.mockImplementationOnce(() =>
+            providerRequestSpy.mockImplementationOnce(() =>
                 Promise.resolve({
                     status: 200,
                     data: "Error",
@@ -119,7 +119,7 @@ describe("ApiAssoService", () => {
 
         it("should return null (error is throw)", async () => {
             const expected = null;
-            axiosMock.mockImplementationOnce(() => {
+            providerRequestSpy.mockImplementationOnce(() => {
                 throw new Error("Error test");
             });
             cacheHasMock.mockImplementationOnce(() => false);
@@ -568,14 +568,14 @@ describe("ApiAssoService", () => {
 
     describe("Documents part", () => {
         afterAll(() => {
-            axiosMock.mockReset();
+            providerRequestSpy.mockReset();
         });
         beforeAll(() => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             apiAssoService.requestCache.destroy();
 
-            axiosMock = jest.spyOn(axios, "get").mockResolvedValue({
+            providerRequestSpy = jest.spyOn(axios, "get").mockResolvedValue({
                 status: 200,
                 data: fixtureAsso,
             });

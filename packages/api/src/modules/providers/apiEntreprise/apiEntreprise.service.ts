@@ -1,8 +1,7 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import qs from "qs";
 
-import { Association, Siren, Siret } from "dto";
-import { ExtraitRcsDto } from "dto";
+import { Association, Siren, Siret, ExtraitRcsDto } from "dto";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject, StructureIdentifiers } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
@@ -13,6 +12,7 @@ import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import providerRequestService from "../../provider-request/providerRequest.service";
 import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 
@@ -56,11 +56,16 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
 
         let result;
         if (isNewAPI) {
-            result = await axios.get<T>(fullURL, {
-                headers: { Authorization: `Bearer ${API_ENTREPRISE_TOKEN}` },
+            result = await providerRequestService.get<T>(fullURL, {
+                headers: {
+                    Authorization: `Bearer ${API_ENTREPRISE_TOKEN}`,
+                },
+                providerName: this.provider.name,
             });
         } else {
-            result = await axios.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`);
+            result = await providerRequestService.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`, {
+                providerName: this.provider.name,
+            });
         }
         this.requestCache.add(fullURL, result.status == 200 ? result.data : null);
 

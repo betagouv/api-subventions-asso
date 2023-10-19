@@ -1,7 +1,7 @@
-import axios, { AxiosError } from "axios";
 import qs from "qs";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import apiEntrepriseService from "./apiEntreprise.service";
+import providerRequestService from "../../provider-request/providerRequest.service";
 
 describe("ApiEntrepriseService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -20,16 +20,20 @@ describe("ApiEntrepriseService", () => {
         apiEntrepriseService.requestCache.collection.clear();
     });
 
-    describe("sendRequest()()", () => {
-        const axiosGetMock = jest.spyOn(axios, "get");
+    describe("sendRequest()", () => {
+        let providerRequestSpy: jest.SpyInstance;
         const qsMock = jest.spyOn(qs, "stringify");
+
+        beforeAll(() => {
+            providerRequestSpy = jest.spyOn(providerRequestService, "get");
+        });
 
         it("should return data", async () => {
             const expected = { test: true };
-            axiosGetMock.mockImplementationOnce(async () => ({
+            providerRequestSpy.mockResolvedValueOnce({
                 status: 200,
                 data: expected,
-            }));
+            });
 
             // @ts-expect-error sendRequest is private method
             const actual = await apiEntrepriseService.sendRequest("test", {}, "");
@@ -39,7 +43,7 @@ describe("ApiEntrepriseService", () => {
 
         it("should throw error", async () => {
             const expected = { response: { status: 404 } };
-            axiosGetMock.mockImplementationOnce(async () => {
+            providerRequestSpy.mockImplementationOnce(async () => {
                 throw expected;
             });
             let actual;
@@ -60,7 +64,7 @@ describe("ApiEntrepriseService", () => {
 
             const expected = [{ ...params, object: HEADCOUNT_REASON }];
 
-            axiosGetMock.mockImplementationOnce(async () => ({
+            providerRequestSpy.mockImplementationOnce(async () => ({
                 status: 200,
                 data: { test: true },
             }));

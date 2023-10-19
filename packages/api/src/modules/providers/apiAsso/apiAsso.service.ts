@@ -1,5 +1,4 @@
 import { Rna, Siren, Siret, Association, Etablissement, Document } from "dto";
-import axios from "axios";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
@@ -13,6 +12,7 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import { isDateNewer } from "../../../shared/helpers/DateHelper";
 import associationNameService from "../../association-name/associationName.service";
+import providerRequestService from "../../provider-request/providerRequest.service";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, {
     StructureDacDocumentDto,
@@ -40,11 +40,12 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;
 
         try {
-            const res = await axios.get<T>(`${API_ASSO_URL}/${route}`, {
+            const res = await providerRequestService.get<T>(`${API_ASSO_URL}/${route}`, {
                 headers: {
                     Accept: "application/json",
                     "X-Gravitee-Api-Key": API_ASSO_TOKEN as string,
                 },
+                providerName: this.provider.name,
             });
 
             if (res.status === 200 && (typeof res.data != "string" || !res.data.includes("Error"))) {

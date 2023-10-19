@@ -1,11 +1,11 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
-import axios from "axios";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
+import providerRequestService from "../../provider-request/providerRequest.service";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 import CaisseDepotsSubventionDto from "./dto/CaisseDepotsSubventionDto";
 
@@ -28,8 +28,11 @@ export class CaisseDepotsService implements DemandesSubventionsProvider, GrantPr
 
     private async getRawCaisseDepotsSubventions(identifier: string): Promise<CaisseDepotsSubventionDto[]> {
         try {
-            const result = await axios.get(
+            const result = await providerRequestService.get(
                 `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${identifier}")`,
+                {
+                    providerName: this.provider.name,
+                },
             );
 
             return result.data.records.map(({ record }) => record);
