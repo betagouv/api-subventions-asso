@@ -1,4 +1,4 @@
-import { Rna } from "../build";
+import { Rna } from "../shared/Rna";
 import { Siret } from "../shared/Siret";
 
 enum PaymentNatureEnum {

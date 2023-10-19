@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
+Object {
+  "_id": Any<ObjectId>,
+  "lastUpdate": Any<Date>,
+  "producerId": "PRODUCER_ID",
+  "producerName": "PRODUCER_NAME",
+}
+`;
+
+exports[`SCDL CLI parse() should add grants 1`] = `Array []`;

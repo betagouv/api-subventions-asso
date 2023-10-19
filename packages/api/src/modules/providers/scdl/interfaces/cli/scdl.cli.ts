@@ -1,28 +1,30 @@
 import fs from "fs";
-import CliController from "../../../../../shared/CliController";
 import ExportDateError from "../../../../../shared/errors/cliErrors/ExportDateError";
 import ScdlGrantParser from "../../scdl.grant.parser";
 import scdlService from "../../scdl.service";
 import MiscScdlGrantEntity from "../../entities/MiscScdlGrantEntity";
+import { NotFoundError } from "../../../../../shared/errors/httpErrors";
 
-export default class ScdlCliController extends CliController {
+export default class ScdlCliController {
     static cmdName = "scdl";
 
-    protected async _parse(file: string, logs: unknown[], exportDate?: Date | undefined) {
+    public async addProducer(producerId, producerName) {
+        await scdlService.createProducer({ producerId, producerName, lastUpdate: new Date() });
+        console.log(producerId);
+    }
+
+    public async parse(file: string, producerId: string, exportDate?: Date | undefined) {
         if (!exportDate) throw new ExportDateError();
-        this.logger.logIC("\nStart parse file: ", file);
-        this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
+
+        if (!(await scdlService.getProducer(producerId)))
+            throw new NotFoundError("Producer ID does not match any producer in database");
 
         const fileContent = fs.readFileSync(file);
 
         const grants = ScdlGrantParser.parseCsv(fileContent);
 
-        this.logger.log(`adding ${grants.length} grants in db`);
-
-        const producerId = "";
+        console.log(`start persisting ${grants.length} grants`);
         const entities: MiscScdlGrantEntity[] = grants.map(grant => ({ ...grant, producerId: producerId }));
         await scdlService.createManyGrants(entities);
-
-        this.logger.log(`parsing done`);
     }
 }

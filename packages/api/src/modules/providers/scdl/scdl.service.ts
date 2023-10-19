@@ -4,6 +4,10 @@ import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
 import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
 
 export class ScdlService {
+    getProducer(producerId: string) {
+        return miscScdlProducersRepository.findByProducerId(producerId);
+    }
+
     createProducer(entity: MiscScdlProducerEntity) {
         return miscScdlProducersRepository.create(entity);
     }
