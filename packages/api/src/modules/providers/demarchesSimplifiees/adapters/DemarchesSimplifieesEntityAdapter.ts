@@ -48,7 +48,7 @@ export class DemarchesSimplifieesEntityAdapter {
         const subvention: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "schema");
 
         // DS doesn't have an attribute with only year, so we get year from the start date
-        if (subvention.date_debut && subvention.date_debut && isValidDate(subvention.date_debut))
+        if (!subvention.annee_demande && subvention.date_debut && isValidDate(subvention.date_debut))
             subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
 
         Object.keys(subvention).map(key => (subvention[key] = toPv(subvention[key])));
@@ -59,7 +59,7 @@ export class DemarchesSimplifieesEntityAdapter {
     static toCommon(entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity): ApplicationDto {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "commonSchema");
 
-        if (application.dateTransmitted)
+        if (!application.exercice && application.dateTransmitted)
             application.exercice = new Date(application.dateTransmitted as string)?.getFullYear();
         delete application.dateTransmitted;
 
