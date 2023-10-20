@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.3](https://github.com/betagouv/api-subventions-asso/compare/v0.38.2...v0.38.3) (2023-10-20)
+
+### Bug Fixes
+
+-   **api:** prevent token inflation ([ffca28c](https://github.com/betagouv/api-subventions-asso/commit/ffca28c2eb2dd554c1669a4e7e7f5a8059859ab1))
+
 ## [0.38.2](https://github.com/betagouv/api-subventions-asso/compare/v0.38.1...v0.38.2) (2023-10-20)
 
 ### Bug Fixes
