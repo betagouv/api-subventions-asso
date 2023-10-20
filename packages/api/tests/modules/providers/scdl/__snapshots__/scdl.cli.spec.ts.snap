@@ -13,7 +13,7 @@ exports[`SCDL CLI parse() should add grants 1`] = `
 Array [
   Object {
     "UeNotification": false,
-    "_id": "6532225c3e3c4d9a02b24616",
+    "_id": Any<ObjectId>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
     "allocatorName": "TEST_SOCLE_SCDL",
     "allocatorSiret": "12000123400023",
@@ -33,7 +33,7 @@ Array [
   },
   Object {
     "UeNotification": false,
-    "_id": "6532225c3e3c4d9a02b24617",
+    "_id": Any<ObjectId>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edz27",
     "allocatorName": "TEST_SOCLE_SCDL",
     "allocatorSiret": "12000123400023",
@@ -53,7 +53,7 @@ Array [
   },
   Object {
     "UeNotification": false,
-    "_id": "6532225c3e3c4d9a02b24618",
+    "_id": Any<ObjectId>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708endyu",
     "allocatorName": "TEST_SOCLE_SCDL",
     "allocatorSiret": "12000123400023",
@@ -73,7 +73,7 @@ Array [
   },
   Object {
     "UeNotification": false,
-    "_id": "6532225c3e3c4d9a02b24619",
+    "_id": Any<ObjectId>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708mpo8i",
     "allocatorName": "TEST_SOCLE_SCDL",
     "allocatorSiret": "12000123400023",

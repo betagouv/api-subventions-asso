@@ -44,7 +44,10 @@ describe("SCDL CLI", () => {
                 new Date(),
             );
             const grants = await miscScdlGrantRepository.findAll();
-            expect(grants).toMatchSnapshot();
+            const expectedAny = grants.map(grant => ({
+                _id: expect.any(ObjectId),
+            }));
+            expect(grants).toMatchSnapshot(expectedAny);
         });
 
         it("should update producer lastUpdate", async () => {
