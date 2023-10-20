@@ -50,13 +50,15 @@
         { anchor: "footer", label: "Pied de page" },
     ]} />
 <Auth>
-    <div class:main-view={$page.data.withBlueBanner}>
-        <Header />
-        <div class="fr-container fr-mb-8w">
-            <main id="content">
-                <Breadcrumb crumbs={data.crumbs} />
-                <slot />
-            </main>
+    <div>
+        <div class:main-view={$page.data.withBlueBanner}>
+            <Header />
+            <div class="fr-container fr-mb-8w">
+                <main id="content">
+                    <Breadcrumb crumbs={data.crumbs} />
+                    <slot />
+                </main>
+            </div>
         </div>
         <Footer />
         <Theme />
