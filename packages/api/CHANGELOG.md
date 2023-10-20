@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.1](https://github.com/betagouv/api-subventions-asso/compare/v0.38.0...v0.38.1) (2023-10-20)
+
+### Bug Fixes
+
+-   **api:** add log to fonjep bop migration ([5d7c3b5](https://github.com/betagouv/api-subventions-asso/commit/5d7c3b5db190bbe1520285b2618e1d060fd6702a))
+-   **api:** if specified, exercice/annee_demande is used ([2de6c65](https://github.com/betagouv/api-subventions-asso/commit/2de6c6578df098ccb70c13cebda715f766db453e))
+
+### Features
+
+-   **api:** interpret exercice in 72319 ([d7634ba](https://github.com/betagouv/api-subventions-asso/commit/d7634baf7a0ed292aab51b76d765e97026d8dab1))
+-   **api:** merci victor ([8cf63ae](https://github.com/betagouv/api-subventions-asso/commit/8cf63ae036ff93f6f86423cb8d3b0d613bc2af38))
+-   **api:** optimize fonjep bop migration ([2f12f2a](https://github.com/betagouv/api-subventions-asso/commit/2f12f2a1a088a6deeaf9b2bbfba3d1369d5226b4))
+
 # [0.38.0](https://github.com/betagouv/api-subventions-asso/compare/v0.36.8...v0.38.0) (2023-10-16)
 
 ### Bug Fixes
