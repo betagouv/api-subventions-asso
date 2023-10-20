@@ -9,7 +9,6 @@ const mockedScdlService = jest.mocked(scdlService);
 import ScdlGrantParser from "../../scdl.grant.parser";
 import MiscScdlGrant from "../../__fixtures__/MiscScdlGrant";
 import { ObjectId } from "mongodb";
-import { NotFoundError } from "../../../../../shared/errors/httpErrors";
 jest.mock("../../scdl.grant.parser");
 const mockedScdlGrantParser = jest.mocked(ScdlGrantParser);
 
@@ -24,6 +23,7 @@ describe("ScdlCliController", () => {
         producerName: PRODUCER_NAME,
         lastUpdate: new Date(),
     };
+    const EXPORT_DATE = new Date();
 
     const FILE_PATH = "FILE_PATH";
 
@@ -37,12 +37,17 @@ describe("ScdlCliController", () => {
 
     describe("addProducer()", () => {
         it("should call scdlService.createProducer()", async () => {
+            mockedScdlService.getProducer.mockResolvedValue(null);
             await cli.addProducer(PRODUCER_ID, PRODUCER_NAME);
             expect(scdlService.createProducer).toHaveBeenCalledWith({
                 producerId: PRODUCER_ID,
                 producerName: PRODUCER_NAME,
                 lastUpdate: expect.any(Date),
             });
+        });
+
+        it("should throw Error", () => {
+            expect(() => cli.addProducer(PRODUCER_ID, PRODUCER_NAME)).rejects.toThrowError();
         });
     });
 
@@ -56,9 +61,9 @@ describe("ScdlCliController", () => {
             expect(() => cli.parse(FILE_PATH, PRODUCER_ID)).rejects.toThrowError(ExportDateError);
         });
 
-        it("should throw NotFoundError when providerId does not match any provider in database", async () => {
+        it("should throw Error when providerId does not match any provider in database", async () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
-            expect(() => cli.parse(FILE_PATH, "WRONG_ID", new Date())).rejects.toThrowError(NotFoundError);
+            expect(() => cli.parse(FILE_PATH, "WRONG_ID", new Date())).rejects.toThrowError();
         });
 
         it("should call ScdlGrantParser.parseCsv()", async () => {
@@ -75,6 +80,10 @@ describe("ScdlCliController", () => {
                     producerId: expect.any(String),
                 },
             ]);
+        });
+        it("should call scdlService.updateProducer()", async () => {
+            await cli.parse(FILE_PATH, PRODUCER_ID, EXPORT_DATE);
+            expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ID, { lastUpdate: EXPORT_DATE });
         });
     });
 });

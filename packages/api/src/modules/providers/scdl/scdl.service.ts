@@ -15,6 +15,10 @@ export class ScdlService {
     createManyGrants(entities: MiscScdlGrantEntity[]) {
         return miscScdlGrantRepository.createMany(entities);
     }
+
+    updateProducer(producerId, setObject) {
+        return miscScdlProducersRepository.update(producerId, setObject);
+    }
 }
 
 const scdlService = new ScdlService();

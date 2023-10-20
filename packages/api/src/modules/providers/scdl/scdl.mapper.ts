@@ -39,7 +39,7 @@ export const SCDL_MAPPER = {
         },
     },
     grantPercentage: {
-        path: ["pourcentageSubvention", "Pourcentage du montant de la subvention attribué au bénéficiaire*"],
+        path: [["pourcentageSubvention", "Pourcentage du montant de la subvention attribué au bénéficiaire*"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
     aidSystem: ["dispositifAide"],
