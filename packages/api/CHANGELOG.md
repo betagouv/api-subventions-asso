@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.2](https://github.com/betagouv/api-subventions-asso/compare/v0.38.1...v0.38.2) (2023-10-20)
+
+### Bug Fixes
+
+-   **api:** allows front redirection to sentry ([ac9fa97](https://github.com/betagouv/api-subventions-asso/commit/ac9fa974f19a8b29bea12fb58fe399118d5a33fc))
+
 ## [0.38.1](https://github.com/betagouv/api-subventions-asso/compare/v0.38.0...v0.38.1) (2023-10-20)
 
 ### Bug Fixes
