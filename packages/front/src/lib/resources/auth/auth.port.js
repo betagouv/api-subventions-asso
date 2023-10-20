@@ -12,7 +12,7 @@ export class AuthPort {
 
     async resetPassword(token, password) {
         const path = `${this.BASE_PATH}/reset-password`;
-        return await requestsService.post(path, { token, password });
+        return (await requestsService.post(path, { token, password })).data.user;
     }
 
     login(email, password) {
@@ -34,7 +34,8 @@ export class AuthPort {
 
     async activate(token, data) {
         const path = `${this.BASE_PATH}/activate`;
-        return await requestsService.post(path, { token, data });
+        const response = await requestsService.post(path, { token, data });
+        return response.data.user;
     }
 }
 
