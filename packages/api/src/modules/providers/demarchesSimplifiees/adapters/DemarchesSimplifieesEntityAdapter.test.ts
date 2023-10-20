@@ -74,16 +74,16 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             `);
         });
 
-        it("sets annee_demande thanks to date_debut", () => {
-            mapMock.mockReturnValueOnce({ date_debut: new Date(2023, 10, 20) });
+        it("sets exercice thanks to dateTransmitted", () => {
+            mapMock.mockReturnValueOnce({ dateTransmitted: new Date(2023, 10, 20) });
             const expected = 2023;
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).exercice;
 
             expect(actual).toBe(expected);
         });
 
-        it("sets annee_demande prioritary to date_debut", () => {
-            mapMock.mockReturnValueOnce({ date_debut: new Date(2023, 10, 20), annee_demande: 2024 });
+        it("sets exercice prioritary to dateTransmitted", () => {
+            mapMock.mockReturnValueOnce({ dateTransmitted: new Date(2023, 10, 20), exercice: 2024 });
             const expected = 2024;
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).exercice;
 
