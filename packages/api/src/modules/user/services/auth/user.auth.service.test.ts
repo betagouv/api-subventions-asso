@@ -1,3 +1,5 @@
+import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+
 const jwtVerifyMock = jest.fn();
 const jwtSignMock = jest.fn(() => SIGNED_TOKEN);
 jest.mock("jsonwebtoken", () => ({
@@ -73,6 +75,17 @@ describe("user auth service", () => {
     });
 
     describe("buildJWTToken", () => {
+        it("should remove jwt if given", () => {
+            jest.mocked(removeSecrets).mockReturnValueOnce(USER_WITHOUT_SECRET);
+            // @ts-expect-error mock
+            userAuthService.buildJWTToken({ ...USER_WITHOUT_SECRET, jwt: "smthg" }, { expiration: true });
+            expect(jwt.sign).toHaveBeenCalledWith(
+                { ...USER_WITHOUT_SECRET, now: expect.any(Date) },
+                expect.anything(),
+                expect.anything(),
+            );
+        });
+
         it("should set expiresIn", () => {
             const expected = {
                 expiresIn: JWT_EXPIRES_TIME,
