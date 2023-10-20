@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.1](https://github.com/betagouv/datasubvention/compare/v0.38.0...v0.38.1) (2023-10-20)
+
+### Bug Fixes
+
+-   **front:** activate and reset-password ports get user directly ([99b8ec3](https://github.com/betagouv/datasubvention/commit/99b8ec3b8bb91b6a93c23123ab29de7e34db755a))
+-   **front:** ignore subv without 'annee_demande' ([e0d1c61](https://github.com/betagouv/datasubvention/commit/e0d1c615f84bc7980b41e95470463dd89b9c5dd9))
+-   **front:** prevent & escape stringified undefined ([2d4e53e](https://github.com/betagouv/datasubvention/commit/2d4e53e4e0028505978576742a4e439876b46ae8))
+
 # [0.38.0](https://github.com/betagouv/datasubvention/compare/v0.36.8...v0.38.0) (2023-10-16)
 
 ### Bug Fixes

@@ -18,6 +18,10 @@ const linkVersementsToSubvention = elements =>
         }, null);
 
         const siret = lastSub?.siret || versements.find(v => v.siret)?.siret;
+
+        const date = lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastVersementsDate(versements);
+        if (!date || isNaN(date)) return acc;
+
         acc.push({
             subvention: lastSub,
             versements: versements,
