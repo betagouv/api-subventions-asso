@@ -10,6 +10,7 @@ import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import { isDateNewer } from "../../../shared/helpers/DateHelper";
 import associationNameService from "../../association-name/associationName.service";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
@@ -60,18 +61,19 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna}`);
 
         if (!rnaStructure) return null;
-        if (!rnaStructure.identite?.date_modif_rna) return null; // sometimes an empty shell object if given by the api
+        if (hasEmptyProperties(rnaStructure.identite) || !rnaStructure.identite.date_modif_rna) return null; // sometimes an empty shell object if given by the api
         return ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructure);
     }
 
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
 
-        const isSirenStructureValid = (structure) => structure.etablissement && structure.etablissement.length;
+        const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
             const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren}`);
-            if (!structure || !structure.identite?.date_modif_siren) return null;
+            if (!structure || hasEmptyProperties(structure.identite) || structure.identite.date_modif_siren)
+                return null;
             return ApiAssoDtoAdapter.sirenStructureToAssociation(structure);
         }
         if (!sirenStructure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
