@@ -26,16 +26,6 @@ https://webaim.org/techniques/css/invisiblecontent/#techniques */
     display: flex;
 }
 
-.main-view {
-    display: flex;
-    flex-direction: column;
-    background-image: linear-gradient(
-        to bottom,
-        var(--background-action-low-blue-france) 0 30em,
-        var(--background-alt-grey) 30em
-    );
-}
-
 .flex-right {
     display: flex;
     justify-content: flex-end;

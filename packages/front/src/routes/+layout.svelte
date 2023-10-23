@@ -51,16 +51,37 @@
     ]} />
 <Auth>
     <div>
-        <div class:main-view={$page.data.withBlueBanner}>
-            <Header />
-            <div class="fr-container fr-mb-8w">
-                <main id="content">
-                    <Breadcrumb crumbs={data.crumbs} />
-                    <slot />
-                </main>
+        <div class="stick-footer">
+            <div class:main-view={$page.data.withBlueBanner}>
+                <Header />
+                <div class="fr-container fr-mb-8w">
+                    <main id="content">
+                        <Breadcrumb crumbs={data.crumbs} />
+                        <slot />
+                    </main>
+                </div>
             </div>
+            <Footer />
         </div>
-        <Footer />
         <Theme />
     </div>
 </Auth>
+
+<style>
+    .stick-footer {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .main-view {
+        display: flex;
+        flex-direction: column;
+        background-image: linear-gradient(
+            to bottom,
+            var(--background-action-low-blue-france) 0 30em,
+            var(--background-alt-grey) 30em
+        );
+    }
+</style>
