@@ -84,7 +84,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
 
         if (!structure) return null;
-        if (!structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
+        if (hasEmptyProperties(structure.identite) || !structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
 
         await this.saveStructureInAssociationName(structure);
 
@@ -234,7 +234,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (!groupedIdentifier.rna) {
             // Check if information rna <=> siren is save in apiRNA
             const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
-            if (!structure?.identite.id_rna) return [sirenAssociation];
+            if (hasEmptyProperties(structure?.identite) || !structure?.identite.id_rna) return [sirenAssociation];
             rna = structure.identite.id_rna;
         }
 
@@ -261,7 +261,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (!groupedIdentifier.siren) {
             // Check if information rna <=> siren is save in apiRNA
             const structure = await this.sendRequest<StructureDto>(`/api/structure/${rna}`);
-            if (!structure?.identite.id_siren) return [rnaAssociation];
+            if (hasEmptyProperties(structure?.identite) || !structure?.identite.id_siren) return [rnaAssociation];
             siren = structure.identite.id_siren;
         }
 
