@@ -7,6 +7,8 @@ import associationNameService from "../../association-name/associationName.servi
 import { sirenStructureFixture } from "./__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
+import { RnaStructureDto } from "./dto/RnaStructureDto";
+import { SirenStructureDto } from "./dto/SirenStructureDto";
 
 jest.mock("../../../shared/EventManager");
 jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
@@ -389,6 +391,14 @@ describe("ApiAssoService", () => {
                 sendRequestMock.mockResolvedValueOnce({ data: true, etablissement: { length: 1 } });
                 const actual = await apiAssoService.findAssociationBySiren(RNA);
                 expect(actual).toBe(expected);
+            });
+
+            it("should return null if structure has empty properties", async () => {
+                // @ts-expect-error: mock wrong api response
+                const STRUCTURE: SirenStructureDto = { identite: { date_modif_siren: null, nom: null, id_rna: null } };
+                sendRequestMock.mockResolvedValueOnce(STRUCTURE);
+                const actual = await apiAssoService.findAssociationBySiren(SIREN);
+                expect(actual).toBe(null);
             });
 
             it("should use adapter", async () => {
