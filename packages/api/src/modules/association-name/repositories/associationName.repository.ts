@@ -93,6 +93,13 @@ export class AssociationNameRepository {
     async findBySiren(siren: Siren) {
         return this.collection.find({ siren }).toArray();
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ siren: 1, rna: 1, name: 1 }, { unique: true });
+        await this.collection.createIndex({ rna: 1 });
+        await this.collection.createIndex({ siren: 1 });
+        await this.collection.createIndex({ name: 1 });
+    }
 }
 
 const associationNameRepository = new AssociationNameRepository();
