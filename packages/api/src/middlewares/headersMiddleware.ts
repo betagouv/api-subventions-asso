@@ -6,6 +6,7 @@ const headers = {
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
     "Cache-Control": "max-age 1800",
+    "Access-Control-Allow-Headers": "sentry-trace, baggage",
 };
 
 export const headersMiddleware = (req: Request, res: Response, next: NextFunction) => {

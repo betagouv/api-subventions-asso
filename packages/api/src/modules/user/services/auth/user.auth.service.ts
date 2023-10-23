@@ -49,7 +49,8 @@ export class UserAuthService {
         user: Omit<UserDbo, "hashPassword"> | UserDto,
         options: { expiration: boolean } = { expiration: true },
     ) {
-        const jwtContent = { ...user, now: new Date() };
+        const userNoJwt = removeSecrets(user);
+        const jwtContent = { ...userNoJwt, now: new Date() };
         const jwtOption: jwt.SignOptions = {};
 
         if (options.expiration) {
