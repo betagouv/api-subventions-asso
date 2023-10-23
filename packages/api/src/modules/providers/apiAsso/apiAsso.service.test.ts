@@ -515,6 +515,17 @@ describe("ApiAssoService", () => {
                 expect(actual).toBe(null);
             });
 
+            it("should return null if structure.identite has empty properties", async () => {
+                sendRequestMock.mockResolvedValueOnce({
+                    date_modif_siren: null,
+                    id_siren: null,
+                });
+                // @ts-ignore findEtablissementsBySiren is private method
+                const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
+
+                expect(actual).toBe(null);
+            });
+
             it("should call saveStructureInAssociationName", async () => {
                 // @ts-ignore findEtablissementsBySiren is private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
