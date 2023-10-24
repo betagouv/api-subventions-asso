@@ -41,9 +41,13 @@
                     </div>
                     <fieldset class="fr-fieldset fr-mt-6w">
                         <SignupModule bind:user={$user} on:change={() => controller.onChange()} />
-                        <div class="fr-fieldset__element fr-mt-4v">
+                        <!--<div class="fr-fieldset__element fr-mt-4v">
                             <ResetPwdModule email={$user.email} />
-                        </div>
+                            TODO le user est pas réactif dans le composant. Il faudrait passer un store mais ça va être
+                                pénible de faire ça depuis un prop : stocker l'utilisateur dans un store global ?
+                                Peut-être pas nécessaire
+                                De plus il faudrait aussi déconnecter l'utilisateur parce que son token va être invalidé
+                        </div>-->
                     </fieldset>
 
                     <div class="separator fr-mb-6w fr-mt-4w" />
