@@ -393,7 +393,7 @@ describe("ApiAssoService", () => {
                 expect(actual).toBe(expected);
             });
 
-            it("should return null if structure has empty properties", async () => {
+            it("should return null if structure identite has empty properties", async () => {
                 // @ts-expect-error: mock wrong api response
                 const STRUCTURE: SirenStructureDto = { identite: { date_modif_siren: null, nom: null, id_rna: null } };
                 sendRequestMock.mockResolvedValueOnce(STRUCTURE);
