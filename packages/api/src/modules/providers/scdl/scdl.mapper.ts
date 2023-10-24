@@ -1,36 +1,37 @@
 import { shortISOPeriodRegExp, shortISORegExp } from "../../../shared/helpers/DateHelper";
 
 export const SCDL_MAPPER = {
-    allocatorName: ["Nom attributaire*"],
-    allocatorSiret: ["Identification de l'attributaire*"],
+    allocatorName: [["nomAttribuant", "Nom attributaire*"]],
+    allocatorSiret: [["idAttribuant", "Identification de l'attributaire*"]],
     conventionDate: {
-        path: ["Date de convention*"],
+        path: [["dateConvention", "Date de convention*"]],
         adapter: value => (value ? new Date(value) : value),
     },
-    decisionReference: ["Référence de la décision"],
-    associationName: ["Nom du bénéficiaire*"],
-    associationSiret: ["Identification du bénéficiaire*"],
-    object: ["Objet de la convention"],
+    decisionReference: [["referenceDecision", "Référence de la décision"]],
+    associationName: [["nomBeneficiaire", "Nom du bénéficiaire*"]],
+    associationSiret: [["idBeneficiaire", "Identification du bénéficiaire*"]],
+    associationRna: [["rnaBeneficiaire"]],
+    object: [["object", "Objet de la convention"]],
     amount: {
-        path: ["Montant total de la subvention*"],
+        path: [["montant", "Montant total de la subvention*"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    paymentConditions: ["Conditions de versement*"],
+    paymentConditions: [["nature", "Conditions de versement*"]],
     paymentStartDate: {
-        path: ["Date de versement"],
+        path: [["datesPeriodeVersement", "Date de versement"]],
         adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0]) : value),
     },
     paymentEndDate: {
-        path: ["Date de versement"],
+        path: [["datesPeriodeVersement", "Date de versement"]],
         adapter: value => {
             if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1]);
             else if (shortISORegExp.test(value)) return new Date(value);
             else return null;
         },
     },
-    idRAE: ["Numéro de référencement au répertoire des entreprises"],
+    idRAE: [["idRAE", "Numéro de référencement au répertoire des entreprises"]],
     UeNotification: {
-        path: ["Aide notifiée Ã  l'Europe"],
+        path: [["notificationUE", "Aide notifiée Ã  l'Europe"]],
         adapter: value => {
             if (value === "oui") return true;
             if (value === "non") return false;
@@ -38,7 +39,8 @@ export const SCDL_MAPPER = {
         },
     },
     grantPercentage: {
-        path: ["Pourcentage du montant de la subvention attribué au bénéficiaire*"],
+        path: ["pourcentageSubvention", "Pourcentage du montant de la subvention attribué au bénéficiaire*"],
         adapter: value => (value ? parseFloat(value) : value),
     },
+    aidSystem: ["dispositifAide"],
 };
