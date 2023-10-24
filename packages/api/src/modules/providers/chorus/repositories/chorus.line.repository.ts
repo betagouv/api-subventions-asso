@@ -87,6 +87,12 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> 
 
         if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
+        await this.collection.createIndex({ "indexedInformations.ej": 1 });
+        await this.collection.createIndex({ "indexedInformations.siret": 1 });
+    }
 }
 
 const chorusLineRepository = new ChorusLineRepository();
