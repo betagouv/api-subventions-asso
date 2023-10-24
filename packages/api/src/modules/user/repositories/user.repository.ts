@@ -77,6 +77,10 @@ export class UserRepository {
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.collection.find(query).count();
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ email: 1 }, { unique: true });
+    }
 }
 
 const userRepository = new UserRepository();
