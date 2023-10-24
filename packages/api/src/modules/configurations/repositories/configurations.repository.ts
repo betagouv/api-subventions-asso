@@ -18,6 +18,10 @@ export class ConfigurationsRepository extends MigrationRepository<ConfigurationE
     getByName<T>(name: string) {
         return this.collection.findOne({ name }) as Promise<WithId<ConfigurationEntity<T>> | null>;
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ name: 1 }, { unique: true });
+    }
 }
 
 const configurationsRepository = new ConfigurationsRepository();
