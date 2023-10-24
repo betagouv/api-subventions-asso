@@ -30,6 +30,11 @@ export class UserResetRepository {
         const result = await this.collection.deleteMany({ userId });
         return result.acknowledged;
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ token: 1 }, { unique: true });
+        await this.collection.createIndex({ userId: 1 }, { unique: true });
+    }
 }
 
 const userResetRepository = new UserResetRepository();
