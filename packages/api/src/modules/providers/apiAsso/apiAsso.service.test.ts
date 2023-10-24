@@ -7,8 +7,10 @@ import associationNameService from "../../association-name/associationName.servi
 import { sirenStructureFixture } from "./__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
-import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
+import * as ObjectHelper from "../../../shared/helpers/ObjectHelper";
+jest.mock("../../../shared/helpers/ObjectHelper");
+const mockedObjectHelper = jest.mocked(ObjectHelper);
 
 jest.mock("../../../shared/EventManager");
 jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
@@ -322,6 +324,7 @@ describe("ApiAssoService", () => {
             let sendRequestMock: jest.SpyInstance;
 
             beforeAll(() => {
+                mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
                 // @ts-ignore sendRequest is private Method
                 sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
             });
@@ -339,10 +342,19 @@ describe("ApiAssoService", () => {
 
             it("should return null if result without date", async () => {
                 const expected = null;
-                sendRequestMock.mockResolvedValue({ data: true });
+                sendRequestMock.mockResolvedValue({ data: true, identite: { date_modif_rna: null } });
                 // @ts-ignore findAssociationByRna is private method
                 const actual = await apiAssoService.findAssociationByRna(RNA);
 
+                expect(actual).toBe(expected);
+            });
+
+            it("should return null if structure.identite has empty properties", async () => {
+                mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
+                const expected = null;
+                sendRequestMock.mockResolvedValue({ data: true, identite: {} });
+                // @ts-ignore findAssociationByRna is private method
+                const actual = await apiAssoService.findAssociationByRna(RNA);
                 expect(actual).toBe(expected);
             });
 
@@ -366,6 +378,7 @@ describe("ApiAssoService", () => {
             let sendRequestMock: jest.SpyInstance;
 
             beforeAll(() => {
+                mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
                 // @ts-ignore sendRequest is private Method
                 sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(ASSO_WITH_STRUCTURES);
             });
@@ -380,10 +393,9 @@ describe("ApiAssoService", () => {
             });
 
             it("should call /structures if no establishment found", async () => {
-                const expected = null;
                 sendRequestMock.mockResolvedValueOnce({ data: true, identite: { date_modif_siren: "smthg" } });
                 await apiAssoService.findAssociationBySiren(RNA);
-                expect(sendRequestMock).toHaveBeenCalledTimes(2);
+                expect(sendRequestMock).toHaveBeenCalledWith(`/api/structure/${RNA}`);
             });
 
             it("should return null if result without date", async () => {
@@ -393,7 +405,19 @@ describe("ApiAssoService", () => {
                 expect(actual).toBe(expected);
             });
 
+            it("should return null if date_modif_siren is null", async () => {
+                const expected = null;
+                sendRequestMock.mockResolvedValueOnce({
+                    data: true,
+                    etablissement: { length: 1 },
+                    identite: { date_modif_siren: null },
+                });
+                const actual = await apiAssoService.findAssociationBySiren(RNA);
+                expect(actual).toBe(expected);
+            });
+
             it("should return null if structure identite has empty properties", async () => {
+                mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
                 // @ts-expect-error: mock wrong api response
                 const STRUCTURE: SirenStructureDto = { identite: { date_modif_siren: null, nom: null, id_rna: null } };
                 sendRequestMock.mockResolvedValueOnce(STRUCTURE);
