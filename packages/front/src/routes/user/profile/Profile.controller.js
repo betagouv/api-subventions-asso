@@ -23,7 +23,7 @@ export class ProfileController {
                 cancel();
                 this.modalCtrlButton.click();
                 modal.set(QuitNoSaveModal);
-                action.set(() => goto(to.route.url));
+                action.set(() => goto(to.url));
             }
         });
     }
