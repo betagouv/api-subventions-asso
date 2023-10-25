@@ -11,6 +11,12 @@ export class MiscScdlGrantRepository extends MigrationRepository<MiscScdlGrantEn
     public async createMany(entities: MiscScdlGrantEntity[]) {
         this.collection.insertMany(entities);
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ editorId: 1 });
+        await this.collection.createIndex({ associationSiret: 1 });
+        await this.collection.createIndex({ associationRna: 1 });
+    }
 }
 
 const miscScdlGrantRepository = new MiscScdlGrantRepository();
