@@ -51,10 +51,12 @@ export class DocumentService {
 
         // internal link : add api domain and token
         const token = (await authService.getCurrentUser()).jwt.token;
-        return sortedFlatDocs.map(doc => {
-            if (this.isInternalLink(doc.url)) doc.url = `${DATASUB_URL}${doc.url}?token=${token}`;
-            return doc;
-        });
+        return sortedFlatDocs.map(doc => this.addTokenToInternalLink(token, doc));
+    }
+
+    addTokenToInternalLink(token, doc) {
+        if (this.isInternalLink(doc.url)) doc.url = `${DATASUB_URL}${doc.url}?token=${token}`;
+        return doc;
     }
 }
 
