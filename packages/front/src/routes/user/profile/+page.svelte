@@ -59,6 +59,7 @@
                                 options={controller.agentTypeOptions}
                                 label="Vous êtes : "
                                 bind:selected={$user.agentType}
+                                required={true}
                                 on:change={() => controller.onChange()} />
                         </div>
                     </fieldset>
