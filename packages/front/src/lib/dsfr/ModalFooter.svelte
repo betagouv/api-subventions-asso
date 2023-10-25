@@ -8,13 +8,12 @@
 
 <div class="fr-modal__footer">
     <slot>
-        <ul
-            class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+        <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg fr-btns-group--icon-left">
             <li>
-                <Button ariaControls="fr-modal">Annuler</Button>
+                <Button ariaControls="fr-modal" type="secondary">Annuler</Button>
             </li>
             <li>
-                <Button on:click={confirmAction} type="secondary" ariaControls="fr-modal" disabled={disableConfirm}>
+                <Button on:click={confirmAction} ariaControls="fr-modal" disabled={disableConfirm}>
                     {confirmLabel}
                 </Button>
             </li>
