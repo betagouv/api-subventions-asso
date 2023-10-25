@@ -1,11 +1,10 @@
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import avisSituationInseeService from "./avisSituationInsee.service";
-import providerRequestService from "../../provider-request/providerRequest.service";
 
 describe("AvisSituationInseeService", () => {
     describe("getInseeEtablissementsBySiren", () => {
-        let providerRequestSpy: jest.SpyInstance;
+        let httpGetSpy: jest.SpyInstance;
         // @ts-expect-error requestCache is private attribute
         const cacheGetMock = jest.spyOn(avisSituationInseeService.requestCache, "get");
         // @ts-expect-error requestCache is private attribute
@@ -14,7 +13,8 @@ describe("AvisSituationInseeService", () => {
         const cacheHasMock = jest.spyOn(avisSituationInseeService.requestCache, "has");
 
         beforeAll(() => {
-            providerRequestSpy = jest.spyOn(providerRequestService, "get");
+            // @ts-expect-error http is private method
+            httpGetSpy = jest.spyOn(avisSituationInseeService.http, "get");
         });
 
         beforeEach(() => {
@@ -45,7 +45,7 @@ describe("AvisSituationInseeService", () => {
         it("should return false because axios throw error", async () => {
             const expected = false;
             cacheHasMock.mockImplementationOnce(() => false);
-            providerRequestSpy.mockImplementationOnce(() => {
+            httpGetSpy.mockImplementationOnce(() => {
                 throw new Error();
             });
             // @ts-expect-error getInseeEtablissementsBySiren is private method
@@ -57,7 +57,7 @@ describe("AvisSituationInseeService", () => {
         it("should return object returned by axios", async () => {
             const expected = { 42: "youpi" };
             cacheHasMock.mockImplementationOnce(() => false);
-            providerRequestSpy.mockImplementationOnce(async () => ({
+            httpGetSpy.mockImplementationOnce(async () => ({
                 status: 200,
                 data: expected,
             }));
@@ -70,7 +70,7 @@ describe("AvisSituationInseeService", () => {
         it("should save object in cache", async () => {
             const expected = { 42: "youpi" };
             cacheHasMock.mockImplementationOnce(() => false);
-            providerRequestSpy.mockImplementationOnce(async () => ({
+            httpGetSpy.mockImplementationOnce(async () => ({
                 status: 200,
                 data: expected,
             }));
@@ -83,7 +83,7 @@ describe("AvisSituationInseeService", () => {
         it("should return false returned by axios", async () => {
             const expected = false;
             cacheHasMock.mockImplementationOnce(() => false);
-            providerRequestSpy.mockImplementationOnce(async () => ({
+            httpGetSpy.mockImplementationOnce(async () => ({
                 status: 404,
                 data: false,
             }));
@@ -96,7 +96,7 @@ describe("AvisSituationInseeService", () => {
         it("should save false in cache", async () => {
             const expected = false;
             cacheHasMock.mockImplementationOnce(() => false);
-            providerRequestSpy.mockImplementationOnce(async () => ({
+            httpGetSpy.mockImplementationOnce(async () => ({
                 status: 404,
                 data: expected,
             }));

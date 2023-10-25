@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 export default interface ProviderRequestLogDbo {
     _id: ObjectId;
-    providerName: string;
+    providerId: string;
     route: string;
     date: Date;
     responseCode: number;

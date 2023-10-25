@@ -6,19 +6,21 @@ import { RequestResponse } from "./@types/RequestResponse";
 import RequestConfigAdapter from "./adapters/RequestConfigAdapter";
 import RequestResponseAdapter from "./adapters/RequestResponseAdapter";
 
-class ProviderRequestService {
-    get<T = any>(url: string, option: RequestConfig) {
-        return this._sendRequest<T>("GET", url, option);
+export class ProviderRequestService {
+    constructor(private providerId: string) {}
+
+    get<T = any>(url: string, option?: RequestConfig) {
+        return this.sendRequest<T>("GET", url, option);
     }
 
-    post<T = any>(url: string, option: RequestConfig) {
-        return this._sendRequest<T>("POST", url, option);
+    post<T = any>(url: string, option?: RequestConfig) {
+        return this.sendRequest<T>("POST", url, option);
     }
 
-    _sendRequest<T>(type: "GET" | "POST", url: string, option: RequestConfig): Promise<RequestResponse<T>> {
+    private sendRequest<T>(type: "GET" | "POST", url: string, option?: RequestConfig): Promise<RequestResponse<T>> {
         const date = new Date();
 
-        const axiosOption = RequestConfigAdapter.toAxiosRequestConfig(option);
+        const axiosOption = option ? RequestConfigAdapter.toAxiosRequestConfig(option) : {};
 
         return axios
             .request<T>({
@@ -27,22 +29,22 @@ class ProviderRequestService {
                 ...axiosOption,
             })
             .then(async response => {
-                await this.createLog(option.providerName, url, date, response.status, type);
+                await this.createLog(url, date, response.status, type);
                 return RequestResponseAdapter.toRequestReponse(response);
             })
             .catch(async (error: AxiosError) => {
-                if (error.status) await this.createLog(option.providerName, url, date, error.status, type);
+                if (error.status) await this.createLog(url, date, error.status, type);
                 throw error;
             });
     }
 
-    async createLog(providerName: string, route: string, date: Date, responseCode: number, type: "GET" | "POST") {
-        const log = new ProviderRequestLog(providerName, route, date, responseCode, type);
+    private async createLog(route: string, date: Date, responseCode: number, type: "GET" | "POST") {
+        const log = new ProviderRequestLog(this.providerId, route, date, responseCode, type);
 
         await providerRequestRepository.create(log);
     }
 }
 
-const providerRequestService = new ProviderRequestService();
-
-export default providerRequestService;
+export default function ProviderRequestFactory(providerId: string) {
+    return new ProviderRequestService(providerId);
+}

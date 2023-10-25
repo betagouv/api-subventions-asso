@@ -24,7 +24,7 @@ jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
 }));
 
 describe("ApiAssoService", () => {
-    let providerRequestSpy: jest.SpyInstance;
+    let httpGetSpy: jest.SpyInstance;
     // @ts-expect-error: mock private method
     let sendRequestMock = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
     // @ts-expect-error: mock private method
@@ -45,7 +45,8 @@ describe("ApiAssoService", () => {
     beforeAll(() => {
         // @ts-expect-error  mock mongodb return value
         associationNameUpsert = jest.spyOn(associationNameService, "upsert").mockResolvedValue({});
-        providerRequestSpy = jest.spyOn(providerRequestService, "get");
+        // @ts-expect-error http is private attribute
+        httpGetSpy = jest.spyOn(apiAssoService.http, "get");
     });
 
     afterAll(() => {
@@ -76,7 +77,7 @@ describe("ApiAssoService", () => {
 
         it("should return api data", async () => {
             const expected = "FAKEDATA";
-            providerRequestSpy.mockResolvedValueOnce({
+            httpGetSpy.mockResolvedValueOnce({
                 status: 200,
                 data: expected,
             });
@@ -89,7 +90,7 @@ describe("ApiAssoService", () => {
 
         it("should return null (wrong status code)", async () => {
             const expected = null;
-            providerRequestSpy.mockImplementationOnce(() =>
+            httpGetSpy.mockImplementationOnce(() =>
                 Promise.resolve({
                     status: 404,
                     data: 1,
@@ -104,7 +105,7 @@ describe("ApiAssoService", () => {
 
         it("should return null (dummy error message in data and status 200)", async () => {
             const expected = null;
-            providerRequestSpy.mockImplementationOnce(() =>
+            httpGetSpy.mockImplementationOnce(() =>
                 Promise.resolve({
                     status: 200,
                     data: "Error",
@@ -119,7 +120,7 @@ describe("ApiAssoService", () => {
 
         it("should return null (error is throw)", async () => {
             const expected = null;
-            providerRequestSpy.mockImplementationOnce(() => {
+            httpGetSpy.mockImplementationOnce(() => {
                 throw new Error("Error test");
             });
             cacheHasMock.mockImplementationOnce(() => false);
@@ -568,14 +569,14 @@ describe("ApiAssoService", () => {
 
     describe("Documents part", () => {
         afterAll(() => {
-            providerRequestSpy.mockReset();
+            httpGetSpy.mockReset();
         });
         beforeAll(() => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             apiAssoService.requestCache.destroy();
 
-            providerRequestSpy = jest.spyOn(axios, "get").mockResolvedValue({
+            httpGetSpy = jest.spyOn(axios, "get").mockResolvedValue({
                 status: 200,
                 data: fixtureAsso,
             });

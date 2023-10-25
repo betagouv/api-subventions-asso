@@ -18,11 +18,12 @@ describe("CaisseDepotsService", () => {
 
     describe("getRawCaisseDepotsSubventions", () => {
         const GET_RESPONSE = { data: { records: [{ record: 1 }, { record: 2 }] } };
-        let providerRequestGetSpy: jest.SpyInstance;
+        let httpGetSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            providerRequestGetSpy = jest.spyOn(providerRequestService, "get");
-            providerRequestGetSpy.mockResolvedValue(GET_RESPONSE);
+            // @ts-expect-error http is protected method
+            httpGetSpy = jest.spyOn(caisseDepotsService.http, "get");
+            httpGetSpy.mockResolvedValue(GET_RESPONSE);
         });
 
         it("calls axios get with proper url", async () => {
@@ -30,7 +31,7 @@ describe("CaisseDepotsService", () => {
                 'https://opendata.caissedesdepots.fr/api/v2/catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "toto")';
             // @ts-expect-error: mock
             await caisseDepotsService.getRawCaisseDepotsSubventions(IDENTIFIER);
-            expect(providerRequestGetSpy).toBeCalledWith(URL, { providerName: caisseDepotsService.provider.name });
+            expect(httpGetSpy).toBeCalledWith(URL);
         });
 
         it("returns records from axios get", async () => {

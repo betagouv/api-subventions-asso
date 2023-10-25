@@ -7,48 +7,40 @@ import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";
-import providerRequestService from "../../provider-request/providerRequest.service";
+import ProviderCore from "../ProviderCore";
 
-export class AvisSituationInseeService implements DocumentProvider {
-    provider = {
-        name: "Avis de Situation Insee",
-        type: ProviderEnum.api,
-        description:
-            "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
-    };
+interface AvisSituationCache {
+    etablissements: {
+        nic: string;
+        etablissementSiege: boolean;
+    }[];
+}
 
+export class AvisSituationInseeService extends ProviderCore implements DocumentProvider {
     static API_URL = "https://api-avis-situation-sirene.insee.fr/identification";
 
-    private requestCache = new CacheData<
-        | {
-              etablissements: {
-                  nic: string;
-                  etablissementSiege: boolean;
-              }[];
-          }
-        | false
-    >(CACHE_TIMES.ONE_DAY);
+    private requestCache = new CacheData<AvisSituationCache | false>(CACHE_TIMES.ONE_DAY);
 
-    private async getInseeEtablissementsBySiren(siren: Siren): Promise<
-        | {
-              etablissements: {
-                  nic: string;
-                  etablissementSiege: boolean;
-              }[];
-          }
-        | false
-    > {
+    constructor() {
+        super({
+            name: "Avis de Situation Insee",
+            type: ProviderEnum.api,
+            id: "avis_situation_api",
+            description:
+                "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
+        });
+    }
+
+    private async getInseeEtablissementsBySiren(siren: Siren): Promise<AvisSituationCache | false> {
         if (this.requestCache.has(siren)) return this.requestCache.get(siren)[0];
 
         try {
-            const result = await providerRequestService.get<{
+            const result = await this.http.get<{
                 etablissements: {
                     nic: string;
                     etablissementSiege: boolean;
                 }[];
-            }>(`${AvisSituationInseeService.API_URL}/siren/${siren}`, {
-                providerName: this.provider.name,
-            });
+            }>(`${AvisSituationInseeService.API_URL}/siren/${siren}`);
 
             if (result.status == 200) {
                 this.requestCache.add(siren, result.data);

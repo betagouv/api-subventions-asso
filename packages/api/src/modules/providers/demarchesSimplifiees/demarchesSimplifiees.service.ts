@@ -1,5 +1,4 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
-import providerRequestService from "../../provider-request/providerRequest.service";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
@@ -7,6 +6,7 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
+import ProviderCore from "../ProviderCore";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -16,14 +16,17 @@ import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMap
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesService implements DemandesSubventionsProvider {
+export class DemarchesSimplifieesService extends ProviderCore implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true;
-    provider = {
-        name: "Démarches Simplifiées",
-        type: ProviderEnum.api,
-        description: "", // TODO
-        id: "demarchesSimplifiees",
-    };
+
+    constructor() {
+        super({
+            name: "Démarches Simplifiées",
+            type: ProviderEnum.api,
+            description: "", // TODO
+            id: "demarchesSimplifiees",
+        });
+    }
 
     getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return Promise.resolve(null);
@@ -105,7 +108,7 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     async sendQuery(query: string, vars: DefaultObject) {
         if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
         try {
-            const result = await providerRequestService.post<DemarchesSimplifieesDto>(
+            const result = await this.http.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     data: {
@@ -114,7 +117,6 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
                     },
                     ...this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
                     keepAlive: true,
-                    providerName: this.provider.name,
                 },
             );
 

@@ -310,7 +310,8 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             postMock = jest
-                .spyOn(providerRequestService, "post")
+                // @ts-expect-error http is private method
+                .spyOn(demarchesSimplifieesService.http, "post")
                 .mockResolvedValue({ data: 1 } as RequestResponse<unknown>);
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");

@@ -12,26 +12,30 @@ import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import providerRequestService from "../../provider-request/providerRequest.service";
+import ProviderCore from "../ProviderCore";
 import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 
-export class ApiEntrepriseService implements EtablissementProvider, AssociationsProvider {
+export class ApiEntrepriseService extends ProviderCore implements EtablissementProvider, AssociationsProvider {
     static API_URL = "https://entreprise.api.gouv.fr/";
 
     isEtablissementProvider = true;
     isAssociationsProvider = true;
 
-    provider = {
-        name: "API Entreprise",
-        type: ProviderEnum.api,
-        description:
-            "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
-    };
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
 
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
+
+    constructor() {
+        super({
+            name: "API Entreprise",
+            type: ProviderEnum.api,
+            id: "api_entreprise",
+            description:
+                "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
+        });
+    }
 
     private async sendRequest<T>(
         route: string,
@@ -56,16 +60,13 @@ export class ApiEntrepriseService implements EtablissementProvider, Associations
 
         let result;
         if (isNewAPI) {
-            result = await providerRequestService.get<T>(fullURL, {
+            result = await this.http.get<T>(fullURL, {
                 headers: {
                     Authorization: `Bearer ${API_ENTREPRISE_TOKEN}`,
                 },
-                providerName: this.provider.name,
             });
         } else {
-            result = await providerRequestService.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`, {
-                providerName: this.provider.name,
-            });
+            result = await this.http.get<T>(`${fullURL}&token=${API_ENTREPRISE_TOKEN}`);
         }
         this.requestCache.add(fullURL, result.status == 200 ? result.data : null);
 

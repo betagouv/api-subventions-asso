@@ -11,6 +11,7 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccept
 import EventManager from "../../../shared/EventManager";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import associationNameService from "../../association-name/associationName.service";
+import ProviderCore from "../ProviderCore";
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import leCompteAssoRepository from "./repositories/leCompteAsso.repository";
@@ -21,15 +22,18 @@ export interface RejectedRequest {
     result: { message: string; code: number; data: unknown };
 }
 
-export class LeCompteAssoService implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider {
-    provider = {
-        name: "Le Compte Asso",
-        type: ProviderEnum.api,
-        description:
-            "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET.",
-    };
-
+export class LeCompteAssoService
+    extends ProviderCore
+    implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider
+{
     constructor() {
+        super({
+            name: "Le Compte Asso",
+            type: ProviderEnum.api,
+            id: "compte_asso",
+            description:
+                "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET.",
+        });
         associationNameService.setProviderScore(this.provider.name, 0.2);
     }
 

@@ -7,7 +7,7 @@ class ProviderRequestRepository extends MigrationRepository<ProviderRequestLogDb
     public collectionName = "provider-request-log";
 
     async create(entity: ProviderRequestLog) {
-        const dbo = ProviderRequestLogAdapter.formDomain(entity);
+        const dbo = ProviderRequestLogAdapter.fromEntity(entity);
 
         await this.collection.insertOne(dbo);
     }

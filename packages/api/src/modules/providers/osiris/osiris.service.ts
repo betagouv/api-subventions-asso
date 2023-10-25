@@ -16,6 +16,7 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
+import ProviderCore from "../ProviderCore";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
@@ -31,17 +32,17 @@ export const VALID_REQUEST_ERROR_CODE = {
 };
 
 export class OsirisService
+    extends ProviderCore
     implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider, GrantProvider
 {
-    provider = {
-        name: "OSIRIS",
-        type: ProviderEnum.raw,
-        description:
-            "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
-        id: "osiris",
-    };
-
     constructor() {
+        super({
+            name: "OSIRIS",
+            type: ProviderEnum.raw,
+            description:
+                "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
+            id: "osiris",
+        });
         associationNameService.setProviderScore(this.provider.name, 0.3);
     }
 

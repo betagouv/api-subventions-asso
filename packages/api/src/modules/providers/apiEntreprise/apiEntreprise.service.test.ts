@@ -21,16 +21,17 @@ describe("ApiEntrepriseService", () => {
     });
 
     describe("sendRequest()", () => {
-        let providerRequestSpy: jest.SpyInstance;
+        let httpGetSpy: jest.SpyInstance;
         const qsMock = jest.spyOn(qs, "stringify");
 
         beforeAll(() => {
-            providerRequestSpy = jest.spyOn(providerRequestService, "get");
+            // @ts-expect-error http is protected attribute
+            httpGetSpy = jest.spyOn(apiEntrepriseService.http, "get");
         });
 
         it("should return data", async () => {
             const expected = { test: true };
-            providerRequestSpy.mockResolvedValueOnce({
+            httpGetSpy.mockResolvedValueOnce({
                 status: 200,
                 data: expected,
             });
@@ -43,7 +44,7 @@ describe("ApiEntrepriseService", () => {
 
         it("should throw error", async () => {
             const expected = { response: { status: 404 } };
-            providerRequestSpy.mockImplementationOnce(async () => {
+            httpGetSpy.mockImplementationOnce(async () => {
                 throw expected;
             });
             let actual;
@@ -64,7 +65,7 @@ describe("ApiEntrepriseService", () => {
 
             const expected = [{ ...params, object: HEADCOUNT_REASON }];
 
-            providerRequestSpy.mockImplementationOnce(async () => ({
+            httpGetSpy.mockImplementationOnce(async () => ({
                 status: 200,
                 data: { test: true },
             }));

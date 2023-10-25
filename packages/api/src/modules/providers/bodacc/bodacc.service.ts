@@ -2,28 +2,28 @@ import { Siren } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import providerRequestService from "../../provider-request/providerRequest.service";
+import ProviderCore from "../ProviderCore";
 import BodaccAdapter from "./adapters/bodacc.adapter";
 import { BodaccDto } from "./dto/BodaccDto";
 
-export class BodaccService implements AssociationsProvider {
-    provider = {
-        type: ProviderEnum.api,
-        name: "Bodacc",
-        description: "Le bulletin officiel des annonces civiles et commerciales",
-    };
-
+export class BodaccService extends ProviderCore implements AssociationsProvider {
     isAssociationsProvider = true;
 
     apiUrl = "https://bodacc-datadila.opendatasoft.com/api/v2";
 
+    constructor() {
+        super({
+            type: ProviderEnum.api,
+            name: "Bodacc",
+            id: "bodacc",
+            description: "Le bulletin officiel des annonces civiles et commerciales",
+        });
+    }
+
     async sendRequest(siren: Siren) {
         try {
-            const result = await providerRequestService.get<BodaccDto>(
+            const result = await this.http.get<BodaccDto>(
                 `${this.apiUrl}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren}`,
-                {
-                    providerName: this.provider.name,
-                },
             );
             return result.data;
         } catch (e) {

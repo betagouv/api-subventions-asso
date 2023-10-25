@@ -2,9 +2,6 @@ import providerRequestService from "../../provider-request/providerRequest.servi
 import BodaccAdapter from "./adapters/bodacc.adapter";
 import bodaccService from "./bodacc.service";
 import { BodaccDto } from "./dto/BodaccDto";
-jest.mock("../../provider-request/providerRequest.service", () => ({
-    get: jest.fn(() => ({ data: null })),
-}));
 
 import * as SirenHelper from "./../../../shared/helpers/SirenHelper";
 jest.mock("./../../../shared/helpers/SirenHelper", () => ({
@@ -26,15 +23,18 @@ describe("Bodacc Service", () => {
     } as BodaccDto;
 
     const mockToAssociation = jest.spyOn(BodaccAdapter, "toAssociation").mockImplementation(jest.fn());
+    let httpGetSpy: jest.SpyInstance;
+
+    beforeAll(() => {
+        // @ts-expect-error http is protected method
+        httpGetSpy = jest.spyOn(bodaccService.http, "get").mockResolvedValue({});
+    });
 
     describe("sendRequest", () => {
         it("should call providerRequestService with url", async () => {
             await bodaccService.sendRequest(SIREN);
-            expect(providerRequestService.get).toHaveBeenCalledWith(
+            expect(httpGetSpy).toHaveBeenCalledWith(
                 `https://bodacc-datadila.opendatasoft.com/api/v2/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${SIREN}`,
-                {
-                    providerName: bodaccService.provider.name,
-                },
             );
         });
     });

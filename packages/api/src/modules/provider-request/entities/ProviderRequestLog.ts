@@ -1,6 +1,6 @@
 export default class ProviderRequestLog {
     constructor(
-        public providerName: string,
+        public providerId: string,
         public route: string,
         public date: Date,
         public responseCode: number,

@@ -1,117 +1,137 @@
-import providerRequestService from "./providerRequest.service";
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios from "axios";
+import ProviderRequestFactory, { ProviderRequestService } from "./providerRequest.service";
 import providerRequestRepository from "./repositories/providerRequest.repository";
 
-jest.mock("axios");
 jest.mock("./repositories/providerRequest.repository");
 
 describe("ProviderRequestService", () => {
-    afterEach(() => {
-        jest.clearAllMocks();
+    let providerRequestService: ProviderRequestService;
+    let sendRequestSpy: jest.SpyInstance;
+    const providerId = "ExampleProvider";
+
+    beforeEach(() => {
+        providerRequestService = ProviderRequestFactory(providerId);
     });
 
-    it("should send a GET request", async () => {
-        const url = "https://example.com";
-        const option = {
-            providerName: "ExampleProvider",
-            // Other request options
-        };
-
-        // Mock Axios to return a response
-        const mockResponse = { status: 200, data: "Response Data" };
-        (axios.request as jest.Mock).mockResolvedValue(mockResponse);
-
-        const result = await providerRequestService.get(url, option);
-
-        expect(axios.request).toHaveBeenCalledWith({
-            method: "GET",
-            url,
+    describe("Get", () => {
+        beforeEach(() => {
+            // @ts-expect-error sendRequest is private method
+            sendRequestSpy = jest.spyOn(providerRequestService, "sendRequest").mockResolvedValue({});
         });
 
-        // Add more assertions to check the result
-    });
-
-    it("should send a POST request", async () => {
-        const url = "https://example.com";
-        const option = {
-            providerName: "ExampleProvider",
-            // Other request options
-        };
-
-        // Mock Axios to return a response
-        const mockResponse = { status: 200, data: "Response Data" };
-        (axios.request as jest.Mock).mockResolvedValue(mockResponse);
-
-        const result = await providerRequestService.post(url, option);
-
-        expect(axios.request).toHaveBeenCalledWith({
-            method: "POST",
-            url,
-        });
-
-        // Add more assertions to check the result
-    });
-
-    it("should create a log for successful requests", async () => {
-        const url = "https://example.com";
-        const option = {
-            providerName: "ExampleProvider",
-            // Other request options
-        };
-
-        // Mock Axios to return a response
-        const mockResponse = { status: 200, data: "Response Data" };
-        (axios.request as jest.Mock).mockResolvedValue(mockResponse);
-
-        // Mock providerRequestRepository.create to do nothing
-        (providerRequestRepository.create as jest.Mock).mockResolvedValue(undefined);
-
-        await providerRequestService.get(url, option);
-
-        // Check if createLog was called with the expected arguments
-        expect(providerRequestRepository.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                providerName: option.providerName,
-                route: url,
-                responseCode: mockResponse.status,
-                type: "GET",
-            }),
-        );
-
-        // Add more assertions as needed
-    });
-
-    it("should create a log for failed requests", async () => {
-        const url = "https://example.com";
-        const option = {
-            providerName: "ExampleProvider",
-            // Other request options
-        };
-
-        // Mock Axios to throw an error
-        const mockError = { status: 404, message: "Not Found" };
-        (axios.request as jest.Mock).mockRejectedValue(mockError);
-
-        // Mock providerRequestRepository.create to do nothing
-        (providerRequestRepository.create as jest.Mock).mockResolvedValue(undefined);
-
-        // Ensure that the error status is set
-        mockError.status = 404;
-
-        try {
+        it("should call sendRequest Method", async () => {
+            const url = "/test";
+            const option = { headers: { test: true } };
             await providerRequestService.get(url, option);
-        } catch (error) {
-            // Check if createLog was called with the expected arguments
-            expect(providerRequestRepository.create).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    providerName: option.providerName,
-                    route: url,
-                    responseCode: mockError.status,
-                    type: "GET",
-                }),
-            );
-        }
 
-        // Add more assertions as needed
+            expect(sendRequestSpy).toBeCalledWith("GET", url, option);
+        });
+    });
+
+    describe("post", () => {
+        beforeEach(() => {
+            // @ts-expect-error sendRequest is private method
+            sendRequestSpy = jest.spyOn(providerRequestService, "sendRequest").mockResolvedValue({});
+        });
+
+        it("should call sendRequest Method", async () => {
+            const url = "/test";
+            const option = { headers: { test: true } };
+            await providerRequestService.post(url, option);
+
+            expect(sendRequestSpy).toBeCalledWith("POST", url, option);
+        });
+    });
+
+    describe("createLog", () => {
+        let repositoryCreateSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            repositoryCreateSpy = jest.spyOn(providerRequestRepository, "create").mockResolvedValue();
+        });
+
+        it("should call repository", async () => {
+            const url = "/test";
+            const date = new Date();
+            const responseCode = 200;
+            const type = "GET";
+
+            // @ts-expect-error createlog is private method
+            await providerRequestService.createLog(url, date, responseCode, type);
+
+            expect(repositoryCreateSpy).toHaveBeenCalledWith({
+                providerId,
+                route: url,
+                date,
+                responseCode,
+                type,
+            });
+        });
+    });
+
+    describe("sendRequest", () => {
+        let createLogSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error createLog is private method
+            createLogSpy = jest.spyOn(providerRequestService, "createLog").mockResolvedValue({});
+
+            (axios.request as jest.Mock).mockResolvedValue({ status: 200 });
+        });
+
+        it("should call axios request", async () => {
+            const url = "/test";
+            const method = "GET";
+            const headers = {
+                test: true,
+            };
+
+            // @ts-expect-error sendRequest is private method
+            await providerRequestService.sendRequest(method, url, {
+                headers,
+            });
+
+            expect(axios.request).toHaveBeenCalledWith({
+                method,
+                url,
+                headers,
+            });
+        });
+
+        it("should call createLog", async () => {
+            const url = "/test";
+            const method = "GET";
+            const headers = {
+                test: true,
+            };
+
+            // @ts-expect-error sendRequest is private method
+            await providerRequestService.sendRequest(method, url, {
+                headers,
+            });
+
+            expect(createLogSpy).toHaveBeenCalledWith(url, expect.any(Date), 200, method);
+        });
+
+        it("should call createLog when error", async () => {
+            const url = "/test";
+            const method = "GET";
+            const headers = {
+                test: true,
+            };
+
+            const statusCode = 400;
+
+            (axios.request as jest.Mock).mockRejectedValueOnce({ status: statusCode });
+
+            try {
+                // @ts-expect-error sendRequest is private method
+                await providerRequestService.sendRequest(method, url, {
+                    headers,
+                });
+            } catch {
+                expect(createLogSpy).toHaveBeenCalledWith(url, expect.any(Date), statusCode, method);
+            }
+        });
     });
 });

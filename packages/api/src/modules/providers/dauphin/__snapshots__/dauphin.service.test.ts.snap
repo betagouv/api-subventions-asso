@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`Dauphin Service documents findDauphinInternalId should call providerRequestServiceMocked with args 1`] = `
+exports[`Dauphin Service documents findDauphinInternalId should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
   Object {
@@ -41,12 +41,11 @@ Array [
       "content-type": "application/json;charset=UTF-8",
       "mg-authentication": "true",
     },
-    "providerName": "Dauphin",
   },
 ]
 `;
 
-exports[`Dauphin Service documents getDocumentsBySiren should call providerRequestServiceMocked with args 1`] = `
+exports[`Dauphin Service documents getDocumentsBySiren should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/DAUPHIN_ID?expand=pieces.documents",
   Object {
@@ -59,12 +58,11 @@ Array [
       "content-type": "application/json;charset=UTF-8",
       "mg-authentication": "true",
     },
-    "providerName": "Dauphin",
   },
 ]
 `;
 
-exports[`Dauphin Service documents getSpecificDocumentStream should call providerRequestServiceMocked with args 1`] = `
+exports[`Dauphin Service documents getSpecificDocumentStream should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.frPATH",
   Object {
@@ -76,13 +74,12 @@ Array [
       "authorization": "Bearer FAKE_TOKEN",
       "mg-authentication": "true",
     },
-    "providerName": "Dauphin",
     "responseType": "stream",
   },
 ]
 `;
 
-exports[`Dauphin Service sendAuthRequest should call providerRequestServiceMocked 1`] = `
+exports[`Dauphin Service sendAuthRequest should call httpSpy 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
   Object {
@@ -94,12 +91,11 @@ Array [
       "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
       "content-type": "application/x-www-form-urlencoded",
     },
-    "providerName": "Dauphin",
   },
 ]
 `;
 
-exports[`Dauphin Service updateApplicationCache should call providerRequestServiceMocked with args 1`] = `
+exports[`Dauphin Service updateApplicationCache should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
   Object {
@@ -107,7 +103,6 @@ Array [
       "from": 0,
     },
     "headers": Object {},
-    "providerName": "Dauphin",
   },
 ]
 `;

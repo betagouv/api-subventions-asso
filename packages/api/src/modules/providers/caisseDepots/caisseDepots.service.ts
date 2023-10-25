@@ -4,19 +4,12 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
+import ProviderCore from "../ProviderCore";
 import { RawGrant } from "../../grant/@types/rawGrant";
-import providerRequestService from "../../provider-request/providerRequest.service";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 import CaisseDepotsSubventionDto from "./dto/CaisseDepotsSubventionDto";
 
-export class CaisseDepotsService implements DemandesSubventionsProvider, GrantProvider {
-    provider = {
-        name: "API Caisse des dépôts",
-        type: ProviderEnum.api,
-        description:
-            "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention.",
-        id: "caisseDepots",
-    };
+export class CaisseDepotsService extends ProviderCore implements DemandesSubventionsProvider, GrantProvider {
     isDemandesSubventionsProvider = true;
     isGrantProvider = true;
 
@@ -26,13 +19,20 @@ export class CaisseDepotsService implements DemandesSubventionsProvider, GrantPr
         return this.getCaisseDepotsSubventions("33760730300068");
     }
 
+    constructor() {
+        super({
+            name: "API Caisse des dépôts",
+            type: ProviderEnum.api,
+            description:
+                "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention.",
+            id: "caisseDepots",
+        });
+    }
+
     private async getRawCaisseDepotsSubventions(identifier: string): Promise<CaisseDepotsSubventionDto[]> {
         try {
-            const result = await providerRequestService.get(
+            const result = await this.http.get(
                 `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${identifier}")`,
-                {
-                    providerName: this.provider.name,
-                },
             );
 
             return result.data.records.map(({ record }) => record);

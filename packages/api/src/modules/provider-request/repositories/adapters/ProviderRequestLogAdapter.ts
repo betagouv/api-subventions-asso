@@ -4,9 +4,9 @@ import ProviderRequestLog from "../../entities/ProviderRequestLog";
 import ProviderRequestLogDbo from "../dbo/ProviderRequestLogDbo";
 
 export default class ProviderRequestLogAdapter {
-    static toDomain(dbo: ProviderRequestLogDbo): ProviderRequestLog {
+    static toEntity(dbo: ProviderRequestLogDbo): ProviderRequestLog {
         return new ProviderRequestLog(
-            dbo.providerName,
+            dbo.providerId,
             dbo.route,
             dbo.date,
             dbo.responseCode,
@@ -15,10 +15,10 @@ export default class ProviderRequestLogAdapter {
         );
     }
 
-    static formDomain(entity: ProviderRequestLog): ProviderRequestLogDbo {
+    static fromEntity(entity: ProviderRequestLog): ProviderRequestLogDbo {
         return {
             _id: entity.id ? new ObjectId(entity.id) : new ObjectId(),
-            providerName: entity.providerName,
+            providerId: entity.providerId,
             date: entity.date,
             route: entity.route,
             responseCode: entity.responseCode,
