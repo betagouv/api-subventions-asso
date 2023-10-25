@@ -21,6 +21,10 @@ class ConsumerTokenRepository {
         const result = await this.collection.deleteMany({ userId: new ObjectId(userId) });
         return result.acknowledged;
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ userId: 1 });
+    }
 }
 
 const consumerTokenRepository = new ConsumerTokenRepository();
