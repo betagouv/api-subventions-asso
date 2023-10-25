@@ -41,10 +41,6 @@ export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubve
     async rename(name: string) {
         return this.collection.rename(name);
     }
-
-    async createIndexes() {
-        await this.collection.createIndex({ "legalInformations.siret": 1 });
-    }
 }
 
 const fonjepSubventionRepository = new FonjepSubventionRepository();
