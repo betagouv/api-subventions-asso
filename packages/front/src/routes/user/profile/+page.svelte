@@ -10,11 +10,12 @@
     import Select from "$lib/dsfr/Select.svelte";
 
     let saveAlertElement;
+    let modalCtrlButton;
 
     const controller = new ProfileController();
     const { deleteError, user, saveStatus, isSubmitBlocked } = controller;
 
-    onMount(() => controller.onMount(saveAlertElement));
+    onMount(() => controller.onMount(saveAlertElement, modalCtrlButton));
     controller.init();
 </script>
 
@@ -25,6 +26,12 @@
             <div class="fr-grid-row">
                 <form on:submit|preventDefault={() => controller.onSubmit($user)} class="bordered-frame">
                     <h2 class="fr-h5">Vos informations de profil</h2>
+                    <button
+                        type="button"
+                        data-fr-opened="false"
+                        hidden
+                        aria-controls="fr-modal"
+                        bind:this={modalCtrlButton} />
                     <div bind:this={saveAlertElement}>
                         {#if $saveStatus === "changed"}
                             <Alert type="warning" small={true}>
@@ -41,9 +48,13 @@
                     </div>
                     <fieldset class="fr-fieldset fr-mt-6w">
                         <SignupModule bind:user={$user} on:change={() => controller.onChange()} />
-                        <div class="fr-fieldset__element fr-mt-4v">
+                        <!--<div class="fr-fieldset__element fr-mt-4v">
                             <ResetPwdModule email={$user.email} />
-                        </div>
+                            TODO le user est pas réactif dans le composant. Il faudrait passer un store mais ça va être
+                                pénible de faire ça depuis un prop : stocker l'utilisateur dans un store global ?
+                                Peut-être pas nécessaire
+                                De plus il faudrait aussi déconnecter l'utilisateur parce que son token va être invalidé
+                        </div>-->
                     </fieldset>
 
                     <div class="separator fr-mb-6w fr-mt-4w" />
@@ -55,6 +66,7 @@
                                 options={controller.agentTypeOptions}
                                 label="Vous êtes : "
                                 bind:selected={$user.agentType}
+                                required={true}
                                 on:change={() => controller.onChange()} />
                         </div>
                     </fieldset>

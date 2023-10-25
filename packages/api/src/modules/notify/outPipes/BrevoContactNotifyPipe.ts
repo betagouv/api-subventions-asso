@@ -175,8 +175,8 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             decentralizedLevel: "COMPETENCE_TERRITORIALE",
             decentralizedTerritory: "ECHELON_TERRITORIAL",
             territorialScope: "ECHELON_COLLECTIVITE",
-            lastname: "NOM",
-            firstname: "PRENOM",
+            lastName: "NOM",
+            firstName: "PRENOM",
         };
 
         function buildAttributesObject(data) {
@@ -196,6 +196,10 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                         break;
                     default:
                         if (Object.keys(ATTRIBUTES_MAPPING).includes(key)) acc[ATTRIBUTES_MAPPING[key]] = data[key];
+                }
+
+                if (typeof acc[ATTRIBUTES_MAPPING[key]] == "string" && !acc[ATTRIBUTES_MAPPING[key]].length) {
+                    delete acc[ATTRIBUTES_MAPPING[key]];
                 }
                 return acc;
             }, {});
