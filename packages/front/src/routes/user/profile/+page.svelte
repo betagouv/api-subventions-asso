@@ -10,11 +10,12 @@
     import Select from "$lib/dsfr/Select.svelte";
 
     let saveAlertElement;
+    let modalCtrlButton;
 
     const controller = new ProfileController();
     const { deleteError, user, saveStatus, isSubmitBlocked } = controller;
 
-    onMount(() => controller.onMount(saveAlertElement));
+    onMount(() => controller.onMount(saveAlertElement, modalCtrlButton));
     controller.init();
 </script>
 
@@ -25,6 +26,12 @@
             <div class="fr-grid-row">
                 <form on:submit|preventDefault={() => controller.onSubmit($user)} class="bordered-frame">
                     <h2 class="fr-h5">Vos informations de profil</h2>
+                    <button
+                        type="button"
+                        data-fr-opened="false"
+                        hidden
+                        aria-controls="fr-modal"
+                        bind:this={modalCtrlButton} />
                     <div bind:this={saveAlertElement}>
                         {#if $saveStatus === "changed"}
                             <Alert type="warning" small={true}>
@@ -59,6 +66,7 @@
                                 options={controller.agentTypeOptions}
                                 label="Vous êtes : "
                                 bind:selected={$user.agentType}
+                                required={true}
                                 on:change={() => controller.onChange()} />
                         </div>
                     </fieldset>
