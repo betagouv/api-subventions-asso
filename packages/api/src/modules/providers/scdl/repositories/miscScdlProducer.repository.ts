@@ -15,6 +15,10 @@ export class MiscScdlProducersRepository extends MigrationRepository<MiscScdlPro
     public async update(producerId: string, set: Partial<MiscScdlProducerEntity>) {
         return this.collection.updateOne({ producerId }, { $set: set });
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ editorId: 1 }, { unique: true });
+    }
 }
 
 const miscScdlProducersRepository = new MiscScdlProducersRepository();
