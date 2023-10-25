@@ -15,9 +15,12 @@
     import { nanoid } from "nanoid";
 
     import "./combobox.css";
-    import { onMount, afterUpdate, tick } from "svelte";
+    import { onMount, tick } from "svelte";
     import Store from "$lib/core/Store";
     import { ComboboxAutocomplete } from "$lib/components/AutocompleteSelect/combobox.js";
+    import Dispatch from "$lib/core/Dispatch";
+
+    const dispatch = Dispatch.getDispatcher();
 
     export let value; // to be bound by parent
 
@@ -31,7 +34,10 @@
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
 
     const storeValue = new Store("");
-    storeValue.subscribe(newV => (value = newV)); // cannot be in controller so that binding works
+    storeValue.subscribe(newV => {
+        value = newV; // cannot be in controller so that binding works
+        dispatch("change");
+    });
 
     let ctrl: ComboboxAutocomplete;
 

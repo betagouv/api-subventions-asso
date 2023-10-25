@@ -1,7 +1,9 @@
+import QuitNoSaveModal from "./components/QuitNoSaveModal.svelte";
 import Store, { derived } from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
-import { beforeNavigate } from "$app/navigation";
+import { beforeNavigate, goto } from "$app/navigation";
+import { action, modal } from "$lib/store/modal.store";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
@@ -15,16 +17,24 @@ export class ProfileController {
             [this.saveStatus, this.saveValidation],
             ([status, validation]) => (status !== "changed" && status !== "error") || !validation,
         );
-        beforeNavigate(({ cancel }) => {
-            if (this.saveStatus.value === "changed") {
+
+        beforeNavigate(({ cancel, willUnload, to }) => {
+            if (this.saveStatus.value === "changed" && !this.confirmingLeave && !willUnload) {
                 cancel();
-                this.showAlert();
+                this.modalCtrlButton.click();
+                modal.set(QuitNoSaveModal);
+                action.set(() => goto(to.url));
             }
         });
     }
 
-    onMount(saveAlertElement) {
+    get confirmingLeave() {
+        return this.modalCtrlButton.getAttribute("data-fr-opened") === "true";
+    }
+
+    onMount(saveAlertElement, modalCtrlButton) {
         this.saveAlertElement = saveAlertElement;
+        this.modalCtrlButton = modalCtrlButton;
     }
 
     onChange() {

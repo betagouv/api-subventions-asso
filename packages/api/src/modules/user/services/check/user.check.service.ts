@@ -7,6 +7,8 @@ import userRepository from "../../repositories/user.repository";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRolesService from "../roles/user.roles.service";
 import { UserServiceErrors } from "../../user.enum";
+import notifyService from "../../../notify/notify.service";
+import { NotificationType } from "../../../notify/@types/NotificationType";
 
 export class UserCheckService {
     public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
@@ -36,7 +38,15 @@ export class UserCheckService {
      * @param newUser
      */
     async validateSanitizeUser(user: FutureUserDto, newUser = true) {
-        await userCheckService.validateEmail(user.email);
+        try {
+            await userCheckService.validateEmail(user.email);
+        } catch (e) {
+            if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
+                notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, user);
+            }
+
+            throw e;
+        }
 
         if (newUser && (await userRepository.findByEmail(user.email)))
             throw new InternalServerError("An error has occurred");

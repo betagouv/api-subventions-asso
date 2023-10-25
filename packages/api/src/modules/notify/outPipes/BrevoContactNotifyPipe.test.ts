@@ -123,8 +123,8 @@ describe("BrevoContactNotifyPipe", () => {
             operatorStructure: "OPERATEUR",
             territorialStructure: "COLLECTIVITES",
             territorialScope: TerritorialScopeEnum.DEPARTMENTAL,
-            lastname: "NOM",
-            firstname: "PRENOM",
+            lastName: "NOM",
+            firstName: "PRENOM",
         };
 
         it("should call updateContact()", async () => {

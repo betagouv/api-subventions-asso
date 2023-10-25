@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.4](https://github.com/betagouv/api-subventions-asso/compare/v0.38.3...v0.38.4) (2023-10-25)
+
+### Bug Fixes
+
+-   **api:** dont send empty values and fix first and last name ([6aa079f](https://github.com/betagouv/api-subventions-asso/commit/6aa079fcd182ed58f050f6e3bb4d8f409998c407))
+-   **api:** send mattermost notification when user email is not accepted ([9546574](https://github.com/betagouv/api-subventions-asso/commit/95465746c96130b6a7111fae4d20c0bf591a85bd))
+
 ## [0.38.3](https://github.com/betagouv/api-subventions-asso/compare/v0.38.2...v0.38.3) (2023-10-20)
 
 ### Bug Fixes
