@@ -51,6 +51,11 @@ export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvalua
     public cursorFind(query = {}) {
         return this.collection.find(query);
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ "indexedInformations.osirisActionId": 1 }, { unique: true });
+        await this.collection.createIndex({ "legalInformations.siret": 1 });
+    }
 }
 
 const osirisEvaluationRepository = new OsirisEvaluationRepository();
