@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.4](https://github.com/betagouv/datasubvention/compare/v0.38.3...v0.38.4) (2023-10-25)
+
+### Bug Fixes
+
+-   **front:** classical modal to prevent and allow leaving unsasved profile ([445f206](https://github.com/betagouv/datasubvention/commit/445f206f1c83fe56bbe21d051857f0ec8f8c64f8))
+-   **front:** hide resetPassword module from profile ([179ceff](https://github.com/betagouv/datasubvention/commit/179ceffdaf4b93c6e55ebf9df29c655eaa807372))
+-   **front:** manually dispatch change event ([9724040](https://github.com/betagouv/datasubvention/commit/97240402018028c4e80ccd64f251ed6ea8e1fc67))
+-   **front:** mark agentType required in profile ([c4d4bae](https://github.com/betagouv/datasubvention/commit/c4d4bae508b3a616bf270ad749fead00d0e16c49))
+-   **front:** more logical modal buttons ([7984db8](https://github.com/betagouv/datasubvention/commit/7984db810aec2c7827322f0ef5061c65a84c3511))
+-   **front:** to.url instead of to.route.url ([f70e9ac](https://github.com/betagouv/datasubvention/commit/f70e9ac9a178c3474fbe2bbc253918e9da49d082))
+
+### Features
+
+-   **front:** select required prop ([e1b3cfe](https://github.com/betagouv/datasubvention/commit/e1b3cfed7a9ebc1eb380985ff9c9f742ab1e8b04))
+
 ## [0.38.2](https://github.com/betagouv/datasubvention/compare/v0.38.1...v0.38.2) (2023-10-20)
 
 **Note:** Version bump only for package front

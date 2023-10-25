@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.4](https://github.com/betagouv/api-subventions-asso/compare/v0.38.3...v0.38.4) (2023-10-25)
+
+### Bug Fixes
+
+-   **api:** dont send empty values and fix first and last name ([6aa079f](https://github.com/betagouv/api-subventions-asso/commit/6aa079fcd182ed58f050f6e3bb4d8f409998c407))
+-   **api:** send mattermost notification when user email is not accepted ([9546574](https://github.com/betagouv/api-subventions-asso/commit/95465746c96130b6a7111fae4d20c0bf591a85bd))
+-   **front:** classical modal to prevent and allow leaving unsasved profile ([445f206](https://github.com/betagouv/api-subventions-asso/commit/445f206f1c83fe56bbe21d051857f0ec8f8c64f8))
+-   **front:** hide resetPassword module from profile ([179ceff](https://github.com/betagouv/api-subventions-asso/commit/179ceffdaf4b93c6e55ebf9df29c655eaa807372))
+-   **front:** manually dispatch change event ([9724040](https://github.com/betagouv/api-subventions-asso/commit/97240402018028c4e80ccd64f251ed6ea8e1fc67))
+-   **front:** mark agentType required in profile ([c4d4bae](https://github.com/betagouv/api-subventions-asso/commit/c4d4bae508b3a616bf270ad749fead00d0e16c49))
+-   **front:** more logical modal buttons ([7984db8](https://github.com/betagouv/api-subventions-asso/commit/7984db810aec2c7827322f0ef5061c65a84c3511))
+-   **front:** to.url instead of to.route.url ([f70e9ac](https://github.com/betagouv/api-subventions-asso/commit/f70e9ac9a178c3474fbe2bbc253918e9da49d082))
+
+### Features
+
+-   **front:** select required prop ([e1b3cfe](https://github.com/betagouv/api-subventions-asso/commit/e1b3cfed7a9ebc1eb380985ff9c9f742ab1e8b04))
+
 ## [0.38.3](https://github.com/betagouv/api-subventions-asso/compare/v0.38.2...v0.38.3) (2023-10-20)
 
 ### Bug Fixes
