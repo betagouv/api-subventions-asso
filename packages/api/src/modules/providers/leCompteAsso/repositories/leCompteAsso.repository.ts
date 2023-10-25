@@ -54,6 +54,12 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
             })
             .toArray();
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ "providerInformations.compteAssoId": 1 }, { unique: true });
+        await this.collection.createIndex({ "legalInformations.siret": 1 });
+        await this.collection.createIndex({ "legalInformations.rna": 1 });
+    }
 }
 
 const leCompteAssoRepository: LeCompteAssoRepository = new LeCompteAssoRepository();
