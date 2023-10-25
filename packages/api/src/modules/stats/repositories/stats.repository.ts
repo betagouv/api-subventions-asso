@@ -84,6 +84,12 @@ export class StatsRepository {
             },
         });
     }
+
+    async createIndexes() {
+        await this.collection.createIndex({ timestamp: 1 });
+        await this.collection.createIndex({ "meta.req.user.email": 1 });
+        await this.collection.createIndex({ "meta.req.url": 1 });
+    }
 }
 
 const statsRepository = new StatsRepository();
