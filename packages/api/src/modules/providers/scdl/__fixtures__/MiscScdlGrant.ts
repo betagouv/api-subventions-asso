@@ -1,5 +1,4 @@
 export default {
-    id: "62d6c89108d8d078053b48e1",
     editorId: "62d6c07847d8d078053b48e1",
     allocatorName: "Région Bretagne",
     allocatorSiret: "23350001600040",

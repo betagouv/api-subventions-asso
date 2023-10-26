@@ -1,25 +1,41 @@
 import scdlService from "./scdl.service";
-import miscScdlDataRepository from "./miscScdlData.repository";
-jest.mock("./miscScdlData.repository");
-import miscScdlProducersRepository from "./miscScdlProducer.repository";
-jest.mock("./miscScdlProducer.repository");
+import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
+jest.mock("./repositories/miscScdlGrant.repository");
+import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
+jest.mock("./repositories/miscScdlProducer.repository");
 
-import MiscScdlDataFixture from "./__fixtures__/MiscScdlData";
+import MiscScdlGrantFixture from "./__fixtures__/MiscScdlGrant";
 import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
 
 describe("ScdlService", () => {
-    describe("createProducer", () => {
+    const PRODUCER_ID = "ID";
+    describe("getProvider()", () => {
+        it("should call miscScdlProducerRepository.create()", async () => {
+            await scdlService.getProducer(PRODUCER_ID);
+            expect(miscScdlProducersRepository.findByProducerId).toHaveBeenCalledWith(PRODUCER_ID);
+        });
+    });
+    describe("createProducer()", () => {
         it("should call miscScdlProducerRepository.create()", async () => {
             const PRODUCER = { ...MiscScdlProducerFixture };
             await scdlService.createProducer(PRODUCER);
             expect(miscScdlProducersRepository.create).toHaveBeenCalledWith(PRODUCER);
         });
     });
-    describe("createData", () => {
-        it("should call miscScdlDataRepository.create()", async () => {
-            const DATA = { ...MiscScdlDataFixture };
-            await scdlService.createData(DATA);
-            expect(miscScdlDataRepository.create).toHaveBeenCalledWith(DATA);
+    describe("updateProducer()", () => {
+        it("should call miscScdlProducerRepository.update()", async () => {
+            const SET_OBJECT = {
+                lastUpdate: new Date(),
+            };
+            await scdlService.updateProducer(PRODUCER_ID, SET_OBJECT);
+            expect(miscScdlProducersRepository.update).toHaveBeenCalledWith(PRODUCER_ID, SET_OBJECT);
+        });
+    });
+    describe("createData()", () => {
+        it("should call miscScdlGrantRepository.createMany()", async () => {
+            const GRANTS = [{ ...MiscScdlGrantFixture, producerId: "" }];
+            await scdlService.createManyGrants(GRANTS);
+            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith(GRANTS);
         });
     });
 });

@@ -21,6 +21,7 @@ import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispr
 import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dauphin.cli.controller";
 import AdminStructureCliController from "./modules/admin-structure/interfaces/cli/adminStructureCliController";
 import DumpCliController from "./modules/dump/interfaces/cli/DumpCliController";
+import ScdlCliController from "./modules/providers/scdl/interfaces/cli/scdl.cli";
 
 async function main() {
     await connectDB();
@@ -44,6 +45,7 @@ async function main() {
         DauphinCliController,
         AdminStructureCliController,
         DumpCliController,
+        ScdlCliController,
     ];
 
     const args = process.argv.slice(2);
