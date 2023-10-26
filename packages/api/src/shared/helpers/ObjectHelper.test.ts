@@ -7,7 +7,7 @@ describe("ObjectHelper", () => {
             expect(actual).toBe(true);
         });
 
-        it("should return true if object has undefined properties", () => {
+        it("should return false if object has undefined properties", () => {
             const actual = ObjectHelper.isEmpty({ foo: undefined, bar: null });
             expect(actual).toBe(false);
         });
