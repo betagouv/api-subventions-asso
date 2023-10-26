@@ -9,7 +9,7 @@ enum PaymentNatureEnum {
 }
 
 export type ScdlGrantDto = {
-    id: string; // ObjectId.toString()
+    id: string;
     allocatorName: string;
     allocatorSiret: string;
     conventionDate: string; // date formatted as YYYY-MM-DD
