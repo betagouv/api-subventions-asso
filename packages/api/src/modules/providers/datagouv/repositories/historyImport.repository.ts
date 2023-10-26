@@ -1,7 +1,7 @@
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 import HistoryImportEntity from "../entities/HistoryImportEntity";
 
-export class HistoryImportRepository extends MigrationRepository<HistoryImportEntity> {
+export class HistoryImportRepository extends MongoRepository<HistoryImportEntity> {
     public collectionName = "datagouv-history-import";
 
     add(entity: HistoryImportEntity) {

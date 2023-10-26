@@ -1,9 +1,9 @@
 import { Siret, Siren } from "dto";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisEvaluationEntity from "../entities/OsirisEvaluationEntity";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 
-export class OsirisEvaluationRepository extends MigrationRepository<OsirisEvaluationEntity> {
+export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluationEntity> {
     readonly collectionName = "osiris-evaluation";
 
     public async findByActionId(actionId: string) {

@@ -1,9 +1,9 @@
 import { Siren, Siret } from "dto";
 import { UpdateFilter } from "mongodb";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 import DauphinGisproDbo from "./dbo/DauphinGisproDbo";
 
-export class DauphinGisproRepository extends MigrationRepository<DauphinGisproDbo> {
+export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
     readonly collectionName = "dauphin-gispro";
 
     async createIndexes() {

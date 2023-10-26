@@ -1,9 +1,9 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import { Rna, Siret, Siren } from "dto";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 
-export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequestEntity> {
+export class LeCompteAssoRepository extends MongoRepository<LeCompteAssoRequestEntity> {
     readonly collectionName = "lecompteasso-requests";
 
     public async addRequest(request: LeCompteAssoRequestEntity) {

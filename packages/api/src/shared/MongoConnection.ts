@@ -1,5 +1,8 @@
 import * as mongoDB from "mongodb";
 import { MONGO_DBNAME, MONGO_URL, MONGO_PASSWORD, MONGO_USER } from "../configurations/mongo.conf";
+import { repositoriesWithIndexes } from "../modules/repository.list";
+
+import { asyncForEach } from "./helpers/ArrayHelper";
 
 const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, {
     auth:
@@ -18,6 +21,7 @@ export const connectDB = () =>
         process.exit(1);
     });
 
+export const initIndexes = () => asyncForEach(repositoriesWithIndexes, repository => repository.createIndexes());
 export const client = mongoClient;
 
 export default mongoClient.db(MONGO_DBNAME);

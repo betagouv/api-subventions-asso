@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
-import db from "../../../shared/MongoConnection";
 import UserReset from "../entities/UserReset";
+import MongoRepository from "../../../shared/MongoRepository";
 
-export class UserResetRepository {
-    private readonly collection = db.collection<UserReset>("users-reset");
+export class UserResetRepository extends MongoRepository<UserReset> {
+    collectionName = "users-reset";
 
     public async findByToken(token: string) {
         return this.collection.findOne({ token });

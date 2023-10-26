@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
-import db from "../../../shared/MongoConnection";
 import { ConsumerToken } from "../entities/ConsumerToken";
+import MongoRepository from "../../../shared/MongoRepository";
 
-class ConsumerTokenRepository {
-    private readonly collection = db.collection<ConsumerToken>("consumer-token");
+class ConsumerTokenRepository extends MongoRepository<ConsumerToken> {
+    collectionName = "consumer-token";
 
     async findToken(userId: string | ObjectId) {
         return (await this.collection.findOne({ userId: new ObjectId(userId) }))?.token;
