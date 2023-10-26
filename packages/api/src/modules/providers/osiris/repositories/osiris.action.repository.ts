@@ -1,16 +1,16 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import { Siren } from "dto";
-import db from "../../../../shared/MongoConnection";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisActionEntityDbo from "../entities/OsirisActionEntityDbo";
 import MongoCnxError from "../../../../shared/errors/MongoCnxError";
+import MongoRepository from "../../../../shared/MongoRepository";
 import OsirisActionAdapter from "./dboAdapters/osirisActionAdapter";
 
-export class OsirisActionRepository {
-    private readonly collection = db.collection<OsirisActionEntityDbo>("osiris-actions");
+export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDbo> {
+    collectionName = "osiris-actions";
 
     async createIndexes() {
-        await this.collection.createIndex({ "indexedInformations.osirisActionId": 1 }, { unique: true });
+        await this.collection.createIndex({ "indexedInformations.osirisActionId": 1 });
         await this.collection.createIndex({ "indexedInformations.compteAssoId": 1 });
         await this.collection.createIndex({ "indexedInformations.siret": 1 });
     }

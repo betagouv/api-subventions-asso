@@ -1,9 +1,9 @@
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
-import db from "../../../shared/MongoConnection";
+import MongoRepository from "../../../shared/MongoRepository";
 
-export class StatsRepository {
-    private readonly collection = db.collection("log");
+export class StatsRepository extends MongoRepository<any> {
+    collectionName = "log";
 
     public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean): Promise<number> {
         const buildQuery = () => {
@@ -86,7 +86,7 @@ export class StatsRepository {
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ timestamp: 1 });
+        // await this.collection.createIndex({ timestamp: -1 });
         await this.collection.createIndex({ "meta.req.user.email": 1 });
         await this.collection.createIndex({ "meta.req.url": 1 });
     }

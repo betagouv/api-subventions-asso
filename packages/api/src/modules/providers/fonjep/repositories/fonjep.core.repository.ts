@@ -1,9 +1,9 @@
 import { Document } from "mongodb";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 
 export abstract class FonjepCoreRepository<
     FonjepTypedDocument extends Document,
-> extends MigrationRepository<FonjepTypedDocument> {
+> extends MongoRepository<FonjepTypedDocument> {
     private tmpCollectionEnabled = false;
 
     async createIndexes() {

@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import { AssociationIdentifiers } from "../../../@types";
-import MigrationRepository from "../../../shared/MigrationRepository";
+import MongoRepository from "../../../shared/MongoRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 
-export class StatsAssociationsVisitRepository extends MigrationRepository<AssociationVisitEntity> {
+export class StatsAssociationsVisitRepository extends MongoRepository<AssociationVisitEntity> {
     collectionName = "stats-association-visits";
 
     joinIndexes = {

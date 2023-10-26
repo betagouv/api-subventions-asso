@@ -1,10 +1,10 @@
 import { Siren, Rna } from "dto";
 import { ObjectId } from "mongodb";
 import RnaSiren from ".././entities/RnaSirenEntity";
-import db from "../../../../shared/MongoConnection";
+import MongoRepository from "../../../../shared/MongoRepository";
 
-export class RnaSirenRepository {
-    private readonly collection = db.collection<RnaSiren>("rna-siren");
+export class RnaSirenRepository extends MongoRepository<RnaSiren> {
+    collectionName = "rna-siren";
 
     findById(id: ObjectId) {
         return this.collection.findOne({ _id: id });

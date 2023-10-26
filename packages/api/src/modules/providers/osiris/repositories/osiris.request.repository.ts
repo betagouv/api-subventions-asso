@@ -1,10 +1,10 @@
 import { FindOneAndUpdateOptions, ObjectId } from "mongodb";
 import { Rna, Siren, Siret } from "dto";
-import db from "../../../../shared/MongoConnection";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
+import MongoRepository from "../../../../shared/MongoRepository";
 
-export class OsirisRequestRepository {
-    private readonly collection = db.collection<OsirisRequestEntity>("osiris-requests");
+export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity> {
+    collectionName = "osiris-requests";
 
     async createIndexes() {
         await this.collection.createIndex({ "providerInformations.osirisId": 1 }, { unique: true });
