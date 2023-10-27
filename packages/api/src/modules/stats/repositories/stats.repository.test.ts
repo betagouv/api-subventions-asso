@@ -1,5 +1,6 @@
-import statsRepository from "./stats.repository";
+import statsRepository, { StatsRepository } from "./stats.repository";
 import { firstDayOfPeriod } from "../../../shared/helpers/DateHelper";
+import MongoRepository from "../../../shared/MongoRepository";
 
 const FIRST_DAY_YEAR = firstDayOfPeriod(2022);
 const YEAR = 2022;
@@ -11,40 +12,39 @@ const dateFactory = (diff: number) => {
 };
 
 describe("StatsRepository", () => {
+    const mockToArray = jest.fn();
+    let spyAggregate = jest.fn(() => ({ toArray: mockToArray }));
+    let mockMongoRepositoryCollection: jest.SpyInstance;
+    beforeAll(() => {
+        mockMongoRepositoryCollection = jest
+            // @ts-expect-error: test
+            .spyOn(MongoRepository.prototype, "collection", "get")
+            // @ts-expect-error: test
+            .mockReturnValue({ aggregate: spyAggregate });
+    });
+
+    afterAll(() => mockMongoRepositoryCollection.mockRestore());
+
     describe("countMedianRequestsOnPeriod()", () => {
         const START = dateFactory(-1);
         const END = dateFactory(1);
 
         it("should call mongo with admin filters", async () => {
-            const mock = jest
-                // @ts-expect-error statsRepository.collection is private attribute
-                .spyOn(statsRepository.collection, "aggregate")
-                // @ts-expect-error type error due to mocking documents
-                .mockImplementationOnce(() => ({ toArray: () => [] }));
-
+            mockToArray.mockReturnValueOnce([]);
             await statsRepository.countMedianRequestsOnPeriod(START, END, false);
 
-            expect(mock.mock.calls).toMatchSnapshot();
+            expect(spyAggregate.mock.calls).toMatchSnapshot();
         });
 
         it("should call mongo without admin filters", async () => {
-            const mock = jest
-                // @ts-expect-error statsRepository.collection is private attribute
-                .spyOn(statsRepository.collection, "aggregate")
-                // @ts-expect-error type error due to mocking documents
-                .mockImplementationOnce(() => ({ toArray: () => [] }));
-
+            mockToArray.mockReturnValueOnce([]);
             await statsRepository.countMedianRequestsOnPeriod(START, END, true);
 
-            expect(mock.mock.calls).toMatchSnapshot();
+            expect(spyAggregate.mock.calls).toMatchSnapshot();
         });
 
         it("should return median (odd)", async () => {
-            // @ts-expect-error statsRepository.collection is private attribute
-            jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({
-                // @ts-expect-error type error due to mocking documents
-                toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }],
-            }));
+            mockToArray.mockReturnValueOnce([{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }]);
             const expected = 2;
             const actual = await statsRepository.countMedianRequestsOnPeriod(START, END, true);
 
@@ -52,11 +52,12 @@ describe("StatsRepository", () => {
         });
 
         it("should return median (pair)", async () => {
-            // @ts-expect-error statsRepository.collection is private attribute
-            jest.spyOn(statsRepository.collection, "aggregate").mockImplementationOnce(() => ({
-                // @ts-expect-error type error due to mocking documents
-                toArray: () => [{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }, { nbOfRequest: 4 }],
-            }));
+            mockToArray.mockReturnValueOnce([
+                { nbOfRequest: 1 },
+                { nbOfRequest: 2 },
+                { nbOfRequest: 3 },
+                { nbOfRequest: 4 },
+            ]);
             const expected = 2.5;
             const actual = await statsRepository.countMedianRequestsOnPeriod(START, END, true);
 
@@ -65,25 +66,21 @@ describe("StatsRepository", () => {
     });
 
     describe("countRequestsPerMonthByYear()", () => {
-        // @ts-expect-error statsRepository.collection is private attribute and mock typing errors
-        const mongoSpy = jest.spyOn(statsRepository.collection, "aggregate");
         const MONGO_OUTPUT = [
             { _id: 1, nbOfRequest: 201 },
             { _id: 2, nbOfRequest: 21 },
             { _id: 10, nbOfRequest: 300 },
             { _id: 12, nbOfRequest: 1 },
         ];
+        beforeAll(() => mockToArray.mockResolvedValueOnce(MONGO_OUTPUT));
 
         it("calls mongo aggregation", async () => {
-            // @ts-expect-error mock
-            mongoSpy.mockReturnValueOnce({ toArray: () => Promise.resolve(MONGO_OUTPUT) });
             await statsRepository.countRequestsPerMonthByYear(YEAR, false);
-            expect(mongoSpy).toBeCalled();
+            expect(spyAggregate).toBeCalled();
         });
 
         it("returns repo's result'", async () => {
-            // @ts-expect-error mock
-            mongoSpy.mockReturnValueOnce({ toArray: () => Promise.resolve(MONGO_OUTPUT) });
+            mockToArray.mockReturnValueOnce(MONGO_OUTPUT);
             const expected = MONGO_OUTPUT;
             const actual = await statsRepository.countRequestsPerMonthByYear(YEAR, false);
             expect(actual).toStrictEqual(expected);
