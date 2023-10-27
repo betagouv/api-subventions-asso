@@ -1,5 +1,5 @@
 export default {
-    editorId: "62d6c07847d8d078053b48e1",
+    producerId: "62d6c07847d8d078053b48e1",
     allocatorName: "Région Bretagne",
     allocatorSiret: "23350001600040",
     conventionDate: new Date("2017-06-27"),

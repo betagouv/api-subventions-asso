@@ -1,7 +1,7 @@
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 import MiscScdlProducerEntity from "../entities/MiscScdlProducerEntity";
 
-export class MiscScdlProducersRepository extends MigrationRepository<MiscScdlProducerEntity> {
+export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
 
     public async findByProducerId(producerId: string) {
@@ -17,7 +17,7 @@ export class MiscScdlProducersRepository extends MigrationRepository<MiscScdlPro
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ editorId: 1 }, { unique: true });
+        await this.collection.createIndex({ producerId: 1 }, { unique: true });
     }
 }
 
