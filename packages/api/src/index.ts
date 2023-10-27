@@ -1,7 +1,8 @@
 import "reflect-metadata";
 import "./configurations/env.conf";
 
-import { connectDB, initIndexes } from "./shared/MongoConnection";
+import { connectDB } from "./shared/MongoConnection";
+import { initIndexes } from "./shared/MongoInit";
 import { startServer } from "./server";
 
 async function main() {
