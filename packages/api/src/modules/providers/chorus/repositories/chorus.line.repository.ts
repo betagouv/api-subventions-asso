@@ -66,12 +66,26 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> 
         return this.collection.find({ "indexedInformations.ej": ej }).toArray();
     }
 
-    public findBySiren(siren: Siren) {
-        return this.collection
+    public async findBySiren(siren: Siren) {
+        const result = await this.collection
             .find({
                 "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
+
+        // TODO: remove this after investiguation and fix of chorus line duplicates
+        const groupByUniqueId: WithId<ChorusLineEntity>[] = Object.values(
+            result.reduce((acc, vers) => {
+                if (!acc[vers.uniqueId]) acc[vers.uniqueId] = [];
+                acc[vers.uniqueId].push(vers);
+                return acc;
+            }, {}),
+        );
+
+        // TODO: remove this after investiguation and fix of chorus line duplicates
+        const noDuplicates = groupByUniqueId.map(group => group[0]);
+
+        return noDuplicates;
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}) {
