@@ -13,8 +13,8 @@ import {
     osirisEvaluationRepository,
     osirisRequestRepository,
 } from "./providers/osiris/repositories";
-import miscScdlEditorsRepository from "./providers/scdl/misc-scdl-editors.repository";
-import miscScdlDataRepository from "./providers/scdl/miscScdlData.repository";
+import miscScdlGrantRepository from "./providers/scdl/repositories/miscScdlGrant.repository";
+import miscScdlProducerRepository from "./providers/scdl/repositories/miscScdlProducer.repository";
 import statsRepository from "./stats/repositories/stats.repository";
 import statsAssociationsVisitRepository from "./stats/repositories/statsAssociationsVisit.repository";
 import consumerTokenRepository from "./user/repositories/consumer-token.repository";
@@ -33,8 +33,8 @@ export const repositoriesWithIndexes = [
     fonjepSubventionRepository,
     dauphinGisproRepository,
     leCompteAssoRepository,
-    miscScdlDataRepository,
-    miscScdlEditorsRepository,
+    miscScdlGrantRepository,
+    miscScdlProducerRepository,
     configurationsRepository,
     consumerTokenRepository,
     associationNameRepository,
