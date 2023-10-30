@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.5](https://github.com/betagouv/api-subventions-asso/compare/v0.38.4...v0.38.5) (2023-10-30)
+
+### Bug Fixes
+
+-   **api:** remove chorus line duplicates ([2800519](https://github.com/betagouv/api-subventions-asso/commit/2800519d28bb25e118338fb32a4223d13df5c9a7))
+
 ## [0.38.4](https://github.com/betagouv/api-subventions-asso/compare/v0.38.3...v0.38.4) (2023-10-25)
 
 ### Bug Fixes
