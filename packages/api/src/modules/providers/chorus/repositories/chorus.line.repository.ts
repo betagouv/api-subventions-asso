@@ -58,20 +58,39 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> 
         return this.collection.findOne({ _id: id }) as Promise<WithId<ChorusLineEntity>>;
     }
 
-    public findBySiret(siret: Siret) {
-        return this.collection.find({ "indexedInformations.siret": siret }).toArray();
+    private removeDuplicates(arr) {
+        // TODO: remove this after investiguation and fix of chorus line duplicates
+        const groupByUniqueId: WithId<ChorusLineEntity>[] = Object.values(
+            arr.reduce((acc, vers) => {
+                if (!acc[vers.uniqueId]) acc[vers.uniqueId] = [];
+                acc[vers.uniqueId].push(vers);
+                return acc;
+            }, {}),
+        );
+
+        // TODO: remove this after investiguation and fix of chorus line duplicates
+        const noDuplicates = groupByUniqueId.map(group => group[0]);
+        return noDuplicates;
     }
 
-    public findByEJ(ej: string) {
-        return this.collection.find({ "indexedInformations.ej": ej }).toArray();
+    public async findBySiret(siret: Siret) {
+        const result = await this.collection.find({ "indexedInformations.siret": siret }).toArray();
+        return this.removeDuplicates(result);
     }
 
-    public findBySiren(siren: Siren) {
-        return this.collection
+    public async findByEJ(ej: string) {
+        const result = await this.collection.find({ "indexedInformations.ej": ej }).toArray();
+        return this.removeDuplicates(result);
+    }
+
+    public async findBySiren(siren: Siren) {
+        const result = await this.collection
             .find({
                 "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`),
             })
             .toArray();
+
+        return this.removeDuplicates(result);
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}) {
