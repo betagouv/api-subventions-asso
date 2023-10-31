@@ -1,8 +1,7 @@
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
 import CliController from "../../../../../shared/CliController";
-import ParseHistoryUniteLegalUseCase from "../../use-cases/ParseHistoryUniteLegalUseCase";
-import UpdateHistoryUniteLegalUseCase from "../../use-cases/UpdateHistoryUniteLegalUseCase";
+import parseUniteLegalService from "../../parse.uniteLegal.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataGouvCliController extends CliController {
@@ -11,10 +10,10 @@ export default class DataGouvCliController extends CliController {
     protected logFileParsePath = "./logs/datagouv.parse.log.txt";
 
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
-        return ParseHistoryUniteLegalUseCase.run(file, exportDate, this.logger);
+        return parseUniteLegalService.parse(file, exportDate, this.logger);
     }
 
     updateHistoryUniteLegal() {
-        return UpdateHistoryUniteLegalUseCase();
+        return parseUniteLegalService.updateHistoryUniteLegal();
     }
 }

@@ -1,15 +1,21 @@
-import CliLogger from "../../../../shared/CliLogger";
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../shared/LegalCategoriesAccepted";
-import { isValidDate } from "../../../../shared/helpers/DateHelper";
-import associationNameService from "../../../association-name/associationName.service";
-import { SaveCallback } from "../@types";
-import { UniteLegalHistoryRow } from "../@types/UniteLegalHistoryRow";
-import { UniteLegaleHistoriqueAdapter } from "../adapter/UniteLegaleHistoriqueAdapter";
-import DataGouvHistoryLegalUnitParser from "../dataGouvHistoryLegalUnitParser";
-import dataGouvService from "../datagouv.service";
+import CliLogger from "../../../shared/CliLogger";
+import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
+import { isValidDate } from "../../../shared/helpers/DateHelper";
+import associationNameService from "../../association-name/associationName.service";
+import { SaveCallback } from "./@types";
+import { UniteLegalHistoryRow } from "./@types/UniteLegalHistoryRow";
+import { UniteLegaleHistoriqueAdapter } from "./adapter/UniteLegaleHistoriqueAdapter";
+import DataGouvHistoryLegalUnitParser from "./dataGouvHistoryLegalUnitParser";
+import dataGouvService from "./datagouv.service";
+import filesDatagouvService from "./files.uniteLegal.service";
 
-export default class ParseHistoryUniteLegalUseCase {
-    static async run(file: string, date: Date, logger?: CliLogger) {
+export class ParseUniteLegalService {
+    async updateHistoryUniteLegal() {
+        const archivePath = await filesDatagouvService.downloadHistoryUniteLegal();
+        const filePath = await filesDatagouvService.decompressHistoryUniteLegal(archivePath);
+        await this.parse(filePath, new Date());
+    }
+    async parse(file: string, date: Date, logger?: CliLogger) {
         if (logger) logger.logIC(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         if (!isValidDate(date)) {
@@ -47,7 +53,7 @@ export default class ParseHistoryUniteLegalUseCase {
      *
      * @private
      */
-    static _isAssociation(entity: UniteLegalHistoryRow) {
+    private _isAssociation(entity: UniteLegalHistoryRow) {
         return LEGAL_CATEGORIES_ACCEPTED.includes(String(entity.categorieJuridiqueUniteLegale));
     }
 
@@ -56,7 +62,7 @@ export default class ParseHistoryUniteLegalUseCase {
      *
      * @private
      */
-    static _shouldBeSaved(entity: UniteLegalHistoryRow) {
+    private _shouldBeSaved(entity: UniteLegalHistoryRow) {
         return entity.changementDenominationUniteLegale === "true" || this._isUniteLegaleNew(entity);
     }
 
@@ -65,7 +71,7 @@ export default class ParseHistoryUniteLegalUseCase {
      *
      * @private
      */
-    static _isUniteLegaleNew(entity) {
+    private _isUniteLegaleNew(entity) {
         const props = [
             "changementEtatAdministratifUniteLegale",
             "changementNomUniteLegale",
@@ -88,7 +94,7 @@ export default class ParseHistoryUniteLegalUseCase {
      *
      * @private
      */
-    static async _saveAssociations(rows: UniteLegalHistoryRow[]) {
+    private async _saveAssociations(rows: UniteLegalHistoryRow[]) {
         for (const row of rows) {
             const entity = UniteLegaleHistoriqueAdapter.rowToAssociationName(row);
             await associationNameService.upsert(entity);
@@ -100,7 +106,7 @@ export default class ParseHistoryUniteLegalUseCase {
      *
      * @private
      */
-    static _saveEntreprises(rows: UniteLegalHistoryRow[]) {
+    private _saveEntreprises(rows: UniteLegalHistoryRow[]) {
         return dataGouvService.insertManyEntrepriseSiren(rows.map(UniteLegaleHistoriqueAdapter.rowToEntrepriseSiren));
     }
 
@@ -109,7 +115,7 @@ export default class ParseHistoryUniteLegalUseCase {
      *
      * @private
      */
-    static _saveEntityFactory(
+    private _saveEntityFactory(
         stackAssociation: UniteLegalHistoryRow[],
         stackEntreprise: UniteLegalHistoryRow[],
         chunksMetadata: { chunksSize: number; chunksInSave: number },
@@ -143,3 +149,7 @@ export default class ParseHistoryUniteLegalUseCase {
         };
     }
 }
+
+const parseUniteLegalService = new ParseUniteLegalService();
+
+export default parseUniteLegalService;

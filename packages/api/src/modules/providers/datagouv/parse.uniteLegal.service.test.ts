@@ -1,17 +1,17 @@
-import ParseHistoryUniteLegalUseCase from "./ParseHistoryUniteLegalUseCase";
-import PartialUniteLegalRow from "../__fixtures__/PartialUniteLegalRow";
-import { AssociationRow } from "../__fixtures__/AssociationRowFixture";
-import { EntrepriseRow } from "../__fixtures__/EntrepriseRowFixture";
-import associationNameService from "../../../association-name/associationName.service";
-import dataGouvService from "../datagouv.service";
-import { UniteLegaleHistoriqueAdapter } from "../adapter/UniteLegaleHistoriqueAdapter";
-import { UniteLegalHistoryRow } from "../@types/UniteLegalHistoryRow";
-import { SaveCallback } from "../@types";
-import * as DateHelper from "../../../../shared/helpers/DateHelper";
-import DataGouvHistoryLegalUnitParser from "../dataGouvHistoryLegalUnitParser";
-import CliLogger from "../../../../shared/CliLogger";
+import PartialUniteLegalRow from "./__fixtures__/PartialUniteLegalRow";
+import { AssociationRow } from "./__fixtures__/AssociationRowFixture";
+import { EntrepriseRow } from "./__fixtures__/EntrepriseRowFixture";
+import associationNameService from "../../association-name/associationName.service";
+import dataGouvService from "./datagouv.service";
+import { UniteLegaleHistoriqueAdapter } from "./adapter/UniteLegaleHistoriqueAdapter";
+import { UniteLegalHistoryRow } from "./@types/UniteLegalHistoryRow";
+import { SaveCallback } from "./@types";
+import * as DateHelper from "../../../shared/helpers/DateHelper";
+import DataGouvHistoryLegalUnitParser from "./dataGouvHistoryLegalUnitParser";
+import CliLogger from "../../../shared/CliLogger";
+import parseUniteLegalService from "./parse.uniteLegal.service";
 
-describe("ParseHistoryUniteLegalUseCase", () => {
+describe("ParseUniteLegalService", () => {
     const addAssociationNameMock = jest.spyOn(associationNameService, "upsert").mockImplementation(jest.fn());
     const addManyEntrepriseSirenMock = jest
         .spyOn(dataGouvService, "insertManyEntrepriseSiren")
@@ -23,13 +23,15 @@ describe("ParseHistoryUniteLegalUseCase", () => {
     describe("isAssociation()", () => {
         it("should return true", () => {
             const expected = true;
-            const actual = ParseHistoryUniteLegalUseCase._isAssociation(AssociationRow);
+            // @ts-expect-error private methode
+            const actual = parseUniteLegalService._isAssociation(AssociationRow);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
             const expected = false;
-            const actual = ParseHistoryUniteLegalUseCase._isAssociation(EntrepriseRow);
+            // @ts-expect-error private methode
+            const actual = parseUniteLegalService._isAssociation(EntrepriseRow);
             expect(actual).toEqual(expected);
         });
     });
@@ -37,7 +39,8 @@ describe("ParseHistoryUniteLegalUseCase", () => {
     describe("shouldBeSaved()", () => {
         it("should return true if association denomination has changed", () => {
             const expected = true;
-            const actual = ParseHistoryUniteLegalUseCase._shouldBeSaved({
+            // @ts-expect-error private methode
+            const actual = parseUniteLegalService._shouldBeSaved({
                 ...AssociationRow,
                 changementDenominationUniteLegale: "true",
             });
@@ -47,7 +50,7 @@ describe("ParseHistoryUniteLegalUseCase", () => {
         it("should return true if association is new", () => {
             const expected = true;
             // @ts-expect-error: test type string method accpete only "true" | "false"
-            const actual = ParseHistoryUniteLegalUseCase._shouldBeSaved({
+            const actual = parseUniteLegalService._shouldBeSaved({
                 ...AssociationRow,
                 ...PartialUniteLegalRow,
             });
@@ -57,7 +60,7 @@ describe("ParseHistoryUniteLegalUseCase", () => {
         it("should return false if association has changed but not the denomination", () => {
             const expected = false;
             // @ts-expect-error: test type string method accpete only "true" | "false"
-            const actual = ParseHistoryUniteLegalUseCase._shouldBeSaved({
+            const actual = parseUniteLegalService._shouldBeSaved({
                 ...AssociationRow,
                 ...PartialUniteLegalRow,
                 changementEtatAdministratifUniteLegale: "true",
@@ -69,13 +72,15 @@ describe("ParseHistoryUniteLegalUseCase", () => {
     describe("isUniteLegaleNew()", () => {
         it("should return true", () => {
             const expected = true;
-            const actual = ParseHistoryUniteLegalUseCase._isUniteLegaleNew(PartialUniteLegalRow);
+            // @ts-expect-error private methode
+            const actual = parseUniteLegalService._isUniteLegaleNew(PartialUniteLegalRow);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
             const expected = false;
-            const actual = ParseHistoryUniteLegalUseCase._isUniteLegaleNew({
+            // @ts-expect-error private methode
+            const actual = parseUniteLegalService._isUniteLegaleNew({
                 ...PartialUniteLegalRow,
                 changementEtatAdministratifUniteLegale: "true",
             });
@@ -86,25 +91,29 @@ describe("ParseHistoryUniteLegalUseCase", () => {
     describe("saveAssociations()", () => {
         it("should transform rows to associationNames", async () => {
             const expected = 1;
-            await ParseHistoryUniteLegalUseCase._saveAssociations([AssociationRow]);
+            // @ts-expect-error private methode
+            await parseUniteLegalService._saveAssociations([AssociationRow]);
             const actual = rowToAssociationNameMock.mock.calls.length;
             expect(actual).toEqual(expected);
         });
 
         it("should save associationNames", async () => {
-            await ParseHistoryUniteLegalUseCase._saveAssociations([AssociationRow, AssociationRow]);
+            // @ts-expect-error private methode
+            await parseUniteLegalService._saveAssociations([AssociationRow, AssociationRow]);
             expect(addAssociationNameMock).toHaveBeenCalledTimes(2);
         });
     });
 
     describe("saveEntreprises()", () => {
         it("should transform rows to entrepriseSiren", async () => {
-            await ParseHistoryUniteLegalUseCase._saveEntreprises([EntrepriseRow]);
+            // @ts-expect-error private methode
+            await parseUniteLegalService._saveEntreprises([EntrepriseRow]);
             expect(rowToEntrepriseSirenMock).toHaveBeenCalledTimes(1);
         });
 
         it("should save entrepriseSirens", async () => {
-            await ParseHistoryUniteLegalUseCase._saveEntreprises([EntrepriseRow, EntrepriseRow]);
+            // @ts-expect-error private methode
+            await parseUniteLegalService._saveEntreprises([EntrepriseRow, EntrepriseRow]);
             expect(addManyEntrepriseSirenMock).toHaveBeenCalledTimes(1);
         });
     });
@@ -123,15 +132,20 @@ describe("ParseHistoryUniteLegalUseCase", () => {
         let saveAssociationsSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            isAssoSpy = jest.spyOn(ParseHistoryUniteLegalUseCase, "_isAssociation");
-            shouldBeSavedSpy = jest.spyOn(ParseHistoryUniteLegalUseCase, "_shouldBeSaved");
-            isUniteLegaleNewSpy = jest.spyOn(ParseHistoryUniteLegalUseCase, "_isUniteLegaleNew");
+            // @ts-expect-error private methode
+            isAssoSpy = jest.spyOn(parseUniteLegalService, "_isAssociation");
+            // @ts-expect-error private methode
+            shouldBeSavedSpy = jest.spyOn(parseUniteLegalService, "_shouldBeSaved");
+            // @ts-expect-error private methode
+            isUniteLegaleNewSpy = jest.spyOn(parseUniteLegalService, "_isUniteLegaleNew");
             saveEntreprisesSpy = jest
-                .spyOn(ParseHistoryUniteLegalUseCase, "_saveEntreprises")
-                .mockResolvedValue(undefined);
+                // @ts-expect-error private methode
+                .spyOn(parseUniteLegalService, "_saveEntreprises")
+                .mockResolvedValue(undefined as never);
             saveAssociationsSpy = jest
-                .spyOn(ParseHistoryUniteLegalUseCase, "_saveAssociations")
-                .mockResolvedValue(undefined);
+                // @ts-expect-error private methode
+                .spyOn(parseUniteLegalService, "_saveAssociations")
+                .mockResolvedValue(undefined as never);
         });
 
         beforeEach(() => {
@@ -143,11 +157,8 @@ describe("ParseHistoryUniteLegalUseCase", () => {
             shouldBeSavedSpy.mockReset();
             isAssoSpy.mockReset();
 
-            saveEntity = ParseHistoryUniteLegalUseCase._saveEntityFactory(
-                stackAssociation,
-                stackEntreprise,
-                chunksMetadata,
-            );
+            // @ts-expect-error private methode
+            saveEntity = parseUniteLegalService._saveEntityFactory(stackAssociation, stackEntreprise, chunksMetadata);
         });
 
         it("should check if entity is an association", async () => {
@@ -216,7 +227,7 @@ describe("ParseHistoryUniteLegalUseCase", () => {
         });
     });
 
-    describe("run", () => {
+    describe("parse", () => {
         let getLastDateImportSpy: jest.SpyInstance;
         let isValidDateSpy: jest.SpyInstance;
         let saveEntityFactorySpy: jest.SpyInstance;
@@ -229,14 +240,16 @@ describe("ParseHistoryUniteLegalUseCase", () => {
             getLastDateImportSpy = jest.spyOn(dataGouvService, "getLastDateImport").mockResolvedValue(new Date());
             isValidDateSpy = jest.spyOn(DateHelper, "isValidDate").mockReturnValue(true);
             saveEntityFactorySpy = jest
-                .spyOn(ParseHistoryUniteLegalUseCase, "_saveEntityFactory")
-                .mockReturnValue(jest.fn());
+                // @ts-expect-error private methode
+                .spyOn(parseUniteLegalService, "_saveEntityFactory")
+                .mockReturnValue(jest.fn() as never);
             parseUniteLegalHistorySpy = jest
                 .spyOn(DataGouvHistoryLegalUnitParser, "parseUniteLegalHistory")
                 .mockResolvedValue();
-            saveAssociationsSpy = jest.spyOn(ParseHistoryUniteLegalUseCase, "_saveAssociations").mockResolvedValue();
+            // @ts-expect-error private methode
+            saveAssociationsSpy = jest.spyOn(parseUniteLegalService, "_saveAssociations").mockResolvedValue();
             // @ts-expect-error mock
-            saveEntreprisesSpy = jest.spyOn(ParseHistoryUniteLegalUseCase, "_saveEntreprises").mockResolvedValue();
+            saveEntreprisesSpy = jest.spyOn(parseUniteLegalService, "_saveEntreprises").mockResolvedValue();
             // @ts-expect-error mock
             addNewImportSpy = jest.spyOn(dataGouvService, "addNewImport").mockReturnValue();
         });
@@ -246,42 +259,42 @@ describe("ParseHistoryUniteLegalUseCase", () => {
                 logIC: jest.fn(),
             } as unknown as CliLogger;
 
-            await ParseHistoryUniteLegalUseCase.run("", new Date(), logger);
+            await parseUniteLegalService.parse("", new Date(), logger);
 
             expect(logger.logIC).toHaveBeenCalled();
         });
 
         it("should check if date is valid", async () => {
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(isValidDateSpy).toBeCalledTimes(1);
         });
 
         it("should throw errer if date is invalid", async () => {
             isValidDateSpy.mockReturnValueOnce(false);
-            expect(() => ParseHistoryUniteLegalUseCase.run("", new Date())).rejects.toThrowError();
+            expect(() => parseUniteLegalService.parse("", new Date())).rejects.toThrowError();
         });
 
         it("should call getLastDateImport", async () => {
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(getLastDateImportSpy).toHaveBeenCalled();
         });
 
         it("should call saveEntityFactory", async () => {
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(saveEntityFactorySpy).toHaveBeenCalled();
         });
 
         it("should call parseUniteLegalHistory", async () => {
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(parseUniteLegalHistorySpy).toHaveBeenCalled();
         });
 
         it("should call addNewImport", async () => {
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(addNewImportSpy).toHaveBeenCalled();
         });
@@ -292,7 +305,7 @@ describe("ParseHistoryUniteLegalUseCase", () => {
                 return jest.fn();
             });
 
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(saveEntreprisesSpy).toHaveBeenCalled();
         });
@@ -303,7 +316,7 @@ describe("ParseHistoryUniteLegalUseCase", () => {
                 return jest.fn();
             });
 
-            await ParseHistoryUniteLegalUseCase.run("", new Date());
+            await parseUniteLegalService.parse("", new Date());
 
             expect(saveAssociationsSpy).toHaveBeenCalled();
         });
