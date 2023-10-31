@@ -324,19 +324,21 @@ describe("DemarchesSimplifieesService", () => {
 
         it("should send request with good query and vars", async () => {
             const expected = {
-                data: {
-                    query: "I'm a query",
-                    variables: {
-                        we: "",
-                        are: "",
-                        vars: "",
-                    },
+                query: "I'm a query",
+                variables: {
+                    we: "",
+                    are: "",
+                    vars: "",
                 },
             };
 
-            await demarchesSimplifieesService.sendQuery(expected.data.query, expected.data.variables);
+            await demarchesSimplifieesService.sendQuery(expected.query, expected.variables);
 
-            expect(postMock).toHaveBeenCalledWith(expect.any(String), expect.objectContaining(expected));
+            expect(postMock).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining(expected),
+                expect.any(Object),
+            );
         });
 
         it("should call buildSearchHeader", async () => {

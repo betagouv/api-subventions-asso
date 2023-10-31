@@ -36,8 +36,8 @@ describe("ProviderRequestService", () => {
 
         it("should call sendRequest Method", async () => {
             const url = "/test";
-            const option = { headers: { test: true } };
-            await providerRequestService.post(url, option);
+            const option = { headers: { test: true }, data: {} };
+            await providerRequestService.post(url, {}, option);
 
             expect(sendRequestSpy).toBeCalledWith("POST", url, option);
         });

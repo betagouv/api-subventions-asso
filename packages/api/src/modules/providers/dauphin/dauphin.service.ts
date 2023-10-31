@@ -111,8 +111,8 @@ export class DauphinService
                 const result = (
                     await this.http.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
+                        { ...this.buildFetchApplicationFromDateQuery(lastUpdateDate), from: fetched },
                         {
-                            data: { ...this.buildFetchApplicationFromDateQuery(lastUpdateDate), from: fetched },
                             ...this.buildSearchHeader(token),
                         },
                     )
@@ -275,10 +275,13 @@ export class DauphinService
         const token = await this.getAuthToken();
 
         const res = (
-            await this.http.post("https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText", {
-                data: query,
-                ...this.buildSearchHeader(token),
-            })
+            await this.http.post(
+                "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
+                query,
+                {
+                    ...this.buildSearchHeader(token),
+                },
+            )
         ).data;
         const properHit = res?.hits?.hits?.find(asso => asso._source.SIREN === siren);
         return properHit?._id?.match(/cget-(.*)/)?.[1];

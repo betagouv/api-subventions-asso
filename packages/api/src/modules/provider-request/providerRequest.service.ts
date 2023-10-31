@@ -13,7 +13,13 @@ export class ProviderRequestService {
         return this.sendRequest<T>("GET", url, option);
     }
 
-    post<T = any>(url: string, option?: RequestConfig) {
+    post<T = any, D = unknown>(url: string, data?: D, option?: RequestConfig) {
+        if (data) {
+            option = {
+                ...option,
+                data,
+            };
+        }
         return this.sendRequest<T>("POST", url, option);
     }
 

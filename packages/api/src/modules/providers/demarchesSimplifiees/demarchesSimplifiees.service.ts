@@ -111,10 +111,10 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
             const result = await this.http.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
-                    data: {
-                        query,
-                        variables: vars,
-                    },
+                    query,
+                    variables: vars,
+                },
+                {
                     ...this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
                     keepAlive: true,
                 },

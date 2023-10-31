@@ -18,20 +18,20 @@ exports[`Dauphin Service documents findDauphinInternalId should call httpSpy wit
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
   Object {
-    "data": Object {
-      "facets": Object {
-        "famille": Array [
-          "Association",
-        ],
-        "status": Array [
-          "SUPPORTED",
-        ],
-      },
-      "from": 0,
-      "query": "123456789",
-      "size": 1,
-      "type": "tiers",
+    "facets": Object {
+      "famille": Array [
+        "Association",
+      ],
+      "status": Array [
+        "SUPPORTED",
+      ],
     },
+    "from": 0,
+    "query": "123456789",
+    "size": 1,
+    "type": "tiers",
+  },
+  Object {
     "headers": Object {
       "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -99,9 +99,9 @@ exports[`Dauphin Service updateApplicationCache should call httpSpy with args 1`
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
   Object {
-    "data": Object {
-      "from": 0,
-    },
+    "from": 0,
+  },
+  Object {
     "headers": Object {},
   },
 ]
