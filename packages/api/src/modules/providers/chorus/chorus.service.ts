@@ -29,6 +29,13 @@ export class ChorusService implements VersementsProvider, GrantProvider {
         id: "chorus",
     };
 
+    // new unique ID builder
+    // remove the one used in chorus CLI after fix fully handled
+    static buildUniqueId(entity: ChorusLineEntity) {
+        const info = entity.indexedInformations;
+        return `${info.siret}-${info.ej}-${info.dateOperation}-${info.amount}-${info.numeroDemandePayment}`;
+    }
+
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
     public validateEntity(entity: ChorusLineEntity) {
