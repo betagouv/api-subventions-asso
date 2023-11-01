@@ -1,10 +1,21 @@
-import chorusService from "./chorus.service";
+import chorusService, { ChorusService } from "./chorus.service";
 import chorusLineRepository from "./repositories/chorus.line.repository";
 import ChorusAdapter from "./adapters/ChorusAdapter";
+import { paymentsWithDifferentDP } from "./__fixutres__/ChorusLineEntities";
 
 jest.mock("./adapters/ChorusAdapter");
 
 describe("chorusService", () => {
+    describe("buildUniqueId", () => {
+        const PAYMENTS = [...paymentsWithDifferentDP];
+        it("return uniqueId", () => {
+            const expected =
+                "33499024900180-2103955300-Thu Feb 23 2023 01:00:00 GMT+0100 (heure normale d’Europe centrale)-7013.35-100028941";
+            const actual = ChorusService.buildUniqueId(PAYMENTS[0]);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("raw grant", () => {
         const DATA = [{ indexedInformations: { ej: "EJ" } }];
 
