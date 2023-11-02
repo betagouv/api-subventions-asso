@@ -25,6 +25,11 @@ export const keepOneUserVisitByDay = userVisits => {
 export class StatsUniqueVisitByDay extends MongoRepository<AssociationVisitEntity> {
     public collectionName = "stats-unique-visit-by-day";
 
+    public createIndexes(): void {
+        // no indexes needed
+        return;
+    }
+
     _reduceToOneVisitByDayByUser(visitsByAssociation) {
         /**
          * array of associations visits grouped ny day

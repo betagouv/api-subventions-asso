@@ -2,6 +2,7 @@ import db from "./MongoConnection";
 
 export default abstract class MongoRepository<T> {
     public abstract collectionName: string;
+    public abstract createIndexes(): void;
 
     protected db = db;
 

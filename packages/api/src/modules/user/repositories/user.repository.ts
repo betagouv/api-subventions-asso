@@ -7,7 +7,6 @@ import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository extends MongoRepository<UserDbo> {
     collectionName = "users";
-    // private readonly collection = db.collection<UserDbo>("users");
 
     joinIndexes = {
         associationVisits: "_id",
