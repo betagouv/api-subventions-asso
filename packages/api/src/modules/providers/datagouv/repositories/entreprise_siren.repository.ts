@@ -5,6 +5,11 @@ import EntrepriseSirenEntity from "../entities/EntrepriseSirenEntity";
 export class EntrepriseSirenRepository extends MongoRepository<EntrepriseSirenEntity> {
     readonly collectionName = "datagouv-entreprise-siren";
 
+    public createIndexes(): void {
+        // no indexes needed
+        return;
+    }
+
     async insertMany(entities: EntrepriseSirenEntity[]) {
         return this.collection.insertMany(entities, { ordered: false });
     }
