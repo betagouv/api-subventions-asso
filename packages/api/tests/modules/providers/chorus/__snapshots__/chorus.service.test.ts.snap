@@ -1,0 +1,265 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`chorus.service getVersementsByKey finds entity 1`] = `
+Array [
+  Object {
+    "activitee": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "XYZ- accompagnement",
+    },
+    "amount": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "number",
+      "value": 7013.35,
+    },
+    "bop": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "0177",
+    },
+    "branche": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Associations",
+    },
+    "centreFinancier": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "CABANE A OISEAUX",
+    },
+    "codeBranche": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Z039",
+    },
+    "compte": undefined,
+    "dateOperation": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "object",
+      "value": 2023-02-23T00:00:00.000Z,
+    },
+    "domaineFonctionnel": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Accompagnement social",
+    },
+    "ej": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "2103955300",
+    },
+    "id": Any<String>,
+    "numeroDemandePayment": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "100028941",
+    },
+    "numeroTier": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "SARA ROSIGNOL",
+    },
+    "siret": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "33499024900180",
+    },
+    "type": undefined,
+    "versementKey": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "2103955300",
+    },
+  },
+]
+`;
+
+exports[`chorus.service getVersementsBySiren finds entity 1`] = `
+Array [
+  Object {
+    "activitee": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "XYZ- accompagnement",
+    },
+    "amount": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "number",
+      "value": 7013.35,
+    },
+    "bop": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "0177",
+    },
+    "branche": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Associations",
+    },
+    "centreFinancier": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "CABANE A OISEAUX",
+    },
+    "codeBranche": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Z039",
+    },
+    "compte": undefined,
+    "dateOperation": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "object",
+      "value": 2023-02-23T00:00:00.000Z,
+    },
+    "domaineFonctionnel": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Accompagnement social",
+    },
+    "ej": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "2103955300",
+    },
+    "id": Any<String>,
+    "numeroDemandePayment": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "100028941",
+    },
+    "numeroTier": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "SARA ROSIGNOL",
+    },
+    "siret": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "33499024900180",
+    },
+    "type": undefined,
+    "versementKey": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "2103955300",
+    },
+  },
+]
+`;
+
+exports[`chorus.service getVersementsBySiret finds entity 1`] = `
+Array [
+  Object {
+    "activitee": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "XYZ- accompagnement",
+    },
+    "amount": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "number",
+      "value": 7013.35,
+    },
+    "bop": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "0177",
+    },
+    "branche": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Associations",
+    },
+    "centreFinancier": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "CABANE A OISEAUX",
+    },
+    "codeBranche": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Z039",
+    },
+    "compte": undefined,
+    "dateOperation": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "object",
+      "value": 2023-02-23T00:00:00.000Z,
+    },
+    "domaineFonctionnel": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "Accompagnement social",
+    },
+    "ej": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "2103955300",
+    },
+    "id": Any<String>,
+    "numeroDemandePayment": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "100028941",
+    },
+    "numeroTier": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "SARA ROSIGNOL",
+    },
+    "siret": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "33499024900180",
+    },
+    "type": undefined,
+    "versementKey": Object {
+      "last_update": 2023-02-23T00:00:00.000Z,
+      "provider": "Chorus",
+      "type": "string",
+      "value": "2103955300",
+    },
+  },
+]
+`;
