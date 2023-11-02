@@ -1,7 +1,7 @@
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 import MiscScdlProducerEntity from "../entities/MiscScdlProducerEntity";
 
-export class MiscScdlProducersRepository extends MigrationRepository<MiscScdlProducerEntity> {
+export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
 
     public async findByProducerId(producerId: string) {
@@ -14,6 +14,10 @@ export class MiscScdlProducersRepository extends MigrationRepository<MiscScdlPro
 
     public async update(producerId: string, set: Partial<MiscScdlProducerEntity>) {
         return this.collection.updateOne({ producerId }, { $set: set });
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ producerId: 1 }, { unique: true });
     }
 }
 

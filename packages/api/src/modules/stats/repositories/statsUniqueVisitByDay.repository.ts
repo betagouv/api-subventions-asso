@@ -1,4 +1,4 @@
-import MigrationRepository from "../../../shared/MigrationRepository";
+import MongoRepository from "../../../shared/MongoRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 import statsAssociationsVisitRepository from "./statsAssociationsVisit.repository";
 
@@ -22,8 +22,13 @@ export const keepOneUserVisitByDay = userVisits => {
     }, {});
 };
 
-export class StatsUniqueVisitByDay extends MigrationRepository<AssociationVisitEntity> {
+export class StatsUniqueVisitByDay extends MongoRepository<AssociationVisitEntity> {
     public collectionName = "stats-unique-visit-by-day";
+
+    public createIndexes(): void {
+        // no indexes needed
+        return;
+    }
 
     _reduceToOneVisitByDayByUser(visitsByAssociation) {
         /**

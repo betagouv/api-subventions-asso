@@ -1,10 +1,10 @@
 import { Siren, Siret } from "dto";
 import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../../../@types";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
-export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> {
+export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
     readonly collectionImportName = "chorus-line-IMPORT";
 
@@ -105,6 +105,12 @@ export class ChorusLineRepository extends MigrationRepository<ChorusLineEntity> 
         await this.db.collection(this.collectionImportName).rename(this.collectionName);
 
         if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ uniqueId: 1 });
+        await this.collection.createIndex({ "indexedInformations.ej": 1 });
+        await this.collection.createIndex({ "indexedInformations.siret": 1 });
     }
 }
 

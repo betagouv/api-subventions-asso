@@ -1,17 +1,18 @@
 import { Rna, Siren } from "dto";
 import { UpdateResult, WithId } from "mongodb";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import db from "../../../shared/MongoConnection";
 import { isStartOfSiret } from "../../../shared/Validators";
 import IAssociationName from "../@types/IAssociationName";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
 import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
+import MongoRepository from "../../../shared/MongoRepository";
 
-export class AssociationNameRepository {
-    private readonly collection = db.collection<AssociationNameEntity>("association-name");
+export class AssociationNameRepository extends MongoRepository<AssociationNameEntity> {
+    collectionName = "association-name";
     private upsertStack: ExecutionSyncStack<AssociationNameEntity, UpdateResult>;
 
     constructor() {
+        super();
         this.upsertStack = new ExecutionSyncStack(entity => {
             return this.collection.updateOne(
                 {
@@ -92,6 +93,13 @@ export class AssociationNameRepository {
     }
     async findBySiren(siren: Siren) {
         return this.collection.find({ siren }).toArray();
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ siren: 1, rna: 1, name: 1 }, { unique: true });
+        await this.collection.createIndex({ rna: 1 });
+        await this.collection.createIndex({ siren: 1 });
+        await this.collection.createIndex({ name: 1 });
     }
 }
 

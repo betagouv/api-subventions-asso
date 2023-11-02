@@ -1,13 +1,12 @@
 import { UserDto } from "dto";
 import { Filter, ObjectId } from "mongodb";
-import db from "../../../shared/MongoConnection";
+import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
-export class UserRepository {
+export class UserRepository extends MongoRepository<UserDbo> {
     collectionName = "users";
-    private readonly collection = db.collection<UserDbo>("users");
 
     joinIndexes = {
         associationVisits: "_id",
@@ -76,6 +75,10 @@ export class UserRepository {
         const query: Filter<UserDbo> = { signupAt: { $lt: date } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.collection.find(query).count();
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ email: 1 });
     }
 }
 

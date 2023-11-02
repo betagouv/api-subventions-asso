@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
-import db from "../../../shared/MongoConnection";
 import UserReset from "../entities/UserReset";
+import MongoRepository from "../../../shared/MongoRepository";
 
-export class UserResetRepository {
-    private readonly collection = db.collection<UserReset>("users-reset");
+export class UserResetRepository extends MongoRepository<UserReset> {
+    collectionName = "users-reset";
 
     public async findByToken(token: string) {
         return this.collection.findOne({ token });
@@ -29,6 +29,11 @@ export class UserResetRepository {
     public async removeAllByUserId(userId: ObjectId) {
         const result = await this.collection.deleteMany({ userId });
         return result.acknowledged;
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ token: 1 }, { unique: true });
+        await this.collection.createIndex({ userId: 1 }, { unique: true });
     }
 }
 

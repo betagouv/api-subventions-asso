@@ -1,8 +1,8 @@
 import { Siren, Siret } from "dto";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesDataRepository extends MigrationRepository<DemarchesSimplifieesDataEntity> {
+export class DemarchesSimplifieesDataRepository extends MongoRepository<DemarchesSimplifieesDataEntity> {
     collectionName = "demarches-simplifiees-data";
 
     async createIndexes() {

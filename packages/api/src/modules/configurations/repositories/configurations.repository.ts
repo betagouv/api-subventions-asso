@@ -1,8 +1,8 @@
 import { WithId } from "mongodb";
-import MigrationRepository from "../../../shared/MigrationRepository";
+import MongoRepository from "../../../shared/MongoRepository";
 import ConfigurationEntity from "../entities/ConfigurationEntity";
 
-export class ConfigurationsRepository extends MigrationRepository<ConfigurationEntity> {
+export class ConfigurationsRepository extends MongoRepository<ConfigurationEntity> {
     readonly collectionName = "configurations";
 
     async upsert(name: string, partialEntity: Partial<ConfigurationEntity>) {
@@ -17,6 +17,10 @@ export class ConfigurationsRepository extends MigrationRepository<ConfigurationE
 
     getByName<T>(name: string) {
         return this.collection.findOne({ name }) as Promise<WithId<ConfigurationEntity<T>> | null>;
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ name: 1 });
     }
 }
 

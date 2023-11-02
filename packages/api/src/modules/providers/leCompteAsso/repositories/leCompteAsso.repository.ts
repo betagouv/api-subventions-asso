@@ -1,9 +1,9 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import { Rna, Siret, Siren } from "dto";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
-import MigrationRepository from "../../../../shared/MigrationRepository";
+import MongoRepository from "../../../../shared/MongoRepository";
 
-export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequestEntity> {
+export class LeCompteAssoRepository extends MongoRepository<LeCompteAssoRequestEntity> {
     readonly collectionName = "lecompteasso-requests";
 
     public async addRequest(request: LeCompteAssoRequestEntity) {
@@ -53,6 +53,12 @@ export class LeCompteAssoRepository extends MigrationRepository<LeCompteAssoRequ
                 "legalInformations.rna": rna,
             })
             .toArray();
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ "providerInformations.compteAssoId": 1 }, { unique: true });
+        await this.collection.createIndex({ "legalInformations.siret": 1 });
+        await this.collection.createIndex({ "legalInformations.rna": 1 });
     }
 }
 
