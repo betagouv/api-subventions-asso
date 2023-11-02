@@ -1,5 +1,5 @@
 import { Siren, Siret } from "dto";
-import { WithId } from "mongodb";
+import { AnyBulkWriteOperation, WithId } from "mongodb";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -8,6 +8,7 @@ import { isEJ, isSiret } from "../../../shared/Validators";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
+import db from "../../../shared/MongoConnection";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
@@ -28,6 +29,50 @@ export class ChorusService implements VersementsProvider, GrantProvider {
             "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
         id: "chorus",
     };
+
+    // new unique ID builder
+    // remove the one used in chorus CLI after fix fully handled
+    static buildUniqueId(entity: ChorusLineEntity) {
+        const info = entity.indexedInformations;
+        return `${info.siret}-${info.ej}-${info.dateOperation}-${info.amount}-${info.numeroDemandePayment}`;
+    }
+
+    public async addDp() {
+        const chorusCursor = chorusLineRepository.cursorFind();
+
+        const buildUpdateOne = (document: WithId<ChorusLineEntity>, newId: string): AnyBulkWriteOperation => ({
+            updateOne: {
+                filter: {
+                    uniqueId: document.uniqueId,
+                    "indexedInformations.numeroDemandePayment": document.indexedInformations.numeroDemandePayment,
+                },
+                update: { $set: { uniqueId: newId } },
+            },
+        });
+
+        let ops: AnyBulkWriteOperation[] = [];
+        while (await chorusCursor.hasNext()) {
+            const document = (await chorusCursor.next()) as WithId<ChorusLineEntity>;
+
+            // if migration failed and we run it again, prevent appending another DP at the end of the uniqueID
+            if (document.uniqueId.endsWith(document.indexedInformations.numeroDemandePayment)) continue;
+
+            const newId = ChorusService.buildUniqueId(document);
+            ops.push(buildUpdateOne(document, newId));
+            if (ops.length === 1000) {
+                console.log("start bulkwrite");
+                await db.collection("chorus-line").bulkWrite(ops);
+                ops = [];
+                console.log("end bulkwrite");
+            }
+        }
+
+        if (ops.length) {
+            console.log("start last bulkwrite");
+            await db.collection("chorus-line").bulkWrite(ops);
+            console.log("end last bulkwrite");
+        }
+    }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
