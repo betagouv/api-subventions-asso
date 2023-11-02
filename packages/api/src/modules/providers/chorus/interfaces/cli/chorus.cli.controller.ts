@@ -143,4 +143,10 @@ export default class ChorusCliController extends CliController {
             );
         });
     }
+
+    public async addDp() {
+        console.log("start addDp...");
+        await chorusService.addDp();
+        console.log("end addDp!");
+    }
 }
