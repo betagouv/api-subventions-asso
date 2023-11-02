@@ -2,6 +2,7 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
+import { ChorusService } from "./chorus.service";
 
 export default class ChorusParser {
     public static parse(content: Buffer) {
@@ -37,7 +38,7 @@ export default class ChorusParser {
             ) as unknown as IChorusIndexedInformations;
 
             return entities.concat(
-                new ChorusLineEntity(this.buildUniqueId(indexedInformations), indexedInformations, parsedData),
+                new ChorusLineEntity(ChorusService.buildUniqueId(indexedInformations), indexedInformations, parsedData),
             );
         }, [] as ChorusLineEntity[]);
     }
@@ -71,7 +72,7 @@ export default class ChorusParser {
                 parsedData,
             ) as unknown as IChorusIndexedInformations;
             const entity = new ChorusLineEntity(
-                this.buildUniqueId(indexedInformations),
+                ChorusService.buildUniqueId(indexedInformations),
                 indexedInformations,
                 parsedData,
             );
@@ -81,9 +82,5 @@ export default class ChorusParser {
             }
             return entities;
         }, [] as ChorusLineEntity[]);
-    }
-
-    private static buildUniqueId(indexedInformations: IChorusIndexedInformations): string {
-        return `${indexedInformations.siret}-${indexedInformations.ej}-${indexedInformations.dateOperation}-${indexedInformations.amount}`;
     }
 }
