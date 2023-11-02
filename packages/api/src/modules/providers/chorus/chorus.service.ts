@@ -15,6 +15,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
+import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -32,12 +33,12 @@ export class ChorusService implements VersementsProvider, GrantProvider {
 
     // new unique ID builder
     // remove the one used in chorus CLI after fix fully handled
-    static buildUniqueId(entity: ChorusLineEntity) {
-        const info = entity.indexedInformations;
+    static buildUniqueId(info: IChorusIndexedInformations) {
         return `${info.siret}-${info.ej}-${info.dateOperation}-${info.amount}-${info.numeroDemandePayment}`;
     }
 
-    public async addDp() {
+    // keep this for migration ?
+    public async addPaymentRequestNumberToUniqueId() {
         const chorusCursor = chorusLineRepository.cursorFind();
 
         const buildUpdateOne = (document: WithId<ChorusLineEntity>, newId: string): AnyBulkWriteOperation => ({
@@ -57,7 +58,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
             // if migration failed and we run it again, prevent appending another DP at the end of the uniqueID
             if (document.uniqueId.endsWith(document.indexedInformations.numeroDemandePayment)) continue;
 
-            const newId = ChorusService.buildUniqueId(document);
+            const newId = ChorusService.buildUniqueId(document.indexedInformations);
             ops.push(buildUpdateOne(document, newId));
             if (ops.length === 1000) {
                 console.log("start bulkwrite");
@@ -175,6 +176,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
         if (await dataGouvService.sirenIsEntreprise(siren)) return false;
+        console.log(rnaSirenService.getRna);
         if (await rnaSirenService.getRna(siren)) return true;
 
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);
