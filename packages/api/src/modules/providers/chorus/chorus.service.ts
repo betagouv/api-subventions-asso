@@ -39,6 +39,8 @@ export class ChorusService implements VersementsProvider, GrantProvider {
 
     // keep this for migration ?
     public async addPaymentRequestNumberToUniqueId() {
+        // TODO: ajouter un index sur numeroDemandePayment ?
+
         const chorusCursor = chorusLineRepository.cursorFind();
 
         const buildUpdateOne = (document: WithId<ChorusLineEntity>, newId: string): AnyBulkWriteOperation => ({
