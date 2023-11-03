@@ -2,6 +2,7 @@ import { Siren, Siret } from "dto";
 import { AnyBulkWriteOperation, WithId } from "mongodb";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
+import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";
@@ -34,7 +35,11 @@ export class ChorusService implements VersementsProvider, GrantProvider {
     // new unique ID builder
     // remove the one used in chorus CLI after fix fully handled
     static buildUniqueId(info: IChorusIndexedInformations) {
-        return `${info.siret}-${info.ej}-${info.dateOperation}-${info.amount}-${info.numeroDemandePayment}`;
+        const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
+            info;
+        return getMD5(
+            `${ej}-${siret}-${dateOperation}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
+        );
     }
 
     // keep this for migration ?
@@ -178,7 +183,6 @@ export class ChorusService implements VersementsProvider, GrantProvider {
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
         if (await dataGouvService.sirenIsEntreprise(siren)) return false;
-        console.log(rnaSirenService.getRna);
         if (await rnaSirenService.getRna(siren)) return true;
 
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);
