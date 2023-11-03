@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import xss from "xss";
 
 export function capitalizeFirstLetter(string: string): string {
@@ -27,4 +28,8 @@ export function sanitizeToPlainText(unsafe: string): string {
         stripIgnoreTagBody: ["script"], // the script tag is a special case, we need
         // to filter out its content
     });
+}
+
+export function getMD5(str: string) {
+    return crypto.createHash("md5").update(str).digest("hex");
 }
