@@ -78,16 +78,19 @@ describe("chorus.service", () => {
 
     describe("addChorusLine", () => {
         it("rejects because entity is not valid", async () => {
+            const value = "#";
             const entity = new ChorusLineEntity(
                 "FAKE_ID",
-                { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, siret: "SIRET" },
+                { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, siret: value },
                 {},
             );
 
-            await expect(chorusService.addChorusLine(entity)).resolves.toEqual({
+            const actual = await chorusService.addChorusLine(entity);
+
+            expect(actual).toEqual({
                 state: "rejected",
                 result: expect.objectContaining({
-                    message: "INVALID SIRET FOR SIRET",
+                    message: `INVALID SIRET FOR ${value}`,
                 }),
             });
         });

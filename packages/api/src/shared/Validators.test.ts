@@ -35,6 +35,10 @@ describe("Validators", () => {
             const actual = isSiret(SIREN);
             expect(actual).toBeFalsy();
         });
+        it("should return false with #", () => {
+            const actual = isSiret("#");
+            expect(actual).toBeFalsy();
+        });
     });
 
     describe("isSiren", () => {
