@@ -5,6 +5,7 @@
     import Card from "$lib/dsfr/Card.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Messages from "$lib/components/Messages/Messages.svelte";
+    import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
 
     export let data;
     const { query } = data;
@@ -23,22 +24,7 @@
     </Alert>
 {/if}
 
-<div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-    <div class="fr-col fr-col-lg-12">
-        <form on:submit|preventDefault={() => ctrl.onSubmit()}>
-            <div class="fr-search-bar fr-search-bar--lg" id="search-input">
-                <input
-                    class="fr-input"
-                    placeholder="Recherche une association par nom ou par identifiant RNA, SIREN ou SIRET…"
-                    type="search"
-                    id="search-input-input"
-                    name="search-input"
-                    bind:value={$input} />
-                <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">Rechercher</button>
-            </div>
-        </form>
-    </div>
-</div>
+<SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
 
 {#if $isLoading}
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
