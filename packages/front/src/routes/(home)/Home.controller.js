@@ -17,6 +17,7 @@ export class HomeController {
     }
 
     onInput(input) {
+        console.log("coucou");
         if (input.length < 3) return;
 
         this._debouncedInitSearch();
