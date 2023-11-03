@@ -24,7 +24,9 @@
     </Alert>
 {/if}
 
-<SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
+<div class="search-bar">
+    <SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
+</div>
 
 {#if $isLoading}
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
@@ -83,6 +85,12 @@
 {/if}
 
 <style>
+    .search-bar {
+        margin: auto;
+        justify-content: space-around;
+        max-width: 792px;
+    }
+
     .search-result {
         max-height: 50vh;
         overflow: auto;
