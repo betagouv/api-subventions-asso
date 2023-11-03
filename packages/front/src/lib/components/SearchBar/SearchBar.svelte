@@ -12,7 +12,7 @@
             <div class="fr-search-bar fr-search-bar--lg" id="search-input">
                 <input
                     class="fr-input"
-                    placeholder="Recherche une association par nom ou par identifiant RNA, SIREN ou SIRET…"
+                    placeholder="Nom, n°SIREN ou RNA d’association, n°SIRET d’établissement"
                     type="search"
                     id="search-input-input"
                     name="search-input"
@@ -22,6 +22,3 @@
         </form>
     </div>
 </div>
-
-<style>
-</style>
