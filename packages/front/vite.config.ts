@@ -1,6 +1,12 @@
+import { fileURLToPath } from "url";
+import { readFileSync } from "fs";
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig, loadEnv } from "vite";
+
+const file = fileURLToPath(new URL("package.json", import.meta.url));
+const json = readFileSync(file, "utf8");
+const pkg = JSON.parse(json);
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
@@ -12,6 +18,7 @@ export default defineConfig(({ mode }) => {
                     project: "data-subvention-front",
                     url: "https://sentry.incubateur.net/",
                     authToken: env.SENTRY_AUTH_TOKEN || env.SENTRY_AUTH_TOKEN,
+                    release: pkg.version
                 },
             }),
             sveltekit(),
