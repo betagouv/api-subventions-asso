@@ -13,9 +13,7 @@ import { NotificationType } from "../modules/notify/@types/NotificationType";
 
 export const errorHandlerFactory = (cronName: string) => {
     return (error: Error) => {
-        Sentry.captureException(error);
         console.error(`error during cron ${cronName}`);
-        console.trace();
         notifyService.notify(NotificationType.FAILED_CRON, { cronName, error });
         return;
     };
