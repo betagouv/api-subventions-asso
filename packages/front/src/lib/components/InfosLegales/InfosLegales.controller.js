@@ -1,7 +1,7 @@
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import {
-    addressToString,
     getAddress,
+    addressToOneLineString,
     getImmatriculation,
     getModification,
     getSiegeSiret,
@@ -40,10 +40,10 @@ export default class InfosLegalesController {
         let title, value;
         if (this.establishment) {
             title = "Adresse établissement";
-            value = addressToString(this.establishment.adresse);
+            value = addressToOneLineString(getAddress(this.establishment.adresse));
         } else {
             title = "Adresse du siège";
-            value = valueOrHyphen(getAddress(this.association));
+            value = valueOrHyphen(addressToOneLineString(getAddress(this.association)));
         }
         return { title, value };
     }
@@ -66,8 +66,8 @@ export default class InfosLegalesController {
         const objectRows = {
             Dénomination: [this.association.denomination_rna, this.association.denomination_siren],
             "Adresse du siège": [
-                addressToString(this.association.adresse_siege_rna),
-                addressToString(this.association.adresse_siege_siren),
+                addressToOneLineString(this.association.adresse_siege_rna),
+                addressToOneLineString(this.association.adresse_siege_siren),
             ],
             "Date d'immatriculation": [
                 this.association.date_creation_rna ? dateToDDMMYYYY(this.association.date_creation_rna) : null,

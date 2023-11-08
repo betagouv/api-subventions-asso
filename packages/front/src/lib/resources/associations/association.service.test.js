@@ -9,7 +9,7 @@ vi.mock("./association.port", () => ({
         search: vi.fn(() => []),
     },
 }));
-vi.mock("$lib/services/storage.service", () => ({
+vi.mock("$lib/services/localStorage.service", () => ({
     updateSearchHistory: vi.fn(),
 }));
 

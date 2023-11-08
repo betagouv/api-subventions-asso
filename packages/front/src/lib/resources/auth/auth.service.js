@@ -7,8 +7,8 @@ import crispService from "$lib/services/crisp.service";
 import { page } from "$lib/store/kit.store";
 import localStorageService from "$lib/services/localStorage.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
-import { isAdmin } from "$lib/services/user.service.js";
-import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service.js";
+import { isAdmin } from "$lib/services/user.service";
+import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 
 export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
