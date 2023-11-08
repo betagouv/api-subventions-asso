@@ -22,7 +22,7 @@
 
     const dispatch = Dispatch.getDispatcher();
 
-    export let value; // to be bound by parent
+    export let value = ""; // to be bound by parent
 
     export let id = nanoid(7);
     export let name = id;
@@ -33,7 +33,7 @@
     const listId = `list-${id}`;
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
 
-    const storeValue = new Store("");
+    const storeValue = new Store(value);
     storeValue.subscribe(newV => {
         value = newV; // cannot be in controller so that binding works
         dispatch("change");
