@@ -1,4 +1,4 @@
-import HtmlSanitizer from "jitbit-html-sanitizer";
+// import HtmlSanitizer from "jitbit-html-sanitizer";
 import { isStartOfSiret } from "$lib/helpers/validatorHelper";
 import { siretToSiren } from "$lib/helpers/sirenHelper";
 import trackerService from "$lib/services/tracker.service";
@@ -15,7 +15,8 @@ export class ResultCardController {
         const siren = association.siren || "INCONNU";
         this.url = `/association/${association.rna || association.siren}`;
 
-        let searchValue = HtmlSanitizer.SanitizeHtml(rawSearchValue.trim());
+        // let searchValue = HtmlSanitizer.SanitizeHtml(rawSearchValue.trim());
+        let searchValue = rawSearchValue;
         if (isStartOfSiret(rawSearchValue)) {
             searchValue = siretToSiren(rawSearchValue);
         }

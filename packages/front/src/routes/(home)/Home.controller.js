@@ -1,5 +1,5 @@
 import { debounce } from "lodash/function";
-import { getSearchHistory } from "$lib/services/searchHistory.service.js";
+import { getSearchHistory } from "$lib/services/searchHistory.service";
 import { isRna, isSiren, isSiret, isStartOfSiret } from "$lib/helpers/validatorHelper";
 import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";

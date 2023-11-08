@@ -2,7 +2,8 @@
     import ResultCard from "./components/ResultCard.svelte";
     import { HomeController } from "./Home.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
-    import Card from "$lib/dsfr/Card.svelte";
+    import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
+    // import Card from "$lib/dsfr/Card.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Messages from "$lib/components/Messages/Messages.svelte";
 
@@ -82,15 +83,7 @@
         <h4 class="fr-py-3w">Vos dernières recherches</h4>
         <div class="fr-grid-row fr-grid-row--gutters">
             {#each $searchHistory.reverse() as search}
-                <Card
-                    url={"/association/" + (search.rna || search.siren)}
-                    title={search.name}
-                    size="6"
-                    direction="horizontal">
-                    <div class="card-description">
-                        {search.objectSocial}
-                    </div>
-                </Card>
+                <AssociationCard title={search.name} simplifiedAsso={search} />
             {/each}
         </div>
     </div>
@@ -102,7 +95,7 @@
         overflow: auto;
     }
 
-    .card-description {
+    /* .card-description {
         min-height: 3rem;
     }
 
@@ -112,5 +105,5 @@
         overflow-wrap: anywhere;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-    }
+    } */
 </style>
