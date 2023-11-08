@@ -93,7 +93,7 @@
         "unzip": "^0.1.11",
         "unzipper": "^0.10.14",
         "winston": "^3.5.1",
-        "winston-mongodb": "^5.0.7",
+        "winston-mongodb": "^5.1.1",
         "xss": "^1.0.14"
     },
     "devDependencies": {
