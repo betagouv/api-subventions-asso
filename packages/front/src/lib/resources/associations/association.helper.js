@@ -31,6 +31,27 @@ export const getAddress = association => {
     return null;
 };
 
+export const getNbEtab = association => {
+    const etabsSiret = association.etablissements_siret;
+    // not define or only containing one raw siret = no other establishment than the main one
+    if (!etabsSiret || typeof etabsSiret[0] === "string") return 1;
+    // value from ApiAsso SIREN is an array of SIRET
+    const apiAssoEtabs = etabsSiret.find(providerValue => providerValue.provider == "SIREN");
+    if (apiAssoEtabs) return apiAssoEtabs.value.length;
+    // TODO: else ?
+};
+
+export const toSimplifiedAsso = association => {
+    return {
+        rna: association.rna,
+        siren: association.siren,
+        name: association.denomination_rna || association.denomination_siren,
+        address: getAddress(association),
+        // TODO: find a better way to do retrieve the number of etabs ?
+        nbEtabs: getNbEtab(association),
+    };
+};
+
 export const getImmatriculation = association => {
     return association.date_creation_rna || association.date_creation_siren || null;
 };

@@ -42,6 +42,17 @@
                         <p class="fr-text--sm">
                             Fournisseur du fichier: <b>{document.provider}</b>
                         </p>
+
+                        {#if controller.isInternalLink(document.url)}
+                            <p class="fr-text--sm" style="font-style: italic">
+                                <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true" />
+                                Faire un clic gauche pour télécharger la pièce
+                            </p>
+                        {/if}
+
+                        <div slot="card-end">
+                            <p class="fr-card__detail">{controller.getDateString(document.date)}</p>
+                        </div>
                     </Card>
                 {/each}
             </div>

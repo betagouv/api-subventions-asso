@@ -79,4 +79,31 @@ describe("Association Helper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getNbEtabs", () => {
+        it("should return 1 if etablissements_siret is undefined", () => {
+            const expected = 1;
+            const actual = AssociationHelper.getNbEtab({ etablissements_siret: undefined });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return 1 if etablissements_siret contain only one raw SIRET (and not a ProviderValue)", () => {
+            const expected = 1;
+            const actual = AssociationHelper.getNbEtab({ etablissements_siret: [DEFAULT_ASSOCIATION.siren + "00019"] });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return nb of establishment from ApiAsso SIREN provider", () => {
+            const expected = 2;
+            const actual = AssociationHelper.getNbEtab({
+                etablissements_siret: [
+                    {
+                        provider: "SIREN",
+                        value: [DEFAULT_ASSOCIATION.siren + "00019", DEFAULT_ASSOCIATION.siren + "00020"],
+                    },
+                ],
+            });
+            expect(actual).toEqual(expected);
+        });
+    });
 });

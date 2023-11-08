@@ -18,6 +18,12 @@ b {
     text-overflow: ellipsis;
 }
 
+/* DSFR COLOR */
+
+.active-blue {
+    color: var(--text-active-blue-france);
+}
+
 /* POSITIONING / LAYOUT */
 
 .flex {
