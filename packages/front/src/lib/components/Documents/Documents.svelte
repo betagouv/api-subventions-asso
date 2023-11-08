@@ -33,7 +33,6 @@
                         title={document.label}
                         url={document.url}
                         size="6"
-                        endDetail={controller.getDateString(document.date)}
                         onClick={e => controller.onClick(e, document)}
                         target="_blank">
                         <p>
@@ -50,6 +49,10 @@
                                 Faire un clic gauche pour télécharger la pièce
                             </p>
                         {/if}
+
+                        <div slot="card-end">
+                            <p class="fr-card__detail">{controller.getDateString(document.date)}</p>
+                        </div>
                     </Card>
                 {/each}
             </div>

@@ -1,8 +1,10 @@
 <script>
-    import { getIconClass } from "./helper";
-
     export let size = 4;
     export let title = "";
+    // make use of global.css overflow-ellipsis-* classes
+    export let titleEllipsis = undefined;
+    // h1 to h6
+    export let titleLevel = 3;
     export let url;
     export let img = false;
     export let target = "";
@@ -10,10 +12,7 @@
     // eslint-disable-next-line @typescript-eslint/no-empty-function -- default value
     export let onClick = () => {};
 
-    // second detail zone
-    export let endIcon = undefined;
-    export let endDetail = undefined;
-    const endClasses = ["fr-card__detail", endIcon ? getIconClass(endIcon) : ""].join(" ");
+    const ellipsisClass = titleEllipsis ? `overflow-ellipsis-${titleEllipsis}` : undefined;
 </script>
 
 <div class="fr-col-{size} fr-col-md-{size}">
@@ -23,15 +22,15 @@
                 <div class="fr-card__start">
                     <slot name="card-start" />
                 </div>
-                <h2 class="fr-card__title">
-                    <a href={url} on:click={onClick} class="fr-card__link" {target}>{title}</a>
-                </h2>
+                <h3 class={`fr-card__title fr-h${titleLevel}`}>
+                    <a href={url} on:click={onClick} class={`fr-card__link ${ellipsisClass}`} {target}>{title}</a>
+                </h3>
                 <p class="fr-card__desc">
                     <slot />
                 </p>
-                {#if endDetail}
+                {#if $$slots["card-end"]}
                     <div class="fr-card__end">
-                        <p class={endClasses}>{endDetail}</p>
+                        <slot name="card-end" />
                     </div>
                 {/if}
             </div>

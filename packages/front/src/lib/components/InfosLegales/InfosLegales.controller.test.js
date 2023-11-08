@@ -7,7 +7,7 @@ vi.mock("$lib/resources/associations/association.helper", async () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const ASSOCIATION = await import("$lib/resources/associations/__fixtures__/Association");
     return {
-        addressToString: address => address,
+        addressToOneLineString: address => address,
         getSiegeSiret: () => ASSOCIATION.default.siren + ASSOCIATION.default.nic_siege,
         getAddress: () => ASSOCIATION.default.adresse_siege_rna,
         getImmatriculation: vi.fn(),
