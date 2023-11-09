@@ -6,7 +6,7 @@
 <div class="fr-notice fr-notice--info">
     <div class="fr-container">
         <div class="fr-notice__body">
-            <p class="fr-notice__title fr-text--xs">{title}</p>
+            <p class="fr-notice__title">{title}</p>
             {#if closeBtn}
                 <button
                     class="fr-btn--close fr-btn"

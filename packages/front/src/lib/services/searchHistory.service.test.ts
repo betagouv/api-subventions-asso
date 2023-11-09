@@ -60,7 +60,7 @@ describe("SearchHistoryService", () => {
         ]);
     });
 
-    it.only("should update search if already in localStorage", () => {
+    it("should update search if already in localStorage", () => {
         const FIRST_SEARCH = { rna: RNA };
         const SECOND_SEARCH = { rna: RNA_2 };
         // @ts-expect-error: mock
