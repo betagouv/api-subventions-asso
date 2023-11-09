@@ -24,6 +24,10 @@
     </Alert>
 {/if}
 
+<h1 class="fr-h4 fr-px-14v fr-py-6v fr-mb-6v">
+    Consulter les dernières informations sur les associations et leurs subventions
+</h1>
+
 <div class="search-bar">
     <SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
 </div>
@@ -85,6 +89,11 @@
 {/if}
 
 <style>
+    h1 {
+        text-align: center;
+    }
+
+    h1,
     .search-bar {
         margin: auto;
         justify-content: space-around;
