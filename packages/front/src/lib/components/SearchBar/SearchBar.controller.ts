@@ -7,7 +7,6 @@ export class SearchBarController {
     }
 
     dispatchSubmit() {
-        console.log("dispatchSubmit");
         this.dispatch("submit");
     }
 }

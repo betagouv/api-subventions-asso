@@ -41,7 +41,7 @@ export const getNbEtab = association => {
     // TODO: else ?
 };
 
-export const toSimplifiedAsso = association => {
+export const toSearchHistory = association => {
     return {
         rna: association.rna,
         siren: association.siren,
