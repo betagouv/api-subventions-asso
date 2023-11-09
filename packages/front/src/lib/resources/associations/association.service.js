@@ -1,5 +1,5 @@
 import associationPort from "./association.port";
-import { toSimplifiedAsso } from "./association.helper";
+import { toSearchHistory } from "./association.helper";
 import { isRna, isStartOfSiret } from "$lib/helpers/validatorHelper";
 import { siretToSiren } from "$lib/helpers/sirenHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
@@ -17,7 +17,7 @@ class AssociationService {
         if (!result) return;
         const association = flattenProviderValue(result);
 
-        updateSearchHistory(toSimplifiedAsso(association));
+        updateSearchHistory(toSearchHistory(association));
 
         return association;
     }
