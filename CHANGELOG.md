@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.6](https://github.com/betagouv/api-subventions-asso/compare/v0.38.5...v0.38.6) (2023-11-09)
+
+### Bug Fixes
+
+-   **front:** combobox shows given value on init ([58e601f](https://github.com/betagouv/api-subventions-asso/commit/58e601fc1a163427e4d9e26f3bdbd44d0f310253))
+
 ## [0.38.5](https://github.com/betagouv/api-subventions-asso/compare/v0.38.4...v0.38.5) (2023-10-30)
 
 ### Bug Fixes
