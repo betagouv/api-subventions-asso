@@ -23,7 +23,7 @@
     </Alert>
 {/if}
 
-<h1 class="visually-hidden">Page d'accueil</h1>
+<h1 class="fr-sr-only">Page d'accueil</h1>
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">

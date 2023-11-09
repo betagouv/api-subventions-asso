@@ -39,7 +39,7 @@
     <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="assertive" />
     <div class="fr-password__checkbox fr-checkbox-group--sm">
         <input
-            class="sr-only"
+            class="fr-sr-only"
             bind:checked={showPassword}
             aria-label="Afficher le mot de passe"
             id="password-show-{id}"
