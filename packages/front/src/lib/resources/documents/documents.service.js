@@ -43,7 +43,7 @@ export class DocumentService {
 
         // sort
         const sortedFlatDocs = Object.entries(documentsByType)
-            .sort(([keyA], [keyB]) => (keyA > keyB ? 1 : -1)) // Sort by type
+            .sort(([keyA], [keyB]) => keyA - keyB) // Sort by type
             .map(
                 ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same types sort by date
             )
