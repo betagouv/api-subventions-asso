@@ -14,6 +14,7 @@
 export class ComboboxAutocomplete {
     constructor(comboboxNode, buttonNode, listboxNode, svelteStore) {
         this.comboboxNode = comboboxNode;
+        this.comboboxNode.value = svelteStore.value;
         this.buttonNode = buttonNode;
         this.listboxNode = listboxNode;
 
