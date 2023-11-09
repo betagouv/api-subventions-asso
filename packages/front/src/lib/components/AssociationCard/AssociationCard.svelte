@@ -2,16 +2,22 @@
     import Card from "$lib/dsfr/Card.svelte";
     import { getFirstPartAddress, getLastPartAddress } from "$lib/resources/associations/association.helper";
 
-    export let title;
     export let simplifiedAsso;
 
     const street = getFirstPartAddress(simplifiedAsso.address);
     const city = getLastPartAddress(simplifiedAsso.address);
 </script>
 
-<Card {title} titleEllipsis="3" titleLevel="6" url="/association/{simplifiedAsso.siren}">
+<Card>
     <svelte:fragment slot="card-start">
         <p class="card-start fr-card__detail fr-text--sm fr-icon-community-line">Association</p>
+    </svelte:fragment>
+    <svelte:fragment slot="card-title">
+        <h3 class="fr-card__title fr-h6">
+            <a href="/association/{simplifiedAsso.siren}" class="fr-card__link overflow-ellipsis-3">
+                {simplifiedAsso.name}
+            </a>
+        </h3>
     </svelte:fragment>
     <div class="flex">
         <p>
