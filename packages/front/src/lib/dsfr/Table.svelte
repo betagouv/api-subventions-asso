@@ -7,7 +7,7 @@
 <div class="fr-table {color ? `fr-table--${color}` : ''} custom-table" class:fr-table--bordered={bordered}>
     <table>
         <slot name="colgroup" />
-        <caption class="sr-only">{title}</caption>
+        <caption class="fr-sr-only">{title}</caption>
         <thead>
             <tr>
                 <slot name="head" />
