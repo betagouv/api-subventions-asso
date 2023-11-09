@@ -12,25 +12,6 @@ b {
 /* TEXT */
 
 .ellipsis {
-    /* min-width: 0; */
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-/* ACCESSIBILITY */
-.visually-hidden {
-    height: 1px;
-    width: 1px;
-    position: absolute;
-    overflow: hidden;
-    top: -10px;
-}
-
-/* TEXT */
-
-.ellipsis {
-    /* min-width: 0; */
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
