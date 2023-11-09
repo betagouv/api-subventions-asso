@@ -84,7 +84,7 @@
         <h2 class="fr-h4 fr-py-3w">Vos dernières recherches</h2>
         <div class="fr-grid-row fr-grid-row--gutters">
             {#each $searchHistory.reverse() as search}
-                <AssociationCard title={search.name} simplifiedAsso={search} />
+                <AssociationCard simplifiedAsso={search} />
             {/each}
         </div>
     </div>
