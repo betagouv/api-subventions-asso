@@ -25,13 +25,13 @@
         </p>
     </div>
     <div class="address">
+        <!-- if history was created before we saved the address, do not display -->
         {#if simplifiedAsso.address}
             <div>
                 <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line" />
             </div>
-            <div>
-                <!-- if history was created before we saved the address, do not display -->
-                <span class="fr-text--bold">{street}</span>
+            <div class="ellipsis">
+                <span class="fr-text--bold ellipsis">{street}</span>
                 <br />
                 <span class="fr-text--bold">{city}</span>
             </div>
@@ -39,9 +39,9 @@
     </div>
     <p />
     <div slot="card-end">
+        <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}
             <p class="info fr-card__detail fr-icon-info-fill fr-text--sm">
-                <!-- <span class="fr-icon-info-fill" /> -->
                 {`${simplifiedAsso.nbEtabs} établissements rattachés`}
             </p>
         {/if}
@@ -52,6 +52,10 @@
     .circle-separator {
         text-align: center;
         font-size: 0.6em;
+    }
+
+    .address div:first-child {
+        flex: 0 0 2em;
     }
 
     .icon-address,
