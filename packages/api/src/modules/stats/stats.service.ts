@@ -1,4 +1,4 @@
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { UserCountByStatus } from "dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
@@ -297,7 +297,8 @@ class StatsService {
             if (log.meta.req?.body?.lastName) delete log.meta.req.body.lastName;
             if (log.meta.req?.body?.phoneNumber) delete log.meta.req.body.phoneNumber;
             if (log.meta.req?.user) {
-                log.meta.req.userId = log.meta.req.user._id?.toString(); // userId is needed for joins with another table
+                // userId is needed for joins with another table, but is saved as a string because of a dependency bug
+                log.meta.req.userId = new ObjectId(log.meta.req.user._id);
                 delete log.meta.req.user;
             }
 
