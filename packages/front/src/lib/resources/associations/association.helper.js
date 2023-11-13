@@ -31,17 +31,6 @@ export const getAddress = association => {
     return null;
 };
 
-export const toSearchHistory = association => {
-    return {
-        rna: association.rna,
-        siren: association.siren,
-        name: association.denomination_rna || association.denomination_siren,
-        address: getAddress(association),
-        // TODO: find a better way to do retrieve the number of etabs ?
-        nbEtabs: association.etablisements_siret.length,
-    };
-};
-
 export const getImmatriculation = association => {
     return association.date_creation_rna || association.date_creation_siren || null;
 };

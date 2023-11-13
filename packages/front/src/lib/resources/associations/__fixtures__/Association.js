@@ -21,4 +21,5 @@ export default {
     date_creation_siren: new Date("2012-01-01"),
     date_modification_rna: new Date("2021-01-01"),
     date_modification_siren: new Date("2016-01-01"),
+    etablisements_siret: ["00000000100018"],
 };
