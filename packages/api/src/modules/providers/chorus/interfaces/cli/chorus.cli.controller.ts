@@ -37,15 +37,14 @@ export default class ChorusCliController extends CliController {
 
         const chorusEntityValidator = entity => {
             try {
-                chorusService.validateEntity(entity);
+                return chorusService.validateEntity(entity);
             } catch (e) {
                 logs.push(
                     `\n\nThis request is not registered because: ${(e as Error).message}\n`,
                     JSON.stringify(entity, null, "\t"),
                 );
+                return false;
             }
-
-            return true;
         };
 
         const entities = ChorusParser.parseXls(fileContent, chorusEntityValidator);

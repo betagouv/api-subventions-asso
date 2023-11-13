@@ -2,18 +2,21 @@ import { Siren, Siret } from "dto";
 import { WithId } from "mongodb";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
+import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
+import db from "../../../shared/MongoConnection";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
+import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -28,6 +31,16 @@ export class ChorusService implements VersementsProvider, GrantProvider {
             "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
         id: "chorus",
     };
+
+    // new unique ID builder
+    // remove the one used in chorus CLI after fix fully handled
+    static buildUniqueId(info: IChorusIndexedInformations) {
+        const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
+            info;
+        return getMD5(
+            `${ej}-${siret}-${dateOperation}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
+        );
+    }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
