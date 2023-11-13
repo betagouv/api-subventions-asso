@@ -6,6 +6,11 @@
 
     const street = getFirstPartAddress(simplifiedAsso.address);
     const city = getLastPartAddress(simplifiedAsso.address);
+
+    const getNbEtabLabel = () =>
+        (simplifiedAsso.nbEtabs == 1) | 0
+            ? `${simplifiedAsso.nbEtabs} établissement rattaché`
+            : `${simplifiedAsso.nbEtabs} établissements rattachés`;
 </script>
 
 <Card>
@@ -48,7 +53,7 @@
         <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}
             <p class="info fr-card__detail fr-icon-info-fill fr-text--sm">
-                {`${simplifiedAsso.nbEtabs} établissements rattachés`}
+                {getNbEtabLabel()}
             </p>
         {/if}
     </div>
