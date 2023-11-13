@@ -18,6 +18,8 @@ vi.mock("$lib/helpers/validatorHelper");
 import * as sirenHelper from "$lib/helpers/sirenHelper";
 vi.mock("$lib/helpers/sirenHelper");
 vi.mock("$lib/services/searchHistory.service");
+import * as AssociationHelper from "$lib/resources/associations/association.helper";
+vi.mock("$lib/resources/associations/association.helper");
 
 const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 
