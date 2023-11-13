@@ -11,7 +11,7 @@
     export let onClick = () => {};
 </script>
 
-<div class="fr-col-{size} fr-col-md-{size}">
+<div class="fr-col-md-{size} fr-col-12">
     <div class={`fr-card fr-enlarge-link ${direction === "horizontal" ? " fr-card--horizontal" : ""}`}>
         <div class="fr-card__body">
             <div class="fr-card__content">

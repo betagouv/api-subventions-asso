@@ -24,12 +24,17 @@
     </Alert>
 {/if}
 
-<h1 class="fr-h4 fr-px-14v fr-py-6v fr-mb-6v">
-    Consulter les dernières informations sur les associations et leurs subventions
-</h1>
-
-<div class="search-bar">
-    <SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
+<div class="fr-grid-row fr-grid-row--center fr-mt-6v">
+    <div class="fr-col-7">
+        <h1 class="fr-h4">Consulter les dernières informations sur les associations et leurs subventions</h1>
+    </div>
+</div>
+<div class="fr-grid-row fr-grid-row--center fr-mt-6v">
+    <div class="fr-col-8">
+        <div class="search-bar">
+            <SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
+        </div>
+    </div>
 </div>
 
 {#if $isLoading}
@@ -70,13 +75,13 @@
 {/if}
 
 {#if !$isLoading && !$searchResult.length && $searchHistory.length}
-    <div class="history fr-pt-5w">
-        <h2 class="fr-h4 fr-py-3w">Vos dernières recherches</h2>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            {#each $searchHistory.reverse() as search}
-                <AssociationCard simplifiedAsso={search} />
-            {/each}
-        </div>
+    <div class="fr-grid-row fr-grid-row--center fr-mt-12v fr-mb-6v">
+        <h2 class="fr-h4">Vos dernières recherches</h2>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {#each $searchHistory.reverse() as search}
+            <AssociationCard simplifiedAsso={search} />
+        {/each}
     </div>
 {/if}
 
@@ -87,8 +92,8 @@
 
     h1,
     .search-bar {
-        margin: auto;
-        justify-content: space-around;
+        /* margin: auto; */
+        /* justify-content: space-around; */
         max-width: 792px;
     }
 
