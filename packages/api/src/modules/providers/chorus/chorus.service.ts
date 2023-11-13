@@ -1,5 +1,5 @@
 import { Siren, Siret } from "dto";
-import { AnyBulkWriteOperation, WithId } from "mongodb";
+import { WithId } from "mongodb";
 import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
@@ -40,46 +40,6 @@ export class ChorusService implements VersementsProvider, GrantProvider {
         return getMD5(
             `${ej}-${siret}-${dateOperation}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
         );
-    }
-
-    // keep this for migration ?
-    public async addPaymentRequestNumberToUniqueId() {
-        // TODO: ajouter un index sur numeroDemandePayment ?
-
-        const chorusCursor = chorusLineRepository.cursorFind();
-
-        const buildUpdateOne = (document: WithId<ChorusLineEntity>, newId: string): AnyBulkWriteOperation => ({
-            updateOne: {
-                filter: {
-                    uniqueId: document.uniqueId,
-                    "indexedInformations.numeroDemandePayment": document.indexedInformations.numeroDemandePayment,
-                },
-                update: { $set: { uniqueId: newId } },
-            },
-        });
-
-        let ops: AnyBulkWriteOperation[] = [];
-        while (await chorusCursor.hasNext()) {
-            const document = (await chorusCursor.next()) as WithId<ChorusLineEntity>;
-
-            // if migration failed and we run it again, prevent appending another DP at the end of the uniqueID
-            if (document.uniqueId.endsWith(document.indexedInformations.numeroDemandePayment)) continue;
-
-            const newId = ChorusService.buildUniqueId(document.indexedInformations);
-            ops.push(buildUpdateOne(document, newId));
-            if (ops.length === 1000) {
-                console.log("start bulkwrite");
-                await db.collection("chorus-line").bulkWrite(ops);
-                ops = [];
-                console.log("end bulkwrite");
-            }
-        }
-
-        if (ops.length) {
-            console.log("start last bulkwrite");
-            await db.collection("chorus-line").bulkWrite(ops);
-            console.log("end last bulkwrite");
-        }
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);

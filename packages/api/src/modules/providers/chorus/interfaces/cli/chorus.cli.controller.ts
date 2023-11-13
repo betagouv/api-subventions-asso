@@ -142,11 +142,4 @@ export default class ChorusCliController extends CliController {
             );
         });
     }
-
-    // remove this after DP has been added to ChorusLineEntity uniqueId in DB
-    public async addDp() {
-        console.log("start addDp...");
-        await chorusService.addPaymentRequestNumberToUniqueId();
-        console.log("end addDp!");
-    }
 }
