@@ -7,40 +7,38 @@ jest.mock("./adapters/ChorusAdapter");
 import dataGouvService from "../datagouv/datagouv.service";
 jest.mock("../datagouv/datagouv.service");
 const mockedDataGouvService = jest.mocked(dataGouvService);
-import { DEFAULT_CHORUS_LINE_ENTITY, paymentsWithDifferentDP } from "./__fixutres__/ChorusLineEntities";
+import { DEFAULT_CHORUS_LINE_DOCUMENT, paymentsWithDifferentDP } from "./__fixutres__/ChorusLineEntities";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 jest.mock("../../_open-data/rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import { ObjectId } from "mongodb";
 
-const GOOD_ENTITY = new ChorusLineEntity("FAKE_ID", { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations }, {});
-
 const WRONG_CODE_BRANCHE_ENTITY = new ChorusLineEntity(
     "FAKE_ID",
-    { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, codeBranche: "WRONG CODE" },
+    { ...DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations, codeBranche: "WRONG CODE" },
     {},
 );
 const WRONG_SIRET_ENTITY = new ChorusLineEntity(
     "FAKE_ID",
-    { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, siret: "SIRET" },
+    { ...DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations, siret: "SIRET" },
     {},
 );
 const WRONG_EJ_ENTITY = new ChorusLineEntity(
     "FAKE_ID",
-    { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, ej: "00000" },
+    { ...DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations, ej: "00000" },
     {},
 );
 const WRONG_AMOUNT_ENTITY = new ChorusLineEntity(
     "FAKE_ID",
     // @ts-expect-error: amount not defined
-    { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, amount: undefined },
+    { ...DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations, amount: undefined },
     {},
 );
 const WRONG_DATE_ENTITY = new ChorusLineEntity(
     "FAKE_ID",
     // @ts-expect-error: string instead of date
-    { ...DEFAULT_CHORUS_LINE_ENTITY.indexedInformations, dateOperation: "01/01/1960" },
+    { ...DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations, dateOperation: "01/01/1960" },
     {},
 );
 
@@ -87,7 +85,7 @@ describe("chorusService", () => {
         });
 
         it("accepts", () => {
-            const entity = GOOD_ENTITY;
+            const entity = DEFAULT_CHORUS_LINE_DOCUMENT;
             expect(chorusService.validateEntity(entity)).toEqual(true);
         });
     });
@@ -128,21 +126,24 @@ describe("chorusService", () => {
         });
 
         it("should call chorusLineRepository.update", async () => {
-            mockedChorusLineRepository.findOneByUniqueId.mockResolvedValueOnce({ _id: OBJECT_ID, ...GOOD_ENTITY });
-            await chorusService.addChorusLine(GOOD_ENTITY);
-            expect(mockedChorusLineRepository.update).toHaveBeenCalledWith(GOOD_ENTITY);
+            mockedChorusLineRepository.findOneByUniqueId.mockResolvedValueOnce({
+                _id: OBJECT_ID,
+                ...DEFAULT_CHORUS_LINE_DOCUMENT,
+            });
+            await chorusService.addChorusLine(DEFAULT_CHORUS_LINE_DOCUMENT);
+            expect(mockedChorusLineRepository.update).toHaveBeenCalledWith(DEFAULT_CHORUS_LINE_DOCUMENT);
         });
 
         it("return update object after update succeed", async () => {
             // @ts-expect-error: mock resolve value
-            mockedChorusLineRepository.update.mockResolvedValueOnce(GOOD_ENTITY);
+            mockedChorusLineRepository.update.mockResolvedValueOnce(DEFAULT_CHORUS_LINE_DOCUMENT);
             // @ts-expect-error: mock resolve value
-            mockedChorusLineRepository.findOneByUniqueId.mockResolvedValueOnce(GOOD_ENTITY);
+            mockedChorusLineRepository.findOneByUniqueId.mockResolvedValueOnce(DEFAULT_CHORUS_LINE_DOCUMENT);
             const expected = {
                 state: "updated",
-                result: GOOD_ENTITY,
+                result: DEFAULT_CHORUS_LINE_DOCUMENT,
             };
-            const actual = await chorusService.addChorusLine(GOOD_ENTITY);
+            const actual = await chorusService.addChorusLine(DEFAULT_CHORUS_LINE_DOCUMENT);
             expect(actual).toEqual(expected);
         });
 
@@ -157,30 +158,33 @@ describe("chorusService", () => {
         });
 
         it("should call chorusLineRepository.creates", async () => {
-            await chorusService.addChorusLine(GOOD_ENTITY);
-            expect(chorusLineRepository.create).toHaveBeenCalledWith(GOOD_ENTITY);
+            await chorusService.addChorusLine(DEFAULT_CHORUS_LINE_DOCUMENT);
+            expect(chorusLineRepository.create).toHaveBeenCalledWith(DEFAULT_CHORUS_LINE_DOCUMENT);
         });
 
         it("should return create object after creation succeed", async () => {
             const expected = {
                 state: "created",
-                result: GOOD_ENTITY,
+                result: DEFAULT_CHORUS_LINE_DOCUMENT,
             };
-            const actual = await chorusService.addChorusLine(GOOD_ENTITY);
+            const actual = await chorusService.addChorusLine(DEFAULT_CHORUS_LINE_DOCUMENT);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("getVersementsBySiret", () => {
         beforeAll(() => {
-            mockedChorusLineRepository.findBySiret.mockResolvedValue([GOOD_ENTITY, GOOD_ENTITY]);
+            mockedChorusLineRepository.findBySiret.mockResolvedValue([
+                DEFAULT_CHORUS_LINE_DOCUMENT,
+                DEFAULT_CHORUS_LINE_DOCUMENT,
+            ]);
         });
 
         afterEach(() => mockedChorusLineRepository.findBySiret.mockClear());
 
         afterAll(() => mockedChorusLineRepository.findBySiret.mockReset());
 
-        const SIRET = GOOD_ENTITY.indexedInformations.siret;
+        const SIRET = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations.siret;
         it("should call chorusLineRepository.findBySiret()", async () => {
             await chorusService.getVersementsBySiret(SIRET);
             expect(mockedChorusLineRepository.findBySiret).toHaveBeenCalledWith(SIRET);
@@ -193,14 +197,17 @@ describe("chorusService", () => {
 
     describe("getVersementsBySiren", () => {
         beforeAll(() => {
-            mockedChorusLineRepository.findBySiren.mockResolvedValue([GOOD_ENTITY, GOOD_ENTITY]);
+            mockedChorusLineRepository.findBySiren.mockResolvedValue([
+                DEFAULT_CHORUS_LINE_DOCUMENT,
+                DEFAULT_CHORUS_LINE_DOCUMENT,
+            ]);
         });
 
         afterEach(() => mockedChorusLineRepository.findOneBySiren.mockClear());
 
         afterAll(() => mockedChorusLineRepository.findBySiren.mockReset());
 
-        const SIREN = GOOD_ENTITY.indexedInformations.siret.substring(0, 9);
+        const SIREN = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations.siret.substring(0, 9);
         it("should call chorusLineRepository.findBySiren()", async () => {
             await chorusService.getVersementsBySiren(SIREN);
             expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
@@ -213,14 +220,17 @@ describe("chorusService", () => {
 
     describe("getVersementsByKey", () => {
         beforeAll(() => {
-            mockedChorusLineRepository.findByEJ.mockResolvedValue([GOOD_ENTITY, GOOD_ENTITY]);
+            mockedChorusLineRepository.findByEJ.mockResolvedValue([
+                DEFAULT_CHORUS_LINE_DOCUMENT,
+                DEFAULT_CHORUS_LINE_DOCUMENT,
+            ]);
         });
 
         afterEach(() => mockedChorusLineRepository.findByEJ.mockClear());
 
         afterAll(() => mockedChorusLineRepository.findByEJ.mockReset());
 
-        const EJ = GOOD_ENTITY.indexedInformations.ej;
+        const EJ = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations.ej;
         it("should call chorusLineRepository.findByEJ()", async () => {
             await chorusService.getVersementsByKey(EJ);
             expect(mockedChorusLineRepository.findByEJ).toHaveBeenCalledWith(EJ);
@@ -232,13 +242,13 @@ describe("chorusService", () => {
     });
 
     describe("sirenBelongAsso", () => {
-        const SIREN = GOOD_ENTITY.indexedInformations.siret.substring(0, 9);
+        const SIREN = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations.siret.substring(0, 9);
 
         beforeEach(() => {
             mockedDataGouvService.sirenIsEntreprise.mockResolvedValue(false);
             mockedRnaSirenService.getRna.mockResolvedValue(null);
             // @ts-expect-error: mock resolve value
-            mockedChorusLineRepository.findOneBySiren.mockResolvedValue(GOOD_ENTITY);
+            mockedChorusLineRepository.findOneBySiren.mockResolvedValue(DEFAULT_CHORUS_LINE_DOCUMENT);
         });
 
         afterAll(() => {
