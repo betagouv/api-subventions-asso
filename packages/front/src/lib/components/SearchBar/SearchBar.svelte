@@ -1,14 +1,10 @@
 <script>
-    import { SearchBarController } from "./SearchBar.controller";
-
     export let value;
-
-    const ctrl = new SearchBarController();
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
-        <form on:submit|preventDefault={() => ctrl.dispatchSubmit()}>
+        <form on:submit>
             <div class="fr-search-bar fr-search-bar--lg" id="search-input">
                 <input
                     class="fr-input"
