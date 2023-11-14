@@ -1,4 +1,16 @@
 import * as StringHelper from "./StringHelper";
+import crypto from "crypto";
+jest.mock("crypto", () => ({
+    createHash: jest.fn(() => ({
+        update: jest.fn(() => ({
+            digest: jest.fn(() => {
+                {
+                }
+            }),
+        })),
+    })),
+}));
+const mockedCrypto = jest.mocked(crypto);
 
 describe("StringHelper", () => {
     describe("sanitizeToPlainText", () => {
@@ -20,6 +32,24 @@ describe("StringHelper", () => {
             const expected = "Lorem";
             const actual = StringHelper.capitalizeFirstLetter("lOReM");
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getMD5", () => {
+        const digest = jest.fn();
+        const update = jest.fn(() => ({ digest }));
+
+        beforeAll(() =>
+            // @ts-expect-error: mock
+            mockedCrypto.createHash.mockImplementation(() => ({ update })),
+        );
+
+        it("return call crypto methods", () => {
+            const str = "STRING";
+            StringHelper.getMD5(str);
+            expect(mockedCrypto.createHash).toHaveBeenCalledWith("md5");
+            expect(update).toHaveBeenCalledWith(str);
+            expect(digest).toHaveBeenCalledWith("hex");
         });
     });
 });

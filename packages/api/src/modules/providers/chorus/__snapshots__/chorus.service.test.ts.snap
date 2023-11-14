@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`chorusService buildUniqueId return a uniqueId hash 1`] = `"4589731b469a93eaaad997babbd076db"`;
