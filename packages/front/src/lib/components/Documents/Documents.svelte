@@ -42,6 +42,9 @@
                         <p class="fr-text--sm">
                             Fournisseur du fichier: <b>{document.provider}</b>
                         </p>
+                        <div slot="card-end">
+                            {controller.getDateString(document.date)}
+                        </div>
                     </Card>
                 {/each}
             </div>
