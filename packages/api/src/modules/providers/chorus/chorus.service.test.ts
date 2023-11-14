@@ -7,7 +7,7 @@ jest.mock("./adapters/ChorusAdapter");
 import dataGouvService from "../datagouv/datagouv.service";
 jest.mock("../datagouv/datagouv.service");
 const mockedDataGouvService = jest.mocked(dataGouvService);
-import { DEFAULT_CHORUS_LINE_DOCUMENT, paymentsWithDifferentDP } from "./__fixutres__/ChorusLineEntities";
+import { DEFAULT_CHORUS_LINE_DOCUMENT } from "./__fixutres__/ChorusLineEntities";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 jest.mock("../../_open-data/rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
@@ -44,9 +44,8 @@ const WRONG_DATE_ENTITY = new ChorusLineEntity(
 
 describe("chorusService", () => {
     describe("buildUniqueId", () => {
-        const PAYMENTS = [...paymentsWithDifferentDP];
         it("return a uniqueId hash", () => {
-            const actual = ChorusService.buildUniqueId(PAYMENTS[0].indexedInformations);
+            const actual = ChorusService.buildUniqueId(DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations);
             expect(actual).toMatchSnapshot();
         });
     });
