@@ -30,7 +30,7 @@
     </div>
 {:then _result}
     <p class="fr-text-md">
-        {`${nbResultLabel}`}
+        {nbResultLabel}
     </p>
     <div class="fr-grid-row fr-grid-row--gutters search-layout">
         {#each $associations as simplifiedAsso}
