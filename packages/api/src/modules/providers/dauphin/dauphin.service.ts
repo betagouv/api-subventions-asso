@@ -112,9 +112,7 @@ export class DauphinService
                     await this.http.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
                         { ...this.buildFetchApplicationFromDateQuery(lastUpdateDate), from: fetched },
-                        {
-                            ...this.buildSearchHeader(token),
-                        },
+                        this.buildSearchHeader(token),
                     )
                 ).data;
 
@@ -248,9 +246,7 @@ export class DauphinService
         const result = (
             await this.http.get(
                 `https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/${dauphinInternalId}?expand=pieces.documents`,
-                {
-                    ...this.buildSearchHeader(token),
-                },
+                this.buildSearchHeader(token),
             )
         ).data.pieces;
 
@@ -278,9 +274,7 @@ export class DauphinService
             await this.http.post(
                 "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
                 query,
-                {
-                    ...this.buildSearchHeader(token),
-                },
+                this.buildSearchHeader(token),
             )
         ).data;
         const properHit = res?.hits?.hits?.find(asso => asso._source.SIREN === siren);
@@ -355,8 +349,7 @@ export class DauphinService
         });
 
         return this.http
-            .post<string>("https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens", {
-                data,
+            .post<string>("https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens", data, {
                 headers: {
                     accept: "application/json, text/plain, */*",
                     "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
