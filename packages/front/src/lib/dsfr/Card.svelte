@@ -2,7 +2,9 @@
     export let size = 4;
     export let title = "";
     // h1 to h6
-    export let titleLevel = 3;
+    export let titleTag = "h3";
+    export let titleStyle = titleTag ? titleTag : "h3";
+    export let titleEllipsis = 2;
     export let url = "";
     export let img = false;
     export let target = "";
@@ -12,17 +14,19 @@
 </script>
 
 <div class="fr-col-md-{size} fr-col-12">
-    <div class={`fr-card fr-enlarge-link ${direction === "horizontal" ? " fr-card--horizontal" : ""}`}>
+    <div class={`fr-card fr-enlarge-link`} class:fr-card--horizontal={direction === "horizontal"}>
         <div class="fr-card__body">
             <div class="fr-card__content">
-                <div class="fr-card__start">
-                    <slot name="card-start" />
-                </div>
-                <slot name="card-title">
-                    <h3 class={`fr-card__title fr-h${titleLevel}`}>
-                        <a href={url} on:click={onClick} class="fr-card__link" {target}>{title}</a>
-                    </h3>
-                </slot>
+                {#if $$slots["card-start"]}
+                    <div class="fr-card__start">
+                        <slot name="card-start" />
+                    </div>
+                {/if}
+                <svelte:element this={titleTag} class="fr-card__title fr-{titleStyle}">
+                    <a href={url} on:click={onClick} class="fr-card__link overflow-ellipsis-{titleEllipsis}" {target}>
+                        {title}
+                    </a>
+                </svelte:element>
                 <p class="fr-card__desc">
                     <slot />
                 </p>

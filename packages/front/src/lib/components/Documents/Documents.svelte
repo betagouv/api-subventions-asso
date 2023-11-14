@@ -31,6 +31,7 @@
                 {#each documents as document}
                     <Card
                         title={document.label}
+                        titleTag="h4"
                         url={document.url}
                         size="6"
                         onClick={e => controller.onClick(e, document)}

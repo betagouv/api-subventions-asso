@@ -13,16 +13,9 @@
             : `${simplifiedAsso.nbEtabs} établissements rattachés`;
 </script>
 
-<Card>
+<Card title={simplifiedAsso.name} url="/association/{simplifiedAsso.siren}" titleStyle="h6">
     <svelte:fragment slot="card-start">
         <p class="card-start fr-card__detail fr-text--sm fr-icon-community-line">Association</p>
-    </svelte:fragment>
-    <svelte:fragment slot="card-title">
-        <h3 class="fr-card__title fr-h6">
-            <a href="/association/{simplifiedAsso.siren}" class="fr-card__link overflow-ellipsis-3">
-                {simplifiedAsso.name}
-            </a>
-        </h3>
     </svelte:fragment>
     <div class="flex">
         <p>
