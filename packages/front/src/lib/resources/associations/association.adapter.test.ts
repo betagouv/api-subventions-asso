@@ -9,7 +9,7 @@ describe("toSearchHistory", () => {
 
     beforeAll(() => mockedAssociationHelper.getAddress.mockReturnValue(ADDRESS));
 
-    it("should adapte format", () => {
+    it("should adapt format", () => {
         const expected = {
             rna: DEFAULT_ASSOCIATION.rna,
             siren: DEFAULT_ASSOCIATION.siren,
