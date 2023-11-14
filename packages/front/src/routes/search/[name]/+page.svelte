@@ -43,7 +43,6 @@
     .search-layout {
         display: flex;
         flex-wrap: wrap;
-        /* gap: 16px; */
     }
 
     .search-bar {
