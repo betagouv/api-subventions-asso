@@ -9,7 +9,7 @@
     const city = getLastPartAddress(simplifiedAsso.address);
 
     const getNbEtabLabel = () =>
-        (simplifiedAsso.nbEtabs == 1) | 0
+        simplifiedAsso.nbEtabs <= 1
             ? `${simplifiedAsso.nbEtabs} établissement rattaché`
             : `${simplifiedAsso.nbEtabs} établissements rattachés`;
 </script>
