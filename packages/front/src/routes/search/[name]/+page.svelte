@@ -9,6 +9,11 @@
 
     const ctrl = new SearchController(name);
     const { searchPromise, associations, inputSearch } = ctrl;
+
+    $: nbResultLabel =
+        $associations.length > 1
+            ? `${$associations.length} résultats trouvés.`
+            : `${$associations.length} résultat trouvé.`;
 </script>
 
 <div class="search-bar fr-py-6v">
@@ -24,7 +29,9 @@
         </div>
     </div>
 {:then _result}
-    <p class="fr-text-md">{`${$associations.length} résultats trouvés.`}</p>
+    <p class="fr-text-md">
+        {`${nbResultLabel}`}
+    </p>
     <div class="fr-grid-row fr-grid-row--gutters search-layout">
         {#each $associations as simplifiedAsso}
             <AssociationCard {simplifiedAsso} />
