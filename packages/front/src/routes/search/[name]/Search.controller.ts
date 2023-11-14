@@ -15,14 +15,7 @@ export default class SearchController {
     }
 
     fetchAssociationFromName(name) {
-        return associationService.search(name).then(associations =>
-            this.associations.set(
-                associations.map(association => {
-                    const { rna, siren, name } = association;
-                    return { rna, siren, name };
-                }),
-            ),
-        );
+        return associationService.search(name).then(associations => this.associations.set(associations));
     }
 
     onSubmit() {
