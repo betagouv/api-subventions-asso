@@ -15,7 +15,9 @@ export class ResultCardController {
         const siren = association.siren || "INCONNU";
         this.url = `/association/${association.rna || association.siren}`;
 
-        // let searchValue = HtmlSanitizer.SanitizeHtml(rawSearchValue.trim());
+        // const sanitizer = new HtmlSanitizer();
+
+        // let searchValue = sanitizer.sanitizeHtml(rawSearchValue.trim());
         let searchValue = rawSearchValue;
         if (isStartOfSiret(rawSearchValue)) {
             searchValue = siretToSiren(rawSearchValue);

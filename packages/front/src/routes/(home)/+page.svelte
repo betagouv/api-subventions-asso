@@ -5,6 +5,7 @@
     import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Messages from "$lib/components/Messages/Messages.svelte";
+    import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
 
     export let data;
     const { query } = data;
@@ -23,23 +24,12 @@
     </Alert>
 {/if}
 
-<h1 class="fr-sr-only">Page d'accueil</h1>
+<h1 class="fr-h4 fr-px-14v fr-py-6v fr-mb-6v">
+    Consulter les dernières informations sur les associations et leurs subventions
+</h1>
 
-<div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
-    <div class="fr-col fr-col-lg-12">
-        <form on:submit|preventDefault={() => ctrl.onSubmit()}>
-            <div class="fr-search-bar fr-search-bar--lg" id="search-input">
-                <input
-                    class="fr-input"
-                    placeholder="Recherche une association par nom ou par identifiant RNA, SIREN ou SIRET…"
-                    type="search"
-                    id="search-input-input"
-                    name="search-input"
-                    bind:value={$input} />
-                <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">Rechercher</button>
-            </div>
-        </form>
-    </div>
+<div class="search-bar">
+    <SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
 </div>
 
 {#if $isLoading}
@@ -91,6 +81,17 @@
 {/if}
 
 <style>
+    h1 {
+        text-align: center;
+    }
+
+    h1,
+    .search-bar {
+        margin: auto;
+        justify-content: space-around;
+        max-width: 792px;
+    }
+
     .search-result {
         max-height: 50vh;
         overflow: auto;
