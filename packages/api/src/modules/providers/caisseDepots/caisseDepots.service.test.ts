@@ -1,6 +1,6 @@
 import caisseDepotsService from "./caisseDepots.service";
-import axios from "axios";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
+import providerRequestService from "../../provider-request/providerRequest.service";
 
 jest.mock("./adapters/caisseDepotsDtoAdapter");
 
@@ -17,15 +17,21 @@ describe("CaisseDepotsService", () => {
     });
 
     describe("getRawCaisseDepotsSubventions", () => {
-        const AXIOS_RES = { data: { records: [{ record: 1 }, { record: 2 }] } };
-        const axiosGetSpy = jest.spyOn(axios, "get").mockResolvedValue(AXIOS_RES);
+        const GET_RESPONSE = { data: { records: [{ record: 1 }, { record: 2 }] } };
+        let httpGetSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            // @ts-expect-error http is protected method
+            httpGetSpy = jest.spyOn(caisseDepotsService.http, "get");
+            httpGetSpy.mockResolvedValue(GET_RESPONSE);
+        });
 
         it("calls axios get with proper url", async () => {
             const URL =
                 'https://opendata.caissedesdepots.fr/api/v2/catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "toto")';
             // @ts-expect-error: mock
             await caisseDepotsService.getRawCaisseDepotsSubventions(IDENTIFIER);
-            expect(axiosGetSpy).toBeCalledWith(URL);
+            expect(httpGetSpy).toBeCalledWith(URL);
         });
 
         it("returns records from axios get", async () => {

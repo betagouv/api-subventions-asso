@@ -12,6 +12,7 @@ import dataGouvService from "../datagouv/datagouv.service";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
+import ProviderCore from "../ProviderCore";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -22,14 +23,16 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService implements VersementsProvider, GrantProvider {
-    provider = {
-        name: "Chorus",
-        type: ProviderEnum.raw,
-        description:
-            "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
-        id: "chorus",
-    };
+export class ChorusService extends ProviderCore implements VersementsProvider, GrantProvider {
+    constructor() {
+        super({
+            name: "Chorus",
+            type: ProviderEnum.raw,
+            description:
+                "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
+            id: "chorus",
+        });
+    }
 
     // new unique ID builder
     // remove the one used in chorus CLI after fix fully handled
@@ -42,6 +45,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
+
 
     public validateEntity(entity: ChorusLineEntity) {
         if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {

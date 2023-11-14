@@ -1,7 +1,5 @@
-import axios from "axios";
-import { Siren, Siret, Rna } from "dto";
+import { Siren, Siret, Rna, Document } from "dto";
 
-import { Document } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
@@ -9,40 +7,35 @@ import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";
+import ProviderCore from "../ProviderCore";
 
-export class AvisSituationInseeService implements DocumentProvider {
-    provider = {
-        name: "Avis de Situation Insee",
-        type: ProviderEnum.api,
-        description:
-            "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
-    };
+interface AvisSituationCache {
+    etablissements: {
+        nic: string;
+        etablissementSiege: boolean;
+    }[];
+}
 
+export class AvisSituationInseeService extends ProviderCore implements DocumentProvider {
     static API_URL = "https://api-avis-situation-sirene.insee.fr/identification";
 
-    private requestCache = new CacheData<
-        | {
-              etablissements: {
-                  nic: string;
-                  etablissementSiege: boolean;
-              }[];
-          }
-        | false
-    >(CACHE_TIMES.ONE_DAY);
+    private requestCache = new CacheData<AvisSituationCache | false>(CACHE_TIMES.ONE_DAY);
 
-    private async getInseeEtablissementsBySiren(siren: Siren): Promise<
-        | {
-              etablissements: {
-                  nic: string;
-                  etablissementSiege: boolean;
-              }[];
-          }
-        | false
-    > {
+    constructor() {
+        super({
+            name: "Avis de Situation Insee",
+            type: ProviderEnum.api,
+            id: "avis_situation_api",
+            description:
+                "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
+        });
+    }
+
+    private async getInseeEtablissementsBySiren(siren: Siren): Promise<AvisSituationCache | false> {
         if (this.requestCache.has(siren)) return this.requestCache.get(siren)[0];
 
         try {
-            const result = await axios.get<{
+            const result = await this.http.get<{
                 etablissements: {
                     nic: string;
                     etablissementSiege: boolean;

@@ -1,5 +1,4 @@
-import { Etablissement, Association } from "dto";
-import { Document } from "dto";
+import { Etablissement, Association, Document } from "dto";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {

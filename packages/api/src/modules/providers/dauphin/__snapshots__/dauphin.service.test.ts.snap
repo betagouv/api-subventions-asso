@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`Dauphin Service documents findDauphinInternalId should call axios with args 1`] = `
+exports[`Dauphin Service documents findDauphinInternalId should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
   Object {
@@ -45,7 +45,7 @@ Array [
 ]
 `;
 
-exports[`Dauphin Service documents getDocumentsBySiren should call axios with args 1`] = `
+exports[`Dauphin Service documents getDocumentsBySiren should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/DAUPHIN_ID?expand=pieces.documents",
   Object {
@@ -62,7 +62,7 @@ Array [
 ]
 `;
 
-exports[`Dauphin Service documents getSpecificDocumentStream should call axios with args 1`] = `
+exports[`Dauphin Service documents getSpecificDocumentStream should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.frPATH",
   Object {
@@ -79,7 +79,7 @@ Array [
 ]
 `;
 
-exports[`Dauphin Service sendAuthRequest should call axios 1`] = `
+exports[`Dauphin Service sendAuthRequest should call httpSpy 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
   "username=DAUPHIN_USERNAME&password=DAUPHIN_PASSWORD&redirectTo=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fagents%2F%23%2Fcget%2Fhome%3FredirectTo%3Dportal.home",
@@ -95,7 +95,7 @@ Array [
 ]
 `;
 
-exports[`Dauphin Service updateApplicationCache should call axios with args 1`] = `
+exports[`Dauphin Service updateApplicationCache should call httpSpy with args 1`] = `
 Array [
   "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
   Object {

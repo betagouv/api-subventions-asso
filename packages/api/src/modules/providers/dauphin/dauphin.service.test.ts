@@ -1,4 +1,3 @@
-import axios from "axios";
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
@@ -7,11 +6,7 @@ import SpyInstance = jest.SpyInstance;
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import { Siret, Siren } from "dto";
 import * as sirenHelper from "../../../shared/helpers/SirenHelper";
-
-jest.mock("axios", () => ({
-    post: jest.fn(),
-    get: jest.fn(),
-}));
+import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 
 jest.mock("./repositories/dauphin-gispro.repository", () => ({
     getLastImportDate: jest.fn(() => new Date()),
@@ -21,8 +16,6 @@ jest.mock("./repositories/dauphin-gispro.repository", () => ({
 }));
 
 jest.mock("./adapters/DauphinDtoAdapter");
-
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const SIRET: Siret = "12345678912345";
 const SIREN: Siren = "123456789";
@@ -34,18 +27,24 @@ jest.mock("./../../../configurations/apis.conf", () => ({
 
 describe("Dauphin Service", () => {
     const TOKEN = "FAKE_TOKEN";
+    let httpPostSpy: jest.SpyInstance;
+    let httpGetSpy: jest.SpyInstance;
 
     const DATA = [{ a: true }, { b: true }];
 
     beforeAll(() => {
-        mockedAxios.post.mockImplementation(async (_url, _search, _headers) => ({
+        // @ts-expect-error http is protected methode
+        httpPostSpy = jest.spyOn(dauphinService.http, "post");
+        // @ts-expect-error http is protected methode
+        httpGetSpy = jest.spyOn(dauphinService.http, "get");
+        httpPostSpy.mockResolvedValue({
             data: {
                 hits: {
                     total: DATA.length,
                     hits: DATA,
                 },
             },
-        }));
+        } as RequestResponse<unknown>);
     });
 
     /**
@@ -269,10 +268,9 @@ describe("Dauphin Service", () => {
             expect(mockBuildSearchHeader).toHaveBeenCalledWith(expected);
         });
 
-        it("should call axios with args", async () => {
+        it("should call httpSpy with args", async () => {
             await dauphinService.updateApplicationCache();
-            // @ts-expect-error: mock
-            expect(axios.post.mock.calls[0]).toMatchSnapshot();
+            expect(httpPostSpy.mock.calls[0]).toMatchSnapshot();
         });
 
         it("should call mockSaveApplicationsInCache", async () => {
@@ -403,17 +401,15 @@ describe("Dauphin Service", () => {
     });
 
     describe("sendAuthRequest", () => {
-        it("should call axios", async () => {
+        it("should call httpSpy", async () => {
             // @ts-expect-error sendAuthRequest is private
             await dauphinService.sendAuthRequest();
-            // @ts-expect-error: mock
-            expect(axios.post.mock.calls[0]).toMatchSnapshot();
+            expect(httpPostSpy.mock.calls[0]).toMatchSnapshot();
         });
 
         it("should return data", async () => {
             const expected = { hello: "world" };
-            // @ts-expect-error: mock
-            axios.post.mockImplementationOnce(async () => ({ data: expected }));
+            httpPostSpy.mockImplementationOnce(async () => ({ data: expected }));
 
             // @ts-expect-error sendAuthRequest is private
             const actual = await dauphinService.sendAuthRequest();
@@ -434,11 +430,10 @@ describe("Dauphin Service", () => {
 
         describe("getSpecificDocumentStream", () => {
             const DOC_PATH = "PATH";
-            const AXIOS_RES = "RES";
+            const httpSpy_RES = "RES";
 
             beforeAll(() => {
-                // @ts-expect-errors mocked
-                axios.get.mockResolvedValue({ data: AXIOS_RES });
+                httpGetSpy.mockResolvedValue({ data: httpSpy_RES });
             });
 
             it("should call getAuthToken", async () => {
@@ -446,14 +441,13 @@ describe("Dauphin Service", () => {
                 expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
             });
 
-            it("should call axios with args", async () => {
+            it("should call httpSpy with args", async () => {
                 await dauphinService.getSpecificDocumentStream(DOC_PATH);
-                // @ts-expect-error: mock
-                expect(axios.get.mock.calls[0]).toMatchSnapshot();
+                expect(httpGetSpy.mock.calls[0]).toMatchSnapshot();
             });
 
-            it("should return stream from axios", async () => {
-                const expected = AXIOS_RES;
+            it("should return stream from httpSpy", async () => {
+                const expected = httpSpy_RES;
                 const actual = await dauphinService.getSpecificDocumentStream(DOC_PATH);
                 expect(actual).toEqual(expected);
             });
@@ -498,23 +492,21 @@ describe("Dauphin Service", () => {
 
         describe("getDocumentsBySiren", () => {
             let findIdMock: SpyInstance;
-            const RAW_DOCS = ["axios"];
+            const RAW_DOCS = ["httpSpy"];
             const ADAPTED_DOCS = ["doc"];
-            const AXIOS_RES = { pieces: RAW_DOCS };
+            const httpSpy_RES = { pieces: RAW_DOCS };
             const ID = "DAUPHIN_ID";
 
             beforeAll(() => {
                 // @ts-expect-error: mock
                 findIdMock = jest.spyOn(dauphinService, "findDauphinInternalId").mockResolvedValue(ID);
-                // @ts-expect-errors mocked
-                axios.get.mockResolvedValue({ data: AXIOS_RES });
+                httpGetSpy.mockResolvedValue({ data: httpSpy_RES });
                 // @ts-expect-error: mock
                 DauphinDtoAdapter.toDocuments.mockResolvedValue(ADAPTED_DOCS);
             });
 
             afterAll(() => {
-                // @ts-expect-errors mocked
-                axios.get.mockRestore();
+                httpGetSpy.mockRestore();
                 findIdMock.mockRestore();
             });
 
@@ -523,10 +515,10 @@ describe("Dauphin Service", () => {
                 expect(findIdMock).toHaveBeenCalled();
             });
 
-            it("does not call axios if no internal id", async () => {
+            it("does not call httpSpy if no internal id", async () => {
                 findIdMock.mockResolvedValueOnce(null);
                 await dauphinService.getDocumentsBySiren(SIREN);
-                expect(axios.get).not.toHaveBeenCalled();
+                expect(httpGetSpy).not.toHaveBeenCalled();
             });
 
             it("should call getAuthToken", async () => {
@@ -534,18 +526,17 @@ describe("Dauphin Service", () => {
                 expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
             });
 
-            it("should call axios with args", async () => {
+            it("should call httpSpy with args", async () => {
                 await dauphinService.getDocumentsBySiren(SIREN);
-                // @ts-expect-error: mock
-                expect(axios.get.mock.calls[0]).toMatchSnapshot();
+                expect(httpGetSpy.mock.calls[0]).toMatchSnapshot();
             });
 
-            it("should adapt result from axios", async () => {
+            it("should adapt result from httpSpy", async () => {
                 await dauphinService.getDocumentsBySiren(SIREN);
                 expect(DauphinDtoAdapter.toDocuments).toHaveBeenCalledWith(RAW_DOCS);
             });
 
-            it("returns documents from axios", async () => {
+            it("returns documents from httpSpy", async () => {
                 const expected = ADAPTED_DOCS;
                 const actual = await dauphinService.getDocumentsBySiren(SIREN);
                 expect(actual).toEqual(expected);
@@ -584,15 +575,14 @@ describe("Dauphin Service", () => {
 
         describe("findDauphinInternalId", () => {
             const ID = "DAUPHIN_ID";
-            const AXIOS_RES = {
+            const httpSpy_RES = {
                 hits: {
                     hits: [{ _source: { SIREN: "pas le bon" } }, { _source: { SIREN: SIREN }, _id: `cget-${ID}` }],
                 },
             };
 
             beforeAll(() => {
-                // @ts-expect-errors mocked
-                axios.post.mockResolvedValue({ data: AXIOS_RES });
+                httpPostSpy.mockResolvedValue({ data: httpSpy_RES });
             });
 
             it("should call getAuthToken", async () => {
@@ -601,14 +591,13 @@ describe("Dauphin Service", () => {
                 expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
             });
 
-            it("should call axios with args", async () => {
+            it("should call httpSpy with args", async () => {
                 // @ts-expect-errors test private method
                 await dauphinService.findDauphinInternalId(SIREN);
-                // @ts-expect-error: mock
-                expect(axios.post.mock.calls[0]).toMatchSnapshot();
+                expect(httpPostSpy.mock.calls[0]).toMatchSnapshot();
             });
 
-            it("returns id from axios with proper siren", async () => {
+            it("returns id from httpSpy with proper siren", async () => {
                 const expected = ID;
                 // @ts-expect-errors test private method
                 const actual = await dauphinService.findDauphinInternalId(SIREN);

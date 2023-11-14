@@ -6,6 +6,7 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
+import ProviderCore from "../ProviderCore";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
@@ -42,15 +43,18 @@ export const FOUNDER_CODE_TO_BOP_MAPPER = {
 export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
+    extends ProviderCore
     implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider, GrantProvider
 {
-    provider = {
-        name: "Extranet FONJEP",
-        type: ProviderEnum.raw,
-        description:
-            "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
-        id: "fonjep",
-    };
+    constructor() {
+        super({
+            name: "Extranet FONJEP",
+            type: ProviderEnum.raw,
+            description:
+                "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
+            id: "fonjep",
+        });
+    }
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
         const validation = this.validateEntity(entity);

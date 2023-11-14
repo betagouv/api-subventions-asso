@@ -1,22 +1,22 @@
 import { Siren } from "dto";
 import { MongoServerError } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import Provider from "../@types/IProvider";
 import associationNameService from "../../association-name/associationName.service";
+import ProviderCore from "../ProviderCore";
 import EntrepriseSirenEntity from "./entities/EntrepriseSirenEntity";
 import entrepriseSirenRepository from "./repositories/entreprise_siren.repository";
 import HistoryImportEntity from "./entities/HistoryImportEntity";
 import historyImportRepository from "./repositories/historyImport.repository";
 
-export class DataGouvService implements Provider {
-    provider = {
-        name: "Base Sirene - DataGouv",
-        type: ProviderEnum.raw,
-        description:
-            "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire).",
-    };
-
+export class DataGouvService extends ProviderCore {
     constructor() {
+        super({
+            name: "Base Sirene - DataGouv",
+            type: ProviderEnum.raw,
+            id: "data_gouv_base_sirene",
+            description:
+                "Fichier StockUniteLegale récupéré au préalable sur data.gouv.fr : stock des entreprises (ensemble des entreprises actives et cessées dans leur état courant au répertoire).",
+        });
         associationNameService.setProviderScore(this.provider.name, 1);
     }
 

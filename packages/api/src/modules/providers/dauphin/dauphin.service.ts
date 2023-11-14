@@ -1,8 +1,6 @@
 import { IncomingMessage } from "http";
-import axios from "axios";
 import qs from "qs";
-import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret } from "dto";
-import { Document } from "dto";
+import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret, Document } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -16,19 +14,25 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import { RawGrant } from "../../grant/@types/rawGrant";
+import ProviderCore from "../ProviderCore";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
-export class DauphinService implements DemandesSubventionsProvider, DocumentProvider, GrantProvider {
-    provider = {
-        name: "Dauphin",
-        type: ProviderEnum.api,
-        description:
-            "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
-        id: "dauphin",
-    };
+export class DauphinService
+    extends ProviderCore
+    implements DemandesSubventionsProvider, DocumentProvider, GrantProvider
+{
+    constructor() {
+        super({
+            name: "Dauphin",
+            type: ProviderEnum.api,
+            description:
+                "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
+            id: "dauphin",
+        });
+    }
 
     /**
      * |-------------------------|
@@ -105,7 +109,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
                 if (fetched == 0) console.log("start fetching data...");
                 else console.log(`fetching data from ${fetched}`);
                 const result = (
-                    await axios.post(
+                    await this.http.post(
                         "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
                         { ...this.buildFetchApplicationFromDateQuery(lastUpdateDate), from: fetched },
                         this.buildSearchHeader(token),
@@ -135,7 +139,6 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
                 return [];
             }
         } while (fetched < totalToFetch);
-        return Promise.resolve();
     }
 
     private saveApplicationsInCache(applications: DauphinSubventionDto[]) {
@@ -241,7 +244,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
 
         const token = await this.getAuthToken();
         const result = (
-            await axios.get(
+            await this.http.get(
                 `https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/${dauphinInternalId}?expand=pieces.documents`,
                 this.buildSearchHeader(token),
             )
@@ -268,7 +271,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
         const token = await this.getAuthToken();
 
         const res = (
-            await axios.post(
+            await this.http.post(
                 "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
                 query,
                 this.buildSearchHeader(token),
@@ -282,7 +285,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
         const token = await this.getAuthToken();
 
         return (
-            await axios.get(`https://agent-dauphin.cget.gouv.fr${docPath}`, {
+            await this.http.get(`https://agent-dauphin.cget.gouv.fr${docPath}`, {
                 responseType: "stream",
                 headers: {
                     accept: "application/json, text/plain, */*, application/vnd.mgdis.tiers-3.19.0+json",
@@ -345,7 +348,7 @@ export class DauphinService implements DemandesSubventionsProvider, DocumentProv
             captcha: undefined,
         });
 
-        return axios
+        return this.http
             .post<string>("https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens", data, {
                 headers: {
                     accept: "application/json, text/plain, */*",

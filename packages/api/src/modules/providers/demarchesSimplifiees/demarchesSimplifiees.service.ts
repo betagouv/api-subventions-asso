@@ -1,6 +1,3 @@
-import * as https from "https";
-import * as http from "http";
-import axios, { AxiosInstance } from "axios";
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -9,6 +6,7 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
+import ProviderCore from "../ProviderCore";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -18,20 +16,15 @@ import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMap
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesService implements DemandesSubventionsProvider {
+export class DemarchesSimplifieesService extends ProviderCore implements DemandesSubventionsProvider {
     isDemandesSubventionsProvider = true;
-    provider = {
-        name: "Démarches Simplifiées",
-        type: ProviderEnum.api,
-        description: "", // TODO
-        id: "demarchesSimplifiees",
-    };
-    axiosInstance: AxiosInstance;
 
     constructor() {
-        this.axiosInstance = axios.create({
-            httpAgent: new http.Agent({ keepAlive: true }),
-            httpsAgent: new https.Agent({ keepAlive: true }),
+        super({
+            name: "Démarches Simplifiées",
+            type: ProviderEnum.api,
+            description: "", // TODO
+            id: "demarchesSimplifiees",
         });
     }
 
@@ -115,13 +108,16 @@ export class DemarchesSimplifieesService implements DemandesSubventionsProvider 
     async sendQuery(query: string, vars: DefaultObject) {
         if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
         try {
-            const result = await this.axiosInstance.post<DemarchesSimplifieesDto>(
+            const result = await this.http.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,
                     variables: vars,
                 },
-                this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
+                {
+                    ...this.buildSearchHeader(DEMARCHES_SIMPLIFIEES_TOKEN),
+                    keepAlive: true,
+                },
             );
 
             return result.data;

@@ -1,5 +1,4 @@
 import { Rna, Siren, Siret, Association, Etablissement, Document } from "dto";
-import axios from "axios";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
@@ -13,6 +12,7 @@ import EtablissementProvider from "../../etablissements/@types/EtablissementProv
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import { isDateNewer } from "../../../shared/helpers/DateHelper";
 import associationNameService from "../../association-name/associationName.service";
+import ProviderCore from "../ProviderCore";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, {
     StructureDacDocumentDto,
@@ -22,16 +22,20 @@ import StructureDto, {
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 
-export class ApiAssoService implements AssociationsProvider, EtablissementProvider, DocumentProvider {
-    public provider = {
-        name: "API ASSO",
-        type: ProviderEnum.api,
-        description:
-            "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
-    };
+export class ApiAssoService
+    extends ProviderCore
+    implements AssociationsProvider, EtablissementProvider, DocumentProvider
+{
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
     constructor() {
+        super({
+            name: "API ASSO",
+            type: ProviderEnum.api,
+            id: "api_asso",
+            description:
+                "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
+        });
         associationNameService.setProviderScore(ApiAssoDtoAdapter.providerNameRna, 1);
         associationNameService.setProviderScore(ApiAssoDtoAdapter.providerNameSiren, 1);
     }
@@ -40,7 +44,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         if (this.requestCache.has(route)) return this.requestCache.get(route)[0] as T;
 
         try {
-            const res = await axios.get<T>(`${API_ASSO_URL}/${route}`, {
+            const res = await this.http.get<T>(`${API_ASSO_URL}/${route}`, {
                 headers: {
                     Accept: "application/json",
                     "X-Gravitee-Api-Key": API_ASSO_TOKEN as string,

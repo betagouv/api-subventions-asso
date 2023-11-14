@@ -3,7 +3,6 @@ jest.mock("./repositories/demarchesSimplifieesData.repository");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 
 import { DemandeSubvention } from "dto";
-import axios from "axios";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
@@ -11,6 +10,8 @@ import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMap
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
+import providerRequestService from "../../provider-request/providerRequest.service";
+import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 
 describe("DemarchesSimplifieesService", () => {
     describe("getSchemasByIds", () => {
@@ -308,7 +309,10 @@ describe("DemarchesSimplifieesService", () => {
         let buildSearchHeaderMock: jest.SpyInstance;
 
         beforeAll(() => {
-            postMock = jest.spyOn(demarchesSimplifieesService.axiosInstance, "post").mockResolvedValue({ data: 1 });
+            postMock = jest
+                // @ts-expect-error http is private method
+                .spyOn(demarchesSimplifieesService.http, "post")
+                .mockResolvedValue({ data: 1 } as RequestResponse<unknown>);
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });
@@ -330,7 +334,11 @@ describe("DemarchesSimplifieesService", () => {
 
             await demarchesSimplifieesService.sendQuery(expected.query, expected.variables);
 
-            expect(postMock).toHaveBeenCalledWith(expect.any(String), expected, expect.any(Object));
+            expect(postMock).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining(expected),
+                expect.any(Object),
+            );
         });
 
         it("should call buildSearchHeader", async () => {
