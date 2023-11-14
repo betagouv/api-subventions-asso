@@ -7,7 +7,10 @@ jest.mock("./adapters/ChorusAdapter");
 import dataGouvService from "../datagouv/datagouv.service";
 jest.mock("../datagouv/datagouv.service");
 const mockedDataGouvService = jest.mocked(dataGouvService);
-import { DEFAULT_CHORUS_LINE_DOCUMENT, paymentsWithDifferentDP } from "./__fixutres__/ChorusLineEntities";
+import * as StringHelper from "../../../shared/helpers/StringHelper";
+jest.mock("../../../shared/helpers/StringHelper");
+const mockedStringHelper = jest.mocked(StringHelper);
+import { DEFAULT_CHORUS_LINE_DOCUMENT } from "./__fixutres__/ChorusLineEntities";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 jest.mock("../../_open-data/rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
@@ -44,10 +47,14 @@ const WRONG_DATE_ENTITY = new ChorusLineEntity(
 
 describe("chorusService", () => {
     describe("buildUniqueId", () => {
-        const PAYMENTS = [...paymentsWithDifferentDP];
-        it("return a uniqueId hash", () => {
-            const actual = ChorusService.buildUniqueId(PAYMENTS[0].indexedInformations);
-            expect(actual).toMatchSnapshot();
+        it("call getMD5", () => {
+            const info = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations;
+            ChorusService.buildUniqueId(info);
+            expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
+                `${info.ej}-${info.siret}-${info.dateOperation.toISOString()}-${info.amount}-${
+                    info.numeroDemandePayment
+                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}`,
+            );
         });
     });
 

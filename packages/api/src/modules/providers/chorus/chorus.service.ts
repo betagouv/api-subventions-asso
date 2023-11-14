@@ -9,7 +9,6 @@ import { isEJ, isSiret } from "../../../shared/Validators";
 import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import dataGouvService from "../datagouv/datagouv.service";
-import db from "../../../shared/MongoConnection";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
@@ -38,7 +37,7 @@ export class ChorusService implements VersementsProvider, GrantProvider {
         const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
             info;
         return getMD5(
-            `${ej}-${siret}-${dateOperation}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
+            `${ej}-${siret}-${dateOperation.toISOString()}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
         );
     }
 
