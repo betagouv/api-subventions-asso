@@ -1,4 +1,4 @@
-// import HtmlSanitizer from "jitbit-html-sanitizer";
+import HtmlSanitizer from "jitbit-html-sanitizer";
 import Store from "$lib/core/Store";
 import { returnInfinitPromise } from "$lib/helpers/promiseHelper";
 import associationService from "$lib/resources/associations/association.service";
@@ -16,11 +16,10 @@ export default class SearchController {
     }
 
     fetchAssociationFromName(name) {
-        // const sanitizer = new HtmlSanitizer();
+        const sanitizer = new HtmlSanitizer({});
+        const sanitizedName = sanitizer.sanitizeHtml(name);
 
-        // const sanitizedName = sanitizer.sanitizeHtml(name);
-
-        return associationService.search(name).then(associations =>
+        return associationService.search(sanitizedName).then(associations =>
             this.associations.set(
                 associations.map(association => {
                     const { rna, siren, name } = association;
