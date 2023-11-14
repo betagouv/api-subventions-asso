@@ -25,17 +25,15 @@ export class GrantService {
         let idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
 
-        let isReallyAsso;
+        await associationsService.validateIdentifierFromAsso(id, idType);
+
         if (idType === StructureIdentifiersEnum.rna) {
-            isReallyAsso = true;
             const siren = await rnaSirenService.getSiren(id);
             if (siren) {
                 id = siren;
                 idType = StructureIdentifiersEnum.siren;
             }
         }
-        if (!isReallyAsso) isReallyAsso = await associationsService.isSirenFromAsso(siretToSiren(id));
-        if (!isReallyAsso) throw new BadRequestError("identifier does not represent an association");
 
         const providers = this.getGrantProviders();
         const methodName = GrantService.getRawMethodNameByIdType[idType];
