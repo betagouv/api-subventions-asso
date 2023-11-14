@@ -1,7 +1,7 @@
 import { ENV } from "../../configurations/env.conf";
 import configurationsService from "../configurations/configurations.service";
 import statsService from "../stats/stats.service";
-import userRgpdService from "../user/services/rgpd/user.rgpd.service";
+import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpRepo from "./repositories/metabase-dump.repository";
 
 export class DumpService {
@@ -38,7 +38,7 @@ export class DumpService {
 
         if (lastAssociationVisits.length) await metabaseDumpRepo.addVisits(lastAssociationVisits);
 
-        const users = await userRgpdService.findAnonymizedUsers();
+        const users = await userCrudService.find();
         console.log("users: ", users.length);
 
         if (users.length) await metabaseDumpRepo.upsertUsers(users);

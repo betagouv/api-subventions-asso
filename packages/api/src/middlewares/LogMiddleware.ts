@@ -1,8 +1,8 @@
 import winston from "winston";
 import expressWinston from "express-winston";
-import { client } from "../shared/MongoConnection";
-
 import "winston-mongodb";
+import { ObjectId } from "mongodb";
+import { client } from "../shared/MongoConnection";
 
 const LOGGER_SECRET_FIELDS = ["password", "token"];
 
@@ -49,6 +49,11 @@ export const expressLogger = () =>
         requestFilter: (req, propName) => {
             if (propName === "body" && typeof req[propName] === "object" && req[propName])
                 recursiveFilter(req[propName]);
+
+            // @ts-expect-error strange express-winston types
+            // we convert _id into string as a workaround to winston-mongodb bug that serializes them to {}
+            if (propName === "user" && req[propName]?._id) req[propName]._id = req[propName]._id.toString();
+
             return LOGGER_SECRET_FIELDS.includes(propName) ? "**********" : req[propName];
         },
         responseFilter: (req, propName) => {

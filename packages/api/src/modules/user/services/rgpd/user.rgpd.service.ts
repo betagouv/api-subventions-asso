@@ -65,7 +65,6 @@ export class UserRgpdService {
         return users.map(user => {
             return {
                 ...user,
-                _id: user._id.toString(),
                 email: undefined,
                 firstName: undefined,
                 lastName: undefined,
