@@ -1,5 +1,6 @@
 <script>
     import Card from "$lib/dsfr/Card.svelte";
+    import { valueOrNotFound } from "$lib/helpers/dataHelper";
     import { getFirstPartAddress, getLastPartAddress } from "$lib/resources/associations/association.helper";
 
     export let simplifiedAsso;
@@ -20,12 +21,12 @@
     <div class="flex">
         <p>
             <b>RNA</b>
-            : {simplifiedAsso.rna}
+            : {valueOrNotFound(simplifiedAsso.rna)}
         </p>
         <span class="circle-separator fr-px-2v">●</span>
         <p>
             <b>SIREN</b>
-            : {simplifiedAsso.siren}
+            : {valueOrNotFound(simplifiedAsso.siren)}
         </p>
     </div>
     <div class="address">
