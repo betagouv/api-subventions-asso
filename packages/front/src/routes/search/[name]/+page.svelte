@@ -14,8 +14,12 @@
     $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
 </script>
 
-<div class="search-bar fr-py-6v">
-    <SearchBar bind:value={$inputSearch} on:submit={() => ctrl.onSubmit()} />
+<div class="fr-grid-row fr-grid-row--center fr-my-6v">
+    <div class="fr-col-8">
+        <div class="search-bar">
+            <SearchBar bind:value={$inputSearch} on:submit={() => ctrl.onSubmit()} />
+        </div>
+    </div>
 </div>
 
 {#await $searchPromise}
@@ -41,11 +45,5 @@
     .search-layout {
         display: flex;
         flex-wrap: wrap;
-    }
-
-    .search-bar {
-        margin: auto;
-        justify-content: space-around;
-        max-width: 792px;
     }
 </style>

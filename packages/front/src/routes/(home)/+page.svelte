@@ -48,11 +48,4 @@
     h1 {
         text-align: center;
     }
-
-    h1,
-    .search-bar {
-        /* margin: auto; */
-        /* justify-content: space-around; */
-        max-width: 792px;
-    }
 </style>
