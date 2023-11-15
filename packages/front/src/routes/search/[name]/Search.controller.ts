@@ -9,7 +9,6 @@ export default class SearchController {
     inputSearch: Store<string>;
 
     constructor(name) {
-        console.log("coucou");
         this.inputSearch = new Store("");
         this.associations = new Store([]);
         this.searchPromise = new Store(returnInfinitPromise());
@@ -18,6 +17,11 @@ export default class SearchController {
 
     fetchAssociationFromName(name) {
         return associationService.search(name).then(associations => this.associations.set(associations));
+    }
+
+    updateNbEtabsLabel() {
+        const nbAssos = this.associations.value.length;
+        return nbAssos > 1 ? `${nbAssos} résultats trouvés.` : `${nbAssos} résultat trouvé.`;
     }
 
     onSubmit() {

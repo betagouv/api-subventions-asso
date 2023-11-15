@@ -10,10 +10,8 @@
     const ctrl = new SearchController(name);
     const { searchPromise, associations, inputSearch } = ctrl;
 
-    $: nbResultLabel =
-        $associations.length > 1
-            ? `${$associations.length} résultats trouvés.`
-            : `${$associations.length} résultat trouvé.`;
+    let nbResultLabel;
+    $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
 </script>
 
 <div class="search-bar fr-py-6v">
