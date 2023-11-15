@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.39.0](https://github.com/betagouv/datasubvention/compare/v0.38.6...v0.39.0) (2023-11-15)
+
+### Features
+
+-   **api:** add grants persistance ([6b7f47e](https://github.com/betagouv/datasubvention/commit/6b7f47e05e76fb329d1bb7dca466ff102942a3da))
+-   **api:** add productor persistance add producerId to parse ([50a2898](https://github.com/betagouv/datasubvention/commit/50a2898accd838f584354802f47bf4641925dec0))
+-   **api:** remove comment ([356ab96](https://github.com/betagouv/datasubvention/commit/356ab96a880887b7763459d6fcd7ba40dc071be8))
+
 # [0.38.0](https://github.com/betagouv/datasubvention/compare/v0.36.8...v0.38.0) (2023-10-16)
 
 ### Bug Fixes
