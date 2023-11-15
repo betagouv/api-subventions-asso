@@ -96,6 +96,7 @@ export class AssociationNameRepository extends MongoRepository<AssociationNameEn
     }
 
     async createIndexes() {
+        // to handle in #969
         // await this.collection.createIndex({ siren: 1, rna: 1, name: 1 }, { unique: true });
         await this.collection.createIndex({ rna: 1 });
         await this.collection.createIndex({ siren: 1 });
