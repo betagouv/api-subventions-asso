@@ -67,7 +67,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
 
-        const isSirenStructureValid = (structure) => structure.etablissement && structure.etablissement.length;
+        const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
             const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren}`);
@@ -86,10 +86,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         await this.saveStructureInAssociationName(structure);
 
-        return structure.etablissement.map(etablissement =>
+        return structure.etablissements.etablissement.map(etablissement =>
             ApiAssoDtoAdapter.toEtablissement(
                 etablissement,
-                structure.rib,
+                structure.ribs.rib,
                 structure.representant_legal,
                 structure.identite.date_modif_siren,
             ),
@@ -106,7 +106,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         await associationNameService.upsert({
             rna: structure.identite.id_rna,
-            siren: structure.identite.id_siren,
+            siren: structure.identite.id_siren.toString(),
             name: structure.identite.nom,
             provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
             lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren,
@@ -257,10 +257,10 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
         let siren = groupedIdentifier.siren || "";
 
         if (!groupedIdentifier.siren) {
-            // Check if information rna <=> siren is save in apiRNA
+            // Check if information rna <=> siren is saved in apiRNA
             const structure = await this.sendRequest<StructureDto>(`/api/structure/${rna}`);
             if (!structure?.identite.id_siren) return [rnaAssociation];
-            siren = structure.identite.id_siren;
+            siren = structure.identite.id_siren.toString();
         }
 
         const sirenAssociation = await this.findAssociationBySiren(siren);

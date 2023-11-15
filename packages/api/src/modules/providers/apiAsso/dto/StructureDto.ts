@@ -1,7 +1,8 @@
 import { Rna, Siren, Siret } from "dto";
 
 export interface StructureEtablissementDto {
-    id_siret: Siret;
+    id_siret: number;
+    id_siren: number;
     actif: boolean;
     date_actif: string;
     est_siege: boolean;
@@ -20,14 +21,14 @@ export interface StructureEtablissementDto {
         cplt_1?: string;
         cplt_2?: string;
         cplt_3?: string;
-        num_voie?: string;
+        num_voie?: number;
         type_voie?: string;
         voie?: string;
         bp?: string;
         cedex?: string;
-        cp?: string;
+        cp?: number;
         commune?: string;
-        code_insee?: string;
+        code_insee?: number;
         pays?: string;
     };
 }
@@ -39,7 +40,7 @@ export interface StructureRibDto {
     iban: string;
     bic: string;
     deleted: boolean;
-    id_siret: string;
+    id_siret: number;
     url?: string;
 }
 
@@ -54,7 +55,7 @@ export interface StructureRepresentantLegalDto {
     telephone: string;
     courriel: string;
     deleted: boolean;
-    id_siret: string;
+    id_siret: number;
 }
 
 export interface StructureRnaDocumentDto {
@@ -105,8 +106,8 @@ export default interface StructureDto {
         sigle_sirene?: string;
         id_rna: Rna;
         id_ex: string;
-        id_siren: Siren;
-        id_siret_siege: Siret;
+        id_siren: number;
+        id_siret_siege: number;
         id_correspondance: string;
         id_forme_juridique: string;
         lib_forme_juridique: string;
@@ -158,40 +159,40 @@ export default interface StructureDto {
             cplt_1?: string;
             cplt_2?: string;
             cplt_3?: string;
-            num_voie?: string;
+            num_voie?: number;
             type_voie?: string;
             voie?: string;
             bp?: string;
             cedex?: string;
             cp?: string;
-            commune?: string;
-            code_insee?: string;
+            commune?: number;
+            code_insee?: number;
         };
         adresse_siege_sirene?: {
             cplt_1?: string;
             cplt_2?: string;
             cplt_3?: string;
-            num_voie?: string;
+            num_voie?: number;
             type_voie?: string;
             voie?: string;
             bp?: string;
             cedex?: string;
-            cp?: string;
+            cp?: number;
             commune?: string;
-            code_insee?: string;
+            code_insee?: number;
         };
         adresse_gestion?: {
             cplt_1?: string;
             cplt_2?: string;
             cplt_3?: string;
-            num_voie?: string;
+            num_voie?: number;
             type_voie?: string;
             voie?: string;
             bp?: string;
             cedex?: string;
-            cp?: string;
+            cp?: number;
             commune?: string;
-            code_insee?: string;
+            code_insee?: number;
             pays?: string;
         };
         telephone?: string;
@@ -201,7 +202,7 @@ export default interface StructureDto {
     };
     reseaux_affiliation: {
         id_rna: string;
-        id_siren: string;
+        id_siren: number; // not tested since 2023-11-15 change
         nom: string;
         objet: string;
         adresse: string;
@@ -214,15 +215,17 @@ export default interface StructureDto {
         url: string | number;
     }[];
     composition_reseau: {
-        nom: string;
-        id_rna: string;
-        objet: string;
-        id_siren: string;
-        adresse: string;
-    }[];
+        membre: {
+            nom: string;
+            id_rna: string;
+            objet: string;
+            id_siren: number;
+            adresse: string;
+        };
+    };
     adherents_personnes_morales: {
         nom: string;
-        siret: string;
+        siret: number;
         id: number;
     }[];
     representant_legal: StructureRepresentantLegalDto[];
@@ -234,19 +237,21 @@ export default interface StructureDto {
         date_attribution: string;
         url: string | number;
     }[];
-    rh: {
-        annee: number;
-        nb_adherents: number;
-        nb_adherents_h: number;
-        nb_adherents_f: number;
-        nb_benevoles: number;
-        nb_volontaires: number;
-        nb_salaries: number;
-        nb_salaries_etpt: number;
-        nb_emplois_aides: number;
-        nb_personnels_detaches: number;
-        cumul_top_5_salaires: number;
-        id_siret: string;
+    rhs: {
+        rh: {
+            annee: number;
+            nb_adherents: number;
+            nb_adherents_h: number;
+            nb_adherents_f: number;
+            nb_benevoles: number;
+            nb_volontaires: number;
+            nb_salaries: number;
+            nb_salaries_etpt: number;
+            nb_emplois_aides: number;
+            nb_personnels_detaches: number;
+            cumul_top_5_salaires: number;
+            id_siret: number;
+        };
     }[];
     compte: {
         annee: number;
@@ -258,10 +263,12 @@ export default interface StructureDto {
         charges: number;
         produits: number;
         resultat: number;
-        id_siret: string;
+        id_siret: number;
     }[];
-    etablissement: StructureEtablissementDto[];
-    rib: StructureRibDto[];
+    etablissements: { etablissement: StructureEtablissementDto[] };
+    ribs: {
+        rib: StructureRibDto[];
+    };
     commentaire?: {
         note: string;
     };
