@@ -6,7 +6,6 @@
     export let titleStyle = titleTag ? titleTag : "h3";
     export let titleEllipsis = 2;
     export let url = "";
-    export let img = false;
     export let target = "";
     export let direction = undefined;
     // eslint-disable-next-line @typescript-eslint/no-empty-function -- default value
@@ -37,10 +36,10 @@
                 {/if}
             </div>
         </div>
-        {#if img}
+        {#if $$slots["card-img"]}
             <div class="fr-card__header">
                 <div class="fr-card__img">
-                    <img src={img} alt="Image de {title}" />
+                    <slot name="card-img" />
                 </div>
             </div>
         {/if}
