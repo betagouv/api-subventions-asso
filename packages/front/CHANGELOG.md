@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.7](https://github.com/betagouv/datasubvention/compare/v0.38.6...v0.38.7) (2023-11-15)
+
+**Note:** Version bump only for package front
+
 ## [0.38.6](https://github.com/betagouv/datasubvention/compare/v0.38.5...v0.38.6) (2023-11-09)
 
 ### Bug Fixes
