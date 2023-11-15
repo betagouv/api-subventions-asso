@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.39.1](https://github.com/betagouv/api-subventions-asso/compare/v0.39.0...v0.39.1) (2023-11-15)
+
+### Bug Fixes
+
+-   **api:** updateLogUserId migration import path ([b8626e9](https://github.com/betagouv/api-subventions-asso/commit/b8626e964c4bc16ab8a08077252c77ce1a8630d6))
+
 # [0.39.0](https://github.com/betagouv/api-subventions-asso/compare/v0.38.6...v0.39.0) (2023-11-15)
 
 ### Bug Fixes
