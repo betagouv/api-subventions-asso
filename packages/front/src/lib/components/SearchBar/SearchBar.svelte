@@ -8,7 +8,7 @@
             <div class="fr-search-bar fr-search-bar--lg" id="search-input">
                 <input
                     class="fr-input"
-                    placeholder="Nom, n°SIREN ou RNA d’association, n°SIRET d’établissement"
+                    placeholder="Nom, n°RNA, n°SIREN ou SIRET"
                     type="search"
                     id="search-input-input"
                     name="search-input"
