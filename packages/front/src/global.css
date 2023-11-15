@@ -9,15 +9,12 @@ b {
     font-weight: 700 !important;
 }
 
-/* This is use to hide content only useful for accessibility
-https://webaim.org/techniques/css/invisiblecontent/#techniques */
-.sr-only {
-    position: absolute;
-    left: -10000px;
-    top: auto;
-    width: 1px;
-    height: 1px;
+/* TEXT */
+
+.ellipsis {
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* POSITIONING / LAYOUT */
@@ -65,4 +62,12 @@ html {
 .separator {
     width: 100%;
     border-top: 2px solid var(--border-default-grey);
+}
+
+.overflow-ellipsis-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

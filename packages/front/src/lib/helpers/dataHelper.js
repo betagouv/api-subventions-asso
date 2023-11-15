@@ -1,5 +1,7 @@
 export const valueOrHyphen = value => value || "-";
 
+export const valueOrNotFound = value => value || "Non trouvé";
+
 export const numberToEuro = value => {
     if (isNaN(value)) return;
     value = typeof value === "string" ? parseFloat(value) : value;

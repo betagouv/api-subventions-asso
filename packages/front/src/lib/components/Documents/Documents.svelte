@@ -31,9 +31,9 @@
                 {#each documents as document}
                     <Card
                         title={document.label}
+                        titleTag="h4"
                         url={document.url}
                         size="6"
-                        endDetail={controller.getDateString(document.date)}
                         onClick={e => controller.onClick(e, document)}
                         target="_blank">
                         <p>
@@ -43,6 +43,9 @@
                         <p class="fr-text--sm">
                             Fournisseur du fichier: <b>{document.provider}</b>
                         </p>
+                        <svelte:fragment slot="card-end">
+                            {controller.getDateString(document.date)}
+                        </svelte:fragment>
                     </Card>
                 {/each}
             </div>

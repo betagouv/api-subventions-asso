@@ -1,8 +1,9 @@
 import associationPort from "./association.port";
+import { toSearchHistory } from "./association.adapter";
 import { isRna, isStartOfSiret } from "$lib/helpers/validatorHelper";
 import { siretToSiren } from "$lib/helpers/sirenHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
-import { updateSearchHistory } from "$lib/services/searchHistory.service.js";
+import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.adapter";
 import documentService from "$lib/resources/documents/documents.service";
 
@@ -15,12 +16,9 @@ class AssociationService {
         const result = await associationPort.getByIdentifier(identifier);
         if (!result) return;
         const association = flattenProviderValue(result);
-        updateSearchHistory({
-            rna: association.rna,
-            siren: association.siren,
-            name: association.denomination_rna || association.denomination_siren,
-            objectSocial: association.objet_social || "",
-        });
+
+        updateSearchHistory(toSearchHistory(association));
+
         return association;
     }
 
