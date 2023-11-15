@@ -1,17 +1,8 @@
 import ChorusCliController from "../../../../../../src/modules/providers/chorus/interfaces/cli/chorus.cli.controller";
-import ChorusParser from "../../../../../../src/modules/providers/chorus/chorus.parser";
 import path from "path";
+import chorusLineRepository from "../../../../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 
 describe("ChorusCliController", () => {
-    const spys: jest.SpyInstance<unknown>[] = [];
-    beforeAll(() => {
-        spys.push(jest.spyOn(ChorusParser, "parse"));
-    });
-
-    afterAll(() => {
-        spys.forEach(spy => spy.mockReset());
-    });
-
     describe("parse cli requests", () => {
         let controller: ChorusCliController;
 
@@ -19,10 +10,12 @@ describe("ChorusCliController", () => {
             controller = new ChorusCliController();
         });
 
-        it("should call osiris parse", async () => {
-            const filePath = path.resolve(__dirname, "../../__fixtures__/infbud-53.tests.csv");
+        it("should save entities", async () => {
+            const expected = 3;
+            const filePath = path.resolve(__dirname, "../../__fixtures__/export-chorus.xlsx");
             await controller.parse(filePath);
-            expect(ChorusParser.parse).toHaveBeenCalled();
+            const actual = (await chorusLineRepository.cursorFind().toArray()).length;
+            expect(actual).toEqual(expected);
         });
     });
 });

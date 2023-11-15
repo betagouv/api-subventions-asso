@@ -6,7 +6,6 @@ import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
-    readonly collectionImportName = "chorus-line-IMPORT";
 
     public async findOneByEJ(ej: string) {
         return this.collection.findOne({ "indexedInformations.ej": ej });
@@ -30,13 +29,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         await this.collection.insertOne(entity);
     }
 
-    public async insertMany(entities: ChorusLineEntity[], dropDB = false) {
-        if (dropDB) {
-            return this.db
-                .collection<ChorusLineEntity>(this.collectionImportName)
-                .insertMany(entities, { ordered: false });
-        }
-
+    public async insertMany(entities: ChorusLineEntity[]) {
         return this.collection.insertMany(entities, { ordered: false });
     }
 
@@ -95,16 +88,6 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
 
     public cursorFind(query: DefaultObject<unknown> = {}) {
         return this.collection.find(query);
-    }
-
-    public async switchCollection() {
-        const collectionExist = (await this.db.listCollections().toArray()).find(c => c.name === this.collectionName);
-
-        if (collectionExist) await this.collection.rename(this.collectionName + "-OLD");
-
-        await this.db.collection(this.collectionImportName).rename(this.collectionName);
-
-        if (collectionExist) await this.db.collection(this.collectionName + "-OLD").drop();
     }
 
     async createIndexes() {

@@ -5,44 +5,6 @@ import ChorusLineEntity from "./entities/ChorusLineEntity";
 import { ChorusService } from "./chorus.service";
 
 export default class ChorusParser {
-    public static parse(content: Buffer) {
-        const data = content
-            .toString()
-            .replace(/"/g, "")
-            .replace("", "")
-            .split("\n") // Select line by line
-            .map(row =>
-                row
-                    .split(";")
-                    .map(r => r.split("\t"))
-                    .flat(),
-            ); // Parse column
-
-        const headers = data.splice(0, 7);
-
-        const header = headers[6].map((header, index) => {
-            const isCode = headers[6].slice(index + 1).find(h => h === header);
-            if (isCode) {
-                return `${header.trim()} CODE`;
-            }
-            return header.trim();
-        });
-
-        return data.reduce((entities, row) => {
-            if (!row.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = ParseHelper.linkHeaderToData(header, row);
-
-            const indexedInformations = ParseHelper.indexDataByPathObject(
-                ChorusLineEntity.indexedInformationsPath,
-                parsedData,
-            ) as unknown as IChorusIndexedInformations;
-
-            return entities.concat(
-                new ChorusLineEntity(ChorusService.buildUniqueId(indexedInformations), indexedInformations, parsedData),
-            );
-        }, [] as ChorusLineEntity[]);
-    }
-
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
     // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
     // LABEL + CODE | LABEL
@@ -62,7 +24,7 @@ export default class ChorusParser {
         return header;
     }
 
-    static parseXls(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
+    static parse(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
         console.log("Open and read file ...");
         const pages = ParseHelper.xlsParse(content);
         const page = pages[0];

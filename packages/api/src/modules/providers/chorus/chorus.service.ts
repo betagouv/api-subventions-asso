@@ -73,7 +73,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
     /**
      * @param entities /!\ entities must be validated upstream
      */
-    public async insertBatchChorusLine(entities: ChorusLineEntity[], dropedDb = false) {
+    public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
         const acceptedEntities = await asyncFilter(entities, async entity => {
             if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
             const siren = siretToSiren(entity.indexedInformations.siret);
@@ -88,16 +88,12 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
             return false;
         });
 
-        if (acceptedEntities.length) await chorusLineRepository.insertMany(acceptedEntities, dropedDb);
+        if (acceptedEntities.length) await chorusLineRepository.insertMany(acceptedEntities);
 
         return {
             rejected: entities.length - acceptedEntities.length,
             created: acceptedEntities.length,
         };
-    }
-
-    public async switchChorusRepo() {
-        return chorusLineRepository.switchCollection();
     }
 
     public async addChorusLine(entity: ChorusLineEntity) {
