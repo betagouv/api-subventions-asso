@@ -12,10 +12,10 @@
     const { identifier } = data.params;
 
     const controller = new AssociationController(identifier);
-    const { association: associationPromise, titles } = controller;
+    const { promise, titles } = controller;
 </script>
 
-{#await associationPromise}
+{#await promise}
     <FullPageSpinner description="Chargement de l'association {identifier} en cours ..." />
 {:then association}
     {#if !association}
@@ -23,7 +23,7 @@
             <Alert type="warning" title="Attention">Nous n'avons pas connaissance de cette association</Alert>
         </div>
     {/if}
-    {#if !controller.isAssociation()}
+    {#if !controller.isAssociation(association)}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Il semblerait que vous cherchiez une entreprise et non une association
@@ -40,7 +40,7 @@
         <TabsAsso {titles} associationIdentifier={identifier} {association} />
     </div>
 {:catch error}
-    {#if error.request && error.request.status == 404}
+    {#if error.request && error.request.status === 404}
         <DataNotFound />
     {:else}
         <ErrorAlert message={error.message} />
