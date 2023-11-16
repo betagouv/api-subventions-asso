@@ -1,3 +1,24 @@
+interface SirenStructureEtablissementDto {
+    actif: boolean;
+    adresse: {
+        cplt_1?: string;
+        num_voie: number;
+        voie: string;
+        commune: string;
+        code_insee: number;
+        cp: number;
+        type_voie: string;
+    };
+    id_siret: number;
+    est_siege: boolean;
+    date_actif: string;
+    id_activite_principale: string;
+    annee_activite_principale: number;
+    effectif_salarie_cent: number;
+    id_tranche_effectif?: string;
+    annee_effectif_salarie_cent: number;
+}
+
 export interface SirenStructureDto {
     identite: {
         nom: string;
@@ -41,25 +62,6 @@ export interface SirenStructureDto {
     };
     nbEtabsActifs: number;
     etablissements: {
-        etablissement: {
-            actif: boolean;
-            adresse: {
-                cplt_1?: string;
-                num_voie: number;
-                voie: string;
-                commune: string;
-                code_insee: number;
-                cp: number;
-                type_voie: string;
-            };
-            id_siret: number;
-            est_siege: boolean;
-            date_actif: string;
-            id_activite_principale: string;
-            annee_activite_principale: number;
-            effectif_salarie_cent: number;
-            id_tranche_effectif?: string;
-            annee_effectif_salarie_cent: number;
-        }[];
+        etablissement: SirenStructureEtablissementDto[] | SirenStructureEtablissementDto;
     };
 }

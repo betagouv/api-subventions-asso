@@ -30,6 +30,10 @@ export default class ApiAssoDtoAdapter {
             ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren),
         );
 
+        const establishmentSiret = Array.isArray(structure.etablissements.etablissement)
+            ? structure.etablissements.etablissement
+            : [structure.etablissements.etablissement];
+
         return {
             denomination_siren: toPvs(structure.identite.nom),
             siren: toPvs(structure.identite.id_siren.toString()),
@@ -44,7 +48,7 @@ export default class ApiAssoDtoAdapter {
                 code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
-            etablisements_siret: toPvs(structure.etablissements.etablissement.map(e => e.id_siret.toString())),
+            etablisements_siret: toPvs(establishmentSiret.map(e => e.id_siret.toString())),
         };
     }
 
