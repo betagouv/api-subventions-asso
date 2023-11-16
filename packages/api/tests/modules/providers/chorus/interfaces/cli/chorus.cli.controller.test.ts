@@ -12,7 +12,16 @@ describe("ChorusCliController", () => {
 
         it("should save entities", async () => {
             const expected = 3;
-            const filePath = path.resolve(__dirname, "../../__fixtures__/export-chorus.xlsx");
+            const filePath = path.resolve(__dirname, "../../__fixtures__/chorus-export.xlsx");
+            await controller.parse(filePath);
+            const actual = (await chorusLineRepository.cursorFind().toArray()).length;
+            expect(actual).toEqual(expected);
+        });
+
+        it("should not save duplicates", async () => {
+            const expected = 3;
+            const filePath = path.resolve(__dirname, "../../__fixtures__/chorus-export.xlsx");
+            await controller.parse(filePath);
             await controller.parse(filePath);
             const actual = (await chorusLineRepository.cursorFind().toArray()).length;
             expect(actual).toEqual(expected);

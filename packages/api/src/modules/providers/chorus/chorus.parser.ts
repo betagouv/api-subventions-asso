@@ -1,6 +1,5 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
-import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import { ChorusService } from "./chorus.service";
 
@@ -27,34 +26,48 @@ export default class ChorusParser {
     static parse(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
         console.log("Open and read file ...");
         const pages = ParseHelper.xlsParse(content);
-        const page = pages[0];
         console.log("Read file end");
 
+        const page = pages[0];
+
         const headerRow = page[0] as string[];
+        const headers = ChorusParser.renameEmptyHeaders(headerRow);
+        console.log("Map rows to entities...");
+        const entities = this.rowsToEntities(headers, page.slice(1), validator);
+        console.log(`${entities.length} entity ready to be saved...`);
+        return entities;
+    }
 
-        const header = ChorusParser.renameEmptyHeaders(headerRow);
+    protected static rowsToEntities(headers, rows, validator) {
+        const entities = rows
+            .map(row => ({ parsedData: ParseHelper.linkHeaderToData(headers, row) }))
+            .map(this.addIndexedInformations)
+            .map(this.addUniqueId)
+            .map(this.mapToEntity)
+            // TODO: validate parsedData instead of waiting entity build
+            // it would remove the need of passing the validator
+            .filter(validator);
+        return entities;
+    }
 
-        // rename empty header
+    protected static addIndexedInformations(partialChorusEntity) {
+        const indexedInformations = ParseHelper.indexDataByPathObject(
+            ChorusLineEntity.indexedInformationsPath,
+            partialChorusEntity.parsedData,
+        );
+        return { ...partialChorusEntity, indexedInformations };
+    }
 
-        const data = page.slice(1) as string[][];
-        return data.reduce((entities, row, index) => {
-            CliHelper.printAtSameLine(`${index} entities parsed of ${data.length}`);
+    protected static addUniqueId(partialChorusEntity) {
+        return {
+            ...partialChorusEntity,
+            uniqueId: ChorusService.buildUniqueId(partialChorusEntity.indexedInformations),
+        };
+    }
 
-            const parsedData = ParseHelper.linkHeaderToData(header, row);
-            const indexedInformations = ParseHelper.indexDataByPathObject(
-                ChorusLineEntity.indexedInformationsPath,
-                parsedData,
-            ) as unknown as IChorusIndexedInformations;
-            const entity = new ChorusLineEntity(
-                ChorusService.buildUniqueId(indexedInformations),
-                indexedInformations,
-                parsedData,
-            );
-
-            if (validator(entity)) {
-                return entities.concat(entity);
-            }
-            return entities;
-        }, [] as ChorusLineEntity[]);
+    protected static mapToEntity(obj, index, array) {
+        const entity = new ChorusLineEntity(obj.uniqueId, obj.indexedInformations, obj.parsedData);
+        CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
+        return entity;
     }
 }

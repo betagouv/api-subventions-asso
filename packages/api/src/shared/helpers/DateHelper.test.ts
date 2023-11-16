@@ -143,4 +143,13 @@ describe("DateHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("addDaysToDate", () => {
+        it("should return tomorrow", () => {
+            const today = new Date("2023-01-01");
+            const expected = new Date("2023-01-02");
+            const actual = DateHelper.addDaysToDate(today, 1);
+            expect(actual).toEqual(expected);
+        });
+    });
 });

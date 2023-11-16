@@ -206,6 +206,10 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
     rawToCommon(raw: RawGrant) {
         return ChorusAdapter.toCommon(raw.data as WithId<ChorusLineEntity>);
     }
+
+    getMostRecentOperationDate() {
+        return chorusLineRepository.findMostRecentOperationDate();
+    }
 }
 
 const chorusService = new ChorusService();

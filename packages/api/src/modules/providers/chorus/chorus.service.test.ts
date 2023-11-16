@@ -402,4 +402,11 @@ describe("chorusService", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getMostRecentOperationDate", () => {
+        it("should call repository.findMostRecentOperationDate", async () => {
+            await chorusService.getMostRecentOperationDate();
+            expect(mockedChorusLineRepository.findMostRecentOperationDate).toHaveBeenCalledTimes(1);
+        });
+    });
 });

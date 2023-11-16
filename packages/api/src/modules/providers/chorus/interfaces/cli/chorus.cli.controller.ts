@@ -16,6 +16,21 @@ export default class ChorusCliController extends CliController {
     protected logFileParsePath = "./logs/chorus.parse.log.txt";
     protected batchSize = 1000;
 
+    protected async filterEntitiesToSave(parsedEntities) {
+        const mostRecentOperationDate = await chorusService.getMostRecentOperationDate();
+
+        let entitiesToSave: ChorusLineEntity[];
+        if (mostRecentOperationDate) {
+            entitiesToSave = parsedEntities.filter(
+                entity => entity.indexedInformations.dateOperation > mostRecentOperationDate,
+            );
+        } else {
+            entitiesToSave = parsedEntities;
+        }
+
+        return entitiesToSave;
+    }
+
     /**
      * Parse Chorus XLS files
      * @param file path to file
@@ -48,8 +63,9 @@ export default class ChorusCliController extends CliController {
         };
 
         const entities = ChorusParser.parse(fileContent, chorusEntityValidator);
+        const entitiesToSave = await this.filterEntitiesToSave(entities);
 
-        const totalEntities = entities.length;
+        const totalEntities = entitiesToSave.length;
 
         console.info(`\n${totalEntities} valid entities found in file.`);
 
@@ -59,7 +75,7 @@ export default class ChorusCliController extends CliController {
         const batchs: ChorusLineEntity[][] = [];
 
         for (let i = 0; i < batchNumber; i++) {
-            batchs.push(entities.splice(-this.batchSize));
+            batchs.push(entitiesToSave.splice(-this.batchSize));
         }
 
         const finalResult = {

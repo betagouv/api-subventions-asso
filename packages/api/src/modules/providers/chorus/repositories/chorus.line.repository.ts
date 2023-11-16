@@ -86,6 +86,16 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         return this.removeDuplicates(result);
     }
 
+    async findMostRecentOperationDate(): Promise<Date | null> {
+        const cursor = await this.collection.find({}).sort({ "indexedInformations.dateOperation": -1 }).limit(1);
+        const document = await cursor.next();
+        if (document) {
+            return document.indexedInformations.dateOperation;
+        } else {
+            return null;
+        }
+    }
+
     public cursorFind(query: DefaultObject<unknown> = {}) {
         return this.collection.find(query);
     }
