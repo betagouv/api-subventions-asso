@@ -18,10 +18,10 @@ export interface RnaStructureDto {
     coordonnees: {
         adresse_siege: {
             cplt_1: string;
-            num_voie: string;
+            num_voie: number;
             voie: string;
             commune: string;
-            cp: string;
+            cp: number;
             bp?: string;
             type_voie: string;
         };
@@ -29,7 +29,7 @@ export interface RnaStructureDto {
             cplt_1: string;
             voie: string;
             commune: string;
-            cp: string;
+            cp: number;
             pays: string;
         };
     };

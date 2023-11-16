@@ -57,6 +57,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** rework after rebase ([a5eefd9](https://github.com/betagouv/api-subventions-asso/commit/a5eefd9f5dd6bab20d53e54f605df8c42a6d3ea4))
 -   **api:** update producer after persisting grants ([a2c3242](https://github.com/betagouv/api-subventions-asso/commit/a2c3242f6d0b8c3eda6af2421f8eda4a6d7bbc55))
 
+## [0.38.8](https://github.com/betagouv/api-subventions-asso/compare/v0.38.7...v0.38.8) (2023-11-16)
+
+### Bug Fixes
+
+-   **api:** disable deprecated apiEntreprise call ([bddd644](https://github.com/betagouv/api-subventions-asso/commit/bddd6445e430e4df1b96a17d17c8b4a9158596cb))
+-   **api:** more weird specs from new api asso types ([795736e](https://github.com/betagouv/api-subventions-asso/commit/795736e35cd57d7b31e047a717c5bcf134d9d357))
+
+## [0.38.7](https://github.com/betagouv/api-subventions-asso/compare/v0.38.6...v0.38.7) (2023-11-15)
+
+### Bug Fixes
+
+-   **api:** update adapters and fixture to new api asso formats ([f836ed6](https://github.com/betagouv/api-subventions-asso/commit/f836ed6dd289626ee436aed29eaaf2ac9a2d10dd))
+
 ## [0.38.5](https://github.com/betagouv/api-subventions-asso/compare/v0.38.4...v0.38.5) (2023-10-30)
 
 ### Bug Fixes

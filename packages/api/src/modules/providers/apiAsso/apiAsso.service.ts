@@ -92,10 +92,20 @@ export class ApiAssoService
 
         await this.saveStructureInAssociationName(structure);
 
-        return structure.etablissement.map(etablissement =>
+        const establishments = Array.isArray(structure.etablissements.etablissement)
+            ? structure.etablissements.etablissement
+            : [structure.etablissements.etablissement];
+
+        const ribs = structure.ribs
+            ? Array.isArray(structure.ribs.rib)
+                ? structure.ribs.rib
+                : [structure.ribs.rib]
+            : [];
+
+        return establishments.map(etablissement =>
             ApiAssoDtoAdapter.toEtablissement(
                 etablissement,
-                structure.rib,
+                ribs,
                 structure.representant_legal,
                 structure.identite.date_modif_siren,
             ),
@@ -112,7 +122,7 @@ export class ApiAssoService
 
         await associationNameService.upsert({
             rna: structure.identite.id_rna,
-            siren: structure.identite.id_siren,
+            siren: structure.identite.id_siren.toString(),
             name: structure.identite.nom,
             provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
             lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren,
@@ -162,6 +172,7 @@ export class ApiAssoService
             )
             .filter(document => document) as StructureDacDocumentDto[];
     }
+
     private filterRibsInDacDocuments(documents: StructureDacDocumentDto[]) {
         const ribs = documents.filter(
             document =>
@@ -263,10 +274,10 @@ export class ApiAssoService
         let siren = groupedIdentifier.siren || "";
 
         if (!groupedIdentifier.siren) {
-            // Check if information rna <=> siren is save in apiRNA
+            // Check if information rna <=> siren is saved in apiRNA
             const structure = await this.sendRequest<StructureDto>(`/api/structure/${rna}`);
             if (hasEmptyProperties(structure?.identite) || !structure?.identite.id_siren) return [rnaAssociation];
-            siren = structure.identite.id_siren;
+            siren = structure.identite.id_siren.toString();
         }
 
         const sirenAssociation = await this.findAssociationBySiren(siren);

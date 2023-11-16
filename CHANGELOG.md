@@ -85,6 +85,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** update layout spacing ([6be958e](https://github.com/betagouv/api-subventions-asso/commit/6be958eac08a5636f8f97296a6c99be91ddc47bb))
 -   **front:** use svelte:fragment for slot ([97c62a6](https://github.com/betagouv/api-subventions-asso/commit/97c62a68d52b5c97a8b7bee99a17488dd5117a8f))
 
+## [0.38.8](https://github.com/betagouv/api-subventions-asso/compare/v0.38.7...v0.38.8) (2023-11-16)
+
+### Bug Fixes
+
+-   **api:** disable deprecated apiEntreprise call ([bddd644](https://github.com/betagouv/api-subventions-asso/commit/bddd6445e430e4df1b96a17d17c8b4a9158596cb))
+-   **api:** more weird specs from new api asso types ([795736e](https://github.com/betagouv/api-subventions-asso/commit/795736e35cd57d7b31e047a717c5bcf134d9d357))
+
+## [0.38.7](https://github.com/betagouv/api-subventions-asso/compare/v0.38.6...v0.38.7) (2023-11-15)
+
+### Bug Fixes
+
+-   **api:** update adapters and fixture to new api asso formats ([f836ed6](https://github.com/betagouv/api-subventions-asso/commit/f836ed6dd289626ee436aed29eaaf2ac9a2d10dd))
+
 ## [0.38.6](https://github.com/betagouv/api-subventions-asso/compare/v0.38.5...v0.38.6) (2023-11-09)
 
 ### Bug Fixes

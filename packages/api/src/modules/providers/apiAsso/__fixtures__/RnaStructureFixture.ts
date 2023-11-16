@@ -20,17 +20,17 @@ export const rnaStructureFixture: RnaStructureDto = {
     coordonnees: {
         adresse_siege: {
             cplt_1: "Place des orties",
-            num_voie: "18",
+            num_voie: 18,
             voie: "MEURIS",
             commune: "Londre",
-            cp: "42424",
+            cp: 42424,
             type_voie: "RUE",
         },
         adresse_gestion: {
             cplt_1: "Place des orties",
             voie: "MEURIS",
             commune: "Londre",
-            cp: "42424",
+            cp: 42424,
             pays: "Groenland",
         },
     },
