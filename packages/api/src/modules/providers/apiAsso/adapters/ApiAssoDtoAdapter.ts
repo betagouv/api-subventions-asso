@@ -29,21 +29,25 @@ export default class ApiAssoDtoAdapter {
             ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren),
         );
 
+        const establishmentSiret = Array.isArray(structure.etablissements.etablissement)
+            ? structure.etablissements.etablissement
+            : [structure.etablissements.etablissement];
+
         return {
             denomination_siren: toPvs(structure.identite.nom),
-            siren: toPvs(structure.identite.id_siren),
-            nic_siege: toPvs(siretToNIC(structure.identite.id_siret_siege)),
+            siren: toPvs(structure.identite.id_siren.toString()),
+            nic_siege: toPvs(siretToNIC(structure.identite.id_siret_siege.toString())),
             categorie_juridique: toPvs(structure.identite.id_forme_juridique.toString()),
             date_creation_siren: toPvs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_creation_sirene)),
             date_modification_siren: toPvs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren)),
             adresse_siege_siren: toPvs({
-                numero: structure.coordonnees.adresse_siege.num_voie,
+                numero: structure.coordonnees.adresse_siege.num_voie?.toString(),
                 type_voie: structure.coordonnees.adresse_siege.type_voie,
                 voie: structure.coordonnees.adresse_siege.voie,
-                code_postal: structure.coordonnees.adresse_siege.cp,
+                code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
-            etablisements_siret: toPvs(structure.etablissement.map(e => e.id_siret)),
+            etablisements_siret: toPvs(establishmentSiret.map(e => e.id_siret.toString())),
         };
     }
 
@@ -63,10 +67,10 @@ export default class ApiAssoDtoAdapter {
             objet_social: toPVs(structure.activites.objet),
             code_objet_social_1: toPVs(structure.activites.lib_objet_social1),
             adresse_siege_rna: toPVs({
-                numero: structure.coordonnees.adresse_siege.num_voie,
+                numero: structure.coordonnees.adresse_siege.num_voie?.toString(),
                 type_voie: structure.coordonnees.adresse_siege.type_voie,
                 voie: structure.coordonnees.adresse_siege.voie,
-                code_postal: structure.coordonnees.adresse_siege.cp,
+                code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
         };
@@ -97,15 +101,15 @@ export default class ApiAssoDtoAdapter {
         });
 
         return {
-            siret: toSirenPvs(etablissement.id_siret),
-            nic: toSirenPvs(siretToNIC(etablissement.id_siret)),
+            siret: toSirenPvs(etablissement.id_siret.toString()),
+            nic: toSirenPvs(siretToNIC(etablissement.id_siret.toString())),
             ouvert: toSirenPvs(etablissement.actif),
             siege: toSirenPvs(etablissement.est_siege),
             adresse: toSirenPvs({
-                numero: etablissement.adresse.num_voie,
+                numero: etablissement.adresse.num_voie?.toString(),
                 type_voie: etablissement.adresse.type_voie,
                 voie: etablissement.adresse.voie,
-                code_postal: etablissement.adresse.cp,
+                code_postal: etablissement.adresse.cp?.toString(),
                 commune: etablissement.adresse.commune,
             }),
             information_banquaire: ribs
@@ -126,7 +130,7 @@ export default class ApiAssoDtoAdapter {
 
     static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): Document {
         let date = new Date(Date.UTC(rnaDocument.annee as number, 0));
-        // DTO expect date so we use 1970 as a hack to know that the date is not defined
+        // DTO expect date, so we use 1970 as a hack to know that the date is not defined
         if (!isValidDate(date)) date = new Date(Date.UTC(1970, 0));
         else if (rnaDocument.time) date.setTime(date.getTime() + rnaDocument.time);
 

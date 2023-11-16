@@ -38,6 +38,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** update layout spacing ([6be958e](https://github.com/betagouv/datasubvention/commit/6be958eac08a5636f8f97296a6c99be91ddc47bb))
 -   **front:** use svelte:fragment for slot ([97c62a6](https://github.com/betagouv/datasubvention/commit/97c62a68d52b5c97a8b7bee99a17488dd5117a8f))
 
+## [0.38.7](https://github.com/betagouv/datasubvention/compare/v0.38.6...v0.38.7) (2023-11-15)
+
+**Note:** Version bump only for package front
+
 ## [0.38.6](https://github.com/betagouv/datasubvention/compare/v0.38.5...v0.38.6) (2023-11-09)
 
 ### Bug Fixes

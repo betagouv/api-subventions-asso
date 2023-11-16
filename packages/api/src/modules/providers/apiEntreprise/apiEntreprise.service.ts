@@ -143,35 +143,36 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
     }
 
     async getEtablissementsBySiret(siret: Siret) {
-        try {
-            const result = await this.getHeadcount(siret);
-            if (!result) return null;
-            return [ApiEntrepriseAdapter.toEtablissement(result)];
-        } catch {
-            return null;
-        }
+        return null;
+        // try {
+        //     const result = await this.getHeadcount(siret);
+        //     if (!result) return null;
+        //     return [ApiEntrepriseAdapter.toEtablissement(result)];
+        // } catch {
+        //     return null;
+        // }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getEtablissementsBySiren(_siret: Siren) {
         return null;
     }
 
     async getAssociationsBySiren(siren: string): Promise<Association[] | null> {
-        try {
-            const result = await this.getExtractRcs(siren);
-            if (!result) return null;
-            return [ApiEntrepriseAdapter.toAssociation(result)];
-        } catch (e) {
-            return null;
-        }
+        return null;
+        // try {
+        //     const result = await this.getExtractRcs(siren);
+        //     if (!result) return null;
+        //     return [ApiEntrepriseAdapter.toAssociation(result)];
+        // } catch (e) {
+        //     return null;
+        // }
     }
 
     async getAssociationsBySiret(siret: string): Promise<Association[] | null> {
-        return await this.getAssociationsBySiren(siretToSiren(siret));
+        return null;
+        // return await this.getAssociationsBySiren(siretToSiren(siret));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getAssociationsByRna(_rna: string): Promise<Association[] | null> {
         return null;
     }

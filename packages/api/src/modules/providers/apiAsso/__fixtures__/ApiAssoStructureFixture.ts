@@ -8,11 +8,11 @@ import StructureDto, {
 
 export const fixtureEtablissements = [
     {
-        id_siret: "50922194100000",
+        id_siret: 50922194100000,
         adresse: {},
     },
     {
-        id_siret: "50922194100001",
+        id_siret: 50922194100001,
         adresse: {},
     },
 ] as StructureEtablissementDto[];
@@ -43,12 +43,12 @@ export const fixtureDocumentDac = [
 
 export const fixtureRib = [
     {
-        id_siret: "50922194100000",
+        id_siret: 50922194100000,
         iban: "TEST",
         bic: "BIC_TEST",
     },
     {
-        id_siret: "50922194100000",
+        id_siret: 50922194100000,
         iban: "TEST 2",
         bic: "BIC_TEST 2",
         url: "fake/path/to/rib",
@@ -60,7 +60,7 @@ export const fixtureRepresentantLegal = [
         nom: "Jedusor",
         prenom: "Tom",
         role: "Mage pas simpa",
-        id_siret: "50922194100000",
+        id_siret: 50922194100000,
     },
 ] as unknown as StructureRepresentantLegalDto[];
 
@@ -69,9 +69,9 @@ export const fixtureAsso = {
         nom: "TEST",
         nom_sirene: "TEST SIREN 2",
         id_rna: "W00000000",
-        id_siren: "509221941",
-        id_siret_siege: "5092219410000",
-        id_forme_juridique: "9220",
+        id_siren: 509221941,
+        id_siret_siege: 5092219410000,
+        id_forme_juridique: 9220,
         date_creat: "1994-07-04",
         date_creation_siren: "1985-02-26",
         date_modif_rna: "2018-01-01",
@@ -84,8 +84,8 @@ export const fixtureAsso = {
             commune: "paris",
         },
     },
-    rib: fixtureRib,
-    etablissement: fixtureEtablissements,
+    ribs: { rib: fixtureRib },
+    etablissements: { etablissement: fixtureEtablissements },
     document_rna: fixtureDocumentRna,
     document_dac: fixtureDocumentDac,
 } as unknown as StructureDto;

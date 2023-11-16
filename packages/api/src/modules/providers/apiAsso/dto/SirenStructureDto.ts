@@ -1,11 +1,30 @@
-import { Siren, Siret } from "dto";
+interface SirenStructureEtablissementDto {
+    actif: boolean;
+    adresse: {
+        cplt_1?: string;
+        num_voie: number;
+        voie: string;
+        commune: string;
+        code_insee: number;
+        cp: number;
+        type_voie: string;
+    };
+    id_siret: number;
+    est_siege: boolean;
+    date_actif: string;
+    id_activite_principale: string;
+    annee_activite_principale: number;
+    effectif_salarie_cent: number;
+    id_tranche_effectif?: string;
+    annee_effectif_salarie_cent: number;
+}
 
 export interface SirenStructureDto {
     identite: {
         nom: string;
         nom_sirene: string;
-        id_siren: Siren;
-        id_siret_siege: Siret;
+        id_siren: number;
+        id_siret_siege: number;
         id_forme_juridique: number;
         date_creation_sirene: string;
         date_modif_siren: string;
@@ -24,42 +43,25 @@ export interface SirenStructureDto {
     coordonnees: {
         adresse_siege: {
             cplt_1: string;
-            num_voie: string;
+            num_voie: number;
             voie: string;
             commune: string;
-            code_insee: string;
-            cp: string;
+            code_insee: number;
+            cp: number;
             type_voie: string;
         };
         adresse_gestion: {
             cplt_1: string;
-            num_voie: string;
+            num_voie: number;
             voie: string;
             commune: string;
-            code_insee: string;
-            cp: string;
+            code_insee: number;
+            cp: number;
             type_voie: string;
         };
     };
     nbEtabsActifs: number;
-    etablissement: {
-        actif: boolean;
-        adresse: {
-            cplt_1?: string;
-            num_voie: string;
-            voie: string;
-            commune: string;
-            code_insee: string;
-            cp: string;
-            type_voie: string;
-        };
-        id_siret: Siret;
-        est_siege: boolean;
-        date_actif: string;
-        id_activite_principale: string;
-        annee_activite_principale: number;
-        effectif_salarie_cent: number;
-        id_tranche_effectif?: string;
-        annee_effectif_salarie_cent: number;
-    }[];
+    etablissements: {
+        etablissement: SirenStructureEtablissementDto[] | SirenStructureEtablissementDto;
+    };
 }
