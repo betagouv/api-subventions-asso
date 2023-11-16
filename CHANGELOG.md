@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.38.8](https://github.com/betagouv/api-subventions-asso/compare/v0.38.7...v0.38.8) (2023-11-16)
+
+### Bug Fixes
+
+-   **api:** disable deprecated apiEntreprise call ([bddd644](https://github.com/betagouv/api-subventions-asso/commit/bddd6445e430e4df1b96a17d17c8b4a9158596cb))
+-   **api:** more weird specs from new api asso types ([795736e](https://github.com/betagouv/api-subventions-asso/commit/795736e35cd57d7b31e047a717c5bcf134d9d357))
+
 ## [0.38.7](https://github.com/betagouv/api-subventions-asso/compare/v0.38.6...v0.38.7) (2023-11-15)
 
 ### Bug Fixes
