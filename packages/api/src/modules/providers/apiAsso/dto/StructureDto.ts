@@ -265,9 +265,9 @@ export default interface StructureDto {
         resultat: number;
         id_siret: number;
     }[];
-    etablissements: { etablissement: StructureEtablissementDto[] };
+    etablissements: { etablissement: StructureEtablissementDto | StructureEtablissementDto[] };
     ribs: {
-        rib: StructureRibDto[];
+        rib: StructureRibDto[] | StructureRibDto;
     };
     commentaire?: {
         note: string;

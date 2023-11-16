@@ -86,10 +86,20 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
 
         await this.saveStructureInAssociationName(structure);
 
-        return structure.etablissements.etablissement.map(etablissement =>
+        const establishments = Array.isArray(structure.etablissements.etablissement)
+            ? structure.etablissements.etablissement
+            : [structure.etablissements.etablissement];
+
+        const ribs = structure.ribs
+            ? Array.isArray(structure.ribs.rib)
+                ? structure.ribs.rib
+                : [structure.ribs.rib]
+            : [];
+
+        return establishments.map(etablissement =>
             ApiAssoDtoAdapter.toEtablissement(
                 etablissement,
-                structure.ribs.rib,
+                ribs,
                 structure.representant_legal,
                 structure.identite.date_modif_siren,
             ),
@@ -156,6 +166,7 @@ export class ApiAssoService implements AssociationsProvider, EtablissementProvid
             )
             .filter(document => document) as StructureDacDocumentDto[];
     }
+
     private filterRibsInDacDocuments(documents: StructureDacDocumentDto[]) {
         const ribs = documents.filter(
             document =>
