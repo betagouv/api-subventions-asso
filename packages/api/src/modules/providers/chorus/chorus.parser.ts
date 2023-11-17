@@ -4,25 +4,6 @@ import ChorusLineEntity from "./entities/ChorusLineEntity";
 import { ChorusService } from "./chorus.service";
 
 export default class ChorusParser {
-    // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
-    // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
-    // LABEL + CODE | LABEL
-    private static renameEmptyHeaders(headerRow) {
-        const header: string[] = [];
-        for (let i = 0; i < headerRow.length; i++) {
-            // if header not defined, we take the previous one
-            if (!headerRow[i]) {
-                const name = header[i - 1] as string;
-                // we add CODE at the end of the previous header
-                header[i - 1] = `${name} CODE`;
-                header.push(name.replace("&#32;", " ").trim());
-            } else {
-                header.push(headerRow[i].replace(/&#32;/g, " ").trim());
-            }
-        }
-        return header;
-    }
-
     static parse(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
         console.log("Open and read file ...");
         const pages = ParseHelper.xlsParse(content);
@@ -36,6 +17,25 @@ export default class ChorusParser {
         const entities = this.rowsToEntities(headers, page.slice(1), validator);
         console.log(`${entities.length} entity ready to be saved...`);
         return entities;
+    }
+
+    // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
+    // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
+    // LABEL + CODE | LABEL
+    protected static renameEmptyHeaders(headerRow) {
+        const header: string[] = [];
+        for (let i = 0; i < headerRow.length; i++) {
+            // if header not defined, we take the previous one
+            if (!headerRow[i]) {
+                const name = header[i - 1] as string;
+                // we add CODE at the end of the previous header
+                header[i - 1] = `${name} CODE`;
+                header.push(name.replace("&#32;", " ").trim());
+            } else {
+                header.push(headerRow[i].replace(/&#32;/g, " ").trim());
+            }
+        }
+        return header;
     }
 
     protected static rowsToEntities(headers, rows, validator) {
@@ -59,6 +59,7 @@ export default class ChorusParser {
     }
 
     protected static addUniqueId(partialChorusEntity) {
+        console.log(ChorusService.buildUniqueId);
         return {
             ...partialChorusEntity,
             uniqueId: ChorusService.buildUniqueId(partialChorusEntity.indexedInformations),
