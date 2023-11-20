@@ -40,7 +40,7 @@ export default class InfosLegalesController {
         let title, value;
         if (this.establishment) {
             title = "Adresse établissement";
-            value = addressToOneLineString(getAddress(this.establishment.adresse));
+            value = addressToOneLineString(this.establishment.adresse);
         } else {
             title = "Adresse du siège";
             value = valueOrHyphen(addressToOneLineString(getAddress(this.association)));
