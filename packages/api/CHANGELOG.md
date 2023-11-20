@@ -3,6 +3,62 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.39.3](https://github.com/betagouv/api-subventions-asso/compare/v0.38.8...v0.39.3) (2023-11-20)
+
+## [0.39.2](https://github.com/betagouv/api-subventions-asso/compare/v0.39.1...v0.39.2) (2023-11-15)
+
+### Bug Fixes
+
+-   **api:** updateLogUserId migration default import in commonjs ([4e3fbb8](https://github.com/betagouv/api-subventions-asso/commit/4e3fbb8f1b945d0c06bbdddb1a4336f36e1462c1))
+
+## [0.39.1](https://github.com/betagouv/api-subventions-asso/compare/v0.39.0...v0.39.1) (2023-11-15)
+
+### Bug Fixes
+
+-   **api:** updateLogUserId migration import path ([b8626e9](https://github.com/betagouv/api-subventions-asso/commit/b8626e964c4bc16ab8a08077252c77ce1a8630d6))
+
+# [0.39.0](https://github.com/betagouv/api-subventions-asso/compare/v0.38.6...v0.39.0) (2023-11-15)
+
+### Bug Fixes
+
+-   **api:** add forgottent failed_cron in accepted notification type ([50e8d7b](https://github.com/betagouv/api-subventions-asso/commit/50e8d7b9da88b141185686507f1bdd60f7ed8905))
+-   **api:** add numeroDemandePayment as part of chorus line uniqueId in parse methods ([89fef3e](https://github.com/betagouv/api-subventions-asso/commit/89fef3ea58f08bd8f17d644dc0e6c80cfbf3aac4))
+-   **api:** apiAsso return null if structure has empty properties ([b68ca92](https://github.com/betagouv/api-subventions-asso/commit/b68ca9239044d0c1815926ce3ad72385e9fb9544))
+-   **api:** check object has empty properties in apiAsso getters ([12415a0](https://github.com/betagouv/api-subventions-asso/commit/12415a05f65dee0a84055a80d73a0d0fdb88f854))
+-   **api:** chorus line broken snapshot ([2f3dc8f](https://github.com/betagouv/api-subventions-asso/commit/2f3dc8f598969ff2bba201323dee5d02d9ac4a6f))
+-   **api:** chorus line tests ([6f0b89b](https://github.com/betagouv/api-subventions-asso/commit/6f0b89bcae0bf6614fdff578be48401f26b061f8))
+-   **api:** chorus parser entity validator ([496b28a](https://github.com/betagouv/api-subventions-asso/commit/496b28a598611fdd44b50b9c835af57533d7a344))
+-   **api:** comment indexes that conflict with current db state ([9a0e947](https://github.com/betagouv/api-subventions-asso/commit/9a0e947bfb148d71ab38c00525d919530aa0cbdf))
+-   **api:** convert \_id to string in logs as to not loose data ([68c9dd8](https://github.com/betagouv/api-subventions-asso/commit/68c9dd854d3dfb05e71bc70a44f189e75fd4ae0b))
+-   **api:** convert log's userId back to ObjectId in metabase dump ([ae40e15](https://github.com/betagouv/api-subventions-asso/commit/ae40e15cf926d2a83f01286731e66dbfdcead9bd))
+-   **api:** don't transform user \_id to string ([787d6cf](https://github.com/betagouv/api-subventions-asso/commit/787d6cf26e88871ee0e2cd78cfd58558756d3969))
+-   **api:** mv fn to service to avoid scalingo timeout ([808a8e0](https://github.com/betagouv/api-subventions-asso/commit/808a8e005563607c9618d1890808f2c6bb9a58a3))
+-   **api:** remove chorus line duplicates ([aae50b6](https://github.com/betagouv/api-subventions-asso/commit/aae50b6a02fbb84da1e2a1e697172625a00cd9d6))
+-   **api:** remove duplicate error monitoring ([b82da48](https://github.com/betagouv/api-subventions-asso/commit/b82da48e1197aa7c6c5b13f75f81765188cc74dc))
+
+### Features
+
+-   **api:** add grants persistance ([6b7f47e](https://github.com/betagouv/api-subventions-asso/commit/6b7f47e05e76fb329d1bb7dca466ff102942a3da))
+-   **api:** add numeroDemandePaiement to chorusLineEntity uniqueId ([070503e](https://github.com/betagouv/api-subventions-asso/commit/070503e8dd6f10418e2d818a92c56fc7c83f056c))
+-   **api:** add productor persistance add producerId to parse ([50a2898](https://github.com/betagouv/api-subventions-asso/commit/50a2898accd838f584354802f47bf4641925dec0))
+-   **api:** add provider request service ([4bc9116](https://github.com/betagouv/api-subventions-asso/commit/4bc91167bb665610a0cb26efb10d6f46fcba4a64))
+-   **api:** add provider request service ([aa25e79](https://github.com/betagouv/api-subventions-asso/commit/aa25e7925535d7a6279de6db93b7ec250888c4b7))
+-   **api:** add use cases for download and parse history unite legal file ([2dcc346](https://github.com/betagouv/api-subventions-asso/commit/2dcc346593f6c6364e67d6f6a9b205ac14b3ff00))
+-   **api:** build uniqueId as hash and refactor tests ([b9361bb](https://github.com/betagouv/api-subventions-asso/commit/b9361bb4aacbe9718e9c4811d1e1d785f77fe426))
+-   **api:** check that identifier is from asso before sending subv data ([9449450](https://github.com/betagouv/api-subventions-asso/commit/9449450b73774d145d38f1bdf6b50a24e27276c6))
+-   **api:** collect full users for metabase ([bbfcf18](https://github.com/betagouv/api-subventions-asso/commit/bbfcf18c7df78855e91f1c9f21cf436a05c003cc)), closes [#1857](https://github.com/betagouv/api-subventions-asso/issues/1857)
+-   **api:** create indexes on association names ([1718aac](https://github.com/betagouv/api-subventions-asso/commit/1718aace0f93c012bc883a06c3930bc0dbe16aa0))
+-   **api:** create scdl service ([1c77ce4](https://github.com/betagouv/api-subventions-asso/commit/1c77ce4cbfd26bb21c1142e50127f63e28d27f81))
+-   **api:** cron for upate history unitee legal ([1a3cda8](https://github.com/betagouv/api-subventions-asso/commit/1a3cda8c71f7edb0e73d3f8641109e08c57b569d))
+-   **api:** define abstract createIndexes in MongoRepository ([a1e4aee](https://github.com/betagouv/api-subventions-asso/commit/a1e4aee34ed594e635e8d8bee75205ba388e6c62))
+-   **api:** delete MigrationManager and rename MigrationRepository to MongoRepository ([711a5dd](https://github.com/betagouv/api-subventions-asso/commit/711a5ddb9f04a787cc162825c771ffe07aca459e))
+-   **api:** fix circular deps ([b22099b](https://github.com/betagouv/api-subventions-asso/commit/b22099b28550b556c7c8309955b5771641f0b62e))
+-   **api:** migration to add user's object ids ([a0101e4](https://github.com/betagouv/api-subventions-asso/commit/a0101e459a17af76439592f00e4e08f458ce671f))
+-   **api:** new archi for history unite legal ([14a5d66](https://github.com/betagouv/api-subventions-asso/commit/14a5d66c1e6a750bd65aae356be2dfc749bef89c))
+-   **api:** remove dp migration ([f660819](https://github.com/betagouv/api-subventions-asso/commit/f66081985bc6e367b1597e1bcb6ff1e944c2c2a8))
+-   **api:** rework after rebase ([a5eefd9](https://github.com/betagouv/api-subventions-asso/commit/a5eefd9f5dd6bab20d53e54f605df8c42a6d3ea4))
+-   **api:** update producer after persisting grants ([a2c3242](https://github.com/betagouv/api-subventions-asso/commit/a2c3242f6d0b8c3eda6af2421f8eda4a6d7bbc55))
+
 ## [0.39.2](https://github.com/betagouv/api-subventions-asso/compare/v0.39.1...v0.39.2) (2023-11-15)
 
 ### Bug Fixes
