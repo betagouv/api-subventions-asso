@@ -1,20 +1,14 @@
-<script>
+<script lang="ts">
+    import AssociationCardController from "./AssociationCard.controller";
     import Card from "$lib/dsfr/Card.svelte";
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
-    import { getFirstPartAddress, getLastPartAddress } from "$lib/resources/associations/association.helper";
 
     export let simplifiedAsso;
 
-    const street = getFirstPartAddress(simplifiedAsso.address);
-    const city = getLastPartAddress(simplifiedAsso.address);
-
-    const getNbEtabLabel = () =>
-        simplifiedAsso.nbEtabs <= 1
-            ? `${simplifiedAsso.nbEtabs} établissement rattaché`
-            : `${simplifiedAsso.nbEtabs} établissements rattachés`;
+    const ctrl = new AssociationCardController(simplifiedAsso);
 </script>
 
-<Card title={simplifiedAsso.name} url="/association/{simplifiedAsso.siren}" titleStyle="h6">
+<Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6">
     <svelte:fragment slot="card-start">
         <p class="card-start fr-card__detail fr-text--sm fr-icon-community-line">Association</p>
     </svelte:fragment>
@@ -36,9 +30,9 @@
                 <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line" />
             </div>
             <div class="ellipsis">
-                <span class="fr-text--bold ellipsis">{street}</span>
+                <span class="fr-text--bold ellipsis">{ctrl.street}</span>
                 <br />
-                <span class="fr-text--bold">{city}</span>
+                <span class="fr-text--bold">{ctrl.city}</span>
             </div>
         {/if}
     </div>
@@ -47,7 +41,7 @@
         <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}
             <p class="info fr-card__detail fr-icon-info-fill fr-text--sm">
-                {getNbEtabLabel()}
+                {ctrl.nbEtabsLabel}
             </p>
         {/if}
     </div>

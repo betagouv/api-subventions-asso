@@ -4,54 +4,28 @@ import { NotFoundError } from "../../shared/errors/httpErrors";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import versementsService from "./versements.service";
-import associationsService from "../associations/associations.service";
-
-jest.mock("../associations/associations.service");
 
 describe("VersementsService", () => {
     const VERSEMENT_KEY = "J00034";
-
     describe("getVersementsByAssociation", () => {
         const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
         const getSirenMock = jest.spyOn(rnaSirenService, "getSiren");
         // @ts-expect-error getVersementsBySiren is private methode
         const getVersementsMock = jest.spyOn<any>(versementsService, "getVersementsBySiren");
-        const SIREN = "FAKE_SIREN";
 
-        beforeAll(() => {
-            getIdentifierTypeMock.mockReturnValue(StructureIdentifiersEnum.siren);
-            getVersementsMock.mockResolvedValue([]);
-            getIdentifierTypeMock.mockReturnValue(StructureIdentifiersEnum.rna);
-            getSirenMock.mockResolvedValue(SIREN);
-            jest.mocked(associationsService.validateIdentifierFromAsso).mockResolvedValue(undefined);
-        });
-
-        afterAll(() => {
-            getIdentifierTypeMock.mockReset();
-            getVersementsMock.mockReset();
-            getIdentifierTypeMock.mockReset();
-            jest.mocked(associationsService.validateIdentifierFromAsso).mockReset();
-        });
-
-        it("should throw error because identifier is not valid", async () => {
-            getIdentifierTypeMock.mockReturnValueOnce(null);
+        it("should throw error because indentifier is not valid", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => null);
 
             await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
                 AssociationIdentifierError,
             );
         });
 
-        it("should check that identifier comes from an association", async () => {
-            const id = "test";
-            await versementsService.getVersementsByAssociation(id);
-            expect(associationsService.validateIdentifierFromAsso).toHaveBeenCalledWith(
-                id,
-                StructureIdentifiersEnum.rna,
-            );
-        });
-
         it("should throw not found error because siren not found", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            getVersementsMock.mockImplementationOnce(async () => []);
             getSirenMock.mockImplementationOnce(async () => null);
+
             await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
                 NotFoundError,
             );
@@ -59,20 +33,36 @@ describe("VersementsService", () => {
 
         it("should call rnaSirenService", async () => {
             const expected = "test";
+
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            getVersementsMock.mockImplementationOnce(async () => []);
+            getSirenMock.mockImplementationOnce(async () => "FAKE_SIREN");
+
             await versementsService.getVersementsByAssociation("test");
+
             expect(getSirenMock).toHaveBeenCalledWith(expected);
         });
 
-        it("should call getVersementsBySiren with found siren", async () => {
-            const expected = SIREN;
+        it("should call getVersementsBySiren with founded siren", async () => {
+            const expected = "FAKE_SIREN";
+
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            getVersementsMock.mockImplementationOnce(async () => []);
+            getSirenMock.mockImplementationOnce(async () => expected);
+
             await versementsService.getVersementsByAssociation("test");
+
             expect(getVersementsMock).toHaveBeenCalledWith(expected);
         });
 
         it("should call getVersementsBySiren", async () => {
-            const expected = SIREN;
-            getIdentifierTypeMock.mockReturnValueOnce(StructureIdentifiersEnum.siren);
-            await versementsService.getVersementsByAssociation(SIREN);
+            const expected = "FAKE_SIREN";
+
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+            getVersementsMock.mockImplementationOnce(async () => []);
+
+            await versementsService.getVersementsByAssociation(expected);
+
             expect(getVersementsMock).toHaveBeenCalledWith(expected);
         });
     });

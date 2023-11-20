@@ -38,8 +38,7 @@ export class EtablissementController extends Controller {
      */
     @Get("/{siret}/subventions")
     public async getDemandeSubventions(siret: Siret): Promise<GetSubventionsResponseDto> {
-        const flux = await etablissementService.getSubventions(siret);
-        const data = await flux.toPromise();
+        const data = await etablissementService.getSubventions(siret).toPromise();
         const subventions = data
             .map(subFlux => subFlux.subventions)
             .flat()

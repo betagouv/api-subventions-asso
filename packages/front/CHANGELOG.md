@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.39.3](https://github.com/betagouv/datasubvention/compare/v0.38.8...v0.39.3) (2023-11-20)
+
+### Bug Fixes
+
+-   **front:** association card url with rna ([b6fcd4d](https://github.com/betagouv/datasubvention/commit/b6fcd4d731decf378573af318576d5cc157f8cd7))
+-   **front:** disable search button if value is empty ([1474b69](https://github.com/betagouv/datasubvention/commit/1474b6931391bcc41db3efce8fb0ce129f9cb5d7))
+-   **front:** display establishment address ([4cff825](https://github.com/betagouv/datasubvention/commit/4cff825feaaadc1d2db64acc1cfb0d244c5e79e1))
+-   **front:** display input in SearchBar on search page first load ([a9265a8](https://github.com/betagouv/datasubvention/commit/a9265a8680542dd9849480b68ef985c4143ffa8d))
+-   **front:** redirect to structure page if input is an identifier ([662b017](https://github.com/betagouv/datasubvention/commit/662b017b12be9c518766ef3a42dc3b421600ce20))
+
+# [0.39.0](https://github.com/betagouv/datasubvention/compare/v0.38.6...v0.39.0) (2023-11-15)
+
+### Bug Fixes
+
+-   **front:** association card nb etab label ([cfcfc15](https://github.com/betagouv/datasubvention/commit/cfcfc15b5fbe8c8727718848cc9df773a20e40e7))
+-   **front:** comment sanitizing for review ([8618965](https://github.com/betagouv/datasubvention/commit/86189655dce2d74ad4bce202c5ddd9f46ab658ba))
+-   **front:** date documents ([726bc24](https://github.com/betagouv/datasubvention/commit/726bc24aedc63ffeba9d99d415d9ef540f6677d5))
+-   **front:** fix blue banner when content is small ([df6521a](https://github.com/betagouv/datasubvention/commit/df6521a51bc752081db335230e0f3e707a0c49d0))
+-   **front:** fix sanitizing ([9a9d784](https://github.com/betagouv/datasubvention/commit/9a9d784f48c22971c8d1e2f5957f101366a37b3d))
+-   **front:** mock association adapter ([47aef02](https://github.com/betagouv/datasubvention/commit/47aef02b1d71f0c5d6cd1ee36fce62c90eeb24c2))
+-   **front:** nb etab in association card ([dab413a](https://github.com/betagouv/datasubvention/commit/dab413ae2459e76b0f69fa34a1823b5b907450e1))
+-   **front:** nb result found from search ([d2cf219](https://github.com/betagouv/datasubvention/commit/d2cf21972b43e0cd9734026580de8c160c5e3c7a))
+-   **front:** sentry sourcemaps proper release ([17f26c2](https://github.com/betagouv/datasubvention/commit/17f26c281b426916d6eb32a437f190489feb061c))
+-   **front:** stick footer to the end of content ([25701e8](https://github.com/betagouv/datasubvention/commit/25701e8a72d6196aeeac8be3b6631d3d899a63c0))
+-   **front:** use onclick not [@click](https://github.com/click) ([3e64ba1](https://github.com/betagouv/datasubvention/commit/3e64ba11cb4184a8b294bda0078248348b76ed73))
+
+### Features
+
+-   **front:** add title ([d4322c1](https://github.com/betagouv/datasubvention/commit/d4322c11d25d09dcf876d8b4a24cd1df888e9862))
+-   **front:** center search bar and add max-width ([e09f3ab](https://github.com/betagouv/datasubvention/commit/e09f3abdc5784f75985ab13a2ec0c4480f948dc5))
+-   **front:** create AssociationCard and use it in search history ([4b6f6f8](https://github.com/betagouv/datasubvention/commit/4b6f6f81dbd54c7108305f551e6959fb3a5551ff))
+-   **front:** create search name view ([2ce9e86](https://github.com/betagouv/datasubvention/commit/2ce9e86ff92b11e10f7b526cf7eb46ec0a71a211))
+-   **front:** enrich document url with api domain and token ([e919b00](https://github.com/betagouv/datasubvention/commit/e919b005261b7f010e42c31564daa8e3bd340b0d))
+-   **front:** extract search bar in a new component ([e745026](https://github.com/betagouv/datasubvention/commit/e74502602673856e6ebbe265db33c5ab81277651))
+-   **front:** front sanitization ([a9a68d9](https://github.com/betagouv/datasubvention/commit/a9a68d989ff6dbbe5269c1e078b01b046e6868d8))
+-   **front:** handle back navigation with new search input ([328c499](https://github.com/betagouv/datasubvention/commit/328c499cc26bd3d1a8e2068b561f7e95842de45b))
+-   **front:** handle plural in nb etab ([1cd13bb](https://github.com/betagouv/datasubvention/commit/1cd13bba546337cce10d606ae2f1e667641258c3))
+-   **front:** make card title a slot ([f2754c6](https://github.com/betagouv/datasubvention/commit/f2754c639112cd2a15313b0cd4fa638c992e2ca5))
+-   **front:** mv toSearchHistory in a new adapter file ([8ef46d9](https://github.com/betagouv/datasubvention/commit/8ef46d956428476193e81be9d92c90b84241a4d0))
+-   **front:** remove ResultCard and put sanitizing in SearchController ([5f736b4](https://github.com/betagouv/datasubvention/commit/5f736b44f58cd771a62d6bc4531d77f1760997e6))
+-   **front:** remove searchbar search result ([5cb2c23](https://github.com/betagouv/datasubvention/commit/5cb2c236e587be3449befd5645933140e3a0abee))
+-   **front:** track search history use ([17e3858](https://github.com/betagouv/datasubvention/commit/17e3858c0dba87d1c915829f78a57652c86f44d6))
+-   **front:** update layout spacing ([6be958e](https://github.com/betagouv/datasubvention/commit/6be958eac08a5636f8f97296a6c99be91ddc47bb))
+-   **front:** use svelte:fragment for slot ([97c62a6](https://github.com/betagouv/datasubvention/commit/97c62a68d52b5c97a8b7bee99a17488dd5117a8f))
+
 # [0.39.0](https://github.com/betagouv/datasubvention/compare/v0.38.6...v0.39.0) (2023-11-15)
 
 ### Bug Fixes
