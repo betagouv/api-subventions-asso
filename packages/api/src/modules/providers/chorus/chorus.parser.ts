@@ -59,7 +59,6 @@ export default class ChorusParser {
     }
 
     protected static addUniqueId(partialChorusEntity) {
-        console.log(ChorusService.buildUniqueId);
         return {
             ...partialChorusEntity,
             uniqueId: ChorusService.buildUniqueId(partialChorusEntity.indexedInformations),

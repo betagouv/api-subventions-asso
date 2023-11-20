@@ -7,9 +7,9 @@ const mockedChorusService = jest.mocked(chorusService);
 import { printAtSameLine } from "../../../shared/helpers/CliHelper";
 jest.mock("../../../shared/helpers/CliHelper");
 import ChorusParser from "./chorus.parser";
-import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES, PARSED_DATA } from "./__fixutres__/ChorusPages";
+import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixutres__/ChorusPages";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import { DEFAULT_CHORUS_LINE_ENTITY } from "./__fixutres__/ChorusLineEntities";
+jest.mock("./entities/ChorusLineEntity");
 
 describe("ChorusParser", () => {
     describe("renameEmptyHeaders()", () => {
@@ -21,7 +21,51 @@ describe("ChorusParser", () => {
         });
     });
 
-    describe("rowsToEntities", () => {});
+    describe("rowsToEntities", () => {
+        // @ts-expect-error: protected
+        let originalAddIndexedInformations = ChorusParser.addIndexedInformations;
+        // @ts-expect-error: protected
+        let originalAddUniqueId = ChorusParser.addUniqueId;
+        // @ts-expect-error: protected
+        let originalMapToEntity = ChorusParser.mapToEntity;
+        let validator = jest.fn().mockReturnValue(true);
+        const mockAddIndexedInformations = jest.fn();
+        const mockAddUniqueId = jest.fn();
+        const mockMapToEntity = jest.fn();
+
+        const ROWS = [...PAGES];
+
+        beforeAll(() => {
+            // @ts-expect-error: protected
+            ChorusParser.addIndexedInformations = mockAddIndexedInformations;
+            // @ts-expect-error: protected
+            ChorusParser.addUniqueId = mockAddUniqueId;
+            // @ts-expect-error: protected
+            ChorusParser.mapToEntity = mockMapToEntity;
+        });
+
+        afterAll(() => {
+            // @ts-expect-error: protected
+            ChorusParser.addIndexedInformations = originalAddIndexedInformations;
+            // @ts-expect-error: protected
+            ChorusParser.addUniqueId = originalAddUniqueId;
+            // @ts-expect-error: protected
+            ChorusParser.mapToEntity = originalMapToEntity;
+        });
+
+        it.each`
+            fn
+            ${ParserHelper.linkHeaderToData}
+            ${mockAddIndexedInformations}
+            ${mockAddUniqueId}
+            ${mockMapToEntity}
+            ${validator}
+        `("should call $fn", ({ fn }) => {
+            // @ts-expect-error: protected
+            ChorusParser.rowsToEntities([], ROWS, validator);
+            expect(fn).toHaveBeenCalledTimes(ROWS.length);
+        });
+    });
 
     describe("addIndexedInformations", () => {
         it("should add create indexedInformations from parsedData", () => {
@@ -47,6 +91,16 @@ describe("ChorusParser", () => {
     });
 
     describe("addUniqueId", () => {
+        const UNIQUE_ID = "unique-id";
+        const originalBuildUniqueId = ChorusService.buildUniqueId;
+        beforeAll(() => {
+            ChorusService.buildUniqueId = jest.fn().mockReturnValue(UNIQUE_ID);
+        });
+
+        afterAll(() => {
+            ChorusService.buildUniqueId = originalBuildUniqueId;
+        });
+
         it("should buildUniqueId from indexedInformations", () => {
             // @ts-expect-error: protected
             ChorusParser.addUniqueId(ENTITIES[0]);
@@ -55,14 +109,46 @@ describe("ChorusParser", () => {
 
         it("should add uniqueId to the returned object", () => {
             const partialChorusLineEntity = { indexedInformations: ENTITIES[0] };
-            const expected = { ...partialChorusLineEntity, uniqueId: ENTITIES[0].uniqueId };
+            const expected = { ...partialChorusLineEntity, uniqueId: UNIQUE_ID };
             // @ts-expect-error: protected
-            const actual = ChorusParser.addUniqueId(partialChorusLineEntity).uniqueId;
+            const actual = ChorusParser.addUniqueId(partialChorusLineEntity);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("mapToEntity", () => {});
+    describe("mapToEntity", () => {
+        it("should create new ChorusLineEntity", () => {
+            const fixture = ENTITIES[0];
+            const almostEntity = {
+                parsedData: fixture.data,
+                indexedInformations: fixture.indexedInformations,
+                uniqueId: fixture.uniqueId,
+            };
+            // @ts-expect-error: protected
+            // test it as a real mapper
+            [almostEntity].map(ChorusParser.mapToEntity);
+            console.log(ChorusLineEntity);
+            expect(ChorusLineEntity).toHaveBeenCalledWith(
+                almostEntity.uniqueId,
+                almostEntity.indexedInformations,
+                almostEntity.parsedData,
+            );
+        });
+
+        it("should map to entity", () => {
+            const fixture = ENTITIES[0];
+            const almostEntity = {
+                parsedData: fixture.data,
+                indexedInformations: fixture.indexedInformations,
+                uniqueId: fixture.uniqueId,
+            };
+            // @ts-expect-error: protected
+            // test it as a real mapper
+            const actual = [almostEntity].map(ChorusParser.mapToEntity);
+            const expected = [expect.any(ChorusLineEntity)];
+            expect(actual).toEqual(expected);
+        });
+    });
 
     describe("parse()", () => {
         // @ts-expect-error: protected
