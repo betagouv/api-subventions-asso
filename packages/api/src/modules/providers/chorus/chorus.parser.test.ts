@@ -59,7 +59,6 @@ describe("ChorusParser", () => {
             ${mockAddIndexedInformations}
             ${mockAddUniqueId}
             ${mockMapToEntity}
-            ${validator}
         `("should call $fn", ({ fn }) => {
             // @ts-expect-error: protected
             ChorusParser.rowsToEntities([], ROWS, validator);
@@ -127,7 +126,6 @@ describe("ChorusParser", () => {
             // @ts-expect-error: protected
             // test it as a real mapper
             [almostEntity].map(ChorusParser.mapToEntity);
-            console.log(ChorusLineEntity);
             expect(ChorusLineEntity).toHaveBeenCalledWith(
                 almostEntity.uniqueId,
                 almostEntity.indexedInformations,
@@ -146,6 +144,29 @@ describe("ChorusParser", () => {
             // test it as a real mapper
             const actual = [almostEntity].map(ChorusParser.mapToEntity);
             const expected = [expect.any(ChorusLineEntity)];
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("validateEntity", () => {
+        beforeAll(() => {
+            mockedChorusService.validateEntity.mockReturnValue(true);
+        });
+
+        it("should return true", () => {
+            const expected = true;
+            //@ts-expect-error: protected
+            const actual = ChorusParser.validateEntity(ENTITIES[0]);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false", () => {
+            mockedChorusService.validateEntity.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const expected = false;
+            //@ts-expect-error: protected
+            const actual = ChorusParser.validateEntity(ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
     });

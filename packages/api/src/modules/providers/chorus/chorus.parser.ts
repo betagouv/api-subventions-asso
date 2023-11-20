@@ -1,10 +1,10 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import { ChorusService } from "./chorus.service";
+import chorusService, { ChorusService } from "./chorus.service";
 
 export default class ChorusParser {
-    static parse(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
+    static parse(content: Buffer) {
         console.log("Open and read file ...");
         const pages = ParseHelper.xlsParse(content);
         console.log("Read file end");
@@ -14,7 +14,7 @@ export default class ChorusParser {
         const headerRow = page[0] as string[];
         const headers = ChorusParser.renameEmptyHeaders(headerRow);
         console.log("Map rows to entities...");
-        const entities = this.rowsToEntities(headers, page.slice(1), validator);
+        const entities = this.rowsToEntities(headers, page.slice(1));
         console.log(`${entities.length} entity ready to be saved...`);
         return entities;
     }
@@ -38,15 +38,13 @@ export default class ChorusParser {
         return header;
     }
 
-    protected static rowsToEntities(headers, rows, validator) {
+    protected static rowsToEntities(headers, rows) {
         const entities = rows
             .map(row => ({ parsedData: ParseHelper.linkHeaderToData(headers, row) }))
             .map(this.addIndexedInformations)
             .map(this.addUniqueId)
             .map(this.mapToEntity)
-            // TODO: validate parsedData instead of waiting entity build
-            // it would remove the need of passing the validator
-            .filter(validator);
+            .filter(this.validateEntity);
         return entities;
     }
 
@@ -69,5 +67,17 @@ export default class ChorusParser {
         const entity = new ChorusLineEntity(obj.uniqueId, obj.indexedInformations, obj.parsedData);
         CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
         return entity;
+    }
+
+    protected static validateEntity(entity) {
+        try {
+            return chorusService.validateEntity(entity);
+        } catch (e) {
+            console.log(
+                `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                JSON.stringify(entity, null, "\t"),
+            );
+            return false;
+        }
     }
 }

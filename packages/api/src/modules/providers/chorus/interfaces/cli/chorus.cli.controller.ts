@@ -50,19 +50,7 @@ export default class ChorusCliController extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const chorusEntityValidator = entity => {
-            try {
-                return chorusService.validateEntity(entity);
-            } catch (e) {
-                logger.push(
-                    `\n\nThis request is not registered because: ${(e as Error).message}\n`,
-                    JSON.stringify(entity, null, "\t"),
-                );
-                return false;
-            }
-        };
-
-        const entities = ChorusParser.parse(fileContent, chorusEntityValidator);
+        const entities = ChorusParser.parse(fileContent);
         const entitiesToSave = await this.filterEntitiesToSave(entities);
 
         const totalEntities = entitiesToSave.length;
