@@ -9,7 +9,7 @@ export default class SearchController {
     inputSearch: Store<string>;
 
     constructor(name) {
-        this.inputSearch = new Store("");
+        this.inputSearch = new Store(name);
         this.associations = new Store([]);
         this.searchPromise = new Store(returnInfinitPromise());
         this.searchPromise.set(this.fetchAssociationFromName(name));
