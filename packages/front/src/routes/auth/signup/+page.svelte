@@ -88,7 +88,7 @@
     <form on:submit|preventDefault={() => ctrl.signin()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
             <legend class="fr-fieldset__legend">
-                <h5>Vous avez déjà un compte ?</h5>
+                <h2 class="fr-h5">Vous avez déjà un compte ?</h2>
             </legend>
             <div class="fr-fieldset__element">
                 <ul class="fr-btns-group">
