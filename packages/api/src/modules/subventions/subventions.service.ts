@@ -9,7 +9,6 @@ import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
-import associationsService from "../associations/associations.service";
 import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 
@@ -17,8 +16,6 @@ export class SubventionsService {
     async getDemandesByAssociation(id: AssociationIdentifiers) {
         let type = getIdentifierType(id);
         if (!type) throw new AssociationIdentifierError();
-
-        await associationsService.validateIdentifierFromAsso(id, type);
 
         if (type === StructureIdentifiersEnum.rna) {
             const siren = await rnaSirenService.getSiren(id);
@@ -31,11 +28,9 @@ export class SubventionsService {
         return this.aggregate(id, type);
     }
 
-    async getDemandesByEtablissement(id: Siret) {
+    getDemandesByEtablissement(id: Siret) {
         const type = getIdentifierType(id);
         if (type !== StructureIdentifiersEnum.siret) throw new StructureIdentifiersError("SIRET");
-
-        await associationsService.validateIdentifierFromAsso(id, type);
 
         return this.aggregateByType(id, StructureIdentifiersEnum.siret);
     }

@@ -13,7 +13,9 @@
                     id="search-input-input"
                     name="search-input"
                     bind:value />
-                <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit">Rechercher</button>
+                <button class="fr-btn" title="Rechercher" id="search-input-button" type="submit" disabled={!value}>
+                    Rechercher
+                </button>
             </div>
         </form>
     </div>
