@@ -1,6 +1,6 @@
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { AssociationNameDto } from "dto";
 import { HttpErrorInterface } from "../../../../shared/errors/httpErrors/HttpError";
-import AssociationNameEntity from "../../../association-name/entities/AssociationNameEntity";
 
 import searchService from "../../search.service";
 
@@ -17,7 +17,7 @@ export class SearchController extends Controller {
     @Response<HttpErrorInterface>("404", "Aucune association retrouvée", {
         message: "Could match any association with given input : ${input}",
     })
-    public async findAssociations(input: string): Promise<{ result: AssociationNameEntity[] }> {
+    public async findAssociations(input: string): Promise<{ result: AssociationNameDto[] }> {
         const result = await searchService.getAssociationsKeys(input);
         if (result.length === 0) this.setStatus(204);
         return { result };

@@ -4,9 +4,9 @@ jest.mock("./repositories/chorus.line.repository");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
 import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");
-import dataGouvService from "../datagouv/datagouv.service";
+import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegalEntrepises.service";
 jest.mock("../datagouv/datagouv.service");
-const mockedDataGouvService = jest.mocked(dataGouvService);
+const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSerivce);
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
@@ -252,20 +252,20 @@ describe("chorusService", () => {
         const SIREN = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations.siret.substring(0, 9);
 
         beforeEach(() => {
-            mockedDataGouvService.sirenIsEntreprise.mockResolvedValue(false);
+            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValue(false);
             mockedRnaSirenService.find.mockResolvedValue(null);
             // @ts-expect-error: mock resolve value
             mockedChorusLineRepository.findOneBySiren.mockResolvedValue(DEFAULT_CHORUS_LINE_DOCUMENT);
         });
 
         afterAll(() => {
-            mockedDataGouvService.sirenIsEntreprise.mockReset();
+            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockReset();
             mockedRnaSirenService.find.mockReset();
             mockedChorusLineRepository.findOneBySiren.mockReset();
         });
 
         it("should return false if siren belongs to company", async () => {
-            mockedDataGouvService.sirenIsEntreprise.mockResolvedValueOnce(true);
+            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValueOnce(true);
             const expected = false;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);

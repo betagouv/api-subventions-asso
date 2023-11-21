@@ -5,12 +5,14 @@ import { ExampleCronController } from "./modules/example/interfaces/cron/example
 import { DemarchesSimplifieesCronController } from "./modules/example/interfaces/cron/demarchesSimplifiees.cron.controller";
 import { DauphinCronController } from "./modules/providers/dauphin/interfaces/cron/dauphin.cron.controller";
 import { DumpCronController } from "./modules/dump/interfaces/cron/DumpCronController";
+import { HistoryUniteLegalInterfaceCron } from "./interfaces/cron/HistoryUniteLegalControllerCron";
 
 const controllers: CronController[] = [
     // ExampleCronController,
     DemarchesSimplifieesCronController,
     DauphinCronController,
     DumpCronController,
+    HistoryUniteLegalInterfaceCron
 ];
 
 export const scheduler = new ToadScheduler();

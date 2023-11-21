@@ -15,11 +15,11 @@ import AssociationIdentifierError from "../../shared/errors/AssociationIdentifie
 import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import { NotFoundError } from "../../shared/errors/httpErrors";
-import dataGouvService from "../providers/datagouv/datagouv.service";
 import mocked = jest.mocked;
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegalEntrepises.service";
 
 jest.mock("../providers/index");
 
@@ -312,7 +312,7 @@ describe("associationsService", () => {
         const SIREN = "123456789";
 
         beforeAll(() => {
-            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValue(false);
+            mocked(uniteLegalEntreprisesService.isEntreprise).mockResolvedValue(false);
             mocked(rnaSirenService.find).mockResolvedValue(null);
             mocked(apiAssoService.findAssociationBySiren).mockResolvedValue({
                 // @ts-expect-error: mock
@@ -321,13 +321,13 @@ describe("associationsService", () => {
         });
 
         afterAll(() => {
-            mocked(dataGouvService.sirenIsEntreprise).mockRestore();
+            mocked(uniteLegalEntreprisesService.isEntreprise).mockRestore();
             mocked(rnaSirenService.find).mockRestore();
             mocked(apiAssoService.findAssociationBySiren).mockRestore();
         });
 
         it("returns false if found by data gouv service as not an association", async () => {
-            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValueOnce(true);
+            mocked(uniteLegalEntreprisesService.isEntreprise).mockResolvedValueOnce(true);
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
@@ -359,6 +359,16 @@ describe("associationsService", () => {
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("validateIdentifierFromAsso()", () => {
+        const ID = "identifier";
+        const ID_TYPE = StructureIdentifiersEnum.siret;
+        const isIdentifierFromAssoSpy = jest.spyOn(associationsService, "isSirenFromAsso");
+
+        beforeAll(() => {
+            isIdentifierFromAssoSpy.mockResolvedValue(true);
         });
 
         it("returns true if structure found by apiAssoService has accepted categories_juridique", async () => {

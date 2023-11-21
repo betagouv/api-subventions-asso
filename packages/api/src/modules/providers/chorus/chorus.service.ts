@@ -7,12 +7,12 @@ import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { isEJ, isSiret } from "../../../shared/Validators";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
-import dataGouvService from "../datagouv/datagouv.service";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegalEntrepises.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -145,7 +145,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
     }
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
-        if (await dataGouvService.sirenIsEntreprise(siren)) return false;
+        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
         if (await rnaSirenService.find(siren)) return true;
 
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);

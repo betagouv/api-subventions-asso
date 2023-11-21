@@ -15,13 +15,14 @@ import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
-import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import documentsService from "../documents/documents.service";
 import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegalEntrepises.service";
+import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
@@ -139,7 +140,7 @@ export class AssociationsService {
     }
 
     async isSirenFromAsso(siren: Siren): Promise<boolean> {
-        if (await dataGouvService.sirenIsEntreprise(siren)) return false;
+        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
 
         // what follows will be useless when #554 is done (then maybe the helper will be redundant)
         if (await rnaSirenService.find(siren)) return true;
@@ -147,7 +148,7 @@ export class AssociationsService {
         const asso = await apiAssoService.findAssociationBySiren(siren);
         if (!asso?.categorie_juridique?.[0]?.value) return false;
         return LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value);
-    } // TODO tests
+    }
 }
 
 const associationsService = new AssociationsService();

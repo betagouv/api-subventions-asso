@@ -3,7 +3,6 @@ import { mkdirSync, existsSync } from "fs";
 import "./configurations/env.conf";
 
 import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
-import DataGouvCliController from "./modules/providers/datagouv/interfaces/cli/datagouv.cli.controller";
 import FonjepCliController from "./modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
 import ChorusCliController from "./modules/providers/chorus/interfaces/cli/chorus.cli.controller";
 import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
@@ -13,7 +12,6 @@ import { connectDB } from "./shared/MongoConnection";
 
 import { CliStaticInterface } from "./@types";
 
-import "./modules/association-name/associationName.service"; // Load association-name for load service in eventManager
 import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
 import DemarchesSimplifieesCliController from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
 import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
@@ -22,6 +20,7 @@ import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dau
 import AdminStructureCliController from "./modules/admin-structure/interfaces/cli/adminStructureCliController";
 import DumpCliController from "./modules/dump/interfaces/cli/DumpCliController";
 import ScdlCliController from "./modules/providers/scdl/interfaces/cli/scdl.cli";
+import HistoryUniteLegalInterfaceCli from "./interfaces/cli/HistoryUniteLegalInterfaceCli";
 import RnaSirenInterfaceCli from "./interfaces/cli/RnaSirenInterfaceCli";
 
 async function main() {
@@ -37,7 +36,6 @@ async function main() {
         UserCliController,
         ChorusCliController,
         FonjepCliController,
-        DataGouvCliController,
         SubventiaCliController,
         ConsumerCliController,
         DemarchesSimplifieesCliController,
@@ -47,6 +45,7 @@ async function main() {
         AdminStructureCliController,
         DumpCliController,
         ScdlCliController,
+        HistoryUniteLegalInterfaceCli,
         RnaSirenInterfaceCli,
     ];
 

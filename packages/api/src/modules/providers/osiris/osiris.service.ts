@@ -9,7 +9,6 @@ import {
     isOsirisRequestId,
     isOsirisActionId,
 } from "../../../shared/Validators";
-import associationNameService from "../../association-name/associationName.service";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
@@ -43,7 +42,6 @@ export class OsirisService
                 "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
             id: "osiris",
         });
-        associationNameService.setProviderScore(this.provider.name, 0.3);
     }
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
