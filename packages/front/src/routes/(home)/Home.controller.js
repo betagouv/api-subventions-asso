@@ -1,5 +1,4 @@
 import { getSearchHistory } from "$lib/services/searchHistory.service";
-import { isRna, isSiren, isSiret } from "$lib/helpers/validatorHelper";
 import Store from "$lib/core/Store";
 import { goto } from "$app/navigation";
 
@@ -11,13 +10,7 @@ export class HomeController {
     }
 
     onSubmit() {
-        if (isRna(this.input.value) || isSiren(this.input.value)) {
-            goto(`/association/${this.input.value}`);
-        } else if (isSiret(this.input.value)) {
-            goto(`/etablissement/${this.input.value}`);
-        } else {
-            goto(`/search/${this.input.value}`);
-        }
+        goto(`/search/${this.input.value}`);
     }
 
     _getSuccessMessage(successKey) {

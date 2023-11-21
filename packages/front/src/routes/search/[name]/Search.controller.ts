@@ -1,12 +1,12 @@
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitPromise } from "$lib/helpers/promiseHelper";
-import { isRna, isSiren, isSiret } from "$lib/helpers/validatorHelper";
+import { isSiret } from "$lib/helpers/validatorHelper";
 import associationService from "$lib/resources/associations/association.service";
 
 export default class SearchController {
-    associations: Store<any>;
-    searchPromise: Store<Promise<any>>;
+    associations: Store<unknown[]>;
+    searchPromise: Store<Promise<unknown>>;
     inputSearch: Store<string>;
 
     constructor(name) {
@@ -17,7 +17,14 @@ export default class SearchController {
     }
 
     fetchAssociationFromName(name) {
-        return associationService.search(name).then(associations => this.associations.set(associations));
+        return associationService.search(name).then(associations => {
+            if (associations.length === 1) {
+                goto(`/association/${associations[0].siren || associations[0].rna}`);
+            } else {
+                this.associations.set(associations);
+                goto(`/search/${this.inputSearch.value}`, { replaceState: true });
+            }
+        });
     }
 
     updateNbEtabsLabel() {
@@ -26,13 +33,10 @@ export default class SearchController {
     }
 
     onSubmit() {
-        if (isRna(this.inputSearch.value) || isSiren(this.inputSearch.value)) {
-            goto(`/association/${this.inputSearch.value}`);
-        } else if (isSiret(this.inputSearch.value)) {
+        if (isSiret(this.inputSearch.value)) {
             goto(`/etablissement/${this.inputSearch.value}`);
         } else {
             this.searchPromise.set(this.fetchAssociationFromName(this.inputSearch.value));
-            return goto(`/search/${this.inputSearch.value}`, { replaceState: true });
         }
     }
 }
