@@ -12,9 +12,9 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
@@ -229,9 +229,9 @@ export class DauphinService
     // no RIB document in dauphin
 
     async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
-        const siren = await rnaSirenService.getSiren(rna);
-        if (!siren) return null;
-        return this.getDocumentsBySiren(siren);
+        const rnaSirenEntities = await rnaSirenService.find(rna);
+        if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
+        return this.getDocumentsBySiren(rnaSirenEntities[0].siren);
     }
 
     async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {

@@ -1,6 +1,7 @@
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
-import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import avisSituationInseeService from "./avisSituationInsee.service";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 
 describe("AvisSituationInseeService", () => {
     describe("getInseeEtablissementsBySiren", () => {
@@ -253,11 +254,11 @@ describe("AvisSituationInseeService", () => {
     });
 
     describe("getDocumentByRna", () => {
-        const getSirenMock = jest.spyOn(rnaSirenService, "getSiren");
+        const findOneMock = jest.spyOn(rnaSirenService, "find");
         const getDocumentsBySirenMock = jest.spyOn(avisSituationInseeService, "getDocumentsBySiren");
 
         it("should return null because siren not found", async () => {
-            getSirenMock.mockImplementationOnce(async () => null);
+            findOneMock.mockResolvedValueOnce(null);
 
             const expected = null;
             const actual = await avisSituationInseeService.getDocumentsByRna("");
@@ -266,17 +267,17 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should call getDocumentsBySiren with founded siren", async () => {
-            getSirenMock.mockImplementationOnce(async () => expected);
+            const expected = "000000000";
+            findOneMock.mockResolvedValueOnce(new RnaSirenEntity("", expected, false));
             getDocumentsBySirenMock.mockImplementation(async () => ({} as any));
 
-            const expected = "000000000";
             await avisSituationInseeService.getDocumentsByRna("");
 
             expect(avisSituationInseeService.getDocumentsBySiren).toHaveBeenCalledWith(expected);
         });
 
         it("should return getDocumentsBySiren anwser", async () => {
-            getSirenMock.mockImplementationOnce(async () => "000000000");
+            findOneMock.mockResolvedValueOnce(new RnaSirenEntity("","000000000", false));
             getDocumentsBySirenMock.mockImplementation(async () => expected as any);
 
             const expected = { imTest: true };

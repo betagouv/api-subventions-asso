@@ -3,10 +3,16 @@ import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 import SpyInstance = jest.SpyInstance;
-import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import { Siret, Siren } from "dto";
 import * as sirenHelper from "../../../shared/helpers/SirenHelper";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import RnaSirenEntity from "../../../entities/RnaSirenEntity";
+
+jest.mock("axios", () => ({
+    post: jest.fn(),
+    get: jest.fn(),
+}));
 
 jest.mock("./repositories/dauphin-gispro.repository", () => ({
     getLastImportDate: jest.fn(() => new Date()),
@@ -458,7 +464,7 @@ describe("Dauphin Service", () => {
             let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
 
             beforeAll(() => {
-                getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
+                getSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([new RnaSirenEntity(RNA, SIREN)]);
                 // @ts-expect-error: mock
                 getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
             });

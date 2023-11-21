@@ -3,11 +3,11 @@ import { Siren, Siret, Rna, Document } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
-import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";
 import ProviderCore from "../ProviderCore";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 
 interface AvisSituationCache {
     etablissements: {
@@ -110,11 +110,11 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
     }
 
     async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
-        const siren = await rnaSirenService.getSiren(rna);
+        const rnaSirenEntities = await rnaSirenService.find(rna);
 
-        if (!siren) return null;
+        if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
 
-        return this.getDocumentsBySiren(siren);
+        return this.getDocumentsBySiren(rnaSirenEntities[0].siren);
     }
 }
 

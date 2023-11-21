@@ -1,5 +1,4 @@
-import rnaSirenRepository from "./_open-data/rna-siren/repositories/rnaSiren.repository";
-import associationNameRepository from "./association-name/repositories/associationName.repository";
+import rnaSirenPort from "../dataProviders/db/rnaSiren/rnaSiren.port";
 import configurationsRepository from "./configurations/repositories/configurations.repository";
 import chorusLineRepository from "./providers/chorus/repositories/chorus.line.repository";
 import dauphinGisproRepository from "./providers/dauphin/repositories/dauphin-gispro.repository";
@@ -25,7 +24,6 @@ export const repositoriesWithIndexes = [
     userRepository,
     statsRepository,
     userResetRepository,
-    rnaSirenRepository,
     osirisRequestRepository,
     osirisActionRepository,
     osirisEvaluationRepository,
@@ -42,4 +40,5 @@ export const repositoriesWithIndexes = [
     demarchesSimplifieesDataRepository,
     demarchesSimplifieesMapperRepository,
     statsAssociationsVisitRepository,
+    rnaSirenPort,
 ];

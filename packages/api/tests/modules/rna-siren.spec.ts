@@ -1,6 +1,6 @@
 import request = require("supertest");
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import rnaSirenService from "../../src/modules/_open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -9,15 +9,14 @@ describe("RnaSirenController", () => {
     const SIREN = "123456789";
 
     beforeEach(() => {
-        jest.spyOn(rnaSirenService, "getSiren");
-        jest.spyOn(rnaSirenService, "getRna");
+        jest.spyOn(rnaSirenService, "find");
     });
 
     describe("GET /open-data/rna-siren/{rna}", () => {
         describe("on success", () => {
             it("should return an object", async () => {
-                (rnaSirenService.getSiren as jest.Mock).mockImplementation(async () => SIREN);
-                const expected = { siren: SIREN, rna: RNA };
+                const expected = [{ siren: SIREN, rna: RNA }];
+                (rnaSirenService.find as jest.Mock).mockResolvedValueOnce(expected);
                 const actual = (
                     await request(g.app)
                         .get(`/open-data/rna-siren/${RNA}`)
@@ -33,8 +32,8 @@ describe("RnaSirenController", () => {
     describe("GET /open-data/rna-siren/{siren}", () => {
         describe("on success", () => {
             it("should return an object", async () => {
-                (rnaSirenService.getRna as jest.Mock).mockImplementation(async () => RNA);
-                const expected = { siren: SIREN, rna: RNA };
+                const expected = [{ siren: SIREN, rna: RNA }];
+                (rnaSirenService.find as jest.Mock).mockResolvedValueOnce(expected);
                 const actual = (
                     await request(g.app)
                         .get(`/open-data/rna-siren/${SIREN}`)

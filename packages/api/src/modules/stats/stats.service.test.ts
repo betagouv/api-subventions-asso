@@ -20,6 +20,8 @@ import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import { ObjectId } from "mongodb";
 import userStatsService from "../user/services/stats/user.stats.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import RnaSirenEntity from "../../entities/RnaSirenEntity";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -505,7 +507,7 @@ describe("StatsService", () => {
         const RNA = "W123456789";
         const SIREN = "123456789";
 
-        const getGroupedIdentifiersMock = jest.spyOn(associationNameService, "getGroupedIdentifiers");
+        const findOneMock = jest.spyOn(rnaSirenService, "find");
 
         it("should add visits on rnaMap because is already available", async () => {
             const rnaMap = new Map([[RNA, { id: RNA, visits: [] }]]);
@@ -556,10 +558,7 @@ describe("StatsService", () => {
         });
 
         it("should getting all identifers of association", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
-                rna: RNA,
-                siren: SIREN,
-            }));
+            findOneMock.mockResolvedValueOnce([new RnaSirenEntity(RNA, SIREN)]);
             const sirenMap = new Map();
             const rnaMap = new Map();
             // @ts-expect-error groupVisitsOnMaps is private methode
@@ -576,14 +575,11 @@ describe("StatsService", () => {
                 sirenMap,
             );
 
-            expect(getGroupedIdentifiersMock).toHaveBeenCalledWith(SIREN);
+            expect(findOneMock).toHaveBeenCalledWith(SIREN);
         });
 
         it("should add visits on all maps", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
-                rna: RNA,
-                siren: SIREN,
-            }));
+            findOneMock.mockResolvedValueOnce([new RnaSirenEntity(RNA, SIREN)]);
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
@@ -604,10 +600,7 @@ describe("StatsService", () => {
         });
 
         it("should add visits on sirenMap", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
-                rna: undefined,
-                siren: SIREN,
-            }));
+            findOneMock.mockResolvedValueOnce(null);
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
@@ -625,10 +618,7 @@ describe("StatsService", () => {
         });
 
         it("should add visits on rnaMap", async () => {
-            getGroupedIdentifiersMock.mockImplementationOnce(async () => ({
-                rna: RNA,
-                siren: undefined,
-            }));
+            findOneMock.mockResolvedValueOnce(null);
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {

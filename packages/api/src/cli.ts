@@ -22,6 +22,7 @@ import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dau
 import AdminStructureCliController from "./modules/admin-structure/interfaces/cli/adminStructureCliController";
 import DumpCliController from "./modules/dump/interfaces/cli/DumpCliController";
 import ScdlCliController from "./modules/providers/scdl/interfaces/cli/scdl.cli";
+import RnaSirenInterfaceCli from "./interfaces/cli/RnaSirenInterfaceCli";
 
 async function main() {
     await connectDB();
@@ -46,6 +47,7 @@ async function main() {
         AdminStructureCliController,
         DumpCliController,
         ScdlCliController,
+        RnaSirenInterfaceCli,
     ];
 
     const args = process.argv.slice(2);

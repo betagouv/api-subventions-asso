@@ -1,12 +1,13 @@
 import grantService from "./grant.service";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
 import commonGrantService from "./commonGrant.service";
 import mocked = jest.mocked;
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import associationsService from "../associations/associations.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import RnaSirenEntity from "../../entities/RnaSirenEntity";
 
 jest.mock("../providers", () => ({
     prov1: { isGrantProvider: true, name: "prov1" },
@@ -43,7 +44,7 @@ describe("GrantService", () => {
 
         beforeAll(() => {
             mocked(getIdentifierType).mockReturnValue(StructureIdentifiersEnum.siren);
-            getSirenMock = jest.spyOn(rnaSirenService, "getSiren").mockResolvedValue(SIREN);
+            getSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([new RnaSirenEntity(RNA, SIREN)]);
             joinGrantsMock = jest.spyOn(grantService as any, "joinGrants").mockReturnValue(JOINED);
             mocked(associationsService.isSirenFromAsso).mockResolvedValue(true);
 

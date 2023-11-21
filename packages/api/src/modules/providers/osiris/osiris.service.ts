@@ -17,6 +17,7 @@ import ProviderRequestInterface from "../../search/@types/ProviderRequestInterfa
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
+import rnaSirenSerivce from "../../rna-siren/rnaSiren.service";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
@@ -48,18 +49,10 @@ export class OsirisService
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
         const existingFile = await osirisRequestRepository.findByOsirisId(request.providerInformations.osirisId);
-        const { rna, siret, name } = request.legalInformations;
+        const { rna, siret } = request.legalInformations;
         const siren = siretToSiren(siret);
-        const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
 
-        EventManager.call("rna-siren.matching", [{ rna, siren }]);
-        await associationNameService.upsert({
-            rna: rna || null,
-            siren,
-            name,
-            provider: this.provider.name,
-            lastUpdate: date,
-        });
+        if (rna) await rnaSirenSerivce.insert(rna, siren);
 
         if (existingFile) {
             await osirisRequestRepository.update(request);

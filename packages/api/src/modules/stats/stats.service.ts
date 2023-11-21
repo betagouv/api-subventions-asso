@@ -11,6 +11,8 @@ import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import userStatsService from "../user/services/stats/user.stats.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { isRna } from "../../shared/Validators";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
@@ -119,7 +121,7 @@ class StatsService {
             mapVisits?.visits.push(...group.visits);
             return;
         }
-        const identifiers = await associationNameService.getGroupedIdentifiers(group._id);
+        const rnaSirenEntities = await rnaSirenService.find(group._id);
         const associationVisits = {
             id: group._id,
             visits: [] as AssociationVisitEntity[],
@@ -127,8 +129,14 @@ class StatsService {
 
         associationVisits.visits.push(...group.visits);
 
-        if (identifiers.rna) rnaMap.set(identifiers.rna, associationVisits);
-        if (identifiers.siren) sirenMap.set(identifiers.siren, associationVisits);
+        if (rnaSirenEntities && rnaSirenEntities.length) {
+            rnaMap.set(rnaSirenEntities[0].rna, associationVisits);
+            sirenMap.set(rnaSirenEntities[0].siren, associationVisits);
+        } else if (isRna(group.id)) {
+            rnaMap.set(group.id, associationVisits);
+        } else {
+            sirenMap.set(group.id, associationVisits);
+        }
     }
 
     private async groupAssociationVisitsByAssociation(visits: { _id: string; visits: AssociationVisitEntity[] }[]) {

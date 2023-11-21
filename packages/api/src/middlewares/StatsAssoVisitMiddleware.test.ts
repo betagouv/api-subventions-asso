@@ -1,8 +1,5 @@
 import { Response, Request } from "express";
-import rnaSirenService from "../modules/_open-data/rna-siren/rnaSiren.service";
-import { siretToSiren } from "../shared/helpers/SirenHelper";
 import * as HttpHelper from "../shared/helpers/HttpHelper";
-import * as SirenHelper from "../shared/helpers/SirenHelper";
 import StatsAssoVisitMiddleware from "./StatsAssoVisitMiddleware";
 import statsSerivce from "../modules/stats/stats.service";
 import { IdentifiedRequest } from "../@types";

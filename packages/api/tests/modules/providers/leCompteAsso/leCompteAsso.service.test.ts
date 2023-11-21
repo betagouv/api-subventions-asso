@@ -1,5 +1,5 @@
 import associationNameService from "../../../../src/modules/association-name/associationName.service";
-import rnaSirenService from "../../../../src/modules/_open-data/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../../../src/modules/rna-siren/rnaSiren.service";
 import apiAssoService from "../../../../src/modules/providers/apiAsso/apiAsso.service";
 import ILeCompteAssoPartialRequestEntity from "../../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity";
 import ILeCompteAssoRequestInformations from "../../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
@@ -94,7 +94,7 @@ describe("leCompteAssoService", () => {
         beforeAll(() => {
             // @ts-expect-error mock mongodb return value
             associationNameUpsertMock = jest.spyOn(associationNameService, "upsert").mockResolvedValue();
-            rnaSirenServiceMock = jest.spyOn(rnaSirenService, "getRna");
+            rnaSirenServiceMock = jest.spyOn(rnaSirenService, "find");
         });
 
         afterAll(() => {
@@ -258,7 +258,7 @@ describe("leCompteAssoService", () => {
                 } as unknown as ILeCompteAssoRequestInformations,
                 data: {},
             };
-            rnaSirenServiceMock.mockResolvedValueOnce(RNA);
+            rnaSirenServiceMock.mockResolvedValueOnce({ siret: SIREN, rna: RNA });
             apiAssoServiceFindAssociationBySiren.mockResolvedValueOnce({
                 categorie_juridique: [{ value: "9210" }],
             });
