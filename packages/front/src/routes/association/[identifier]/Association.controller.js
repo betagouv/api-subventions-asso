@@ -8,6 +8,6 @@ export class AssociationController {
     }
 
     isAssociation(association) {
-        return !!association.rna || isAssociation(association.categorie_juridique);
+        return !!association?.rna || isAssociation(association?.categorie_juridique);
     }
 }
