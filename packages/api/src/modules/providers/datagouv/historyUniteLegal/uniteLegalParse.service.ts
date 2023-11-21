@@ -12,8 +12,8 @@ import { SaveCallback, UniteLegalHistoryRow } from "./@types";
 
 export class UniteLegalParseService {
     async updateHistoryUniteLegal() {
-        // const archivePath = await filesDatagouvService.downloadHistoryUniteLegal();
-        const filePath = "./output/StockUniteLegaleHistorique_utf8.csv";//await filesDatagouvService.decompressHistoryUniteLegal(archivePath);
+        const archivePath = await filesDatagouvService.downloadHistoryUniteLegal();
+        const filePath = await filesDatagouvService.decompressHistoryUniteLegal(archivePath);
         await this.parse(filePath, new Date());
     }
     async parse(file: string, date: Date, logger?: CliLogger) {
@@ -42,11 +42,7 @@ export class UniteLegalParseService {
             await this._saveAssociations(stackAssociation);
         }
 
-        await uniteLegalImportService.addNewImport(new HistoryUniteLegalImportEntity(
-            file,
-            date,
-            new Date()
-        ));
+        await uniteLegalImportService.addNewImport(new HistoryUniteLegalImportEntity(file, date, new Date()));
     }
 
     /**
@@ -108,7 +104,9 @@ export class UniteLegalParseService {
      * @private
      */
     private _saveEntreprises(rows: UniteLegalHistoryRow[]) {
-        return uniteLegalEntrepriseSerivce.insertManyEntrepriseSiren(rows.map(UniteLegaleHistoriqueAdapter.rowToUniteLegalEntrepriseEntity))
+        return uniteLegalEntrepriseSerivce.insertManyEntrepriseSiren(
+            rows.map(UniteLegaleHistoriqueAdapter.rowToUniteLegalEntrepriseEntity),
+        );
     }
 
     /**

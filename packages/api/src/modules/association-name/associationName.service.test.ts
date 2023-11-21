@@ -1,74 +1,41 @@
+import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
+import uniteLegalNamesService from "../providers/uniteLegalNames/uniteLegalNames.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
 import associationNameService from "./associationName.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
-import associationNameRepository from "./repositories/associationName.repository";
 import { ObjectId } from "mongodb";
 
 describe("associationName.service", () => {
     describe("getNameFromIdentifier()", () => {
-        // @ts-expect-error mock private method
-        const mergeEntitiesMock = jest.spyOn(associationNameService, "_mergeEntities");
-        const repoMock = jest.spyOn(associationNameRepository, "findAllByIdentifier");
+        const uniteLegalNameMock = jest.spyOn(uniteLegalNamesService, "getNameFromIdentifier");
         const IDENTIFIER = "toto";
-        const REPO_OUTPUT = [
-            {
-                _id: new ObjectId("62d6c89108d8d078053b48e1"),
-                lastUpdate: new Date("2022-07-13T00:00:00.000Z"),
-                name: "ALPCM NANTES BASKET",
-                provider: "Base Sirene - DataGouv",
-                rna: null,
-                siren: "433955101",
-            },
-        ];
+        const REPO_OUTPUT = new UniteLegalNameEntity(
+            "433955101",
+            "ALPCM NANTES BASKET",
+            "",
+            new Date("2022-07-13T00:00:00.000Z"),
+        );
 
         beforeAll(() => {
-            repoMock.mockResolvedValue(REPO_OUTPUT);
-            // @ts-expect-error mock
-            mergeEntitiesMock.mockImplementation(jest.fn());
+            uniteLegalNameMock.mockResolvedValue(REPO_OUTPUT);
         });
         afterAll(() => {
-            repoMock.mockRestore();
-            mergeEntitiesMock.mockRestore();
+            uniteLegalNameMock.mockRestore();
         });
 
         it("should call repo", async () => {
             await associationNameService.getNameFromIdentifier(IDENTIFIER);
-            expect(repoMock).toBeCalledWith(IDENTIFIER);
-        });
-
-        it("should call most recent value from repo result", async () => {
-            await associationNameService.getNameFromIdentifier(IDENTIFIER);
-            expect(mergeEntitiesMock).toBeCalledWith(REPO_OUTPUT);
-        });
-
-        it("should return name most recent result", async () => {
-            const expected = "nom d'asso";
-            // @ts-expect-error mock
-            mergeEntitiesMock.mockReturnValueOnce({ name: expected });
-            const actual = await associationNameService.getNameFromIdentifier(IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should not fail if no name in repo result", async () => {
-            // @ts-expect-error mock
-            mergeEntitiesMock.mockReturnValueOnce({});
-            const actual = await associationNameService.getNameFromIdentifier(IDENTIFIER);
-            expect(actual).toEqual(undefined);
+            expect(uniteLegalNameMock).toBeCalledWith(IDENTIFIER);
         });
     });
-    describe("getAllStartingWith", () => {
+    describe("getAllByValye", () => {
         it("return an array AssociationNameEntity", async () => {
             const INPUT = "";
-            const LAST_UPDATE = new Date();
-            const associationNameEntity = new AssociationNameEntity(
-                "W75000000",
-                "0000000000",
-                "FAKE NAME",
-                LAST_UPDATE,
-                null,
-            );
-            jest.spyOn(associationNameRepository, "findAllStartingWith").mockResolvedValue([associationNameEntity]);
-            const expected = [associationNameEntity];
-            const actual = await associationNameService.getAllStartingWith(INPUT);
+            const associationNameEntity = new UniteLegalNameEntity("W75000000", "0000000000", "FAKE NAME", new Date());
+            jest.spyOn(uniteLegalNamesService, "findBy").mockResolvedValue([associationNameEntity]);
+            jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
+            const expected = [new AssociationNameEntity(associationNameEntity.name, associationNameEntity.siren)];
+            const actual = await associationNameService.getAllByValye(INPUT);
             expect(actual).toEqual(expected);
         });
     });

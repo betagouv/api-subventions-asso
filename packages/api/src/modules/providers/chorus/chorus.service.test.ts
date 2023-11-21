@@ -5,14 +5,14 @@ const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
 import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");
 import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegalEntrepises.service";
-jest.mock("../datagouv/datagouv.service");
+jest.mock("../uniteLegalEntreprises/uniteLegalEntrepises.service");
 const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSerivce);
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 import { DEFAULT_CHORUS_LINE_DOCUMENT } from "./__fixutres__/ChorusLineEntities";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
-jest.mock("../../rna-siren/entities");
+jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import { ObjectId } from "mongodb";
@@ -272,7 +272,7 @@ describe("chorusService", () => {
         });
 
         it("should return true if a RNA is found", async () => {
-            mockedRnaSirenService.find.mockResolvedValueOnce([{rna: "W7000065", siren: SIREN}]);
+            mockedRnaSirenService.find.mockResolvedValueOnce([{ rna: "W7000065", siren: SIREN }]);
             const expected = true;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);

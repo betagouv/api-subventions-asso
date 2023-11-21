@@ -23,9 +23,9 @@ import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uni
 
 jest.mock("../providers/index");
 
-jest.mock("../../modules/providers/datagouv/datagouv.service");
 jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../../modules/_open-data/rna-siren/rnaSiren.service");
+jest.mock("../rna-siren/rnaSiren.service");
+jest.mock("../providers/uniteLegalEntreprises/uniteLegalEntrepises.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
 
 const DEFAULT_PROVIDERS = providers.default;
@@ -262,7 +262,7 @@ describe("associationsService", () => {
             const expected = SIREN;
             getEtablissementsBySirenMock.mockImplementationOnce(async () => []);
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
-            rnaSirenServiceFindOne.mockImplementationOnce(() => Promise.resolve([new RnaSirenEntity(RNA, SIREN, false)]));
+            rnaSirenServiceFindOne.mockImplementationOnce(() => Promise.resolve([new RnaSirenEntity(RNA, SIREN)]));
             await associationsService.getEtablissements(RNA);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(expected);
         });

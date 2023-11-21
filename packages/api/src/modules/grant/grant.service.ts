@@ -27,6 +27,7 @@ export class GrantService {
 
         let isReallyAsso;
         if (idType === StructureIdentifiersEnum.rna) {
+            isReallyAsso = true;
             const rnaSirenEntities = await rnaSirenService.find(id);
             if (rnaSirenEntities && rnaSirenEntities.length) {
                 id = rnaSirenEntities[0].siren;

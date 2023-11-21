@@ -254,11 +254,11 @@ describe("AvisSituationInseeService", () => {
     });
 
     describe("getDocumentByRna", () => {
-        const findOneMock = jest.spyOn(rnaSirenService, "find");
+        const findMock = jest.spyOn(rnaSirenService, "find");
         const getDocumentsBySirenMock = jest.spyOn(avisSituationInseeService, "getDocumentsBySiren");
 
         it("should return null because siren not found", async () => {
-            findOneMock.mockResolvedValueOnce(null);
+            findMock.mockResolvedValueOnce(null);
 
             const expected = null;
             const actual = await avisSituationInseeService.getDocumentsByRna("");
@@ -268,7 +268,7 @@ describe("AvisSituationInseeService", () => {
 
         it("should call getDocumentsBySiren with founded siren", async () => {
             const expected = "000000000";
-            findOneMock.mockResolvedValueOnce(new RnaSirenEntity("", expected, false));
+            findMock.mockResolvedValueOnce([new RnaSirenEntity("", expected)]);
             getDocumentsBySirenMock.mockImplementation(async () => ({} as any));
 
             await avisSituationInseeService.getDocumentsByRna("");
@@ -277,7 +277,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return getDocumentsBySiren anwser", async () => {
-            findOneMock.mockResolvedValueOnce(new RnaSirenEntity("","000000000", false));
+            findMock.mockResolvedValueOnce([new RnaSirenEntity("", "000000000")]);
             getDocumentsBySirenMock.mockImplementation(async () => expected as any);
 
             const expected = { imTest: true };

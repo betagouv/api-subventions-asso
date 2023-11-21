@@ -22,6 +22,7 @@ import { ObjectId } from "mongodb";
 import userStatsService from "../user/services/stats/user.stats.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
+import GroupAssociationVisits from "./@types/GroupAssociationVisits";
 
 describe("StatsService", () => {
     describe("getNbUsersByRequestsOnPeriod()", () => {
@@ -369,7 +370,7 @@ describe("StatsService", () => {
             const expected = "W123456789";
             const DATA = [
                 {
-                    id: expected,
+                    _id: expected,
                     visits: "Visits",
                 },
             ];
@@ -416,11 +417,11 @@ describe("StatsService", () => {
             ];
             const DATA = [
                 {
-                    id: "ID1",
+                    _id: "ID1",
                     visits: { length: 1 },
                 },
                 {
-                    id: "ID2",
+                    _id: "ID2",
                     visits: { length: 42 },
                 },
             ];
@@ -440,7 +441,7 @@ describe("StatsService", () => {
             };
             const DATA = [
                 {
-                    id: "ID",
+                    _id: "ID",
                     visits: { length: 42 },
                 },
             ];
@@ -507,7 +508,7 @@ describe("StatsService", () => {
         const RNA = "W123456789";
         const SIREN = "123456789";
 
-        const findOneMock = jest.spyOn(rnaSirenService, "find");
+        const findRnaSirenMock = jest.spyOn(rnaSirenService, "find");
 
         it("should add visits on rnaMap because is already available", async () => {
             const rnaMap = new Map([[RNA, { id: RNA, visits: [] }]]);
@@ -537,7 +538,7 @@ describe("StatsService", () => {
         });
 
         it("should add visits on rnaMap and siren because is already available", async () => {
-            const expected = { id: SIREN, visits: [] };
+            const expected = { _id: SIREN, visits: [] } as GroupAssociationVisits;
             const sirenMap = new Map([[SIREN, expected]]);
             const rnaMap = new Map([[RNA, expected]]);
             // @ts-expect-error groupVisitsOnMaps is private methode
@@ -547,7 +548,7 @@ describe("StatsService", () => {
                     visits: [
                         {
                             visits: 1,
-                        },
+                        } as unknown as AssociationVisitEntity,
                     ],
                 },
                 rnaMap,
@@ -558,7 +559,7 @@ describe("StatsService", () => {
         });
 
         it("should getting all identifers of association", async () => {
-            findOneMock.mockResolvedValueOnce([new RnaSirenEntity(RNA, SIREN)]);
+            findRnaSirenMock.mockResolvedValueOnce([new RnaSirenEntity(RNA, SIREN)]);
             const sirenMap = new Map();
             const rnaMap = new Map();
             // @ts-expect-error groupVisitsOnMaps is private methode
@@ -568,22 +569,22 @@ describe("StatsService", () => {
                     visits: [
                         {
                             visits: 1,
-                        },
+                        } as unknown as AssociationVisitEntity,
                     ],
                 },
                 rnaMap,
                 sirenMap,
             );
 
-            expect(findOneMock).toHaveBeenCalledWith(SIREN);
+            expect(findRnaSirenMock).toHaveBeenCalledWith(SIREN);
         });
 
         it("should add visits on all maps", async () => {
-            findOneMock.mockResolvedValueOnce([new RnaSirenEntity(RNA, SIREN)]);
+            findRnaSirenMock.mockResolvedValueOnce([new RnaSirenEntity(RNA, SIREN)]);
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
-                id: SIREN,
+                _id: SIREN,
                 visits: [
                     {
                         visits: 1,
@@ -600,11 +601,11 @@ describe("StatsService", () => {
         });
 
         it("should add visits on sirenMap", async () => {
-            findOneMock.mockResolvedValueOnce(null);
+            findRnaSirenMock.mockResolvedValueOnce(null);
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
-                id: SIREN,
+                _id: SIREN,
                 visits: [
                     {
                         visits: 1,
@@ -618,11 +619,11 @@ describe("StatsService", () => {
         });
 
         it("should add visits on rnaMap", async () => {
-            findOneMock.mockResolvedValueOnce(null);
+            findRnaSirenMock.mockResolvedValueOnce(null);
             const sirenMap = new Map();
             const rnaMap = new Map();
             const expected = {
-                id: RNA,
+                _id: RNA,
                 visits: [
                     {
                         visits: 1,

@@ -1,7 +1,6 @@
 import PartialUniteLegalRow from "./__fixtures__/PartialUniteLegalRow";
 import { AssociationRow } from "./__fixtures__/AssociationRowFixture";
 import { EntrepriseRow } from "./__fixtures__/EntrepriseRowFixture";
-import associationNameService from "../../../association-name/associationName.service";
 import { UniteLegaleHistoriqueAdapter } from "./adapters/UniteLegaleHistoriqueAdapter";
 import { SaveCallback, UniteLegalHistoryRow } from "./@types";
 import * as DateHelper from "../../../../shared/helpers/DateHelper";
@@ -10,9 +9,10 @@ import CliLogger from "../../../../shared/CliLogger";
 import uniteLegalParseService from "./uniteLegalParse.service";
 import uniteLegalImportService from "./uniteLegalImport.service";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegalEntrepises.service";
+import uniteLegalNamesService from "../../uniteLegalNames/uniteLegalNames.service";
 
 describe("ParseUniteLegalService", () => {
-    const addAssociationNameMock = jest.spyOn(associationNameService, "upsert").mockImplementation(jest.fn());
+    const addAssociationNameMock = jest.spyOn(uniteLegalNamesService, "insert").mockImplementation(jest.fn());
     const addManyEntrepriseSirenMock = jest
         .spyOn(uniteLegalEntreprisesService, "insertManyEntrepriseSiren")
         .mockImplementation(jest.fn());
@@ -237,7 +237,9 @@ describe("ParseUniteLegalService", () => {
         let addNewImportSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            getLastDateImportSpy = jest.spyOn(uniteLegalImportService, "getLastDateImport").mockResolvedValue(new Date());
+            getLastDateImportSpy = jest
+                .spyOn(uniteLegalImportService, "getLastDateImport")
+                .mockResolvedValue(new Date());
             isValidDateSpy = jest.spyOn(DateHelper, "isValidDate").mockReturnValue(true);
             saveEntityFactorySpy = jest
                 // @ts-expect-error private methode
