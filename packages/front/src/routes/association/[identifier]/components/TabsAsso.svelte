@@ -5,10 +5,10 @@
     import TabContent from "$lib/dsfr/TabContent.svelte";
     import Documents from "$lib/components/Documents/Documents.svelte";
     import SubventionsVersementsDashboard from "$lib/components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+    import { currentAssociation } from "$lib/store/association.store";
     // import Stats from "./Stats/Stats.svelte";
 
     export let titles;
-    export let association;
     export let associationIdentifier;
 </script>
 
@@ -21,11 +21,11 @@
                     <!-- {:else if index === 1} // Uncomment when stats are available
                     <Stats /> -->
                 {:else if index === 1}
-                    <Documents resource={association} />
+                    <Documents resource={$currentAssociation} />
                 {:else if index === 2}
-                    <Etablissements {associationIdentifier} {association} />
+                    <Etablissements />
                 {:else}
-                    <Bodacc bodacc={association.bodacc} />
+                    <Bodacc bodacc={$currentAssociation.bodacc} />
                 {/if}
             </TabContent>
         {/each}
