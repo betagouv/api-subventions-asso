@@ -2,7 +2,6 @@ import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { isSiret, isEJ } from "../../../shared/Validators";
-import entity from "../subventia/__fixtures__/entity";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
@@ -99,7 +98,7 @@ export default class ChorusParser {
         } catch (e) {
             console.log(
                 `\n\nThis request is not registered because: ${(e as Error).message}\n`,
-                JSON.stringify(entity, null, "\t"),
+                JSON.stringify(indexedInformations, null, "\t"),
             );
             return false;
         }
