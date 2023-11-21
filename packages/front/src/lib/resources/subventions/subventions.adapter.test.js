@@ -23,7 +23,7 @@ describe("Subventions Adapter", () => {
 
         it("should return an object with properties", () => {
             const expected = [
-                "establishment",
+                "establishmentPostcode",
                 "serviceInstructeur",
                 "dispositif",
                 "projectName",

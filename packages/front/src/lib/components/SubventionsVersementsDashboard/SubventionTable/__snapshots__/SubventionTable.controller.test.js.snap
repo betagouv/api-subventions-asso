@@ -2,7 +2,7 @@
 
 exports[`SubventionTableController > extractHeaders() > return an array of header 1`] = `
 [
-  "Établissement",
+  "Code postal demandeur",
   "Service instructeur",
   "Dispositif",
   "Intitulé de l'action",

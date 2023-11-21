@@ -1,12 +1,19 @@
 import { AssociationController } from "./Association.controller";
 import { isAssociation } from "$lib/helpers/entrepriseHelper.js";
+import associationService from "$lib/resources/associations/association.service";
 
 vi.mock("$lib/helpers/entrepriseHelper.js");
+vi.mock("$lib/resources/associations/association.service");
 
 describe("Association Controller", () => {
     const SIREN = "123456789";
     const RNA = "W12345678";
     let controller;
+
+    beforeAll(() => {
+        associationService.getEstablishments.mockResolvedValue([]);
+        associationService.getAssociation.mockResolvedValue({});
+    });
 
     beforeEach(() => {
         controller = new AssociationController(SIREN);
