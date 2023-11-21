@@ -1,11 +1,9 @@
 import { Siren, Siret } from "dto";
 import { WithId } from "mongodb";
-import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
+import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
-import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { isEJ, isSiret } from "../../../shared/Validators";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
@@ -16,7 +14,6 @@ import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.en
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
-import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -34,41 +31,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
         });
     }
 
-    // new unique ID builder
-    // remove the one used in chorus CLI after fix fully handled
-    static buildUniqueId(info: IChorusIndexedInformations) {
-        const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
-            info;
-        return getMD5(
-            `${ej}-${siret}-${dateOperation.toISOString()}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
-        );
-    }
-
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
-
-    public validateEntity(entity: ChorusLineEntity) {
-        if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {
-            throw new Error(`The branch ${entity.indexedInformations.codeBranche} is not accepted in data`);
-        }
-
-        if (!isSiret(entity.indexedInformations.siret)) {
-            throw new Error(`INVALID SIRET FOR ${entity.indexedInformations.siret}`);
-        }
-
-        if (isNaN(entity.indexedInformations.amount)) {
-            throw new Error(`Amount is not a number`);
-        }
-
-        if (!(entity.indexedInformations.dateOperation instanceof Date)) {
-            throw new Error(`Operation date is not a valid date`);
-        }
-
-        if (!isEJ(entity.indexedInformations.ej)) {
-            throw new Error(`INVALID EJ FOR ${entity.indexedInformations.ej}`);
-        }
-
-        return true;
-    }
 
     /**
      * @param entities /!\ entities must be validated upstream

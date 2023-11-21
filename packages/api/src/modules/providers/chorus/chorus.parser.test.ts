@@ -1,17 +1,79 @@
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 jest.mock("../../../shared/helpers/ParserHelper");
 const mockedParserHelper = jest.mocked(ParserHelper);
-import chorusService, { ChorusService } from "./chorus.service";
-jest.mock("./chorus.service");
-const mockedChorusService = jest.mocked(chorusService);
 import { printAtSameLine } from "../../../shared/helpers/CliHelper";
 jest.mock("../../../shared/helpers/CliHelper");
 import ChorusParser from "./chorus.parser";
 import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixutres__/ChorusFixtures";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 jest.mock("./entities/ChorusLineEntity");
+import * as StringHelper from "../../../shared/helpers/StringHelper";
+jest.mock("../../../shared/helpers/StringHelper");
+const mockedStringHelper = jest.mocked(StringHelper);
 
 describe("ChorusParser", () => {
+    describe("buildUniqueId", () => {
+        it("call getMD5", () => {
+            const info = ENTITIES[0].indexedInformations;
+            // @ts-expect-error: protected
+            ChorusParser.buildUniqueId(info);
+            expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
+                `${info.ej}-${info.siret}-${info.dateOperation.toISOString()}-${info.amount}-${
+                    info.numeroDemandePayment
+                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}`,
+            );
+        });
+    });
+
+    describe("isIndexedInformationsValid", () => {
+        it("rejects because codeBranche is not accepted", () => {
+            const indexedInformations = { ...ENTITIES[0].indexedInformations, codeBranche: "WRONG CODE" };
+
+            //@ts-expect-error: protected
+            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+                `The branch ${indexedInformations.codeBranche} is not accepted in data`,
+            );
+        });
+
+        it("rejects because amount is not a number", () => {
+            const indexedInformations = { ...ENTITIES[0].indexedInformations, amount: undefined };
+            //@ts-expect-error: protected
+            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+                `Amount is not a number`,
+            );
+        });
+
+        it("rejects dateOperation is not a Date", () => {
+            const indexedInformations = { ...ENTITIES[0].indexedInformations, dateOperation: "01/01/1960" };
+            //@ts-expect-error: protected
+            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+                `Operation date is not a valid date`,
+            );
+        });
+
+        it("rejects because siret is not valid", () => {
+            const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "SIRET" };
+            //@ts-expect-error: protected
+            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+                `INVALID SIRET FOR ${indexedInformations.siret}`,
+            );
+        });
+
+        it("rejects because ej is not valid", () => {
+            const indexedInformations = { ...ENTITIES[0].indexedInformations, ej: "00000" };
+            //@ts-expect-error: protected
+            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+                `INVALID EJ FOR ${indexedInformations.ej}`,
+            );
+        });
+
+        it("accepts", () => {
+            const indexedInformations = ENTITIES[0].indexedInformations;
+            //@ts-expect-error: protected
+            expect(ChorusParser.isIndexedInformationsValid(indexedInformations)).toEqual(true);
+        });
+    });
+
     describe("renameEmptyHeaders()", () => {
         it("should rename empty headers", () => {
             const expected = FILLED_HEADERS;
@@ -23,150 +85,79 @@ describe("ChorusParser", () => {
 
     describe("rowsToEntities", () => {
         // @ts-expect-error: protected
-        let originalAddIndexedInformations = ChorusParser.addIndexedInformations;
+        let originalBuildUniqueId = ChorusParser.buildUniqueId;
+        const mockBuildUniqueId = jest.fn();
         // @ts-expect-error: protected
-        let originalAddUniqueId = ChorusParser.addUniqueId;
-        // @ts-expect-error: protected
-        let originalMapToEntity = ChorusParser.mapToEntity;
-        let validator = jest.fn().mockReturnValue(true);
-        const mockAddIndexedInformations = jest.fn();
-        const mockAddUniqueId = jest.fn();
-        const mockMapToEntity = jest.fn();
+        let originalValidateIndexedInformations = ChorusParser.validateIndexedInformations;
+        const mockValidateIndexedInformations = jest.fn().mockReturnValue(true);
 
         const ROWS = [...PAGES];
 
         beforeAll(() => {
+            mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data);
+            // @ts-expect-error: mock
+            mockedParserHelper.indexDataByPathObject.mockReturnValue(ENTITIES[0].indexedInformations);
             // @ts-expect-error: protected
-            ChorusParser.addIndexedInformations = mockAddIndexedInformations;
+            ChorusParser.buildUniqueId = mockBuildUniqueId;
             // @ts-expect-error: protected
-            ChorusParser.addUniqueId = mockAddUniqueId;
-            // @ts-expect-error: protected
-            ChorusParser.mapToEntity = mockMapToEntity;
+            ChorusParser.validateIndexedInformations = mockValidateIndexedInformations;
         });
 
         afterAll(() => {
             // @ts-expect-error: protected
-            ChorusParser.addIndexedInformations = originalAddIndexedInformations;
+            ChorusParser.buildUniqueId = originalBuildUniqueId;
             // @ts-expect-error: protected
-            ChorusParser.addUniqueId = originalAddUniqueId;
-            // @ts-expect-error: protected
-            ChorusParser.mapToEntity = originalMapToEntity;
+            ChorusParser.validateIndexedInformations = originalValidateIndexedInformations;
         });
 
         it.each`
             fn
-            ${ParserHelper.linkHeaderToData}
-            ${mockAddIndexedInformations}
-            ${mockAddUniqueId}
-            ${mockMapToEntity}
+            ${mockedParserHelper.linkHeaderToData}
+            ${mockedParserHelper.indexDataByPathObject}
+            ${mockValidateIndexedInformations}
+            ${mockBuildUniqueId}
         `("should call $fn", ({ fn }) => {
             // @ts-expect-error: protected
-            ChorusParser.rowsToEntities([], ROWS, validator);
+            ChorusParser.rowsToEntities([], ROWS);
             expect(fn).toHaveBeenCalledTimes(ROWS.length);
         });
-    });
 
-    describe("addIndexedInformations", () => {
-        it("should add create indexedInformations from parsedData", () => {
+        it("should not return invalid entities", () => {
+            mockValidateIndexedInformations.mockReturnValueOnce(false);
+            const expected = ROWS.length - 1;
             // @ts-expect-error: protected
-            ChorusParser.addIndexedInformations({ parsedData: ENTITIES[0].data });
-            expect(mockedParserHelper.indexDataByPathObject).toHaveBeenLastCalledWith(
-                ChorusLineEntity.indexedInformationsPath,
-                ENTITIES[0].data,
-            );
-        });
-
-        it("should add indexedInformations to the returned object", () => {
-            //@ts-expect-error: mock
-            mockedParserHelper.indexDataByPathObject.mockReturnValueOnce(ENTITIES[0].indexedInformations);
-            const expected = {
-                parsedData: ENTITIES[0].data,
-                indexedInformations: ENTITIES[0].indexedInformations,
-            };
-            // @ts-expect-error: protected
-            const actual = ChorusParser.addIndexedInformations({ parsedData: ENTITIES[0].data });
+            const actual = ChorusParser.rowsToEntities([], ROWS).length;
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("addUniqueId", () => {
-        const UNIQUE_ID = "unique-id";
-        const originalBuildUniqueId = ChorusService.buildUniqueId;
+    describe("validateIndexedInformations", () => {
+        // @ts-expect-error: protected
+        let originalIsIndexedInformationsValid = ChorusParser.isIndexedInformationsValid;
+        const mockedIsIndexedInformationsValid = jest.fn().mockReturnValue(true);
+
         beforeAll(() => {
-            ChorusService.buildUniqueId = jest.fn().mockReturnValue(UNIQUE_ID);
+            // @ts-expect-error: protected
+            ChorusParser.isIndexedInformationsValid = mockedIsIndexedInformationsValid;
         });
 
         afterAll(() => {
-            ChorusService.buildUniqueId = originalBuildUniqueId;
-        });
-
-        it("should buildUniqueId from indexedInformations", () => {
             // @ts-expect-error: protected
-            ChorusParser.addUniqueId(ENTITIES[0]);
-            expect(ChorusService.buildUniqueId).toHaveBeenCalledWith(ENTITIES[0].indexedInformations);
-        });
-
-        it("should add uniqueId to the returned object", () => {
-            const partialChorusLineEntity = { indexedInformations: ENTITIES[0] };
-            const expected = { ...partialChorusLineEntity, uniqueId: UNIQUE_ID };
-            // @ts-expect-error: protected
-            const actual = ChorusParser.addUniqueId(partialChorusLineEntity);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("mapToEntity", () => {
-        it("should create new ChorusLineEntity", () => {
-            const fixture = ENTITIES[0];
-            const almostEntity = {
-                parsedData: fixture.data,
-                indexedInformations: fixture.indexedInformations,
-                uniqueId: fixture.uniqueId,
-            };
-            // @ts-expect-error: protected
-            // test it as a real mapper
-            [almostEntity].map(ChorusParser.mapToEntity);
-            expect(ChorusLineEntity).toHaveBeenCalledWith(
-                almostEntity.uniqueId,
-                almostEntity.indexedInformations,
-                almostEntity.parsedData,
-            );
-        });
-
-        it("should map to entity", () => {
-            const fixture = ENTITIES[0];
-            const almostEntity = {
-                parsedData: fixture.data,
-                indexedInformations: fixture.indexedInformations,
-                uniqueId: fixture.uniqueId,
-            };
-            // @ts-expect-error: protected
-            // test it as a real mapper
-            const actual = [almostEntity].map(ChorusParser.mapToEntity);
-            const expected = [expect.any(ChorusLineEntity)];
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("validateEntity", () => {
-        beforeAll(() => {
-            mockedChorusService.validateEntity.mockReturnValue(true);
+            ChorusParser.isIndexedInformationsValid = originalIsIndexedInformationsValid;
         });
 
         it("should return true", () => {
             const expected = true;
             //@ts-expect-error: protected
-            const actual = ChorusParser.validateEntity(ENTITIES[0]);
+            const actual = ChorusParser.validateIndexedInformations(ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
-            mockedChorusService.validateEntity.mockImplementationOnce(() => {
-                throw new Error();
-            });
+            mockedIsIndexedInformationsValid.mockReturnValueOnce(false);
             const expected = false;
             //@ts-expect-error: protected
-            const actual = ChorusParser.validateEntity(ENTITIES[0]);
+            const actual = ChorusParser.validateIndexedInformations(ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
     });

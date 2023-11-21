@@ -1,7 +1,11 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
+import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
+import { isSiret, isEJ } from "../../../shared/Validators";
+import entity from "../subventia/__fixtures__/entity";
+import { getMD5 } from "../../../shared/helpers/StringHelper";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import chorusService, { ChorusService } from "./chorus.service";
+import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
@@ -39,39 +43,59 @@ export default class ChorusParser {
     }
 
     protected static rowsToEntities(headers, rows) {
-        const entities = rows
-            .map(row => ({ parsedData: ParseHelper.linkHeaderToData(headers, row) }))
-            .map(this.addIndexedInformations)
-            .map(this.addUniqueId)
-            .map(this.mapToEntity)
-            .filter(this.validateEntity);
-        return entities;
+        return rows.reduce((entities, row, index, array) => {
+            const data = ParseHelper.linkHeaderToData(headers, row);
+            const indexedInformations = ParseHelper.indexDataByPathObject(
+                ChorusLineEntity.indexedInformationsPath,
+                data,
+            ) as unknown as IChorusIndexedInformations;
+
+            if (!this.validateIndexedInformations(indexedInformations)) return entities;
+
+            const uniqueId = this.buildUniqueId(indexedInformations);
+            entities.push(new ChorusLineEntity(uniqueId, indexedInformations, data));
+
+            CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
+
+            return entities;
+        }, []);
     }
 
-    protected static addIndexedInformations(partialChorusEntity) {
-        const indexedInformations = ParseHelper.indexDataByPathObject(
-            ChorusLineEntity.indexedInformationsPath,
-            partialChorusEntity.parsedData,
+    protected static buildUniqueId(info: IChorusIndexedInformations) {
+        const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
+            info;
+        return getMD5(
+            `${ej}-${siret}-${dateOperation.toISOString()}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
         );
-        return { ...partialChorusEntity, indexedInformations };
     }
 
-    protected static addUniqueId(partialChorusEntity) {
-        return {
-            ...partialChorusEntity,
-            uniqueId: ChorusService.buildUniqueId(partialChorusEntity.indexedInformations),
-        };
+    protected static isIndexedInformationsValid(indexedInformations) {
+        if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
+            throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
+        }
+
+        if (!isSiret(indexedInformations.siret)) {
+            throw new Error(`INVALID SIRET FOR ${indexedInformations.siret}`);
+        }
+
+        if (isNaN(indexedInformations.amount)) {
+            throw new Error(`Amount is not a number`);
+        }
+
+        if (!(indexedInformations.dateOperation instanceof Date)) {
+            throw new Error(`Operation date is not a valid date`);
+        }
+
+        if (!isEJ(indexedInformations.ej)) {
+            throw new Error(`INVALID EJ FOR ${indexedInformations.ej}`);
+        }
+
+        return true;
     }
 
-    protected static mapToEntity(obj, index, array) {
-        const entity = new ChorusLineEntity(obj.uniqueId, obj.indexedInformations, obj.parsedData);
-        CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
-        return entity;
-    }
-
-    protected static validateEntity(entity) {
+    protected static validateIndexedInformations(indexedInformations: IChorusIndexedInformations) {
         try {
-            return chorusService.validateEntity(entity);
+            return this.isIndexedInformationsValid(indexedInformations);
         } catch (e) {
             console.log(
                 `\n\nThis request is not registered because: ${(e as Error).message}\n`,

@@ -10,86 +10,14 @@ const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSeri
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
-jest.mock("../../rna-siren/rnaSiren.service");
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
+jest.mock("../../rna-siren/rnaSiren.service");
+
 jest.mock("../../_open-data/rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
-import ChorusLineEntity from "./entities/ChorusLineEntity";
-import { ObjectId } from "mongodb";
 import { ENTITIES } from "./__fixutres__/ChorusFixtures";
 
-const WRONG_CODE_BRANCHE_ENTITY = new ChorusLineEntity(
-    "FAKE_ID",
-    { ...ENTITIES[0].indexedInformations, codeBranche: "WRONG CODE" },
-    {},
-);
-const WRONG_SIRET_ENTITY = new ChorusLineEntity("FAKE_ID", { ...ENTITIES[0].indexedInformations, siret: "SIRET" }, {});
-const WRONG_EJ_ENTITY = new ChorusLineEntity("FAKE_ID", { ...ENTITIES[0].indexedInformations, ej: "00000" }, {});
-const WRONG_AMOUNT_ENTITY = new ChorusLineEntity(
-    "FAKE_ID",
-    // @ts-expect-error: amount not defined
-    { ...ENTITIES[0].indexedInformations, amount: undefined },
-    {},
-);
-const WRONG_DATE_ENTITY = new ChorusLineEntity(
-    "FAKE_ID",
-    // @ts-expect-error: string instead of date
-    { ...ENTITIES[0].indexedInformations, dateOperation: "01/01/1960" },
-    {},
-);
-
 describe("chorusService", () => {
-    describe("buildUniqueId", () => {
-        it("call getMD5", () => {
-            const info = ENTITIES[0].indexedInformations;
-            ChorusService.buildUniqueId(info);
-            expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
-                `${info.ej}-${info.siret}-${info.dateOperation.toISOString()}-${info.amount}-${
-                    info.numeroDemandePayment
-                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}`,
-            );
-        });
-    });
-
-    describe("validateEntity", () => {
-        it("rejects because codeBranche is not accepted", () => {
-            const entity = { ...WRONG_CODE_BRANCHE_ENTITY };
-
-            expect(() => chorusService.validateEntity(entity)).toThrow(
-                `The branch ${entity.indexedInformations.codeBranche} is not accepted in data`,
-            );
-        });
-
-        it("rejects because amount is not a number", () => {
-            const entity = { ...WRONG_AMOUNT_ENTITY };
-            expect(() => chorusService.validateEntity(entity)).toThrow(`Amount is not a number`);
-        });
-
-        it("rejects dateOperation is not a Date", () => {
-            const entity = { ...WRONG_DATE_ENTITY };
-            expect(() => chorusService.validateEntity(entity)).toThrow(`Operation date is not a valid date`);
-        });
-
-        it("rejects because siret is not valid", () => {
-            const entity = { ...WRONG_SIRET_ENTITY };
-            expect(() => chorusService.validateEntity(entity)).toThrow(
-                `INVALID SIRET FOR ${entity.indexedInformations.siret}`,
-            );
-        });
-
-        it("rejects because ej is not valid", () => {
-            const entity = { ...WRONG_EJ_ENTITY };
-            expect(() => chorusService.validateEntity(entity)).toThrow(
-                `INVALID EJ FOR ${entity.indexedInformations.ej}`,
-            );
-        });
-
-        it("accepts", () => {
-            const entity = ENTITIES[0];
-            expect(chorusService.validateEntity(entity)).toEqual(true);
-        });
-    });
-
     describe("getVersementsBySiret", () => {
         beforeAll(() => {
             mockedChorusLineRepository.findBySiret.mockResolvedValue([ENTITIES[0], ENTITIES[0]]);
