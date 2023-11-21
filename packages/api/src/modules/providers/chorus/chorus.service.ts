@@ -96,49 +96,6 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
         };
     }
 
-    public async addChorusLine(entity: ChorusLineEntity) {
-        try {
-            this.validateEntity(entity);
-        } catch (error) {
-            return {
-                state: "rejected",
-                result: { message: (error as Error).message, data: entity },
-            };
-        }
-
-        const alreadyExist = await chorusLineRepository.findOneByUniqueId(entity.uniqueId);
-        if (alreadyExist) {
-            return {
-                state: "updated",
-                result: await chorusLineRepository.update(entity),
-            };
-        }
-
-        // Check if siret belongs to an asso
-        if (
-            entity.indexedInformations.codeBranche !== ASSO_BRANCHE &&
-            !(await this.sirenBelongAsso(siretToSiren(entity.indexedInformations.siret)))
-        ) {
-            return {
-                state: "rejected",
-                result: { message: "The Siret does not correspond to an association", data: entity },
-            };
-        }
-
-        try {
-            await chorusLineRepository.create(entity);
-            return {
-                state: "created",
-                result: entity,
-            };
-        } catch (e) {
-            return {
-                state: "rejected",
-                result: { message: "Fail to create ChorusLineEntity", data: entity },
-            };
-        }
-    }
-
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
         if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
         if (await rnaSirenService.find(siren)) return true;
