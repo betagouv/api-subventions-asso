@@ -13,7 +13,6 @@ import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
-jest.mock("../../../shared/EventManager");
 jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
     rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
     dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
@@ -166,9 +165,7 @@ describe("ApiAssoService", () => {
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(sirenStructureFixture);
-                findOneRnaSirenMock = jest
-                    .spyOn(rnaSirenService, "find")
-                    .mockResolvedValue(null);
+                findOneRnaSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
                 findAssociationByRnaMock = jest.spyOn(apiAssoService, "findAssociationByRna").mockResolvedValue(null);
             });
 
@@ -264,9 +261,7 @@ describe("ApiAssoService", () => {
                     .spyOn(apiAssoService, "findAssociationByRna")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(rnaStructureFixture);
-                findOneRnaSirenMock = jest
-                    .spyOn(rnaSirenService, "find")
-                    .mockResolvedValue(null);
+                findOneRnaSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
                 findAssociationBySirenMock = jest
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy

@@ -1,6 +1,5 @@
 import { DemandeSubvention, Rna, Siren, Siret, Association, Etablissement } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import EventManager from "../../../shared/EventManager";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import {
     isSiret,

@@ -5,7 +5,6 @@ import ILeCompteAssoPartialRequestEntity from "../../../../src/modules/providers
 import ILeCompteAssoRequestInformations from "../../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoRequestInformations";
 import leCompteAssoService from "../../../../src/modules/providers/leCompteAsso/leCompteAsso.service";
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
-import EventManager from "../../../../src/shared/EventManager";
 
 describe("leCompteAssoService", () => {
     describe("validate", () => {
@@ -75,9 +74,6 @@ describe("leCompteAssoService", () => {
     });
 
     describe("addRequest", () => {
-        const eventManagerMock = jest
-            .spyOn(EventManager, "call")
-            .mockImplementation((name, value) => Promise.resolve({ name, value }));
         let apiAssoServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
         let associationNameUpsertMock: jest.SpyInstance;
         let rnaSirenServiceMock: jest.SpyInstance;
@@ -99,7 +95,6 @@ describe("leCompteAssoService", () => {
 
         afterAll(() => {
             apiAssoServiceFindAssociationBySiren.mockReset();
-            eventManagerMock.mockReset();
             associationNameUpsertMock.mockRestore();
             rnaSirenServiceMock.mockRestore();
         });
@@ -221,28 +216,6 @@ describe("leCompteAssoService", () => {
                     message: "RNA not found",
                 },
             });
-        });
-
-        it("should call EventManager", async () => {
-            const LAST_UPDATE = new Date();
-            const RNA = "RNA";
-            const SIREN = "SIREN";
-            const NAME = "NAME";
-            const PARTIAL_ENTITY = {
-                legalInformations: { siret: SIREN, name: NAME },
-                providerInformations: {
-                    compeAssoId: "",
-                    transmis_le: LAST_UPDATE,
-                } as unknown as ILeCompteAssoRequestInformations,
-                data: {},
-            };
-            rnaSirenServiceMock.mockResolvedValueOnce(RNA);
-            apiAssoServiceFindAssociationBySiren.mockResolvedValueOnce({
-                categorie_juridique: [{ value: "9210" }],
-            });
-            await leCompteAssoService.addRequest(PARTIAL_ENTITY);
-            expect(eventManagerMock).toHaveBeenCalledTimes(1);
-            expect(eventManagerMock).toHaveBeenNthCalledWith(1, "rna-siren.matching", [{ rna: RNA, siren: SIREN }]);
         });
 
         it("should call association name upsert", async () => {
