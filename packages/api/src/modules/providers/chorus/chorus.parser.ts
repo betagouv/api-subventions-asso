@@ -49,7 +49,7 @@ export default class ChorusParser {
                 data,
             ) as unknown as IChorusIndexedInformations;
 
-            if (!this.validateIndexedInformations(indexedInformations)) return entities;
+            if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
 
             const uniqueId = this.buildUniqueId(indexedInformations);
             entities.push(new ChorusLineEntity(uniqueId, indexedInformations, data));
@@ -68,7 +68,7 @@ export default class ChorusParser {
         );
     }
 
-    protected static isIndexedInformationsValid(indexedInformations) {
+    protected static validateIndexedInformations(indexedInformations) {
         if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
         }
@@ -93,9 +93,9 @@ export default class ChorusParser {
         return true;
     }
 
-    protected static validateIndexedInformations(indexedInformations: IChorusIndexedInformations) {
+    protected static isIndexedInformationsValid(indexedInformations: IChorusIndexedInformations) {
         try {
-            return this.isIndexedInformationsValid(indexedInformations);
+            return this.validateIndexedInformations(indexedInformations);
         } catch (e) {
             console.log(
                 `\n\nThis request is not registered because: ${(e as Error).message}\n`,

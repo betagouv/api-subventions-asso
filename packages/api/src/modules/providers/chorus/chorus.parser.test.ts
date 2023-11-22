@@ -25,36 +25,36 @@ describe("ChorusParser", () => {
         });
     });
 
-    describe("isIndexedInformationsValid", () => {
-        it("should rejects because codeBranche is not accepted", () => {
+    describe("validateIndexedInformations", () => {
+        it("rejects because codeBranche is not accepted", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, codeBranche: "WRONG CODE" };
 
             //@ts-expect-error: protected
-            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
                 `The branch ${indexedInformations.codeBranche} is not accepted in data`,
             );
         });
 
-        it("should rejects because amount is not a number", () => {
+        it("rejects because amount is not a number", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, amount: undefined };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
                 `Amount is not a number`,
             );
         });
 
-        it("should rejects dateOperation is not a Date", () => {
+        it("rejects dateOperation is not a Date", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, dateOperation: "01/01/1960" };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
                 `Operation date is not a valid date`,
             );
         });
 
-        it("should rejects because siret is not valid", () => {
+        it("rejects because siret is not valid", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "SIRET" };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
                 `INVALID SIRET FOR ${indexedInformations.siret}`,
             );
         });
@@ -62,13 +62,13 @@ describe("ChorusParser", () => {
         it("should return true if siret equals #", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "#" };
             //@ts-expect-error: protected
-            expect(ChorusParser.isIndexedInformationsValid(indexedInformations)).toEqual(true);
+            expect(ChorusParser.validateIndexedInformations(indexedInformations)).toEqual(true);
         });
 
-        it("should rejects because ej is not valid", () => {
+        it("rejects because ej is not valid", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, ej: "00000" };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
+            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
                 `INVALID EJ FOR ${indexedInformations.ej}`,
             );
         });
@@ -76,7 +76,7 @@ describe("ChorusParser", () => {
         it("accepts", () => {
             const indexedInformations = ENTITIES[0].indexedInformations;
             //@ts-expect-error: protected
-            expect(ChorusParser.isIndexedInformationsValid(indexedInformations)).toEqual(true);
+            expect(ChorusParser.validateIndexedInformations(indexedInformations)).toEqual(true);
         });
     });
 
@@ -94,7 +94,7 @@ describe("ChorusParser", () => {
         let originalBuildUniqueId = ChorusParser.buildUniqueId;
         const mockBuildUniqueId = jest.fn();
         // @ts-expect-error: protected
-        let originalValidateIndexedInformations = ChorusParser.validateIndexedInformations;
+        let originalValidateIndexedInformations = ChorusParser.isIndexedInformationsValid;
         const mockValidateIndexedInformations = jest.fn().mockReturnValue(true);
 
         const ROWS = [...PAGES];
@@ -106,14 +106,14 @@ describe("ChorusParser", () => {
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId = mockBuildUniqueId;
             // @ts-expect-error: protected
-            ChorusParser.validateIndexedInformations = mockValidateIndexedInformations;
+            ChorusParser.isIndexedInformationsValid = mockValidateIndexedInformations;
         });
 
         afterAll(() => {
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId = originalBuildUniqueId;
             // @ts-expect-error: protected
-            ChorusParser.validateIndexedInformations = originalValidateIndexedInformations;
+            ChorusParser.isIndexedInformationsValid = originalValidateIndexedInformations;
         });
 
         it.each`
@@ -137,33 +137,33 @@ describe("ChorusParser", () => {
         });
     });
 
-    describe("validateIndexedInformations", () => {
+    describe("isIndexedInformationsValid", () => {
         // @ts-expect-error: protected
-        let originalIsIndexedInformationsValid = ChorusParser.isIndexedInformationsValid;
-        const mockedIsIndexedInformationsValid = jest.fn().mockReturnValue(true);
+        let originalvalidateIndexedInformationsNEW = ChorusParser.validateIndexedInformations;
+        const mockedvalidateIndexedInformationsNEW = jest.fn().mockReturnValue(true);
 
         beforeAll(() => {
             // @ts-expect-error: protected
-            ChorusParser.isIndexedInformationsValid = mockedIsIndexedInformationsValid;
+            ChorusParser.validateIndexedInformations = mockedvalidateIndexedInformationsNEW;
         });
 
         afterAll(() => {
             // @ts-expect-error: protected
-            ChorusParser.isIndexedInformationsValid = originalIsIndexedInformationsValid;
+            ChorusParser.validateIndexedInformations = originalvalidateIndexedInformationsNEW;
         });
 
         it("should return true", () => {
             const expected = true;
             //@ts-expect-error: protected
-            const actual = ChorusParser.validateIndexedInformations(ENTITIES[0]);
+            const actual = ChorusParser.isIndexedInformationsValid(ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
 
         it("should return false", () => {
-            mockedIsIndexedInformationsValid.mockReturnValueOnce(false);
+            mockedvalidateIndexedInformationsNEW.mockReturnValueOnce(false);
             const expected = false;
             //@ts-expect-error: protected
-            const actual = ChorusParser.validateIndexedInformations(ENTITIES[0]);
+            const actual = ChorusParser.isIndexedInformationsValid(ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
     });
