@@ -10,7 +10,7 @@ import {
 } from "../dto/StructureDto";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
-import { SirenStructureDto } from "../dto/SirenStructureDto";
+import { SirenStructureDto, SirenStructureEtablissementDto } from "../dto/SirenStructureDto";
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "RNA";
@@ -23,15 +23,20 @@ export default class ApiAssoDtoAdapter {
         return new Date(Date.UTC(year, month - 1, day));
     }
 
+    protected static formatEstablishementSiret(
+        establishments: SirenStructureEtablissementDto[] | SirenStructureEtablissementDto | undefined,
+    ) {
+        if (!establishments) return [];
+        return Array.isArray(establishments) ? establishments : [establishments];
+    }
+
     static sirenStructureToAssociation(structure: SirenStructureDto): Association {
         const toPvs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameSiren,
             ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren),
         );
 
-        const establishmentSiret = Array.isArray(structure.etablissements.etablissement)
-            ? structure.etablissements.etablissement
-            : [structure.etablissements.etablissement];
+        const establishmentSiret = this.formatEstablishementSiret(structure.etablissements.etablissement);
 
         return {
             denomination_siren: toPvs(structure.identite.nom),
