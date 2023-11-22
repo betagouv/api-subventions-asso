@@ -1,4 +1,4 @@
-import { Rna, Siren, Siret } from "dto";
+import { Rna } from "dto";
 
 export interface StructureEtablissementDto {
     id_siret: number;

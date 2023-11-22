@@ -97,6 +97,17 @@ describe("ApiAssoDtoAdapter", () => {
     });
 
     describe("sirenStructureToAssociation", () => {
+        // @ts-expect-error: protected
+        const originalFormatEstablishementSiret = ApiAssoDtoAdapter.formatEstablishementSiret;
+        const mockedFormatEstablishementSiret = jest
+            .fn()
+            .mockReturnValue(sirenStructureFixture.etablissements.etablissement);
+
+        // @ts-expect-error: protected
+        beforeAll(() => (ApiAssoDtoAdapter.formatEstablishementSiret = mockedFormatEstablishementSiret));
+        // @ts-expect-error: protected
+        afterAll(() => (ApiAssoDtoAdapter.formatEstablishementSiret = originalFormatEstablishementSiret));
+
         it("should transform to association", () => {
             expect(ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructureFixture)).toMatchSnapshot();
         });
@@ -119,6 +130,31 @@ describe("ApiAssoDtoAdapter", () => {
             const actual = ApiAssoDtoAdapter.apiDateToDate("2022-12-23");
 
             expect(actual).toEqual(new Date(Date.UTC(2022, 11, 23)));
+        });
+    });
+
+    describe("formatEstablishementSiret", () => {
+        it("should return empty array", () => {
+            const expected = [];
+            // @ts-expect-error: protected
+            const actual = ApiAssoDtoAdapter.formatEstablishementSiret(undefined);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should wrap establishment in array", () => {
+            const establishment = {};
+            const expected = [establishment];
+            // @ts-expect-error: protected
+            const actual = ApiAssoDtoAdapter.formatEstablishementSiret(establishment);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return establishments", () => {
+            const establishments = [{}];
+            const expected = establishments;
+            // @ts-expect-error: protected
+            const actual = ApiAssoDtoAdapter.formatEstablishementSiret(establishments);
+            expect(actual).toEqual(expected);
         });
     });
 });
