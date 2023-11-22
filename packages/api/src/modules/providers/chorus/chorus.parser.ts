@@ -73,7 +73,8 @@ export default class ChorusParser {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
         }
 
-        if (!isSiret(indexedInformations.siret)) {
+        // special treatment for siret with # that represents departments which didn't use SIRET but another identifier
+        if (!isSiret(indexedInformations.siret) && indexedInformations.siret !== "#") {
             throw new Error(`INVALID SIRET FOR ${indexedInformations.siret}`);
         }
 

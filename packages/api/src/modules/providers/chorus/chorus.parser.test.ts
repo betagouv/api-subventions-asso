@@ -26,7 +26,7 @@ describe("ChorusParser", () => {
     });
 
     describe("isIndexedInformationsValid", () => {
-        it("rejects because codeBranche is not accepted", () => {
+        it("should rejects because codeBranche is not accepted", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, codeBranche: "WRONG CODE" };
 
             //@ts-expect-error: protected
@@ -35,7 +35,7 @@ describe("ChorusParser", () => {
             );
         });
 
-        it("rejects because amount is not a number", () => {
+        it("should rejects because amount is not a number", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, amount: undefined };
             //@ts-expect-error: protected
             expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
@@ -43,7 +43,7 @@ describe("ChorusParser", () => {
             );
         });
 
-        it("rejects dateOperation is not a Date", () => {
+        it("should rejects dateOperation is not a Date", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, dateOperation: "01/01/1960" };
             //@ts-expect-error: protected
             expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
@@ -51,7 +51,7 @@ describe("ChorusParser", () => {
             );
         });
 
-        it("rejects because siret is not valid", () => {
+        it("should rejects because siret is not valid", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "SIRET" };
             //@ts-expect-error: protected
             expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
@@ -59,7 +59,13 @@ describe("ChorusParser", () => {
             );
         });
 
-        it("rejects because ej is not valid", () => {
+        it("should return true if siret equals #", () => {
+            const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "#" };
+            //@ts-expect-error: protected
+            expect(ChorusParser.isIndexedInformationsValid(indexedInformations)).toEqual(true);
+        });
+
+        it("should rejects because ej is not valid", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, ej: "00000" };
             //@ts-expect-error: protected
             expect(() => ChorusParser.isIndexedInformationsValid(indexedInformations)).toThrow(
