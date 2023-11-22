@@ -1,8 +1,16 @@
-import { isAssociation } from "$lib/helpers/entrepriseHelper";
+import { isAssociation } from "$lib/resources/associations/association.helper";
 import associationService from "$lib/resources/associations/association.service";
 import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
 
 export class AssociationController {
+    titles = [
+        "Tableau de bord",
+        /**, "Statistiques",*/
+        "Pièces administratives",
+        "Établissements",
+        "Bodacc",
+    ];
+
     constructor(identifier) {
         this.associationPromise = associationService.getAssociation(identifier).then(asso => {
             currentAssociation.set(asso);
@@ -11,10 +19,9 @@ export class AssociationController {
         this.simplifiedEstablishmentPromise = associationService
             .getEstablishments(identifier)
             .then(estabs => currentAssoSimplifiedEtabs.set(estabs));
-        this.titles = ["Tableau de bord" /**, "Statistiques"*/, "Pièces administratives", "Établissements", "Bodacc"];
     }
 
-    isAssociation(association) {
-        return !!association.rna || isAssociation(association.categorie_juridique);
+    get isAssociation() {
+        return isAssociation(currentAssociation.value);
     }
 }

@@ -23,7 +23,7 @@
             <Alert type="warning" title="Attention">Nous n'avons pas connaissance de cette association</Alert>
         </div>
     {/if}
-    {#if !controller.isAssociation(association)}
+    {#if !controller.isAssociation}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Il semblerait que vous cherchiez une entreprise et non une association
