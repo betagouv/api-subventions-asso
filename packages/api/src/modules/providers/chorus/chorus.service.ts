@@ -33,12 +33,17 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
+    public async insertMany(entities: ChorusLineEntity[]) {
+        return chorusLineRepository.insertMany(entities);
+    }
+
     /**
      * @param entities /!\ entities must be validated upstream
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
         const acceptedEntities = await asyncFilter(entities, async entity => {
             if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
+
             const siren = siretToSiren(entity.indexedInformations.siret);
 
             if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
@@ -51,7 +56,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
             return false;
         });
 
-        if (acceptedEntities.length) await chorusLineRepository.insertMany(acceptedEntities);
+        if (acceptedEntities.length) await this.insertMany(entities);
 
         return {
             rejected: entities.length - acceptedEntities.length,

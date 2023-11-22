@@ -18,6 +18,13 @@ const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES } from "./__fixutres__/ChorusFixtures";
 
 describe("chorusService", () => {
+    describe("insertMany", () => {
+        it("should call repository with entities", async () => {
+            await chorusService.insertMany(ENTITIES);
+            expect(mockedChorusLineRepository.insertMany).toHaveBeenCalledWith(ENTITIES);
+        });
+    });
+
     describe("getVersementsBySiret", () => {
         beforeAll(() => {
             mockedChorusLineRepository.findBySiret.mockResolvedValue([ENTITIES[0], ENTITIES[0]]);
