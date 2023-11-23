@@ -10,6 +10,18 @@ describe("ParserHelper", () => {
         });
     });
 
+    describe("sanitizeCellContent", () => {
+        it("should test", () => {
+            const expected =
+                "start of line;I am a string and I need to be modified;end of line\nstart of second line;this is another line that needs to be modified;end of second line";
+            const actual = ParserHelper.sanitizeCellContent(
+                `start of line;"I am a string; and I need ; to be modified;";end of line\nstart of second line;"this is another ; line that needs ; to be modified ;";end of second line`,
+                ";",
+            );
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("parseCsv()", () => {
         const CSV = dedent`this is a string, with , (coma)
         this is a string, with ; (semi-colon)`;

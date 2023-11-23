@@ -69,10 +69,18 @@ export function findFiles(file: string) {
     return files;
 }
 
+export function sanitizeCellContent(content: string, delimiter: string) {
+    function replacer(match) {
+        return match.replaceAll('"', "").replaceAll(delimiter, " ").replaceAll(/\s+/g, " ").trim();
+    }
+    const matchs = content.replace(/"(.+?);"/g, replacer);
+    return matchs;
+}
+
 export function csvParse(content: Buffer, delimiter = ";,") {
+    const sanitizedContent = sanitizeCellContent(content.toString(), ";");
     const CSV_DELIMITER = new RegExp(`[\t${delimiter}]`);
-    return content
-        .toString()
+    return sanitizedContent
         .split("\n") // Select line by line
         .map(raw => raw.split(CSV_DELIMITER).flat()); // Parse column
 }
