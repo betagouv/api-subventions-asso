@@ -4,7 +4,7 @@
     // h1 to h6
     export let titleTag = "h3";
     export let titleStyle = titleTag ? titleTag : "h3";
-    export let titleEllipsis = 2;
+    export let titleEllipsis = 3;
     export let url = "";
     export let target = "";
     export let direction = undefined;
