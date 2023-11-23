@@ -1,37 +1,61 @@
 import { shortISOPeriodRegExp, shortISORegExp } from "../../../shared/helpers/DateHelper";
 
+const OFFICIAL_MAPPER = {
+    allocatorName: "nomAttribuant",
+    allocatorSiret: "idAttribuant",
+    conventionDate: "dateConvention",
+    decisionReference: "referenceDecision",
+    associationName: "nomBeneficiaire",
+    associationSiret: "idBeneficiaire",
+    associationRna: "rnaBeneficiaire",
+    object: "object",
+    amount: "montant",
+    paymentConditions: "nature",
+    paymentStartDate: "datesPeriodeVersement",
+    paymentEndDate: "datesPeriodeVersement",
+    idRAE: "idRAE",
+    UeNotification: "notificationUE",
+    grantPercentage: "pourcentageSubvention",
+    aidSystem: "dispositifAide",
+};
+
+function getMapperVariants(prop) {
+    const header = OFFICIAL_MAPPER[prop];
+    return [header, header.toLowerCase(), header.toUpperCase()];
+}
+
 export const SCDL_MAPPER = {
-    allocatorName: [["nomAttribuant", "Nom attributaire*"]],
-    allocatorSiret: [["idAttribuant", "Identification de l'attributaire*"]],
+    allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*"]],
+    allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
-        path: [["dateConvention", "Date de convention*"]],
+        path: [[...getMapperVariants("conventionDate"), "Date de convention*"]],
         adapter: value => (value ? new Date(value) : value),
     },
-    decisionReference: [["referenceDecision", "Référence de la décision"]],
-    associationName: [["nomBeneficiaire", "Nom du bénéficiaire*"]],
-    associationSiret: [["idBeneficiaire", "Identification du bénéficiaire*"]],
-    associationRna: [["rnaBeneficiaire"]],
-    object: [["object", "Objet de la convention"]],
+    decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
+    associationName: [[...getMapperVariants("associationName"), "Nom du bénéficiaire*"]],
+    associationSiret: [[...getMapperVariants("associationSiret"), "Identification du bénéficiaire*"]],
+    associationRna: [[...getMapperVariants("associationRna")]],
+    object: [[...getMapperVariants("object"), "Objet de la convention"]],
     amount: {
-        path: [["montant", "Montant total de la subvention*"]],
+        path: [[...getMapperVariants("amount"), "Montant total de la subvention*"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    paymentConditions: [["nature", "Conditions de versement*"]],
+    paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
-        path: [["datesPeriodeVersement", "Date de versement"]],
-        adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0]) : value),
+        path: [[...getMapperVariants("paymentStartDate"), "Date de versement"]],
+        adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0].trim()) : value),
     },
     paymentEndDate: {
-        path: [["datesPeriodeVersement", "Date de versement"]],
+        path: [[...getMapperVariants("paymentEndDate"), "Date de versement"]],
         adapter: value => {
-            if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1]);
+            if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1].trim());
             else if (shortISORegExp.test(value)) return new Date(value);
             else return null;
         },
     },
-    idRAE: [["idRAE", "Numéro de référencement au répertoire des entreprises"]],
+    idRAE: [[...getMapperVariants("idRAE"), "Numéro de référencement au répertoire des entreprises"]],
     UeNotification: {
-        path: [["notificationUE", "Aide notifiée Ã  l'Europe"]],
+        path: [[...getMapperVariants("UeNotification"), "Aide notifiée Ã  l'Europe"]],
         adapter: value => {
             if (value === "oui") return true;
             if (value === "non") return false;
@@ -39,8 +63,13 @@ export const SCDL_MAPPER = {
         },
     },
     grantPercentage: {
-        path: [["pourcentageSubvention", "Pourcentage du montant de la subvention attribué au bénéficiaire*"]],
+        path: [
+            [
+                ...getMapperVariants("grantPercentage"),
+                "Pourcentage du montant de la subvention attribué au bénéficiaire*",
+            ],
+        ],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    aidSystem: ["dispositifAide"],
+    aidSystem: [...getMapperVariants("aidSystem")],
 };
