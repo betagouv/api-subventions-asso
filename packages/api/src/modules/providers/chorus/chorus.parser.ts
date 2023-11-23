@@ -18,7 +18,6 @@ export default class ChorusParser {
         const headers = ChorusParser.renameEmptyHeaders(headerRow);
         console.log("Map rows to entities...");
         const entities = this.rowsToEntities(headers, page.slice(1));
-        console.log(`${entities.length} entity ready to be saved...`);
         return entities;
     }
 
