@@ -1,3 +1,4 @@
+import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { shortISOPeriodRegExp, shortISORegExp } from "../../../shared/helpers/DateHelper";
 
 const OFFICIAL_MAPPER = {
@@ -19,12 +20,12 @@ const OFFICIAL_MAPPER = {
     aidSystem: "dispositifAide",
 };
 
-function getMapperVariants(prop) {
+function getMapperVariants(prop): string[] {
     const header = OFFICIAL_MAPPER[prop];
     return [header, header.toLowerCase(), header.toUpperCase()];
 }
 
-export const SCDL_MAPPER = {
+export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*"]],
     allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
@@ -43,12 +44,15 @@ export const SCDL_MAPPER = {
     paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
         path: [[...getMapperVariants("paymentStartDate"), "Date de versement"]],
+        // @ts-expect-error: with undefined it returns false so we don't need to check it
         adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0].trim()) : value),
     },
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), "Date de versement"]],
         adapter: value => {
+            // @ts-expect-error: with undefined it returns false so we don't need to check it
             if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1].trim());
+            // @ts-expect-error: with undefined it returns false so we don't need to check it
             else if (shortISORegExp.test(value)) return new Date(value);
             else return null;
         },

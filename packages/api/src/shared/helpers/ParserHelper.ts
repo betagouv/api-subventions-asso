@@ -73,7 +73,9 @@ export function sanitizeCellContent(content: string, delimiter: string) {
     function replacer(match) {
         return match.replaceAll('"', "").replaceAll(delimiter, " ").replaceAll(/\s+/g, " ").trim();
     }
-    const matchs = content.replace(/"(.+?);"/g, replacer);
+    // match three time quoted string that is presumably used to display real quote cell content
+    // match single quoted string that is presumably used to display delimiter (";" or ",") in cell content
+    const matchs = content.replace(/"{1,3}([^"]+?)"{1,3}/g, replacer);
     return matchs;
 }
 
