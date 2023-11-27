@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.40.0](https://github.com/betagouv/api-subventions-asso/compare/v0.39.3...v0.40.0) (2023-11-27)
+
+### Bug Fixes
+
+-   **api:** handle empty establishement in sirenStructureToAssociation ([218fa8c](https://github.com/betagouv/api-subventions-asso/commit/218fa8c3f544c203b38d36b9cc0039a675d7e5e1))
+-   **front:** a11y structure hierarchy ([fe7f6d6](https://github.com/betagouv/api-subventions-asso/commit/fe7f6d675fa369b4cbcb79736f5f5a5802b3a6df))
+-   **front:** association card title ellipsis ([7493e0c](https://github.com/betagouv/api-subventions-asso/commit/7493e0c68cef056c4009c47b9bef146310821089))
+
+### Features
+
+-   **front:** a11y declaration page ([ba25f8a](https://github.com/betagouv/api-subventions-asso/commit/ba25f8a70f89d748dde073f0b9abc930da2b4bef))
+-   **front:** update default footer links ([e2cccb4](https://github.com/betagouv/api-subventions-asso/commit/e2cccb4d871d236ef49d7a17894914c04e94da10))
+
 ## [0.39.3](https://github.com/betagouv/api-subventions-asso/compare/v0.38.8...v0.39.3) (2023-11-20)
 
 ### Bug Fixes

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.40.0](https://github.com/betagouv/api-subventions-asso/compare/v0.39.3...v0.40.0) (2023-11-27)
+
+### Bug Fixes
+
+-   **api:** handle empty establishement in sirenStructureToAssociation ([218fa8c](https://github.com/betagouv/api-subventions-asso/commit/218fa8c3f544c203b38d36b9cc0039a675d7e5e1))
+
 ## [0.39.3](https://github.com/betagouv/api-subventions-asso/compare/v0.38.8...v0.39.3) (2023-11-20)
 
 ## [0.39.2](https://github.com/betagouv/api-subventions-asso/compare/v0.39.1...v0.39.2) (2023-11-15)
