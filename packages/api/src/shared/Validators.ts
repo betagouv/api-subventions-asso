@@ -49,7 +49,11 @@ export function isStringsValid(strings: unknown[]) {
 }
 
 export function isNumbersValid(numbers: unknown[]) {
-    return numbers.every(n => typeof n === "number" && !isNaN(n));
+    return numbers.every(isNumberValid);
+}
+
+export function isNumberValid(number: unknown) {
+    return typeof number === "number" && !isNaN(number);
 }
 
 export function isCP(cp: string) {

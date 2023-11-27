@@ -80,7 +80,7 @@ export function sanitizeCellContent(content: string, delimiter: string) {
 }
 
 export function csvParse(content: Buffer, delimiter = ";,") {
-    const sanitizedContent = sanitizeCellContent(content.toString(), ";");
+    const sanitizedContent = sanitizeCellContent(content.toString(), delimiter);
     const CSV_DELIMITER = new RegExp(`[\t${delimiter}]`);
     return sanitizedContent
         .split("\n") // Select line by line

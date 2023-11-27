@@ -1,10 +1,23 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import { isSiret } from "../../../shared/Validators";
 import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
+import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
+import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
 
 export default class ScdlGrantParser {
+    protected static isGrantValid(grant: ScdlGrantEntity) {
+        // mandatory fields
+        if (!isSiret(grant.associationSiret)) return false;
+        if (!isValidDate(grant.paymentStartDate)) return false;
+        if (!isNumberValid(grant.amount)) return false;
+
+        // // optionnal fields
+        if (!isRna(grant.associationRna) && grant.associationRna !== undefined) return false;
+        if (!isValidDate(grant.paymentEndDate) && grant.paymentEndDate !== undefined) return false;
+        return true;
+    }
+
     static parseCsv(chunk: Buffer): ScdlGrantEntity[] {
         const parsedChunk = ParseHelper.csvParse(chunk, ";");
         const header = parsedChunk.shift();
@@ -20,8 +33,10 @@ export default class ScdlGrantParser {
                 parsedData,
             ) as unknown as ScdlGrantEntity;
 
-            if (!storableData.associationSiret || !isSiret(storableData.associationSiret)) continue;
-            storableChunk.push(storableData);
+            if (this.isGrantValid(storableData))
+                // if (!storableData.associationSiret || !isSiret(storableData.associationSiret)) continue;
+
+                storableChunk.push(storableData);
         }
         return storableChunk;
     }
