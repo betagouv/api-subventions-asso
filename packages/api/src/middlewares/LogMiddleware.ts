@@ -52,7 +52,8 @@ export const expressLogger = () =>
 
             // @ts-expect-error strange express-winston types
             // we convert _id into string as a workaround to winston-mongodb bug that serializes them to {}
-            if (propName === "user" && req[propName]?._id) req[propName]._id = req[propName]._id.toString();
+            if (propName === "user" && req[propName]?._id)
+                return { ...req[propName], _id: req[propName]._id.toString() };
 
             return LOGGER_SECRET_FIELDS.includes(propName) ? "**********" : req[propName];
         },
