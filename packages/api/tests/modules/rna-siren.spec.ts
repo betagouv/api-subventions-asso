@@ -21,7 +21,6 @@ describe("RnaSirenController", () => {
                     .get(`/open-data/rna-siren/${RNA}`)
                     .set("x-access-token", await createAndGetUserToken())
                     .set("Accept", "application/json");
-                console.log(actual.status);
                 expect(actual.body).toEqual(expected);
             });
         });

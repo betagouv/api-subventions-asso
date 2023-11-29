@@ -102,7 +102,7 @@ describe("/association", () => {
     describe("/{structure_identifier}/etablissements", () => {
         it("should return SimplifiedEtablissement[]", async () => {
             const response = await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.rna}/etablissements`)
+                .get(`/association/${siretToSiren(OsirisRequestEntityFixture.legalInformations.siret)}/etablissements`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
