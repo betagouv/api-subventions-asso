@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.40.1](https://github.com/betagouv/api-subventions-asso/compare/v0.40.0...v0.40.1) (2023-11-29)
+
+### Bug Fixes
+
+-   **api:** do not modify user for logs ([344ce51](https://github.com/betagouv/api-subventions-asso/commit/344ce51da868b6fb34b8e7b0abe5dd3d14cade80))
+
 # [0.40.0](https://github.com/betagouv/api-subventions-asso/compare/v0.39.3...v0.40.0) (2023-11-27)
 
 ### Bug Fixes
