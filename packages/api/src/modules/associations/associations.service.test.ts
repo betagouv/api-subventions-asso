@@ -2,10 +2,9 @@
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import * as StringHelper from "../../shared/helpers/StringHelper";
 import associationsService from "./associations.service";
-import { Document, Etablissement, Versement } from "dto";
+import { Etablissement, Versement, Document } from "dto";
 import subventionService from "../subventions/subventions.service";
 import * as providers from "../providers";
 import etablissementService from "../etablissements/etablissements.service";
@@ -18,14 +17,14 @@ import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import dataGouvService from "../providers/datagouv/datagouv.service";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
+import mocked = jest.mocked;
+import apiAssoService from "../providers/apiAsso/apiAsso.service";
 
 jest.mock("../providers/index");
 
 jest.mock("../../modules/providers/datagouv/datagouv.service");
 jest.mock("../providers/apiAsso/apiAsso.service");
 jest.mock("../../modules/_open-data/rna-siren/rnaSiren.service");
-jest.mock("../../shared/helpers/SirenHelper");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
 
 const DEFAULT_PROVIDERS = providers.default;
@@ -308,82 +307,67 @@ describe("associationsService", () => {
         });
     });
 
-    describe("isIdentifierFromAsso()", () => {
-        const ID = "identifier";
+    describe("isSirenFromAsso", () => {
+        const SIREN = "123456789";
 
         beforeAll(() => {
-            jest.mocked(siretToSiren).mockReturnValue(SIREN);
-            jest.mocked(getIdentifierType).mockReturnValue(StructureIdentifiersEnum.siren);
+            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValue(false);
+            mocked(rnaSirenService.getRna).mockResolvedValue(null);
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValue({
+                // @ts-expect-error: mock
+                categorie_juridique: [{ value: "not asso" }],
+            });
         });
 
         afterAll(() => {
-            jest.mocked(siretToSiren).mockReset();
-            jest.mocked(getIdentifierType).mockReset();
+            mocked(dataGouvService.sirenIsEntreprise).mockRestore();
+            mocked(rnaSirenService.getRna).mockRestore();
+            mocked(apiAssoService.findAssociationBySiren).mockRestore();
         });
 
-        it("if no given idType, get it", async () => {
-            await associationsService.isIdentifierFromAsso(ID);
-            expect(getIdentifierType).toHaveBeenCalledWith(ID);
-        });
-
-        it("if no idType found, throw", async () => {
-            jest.mocked(getIdentifierType).mockReturnValueOnce(null);
-            const test = () => associationsService.isIdentifierFromAsso(ID);
-            await expect(test).rejects.toMatchInlineSnapshot(
-                `[Error: Invalid structure identifier (rna, siren or siret)]`,
-            );
-        });
-
-        it("if idType is rna, return true", async () => {
-            const expected = true;
-            const actual = await associationsService.isIdentifierFromAsso(ID, StructureIdentifiersEnum.rna);
+        it("returns false if found by data gouv service as not an association", async () => {
+            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValueOnce(true);
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
         });
 
-        it("if idType is rna, return without db call", async () => {
-            await associationsService.isIdentifierFromAsso(ID, StructureIdentifiersEnum.rna);
-            expect(dataGouvService.sirenIsEntreprise).not.toHaveBeenCalled();
+        it("returns true if found related rna", async () => {
+            mocked(rnaSirenService.getRna).mockResolvedValueOnce("RNA");
+            const expected = true;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
         });
 
-        it("if idType is not rna, get siren", async () => {
-            await associationsService.isIdentifierFromAsso(ID, StructureIdentifiersEnum.siret);
-            expect(siretToSiren).toHaveBeenCalledWith(ID);
+        it("returns false if no structure found by apiAssoService", async () => {
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValueOnce(null);
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
         });
 
-        it("call dataGouvService with siren", async () => {
-            await associationsService.isIdentifierFromAsso(ID, StructureIdentifiersEnum.siret);
-            expect(siretToSiren).toHaveBeenCalledWith(ID);
+        it("returns false if structure found by apiAssoService has no categorie_juridique", async () => {
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValueOnce({});
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
         });
 
-        it("return result from dataGouvService", async () => {
-            await associationsService.isIdentifierFromAsso(ID);
-            expect(dataGouvService.sirenIsEntreprise).toHaveBeenCalledWith(SIREN);
-        });
-    });
-
-    describe("validateIdentifierFromAsso()", () => {
-        const ID = "identifier";
-        const ID_TYPE = StructureIdentifiersEnum.siret;
-        const isIdentifierFromAssoSpy = jest.spyOn(associationsService, "isIdentifierFromAsso");
-
-        beforeAll(() => {
-            isIdentifierFromAssoSpy.mockResolvedValue(true);
+        it("returns false if structure found by apiAssoService has incorrect categories_juridique", async () => {
+            // standard mocks
+            const expected = false;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
         });
 
-        afterAll(() => isIdentifierFromAssoSpy.mockReset());
-
-        it("calls isIdentifierFromAsso", async () => {
-            await associationsService.validateIdentifierFromAsso(ID, ID_TYPE);
-            expect(isIdentifierFromAssoSpy).toHaveBeenCalledWith(ID, ID_TYPE);
-        });
-        it("if isIdentifierFromAsso returns false, throw error", async () => {
-            isIdentifierFromAssoSpy.mockRejectedValueOnce("ERROR");
-            const test = () => associationsService.validateIdentifierFromAsso(ID, ID_TYPE);
-            expect(test).rejects.toBe("ERROR");
-        });
-        it("if isIdentifierFromAsso returns undefined", async () => {
-            const actual = await associationsService.validateIdentifierFromAsso(ID, ID_TYPE);
-            expect(actual).toBeUndefined();
+        it("returns true if structure found by apiAssoService has accepted categories_juridique", async () => {
+            mocked(apiAssoService.findAssociationBySiren).mockResolvedValueOnce({
+                // @ts-expect-error mock
+                categorie_juridique: [{ value: "asso" }],
+            });
+            const expected = true;
+            const actual = await associationsService.isSirenFromAsso(SIREN);
+            expect(actual).toBe(expected);
         });
     });
 });

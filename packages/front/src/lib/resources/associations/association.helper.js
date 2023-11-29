@@ -43,4 +43,4 @@ export const getModification = association => {
 
 export const getSiegeSiret = association => association.siren + association.nic_siege;
 
-export const isAssociation = association => !!association.rna || isAssoCategory(association.categorie_juridique);
+export const isAssociation = association => !!association?.rna || isAssoCategory(association?.categorie_juridique);

@@ -18,27 +18,23 @@
 {#await associationPromise}
     <FullPageSpinner description="Chargement de l'association {identifier} en cours ..." />
 {:then association}
-    {#if !association}
+    {#if controller.isAssociation}
         <div class="fr-mb-3w">
-            <Alert type="warning" title="Attention">Nous n'avons pas connaissance de cette association</Alert>
+            <StructureTitle />
         </div>
-    {/if}
-    {#if !controller.isAssociation}
+        <div class="fr-mb-6w">
+            <InfosLegales {association} />
+        </div>
+        <div class="fr-mb-6w">
+            <TabsAsso {titles} associationIdentifier={identifier} {association} />
+        </div>
+    {:else}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Il semblerait que vous cherchiez une entreprise et non une association
             </Alert>
         </div>
     {/if}
-    <div class="fr-mb-3w">
-        <StructureTitle />
-    </div>
-    <div class="fr-mb-6w">
-        <InfosLegales {association} />
-    </div>
-    <div class="fr-mb-6w">
-        <TabsAsso {titles} associationIdentifier={identifier} />
-    </div>
 {:catch error}
     {#if error.request && error.request.status === 404}
         <DataNotFound />

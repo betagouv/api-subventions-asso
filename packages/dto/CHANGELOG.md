@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.40.0](https://github.com/betagouv/datasubvention/compare/v0.39.3...v0.40.0) (2023-11-27)
+
+**Note:** Version bump only for package dto
+
 # [0.39.0](https://github.com/betagouv/datasubvention/compare/v0.38.6...v0.39.0) (2023-11-15)
 
 ### Features
