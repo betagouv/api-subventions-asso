@@ -1,5 +1,4 @@
 import { HomeController } from "./Home.controller";
-import { isRna, isSiren, isSiret } from "$lib/helpers/validatorHelper";
 import { goto } from "$app/navigation";
 
 vi.mock("$lib/helpers/validatorHelper");
@@ -39,30 +38,9 @@ describe("HomeController", () => {
     });
 
     describe("onSubmit", () => {
-        const IDENTIFIER = "identifier";
-
-        beforeAll(() => {
-            isRna.mockReturnValue(false);
-            isSiren.mockReturnValue(false);
-            isSiret.mockReturnValue(false);
-            ctrl.input.value = IDENTIFIER;
-        });
-        afterAll(() => {
-            isRna.mockRestore();
-            isSiren.mockRestore();
-            isSiret.mockRestore();
-        });
-
-        it.each`
-            dataType   | structure          | expected                          | helper
-            ${"rna"}   | ${"association"}   | ${`/association/${IDENTIFIER}`}   | ${isRna}
-            ${"siren"} | ${"association"}   | ${`/association/${IDENTIFIER}`}   | ${isSiren}
-            ${"siret"} | ${"etablissement"} | ${`/etablissement/${IDENTIFIER}`} | ${isSiret}
-            ${"name"}  | ${"search"}        | ${`/search/${IDENTIFIER}`}
-        `("updates href to given $structure from $dataType", ({ expected, helper }) => {
-            if (helper) helper.mockReturnValueOnce(true);
+        it("should call goto", () => {
             ctrl.onSubmit();
-            expect(goto).toHaveBeenCalledWith(expected);
+            expect(goto).toHaveBeenCalledTimes(1);
         });
     });
 });

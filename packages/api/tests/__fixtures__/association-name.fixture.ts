@@ -1,41 +1,46 @@
-import AssociationNameEntity from "../../src/modules/association-name/entities/AssociationNameEntity";
+import UniteLegalNameEntity from "../../src/entities/UniteLegalNameEntity";
 
 export default [
     {
         name: "ASSOCIATION AURORE",
-        rna: "W931006748",
         siren: "775684970",
+        searchingKey: "775684970 - association aurore",
+        updatedDate: new Date(),
     },
     {
         name: "AVENIR ET JOIE - JOC",
-        rna: "W922001509",
         siren: "775724842",
+        searchingKey: "775724842 - avenir et joie - joc",
+        updatedDate: new Date(),
     },
     {
         name: "ORIN ÀBAJADE",
-        rna: "W921009414",
         siren: "884423187",
+        searchingKey: "884423187 - orin àbajade",
+        updatedDate: new Date(),
     },
     {
         name: "ASSOCIATION CONTRE CHAMPS",
-        rna: "W913006937",
         siren: "352535967",
+        searchingKey: "352535967 - association contre champS",
+        updatedDate: new Date(),
     },
     {
         name: "ASSOCIATION CONTRE CHAMPS",
-        provider: "BASE RNA <Via API ASSO>",
-        rna: "W913006937",
         siren: "352535967",
+        searchingKey: "352535967 - association contre champs",
+        updatedDate: new Date(),
     },
-
     {
         name: "GROUPEMENT D EMPLOYEURS PROFESSION SPORT LOISIRS",
-        rna: "W901000297",
         siren: "502722978",
+        searchingKey: "502722978 - groupement d employeurs profession sport loisirs",
+        updatedDate: new Date(),
     },
     {
         name: "LA CASERNE BASCULE",
-        rna: "W893006723",
         siren: "899985618",
+        searchingKey: "899985618 - la caserne bascule",
+        updatedDate: new Date(),
     },
-] as AssociationNameEntity[];
+] as UniteLegalNameEntity[];

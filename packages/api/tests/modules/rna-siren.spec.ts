@@ -17,14 +17,12 @@ describe("RnaSirenController", () => {
             it("should return an object", async () => {
                 const expected = [{ siren: SIREN, rna: RNA }];
                 (rnaSirenService.find as jest.Mock).mockResolvedValueOnce(expected);
-                const actual = (
-                    await request(g.app)
-                        .get(`/open-data/rna-siren/${RNA}`)
-                        .set("x-access-token", await createAndGetUserToken())
-                        .set("Accept", "application/json")
-                ).body;
-
-                expect(actual).toEqual(expected);
+                const actual = await request(g.app)
+                    .get(`/open-data/rna-siren/${RNA}`)
+                    .set("x-access-token", await createAndGetUserToken())
+                    .set("Accept", "application/json");
+                console.log(actual.status);
+                expect(actual.body).toEqual(expected);
             });
         });
     });

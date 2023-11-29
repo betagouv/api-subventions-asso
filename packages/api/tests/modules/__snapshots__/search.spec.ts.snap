@@ -1,27 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`/search /associations/{input} should return an Association from its RNA 1`] = `
-Object {
-  "result": Array [
-    Object {
-      "lastUpdate": Any<String>,
-      "name": "ASSOCIATION AURORE",
-      "provider": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
-      "rna": "W931006748",
-      "siren": "775684970",
-    },
-  ],
-}
-`;
-
 exports[`/search /associations/{input} should return an Association from its Siren 1`] = `
 Object {
   "result": Array [
     Object {
-      "lastUpdate": Any<String>,
       "name": "ASSOCIATION AURORE",
-      "provider": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
-      "rna": "W931006748",
       "siren": "775684970",
     },
   ],
@@ -32,10 +15,7 @@ exports[`/search /associations/{input} should return an AssociationNameEntity fr
 Object {
   "result": Array [
     Object {
-      "lastUpdate": Any<String>,
       "name": "ASSOCIATION AURORE",
-      "provider": "API SIRENE données ouvertes + API Répertoire des Associations (RNA)",
-      "rna": "W931006748",
       "siren": "775684970",
     },
   ],

@@ -4,13 +4,7 @@ import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
 export default class UniteLegalNameAdapter {
     static toEntity(dbo: UniteLegalNameDbo): UniteLegalNameEntity {
-        return new UniteLegalNameEntity(
-            dbo.siren,
-            dbo.name,
-            dbo.searchingKey,
-            dbo.updatedDate,
-            dbo._id?.toString()
-        )
+        return new UniteLegalNameEntity(dbo.siren, dbo.name, dbo.searchingKey, dbo.updatedDate, dbo._id?.toString());
     }
 
     static toDbo(entity: UniteLegalNameEntity): UniteLegalNameDbo {
@@ -20,6 +14,6 @@ export default class UniteLegalNameAdapter {
             searchingKey: entity.searchingKey,
             updatedDate: entity.updatedDate,
             _id: new ObjectId(entity.id),
-        }
+        };
     }
 }

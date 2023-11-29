@@ -1,7 +1,7 @@
 import fs from "fs";
 import https from "https";
 import { exec } from "child_process";
-import uniteLegalFilesService from "./uniteLegalFiles.service";
+import uniteLegalFilesService from "./uniteLegal.files.service";
 
 jest.mock("child_process", () => ({
     exec: jest.fn((path, cb) => cb()),

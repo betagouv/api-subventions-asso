@@ -1,3 +1,4 @@
+import type { Siret } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitPromise } from "$lib/helpers/promiseHelper";
@@ -19,12 +20,16 @@ export default class SearchController {
     fetchAssociationFromName(name) {
         return associationService.search(name).then(associations => {
             if (associations.length === 1) {
-                goto(`/association/${associations[0].siren || associations[0].rna}`);
+                goto(`/association/${associations[0].siren || associations[0].rna}`, { replaceState: true });
             } else {
                 this.associations.set(associations);
                 goto(`/search/${this.inputSearch.value}`, { replaceState: true });
             }
         });
+    }
+
+    gotoEstablishment(siret: Siret) {
+        goto(`/etablissement/${siret}`);
     }
 
     updateNbEtabsLabel() {
@@ -34,7 +39,7 @@ export default class SearchController {
 
     onSubmit() {
         if (isSiret(this.inputSearch.value)) {
-            goto(`/etablissement/${this.inputSearch.value}`);
+            this.gotoEstablishment(this.inputSearch.value);
         } else {
             this.searchPromise.set(this.fetchAssociationFromName(this.inputSearch.value));
         }

@@ -1,14 +1,16 @@
 import { getFirstPartAddress, getLastPartAddress } from "$lib/resources/associations/association.helper";
 
 export default class AssociationCardController {
-    public simplifiedAsso;
-
-    constructor(simplifiedAsso) {
-        this.simplifiedAsso = simplifiedAsso;
-    }
+    constructor(public simplifiedAsso, public searchKey: string) {}
 
     get url() {
-        const identifier = this.simplifiedAsso.rna ? this.simplifiedAsso.rna : this.simplifiedAsso.siren;
+        const identifier =
+            this.searchKey === this.simplifiedAsso.rna
+                ? this.simplifiedAsso.siren
+                : this.searchKey === this.simplifiedAsso.siren
+                ? this.simplifiedAsso.rna
+                : this.simplifiedAsso.rna || this.simplifiedAsso.siren;
+
         return `/association/${identifier}`;
     }
 

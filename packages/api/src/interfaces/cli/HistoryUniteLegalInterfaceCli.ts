@@ -2,9 +2,7 @@ import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import CliController from "../../shared/CliController";
 
-import parseUniteLegalService from "../../modules/providers/datagouv/historyUniteLegal/uniteLegalParse.service"
-import uniteLegalNamesPort from "../../dataProviders/db/uniteLegalNames/uniteLegalNames.port";
-import uniteLegalEntreprisePort from "../../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
+import parseUniteLegalService from "../../modules/providers/datagouv/historyUniteLegal/uniteLegal.parse.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class HistoryUniteLegalInterfaceCli extends CliController {
@@ -18,10 +16,5 @@ export default class HistoryUniteLegalInterfaceCli extends CliController {
 
     updateHistoryUniteLegal() {
         return parseUniteLegalService.updateHistoryUniteLegal();
-    }
-
-    async indexes() {
-        await uniteLegalNamesPort.createIndexes();
-        await uniteLegalEntreprisePort.createIndexes();
     }
 }

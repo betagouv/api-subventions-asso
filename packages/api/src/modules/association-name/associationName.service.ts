@@ -1,6 +1,6 @@
 import { Siren } from "dto";
 import Fuse from "fuse.js";
-import uniteLegalNamesService from "../providers/uniteLegalNames/uniteLegalNames.service";
+import uniteLegalNameService from "../providers/uniteLegalName/uniteLegalName.service";
 import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
@@ -10,14 +10,14 @@ import AssociationNameAdapter from "./adapters/AssociationNameAdapter";
 
 export class AssociationNameService {
     async getNameFromIdentifier(identifier: AssociationIdentifiers): Promise<string | undefined> {
-        const result = await uniteLegalNamesService.getNameFromIdentifier(identifier);
+        const result = await uniteLegalNameService.getNameFromIdentifier(identifier);
 
         if (!result) return;
 
         return result.name;
     }
 
-    async getAllByValye(value: string): Promise<AssociationNameEntity[]> {
+    async find(value: AssociationIdentifiers | string): Promise<AssociationNameEntity[]> {
         const lowerCaseValue = value.toLowerCase().trim();
         let uniteLegalNameEntities: UniteLegalNameEntity[];
         if (isRna(value)) {
@@ -25,10 +25,10 @@ export class AssociationNameService {
             const rnaSirenEntities = (await rnaSirenService.find(value)) || [];
             const sirens = rnaSirenEntities.map(entity => entity.siren);
             uniteLegalNameEntities = (
-                await Promise.all(sirens.map(siren => uniteLegalNamesService.findBy(siren)))
+                await Promise.all(sirens.map(siren => uniteLegalNameService.searchBySirenSiretName(siren)))
             ).flat();
         } else {
-            uniteLegalNameEntities = await uniteLegalNamesService.findBy(lowerCaseValue);
+            uniteLegalNameEntities = await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue);
         }
 
         const groupedNameByStructures = uniteLegalNameEntities.reduce((acc, entity) => {
@@ -46,7 +46,7 @@ export class AssociationNameService {
             return fuse.search(lowerCaseValue).sort((a, b) => (a.score || 1) - (b.score || 1));
         };
 
-        const promises = Object.values(groupedNameByStructures).map(async namesBySiren => {
+        const rnaSirenPromises = Object.values(groupedNameByStructures).map(async namesBySiren => {
             let bestMatch = namesBySiren[0];
             if (namesBySiren.length > 1) {
                 const scoredMatchNamesBySiren = fuseSearch(namesBySiren);
@@ -55,15 +55,15 @@ export class AssociationNameService {
 
             const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren);
 
-            if (!rnaSirenEntities) return [AssociationNameAdapter.toAssociationNameEntity(bestMatch)];
+            if (!rnaSirenEntities) return [AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch)];
 
             return rnaSirenEntities?.map(entity => {
                 // For one siren its possible to have many rna from match
-                return AssociationNameAdapter.toAssociationNameEntity(bestMatch, entity.rna);
+                return AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch, entity.rna);
             });
         });
-        const listEnitities = await Promise.all(promises);
-        return listEnitities.flat();
+        const listEntities = await Promise.all(rnaSirenPromises);
+        return listEntities.flat();
     }
 }
 

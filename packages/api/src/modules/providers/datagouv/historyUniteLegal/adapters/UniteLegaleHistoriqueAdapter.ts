@@ -15,15 +15,15 @@ export class UniteLegaleHistoriqueAdapter {
 
     private static buildSearchingKey(siren: Siren, name: string) {
         const nameLc = name.toLowerCase();
-        let key =  `${siren} - ${nameLc}`;
-        const removeAccents = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        let key = `${siren} - ${nameLc}`;
+        const removeAccents = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accent on name for futur search
         const nameWithoutAccent = removeAccents(nameLc);
 
         if (nameLc != nameWithoutAccent) {
             key += ` - ${nameWithoutAccent}`;
         }
 
-        return key
+        return key;
     }
 
     static rowToUniteLegalEntrepriseEntity(row: UniteLegalHistoryRow) {

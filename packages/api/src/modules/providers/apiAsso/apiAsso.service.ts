@@ -62,8 +62,8 @@ export class ApiAssoService
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
         return {
             rna: structure?.identite.id_rna,
-            siren: structure?.identite.id_siren.toString()
-        }
+            siren: structure?.identite.id_siren.toString(), // sometimes siren is string or number
+        };
     }
 
     public async findAssociationByRna(rna: Rna): Promise<Association | null> {
@@ -94,7 +94,6 @@ export class ApiAssoService
 
         if (!structure) return null;
         if (hasEmptyProperties(structure.identite) || !structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
-
 
         const establishments = Array.isArray(structure.etablissements.etablissement)
             ? structure.etablissements.etablissement
@@ -231,8 +230,8 @@ export class ApiAssoService
         if (!sirenAssociation) return null;
 
         const rnaSirenEntities = await rnaSirenService.find(siren);
-        
-        if (!rnaSirenEntities?.length)  return [sirenAssociation];
+
+        if (!rnaSirenEntities?.length) return [sirenAssociation];
 
         const rnaAssociation = await this.findAssociationByRna(rnaSirenEntities[0].rna);
 

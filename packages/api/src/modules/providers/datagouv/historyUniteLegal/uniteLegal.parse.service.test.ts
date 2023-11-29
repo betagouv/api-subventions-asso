@@ -6,13 +6,13 @@ import { SaveCallback, UniteLegalHistoryRow } from "./@types";
 import * as DateHelper from "../../../../shared/helpers/DateHelper";
 import DataGouvHistoryLegalUnitParser from "./parser/dataGouvHistoryLegalUnitParser";
 import CliLogger from "../../../../shared/CliLogger";
-import uniteLegalParseService from "./uniteLegalParse.service";
-import uniteLegalImportService from "./uniteLegalImport.service";
+import uniteLegalParseService from "./uniteLegal.parse.service";
+import uniteLegalImportService from "./uniteLegal.import.service";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegalEntrepises.service";
-import uniteLegalNamesService from "../../uniteLegalNames/uniteLegalNames.service";
+import uniteLegalNameService from "../../uniteLegalName/uniteLegalName.service";
 
 describe("ParseUniteLegalService", () => {
-    const addAssociationNameMock = jest.spyOn(uniteLegalNamesService, "insert").mockImplementation(jest.fn());
+    const addAssociationNameMock = jest.spyOn(uniteLegalNameService, "insert").mockImplementation(jest.fn());
     const addManyEntrepriseSirenMock = jest
         .spyOn(uniteLegalEntreprisesService, "insertManyEntrepriseSiren")
         .mockImplementation(jest.fn());

@@ -3,11 +3,7 @@ import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
 
 export default class AssociationNameAdapter {
-    static toAssociationNameEntity(uniteLegalNameEntity: UniteLegalNameEntity, rna ?: Rna): AssociationNameEntity {
-        return new AssociationNameEntity(
-            uniteLegalNameEntity.name,
-            uniteLegalNameEntity.siren,
-            rna
-        )
+    static fromUniteLegalNameEntity(uniteLegalNameEntity: UniteLegalNameEntity, rna?: Rna): AssociationNameEntity {
+        return new AssociationNameEntity(uniteLegalNameEntity.name, uniteLegalNameEntity.siren, rna);
     }
 }

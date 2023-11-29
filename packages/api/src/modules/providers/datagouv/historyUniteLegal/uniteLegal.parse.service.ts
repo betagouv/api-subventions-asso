@@ -1,13 +1,13 @@
 import CliLogger from "../../../../shared/CliLogger";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../shared/LegalCategoriesAccepted";
-import uniteLegalNamesService from "../../uniteLegalNames/uniteLegalNames.service";
+import uniteLegalNameService from "../../uniteLegalName/uniteLegalName.service";
 import uniteLegalEntrepriseSerivce from "../../uniteLegalEntreprises/uniteLegalEntrepises.service";
 import HistoryUniteLegalImportEntity from "../../../../entities/HistoryUniteLegalImportEntity";
 import DataGouvHistoryLegalUnitParser from "./parser/dataGouvHistoryLegalUnitParser";
 import { UniteLegaleHistoriqueAdapter } from "./adapters/UniteLegaleHistoriqueAdapter";
-import filesDatagouvService from "./uniteLegalFiles.service";
-import uniteLegalImportService from "./uniteLegalImport.service";
+import filesDatagouvService from "./uniteLegal.files.service";
+import uniteLegalImportService from "./uniteLegal.import.service";
 import { SaveCallback, UniteLegalHistoryRow } from "./@types";
 
 export class UniteLegalParseService {
@@ -94,7 +94,7 @@ export class UniteLegalParseService {
     private async _saveAssociations(rows: UniteLegalHistoryRow[]) {
         for (const row of rows) {
             const entity = UniteLegaleHistoriqueAdapter.rowToUniteLegalNameEntity(row);
-            await uniteLegalNamesService.insert(entity);
+            await uniteLegalNameService.insert(entity);
         }
     }
 

@@ -4,8 +4,9 @@
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
 
     export let simplifiedAsso;
+    export let searchKey;
 
-    const ctrl = new AssociationCardController(simplifiedAsso);
+    const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
 </script>
 
 <Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6">

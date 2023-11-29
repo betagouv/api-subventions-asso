@@ -189,7 +189,6 @@ class StatsService {
         const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(
             visitsGroupedByAssociationIdentifier,
         );
-
         const countVisitByAssociationDesc = visitsGroupedByAssociation
             .map(associationVisit => ({
                 id: associationVisit._id,

@@ -1,4 +1,3 @@
-import associationNameService from "../../../../src/modules/association-name/associationName.service";
 import rnaSirenService from "../../../../src/modules/rna-siren/rnaSiren.service";
 import apiAssoService from "../../../../src/modules/providers/apiAsso/apiAsso.service";
 import ILeCompteAssoPartialRequestEntity from "../../../../src/modules/providers/leCompteAsso/@types/ILeCompteAssoPartialRequestEntity";
@@ -75,12 +74,10 @@ describe("leCompteAssoService", () => {
 
     describe("addRequest", () => {
         let apiAssoServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
-        let associationNameUpsertMock: jest.SpyInstance;
         let rnaSirenServiceMock: jest.SpyInstance;
 
         beforeEach(() => {
             apiAssoServiceFindAssociationBySiren = jest.spyOn(apiAssoService, "findAssociationBySiren");
-            associationNameUpsertMock.mockClear();
         });
 
         afterEach(() => {
@@ -88,14 +85,16 @@ describe("leCompteAssoService", () => {
         });
 
         beforeAll(() => {
-            // @ts-expect-error mock mongodb return value
-            associationNameUpsertMock = jest.spyOn(associationNameService, "upsert").mockResolvedValue();
-            rnaSirenServiceMock = jest.spyOn(rnaSirenService, "find");
+            rnaSirenServiceMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([
+                {
+                    rna: "FAKE_RNA",
+                    siren: "000000000",
+                },
+            ]);
         });
 
         afterAll(() => {
             apiAssoServiceFindAssociationBySiren.mockReset();
-            associationNameUpsertMock.mockRestore();
             rnaSirenServiceMock.mockRestore();
         });
 
@@ -217,38 +216,11 @@ describe("leCompteAssoService", () => {
                 },
             });
         });
-
-        it("should call association name upsert", async () => {
-            const LAST_UPDATE = new Date();
-            const RNA = "RNA";
-            const SIREN = "SIREN";
-            const NAME = "NAME";
-            const PARTIAL_ENTITY = {
-                legalInformations: { siret: SIREN, name: NAME },
-                providerInformations: {
-                    compeAssoId: "",
-                    transmis_le: LAST_UPDATE,
-                } as unknown as ILeCompteAssoRequestInformations,
-                data: {},
-            };
-            rnaSirenServiceMock.mockResolvedValueOnce({ siret: SIREN, rna: RNA });
-            apiAssoServiceFindAssociationBySiren.mockResolvedValueOnce({
-                categorie_juridique: [{ value: "9210" }],
-            });
-            await leCompteAssoService.addRequest(PARTIAL_ENTITY);
-            expect(associationNameUpsertMock).toHaveBeenCalledTimes(1);
-            expect(associationNameUpsertMock).toHaveBeenCalledWith({
-                rna: RNA,
-                siren: SIREN,
-                name: NAME,
-                provider: leCompteAssoService.provider.name,
-                lastUpdate: LAST_UPDATE,
-            });
-        });
     });
 
     describe("findBySiret", () => {
         let apiAssoServiceFindAssociationBySiren: jest.SpyInstance<Promise<unknown>>;
+        let rnaSirenServiceMock: jest.SpyInstance;
         beforeEach(() => {
             apiAssoServiceFindAssociationBySiren = jest.spyOn(apiAssoService, "findAssociationBySiren");
             apiAssoServiceFindAssociationBySiren.mockImplementation(() =>
@@ -257,6 +229,15 @@ describe("leCompteAssoService", () => {
                     categorie_juridique: ProviderValueAdapter.toProviderValues("9220", "test", new Date()),
                 }),
             );
+        });
+
+        beforeAll(() => {
+            rnaSirenServiceMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([
+                {
+                    rna: "FAKE_RNA",
+                    siren: "000000000",
+                },
+            ]);
         });
 
         afterEach(() => {

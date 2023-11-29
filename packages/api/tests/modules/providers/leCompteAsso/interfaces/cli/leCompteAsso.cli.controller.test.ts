@@ -2,6 +2,7 @@ import path from "path";
 import apiAssoService from "../../../../../../src/modules/providers/apiAsso/apiAsso.service";
 import LeCompteAssoCliController from "../../../../../../src/modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
 import ProviderValueAdapter from "../../../../../../src/shared/adapters/ProviderValueAdapter";
+import rnaSirenService from "../../../../../../src/modules/rna-siren/rnaSiren.service";
 
 describe("LeCompteAssoCliController", () => {
     const testWrongFilePath = path.resolve(__dirname, "../../__fixtures__/le-compte-asso-export-tests.csv");
@@ -76,13 +77,15 @@ describe("LeCompteAssoCliController", () => {
 
     describe("parse", () => {
         let mock: jest.SpyInstance<Promise<unknown>>;
-
+        let rnaSrienMock: jest.SpyInstance;
         beforeEach(() => {
             mock = jest.spyOn(apiAssoService, "findAssociationBySiren");
+            rnaSrienMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([{ rna: "test", siren: "000000000" }]);
         });
 
         afterEach(() => {
             mock.mockReset();
+            rnaSrienMock.mockReset();
         });
 
         it("should reject beause not var send", async () => {
