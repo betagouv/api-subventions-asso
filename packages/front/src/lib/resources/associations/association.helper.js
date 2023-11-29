@@ -1,4 +1,4 @@
-import { isAssociation as entrepriseIsAsso } from "$lib/helpers/entrepriseHelper";
+import { isAssoCategory } from "$lib/helpers/entrepriseHelper";
 
 export const addressToOneLineString = address => {
     if (!address) return address;
@@ -43,4 +43,4 @@ export const getModification = association => {
 
 export const getSiegeSiret = association => association.siren + association.nic_siege;
 
-export const isAssociation = association => !!association.rna || entrepriseIsAsso(association.categorie_juridique);
+export const isAssociation = association => !!association.rna || isAssoCategory(association.categorie_juridique);

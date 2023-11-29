@@ -1,4 +1,4 @@
-export function isAssociation(code_juridique) {
+export function isAssoCategory(code_juridique) {
     const LEGAL_CATEGORIES_ACCEPTED = [
         // TODO: créer un package shared pour partager les cat juridique entre le front et le back
         "9210", // Association non déclarée
