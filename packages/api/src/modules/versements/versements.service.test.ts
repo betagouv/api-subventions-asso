@@ -2,14 +2,15 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
+import RnaSirenEntity from "../../entities/RnaSirenEntity";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
 import versementsService from "./versements.service";
 
 describe("VersementsService", () => {
     const VERSEMENT_KEY = "J00034";
     describe("getVersementsByAssociation", () => {
         const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
-        const getSirenMock = jest.spyOn(rnaSirenService, "getSiren");
+        const findOneMock = jest.spyOn(rnaSirenService, "find");
         // @ts-expect-error getVersementsBySiren is private methode
         const getVersementsMock = jest.spyOn<any>(versementsService, "getVersementsBySiren");
 
@@ -24,7 +25,7 @@ describe("VersementsService", () => {
         it("should throw not found error because siren not found", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getVersementsMock.mockImplementationOnce(async () => []);
-            getSirenMock.mockImplementationOnce(async () => null);
+            findOneMock.mockImplementationOnce(async () => null);
 
             await expect(() => versementsService.getVersementsByAssociation("test")).rejects.toThrowError(
                 NotFoundError,
@@ -36,11 +37,11 @@ describe("VersementsService", () => {
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getVersementsMock.mockImplementationOnce(async () => []);
-            getSirenMock.mockImplementationOnce(async () => "FAKE_SIREN");
+            findOneMock.mockResolvedValueOnce([new RnaSirenEntity("","FAKE_SIREN")]);
 
             await versementsService.getVersementsByAssociation("test");
 
-            expect(getSirenMock).toHaveBeenCalledWith(expected);
+            expect(findOneMock).toHaveBeenCalledWith(expected);
         });
 
         it("should call getVersementsBySiren with founded siren", async () => {
@@ -48,7 +49,7 @@ describe("VersementsService", () => {
 
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             getVersementsMock.mockImplementationOnce(async () => []);
-            getSirenMock.mockImplementationOnce(async () => expected);
+            findOneMock.mockResolvedValueOnce([new RnaSirenEntity("",expected)]);
 
             await versementsService.getVersementsByAssociation("test");
 

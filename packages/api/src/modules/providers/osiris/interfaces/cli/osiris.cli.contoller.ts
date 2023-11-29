@@ -9,9 +9,9 @@ import OsirisActionEntity from "../../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
-import rnaSirenService from "../../../../_open-data/rna-siren/rnaSiren.service";
 import OsirisEvaluationEntity from "../../entities/OsirisEvaluationEntity";
 import { findFiles } from "../../../../../shared/helpers/ParserHelper";
+import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCliController {
@@ -132,9 +132,9 @@ export default class OsirisCliController {
 
             if (validation !== true && validation.code === 2) {
                 // RNA NOT FOUND // TODO: use const for decribe error
-                const rna = await rnaSirenService.getRna(osirisRequest.legalInformations.siret);
+                const rnaSirenEntities = await rnaSirenService.find(osirisRequest.legalInformations.siret);
 
-                if (typeof rna !== "string") {
+                if (!rnaSirenEntities || !rnaSirenEntities.length) {
                     logs.push(
                         `\n\nThis request is not registered because: RNA not found\n`,
                         JSON.stringify(osirisRequest.legalInformations, null, "\t"),
@@ -142,7 +142,7 @@ export default class OsirisCliController {
                     return data;
                 }
 
-                osirisRequest.legalInformations.rna = rna;
+                osirisRequest.legalInformations.rna = rnaSirenEntities[0].rna;
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
 

@@ -10,9 +10,8 @@ import AssociationsProvider from "../../associations/@types/AssociationsProvider
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
-import { isDateNewer } from "../../../shared/helpers/DateHelper";
-import associationNameService from "../../association-name/associationName.service";
 import ProviderCore from "../ProviderCore";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, {
     StructureDacDocumentDto,
@@ -36,8 +35,6 @@ export class ApiAssoService
             description:
                 "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
         });
-        associationNameService.setProviderScore(ApiAssoDtoAdapter.providerNameRna, 1);
-        associationNameService.setProviderScore(ApiAssoDtoAdapter.providerNameSiren, 1);
     }
 
     private async sendRequest<T>(route: string): Promise<T | null> {
@@ -59,6 +56,14 @@ export class ApiAssoService
         } catch {
             return null;
         }
+    }
+
+    public async findRnaSirenByIdentifiers(identifier: AssociationIdentifiers) {
+        const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
+        return {
+            rna: structure?.identite.id_rna,
+            siren: structure?.identite.id_siren.toString(), // sometimes siren is string or number
+        };
     }
 
     public async findAssociationByRna(rna: Rna): Promise<Association | null> {
@@ -90,8 +95,6 @@ export class ApiAssoService
         if (!structure) return null;
         if (hasEmptyProperties(structure.identite) || !structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
 
-        await this.saveStructureInAssociationName(structure);
-
         const establishments = Array.isArray(structure.etablissements.etablissement)
             ? structure.etablissements.etablissement
             : [structure.etablissements.etablissement];
@@ -110,23 +113,6 @@ export class ApiAssoService
                 structure.identite.date_modif_siren,
             ),
         );
-    }
-
-    private async saveStructureInAssociationName(structure: StructureDto) {
-        if (!structure?.identite?.id_siren || !structure?.identite?.id_rna || !structure?.identite?.nom) return;
-
-        const lastUpdateDateRna = ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna);
-        const lastUpdateDateSiren = ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren);
-
-        const rnaIsMoreRecent = isDateNewer(lastUpdateDateRna, lastUpdateDateSiren);
-
-        await associationNameService.upsert({
-            rna: structure.identite.id_rna,
-            siren: structure.identite.id_siren.toString(),
-            name: structure.identite.nom,
-            provider: rnaIsMoreRecent ? ApiAssoDtoAdapter.providerNameRna : ApiAssoDtoAdapter.providerNameSiren,
-            lastUpdate: rnaIsMoreRecent ? lastUpdateDateRna : lastUpdateDateSiren,
-        });
     }
 
     private filterRnaDocuments(documents: StructureRnaDocumentDto[]) {
@@ -243,17 +229,11 @@ export class ApiAssoService
 
         if (!sirenAssociation) return null;
 
-        const groupedIdentifier = await associationNameService.getGroupedIdentifiers(siren);
-        let rna = groupedIdentifier.rna || "";
+        const rnaSirenEntities = await rnaSirenService.find(siren);
 
-        if (!groupedIdentifier.rna) {
-            // Check if information rna <=> siren is save in apiRNA
-            const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
-            if (hasEmptyProperties(structure?.identite) || !structure?.identite.id_rna) return [sirenAssociation];
-            rna = structure.identite.id_rna;
-        }
+        if (!rnaSirenEntities?.length) return [sirenAssociation];
 
-        const rnaAssociation = await this.findAssociationByRna(rna);
+        const rnaAssociation = await this.findAssociationByRna(rnaSirenEntities[0].rna);
 
         if (!rnaAssociation) return [sirenAssociation];
 
@@ -269,18 +249,11 @@ export class ApiAssoService
 
         if (!rnaAssociation) return null;
 
-        const groupedIdentifier = await associationNameService.getGroupedIdentifiers(rna);
+        const rnaSirenEntities = await rnaSirenService.find(rna);
 
-        let siren = groupedIdentifier.siren || "";
+        if (!rnaSirenEntities?.length) return [rnaAssociation];
 
-        if (!groupedIdentifier.siren) {
-            // Check if information rna <=> siren is saved in apiRNA
-            const structure = await this.sendRequest<StructureDto>(`/api/structure/${rna}`);
-            if (hasEmptyProperties(structure?.identite) || !structure?.identite.id_siren) return [rnaAssociation];
-            siren = structure.identite.id_siren.toString();
-        }
-
-        const sirenAssociation = await this.findAssociationBySiren(siren);
+        const sirenAssociation = await this.findAssociationBySiren(rnaSirenEntities[0].siren);
 
         if (!sirenAssociation) return [rnaAssociation];
 

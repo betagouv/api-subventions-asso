@@ -1,6 +1,5 @@
 import { DemandeSubvention, Rna, Siren, Siret, Association, Etablissement } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import EventManager from "../../../shared/EventManager";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import {
     isSiret,
@@ -10,13 +9,13 @@ import {
     isOsirisRequestId,
     isOsirisActionId,
 } from "../../../shared/Validators";
-import associationNameService from "../../association-name/associationName.service";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
+import rnaSirenSerivce from "../../rna-siren/rnaSiren.service";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
@@ -43,23 +42,14 @@ export class OsirisService
                 "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
             id: "osiris",
         });
-        associationNameService.setProviderScore(this.provider.name, 0.3);
     }
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
         const existingFile = await osirisRequestRepository.findByOsirisId(request.providerInformations.osirisId);
-        const { rna, siret, name } = request.legalInformations;
+        const { rna, siret } = request.legalInformations;
         const siren = siretToSiren(siret);
-        const date = request.providerInformations.dateCommission || request.providerInformations.exerciceDebut;
 
-        EventManager.call("rna-siren.matching", [{ rna, siren }]);
-        await associationNameService.upsert({
-            rna: rna || null,
-            siren,
-            name,
-            provider: this.provider.name,
-            lastUpdate: date,
-        });
+        if (rna) await rnaSirenSerivce.insert(rna, siren);
 
         if (existingFile) {
             await osirisRequestRepository.update(request);

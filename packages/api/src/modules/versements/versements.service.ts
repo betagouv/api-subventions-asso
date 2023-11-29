@@ -3,9 +3,9 @@ import providers from "../providers";
 import { AssociationIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { NotFoundError } from "../../shared/errors/httpErrors";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
 import VersementsProvider from "./@types/VersementsProvider";
 
 export class VersementsService {
@@ -15,7 +15,8 @@ export class VersementsService {
 
         let siren = type === StructureIdentifiersEnum.siren ? identifier : null;
         if (!siren) {
-            siren = await rnaSirenService.getSiren(identifier);
+            const rnaSirenEntities = await rnaSirenService.find(identifier);
+            if (rnaSirenEntities && rnaSirenEntities.length) siren = rnaSirenEntities[0].siren;
         }
 
         if (!siren) throw new NotFoundError("Impossible to recover the SIREN");

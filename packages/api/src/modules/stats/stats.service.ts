@@ -11,11 +11,14 @@ import UserDbo from "../user/repositories/dbo/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import userStatsService from "../user/services/stats/user.stats.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { isRna } from "../../shared/Validators";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
 import statsRepository from "./repositories/stats.repository";
+import GroupAssociationVisits from "./@types/GroupAssociationVisits";
 
 class StatsService {
     async getNbUsersByRequestsOnPeriod(start: Date, end: Date, minReq: number) {
@@ -113,30 +116,37 @@ class StatsService {
         };
     }
 
-    private async groupVisitsOnMaps(group, rnaMap, sirenMap) {
+    private async groupVisitsOnMaps(
+        group: GroupAssociationVisits,
+        rnaMap: Map<AssociationIdentifiers, GroupAssociationVisits>,
+        sirenMap: Map<AssociationIdentifiers, GroupAssociationVisits>,
+    ) {
         if (rnaMap.has(group._id) || sirenMap.has(group._id)) {
             const mapVisits = rnaMap.get(group._id) || sirenMap.get(group._id);
             mapVisits?.visits.push(...group.visits);
             return;
         }
-        const identifiers = await associationNameService.getGroupedIdentifiers(group._id);
+        const rnaSirenEntities = await rnaSirenService.find(group._id);
         const associationVisits = {
-            id: group._id,
+            _id: group._id,
             visits: [] as AssociationVisitEntity[],
         };
 
         associationVisits.visits.push(...group.visits);
-
-        if (identifiers.rna) rnaMap.set(identifiers.rna, associationVisits);
-        if (identifiers.siren) sirenMap.set(identifiers.siren, associationVisits);
+        if (rnaSirenEntities && rnaSirenEntities.length) {
+            rnaMap.set(rnaSirenEntities[0].rna, associationVisits);
+            sirenMap.set(rnaSirenEntities[0].siren, associationVisits);
+        } else if (isRna(group._id)) {
+            rnaMap.set(group._id, associationVisits);
+        } else {
+            sirenMap.set(group._id, associationVisits);
+        }
     }
 
-    private async groupAssociationVisitsByAssociation(visits: { _id: string; visits: AssociationVisitEntity[] }[]) {
+    private async groupAssociationVisitsByAssociation(visits: GroupAssociationVisits[]) {
         // Group by association, same association but different identifier
-        const rnaMap: Map<AssociationIdentifiers, { id: AssociationIdentifiers; visits: AssociationVisitEntity[] }> =
-            new Map();
-        const sirenMap: Map<AssociationIdentifiers, { id: AssociationIdentifiers; visits: AssociationVisitEntity[] }> =
-            new Map();
+        const rnaMap: Map<AssociationIdentifiers, GroupAssociationVisits> = new Map();
+        const sirenMap: Map<AssociationIdentifiers, GroupAssociationVisits> = new Map();
 
         await asyncForEach(visits, async group => this.groupVisitsOnMaps(group, rnaMap, sirenMap));
 
@@ -179,10 +189,9 @@ class StatsService {
         const visitsGroupedByAssociation = await this.groupAssociationVisitsByAssociation(
             visitsGroupedByAssociationIdentifier,
         );
-
         const countVisitByAssociationDesc = visitsGroupedByAssociation
             .map(associationVisit => ({
-                id: associationVisit.id,
+                id: associationVisit._id,
                 visits: this.keepOneVisitByUserAndDate(associationVisit.visits).length,
             }))
             .sort((a, b) => b.visits - a.visits);

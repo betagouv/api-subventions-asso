@@ -15,14 +15,14 @@ import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
-import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import documentsService from "../documents/documents.service";
 import versementsService from "../versements/versements.service";
 import subventionsService from "../subventions/subventions.service";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
-import dataGouvService from "../providers/datagouv/datagouv.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entrepises.service";
+import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
@@ -67,10 +67,10 @@ export class AssociationsService {
     }
 
     async getAssociationByRna(rna: Rna) {
-        const siren = await rnaSirenService.getSiren(rna);
-        if (siren) {
+        const rnaSirenEntities = await rnaSirenService.find(rna);
+        if (rnaSirenEntities?.length) {
             try {
-                const association = await this.getAssociationBySiren(siren);
+                const association = await this.getAssociationBySiren(rnaSirenEntities[0].siren);
                 return association;
             } catch {
                 // if no association found by siren search by rna
@@ -105,10 +105,10 @@ export class AssociationsService {
             throw new Error("You must provide a valid SIREN or RNA");
         }
         if (type === StructureIdentifiersEnum.rna) {
-            const siren = await rnaSirenService.getSiren(identifier);
-            if (!siren) return [];
+            const rnaSirenEntities = await rnaSirenService.find(identifier);
+            if (!rnaSirenEntities?.length) return [];
 
-            identifier = siren;
+            identifier = rnaSirenEntities[0].siren;
         }
         return await etablissementService.getEtablissementsBySiren(identifier);
     }
@@ -140,15 +140,15 @@ export class AssociationsService {
     }
 
     async isSirenFromAsso(siren: Siren): Promise<boolean> {
-        if (await dataGouvService.sirenIsEntreprise(siren)) return false;
+        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
 
         // what follows will be useless when #554 is done (then maybe the helper will be redundant)
-        if (await rnaSirenService.getRna(siren)) return true;
+        if (await rnaSirenService.find(siren)) return true;
 
         const asso = await apiAssoService.findAssociationBySiren(siren);
         if (!asso?.categorie_juridique?.[0]?.value) return false;
         return LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value);
-    } // TODO tests
+    }
 }
 
 const associationsService = new AssociationsService();

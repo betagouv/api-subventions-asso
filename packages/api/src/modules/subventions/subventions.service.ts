@@ -5,10 +5,10 @@ import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import providers from "../providers";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
 import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 
@@ -18,9 +18,9 @@ export class SubventionsService {
         if (!type) throw new AssociationIdentifierError();
 
         if (type === StructureIdentifiersEnum.rna) {
-            const siren = await rnaSirenService.getSiren(id);
-            if (siren) {
-                id = siren;
+            const rnaSirenEntities = await rnaSirenService.find(id);
+            if (rnaSirenEntities && rnaSirenEntities.length) {
+                id = rnaSirenEntities[0].siren;
                 type = StructureIdentifiersEnum.siren;
             }
         }

@@ -5,11 +5,14 @@ import UserDbo from "../../src/modules/user/repositories/dbo/UserDbo";
 import userFixture from "./user/__fixtures__/entity";
 import db from "../../src/shared/MongoConnection";
 import visitsFixture, { THIS_MONTH, TODAY } from "../__fixtures__/association-visits.fixture";
-import nameFixture from "../__fixtures__/association-name.fixture";
+import AssociationNameFixture from "../__fixtures__/association-name.fixture";
+import RnaNameFixture from "../__fixtures__/rna-siren.fixture";
 import statsAssociationsVisitRepository from "../../src/modules/stats/repositories/statsAssociationsVisit.repository";
 import { DefaultObject } from "../../src/@types";
 import { createAndActiveUser, createUser } from "../__helpers__/userHelper";
 import userRepository from "../../src/modules/user/repositories/user.repository";
+import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
+import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -167,12 +170,12 @@ describe("/stats", () => {
             }
 
             const collection = db.collection(statsAssociationsVisitRepository.collectionName);
-            const nameCollection = db.collection("association-name");
             const serviceSpy = jest.spyOn(statsService, "getTopAssociationsByPeriod");
 
             beforeEach(async () => {
                 await collection.insertMany(visitsFixture);
-                await nameCollection.insertMany(nameFixture);
+                Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.insert(fixture)));
+                Promise.all(RnaNameFixture.map(fixture => rnaSirenService.insert(fixture.rna, fixture.siren)));
             });
 
             describe("should return data with HTTP status code 200", () => {
@@ -222,7 +225,6 @@ describe("/stats", () => {
                     const start = THIS_MONTH;
                     const end = TODAY;
                     const response = await makeRequestWithParams(limit, start, end);
-
                     expect(response.statusCode).toBe(200);
                     expect(response.body).toMatchObject({ data });
                 });

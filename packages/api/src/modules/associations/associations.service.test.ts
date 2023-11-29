@@ -8,7 +8,6 @@ import { Etablissement, Versement, Document } from "dto";
 import subventionService from "../subventions/subventions.service";
 import * as providers from "../providers";
 import etablissementService from "../etablissements/etablissements.service";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import versementsService from "../versements/versements.service";
 import documentsService from "../documents/documents.service";
@@ -16,15 +15,17 @@ import AssociationIdentifierError from "../../shared/errors/AssociationIdentifie
 import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import { NotFoundError } from "../../shared/errors/httpErrors";
-import dataGouvService from "../providers/datagouv/datagouv.service";
 import mocked = jest.mocked;
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import RnaSirenEntity from "../../entities/RnaSirenEntity";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entrepises.service";
 
 jest.mock("../providers/index");
 
-jest.mock("../../modules/providers/datagouv/datagouv.service");
 jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../../modules/_open-data/rna-siren/rnaSiren.service");
+jest.mock("../rna-siren/rnaSiren.service");
+jest.mock("../providers/uniteLegalEntreprises/uniteLegal.entrepises.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
 
 const DEFAULT_PROVIDERS = providers.default;
@@ -44,7 +45,7 @@ describe("associationsService", () => {
     const getDocumentByRnaMock = jest.spyOn(documentsService, "getDocumentByRna");
     const getEtablissementsBySirenMock = jest.spyOn(etablissementService, "getEtablissementsBySiren");
     const getEtablissementMock = jest.spyOn(etablissementService, "getEtablissement");
-    const rnaSirenServiceGetSirenMock = jest.spyOn(rnaSirenService, "getSiren");
+    const rnaSirenServiceFindOne = jest.spyOn(rnaSirenService, "find");
     // @ts-expect-error: mock private method
     const aggregateMock = jest.spyOn(associationsService, "aggregate");
 
@@ -185,7 +186,7 @@ describe("associationsService", () => {
         it("should call aggregate", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => [{}]);
-            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
+            rnaSirenServiceFindOne.mockImplementationOnce(async () => null);
             await associationsService.getAssociationByRna(RNA);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
@@ -193,7 +194,7 @@ describe("associationsService", () => {
         it("should throw not found error if aggregates return an empty array", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
-            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
+            rnaSirenServiceFindOne.mockImplementationOnce(async () => null);
             expect(() => associationsService.getAssociationByRna(RNA)).rejects.toThrowError(
                 new NotFoundError("Association not found"),
             );
@@ -201,7 +202,7 @@ describe("associationsService", () => {
         it("should call FormaterHelper.formatData()", async () => {
             // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => [{}]);
-            rnaSirenServiceGetSirenMock.mockImplementationOnce(async () => null);
+            rnaSirenServiceFindOne.mockImplementationOnce(async () => null);
             const expected = 1;
             await associationsService.getAssociationByRna(RNA);
             const actual = formatDataMock.mock.calls.length;
@@ -261,7 +262,7 @@ describe("associationsService", () => {
             const expected = SIREN;
             getEtablissementsBySirenMock.mockImplementationOnce(async () => []);
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
-            rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(expected));
+            rnaSirenServiceFindOne.mockImplementationOnce(() => Promise.resolve([new RnaSirenEntity(RNA, SIREN)]));
             await associationsService.getEtablissements(RNA);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(expected);
         });
@@ -269,7 +270,7 @@ describe("associationsService", () => {
         it("should return empty array (siren not matching with rna)", async () => {
             const expected = 0;
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
-            rnaSirenServiceGetSirenMock.mockImplementationOnce(() => Promise.resolve(null));
+            rnaSirenServiceFindOne.mockImplementationOnce(() => Promise.resolve(null));
             const actual = await associationsService.getEtablissements(RNA);
             expect(actual).toHaveLength(expected);
         });
@@ -311,8 +312,8 @@ describe("associationsService", () => {
         const SIREN = "123456789";
 
         beforeAll(() => {
-            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValue(false);
-            mocked(rnaSirenService.getRna).mockResolvedValue(null);
+            mocked(uniteLegalEntreprisesService.isEntreprise).mockResolvedValue(false);
+            mocked(rnaSirenService.find).mockResolvedValue(null);
             mocked(apiAssoService.findAssociationBySiren).mockResolvedValue({
                 // @ts-expect-error: mock
                 categorie_juridique: [{ value: "not asso" }],
@@ -320,20 +321,20 @@ describe("associationsService", () => {
         });
 
         afterAll(() => {
-            mocked(dataGouvService.sirenIsEntreprise).mockRestore();
-            mocked(rnaSirenService.getRna).mockRestore();
+            mocked(uniteLegalEntreprisesService.isEntreprise).mockRestore();
+            mocked(rnaSirenService.find).mockRestore();
             mocked(apiAssoService.findAssociationBySiren).mockRestore();
         });
 
         it("returns false if found by data gouv service as not an association", async () => {
-            mocked(dataGouvService.sirenIsEntreprise).mockResolvedValueOnce(true);
+            mocked(uniteLegalEntreprisesService.isEntreprise).mockResolvedValueOnce(true);
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
         });
 
         it("returns true if found related rna", async () => {
-            mocked(rnaSirenService.getRna).mockResolvedValueOnce("RNA");
+            mocked(rnaSirenService.find).mockResolvedValueOnce([new RnaSirenEntity("RNA", "SIREN")]);
             const expected = true;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
@@ -358,6 +359,16 @@ describe("associationsService", () => {
             const expected = false;
             const actual = await associationsService.isSirenFromAsso(SIREN);
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("validateIdentifierFromAsso()", () => {
+        const ID = "identifier";
+        const ID_TYPE = StructureIdentifiersEnum.siret;
+        const isIdentifierFromAssoSpy = jest.spyOn(associationsService, "isSirenFromAsso");
+
+        beforeAll(() => {
+            isIdentifierFromAssoSpy.mockResolvedValue(true);
         });
 
         it("returns true if structure found by apiAssoService has accepted categories_juridique", async () => {

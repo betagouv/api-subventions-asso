@@ -1,7 +1,7 @@
 import associationNameService from "../association-name/associationName.service";
 export class SearchService {
     public async getAssociationsKeys(value: string) {
-        const result = await associationNameService.getAllStartingWith(value);
+        const result = await associationNameService.find(value);
         return result;
     }
 }

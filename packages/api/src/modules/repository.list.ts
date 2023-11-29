@@ -1,5 +1,7 @@
-import rnaSirenRepository from "./_open-data/rna-siren/repositories/rnaSiren.repository";
-import associationNameRepository from "./association-name/repositories/associationName.repository";
+import rnaSirenPort from "../dataProviders/db/rnaSiren/rnaSiren.port";
+import uniteLegalEntreprisePort from "../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
+import uniteLegalImportsPort from "../dataProviders/db/uniteLegalImports/uniteLegalImports.port";
+import uniteLegalNamePort from "../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import configurationsRepository from "./configurations/repositories/configurations.repository";
 import chorusLineRepository from "./providers/chorus/repositories/chorus.line.repository";
 import dauphinGisproRepository from "./providers/dauphin/repositories/dauphin-gispro.repository";
@@ -25,7 +27,6 @@ export const repositoriesWithIndexes = [
     userRepository,
     statsRepository,
     userResetRepository,
-    rnaSirenRepository,
     osirisRequestRepository,
     osirisActionRepository,
     osirisEvaluationRepository,
@@ -37,9 +38,12 @@ export const repositoriesWithIndexes = [
     miscScdlProducerRepository,
     configurationsRepository,
     consumerTokenRepository,
-    associationNameRepository,
     chorusLineRepository,
     demarchesSimplifieesDataRepository,
     demarchesSimplifieesMapperRepository,
     statsAssociationsVisitRepository,
+    rnaSirenPort,
+    uniteLegalEntreprisePort,
+    uniteLegalImportsPort,
+    uniteLegalNamePort,
 ];

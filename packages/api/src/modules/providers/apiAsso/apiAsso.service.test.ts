@@ -3,17 +3,15 @@ import { Association, Etablissement } from "dto";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service";
 import { DacDtoDocument, DacSiret, DtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
-import associationNameService from "../../association-name/associationName.service";
 import { sirenStructureFixture } from "./__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 import * as ObjectHelper from "../../../shared/helpers/ObjectHelper";
-import providerRequestService from "../../provider-request/providerRequest.service";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
-jest.mock("../../../shared/EventManager");
 jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
     rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
     dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
@@ -30,8 +28,6 @@ describe("ApiAssoService", () => {
     // @ts-expect-error: mock private method
     const findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments") as jest.SpyInstance<any | null>;
 
-    let associationNameUpsert: jest.SpyInstance;
-
     const RNA = "W750000000";
     const API_ASSO_RESPONSE = {
         asso: {
@@ -43,14 +39,8 @@ describe("ApiAssoService", () => {
     };
 
     beforeAll(() => {
-        // @ts-expect-error  mock mongodb return value
-        associationNameUpsert = jest.spyOn(associationNameService, "upsert").mockResolvedValue({});
         // @ts-expect-error http is private attribute
         httpGetSpy = jest.spyOn(apiAssoService.http, "get");
-    });
-
-    afterAll(() => {
-        associationNameUpsert.mockReset();
     });
 
     describe("sendRequest", () => {
@@ -158,7 +148,7 @@ describe("ApiAssoService", () => {
     describe("Association Provider Part", () => {
         describe("getAssociationsBySiren", () => {
             let findAssociationBySirenMock: jest.SpyInstance;
-            let getGroupedIdentifiersMock: jest.SpyInstance;
+            let findRnaSirenMock: jest.SpyInstance;
             let findAssociationByRnaMock: jest.SpyInstance;
 
             beforeAll(() => {
@@ -166,15 +156,13 @@ describe("ApiAssoService", () => {
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(sirenStructureFixture);
-                getGroupedIdentifiersMock = jest
-                    .spyOn(associationNameService, "getGroupedIdentifiers")
-                    .mockImplementation(async siren => ({ siren, rna: undefined }));
+                findRnaSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
                 findAssociationByRnaMock = jest.spyOn(apiAssoService, "findAssociationByRna").mockResolvedValue(null);
             });
 
             afterAll(() => {
                 findAssociationBySirenMock.mockRestore();
-                getGroupedIdentifiersMock.mockRestore();
+                findRnaSirenMock.mockRestore();
                 findAssociationByRnaMock.mockRestore();
             });
 
@@ -187,7 +175,7 @@ describe("ApiAssoService", () => {
 
             it("should return one association, because rna structure not found", async () => {
                 const expected = 1;
-                getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
+                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
                 const actual = await apiAssoService.getAssociationsBySiren("509221941");
 
                 expect(actual).toHaveLength(expected);
@@ -195,7 +183,7 @@ describe("ApiAssoService", () => {
 
             it("should return two associations (With rna asso)", async () => {
                 const expected = 2;
-                getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
+                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
                 findAssociationByRnaMock.mockResolvedValueOnce(rnaStructureFixture);
                 const actual = await apiAssoService.getAssociationsBySiren("509221941");
 
@@ -256,7 +244,7 @@ describe("ApiAssoService", () => {
 
         describe("getAssociationsByRna", () => {
             let findAssociationBySirenMock: jest.SpyInstance;
-            let getGroupedIdentifiersMock: jest.SpyInstance;
+            let findRnaSirenMock: jest.SpyInstance;
             let findAssociationByRnaMock: jest.SpyInstance;
 
             beforeAll(() => {
@@ -264,9 +252,7 @@ describe("ApiAssoService", () => {
                     .spyOn(apiAssoService, "findAssociationByRna")
                     // @ts-ignore because previous line is ignored this line is not happy
                     .mockResolvedValue(rnaStructureFixture);
-                getGroupedIdentifiersMock = jest
-                    .spyOn(associationNameService, "getGroupedIdentifiers")
-                    .mockImplementation(async rna => ({ siren: undefined, rna }));
+                findRnaSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
                 findAssociationBySirenMock = jest
                     .spyOn(apiAssoService, "findAssociationBySiren")
                     // @ts-ignore because previous line is ignored this line is not happy
@@ -275,7 +261,7 @@ describe("ApiAssoService", () => {
 
             afterAll(() => {
                 findAssociationByRnaMock.mockRestore();
-                getGroupedIdentifiersMock.mockRestore();
+                findRnaSirenMock.mockRestore();
                 findAssociationBySirenMock.mockRestore();
             });
 
@@ -288,7 +274,7 @@ describe("ApiAssoService", () => {
 
             it("should return one association, because siren structure not found", async () => {
                 const expected = 1;
-                getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
+                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
                 const actual = await apiAssoService.getAssociationsByRna("W000000000");
 
                 expect(actual).toHaveLength(expected);
@@ -296,7 +282,7 @@ describe("ApiAssoService", () => {
 
             it("should return two associations (With siren asso)", async () => {
                 const expected = 2;
-                getGroupedIdentifiersMock.mockResolvedValue({ siren: "509221941", rna: "W000000000" });
+                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
                 findAssociationBySirenMock.mockResolvedValueOnce(sirenStructureFixture);
                 const actual = await apiAssoService.getAssociationsByRna("W000000000");
 
@@ -503,17 +489,11 @@ describe("ApiAssoService", () => {
             const SIREN = "000000000";
 
             let sendRequestMock: jest.SpyInstance;
-            let saveStructureInAssociationNameMock: jest.SpyInstance;
             let toEtablissementMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-ignore sendRequest is private method
                 sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockReturnValue(fixtureAsso);
-                saveStructureInAssociationNameMock = jest
-                    // @ts-ignore saveStructureInAssociationName is private method
-                    .spyOn(apiAssoService, "saveStructureInAssociationName")
-                    // @ts-ignore because previous line is ignored this line is not happy
-                    .mockResolvedValue();
                 toEtablissementMock = jest
                     .spyOn(ApiAssoDtoAdapter, "toEtablissement")
                     .mockImplementation(data => data as unknown as Etablissement);
@@ -521,7 +501,6 @@ describe("ApiAssoService", () => {
 
             afterAll(() => {
                 sendRequestMock.mockRestore();
-                saveStructureInAssociationNameMock.mockRestore();
                 toEtablissementMock.mockRestore();
             });
 
@@ -549,13 +528,6 @@ describe("ApiAssoService", () => {
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
 
                 expect(actual).toBe(null);
-            });
-
-            it("should call saveStructureInAssociationName", async () => {
-                // @ts-ignore findEtablissementsBySiren is private method
-                await apiAssoService.findEtablissementsBySiren(SIREN);
-
-                expect(saveStructureInAssociationNameMock).toHaveBeenCalledTimes(1);
             });
 
             it("should call adapter", async () => {

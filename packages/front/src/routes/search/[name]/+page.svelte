@@ -36,7 +36,7 @@
     </p>
     <div class="fr-grid-row fr-grid-row--gutters search-layout">
         {#each $associations as simplifiedAsso}
-            <AssociationCard {simplifiedAsso} />
+            <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
         {/each}
     </div>
 {/await}

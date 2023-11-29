@@ -4,15 +4,15 @@ jest.mock("./repositories/chorus.line.repository");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
 import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");
-import dataGouvService from "../datagouv/datagouv.service";
-jest.mock("../datagouv/datagouv.service");
-const mockedDataGouvService = jest.mocked(dataGouvService);
+import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegal.entrepises.service";
+jest.mock("../uniteLegalEntreprises/uniteLegal.entrepises.service");
+const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSerivce);
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 import { DEFAULT_CHORUS_LINE_DOCUMENT } from "./__fixutres__/ChorusLineEntities";
-import rnaSirenService from "../../_open-data/rna-siren/rnaSiren.service";
-jest.mock("../../_open-data/rna-siren/rnaSiren.service");
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
+jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import { ObjectId } from "mongodb";
@@ -252,27 +252,27 @@ describe("chorusService", () => {
         const SIREN = DEFAULT_CHORUS_LINE_DOCUMENT.indexedInformations.siret.substring(0, 9);
 
         beforeEach(() => {
-            mockedDataGouvService.sirenIsEntreprise.mockResolvedValue(false);
-            mockedRnaSirenService.getRna.mockResolvedValue(null);
+            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValue(false);
+            mockedRnaSirenService.find.mockResolvedValue(null);
             // @ts-expect-error: mock resolve value
             mockedChorusLineRepository.findOneBySiren.mockResolvedValue(DEFAULT_CHORUS_LINE_DOCUMENT);
         });
 
         afterAll(() => {
-            mockedDataGouvService.sirenIsEntreprise.mockReset();
-            mockedRnaSirenService.getRna.mockReset();
+            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockReset();
+            mockedRnaSirenService.find.mockReset();
             mockedChorusLineRepository.findOneBySiren.mockReset();
         });
 
         it("should return false if siren belongs to company", async () => {
-            mockedDataGouvService.sirenIsEntreprise.mockResolvedValueOnce(true);
+            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValueOnce(true);
             const expected = false;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
         });
 
         it("should return true if a RNA is found", async () => {
-            mockedRnaSirenService.getRna.mockResolvedValueOnce("W7000065");
+            mockedRnaSirenService.find.mockResolvedValueOnce([{ rna: "W7000065", siren: SIREN }]);
             const expected = true;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);

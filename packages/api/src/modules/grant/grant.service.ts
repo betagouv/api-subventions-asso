@@ -4,11 +4,11 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import providers from "../providers";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
-import rnaSirenService from "../_open-data/rna-siren/rnaSiren.service";
 import { isSiret } from "../../shared/Validators";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import associationsService from "../associations/associations.service";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
@@ -28,9 +28,9 @@ export class GrantService {
         let isReallyAsso;
         if (idType === StructureIdentifiersEnum.rna) {
             isReallyAsso = true;
-            const siren = await rnaSirenService.getSiren(id);
-            if (siren) {
-                id = siren;
+            const rnaSirenEntities = await rnaSirenService.find(id);
+            if (rnaSirenEntities && rnaSirenEntities.length) {
+                id = rnaSirenEntities[0].siren;
                 idType = StructureIdentifiersEnum.siren;
             }
         }
