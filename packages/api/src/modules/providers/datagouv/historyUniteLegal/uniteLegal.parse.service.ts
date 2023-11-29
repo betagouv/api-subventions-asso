@@ -1,8 +1,8 @@
 import CliLogger from "../../../../shared/CliLogger";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../shared/LegalCategoriesAccepted";
-import uniteLegalNameService from "../../uniteLegalName/uniteLegalName.service";
-import uniteLegalEntrepriseSerivce from "../../uniteLegalEntreprises/uniteLegalEntrepises.service";
+import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
+import uniteLegalEntrepriseSerivce from "../../uniteLegalEntreprises/uniteLegal.entrepises.service";
 import HistoryUniteLegalImportEntity from "../../../../entities/HistoryUniteLegalImportEntity";
 import DataGouvHistoryLegalUnitParser from "./parser/dataGouvHistoryLegalUnitParser";
 import { UniteLegaleHistoriqueAdapter } from "./adapters/UniteLegaleHistoriqueAdapter";

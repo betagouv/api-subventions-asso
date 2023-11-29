@@ -12,7 +12,7 @@ import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegalEntrepises.service";
+import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entrepises.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -45,7 +45,6 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
-
 
     public validateEntity(entity: ChorusLineEntity) {
         if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {

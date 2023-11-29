@@ -1,5 +1,5 @@
 import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
-import uniteLegalNameService from "../providers/uniteLegalName/uniteLegalName.service";
+import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import associationNameService from "./associationName.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";

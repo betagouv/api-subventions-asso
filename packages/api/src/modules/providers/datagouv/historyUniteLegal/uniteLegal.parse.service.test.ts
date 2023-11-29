@@ -8,8 +8,8 @@ import DataGouvHistoryLegalUnitParser from "./parser/dataGouvHistoryLegalUnitPar
 import CliLogger from "../../../../shared/CliLogger";
 import uniteLegalParseService from "./uniteLegal.parse.service";
 import uniteLegalImportService from "./uniteLegal.import.service";
-import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegalEntrepises.service";
-import uniteLegalNameService from "../../uniteLegalName/uniteLegalName.service";
+import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entrepises.service";
+import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 
 describe("ParseUniteLegalService", () => {
     const addAssociationNameMock = jest.spyOn(uniteLegalNameService, "insert").mockImplementation(jest.fn());

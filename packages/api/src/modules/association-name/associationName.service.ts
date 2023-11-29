@@ -1,6 +1,6 @@
 import { Siren } from "dto";
 import Fuse from "fuse.js";
-import uniteLegalNameService from "../providers/uniteLegalName/uniteLegalName.service";
+import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";

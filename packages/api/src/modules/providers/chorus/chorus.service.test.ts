@@ -4,7 +4,7 @@ jest.mock("./repositories/chorus.line.repository");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
 import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");
-import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegalEntrepises.service";
+import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegal.entrepises.service";
 jest.mock("../uniteLegalEntreprises/uniteLegalEntrepises.service");
 const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSerivce);
 import * as StringHelper from "../../../shared/helpers/StringHelper";

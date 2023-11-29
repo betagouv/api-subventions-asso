@@ -19,7 +19,7 @@ import mocked = jest.mocked;
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
-import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegalEntrepises.service";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entrepises.service";
 
 jest.mock("../providers/index");
 
