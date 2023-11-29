@@ -20,14 +20,14 @@ export class UniteLegalNamePort extends MongoRepository<UniteLegalNameDbo> {
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ searchingKey: 1 }, { unique: true });
+        await this.collection.createIndex({ searchKey: 1 }, { unique: true });
         await this.collection.createIndex({ siren: 1 });
     }
 
     search(searchQuery: string) {
         return this.collection
             .find({
-                searchingKey: { $regex: searchQuery },
+                searchKey: { $regex: searchQuery },
             })
             .map(doc => UniteLegalNameAdapter.toEntity(doc))
             .toArray();

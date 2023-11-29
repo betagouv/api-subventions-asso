@@ -8,12 +8,12 @@ export class UniteLegaleHistoriqueAdapter {
         return new UniteLegalNameEntity(
             row.siren,
             row.denominationUniteLegale,
-            this.buildSearchingKey(row.siren, row.denominationUniteLegale),
+            this.buildsearchKey(row.siren, row.denominationUniteLegale),
             new Date(row.dateDebut),
         );
     }
 
-    private static buildSearchingKey(siren: Siren, name: string) {
+    private static buildsearchKey(siren: Siren, name: string) {
         const nameLc = name.toLowerCase();
         let key = `${siren} - ${nameLc}`;
         const removeAccents = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accent on name for futur search

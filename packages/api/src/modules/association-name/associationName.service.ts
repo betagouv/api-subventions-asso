@@ -41,7 +41,7 @@ export class AssociationNameService {
             const fuse = new Fuse(names, {
                 includeScore: true,
                 findAllMatches: true,
-                keys: ["searchingKey"],
+                keys: ["searchKey"],
             });
             return fuse.search(lowerCaseValue).sort((a, b) => (a.score || 1) - (b.score || 1));
         };
