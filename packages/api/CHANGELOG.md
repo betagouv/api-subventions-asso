@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.41.0](https://github.com/betagouv/api-subventions-asso/compare/v0.40.1...v0.41.0) (2023-11-29)
+
+### Bug Fixes
+
+-   **api:** fix some tests ([463eedc](https://github.com/betagouv/api-subventions-asso/commit/463eedcf9df4dc579893792537b7414880df5a6e))
+
+### Features
+
+-   **api:** change searchingkey by searchkey ([82bb392](https://github.com/betagouv/api-subventions-asso/commit/82bb39242a5bf382bbc8379d5d61ea5791096c36))
+
 ## [0.40.1](https://github.com/betagouv/api-subventions-asso/compare/v0.40.0...v0.40.1) (2023-11-29)
 
 ### Bug Fixes
