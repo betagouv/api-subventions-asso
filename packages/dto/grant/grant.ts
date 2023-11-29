@@ -3,7 +3,7 @@ import { ApplicationStatus } from "../search/DemandeSubvention";
 
 export interface ApplicationDto {
     /**
-     * année budgétaire de la demande de subvention 
+     * année budgétaire de la demande de subvention
      */
     exercice: number;
     /**
@@ -27,7 +27,7 @@ export interface ApplicationDto {
      */
     montant_demande?: number; // only optional param because caisse des depots is weird
     /**
-     * Statut de la demande de subvention, prend l'une des valeurs suivantes : Accordé, En instruction, Inéligible, Refusé. 
+     * Statut de la demande de subvention, prend l'une des valeurs suivantes : Accordé, En instruction, Inéligible, Refusé.
      */
     statut: ApplicationStatus;
     /**
@@ -39,8 +39,8 @@ export interface ApplicationDto {
 export type PublishableApplicationDto = Omit<ApplicationDto, "montant_demande">;
 
 export interface PaymentDto {
-   /**
-     * année du versement lié à la subvention 
+    /**
+     * année du versement lié à la subvention
      */
     exercice: number;
     /**

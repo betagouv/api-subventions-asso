@@ -5,7 +5,7 @@ import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 import trackerService from "$lib/services/tracker.service";
 
-const ESTABLISHMENT = "Établissement";
+const POST_CODE = "Code postal demandeur";
 const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
 const INTITULE_ACTION_LABEL = "Intitulé de l'action";
@@ -34,7 +34,7 @@ export default class SubventionTableController {
 
     static extractHeaders() {
         return [
-            ESTABLISHMENT,
+            POST_CODE,
             SERVICE_INSTRUCTEUR_LABEL,
             DISPOSITIF_LABEL,
             INTITULE_ACTION_LABEL,
@@ -51,7 +51,7 @@ export default class SubventionTableController {
 
     buildColumnDataViews() {
         const columnsName = {
-            establishment: "Établissement",
+            establishment_postcode: "Code postal demandeur",
             "subvention.service_instructeur": "Service instructeur",
             "subvention.dispositif": "Dispositif",
             "subvention.project-name": "Intitulé de l'action",

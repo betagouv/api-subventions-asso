@@ -46,7 +46,7 @@
                     <TableCell colspan="6" position="center">Nous ne disposons pas de cette information.</TableCell>
                 {:else}
                     <TableCell>
-                        {elementData.establishment}
+                        {elementData.establishmentPostcode}
                     </TableCell>
                     <TableCell>{elementData.serviceInstructeur}</TableCell>
                     <TableCell>

@@ -1,3 +1,5 @@
+import { isAssoCategory } from "$lib/helpers/entrepriseHelper";
+
 export const addressToOneLineString = address => {
     if (!address) return address;
     const { numero, type_voie, voie, code_postal, commune } = address;
@@ -40,3 +42,5 @@ export const getModification = association => {
 };
 
 export const getSiegeSiret = association => association.siren + association.nic_siege;
+
+export const isAssociation = association => !!association?.rna || isAssoCategory(association?.categorie_juridique);

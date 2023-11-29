@@ -1,10 +1,9 @@
 <script>
     import { StructureTitleController } from "./StructureTitle.controller";
-
-    export let association;
+    import { currentAssociation } from "$lib/store/association.store";
     export let siret = undefined;
 
-    const controller = new StructureTitleController(association, siret);
+    const controller = new StructureTitleController($currentAssociation, siret);
 </script>
 
 <div class="fr-grid-row">

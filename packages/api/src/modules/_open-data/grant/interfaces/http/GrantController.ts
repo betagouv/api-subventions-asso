@@ -6,7 +6,6 @@ import { AssociationIdentifiers, StructureIdentifiers } from "../../../../../@ty
 @Route("open-data/subventions")
 @Tags("Open Data")
 export class GrantController extends Controller {
-   
     /**
      * Récupérer les demandes de subventions et versements liés à un établissement identifié par son SIRET
      *

@@ -10,7 +10,7 @@
         Direction de la jeunesse, de l'éducation populaire et de la vie associative (DJEPVA) - Ministère de l'Éducation
         nationale et de la Jeunesse
     </span>
-     s’engage à rendre son service accessible, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
+    s’engage à rendre son service accessible, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
 </p>
 <p>
     Cette déclaration d’accessibilité s’applique à <strong>Data.Subvention</strong>
@@ -41,22 +41,21 @@
 <ol class="technical-information accessibility-limitations">
     <li>
         <strong>La correspondance entre les subventions et les versements dans le tableau de bord</strong>
-        : La navigation au clavier parcourt toutes les subventions puis tous les versements et perd donc l'information
-        de correspondance parce que la structuration de nos données ne permet pas à ce jour de regrouper les
-        informations en un seul tableau. Le design et la structuration des données sont en conception pour permettre de
-        n'avoir qu'un seul tableau.. Merci d’utiliser le formulaire de contact si vous rencontrez un problème.
+        : La navigation au clavier parcourt toutes les subventions puis tous les versements et perd donc l'information de
+        correspondance parce que la structuration de nos données ne permet pas à ce jour de regrouper les informations en
+        un seul tableau. Le design et la structuration des données sont en conception pour permettre de n'avoir qu'un seul
+        tableau.. Merci d’utiliser le formulaire de contact si vous rencontrez un problème.
     </li>
     <li>
         <strong>Focus après fermeture de la modale</strong>
-        : Le focus est ramené au début de la page après fermeture d'une modale parce que notre composant modale est
-        généralisé, et ne prend pas en compte les spécificités du contexte d'ouverture. Nous prévoyons de refactoriser
-        ce composant.
+        : Le focus est ramené au début de la page après fermeture d'une modale parce que notre composant modale est généralisé,
+        et ne prend pas en compte les spécificités du contexte d'ouverture. Nous prévoyons de refactoriser ce composant.
     </li>
     <li>
         <strong>Structure de titres des cartes</strong>
-        : Sur l'onglet "pièces administratives", les cartes présentent un mauvais niveau de titre parce que elles
-        implémentent un composant dont le niveau de titre est figé et ne correspond pas au contexte d'appel. Nous
-        refactoriserons ce composant pour rendre le niveau de titre adaptable.
+        : Sur l'onglet "pièces administratives", les cartes présentent un mauvais niveau de titre parce que elles implémentent
+        un composant dont le niveau de titre est figé et ne correspond pas au contexte d'appel. Nous refactoriserons ce composant
+        pour rendre le niveau de titre adaptable.
     </li>
 </ol>
 <h2>Établissement de cette déclaration d’accessibilité</h2>
@@ -67,7 +66,7 @@
 <h3>Technologies utilisées</h3>
 <p>
     L’accessibilité de <span>Data.Subvention</span>
-     s’appuie sur les technologies suivantes&nbsp;:
+    s’appuie sur les technologies suivantes&nbsp;:
 </p>
 <ul class="technical-information technologies-used">
     <li>HTML</li>
@@ -79,7 +78,7 @@
     Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter le responsable de <span>
         Data.Subvention
     </span>
-     pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.
+    pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.
 </p>
 <ul class="basic-information feedback h-card">
     <li>

@@ -12,15 +12,15 @@
     const { identifier } = data.params;
 
     const controller = new AssociationController(identifier);
-    const { promise, titles } = controller;
+    const { associationPromise, titles } = controller;
 </script>
 
-{#await promise}
+{#await associationPromise}
     <FullPageSpinner description="Chargement de l'association {identifier} en cours ..." />
 {:then association}
-    {#if controller.isAssociation(association)}
+    {#if controller.isAssociation}
         <div class="fr-mb-3w">
-            <StructureTitle {association} />
+            <StructureTitle />
         </div>
         <div class="fr-mb-6w">
             <InfosLegales {association} />
