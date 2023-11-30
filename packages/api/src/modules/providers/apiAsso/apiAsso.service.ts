@@ -62,7 +62,7 @@ export class ApiAssoService
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
         return {
             rna: structure?.identite.id_rna,
-            siren: structure?.identite.id_siren.toString(), // sometimes siren is string or number
+            siren: structure?.identite.id_siren?.toString(), // sometimes siren is string or number
         };
     }
 
