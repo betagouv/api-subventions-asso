@@ -12,7 +12,7 @@ import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entrepises.service";
+import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";

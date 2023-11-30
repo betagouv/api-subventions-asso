@@ -21,7 +21,7 @@ import subventionsService from "../subventions/subventions.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entrepises.service";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import AssociationsProvider from "./@types/AssociationsProvider";

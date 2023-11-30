@@ -8,7 +8,7 @@ import DataGouvHistoryLegalUnitParser from "./parser/dataGouvHistoryLegalUnitPar
 import CliLogger from "../../../../shared/CliLogger";
 import uniteLegalParseService from "./uniteLegal.parse.service";
 import uniteLegalImportService from "./uniteLegal.import.service";
-import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entrepises.service";
+import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 
 describe("ParseUniteLegalService", () => {
