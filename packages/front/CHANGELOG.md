@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.40.2](https://github.com/betagouv/datasubvention/compare/v0.40.1...v0.40.2) (2023-11-30)
+
+### Bug Fixes
+
+-   association may not have a list of establishments ([fd90121](https://github.com/betagouv/datasubvention/commit/fd9012116a17e57518a1683f221278a90127eb7c))
+
 # [0.40.0](https://github.com/betagouv/datasubvention/compare/v0.39.3...v0.40.0) (2023-11-27)
 
 ### Bug Fixes
