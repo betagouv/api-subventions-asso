@@ -19,13 +19,13 @@ import mocked = jest.mocked;
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
-import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entrepises.service";
+import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
 
 jest.mock("../providers/index");
 
 jest.mock("../providers/apiAsso/apiAsso.service");
 jest.mock("../rna-siren/rnaSiren.service");
-jest.mock("../providers/uniteLegalEntreprises/uniteLegal.entrepises.service");
+jest.mock("../providers/uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
 
 const DEFAULT_PROVIDERS = providers.default;
