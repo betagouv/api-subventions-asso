@@ -106,7 +106,7 @@ export default interface StructureDto {
         sigle_sirene?: string;
         id_rna: Rna;
         id_ex: string;
-        id_siren: number;
+        id_siren?: number;
         id_siret_siege: number;
         id_correspondance: string;
         id_forme_juridique: string;
