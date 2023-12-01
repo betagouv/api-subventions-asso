@@ -1,7 +1,9 @@
 import uniteLegalFilesService from "./uniteLegal.files.service";
 import datagouvFilesService from "../datagouv.files.service";
+import { downloadFile } from "../../../../shared/helpers/FileHelper";
 
 jest.mock("../datagouv.files.service");
+jest.mock("../../../../shared/helpers/FileHelper");
 
 describe("FilesUniteLegalService", () => {
     describe("decompressHistoryUniteLegal", () => {
@@ -28,7 +30,7 @@ describe("FilesUniteLegalService", () => {
         it("calls datagouv.downloadFile", async () => {
             await uniteLegalFilesService.downloadHistoryUniteLegal();
 
-            expect(datagouvFilesService.downloadFile).toHaveBeenCalledWith(
+            expect(downloadFile).toHaveBeenCalledWith(
                 "https://files.data.gouv.fr/insee-sirene/StockUniteLegaleHistorique_utf8.zip",
                 "StockUniteLegaleHistorique_utf8.zip",
             );
@@ -37,7 +39,7 @@ describe("FilesUniteLegalService", () => {
         it("returns result from datagouv.decompressArchive", async () => {
             const RES = "RES";
             const expected = RES;
-            jest.mocked(datagouvFilesService.downloadFile).mockResolvedValueOnce(RES);
+            jest.mocked(downloadFile).mockResolvedValueOnce(RES);
             const actual = await uniteLegalFilesService.downloadHistoryUniteLegal();
 
             expect(actual).toBe(expected);

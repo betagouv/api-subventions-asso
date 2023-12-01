@@ -1,6 +1,6 @@
 import fs from "fs";
 import CliController from "./CliController";
-import * as ParserHelper from "./helpers/ParserHelper";
+import * as FileHelper from "./helpers/FileHelper";
 
 describe("CliController", () => {
     const controller = new CliController();
@@ -46,7 +46,7 @@ describe("CliController", () => {
         });
     });
     describe("parse()", () => {
-        const findFilesMock = jest.spyOn(ParserHelper, "findFiles");
+        const findFilesMock = jest.spyOn(FileHelper, "findFiles");
         let validFileExistsMock: jest.SpyInstance;
         let _parseSpy: jest.SpyInstance;
 

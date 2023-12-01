@@ -1,6 +1,6 @@
 import fs from "fs";
 import CliLogger from "./CliLogger";
-import { findFiles } from "./helpers/ParserHelper";
+import { findFiles } from "./helpers/FileHelper";
 
 export default class CliController {
     protected logFileParsePath = "";

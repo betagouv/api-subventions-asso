@@ -1,5 +1,3 @@
-import fs from "fs";
-import https from "https";
 import { exec } from "child_process";
 
 export class DataGouvFilesService {
@@ -9,20 +7,6 @@ export class DataGouvFilesService {
             exec(`unzip ${path} -d ./output`, async () => {
                 console.log("End decompress");
                 resolve(outPath);
-            });
-        });
-    }
-
-    downloadFile(url: string, outputPath = "import"): Promise<string> {
-        return new Promise(resolve => {
-            console.log("Start Download");
-            const file = fs.createWriteStream(outputPath);
-            https.get(url, response => {
-                response.pipe(file).on("finish", () => {
-                    console.log("End download");
-                    file.close();
-                    resolve(outputPath);
-                });
             });
         });
     }

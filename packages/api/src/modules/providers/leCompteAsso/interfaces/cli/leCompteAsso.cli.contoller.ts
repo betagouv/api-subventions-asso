@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
@@ -8,7 +7,7 @@ import leCompteAssoService, { RejectedRequest } from "../../leCompteAsso.service
 import LeCompteAssoRequestEntity from "../../entities/LeCompteAssoRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
-import { findFiles } from "../../../../../shared/helpers/ParserHelper";
+import { findFiles } from "../../../../../shared/helpers/FileHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class LeCompteAssoCliController {
@@ -25,16 +24,7 @@ export default class LeCompteAssoCliController {
             throw new Error(`File not found ${file}`);
         }
 
-        const files: string[] = [];
-
-        if (fs.lstatSync(file).isDirectory()) {
-            const filesInFolder = fs
-                .readdirSync(file)
-                .filter(fileName => !fileName.startsWith(".") && !fs.lstatSync(path.join(file, fileName)).isDirectory())
-                .map(fileName => path.join(file, fileName));
-
-            files.push(...filesInFolder);
-        } else files.push(file);
+        const files = findFiles(file);
 
         await Promise.all(
             files.map(async file => {

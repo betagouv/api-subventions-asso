@@ -10,7 +10,7 @@ import OsirisRequestEntity from "../../entities/OsirisRequestEntity";
 import { COLORS } from "../../../../../shared/LogOptions";
 import * as CliHelper from "../../../../../shared/helpers/CliHelper";
 import OsirisEvaluationEntity from "../../entities/OsirisEvaluationEntity";
-import { findFiles } from "../../../../../shared/helpers/ParserHelper";
+import { findFiles } from "../../../../../shared/helpers/FileHelper";
 import rnaSirenService from "../../../../rna-siren/rnaSiren.service";
 
 @StaticImplements<CliStaticInterface>()

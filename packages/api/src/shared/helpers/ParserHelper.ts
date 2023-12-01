@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import xlsx from "node-xlsx";
 
 import { ParserInfo, ParserPath, DefaultObject } from "../../@types";
@@ -52,21 +50,6 @@ export function linkHeaderToData(headers: string[], data: unknown[]) {
         acc[trimedHeader] = value || "";
         return acc;
     }, {} as DefaultObject<unknown>);
-}
-
-export function findFiles(file: string) {
-    const files: string[] = [];
-
-    if (fs.lstatSync(file).isDirectory()) {
-        const filesInFolder = fs
-            .readdirSync(file)
-            .filter(fileName => !fileName.startsWith(".") && !fs.lstatSync(path.join(file, fileName)).isDirectory())
-            .map(fileName => path.join(file, fileName));
-
-        files.push(...filesInFolder);
-    } else files.push(file);
-
-    return files;
 }
 
 export function csvParse(content: Buffer, delimiter = ";,") {
