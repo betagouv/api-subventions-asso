@@ -32,7 +32,7 @@ describe("FilesUniteLegalService", () => {
 
             expect(downloadFile).toHaveBeenCalledWith(
                 "https://files.data.gouv.fr/insee-sirene/StockUniteLegaleHistorique_utf8.zip",
-                "StockUniteLegaleHistorique_utf8.zip",
+                "output/StockUniteLegaleHistorique_utf8.zip",
             );
         });
 

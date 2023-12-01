@@ -9,7 +9,7 @@ export class UniteLegalFilesService {
     downloadHistoryUniteLegal(): Promise<string> {
         return downloadFile(
             "https://files.data.gouv.fr/insee-sirene/StockUniteLegaleHistorique_utf8.zip",
-            "StockUniteLegaleHistorique_utf8.zip",
+            "output/StockUniteLegaleHistorique_utf8.zip",
         );
     }
 }

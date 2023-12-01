@@ -17,7 +17,7 @@ export function findFiles(file: string) {
     return files;
 }
 
-export function downloadFile(url: string, outputPath = "import"): Promise<string> {
+export function downloadFile(url: string, outputPath = "output/import"): Promise<string> {
     return new Promise(resolve => {
         console.log("Start Download");
         const file = fs.createWriteStream(outputPath);
