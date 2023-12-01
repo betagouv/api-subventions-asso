@@ -2,7 +2,7 @@ import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import CliController from "../../shared/CliController";
 
-import parseUniteLegalService from "../../modules/providers/datagouv/historyUniteLegal/uniteLegal.parse.service";
+import parseUniteLegalService from "../../modules/providers/insee/historyUniteLegal/uniteLegal.parse.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class HistoryUniteLegalInterfaceCli extends CliController {

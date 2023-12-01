@@ -1,6 +1,6 @@
 import { CronController } from "../../@types/cron";
 import { AsyncCron } from "../../decorators/cronController.decorator";
-import parseUniteLegalService from "../../modules/providers/datagouv/historyUniteLegal/uniteLegal.parse.service";
+import parseUniteLegalService from "../../modules/providers/insee/historyUniteLegal/uniteLegal.parse.service";
 
 export class HistoryUniteLegalInterfaceCron implements CronController {
     name = "HistoryUniteLegalCron";

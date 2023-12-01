@@ -1,9 +1,9 @@
-import datagouvFilesService from "../datagouv.files.service";
+import inseeFilesService from "../insee.files.service";
 import { downloadFile } from "../../../../shared/helpers/FileHelper";
 
 export class UniteLegalFilesService {
     decompressHistoryUniteLegal(archivePath: string): Promise<string> {
-        return datagouvFilesService.decompressArchive(archivePath, "./output/StockUniteLegaleHistorique_utf8.csv");
+        return inseeFilesService.decompressArchive(archivePath, "./output/StockUniteLegaleHistorique_utf8.csv");
     }
 
     downloadHistoryUniteLegal(): Promise<string> {

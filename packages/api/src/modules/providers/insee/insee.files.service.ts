@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 
-export class DataGouvFilesService {
+export class InseeFilesService {
     decompressArchive(path: string, outPath = "./output/out"): Promise<string> {
         return new Promise(resolve => {
             console.log("Start decompress");
@@ -12,6 +12,6 @@ export class DataGouvFilesService {
     }
 }
 
-const dataGouvFilesService = new DataGouvFilesService();
+const inseeFilesService = new InseeFilesService();
 
-export default dataGouvFilesService;
+export default inseeFilesService;

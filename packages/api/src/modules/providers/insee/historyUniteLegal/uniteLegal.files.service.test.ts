@@ -1,8 +1,8 @@
 import uniteLegalFilesService from "./uniteLegal.files.service";
-import datagouvFilesService from "../datagouv.files.service";
+import inseeFilesService from "../insee.files.service";
 import { downloadFile } from "../../../../shared/helpers/FileHelper";
 
-jest.mock("../datagouv.files.service");
+jest.mock("../insee.files.service");
 jest.mock("../../../../shared/helpers/FileHelper");
 
 describe("FilesUniteLegalService", () => {
@@ -10,16 +10,16 @@ describe("FilesUniteLegalService", () => {
         const OUT_PATH = "./output/StockUniteLegaleHistorique_utf8.csv";
         const ARCHIVE_PATH = "Fake/path";
 
-        it("calls datagouv.decompressArchive", async () => {
+        it("calls insee.decompressArchive", async () => {
             await uniteLegalFilesService.decompressHistoryUniteLegal(ARCHIVE_PATH);
 
-            expect(datagouvFilesService.decompressArchive).toHaveBeenCalledWith(ARCHIVE_PATH, OUT_PATH);
+            expect(inseeFilesService.decompressArchive).toHaveBeenCalledWith(ARCHIVE_PATH, OUT_PATH);
         });
 
-        it("returns result from datagouv.decompressArchive", async () => {
+        it("returns result from insee.decompressArchive", async () => {
             const RES = "RES";
             const expected = RES;
-            jest.mocked(datagouvFilesService.decompressArchive).mockResolvedValueOnce(RES);
+            jest.mocked(inseeFilesService.decompressArchive).mockResolvedValueOnce(RES);
             const actual = await uniteLegalFilesService.decompressHistoryUniteLegal(ARCHIVE_PATH);
 
             expect(actual).toBe(expected);
@@ -27,7 +27,7 @@ describe("FilesUniteLegalService", () => {
     });
 
     describe("downloadHistoryUniteLegal", () => {
-        it("calls datagouv.downloadFile", async () => {
+        it("calls insee.downloadFile", async () => {
             await uniteLegalFilesService.downloadHistoryUniteLegal();
 
             expect(downloadFile).toHaveBeenCalledWith(
@@ -36,7 +36,7 @@ describe("FilesUniteLegalService", () => {
             );
         });
 
-        it("returns result from datagouv.decompressArchive", async () => {
+        it("returns result from insee.decompressArchive", async () => {
             const RES = "RES";
             const expected = RES;
             jest.mocked(downloadFile).mockResolvedValueOnce(RES);
