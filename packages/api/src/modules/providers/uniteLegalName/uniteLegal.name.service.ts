@@ -31,6 +31,6 @@ export class UniteLegalNameService {
     }
 }
 
-const uniteLegalNameervice = new UniteLegalNameService();
+const uniteLegalNameService = new UniteLegalNameService();
 
-export default uniteLegalNameervice;
+export default uniteLegalNameService;
