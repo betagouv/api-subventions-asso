@@ -4,7 +4,7 @@ const mockedParserHelper = jest.mocked(ParserHelper);
 import { printAtSameLine } from "../../../shared/helpers/CliHelper";
 jest.mock("../../../shared/helpers/CliHelper");
 import ChorusParser from "./chorus.parser";
-import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixutres__/ChorusFixtures";
+import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixtures__/ChorusFixtures";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 jest.mock("./entities/ChorusLineEntity");
 import * as StringHelper from "../../../shared/helpers/StringHelper";

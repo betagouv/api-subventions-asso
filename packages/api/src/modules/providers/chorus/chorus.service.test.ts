@@ -12,10 +12,8 @@ jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../rna-siren/rnaSiren.service");
-
-jest.mock("../../_open-data/rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
-import { ENTITIES } from "./__fixutres__/ChorusFixtures";
+import { ENTITIES } from "./__fixtures__/ChorusFixtures";
 
 describe("chorusService", () => {
     describe("insertMany", () => {
