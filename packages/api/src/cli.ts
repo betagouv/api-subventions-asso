@@ -21,6 +21,7 @@ import AdminStructureCliController from "./modules/admin-structure/interfaces/cl
 import DumpCliController from "./modules/dump/interfaces/cli/DumpCliController";
 import ScdlCliController from "./modules/providers/scdl/interfaces/cli/scdl.cli";
 import HistoryUniteLegalInterfaceCli from "./interfaces/cli/HistoryUniteLegalInterfaceCli";
+import StockEtabInterfaceCli from "./interfaces/cli/StockEtabInterfaceCli";
 
 async function main() {
     await connectDB();
@@ -45,6 +46,7 @@ async function main() {
         DumpCliController,
         ScdlCliController,
         HistoryUniteLegalInterfaceCli,
+        StockEtabInterfaceCli
     ];
 
     const args = process.argv.slice(2);
