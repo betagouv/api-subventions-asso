@@ -7,6 +7,7 @@ export enum NotificationType {
     USER_FORGET_PASSWORD,
     USER_LOGGED,
     USER_ALREADY_EXIST,
+    USER_CONFLICT,
     SIGNUP_BAD_DOMAIN,
     FAILED_CRON,
 }
