@@ -1,9 +1,8 @@
 import dedent from "dedent";
 import { FutureUserDto } from "dto";
-import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError } from "../../../../shared/errors/httpErrors";
 import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
 import configurationsService from "../../../configurations/configurations.service";
-import userRepository from "../../repositories/user.repository";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRolesService from "../roles/user.roles.service";
 import { UserServiceErrors } from "../../user.enum";
@@ -33,23 +32,18 @@ export class UserCheckService {
     }
 
     /**
-     * validates and sanitizes in-place user. if newUser: check if no email duplicate
+     * validates and sanitizes in-place user.
      * @param user
-     * @param newUser
      */
-    async validateSanitizeUser(user: FutureUserDto, newUser = true) {
+    async validateSanitizeUser(user: FutureUserDto) {
         try {
             await userCheckService.validateEmail(user.email);
         } catch (e) {
             if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
                 notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, user);
             }
-
             throw e;
         }
-
-        if (newUser && (await userRepository.findByEmail(user.email)))
-            throw new InternalServerError("An error has occurred");
 
         if (!userRolesService.validRoles(user.roles || []))
             throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);

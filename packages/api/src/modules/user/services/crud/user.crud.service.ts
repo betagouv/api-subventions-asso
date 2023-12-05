@@ -12,12 +12,18 @@ import userAuthService from "../auth/user.auth.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import { DEFAULT_PWD } from "../../user.constant";
 import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
-import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
+import {
+    BadRequestError,
+    ConflictError,
+    InternalServerError,
+    NotFoundError,
+} from "../../../../shared/errors/httpErrors";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import { UserServiceErrors } from "../../user.enum";
+import { DuplicateIndexError } from "../../../../shared/errors/dbErrror/DuplicateIndexError";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
@@ -120,6 +126,10 @@ export class UserCrudService {
             } catch (e) {
                 if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
                     throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                if (e instanceof DuplicateIndexError) {
+                    notifyService.notify(NotificationType.USER_CONFLICT, userObject);
+                    throw new InternalServerError("An error has occurred");
+                }
                 throw e;
             }
         }
