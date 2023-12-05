@@ -8,6 +8,7 @@ import BrevoNotifyPipe from "./BrevoNotifyPipe";
 export enum TemplateEnum {
     creation = 55,
     forgetPassword = 74,
+    alreadySubscribed = 152,
 }
 
 export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
@@ -28,6 +29,8 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
                 return this.sendCreationMail(data);
             case NotificationType.USER_FORGET_PASSWORD:
                 return this.sendForgetPasswordMail(data);
+            case NotificationType.USER_CONFLICT:
+                return this.sendAlreadySubscribed(data);
             default:
                 return Promise.resolve(false);
         }
@@ -43,6 +46,10 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
 
     private async sendForgetPasswordMail(data: NotificationDataTypes[NotificationType.USER_FORGET_PASSWORD]) {
         return this.sendMail(data.email, { url: data.url }, TemplateEnum.forgetPassword);
+    }
+
+    private sendAlreadySubscribed(data: NotificationDataTypes[NotificationType.USER_CONFLICT]) {
+        return this.sendMail(data.email, { email: data.email }, TemplateEnum.alreadySubscribed);
     }
 
     async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {
