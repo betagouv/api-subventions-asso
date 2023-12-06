@@ -12,6 +12,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 -   **api:** change searchingkey by searchkey ([82bb392](https://github.com/betagouv/api-subventions-asso/commit/82bb39242a5bf382bbc8379d5d61ea5791096c36))
+## [0.40.3](https://github.com/betagouv/api-subventions-asso/compare/v0.40.2...v0.40.3) (2023-12-06)
+
+### Bug Fixes
+
+-   search can accepted slash on input ([9795fe0](https://github.com/betagouv/api-subventions-asso/commit/9795fe042ea87db8e257b1a0cea4bde88ee6dcef))
+
 ## [0.40.2](https://github.com/betagouv/api-subventions-asso/compare/v0.40.1...v0.40.2) (2023-11-30)
 
 ### Bug Fixes
