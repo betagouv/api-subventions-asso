@@ -1,6 +1,7 @@
 import { getSearchHistory } from "$lib/services/searchHistory.service";
 import Store from "$lib/core/Store";
 import { goto } from "$app/navigation";
+import { encodeQuerySearch } from "$lib/helpers/urlHelper";
 
 export class HomeController {
     constructor(query = {}) {
@@ -10,7 +11,7 @@ export class HomeController {
     }
 
     onSubmit() {
-        goto(`/search/${this.input.value}`);
+        goto(`/search/${encodeQuerySearch(this.input.value)}`);
     }
 
     _getSuccessMessage(successKey) {
