@@ -2,6 +2,7 @@ import { getSearchHistory } from "$lib/services/searchHistory.service";
 import { isRna, isSiren, isSiret } from "$lib/helpers/validatorHelper";
 import Store from "$lib/core/Store";
 import { goto } from "$app/navigation";
+import { encodeQuerySearch } from "$lib/helpers/urlHelper";
 
 export class HomeController {
     constructor(query = {}) {
@@ -16,7 +17,7 @@ export class HomeController {
         } else if (isSiret(this.input.value)) {
             goto(`/etablissement/${this.input.value}`);
         } else {
-            goto(`/search/${this.input.value}`);
+            goto(`/search/${encodeQuerySearch(this.input.value)}`);
         }
     }
 

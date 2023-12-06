@@ -1,6 +1,7 @@
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitPromise } from "$lib/helpers/promiseHelper";
+import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { isRna, isSiren, isSiret } from "$lib/helpers/validatorHelper";
 import associationService from "$lib/resources/associations/association.service";
 
@@ -10,7 +11,7 @@ export default class SearchController {
     inputSearch: Store<string>;
 
     constructor(name) {
-        this.inputSearch = new Store(name);
+        this.inputSearch = new Store(decodeQuerySearch(name));
         this.associations = new Store([]);
         this.searchPromise = new Store(returnInfinitPromise());
         this.searchPromise.set(this.fetchAssociationFromName(name));
@@ -31,8 +32,9 @@ export default class SearchController {
         } else if (isSiret(this.inputSearch.value)) {
             goto(`/etablissement/${this.inputSearch.value}`);
         } else {
-            this.searchPromise.set(this.fetchAssociationFromName(this.inputSearch.value));
-            return goto(`/search/${this.inputSearch.value}`, { replaceState: true });
+            const encodedValue = encodeQuerySearch(this.inputSearch.value);
+            this.searchPromise.set(this.fetchAssociationFromName(encodedValue));
+            return goto(`/search/${encodedValue}`, { replaceState: true });
         }
     }
 }
