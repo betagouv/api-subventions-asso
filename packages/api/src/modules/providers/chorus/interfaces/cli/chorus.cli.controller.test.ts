@@ -25,7 +25,7 @@ describe("Chorus CLI", () => {
         mockedFs.existsSync.mockReturnValue(true);
         mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
         mockedFs.writeFileSync.mockImplementation(jest.fn());
-        mockedService.insertBatchChorusLine.mockResolvedValue({ created: 100, rejected: 10 });
+        mockedService.insertBatchChorusLine.mockResolvedValue({ created: 100, rejected: 10, duplicates: 0 });
         ChorusParser.parse = jest.fn().mockReturnValue([...ENTITIES]);
         controller = new ChorusCliController();
     });

@@ -1,6 +1,7 @@
 import { Rna, Siren } from "dto";
 import { MongoServerError } from "mongodb";
-import { DuplicateIndexError } from "../../../shared/errors/dbErrror/DuplicateIndexError";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
+import { isDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoRepository from "../../../shared/MongoRepository";
 import { isRna } from "../../../shared/Validators";
@@ -19,7 +20,8 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
         try {
             await this.collection.insertOne(RnaSirenAdapter.toDbo(entity));
         } catch (e: unknown) {
-            if (e instanceof MongoServerError && e.code === 11000) { // One or many entities already exist in database but other entities have been saved
+            if (e instanceof MongoServerError && isDuplicateError(e)) {
+                // One or many entities already exist in database but other entities have been saved
                 throw new DuplicateIndexError(e.message);
             }
             throw e;
@@ -29,13 +31,17 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
     async find(query: Rna | Siren) {
         let dbos: RnaSirenDbo[] = [];
         if (isRna(query)) {
-            dbos = await this.collection.find({
-                rna: query
-            }).toArray();
+            dbos = await this.collection
+                .find({
+                    rna: query,
+                })
+                .toArray();
         } else {
-            dbos = await this.collection.find({
-                siren: query
-            }).toArray();
+            dbos = await this.collection
+                .find({
+                    siren: query,
+                })
+                .toArray();
         }
 
         if (!dbos.length) return null;

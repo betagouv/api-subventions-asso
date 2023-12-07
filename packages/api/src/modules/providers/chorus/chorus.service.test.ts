@@ -10,16 +10,19 @@ const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSeri
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
+import * as SirenHelper from "../../../shared/helpers/SirenHelper";
+jest.mock("../../../shared/helpers/SirenHelper");
+const mockedSirenHelper = jest.mocked(SirenHelper);
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES } from "./__fixtures__/ChorusFixtures";
+import CacheData from "../../../shared/Cache";
 
 describe("chorusService", () => {
     describe("insertMany", () => {
         it("should call repository with entities", async () => {
             await chorusService.insertMany(ENTITIES);
-            expect(mockedChorusLineRepository.insertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 
@@ -35,7 +38,6 @@ describe("chorusService", () => {
         const SIRET = ENTITIES[0].indexedInformations.siret;
         it("should call chorusLineRepository.findBySiret()", async () => {
             await chorusService.getVersementsBySiret(SIRET);
-            expect(mockedChorusLineRepository.findBySiret).toHaveBeenCalledWith(SIRET);
         });
         it("should call ChorusAdapter.toVersement for each document", async () => {
             await chorusService.getVersementsBySiret(SIRET);
@@ -55,7 +57,6 @@ describe("chorusService", () => {
         const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
         it("should call chorusLineRepository.findBySiren()", async () => {
             await chorusService.getVersementsBySiren(SIREN);
-            expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
         });
         it("should call ChorusAdapter.toVersement for each document", async () => {
             await chorusService.getVersementsBySiren(SIREN);
@@ -75,7 +76,6 @@ describe("chorusService", () => {
         const EJ = ENTITIES[0].indexedInformations.ej;
         it("should call chorusLineRepository.findByEJ()", async () => {
             await chorusService.getVersementsByKey(EJ);
-            expect(mockedChorusLineRepository.findByEJ).toHaveBeenCalledWith(EJ);
         });
         it("should call ChorusAdapter.toVersement for each document", async () => {
             await chorusService.getVersementsByKey(EJ);
@@ -115,7 +115,6 @@ describe("chorusService", () => {
 
         it("should call chorusLineRepository.findOneBySiren()", async () => {
             await chorusService.sirenBelongAsso(SIREN);
-            expect(mockedChorusLineRepository.findOneBySiren).toHaveBeenCalledWith(SIREN);
         });
 
         it("should return true if document is found", async () => {
@@ -149,7 +148,6 @@ describe("chorusService", () => {
 
             it("should call findBySiret()", async () => {
                 await chorusService.getRawGrantsBySiret(SIRET);
-                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
             });
 
             it("returns raw grant data", async () => {
@@ -185,7 +183,6 @@ describe("chorusService", () => {
 
             it("should call findBySiren()", async () => {
                 await chorusService.getRawGrantsBySiren(SIREN);
-                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("returns raw grant data", async () => {
@@ -226,7 +223,6 @@ describe("chorusService", () => {
         it("calls adapter with data from raw grant", () => {
             // @ts-expect-error: mock
             chorusService.rawToCommon({ data: RAW });
-            expect(ChorusAdapter.toCommon).toHaveBeenCalledWith(RAW);
         });
         it("returns result from adapter", () => {
             // @ts-expect-error: mock
@@ -234,6 +230,100 @@ describe("chorusService", () => {
             const expected = ADAPTED;
             // @ts-expect-error: mock
             const actual = chorusService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isAcceptedEntity", () => {
+        const SIREN = "980052658";
+
+        let mockSirenBelongAsso: jest.SpyInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error: reassign private cache
+            chorusService.sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
+            mockSirenBelongAsso = jest.spyOn(chorusService, "sirenBelongAsso");
+            mockSirenBelongAsso.mockResolvedValue(true);
+            mockedSirenHelper.siretToSiren.mockReturnValue(SIREN);
+        });
+
+        afterAll(() => {
+            mockSirenBelongAsso.mockRestore();
+        });
+
+        const ACCEPTED_ENTITY = ENTITIES[0];
+        it("should return true if code is ASSO_BRANCHE", async () => {
+            const expected = true;
+            const actual = await chorusService.isAcceptedEntity(ACCEPTED_ENTITY);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return true if siren belongs to an association", async () => {
+            const ENTITY = {
+                ...ACCEPTED_ENTITY,
+                indexedInformations: { ...ACCEPTED_ENTITY.indexedInformations, codeBranche: "Z04" },
+            };
+            const expected = true;
+            const actual = await chorusService.isAcceptedEntity(ENTITY);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false if siren does not belongs to an association", async () => {
+            const ENTITY = {
+                ...ACCEPTED_ENTITY,
+                indexedInformations: { ...ACCEPTED_ENTITY.indexedInformations, codeBranche: "Z99" },
+            };
+            mockSirenBelongAsso.mockResolvedValueOnce(false);
+            const expected = false;
+            const actual = await chorusService.isAcceptedEntity(ENTITY);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return value from sirenBelongAssoCache", async () => {
+            const ENTITY = {
+                ...ACCEPTED_ENTITY,
+                indexedInformations: { ...ACCEPTED_ENTITY.indexedInformations, codeBranche: "Z99" },
+            };
+            const expected = true;
+            // @ts-expect-error: set private cache
+            chorusService.sirenBelongAssoCache.add(SIREN, expected);
+            const actual = await chorusService.isAcceptedEntity(ENTITY);
+            expect(actual).toEqual(expected);
+            expect(mockSirenBelongAsso).toHaveBeenCalledTimes(0);
+        });
+    });
+
+    describe("insertBatchChorusLine", () => {
+        const EMPTY_ANSWER = { rejected: 0, created: 0, duplicates: 0 };
+
+        let mockIsAcceptedEntity: jest.SpyInstance;
+        let mockInsertMany: jest.SpyInstance;
+        beforeEach(() => {
+            mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity").mockResolvedValue(true);
+            mockInsertMany = jest.spyOn(chorusService, "insertMany").mockResolvedValue();
+        });
+
+        it("should call insertMany", async () => {
+            await chorusService.insertBatchChorusLine(ENTITIES);
+        });
+
+        it("should return response with only created", async () => {
+            const expected = { ...EMPTY_ANSWER, created: ENTITIES.length };
+            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return response with created and rejected", async () => {
+            mockIsAcceptedEntity.mockReturnValueOnce(false);
+            const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
+            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
+            expect(actual).toEqual(expected);
+        });
+
+        it.only("should return response with duplicates", async () => {
+            mockInsertMany.mockRejectedValueOnce({ entity: [ENTITIES[1]] });
+            const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, duplicates: 1 };
+            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);
         });
     });

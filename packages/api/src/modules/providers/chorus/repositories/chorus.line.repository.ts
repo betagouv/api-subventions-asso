@@ -1,8 +1,10 @@
 import { Siren, Siret } from "dto";
-import { ObjectId, WithId } from "mongodb";
+import { MongoServerError, ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
+import { buildDuplicateIndexError, isDuplicateError } from "../../../../shared/helpers/MongoHelper";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 
 export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
@@ -30,7 +32,11 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     }
 
     public async insertMany(entities: ChorusLineEntity[]) {
-        return this.collection.insertMany(entities, { ordered: false });
+        return this.collection.insertMany(entities, { ordered: false }).catch(error => {
+            if (error instanceof MongoServerError && isDuplicateError(error)) {
+                throw buildDuplicateIndexError(error);
+            }
+        });
     }
 
     public async update(entity: ChorusLineEntity) {
@@ -91,7 +97,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ uniqueId: 1 });
+        await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
         await this.collection.createIndex({ "indexedInformations.ej": 1 });
         await this.collection.createIndex({ "indexedInformations.siret": 1 });
     }

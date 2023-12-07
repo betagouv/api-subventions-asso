@@ -11,6 +11,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -37,29 +38,38 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
         return chorusLineRepository.insertMany(entities);
     }
 
+    public async isAcceptedEntity(entity: ChorusLineEntity) {
+        if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
+
+        const siren = siretToSiren(entity.indexedInformations.siret);
+
+        if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
+
+        const sirenIsAsso = await this.sirenBelongAsso(siren);
+
+        this.sirenBelongAssoCache.add(siren, sirenIsAsso);
+        if (sirenIsAsso) return true;
+        return false;
+    }
+
     /**
      * @param entities /!\ entities must be validated upstream
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
-        const acceptedEntities = await asyncFilter(entities, async entity => {
-            if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
-
-            const siren = siretToSiren(entity.indexedInformations.siret);
-
-            if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
-
-            const sirenIsAsso = await this.sirenBelongAsso(siren);
-
-            this.sirenBelongAssoCache.add(siren, sirenIsAsso);
-            if (sirenIsAsso) return true;
-            return false;
-        });
-
-        if (acceptedEntities.length) await this.insertMany(acceptedEntities);
+        const acceptedEntities = await asyncFilter(entities, this.isAcceptedEntity);
+        let duplicates = 0;
+        if (acceptedEntities.length) {
+            try {
+                await this.insertMany(acceptedEntities);
+            } catch (e) {
+                duplicates = ((e as DuplicateIndexError).entity as ChorusLineEntity[]).length;
+            }
+        }
 
         return {
             rejected: entities.length - acceptedEntities.length,
-            created: acceptedEntities.length,
+            created: acceptedEntities.length - duplicates,
+            duplicates,
         };
     }
 

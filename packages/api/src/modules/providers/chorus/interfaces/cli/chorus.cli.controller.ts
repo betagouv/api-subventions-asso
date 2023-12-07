@@ -1,5 +1,4 @@
 import fs from "fs";
-
 import { StaticImplements } from "../../../../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../../../../@types";
 import ChorusParser from "../../chorus.parser";
@@ -36,7 +35,6 @@ export default class ChorusCliController extends CliController {
         const fileContent = fs.readFileSync(file);
 
         const entities = ChorusParser.parse(fileContent);
-        console.log(entities);
         const totalEntities = entities.length;
 
         console.info(`\n${totalEntities} valid entities found in file.`);
@@ -53,6 +51,7 @@ export default class ChorusCliController extends CliController {
         const finalResult = {
             created: 0,
             rejected: 0,
+            duplicates: 0,
         };
 
         await asyncForEach(batchs, async (batch, index) => {
@@ -60,6 +59,7 @@ export default class ChorusCliController extends CliController {
             const result = await chorusService.insertBatchChorusLine(batch);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
+            finalResult.duplicates += result.duplicates;
         });
 
         logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
