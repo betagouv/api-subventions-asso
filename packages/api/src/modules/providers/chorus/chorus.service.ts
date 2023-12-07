@@ -56,7 +56,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
      * @param entities /!\ entities must be validated upstream
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
-        const acceptedEntities = await asyncFilter(entities, this.isAcceptedEntity);
+        const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
         let duplicates = 0;
         if (acceptedEntities.length) {
             try {
