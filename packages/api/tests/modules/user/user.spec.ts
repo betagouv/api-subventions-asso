@@ -204,7 +204,18 @@ describe("UserController, /user", () => {
                 .expect(204);
 
             const user = await userRepository.findById(userId?.toString() as string);
-            expect(user).toMatchSnapshot({ signupAt: expect.any(Date), _id: expect.any(ObjectId) });
+            expect(user).toMatchObject({
+                signupAt: expect.any(Date),
+                _id: expect.any(ObjectId),
+                email: `${userId}@deleted.datasubvention.beta.gouv.fr`,
+
+                active: false,
+                disable: true,
+                firstName: "",
+                lastName: "",
+                profileToComplete: true,
+                roles: ["user"],
+            });
         });
     });
 });

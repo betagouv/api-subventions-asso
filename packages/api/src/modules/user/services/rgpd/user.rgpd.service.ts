@@ -46,7 +46,7 @@ export class UserRgpdService {
         const disabledUser = {
             ...user,
             active: false,
-            email: "",
+            email: `${user._id}@deleted.datasubvention.beta.gouv.fr`,
             jwt: null,
             hashPassword: "",
             disable: true,

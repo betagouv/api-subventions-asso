@@ -27,7 +27,7 @@ export const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer
 export const ANONYMIZED_USER = {
     ...USER_WITHOUT_SECRET,
     active: false,
-    email: "",
+    email: "635132a527c9bfb8fc7c758e@deleted.datasubvention.beta.gouv.fr",
     jwt: null,
     hashPassword: "",
     disable: true,
