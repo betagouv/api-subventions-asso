@@ -12,5 +12,6 @@ export default class AssociationNameEntity {
             code_postal?: string;
             commune?: string;
         },
+        public nbEtabs?: number,
     ) {}
 }

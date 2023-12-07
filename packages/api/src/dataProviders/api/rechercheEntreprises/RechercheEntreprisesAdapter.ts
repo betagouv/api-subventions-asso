@@ -16,6 +16,7 @@ export class RechercheEntreprisesAdapter {
                       commune: dto.siege.libelle_commune || undefined,
                   }
                 : undefined,
+            dto.nombre_etablissements,
         );
     }
 }

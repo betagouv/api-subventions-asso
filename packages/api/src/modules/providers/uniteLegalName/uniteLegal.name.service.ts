@@ -2,7 +2,6 @@ import { Siren, Siret } from "dto";
 import Fuse from "fuse.js";
 import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
 import { AssociationIdentifiers } from "../../../@types";
-import rnaSirenPort from "../../../dataProviders/db/rnaSiren/rnaSiren.port";
 import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import { isStartOfSiret } from "../../../shared/Validators";
 import { getIdentifierType } from "../../../shared/helpers/IdentifierHelper";
@@ -16,9 +15,9 @@ export class UniteLegalNameService {
         let siren;
         if (getIdentifierType(identifier) === StructureIdentifiersEnum.siren) siren = identifier;
         else {
-            const rnaSiren = await rnaSirenPort.find(identifier);
-            if (!rnaSiren || !rnaSiren.length) return null;
-            siren = rnaSiren[0].siren;
+            const rnaSirenEntities = await rnaSirenService.find(identifier);
+            if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
+            siren = rnaSirenEntities[0].siren;
         }
         return uniteLegalNamePort.findOneBySiren(siren);
     }
@@ -26,7 +25,6 @@ export class UniteLegalNameService {
     async searchBySirenSiretName(value: Siren | Siret | string) {
         if (isStartOfSiret(value)) value = siretToSiren(value); // Check if value is a start of siret
         const associations = await uniteLegalNamePort.search(value);
-
         const groupedNameByStructures = associations.reduce((acc, entity) => {
             if (!acc[entity.siren]) acc[entity.siren] = [];
             acc[entity.siren].push(entity);
@@ -66,6 +64,6 @@ export class UniteLegalNameService {
     }
 }
 
-const uniteLegalNameervice = new UniteLegalNameService();
+const uniteLegalNameService = new UniteLegalNameService();
 
-export default uniteLegalNameervice;
+export default uniteLegalNameService;

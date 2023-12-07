@@ -26,7 +26,9 @@ export class AssociationNameService {
             // For one rna its possible to have many siren from match
             // For one siren its possible to have many rna from match
             const rnaSirenEntities = (await rnaSirenService.find(value)) || [];
-            const identifiers = rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()]);
+            const identifiers = rnaSirenEntities.length
+                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()])
+                : [value];
             associationNames = [
                 ...(await Promise.all(
                     identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
@@ -39,7 +41,6 @@ export class AssociationNameService {
                 ...(await rechercheEntreprises.search(value)),
             ].flat();
         }
-
         const mergedAssociationName = associationNames.reduce((acc, associationName) => {
             const id = `${associationName.rna} - ${associationName.siren}`;
             const oldValue = acc[id] || {};
@@ -48,6 +49,7 @@ export class AssociationNameService {
                 oldValue.siren || associationName.siren,
                 oldValue.rna || associationName.rna,
                 oldValue.address || associationName.address,
+                oldValue.nbEtabs || associationName.nbEtabs,
             );
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
