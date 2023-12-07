@@ -320,8 +320,8 @@ describe("chorusService", () => {
             expect(actual).toEqual(expected);
         });
 
-        it.only("should return response with duplicates", async () => {
-            mockInsertMany.mockRejectedValueOnce({ entity: [ENTITIES[1]] });
+        it("should return response with duplicates", async () => {
+            mockInsertMany.mockRejectedValueOnce({ duplicates: [ENTITIES[1]] });
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, duplicates: 1 };
             const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);

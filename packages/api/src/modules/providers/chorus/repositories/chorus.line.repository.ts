@@ -4,7 +4,6 @@ import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import { buildDuplicateIndexError, isDuplicateError } from "../../../../shared/helpers/MongoHelper";
-import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 
 export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";

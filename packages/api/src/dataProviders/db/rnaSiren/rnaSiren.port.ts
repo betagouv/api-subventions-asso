@@ -1,7 +1,6 @@
 import { Rna, Siren } from "dto";
 import { MongoServerError } from "mongodb";
-import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
-import { isDuplicateError } from "../../../shared/helpers/MongoHelper";
+import { buildDuplicateIndexError, isDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoRepository from "../../../shared/MongoRepository";
 import { isRna } from "../../../shared/Validators";
@@ -22,7 +21,7 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
         } catch (e: unknown) {
             if (e instanceof MongoServerError && isDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
-                throw new DuplicateIndexError(e.message);
+                throw buildDuplicateIndexError(e);
             }
             throw e;
         }

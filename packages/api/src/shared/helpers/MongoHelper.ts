@@ -8,8 +8,5 @@ export const isDuplicateError = error => {
 
 export const buildDuplicateIndexError = (error: MongoServerError): DuplicateIndexError | MongoServerError => {
     if (!error.writeErrors) return error;
-    return new DuplicateIndexError(
-        error.message,
-        error.writeErrors.map(writeError => writeError.err.op),
-    );
+    return new DuplicateIndexError(error.message, error.writeErrors.map(writeError => writeError.err.op) || []);
 };

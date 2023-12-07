@@ -1,9 +1,8 @@
 import { MongoServerError } from "mongodb";
 import { Siren } from "dto";
-import { isDuplicateError } from "../../../shared/helpers/MongoHelper";
+import { buildDuplicateIndexError, isDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
-import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import { UniteLegalEntrepriseAdapter } from "./UniteLegalEntreprise.adapter";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
 
@@ -28,7 +27,7 @@ export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepri
         } catch (e: unknown) {
             if (e instanceof MongoServerError && isDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
-                throw new DuplicateIndexError(e.message);
+                throw buildDuplicateIndexError(e);
             }
             throw e;
         }
