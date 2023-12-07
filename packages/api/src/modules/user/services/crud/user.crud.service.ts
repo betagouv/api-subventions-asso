@@ -12,12 +12,7 @@ import userAuthService from "../auth/user.auth.service";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import { DEFAULT_PWD } from "../../user.constant";
 import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
-import {
-    BadRequestError,
-    ConflictError,
-    InternalServerError,
-    NotFoundError,
-} from "../../../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
