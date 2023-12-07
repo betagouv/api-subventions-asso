@@ -12,7 +12,7 @@ export default class ScdlGrantParser {
         if (!isValidDate(grant.paymentStartDate)) return false;
         if (!isNumberValid(grant.amount)) return false;
 
-        // // optionnal fields
+        // optionnal fields
         if (!isRna(grant.associationRna) && grant.associationRna !== undefined) return false;
         if (!isValidDate(grant.paymentEndDate) && grant.paymentEndDate !== undefined) return false;
         return true;
@@ -33,10 +33,7 @@ export default class ScdlGrantParser {
                 parsedData,
             ) as unknown as ScdlGrantEntity;
 
-            if (this.isGrantValid(storableData))
-                // if (!storableData.associationSiret || !isSiret(storableData.associationSiret)) continue;
-
-                storableChunk.push(storableData);
+            if (this.isGrantValid(storableData)) storableChunk.push(storableData);
         }
         return storableChunk;
     }
