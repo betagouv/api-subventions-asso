@@ -17,7 +17,6 @@ describe("Chorus CLI", () => {
 
     const FILE_PATH = "../../file/path";
     const FILE_CONTENT = "HERE_MY_CONTENT";
-    const EXPORT_DATE = "2023";
 
     let controller;
 
@@ -32,25 +31,25 @@ describe("Chorus CLI", () => {
 
     describe("_parse()", () => {
         it("should throw error if file is not a string", () => {
-            expect(() => controller._parse(undefined, LOGGER, EXPORT_DATE)).rejects.toThrowError(
+            expect(() => controller._parse(undefined, LOGGER)).rejects.toThrowError(
                 new Error("Parse command need file args"),
             );
         });
 
         it("should throw error if file is not found", () => {
             mockedFs.existsSync.mockReturnValueOnce(false);
-            expect(() => controller._parse(FILE_PATH, LOGGER, EXPORT_DATE)).rejects.toThrowError(
+            expect(() => controller._parse(FILE_PATH, LOGGER)).rejects.toThrowError(
                 new Error(`File not found ${FILE_PATH}`),
             );
         });
 
         it("should call ChorusParser.parse()", async () => {
-            await controller._parse(FILE_PATH, LOGGER, EXPORT_DATE);
+            await controller._parse(FILE_PATH, LOGGER);
             expect(ChorusParser.parse).toHaveBeenCalledTimes(1);
         });
 
         it("should call chorusService.insertBatchChorusLine()", async () => {
-            await controller._parse(FILE_PATH, LOGGER, EXPORT_DATE);
+            await controller._parse(FILE_PATH, LOGGER);
             expect(mockedService.insertBatchChorusLine).toHaveBeenCalledTimes(1);
         });
     });

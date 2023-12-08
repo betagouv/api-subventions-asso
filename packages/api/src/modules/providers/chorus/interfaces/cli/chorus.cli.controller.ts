@@ -20,7 +20,7 @@ export default class ChorusCliController extends CliController {
      * @param file path to file
      * @param batchSize La taille des paquets envoyés à mongo coup par coup
      */
-    protected async _parse(file: string, logger, _exportDate) {
+    protected async _parse(file: string, logger) {
         if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
