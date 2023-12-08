@@ -24,13 +24,15 @@ describe("ResetPwdController", () => {
     const PASSWORD = "very secret";
 
     describe("constructor and static values", () => {
-        it.each`
-            propertyName | expected
-            ${"values"}  | ${{ password: "", confirm: "" }}
-            ${"promise"} | ${Promise.resolve()}
-        `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
+        it("initializes correctly 'values' store", () => {
+            const expected = { password: "", confirm: "" };
             const ctrl = new ResetPwdController(TOKEN);
-            expect(ctrl[propertyName].value).toEqual(expected);
+            expect(ctrl.values.value).toEqual(expected);
+        });
+
+        it("initializes correctly 'promise' store", async () => {
+            const ctrl = new ResetPwdController(TOKEN);
+            await expect(ctrl.promise.value).resolves.toBeUndefined();
         });
 
         it("does not fail if no token given", async () => {
