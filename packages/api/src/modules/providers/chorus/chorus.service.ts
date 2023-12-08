@@ -48,8 +48,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
         const sirenIsAsso = await this.sirenBelongAsso(siren);
 
         this.sirenBelongAssoCache.add(siren, sirenIsAsso);
-        if (sirenIsAsso) return true;
-        return false;
+        return sirenIsAsso;
     }
 
     /**
