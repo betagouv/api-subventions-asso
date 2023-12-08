@@ -29,21 +29,21 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*"]],
     allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
-        path: [[...getMapperVariants("conventionDate"), "Date de convention*"]],
+        path: [[...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"]],
         adapter: value => (value ? new Date(value) : value),
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
     associationName: [[...getMapperVariants("associationName"), "Nom du bénéficiaire*"]],
     associationSiret: [[...getMapperVariants("associationSiret"), "Identification du bénéficiaire*"]],
     associationRna: [[...getMapperVariants("associationRna")]],
-    object: [[...getMapperVariants("object"), "Objet de la convention"]],
+    object: [[...getMapperVariants("object"), "objet", "Objet de la convention"]],
     amount: {
         path: [[...getMapperVariants("amount"), "Montant total de la subvention*"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
     paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
-        path: [[...getMapperVariants("paymentStartDate"), "Date de versement"]],
+        path: [[...getMapperVariants("paymentStartDate"), "Date de versement", "dateperiodedeversement"]],
         // @ts-expect-error: with undefined it returns false so we don't need to check it
         adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0].trim()) : value),
     },
