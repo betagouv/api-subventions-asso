@@ -1,4 +1,4 @@
-import { AssociationSSEController } from "./associations/interfaces/sse/AssociationController.SSE";
-import { EtablissementSSEController } from "./etablissements/interfaces/sse/EtablissementController.SSE";
+import { AssociationInterfaceSse } from "../interfaces/sse/AssociationInterfaceSse";
+import { EtablissementInterfaceSse } from "../interfaces/sse/EtablissementInterfaceSse";
 
-export default [AssociationSSEController, EtablissementSSEController];
+export default [AssociationInterfaceSse, EtablissementInterfaceSse];

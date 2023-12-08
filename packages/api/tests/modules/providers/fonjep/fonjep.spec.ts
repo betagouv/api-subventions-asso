@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser";
-import FonjepCliController from "../../../../src/modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
+import FonjepCliController from "../../../../src/interfaces/cli/FonjepInterfaceCli";
 import db from "../../../../src/shared/MongoConnection";
 import fonjepVersementRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.versement.repository";
 import fonjepSubventionRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";

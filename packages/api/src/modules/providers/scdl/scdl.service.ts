@@ -1,7 +1,7 @@
-import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
 import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
+import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
+import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 
 export class ScdlService {
     getProducer(producerId: string) {
