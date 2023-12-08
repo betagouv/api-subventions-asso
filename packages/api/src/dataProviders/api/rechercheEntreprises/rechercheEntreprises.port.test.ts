@@ -1,4 +1,4 @@
-import rechercheEntreprises from "./rechercheEntreprises.port";
+import rechercheEntreprises, { RechercheEntreprises } from "./rechercheEntreprises.port";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import { ProviderRequestService } from "../../../modules/provider-request/providerRequest.service";
 import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
@@ -21,12 +21,12 @@ describe("RechercheEntreprises", () => {
 
     describe("Initialization", () => {
         it("should initialize the URL correctly", () => {
-            expect(rechercheEntreprises["URL"]).toBe("https://recherche-entreprises.api.gouv.fr/search");
+            expect(RechercheEntreprises["URL"]).toBe("https://recherche-entreprises.api.gouv.fr/search");
         });
 
         it("should initialize the natureJuridique correctly", () => {
             const expectedNatureJuridique = LEGAL_CATEGORIES_ACCEPTED.filter(id => id !== "92").join(",");
-            expect(rechercheEntreprises["natureJuridique"]).toBe(expectedNatureJuridique);
+            expect(RechercheEntreprises["natureJuridique"]).toBe(expectedNatureJuridique);
         });
 
         it("should initialize the http service correctly", () => {
@@ -37,7 +37,7 @@ describe("RechercheEntreprises", () => {
     describe("search", () => {
         it("should make a GET request to the correct URL with the provided query", async () => {
             const query = "example";
-            const expectedUrl = `https://recherche-entreprises.api.gouv.fr/search?q=${query}&nature_juridique=${rechercheEntreprises["natureJuridique"]}`;
+            const expectedUrl = `https://recherche-entreprises.api.gouv.fr/search?q=${query}&nature_juridique=${RechercheEntreprises["natureJuridique"]}`;
             mockedHttpGet.mockResolvedValueOnce({ data: {} } as unknown as RequestResponse<unknown>);
             await rechercheEntreprises.search(query);
 

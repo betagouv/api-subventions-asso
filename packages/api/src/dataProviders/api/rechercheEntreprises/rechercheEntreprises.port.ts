@@ -7,9 +7,9 @@ import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./Recher
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 
 export class RechercheEntreprises {
-    private URL = "https://recherche-entreprises.api.gouv.fr/search";
+    private static URL = "https://recherche-entreprises.api.gouv.fr/search";
     private http: ProviderRequestService;
-    private natureJuridique = LEGAL_CATEGORIES_ACCEPTED.filter(id => id !== "92").join(",");
+    private static natureJuridique = LEGAL_CATEGORIES_ACCEPTED.filter(id => id !== "92").join(",");
 
     constructor() {
         this.http = ProviderRequestFactory("recherche-entreprise");
@@ -17,7 +17,7 @@ export class RechercheEntreprises {
 
     async search(query: string) {
         const answer = await this.http.get<RechercheEntreprisesDto>(
-            this.URL + `?q=${query}&nature_juridique=${this.natureJuridique}`,
+            RechercheEntreprises.URL + `?q=${query}&nature_juridique=${RechercheEntreprises.natureJuridique}`,
         );
 
         return (

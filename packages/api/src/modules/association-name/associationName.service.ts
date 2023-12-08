@@ -23,8 +23,8 @@ export class AssociationNameService {
             const identifierType = getIdentifierType(value) as
                 | StructureIdentifiersEnum.rna
                 | StructureIdentifiersEnum.siren;
-            // For one rna its possible to have many siren from match
-            // For one siren its possible to have many rna from match
+            // For one rna it's possible to have many siren from match
+            // For one siren it's possible to have many rna from match
             const rnaSirenEntities = (await rnaSirenService.find(value)) || [];
             const identifiers = rnaSirenEntities.length
                 ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()])
@@ -36,6 +36,7 @@ export class AssociationNameService {
                 ...(await Promise.all(identifiers.map(identifier => rechercheEntreprises.search(identifier)))),
             ].flat();
         } else {
+            // Siret Or Name
             associationNames = [
                 ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
                 ...(await rechercheEntreprises.search(value)),
