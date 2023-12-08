@@ -12,7 +12,7 @@ export default class ScdlGrantParser {
         if (!isValidDate(grant.paymentStartDate)) return false;
         if (!isNumberValid(grant.amount)) return false;
 
-        // optionnal fields
+        // optional fields
         if (!isRna(grant.associationRna) && grant.associationRna !== undefined) return false;
         if (!isValidDate(grant.paymentEndDate) && grant.paymentEndDate !== undefined) return false;
         return true;

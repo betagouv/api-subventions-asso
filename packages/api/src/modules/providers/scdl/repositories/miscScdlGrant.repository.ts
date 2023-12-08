@@ -9,7 +9,7 @@ export class MiscScdlGrantRepository extends MongoRepository<MiscScdlGrantEntity
     }
 
     public async createMany(entities: MiscScdlGrantEntity[]) {
-        this.collection.insertMany(entities);
+        await this.collection.insertMany(entities);
     }
 
     async createIndexes() {
