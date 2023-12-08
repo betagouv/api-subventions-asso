@@ -50,8 +50,6 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), "Date de versement"]],
         adapter: value => {
-            // @ts-expect-error: expect error
-            console.log(value, shortISOPeriodRegExp.test(value));
             // @ts-expect-error: with undefined it returns false so we don't need to check it
             if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1].trim());
             // @ts-expect-error: with undefined it returns false so we don't need to check it
