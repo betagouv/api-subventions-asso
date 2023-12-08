@@ -7,6 +7,8 @@ export const isDuplicateError = error => {
 };
 
 export const buildDuplicateIndexError = (error: MongoServerError): DuplicateIndexError | MongoServerError => {
+    // MongoServerError default errors are stored in writeErrors
+    // c.f https://www.mongodb.com/docs/v4.4/reference/method/db.collection.insertMany/#behaviors
     if (!error.writeErrors) return error;
     return new DuplicateIndexError(error.message, error.writeErrors.map(writeError => writeError.err.op) || []);
 };
