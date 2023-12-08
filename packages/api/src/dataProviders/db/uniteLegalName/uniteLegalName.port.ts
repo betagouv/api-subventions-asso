@@ -2,7 +2,7 @@ import { InsertOneResult, MongoServerError } from "mongodb";
 import { Siren } from "dto";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
-import { DuplicateIndexError } from "../../../shared/errors/dbErrror/DuplicateIndexError";
+import { buildDuplicateIndexError, isDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import UniteLegalNameAdapter from "./UniteLegalName.adapter";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
@@ -52,8 +52,7 @@ export class UniteLegalNamePort extends MongoRepository<UniteLegalNameDbo> {
     insert(entity: UniteLegalNameEntity) {
         // Use stack because, sometimes to upsert on same entity as executed at the same time, please read : https://jira.mongodb.org/browse/SERVER-14322
         return this.insertSirenStack.addOperation(UniteLegalNameAdapter.toDbo(entity)).catch(error => {
-            if (error instanceof MongoServerError && error.code === "E11000")
-                throw new DuplicateIndexError(error.message, entity);
+            if (error instanceof MongoServerError && isDuplicateError(error)) throw buildDuplicateIndexError(error);
             return error;
         });
     }

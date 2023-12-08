@@ -9,6 +9,7 @@ import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 import * as ObjectHelper from "../../../shared/helpers/ObjectHelper";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import StructureDto from "./dto/StructureDto";
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
@@ -24,7 +25,7 @@ jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
 describe("ApiAssoService", () => {
     let httpGetSpy: jest.SpyInstance;
     // @ts-expect-error: mock private method
-    let sendRequestMock = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
+    let mockSendRequest = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
     // @ts-expect-error: mock private method
     const findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments") as jest.SpyInstance<any | null>;
 
@@ -121,16 +122,40 @@ describe("ApiAssoService", () => {
         });
     });
 
+    describe("findRnaSirenByIdentifiers", () => {
+        const RNA = "W76009382";
+        const SIREN = "954983829";
+
+        beforeEach(() => {
+            mockSendRequest.mockResolvedValue({ identite: { id_rna: RNA, id_siren: SIREN } });
+        });
+
+        afterAll(() => mockSendRequest.mockReset());
+
+        it("should return undefined identifiers if identite is undefined", async () => {
+            mockSendRequest.mockResolvedValueOnce({});
+            const expected = { rna: undefined, siren: undefined };
+            const actual = await apiAssoService.findRnaSirenByIdentifiers(RNA);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return identifiers", async () => {
+            const expected = { rna: RNA, siren: SIREN };
+            const actual = await apiAssoService.findRnaSirenByIdentifiers(RNA);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("fetchDocuments", () => {
         it("call sendRequest()", async () => {
             // @ts-expect-error: private method
             await apiAssoService.fetchDocuments(RNA);
-            expect(sendRequestMock).toHaveBeenCalledWith(`/proxy_db_asso/documents/${RNA}`);
+            expect(mockSendRequest).toHaveBeenCalledWith(`/proxy_db_asso/documents/${RNA}`);
         });
 
         it("return documents", async () => {
             const expected = API_ASSO_RESPONSE.asso.documents;
-            sendRequestMock.mockImplementationOnce(async () => API_ASSO_RESPONSE);
+            mockSendRequest.mockImplementationOnce(async () => API_ASSO_RESPONSE);
             // @ts-expect-error: private method
             const actual = await apiAssoService.fetchDocuments(RNA);
             expect(actual).toEqual(expected);
@@ -138,7 +163,7 @@ describe("ApiAssoService", () => {
 
         it("does not fail if no result from axios", async () => {
             const expected = undefined;
-            sendRequestMock.mockImplementationOnce(async () => null);
+            mockSendRequest.mockImplementationOnce(async () => null);
             // @ts-expect-error: private method
             const test = async () => await apiAssoService.fetchDocuments(RNA);
             await expect(test).resolves;
@@ -308,28 +333,28 @@ describe("ApiAssoService", () => {
 
         describe("findAssociationByRna", () => {
             const RNA = "W000000000";
-            let sendRequestMock: jest.SpyInstance;
+            let mockSendRequest: jest.SpyInstance;
 
             beforeAll(() => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
                 // @ts-ignore sendRequest is private Method
-                sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
+                mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
             });
 
             afterAll(() => {
-                sendRequestMock.mockRestore();
+                mockSendRequest.mockRestore();
             });
 
             it("should send a request", async () => {
                 // @ts-ignore findAssociationByRna is private method
                 await apiAssoService.findAssociationByRna(RNA);
 
-                expect(sendRequestMock).toHaveBeenCalledTimes(1);
+                expect(mockSendRequest).toHaveBeenCalledTimes(1);
             });
 
             it("should return null if result without date", async () => {
                 const expected = null;
-                sendRequestMock.mockResolvedValue({ data: true, identite: { date_modif_rna: null } });
+                mockSendRequest.mockResolvedValue({ data: true, identite: { date_modif_rna: null } });
                 // @ts-ignore findAssociationByRna is private method
                 const actual = await apiAssoService.findAssociationByRna(RNA);
 
@@ -339,7 +364,7 @@ describe("ApiAssoService", () => {
             it("should return null if structure.identite has empty properties", async () => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
                 const expected = null;
-                sendRequestMock.mockResolvedValue({ data: true, identite: {} });
+                mockSendRequest.mockResolvedValue({ data: true, identite: {} });
                 // @ts-ignore findAssociationByRna is private method
                 const actual = await apiAssoService.findAssociationByRna(RNA);
                 expect(actual).toBe(expected);
@@ -347,7 +372,7 @@ describe("ApiAssoService", () => {
 
             it("should use adapter", async () => {
                 const expected = { data: true, identite: { date_modif_rna: "smthg" } };
-                sendRequestMock.mockResolvedValue(expected);
+                mockSendRequest.mockResolvedValue(expected);
                 // @ts-ignore findAssociationByRna is private method
                 await apiAssoService.findAssociationByRna(RNA);
 
@@ -362,39 +387,39 @@ describe("ApiAssoService", () => {
                 identite: { date_modif_siren: "smthg" },
                 etablissement: { length: 1 },
             };
-            let sendRequestMock: jest.SpyInstance;
+            let mockSendRequest: jest.SpyInstance;
 
             beforeAll(() => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
                 // @ts-ignore sendRequest is private Method
-                sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(ASSO_WITH_STRUCTURES);
+                mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(ASSO_WITH_STRUCTURES);
             });
 
             afterAll(() => {
-                sendRequestMock.mockRestore();
+                mockSendRequest.mockRestore();
             });
 
             it("should send a request", async () => {
                 await apiAssoService.findAssociationBySiren(SIREN);
-                expect(sendRequestMock).toHaveBeenCalledTimes(1);
+                expect(mockSendRequest).toHaveBeenCalledTimes(1);
             });
 
             it("should call /structures if no establishment found", async () => {
-                sendRequestMock.mockResolvedValueOnce({ data: true, identite: { date_modif_siren: "smthg" } });
+                mockSendRequest.mockResolvedValueOnce({ data: true, identite: { date_modif_siren: "smthg" } });
                 await apiAssoService.findAssociationBySiren(RNA);
-                expect(sendRequestMock).toHaveBeenCalledWith(`/api/structure/${RNA}`);
+                expect(mockSendRequest).toHaveBeenCalledWith(`/api/structure/${RNA}`);
             });
 
             it("should return null if result without date", async () => {
                 const expected = null;
-                sendRequestMock.mockResolvedValueOnce({ data: true, etablissement: { length: 1 } });
+                mockSendRequest.mockResolvedValueOnce({ data: true, etablissement: { length: 1 } });
                 const actual = await apiAssoService.findAssociationBySiren(RNA);
                 expect(actual).toBe(expected);
             });
 
             it("should return null if date_modif_siren is null", async () => {
                 const expected = null;
-                sendRequestMock.mockResolvedValueOnce({
+                mockSendRequest.mockResolvedValueOnce({
                     data: true,
                     etablissement: { length: 1 },
                     identite: { date_modif_siren: null },
@@ -407,7 +432,7 @@ describe("ApiAssoService", () => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
                 // @ts-expect-error: mock wrong api response
                 const STRUCTURE: SirenStructureDto = { identite: { date_modif_siren: null, nom: null, id_rna: null } };
-                sendRequestMock.mockResolvedValueOnce(STRUCTURE);
+                mockSendRequest.mockResolvedValueOnce(STRUCTURE);
                 const actual = await apiAssoService.findAssociationBySiren(SIREN);
                 expect(actual).toBe(null);
             });
@@ -488,19 +513,19 @@ describe("ApiAssoService", () => {
         describe("findEtablissementsBySiren", () => {
             const SIREN = "000000000";
 
-            let sendRequestMock: jest.SpyInstance;
+            let mockSendRequest: jest.SpyInstance;
             let toEtablissementMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-ignore sendRequest is private method
-                sendRequestMock = jest.spyOn(apiAssoService, "sendRequest").mockReturnValue(fixtureAsso);
+                mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockReturnValue(fixtureAsso);
                 toEtablissementMock = jest
                     .spyOn(ApiAssoDtoAdapter, "toEtablissement")
                     .mockImplementation(data => data as unknown as Etablissement);
             });
 
             afterAll(() => {
-                sendRequestMock.mockRestore();
+                mockSendRequest.mockRestore();
                 toEtablissementMock.mockRestore();
             });
 
@@ -508,11 +533,11 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findEtablissementsBySiren is private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
 
-                expect(sendRequestMock).toBeCalledTimes(1);
+                expect(mockSendRequest).toBeCalledTimes(1);
             });
 
             it("should return null", async () => {
-                sendRequestMock.mockResolvedValueOnce(null);
+                mockSendRequest.mockResolvedValueOnce(null);
                 // @ts-ignore findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
 
@@ -520,7 +545,7 @@ describe("ApiAssoService", () => {
             });
 
             it("should return null if structure.identite has empty properties", async () => {
-                sendRequestMock.mockResolvedValueOnce({
+                mockSendRequest.mockResolvedValueOnce({
                     date_modif_siren: null,
                     id_siren: null,
                 });
@@ -738,8 +763,8 @@ describe("ApiAssoService", () => {
                 mockFilterDacDocuments.mockImplementation(() => []);
                 // @ts-ignore filterRibsInDacDocuments has private method
                 mockFilterRibsInDacDocuments.mockImplementation(() => []);
-                // @ts-ignore sendRequestMock is private method
-                sendRequestMock = jest.spyOn(apiAssoService, "sendRequest");
+                // @ts-ignore mockSendRequest is private method
+                mockSendRequest = jest.spyOn(apiAssoService, "sendRequest");
             });
 
             it("should call filterRnaDocuments with document_rna", async () => {
@@ -749,7 +774,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                sendRequestMock.mockResolvedValueOnce({
+                mockSendRequest.mockResolvedValueOnce({
                     asso: {
                         documents: {
                             document_rna: expected,
@@ -766,7 +791,7 @@ describe("ApiAssoService", () => {
             it("should call filterRnaDocuments with empty array", async () => {
                 const expected = [];
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {},
                     },
@@ -787,7 +812,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
                             document_dac: expected,
@@ -804,7 +829,7 @@ describe("ApiAssoService", () => {
             it("should call filterActiveDacDocuments with empty array", async () => {
                 const expected = [];
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {},
                     },
@@ -825,7 +850,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
                             document_dac: expected,
@@ -851,7 +876,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
                             document_dac: expected,
@@ -873,7 +898,7 @@ describe("ApiAssoService", () => {
                     sous_type: "PV",
                 };
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
                             document_rna: [expected],
@@ -897,7 +922,7 @@ describe("ApiAssoService", () => {
                     },
                 };
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
                             document_dac: [expected],
@@ -923,7 +948,7 @@ describe("ApiAssoService", () => {
                     },
                 };
 
-                sendRequestMock.mockImplementationOnce(() => ({
+                mockSendRequest.mockImplementationOnce(() => ({
                     asso: {
                         documents: {
                             document_dac: [expected],

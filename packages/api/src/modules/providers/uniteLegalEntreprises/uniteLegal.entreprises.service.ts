@@ -1,6 +1,6 @@
 import { Siren } from "dto";
 import uniteLegalEntreprisePort from "../../../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
-import { DuplicateIndexError } from "../../../shared/errors/dbErrror/DuplicateIndexError";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 
 export class UniteLegalEntreprisesService {

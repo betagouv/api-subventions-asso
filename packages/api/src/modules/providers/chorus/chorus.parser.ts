@@ -1,86 +1,106 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
-import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
+import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
+import { isSiret, isEJ } from "../../../shared/Validators";
+import { getMD5 } from "../../../shared/helpers/StringHelper";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import { ChorusService } from "./chorus.service";
+import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export default class ChorusParser {
-    public static parse(content: Buffer) {
-        const data = content
-            .toString()
-            .replace(/"/g, "")
-            .replace("", "")
-            .split("\n") // Select line by line
-            .map(row =>
-                row
-                    .split(";")
-                    .map(r => r.split("\t"))
-                    .flat(),
-            ); // Parse column
-
-        const headers = data.splice(0, 7);
-
-        const header = headers[6].map((header, index) => {
-            const isCode = headers[6].slice(index + 1).find(h => h === header);
-            if (isCode) {
-                return `${header.trim()} CODE`;
-            }
-            return header.trim();
-        });
-
-        return data.reduce((entities, row) => {
-            if (!row.map(column => column.trim()).filter(c => c).length) return entities;
-            const parsedData = ParseHelper.linkHeaderToData(header, row);
-
-            const indexedInformations = ParseHelper.indexDataByPathObject(
-                ChorusLineEntity.indexedInformationsPath,
-                parsedData,
-            ) as unknown as IChorusIndexedInformations;
-
-            return entities.concat(
-                new ChorusLineEntity(ChorusService.buildUniqueId(indexedInformations), indexedInformations, parsedData),
-            );
-        }, [] as ChorusLineEntity[]);
-    }
-
-    static parseXls(content: Buffer, validator: (entity: ChorusLineEntity) => boolean) {
+    static parse(content: Buffer) {
         console.log("Open and read file ...");
         const pages = ParseHelper.xlsParse(content);
-        const page = pages[0];
         console.log("Read file end");
 
-        const headerRow = page[0] as string[];
-        const header: string[] = [];
+        const page = pages[0];
 
+        const headerRow = page[0] as string[];
+        const headers = ChorusParser.renameEmptyHeaders(headerRow);
+        console.log("Map rows to entities...");
+        const entities = this.rowsToEntities(headers, page.slice(1));
+        return entities;
+    }
+
+    // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
+    // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
+    // LABEL + CODE | LABEL
+    protected static renameEmptyHeaders(headerRow) {
+        const header: string[] = [];
         for (let i = 0; i < headerRow.length; i++) {
+            // if header not defined, we take the previous one
             if (!headerRow[i]) {
                 const name = header[i - 1] as string;
+                // we add CODE at the end of the previous header
                 header[i - 1] = `${name} CODE`;
                 header.push(name.replace("&#32;", " ").trim());
             } else {
                 header.push(headerRow[i].replace(/&#32;/g, " ").trim());
             }
         }
+        return header;
+    }
 
-        const data = page.slice(1) as string[][];
-        return data.reduce((entities, row, index) => {
-            CliHelper.printAtSameLine(`${index} entities parsed of ${data.length}`);
-
-            const parsedData = ParseHelper.linkHeaderToData(header, row);
+    protected static rowsToEntities(headers, rows) {
+        return rows.reduce((entities, row, index, array) => {
+            const data = ParseHelper.linkHeaderToData(headers, row);
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 ChorusLineEntity.indexedInformationsPath,
-                parsedData,
+                data,
             ) as unknown as IChorusIndexedInformations;
-            const entity = new ChorusLineEntity(
-                ChorusService.buildUniqueId(indexedInformations),
-                indexedInformations,
-                parsedData,
-            );
 
-            if (validator(entity)) {
-                return entities.concat(entity);
-            }
+            if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
+
+            const uniqueId = this.buildUniqueId(indexedInformations);
+            entities.push(new ChorusLineEntity(uniqueId, indexedInformations, data));
+
+            CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
+
             return entities;
-        }, [] as ChorusLineEntity[]);
+        }, []);
+    }
+
+    protected static buildUniqueId(info: IChorusIndexedInformations) {
+        const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
+            info;
+        return getMD5(
+            `${ej}-${siret}-${dateOperation.toISOString()}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
+        );
+    }
+
+    protected static validateIndexedInformations(indexedInformations) {
+        if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
+            throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
+        }
+
+        // special treatment for siret with # that represents departments which didn't use SIRET but another identifier
+        if (!isSiret(indexedInformations.siret) && indexedInformations.siret !== "#") {
+            throw new Error(`INVALID SIRET FOR ${indexedInformations.siret}`);
+        }
+
+        if (isNaN(indexedInformations.amount)) {
+            throw new Error(`Amount is not a number`);
+        }
+
+        if (!(indexedInformations.dateOperation instanceof Date)) {
+            throw new Error(`Operation date is not a valid date`);
+        }
+
+        if (!isEJ(indexedInformations.ej)) {
+            throw new Error(`INVALID EJ FOR ${indexedInformations.ej}`);
+        }
+
+        return true;
+    }
+
+    protected static isIndexedInformationsValid(indexedInformations: IChorusIndexedInformations) {
+        try {
+            return this.validateIndexedInformations(indexedInformations);
+        } catch (e) {
+            console.log(
+                `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                JSON.stringify(indexedInformations, null, "\t"),
+            );
+            return false;
+        }
     }
 }

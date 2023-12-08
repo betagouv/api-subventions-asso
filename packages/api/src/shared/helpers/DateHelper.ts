@@ -68,3 +68,5 @@ export const getShortISODate = (date: Date) => date.toISOString().substring(0, 1
 export const shortISORegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d/);
 
 export const shortISOPeriodRegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d\/\d{4}-[01]\d-[0-3]\d/);
+
+export const addDaysToDate = (date, nbOfDays = 1) => new Date(new Date(date).setDate(date.getDate() + nbOfDays));

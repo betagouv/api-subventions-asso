@@ -1,8 +1,8 @@
 import { MongoServerError } from "mongodb";
 import { Siren } from "dto";
+import { buildDuplicateIndexError, isDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
-import { DuplicateIndexError } from "../../../shared/errors/dbErrror/DuplicateIndexError";
 import { UniteLegalEntrepriseAdapter } from "./UniteLegalEntreprise.adapter";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
 
@@ -10,11 +10,11 @@ export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepri
     collectionName = "unite-legal-entreprise";
 
     async createIndexes() {
-        await this.collection.createIndex({siren: 1}, {unique: true})
+        await this.collection.createIndex({ siren: 1 }, { unique: true });
     }
 
     async findOneBySiren(siren: Siren) {
-        const dbo = await this.collection.findOne({siren: siren});
+        const dbo = await this.collection.findOne({ siren: siren });
         if (!dbo) return null;
 
         return UniteLegalEntrepriseAdapter.toEntity(dbo);
@@ -24,9 +24,10 @@ export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepri
         try {
             const dbos = entities.map(entity => UniteLegalEntrepriseAdapter.toDbo(entity));
             await this.collection.insertMany(dbos, { ordered: false });
-        } catch(e: unknown) {
-            if (e instanceof MongoServerError && e.code === 11000) { // One or many entities already exist in database but other entities have been saved
-                throw new DuplicateIndexError(e.message);
+        } catch (e: unknown) {
+            if (e instanceof MongoServerError && isDuplicateError(e)) {
+                // One or many entities already exist in database but other entities have been saved
+                throw buildDuplicateIndexError(e);
             }
             throw e;
         }
