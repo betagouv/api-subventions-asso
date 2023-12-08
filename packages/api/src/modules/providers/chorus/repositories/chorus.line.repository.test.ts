@@ -28,12 +28,12 @@ describe("ChorusLineRepository", () => {
         });
 
         it("should call buildDuplicateIndexError", async () => {
-            try {
-                await chorusLineRepository.insertMany([]);
-                throw new Error("Error should have been throwned");
-            } catch (e) {
-                expect(mockedMongoHelper.buildDuplicateIndexError).toHaveBeenCalledWith(MONGO_SERVER_ERROR);
-            }
+            await chorusLineRepository
+                .insertMany([])
+                .catch(e => {})
+                .finally(() => {
+                    expect(mockedMongoHelper.buildDuplicateIndexError).toHaveBeenCalledWith(MONGO_SERVER_ERROR);
+                });
         });
     });
 });
