@@ -1,8 +1,7 @@
-import ChorusLineEntity from "../../../modules/providers/chorus/entities/ChorusLineEntity";
 import { ConflictError } from "../httpErrors";
 
-export class DuplicateIndexError extends ConflictError {
-    constructor(message: string, public duplicates: ChorusLineEntity[]) {
+export class DuplicateIndexError<T> extends ConflictError {
+    constructor(message: string, public duplicates: T) {
         super(message);
     }
 }

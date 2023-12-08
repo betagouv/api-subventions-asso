@@ -3,6 +3,7 @@ import { Filter, InsertOneResult, MongoServerError, ObjectId } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
+import { isDuplicateError } from "../../../shared/helpers/MongoHelper";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
@@ -59,15 +60,15 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 
     async create(user: UserNotPersisted): Promise<UserDto> {
-        const userDbo = { ...user, _id: new ObjectId() };
+        const userDbo: UserDbo = { ...user, _id: new ObjectId() };
         let result: InsertOneResult<UserDbo>;
 
         try {
             result = await this.collection.insertOne(userDbo);
         } catch (error) {
             // TODO refactor with Maxime's helper
-            if (error instanceof MongoServerError && error.code === "11000")
-                throw new DuplicateIndexError(`user '${user.email} already exists`, userDbo);
+            if (error instanceof MongoServerError && isDuplicateError(error))
+                throw new DuplicateIndexError<UserDbo>(`user '${user.email} already exists`, userDbo);
             throw error;
         }
 

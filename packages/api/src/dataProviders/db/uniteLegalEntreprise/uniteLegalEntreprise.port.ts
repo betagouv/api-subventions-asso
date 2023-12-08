@@ -27,7 +27,7 @@ export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepri
         } catch (e: unknown) {
             if (e instanceof MongoServerError && isDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
-                throw buildDuplicateIndexError(e);
+                throw buildDuplicateIndexError<UniteLegalEntrepriseDbo[]>(e);
             }
             throw e;
         }

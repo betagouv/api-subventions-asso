@@ -34,7 +34,7 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
-import { DuplicateIndexError } from "../../../../shared/errors/dbErrror/DuplicateIndexError";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 jest.mock("../../../../shared/helpers/RepositoryHelper");
 
 describe("user crud service", () => {

@@ -21,7 +21,7 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
         } catch (e: unknown) {
             if (e instanceof MongoServerError && isDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
-                throw buildDuplicateIndexError(e);
+                throw buildDuplicateIndexError<RnaSirenDbo>(e);
             }
             throw e;
         }
