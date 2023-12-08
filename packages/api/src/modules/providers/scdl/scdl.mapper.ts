@@ -44,16 +44,17 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
         path: [[...getMapperVariants("paymentStartDate"), "Date de versement", "dateperiodedeversement"]],
-        // @ts-expect-error: with undefined it returns false so we don't need to check it
+        // @ts-expect-error: with undefined it returns false, so we don't need to check it
         adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0].trim()) : value),
     },
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), "Date de versement"]],
         adapter: value => {
-            // @ts-expect-error: with undefined it returns false so we don't need to check it
-            if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1].trim());
-            // @ts-expect-error: with undefined it returns false so we don't need to check it
-            else if (shortISORegExp.test(value)) return new Date(value);
+            const noSpaceValue = value?.replaceAll(" ", "");
+            // @ts-expect-error: with undefined it returns false, so we don't need to check it
+            if (shortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split("/")[1].trim());
+            // @ts-expect-error: with undefined it returns false, so we don't need to check it
+            else if (shortISORegExp.test(noSpaceValue)) return new Date(noSpaceValue);
             else return null;
         },
     },
@@ -61,8 +62,8 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     UeNotification: {
         path: [[...getMapperVariants("UeNotification"), "Aide notifiée Ã  l'Europe"]],
         adapter: value => {
-            if (value === "oui") return true;
-            if (value === "non") return false;
+            if (value?.toLowerCase() === "oui") return true;
+            if (value?.toLowerCase() === "non") return false;
             return undefined;
         },
     },
