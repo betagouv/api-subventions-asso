@@ -6,6 +6,6 @@ export const toSearchHistory = association => {
         siren: association.siren,
         name: association.denomination_rna || association.denomination_siren,
         address: getAddress(association),
-        nbEtabs: association.etablisements_siret.length,
+        nbEtabs: association.etablisements_siret?.length || 0,
     };
 };

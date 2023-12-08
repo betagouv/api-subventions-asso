@@ -18,6 +18,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** completely hid tabs if not asso ([8c1e6b3](https://github.com/betagouv/api-subventions-asso/commit/8c1e6b33aafa03e81e51ad0ee503af9548cc17ff))
 -   **front:** display cp instead of establishment ([a25fb78](https://github.com/betagouv/api-subventions-asso/commit/a25fb78e3d5b97cc023e761cf61e0fb53e0d646d))
 -   **front:** show search if duplicate rna siren ([e8ec04b](https://github.com/betagouv/api-subventions-asso/commit/e8ec04b129187dee3d021121d922b65db7c13c9e))
+## [0.40.3](https://github.com/betagouv/api-subventions-asso/compare/v0.40.2...v0.40.3) (2023-12-06)
+
+### Bug Fixes
+
+-   search can accepted slash on input ([9795fe0](https://github.com/betagouv/api-subventions-asso/commit/9795fe042ea87db8e257b1a0cea4bde88ee6dcef))
+
+## [0.40.2](https://github.com/betagouv/api-subventions-asso/compare/v0.40.1...v0.40.2) (2023-11-30)
+
+### Bug Fixes
+
+-   association may not have a list of establishments ([fd90121](https://github.com/betagouv/api-subventions-asso/commit/fd9012116a17e57518a1683f221278a90127eb7c))
 
 ## [0.40.1](https://github.com/betagouv/api-subventions-asso/compare/v0.40.0...v0.40.1) (2023-11-29)
 

@@ -23,20 +23,24 @@ describe("Validators", () => {
 
     describe("isSiret", () => {
         const isSiret = validators.isSiret;
+
         it("should return true with valid SIRET", () => {
             const actual = isSiret(SIRET);
             expect(actual).toBeTruthy();
         });
-        it("should return false with RNA", () => {
-            const actual = isSiret(RNA);
-            expect(actual).toBeFalsy();
-        });
-        it("should return false with SIREN", () => {
-            const actual = isSiret(SIREN);
-            expect(actual).toBeFalsy();
-        });
-        it("should return false with #", () => {
-            const actual = isSiret("#");
+
+        it.each`
+            value
+            ${RNA}
+            ${SIREN}
+            ${"#"}
+            ${""}
+            ${null}
+            ${undefined}
+            ${false}
+            ${true}
+        `("should return false with $value", ({ value }) => {
+            const actual = isSiret(value);
             expect(actual).toBeFalsy();
         });
     });

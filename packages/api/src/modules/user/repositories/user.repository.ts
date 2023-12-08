@@ -3,7 +3,7 @@ import { Filter, InsertOneResult, MongoServerError, ObjectId } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
-import { DuplicateIndexError } from "../../../shared/errors/dbErrror/DuplicateIndexError";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository extends MongoRepository<UserDbo> {

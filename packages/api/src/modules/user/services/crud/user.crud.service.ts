@@ -18,7 +18,7 @@ import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import { UserServiceErrors } from "../../user.enum";
-import { DuplicateIndexError } from "../../../../shared/errors/dbErrror/DuplicateIndexError";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {

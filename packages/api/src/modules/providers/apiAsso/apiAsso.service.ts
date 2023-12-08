@@ -60,9 +60,15 @@ export class ApiAssoService
 
     public async findRnaSirenByIdentifiers(identifier: AssociationIdentifiers) {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
+
+        // TODO: investiguate with JFM
+        // some times apiAsso return a 404
+        // ex: siren 422606285
+        if (!structure?.identite) return { rna: undefined, siren: undefined };
+
         return {
-            rna: structure?.identite.id_rna,
-            siren: structure?.identite.id_siren.toString(), // sometimes siren is string or number
+            rna: structure?.identite?.id_rna,
+            siren: structure?.identite.id_siren?.toString(), // sometimes siren is string or number
         };
     }
 

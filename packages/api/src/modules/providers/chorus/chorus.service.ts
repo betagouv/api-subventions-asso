@@ -1,11 +1,9 @@
 import { Siren, Siret } from "dto";
 import { WithId } from "mongodb";
-import { ASSO_BRANCHE, BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
+import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
-import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { isEJ, isSiret } from "../../../shared/Validators";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
@@ -13,10 +11,10 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
-import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -34,113 +32,44 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
         });
     }
 
-    // new unique ID builder
-    // remove the one used in chorus CLI after fix fully handled
-    static buildUniqueId(info: IChorusIndexedInformations) {
-        const { ej, siret, dateOperation, amount, numeroDemandePayment, codeCentreFinancier, codeDomaineFonctionnel } =
-            info;
-        return getMD5(
-            `${ej}-${siret}-${dateOperation.toISOString()}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}`,
-        );
-    }
-
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
-    public validateEntity(entity: ChorusLineEntity) {
-        if (!BRANCHE_ACCEPTED[entity.indexedInformations.codeBranche]) {
-            throw new Error(`The branch ${entity.indexedInformations.codeBranche} is not accepted in data`);
-        }
+    public async insertMany(entities: ChorusLineEntity[]) {
+        return chorusLineRepository.insertMany(entities);
+    }
 
-        if (!isSiret(entity.indexedInformations.siret)) {
-            throw new Error(`INVALID SIRET FOR ${entity.indexedInformations.siret}`);
-        }
+    public async isAcceptedEntity(entity: ChorusLineEntity) {
+        if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
 
-        if (isNaN(entity.indexedInformations.amount)) {
-            throw new Error(`Amount is not a number`);
-        }
+        const siren = siretToSiren(entity.indexedInformations.siret);
 
-        if (!(entity.indexedInformations.dateOperation instanceof Date)) {
-            throw new Error(`Operation date is not a valid date`);
-        }
+        if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
 
-        if (!isEJ(entity.indexedInformations.ej)) {
-            throw new Error(`INVALID EJ FOR ${entity.indexedInformations.ej}`);
-        }
+        const sirenIsAsso = await this.sirenBelongAsso(siren);
 
-        return true;
+        this.sirenBelongAssoCache.add(siren, sirenIsAsso);
+        return sirenIsAsso;
     }
 
     /**
      * @param entities /!\ entities must be validated upstream
      */
-    public async insertBatchChorusLine(entities: ChorusLineEntity[], dropedDb = false) {
-        const acceptedEntities = await asyncFilter(entities, async entity => {
-            if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
-            const siren = siretToSiren(entity.indexedInformations.siret);
-
-            if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
-
-            const sirenIsAsso = await this.sirenBelongAsso(siren);
-
-            this.sirenBelongAssoCache.add(siren, sirenIsAsso);
-
-            if (sirenIsAsso) return true;
-            return false;
-        });
-
-        if (acceptedEntities.length) await chorusLineRepository.insertMany(acceptedEntities, dropedDb);
+    public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
+        const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
+        let duplicates = 0;
+        if (acceptedEntities.length) {
+            try {
+                await this.insertMany(acceptedEntities);
+            } catch (e) {
+                duplicates = ((e as DuplicateIndexError).duplicates as ChorusLineEntity[]).length;
+            }
+        }
 
         return {
             rejected: entities.length - acceptedEntities.length,
-            created: acceptedEntities.length,
+            created: acceptedEntities.length - duplicates,
+            duplicates,
         };
-    }
-
-    public async switchChorusRepo() {
-        return chorusLineRepository.switchCollection();
-    }
-
-    public async addChorusLine(entity: ChorusLineEntity) {
-        try {
-            this.validateEntity(entity);
-        } catch (error) {
-            return {
-                state: "rejected",
-                result: { message: (error as Error).message, data: entity },
-            };
-        }
-
-        const alreadyExist = await chorusLineRepository.findOneByUniqueId(entity.uniqueId);
-        if (alreadyExist) {
-            return {
-                state: "updated",
-                result: await chorusLineRepository.update(entity),
-            };
-        }
-
-        // Check if siret belongs to an asso
-        if (
-            entity.indexedInformations.codeBranche !== ASSO_BRANCHE &&
-            !(await this.sirenBelongAsso(siretToSiren(entity.indexedInformations.siret)))
-        ) {
-            return {
-                state: "rejected",
-                result: { message: "The Siret does not correspond to an association", data: entity },
-            };
-        }
-
-        try {
-            await chorusLineRepository.create(entity);
-            return {
-                state: "created",
-                result: entity,
-            };
-        } catch (e) {
-            return {
-                state: "rejected",
-                result: { message: "Fail to create ChorusLineEntity", data: entity },
-            };
-        }
     }
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
