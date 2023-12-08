@@ -1,4 +1,4 @@
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
 import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
@@ -19,7 +19,7 @@ export default class ScdlGrantParser {
     }
 
     static parseCsv(chunk: Buffer): ScdlGrantEntity[] {
-        const parsedChunk = ParseHelper.csvParse(chunk, ";");
+        const parsedChunk = ParserHelper.csvParse(chunk, ";");
         const header = parsedChunk.shift();
         if (!header) return [];
 
@@ -27,8 +27,8 @@ export default class ScdlGrantParser {
 
         for (const csvRow of parsedChunk) {
             if (isEmptyRow(csvRow)) continue;
-            const parsedData = ParseHelper.linkHeaderToData(header, csvRow);
-            const storableData = ParseHelper.indexDataByPathObject(
+            const parsedData = ParserHelper.linkHeaderToData(header, csvRow);
+            const storableData = ParserHelper.indexDataByPathObject(
                 SCDL_MAPPER,
                 parsedData,
             ) as unknown as ScdlGrantEntity;
