@@ -68,8 +68,9 @@ describe("ScdlCli", () => {
 
         it("should call ScdlGrantParser.parseCsv()", async () => {
             const EXPORT_DATE = new Date();
-            await cli.parse(FILE_PATH, PRODUCER_ID, EXPORT_DATE);
-            expect(ScdlGrantParser.parseCsv).toHaveBeenLastCalledWith(CSV_CONTENT);
+            const DELIMETER = "%";
+            await cli.parse(FILE_PATH, PRODUCER_ID, EXPORT_DATE, DELIMETER);
+            expect(ScdlGrantParser.parseCsv).toHaveBeenLastCalledWith(CSV_CONTENT, DELIMETER);
         });
 
         it("should call scdlService.createManyGrants()", async () => {

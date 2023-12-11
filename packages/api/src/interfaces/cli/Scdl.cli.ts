@@ -15,7 +15,7 @@ export default class ScdlCli {
         console.log(producerId);
     }
 
-    public async parse(file: string, producerId: string, exportDate?: Date | undefined) {
+    public async parse(file: string, producerId: string, exportDate?: Date | undefined, delimeter = ";") {
         if (!exportDate) throw new ExportDateError();
         exportDate = new Date(exportDate);
         if (!(await scdlService.getProducer(producerId)))
@@ -23,7 +23,7 @@ export default class ScdlCli {
 
         const fileContent = fs.readFileSync(file);
 
-        const grants = ScdlGrantParser.parseCsv(fileContent);
+        const grants = ScdlGrantParser.parseCsv(fileContent, delimeter);
 
         console.log(`start persisting ${grants.length} grants`);
         const entities: MiscScdlGrantEntity[] = grants.map(grant => ({ ...grant, producerId: producerId }));

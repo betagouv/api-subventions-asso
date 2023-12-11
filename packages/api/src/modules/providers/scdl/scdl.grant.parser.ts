@@ -18,8 +18,8 @@ export default class ScdlGrantParser {
         return true;
     }
 
-    static parseCsv(chunk: Buffer): ScdlGrantEntity[] {
-        const parsedChunk = ParserHelper.csvParse(chunk, ";");
+    static parseCsv(chunk: Buffer, delimiter = ";"): ScdlGrantEntity[] {
+        const parsedChunk = ParserHelper.csvParse(chunk, delimiter);
         const header = parsedChunk.shift();
         if (!header) return [];
 
