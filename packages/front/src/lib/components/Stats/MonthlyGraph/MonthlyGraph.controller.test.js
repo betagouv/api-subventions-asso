@@ -30,13 +30,15 @@ describe("MonthlyGraphController", () => {
             expect(ctrl[parameterName]).toEqual(expected);
         });
 
-        it.each`
-            parameterName    | expected
-            ${"year"}        | ${new Date().getFullYear()}
-            ${"dataPromise"} | ${Promise.resolve()}
-        `("initializes correctly $parameterName store", ({ parameterName, expected }) => {
+        it("initializes correctly 'year' store", () => {
+            const expected = new Date().getFullYear();
             const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
-            expect(ctrl[parameterName].value).toEqual(expected);
+            expect(ctrl.year.value).toEqual(expected);
+        });
+
+        it("initializes correctly 'dataPromise' store", async () => {
+            const ctrl = new MonthlyGraphController(LOAD_DATA, TITLE);
+            await expect(ctrl.dataPromise.value).resolves.toBeUndefined();
         });
     });
 

@@ -1,17 +1,20 @@
 import ForgetPwdController from "./ForgetPwd.controller";
 import authService from "$lib/resources/auth/auth.service";
 
-describe("SignupController", () => {
+describe("ForgetPwdController", () => {
     describe("constructor and static values", () => {
         it.each`
             propertyName        | expected
             ${"email"}          | ${""}
-            ${"promise"}        | ${Promise.resolve()}
             ${"firstSubmitted"} | ${false}
         `("initializes correctly $propertyName store", ({ propertyName, expected }) => {
             const ctrl = new ForgetPwdController();
             expect(ctrl[propertyName].value).toEqual(expected);
         });
+    });
+    it("initializes correctly 'promise' store", async () => {
+        const ctrl = new ForgetPwdController();
+        await expect(ctrl.promise.value).resolves.toBeUndefined();
     });
 
     describe("onSubmit", () => {
