@@ -70,12 +70,13 @@ export function findFiles(file: string) {
 }
 
 export function sanitizeCellContent(content: string, delimiter: string) {
-    function replacer(match) {
-        return match.replaceAll('"', "").replaceAll(delimiter, " ").replaceAll(/\s+/g, " ").trim();
+    function replacer(_match, beginSeparator, content, _insideContent, endSeparator) {
+        const sanitizedContent = content.replaceAll('"', "").replaceAll(delimiter, " ").replaceAll(/\s+/g, " ").trim();
+        return `${beginSeparator}${sanitizedContent}${endSeparator}`;
     }
     // match three time quoted string that is presumably used to display real quote cell content
     // match single quoted string that is presumably used to display delimiter (";" or ",") in cell content
-    const matchs = content.replace(/"{1,3}([^"]+?)"{1,3}/g, replacer);
+    const matchs = content.replace(/([;\n])("{1,3}(.+?)"{1,3})([;\n])/g, replacer);
     return matchs;
 }
 

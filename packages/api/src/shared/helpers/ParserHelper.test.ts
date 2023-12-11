@@ -20,6 +20,15 @@ describe("ParserHelper", () => {
             );
             expect(actual).toEqual(expected);
         });
+
+        it("test regexp", () => {
+            const expected = `REGION CENTRE VAL DE LOIRE;23450002300028;2019-05-04;19042443;LE CERCLE JEAN ZAY;82075452100012;le Festival Cannes 1939 à Orléans 2019, en 2019;27000;Numéraire;Echelonne;2019-04-05 / 2019-12-31;;;1`;
+            const actual = ParserHelper.sanitizeCellContent(
+                `REGION CENTRE VAL DE LOIRE;23450002300028;2019-05-04;19042443;LE CERCLE JEAN ZAY;82075452100012;"le ""Festival Cannes 1939 à Orléans 2019, en 2019";27000;Numéraire;Echelonne;2019-04-05 / 2019-12-31;;;1`,
+                ";",
+            );
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("parseCsv()", () => {
