@@ -66,7 +66,6 @@ export class UserRepository extends MongoRepository<UserDbo> {
         try {
             result = await this.collection.insertOne(userDbo);
         } catch (error) {
-            // TODO refactor with Maxime's helper
             if (error instanceof MongoServerError && isDuplicateError(error))
                 throw new DuplicateIndexError<UserDbo>(`user '${user.email} already exists`, userDbo);
             throw error;
