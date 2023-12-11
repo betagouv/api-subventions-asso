@@ -34,6 +34,7 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 jest.mock("../../../../shared/helpers/RepositoryHelper");
 
 describe("user crud service", () => {
@@ -218,7 +219,12 @@ describe("user crud service", () => {
             expect(mockedUserConsumerService.createConsumer).toHaveBeenCalled();
         });
 
-        it("should create a user", async () => {});
+        it("should create a user", async () => {
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            await userCrudService.signup({ email: USER_EMAIL });
+            expect(mockCreateUser).toHaveBeenCalled();
+        });
 
         it("should create a reset token", async () => {
             mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
@@ -243,6 +249,21 @@ describe("user crud service", () => {
             mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userCrudService.signup({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
+        });
+
+        it("notifies if user already exists USER_CONFLICT", async () => {
+            mockCreateUser.mockRejectedValueOnce(new DuplicateIndexError("", USER_EMAIL));
+            const test = () => userCrudService.signup({ email: USER_EMAIL });
+            await expect(test).rejects.toThrowErrorMatchingInlineSnapshot(`"An error has occurred"`);
+        });
+
+        it("generalizes error if user already exists", async () => {
+            mockCreateUser.mockRejectedValueOnce(new DuplicateIndexError("", USER_EMAIL));
+            await userCrudService.signup({ email: USER_EMAIL }).catch(() => {});
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(
+                NotificationType.USER_CONFLICT,
+                expect.objectContaining({ email: USER_EMAIL }),
+            );
         });
     });
 

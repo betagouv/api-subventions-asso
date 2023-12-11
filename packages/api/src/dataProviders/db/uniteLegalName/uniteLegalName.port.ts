@@ -52,7 +52,8 @@ export class UniteLegalNamePort extends MongoRepository<UniteLegalNameDbo> {
     insert(entity: UniteLegalNameEntity) {
         // Use stack because, sometimes to upsert on same entity as executed at the same time, please read : https://jira.mongodb.org/browse/SERVER-14322
         return this.insertSirenStack.addOperation(UniteLegalNameAdapter.toDbo(entity)).catch(error => {
-            if (error instanceof MongoServerError && isDuplicateError(error)) throw buildDuplicateIndexError(error);
+            if (error instanceof MongoServerError && isDuplicateError(error))
+                throw buildDuplicateIndexError<UniteLegalNameDbo>(error);
             return error;
         });
     }

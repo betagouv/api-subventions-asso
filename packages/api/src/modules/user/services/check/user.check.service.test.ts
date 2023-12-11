@@ -101,19 +101,9 @@ describe("user check service", () => {
             mockedStringHelper.sanitizeToPlainText.mockRestore();
         });
 
-        it("look for user with this email if newUser", async () => {
-            await userCheckService.validateSanitizeUser({ email: USER_EMAIL }, true);
-            expect(mockedUserRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
-        });
-
-        it("does not look for user with this email if not newUser", async () => {
-            await userCheckService.validateSanitizeUser({ email: USER_EMAIL }, false);
-            expect(mockedUserRepository.findByEmail).not.toHaveBeenCalled();
-        });
-
         it("validates roles", async () => {
             const roles = ["ratata", "tralala"];
-            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, roles }, false);
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, roles });
             expect(mockedUserRolesService.validRoles).toHaveBeenCalledWith(roles);
         });
 

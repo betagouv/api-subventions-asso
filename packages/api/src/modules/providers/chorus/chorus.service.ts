@@ -61,7 +61,7 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
             try {
                 await this.insertMany(acceptedEntities);
             } catch (e) {
-                duplicates = ((e as DuplicateIndexError).duplicates as ChorusLineEntity[]).length;
+                duplicates = ((e as DuplicateIndexError<ChorusLineEntity[]>).duplicates as ChorusLineEntity[]).length;
             }
         }
 

@@ -1,8 +1,10 @@
 import { UserDto } from "dto";
-import { Filter, ObjectId } from "mongodb";
+import { Filter, InsertOneResult, MongoServerError, ObjectId } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
+import { isDuplicateError } from "../../../shared/helpers/MongoHelper";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository extends MongoRepository<UserDbo> {
@@ -58,8 +60,17 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 
     async create(user: UserNotPersisted): Promise<UserDto> {
-        const userDbo = { ...user, _id: new ObjectId() };
-        const result = await this.collection.insertOne(userDbo);
+        const userDbo: UserDbo = { ...user, _id: new ObjectId() };
+        let result: InsertOneResult<UserDbo>;
+
+        try {
+            result = await this.collection.insertOne(userDbo);
+        } catch (error) {
+            if (error instanceof MongoServerError && isDuplicateError(error))
+                throw new DuplicateIndexError<UserDbo>(`user '${user.email} already exists`, userDbo);
+            throw error;
+        }
+
         return removeSecrets({ ...user, _id: result.insertedId });
     }
 
@@ -78,7 +89,7 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ email: 1 });
+        await this.collection.createIndex({ email: 1 }, { unique: true });
     }
 }
 

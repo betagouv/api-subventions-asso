@@ -33,7 +33,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     public async insertMany(entities: ChorusLineEntity[]) {
         return this.collection.insertMany(entities, { ordered: false }).catch(error => {
             if (error instanceof MongoServerError && isDuplicateError(error)) {
-                throw buildDuplicateIndexError(error);
+                throw buildDuplicateIndexError<ChorusLineEntity[]>(error);
             }
         });
     }

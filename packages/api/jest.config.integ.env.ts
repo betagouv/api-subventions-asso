@@ -12,6 +12,7 @@ import { existsSync, mkdirSync } from "fs";
 import { Server } from "http";
 
 import db, { connectDB, client } from "./src/shared/MongoConnection";
+import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
 import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
@@ -34,6 +35,7 @@ beforeAll(async () => {
 
     if (g.app) return;
     g.app = await startServer("1234", true);
+    await initIndexes()
 });
 
 beforeEach(async () => await addBetaGouvEmailDomain());
@@ -43,7 +45,7 @@ afterEach(async () => {
     const collections = await db.listCollections().toArray();
     await collections.reduce(async (acc, collection) => {
         await acc;
-        await db.collection(collection.name).drop();
+        await db.collection(collection.name).deleteMany({});
 
         return Promise.resolve();
     }, Promise.resolve() as Promise<void>);

@@ -1,21 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UserController, /user DELETE should anonymize user 1`] = `
-Object {
-  "_id": Any<ObjectId>,
-  "active": false,
-  "disable": true,
-  "email": "",
-  "firstName": "",
-  "lastName": "",
-  "profileToComplete": true,
-  "roles": Array [
-    "user",
-  ],
-  "signupAt": Any<Date>,
-}
-`;
-
 exports[`UserController, /user GET /admin/list-users should return UserRequestsSuccessResponse 1`] = `
 Object {
   "_id": Any<String>,

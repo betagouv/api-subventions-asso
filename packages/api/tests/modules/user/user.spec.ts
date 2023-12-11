@@ -204,7 +204,57 @@ describe("UserController, /user", () => {
                 .expect(204);
 
             const user = await userRepository.findById(userId?.toString() as string);
-            expect(user).toMatchSnapshot({ signupAt: expect.any(Date), _id: expect.any(ObjectId) });
+            expect(user).toMatchObject({
+                signupAt: expect.any(Date),
+                _id: expect.any(ObjectId),
+                email: `${userId}@deleted.datasubvention.beta.gouv.fr`,
+
+                active: false,
+                disable: true,
+                firstName: "",
+                lastName: "",
+                profileToComplete: true,
+                roles: ["user"],
+            });
+        });
+    });
+
+    describe("/auth/signup", () => {
+        it("prevents creating duplicate accounts - one at the time", async () => {
+            const res1 = await request(g.app)
+                .post("/auth/signup")
+                .send({
+                    email: "test.duplicate@beta.gouv.fr",
+                })
+                .set("Accept", "application/json");
+
+            const res2 = await request(g.app)
+                .post("/auth/signup")
+                .send({
+                    email: "test.duplicate@beta.gouv.fr",
+                })
+                .set("Accept", "application/json");
+
+            expect([res1.statusCode, res2.statusCode]).toContain(500);
+        });
+        it("prevents creating duplicate - fast requests", async () => {
+            const promise1 = request(g.app)
+                .post("/auth/signup")
+                .send({
+                    email: "test.duplicate@beta.gouv.fr",
+                })
+                .set("Accept", "application/json");
+
+            const promise2 = request(g.app)
+                .post("/auth/signup")
+                .send({
+                    email: "test.duplicate@beta.gouv.fr",
+                })
+                .set("Accept", "application/json");
+
+            const responses = await Promise.all([promise1, promise2]);
+
+            expect(responses.map(r => r.statusCode)).toContain(500);
         });
     });
 });
