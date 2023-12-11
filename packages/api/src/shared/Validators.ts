@@ -40,15 +40,15 @@ export function isEJ(ej: string) {
 
 // Generique
 
-export function isDates(dates: unknown[]) {
+export function areDates(dates: unknown[]) {
     return dates.every(date => date instanceof Date);
 }
 
-export function isStringsValid(strings: unknown[]) {
+export function areStringsValid(strings: unknown[]) {
     return strings.every(s => typeof s === "string" && s.length != 0);
 }
 
-export function isNumbersValid(numbers: unknown[]) {
+export function areNumbersValid(numbers: unknown[]) {
     return numbers.every(isNumberValid);
 }
 

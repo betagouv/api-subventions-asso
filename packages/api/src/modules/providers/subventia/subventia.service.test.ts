@@ -69,7 +69,7 @@ describe("SubventiaService", () => {
         it("should be reject because string is not valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isAssociationName").mockImplementationOnce(() => true);
-            jest.spyOn(Validators, "isStringsValid").mockImplementationOnce(() => false);
+            jest.spyOn(Validators, "areStringsValid").mockImplementationOnce(() => false);
 
             const expected = {
                 message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
@@ -85,8 +85,8 @@ describe("SubventiaService", () => {
         it("should be reject because number is not valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isAssociationName").mockImplementationOnce(() => true);
-            jest.spyOn(Validators, "isStringsValid").mockImplementationOnce(() => true);
-            jest.spyOn(Validators, "isNumbersValid").mockImplementationOnce(() => false);
+            jest.spyOn(Validators, "areStringsValid").mockImplementationOnce(() => true);
+            jest.spyOn(Validators, "areNumbersValid").mockImplementationOnce(() => false);
 
             const expected = {
                 message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
@@ -102,8 +102,8 @@ describe("SubventiaService", () => {
         it("should be valid", () => {
             jest.spyOn(Validators, "isSiret").mockImplementationOnce(() => true);
             jest.spyOn(Validators, "isAssociationName").mockImplementationOnce(() => true);
-            jest.spyOn(Validators, "isStringsValid").mockImplementationOnce(() => true);
-            jest.spyOn(Validators, "isNumbersValid").mockImplementationOnce(() => true);
+            jest.spyOn(Validators, "areStringsValid").mockImplementationOnce(() => true);
+            jest.spyOn(Validators, "areNumbersValid").mockImplementationOnce(() => true);
 
             const actual = subventiaService.validateEntity(entity);
 
