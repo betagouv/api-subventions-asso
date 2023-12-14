@@ -1,6 +1,6 @@
 import path from "path";
 import { ObjectId } from "mongodb";
-import ScdlCliController from "../../../src/interfaces/cli/ScdlInterfaceCli";
+import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
 import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
 import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
@@ -14,7 +14,7 @@ describe("SCDL CLI", () => {
     let cli;
 
     beforeEach(() => {
-        cli = new ScdlCliController();
+        cli = new ScdlCli();
     });
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {

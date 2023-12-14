@@ -1,11 +1,11 @@
 import path from "path";
 import IOsirisRequestInformations from "../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
 import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
-import OsirisCliController from "../../../src/interfaces/cli/OsirisInterfaceCli";
+import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
 import osirisService from "../../../src/modules/providers/osiris/osiris.service";
 
-describe("OsirisCliController", () => {
+describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
     beforeAll(() => {
         spys.push(jest.spyOn(OsirisParser, "parseRequests"), jest.spyOn(OsirisParser, "parseActions"));
@@ -16,10 +16,10 @@ describe("OsirisCliController", () => {
     });
 
     describe("parse cli requests", () => {
-        let controller: OsirisCliController;
+        let controller: OsirisCli;
 
         beforeEach(() => {
-            controller = new OsirisCliController();
+            controller = new OsirisCli();
         });
 
         it("should call osiris parser", async () => {
@@ -43,11 +43,11 @@ describe("OsirisCliController", () => {
     });
 
     describe("parse cli actions", () => {
-        let controller: OsirisCliController;
+        let controller: OsirisCli;
         let consoleWarn: jest.SpyInstance;
 
         beforeEach(() => {
-            controller = new OsirisCliController();
+            controller = new OsirisCli();
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
         });
@@ -82,10 +82,10 @@ describe("OsirisCliController", () => {
     });
 
     describe("parse cli unknown", () => {
-        let controller: OsirisCliController;
+        let controller: OsirisCli;
 
         beforeEach(() => {
-            controller = new OsirisCliController();
+            controller = new OsirisCli();
         });
 
         it("should throw an error because unknown is not valid type", () => {
@@ -101,10 +101,10 @@ describe("OsirisCliController", () => {
     });
 
     describe("findByRna cli ", () => {
-        let controller: OsirisCliController;
+        let controller: OsirisCli;
 
         beforeEach(async () => {
-            controller = new OsirisCliController();
+            controller = new OsirisCli();
 
             const entity = new OsirisRequestEntity(
                 { siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME" },
@@ -147,10 +147,10 @@ describe("OsirisCliController", () => {
     });
 
     describe("findBySiret cli ", () => {
-        let controller: OsirisCliController;
+        let controller: OsirisCli;
 
         beforeEach(async () => {
-            controller = new OsirisCliController();
+            controller = new OsirisCli();
 
             const entity = new OsirisRequestEntity(
                 { siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME" },

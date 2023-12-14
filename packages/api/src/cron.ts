@@ -1,18 +1,18 @@
 import { ToadScheduler } from "toad-scheduler";
 import { CronController } from "./@types/cron";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- test purposes
-import { ExampleInterfaceCron } from "./interfaces/cron/_ExampleInterfaceCron";
-import { DemarchesSimplifieesInterfaceCron } from "./interfaces/cron/DemarchesSimplifieesInterfaceCron";
-import { DauphinInterfaceCron } from "./interfaces/cron/DauphinInterfaceCron";
-import { DumpInterfaceCron } from "./interfaces/cron/DumpInterfaceCron";
-import { HistoryUniteLegalInterfaceCron } from "./interfaces/cron/HistoryUniteLegalInterfaceCron";
+import { ExampleCron } from "./interfaces/cron/_Example.cron";
+import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees.cron";
+import { DauphinCron } from "./interfaces/cron/Dauphin.cron";
+import { DumpCron } from "./interfaces/cron/Dump.cron";
+import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
 
 const controllers: CronController[] = [
-    // ExampleInterfaceCron,
-    DemarchesSimplifieesInterfaceCron,
-    DauphinInterfaceCron,
-    DumpInterfaceCron,
-    HistoryUniteLegalInterfaceCron,
+    // ExampleCron,
+    DemarchesSimplifieesCron,
+    DauphinCron,
+    DumpCron,
+    HistoryUniteLegalCron,
 ];
 
 export const scheduler = new ToadScheduler();

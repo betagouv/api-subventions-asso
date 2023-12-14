@@ -1,10 +1,10 @@
 import statsService from "../../modules/stats/stats.service";
-import { StatsInterfaceHttp } from "./StatsInterfaceHttp";
+import { StatsHttp } from "./Stats.http";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 
-const controller = new StatsInterfaceHttp();
+const controller = new StatsHttp();
 
-describe("StatsInterfaceHttp", () => {
+describe("StatsHttp", () => {
     const mockGetUserCountByStatus = jest.spyOn(statsService, "getUserCountByStatus").mockImplementation(jest.fn());
 
     describe("getRequestsPerMonthByYear", () => {

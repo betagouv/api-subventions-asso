@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser";
-import FonjepCliController from "../../../../src/interfaces/cli/FonjepInterfaceCli";
+import FonjepCli from "../../../../src/interfaces/cli/Fonjep.cli";
 import db from "../../../../src/shared/MongoConnection";
 import fonjepVersementRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.versement.repository";
 import fonjepSubventionRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
@@ -26,7 +26,7 @@ describe("FonjepCli", () => {
     });
     describe("parse()", () => {
         it("should remove temporary collections", async () => {
-            const controller = new FonjepCliController();
+            const controller = new FonjepCli();
             await controller.parse(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"), EXPORT_DATE);
             const collections = await db.listCollections().toArray();
             const actual = collections.find(col =>
@@ -36,14 +36,14 @@ describe("FonjepCli", () => {
         });
 
         it("should create versements", async () => {
-            const controller = new FonjepCliController();
+            const controller = new FonjepCli();
             await controller.parse(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"), EXPORT_DATE);
             const actual = await db.collection("fonjepVersement").countDocuments();
             expect(actual).toMatchSnapshot();
         });
 
         it("should create subventions", async () => {
-            const controller = new FonjepCliController();
+            const controller = new FonjepCli();
             await controller.parse(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"), EXPORT_DATE);
             const actual = await db.collection("fonjepSubvention").countDocuments();
             expect(actual).toMatchSnapshot();

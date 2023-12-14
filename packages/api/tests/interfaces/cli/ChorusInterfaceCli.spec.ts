@@ -1,13 +1,13 @@
-import ChorusCliController from "../../../src/interfaces/cli/ChorusInterfaceCli";
+import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 
-describe("ChorusCliController", () => {
+describe("ChorusCli", () => {
     describe("parse cli requests", () => {
-        let controller: ChorusCliController;
+        let controller: ChorusCli;
 
         beforeEach(() => {
-            controller = new ChorusCliController();
+            controller = new ChorusCli();
         });
 
         it("should save entities", async () => {

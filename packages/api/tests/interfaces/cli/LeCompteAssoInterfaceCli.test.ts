@@ -1,10 +1,10 @@
 import path from "path";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import LeCompteAssoCliController from "../../../src/interfaces/cli/LeCompteAssoInterfaceCli";
+import LeCompteAssoCli from "../../../src/interfaces/cli/LeCompteAsso.cli";
 import ProviderValueAdapter from "../../../src/shared/adapters/ProviderValueAdapter";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 
-describe("LeCompteAssoCliController", () => {
+describe("LeCompteAssoCli", () => {
     const testWrongFilePath = path.resolve(
         __dirname,
         "../../modules/providers/leCompteAsso/__fixtures__/le-compte-asso-export-tests.csv",
@@ -13,10 +13,10 @@ describe("LeCompteAssoCliController", () => {
         __dirname,
         "../../modules/providers/leCompteAsso/__fixtures__/le-compte-asso-export-tests-with-good-siret.csv",
     );
-    let controller: LeCompteAssoCliController;
+    let controller: LeCompteAssoCli;
 
     beforeEach(() => {
-        controller = new LeCompteAssoCliController();
+        controller = new LeCompteAssoCli();
     });
 
     describe("validate", () => {

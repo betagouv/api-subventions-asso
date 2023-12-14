@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConsumerCliController create should create a consumer token with user info 1`] = `
+exports[`ConsumerCli create should create a consumer token with user info 1`] = `
 Object {
   "_id": Any<String>,
   "active": false,
@@ -19,7 +19,7 @@ Object {
 }
 `;
 
-exports[`ConsumerCliController create should create a user 1`] = `
+exports[`ConsumerCli create should create a user 1`] = `
 Object {
   "_id": Any<ObjectId>,
   "active": false,

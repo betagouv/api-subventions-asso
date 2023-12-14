@@ -1,13 +1,13 @@
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../../src/configurations/jwt.conf";
-import ConsumerCliController from "../../../src/interfaces/cli/ConsumerInterfaceCli";
+import ConsumerCli from "../../../src/interfaces/cli/Consumer.cli";
 import consumerTokenRepository from "../../../src/modules/user/repositories/consumer-token.repository";
 import userRepository from "../../../src/modules/user/repositories/user.repository";
 import { UserDto } from "dto";
 
-describe("ConsumerCliController", () => {
-    const cli = new ConsumerCliController();
+describe("ConsumerCli", () => {
+    const cli = new ConsumerCli();
     const EMAIL = "test@beta.gouv.fr";
     describe("create", () => {
         it("should create a user", async () => {

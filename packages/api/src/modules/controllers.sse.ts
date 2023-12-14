@@ -1,4 +1,4 @@
-import { AssociationInterfaceSse } from "../interfaces/sse/AssociationInterfaceSse";
-import { EtablissementInterfaceSse } from "../interfaces/sse/EtablissementInterfaceSse";
+import { AssociationSse } from "../interfaces/sse/Association.sse";
+import { EtablissementSse } from "../interfaces/sse/Etablissement.sse";
 
-export default [AssociationInterfaceSse, EtablissementInterfaceSse];
+export default [AssociationSse, EtablissementSse];
