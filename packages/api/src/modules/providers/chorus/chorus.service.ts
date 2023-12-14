@@ -73,11 +73,11 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
     }
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
-        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
-        if (await rnaSirenService.find(siren)) return true;
-
         const chorusLine = await chorusLineRepository.findOneBySiren(siren);
         if (chorusLine) return true;
+
+        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
+        if (await rnaSirenService.find(siren)) return true;
 
         return false;
     }

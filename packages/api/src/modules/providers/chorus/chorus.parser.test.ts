@@ -8,6 +8,7 @@ import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixtures__/ChorusF
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 jest.mock("./entities/ChorusLineEntity");
 import * as StringHelper from "../../../shared/helpers/StringHelper";
+import { DefaultObject } from "../../../@types";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 
@@ -20,7 +21,7 @@ describe("ChorusParser", () => {
             expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
                 `${info.ej}-${info.siret}-${info.dateOperation.toISOString()}-${info.amount}-${
                     info.numeroDemandePayment
-                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}`,
+                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}-${info.codeActivitee}`,
             );
         });
     });
@@ -100,7 +101,7 @@ describe("ChorusParser", () => {
         const ROWS = [...PAGES];
 
         beforeAll(() => {
-            mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data);
+            mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<unknown>);
             // @ts-expect-error: mock
             mockedParserHelper.indexDataByPathObject.mockReturnValue(ENTITIES[0].indexedInformations);
             // @ts-expect-error: protected
