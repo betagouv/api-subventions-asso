@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import xlsx from "node-xlsx";
+import csvSyncParser = require("csv-parse/sync");
 
 import { ParserInfo, ParserPath, DefaultObject } from "../../@types";
 
@@ -69,25 +70,13 @@ export function findFiles(file: string) {
     return files;
 }
 
-export function sanitizeCellContent(content: string, delimiter: string) {
-    function replacer(_match, beginSeparator, content, _insideContent, endSeparator) {
-        const sanitizedContent = content.replaceAll('"', "").replaceAll(delimiter, " ").replaceAll(/\s+/g, " ").trim();
-        return `${beginSeparator}${sanitizedContent}${endSeparator}`;
-    }
-    // match three time quoted string that is presumably used to display real quote cell content
-    // match single quoted string that is presumably used to display delimiter (";" or ",") in cell content
-    const matchs = content.replace(/([;\n])("{1,3}(.+?)"{1,3})([;\n])/g, replacer);
-    return matchs;
-}
-
-export function csvParse(content: Buffer, delimiter = ";,") {
-    const sanitizedContent = sanitizeCellContent(content.toString(), delimiter);
-    const CSV_DELIMITER = new RegExp(`[\t${delimiter}]`);
-    // return sanitizedContent
-    return content
-        .toString()
-        .split("\n") // Select line by line
-        .map(raw => raw.split(CSV_DELIMITER).flat()); // Parse column
+export function csvParse(content: Buffer, delimiter = ";,"): string[][] {
+    return csvSyncParser.parse(content, {
+        columns: false,
+        skip_empty_lines: true,
+        delimiter: Array.from(delimiter),
+        relax_column_count: true,
+    });
 }
 
 export function xlsParse(content: Buffer) {

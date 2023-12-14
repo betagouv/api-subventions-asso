@@ -1,17 +1,19 @@
-import path from "path";
-import fs from "fs";
 import ScdlGrantParser from "./scdl.grant.parser";
 import MiscScdlGrant from "./__fixtures__/MiscScdlGrant";
 import * as Validators from "../../../shared/Validators";
+import csvSyncParser = require("csv-parse/sync");
+
 jest.mock("../../../shared/Validators");
 const mockedValidators = jest.mocked(Validators);
 import * as DateHelper from "../../../shared/helpers/DateHelper";
 jest.mock("../../../shared/helpers/DateHelper");
 const mockedDateHelper = jest.mocked(DateHelper);
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-import { SCDL_HEADERS, SCDL_ROWS } from "./__fixtures__/RawData";
+import { SCDL_STORABLE } from "./__fixtures__/RawData";
 jest.mock("../../../shared/helpers/ParserHelper");
 const mockedParserHelper = jest.mocked(ParserHelper);
+jest.mock("csv-parse/sync");
+const mockedCsvLib = jest.mocked(csvSyncParser);
 
 describe("ScdlGrantParser", () => {
     describe("parseCsv", () => {
@@ -21,7 +23,7 @@ describe("ScdlGrantParser", () => {
         const originalIsGrantValid = ScdlGrantParser.isGrantValid;
 
         beforeEach(() => {
-            mockedParserHelper.csvParse.mockReturnValue([SCDL_HEADERS, ...SCDL_ROWS]);
+            mockedCsvLib.parse.mockReturnValue(SCDL_STORABLE);
             // @ts-expect-error: mock protected static method
             ScdlGrantParser.isGrantValid = mockIsGrantValid.mockReturnValue(true);
         });
@@ -29,25 +31,21 @@ describe("ScdlGrantParser", () => {
         // @ts-expect-error: unmock protected static method
         afterAll(() => (ScdlGrantParser.isGrantValid = originalIsGrantValid));
 
-        it("should call ParserHelper.csvParse", () => {
+        it("should call csv lib parse", () => {
             ScdlGrantParser.parseCsv(BUFFER);
-            expect(mockedParserHelper.csvParse).toHaveBeenCalledWith(BUFFER, ";");
-        });
-
-        it("should link and index data for each rows", () => {
-            ScdlGrantParser.parseCsv(BUFFER);
-            expect(mockedParserHelper.linkHeaderToData).toHaveBeenCalledTimes(SCDL_ROWS.length);
-            expect(mockedParserHelper.indexDataByPathObject).toHaveBeenCalledTimes(SCDL_ROWS.length);
+            expect(mockedCsvLib.parse).toHaveBeenCalledWith(BUFFER, {
+                columns: true,
+                delimiter: ";",
+                skip_empty_lines: true,
+                trim: true,
+            });
         });
 
         it("should return storableChunk", () => {
             // @ts-expect-error: mock
-            mockedParserHelper.linkHeaderToData.mockImplementation((header, row) => row);
-            // @ts-expect-error: mock
             mockedParserHelper.indexDataByPathObject.mockImplementation((mapper, row) => row);
-            const expected = SCDL_ROWS;
             const actual = ScdlGrantParser.parseCsv(BUFFER);
-            expect(actual).toEqual(expected);
+            expect(actual).toMatchSnapshot();
         });
     });
 

@@ -1,5 +1,5 @@
+import csvSyncParser = require("csv-parse/sync");
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-import { isEmptyRow } from "../../../shared/helpers/ParserHelper";
 import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { SCDL_MAPPER } from "./scdl.mapper";
@@ -19,15 +19,16 @@ export default class ScdlGrantParser {
     }
 
     static parseCsv(chunk: Buffer, delimiter = ";"): ScdlGrantEntity[] {
-        const parsedChunk = ParserHelper.csvParse(chunk, delimiter);
-        const header = parsedChunk.shift();
-        if (!header) return [];
+        const parsedChunk = csvSyncParser.parse(chunk, {
+            columns: true,
+            skip_empty_lines: true,
+            delimiter,
+            trim: true,
+        });
 
         const storableChunk: ScdlGrantEntity[] = [];
 
-        for (const csvRow of parsedChunk) {
-            if (isEmptyRow(csvRow)) continue;
-            const parsedData = ParserHelper.linkHeaderToData(header, csvRow);
+        for (const parsedData of parsedChunk) {
             const storableData = ParserHelper.indexDataByPathObject(
                 SCDL_MAPPER,
                 parsedData,
