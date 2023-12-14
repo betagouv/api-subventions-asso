@@ -76,5 +76,5 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
         ],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    aidSystem: [...getMapperVariants("aidSystem")],
+    aidSystem: [[...getMapperVariants("aidSystem")]],
 };
