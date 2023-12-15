@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConsumerCli create should create a consumer token with user info 1`] = `
+Object {
+  "_id": Any<String>,
+  "active": false,
+  "email": "test@beta.gouv.fr",
+  "firstName": null,
+  "iat": Any<Number>,
+  "isConsumerToken": true,
+  "lastName": null,
+  "now": Any<String>,
+  "profileToComplete": true,
+  "roles": Array [
+    "user",
+    "consumer",
+  ],
+  "signupAt": Any<String>,
+}
+`;
+
+exports[`ConsumerCli create should create a user 1`] = `
+Object {
+  "_id": Any<ObjectId>,
+  "active": false,
+  "email": "test@beta.gouv.fr",
+  "firstName": null,
+  "lastName": null,
+  "profileToComplete": true,
+  "roles": Array [
+    "user",
+    "consumer",
+  ],
+  "signupAt": Any<Date>,
+}
+`;

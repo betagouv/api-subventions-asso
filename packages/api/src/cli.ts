@@ -2,25 +2,25 @@ import "reflect-metadata";
 import { mkdirSync, existsSync } from "fs";
 import "./configurations/env.conf";
 
-import LeCompteAssoCliController from "./modules/providers/leCompteAsso/interfaces/cli/leCompteAsso.cli.contoller";
-import FonjepCliController from "./modules/providers/fonjep/interfaces/cli/fonjep.cli.controller";
-import ChorusCliController from "./modules/providers/chorus/interfaces/cli/chorus.cli.controller";
-import OsirisCliController from "./modules/providers/osiris/interfaces/cli/osiris.cli.contoller";
-import UserCliController from "./modules/user/interfaces/cli/user.cli.controller";
-import ConsumerCliController from "./modules/user/interfaces/cli/consumer.cli.controller";
+import LeCompteAssoCli from "./interfaces/cli/LeCompteAsso.cli";
+import FonjepCli from "./interfaces/cli/Fonjep.cli";
+import ChorusCli from "./interfaces/cli/Chorus.cli";
+import OsirisCli from "./interfaces/cli/Osiris.cli";
+import UserCli from "./interfaces/cli/User.cli";
+import ConsumerCli from "./interfaces/cli/Consumer.cli";
 import { connectDB } from "./shared/MongoConnection";
 
 import { CliStaticInterface } from "./@types";
 
-import SubventiaCliController from "./modules/providers/subventia/interfaces/subventia.cli.controller";
-import DemarchesSimplifieesCliController from "./modules/providers/demarchesSimplifiees/interfaces/cli/demarchesSimplifiees.cli.controller";
-import CaisseDepotsCliController from "./modules/providers/caisseDepots/caisseDepots.cli.controller";
-import GisproCliController from "./modules/providers/gispro/interfaces/cli/gispro.cli.controller";
-import DauphinCliController from "./modules/providers/dauphin/interfaces/cli/dauphin.cli.controller";
-import AdminStructureCliController from "./modules/admin-structure/interfaces/cli/adminStructureCliController";
-import DumpCliController from "./modules/dump/interfaces/cli/DumpCliController";
-import ScdlCliController from "./modules/providers/scdl/interfaces/cli/scdl.cli";
-import HistoryUniteLegalInterfaceCli from "./interfaces/cli/HistoryUniteLegalInterfaceCli";
+import SubventiaCli from "./interfaces/cli/Subventia.cli";
+import DemarchesSimplifieesCli from "./interfaces/cli/DemarchesSimplifiees.cli";
+import CaisseDepotsCli from "./interfaces/cli/CaisseDepots.cli";
+import GisproCli from "./interfaces/cli/Gispro.cli";
+import DauphinCli from "./interfaces/cli/Dauphin.cli";
+import AdminStructureCli from "./interfaces/cli/AdminStructure.cli";
+import DumpCli from "./interfaces/cli/Dump.cli";
+import ScdlCli from "./interfaces/cli/Scdl.cli";
+import HistoryUniteLegalCli from "./interfaces/cli/HistoryUniteLegal.cli";
 
 async function main() {
     await connectDB();
@@ -30,21 +30,21 @@ async function main() {
     }
 
     const controllers: CliStaticInterface[] = [
-        OsirisCliController,
-        LeCompteAssoCliController,
-        UserCliController,
-        ChorusCliController,
-        FonjepCliController,
-        SubventiaCliController,
-        ConsumerCliController,
-        DemarchesSimplifieesCliController,
-        CaisseDepotsCliController,
-        GisproCliController,
-        DauphinCliController,
-        AdminStructureCliController,
-        DumpCliController,
-        ScdlCliController,
-        HistoryUniteLegalInterfaceCli,
+        OsirisCli,
+        LeCompteAssoCli,
+        UserCli,
+        ChorusCli,
+        FonjepCli,
+        SubventiaCli,
+        ConsumerCli,
+        DemarchesSimplifieesCli,
+        CaisseDepotsCli,
+        GisproCli,
+        DauphinCli,
+        AdminStructureCli,
+        DumpCli,
+        ScdlCli,
+        HistoryUniteLegalCli,
     ];
 
     const args = process.argv.slice(2);
