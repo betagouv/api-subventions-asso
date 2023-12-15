@@ -18,7 +18,7 @@ describe("leCompteAsso.parser", () => {
                 "Etat du dossier CRF": "Non débuté",
                 "Exercice de début": "2021",
                 "Exercice de fin": "2021",
-                "Identifiant technique": '"""00aa00aa000aaa00aaa000aaa00a"""',
+                "Identifiant technique": '"00aa00aa000aaa00aaa000aaa00a"',
                 "Nom association": "Lorem ipsum dolor sit",
                 "Nom du dispositif": "AAAA",
                 "Nom du sous-dispositif": "Lorem ipsum dolor sit",

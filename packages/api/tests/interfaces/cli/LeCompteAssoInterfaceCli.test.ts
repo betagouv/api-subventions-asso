@@ -20,13 +20,13 @@ describe("LeCompteAssoCli", () => {
     });
 
     describe("validate", () => {
-        it("should reject beause not var send", async () => {
+        it("should reject because no var sent", async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             await expect(controller.validate).rejects.toThrow("Validate command need file args");
         });
 
-        it("should reject beause file not exist", async () => {
+        it("should reject because file not exist", async () => {
             await expect(controller.validate("FAKE_FILE")).rejects.toThrow("File not found FAKE_FILE");
         });
 
@@ -66,7 +66,7 @@ describe("LeCompteAssoCli", () => {
             errorLog.mockClear();
         });
 
-        it("should be works, and show logs", async () => {
+        it("should work, and show logs", async () => {
             const info = jest.spyOn(console, "info").mockImplementation();
 
             await controller.validate(testFilePath);
@@ -94,13 +94,13 @@ describe("LeCompteAssoCli", () => {
             rnaSrienMock.mockReset();
         });
 
-        it("should reject beause not var send", async () => {
+        it("should reject because no var sent", async () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             await expect(controller.parse).rejects.toThrow("Parse command need file args");
         });
 
-        it("should reject beause file not exist", async () => {
+        it("should reject because file not exist", async () => {
             await expect(controller.parse("FAKE_FILE")).rejects.toThrow("File not found FAKE_FILE");
         });
 
@@ -135,9 +135,7 @@ Start register in database ...`,
                 ],
                 ["\nStart parse file: ", testWrongFilePath],
                 ["1 entities found in file."],
-                [
-                    "Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE",
-                ],
+                ["Please use command validator for more information eg. npm run cli leCompteAsso validator YOUR_FILE"],
             ]);
             expect(errorLog).toHaveBeenCalledWith(
                 expect.stringMatching("An error occurred while parsing the file " + testWrongFilePath),
@@ -146,7 +144,7 @@ Start register in database ...`,
             errorLog.mockClear();
         });
 
-        it("should be works, and show logs", async () => {
+        it("should work, and show logs", async () => {
             const info = jest.spyOn(console, "info").mockImplementation();
 
             mock.mockImplementation(() =>
