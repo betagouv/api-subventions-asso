@@ -13,6 +13,7 @@ describe("ParserHelper", () => {
     describe("parseCsv()", () => {
         const CSV = dedent`this is a string, with , (coma)
         this is a string, with ; (semi-colon)`;
+
         it("should apply default delimiter", () => {
             const actual = ParserHelper.csvParse(Buffer.from(CSV, "utf8"));
             expect(actual).toMatchSnapshot();

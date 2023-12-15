@@ -1,4 +1,4 @@
-import { isAssociationName, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
+import { isAssociationName, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
 import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
 
 export enum SUBVENTIA_SERVICE_ERROR {
@@ -39,7 +39,7 @@ export class SubventiaService {
             entity.indexedInformations.financeurs,
         ];
 
-        if (!isStringsValid(strings)) {
+        if (!areStringsValid(strings)) {
             return {
                 message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 data: entity,
@@ -49,7 +49,7 @@ export class SubventiaService {
 
         const numbers = [entity.indexedInformations.exerciceBudgetaire, entity.indexedInformations.budgetGlobal];
 
-        if (!isNumbersValid(numbers)) {
+        if (!areNumbersValid(numbers)) {
             return {
                 message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 data: entity,

@@ -21,9 +21,11 @@ import AdminStructureCli from "./interfaces/cli/AdminStructure.cli";
 import DumpCli from "./interfaces/cli/Dump.cli";
 import ScdlCli from "./interfaces/cli/Scdl.cli";
 import HistoryUniteLegalCli from "./interfaces/cli/HistoryUniteLegal.cli";
+import { initIndexes } from "./shared/MongoInit";
 
 async function main() {
     await connectDB();
+    await initIndexes();
 
     if (!existsSync("./logs")) {
         mkdirSync("./logs");

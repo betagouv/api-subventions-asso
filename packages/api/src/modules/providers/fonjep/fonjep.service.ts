@@ -1,6 +1,6 @@
 import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep, Rna } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { isAssociationName, isDates, isNumbersValid, isSiret, isStringsValid } from "../../../shared/Validators";
+import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import VersementsProvider from "../../versements/@types/VersementsProvider";
@@ -85,7 +85,7 @@ export class FonjepService
 
         const dates = [entity.indexedInformations.date_fin_triennale];
 
-        if (!isDates(dates)) {
+        if (!areDates(dates)) {
             return new FonjepRejectedRequest(
                 `INVALID DATE FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
@@ -103,7 +103,7 @@ export class FonjepService
             entity.indexedInformations.contact,
         ];
 
-        if (!isStringsValid(strings)) {
+        if (!areStringsValid(strings)) {
             return new FonjepRejectedRequest(
                 `INVALID STRING FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
@@ -113,7 +113,7 @@ export class FonjepService
 
         const numbers = [entity.indexedInformations.montant_paye, entity.indexedInformations.annee_demande];
 
-        if (!isNumbersValid(numbers)) {
+        if (!areNumbersValid(numbers)) {
             return new FonjepRejectedRequest(
                 `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,

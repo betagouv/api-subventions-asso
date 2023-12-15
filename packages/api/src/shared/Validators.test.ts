@@ -43,6 +43,11 @@ describe("Validators", () => {
             const actual = isSiret(value);
             expect(actual).toBeFalsy();
         });
+        it("should return false with undefined", () => {
+            // @ts-expect-error: test edge case
+            const actual = isSiret(undefined);
+            expect(actual).toBeFalsy();
+        });
     });
 
     describe("isSiren", () => {

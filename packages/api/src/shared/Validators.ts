@@ -40,16 +40,20 @@ export function isEJ(ej: string) {
 
 // Generique
 
-export function isDates(dates: unknown[]) {
+export function areDates(dates: unknown[]) {
     return dates.every(date => date instanceof Date);
 }
 
-export function isStringsValid(strings: unknown[]) {
+export function areStringsValid(strings: unknown[]) {
     return strings.every(s => typeof s === "string" && s.length != 0);
 }
 
-export function isNumbersValid(numbers: unknown[]) {
-    return numbers.every(n => typeof n === "number" && !isNaN(n));
+export function areNumbersValid(numbers: unknown[]) {
+    return numbers.every(isNumberValid);
+}
+
+export function isNumberValid(number: unknown) {
+    return typeof number === "number" && !isNaN(number);
 }
 
 export function isCP(cp: string) {

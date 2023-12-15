@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import xlsx from "node-xlsx";
+import csvSyncParser = require("csv-parse/sync");
 
 import { ParserInfo, ParserPath, DefaultObject } from "../../@types";
 
@@ -69,12 +70,13 @@ export function findFiles(file: string) {
     return files;
 }
 
-export function csvParse(content: Buffer, delimiter = ";,") {
-    const CSV_DELIMITER = new RegExp(`[\t${delimiter}]`);
-    return content
-        .toString()
-        .split("\n") // Select line by line
-        .map(raw => raw.split(CSV_DELIMITER).flat()); // Parse column
+export function csvParse(content: Buffer, delimiter = ";,"): string[][] {
+    return csvSyncParser.parse(content, {
+        columns: false,
+        skip_empty_lines: true,
+        delimiter: Array.from(delimiter),
+        relax_column_count: true,
+    });
 }
 
 export function xlsParse(content: Buffer) {

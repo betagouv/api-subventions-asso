@@ -6,7 +6,7 @@ import ILeCompteAssoRequestInformations from "./@types/ILeCompteAssoRequestInfor
 
 export default class LeCompteAssoParser {
     public static parse(content: Buffer): ILeCompteAssoPartialRequestEntity[] {
-        const data = ParseHelper.csvParse(content);
+        const data = ParseHelper.csvParse(content, "\t");
         const header = data[0].map(h => h.trim());
         const rows = data.slice(1);
         return rows.reduce((entities, row) => {

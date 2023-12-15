@@ -1,14 +1,18 @@
 import fs from "fs";
 import { ObjectId } from "mongodb";
+
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
 import ScdlCli from "./Scdl.cli";
 import scdlService from "../../modules/providers/scdl/scdl.service";
+
 jest.mock("../../modules/providers/scdl/scdl.service");
 const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
+import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
+
 jest.mock("../../modules/providers/scdl/scdl.grant.parser");
 const mockedScdlGrantParser = jest.mocked(ScdlGrantParser);
 
@@ -68,8 +72,9 @@ describe("ScdlCli", () => {
 
         it("should call ScdlGrantParser.parseCsv()", async () => {
             const EXPORT_DATE = new Date();
-            await cli.parse(FILE_PATH, PRODUCER_ID, EXPORT_DATE);
-            expect(ScdlGrantParser.parseCsv).toHaveBeenLastCalledWith(CSV_CONTENT);
+            const DELIMETER = "%";
+            await cli.parse(FILE_PATH, PRODUCER_ID, EXPORT_DATE, DELIMETER);
+            expect(ScdlGrantParser.parseCsv).toHaveBeenLastCalledWith(CSV_CONTENT, DELIMETER);
         });
 
         it("should call scdlService.createManyGrants()", async () => {
@@ -81,6 +86,21 @@ describe("ScdlCli", () => {
                 },
             ]);
         });
+
+        it("if DuplicateIndexError arises, doesn't fail and logs", async () => {
+            mockedScdlService.createManyGrants.mockRejectedValueOnce(
+                new DuplicateIndexError("error", [1, 2, 3, 4, 5, 6]),
+            );
+            await cli.parse(FILE_PATH, PRODUCER_ID, new Date());
+        });
+
+        it("if another error arises, fail and throw it again", async () => {
+            const ERROR = new Error("error");
+            mockedScdlService.createManyGrants.mockRejectedValueOnce(ERROR);
+            const test = () => cli.parse(FILE_PATH, PRODUCER_ID, new Date());
+            await expect(test).rejects.toThrowError(ERROR);
+        });
+
         it("should call scdlService.updateProducer()", async () => {
             await cli.parse(FILE_PATH, PRODUCER_ID, EXPORT_DATE);
             expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ID, { lastUpdate: EXPORT_DATE });

@@ -66,6 +66,7 @@
         "bcrypt": "^5.0.1",
         "cors": "^2.8.5",
         "croner": "^6.0.3",
+        "csv-parse": "^5.5.3",
         "decompress": "^4.2.1",
         "dedent": "^0.7.0",
         "dotenv": "^14.3.2",
@@ -100,6 +101,7 @@
     "devDependencies": {
         "@shelf/jest-mongodb": "^2.2.0",
         "@types/jest": "^27.4.0",
+        "@types/node": "^20.10.4",
         "@types/supertest": "^2.0.11",
         "@typescript-eslint/eslint-plugin": "^5.9.0",
         "@typescript-eslint/parser": "^5.9.0",

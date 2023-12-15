@@ -108,7 +108,7 @@ export default class LeCompteAssoCli {
             console.error(`${COLORS.FgRed}An error occurred while parsing the file ${file}${COLORS.Reset}`);
             logs.push(`An error occurred while parsing the file ${file}`);
             console.info(
-                "Please use commande validator for more informations eg. npm run cli leCompteAsso validator YOUR_FILE",
+                "Please use command validator for more information eg. npm run cli leCompteAsso validator YOUR_FILE",
             );
             return;
         }

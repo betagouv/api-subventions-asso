@@ -1,46 +1,89 @@
+import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { shortISOPeriodRegExp, shortISORegExp } from "../../../shared/helpers/DateHelper";
 
-export const SCDL_MAPPER = {
-    allocatorName: [["nomAttribuant", "Nom attributaire*"]],
-    allocatorSiret: [["idAttribuant", "Identification de l'attributaire*"]],
+const OFFICIAL_MAPPER = {
+    allocatorName: "nomAttribuant",
+    allocatorSiret: "idAttribuant",
+    conventionDate: "dateConvention",
+    decisionReference: "referenceDecision",
+    associationName: "nomBeneficiaire",
+    associationSiret: "idBeneficiaire",
+    associationRna: "rnaBeneficiaire",
+    object: "object",
+    amount: "montant",
+    paymentConditions: "nature",
+    paymentStartDate: "datesPeriodeVersement",
+    paymentEndDate: "datesPeriodeVersement",
+    idRAE: "idRAE",
+    UeNotification: "notificationUE",
+    grantPercentage: "pourcentageSubvention",
+    aidSystem: "dispositifAide",
+};
+
+function getMapperVariants(prop): string[] {
+    const header = OFFICIAL_MAPPER[prop];
+    return [header, header.toLowerCase(), header.toUpperCase()];
+}
+
+const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
+
+export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
+    allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*"]],
+    allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
-        path: [["dateConvention", "Date de convention*"]],
+        path: [[...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"]],
         adapter: value => (value ? new Date(value) : value),
     },
-    decisionReference: [["referenceDecision", "Référence de la décision"]],
-    associationName: [["nomBeneficiaire", "Nom du bénéficiaire*"]],
-    associationSiret: [["idBeneficiaire", "Identification du bénéficiaire*"]],
-    associationRna: [["rnaBeneficiaire"]],
-    object: [["object", "Objet de la convention"]],
+    decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
+    associationName: [[...getMapperVariants("associationName"), "Nom du bénéficiaire*"]],
+    associationSiret: [[...getMapperVariants("associationSiret"), "Identification du bénéficiaire*"]],
+    associationRna: [[...getMapperVariants("associationRna")]],
+    object: [[...getMapperVariants("object"), "objet", "Objet de la convention"]],
     amount: {
-        path: [["montant", "Montant total de la subvention*"]],
+        path: [[...getMapperVariants("amount"), "Montant total de la subvention*"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    paymentConditions: [["nature", "Conditions de versement*"]],
+    paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
-        path: [["datesPeriodeVersement", "Date de versement"]],
-        adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0]) : value),
+        path: [
+            [
+                ...getMapperVariants("paymentStartDate"),
+                "Date de versement",
+                "dateperiodedeversement",
+                "dateperiodedversement",
+            ],
+        ],
+        // @ts-expect-error: with undefined it returns false, so we don't need to check it
+        adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : value),
     },
     paymentEndDate: {
-        path: [["datesPeriodeVersement", "Date de versement"]],
+        path: [[...getMapperVariants("paymentEndDate"), "Date de versement", "dateperiodedversement"]],
         adapter: value => {
-            if (shortISOPeriodRegExp.test(value)) return new Date(value.split("/")[1]);
-            else if (shortISORegExp.test(value)) return new Date(value);
+            const noSpaceValue = value?.replaceAll(" ", "");
+            // @ts-expect-error: with undefined it returns false, so we don't need to check it
+            if (expandedShortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split(/[/_]/)[1].trim());
+            // @ts-expect-error: with undefined it returns false, so we don't need to check it
+            else if (shortISORegExp.test(noSpaceValue)) return new Date(noSpaceValue);
             else return null;
         },
     },
-    idRAE: [["idRAE", "Numéro de référencement au répertoire des entreprises"]],
+    idRAE: [[...getMapperVariants("idRAE"), "Numéro de référencement au répertoire des entreprises"]],
     UeNotification: {
-        path: [["notificationUE", "Aide notifiée Ã  l'Europe"]],
+        path: [[...getMapperVariants("UeNotification"), "Aide notifiée Ã  l'Europe"]],
         adapter: value => {
-            if (value === "oui") return true;
-            if (value === "non") return false;
+            if (value?.toLowerCase() === "oui") return true;
+            if (value?.toLowerCase() === "non") return false;
             return undefined;
         },
     },
     grantPercentage: {
-        path: [["pourcentageSubvention", "Pourcentage du montant de la subvention attribué au bénéficiaire*"]],
+        path: [
+            [
+                ...getMapperVariants("grantPercentage"),
+                "Pourcentage du montant de la subvention attribué au bénéficiaire*",
+            ],
+        ],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    aidSystem: ["dispositifAide"],
+    aidSystem: [[...getMapperVariants("aidSystem")]],
 };

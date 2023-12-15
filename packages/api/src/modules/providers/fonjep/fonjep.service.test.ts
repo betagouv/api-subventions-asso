@@ -14,9 +14,9 @@ const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.slice(0, 6);
 const isSiretMock = jest.spyOn(Validators, "isSiret");
 const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
-const isDatesMock = jest.spyOn(Validators, "isDates");
-const isStringsValidMock = jest.spyOn(Validators, "isStringsValid");
-const isNumbersValidMock = jest.spyOn(Validators, "isNumbersValid");
+const isDatesMock = jest.spyOn(Validators, "areDates");
+const isStringsValidMock = jest.spyOn(Validators, "areStringsValid");
+const isNumbersValidMock = jest.spyOn(Validators, "areNumbersValid");
 const findBySiretMock = jest.spyOn(fonjepSubventionRepository, "findBySiret");
 
 const replaceDateWithFakeTimer = value => {
