@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.42.1](https://github.com/betagouv/api-subventions-asso/compare/v0.42.0...v0.42.1) (2023-12-15)
+
+### Bug Fixes
+
+-   **api:** fix misc scdl grand index name ([21d6d86](https://github.com/betagouv/api-subventions-asso/commit/21d6d8618aa055bc060aee01f9a0d61064c53424))
+
 # [0.42.0](https://github.com/betagouv/api-subventions-asso/compare/v0.40.3...v0.42.0) (2023-12-15)
 
 ### Bug Fixes
