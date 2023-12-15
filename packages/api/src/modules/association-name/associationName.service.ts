@@ -1,12 +1,11 @@
-import { Siren } from "dto";
-import Fuse from "fuse.js";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
-import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import { isRna } from "../../shared/Validators";
+import { isRna, isSiren } from "../../shared/Validators";
+import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
+import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
-import AssociationNameAdapter from "./adapters/AssociationNameAdapter";
 
 export class AssociationNameService {
     async getNameFromIdentifier(identifier: AssociationIdentifiers): Promise<string | undefined> {
@@ -19,51 +18,43 @@ export class AssociationNameService {
 
     async find(value: AssociationIdentifiers | string): Promise<AssociationNameEntity[]> {
         const lowerCaseValue = value.toLowerCase().trim();
-        let uniteLegalNameEntities: UniteLegalNameEntity[];
-        if (isRna(value)) {
-            // For one rna its possible to have many siren from match
+        let associationNames: AssociationNameEntity[];
+        if (isRna(value) || isSiren(value)) {
+            const identifierType = getIdentifierType(value) as
+                | StructureIdentifiersEnum.rna
+                | StructureIdentifiersEnum.siren;
+            // For one rna it's possible to have many siren from match
+            // For one siren it's possible to have many rna from match
             const rnaSirenEntities = (await rnaSirenService.find(value)) || [];
-            const sirens = rnaSirenEntities.map(entity => entity.siren);
-            uniteLegalNameEntities = (
-                await Promise.all(sirens.map(siren => uniteLegalNameService.searchBySirenSiretName(siren)))
-            ).flat();
+            const identifiers = rnaSirenEntities.length
+                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()])
+                : [value];
+            associationNames = [
+                ...(await Promise.all(
+                    identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
+                )),
+                ...(await Promise.all(identifiers.map(identifier => rechercheEntreprises.search(identifier)))),
+            ].flat();
         } else {
-            uniteLegalNameEntities = await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue);
+            // Siret Or Name
+            associationNames = [
+                ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
+                ...(await rechercheEntreprises.search(value)),
+            ].flat();
         }
-
-        const groupedNameByStructures = uniteLegalNameEntities.reduce((acc, entity) => {
-            if (!acc[entity.siren]) acc[entity.siren] = [];
-            acc[entity.siren].push(entity);
+        const mergedAssociationName = associationNames.reduce((acc, associationName) => {
+            const id = `${associationName.rna} - ${associationName.siren}`;
+            const oldValue = acc[id] || {};
+            acc[id] = new AssociationNameEntity(
+                oldValue.name || associationName.name,
+                oldValue.siren || associationName.siren,
+                oldValue.rna || associationName.rna,
+                oldValue.address || associationName.address,
+                oldValue.nbEtabs || associationName.nbEtabs,
+            );
             return acc;
-        }, {} as Record<Siren, UniteLegalNameEntity[]>);
-
-        const fuseSearch = (names: UniteLegalNameEntity[]) => {
-            const fuse = new Fuse(names, {
-                includeScore: true,
-                findAllMatches: true,
-                keys: ["searchKey"],
-            });
-            return fuse.search(lowerCaseValue).sort((a, b) => (a.score || 1) - (b.score || 1));
-        };
-
-        const rnaSirenPromises = Object.values(groupedNameByStructures).map(async namesBySiren => {
-            let bestMatch = namesBySiren[0];
-            if (namesBySiren.length > 1) {
-                const scoredMatchNamesBySiren = fuseSearch(namesBySiren);
-                if (scoredMatchNamesBySiren.length) bestMatch = scoredMatchNamesBySiren[0].item;
-            }
-
-            const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren);
-
-            if (!rnaSirenEntities) return [AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch)];
-
-            return rnaSirenEntities?.map(entity => {
-                // For one siren its possible to have many rna from match
-                return AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch, entity.rna);
-            });
-        });
-        const listEntities = await Promise.all(rnaSirenPromises);
-        return listEntities.flat();
+        }, {} as Record<string, AssociationNameEntity>);
+        return Object.values(mergedAssociationName);
     }
 }
 

@@ -4,12 +4,14 @@ import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteL
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
 import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
+import rechercheEntreprises from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 
 const g = global as unknown as { app: unknown };
 
 describe("/search", () => {
     beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
+        jest.spyOn(rechercheEntreprises, "search").mockImplementation(async () => []);
         jest.spyOn(dauphinService, "getDemandeSubventionBySiret").mockImplementation(async () => []);
         jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementation(async () => []);
     });
