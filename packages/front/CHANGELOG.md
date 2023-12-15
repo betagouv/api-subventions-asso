@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.42.0](https://github.com/betagouv/datasubvention/compare/v0.40.3...v0.42.0) (2023-12-15)
+
+### Bug Fixes
+
+-   **api:** don't compare promises ([6545533](https://github.com/betagouv/datasubvention/commit/6545533be26a7b6798b7471b61a34f92b76cf817))
+
 # [0.41.0](https://github.com/betagouv/datasubvention/compare/v0.40.1...v0.41.0) (2023-11-29)
 
 ### Bug Fixes
@@ -16,6 +22,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** completely hid tabs if not asso ([8c1e6b3](https://github.com/betagouv/datasubvention/commit/8c1e6b33aafa03e81e51ad0ee503af9548cc17ff))
 -   **front:** display cp instead of establishment ([a25fb78](https://github.com/betagouv/datasubvention/commit/a25fb78e3d5b97cc023e761cf61e0fb53e0d646d))
 -   **front:** show search if duplicate rna siren ([e8ec04b](https://github.com/betagouv/datasubvention/commit/e8ec04b129187dee3d021121d922b65db7c13c9e))
+
+# [0.41.0](https://github.com/betagouv/datasubvention/compare/v0.40.1...v0.41.0) (2023-11-29)
+
+### Bug Fixes
+
+-   **front:** a11y title hierarchy ([3a69335](https://github.com/betagouv/datasubvention/commit/3a6933507021af8828099c2529b4b4b75d49445b))
+-   **front:** alert about non-association pages ([b2ffc93](https://github.com/betagouv/datasubvention/commit/b2ffc936dda9af2a7d93f4479532d1dd5ac7db1c))
+
+### Features
+
+-   **front:** asso & etab front types ([06ef1a9](https://github.com/betagouv/datasubvention/commit/06ef1a9939e0dfdda22aff592c1f406f1ec4585b))
+-   **front:** completely hid tabs if not asso ([8c1e6b3](https://github.com/betagouv/datasubvention/commit/8c1e6b33aafa03e81e51ad0ee503af9548cc17ff))
+-   **front:** display cp instead of establishment ([a25fb78](https://github.com/betagouv/datasubvention/commit/a25fb78e3d5b97cc023e761cf61e0fb53e0d646d))
+-   **front:** show search if duplicate rna siren ([e8ec04b](https://github.com/betagouv/datasubvention/commit/e8ec04b129187dee3d021121d922b65db7c13c9e))
+
 ## [0.40.3](https://github.com/betagouv/datasubvention/compare/v0.40.2...v0.40.3) (2023-12-06)
 
 ### Bug Fixes

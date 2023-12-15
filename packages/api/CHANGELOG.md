@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.42.0](https://github.com/betagouv/api-subventions-asso/compare/v0.40.3...v0.42.0) (2023-12-15)
+
+### Bug Fixes
+
+-   **api:** chorus filter before insert ([c46a88c](https://github.com/betagouv/api-subventions-asso/commit/c46a88c5a61c5be3f19029ebfaf8dff95e197fe3))
+-   **api:** mapper config error ([a3ef228](https://github.com/betagouv/api-subventions-asso/commit/a3ef2284fe1e2e491b913924a34e48014ec6817f))
+-   **api:** more precise edge cases ([2a24190](https://github.com/betagouv/api-subventions-asso/commit/2a24190fae797bc0c4e1a850e9cf743b6dffab97))
+-   **api:** parser log ([ea2a2eb](https://github.com/betagouv/api-subventions-asso/commit/ea2a2eb6d06be111ea2580522cd034266b32ac78))
+-   **api:** quick fix chorus line ([1940fcb](https://github.com/betagouv/api-subventions-asso/commit/1940fcbd9d280f22d7b3af66cae1f0ff117292c1))
+-   **api:** quick fix for apiAsso 404 error ([98a368c](https://github.com/betagouv/api-subventions-asso/commit/98a368c1a3402bc39dad6e6cdf4c029a15b7fa69))
+-   **api:** specify LCA parser delimiter \t ([ef67028](https://github.com/betagouv/api-subventions-asso/commit/ef6702831a16fc6f0d9d35cef5eb9c971ed57906))
+-   **api:** update filter call to make this accessible ([ae8b281](https://github.com/betagouv/api-subventions-asso/commit/ae8b281359a570aaa77cffe77dc9bf2d1a013b38))
+
+### Features
+
+-   **api:** add api recherche entreprises ([800deff](https://github.com/betagouv/api-subventions-asso/commit/800deff166319e23116687c63a6fb9250c045f9b))
+-   **api:** add comment on writeErrors ([6497cca](https://github.com/betagouv/api-subventions-asso/commit/6497cca6a35eac498f71af3f951b5f5e3cd35592))
+-   **api:** broaden scdl adapters ([d2aaeb6](https://github.com/betagouv/api-subventions-asso/commit/d2aaeb65aa9bbbf93ed361cb3ec655cd35148dd4))
+-   **api:** build unique anonymized email for deleted users ([62b4347](https://github.com/betagouv/api-subventions-asso/commit/62b4347a9772a7c746cf37913a5e1997efc648f1))
+-   **api:** create recherche entreprise port and use this on association name ([3156e74](https://github.com/betagouv/api-subventions-asso/commit/3156e74a1f8d3214d4a8ae16378b39b8dfca1d44))
+-   **api:** custom delimeter caracter ([8bca6de](https://github.com/betagouv/api-subventions-asso/commit/8bca6de0702ed97f4f8b1c46064cedd8e86f25bd))
+-   **api:** expand scdl mapper ([8da5c09](https://github.com/betagouv/api-subventions-asso/commit/8da5c09b96e13ff5bcbd7308df721b95d1f28456))
+-   **api:** extend scdl mapper headers ([27db017](https://github.com/betagouv/api-subventions-asso/commit/27db0175f71ec1cb54d302983d172fc23f91db55))
+-   **api:** handle lower and upper case in SCDL file headers ([fff9b35](https://github.com/betagouv/api-subventions-asso/commit/fff9b35685be80dc9ac35b47879be4379f6864f6))
+-   **api:** init indexes before cli ([23d2540](https://github.com/betagouv/api-subventions-asso/commit/23d2540d44a4b68c36a122346a0bf4567c974cfa))
+-   **api:** notification type for user already subscribed ([e6300ad](https://github.com/betagouv/api-subventions-asso/commit/e6300ad51fe210d09388e1fc5972ff479bc649d9))
+-   **api:** only insert new chorus entities + parse refactoring ([a23e08d](https://github.com/betagouv/api-subventions-asso/commit/a23e08d7a89d01b1c4d64115c5383307181ae2c9))
+-   **api:** rebase and fix last commit revert ([805641d](https://github.com/betagouv/api-subventions-asso/commit/805641d32c661b780a985207cec717ade4e6bbd3))
+-   **api:** sanitize cell content in csv parsing ([023cc57](https://github.com/betagouv/api-subventions-asso/commit/023cc57ea5a3992f50fc217ea094132978648056))
+-   **api:** save entities with # as SIRET ([eb45d4a](https://github.com/betagouv/api-subventions-asso/commit/eb45d4ae2f240c7dd733f430f640288bdabfa31d))
+-   **api:** scdl cli manage duplicates ([e5dc3cb](https://github.com/betagouv/api-subventions-asso/commit/e5dc3cb408944f5336a40906647e558f32821829))
+-   **api:** scdl index unicity constraint ([179567a](https://github.com/betagouv/api-subventions-asso/commit/179567a743c6c32b500a961187f2cb8cbaf81ccc))
+-   **api:** send brevo email ([8caf5ff](https://github.com/betagouv/api-subventions-asso/commit/8caf5ffdefe96686e688606b60e6e80455105eba))
+-   **api:** throw and catch mongodb duplicates errors ([53243c9](https://github.com/betagouv/api-subventions-asso/commit/53243c974810ff55a8b70015510c31fbeec3a0ca))
+-   **api:** typing DuplicateIndexError ([9e1002a](https://github.com/betagouv/api-subventions-asso/commit/9e1002aa262458052b5280e8b35c4599dae5a585))
+-   **api:** update regexp to handle triple quotes in cell content ([d800139](https://github.com/betagouv/api-subventions-asso/commit/d800139b268571a79824899586a38d219f127a07))
+-   **api:** use csv lib ([180e344](https://github.com/betagouv/api-subventions-asso/commit/180e3447b459b2715930cc7521c16f2b5dfe9333))
+-   **api:** wip add scdl grant validator ([4d88d40](https://github.com/betagouv/api-subventions-asso/commit/4d88d4041637559c7c07583f354fc4f68a7eacd2))
+
 # [0.41.0](https://github.com/betagouv/api-subventions-asso/compare/v0.40.1...v0.41.0) (2023-11-29)
 
 ### Bug Fixes
@@ -12,6 +51,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 -   **api:** change searchingkey by searchkey ([82bb392](https://github.com/betagouv/api-subventions-asso/commit/82bb39242a5bf382bbc8379d5d61ea5791096c36))
+
+# [0.41.0](https://github.com/betagouv/api-subventions-asso/compare/v0.40.1...v0.41.0) (2023-11-29)
+
+### Bug Fixes
+
+-   **api:** fix some tests ([463eedc](https://github.com/betagouv/api-subventions-asso/commit/463eedcf9df4dc579893792537b7414880df5a6e))
+
+### Features
+
+-   **api:** change searchingkey by searchkey ([82bb392](https://github.com/betagouv/api-subventions-asso/commit/82bb39242a5bf382bbc8379d5d61ea5791096c36))
+
 ## [0.40.3](https://github.com/betagouv/api-subventions-asso/compare/v0.40.2...v0.40.3) (2023-12-06)
 
 ### Bug Fixes
