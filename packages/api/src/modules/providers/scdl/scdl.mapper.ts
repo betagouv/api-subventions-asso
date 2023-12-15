@@ -25,6 +25,8 @@ function getMapperVariants(prop): string[] {
     return [header, header.toLowerCase(), header.toUpperCase()];
 }
 
+const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
+
 export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*"]],
     allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
@@ -43,16 +45,23 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     },
     paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
-        path: [[...getMapperVariants("paymentStartDate"), "Date de versement", "dateperiodedeversement"]],
+        path: [
+            [
+                ...getMapperVariants("paymentStartDate"),
+                "Date de versement",
+                "dateperiodedeversement",
+                "dateperiodedversement",
+            ],
+        ],
         // @ts-expect-error: with undefined it returns false, so we don't need to check it
-        adapter: value => (shortISORegExp.test(value) ? new Date(value.split("/")[0].trim()) : value),
+        adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : value),
     },
     paymentEndDate: {
-        path: [[...getMapperVariants("paymentEndDate"), "Date de versement"]],
+        path: [[...getMapperVariants("paymentEndDate"), "Date de versement", "dateperiodedversement"]],
         adapter: value => {
             const noSpaceValue = value?.replaceAll(" ", "");
             // @ts-expect-error: with undefined it returns false, so we don't need to check it
-            if (shortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split("/")[1].trim());
+            if (expandedShortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split(/[/_]/)[1].trim());
             // @ts-expect-error: with undefined it returns false, so we don't need to check it
             else if (shortISORegExp.test(noSpaceValue)) return new Date(noSpaceValue);
             else return null;
