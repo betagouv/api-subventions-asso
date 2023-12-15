@@ -1,5 +1,7 @@
+import { MongoServerError } from "mongodb";
 import MongoRepository from "../../../../shared/MongoRepository";
 import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
+import { buildDuplicateIndexError, isDuplicateError } from "../../../../shared/helpers/MongoHelper";
 
 export class MiscScdlGrantRepository extends MongoRepository<MiscScdlGrantEntity> {
     readonly collectionName = "misc-scdl-grant";
@@ -9,7 +11,11 @@ export class MiscScdlGrantRepository extends MongoRepository<MiscScdlGrantEntity
     }
 
     public async createMany(entities: MiscScdlGrantEntity[]) {
-        await this.collection.insertMany(entities);
+        return this.collection.insertMany(entities, { ordered: false }).catch(error => {
+            if (error instanceof MongoServerError && isDuplicateError(error)) {
+                throw buildDuplicateIndexError<MiscScdlGrantEntity[]>(error);
+            }
+        });
     }
 
     async createIndexes() {
