@@ -18,6 +18,8 @@ jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
+import { WithId } from "mongodb";
+import ChorusLineEntity from "./entities/ChorusLineEntity";
 
 describe("chorusService", () => {
     describe("insertMany", () => {
@@ -28,7 +30,10 @@ describe("chorusService", () => {
 
     describe("getVersementsBySiret", () => {
         beforeAll(() => {
-            mockedChorusLineRepository.findBySiret.mockResolvedValue([ENTITIES[0], ENTITIES[0]]);
+            mockedChorusLineRepository.findBySiret.mockResolvedValue([
+                ENTITIES[0],
+                ENTITIES[0],
+            ] as unknown as WithId<ChorusLineEntity>[]);
         });
 
         afterEach(() => mockedChorusLineRepository.findBySiret.mockClear());
@@ -47,7 +52,10 @@ describe("chorusService", () => {
 
     describe("getVersementsBySiren", () => {
         beforeAll(() => {
-            mockedChorusLineRepository.findBySiren.mockResolvedValue([ENTITIES[0], ENTITIES[0]]);
+            mockedChorusLineRepository.findBySiren.mockResolvedValue([
+                ENTITIES[0],
+                ENTITIES[0],
+            ] as unknown as WithId<ChorusLineEntity>[]);
         });
 
         afterEach(() => mockedChorusLineRepository.findOneBySiren.mockClear());
@@ -66,7 +74,10 @@ describe("chorusService", () => {
 
     describe("getVersementsByKey", () => {
         beforeAll(() => {
-            mockedChorusLineRepository.findByEJ.mockResolvedValue([ENTITIES[0], ENTITIES[0]]);
+            mockedChorusLineRepository.findByEJ.mockResolvedValue([
+                ENTITIES[0],
+                ENTITIES[0],
+            ] as unknown as WithId<ChorusLineEntity>[]);
         });
 
         afterEach(() => mockedChorusLineRepository.findByEJ.mockClear());
@@ -84,7 +95,7 @@ describe("chorusService", () => {
     });
 
     describe("sirenBelongAsso", () => {
-        const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
+        const SIREN = SirenHelper.siretToSiren(ENTITIES[0].indexedInformations.siret);
 
         beforeEach(() => {
             mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValue(false);
@@ -101,6 +112,7 @@ describe("chorusService", () => {
 
         it("should return false if siren belongs to company", async () => {
             mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValueOnce(true);
+            mockedChorusLineRepository.findOneBySiren.mockResolvedValueOnce(null);
             const expected = false;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
@@ -119,13 +131,6 @@ describe("chorusService", () => {
 
         it("should return true if document is found", async () => {
             const expected = true;
-            const actual = await chorusService.sirenBelongAsso(SIREN);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return true if document is not found", async () => {
-            mockedChorusLineRepository.findOneBySiren.mockResolvedValueOnce(null);
-            const expected = false;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
         });

@@ -1,3 +1,5 @@
+import ChorusLineEntity from "../entities/ChorusLineEntity";
+
 export const HEADERS = [
     "N° EJ",
     "Fournisseur payé (DP)",
@@ -143,7 +145,7 @@ export const PARSED_DATA = [
     },
 ];
 
-export const ENTITIES = [
+export const ENTITIES: ChorusLineEntity[] = [
     {
         uniqueId: "de175292263fdd97b222a754309df07f",
         indexedInformations: {
@@ -152,6 +154,7 @@ export const ENTITIES = [
             codeBranche: "Z039",
             branche: "Associations",
             activitee: "Appels a projet",
+            codeActivitee: "3222",
             numeroDemandePayment: "000195567",
             numeroTier: "ASSO 1",
             centreFinancier: "UO DGER XXXX-C001",
@@ -189,6 +192,7 @@ export const ENTITIES = [
             codeBranche: "Z039",
             branche: "Associations",
             activitee: "Appels a projet",
+            codeActivitee: "3222",
             numeroDemandePayment: "000212692",
             numeroTier: "ASSO 2",
             centreFinancier: "UO DGER",
@@ -226,6 +230,7 @@ export const ENTITIES = [
             codeBranche: "Z039",
             branche: "Associations",
             activitee: "PIC-Prog nat-Accom",
+            codeActivitee: "3222",
             numeroDemandePayment: "000311141",
             numeroTier: "ASSO 3",
             centreFinancier: "UO régionale",
