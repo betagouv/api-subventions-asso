@@ -71,6 +71,7 @@
         "express-winston": "^4.2.0",
         "fuse.js": "^7.0.0",
         "iconv-lite": "^0.6.3",
+        "jest-environment-jsdom": "^29.7.0",
         "jsonwebtoken": "^9.0.0",
         "lodash": "^4.17.21",
         "migrate-mongo": "^8.2.3",
