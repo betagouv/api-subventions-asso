@@ -41,12 +41,12 @@
     ],
     "dependencies": {
         "husky": "^7.0.4",
-        "lerna": "^7.1.5"
+        "lerna": "^7.4.2"
     },
     "devDependencies": {
-        "@commitlint/cli": "^17.7.1",
-        "@commitlint/config-conventional": "^16.0.0",
-        "prettier": "^2.8.4",
-        "standard-version": "^9.3.2"
+        "@commitlint/cli": "^17.8.1",
+        "@commitlint/config-conventional": "^16.2.4",
+        "prettier": "^2.8.8",
+        "standard-version": "^9.5.0"
     }
 }
