@@ -5,6 +5,9 @@ import { buildDuplicateIndexError, isDuplicateError } from "../../../../shared/h
 
 export class MiscScdlGrantRepository extends MongoRepository<MiscScdlGrantEntity> {
     readonly collectionName = "misc-scdl-grant";
+    readonly joinIndexes = {
+        miscScdlProducer: "producerId",
+    };
 
     public async findAll() {
         return this.collection.find({}).toArray();
