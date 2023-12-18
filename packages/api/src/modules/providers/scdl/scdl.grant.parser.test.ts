@@ -54,6 +54,7 @@ describe("ScdlGrantParser", () => {
 
         beforeEach(() => {
             mockedValidators.isSiret.mockReturnValue(true);
+            mockedDateHelper.isValidDate.mockReturnValue(true);
         });
 
         it("should return false if siret not valid", () => {
@@ -64,7 +65,7 @@ describe("ScdlGrantParser", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return false if date not valid", () => {
+        it("should return false if convention date not valid", () => {
             mockedDateHelper.isValidDate.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method

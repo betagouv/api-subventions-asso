@@ -9,7 +9,7 @@ export default class ScdlGrantParser {
     protected static isGrantValid(grant: ScdlGrantEntity) {
         // mandatory fields
         if (!isSiret(grant.associationSiret)) return false;
-        if (!isValidDate(grant.paymentStartDate)) return false;
+        if (!isValidDate(grant.conventionDate)) return false;
         if (!isNumberValid(grant.amount)) return false;
 
         // optional fields
