@@ -7,12 +7,12 @@ export type ScdlGrantEntity = {
     decisionReference?: string;
     associationName?: string;
     associationSiret: string;
-    associationRna: string;
+    associationRna?: string;
     object?: string;
     amount: number;
     paymentNature: string;
     paymentConditions?: string;
-    paymentStartDate?: Date;
+    paymentStartDate: Date;
     paymentEndDate?: Date;
     idRAE?: string;
     UeNotification?: boolean;
