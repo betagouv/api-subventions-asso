@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.42.3](https://github.com/betagouv/datasubvention/compare/v0.42.2...v0.42.3) (2023-12-19)
+
+### Bug Fixes
+
+-   **front:** add this context on get xxx subventions store ([166ea74](https://github.com/betagouv/datasubvention/commit/166ea7436d6855248b71b29d1ed6277b93bce213))
+
 ## [0.42.2](https://github.com/betagouv/datasubvention/compare/v0.42.1...v0.42.2) (2023-12-19)
 
 ### Bug Fixes
