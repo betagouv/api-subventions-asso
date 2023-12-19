@@ -51,7 +51,7 @@ export default class SubventionTableController {
 
     buildColumnDataViews() {
         const columnsName = {
-            establishment_postcode: "Code postal demandeur",
+            "subvention.establishment_postcode": "Code postal demandeur",
             "subvention.service_instructeur": "Service instructeur",
             "subvention.dispositif": "Dispositif",
             "subvention.project-name": "Intitulé de l'action",
