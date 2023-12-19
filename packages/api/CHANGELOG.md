@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.42.2](https://github.com/betagouv/api-subventions-asso/compare/v0.42.1...v0.42.2) (2023-12-19)
+
+### Bug Fixes
+
+-   **api:** brevo mail notify accepts USER_CONFLICT ([0fb7656](https://github.com/betagouv/api-subventions-asso/commit/0fb76561fb297fbc5d0ceea82a36a3a8674db2b1))
+-   **api:** no call to dauphin documents while we no longer have access ([a7ddd2f](https://github.com/betagouv/api-subventions-asso/commit/a7ddd2fbb95ed93cdf990ee0ba424ddde2920372))
+
 ## [0.42.1](https://github.com/betagouv/api-subventions-asso/compare/v0.42.0...v0.42.1) (2023-12-15)
 
 ### Bug Fixes
