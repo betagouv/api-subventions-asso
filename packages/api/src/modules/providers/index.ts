@@ -9,6 +9,7 @@ import dauphinService from "./dauphin/dauphin.service";
 import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 import bodaccService from "./bodacc/bodacc.service";
+import scdlGrantService from "./scdl/scdl.grant.service";
 
 export default {
     osirisService,
@@ -22,4 +23,5 @@ export default {
     demarchesSimplifieesService,
     caisseDepotsService,
     bodaccService,
+    scdlGrantService,
 };
