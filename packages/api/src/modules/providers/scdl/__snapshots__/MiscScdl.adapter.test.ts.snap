@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MiscScdlAdapter toCommon adapts properly 1`] = `
+Object {
+  "bop": "",
+  "date_debut": 2017-03-14T00:00:00.000Z,
+  "dispositif": "",
+  "exercice": 2017,
+  "montant_accorde": 47800.2,
+  "montant_verse": 47800.2,
+  "objet": "Animations climat-énergie dans les lycées de la région",
+  "service_instructeur": "Région Bretagne",
+  "siret": "23350001600040",
+  "statut": "Accordé",
+}
+`;
+
+exports[`MiscScdlAdapter toDemandeSubvention adapts properly 1`] = `
+Object {
+  "actions_proposee": Array [
+    Object {
+      "intitule": Object {
+        "last_update": 2023-10-13T00:00:00.000Z,
+        "provider": "Cabinet du premier ministre",
+        "type": "string",
+        "value": "Animations climat-énergie dans les lycées de la région",
+      },
+    },
+  ],
+  "annee_demande": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "number",
+    "value": 2017,
+  },
+  "date_commision": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "object",
+    "value": 2017-06-27T00:00:00.000Z,
+  },
+  "financeur_principal": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "string",
+    "value": "Région Bretagne",
+  },
+  "montants": Object {
+    "accorde": Object {
+      "last_update": 2023-10-13T00:00:00.000Z,
+      "provider": "Cabinet du premier ministre",
+      "type": "number",
+      "value": 47800.2,
+    },
+  },
+  "pluriannualite": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "string",
+    "value": "Oui",
+  },
+  "service_instructeur": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "string",
+    "value": "Région Bretagne",
+  },
+  "siret": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "string",
+    "value": "38047555800058",
+  },
+  "status": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "string",
+    "value": "Accordé",
+  },
+  "statut_label": Object {
+    "last_update": 2023-10-13T00:00:00.000Z,
+    "provider": "Cabinet du premier ministre",
+    "type": "string",
+    "value": "Accordé",
+  },
+}
+`;
