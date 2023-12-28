@@ -26,3 +26,8 @@ const providers: { [key: string]: Provider } = {
 };
 
 export default providers;
+
+export const providersById = {};
+for (const providerService of Object.values(providers)) {
+    providersById[providerService.provider.id] = providerService;
+}

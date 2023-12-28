@@ -85,3 +85,11 @@ const providers = {
 };
 
 export default providers;
+
+export const providersById = {
+    "prov-A": providers.serviceA,
+    "prov-B": providers.serviceB,
+    "prov-C": providers.serviceC,
+    "prov-D": providers.serviceD,
+    "prov-E": providers.serviceE,
+};
