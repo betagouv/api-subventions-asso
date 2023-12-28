@@ -37,23 +37,17 @@ describe("ProviderService", () => {
             const expected = new ProvidersInfos(
                 [
                     {
-                        // @ts-expect-error: mock
                         name: providers.serviceB.provider.name,
-                        // @ts-expect-error: mock
                         description: providers.serviceB.provider.description,
                     },
                 ],
                 [
                     {
-                        // @ts-expect-error: mock
                         name: providers.serviceA.provider.name,
-                        // @ts-expect-error: mock
                         description: providers.serviceA.provider.description,
                     },
                     {
-                        // @ts-expect-error: mock
                         name: providers.serviceC.provider.name,
-                        // @ts-expect-error: mock
                         description: providers.serviceC.provider.description,
                     },
                 ],

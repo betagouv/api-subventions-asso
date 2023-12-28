@@ -9,8 +9,9 @@ import dauphinService from "./dauphin/dauphin.service";
 import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 import bodaccService from "./bodacc/bodacc.service";
+import Provider from "./@types/IProvider";
 
-export default {
+const providers: { [key: string]: Provider } = {
     osirisService,
     leCompteAssoService,
     fonjepService,
@@ -23,3 +24,5 @@ export default {
     caisseDepotsService,
     bodaccService,
 };
+
+export default providers;
