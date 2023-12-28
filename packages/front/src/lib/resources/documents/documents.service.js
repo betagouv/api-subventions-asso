@@ -55,7 +55,7 @@ export class DocumentService {
     }
 
     addTokenToInternalLink(token, doc) {
-        if (this.isInternalLink(doc.url)) doc.url = `${DATASUB_URL}${doc.url}?token=${token}`;
+        if (this.isInternalLink(doc.url)) doc.url = `${DATASUB_URL}${doc.url}&token=${token}`;
         return doc;
     }
 }

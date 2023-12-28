@@ -38,7 +38,7 @@ describe("DocumentService", () => {
 
     describe("addTokenToInternalLink", () => {
         const isInternalLinkSpy = vi.spyOn(documentService, "isInternalLink");
-        const URL = "/link";
+        const URL = "/?url=link";
         const DOC = { prop: "something", url: URL };
         const FAKE_TOKEN = "key";
 
@@ -48,9 +48,10 @@ describe("DocumentService", () => {
             const actual = documentService.addTokenToInternalLink(FAKE_TOKEN, DOC);
             expect(actual).toEqual(expected);
         });
+
         it("appends token to internal link", () => {
             isInternalLinkSpy.mockReturnValueOnce(true);
-            const expected = { prop: "something", url: "https://api.fr/link?token=key" };
+            const expected = { prop: "something", url: "https://api.fr/?url=link&token=key" };
             const actual = documentService.addTokenToInternalLink(FAKE_TOKEN, DOC);
             expect(actual).toEqual(expected);
         });
