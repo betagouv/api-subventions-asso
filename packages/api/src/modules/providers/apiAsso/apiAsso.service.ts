@@ -61,7 +61,7 @@ export class ApiAssoService
     public async findRnaSirenByIdentifiers(identifier: AssociationIdentifiers) {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
 
-        // TODO: investiguate with JFM
+        // TODO: investigate with JFM
         // some times apiAsso return a 404
         // ex: siren 422606285
         if (!structure?.identite) return { rna: undefined, siren: undefined };
@@ -210,14 +210,14 @@ export class ApiAssoService
         const documents = await this.fetchDocuments(identifier);
         if (!documents) return [];
 
-        const filtredRnaDocument = this.filterRnaDocuments(documents.document_rna || []);
+        const filteredRnaDocument = this.filterRnaDocuments(documents.document_rna || []);
         const activeDacDocuments = this.filterActiveDacDocuments(documents.document_dac || [], identifier);
-        const filtredDacDocument = this.filterDacDocuments(activeDacDocuments);
+        const filteredDacDocument = this.filterDacDocuments(activeDacDocuments);
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
 
         return [
-            ...filtredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)),
-            ...filtredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)),
+            ...filteredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)),
+            ...filteredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)),
             ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToRib(document)),
         ];
     }
