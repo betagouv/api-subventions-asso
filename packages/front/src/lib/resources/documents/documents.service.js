@@ -3,13 +3,8 @@ import { DATASUB_URL } from "$env/static/public";
 import authService from "$lib/resources/auth/auth.service";
 
 export class DocumentService {
-    getDauphinBlob(localDauphinDocUrl) {
-        return documentPort.getDauphinBlob(localDauphinDocUrl);
-    }
-
-    isInternalLink(link) {
-        const isAbsoluteUrl = new RegExp("^(?:[a-z+]+:)?//", "i");
-        return !isAbsoluteUrl.test(link);
+    getBlob(localDauphinDocUrl) {
+        return documentPort.getBlob(localDauphinDocUrl);
     }
 
     async formatAndSortDocuments(documents) {
