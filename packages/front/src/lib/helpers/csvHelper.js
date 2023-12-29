@@ -1,3 +1,5 @@
+import { stringify } from "csv-stringify/sync";
+
 // BOM (Byte Order Mark, https://en.wikipedia.org/wiki/Byte_order_mark) that forces Excel to use UTF-8
 const BOM_UTF8 = "\uFEFF";
 
@@ -20,5 +22,5 @@ export const downloadCsv = (content, filename) => {
 
 export const buildCsv = (headers, rows) => {
     if (!Array.isArray(headers) || !Array.isArray(rows)) return undefined;
-    return linesToCsv([arrayToLine(headers), ...rows.map(arrayToLine)]);
+    return stringify([headers, ...rows], { delimiter: ";" });
 };

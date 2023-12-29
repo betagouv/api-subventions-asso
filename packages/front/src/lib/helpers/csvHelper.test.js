@@ -21,7 +21,7 @@ describe("csvHelper", () => {
 
     describe("buildCsv", () => {
         it("should return a csv string", () => {
-            const expected = "Name;Date;Adresse\nfoo;bar;baz\nfoo;bar;baz\nfoo;bar;baz";
+            const expected = "Name;Date;Adresse\nfoo;bar;baz\nfoo;bar;baz\nfoo;bar;baz\n";
             const actual = CsvHelper.buildCsv(CSV_ROW_HEADER, [CSV_ROW_ARRAY, CSV_ROW_ARRAY, CSV_ROW_ARRAY]);
             expect(actual).toEqual(expected);
         });
