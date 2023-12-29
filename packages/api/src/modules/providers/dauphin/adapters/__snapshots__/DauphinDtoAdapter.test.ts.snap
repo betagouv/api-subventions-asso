@@ -33,7 +33,7 @@ Array [
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
-      "value": "/document/dauphin/?url=%2Fpath1",
+      "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath1",
     },
   },
   Object {
@@ -54,7 +54,7 @@ Array [
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
-      "value": "/document/dauphin/?url=%2Fpath2",
+      "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath2",
     },
   },
   Object {
@@ -75,7 +75,7 @@ Array [
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
-      "value": "/document/dauphin/?url=%2Fpath1",
+      "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath1",
     },
   },
   Object {
@@ -96,7 +96,7 @@ Array [
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
-      "value": "/document/dauphin/?url=%2Fpath2",
+      "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath2",
     },
   },
 ]
