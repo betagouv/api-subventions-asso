@@ -6,12 +6,15 @@ export const linesToCsv = array => array.join("\n");
 export const arrayToLine = array => array.join(";");
 
 export const downloadCsv = (content, filename) => {
-    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + BOM_UTF8 + content);
+    const blob = new Blob([BOM_UTF8, content], { type: "text/csv;charset=utf8" });
+    const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
+    link.setAttribute("href", url);
     link.setAttribute("download", `${filename}.csv`);
+    link.setAttribute("target", "_blank");
     document.body.appendChild(link);
     link.click();
+    window.URL.revokeObjectURL(url);
     document.body.removeChild(link);
 };
 
