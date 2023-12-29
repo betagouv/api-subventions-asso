@@ -128,7 +128,9 @@ export default class DauphinDtoAdapter {
                 toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.provider.name, new Date(date));
                 resultArray.push({
                     type: toPV(reference.libelle.value),
-                    url: toPV(`/document/dauphin/?url=${encodeURIComponent(doc.id)}`),
+                    url: toPV(
+                        `/document/dauphin/?url=${encodeURIComponent(`https://agent-dauphin.cget.gouv.fr${doc.id}`)}`,
+                    ),
                     nom: toPV(doc.title || reference.libelle.value),
                     __meta__: {},
                 });
