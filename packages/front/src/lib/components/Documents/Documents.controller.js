@@ -30,14 +30,14 @@ export class DocumentsController {
         return etabDocsTitleByType[this.resourceType];
     }
 
-    get getterByType() {
+    get _getterByType() {
         return {
-            establishment: struct => this.getEstablishmentDocuments(struct),
-            association: struct => this.getAssociationDocuments(struct),
+            establishment: struct => this._getEstablishmentDocuments(struct),
+            association: struct => this._getAssociationDocuments(struct),
         };
     }
 
-    async getAssociationDocuments(association) {
+    async _getAssociationDocuments(association) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
         return associationDocuments.filter(
             doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association),
@@ -52,7 +52,7 @@ export class DocumentsController {
         return Object.values(docsByUrl);
     }
 
-    async getEstablishmentDocuments(establishment) {
+    async _getEstablishmentDocuments(establishment) {
         const association = currentAssociation.value;
         const etabDocsPromise = establishmentService.getDocuments(establishment.siret);
         const assoDocsPromise = associationService
@@ -62,7 +62,7 @@ export class DocumentsController {
         return this._removeDuplicates([...etabDocs, ...assoDocs]);
     }
 
-    organizeDocuments(miscDocs) {
+    _organizeDocuments(miscDocs) {
         const assoDocs = [];
         const etabDocs = [];
         for (const doc of miscDocs) {
@@ -74,7 +74,9 @@ export class DocumentsController {
 
     async onMount() {
         await waitElementIsVisible(this.element);
-        const promise = this.getterByType[this.resourceType](this.resource).then(docs => this.organizeDocuments(docs));
+        const promise = this._getterByType[this.resourceType](this.resource).then(docs =>
+            this._organizeDocuments(docs),
+        );
         this.documentsPromise.set(promise);
     }
 }
