@@ -3,8 +3,8 @@ import { DATASUB_URL } from "$env/static/public";
 import authService from "$lib/resources/auth/auth.service";
 
 export class DocumentService {
-    getBlob(localDauphinDocUrl) {
-        return documentPort.getBlob(localDauphinDocUrl);
+    getBlob(localDocUrl) {
+        return documentPort.getBlob(localDocUrl);
     }
 
     async formatAndSortDocuments(documents) {
