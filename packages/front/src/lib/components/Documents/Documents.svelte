@@ -18,20 +18,38 @@
 </script>
 
 <div bind:this={controller.element}>
+    <h2 class="sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
-        {#if documents.length}
+        {#if documents.some}
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.
             </Alert>
-            <h3>Pièces administratives pour {controller.resourceNameWithDemonstrative}</h3>
-            <div class="fr-grid-row fr-grid-row--gutters">
-                {#each documents as document}
-                    <DocumentCard {document} />
-                {/each}
-            </div>
+
+            <!-- Asso documents -->
+            {#if documents.assoDocs.length}
+                <h3 class="fr-h2 fr-mt-6w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
+                <!-- change top margin when we have download all button -->
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    {#each documents.assoDocs as document}
+                        <DocumentCard {document} />
+                    {/each}
+                </div>
+            {/if}
+
+            {#if documents.etabDocs.length}
+                <!-- Etab documents -->
+                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">
+                    {controller.etabDocsTitle}
+                </h3>
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    {#each documents.etabDocs as document}
+                        <DocumentCard {document} />
+                    {/each}
+                </div>
+            {/if}
         {:else}
             <DataNotFound
                 content="Nous sommes désolés, nous n'avons trouvé aucun document sur {controller.resourceNameWithDemonstrative}" />
