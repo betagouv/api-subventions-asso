@@ -5,8 +5,8 @@
     import ErrorAlert from "../ErrorAlert.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import { DocumentsController } from "./Documents.controller";
+    import DocumentCard from "./components/DocumentCard.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
-    import Card from "$lib/dsfr/Card.svelte";
 
     export let resource;
     export let resourceType = "association";
@@ -29,24 +29,7 @@
             <h3>Pièces administratives pour {controller.resourceNameWithDemonstrative}</h3>
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each documents as document}
-                    <Card
-                        title={document.label}
-                        titleTag="h4"
-                        url={document.url}
-                        size="6"
-                        onClick={e => controller.onClick(e, document)}
-                        target="_blank">
-                        <p>
-                            {document.nom}
-                        </p>
-
-                        <p class="fr-text--sm">
-                            Fournisseur du fichier: <b>{document.provider}</b>
-                        </p>
-                        <svelte:fragment slot="card-end">
-                            {controller.getDateString(document.date)}
-                        </svelte:fragment>
-                    </Card>
+                    <DocumentCard {document} />
                 {/each}
             </div>
         {:else}

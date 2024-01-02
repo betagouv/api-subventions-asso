@@ -3,7 +3,6 @@ import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
-import trackerService from "$lib/services/tracker.service";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
@@ -20,11 +19,6 @@ export class DocumentsController {
 
     get resourceNameWithDemonstrative() {
         return resourceNameWithDemonstrativeByType[this.resourceType];
-    }
-
-    getDateString(date) {
-        if (date.getTime() === 0) return "Date de dépôt non disponible";
-        return `Déposé le ${date.toLocaleDateString()}`;
     }
 
     get getterByType() {
@@ -49,9 +43,5 @@ export class DocumentsController {
         await waitElementIsVisible(this.element);
         const promise = this.getterByType[this.resourceType](this.resource);
         this.documentsPromise.set(promise);
-    }
-
-    async onClick(event, doc) {
-        trackerService.buttonClickEvent("association-etablissement.documents.download", doc.url);
     }
 }
