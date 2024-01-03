@@ -33,6 +33,8 @@ export class DocumentService {
         const documentsByType = documents.reduce((acc, document) => {
             if (!acc[document.type]) acc[document.type] = [];
 
+            if (document.type === "LDC") return acc; // skip "Liste des dirigeants" because of political insecurities
+
             acc[document.type].push({
                 ...document,
                 label: documentLabels[document.type] || document.type,
