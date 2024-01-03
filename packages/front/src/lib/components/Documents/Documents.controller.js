@@ -31,10 +31,9 @@ export class DocumentsController {
     }
 
     get _getterByType() {
-        return {
-            establishment: struct => this._getEstablishmentDocuments(struct),
-            association: struct => this._getAssociationDocuments(struct),
-        };
+        return this.resourceType === "establishment"
+            ? struct => this._getEstablishmentDocuments(struct)
+            : struct => this._getAssociationDocuments(struct);
     }
 
     async _getAssociationDocuments(association) {
@@ -74,9 +73,7 @@ export class DocumentsController {
 
     async onMount() {
         await waitElementIsVisible(this.element);
-        const promise = this._getterByType[this.resourceType](this.resource).then(docs =>
-            this._organizeDocuments(docs),
-        );
+        const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
     }
 }
