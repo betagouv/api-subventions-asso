@@ -1,5 +1,6 @@
 import subventionsPort from "./subventions.port";
 import subventionsService from "./subventions.service";
+import Store from "$lib/core/Store";
 
 describe("SubventionsService", () => {
     describe("getEtablissementSubventions", () => {
@@ -17,20 +18,20 @@ describe("SubventionsService", () => {
 
         it("should return subventions", async () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
-            portGetEtablissementSubventionsMock.mockImplementationOnce(() => expected);
+            portGetEtablissementSubventionsMock.mockImplementationOnce(() => new Store({subventions: expected}));
 
             const actual = await subventionsService.getEtablissementsSubventionsStore(SIRET);
 
-            expect(actual).toBe(expected);
+            expect(actual.value.subventions).toBe(expected);
         });
 
         it("should return 0 subventions", async () => {
             const expected = [];
-            portGetEtablissementSubventionsMock.mockImplementationOnce(() => expected);
+            portGetEtablissementSubventionsMock.mockImplementationOnce(() => new Store({subventions: expected}));
 
             const actual = await subventionsService.getEtablissementsSubventionsStore(SIRET);
 
-            expect(actual).toBe(expected);
+            expect(actual.value.subventions).toBe(expected);
         });
     });
 
@@ -49,20 +50,20 @@ describe("SubventionsService", () => {
 
         it("should return subventions", async () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
-            portGetAssociationVersementsMock.mockImplementationOnce(() => expected);
+            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({subventions: expected}));
 
             const actual = await subventionsService.getAssociationsSubventionsStore(SIREN);
 
-            expect(actual).toBe(expected);
+            expect(actual.value.subventions).toBe(expected);
         });
 
         it("should return 0 subventions", async () => {
             const expected = [];
-            portGetAssociationVersementsMock.mockImplementationOnce(() => expected);
+            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({subventions: expected}));
 
             const actual = await subventionsService.getAssociationsSubventionsStore(SIREN);
 
-            expect(actual).toBe(expected);
+            expect(actual.value.subventions).toBe(expected);
         });
     });
 });

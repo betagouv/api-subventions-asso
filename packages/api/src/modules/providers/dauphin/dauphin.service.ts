@@ -41,7 +41,7 @@ export class DauphinService
      */
 
     isDemandesSubventionsProvider = true;
-    isDocumentProvider = true;
+    isDocumentProvider = false; // only while we no longer have access
 
     // Applications
 

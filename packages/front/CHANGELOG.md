@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.42.3](https://github.com/betagouv/datasubvention/compare/v0.42.2...v0.42.3) (2023-12-19)
+
+### Bug Fixes
+
+-   **front:** add this context on get xxx subventions store ([166ea74](https://github.com/betagouv/datasubvention/commit/166ea7436d6855248b71b29d1ed6277b93bce213))
+
+## [0.42.2](https://github.com/betagouv/datasubvention/compare/v0.42.1...v0.42.2) (2023-12-19)
+
+### Bug Fixes
+
+-   **front:** fix sort postal code on subvention versement dashboard ([8838a48](https://github.com/betagouv/datasubvention/commit/8838a48b9fc6646e98495e570df769225520f5cb))
+-   **front:** get association from store in establishment page ([858936f](https://github.com/betagouv/datasubvention/commit/858936f2eb1d1f5619dc6d545d49cb71067d8bc4))
+
 # [0.42.0](https://github.com/betagouv/datasubvention/compare/v0.40.3...v0.42.0) (2023-12-15)
 
 ### Bug Fixes
