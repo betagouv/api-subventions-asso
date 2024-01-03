@@ -13,9 +13,8 @@
     url={document.url}
     size="6"
     onClick={e => controller.onClick(e, document)}
-    target="_blank">
-    <p>{document.nom}</p>
-
+    target="_blank"
+    download={true}>
     <p class="fr-mt-3v fr-mb-2w">
         Fournisseur du fichier : <b class="fr-ml-3v">{document.provider}</b>
     </p>
