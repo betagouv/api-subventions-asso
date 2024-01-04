@@ -8,12 +8,16 @@
     export let url = "";
     export let target = "";
     export let direction = undefined;
+    export let download = false;
     // eslint-disable-next-line @typescript-eslint/no-empty-function -- default value
     export let onClick = () => {};
 </script>
 
 <div class="fr-col-md-{size} fr-col-12">
-    <div class={`fr-card fr-enlarge-link`} class:fr-card--horizontal={direction === "horizontal"}>
+    <div
+        class={`fr-card fr-enlarge-link`}
+        class:fr-card--horizontal={direction === "horizontal"}
+        class:fr-card--download={download}>
         <div class="fr-card__body">
             <div class="fr-card__content">
                 {#if $$slots["card-start"]}
