@@ -30,12 +30,13 @@
             <div class="fr-grid-row fr-grid-row--gutters">
                 {#each documents as document}
                     <Card
-                        title={document.label}
+                        title="{document.label} - nouvelle fenêtre"
                         titleTag="h4"
                         url={document.url}
                         size="6"
                         onClick={e => controller.onClick(e, document)}
-                        target="_blank">
+                        target="_blank"
+                        rel="noopener external">
                         <p>
                             {document.nom}
                         </p>

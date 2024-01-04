@@ -65,7 +65,8 @@
                                     href="/auth/reset-password/{user.resetToken}?active=true"
                                     class="fr-link"
                                     target="_blank"
-                                    rel="noreferrer">
+                                    title="Lien d'activation - nouvelle fenêtre"
+                                    rel="noopener external">
                                     Lien d'activation
                                 </a>
                             </td>

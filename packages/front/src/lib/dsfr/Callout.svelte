@@ -21,7 +21,12 @@
         <slot />
     </p>
     {#if href && labelAction}
-        <a class={actionClasses} {href} target="_blank" rel="noreferrer">
+        <a
+            class={actionClasses}
+            {href}
+            target="_blank"
+            rel="noopener external"
+            title="{labelAction} - nouvelle fenêtre">
             {labelAction}
         </a>
     {/if}
