@@ -1,4 +1,4 @@
-import { stringify } from "csv-stringify/sync";
+import { stringify } from "csv-stringify/browser/esm/sync";
 
 // BOM (Byte Order Mark, https://en.wikipedia.org/wiki/Byte_order_mark) that forces Excel to use UTF-8
 const BOM_UTF8 = "\uFEFF";
