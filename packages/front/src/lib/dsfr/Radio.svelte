@@ -45,7 +45,7 @@
             </div>
         </div>
     {/each}
-    <div class="fr-messages-group" id="{id}-messages" aria-live="assertive">
+    <div class="fr-messages-group" id="{id}-messages" aria-live="polite">
         {#if errorMsgHtml}
             <p class="fr-message fr-message--error" id={descErrorElement}>
                 <span>{@html errorMsgHtml}</span>

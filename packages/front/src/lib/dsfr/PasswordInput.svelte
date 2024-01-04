@@ -29,14 +29,15 @@
             autocomplete="new-password"
             id="password-input-{id}"
             type="password"
-            aria-invalid={errorMsg ? "true" : undefined}
+            aria-invalid={error ? "true" : undefined}
             aria-errormessage={errorMsg ? descErrorElement : undefined}
+            data-fr-error={error ? "en erreur" : undefined}
             required />
         {#if error && errorMsg}
             <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
         {/if}
     </div>
-    <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="assertive" />
+    <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="polite" />
     <div class="fr-password__checkbox fr-checkbox-group--sm">
         <input
             class="fr-sr-only"
@@ -47,6 +48,6 @@
         <label class="fr-password__checkbox fr-label" for="password-show-{id}">
             <span class={iconClasses} />
         </label>
-        <div class="fr-messages-group" id="password-show-messages-{id}" aria-live="assertive" />
+        <div class="fr-messages-group" id="password-show-messages-{id}" aria-live="polite" />
     </div>
 </div>
