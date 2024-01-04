@@ -15,13 +15,9 @@
     </p>
 </div>
 <div class="fr-modal__footer">
-    <ul
+    <div
         class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-        <li>
-            <Button type="primary" ariaControls="fr-modal">Non</Button>
-        </li>
-        <li>
-            <Button type="secondary" on:click={$action} ariaControls="fr-modal">Oui</Button>
-        </li>
-    </ul>
+        <Button type="primary" ariaControls="fr-modal">Non</Button>
+        <Button type="secondary" on:click={$action} ariaControls="fr-modal">Oui</Button>
+    </div>
 </div>

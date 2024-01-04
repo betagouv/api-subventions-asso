@@ -19,10 +19,10 @@
 <div class="fr-grid-row">
     <div class="fr-stepper">
         <h2 class="fr-stepper__title">
+            {$currentStep.step.name}
             {#if steps.length > 1}
                 <span class="fr-stepper__state">Étape {$currentStep.positionLabel} sur {steps.length}</span>
             {/if}
-            {$currentStep.step.name}
         </h2>
         <div class="fr-stepper__steps" data-fr-current-step={$currentStep.positionLabel} data-fr-steps={steps.length} />
         {#if !$currentStep.isLastStep}
