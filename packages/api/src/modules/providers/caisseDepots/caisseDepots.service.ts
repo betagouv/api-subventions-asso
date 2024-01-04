@@ -49,8 +49,7 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
         );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
+    async getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
         return null;
     }
 
