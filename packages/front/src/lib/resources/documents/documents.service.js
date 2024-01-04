@@ -29,31 +29,20 @@ export class DocumentService {
             Formation: "L'habilitation d'organisme de formation",
         };
 
-        // label documents
-        const documentsByType = documents.reduce((acc, document) => {
-            if (!acc[document.type]) acc[document.type] = [];
+        const compareLabelledDocs = (docA, docB) => {
+            // lexicographic order by type label then date
+            if (docA.type !== docB.type) return docA.label.localeCompare(docB.label);
+            return docA.date.getTime() - docB.date.getTime();
+        };
 
-            if (document.type === "LDC") return acc; // skip "Liste des dirigeants" because of political insecurities
-
-            acc[document.type].push({
-                ...document,
-                label: documentLabels[document.type] || document.type,
-            });
-
-            return acc;
-        }, {});
-
-        // sort
-        const sortedFlatDocs = Object.entries(documentsByType)
-            .sort(([keyA], [keyB]) => keyA - keyB) // Sort by type
-            .map(
-                ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same types sort by date
-            )
-            .flat();
+        const sortedDocs = documents
+            .filter(doc => doc.type && doc.type !== "LDC") // skip "Liste des dirigeants" because of political insecurities
+            .map(doc => ({ ...doc, label: documentLabels[document.type] || document.type }))
+            .sort(compareLabelledDocs);
 
         // internal link : add api domain and token
         const token = (await authService.getCurrentUser()).jwt.token;
-        return sortedFlatDocs.map(doc => this.addTokenToInternalLink(token, doc));
+        return sortedDocs.map(doc => this.addTokenToInternalLink(token, doc));
     }
 
     addTokenToInternalLink(token, doc) {
