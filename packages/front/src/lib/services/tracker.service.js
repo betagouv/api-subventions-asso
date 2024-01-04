@@ -13,9 +13,9 @@ export class TrackerService {
         if (user && user._id) this._paq.push(["setUserId", user._id]);
         this._paq.push(["trackPageView"]);
         this._paq.push(["enableLinkTracking"]);
-        var u = "https://stats.data.gouv.fr/";
+        var u = "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io/";
         this._paq.push(["setTrackerUrl", u + "matomo.php"]);
-        this._paq.push(["setSiteId", "256"]);
+        this._paq.push(["setSiteId", "1"]);
         var d = document,
             g = d.createElement("script"),
             s = d.getElementsByTagName("script")[0];
