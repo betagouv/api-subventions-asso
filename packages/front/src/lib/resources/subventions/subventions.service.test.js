@@ -18,7 +18,7 @@ describe("SubventionsService", () => {
 
         it("should return subventions", async () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
-            portGetEtablissementSubventionsMock.mockImplementationOnce(() => new Store({subventions: expected}));
+            portGetEtablissementSubventionsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
 
             const actual = await subventionsService.getEtablissementsSubventionsStore(SIRET);
 
@@ -27,7 +27,7 @@ describe("SubventionsService", () => {
 
         it("should return 0 subventions", async () => {
             const expected = [];
-            portGetEtablissementSubventionsMock.mockImplementationOnce(() => new Store({subventions: expected}));
+            portGetEtablissementSubventionsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
 
             const actual = await subventionsService.getEtablissementsSubventionsStore(SIRET);
 
@@ -50,7 +50,7 @@ describe("SubventionsService", () => {
 
         it("should return subventions", async () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
-            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({subventions: expected}));
+            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
 
             const actual = await subventionsService.getAssociationsSubventionsStore(SIREN);
 
@@ -59,7 +59,7 @@ describe("SubventionsService", () => {
 
         it("should return 0 subventions", async () => {
             const expected = [];
-            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({subventions: expected}));
+            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
 
             const actual = await subventionsService.getAssociationsSubventionsStore(SIREN);
 

@@ -7,10 +7,10 @@ describe("DocumentsPort", () => {
     beforeAll(() => vi.mocked(requestsService.get).mockImplementation(() => Promise.resolve({ data: "" })));
     const DOC_URL = "/path";
 
-    describe("search", () => {
+    describe("getBlob", () => {
         it("calls requestsService get", async () => {
             const expected = [DOC_URL, {}, { responseType: "blob" }];
-            await documentPort.getDauphinBlob(DOC_URL);
+            await documentPort.getBlob(DOC_URL);
             expect(requestsService.get).toHaveBeenCalledWith(...expected);
         });
 
@@ -18,7 +18,7 @@ describe("DocumentsPort", () => {
             const expected = [];
             const RES = { data: expected };
             vi.mocked(requestsService.get).mockResolvedValueOnce(RES);
-            const actual = await documentPort.getDauphinBlob(DOC_URL);
+            const actual = await documentPort.getBlob(DOC_URL);
             expect(actual).toBe(expected);
         });
     });

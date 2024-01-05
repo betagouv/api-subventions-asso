@@ -150,7 +150,7 @@ describe("AvisSituationInseeService", () => {
             expect(actual).toBe(expected);
         });
 
-        it("should return null because nic not found", async () => {
+        it("should return result computed url with given siren and found nic", async () => {
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
@@ -168,7 +168,7 @@ describe("AvisSituationInseeService", () => {
                         expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
-                        `https://api-avis-situation-sirene.insee.fr/identification/pdf/00000000011111`,
+                        `/document/avis_situation_api/?url=https%3A%2F%2Fapi-avis-situation-sirene.insee.fr%2Fidentification%2Fpdf%2F00000000011111`,
                         avisSituationInseeService.provider.name,
                         expect.any(Date),
                     ),
@@ -204,17 +204,7 @@ describe("AvisSituationInseeService", () => {
             >
         >(avisSituationInseeService, "getInseeEtablissementsBySiren");
 
-        it("should return null because file not found in insee", async () => {
-            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => false);
-
-            const expected = null;
-
-            const actual = await avisSituationInseeService.getDocumentsBySiret("");
-
-            expect(actual).toBe(expected);
-        });
-
-        it("should return null because nic not found", async () => {
+        it("should return computed url by siret", async () => {
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {

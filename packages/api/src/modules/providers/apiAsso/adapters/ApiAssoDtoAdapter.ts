@@ -143,7 +143,7 @@ export default class ApiAssoDtoAdapter {
         return {
             nom: toRnaPv(`${rnaDocument.lib_sous_type} - ${rnaDocument.id}`),
             type: toRnaPv(rnaDocument.sous_type),
-            url: toRnaPv(rnaDocument.url),
+            url: toRnaPv(`/document/api_asso/?url=${encodeURIComponent(rnaDocument.url)}`),
             __meta__: {},
         };
     }
@@ -166,7 +166,7 @@ export default class ApiAssoDtoAdapter {
         return {
             nom: toLCAPv(dacDocument.nom),
             type: toLCAPv(dacDocument.meta.type),
-            url: toLCAPv(dacDocument.url),
+            url: toLCAPv(`/document/api_asso/?url=${encodeURIComponent(dacDocument.url)}`),
             __meta__: {
                 siret: String(dacDocument.meta.id_siret),
             },
@@ -180,7 +180,7 @@ export default class ApiAssoDtoAdapter {
         return {
             nom: toLCAPv(rib.meta.iban || rib.nom),
             type: toLCAPv("RIB"),
-            url: toLCAPv(rib.url),
+            url: toLCAPv(`/document/api_asso/?url=${encodeURIComponent(rib.url)}`),
             __meta__: {
                 siret: String(rib.meta.id_siret),
             },

@@ -1,10 +1,14 @@
+import { IncomingMessage } from "http";
+import { Socket } from "node:net";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import { ProviderRequestService } from "../../provider-request/providerRequest.service";
 
-export default {
+const providers = {
     // RAW service AssociationProvider + DemandeSubventionProvider
     serviceA: {
         provider: {
             name: "serviceA",
+            id: "prov-A",
             type: ProviderEnum.raw,
             description: "descriptionA",
         },
@@ -16,11 +20,13 @@ export default {
         getDemandeSubventionBySiret: async () => [{}],
         getDemandeSubventionBySiren: async () => [{}],
         getDemandeSubventionByRna: async () => [{}],
+        http: new ProviderRequestService("prov-A"),
     },
     // API service AssociationProvider + DemandeSubventionProvider
     serviceB: {
         provider: {
             name: "serviceB",
+            id: "prov-B",
             type: ProviderEnum.api,
             description: "descriptionB",
         },
@@ -37,6 +43,7 @@ export default {
     serviceC: {
         provider: {
             name: "serviceC",
+            id: "prov-C",
             type: ProviderEnum.api,
             description: "descriptionC",
         },
@@ -50,6 +57,7 @@ export default {
     serviceD: {
         provider: {
             name: "serviceD",
+            id: "prov-D",
             type: ProviderEnum.api,
             description: "descriptionD",
         },
@@ -63,13 +71,25 @@ export default {
     serviceE: {
         provider: {
             name: "serviceE",
+            id: "prov-E",
             type: ProviderEnum.raw,
-            description: "descriptionE",
+            description: "descriptionE with getSpecificDocumentStream",
         },
         isAssociationsProvider: false,
         isDemandesSubventionsProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
+        getSpecificDocumentStream: async (_path: string) => new IncomingMessage(new Socket()),
     },
+};
+
+export default providers;
+
+export const providersById = {
+    "prov-A": providers.serviceA,
+    "prov-B": providers.serviceB,
+    "prov-C": providers.serviceC,
+    "prov-D": providers.serviceD,
+    "prov-E": providers.serviceE,
 };

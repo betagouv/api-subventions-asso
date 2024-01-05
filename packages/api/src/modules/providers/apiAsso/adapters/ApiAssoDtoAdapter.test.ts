@@ -10,6 +10,7 @@ import { DacDtoDocument, RnaDtoDocument } from "../__fixtures__/DtoDocumentFixtu
 import { ApiAssoDocumentFixture } from "../__fixtures__/ApiAssoDocumentFixture";
 import { sirenStructureFixture } from "../__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "../__fixtures__/RnaStructureFixture";
+import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 
 describe("ApiAssoDtoAdapter", () => {
     describe("toEtablissement", () => {
@@ -59,6 +60,12 @@ describe("ApiAssoDtoAdapter", () => {
     });
 
     describe("rnaDocumentToDocument", () => {
+        let buildProviderValueSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            buildProviderValueSpy = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
+        });
+
         it("should return StructureRnaDocumentDto", () => {
             const expected = RnaDtoDocument;
             const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(
@@ -67,22 +74,24 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should set date to 01/01/1970 if year is not define", () => {
+        it("should set date to 01/01/1970 if year is not defined", () => {
             const document_rna = {
                 ...ApiAssoDocumentFixture.asso.documents.document_rna[0],
                 annee: undefined,
             };
-            const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
-            expect(actual).toMatchSnapshot();
+            ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
+            const actual = buildProviderValueSpy.mock.calls[0][1];
+            expect(actual).toMatchInlineSnapshot(`1970-01-01T00:00:00.000Z`);
         });
 
-        it("should set date to 01/01 of year if time is not define", () => {
+        it("should set date to 01/01 of year if time is not defined", () => {
             const document_rna = {
                 ...ApiAssoDocumentFixture.asso.documents.document_rna[0],
                 time: undefined,
             };
-            const actual = ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
-            expect(actual).toMatchSnapshot();
+            ApiAssoDtoAdapter.rnaDocumentToDocument(document_rna);
+            const actual = buildProviderValueSpy.mock.calls[0][1];
+            expect(actual).toMatchInlineSnapshot(`2021-01-01T00:00:00.000Z`);
         });
     });
 

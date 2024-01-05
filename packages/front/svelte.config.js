@@ -33,7 +33,7 @@ const config = {
                     "https://client.crisp.chat/ wss://client.relay.crisp.chat/w/b1/",
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",
-                    "https://stats.data.gouv.fr",
+                    "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io",
                     "https://geo.api.gouv.fr",
                     "https://sentry.incubateur.net",
                 ],
@@ -50,7 +50,7 @@ const config = {
                     "self",
                     "https://client.crisp.chat",
                     "https://settings.crisp.chat",
-                    "https://stats.data.gouv.fr",
+                    "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io",
                     "https://sentry.incubateur.net",
                     "sha256-+X7Z1KW2Vcl9pendYbp0FYL6F0HZek43aBP/14cwq+U=", // https://github.com/getsentry/sentry-javascript/issues/8925
                 ],

@@ -7,37 +7,37 @@ describe("DocumentController", () => {
     const STREAM = { headers: { "content-type": CONTENT_TYPE } };
     const DECODED_PATH = "/a/b";
     const ENCODED_PATH = "%2Fa%2Fb";
+    const PROVIDER_ID = "providerId";
     let documentController: DocumentHttp;
     let documentServiceMock: SpyInstance, setHeaderMock: SpyInstance;
 
     beforeAll(() => {
-        // @ts-expect-error mock
-        documentServiceMock = jest.spyOn(documentsService, "getDauphinDocumentStream").mockResolvedValue(STREAM);
+        documentServiceMock = jest.spyOn(documentsService, "getDocumentStream").mockResolvedValue(STREAM);
         documentController = new DocumentHttp();
         setHeaderMock = jest.spyOn(documentController, "setHeader").mockImplementation(jest.fn());
     });
 
-    describe("getDauphinDocument", () => {
+    describe("getDocumentStream", () => {
         it("calls document service", async () => {
-            await documentController.getDauphinDocumentStream(ENCODED_PATH);
-            expect(documentServiceMock).toHaveBeenCalledWith(DECODED_PATH);
+            await documentController.getDocumentStream(PROVIDER_ID, ENCODED_PATH);
+            expect(documentServiceMock).toHaveBeenCalledWith(PROVIDER_ID, DECODED_PATH);
         });
 
         it("sets headers", async () => {
-            await documentController.getDauphinDocumentStream(ENCODED_PATH);
+            await documentController.getDocumentStream(PROVIDER_ID, ENCODED_PATH);
             expect(setHeaderMock).toHaveBeenCalledTimes(2);
             setHeaderMock.mockReset();
         });
 
         it("sets default header if none from stream", async () => {
             documentServiceMock.mockResolvedValueOnce({ headers: {} });
-            await documentController.getDauphinDocumentStream(ENCODED_PATH);
+            await documentController.getDocumentStream(PROVIDER_ID, ENCODED_PATH);
             expect(setHeaderMock).toHaveBeenCalledTimes(2);
         });
 
         it("returns stream from document service", async () => {
             const expected = STREAM;
-            const actual = await documentController.getDauphinDocumentStream(ENCODED_PATH);
+            const actual = await documentController.getDocumentStream(PROVIDER_ID, ENCODED_PATH);
             expect(actual).toEqual(expected);
         });
     });
