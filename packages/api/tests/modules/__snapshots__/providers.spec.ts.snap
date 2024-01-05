@@ -49,6 +49,10 @@ Object {
       "description": "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
       "name": "Chorus",
     },
+    Object {
+      "description": "Données au format SCDL de divers producteurs sur data.gouv",
+      "name": "Data.gouv",
+    },
   ],
 }
 `;
