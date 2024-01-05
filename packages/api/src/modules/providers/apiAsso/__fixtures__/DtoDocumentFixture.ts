@@ -18,7 +18,7 @@ export const RnaDtoDocument = {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
         provider: ApiAssoDtoAdapter.providerNameRna,
         type: "string",
-        value: "/fake/url",
+        value: "/document/api_asso/?url=%2Ffake%2Furl",
     },
 };
 
@@ -44,7 +44,7 @@ export const DacDtoDocument = {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
         provider: ApiAssoDtoAdapter.providerNameLcaDocument,
         type: "string",
-        value: "/fake/url",
+        value: "/document/api_asso/?url=%2Ffake%2Furl",
     },
 };
 

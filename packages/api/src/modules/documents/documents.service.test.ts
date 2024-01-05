@@ -1,11 +1,12 @@
 import documentsService from "./documents.service";
+
 jest.mock("../providers");
 
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
-import dauphinService from "../providers/dauphin/dauphin.service";
+import { ProviderRequestService } from "../provider-request/providerRequest.service";
 
 jest.mock("../../shared/helpers/IdentifierHelper", () => ({
     getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
@@ -382,24 +383,78 @@ describe("Documents Service", () => {
         });
     });
 
-    describe("getDauphinDocumentStream", () => {
-        let dauphinServiceMock;
+    describe("getDocumentStream", () => {
+        let getDocumentStreamSpy: jest.SpyInstance;
         const RES = "RES";
         const DOC_ID = "id";
 
-        beforeEach(
-            // @ts-expect-error mock
-            () => (dauphinServiceMock = jest.spyOn(dauphinService, "getSpecificDocumentStream").mockResolvedValue(RES)),
+        describe.each`
+            providerLetter | documentStreamObject  | documentStreamMethodName       | args
+            ${"A"}         | ${documentsService}   | ${"getGenericDocumentStream"}  | ${[providers.serviceA["http"], DOC_ID]}
+            ${"E"}         | ${providers.serviceE} | ${"getSpecificDocumentStream"} | ${[DOC_ID]}
+        `(
+            "if service has getSpecificDocumentStream method",
+            ({ providerLetter, documentStreamObject, documentStreamMethodName, args }) => {
+                const PROVIDER_ID = `prov-${providerLetter}`;
+
+                beforeEach(() => {
+                    getDocumentStreamSpy = jest
+                        .spyOn(documentStreamObject, documentStreamMethodName)
+                        .mockResolvedValue(RES);
+                });
+
+                it("calls getDocumentStream", async () => {
+                    await documentsService.getDocumentStream(PROVIDER_ID, DOC_ID);
+                    expect(getDocumentStreamSpy).toHaveBeenCalledWith(...args);
+                });
+
+                it("returns stream from dauphin service", async () => {
+                    const expected = RES;
+                    const actual = await documentsService.getDocumentStream(PROVIDER_ID, DOC_ID);
+                    expect(actual).toBe(expected);
+                });
+            },
         );
 
-        it("calls dauphin service", async () => {
-            await documentsService.getDauphinDocumentStream(DOC_ID);
-            expect(dauphinServiceMock).toHaveBeenCalledWith(DOC_ID);
+        afterAll(() => {
+            jest.mocked(documentsService.getGenericDocumentStream).mockRestore();
+        });
+    });
+
+    describe("getGenericDocumentStream", () => {
+        let httpGetSpy: jest.SpyInstance;
+        const HTTP = new ProviderRequestService("PROVIDER_ID");
+        const URL = "path";
+        const RES = "STREAM";
+
+        beforeEach(() => {
+            // @ts-ignore
+            httpGetSpy = jest.spyOn(HTTP, "get").mockResolvedValue({ data: RES });
+            httpGetSpy.mockClear();
         });
 
-        it("returns stream from dauphin service", async () => {
+        it("calls request's GET with proper args ", async () => {
+            await documentsService.getGenericDocumentStream(HTTP, URL);
+            const actual = httpGetSpy.mock.calls[0];
+            expect(actual).toMatchInlineSnapshot(`
+                Array [
+                  "path",
+                  Object {
+                    "headers": Object {
+                      "Referrer-Policy": "strict-origin-when-cross-origin",
+                      "accept": "application/json, text/plain, */*",
+                      "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                      "mg-authentication": "true",
+                    },
+                    "responseType": "stream",
+                  },
+                ]
+            `);
+        });
+
+        it("returns data from GET response", async () => {
             const expected = RES;
-            const actual = await documentsService.getDauphinDocumentStream(DOC_ID);
+            const actual = await documentsService.getGenericDocumentStream(HTTP, URL);
             expect(actual).toBe(expected);
         });
     });

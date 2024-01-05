@@ -158,8 +158,8 @@ export default class SubventionsVersementsDashboardController {
 
     _getSubventionsStoreFactory() {
         return this.isEtab()
-            ? subventionsService.getEtablissementsSubventionsStore
-            : subventionsService.getAssociationsSubventionsStore;
+            ? subventionsService.getEtablissementsSubventionsStore.bind(subventionsService)
+            : subventionsService.getAssociationsSubventionsStore.bind(subventionsService);
     }
 
     _getVersementsFactory() {

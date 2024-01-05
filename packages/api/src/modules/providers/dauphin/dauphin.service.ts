@@ -41,7 +41,7 @@ export class DauphinService
      */
 
     isDemandesSubventionsProvider = true;
-    isDocumentProvider = true;
+    isDocumentProvider = false; // only while we no longer have access
 
     // Applications
 
@@ -281,11 +281,11 @@ export class DauphinService
         return properHit?._id?.match(/cget-(.*)/)?.[1];
     }
 
-    async getSpecificDocumentStream(docPath: string): Promise<IncomingMessage> {
+    async getSpecificDocumentStream(docUrl: string): Promise<IncomingMessage> {
         const token = await this.getAuthToken();
 
         return (
-            await this.http.get(`https://agent-dauphin.cget.gouv.fr${docPath}`, {
+            await this.http.get(docUrl, {
                 responseType: "stream",
                 headers: {
                     accept: "application/json, text/plain, */*, application/vnd.mgdis.tiers-3.19.0+json",

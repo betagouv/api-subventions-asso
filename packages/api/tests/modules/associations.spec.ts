@@ -47,7 +47,7 @@ describe("/association", () => {
             expect(response.body).toMatchSnapshot();
         });
 
-        it("should add one visits on stats AssociationsVisit", async () => {
+        it("should add one visit on stats AssociationsVisit", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
@@ -64,7 +64,7 @@ describe("/association", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should not add one visits on stats AssociationsVisit beacause user is admin", async () => {
+        it("should not add one visits on stats AssociationsVisit because user is admin", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
@@ -75,7 +75,7 @@ describe("/association", () => {
             expect(actual).toHaveLength(0);
         });
 
-        it("should not add one visits on stats AssociationsVisit beacause user is not authentified", async () => {
+        it("should not add one visits on stats AssociationsVisit because user is not authenticated", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
@@ -85,7 +85,7 @@ describe("/association", () => {
             expect(actual).toHaveLength(0);
         });
 
-        it("should not add one visits on stats AssociationsVisit beacause status is not 200", async () => {
+        it("should not add one visits on stats AssociationsVisit because status is not 200", async () => {
             const beforeRequestTime = new Date();
             jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
                 throw new BadRequestError();

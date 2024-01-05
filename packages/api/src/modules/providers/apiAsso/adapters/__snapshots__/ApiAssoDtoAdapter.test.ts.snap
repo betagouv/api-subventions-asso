@@ -1,53 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApiAssoDtoAdapter rnaDocumentToDocument should set date to 01/01 of year if time is not define 1`] = `
-Object {
-  "__meta__": Object {},
-  "nom": Object {
-    "last_update": 2021-01-01T00:00:00.000Z,
-    "provider": "RNA",
-    "type": "string",
-    "value": "PV - ididididid",
-  },
-  "type": Object {
-    "last_update": 2021-01-01T00:00:00.000Z,
-    "provider": "RNA",
-    "type": "string",
-    "value": "PV",
-  },
-  "url": Object {
-    "last_update": 2021-01-01T00:00:00.000Z,
-    "provider": "RNA",
-    "type": "string",
-    "value": "/fake/url",
-  },
-}
-`;
-
-exports[`ApiAssoDtoAdapter rnaDocumentToDocument should set date to 01/01/1970 if year is not define 1`] = `
-Object {
-  "__meta__": Object {},
-  "nom": Object {
-    "last_update": 1970-01-01T00:00:00.000Z,
-    "provider": "RNA",
-    "type": "string",
-    "value": "PV - ididididid",
-  },
-  "type": Object {
-    "last_update": 1970-01-01T00:00:00.000Z,
-    "provider": "RNA",
-    "type": "string",
-    "value": "PV",
-  },
-  "url": Object {
-    "last_update": 1970-01-01T00:00:00.000Z,
-    "provider": "RNA",
-    "type": "string",
-    "value": "/fake/url",
-  },
-}
-`;
-
 exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to association 1`] = `
 Object {
   "adresse_siege_rna": Array [

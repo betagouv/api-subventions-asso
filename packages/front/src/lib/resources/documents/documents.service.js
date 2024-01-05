@@ -3,13 +3,8 @@ import { DATASUB_URL } from "$env/static/public";
 import authService from "$lib/resources/auth/auth.service";
 
 export class DocumentService {
-    getDauphinBlob(localDauphinDocUrl) {
-        return documentPort.getDauphinBlob(localDauphinDocUrl);
-    }
-
-    isInternalLink(link) {
-        const isAbsoluteUrl = new RegExp("^(?:[a-z+]+:)?//", "i");
-        return !isAbsoluteUrl.test(link);
+    getBlob(localDocUrl) {
+        return documentPort.getBlob(localDocUrl);
     }
 
     async formatAndSortDocuments(documents) {
@@ -37,17 +32,12 @@ export class DocumentService {
 
         const sortedDocs = documents
             .filter(doc => doc.type && doc.type !== "LDC") // skip "Liste des dirigeants" because of political insecurities
-            .map(doc => ({ ...doc, label: documentLabels[document.type] || document.type }))
+            .map(doc => ({ ...doc, label: documentLabels[doc.type] || doc.type }))
             .sort(compareLabelledDocs);
 
-        // internal link : add api domain and token
+        // proxy link : add api domain and token
         const token = (await authService.getCurrentUser()).jwt.token;
-        return sortedDocs.map(doc => this.addTokenToInternalLink(token, doc));
-    }
-
-    addTokenToInternalLink(token, doc) {
-        if (this.isInternalLink(doc.url)) doc.url = `${DATASUB_URL}${doc.url}?token=${token}`;
-        return doc;
+        return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}&token=${token}` }));
     }
 }
 
