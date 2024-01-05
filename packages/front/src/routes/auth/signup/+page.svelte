@@ -25,7 +25,7 @@
         <Alert title="Vous n'avez pas reçu de mail ?" type="info">
             Vous pouvez
             <a
-                title="Contactez-nous"
+                title="Contactez-nous - nouvelle fenêtre"
                 href="mailto:{ctrl.contactEmail}?subject=Lien%20d'inscription%20non%20re%C3%A7u&body=Bonjour, %0D%0A %0D%0AJe viens de m'inscrire avec l'adresse {email} mais je n'ai reçu aucun mail d'activation. %0D%0A %0D%0APouvez-vous débloquer la situation?&html=true"
                 target="_blank"
                 rel="noopener noreferrer">
@@ -76,9 +76,21 @@
             <div class="policy fr-mx-12w">
                 <span>
                     En vous inscrivant, vous acceptez la
-                    <a href={ctrl.privacyPolicyUrl} target="_blank" rel="noreferrer">politique de confidentialité</a>
+                    <a
+                        href={ctrl.privacyPolicyUrl}
+                        target="_blank"
+                        rel="noopener external"
+                        title="politique de confidentialité - nouvelle fenêtre">
+                        politique de confidentialité
+                    </a>
                     et les
-                    <a href={ctrl.cguUrl} target="_blank">conditions générales d'utilisations</a>
+                    <a
+                        href={ctrl.cguUrl}
+                        target="_blank"
+                        rel="noopener external"
+                        title="conditions générales d'utilisations - nouvelle fenêtre">
+                        conditions générales d'utilisations
+                    </a>
                     de Data.Subvention.
                 </span>
             </div>

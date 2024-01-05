@@ -23,7 +23,11 @@
                 </p>
                 <p class="fr-footer__content-desc">
                     Le code source est ouvert et les contributions sont bienvenues.
-                    <a title="Voir le code source" href={getRepo()} target="_blank" rel="noopener noreferrer">
+                    <a
+                        title="Voir le code source - nouvelle fenêtre"
+                        href={getRepo()}
+                        target="_blank"
+                        rel="noopener noreferrer">
                         Voir le code source
                     </a>
                 </p>
@@ -31,27 +35,30 @@
                     <li class="fr-footer__content-item">
                         <a
                             class="fr-footer__content-link"
+                            title="legifrance - nouvelle fenêtre"
                             target="_blank"
                             href="https://legifrance.gouv.fr"
-                            rel="noreferrer">
+                            rel="noopener external">
                             legifrance.gouv.fr
                         </a>
                     </li>
                     <li class="fr-footer__content-item">
                         <a
                             class="fr-footer__content-link"
+                            title="numerique.gouv - nouvelle fenêtre"
                             target="_blank"
                             href="https://www.numerique.gouv.fr/"
-                            rel="noreferrer">
+                            rel="noopener external">
                             numerique.gouv.fr
                         </a>
                     </li>
                     <li class="fr-footer__content-item">
                         <a
                             class="fr-footer__content-link"
+                            title="beta.gouv - nouvelle fenêtre"
                             target="_blank"
                             href="https://beta.gouv.fr/"
-                            rel="noreferrer">
+                            rel="noopener external">
                             beta.gouv.fr
                         </a>
                     </li>
@@ -73,12 +80,22 @@
                     <a class="fr-footer__bottom-link" href="/accessibilite">Accessibilité : non conforme</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a class="fr-footer__bottom-link" href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer">
+                    <a
+                        class="fr-footer__bottom-link"
+                        href={PRIVACY_POLICY_URL}
+                        target="_blank"
+                        rel="noopener external"
+                        title="Politique de confidentialité - nouvelle fenêtre">
                         Politique de confidentialité
                     </a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a class="fr-footer__bottom-link" href={STATS_URL} target="_blank" rel="noreferrer">
+                    <a
+                        class="fr-footer__bottom-link"
+                        href={STATS_URL}
+                        target="_blank"
+                        rel="noopener external"
+                        title="Statistiques d'usage - nouvelle fenêtre">
                         Statistiques d'usage
                     </a>
                 </li>
@@ -86,7 +103,7 @@
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a class="fr-footer__bottom-link" href="/cgu" target="_blank">Conditions générales d’utilisation</a>
+                    <a class="fr-footer__bottom-link" href="/cgu">Conditions générales d’utilisation</a>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
@@ -105,7 +122,8 @@
                     Sauf mention contraire, tous les contenus de ce site sont sous <a
                         href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
                         target="_blank"
-                        rel="noreferrer">
+                        title="licence etalab-2.0 - nouvelle fenêtre"
+                        rel="noopener external">
                         licence etalab-2.0
                     </a>
                 </p>

@@ -41,11 +41,11 @@
                 <label class="fr-label" for="{id}-{i}">
                     {option.label}
                 </label>
-                <div class="fr-messages-group" id="checkboxes-1-messages" aria-live="assertive" />
+                <div class="fr-messages-group" id="checkboxes-1-messages" aria-live="polite" />
             </div>
         </div>
     {/each}
-    <div class="fr-messages-group" id="{id}-messages" aria-live="assertive">
+    <div class="fr-messages-group" id="{id}-messages" aria-live="polite">
         {#if errorMsg}
             <p class="fr-message fr-message--error" id={descErrorElement}>
                 {errorMsg}

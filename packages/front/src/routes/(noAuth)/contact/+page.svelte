@@ -8,6 +8,8 @@
 
 <p>
     Pour nous contacter, vous pouvez envoyer un message à l'adresse
-    <a title="Contactez-nous" href="mailto:{getContact()}" target="_blank" rel="noopener noreferrer">{getContact()}</a>
+    <a title="Contactez-nous - nouvelle fenêtre" href="mailto:{getContact()}" target="_blank" rel="noopener noreferrer">
+        {getContact()}
+    </a>
     .
 </p>

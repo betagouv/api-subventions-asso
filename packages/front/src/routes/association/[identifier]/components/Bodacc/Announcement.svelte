@@ -34,7 +34,12 @@
                 {controller.judgment}
             </p>
         </div>
-        <a class="fr-text--sm" href={controller.publicationFile} target="_blank" rel="noreferrer">
+        <a
+            class="fr-text--sm"
+            href={controller.publicationFile}
+            target="_blank"
+            rel="noopener external"
+            title="Témoin de publication - nouvelle fenêtre">
             Témoin de publication
         </a>
     </Callout>

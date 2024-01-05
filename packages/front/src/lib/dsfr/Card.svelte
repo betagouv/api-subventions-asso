@@ -26,7 +26,13 @@
                     </div>
                 {/if}
                 <svelte:element this={titleTag} class="fr-card__title fr-{titleStyle}">
-                    <a href={url} on:click={onClick} class="fr-card__link overflow-ellipsis-{titleEllipsis}" {target}>
+                    <a
+                        href={url}
+                        on:click={onClick}
+                        class="fr-card__link overflow-ellipsis-{titleEllipsis}"
+                        {target}
+                        title={target === "_blank" ? `${title} - nouvelle fenêtre` : undefined}
+                        rel={target === "_blank" ? "noreferrer noopener" : undefined}>
                         {title}
                     </a>
                 </svelte:element>

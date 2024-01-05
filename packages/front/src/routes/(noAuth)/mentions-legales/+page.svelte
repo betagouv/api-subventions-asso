@@ -46,7 +46,9 @@
 <p>
     Si vous rencontrez un défaut d’accessibilité vous empêchant d’accéder à un contenu ou une fonctionnalité du site,
     merci de nous en faire part en nous contactant à l'adresse
-    <a title="Contactez-nous" href="mailto:{getContact()}" target="_blank" rel="noopener noreferrer">{getContact()}</a>
+    <a title="Contactez-nous - nouvelle fenêtre" href="mailto:{getContact()}" target="_blank" rel="noopener noreferrer">
+        {getContact()}
+    </a>
     .
 </p>
 <p>

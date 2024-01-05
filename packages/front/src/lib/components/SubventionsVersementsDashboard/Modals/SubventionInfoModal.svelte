@@ -8,7 +8,7 @@
   <section>
       <h4 class="fr-icon-arrow-right-line">Établissement concerné</h4>
       <div class="bigger-link">
-          <a href="/etablissement/{establishment.siret}" target="_blank" rel="noreferrer">
+          <a href="/etablissement/{establishment.siret}" target="_blank" rel="noopener external" title="{association.denomination_rna || association.denomination_siren} - nouvelle fenêtre">
               {association.denomination_rna || association.denomination_siren}
           </a>
           <EstablishmentPreview {establishment} small={true} />
