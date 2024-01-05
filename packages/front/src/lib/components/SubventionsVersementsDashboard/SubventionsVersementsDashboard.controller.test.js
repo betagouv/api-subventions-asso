@@ -459,7 +459,8 @@ describe("SubventionsVersementsDashboardController", () => {
     });
 
     describe("_getSubventionsStoreFactory", () => {
-        it.skip("should return etablissement method", () => { // Skip for hotfix
+        it.skip("should return etablissement method", () => {
+            // Skip for hotfix
             validatorHelper.isSiret.mockImplementationOnce(() => true);
             const controller = new SubventionsVersementsDashboardController(SIRET);
             const expected = subventionsService.getEtablissementsSubventionsStore;
@@ -469,7 +470,8 @@ describe("SubventionsVersementsDashboardController", () => {
             expect(actual).toBe(expected);
         });
 
-        it.skip("should return association method", () => { // Skip for hotfix
+        it.skip("should return association method", () => {
+            // Skip for hotfix
             validatorHelper.isSiret.mockImplementationOnce(() => false);
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = subventionsService.getAssociationsSubventionsStore;

@@ -86,11 +86,6 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
         ];
     }
     async getDocumentsBySiret(siret: Siret): Promise<Document[] | null> {
-        const data = await this.getInseeEtablissementsBySiren(siretToSiren(siret));
-        const codeNic = siretToNIC(siret);
-
-        if (!data || !data.etablissements.find(e => e.nic === codeNic)) return null;
-
         return [
             {
                 type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),

@@ -150,7 +150,7 @@ describe("AvisSituationInseeService", () => {
             expect(actual).toBe(expected);
         });
 
-        it("should return null because nic not found", async () => {
+        it("should return result computed url with given siren and found nic", async () => {
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
@@ -204,17 +204,7 @@ describe("AvisSituationInseeService", () => {
             >
         >(avisSituationInseeService, "getInseeEtablissementsBySiren");
 
-        it("should return null because file not found in insee", async () => {
-            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => false);
-
-            const expected = null;
-
-            const actual = await avisSituationInseeService.getDocumentsBySiret("");
-
-            expect(actual).toBe(expected);
-        });
-
-        it("should return null because nic not found", async () => {
+        it("should return computed url by siret", async () => {
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {

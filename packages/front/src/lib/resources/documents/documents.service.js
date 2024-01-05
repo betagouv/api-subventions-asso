@@ -9,44 +9,35 @@ export class DocumentService {
 
     async formatAndSortDocuments(documents) {
         const documentLabels = {
-            RIB: "Télécharger le RIB",
-            "Avis Situation Insee": "Télécharger l'avis de situation (INSEE)",
-            MD: "Télécharger le Récépissé de modification",
-            LDC: "Télécharger la liste des dirigeants",
-            PV: "Télécharger le Procès verbal",
-            STC: "Télécharger les Statuts",
-            RAR: "Télécharger le Rapport d'activité",
-            RAF: "Télécharger le Rapport financier",
-            BPA: "Télécharger le Budget prévisionnel annuel",
-            RCA: "Télécharger le Rapport du commissaire aux compte",
-            "Education nationale": `Télécharger "L'agrément Education Nationale"`,
-            "Jeunesse et Education Populaire (JEP)": `Télécharger "L'agrément jeunesse et éducation populaire"`,
-            Formation: `Télécharger "L'habilitation d'organisme de formation"`,
+            RIB: "RIB",
+            "Avis Situation Insee": "Avis de situation (INSEE)",
+            MD: "Récépissé de modification",
+            LDC: "Liste des dirigeants",
+            PV: "Procès verbal",
+            STC: "Statuts",
+            RAR: "Rapport d'activité",
+            RAF: "Rapport financier",
+            BPA: "Budget prévisionnel annuel",
+            RCA: "Rapport du commissaire aux compte",
+            "Education nationale": `Agrément Education Nationale`,
+            "Jeunesse et Education Populaire (JEP)": `Agrément jeunesse et éducation populaire`,
+            Formation: "L'habilitation d'organisme de formation",
         };
 
-        // label documents
-        const documentsByType = documents.reduce((acc, document) => {
-            if (!acc[document.type]) acc[document.type] = [];
+        const compareLabelledDocs = (docA, docB) => {
+            // lexicographic order by type label then date
+            if (docA.type !== docB.type) return docA.label.localeCompare(docB.label);
+            return docA.date.getTime() - docB.date.getTime();
+        };
 
-            acc[document.type].push({
-                ...document,
-                label: documentLabels[document.type] || document.type,
-            });
-
-            return acc;
-        }, {});
-
-        // sort
-        const sortedFlatDocs = Object.entries(documentsByType)
-            .sort(([keyA], [keyB]) => keyA - keyB) // Sort by type
-            .map(
-                ([__key__, documents]) => documents.sort((a, b) => b.date.getTime() - a.date.getTime()), // In same types sort by date
-            )
-            .flat();
+        const sortedDocs = documents
+            .filter(doc => doc.type && doc.type !== "LDC") // skip "Liste des dirigeants" because of political insecurities
+            .map(doc => ({ ...doc, label: documentLabels[doc.type] || doc.type }))
+            .sort(compareLabelledDocs);
 
         // proxy link : add api domain and token
         const token = (await authService.getCurrentUser()).jwt.token;
-        return sortedFlatDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}&token=${token}` }));
+        return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}&token=${token}` }));
     }
 }
 
