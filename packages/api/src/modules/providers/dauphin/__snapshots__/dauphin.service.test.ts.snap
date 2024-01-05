@@ -64,7 +64,7 @@ Array [
 
 exports[`Dauphin Service documents getSpecificDocumentStream should call httpSpy with args 1`] = `
 Array [
-  "https://agent-dauphin.cget.gouv.frPATH",
+  "URL",
   Object {
     "headers": Object {
       "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",

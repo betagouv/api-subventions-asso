@@ -1,10 +1,11 @@
+import { IncomingMessage } from "http";
 import { Rna, Siren, Siret, Document } from "dto";
 import * as Sentry from "@sentry/node";
-import providers from "../providers";
+import providers, { providersById } from "../providers";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import dauphinService from "../providers/dauphin/dauphin.service";
+import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import DocumentProvider from "./@types/DocumentsProvider";
 
 export class DocumentsService {
@@ -76,8 +77,24 @@ export class DocumentsService {
         return await this.aggregate(documentProviders, method, id);
     }
 
-    getDauphinDocumentStream(docId: string) {
-        return dauphinService.getSpecificDocumentStream(docId);
+    getDocumentStream(providerId: string, docId: string) {
+        const service = providersById[providerId];
+        if ("getSpecificDocumentStream" in service) return service.getSpecificDocumentStream(docId);
+        return this.getGenericDocumentStream(service.http, docId);
+    }
+
+    async getGenericDocumentStream(http: ProviderRequestService, url: string): Promise<IncomingMessage> {
+        return (
+            await http.get(url, {
+                responseType: "stream",
+                headers: {
+                    accept: "application/json, text/plain, */*",
+                    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "mg-authentication": "true",
+                    "Referrer-Policy": "strict-origin-when-cross-origin",
+                },
+            })
+        ).data;
     }
 }
 

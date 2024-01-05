@@ -9,9 +9,10 @@ import dauphinService from "./dauphin/dauphin.service";
 import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 import bodaccService from "./bodacc/bodacc.service";
+import Provider from "./@types/IProvider";
 import scdlGrantService from "./scdl/scdl.grant.service";
 
-export default {
+const providers: { [key: string]: Provider } = {
     osirisService,
     leCompteAssoService,
     fonjepService,
@@ -25,3 +26,10 @@ export default {
     bodaccService,
     scdlGrantService,
 };
+
+export default providers;
+
+export const providersById = {};
+for (const providerService of Object.values(providers)) {
+    providersById[providerService.provider.id] = providerService;
+}

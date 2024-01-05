@@ -1,8 +1,8 @@
 import requestsService from "$lib/services/requests.service";
 
 class DocumentPort {
-    async getDauphinBlob(localDauphinDocUrl) {
-        return (await requestsService.get(localDauphinDocUrl, {}, { responseType: "blob" })).data;
+    async getBlob(proxiedDocUrl) {
+        return (await requestsService.get(proxiedDocUrl, {}, { responseType: "blob" })).data;
     }
 }
 

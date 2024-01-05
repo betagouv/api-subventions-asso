@@ -435,7 +435,7 @@ describe("Dauphin Service", () => {
         afterAll(() => mockGetAuthToken.mockRestore());
 
         describe("getSpecificDocumentStream", () => {
-            const DOC_PATH = "PATH";
+            const DOC_URL = "URL";
             const httpSpy_RES = "RES";
 
             beforeAll(() => {
@@ -443,18 +443,18 @@ describe("Dauphin Service", () => {
             });
 
             it("should call getAuthToken", async () => {
-                await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                await dauphinService.getSpecificDocumentStream(DOC_URL);
                 expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
             });
 
             it("should call httpSpy with args", async () => {
-                await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                await dauphinService.getSpecificDocumentStream(DOC_URL);
                 expect(httpGetSpy.mock.calls[0]).toMatchSnapshot();
             });
 
             it("should return stream from httpSpy", async () => {
                 const expected = httpSpy_RES;
-                const actual = await dauphinService.getSpecificDocumentStream(DOC_PATH);
+                const actual = await dauphinService.getSpecificDocumentStream(DOC_URL);
                 expect(actual).toEqual(expected);
             });
         });
