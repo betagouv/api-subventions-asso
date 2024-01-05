@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.43.0](https://github.com/betagouv/api-subventions-asso/compare/v0.42.3...v0.43.0) (2024-01-05)
+
+### Bug Fixes
+
+-   **api:** conventionDate is mandatory not paymentStartDate ([186bc56](https://github.com/betagouv/api-subventions-asso/commit/186bc56c1d55956900680403aa578b9a06242008))
+-   **api:** get insee avis situation from secondary establishment ([8bf24d6](https://github.com/betagouv/api-subventions-asso/commit/8bf24d64b9609686deeed434054a48bb3bf2ef68))
+-   **api:** tweak mandatory and optional parameters scdl ([e4083e6](https://github.com/betagouv/api-subventions-asso/commit/e4083e671ff1e31a563566fa8ab6eeddee31fd1f))
+
+### Features
+
+-   **api:** any provider doc can be served by api ([beb817e](https://github.com/betagouv/api-subventions-asso/commit/beb817efc0514edf0e74b95f0d6533690897dc0b))
+-   **api:** joiner to get scdl grants with provider metadata ([e7caaa5](https://github.com/betagouv/api-subventions-asso/commit/e7caaa5e017efd06f3f8abef3fb44e15fb8e4e3d))
+-   **api:** misc scdl adapter ([7d9f2a0](https://github.com/betagouv/api-subventions-asso/commit/7d9f2a0cd55b3c2591a49147b98186b9cad27230))
+-   **api:** misc scdl grant provider ([1b2cda4](https://github.com/betagouv/api-subventions-asso/commit/1b2cda449bad49b45950aa3ac85247f1b078445f))
+-   **api:** proxied doc url in query ([299d179](https://github.com/betagouv/api-subventions-asso/commit/299d179410a1d14782f4d593de77355effaae375))
+-   **api:** send local url to proxied documents ([7109341](https://github.com/betagouv/api-subventions-asso/commit/71093417e48e4abb39a767817853ecbd52dc79b6))
+
 ## [0.42.2](https://github.com/betagouv/api-subventions-asso/compare/v0.42.1...v0.42.2) (2023-12-19)
 
 ### Bug Fixes
