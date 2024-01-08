@@ -1,27 +1,28 @@
 import { MongoServerError } from "mongodb";
-import { buildDuplicateIndexError, isDuplicateError } from "./MongoHelper";
+import { buildDuplicateIndexError, isMongoDuplicateError } from "./MongoHelper";
 import { DuplicateIndexError } from "../errors/dbError/DuplicateIndexError";
 
 describe("MongoHelper", () => {
-    describe("isDuplicateError", () => {
+    describe("isMongoDuplicateError", () => {
         it.each`
             error
-            ${{ code: "E11000" }}
-            ${{ code: "11000" }}
-            ${{ code: 11000 }}
+            ${new MongoServerError({ message: "", code: "E11000" })}
+            ${new MongoServerError({ message: "", code: "11000" })}
+            ${new MongoServerError({ message: "", code: 11000 })}
         `("should return true", ({ error }) => {
-            const actual = isDuplicateError(error);
+            const actual = isMongoDuplicateError(error);
             expect(actual).toEqual(true);
         });
 
         it.each`
             error
-            ${{ code: "E10000" }}
-            ${{ code: "1000" }}
-            ${{ code: 1000 }}
+            ${new MongoServerError({ message: "", code: "E10000" })}
+            ${new MongoServerError({ message: "", code: "1000" })}
+            ${new MongoServerError({ message: "", code: 1000 })}
+            ${new MongoServerError({ message: "" })}
             ${new Error()}
         `("should return false", ({ error }) => {
-            const actual = isDuplicateError(error);
+            const actual = isMongoDuplicateError(error);
             expect(actual).toEqual(false);
         });
     });
