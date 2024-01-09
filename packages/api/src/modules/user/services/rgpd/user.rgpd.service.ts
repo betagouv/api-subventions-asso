@@ -38,8 +38,12 @@ export class UserRgpdService {
         };
     }
 
-    public async disable(userId: string) {
+    public async disableById(userId: string) {
         const user = await userCrudService.getUserById(userId);
+        return this.disable(user);
+    }
+
+    public async disable(user) {
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats

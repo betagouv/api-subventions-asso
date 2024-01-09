@@ -110,7 +110,7 @@ describe("user rgpd service", () => {
         });
     });
 
-    describe("disable", () => {
+    describe("disableById", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
 
         beforeEach(() => mockedUserCrudService.getUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
@@ -121,31 +121,31 @@ describe("user rgpd service", () => {
         });
 
         it("should fetch user from db", async () => {
-            await userRgpdService.disable(USER_ID);
+            await userRgpdService.disableById(USER_ID);
             expect(mockedUserCrudService.getUserById).toHaveBeenCalledWith(USER_ID);
         });
 
         it("should return false if user fetch failed", async () => {
             mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
             const expected = false;
-            const actual = await userRgpdService.disable(USER_ID);
+            const actual = await userRgpdService.disableById(USER_ID);
             expect(actual).toEqual(expected);
         });
 
         it("should call update", async () => {
-            await userRgpdService.disable(USER_ID);
+            await userRgpdService.disableById(USER_ID);
             expect(mockedUserRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
         });
 
         it("should return true if update succeed", async () => {
             mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
             const expected = true;
-            const actual = await userRgpdService.disable(USER_ID);
+            const actual = await userRgpdService.disableById(USER_ID);
             expect(actual).toEqual(expected);
         });
 
         it("should call notify USER_DELETED", async () => {
-            await userRgpdService.disable(USER_ID);
+            await userRgpdService.disableById(USER_ID);
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
                 email: USER_WITHOUT_SECRET.email,
             });
