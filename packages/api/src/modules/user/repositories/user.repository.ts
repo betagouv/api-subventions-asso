@@ -40,6 +40,22 @@ export class UserRepository extends MongoRepository<UserDbo> {
         return this.find(query);
     }
 
+    async findInactiveSince(date: Date): Promise<UserDto[]> {
+        const tokenExpirationLimit = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
+        const query: Filter<UserDbo> = {
+            $or: [
+                { "jwt.expirateDate": { $lt: tokenExpirationLimit } },
+                {
+                    "jwt.expirateDate": { $exists: false },
+                    signupAt: { $lt: date },
+                },
+            ],
+            roles: { $ne: "admin" },
+            disable: { $ne: true },
+        };
+        return this.find(query);
+    }
+
     async update(user: Partial<UserDbo>, withJwt = false): Promise<UserDto | Omit<UserDbo, "hashPassword">> {
         const res = user._id
             ? await this.collection.findOneAndUpdate({ _id: user._id }, { $set: user }, { returnDocument: "after" })
