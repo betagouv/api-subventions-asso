@@ -18,6 +18,7 @@ interface AvisSituationCache {
 
 export class AvisSituationInseeService extends ProviderCore implements DocumentProvider {
     static API_URL = "https://api-avis-situation-sirene.insee.fr/identification";
+    static DOC_PATH = "/document/avis_situation_api";
 
     private requestCache = new CacheData<AvisSituationCache | false>(CACHE_TIMES.ONE_DAY);
 
@@ -68,7 +69,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
             {
                 type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),
                 url: ProviderValueAdapter.toProviderValue(
-                    `/document/avis_situation_api/?url=${encodeURIComponent(
+                    `${AvisSituationInseeService.DOC_PATH}/?url=${encodeURIComponent(
                         `${AvisSituationInseeService.API_URL}/pdf/${siren}${nic}`,
                     )}`,
                     this.provider.name,
@@ -90,7 +91,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
             {
                 type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),
                 url: ProviderValueAdapter.toProviderValue(
-                    `/document/avis_situation_api/?url=${encodeURIComponent(
+                    `${AvisSituationInseeService.DOC_PATH}/?url=${encodeURIComponent(
                         `${AvisSituationInseeService.API_URL}/pdf/${siret}`,
                     )}`,
                     this.provider.name,
