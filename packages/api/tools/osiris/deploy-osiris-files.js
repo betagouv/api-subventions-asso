@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const child_process = require("child_process");
 
-// scalingo app url
+// scalingo app name
 const appName = process.argv[2];
 // i.e : "requests" | "actions" | "evaluations"
 const importType = process.argv[3];
