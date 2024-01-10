@@ -1,15 +1,15 @@
 export interface RechercheEntreprisesDto {
     results?: RechercheEntreprisesResultDto[];
-    total_results?: number;
+    total_results: number;
     /** @default 1 */
-    page?: number;
+    page: number;
     /**
      * @description Nombre de résultats par page, limité à 25.
      * @default 10
      */
-    per_page?: number;
+    per_page: number;
     /** @example 1000 */
-    total_pages?: number;
+    total_pages: number;
 }
 
 export interface RechercheEntreprisesResultDto {
