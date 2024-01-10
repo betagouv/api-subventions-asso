@@ -3,7 +3,7 @@ const child_process = require("child_process");
 
 // scalingo app url
 const appName = process.argv[2];
-// i.e : dossier vs action vs evaluation
+// i.e : "requests" | "actions" | "evaluations"
 const importType = process.argv[3];
 // tar.gz with only files (no sub-directories) and a maximum size of 100mo
 const osirisFile = process.argv[4];
