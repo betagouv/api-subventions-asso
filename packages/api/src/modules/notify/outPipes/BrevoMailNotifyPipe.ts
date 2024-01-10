@@ -12,13 +12,6 @@ export enum TemplateEnum {
 }
 
 export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
-    accepts = [
-        NotificationType.USER_CREATED,
-        NotificationType.USER_FORGET_PASSWORD,
-        NotificationType.TEST_EMAIL,
-        NotificationType.USER_CONFLICT,
-    ];
-
     private apiInstance: Brevo.TransactionalEmailsApi;
 
     constructor() {

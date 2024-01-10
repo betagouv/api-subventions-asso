@@ -10,15 +10,6 @@ import BrevoNotifyPipe from "./BrevoNotifyPipe";
 const SENDIND_BLUE_CONTACT_LISTS = [Number(API_SENDINBLUE_CONTACT_LIST)];
 
 export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
-    accepts = [
-        NotificationType.USER_CREATED,
-        NotificationType.USER_ACTIVATED,
-        NotificationType.USER_LOGGED,
-        NotificationType.USER_ALREADY_EXIST,
-        NotificationType.USER_DELETED,
-        NotificationType.USER_UPDATED,
-    ];
-
     private apiInstance: Brevo.ContactsApi;
 
     constructor() {

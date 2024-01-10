@@ -10,8 +10,6 @@ enum MattermostChannels {
 }
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
-    accepts = [NotificationType.USER_DELETED, NotificationType.SIGNUP_BAD_DOMAIN, NotificationType.FAILED_CRON];
-
     private readonly apiUrl: string;
 
     constructor() {
