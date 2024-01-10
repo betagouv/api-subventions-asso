@@ -1,10 +1,11 @@
 <script>
     import TabsAsso from "./components/TabsAsso.svelte";
     import { AssociationController } from "./Association.controller";
+    import DuplicateAlert from "./components/DuplicateAlert.svelte";
+    import Alert from "$lib/dsfr/Alert.svelte";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import InfosLegales from "$lib/components/InfosLegales/InfosLegales.svelte";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
-    import Alert from "$lib/dsfr/Alert.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
 
@@ -12,13 +13,23 @@
     const { identifier } = data.params;
 
     const controller = new AssociationController(identifier);
-    const { associationPromise, titles } = controller;
+    const { associationPromise, duplicatesFromRna, duplicatesFromSiren, titles } = controller;
 </script>
 
 {#await associationPromise}
     <FullPageSpinner description="Chargement de l'association {identifier} en cours ..." />
 {:then association}
     {#if controller.isAssociation}
+        {#if $duplicatesFromRna}
+            <div class="fr-mb-3w">
+                <DuplicateAlert duplicates={$duplicatesFromRna} />
+            </div>
+        {/if}
+        {#if $duplicatesFromSiren}
+            <div class="fr-mb-3w">
+                <DuplicateAlert duplicates={$duplicatesFromSiren} />
+            </div>
+        {/if}
         <div class="fr-mb-3w">
             <StructureTitle />
         </div>

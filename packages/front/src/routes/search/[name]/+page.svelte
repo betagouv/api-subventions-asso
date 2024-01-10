@@ -1,4 +1,5 @@
 <script lang="ts">
+    import DuplicateAlert from "../../association/[identifier]/components/DuplicateAlert.svelte";
     import SearchController from "./Search.controller";
     import Spinner from "$lib/components/Spinner.svelte";
     import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
@@ -8,7 +9,7 @@
     const { name } = data.params;
 
     const ctrl = new SearchController(name);
-    const { searchPromise, associations, inputSearch } = ctrl;
+    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier } = ctrl;
 
     let nbResultLabel;
     $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
@@ -34,6 +35,11 @@
     <p class="fr-text-md">
         {nbResultLabel}
     </p>
+    {#if $duplicatesFromIdentifier}
+        <div class="fr-mb-3w">
+            <DuplicateAlert duplicates={$duplicatesFromIdentifier} />
+        </div>
+    {/if}
     <div class="fr-grid-row fr-grid-row--gutters search-layout">
         {#each $associations as simplifiedAsso}
             <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />

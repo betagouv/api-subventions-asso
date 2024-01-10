@@ -3,9 +3,9 @@ import requestsService from "$lib/services/requests.service";
 class RnaSirenPort {
     basePath = "/open-data/rna-siren";
 
-    getRnaSiren(identifier) {
+    async getRnaSiren(identifier) {
         const path = `${this.basePath}/${identifier}`;
-        return requestsService.get(path);
+        return (await requestsService.get(path))?.data;
     }
 }
 

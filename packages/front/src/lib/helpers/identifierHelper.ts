@@ -15,4 +15,6 @@ export function isRna(rna) {
     return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
 }
 
-export const isBoolean = value => typeof value === "boolean";
+export function isIdentifier(identifier) {
+    return isRna(identifier) || isSiren(identifier) || isSiret(identifier);
+}

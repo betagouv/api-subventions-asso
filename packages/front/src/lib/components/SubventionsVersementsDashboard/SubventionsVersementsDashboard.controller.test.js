@@ -20,15 +20,13 @@ vi.mock("$lib/helpers/csvHelper", () => {
 });
 import * as csvHelper from "$lib/helpers/csvHelper";
 
-vi.mock("$lib/helpers/validatorHelper", () => {
+vi.mock("$lib/helpers/identifierHelper", () => {
     return {
         __esModule: true,
         isSiret: vi.fn(),
     };
 });
-import * as validatorHelper from "$lib/helpers/validatorHelper";
-
-vi.mock("$lib/helpers/validatorHelper");
+import * as identifierHelper from "$lib/helpers/identifierHelper";
 
 describe("SubventionsVersementsDashboardController", () => {
     const SIREN = "123456789";
@@ -38,7 +36,7 @@ describe("SubventionsVersementsDashboardController", () => {
         it("should call isSiret()", () => {
             const ctrl = new SubventionsVersementsDashboardController(SIREN);
             ctrl.isEtab();
-            expect(validatorHelper.isSiret).toHaveBeenCalledWith(SIREN);
+            expect(identifierHelper.isSiret).toHaveBeenCalledWith(SIREN);
         });
     });
 
@@ -275,13 +273,13 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should increment assocation extract data", () => {
-            validatorHelper.isSiret.mockImplementationOnce(() => false);
+            identifierHelper.isSiret.mockImplementationOnce(() => false);
             ctrl.download();
             expect(associationService.incExtractData).toHaveBeenCalledTimes(1);
         });
 
         it("should increment establishment extract data", () => {
-            validatorHelper.isSiret.mockImplementationOnce(() => true);
+            identifierHelper.isSiret.mockImplementationOnce(() => true);
             ctrl.download();
             expect(establishmentService.incExtractData).toHaveBeenCalledTimes(1);
         });
@@ -461,7 +459,7 @@ describe("SubventionsVersementsDashboardController", () => {
     describe("_getSubventionsStoreFactory", () => {
         it.skip("should return etablissement method", () => {
             // Skip for hotfix
-            validatorHelper.isSiret.mockImplementationOnce(() => true);
+            identifierHelper.isSiret.mockImplementationOnce(() => true);
             const controller = new SubventionsVersementsDashboardController(SIRET);
             const expected = subventionsService.getEtablissementsSubventionsStore;
 
@@ -472,7 +470,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
         it.skip("should return association method", () => {
             // Skip for hotfix
-            validatorHelper.isSiret.mockImplementationOnce(() => false);
+            identifierHelper.isSiret.mockImplementationOnce(() => false);
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = subventionsService.getAssociationsSubventionsStore;
 
@@ -484,7 +482,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_getVersementsFactory", () => {
         it("should return etablissement method", () => {
-            validatorHelper.isSiret.mockImplementationOnce(() => true);
+            identifierHelper.isSiret.mockImplementationOnce(() => true);
             const controller = new SubventionsVersementsDashboardController(SIRET);
             const expected = versementsService.getEtablissementVersements;
 
@@ -494,7 +492,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should return association method", () => {
-            validatorHelper.isSiret.mockImplementationOnce(() => false);
+            identifierHelper.isSiret.mockImplementationOnce(() => false);
             const controller = new SubventionsVersementsDashboardController(SIREN);
             const expected = versementsService.getAssociationVersements;
 
