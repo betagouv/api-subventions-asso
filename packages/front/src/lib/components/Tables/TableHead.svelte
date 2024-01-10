@@ -24,7 +24,7 @@
 
 <style>
     th {
-        padding: 12px;
+        padding: 0rem 0.75rem 0.5rem 0.75rem;
         vertical-align: top;
     }
 
@@ -36,8 +36,8 @@
     }
 
     p {
-        min-height: 100px;
-        max-height: 100px;
+        min-height: 3rem;
+        max-height: 3rem;
         font-size: 0.875rem;
         word-wrap: break-word;
     }
@@ -46,6 +46,7 @@
         transform: rotate(-90deg);
         background-color: transparent;
         color: #e3e3fd;
+        margin-left: -0.5rem;
     }
 
     div.desc :global(.fr-btn) {
