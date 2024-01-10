@@ -148,6 +148,7 @@ describe("user rgpd service", () => {
             await userRgpdService.disableById(USER_ID);
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
                 email: USER_WITHOUT_SECRET.email,
+                selfDeleted: true,
             });
         });
     });

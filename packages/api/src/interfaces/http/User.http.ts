@@ -78,7 +78,7 @@ export class UserHttp extends Controller {
             throw new BadRequestError("Cannot delete its own account");
         }
 
-        return await userRgpdService.disableById(id);
+        return await userRgpdService.disableById(id, false);
     }
 
     /**

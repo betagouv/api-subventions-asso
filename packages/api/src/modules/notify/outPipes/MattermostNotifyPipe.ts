@@ -1,4 +1,5 @@
 import axios from "axios";
+import dedent from "dedent";
 import { FutureUserDto } from "dto";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
@@ -43,9 +44,13 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
     }
 
     private userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {
-        const message = `${data.firstname || ""} ${data.lastname || ""} (${
-            data.email
-        }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`;
+        const message = data.selfDeleted
+            ? `${data.firstname || ""} ${data.lastname || ""} (${
+                  data.email
+              }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`
+            : `Le compte de ${data.firstname || ""} ${data.lastname || ""} (${
+                  data.email
+              }) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données\xA0!`;
 
         return this.sendMessage({
             text: message,
