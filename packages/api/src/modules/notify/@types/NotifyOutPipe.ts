@@ -25,6 +25,5 @@ export interface NotifierMethodType {
 }
 
 export interface NotifyOutPipe {
-    accepts: NotificationType[];
     notify: NotifierMethodType;
 }

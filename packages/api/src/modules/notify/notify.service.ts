@@ -8,7 +8,6 @@ export class NotifyService {
     get notify(): NotifierMethodType {
         return (type, data) => {
             const pipesPromise = this.outPipes.map(pipe => {
-                if (!pipe.accepts.includes(type)) return;
                 return pipe.notify(type, data).catch(e => {
                     Sentry.captureException(e); // TODO refactor with errorService? #1591
                     console.error(e);
