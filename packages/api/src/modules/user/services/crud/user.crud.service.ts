@@ -50,12 +50,6 @@ export class UserCrudService {
             consumerTokenRepository.deleteAllByUserId(user._id),
         ];
 
-        notifyService.notify(NotificationType.USER_DELETED, {
-            email: user.email,
-            firstname: user.firstName,
-            lastname: user.lastName,
-        });
-
         return (await Promise.all(deletePromises)).every(success => success);
     }
 
