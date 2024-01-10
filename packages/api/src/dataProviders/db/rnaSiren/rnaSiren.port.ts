@@ -1,5 +1,4 @@
 import { Rna, Siren } from "dto";
-import { MongoServerError } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoRepository from "../../../shared/MongoRepository";
