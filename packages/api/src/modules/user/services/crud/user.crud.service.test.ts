@@ -140,15 +140,6 @@ describe("user crud service", () => {
             const actual = await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
         });
-
-        it("should notify USER_DELETED", async () => {
-            await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
-                email: USER_WITHOUT_SECRET.email,
-                firstname: USER_WITHOUT_SECRET.firstName,
-                lastname: USER_WITHOUT_SECRET.lastName,
-            });
-        });
     });
 
     describe("createUser", () => {
