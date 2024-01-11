@@ -63,6 +63,20 @@ export class UserRgpdService {
         return !!(await userRepository.update(disabledUser));
     }
 
+    async bulkDisableInactive() {
+        const now = new Date();
+        const lastConnexionLimit = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate());
+        const usersToDisable = await userRepository.findInactiveSince(lastConnexionLimit);
+        const disablePromises = usersToDisable.map(user => this.disable(user, false));
+        const results = await Promise.all(disablePromises);
+
+        if (results.length)
+            notifyService.notify(NotificationType.BATCH_USERS_DELETED, {
+                users: usersToDisable.map(user => ({ email: user.email })),
+            });
+        return results;
+    }
+
     async findAnonymizedUsers(query: DefaultObject = {}) {
         const users = await userCrudService.find(query);
 
