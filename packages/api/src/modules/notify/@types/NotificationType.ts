@@ -2,6 +2,7 @@ export enum NotificationType {
     TEST_EMAIL,
     USER_CREATED,
     USER_DELETED,
+    BATCH_USERS_DELETED,
     USER_UPDATED,
     USER_ACTIVATED,
     USER_FORGET_PASSWORD,

@@ -24,6 +24,13 @@ export interface NotificationDataTypes {
         lastname?: string;
         selfDeleted: boolean;
     };
+    [NotificationType.BATCH_USERS_DELETED]: {
+        users: {
+            email: string;
+            firstname?: string;
+            lastname?: string;
+        }[];
+    };
     [NotificationType.USER_ACTIVATED]: {
         email: string;
     };
