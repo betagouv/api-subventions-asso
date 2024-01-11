@@ -29,6 +29,8 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 return this.userLogged(data);
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
+            case NotificationType.BATCH_USERS_DELETED:
+                return this.batchUsersDeleted(data);
             case NotificationType.USER_UPDATED:
                 return this.userUpdated(data);
             default:
@@ -125,6 +127,19 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 Sentry.captureException(error);
                 return false;
             });
+    }
+
+    private batchUsersDeleted(data: NotificationDataTypes[NotificationType.BATCH_USERS_DELETED]) {
+        const promises = data.users.map(user =>
+            this.apiInstance
+                .deleteContact(user.email)
+                .then(() => true)
+                .catch(error => {
+                    Sentry.captureException(error);
+                    return false;
+                }),
+        );
+        return Promise.all(promises).then(results => results.every(Boolean));
     }
 
     private userUpdated(data: NotificationDataTypes[NotificationType.USER_UPDATED]) {
