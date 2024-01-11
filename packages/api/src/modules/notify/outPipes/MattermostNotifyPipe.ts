@@ -21,6 +21,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         switch (type) {
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
+            case NotificationType.BATCH_USERS_DELETED:
+                return this.batchUsersDeleted(data);
             case NotificationType.SIGNUP_BAD_DOMAIN:
                 return this.badEmailDomain(data);
             case NotificationType.FAILED_CRON:
@@ -56,6 +58,24 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             text: message,
             channel: MattermostChannels.BIZDEV,
             username: "Suppression de compte",
+            icon_emoji: "door",
+        });
+    }
+
+    private batchUsersDeleted(data: NotificationDataTypes[NotificationType.BATCH_USERS_DELETED]) {
+        const emailsMdList = data.users.reduce(
+            (mdList: string, miniUser) =>
+                `${mdList}\n- ${miniUser.firstname || ""} ${miniUser.lastname || ""} (${miniUser.email})`,
+            "",
+        );
+        const message = dedent`Les comptes suivants ont été supprimés pour inactivité trop longue.
+        ${emailsMdList} 
+        N'oubliez pas de supprimer toutes leurs données !`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.BIZDEV,
+            username: "Suppression de comptes",
             icon_emoji: "door",
         });
     }
