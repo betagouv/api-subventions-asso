@@ -50,7 +50,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
               }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`
             : `Le compte de ${data.firstname || ""} ${data.lastname || ""} (${
                   data.email
-              }) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données\xA0!`;
+              }) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !`;
 
         return this.sendMessage({
             text: message,
