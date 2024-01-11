@@ -43,7 +43,7 @@ export class UserRgpdService {
         return this.disable(user, self);
     }
 
-    public async disable(user, self = true) {
+    public async disable(user, self = true, whileBatch = false) {
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
@@ -58,7 +58,7 @@ export class UserRgpdService {
             lastName: "",
         };
 
-        notifyService.notify(NotificationType.USER_DELETED, { email: user.email, selfDeleted: self });
+        if (!whileBatch) notifyService.notify(NotificationType.USER_DELETED, { email: user.email, selfDeleted: self });
 
         return !!(await userRepository.update(disabledUser));
     }
@@ -67,7 +67,7 @@ export class UserRgpdService {
         const now = new Date();
         const lastConnexionLimit = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate());
         const usersToDisable = await userRepository.findInactiveSince(lastConnexionLimit);
-        const disablePromises = usersToDisable.map(user => this.disable(user, false));
+        const disablePromises = usersToDisable.map(user => this.disable(user, false, true));
         const results = await Promise.all(disablePromises);
 
         if (results.length)
