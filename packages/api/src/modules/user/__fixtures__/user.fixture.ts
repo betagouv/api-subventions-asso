@@ -9,8 +9,8 @@ export const USER_WITHOUT_SECRET = {
     email: USER_EMAIL,
     roles: ["user"],
     signupAt: new Date(),
-    firstName: "",
-    lastName: "",
+    firstName: "Prénom",
+    lastName: "NOM",
     active: true,
     profileToComplete: false,
 } as UserDto;
@@ -30,6 +30,8 @@ export const ANONYMIZED_USER = {
     email: "635132a527c9bfb8fc7c758e@deleted.datasubvention.beta.gouv.fr",
     jwt: null,
     hashPassword: "",
+    firstName: "",
+    lastName: "",
     disable: true,
 };
 
