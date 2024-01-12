@@ -49,7 +49,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         const message = data.selfDeleted
             ? `${data.firstname || ""} ${data.lastname || ""} (${
                   data.email
-              }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`
+              }) a supprimé son compte, veuillez supprimer toutes ses données !`
             : `Le compte de ${data.firstname || ""} ${data.lastname || ""} (${
                   data.email
               }) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !`;
