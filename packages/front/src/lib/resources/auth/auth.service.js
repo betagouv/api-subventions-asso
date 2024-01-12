@@ -44,7 +44,6 @@ export class AuthService {
 
     setUserInApp() {
         const user = this.getCurrentUser();
-        requestsService.initAuthentication(user?.jwt?.token);
         if (user) crispService.setUserEmail(user.email);
     }
 

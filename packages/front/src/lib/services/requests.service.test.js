@@ -80,15 +80,6 @@ describe("RequestService", () => {
         });
     });
 
-    describe("initAuthentication", () => {
-        it("should defaults auth header", () => {
-            const expected = "TOKEN";
-            requestsService.initAuthentication(expected);
-
-            expect(axios.defaults.headers.common["x-access-token"]).toBe(expected);
-        });
-    });
-
     describe("addErrorHooks", () => {
         it("should add hooks in errorHooks array", () => {
             const expected = vi.fn();

@@ -30,10 +30,6 @@ class RequestsService {
         return this._sendRequest("delete", path, params, undefined, requestOption);
     }
 
-    initAuthentication(apiToken) {
-        axios.defaults.headers.common["x-access-token"] = apiToken;
-    }
-
     addErrorHook(ErrorClass, callback) {
         this._errorHooks.push({
             ErrorClass,
@@ -49,6 +45,7 @@ class RequestsService {
         }
 
         return axios.request({
+            withCredentials: true,
             url: path,
             method: type,
             data,

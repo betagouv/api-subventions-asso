@@ -31,13 +31,10 @@ export class DocumentService {
         };
 
         const sortedDocs = documents
-            .filter(doc => doc.type && doc.type !== "LDC") // skip "Liste des dirigeants" because of political insecurities
             .map(doc => ({ ...doc, label: documentLabels[doc.type] || doc.type }))
             .sort(compareLabelledDocs);
 
-        // proxy link : add api domain and token
-        const token = (await authService.getCurrentUser()).jwt.token;
-        return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}&token=${token}` }));
+        return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}` }));
     }
 }
 
