@@ -8,9 +8,12 @@ describe("BrevoContactNotifyPipe", () => {
 
     // @ts-expect-error apiInstance is private attribute
     const mockUpdateContact = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "updateContact");
+    // @ts-expect-error apiInstance is private attribute
+    const mockDeleteContact = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "deleteContact");
 
     beforeAll(() => {
         mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as any);
+        mockDeleteContact.mockResolvedValue({ body: { id: 1 } } as any);
     });
 
     describe("notify", () => {
@@ -131,6 +134,35 @@ describe("BrevoContactNotifyPipe", () => {
             //@ts-expect-error: private method
             await BrevoContactNotifyPipe.userUpdated({ email: "test@datasubvention.gouv.fr", ...UPDATE_PAYLOAD });
             expect(mockUpdateContact.mock.calls[0]).toMatchSnapshot();
+        });
+    });
+
+    describe("userDeleted", () => {
+        const UPDATE_PAYLOAD = { email: "test@datasubvention.gouv.fr" };
+
+        it("should call deleteContact()", async () => {
+            //@ts-expect-error: private method
+            await BrevoContactNotifyPipe.userDeleted(UPDATE_PAYLOAD);
+            expect(mockDeleteContact.mock.calls[0]).toMatchSnapshot();
+        });
+    });
+
+    describe("batchUsersDeleted", () => {
+        const UPDATE_PAYLOAD = {
+            users: [
+                {
+                    email: "test@datasubvention.gouv.fr",
+                },
+                {
+                    email: "test2@datasubvention.gouv.fr",
+                },
+            ],
+        };
+
+        it("should call deleteContact() for each user", async () => {
+            //@ts-expect-error: private method
+            await BrevoContactNotifyPipe.batchUsersDeleted(UPDATE_PAYLOAD);
+            expect(mockDeleteContact.mock.calls).toMatchSnapshot();
         });
     });
 });

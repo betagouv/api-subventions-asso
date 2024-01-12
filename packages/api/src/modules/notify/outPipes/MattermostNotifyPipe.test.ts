@@ -110,4 +110,21 @@ describe("MattermostNotifyPipe", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("batchUsersDeleted", () => {
+        it("sends message with proper payload", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.batchUsersDeleted({
+                users: [
+                    { email: "some@email.fr", firstname: "Prénom" },
+                    { email: "some-other@email.fr", lastname: "Nom" },
+                ],
+            });
+            // @ts-expect-error -- private method does not expect calls
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
