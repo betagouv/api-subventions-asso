@@ -110,14 +110,60 @@ describe("user rgpd service", () => {
         });
     });
 
+    describe("disable", () => {
+        const USER = USER_WITHOUT_SECRET;
+
+        afterEach(() => {
+            mockedUserRepository.update.mockReset();
+        });
+
+        it("should return false if no user", async () => {
+            const expected = false;
+            const actual = await userRgpdService.disable(null);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call update", async () => {
+            await userRgpdService.disable(USER);
+            expect(mockedUserRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
+        });
+
+        it("should return true if update succeed", async () => {
+            mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
+            const expected = true;
+            const actual = await userRgpdService.disable(USER);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call notify USER_DELETED", async () => {
+            await userRgpdService.disable(USER);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
+                email: USER_WITHOUT_SECRET.email,
+                selfDeleted: true,
+            });
+        });
+
+        it("should call notify USER_DELETED with selfDeleted false", async () => {
+            await userRgpdService.disable(USER, false);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
+                email: USER_WITHOUT_SECRET.email,
+                selfDeleted: false,
+            });
+        });
+    });
+
     describe("disableById", () => {
         const USER_ID = USER_WITHOUT_SECRET._id.toString();
+        let disableMock: jest.SpyInstance;
 
-        beforeEach(() => mockedUserCrudService.getUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET));
+        beforeEach(() => {
+            mockedUserCrudService.getUserById.mockResolvedValueOnce(USER_WITHOUT_SECRET);
+            disableMock = jest.spyOn(userRgpdService, "disable").mockResolvedValue(true);
+        });
 
         afterEach(() => {
             mockedUserCrudService.getUserById.mockReset();
-            mockedUserRepository.update.mockReset();
+            disableMock.mockRestore();
         });
 
         it("should fetch user from db", async () => {
@@ -125,31 +171,16 @@ describe("user rgpd service", () => {
             expect(mockedUserCrudService.getUserById).toHaveBeenCalledWith(USER_ID);
         });
 
-        it("should return false if user fetch failed", async () => {
-            mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
-            const expected = false;
+        it("calls disable", async () => {
+            await userRgpdService.disableById(USER_ID, false);
+            expect(disableMock).toHaveBeenCalledWith(USER_WITHOUT_SECRET, false);
+        });
+
+        it("return result from disable", async () => {
+            const expected = "ratata";
+            disableMock.mockResolvedValue(expected);
             const actual = await userRgpdService.disableById(USER_ID);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call update", async () => {
-            await userRgpdService.disableById(USER_ID);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith(ANONYMIZED_USER);
-        });
-
-        it("should return true if update succeed", async () => {
-            mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
-            const expected = true;
-            const actual = await userRgpdService.disableById(USER_ID);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call notify USER_DELETED", async () => {
-            await userRgpdService.disableById(USER_ID);
-            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_DELETED, {
-                email: USER_WITHOUT_SECRET.email,
-                selfDeleted: true,
-            });
+            expect(actual).toBe(expected);
         });
     });
 });
