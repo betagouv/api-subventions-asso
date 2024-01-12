@@ -225,7 +225,7 @@ describe("user rgpd service", () => {
 
         it("notifies BATCH_USERS_DELETED", async () => {
             await userRgpdService.bulkDisableInactive();
-            const actual = jest.mocked(notifyService.notify).mock.calls;
+            const actual = jest.mocked(notifyService.notify).mock.calls[0][1];
             expect(actual).toMatchSnapshot();
         });
     });
