@@ -150,6 +150,11 @@ describe("user rgpd service", () => {
                 selfDeleted: false,
             });
         });
+
+        it("does not notify USER_DELETED if whileBatch", async () => {
+            await userRgpdService.disable(USER, false, true);
+            expect(mockedNotifyService.notify).not.toHaveBeenCalled();
+        });
     });
 
     describe("disableById", () => {
