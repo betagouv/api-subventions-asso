@@ -1,8 +1,8 @@
-import { InsertOneResult, MongoServerError } from "mongodb";
+import { InsertOneResult } from "mongodb";
 import { Siren } from "dto";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
-import { buildDuplicateIndexError, isDuplicateError } from "../../../shared/helpers/MongoHelper";
+import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import UniteLegalNameAdapter from "./UniteLegalName.adapter";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
@@ -52,8 +52,7 @@ export class UniteLegalNamePort extends MongoRepository<UniteLegalNameDbo> {
     insert(entity: UniteLegalNameEntity) {
         // Use stack because, sometimes to upsert on same entity as executed at the same time, please read : https://jira.mongodb.org/browse/SERVER-14322
         return this.insertSirenStack.addOperation(UniteLegalNameAdapter.toDbo(entity)).catch(error => {
-            if (error instanceof MongoServerError && isDuplicateError(error))
-                throw buildDuplicateIndexError<UniteLegalNameDbo>(error);
+            if (isMongoDuplicateError(error)) throw buildDuplicateIndexError<UniteLegalNameDbo>(error);
             return error;
         });
     }

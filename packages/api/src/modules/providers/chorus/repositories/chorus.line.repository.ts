@@ -1,9 +1,9 @@
 import { Siren, Siret } from "dto";
-import { MongoServerError, ObjectId, WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
-import { buildDuplicateIndexError, isDuplicateError } from "../../../../shared/helpers/MongoHelper";
+import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 
 export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
@@ -32,7 +32,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
 
     public async insertMany(entities: ChorusLineEntity[]) {
         return this.collection.insertMany(entities, { ordered: false }).catch(error => {
-            if (error instanceof MongoServerError && isDuplicateError(error)) {
+            if (isMongoDuplicateError(error)) {
                 throw buildDuplicateIndexError<ChorusLineEntity[]>(error);
             }
         });

@@ -1,6 +1,6 @@
 import { MongoServerError } from "mongodb";
 import { Siren } from "dto";
-import { buildDuplicateIndexError, isDuplicateError } from "../../../shared/helpers/MongoHelper";
+import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 import { UniteLegalEntrepriseAdapter } from "./UniteLegalEntreprise.adapter";
@@ -25,7 +25,7 @@ export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepri
             const dbos = entities.map(entity => UniteLegalEntrepriseAdapter.toDbo(entity));
             await this.collection.insertMany(dbos, { ordered: false });
         } catch (e: unknown) {
-            if (e instanceof MongoServerError && isDuplicateError(e)) {
+            if (isMongoDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
                 throw buildDuplicateIndexError<UniteLegalEntrepriseDbo[]>(e);
             }
