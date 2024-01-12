@@ -183,4 +183,45 @@ describe("user rgpd service", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("bulkDisableInactive", () => {
+        let disableMock: jest.SpyInstance;
+
+        beforeAll(() => {
+            jest.mocked(userRepository.findInactiveSince).mockResolvedValue([USER_WITHOUT_SECRET, USER_WITHOUT_SECRET]);
+            disableMock = jest.spyOn(userRgpdService, "disable").mockResolvedValue(true);
+        });
+
+        afterAll(() => {
+            jest.mocked(userRepository.findInactiveSince).mockReset();
+            disableMock.mockReset();
+        });
+
+        it("finds users inactive since 2 years", async () => {
+            jest.useFakeTimers();
+            const NOW = new Date("2024-01-12");
+            const THEN = new Date("2022-01-12");
+            jest.setSystemTime(NOW);
+            await userRgpdService.bulkDisableInactive();
+            expect(userRepository.findInactiveSince).toHaveBeenCalledWith(THEN);
+            jest.useRealTimers();
+        });
+
+        it("calls disable for each found user", async () => {
+            await userRgpdService.bulkDisableInactive();
+            expect(disableMock).toHaveBeenCalledTimes(2);
+        });
+
+        it("does not notify if no result", async () => {
+            jest.mocked(userRepository.findInactiveSince).mockResolvedValueOnce([]);
+            await userRgpdService.bulkDisableInactive();
+            expect(notifyService.notify).not.toHaveBeenCalled();
+        });
+
+        it("notifies BATCH_USERS_DELETED", async () => {
+            await userRgpdService.bulkDisableInactive();
+            const actual = jest.mocked(notifyService.notify).mock.calls;
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
