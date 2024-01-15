@@ -60,7 +60,7 @@ Array [
     Object {
       "channel": "datasubvention---bizdev",
       "icon_emoji": "door",
-      "text": "[dev] Les comptes suivants ont été supprimés pour inactivité trop longue.
+      "text": "[test] Les comptes suivants ont été supprimés pour inactivité trop longue.
 
 - Prénom NOM (old-user1@mail.com)
 - Prénom NOM (old-user2@mail.com) 

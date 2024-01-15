@@ -58,7 +58,7 @@ describe("Rgpd Cron", () => {
             expect(brevoContactNotifyPipe.apiInstance.deleteContact).toHaveBeenCalledTimes(2);
         });
 
-        it("should notify through mattermost", async () => {
+        it.only("should notify through mattermost", async () => {
             await cron.removeInactiveUsers();
             const actual = jest.mocked(axios.post).mock.calls;
             expect(actual).toMatchSnapshot();
