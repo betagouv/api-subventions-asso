@@ -1,11 +1,11 @@
 import { MongoServerError } from "mongodb";
 import { DuplicateIndexError } from "../errors/dbError/DuplicateIndexError";
 
-export const isDuplicateError = (error: MongoServerError) => {
+export function isMongoDuplicateError(error: unknown): error is MongoServerError {
+    if (!(error instanceof MongoServerError)) return false;
     const { code } = error;
-    if (!code) return false;
-    return ["E11000", "11000", 11000].includes(code);
-};
+    return code ? ["E11000", "11000", 11000].includes(code) : false;
+}
 
 export const buildDuplicateIndexError = <T>(error: MongoServerError): DuplicateIndexError<T> | MongoServerError => {
     // MongoServerError default errors are stored in writeErrors

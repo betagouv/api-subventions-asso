@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const child_process = require("child_process");
 
+// scalingo app name
 const appName = process.argv[2];
+// i.e : "requests" | "actions" | "evaluations"
 const importType = process.argv[3];
+// tar.gz with only files (no sub-directories) and a maximum size of 100mo
 const osirisFile = process.argv[4];
+// year of exercice (i.e: 2024)
 const yearOfFile = process.argv[5];
-const nessesaryMongoPlan = "mongo-business-2048";
 
 if (process.argv.length < 6) {
     console.error(
@@ -40,25 +43,18 @@ function scalingAsyncAppAction(action, value) {
     });
 }
 
-console.log("Welcome to automation deploy osiris files !\n");
+console.log("Welcome to OSIRIS automation deploy files !\n");
 
-console.log("Get mongodb id and mongo plan\n");
+console.log("Getting scalingo app info... \n");
 
 const addonsInfo = scalingoAppAction("addons", "").toString();
-console.log(addonsInfo);
+console.log("Scalingo addons info : ", "\n", addonsInfo, "\n");
 
 const mongoId = addonsInfo.split("\n")[3].split("|")[2].trim();
-const oldPlan = addonsInfo.split("\n")[3].split("|")[3].trim();
+const plan = addonsInfo.split("\n")[3].split("|")[3].trim();
 
-console.log(`Mongodb id found : ${mongoId}`);
-console.log(`Current plan : ${oldPlan}`);
-
-console.log(`Upgrade Plan of mongodb ${oldPlan} to ${nessesaryMongoPlan} ...`);
-
-// console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${nessesaryMongoPlan}`).toString());
-
-console.log(`Upgrade Plan of mongodb ${oldPlan} to ${nessesaryMongoPlan} DONE !`);
-
+console.log(`MongoDB id : ${mongoId}`);
+console.log(`Mongo plan : ${plan}`);
 console.log(`Start deploy ${appName} ...\n`);
 
 scalingAsyncAppAction(
@@ -67,15 +63,7 @@ scalingAsyncAppAction(
 ).then(() => {
     console.log("Extract end !");
 
-    console.log("Downgrade mongodb plan ...");
-
-    // console.log(scalingoAppAction("addons-upgrade", `${mongoId} ${oldPlan}`).toString());
-
-    console.log("Downgrade mongodb plan DONE !");
-
     console.log(`You can read logs in https://dashboard.scalingo.com/apps/osc-fr1/${appName}/activity/`);
-
-    console.log("PLEASE CHECK IF PLAN OF MONGODB AS BEEN DOWNGRADED");
 
     console.log("Have a good day !");
 

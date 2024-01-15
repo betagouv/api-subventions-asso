@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.43.1](https://github.com/betagouv/datasubvention/compare/v0.43.0...v0.43.1) (2024-01-10)
+
+**Note:** Version bump only for package front
+
+# [0.43.0](https://github.com/betagouv/datasubvention/compare/v0.42.3...v0.43.0) (2024-01-05)
+
+### Bug Fixes
+
+-   **front:** extract content in blob not uri ([e046574](https://github.com/betagouv/datasubvention/commit/e046574f9c8763fbabd134c351f7b62665b1b165))
+-   **front:** hides LDC documents ([5c41c6f](https://github.com/betagouv/datasubvention/commit/5c41c6f3600de6d0a7344f8d799bda4a1141bbf3))
+-   **front:** rename variable (review) ([59180ff](https://github.com/betagouv/datasubvention/commit/59180ffaa34da0f497c4d03e818ad3462377a2e5))
+-   **front:** use browser version for csv stringify ([20875f7](https://github.com/betagouv/datasubvention/commit/20875f7ea6eef9b00b6ac3379b8eddf04f60777f))
+
+### Features
+
+-   **api:** proxied doc url in query ([299d179](https://github.com/betagouv/datasubvention/commit/299d179410a1d14782f4d593de77355effaae375))
+-   **front:** a11y 'nouvelle fenêtre' in title ([5928a0e](https://github.com/betagouv/datasubvention/commit/5928a0e3a000d1692d6ddef5d00413cf76a237cf))
+-   **front:** change url matomo ([3c36caa](https://github.com/betagouv/datasubvention/commit/3c36caa16df4c7f459888696dd70e1ef0c3ad451))
+-   **front:** document card is download card ([24f0a15](https://github.com/betagouv/datasubvention/commit/24f0a15baacdd5b2969e8663a77d6369647dedda)), closes [#1565](https://github.com/betagouv/datasubvention/issues/1565)
+-   **front:** front adds domain and token to all document links ([b2358b6](https://github.com/betagouv/datasubvention/commit/b2358b610abbb901d4d341a313c479a6eecc98b1))
+-   **front:** neater csv generation ([50be925](https://github.com/betagouv/datasubvention/commit/50be925d8c48e323e2bcca51d6363619dd2a564f))
+-   **front:** new document card ([e1b6dd9](https://github.com/betagouv/datasubvention/commit/e1b6dd92ac79ab6ea2c61b6532fad3b768e1ba9f))
+-   **front:** separate docs by associated structure type ([b7d47d6](https://github.com/betagouv/datasubvention/commit/b7d47d6299c6b7d2d4181a4d12b5fc898c473b3f))
+-   **front:** sort documents by type label then date ([717f8da](https://github.com/betagouv/datasubvention/commit/717f8da193a66992c9e6c37bbc5cd2f4f12365d8))
+
 ## [0.42.3](https://github.com/betagouv/datasubvention/compare/v0.42.2...v0.42.3) (2023-12-19)
 
 ### Bug Fixes

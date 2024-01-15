@@ -24,7 +24,7 @@ describe("ChorusLineRepository", () => {
 
     describe("insertMany", () => {
         beforeEach(() => {
-            mockedMongoHelper.isDuplicateError.mockReturnValue(true);
+            mockedMongoHelper.isMongoDuplicateError.mockReturnValue(true);
         });
 
         it("should call buildDuplicateIndexError", async () => {
