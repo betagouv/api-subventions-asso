@@ -5,7 +5,7 @@ Object {
   "_id": Anything,
   "active": false,
   "disable": true,
-  "email": Anything,
+  "email": Any<String>,
   "firstName": "",
   "hashPassword": "",
   "jwt": null,
@@ -14,7 +14,7 @@ Object {
   "roles": Array [
     "user",
   ],
-  "signupAt": 2020-12-12T00:00:00.000Z,
+  "signupAt": Any<Date>,
 }
 `;
 
@@ -23,7 +23,7 @@ Object {
   "_id": Anything,
   "active": false,
   "disable": true,
-  "email": Anything,
+  "email": Any<String>,
   "firstName": "",
   "hashPassword": "",
   "jwt": null,
@@ -32,7 +32,7 @@ Object {
   "roles": Array [
     "user",
   ],
-  "signupAt": 2020-12-12T00:00:00.000Z,
+  "signupAt": Any<Date>,
 }
 `;
 
@@ -40,7 +40,7 @@ exports[`Rgpd Cron removeInactiveUsers() should disable users that did not use t
 Object {
   "_id": Anything,
   "active": true,
-  "email": Anything,
+  "email": Any<String>,
   "firstName": "Prénom",
   "hashPassword": "HASH_PASSWORD",
   "jwt": null,
@@ -49,7 +49,7 @@ Object {
   "roles": Array [
     "user",
   ],
-  "signupAt": 2024-01-02T00:00:00.000Z,
+  "signupAt": Any<Date>,
 }
 `;
 
