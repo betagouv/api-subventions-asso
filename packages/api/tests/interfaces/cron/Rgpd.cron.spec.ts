@@ -5,8 +5,8 @@ import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoCo
 import axios from "axios";
 
 describe("Rgpd Cron", () => {
-    const NOW_STR = "2024-01-02";
-    const NOW = new Date(NOW_STR);
+    const NOW = new Date(new Date().getFullYear(), 0, 1);
+    const NOW_STR = NOW.toString();
     let cron: RgpdCron;
 
     beforeEach(() => {
@@ -25,7 +25,7 @@ describe("Rgpd Cron", () => {
                 userRepository.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
-                    signupAt: new Date("2020-12-12"),
+                    signupAt: NOW,
                     jwt: { ...USER_DBO.jwt, expirateDate: new Date("2020-12-12") },
                 }),
                 userRepository.create({
@@ -43,7 +43,8 @@ describe("Rgpd Cron", () => {
             users.map(user =>
                 expect(user).toMatchSnapshot({
                     _id: expect.anything(),
-                    email: expect.anything(),
+                    email: expect.any(String),
+                    signupAt: expect.any(Date),
                 }),
             );
             users.map(user =>
@@ -53,7 +54,7 @@ describe("Rgpd Cron", () => {
 
         it("should delete the users on brevo", async () => {
             await cron.removeInactiveUsers();
-            // @ts-ignore
+            // @ts-expect-error -- test private instance
             expect(brevoContactNotifyPipe.apiInstance.deleteContact).toHaveBeenCalledTimes(2);
         });
 
