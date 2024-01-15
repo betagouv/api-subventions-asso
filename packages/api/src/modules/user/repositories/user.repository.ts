@@ -4,6 +4,7 @@ import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
+import { JWT_EXPIRES_TIME } from "../../../configurations/jwt.conf";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository extends MongoRepository<UserDbo> {
@@ -41,7 +42,7 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 
     async findInactiveSince(date: Date): Promise<UserDto[]> {
-        const tokenExpirationLimit = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
+        const tokenExpirationLimit = new Date(date.getTime() - JWT_EXPIRES_TIME);
         const query: Filter<UserDbo> = {
             $or: [
                 { "jwt.expirateDate": { $lt: tokenExpirationLimit } },
