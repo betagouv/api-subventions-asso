@@ -72,7 +72,7 @@ export class UserRgpdService {
         const results = await Promise.all(disablePromises);
 
         if (results.length)
-            notifyService.notify(NotificationType.BATCH_USERS_DELETED, {
+            await notifyService.notify(NotificationType.BATCH_USERS_DELETED, {
                 users: usersToDisable.map(user => ({
                     email: user.email,
                     firstname: user.firstName,
