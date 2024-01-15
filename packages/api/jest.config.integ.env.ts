@@ -2,7 +2,27 @@
 
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
-jest.mock("@getbrevo/brevo");
+jest.mock("@getbrevo/brevo", () => {
+    class ContactsApi {
+        createContact = jest.fn().mockResolvedValue(true);
+        updateContact = jest.fn().mockResolvedValue(true);
+        deleteContact = jest.fn().mockResolvedValue(true);
+    }
+    return {
+        TransactionalEmailsApi: jest.fn(),
+        SendSmtpEmail: jest.fn(() => ({ templateId: undefined })),
+        ApiClient: {
+            instance: {
+                authentications: {
+                    "api-key": {
+                        apiKey: undefined,
+                    },
+                },
+            },
+        },
+        ContactsApi,
+    };
+});
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
@@ -35,7 +55,7 @@ beforeAll(async () => {
 
     if (g.app) return;
     g.app = await startServer("1234", true);
-    await initIndexes()
+    await initIndexes();
 });
 
 beforeEach(async () => await addBetaGouvEmailDomain());
