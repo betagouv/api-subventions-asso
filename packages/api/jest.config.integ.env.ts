@@ -2,6 +2,7 @@
 
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
+jest.mock("./src/configurations/env.conf", () => ({ ENV: "test" }))
 jest.mock("@getbrevo/brevo", () => {
     class ContactsApi {
         createContact = jest.fn().mockResolvedValue(true);
