@@ -44,7 +44,7 @@ export default class SignupController {
     }
 
     getErrorMessage(error) {
-        return this.ERROR_MESSAGES[error.data.code] || "Une erreur est survenue lors de la création de votre compte.";
+        return this.ERROR_MESSAGES[error] || "Une erreur est survenue lors de la création de votre compte.";
     }
 
     get contactEmail() {

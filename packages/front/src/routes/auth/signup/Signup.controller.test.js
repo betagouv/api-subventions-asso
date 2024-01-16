@@ -107,13 +107,13 @@ describe("SignupController", () => {
 
         it("returns value from dict if found", () => {
             const expected = FOUND_MESSAGE;
-            const actual = ctrl.getErrorMessage({ data: { code: 42 } });
+            const actual = ctrl.getErrorMessage(42);
             expect(actual).toBe(expected);
         });
 
         it("returns default value if code not in dict", () => {
             const expected = "Une erreur est survenue lors de la création de votre compte.";
-            const actual = ctrl.getErrorMessage({ data: { code: 43 } });
+            const actual = ctrl.getErrorMessage(43);
             expect(actual).toBe(expected);
         });
     });
