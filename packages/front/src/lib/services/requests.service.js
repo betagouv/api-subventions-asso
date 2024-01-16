@@ -63,8 +63,8 @@ class RequestsService {
         const hooks = this._errorHooks.filter(hook => hook.ErrorClass === ErrorClass);
         const typedError = new ErrorClass(
             {
-                message: error.response.data.message,
-                code: error.response.data.code,
+                message: error?.response?.data.message || error.message,
+                code: error?.response?.data.code,
             },
             error,
         );
