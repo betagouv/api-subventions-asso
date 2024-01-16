@@ -184,10 +184,15 @@ export class ApiAssoService
 
     private filterActiveDacDocuments(documents: StructureDacDocumentDto[], structureIdentifier: StructureIdentifiers) {
         if (!Array.isArray(documents)) {
-            const errorMessage = "API-ASSO documents is not an array for structure " + structureIdentifier;
-            Sentry.captureException(new Error(errorMessage));
-            console.error(errorMessage);
-            return [];
+            if ((documents as Record<string, unknown>).uuid !== undefined) {
+                // When api have one document, it is not an array but a single object
+                documents = [documents];
+            } else {
+                const errorMessage = "API-ASSO structure do not contain documents or format is not supported. Structure identifier => " + structureIdentifier;
+                Sentry.captureException(new Error(errorMessage));
+                console.error(errorMessage);
+                return [];
+            }
         }
         return documents.filter(document => document.meta.etat === "courant");
     }
@@ -200,7 +205,6 @@ export class ApiAssoService
     private async findRibs(identifier: AssociationIdentifiers) {
         const documents = await this.fetchDocuments(identifier);
         if (!documents) return [];
-
         const activeDacDocuments = this.filterActiveDacDocuments(documents.document_dac || [], identifier);
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
         return ribs.map(rib => ApiAssoDtoAdapter.dacDocumentToRib(rib));
