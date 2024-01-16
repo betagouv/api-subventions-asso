@@ -91,7 +91,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                         });
                 }
 
-                Sentry.captureException({ response, body: wrongBody }); // Don't send to sentry if error is already caught
+                Sentry.captureException({ response, body: JSON.stringify(wrongBody) }); // Don't send to sentry if error is already caught
                 return false;
             });
     }
