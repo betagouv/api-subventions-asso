@@ -21,3 +21,16 @@ export const connectDB = () =>
 export const client = mongoClient;
 
 export default mongoClient.db(MONGO_DBNAME);
+
+const events: string[] = [
+    "serverOpening",
+    "serverClosed",
+    "serverDescriptionChanged",
+    "topologyOpening",
+    "topologyClosed",
+    "topologyDescriptionChanged",
+    "serverHeartbeatFailed",
+];
+for (const eventName of events) {
+    client.on(eventName, data => console.log(eventName, data));
+}
