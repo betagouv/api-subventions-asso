@@ -78,11 +78,15 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                     // It's error code for { code: 'duplicate_parameter', message: 'Contact already exist' }
                     // If user exists in other list brevo throws an error so we update contact to add in good list
                     return sendUpdate()
-                        .then(({ response }) => {
-                            const status = response.statusCode || 0;
-                            if (status > 200 && status < 300) return true;
+                        .then(updateAnwser => {
+                            if (!updateAnwser.response) {
+                                Sentry.captureException(updateAnwser);
+                                return false;
+                            }
+                            const status = updateAnwser.response.statusCode || 0;
+                            if (status >= 200 && status < 300) return true;
                             // Theoretically, this should never happen because mistakes should happen in "catch", but the lib seems to be behaving completely madly!
-                            Sentry.captureException({ response });
+                            Sentry.captureException({ response: updateAnwser.response });
                             return false;
                         })
                         .catch(e => {
