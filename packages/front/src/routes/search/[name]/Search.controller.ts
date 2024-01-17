@@ -25,7 +25,7 @@ export default class SearchController {
             if ((isSiren(name) || isRna(name)) && associations.length === 1) {
                 goto(`/association/${associations[0].siren || associations[0].rna}`, { replaceState: true });
             } else {
-                // display alert if there is duplicates in rna-siren links
+                // display alert if there are duplicates in rna-siren links
                 if (isSiren(name) || isRna(name)) {
                     this.duplicatesFromIdentifier.set(
                         associations.map(association =>
