@@ -111,14 +111,16 @@ export class ApiAssoService
                 : [structure.ribs.rib]
             : [];
 
-        return establishments.map(etablissement =>
-            ApiAssoDtoAdapter.toEtablissement(
-                etablissement,
-                ribs,
-                structure.representant_legal,
-                structure.identite.date_modif_siren,
-            ),
-        );
+        return establishments
+            .filter(establishment => establishment)
+            .map(establishment =>
+                ApiAssoDtoAdapter.toEtablissement(
+                    establishment,
+                    ribs,
+                    structure.representant_legal,
+                    structure.identite.date_modif_siren,
+                ),
+            );
     }
 
     private filterRnaDocuments(documents: StructureRnaDocumentDto[]) {
