@@ -13,7 +13,9 @@
         {#each duplicates as duplicate}
             <li>
                 {ctrl.duplicateType}
-                <u>{duplicate}</u>
+                <span class="bold">
+                    {duplicate}
+                </span>
             </li>
         {/each}
     </ul>

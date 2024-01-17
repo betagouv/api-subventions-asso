@@ -11,6 +11,14 @@ b {
 
 /* TEXT */
 
+.underline {
+    text-decoration: underline;
+}
+
+.bold {
+    font-weight: 700;
+}
+
 .ellipsis {
     overflow: hidden;
     white-space: nowrap;
