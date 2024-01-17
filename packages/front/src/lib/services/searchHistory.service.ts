@@ -1,6 +1,8 @@
+import type { SearchHistory } from "$lib/types/SearchHistory";
 import localStorageService from "$lib/services/localStorage.service";
+import type { ReadStore } from "$lib/core/Store";
 
-export const updateSearchHistory = currentSearch => {
+export const updateSearchHistory = (currentSearch: SearchHistory) => {
     let history = localStorageService.getItem("search-history").value || [];
     const currentSearchIndex = history.findIndex(search => search.rna === currentSearch.rna);
     // update current search to fill new design
@@ -19,7 +21,7 @@ export function clearSearchHistory() {
     // @ts-expect-error: bug
     localStorageService.setItem("search-history", []);
 }
-export const getSearchHistory = () => localStorageService.getItem("search-history", []);
+export const getSearchHistory = () => localStorageService.getItem("search-history", []) as ReadStore<SearchHistory[]>;
 
 export const checkOrDropSearchHistory = (newUserId: string) => {
     localStorageService.getItem("search-history", []);

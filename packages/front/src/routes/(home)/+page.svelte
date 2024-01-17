@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { HomeController } from "./Home.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
@@ -39,7 +39,7 @@
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
         {#each $searchHistory.reverse() as search}
-            <AssociationCard simplifiedAsso={search} />
+            <AssociationCard searchKey={search.siren} simplifiedAsso={search} />
         {/each}
     </div>
 {/if}

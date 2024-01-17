@@ -1,10 +1,15 @@
 import { getSearchHistory } from "$lib/services/searchHistory.service";
-import Store from "$lib/core/Store";
+import Store, { ReadStore } from "$lib/core/Store";
 import { goto } from "$app/navigation";
 import { encodeQuerySearch } from "$lib/helpers/urlHelper";
+import type { SearchHistory } from "$lib/types/SearchHistory";
 
 export class HomeController {
-    constructor(query = {}) {
+    searchHistory: ReadStore<SearchHistory[]>;
+    input: Store<string>;
+    successMessage: { title: string; content: string } | undefined;
+
+    constructor(query: { [k: string]: string } = {}) {
         this.searchHistory = getSearchHistory();
         this.input = new Store("");
         this.successMessage = this._getSuccessMessage(query.success);
