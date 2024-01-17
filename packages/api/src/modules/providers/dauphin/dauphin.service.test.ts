@@ -508,7 +508,7 @@ describe("Dauphin Service", () => {
                 findIdMock = jest.spyOn(dauphinService, "findDauphinInternalId").mockResolvedValue(ID);
                 httpGetSpy.mockResolvedValue({ data: httpSpy_RES });
                 // @ts-expect-error: mock
-                DauphinDtoAdapter.toDocuments.mockResolvedValue(ADAPTED_DOCS);
+                DauphinDtoAdapter.toDocuments.mockReturnValue(ADAPTED_DOCS);
             });
 
             afterAll(() => {

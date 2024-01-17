@@ -45,10 +45,7 @@ export async function startServer(port = "8080", isTest = false) {
             origin: true,
         }),
     );
-    // app.options('*', cors({
-    //     credentials: true,
-    //     origin: true,
-    // }))
+
     if (!isTest) app.use(expressLogger());
 
     app.use("/assets", AssetsMiddleware);

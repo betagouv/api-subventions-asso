@@ -1,4 +1,4 @@
-import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Res } from "tsoa";
+import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
 import {
     FutureUserDto,
     UserActivationInfoDto,
