@@ -9,6 +9,7 @@ Object {
   "firstName": "",
   "hashPassword": "",
   "jwt": null,
+  "lastActivityDate": 2020-12-12T00:00:00.000Z,
   "lastName": "",
   "profileToComplete": false,
   "roles": Array [
@@ -21,29 +22,12 @@ Object {
 exports[`Rgpd Cron removeInactiveUsers() should disable users that did not use the app for 2 years 2`] = `
 Object {
   "_id": Anything,
-  "active": false,
-  "disable": true,
-  "email": Any<String>,
-  "firstName": "",
-  "hashPassword": "",
-  "jwt": null,
-  "lastName": "",
-  "profileToComplete": false,
-  "roles": Array [
-    "user",
-  ],
-  "signupAt": Any<Date>,
-}
-`;
-
-exports[`Rgpd Cron removeInactiveUsers() should disable users that did not use the app for 2 years 3`] = `
-Object {
-  "_id": Anything,
   "active": true,
   "email": Any<String>,
   "firstName": "Prénom",
   "hashPassword": "HASH_PASSWORD",
   "jwt": null,
+  "lastActivityDate": null,
   "lastName": "NOM",
   "profileToComplete": false,
   "roles": Array [
@@ -63,7 +47,6 @@ Array [
       "text": "[test] Les comptes suivants ont été supprimés pour inactivité trop longue.
 
 - Prénom NOM (old-user1@mail.com)
-- Prénom NOM (old-user2@mail.com) 
 N'oubliez pas de supprimer toutes leurs données !",
       "username": "Suppression de comptes",
     },

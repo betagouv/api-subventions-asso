@@ -19,20 +19,14 @@ describe("Rgpd Cron", () => {
                 userRepository.create({
                     ...USER_DBO,
                     email: "old-user1@mail.com",
-                    signupAt: new Date("2020-12-12"),
-                    jwt: null,
-                }),
-                userRepository.create({
-                    ...USER_DBO,
-                    email: "old-user2@mail.com",
-                    signupAt: NOW,
-                    jwt: { ...USER_DBO.jwt, expirateDate: new Date("2020-12-12") },
+                    lastActivityDate: new Date("2020-12-12"),
                 }),
                 userRepository.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     jwt: null,
-                    signupAt: NOW,
+                    signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 6, -1),
+                    lastActivityDate: null,
                 }),
             ]);
         });
@@ -55,7 +49,7 @@ describe("Rgpd Cron", () => {
         it("should delete the users on brevo", async () => {
             await cron.removeInactiveUsers();
             // @ts-expect-error -- test private instance
-            expect(brevoContactNotifyPipe.apiInstance.deleteContact).toHaveBeenCalledTimes(2);
+            expect(brevoContactNotifyPipe.apiInstance.deleteContact).toHaveBeenCalledTimes(1);
         });
 
         it("should notify through mattermost", async () => {
