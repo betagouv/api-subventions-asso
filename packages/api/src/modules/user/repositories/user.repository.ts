@@ -42,15 +42,8 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 
     async findInactiveSince(date: Date): Promise<UserDto[]> {
-        const tokenExpirationLimit = new Date(date.getTime() - JWT_EXPIRES_TIME);
         const query: Filter<UserDbo> = {
-            $or: [
-                { "jwt.expirateDate": { $lt: tokenExpirationLimit } },
-                {
-                    "jwt.expirateDate": { $exists: false },
-                    signupAt: { $lt: date },
-                },
-            ],
+            $or: [{ lastActivityDate: { $lt: date } }],
             roles: { $ne: "admin" },
             disable: { $ne: true },
         };

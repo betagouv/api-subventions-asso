@@ -65,9 +65,10 @@ export class UserRgpdService {
 
     async bulkDisableInactive() {
         const now = new Date();
-        const lastConnexionLimit = new Date(now.valueOf());
-        lastConnexionLimit.setFullYear(now.getFullYear() - 2);
-        const usersToDisable = await userRepository.findInactiveSince(lastConnexionLimit);
+
+        const lastActivityLimit = new Date(now.valueOf());
+        lastActivityLimit.setFullYear(now.getFullYear() - 2);
+        const usersToDisable = await userRepository.findInactiveSince(lastActivityLimit);
         const disablePromises = usersToDisable.map(user => this.disable(user, false, true));
         const results = await Promise.all(disablePromises);
 
