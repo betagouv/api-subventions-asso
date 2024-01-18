@@ -9,6 +9,7 @@ export enum TemplateEnum {
     creation = 55,
     forgetPassword = 74,
     alreadySubscribed = 152,
+    autoDeletion = 156,
 }
 
 export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
@@ -29,6 +30,8 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
                 return this.sendForgetPasswordMail(data);
             case NotificationType.USER_CONFLICT:
                 return this.sendAlreadySubscribed(data);
+            case NotificationType.BATCH_USERS_DELETED:
+                return this.batchUsersDeleted(data);
             default:
                 return Promise.resolve(false);
         }
@@ -48,6 +51,15 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
 
     private sendAlreadySubscribed(data: NotificationDataTypes[NotificationType.USER_CONFLICT]) {
         return this.sendMail(data.email, { email: data.email }, TemplateEnum.alreadySubscribed);
+    }
+
+    private async batchUsersDeleted(data: NotificationDataTypes[NotificationType.BATCH_USERS_DELETED]) {
+        const res = await Promise.all(
+            data.users.map(miniUser =>
+                this.sendMail(miniUser.email, { email: miniUser.email }, TemplateEnum.autoDeletion),
+            ),
+        );
+        return res.every(Boolean);
     }
 
     async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {
