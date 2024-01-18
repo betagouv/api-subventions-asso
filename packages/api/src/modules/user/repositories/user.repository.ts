@@ -50,6 +50,15 @@ export class UserRepository extends MongoRepository<UserDbo> {
         return this.find(query);
     }
 
+    async findNotActivatedSince(date: Date): Promise<UserDto[]> {
+        const query: Filter<UserDbo> = {
+            $or: [{ lastActivityDate: null }, { signupAt: { $lt: date } }],
+            roles: { $ne: "admin" },
+            disable: { $ne: true },
+        };
+        return this.find(query);
+    }
+
     async update(user: Partial<UserDbo>, withJwt = false): Promise<UserDto | Omit<UserDbo, "hashPassword">> {
         const res = user._id
             ? await this.collection.findOneAndUpdate({ _id: user._id }, { $set: user }, { returnDocument: "after" })

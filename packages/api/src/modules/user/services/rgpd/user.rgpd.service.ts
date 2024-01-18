@@ -68,7 +68,13 @@ export class UserRgpdService {
 
         const lastActivityLimit = new Date(now.valueOf());
         lastActivityLimit.setFullYear(now.getFullYear() - 2);
-        const usersToDisable = await userRepository.findInactiveSince(lastActivityLimit);
+        const inactiveUsersToDisable = await userRepository.findInactiveSince(lastActivityLimit);
+
+        const lastSubscriptionNotActivatedLimit = new Date(now.valueOf());
+        lastSubscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 6);
+        const neverSeenUsersToDisable = await userRepository.findNotActivatedSince(lastSubscriptionNotActivatedLimit);
+
+        const usersToDisable = [...inactiveUsersToDisable, ...neverSeenUsersToDisable];
         const disablePromises = usersToDisable.map(user => this.disable(user, false, true));
         const results = await Promise.all(disablePromises);
 
