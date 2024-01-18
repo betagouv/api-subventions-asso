@@ -3,9 +3,10 @@ import userRepository from "../../../src/modules/user/repositories/user.reposito
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoContactNotifyPipe";
 import axios from "axios";
+import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 
 describe("Rgpd Cron", () => {
-    const NOW = new Date(new Date().getFullYear(), 0, 1);
+    const NOW = new Date();
     const NOW_STR = NOW.toString();
     let cron: RgpdCron;
 
@@ -24,14 +25,13 @@ describe("Rgpd Cron", () => {
                 userRepository.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
-                    jwt: null,
-                    signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 6, -1),
-                    lastActivityDate: null,
+                    lastActivityDate: new Date(NOW),
                 }),
                 userRepository.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
-                    lastActivityDate: new Date("2020-12-12"),
+                    signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 6, -1),
+                    lastActivityDate: null,
                 }),
             ]);
         });
@@ -39,13 +39,29 @@ describe("Rgpd Cron", () => {
         it("should disable users that did not use the app for 2 years", async () => {
             await cron.removeInactiveUsers();
             const users = await userRepository.findAll();
-            users.map(user =>
-                expect(user).toMatchSnapshot({
-                    _id: expect.anything(),
-                    email: expect.any(String),
-                    signupAt: expect.any(Date),
-                }),
-            );
+            const expected = [
+                {
+                    firstName: "",
+                    lastName: "",
+                    active: false,
+                    profileToComplete: false,
+                    disable: true,
+                },
+                {
+                    firstName: "Prénom",
+                    lastName: "NOM",
+                    active: true,
+                    profileToComplete: false,
+                },
+                {
+                    firstName: "",
+                    lastName: "",
+                    active: false,
+                    profileToComplete: false,
+                    disable: true,
+                },
+            ];
+            expect(users).toMatchObject(expected);
             users.map(user =>
                 expect(!user.disable || user.email === `${user._id}@deleted.datasubvention.beta.gouv.fr`),
             );
@@ -60,6 +76,13 @@ describe("Rgpd Cron", () => {
         it("should notify through mattermost", async () => {
             await cron.removeInactiveUsers();
             const actual = jest.mocked(axios.post).mock.calls;
+            expect(actual).toMatchSnapshot();
+        });
+
+        it("should notify users through brevo", async () => {
+            await cron.removeInactiveUsers();
+            // @ts-expect-error -- test private instance
+            const actual = jest.mocked(brevoMailNotifyPipe.apiInstance.sendTransacEmail).mock.calls;
             expect(actual).toMatchSnapshot();
         });
     });
