@@ -1,29 +1,40 @@
 import userRgpdService from "./user.rgpd.service";
 import consumerTokenRepository from "../../repositories/consumer-token.repository";
+import * as Sentry from "@sentry/node";
+
+jest.mock("@sentry/node");
+
 jest.mock("../../repositories/consumer-token.repository");
 const mockedConsumerTokenRepository = jest.mocked(consumerTokenRepository);
 import statsService from "../../../stats/stats.service";
+
 jest.mock("../../../stats/stats.service");
 const mockedStatsService = jest.mocked(statsService);
 import userCrudService from "../crud/user.crud.service";
+
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import { ANONYMIZED_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import { ObjectId } from "mongodb";
 import userResetRepository from "../../repositories/user-reset.repository";
+
 jest.mock("../../repositories/user-reset.repository");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
 import userRepository from "../../repositories/user.repository";
+
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
 import notifyService from "../../../notify/notify.service";
+
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+import userActivationService from "../activation/user.activation.service";
+
 jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
     uniformizeId: jest.fn(token => token),
@@ -240,6 +251,72 @@ describe("user rgpd service", () => {
             await userRgpdService.bulkDisableInactive();
             const actual = jest.mocked(notifyService.notify).mock.calls[0][1];
             expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("warnDisableInactive", () => {
+        let resetMock: jest.SpyInstance;
+        let NOW, THEN;
+
+        beforeAll(() => {
+            jest.useFakeTimers();
+            NOW = new Date("2024-01-12");
+            THEN = new Date("2023-08-12");
+            jest.setSystemTime(NOW);
+            jest.mocked(userRepository.findNotActivatedSince).mockResolvedValue([
+                USER_WITHOUT_SECRET,
+                USER_WITHOUT_SECRET,
+            ]);
+            resetMock = jest.spyOn(userActivationService, "resetUser").mockResolvedValue({
+                userId: new ObjectId(),
+                token: "FAKE_TOKEN",
+                createdAt: new Date(),
+            });
+        });
+
+        afterAll(() => {
+            jest.mocked(userRepository.findNotActivatedSince).mockReset();
+            resetMock.mockReset();
+            jest.useRealTimers();
+        });
+
+        it("finds users never seen for 5 month", async () => {
+            await userRgpdService.warnDisableInactive();
+            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN);
+        });
+
+        it("calls reset for each found user", async () => {
+            await userRgpdService.warnDisableInactive();
+            expect(resetMock).toHaveBeenCalledTimes(2);
+        });
+
+        it("notifies WARN_NEW_USER_TO_BE_DELETED for each success", async () => {
+            await userRgpdService.warnDisableInactive();
+            const actual = jest.mocked(notifyService.notify).mock.calls;
+            expect(actual).toMatchSnapshot();
+        });
+
+        describe("if one reset fails", () => {
+            const ERROR = new Error("test");
+
+            beforeEach(() => {
+                resetMock.mockRejectedValueOnce(ERROR);
+            });
+
+            it("notify only successful resets", async () => {
+                await userRgpdService.warnDisableInactive();
+                expect(notifyService.notify).toHaveBeenCalledTimes(1);
+            });
+
+            it("captures exception to Sentry", async () => {
+                await userRgpdService.warnDisableInactive();
+                expect(Sentry.captureException).toHaveBeenCalledWith(ERROR);
+            });
+
+            it("does not fail but return false", async () => {
+                const test = userRgpdService.warnDisableInactive();
+                expect(test).resolves.toBe(false);
+            });
         });
     });
 });

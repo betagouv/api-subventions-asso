@@ -16,3 +16,22 @@ Object {
   ],
 }
 `;
+
+exports[`user rgpd service warnDisableInactive notifies WARN_NEW_USER_TO_BE_DELETED for each success 1`] = `
+Array [
+  Array [
+    12,
+    Object {
+      "activationLink": "http://localhost:5173/auth/reset-password/FAKE_TOKEN",
+      "email": "user@beta.gouv.fr",
+    },
+  ],
+  Array [
+    12,
+    Object {
+      "activationLink": "http://localhost:5173/auth/reset-password/FAKE_TOKEN",
+      "email": "user@beta.gouv.fr",
+    },
+  ],
+]
+`;

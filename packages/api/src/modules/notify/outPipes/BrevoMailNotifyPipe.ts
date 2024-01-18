@@ -10,6 +10,7 @@ export enum TemplateEnum {
     forgetPassword = 74,
     alreadySubscribed = 152,
     autoDeletion = 156,
+    warnDeletion = 155,
 }
 
 export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
@@ -32,6 +33,8 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
                 return this.sendAlreadySubscribed(data);
             case NotificationType.BATCH_USERS_DELETED:
                 return this.batchUsersDeleted(data);
+            case NotificationType.WARN_NEW_USER_TO_BE_DELETED:
+                return this.warnUsersBeforeAutoDeletion(data);
             default:
                 return Promise.resolve(false);
         }
@@ -60,6 +63,10 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
             ),
         );
         return res.every(Boolean);
+    }
+
+    private warnUsersBeforeAutoDeletion(data: NotificationDataTypes[NotificationType.WARN_NEW_USER_TO_BE_DELETED]) {
+        return this.sendMail(data.email, data, TemplateEnum.warnDeletion);
     }
 
     async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {

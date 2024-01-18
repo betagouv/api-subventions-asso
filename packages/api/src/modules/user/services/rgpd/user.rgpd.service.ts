@@ -10,6 +10,8 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import userRepository from "../../repositories/user.repository";
 import userCrudService from "../crud/user.crud.service";
 import { DefaultObject } from "../../../../@types";
+import userActivationService from "../activation/user.activation.service";
+import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
@@ -92,6 +94,32 @@ export class UserRgpdService {
                     lastname: user.lastName,
                 })),
             });
+        return results.every(Boolean);
+    }
+
+    async warnDisableInactive() {
+        const now = new Date();
+
+        const lastSubscriptionNotActivatedLimit = new Date(now.valueOf());
+        lastSubscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 5);
+        const usersToWarn = await userRepository.findNotActivatedSince(lastSubscriptionNotActivatedLimit);
+
+        const promises = usersToWarn.map(user =>
+            userActivationService
+                .resetUser(user)
+                .then(reset => {
+                    notifyService.notify(NotificationType.WARN_NEW_USER_TO_BE_DELETED, {
+                        email: user.email,
+                        activationLink: `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}`,
+                    });
+                    return true;
+                })
+                .catch(error => {
+                    Sentry.captureException(error);
+                    return false;
+                }),
+        );
+        const results = await Promise.all(promises);
         return results.every(Boolean);
     }
 
