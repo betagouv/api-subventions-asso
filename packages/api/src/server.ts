@@ -14,6 +14,7 @@ import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
 import RegisterSSERoutes from "./sse";
 import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
+import UserActivityMiddleware from "./middlewares/UserActivityMiddleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
@@ -59,6 +60,8 @@ export async function startServer(port = "8080", isTest = false) {
             factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware),
         ),
     );
+
+    app.use((req, res, next) => UserActivityMiddleware(req as IdentifiedRequest, res, next));
 
     app.use(headersMiddleware);
 
