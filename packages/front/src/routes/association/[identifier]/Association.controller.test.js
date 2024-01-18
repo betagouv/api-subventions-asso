@@ -19,7 +19,7 @@ describe("Association Controller", () => {
     beforeAll(() => {
         associationService.getEstablishments.mockResolvedValue([]);
         associationService.getAssociation.mockResolvedValue({});
-        mockedRnaSirenService.getAssociatedIdentifier.mockImplementation(async () => [RNA_SIREN]);
+        mockedRnaSirenService.getAssociatedIdentifier.mockResolvedValue([RNA_SIREN]);
     });
 
     beforeEach(() => {
