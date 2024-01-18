@@ -53,4 +53,8 @@ export interface NotificationDataTypes {
         cronName: string;
         error: Error;
     };
+    [NotificationType.WARN_NEW_USER_TO_BE_DELETED]: {
+        email: string;
+        activationLink: string;
+    };
 }

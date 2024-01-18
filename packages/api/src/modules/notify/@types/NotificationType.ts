@@ -11,4 +11,5 @@ export enum NotificationType {
     USER_CONFLICT,
     SIGNUP_BAD_DOMAIN,
     FAILED_CRON,
+    WARN_NEW_USER_TO_BE_DELETED,
 }
