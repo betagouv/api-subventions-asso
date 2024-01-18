@@ -17,6 +17,7 @@ export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "pas
     signupAt: Date;
     profileToComplete: boolean;
     disable?: boolean;
+    lastActivityDate: Date | null;
 }
 
 export interface UserActivationInfoDto {
