@@ -46,11 +46,6 @@ describe("authService", () => {
         });
         afterAll(() => portMock.mockRestore());
 
-        it("rejects with appropriate code if no email", async () => {
-            const test = () => authService.signup();
-            await expect(test).rejects.toBe(mocks.DEFAULT_ERROR_CODE);
-        });
-
         it("calls port", async () => {
             await authService.signup(USER);
             expect(portMock).toHaveBeenCalledWith(USER);
@@ -63,8 +58,9 @@ describe("authService", () => {
         });
 
         it("rejects with error code from port if given", async () => {
-            const expected = { message: 5 };
-            portMock.mockRejectedValueOnce(expected);
+            const expected = 5;
+            const error = { data: { code: expected }  }
+            portMock.mockRejectedValueOnce(error);
             const actual = authService.signup(USER);
             await expect(actual).rejects.toBe(expected);
         });

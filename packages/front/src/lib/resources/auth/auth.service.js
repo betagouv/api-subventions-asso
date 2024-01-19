@@ -14,8 +14,10 @@ export class AuthService {
     USER_LOCAL_STORAGE_KEY = "datasubvention-user";
 
     signup(signupUser) {
-        if (!signupUser?.email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
-        return authPort.signup(signupUser);
+        if (!signupUser?.email) {
+            if (!signupUser?.email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
+        }
+        return authPort.signup(signupUser).catch(error => Promise.reject(error.data.code));
     }
 
     resetPassword(token, password) {
