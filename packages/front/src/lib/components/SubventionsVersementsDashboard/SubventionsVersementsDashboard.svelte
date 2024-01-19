@@ -32,7 +32,7 @@
     <Spinner description="Chargement des demandes de subventions en cours ..." />
 {:then _null}
     <div class="fr-grid-row fr-mt-3w fr-py-2w flex space-between">
-        <h2>Tableau de bord</h2>
+        <h2>Demandes de subventions collectées</h2>
         <div class="baseline">
             {#if $elements && $elements.length}
                 <Button
