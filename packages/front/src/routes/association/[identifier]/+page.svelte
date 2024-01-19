@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import TabsAsso from "./components/TabsAsso.svelte";
     import { AssociationController } from "./Association.controller";
     import DuplicateAlert from "./components/DuplicateAlert.svelte";
@@ -37,7 +37,7 @@
             <InfosLegales {association} />
         </div>
         <div class="fr-mb-6w">
-            <TabsAsso {titles} associationIdentifier={identifier} {association} />
+            <TabsAsso {titles} associationIdentifier={identifier} />
         </div>
     {:else}
         <div class="fr-mb-3w">

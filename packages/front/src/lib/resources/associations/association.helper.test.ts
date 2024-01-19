@@ -1,8 +1,8 @@
 import DEFAULT_ASSOCIATION from "./__fixtures__/Association";
 import * as AssociationHelper from "./association.helper";
-import { isAssoCategory } from "$lib/helpers/entrepriseHelper";
-
+import * as EntrepriseHelper from "$lib/helpers/entrepriseHelper";
 vi.mock("$lib/helpers/entrepriseHelper.js");
+const mockedEntrepriseHelper = vi.mocked(EntrepriseHelper);
 
 describe("Association Helper", () => {
     describe("getAddress", () => {
@@ -100,7 +100,7 @@ describe("Association Helper", () => {
         });
 
         it("should return true if no rna but proper 'categorie_juridique'", () => {
-            isAssoCategory.mockReturnValueOnce(true);
+            mockedEntrepriseHelper.isAssoCategory.mockReturnValueOnce(true);
             const ASSO = { categorie_juridique: "" };
             const expected = true;
             const actual = AssociationHelper.isAssociation(ASSO);
@@ -108,7 +108,7 @@ describe("Association Helper", () => {
         });
 
         it("should return false if neither rna nor proper 'categorie_juridique'", () => {
-            isAssoCategory.mockReturnValueOnce(false);
+            mockedEntrepriseHelper.isAssoCategory.mockReturnValueOnce(false);
             const ASSO = { categorie_juridique: "" };
             const expected = false;
             const actual = AssociationHelper.isAssociation(ASSO);

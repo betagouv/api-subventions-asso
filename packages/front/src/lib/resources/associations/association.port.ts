@@ -1,3 +1,4 @@
+import type { Association } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class AssociationPort {
@@ -6,7 +7,7 @@ class AssociationPort {
         requestsService.get(path).catch(() => null);
     }
 
-    async getByIdentifier(identifier) {
+    async getByIdentifier(identifier): Promise<Association | undefined> {
         const path = `/association/${identifier}`;
         return (await requestsService.get(path))?.data?.association;
     }

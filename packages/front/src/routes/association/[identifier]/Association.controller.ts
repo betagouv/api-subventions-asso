@@ -13,6 +13,9 @@ export class AssociationController {
         "Bodacc",
     ];
 
+    associationPromise: Promise<unknown>;
+    simplifiedEstablishmentPromise: Promise<unknown>;
+
     constructor(identifier) {
         this.duplicatesFromRna = new Store(null);
         this.duplicatesFromSiren = new Store(null);
