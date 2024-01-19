@@ -14,6 +14,8 @@ import userAuthService from "../../modules/user/services/auth/user.auth.service"
 import userProfileService from "../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../modules/user/services/activation/user.activation.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
+import { DOMAIN } from "../../configurations/domain.conf";
+import { JWT_EXPIRES_TIME } from "../../configurations/jwt.conf";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -45,6 +47,13 @@ export class AuthentificationHttp extends Controller {
 
         if (req.user) {
             // Successfully logged
+            req.res?.cookie("token", req.user.jwt.token, {
+                secure: true,
+                sameSite: "none",
+                domain: DOMAIN,
+                expires: new Date(new Date().getTime() + JWT_EXPIRES_TIME),
+                httpOnly: true,
+            });
             return {
                 user: req.user,
             };

@@ -183,13 +183,6 @@ describe("authService", () => {
             getCurrentUserMock.mockRestore();
         });
 
-        it("should call requestService initialisation", () => {
-            const token = "FAKE_TOKEN";
-            getCurrentUserMock.mockReturnValueOnce({ jwt: { token } });
-            authService.initUserInApp();
-            expect(requestsService.initAuthentication).toHaveBeenCalledWith(token);
-        });
-
         it("sets crisp email value", () => {
             const EMAIL = "a@b.c";
             getCurrentUserMock.mockReturnValueOnce({ email: EMAIL });

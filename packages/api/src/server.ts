@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import express, { NextFunction, Response } from "express";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 import * as Sentry from "@sentry/node";
 
 import cors from "cors";
@@ -37,10 +38,11 @@ export async function startServer(port = "8080", isTest = false) {
 
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
     app.use(Sentry.Handlers.requestHandler());
-
+    app.use(cookieParser());
     app.use(
         cors({
-            origin: "*",
+            credentials: true,
+            origin: true,
         }),
     );
 

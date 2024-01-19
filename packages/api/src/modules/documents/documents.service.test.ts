@@ -363,7 +363,8 @@ describe("Documents Service", () => {
     });
 
     describe("aggregate", () => {
-        const fn = jest.fn(async () => [{}, {}]);
+        const documents = [{type: "TEST"}, {type: "TEST"}];
+        const fn = jest.fn(async () => documents);
         const providers = [
             {
                 getDocuments: fn,
@@ -376,7 +377,7 @@ describe("Documents Service", () => {
         });
 
         it("return documents", async () => {
-            const expected = [{}, {}];
+            const expected = documents;
             // @ts-expect-error: private method
             const actual = await documentsService.aggregate(providers, "getDocuments", SIREN);
             expect(actual).toEqual(expected);
