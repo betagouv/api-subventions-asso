@@ -1,6 +1,6 @@
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.adapter";
-import { isRna, isStartOfSiret } from "$lib/helpers/validatorHelper";
+import { isRna, isStartOfSiret } from "$lib/helpers/identifierHelper";
 import { siretToSiren } from "$lib/helpers/sirenHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
 import { updateSearchHistory } from "$lib/services/searchHistory.service";

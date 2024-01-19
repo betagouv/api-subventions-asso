@@ -4,7 +4,7 @@ import SubventionTableController from "./SubventionTable/SubventionTable.control
 import VersementTableController from "./VersementTable/VersementTable.controller";
 import versementsService from "$lib/resources/versements/versements.service";
 import subventionsService from "$lib/resources/subventions/subventions.service";
-import { isSiret } from "$lib/helpers/validatorHelper";
+import { isSiret } from "$lib/helpers/identifierHelper";
 import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import associationService from "$lib/resources/associations/association.service";
