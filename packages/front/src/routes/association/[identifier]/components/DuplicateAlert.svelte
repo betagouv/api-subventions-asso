@@ -13,7 +13,7 @@
         {#each duplicates as duplicate}
             <li>
                 {ctrl.duplicateType}
-                <span class="bold">
+                <span class="fr-text--bold">
                     {duplicate}
                 </span>
             </li>

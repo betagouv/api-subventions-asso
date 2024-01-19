@@ -56,7 +56,7 @@ describe("IdentifierHelper", () => {
         });
     });
 
-    // find a way to test isIdentifier but with mocked isRna and other named exported methods
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    describe.skip("isIdentifier()", () => {});
+    // TODO/STUCK: Could not find a way to test exported named function that calls exported named function from the same file
+    // this is why isIdentifier() is not tested because calls to validators cannot be mocked when we use standard vi.mock()
+    // maybe there is a way to import isIdentifier inline after mocking validators...
 });
