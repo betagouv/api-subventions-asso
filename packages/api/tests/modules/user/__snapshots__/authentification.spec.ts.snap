@@ -12,6 +12,7 @@ Object {
     "expirateDate": Any<String>,
     "token": Any<String>,
   },
+  "lastActivityDate": null,
   "lastName": null,
   "profileToComplete": false,
   "roles": Array [

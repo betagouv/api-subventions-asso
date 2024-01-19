@@ -6,6 +6,7 @@ Object {
   "active": true,
   "email": "active.user@beta.gouv.fr",
   "firstName": null,
+  "lastActivityDate": null,
   "lastName": null,
   "profileToComplete": true,
   "roles": Array [

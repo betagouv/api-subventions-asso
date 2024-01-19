@@ -86,6 +86,7 @@ export class UserCrudService {
             firstName: sanitizedUser.firstName || null,
             lastName: sanitizedUser.lastName || null,
             profileToComplete: true,
+            lastActivityDate: null,
         };
 
         const now = new Date();
