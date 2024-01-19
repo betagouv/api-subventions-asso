@@ -94,7 +94,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
 
             if (result?.errors?.length)
                 throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
-            if (!result || !result.data)
+            if (!result?.data?.demarche)
                 throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
 
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);

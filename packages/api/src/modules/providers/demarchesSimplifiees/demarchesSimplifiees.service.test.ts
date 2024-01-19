@@ -261,7 +261,7 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             // @ts-expect-error mock
-            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue({ data: {} });
+            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue({ data: { demarche: {}} });
             toEntitiesMock = jest
                 .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
                 // @ts-expect-error disable ts form return type of toEntities
@@ -284,7 +284,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call toEntities", async () => {
-            const expected = { data: true };
+            const expected = { data: { demarche: true} };
 
             sendQueryMock.mockResolvedValueOnce(expected);
 
@@ -294,7 +294,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should upsert data", async () => {
-            const expected = { data: true };
+            const expected = { data: { demarche: true} };
 
             sendQueryMock.mockResolvedValueOnce(expected);
 
