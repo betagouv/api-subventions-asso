@@ -31,8 +31,8 @@
 {#await promise}
     <Spinner description="Chargement des demandes de subventions en cours ..." />
 {:then _null}
-    <div class="fr-grid-row fr-mt-3w fr-py-2w flex space-between">
-        <h2>Demandes de subventions collectées</h2>
+    <div class="fr-grid-row fr-my-4w flex space-between">
+        <h2 class="fr-mb-0">Demandes de subventions collectées</h2>
         <div class="baseline">
             {#if $elements && $elements.length}
                 <Button
@@ -46,7 +46,7 @@
             {/if}
         </div>
     </div>
-    <div class="fr-grid-row fr-py-4w flex space-between">
+    <div class="fr-grid-row flex space-between">
         <div class="fr-col-3">
             {#if $exercicesOptions.length}
                 <Select
@@ -64,7 +64,7 @@
             Voir la liste des fournisseurs de données
         </Button>
     </div>
-    <div class="fr-py-3w compact-columns">
+    <div class="compact-columns">
         {#if $elements?.length}
             <SubventionsVersementsStatistique elements={$elements} year={$selectedYear} />
             {#if $loaderStateStore.status != "end"}
