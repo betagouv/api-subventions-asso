@@ -13,6 +13,8 @@ export class AssociationController {
         "Bodacc",
     ];
 
+    duplicatesFromRna;
+    duplicatesFromSiren;
     associationPromise: Promise<unknown>;
     simplifiedEstablishmentPromise: Promise<unknown>;
 
@@ -20,6 +22,7 @@ export class AssociationController {
         this.duplicatesFromRna = new Store(null);
         this.duplicatesFromSiren = new Store(null);
         this.associationPromise = associationService.getAssociation(identifier).then(asso => {
+            if (!asso) return asso;
             this.getRnaSirenDuplicates(asso.rna, asso.siren);
             currentAssociation.set(asso);
             return asso;
