@@ -4,7 +4,7 @@ import { IdentifiedRequest } from "../@types";
 import userCrudService from "../modules/user/services/crud/user.crud.service";
 
 export default function UserActivityMiddleware(req: IdentifiedRequest, _res: Response, next: NextFunction) {
-    if (!req.user || isRequestFromAdmin(req)) return;
+    if (!req.user || isRequestFromAdmin(req)) return next();
     const user = req.user;
     user.lastActivityDate = new Date();
 
