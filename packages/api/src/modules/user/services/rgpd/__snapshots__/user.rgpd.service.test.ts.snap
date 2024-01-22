@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`user rgpd service bulkDisableInactive notifies BATCH_USERS_DELETED 1`] = `
+Object {
+  "users": Array [
+    Object {
+      "email": "user@beta.gouv.fr",
+      "firstname": "Prénom",
+      "lastname": "NOM",
+    },
+    Object {
+      "email": "user@beta.gouv.fr",
+      "firstname": "Prénom",
+      "lastname": "NOM",
+    },
+  ],
+}
+`;

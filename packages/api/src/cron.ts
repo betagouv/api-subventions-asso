@@ -6,6 +6,7 @@ import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees
 import { DauphinCron } from "./interfaces/cron/Dauphin.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
+import { RgpdCron } from "./interfaces/cron/Rgpd.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,
@@ -13,6 +14,7 @@ const controllers: CronController[] = [
     DauphinCron,
     DumpCron,
     HistoryUniteLegalCron,
+    RgpdCron,
 ];
 
 export const scheduler = new ToadScheduler();

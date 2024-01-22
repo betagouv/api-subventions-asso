@@ -1,4 +1,5 @@
 import axios from "axios";
+import dedent from "dedent";
 import { FutureUserDto } from "dto";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
@@ -10,8 +11,6 @@ enum MattermostChannels {
 }
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
-    accepts = [NotificationType.USER_DELETED, NotificationType.SIGNUP_BAD_DOMAIN, NotificationType.FAILED_CRON];
-
     private readonly apiUrl: string;
 
     constructor() {
@@ -22,6 +21,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         switch (type) {
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
+            case NotificationType.BATCH_USERS_DELETED:
+                return this.batchUsersDeleted(data);
             case NotificationType.SIGNUP_BAD_DOMAIN:
                 return this.badEmailDomain(data);
             case NotificationType.FAILED_CRON:
@@ -45,14 +46,36 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
     }
 
     private userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {
-        const message = `${data.firstname || ""} ${data.lastname || ""} (${
-            data.email
-        }) a supprimé son compte, veuillez supprimer toutes ses données\xA0!`;
+        const message = data.selfDeleted
+            ? `${data.firstname || ""} ${data.lastname || ""} (${
+                  data.email
+              }) a supprimé son compte, veuillez supprimer toutes ses données !`
+            : `Le compte de ${data.firstname || ""} ${data.lastname || ""} (${
+                  data.email
+              }) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !`;
 
         return this.sendMessage({
             text: message,
             channel: MattermostChannels.BIZDEV,
             username: "Suppression de compte",
+            icon_emoji: "door",
+        });
+    }
+
+    private batchUsersDeleted(data: NotificationDataTypes[NotificationType.BATCH_USERS_DELETED]) {
+        const emailsMdList = data.users.reduce(
+            (mdList: string, miniUser) =>
+                `${mdList}\n- ${miniUser.firstname || ""} ${miniUser.lastname || ""} (${miniUser.email})`,
+            "",
+        );
+        const message = dedent`Les comptes suivants ont été supprimés pour inactivité trop longue.
+        ${emailsMdList} 
+        N'oubliez pas de supprimer toutes leurs données !`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.BIZDEV,
+            username: "Suppression de comptes",
             icon_emoji: "door",
         });
     }

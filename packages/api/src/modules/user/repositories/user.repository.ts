@@ -4,6 +4,7 @@ import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
+import { JWT_EXPIRES_TIME } from "../../../configurations/jwt.conf";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository extends MongoRepository<UserDbo> {
@@ -37,6 +38,15 @@ export class UserRepository extends MongoRepository<UserDbo> {
     async findByPeriod(begin: Date, end: Date, withAdmin): Promise<UserDto[]> {
         const query: Filter<UserDbo> = { signupAt: { $gte: begin, $lt: end } };
         if (!withAdmin) query.roles = { $ne: "admin" };
+        return this.find(query);
+    }
+
+    async findInactiveSince(date: Date): Promise<UserDto[]> {
+        const query: Filter<UserDbo> = {
+            lastActivityDate: { $lt: date },
+            roles: { $ne: "admin" },
+            disable: { $ne: true },
+        };
         return this.find(query);
     }
 

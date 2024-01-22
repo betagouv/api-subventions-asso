@@ -12,7 +12,6 @@ describe("NotifyService", () => {
 
         it("should call outPipe notify", async () => {
             const fakeOutPipe: NotifyOutPipe = {
-                accepts: [NotificationType.TEST_EMAIL],
                 notify: jest.fn(() => Promise.resolve(true)),
             };
 
@@ -24,20 +23,6 @@ describe("NotifyService", () => {
             await notifyService.notify(NotificationType.TEST_EMAIL, expected);
 
             expect(fakeOutPipe.notify).toHaveBeenCalledWith(NotificationType.TEST_EMAIL, expected);
-        });
-
-        it("should call only good outPipe", async () => {
-            const outPipe: NotifyOutPipe = {
-                accepts: [],
-                notify: jest.fn(),
-            };
-
-            // @ts-expect-error outPipes is private attributes
-            notifyService.outPipes = [outPipe];
-
-            await notifyService.notify(NotificationType.TEST_EMAIL, { email: "Fake email", templateId: 0 });
-
-            expect(outPipe.notify).not.toHaveBeenCalled();
         });
     });
 });

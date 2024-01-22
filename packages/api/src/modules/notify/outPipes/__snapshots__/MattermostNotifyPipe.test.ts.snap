@@ -9,11 +9,33 @@ Object {
 }
 `;
 
-exports[`MattermostNotifyPipe userDeleted sends message with proper payload 1`] = `
+exports[`MattermostNotifyPipe batchUsersDeleted sends message with proper payload 1`] = `
 Object {
   "channel": "datasubvention---bizdev",
   "icon_emoji": "door",
-  "text": "Prénom NOM (email) a supprimé son compte, veuillez supprimer toutes ses données !",
+  "text": "Les comptes suivants ont été supprimés pour inactivité trop longue.
+
+- Prénom  (some@email.fr)
+-  Nom (some-other@email.fr) 
+N'oubliez pas de supprimer toutes leurs données !",
+  "username": "Suppression de comptes",
+}
+`;
+
+exports[`MattermostNotifyPipe userDeleted sends message with proper payload with false selfDeleted 1`] = `
+Object {
+  "channel": "datasubvention---bizdev",
+  "icon_emoji": "door",
+  "text": "Le compte de Prénom NOM (email) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !",
+  "username": "Suppression de compte",
+}
+`;
+
+exports[`MattermostNotifyPipe userDeleted sends message with proper payload with truthy selfDeleted 1`] = `
+Object {
+  "channel": "datasubvention---bizdev",
+  "icon_emoji": "door",
+  "text": "Prénom NOM (email) a supprimé son compte, veuillez supprimer toutes ses données !",
   "username": "Suppression de compte",
 }
 `;

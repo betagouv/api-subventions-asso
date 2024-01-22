@@ -78,11 +78,21 @@ describe("MattermostNotifyPipe", () => {
     });
 
     describe("userDeleted", () => {
-        it("sends message with proper payload", async () => {
+        it("sends message with proper payload with false selfDeleted", async () => {
             // @ts-expect-error -- private method
             const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
             // @ts-expect-error -- private method
             await notifyPipe.userDeleted(USER_DELETED_PAYLOAD);
+            // @ts-expect-error -- private method does not expect calls
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+
+        it("sends message with proper payload with truthy selfDeleted", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.userDeleted({ ...USER_DELETED_PAYLOAD, selfDeleted: true });
             // @ts-expect-error -- private method does not expect calls
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual).toMatchSnapshot();
@@ -95,6 +105,23 @@ describe("MattermostNotifyPipe", () => {
             const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
             // @ts-expect-error -- private method
             await notifyPipe.badEmailDomain({ email: "some@email.fr" });
+            // @ts-expect-error -- private method does not expect calls
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("batchUsersDeleted", () => {
+        it("sends message with proper payload", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.batchUsersDeleted({
+                users: [
+                    { email: "some@email.fr", firstname: "Prénom" },
+                    { email: "some-other@email.fr", lastname: "Nom" },
+                ],
+            });
             // @ts-expect-error -- private method does not expect calls
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual).toMatchSnapshot();

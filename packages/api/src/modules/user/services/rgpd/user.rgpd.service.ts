@@ -1,4 +1,4 @@
-import { UserDataDto } from "dto";
+import { UserDataDto, UserDto } from "dto";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import userResetRepository from "../../repositories/user-reset.repository";
 import consumerTokenRepository from "../../repositories/consumer-token.repository";
@@ -38,8 +38,12 @@ export class UserRgpdService {
         };
     }
 
-    public async disable(userId: string) {
+    public async disableById(userId: string, self = true) {
         const user = await userCrudService.getUserById(userId);
+        return this.disable(user, self);
+    }
+
+    public async disable(user: UserDto | null, self = true, whileBatch = false) {
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
@@ -54,9 +58,29 @@ export class UserRgpdService {
             lastName: "",
         };
 
-        notifyService.notify(NotificationType.USER_DELETED, { email: user.email });
+        if (!whileBatch) notifyService.notify(NotificationType.USER_DELETED, { email: user.email, selfDeleted: self });
 
         return !!(await userRepository.update(disabledUser));
+    }
+
+    async bulkDisableInactive() {
+        const now = new Date();
+
+        const lastActivityLimit = new Date(now.valueOf());
+        lastActivityLimit.setFullYear(now.getFullYear() - 2);
+        const usersToDisable = await userRepository.findInactiveSince(lastActivityLimit);
+        const disablePromises = usersToDisable.map(user => this.disable(user, false, true));
+        const results = await Promise.all(disablePromises);
+
+        if (results.length)
+            notifyService.notify(NotificationType.BATCH_USERS_DELETED, {
+                users: usersToDisable.map(user => ({
+                    email: user.email,
+                    firstname: user.firstName,
+                    lastname: user.lastName,
+                })),
+            });
+        return results.every(Boolean);
     }
 
     async findAnonymizedUsers(query: DefaultObject = {}) {

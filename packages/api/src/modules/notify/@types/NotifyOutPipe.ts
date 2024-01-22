@@ -4,6 +4,10 @@ import { NotificationType } from "./NotificationType";
 export interface NotifierMethodType {
     (type: NotificationType.TEST_EMAIL, data: NotificationDataTypes[NotificationType.TEST_EMAIL]): Promise<boolean>;
     (type: NotificationType.USER_DELETED, data: NotificationDataTypes[NotificationType.USER_DELETED]): Promise<boolean>;
+    (
+        type: NotificationType.BATCH_USERS_DELETED,
+        data: NotificationDataTypes[NotificationType.BATCH_USERS_DELETED],
+    ): Promise<boolean>;
     (type: NotificationType.USER_CREATED, data: NotificationDataTypes[NotificationType.USER_CREATED]): Promise<boolean>;
     (
         type: NotificationType.USER_ACTIVATED,
@@ -25,6 +29,5 @@ export interface NotifierMethodType {
 }
 
 export interface NotifyOutPipe {
-    accepts: NotificationType[];
     notify: NotifierMethodType;
 }
