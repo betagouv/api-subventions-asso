@@ -16,12 +16,16 @@ export class RechercheEntreprises {
     }
 
     private async getSearchResult(query: string, page = 1) {
-        return (
-            await this.http.get<RechercheEntreprisesDto>(
+        try {
+            const resut = await this.http.get<RechercheEntreprisesDto>(
                 RechercheEntreprises.URL +
                     `?q=${query}&nature_juridique=${RechercheEntreprises.natureJuridique}&per_page=25&page=${page}`,
-            )
-        ).data;
+            );
+            return resut.data;
+        } catch (e: unknown) {
+            console.error(e);
+            return null;
+        }
     }
 
     async search(query: string) {
@@ -33,12 +37,13 @@ export class RechercheEntreprises {
             });
 
         const results: AssociationNameEntity[] = [];
-        let response: RechercheEntreprisesDto;
+        let response: RechercheEntreprisesDto | null;
         let page = 1;
         let maxPage = 3;
 
         do {
             response = await this.getSearchResult(query);
+            if (!response) return results;
             addResults(response);
             page += 1;
             maxPage = response.total_pages;
