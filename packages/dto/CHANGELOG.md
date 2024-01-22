@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Features
+
+-   **api:** add last activity date on user ([#2052](https://github.com/betagouv/datasubvention/issues/2052)) ([dc5e482](https://github.com/betagouv/datasubvention/commit/dc5e482fbf2656d9054da0d475da80f49ae5e6ff))
+
 # [0.43.0](https://github.com/betagouv/datasubvention/compare/v0.42.3...v0.43.0) (2024-01-05)
 
 **Note:** Version bump only for package dto
