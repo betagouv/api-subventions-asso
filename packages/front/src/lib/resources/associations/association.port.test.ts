@@ -1,10 +1,11 @@
 import associationPort from "./association.port";
 import requestsService from "$lib/services/requests.service";
-
 vi.mock("$lib/services/requests.service");
+const mockedRequestService = vi.mocked(requestsService);
 
 describe("AssociationPort", () => {
-    requestsService.get.mockImplementation(() => ({ catch: vi.fn() }));
+    // @ts-expect-error: mock
+    mockedRequestService.get.mockResolvedValue({ data: {} });
     const SIREN = "SIREN";
 
     describe("incExtractData", () => {
@@ -19,13 +20,14 @@ describe("AssociationPort", () => {
         it("calls requestsService get", async () => {
             const expected = `/association/${SIREN}`;
             await associationPort.getByIdentifier(SIREN);
-            expect(requestsService.get).toHaveBeenCalledWith(expected);
+            expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
         it("return association from requestsService result", async () => {
             const expected = "";
             const RES = { data: { association: expected } };
-            requestsService.get.mockResolvedValueOnce(RES);
+            // @ts-expect-error: mock
+            mockedRequestService.get.mockResolvedValueOnce(RES);
             const actual = await associationPort.getByIdentifier(SIREN);
             expect(actual).toBe(expected);
         });
@@ -35,13 +37,14 @@ describe("AssociationPort", () => {
         it("calls requestsService get", async () => {
             const expected = `/search/associations/${SIREN}`;
             await associationPort.search(SIREN);
-            expect(requestsService.get).toHaveBeenCalledWith(expected);
+            expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
         it("return association list from requestsService result", async () => {
             const expected = [];
             const RES = { data: { result: expected } };
-            requestsService.get.mockResolvedValueOnce(RES);
+            // @ts-expect-error: mock
+            mockedRequestService.get.mockResolvedValueOnce(RES);
             const actual = await associationPort.search(SIREN);
             expect(actual).toBe(expected);
         });

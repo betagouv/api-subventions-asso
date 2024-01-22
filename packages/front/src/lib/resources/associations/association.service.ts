@@ -1,3 +1,4 @@
+import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.adapter";
 import { isRna, isStartOfSiret } from "$lib/helpers/identifierHelper";
@@ -15,7 +16,9 @@ class AssociationService {
     async getAssociation(identifier) {
         const result = await associationPort.getByIdentifier(identifier);
         if (!result) return;
-        const association = flattenProviderValue(result);
+
+        // TODO(#2079): use an adapter
+        const association = flattenProviderValue(result) as AssociationEntity;
 
         updateSearchHistory(toSearchHistory(association));
 
@@ -35,7 +38,7 @@ class AssociationService {
     }
 
     async search(lookup) {
-        let results = await this._searchByText(lookup);
+        const results = await this._searchByText(lookup);
         if (results?.length) return results;
 
         // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
@@ -53,6 +56,7 @@ class AssociationService {
         try {
             fullResult = await this.getAssociation(identifier);
         } catch (e) {
+            // @ts-expect-error: httpCode
             if (e?.httpCode === 404) return [];
             throw e;
         }
@@ -66,7 +70,7 @@ class AssociationService {
         ];
     }
 
-    _searchByText(lookup) {
+    _searchByText(lookup: string) {
         return associationPort.search(lookup);
     }
 }

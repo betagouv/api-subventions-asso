@@ -39,7 +39,7 @@
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
         {#each $searchHistory.reverse() as search}
-            <AssociationCard searchKey={search.siren} simplifiedAsso={search} />
+            <AssociationCard simplifiedAsso={search} />
         {/each}
     </div>
 {/if}

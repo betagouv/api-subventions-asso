@@ -1,7 +1,7 @@
 import { getFirstPartAddress, getLastPartAddress } from "$lib/resources/associations/association.helper";
 
 export default class AssociationCardController {
-    constructor(public simplifiedAsso, public searchKey: string) {}
+    constructor(public simplifiedAsso, public searchKey: string | undefined) {}
 
     get url() {
         const identifier =

@@ -4,7 +4,9 @@
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
 
     export let simplifiedAsso;
-    export let searchKey;
+    // only used for search page
+    // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
+    export let searchKey = undefined;
 
     const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
 </script>

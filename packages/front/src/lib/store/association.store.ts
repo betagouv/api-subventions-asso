@@ -1,9 +1,9 @@
 import type { Siret } from "dto";
 import Store from "$lib/core/Store";
 import type { SimplifiedEstablishment } from "$lib/resources/establishments/types/establishment.types";
-import type { Association } from "$lib/resources/associations/types/association.types";
+import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 
-export const currentAssociation = new Store<Association | undefined>(undefined);
+export const currentAssociation = new Store<AssociationEntity | undefined>(undefined);
 export const currentAssoSimplifiedEtabs = new Store<SimplifiedEstablishment[]>([]);
 
 export const mapSiretPostCodeStore = new Store(new Map<Siret, string | undefined>()); // store necessary ?
