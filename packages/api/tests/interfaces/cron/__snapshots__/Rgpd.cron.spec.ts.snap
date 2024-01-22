@@ -46,7 +46,7 @@ Array [
       "icon_emoji": "door",
       "text": "[test] Les comptes suivants ont été supprimés pour inactivité trop longue.
 
-- Prénom NOM (old-user1@mail.com)
+- Prénom NOM (old-user1@mail.com) 
 N'oubliez pas de supprimer toutes leurs données !",
       "username": "Suppression de comptes",
     },
