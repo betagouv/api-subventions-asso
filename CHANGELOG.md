@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.43.2](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.43.2) (2024-01-22)
+
+### Bug Fixes
+
+-   **api:** catch error on recherche entreprise api is hs ([91b1c8d](https://github.com/betagouv/api-subventions-asso/commit/91b1c8d817e852f8ef503a1e24d5a0a20555c5b4))
+
 ## [0.43.1](https://github.com/betagouv/api-subventions-asso/compare/v0.43.0...v0.43.1) (2024-01-10)
 
 **Note:** Version bump only for package api-subventions-asso
