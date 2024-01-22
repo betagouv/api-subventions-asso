@@ -108,7 +108,7 @@
         </div>
     </div>
 
-    <!-- TODO : fix arria-labellby -->
+    <!-- TODO : fix aria-labelled-by -->
     <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="button-825">
         <div class="fr-container">
             <button class="fr-link--close fr-link" aria-controls="modal-menu">Fermer</button>

@@ -23,7 +23,7 @@ export default class LoginController {
         try {
             await authService.login(this.email, this.password);
             const urlToGo = decodeURIComponent(location.search.match(/(\?|&)url=([^&]*)/)?.[2] || "/");
-            goToUrl(urlToGo, true, true);
+            await goToUrl(urlToGo, true, true);
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
             this.error.set(message);
