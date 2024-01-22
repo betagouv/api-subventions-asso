@@ -66,6 +66,10 @@ export class UserRgpdService {
         return !!(await userRepository.update(disabledUser));
     }
 
+    /*
+     * deletes automatically users that either
+     * - never ever logged in (even to activate account) for 6 month
+     * - did not log in for 2 years */
     async bulkDisableInactive() {
         const now = new Date();
 
@@ -97,6 +101,12 @@ export class UserRgpdService {
         return results.every(Boolean);
     }
 
+    /*
+     * one month ahead, warn users that will be deleted because they
+     * never ever logged in (even to activate account) for 6 months.
+     * Also send them an activation link so that they can come back easily.
+     *
+     * The users that did not log in for 2 years will be warned via pure brevo automation */
     async warnDisableInactive() {
         const now = new Date();
 
