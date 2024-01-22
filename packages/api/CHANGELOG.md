@@ -26,6 +26,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** fix comment on scaling app name instead of url ([8139320](https://github.com/betagouv/api-subventions-asso/commit/813932046f8d1ecef81343742ce8fa5a1c1d95c3))
 -   **api:** update osiris types comment ([3752ba2](https://github.com/betagouv/api-subventions-asso/commit/3752ba29aea9a401ba6ccb9b2c9b8135ecac6990))
 -   use auth cookie on api transaction ([#2022](https://github.com/betagouv/api-subventions-asso/issues/2022)) ([5946414](https://github.com/betagouv/api-subventions-asso/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+## [0.43.2](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.43.2) (2024-01-22)
+
+### Bug Fixes
+
+-   **api:** catch error on recherche entreprise api is hs ([91b1c8d](https://github.com/betagouv/api-subventions-asso/commit/91b1c8d817e852f8ef503a1e24d5a0a20555c5b4))
 
 ## [0.43.1](https://github.com/betagouv/api-subventions-asso/compare/v0.43.0...v0.43.1) (2024-01-10)
 
