@@ -81,7 +81,7 @@
                                     </a>
                                 </li>
                             {/if}
-                            {#if user?.jwt}
+                            {#if user}
                                 <li>
                                     <Button
                                         on:click={controller.logout}
