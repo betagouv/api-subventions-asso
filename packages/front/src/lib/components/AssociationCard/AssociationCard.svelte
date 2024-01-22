@@ -5,7 +5,7 @@
 
     export let simplifiedAsso;
     // only used for search page
-    // TODO: extract redirection from this component and pass a callback instead ?
+    // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
     export let searchKey = undefined;
 
     const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
