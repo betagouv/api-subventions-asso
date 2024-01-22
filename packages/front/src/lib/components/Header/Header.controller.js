@@ -3,11 +3,10 @@ import authService from "$lib/resources/auth/auth.service";
 
 export default class HeaderController {
     async logout() {
-        await authService.logout();
-        return goToUrl("/auth/login");
+        return authService.logout();
     }
 
     goToProfile() {
-        goToUrl("/user/profile");
+        return goToUrl("/user/profile");
     }
 }
