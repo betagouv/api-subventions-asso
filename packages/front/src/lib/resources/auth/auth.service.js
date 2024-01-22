@@ -1,10 +1,7 @@
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "dto";
-import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
-import requestsService from "$lib/services/requests.service";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
-import { page } from "$lib/store/kit.store";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { isAdmin } from "$lib/services/user.service";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
@@ -53,13 +50,6 @@ export class AuthService {
     }
 
     async initUserInApp() {
-        requestsService.addErrorHook(UnauthorizedError, error => {
-            // if the unauthorized error is triggered from a login error, we do not redirect/reload to the /auth/login page
-            if (error.__nativeError__.request.responseURL.includes("/auth/login")) return;
-            const queryUrl = encodeURIComponent(page.value.url.pathname);
-            this.logout(false);
-            goToUrl(`/auth/login?url=${queryUrl}`, true, true);
-        });
         if (this.connectedUser.value) return true;
         try {
             const user = await userService.getSelfUser();
@@ -83,10 +73,16 @@ export class AuthService {
     }
 
     controlAuth(requiredLevel = AuthLevels.USER) {
-        if (requiredLevel === AuthLevels.NONE) return;
+        if (requiredLevel === AuthLevels.NONE) return true;
         const user = this.getCurrentUser();
-        if (!user) return this.redirectToLogin();
-        if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) goToUrl("/");
+        if (!user) {
+            this.redirectToLogin();
+            return false;
+        } else if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) {
+            goToUrl("/");
+            return false;
+        }
+        return true;
     }
 
     redirectToLogin() {

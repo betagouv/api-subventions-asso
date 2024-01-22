@@ -1,9 +1,12 @@
 <script>
     import AuthController from "./Auth.controller";
     const controller = new AuthController();
+    const { show } = controller;
     controller.init();
 </script>
 
 <div>
-    <slot />
+    {#if $show}
+        <slot />
+    {/if}
 </div>

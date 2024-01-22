@@ -3,6 +3,8 @@ import authService from "$lib/resources/auth/auth.service";
 import crispService from "$lib/services/crisp.service";
 import { ReadStore } from "$lib/core/Store";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
+import AuthLevels from "$lib/resources/auth/authLevels";
+import { goToUrl } from "$lib/services/router.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -179,6 +181,56 @@ describe("authService", () => {
             authService.setUserInApp({ email: EMAIL }); // plus dans cette méthode
             expect(crispServiceMock).toBeCalledWith(EMAIL);
         });
+    });
+
+    describe("controlAuth", () => {
+        let getUserSpy;
+
+        beforeAll(() => {
+            getUserSpy = vi.spyOn(authService, "getCurrentUser");
+        });
+
+        function correctReturn(requiredLevel, user, expected) {
+            getUserSpy.mockReturnValueOnce(user);
+            const actual = authService.controlAuth(requiredLevel);
+            expect(actual).toBe(expected);
+            getUserSpy.mockReset();
+        }
+
+        /* eslint-disable vitest/expect-expect */
+        it("returns true if no auth needed", () => {
+            return correctReturn(AuthLevels.NONE, undefined, true);
+        });
+
+        it("calls redirectToLogin if no user", () => {
+            const redirectSpy = vi.spyOn(authService, "redirectToLogin").mockResolvedValueOnce(true);
+            getUserSpy.mockReturnValueOnce(undefined);
+            authService.controlAuth(AuthLevels.USER);
+            expect(redirectSpy).toHaveBeenCalled();
+        });
+
+        it("returns false if no user", () => {
+            correctReturn(AuthLevels.USER, undefined, false);
+        });
+
+        it("redirect to home if user not admin and admin required", () => {
+            getUserSpy.mockReturnValueOnce({ roles: [] });
+            authService.controlAuth(AuthLevels.ADMIN);
+            expect(goToUrl).toHaveBeenCalledWith("/");
+        });
+
+        it("returns false if user not admin and admin required", () => {
+            correctReturn(AuthLevels.ADMIN, { roles: [] }, false);
+        });
+
+        it("returns true if user is admin and admin required", () => {
+            correctReturn(AuthLevels.ADMIN, { roles: ["admin"] }, true);
+        });
+
+        it("returns true if user is not admin and simple user required", () => {
+            correctReturn(AuthLevels.USER, { roles: [] }, true);
+        });
+        /* eslint-enable vitest/expect-expect */
     });
 
     describe("logout", () => {
