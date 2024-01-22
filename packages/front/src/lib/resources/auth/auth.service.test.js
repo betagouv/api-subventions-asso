@@ -188,6 +188,11 @@ describe("authService", () => {
     });
 
     describe("logout", () => {
+        it("should call authPort.logout", async () => {
+            await authService.logout();
+            expect(authPort.logout).toHaveBeenCalled();
+        });
+
         it("should call removeItem on localStorage", () => {
             authService.logout();
 

@@ -60,7 +60,8 @@ export class AuthService {
         });
     }
 
-    logout(reload = true) {
+    async logout(reload = true) {
+        await authPort.logout();
         localStorageService.removeItem(this.USER_LOCAL_STORAGE_KEY);
         crispService.resetSession();
         if (reload) goToUrl("/auth/login", false, true);

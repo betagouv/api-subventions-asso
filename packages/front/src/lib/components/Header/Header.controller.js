@@ -2,9 +2,9 @@ import { goToUrl } from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 
 export default class HeaderController {
-    logout() {
-        authService.logout();
-        goToUrl("/auth/login");
+    async logout() {
+        await authService.logout();
+        return goToUrl("/auth/login");
     }
 
     goToProfile() {
