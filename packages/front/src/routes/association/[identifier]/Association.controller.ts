@@ -1,3 +1,4 @@
+import type { Rna, Siren } from "dto";
 import Store from "$lib/core/Store";
 import { isAssociation } from "$lib/resources/associations/association.helper";
 import associationService from "$lib/resources/associations/association.service";
@@ -13,8 +14,8 @@ export class AssociationController {
         "Bodacc",
     ];
 
-    duplicatesFromRna;
-    duplicatesFromSiren;
+    duplicatesFromRna: Store<null | Siren[]>;
+    duplicatesFromSiren: Store<null | Rna[]>;
     associationPromise: Promise<unknown>;
     simplifiedEstablishmentPromise: Promise<unknown>;
 
