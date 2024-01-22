@@ -10,4 +10,10 @@ export class RgpdCron implements CronController {
     removeInactiveUsers() {
         return userRgpdService.bulkDisableInactive();
     }
+
+    // every day at 9 PM
+    @AsyncCron({ cronExpression: "0 21 * * *" })
+    warnInactiveUsers() {
+        return userRgpdService.warnDisableInactive();
+    }
 }

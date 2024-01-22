@@ -26,6 +26,10 @@ export interface NotifierMethodType {
     (type: NotificationType.USER_CONFLICT, data: NotificationDataTypes[NotificationType.USER_CONFLICT]);
     (type: NotificationType.SIGNUP_BAD_DOMAIN, data: NotificationDataTypes[NotificationType.SIGNUP_BAD_DOMAIN]);
     (type: NotificationType.FAILED_CRON, data: NotificationDataTypes[NotificationType.FAILED_CRON]);
+    (
+        type: NotificationType.WARN_NEW_USER_TO_BE_DELETED,
+        data: NotificationDataTypes[NotificationType.WARN_NEW_USER_TO_BE_DELETED],
+    );
 }
 
 export interface NotifyOutPipe {
