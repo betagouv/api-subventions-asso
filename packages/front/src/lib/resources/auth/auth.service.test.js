@@ -1,8 +1,6 @@
 import authPort from "$lib/resources/auth/auth.port";
 import authService from "$lib/resources/auth/auth.service";
 import crispService from "$lib/services/crisp.service";
-import localStorageService from "$lib/services/localStorage.service";
-import requestsService from "$lib/services/requests.service";
 import { ReadStore } from "$lib/core/Store";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 
@@ -21,6 +19,7 @@ vi.mock("dto", async () => {
         __esModule: true, // this property makes it work
     };
 });
+vi.mock("$lib/resources/auth/auth.port");
 vi.mock("$lib/services/crisp.service");
 vi.mock("$lib/services/localStorage.service", async () => {
     return {
@@ -59,7 +58,7 @@ describe("authService", () => {
 
         it("rejects with error code from port if given", async () => {
             const expected = 5;
-            const error = { data: { code: expected }  }
+            const error = { data: { code: expected } };
             portMock.mockRejectedValueOnce(error);
             const actual = authService.signup(USER);
             await expect(actual).rejects.toBe(expected);
@@ -154,9 +153,10 @@ describe("authService", () => {
             expect(checkOrDropSearchHistory).toHaveBeenCalledWith(user._id);
         });
 
-        it("should save user in local storage", async () => {
+        it("should save user in store", async () => {
+            const mockedSet = vi.spyOn(authService.connectedUser, "set");
             await authService.loginByUser(user);
-            expect(localStorageService.setItem).toHaveBeenCalledWith(authService.USER_LOCAL_STORAGE_KEY, user);
+            expect(mockedSet).toHaveBeenCalledWith(user);
         });
 
         it("sets crisp email value", async () => {
@@ -171,18 +171,12 @@ describe("authService", () => {
         });
     });
 
-    describe("initUserInApp", () => {
+    describe("setUserInApp", () => {
         const crispServiceMock = vi.spyOn(crispService, "setUserEmail").mockImplementation(vi.fn());
-        const getCurrentUserMock = vi.spyOn(authService, "getCurrentUser");
-
-        afterAll(() => {
-            getCurrentUserMock.mockRestore();
-        });
 
         it("sets crisp email value", () => {
             const EMAIL = "a@b.c";
-            getCurrentUserMock.mockReturnValueOnce({ email: EMAIL });
-            authService.initUserInApp();
+            authService.setUserInApp({ email: EMAIL }); // plus dans cette méthode
             expect(crispServiceMock).toBeCalledWith(EMAIL);
         });
     });
@@ -193,23 +187,25 @@ describe("authService", () => {
             expect(authPort.logout).toHaveBeenCalled();
         });
 
-        it("should call removeItem on localStorage", () => {
-            authService.logout();
+        it("should call remove user from store", async () => {
+            const mockedSet = vi.spyOn(authService.connectedUser, "set");
+            await authService.logout();
 
-            expect(localStorageService.removeItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+            expect(mockedSet).toBeCalledWith(null);
         });
 
-        it("resets crisp session", () => {
-            authService.logout();
+        it("resets crisp session", async () => {
+            await authService.logout();
             expect(crispService.resetSession).toBeCalled();
         });
     });
 
     describe("getCurrentUser", () => {
         it("should call getItem on localStorage", () => {
+            const mockedGet = vi.spyOn(authService.connectedUser, "value", "get");
             authService.getCurrentUser();
 
-            expect(localStorageService.getItem).toBeCalledWith(authService.USER_LOCAL_STORAGE_KEY);
+            expect(mockedGet).toHaveBeenCalled();
         });
     });
 });
