@@ -1,4 +1,5 @@
 import { UserDataDto, UserDto } from "dto";
+import * as Sentry from "@sentry/node";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import userResetRepository from "../../repositories/user-reset.repository";
 import consumerTokenRepository from "../../repositories/consumer-token.repository";
@@ -75,7 +76,12 @@ export class UserRgpdService {
         const neverSeenUsersToDisable = await userRepository.findNotActivatedSince(subscriptionNotActivatedLimit);
 
         const usersToDisable = [...inactiveUsersToDisable, ...neverSeenUsersToDisable];
-        const disablePromises = usersToDisable.map(user => this.disable(user, false, true));
+        const disablePromises = usersToDisable.map(user =>
+            this.disable(user, false, true).catch(e => {
+                Sentry.captureException(e);
+                return false;
+            }),
+        );
         const results = await Promise.all(disablePromises);
 
         if (results.length)
