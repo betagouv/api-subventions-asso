@@ -9,8 +9,11 @@ jest.mock("@getbrevo/brevo", () => {
         updateContact = jest.fn().mockResolvedValue(true);
         deleteContact = jest.fn().mockResolvedValue(true);
     }
+    class TransactionalEmailsApi {
+        sendTransacEmail = jest.fn().mockResolvedValue(true);
+    }
     return {
-        TransactionalEmailsApi: jest.fn(),
+        TransactionalEmailsApi,
         SendSmtpEmail: jest.fn(() => ({ templateId: undefined })),
         ApiClient: {
             instance: {
