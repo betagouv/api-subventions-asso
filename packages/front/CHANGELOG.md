@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.1](https://github.com/betagouv/datasubvention/compare/v0.44.0...v0.44.1) (2024-01-23)
+
+### Bug Fixes
+
+-   **front:** fix spacing ([6822896](https://github.com/betagouv/datasubvention/commit/6822896a41baaa3b0a894cad83bf72ebebbf6e05))
+
 # [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
 
 ### Bug Fixes
