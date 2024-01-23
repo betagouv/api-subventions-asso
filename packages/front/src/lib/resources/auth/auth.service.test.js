@@ -5,6 +5,7 @@ import { ReadStore } from "$lib/core/Store";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { goToUrl } from "$lib/services/router.service";
+import userService from "$lib/resources/users/user.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -35,8 +36,17 @@ vi.mock("$lib/services/localStorage.service", async () => {
 vi.mock("$lib/services/router.service");
 vi.mock("$lib/services/requests.service");
 vi.mock("$lib/services/searchHistory.service");
+vi.mock("$lib/resources/users/user.service");
 
 describe("authService", () => {
+    let connectedUserStoreSpy;
+    beforeAll(() => {
+        connectedUserStoreSpy = {
+            set: vi.spyOn(authService.connectedUser, "set"),
+            value: vi.spyOn(authService.connectedUser, "value", "get"),
+        };
+    });
+
     describe("signup()", () => {
         const portMock = vi.spyOn(authPort, "signup");
         const RES = {};
@@ -180,6 +190,44 @@ describe("authService", () => {
             const EMAIL = "a@b.c";
             authService.setUserInApp({ email: EMAIL }); // plus dans cette méthode
             expect(crispServiceMock).toBeCalledWith(EMAIL);
+        });
+    });
+
+    describe("initUserInApp", () => {
+        it("returns true if user already stored", async () => {
+            connectedUserStoreSpy.value.mockReturnValueOnce("something");
+            const expected = true;
+            const actual = await authService.initUserInApp();
+            expect(actual).toBe(expected);
+        });
+
+        it("calls userService.getSelfUser", async () => {
+            await authService.initUserInApp();
+            expect(userService.getSelfUser).toHaveBeenCalled();
+        });
+
+        it("calls setUserInApp with result", async () => {
+            const USER = "something";
+            vi.mocked(userService.getSelfUser).mockResolvedValueOnce(USER);
+            const setUserSpy = vi.spyOn(authService, "setUserInApp").mockReturnValue(undefined);
+            await authService.initUserInApp();
+            expect(setUserSpy).toHaveBeenCalledWith(USER);
+        });
+
+        it("returns true if result", async () => {
+            const USER = "something";
+            vi.mocked(userService.getSelfUser).mockResolvedValueOnce(USER);
+            vi.spyOn(authService, "setUserInApp").mockReturnValue(undefined);
+            const expected = true;
+            const actual = await authService.initUserInApp();
+            expect(actual).toBe(expected);
+        });
+
+        it("returns false if failure", async () => {
+            vi.mocked(userService.getSelfUser).mockRejectedValueOnce(new Error("anything"));
+            const expected = false;
+            const actual = await authService.initUserInApp();
+            expect(actual).toBe(expected);
         });
     });
 
