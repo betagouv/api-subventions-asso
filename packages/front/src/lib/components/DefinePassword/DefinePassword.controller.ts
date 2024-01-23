@@ -1,10 +1,21 @@
+import type { EventDispatcher } from "svelte";
 import _ from "lodash";
 import { checkPassword } from "$lib/services/validator.service";
 import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
 
 export default class DefinePasswordController {
-    constructor(values) {
+    passwordErrorMsg: string;
+    showPasswordError: Store<boolean>;
+    confirmPwdErrorMsg: string;
+    showConfirmError: Store<boolean>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dispatch: EventDispatcher<any>;
+    validatePassword: () => void;
+    checkConfirm: () => void;
+
+    // Create Entity PasswordValidation Entity ?
+    constructor(public values: { password: string; confirmPwd: string }) {
         this.values = values;
         this.passwordErrorMsg = "Le mot de passe ne respecte pas le format demandé";
         this.showPasswordError = new Store(false);
@@ -40,7 +51,7 @@ export default class DefinePasswordController {
 
     _onOneFieldValid() {
         if (!this.values.password || !this.values.confirmPwd) return this._dispatchError();
-        if (!this.showPasswordError.value && !this.showConfirmError.value) return this.dispatch("valid");
+        if (!this.showPasswordError.value && !this.showConfirmError.value) this.dispatch("valid");
     }
 
     _onPasswordError() {

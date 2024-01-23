@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Alert from "$lib/dsfr/Alert.svelte";
 </script>
 

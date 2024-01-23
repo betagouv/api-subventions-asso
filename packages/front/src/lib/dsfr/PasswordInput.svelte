@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { nanoid } from "nanoid";
 
     export let value;
@@ -6,7 +6,7 @@
     export let id = nanoid(7);
     export let name = `password-input-${id}`;
     export let error = false;
-    export let errorMsg = null;
+    export let errorMsg: string | null = null;
 
     const descErrorElement = `${name}-desc-error`;
     let showPassword = false;
