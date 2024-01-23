@@ -48,18 +48,17 @@ describe("authService", () => {
     });
 
     describe("signup()", () => {
-        const portMock = vi.spyOn(authPort, "signup");
         const RES = {};
         const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
 
         beforeAll(() => {
-            portMock.mockResolvedValue(RES);
+            authPort.signup.mockResolvedValue(RES);
         });
-        afterAll(() => portMock.mockRestore());
+        afterAll(() => authPort.signup.mockRestore());
 
         it("calls port", async () => {
             await authService.signup(USER);
-            expect(portMock).toHaveBeenCalledWith(USER);
+            expect(authPort.signup).toHaveBeenCalledWith(USER);
         });
 
         it("return result from port if success", async () => {
@@ -71,22 +70,21 @@ describe("authService", () => {
         it("rejects with error code from port if given", async () => {
             const expected = 5;
             const error = { data: { code: expected } };
-            portMock.mockRejectedValueOnce(error);
+            authPort.signup.mockRejectedValueOnce(error);
             const actual = authService.signup(USER);
             await expect(actual).rejects.toBe(expected);
         });
     });
 
     describe("resetPassword()", () => {
-        const portMock = vi.spyOn(authPort, "resetPassword");
         const RES = true;
         const PASSWORD = "very secret";
         const TOKEN = "123";
 
         beforeAll(() => {
-            portMock.mockResolvedValue(true);
+            authPort.resetPassword.mockResolvedValue(true);
         });
-        afterAll(() => portMock.mockRestore());
+        afterAll(() => authPort.resetPassword.mockRestore());
 
         it("rejects with appropriate code if no token", async () => {
             const test = () => authService.resetPassword();
@@ -95,7 +93,7 @@ describe("authService", () => {
 
         it("calls port", async () => {
             await authService.resetPassword(TOKEN, PASSWORD);
-            expect(portMock).toHaveBeenCalledWith(TOKEN, PASSWORD);
+            expect(authPort.resetPassword).toHaveBeenCalledWith(TOKEN, PASSWORD);
         });
 
         it("return result from port if success", async () => {
@@ -106,14 +104,13 @@ describe("authService", () => {
     });
 
     describe("forgetPassword()", () => {
-        let portMock;
         const RES = true;
         const EMAIL = "test@test.fr";
 
         beforeAll(() => {
-            portMock = vi.spyOn(authPort, "forgetPassword").mockResolvedValue(true);
+            authPort.forgetPassword.mockResolvedValue(true);
         });
-        afterAll(() => portMock.mockRestore());
+        afterAll(() => authPort.forgetPassword.mockRestore());
 
         it("rejects if no email", async () => {
             const test = () => authService.forgetPassword();
@@ -122,7 +119,7 @@ describe("authService", () => {
 
         it("calls port", async () => {
             await authService.forgetPassword(EMAIL);
-            expect(portMock).toHaveBeenCalledWith(EMAIL);
+            expect(authPort.forgetPassword).toHaveBeenCalledWith(EMAIL);
         });
 
         it("return result from port if success", async () => {
@@ -133,7 +130,6 @@ describe("authService", () => {
     });
 
     describe("login()", () => {
-        const mockPort = vi.spyOn(authPort, "login");
         let mockServiceLogin;
 
         beforeAll(() => {
@@ -143,16 +139,16 @@ describe("authService", () => {
 
         it("should call port", async () => {
             const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
-            mockPort.mockResolvedValueOnce({});
+            authPort.login.mockResolvedValueOnce({});
             await authService.login(...expected);
-            expect(mockPort).toHaveBeenCalledWith(...expected);
+            expect(authPort.login).toHaveBeenCalledWith(...expected);
         });
 
         it("should call front login with given user", async () => {
             const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
-            mockPort.mockResolvedValueOnce({});
+            authPort.login.mockResolvedValueOnce({});
             await authService.login(...expected);
-            expect(mockPort).toHaveBeenCalledWith(...expected);
+            expect(authPort.login).toHaveBeenCalledWith(...expected);
         });
     });
 
@@ -183,12 +179,10 @@ describe("authService", () => {
     });
 
     describe("setUserInApp", () => {
-        const crispServiceMock = vi.spyOn(crispService, "setUserEmail").mockImplementation(vi.fn());
-
         it("sets crisp email value", () => {
             const EMAIL = "a@b.c";
             authService.setUserInApp({ email: EMAIL }); // plus dans cette méthode
-            expect(crispServiceMock).toBeCalledWith(EMAIL);
+            expect(crispService.setUserEmail).toBeCalledWith(EMAIL);
         });
     });
 
