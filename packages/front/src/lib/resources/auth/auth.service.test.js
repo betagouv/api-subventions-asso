@@ -187,6 +187,10 @@ describe("authService", () => {
     });
 
     describe("initUserInApp", () => {
+        beforeAll(() => {
+            connectedUserStoreSpy.value.mockReturnValue();
+        });
+        afterAll(() => connectedUserStoreSpy.value.mockReset());
         it("returns true if user already stored", async () => {
             connectedUserStoreSpy.value.mockReturnValueOnce("something");
             const expected = true;
@@ -232,10 +236,9 @@ describe("authService", () => {
         });
 
         function correctReturn(requiredLevel, user, expected) {
-            getUserSpy.mockReturnValueOnce(user);
+            if (user) getUserSpy.mockReturnValueOnce(user);
             const actual = authService.controlAuth(requiredLevel);
             expect(actual).toBe(expected);
-            getUserSpy.mockReset();
         }
 
         /* eslint-disable vitest/expect-expect */
@@ -292,7 +295,7 @@ describe("authService", () => {
     });
 
     describe("getCurrentUser", () => {
-        it("should call getItem on localStorage", () => {
+        it("should get store value", () => {
             authService.getCurrentUser();
 
             expect(connectedUserStoreSpy.value).toHaveBeenCalled();
