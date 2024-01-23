@@ -166,9 +166,8 @@ describe("authService", () => {
         });
 
         it("should save user in store", async () => {
-            const mockedSet = vi.spyOn(authService.connectedUser, "set");
             await authService.loginByUser(user);
-            expect(mockedSet).toHaveBeenCalledWith(user);
+            expect(connectedUserStoreSpy.set).toHaveBeenCalledWith(user);
         });
 
         it("sets crisp email value", async () => {
@@ -288,10 +287,8 @@ describe("authService", () => {
         });
 
         it("should call remove user from store", async () => {
-            const mockedSet = vi.spyOn(authService.connectedUser, "set");
             await authService.logout();
-
-            expect(mockedSet).toBeCalledWith(null);
+            expect(connectedUserStoreSpy.set).toBeCalledWith(null);
         });
 
         it("resets crisp session", async () => {
@@ -302,10 +299,9 @@ describe("authService", () => {
 
     describe("getCurrentUser", () => {
         it("should call getItem on localStorage", () => {
-            const mockedGet = vi.spyOn(authService.connectedUser, "value", "get");
             authService.getCurrentUser();
 
-            expect(mockedGet).toHaveBeenCalled();
+            expect(connectedUserStoreSpy.value).toHaveBeenCalled();
         });
     });
 });
