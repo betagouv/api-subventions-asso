@@ -14,7 +14,7 @@ describe("DefinePasswordController", () => {
     };
 
     describe("_validatePassword", () => {
-        beforeEach(() => ValidatorService.checkPassword.mockImplementation(() => true));
+        beforeEach(() => vi.mocked(ValidatorService).checkPassword.mockImplementation(() => true));
 
         it("should call ValidatorService._validatePassword()", () => {
             const values = { ...VALUES, password: "abc123DE!" };
@@ -32,7 +32,7 @@ describe("DefinePasswordController", () => {
         });
 
         it("should call _onPasswordError()", () => {
-            ValidatorService.checkPassword.mockImplementation(() => false);
+            vi.mocked(ValidatorService).checkPassword.mockImplementation(() => false);
             const values = { ...VALUES, password: "abc12" };
             const controller = new DefinePasswordController(values);
             const mockOnPasswordError = vi.spyOn(controller, "_onPasswordError").mockImplementation(vi.fn());
@@ -71,7 +71,7 @@ describe("DefinePasswordController", () => {
         beforeAll(() => {
             spyOneFieldValid = vi
                 .spyOn(DefinePasswordController.prototype, "_onOneFieldValid")
-                .mockImplementation(vi.fn());
+                .mockImplementation(vi.fn);
         });
 
         it("should call _onOneFieldValid()", () => {
