@@ -12,6 +12,7 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
     async createIndexes() {
         await this.collection.createIndex({ rna: 1 });
         await this.collection.createIndex({ siren: 1 });
+        await this.collection.createIndex({ rna: 1, siren: 1 }, { unique: true });
     }
 
     async insert(entity: RnaSirenEntity) {

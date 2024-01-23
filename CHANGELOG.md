@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.43.3](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.43.3) (2024-01-23)
+
+### Bug Fixes
+
+-   **api:** remove duplicate rna siren on database ([91c669a](https://github.com/betagouv/api-subventions-asso/commit/91c669a7b702f02a5f13262e2bb2801fc7c20de8))
+
 ## [0.44.1](https://github.com/betagouv/api-subventions-asso/compare/v0.44.0...v0.44.1) (2024-01-23)
 
 ### Bug Fixes
