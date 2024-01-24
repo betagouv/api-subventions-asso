@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.3](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.3) (2024-01-24)
+
+### Bug Fixes
+
+-   **api:** ignore rna-siren duplicate error ([#2093](https://github.com/betagouv/datasubvention/issues/2093)) ([09031b7](https://github.com/betagouv/datasubvention/commit/09031b7306b404c767ed3934d062b86a9c5d811d))
+
+### Reverts
+
+-   Revert "feat(front): wording and layout in subv dashboard (#2075)" ([b87230b](https://github.com/betagouv/datasubvention/commit/b87230bccec075e4d58569db453fa1819d7d6382)), closes [#2075](https://github.com/betagouv/datasubvention/issues/2075)
+
+# [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **front:** fix wrong error when user dont write email ([#2034](https://github.com/betagouv/datasubvention/issues/2034)) ([8b80f6c](https://github.com/betagouv/datasubvention/commit/8b80f6c6b75b5c615efdbec64abe111a4d438ff4))
+-   **front:** in error catcher an error maybe an native error or axios … ([#2038](https://github.com/betagouv/datasubvention/issues/2038)) ([98424a6](https://github.com/betagouv/datasubvention/commit/98424a642ddcd2fd6feb0831068ad58927c555be))
+
+### Features
+
+-   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
+-   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/datasubvention/issues/2075)) ([101f143](https://github.com/betagouv/datasubvention/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
 ## [0.44.2](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.2) (2024-01-23)
 
 ### Bug Fixes
