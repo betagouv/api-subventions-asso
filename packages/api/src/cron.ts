@@ -6,6 +6,7 @@ import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees
 import { DauphinCron } from "./interfaces/cron/Dauphin.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
+import { ENV } from "./configurations/env.conf";
 // import { RgpdCron } from "./interfaces/cron/Rgpd.cron"; // TODO put back after fixing anonymization
 
 const controllers: CronController[] = [
@@ -19,7 +20,10 @@ const controllers: CronController[] = [
 
 export const scheduler = new ToadScheduler();
 
+const TEST_CRON = false; // override to test cron in dev environment
+
 export function initCron() {
+    if (ENV !== "prod" && ENV !== "Preprod" && !TEST_CRON) return;
     for (const ControllerClass of controllers) {
         // @ts-expect-error generic type
         const controller = new ControllerClass();
