@@ -11,17 +11,31 @@
     $: elements, controller.updateElements(elements);
 </script>
 
-<div class="fr-grid-row fr-my-6w">
-    <span class="fr-h4 fr-mb-2w">Total des versements réalisés en {year} : {$versementsAmount}</span>
-    <p class="fr-mb-0">D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.</p>
-    <p class="asterisk fr-mb-0">
-        Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées au service.
-    </p>
+<div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-8">
+        <h3>Demandes de subventions collectées</h3>
+        <p class="fr-mb-0">D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.</p>
+        <p class="asterisk">
+            Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées au
+            service.
+        </p>
+    </div>
+    <div class="fr-col-4">
+        <h3>Versements réalisés</h3>
+        <p>
+            Total des versements en <b>{year}</b>
+            :
+            <b>{$versementsAmount}</b>
+            <br />
+            D'après les données récupérées via Chorus et Fonjep.
+        </p>
+    </div>
 </div>
 
 <style>
     .asterisk {
         font-weight: bold;
         font-style: italic;
+        font-size: 0.875rem;
     }
 </style>
