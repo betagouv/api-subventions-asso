@@ -5,7 +5,7 @@ import { siretToSiren } from "$lib/helpers/sirenHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 
 export class EstablishmentController {
-    titles = ["Subventions", "Contacts", "Pièces administratives", "Informations bancaires"];
+    titles = ["Tableau de bord", "Contacts", "Pièces administratives", "Informations bancaires"];
     promises: Promise<{ establishment: any }>;
 
     constructor(id: string) {
