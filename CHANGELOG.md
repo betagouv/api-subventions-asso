@@ -49,9 +49,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## [0.44.1](https://github.com/betagouv/api-subventions-asso/compare/v0.44.0...v0.44.1) (2024-01-23)
 
 ### Bug Fixes
-
--   **front:** fix spacing ([6822896](https://github.com/betagouv/api-subventions-asso/commit/6822896a41baaa3b0a894cad83bf72ebebbf6e05))
-
 # [0.44.0](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.44.0) (2024-01-22)
 
 ### Bug Fixes
@@ -78,7 +75,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** enhance osiris deploy tool description ([b07bb2e](https://github.com/betagouv/api-subventions-asso/commit/b07bb2e45ac688358540df6ba6edebbc25ae9048))
 -   **api:** fix comment on scaling app name instead of url ([8139320](https://github.com/betagouv/api-subventions-asso/commit/813932046f8d1ecef81343742ce8fa5a1c1d95c3))
 -   **api:** update osiris types comment ([3752ba2](https://github.com/betagouv/api-subventions-asso/commit/3752ba29aea9a401ba6ccb9b2c9b8135ecac6990))
--   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/api-subventions-asso/issues/2075)) ([101f143](https://github.com/betagouv/api-subventions-asso/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
 -   use auth cookie on api transaction ([#2022](https://github.com/betagouv/api-subventions-asso/issues/2022)) ([5946414](https://github.com/betagouv/api-subventions-asso/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
 
 ## [0.43.2](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.43.2) (2024-01-22)

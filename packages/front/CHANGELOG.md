@@ -7,21 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **front:** ensure line separation in dashboard intro ([#2084](https://github.com/betagouv/datasubvention/issues/2084)) ([9756ae7](https://github.com/betagouv/datasubvention/commit/9756ae711fbf0a66fe4e4b4fbd3722d46756dbd5))
-
-# [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
-
-### Bug Fixes
-
--   **front:** fix wrong error when user dont write email ([#2034](https://github.com/betagouv/datasubvention/issues/2034)) ([8b80f6c](https://github.com/betagouv/datasubvention/commit/8b80f6c6b75b5c615efdbec64abe111a4d438ff4))
--   **front:** in error catcher an error maybe an native error or axios … ([#2038](https://github.com/betagouv/datasubvention/issues/2038)) ([98424a6](https://github.com/betagouv/datasubvention/commit/98424a642ddcd2fd6feb0831068ad58927c555be))
-
-### Features
-
--   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
--   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/datasubvention/issues/2075)) ([101f143](https://github.com/betagouv/datasubvention/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
--   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
-
 ## [0.44.1](https://github.com/betagouv/datasubvention/compare/v0.44.0...v0.44.1) (2024-01-23)
 
 ### Bug Fixes
@@ -38,7 +23,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 -   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
--   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/datasubvention/issues/2075)) ([101f143](https://github.com/betagouv/datasubvention/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
 -   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
 
 ## [0.43.1](https://github.com/betagouv/datasubvention/compare/v0.43.0...v0.43.1) (2024-01-10)
