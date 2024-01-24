@@ -1,1 +1,1 @@
-export const DOMAIN = process.env.DOMAIN || undefined;
+export const DOMAIN = process.env.DOMAIN || "";
