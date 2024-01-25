@@ -38,11 +38,7 @@ class RequestsService {
     }
 
     _sendRequest(type, path, params, data, requestOption = {}) {
-        const axiosOption = {};
-
-        if (requestOption.responseType) {
-            axiosOption.responseType = requestOption.responseType;
-        }
+        const axiosOption = { ...requestOption };
 
         return axios.request({
             withCredentials: true,
