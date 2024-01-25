@@ -417,15 +417,16 @@ describe("ApiAssoService", () => {
                 expect(actual).toBe(expected);
             });
 
-            it("should return null if date_modif_siren is null", async () => {
-                const expected = null;
-                mockSendRequest.mockResolvedValueOnce({
+            it("should set date_modif_siren if undefined", async () => {
+                const response = {
                     data: true,
                     etablissement: { length: 1 },
                     identite: { date_modif_siren: null },
-                });
+                };
+                const expected = { ...response, identite: { date_modif_siren: "1900-01-01" } };
+                mockSendRequest.mockResolvedValueOnce(response);
                 const actual = await apiAssoService.findAssociationBySiren(RNA);
-                expect(actual).toBe(expected);
+                expect(actual).toEqual(expected);
             });
 
             it("should return null if structure identite has empty properties", async () => {

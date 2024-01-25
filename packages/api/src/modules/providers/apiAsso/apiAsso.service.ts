@@ -83,24 +83,28 @@ export class ApiAssoService
 
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
-
         const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
             const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren}`);
-            if (!structure || hasEmptyProperties(structure.identite) || !structure.identite.date_modif_siren)
-                return null;
+            if (!structure || hasEmptyProperties(structure.identite)) return null;
+            if (!structure.identite.date_modif_siren) structure.identite.date_modif_siren = "1900-01-01";
             return ApiAssoDtoAdapter.sirenStructureToAssociation(structure);
         }
-        if (!sirenStructure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
+        if (!sirenStructure?.identite || !Object.keys(sirenStructure.identite).length) return null; // sometimes an empty shell object if given by the api
+        // FIX: allows date_modif_siren to be undefined quickly
+        if (!sirenStructure.identite.date_modif_siren) sirenStructure.identite.date_modif_siren = "1900-01-01";
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
     private async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
 
-        if (!structure) return null;
-        if (hasEmptyProperties(structure.identite) || !structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
+        if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
+            return null; // sometimes an empty shell object if given by the api
+
+        // FIX: allows date_modif_siren to be undefined quickly
+        if (!structure.identite.date_modif_siren) structure.identite.date_modif_siren = "1900-01-01";
 
         const establishments = Array.isArray(structure.etablissements.etablissement)
             ? structure.etablissements.etablissement
@@ -251,7 +255,6 @@ export class ApiAssoService
 
     async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
         const sirenAssociation = await this.findAssociationBySiren(siren);
-
         if (!sirenAssociation) return null;
 
         const rnaSirenEntities = await rnaSirenService.find(siren);
