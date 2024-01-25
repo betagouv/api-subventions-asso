@@ -48,7 +48,7 @@ export class AuthentificationHttp extends Controller {
         if (req.user) {
             // Successfully logged
             req.res?.cookie("token", req.user.jwt.token, {
-                secure: true,
+                secure: process.env.NODE_ENV === "production" ? true : false,
                 sameSite: "none",
                 domain: DOMAIN,
                 expires: req.user.jwt.expirateDate,
