@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.4](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.4) (2024-01-25)
+
+### Bug Fixes
+
+-   **api:** ignore rna-siren duplicate error ([#2093](https://github.com/betagouv/datasubvention/issues/2093)) ([09031b7](https://github.com/betagouv/datasubvention/commit/09031b7306b404c767ed3934d062b86a9c5d811d))
+-   ensure to use cookie everywhere with exact expiration ([#2098](https://github.com/betagouv/datasubvention/issues/2098)) ([633cded](https://github.com/betagouv/datasubvention/commit/633cdedb85d7345339127c893f334f53f9ed2aa1))
+-   **front:** ensure line separation in dashboard intro ([#2084](https://github.com/betagouv/datasubvention/issues/2084)) ([9756ae7](https://github.com/betagouv/datasubvention/commit/9756ae711fbf0a66fe4e4b4fbd3722d46756dbd5))
+
+# [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **front:** fix wrong error when user dont write email ([#2034](https://github.com/betagouv/datasubvention/issues/2034)) ([8b80f6c](https://github.com/betagouv/datasubvention/commit/8b80f6c6b75b5c615efdbec64abe111a4d438ff4))
+-   **front:** in error catcher an error maybe an native error or axios … ([#2038](https://github.com/betagouv/datasubvention/issues/2038)) ([98424a6](https://github.com/betagouv/datasubvention/commit/98424a642ddcd2fd6feb0831068ad58927c555be))
+
+### Features
+
+-   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
+-   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/datasubvention/issues/2075)) ([101f143](https://github.com/betagouv/datasubvention/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
 ## [0.44.3](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.3) (2024-01-24)
 
 ### Bug Fixes
