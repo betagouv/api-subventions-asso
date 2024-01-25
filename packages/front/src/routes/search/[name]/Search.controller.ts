@@ -32,7 +32,7 @@ export default class SearchController {
                             [association.rna, association.siren].find(identifier => identifier !== name),
                         ),
                     );
-                }
+                } else this.duplicatesFromIdentifier.set(null);
                 this.associations.set(associations);
                 // reload same page to save search in history
                 goto(`/search/${this.inputSearch.value}`, { replaceState: true });
