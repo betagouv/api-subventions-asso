@@ -51,7 +51,7 @@ export class AuthentificationHttp extends Controller {
                 secure: true,
                 sameSite: "none",
                 domain: DOMAIN,
-                expires: new Date(new Date().getTime() + JWT_EXPIRES_TIME),
+                expires: req.user.jwt.expirateDate,
                 httpOnly: true,
             });
             return {
