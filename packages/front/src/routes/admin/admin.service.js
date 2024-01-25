@@ -1,23 +1,23 @@
-import axios from "axios";
+import requestsService from "$lib/services/requests.service";
 
 export class AdminService {
     async getUsers() {
         const path = `/user/admin/list-users`;
-        return axios.get(path).then(result => {
+        return requestsService.get(path).then(result => {
             return result.data.users;
         });
     }
 
     async deleteUser(userId) {
         const path = `/user/admin/user/${userId}`;
-        return axios.delete(path).then(result => {
+        return requestsService.delete(path).then(result => {
             return result.status == 204;
         });
     }
 
     async create(email) {
         const path = `/user/admin/create-user`;
-        return axios.post(path, { email }).then(result => {
+        return requestsService.post(path, { email }).then(result => {
             return result.status == 201;
         });
     }
@@ -52,7 +52,7 @@ export class AdminService {
 
     async addDomain(domain) {
         const path = `/config/domains`;
-        return axios.post(path, { domain }).then(result => {
+        return requestsService.post(path, { domain }).then(result => {
             return result.status == 201;
         });
     }
