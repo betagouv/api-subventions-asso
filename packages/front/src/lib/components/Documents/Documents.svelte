@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
 
     import Spinner from "../Spinner.svelte";
@@ -7,11 +7,15 @@
     import { DocumentsController } from "./Documents.controller";
     import DocumentCard from "./components/DocumentCard.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import type { ResourceType } from "$lib/types/ResourceType";
+    import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 
-    export let resource;
-    export let resourceType = "association";
+    // TODO: replace unknown with EstablishmentEntity when created
+    export let resource: AssociationEntity | unknown;
+    export let resourceType: ResourceType = "association";
 
-    const controller = new DocumentsController(resourceType, resource);
+    let element;
+    const controller = new DocumentsController(resourceType, resource, element);
     const documentsPromise = controller.documentsPromise;
 
     onMount(() => controller.onMount());
@@ -22,7 +26,7 @@
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
-        {#if documents.some}
+        {#if documents && documents.some}
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.
@@ -39,13 +43,13 @@
                 </div>
             {/if}
 
-            {#if documents.etabDocs.length}
+            {#if documents.estabDocs.length}
                 <!-- Etab documents -->
                 <h3 class="fr-h2 fr-mt-3w fr-mb-6w">
-                    {controller.etabDocsTitle}
+                    {controller.estabDocsTitle}
                 </h3>
                 <div class="fr-grid-row fr-grid-row--gutters">
-                    {#each documents.etabDocs as document}
+                    {#each documents.estabDocs as document}
                         <DocumentCard {document} />
                     {/each}
                 </div>

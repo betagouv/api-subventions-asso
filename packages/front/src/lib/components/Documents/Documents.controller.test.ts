@@ -19,6 +19,7 @@ describe("Documents.controller", () => {
     const ESTABLISHMENT = { siret: "SIRET" };
 
     beforeAll(() => {
+        // @ts-expect-error: use partial association
         const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
@@ -28,10 +29,11 @@ describe("Documents.controller", () => {
         ctrl._organizeDocuments = vi.spyOn(ctrlNotSpied, "_organizeDocuments");
         ctrl.onMount = vi.spyOn(ctrlNotSpied, "onMount");
 
-        associationService.getDocuments.mockResolvedValue([]);
-        establishmentService.getDocuments.mockResolvedValue([]);
-        // eslint-disable-next-line no-import-assign -- no other way I think
-        associationStore["currentAssociation"] = new Store(ASSOCIATION);
+        vi.mocked(associationService).getDocuments.mockResolvedValue([]);
+        vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
+        // @ts-expect-error: partial association
+        associationStore["currentAssociation"].set(ASSOCIATION);
+        // = new Store(ASSOCIATION);
     });
 
     describe("_getAssociationDocument", () => {
@@ -46,21 +48,24 @@ describe("Documents.controller", () => {
         });
 
         it("filter out docs with siret that are not from siege", async () => {
-            associationService.getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "OTHER_SIRET" } }]);
+            // @ts-expect-error: use mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "OTHER_SIRET" } }]);
             const expected = 0;
             const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
             expect(actual).toBe(expected);
         });
 
         it("keep docs with no siret", async () => {
-            associationService.getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
+            // @ts-expect-error: use mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
             const expected = 1;
             const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
             expect(actual).toBe(expected);
         });
 
         it("keep docs with siege siret", async () => {
-            associationService.getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRENNIC" } }]);
+            // @ts-expect-error: use mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRENNIC" } }]);
             const expected = 1;
             const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
             expect(actual).toBe(expected);

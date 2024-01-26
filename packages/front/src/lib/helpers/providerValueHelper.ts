@@ -18,7 +18,7 @@ export const flattenProviderValue = providerValueObject => {
         };
     };
 
-    if (["number", "string"].includes(typeof providerValueObject) | !providerValueObject) return providerValueObject;
+    if (["number", "string"].includes(typeof providerValueObject) || !providerValueObject) return providerValueObject;
 
     if (Array.isArray(providerValueObject)) {
         return providerValueObject.map(ob => flattenProviderValue(ob));
@@ -34,6 +34,7 @@ export const getObjectWithMetadata = providerValueObject => {
     return {
         ...flattenProviderValue(providerValueObject),
         provider: getProvider(providerValueObject.nom),
+        // WTF ?
         date: new Date(getDate(providerValueObject.nom)),
     };
 };

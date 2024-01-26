@@ -1,13 +1,8 @@
-import documentPort from "./documents.port";
 import { DATASUB_URL } from "$env/static/public";
-import authService from "$lib/resources/auth/auth.service";
+import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
 export class DocumentService {
-    getBlob(localDocUrl) {
-        return documentPort.getBlob(localDocUrl);
-    }
-
-    async formatAndSortDocuments(documents) {
+    formatAndSortDocuments(documents): DocumentEntity[] {
         const documentLabels = {
             RIB: "RIB",
             "Avis Situation Insee": "Avis de situation (INSEE)",
