@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.5](https://github.com/betagouv/api-subventions-asso/compare/v0.44.4...v0.44.5) (2024-01-26)
+
+### Bug Fixes
+
+-   **front:** clear search duplicate alert ([de9091c](https://github.com/betagouv/api-subventions-asso/commit/de9091c7553b24d34d3ae42b98ee71a8f94153b5))
+-   **front:** don't send credentials to geo.api ([94f6de8](https://github.com/betagouv/api-subventions-asso/commit/94f6de89fcbba8b86935b3b59b0769e3349cc769))
+
 ## [0.44.4](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.44.4) (2024-01-25)
 
 ### Bug Fixes
