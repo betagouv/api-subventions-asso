@@ -6,7 +6,7 @@ import { siretToSiren } from "$lib/helpers/sirenHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
 import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.adapter";
-import documentService from "$lib/resources/documents/documents.service";
+import documentService from "$lib/services/documents.service";
 
 class AssociationService {
     incExtractData(identifier) {

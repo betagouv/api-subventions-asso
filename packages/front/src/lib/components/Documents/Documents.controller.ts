@@ -4,20 +4,35 @@ import associationService from "$lib/resources/associations/association.service"
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
 import { currentAssociation } from "$lib/store/association.store";
-
+import type { ResourceType } from "$lib/types/ResourceType";
+import type { DocumentEntity } from "$lib/entities/DocumentEntity";
+import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
     establishment: "cet établissement",
 };
-const etabDocsTitleByType = {
+const estabDocsTitleByType = {
     association: "Pièces complémentaires déposées par le siège social (via Le Compte Asso ou Dauphin)",
     establishment: "Pièces complémentaires déposées par l'établissement (via Le Compte Asso ou Dauphin)",
 };
 
 export class DocumentsController {
-    constructor(resourceType, resource) {
+    // element: Store<HTMLElement | null>;
+    documentsPromise: Store<
+        Promise<null | {
+            assoDocs: DocumentEntity[];
+            estabDocs: DocumentEntity[];
+            some: boolean;
+        }>
+    >;
+
+    constructor(
+        public resourceType: ResourceType,
+        // TODO: replace unknown with EstablishmentEntity when created
+        public resource: AssociationEntity | unknown,
+        public element: HTMLElement | undefined,
+    ) {
         this.resourceType = resourceType;
-        this.element = new Store(null);
         this.documentsPromise = new Store(new Promise(() => null));
         this.resource = resource;
     }
@@ -26,8 +41,8 @@ export class DocumentsController {
         return resourceNameWithDemonstrativeByType[this.resourceType];
     }
 
-    get etabDocsTitle() {
-        return etabDocsTitleByType[this.resourceType];
+    get estabDocsTitle() {
+        return estabDocsTitleByType[this.resourceType];
     }
 
     get _getterByType() {
@@ -36,43 +51,44 @@ export class DocumentsController {
             : struct => this._getAssociationDocuments(struct);
     }
 
-    async _getAssociationDocuments(association) {
+    async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
         return associationDocuments.filter(
             doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association),
         );
     }
 
-    _removeDuplicates(docs) {
+    _removeDuplicates(docs: DocumentEntity[]) {
         const docsByUrl = {};
         for (const doc of docs) {
             docsByUrl[doc.url] = doc;
         }
-        return Object.values(docsByUrl);
+        return Object.values(docsByUrl) as DocumentEntity[];
     }
 
     async _getEstablishmentDocuments(establishment) {
         const association = currentAssociation.value;
-        const etabDocsPromise = establishmentService.getDocuments(establishment.siret);
+        if (!association) return [];
+        const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
         const assoDocsPromise = associationService
             .getDocuments(association.rna || association.siren)
             .then(docs => docs.filter(doc => !doc.__meta__.siret || doc.__meta__.siret === establishment.siret));
-        const [etabDocs, assoDocs] = await Promise.all([etabDocsPromise, assoDocsPromise]);
-        return this._removeDuplicates([...etabDocs, ...assoDocs]);
+        const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
+        return this._removeDuplicates([...estabDocs, ...assoDocs]);
     }
 
-    _organizeDocuments(miscDocs) {
-        const assoDocs = [];
-        const etabDocs = [];
+    _organizeDocuments(miscDocs: DocumentEntity[]) {
+        const assoDocs: DocumentEntity[] = [];
+        const estabDocs: DocumentEntity[] = [];
         for (const doc of miscDocs) {
-            if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) etabDocs.push(doc);
+            if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) estabDocs.push(doc);
             if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) assoDocs.push(doc);
         }
-        return { assoDocs, etabDocs, some: !!(assoDocs.length + etabDocs.length) };
+        return { assoDocs, estabDocs, some: !!(assoDocs.length + estabDocs.length) };
     }
 
     async onMount() {
-        await waitElementIsVisible(this.element);
+        await waitElementIsVisible(this.element as HTMLElement);
         const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
     }

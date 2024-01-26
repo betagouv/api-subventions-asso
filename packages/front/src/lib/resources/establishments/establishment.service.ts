@@ -1,6 +1,7 @@
 import { toEstablishmentComponent } from "./establishment.adapter";
 import establishmentPort from "./establishment.port";
-import documentService from "$lib/resources/documents/documents.service";
+import type { DocumentEntity } from "$lib/entities/DocumentEntity";
+import documentService from "$lib/services/documents.service";
 import { getObjectWithMetadata, getValue } from "$lib/helpers/providerValueHelper";
 
 class EstablishmentService {
@@ -28,7 +29,7 @@ class EstablishmentService {
 
         if (!result) return [];
 
-        const documents = result.map(document => getObjectWithMetadata(document));
+        const documents: DocumentEntity[] = result.map(document => getObjectWithMetadata(document));
         return documentService.formatAndSortDocuments(documents);
     }
 }
