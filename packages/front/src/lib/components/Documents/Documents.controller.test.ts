@@ -3,6 +3,7 @@ import associationService from "$lib/resources/associations/association.service"
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import * as associationStore from "$lib/store/association.store";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
+import Store from "$lib/core/Store";
 
 vi.mock("$lib/resources/documents/documents.service");
 vi.mock("$lib/resources/associations/association.service");
@@ -31,7 +32,7 @@ describe("Documents.controller", () => {
         vi.mocked(associationService).getDocuments.mockResolvedValue([]);
         vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
         // @ts-expect-error: partial association
-        associationStore["currentAssociation"].set(ASSOCIATION);
+        associationStore["currentAssociation"] = new Store(ASSOCIATION);
         // = new Store(ASSOCIATION);
     });
 
@@ -174,7 +175,7 @@ describe("Documents.controller", () => {
                         provider: "Avis de Situation Insee",
                     },
                 ],
-                etabDocs: [
+                estabDocs: [
                     {
                         nom: "Document dauphin",
                         provider: "Dauphin",
