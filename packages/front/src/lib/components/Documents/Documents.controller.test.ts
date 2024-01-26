@@ -1,5 +1,4 @@
 import { DocumentsController } from "$lib/components/Documents/Documents.controller";
-import Store from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import * as associationStore from "$lib/store/association.store";
@@ -101,28 +100,33 @@ describe("Documents.controller", () => {
         });
 
         it("calls associationService.getDocuments with SIREN if no RNA", async () => {
+            // @ts-expect-error: mock
             associationStore.currentAssociation.value = { ...ASSOCIATION, rna: undefined };
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
             expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.siren);
+            // @ts-expect-error: mock
             associationStore.currentAssociation.value = ASSOCIATION;
         });
 
         it("filter out docs with siret that are not from given establishment", async () => {
-            associationService.getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "OTHER_SIRET" } }]);
+            // @ts-expect-error: mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "OTHER_SIRET" } }]);
             const expected = 0;
             const actual = (await ctrl._getEstablishmentDocuments(ESTABLISHMENT)).length;
             expect(actual).toBe(expected);
         });
 
         it("keep docs with no siret", async () => {
-            associationService.getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
+            // @ts-expect-error: mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
             const expected = 1;
             const actual = (await ctrl._getEstablishmentDocuments(ESTABLISHMENT)).length;
             expect(actual).toBe(expected);
         });
 
         it("keep docs with establishment siret", async () => {
-            associationService.getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRET" } }]);
+            // @ts-expect-error: mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRET" } }]);
             const expected = 1;
             const actual = (await ctrl._getEstablishmentDocuments(ESTABLISHMENT)).length;
             expect(actual).toBe(expected);
@@ -132,8 +136,10 @@ describe("Documents.controller", () => {
             const DOC_ASSO = { __meta__: { siret: "SIRET" }, name: "from asso" };
             const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" };
 
-            associationService.getDocuments.mockResolvedValueOnce([DOC_ASSO]);
-            establishmentService.getDocuments.mockResolvedValueOnce([DOC_ETAB]);
+            // @ts-expect-error: mock
+            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([DOC_ASSO]);
+            // @ts-expect-error: mock
+            vi.mocked(establishmentService).getDocuments.mockResolvedValueOnce([DOC_ETAB]);
 
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
             expect(ctrl._removeDuplicates).toHaveBeenCalledWith([DOC_ETAB, DOC_ASSO]);
@@ -199,7 +205,7 @@ describe("Documents.controller", () => {
         });
         it("awaits that component is visible", async () => {
             await ctrl.onMount();
-            expect(waitElementIsVisible).toHaveBeenCalled(ctrl.element);
+            expect(waitElementIsVisible).toHaveBeenCalledWith(ctrl.element);
         });
 
         it("calls _getterByType", async () => {
