@@ -19,6 +19,7 @@ import LoginError from "../../../../shared/errors/LoginError";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import { UserConsumerService } from "../consumer/user.consumer.service";
 import { UserServiceErrors } from "../../user.enum";
+import { getNewJwtExpireDate } from "../../user.helper";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -93,7 +94,7 @@ export class UserAuthService {
 
         const updatedJwt = {
             token: userAuthService.buildJWTToken(user),
-            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
+            expirateDate: getNewJwtExpireDate(),
         };
 
         try {
