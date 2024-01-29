@@ -8,7 +8,7 @@ vi.mock("$lib/resources/auth/auth.service");
 
 describe("AuthController", () => {
     describe("init", () => {
-        const authServiceMock = vi.spyOn(authService, "initUserInApp");
+        const authServiceMock = vi.spyOn(authService, "initUserInApp").mockImplementation(vi.fn);
 
         let controller;
 
@@ -17,13 +17,11 @@ describe("AuthController", () => {
         });
 
         it("should call authService", async () => {
-            vi.mocked(authService.initUserInApp).mockReturnValueOnce({});
             await controller.init();
             expect(authServiceMock).toHaveBeenCalledTimes(1);
         });
 
         it("should subscribe page", async () => {
-            vi.mocked(authService.initUserInApp).mockReturnValueOnce({});
             await controller.init();
             expect(page.subscribe).toHaveBeenCalledTimes(1);
         });
@@ -33,6 +31,7 @@ describe("AuthController", () => {
             await controller.init();
             const callback = vi.fn(vi.mocked(page.subscribe).mock.calls[0][0]);
             const PAGE = { data: { authLevel: AuthLevels.ADMIN } };
+            // @ts-expect-error: mock page data
             callback(PAGE);
             expect(authService.controlAuth).toHaveBeenCalledWith(2);
         });

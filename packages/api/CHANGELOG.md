@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.4](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.44.4) (2024-01-25)
+
+### Bug Fixes
+
+-   **api:** ignore rna-siren duplicate error ([#2093](https://github.com/betagouv/api-subventions-asso/issues/2093)) ([09031b7](https://github.com/betagouv/api-subventions-asso/commit/09031b7306b404c767ed3934d062b86a9c5d811d))
+-   **api:** lastActivityDate migration ([#2097](https://github.com/betagouv/api-subventions-asso/issues/2097)) ([88f952b](https://github.com/betagouv/api-subventions-asso/commit/88f952b67be9cabc8e311e507262f210994735ae))
+-   **api:** remove duplicate rna siren on database ([#2087](https://github.com/betagouv/api-subventions-asso/issues/2087)) ([22f7d8b](https://github.com/betagouv/api-subventions-asso/commit/22f7d8bc6baa617c60f4727dea36e3ecca8dd153))
+-   ensure to use cookie everywhere with exact expiration ([#2098](https://github.com/betagouv/api-subventions-asso/issues/2098)) ([633cded](https://github.com/betagouv/api-subventions-asso/commit/633cdedb85d7345339127c893f334f53f9ed2aa1))
+
 # [0.44.0](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.44.0) (2024-01-22)
 
 ### Bug Fixes
@@ -26,6 +35,109 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** fix comment on scaling app name instead of url ([8139320](https://github.com/betagouv/api-subventions-asso/commit/813932046f8d1ecef81343742ce8fa5a1c1d95c3))
 -   **api:** update osiris types comment ([3752ba2](https://github.com/betagouv/api-subventions-asso/commit/3752ba29aea9a401ba6ccb9b2c9b8135ecac6990))
 -   use auth cookie on api transaction ([#2022](https://github.com/betagouv/api-subventions-asso/issues/2022)) ([5946414](https://github.com/betagouv/api-subventions-asso/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
+## [0.44.3](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.44.3) (2024-01-24)
+
+### Bug Fixes
+
+-   **api:** disable rgpd cron ([8a738dc](https://github.com/betagouv/api-subventions-asso/commit/8a738dca511489c2102075905199c3c5e63f3e44))
+-   **api:** ignore rna-siren duplicate error ([#2093](https://github.com/betagouv/api-subventions-asso/issues/2093)) ([09031b7](https://github.com/betagouv/api-subventions-asso/commit/09031b7306b404c767ed3934d062b86a9c5d811d))
+-   **api:** remove duplicate rna siren on database ([#2087](https://github.com/betagouv/api-subventions-asso/issues/2087)) ([22f7d8b](https://github.com/betagouv/api-subventions-asso/commit/22f7d8bc6baa617c60f4727dea36e3ecca8dd153))
+
+### Features
+
+-   **api:** only prod, preprod and special config runs crons ([f0ed624](https://github.com/betagouv/api-subventions-asso/commit/f0ed62413c6411592143a2c5dfdb17758cd1e8ca))
+
+# [0.44.0](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **api:** bad conflict merge resolution ([8496f2e](https://github.com/betagouv/api-subventions-asso/commit/8496f2ed8329bbae11e25ee46a68e176ce8da170))
+-   **api:** dac documents is not an array its object ([#2040](https://github.com/betagouv/api-subventions-asso/issues/2040)) ([062bd29](https://github.com/betagouv/api-subventions-asso/commit/062bd29014e0c3612602a875382451e53a656259))
+-   **api:** establishment can be undefined in api asso ([#2039](https://github.com/betagouv/api-subventions-asso/issues/2039)) ([db8ff22](https://github.com/betagouv/api-subventions-asso/commit/db8ff2266d4e3b7cc08a6aa7bdac256cb168f852))
+-   **api:** fix error when ds return a 200 http code but wrong auth ([#2037](https://github.com/betagouv/api-subventions-asso/issues/2037)) ([cd4b31f](https://github.com/betagouv/api-subventions-asso/commit/cd4b31f6d979cd25097f953810d9de2dd81de0d3))
+-   **api:** send to sentry real error when brevo update crash ([#2036](https://github.com/betagouv/api-subventions-asso/issues/2036)) ([c642b62](https://github.com/betagouv/api-subventions-asso/commit/c642b62eae04099b438ac1a83b0f1f8b1ca19b11))
+-   **api:** stringify body on sentry error in brevo contact ([#2035](https://github.com/betagouv/api-subventions-asso/issues/2035)) ([a2c175b](https://github.com/betagouv/api-subventions-asso/commit/a2c175b07b8a361e6d2ca38bb1b9acfdd99e8e79))
+
+### Features
+
+-   **api:** [#1031](https://github.com/betagouv/api-subventions-asso/issues/1031) disable users never seen for 6 months and notify them ([#2073](https://github.com/betagouv/api-subventions-asso/issues/2073)) ([85b64b3](https://github.com/betagouv/api-subventions-asso/commit/85b64b35bf0acb49c67fcded5583ca45543942ce))
+-   **api:** [#1032](https://github.com/betagouv/api-subventions-asso/issues/1032) warn users before auto deletion because never seen ([#2074](https://github.com/betagouv/api-subventions-asso/issues/2074)) ([189d747](https://github.com/betagouv/api-subventions-asso/commit/189d7477843b90c30b3bf441e38855004f17bfd1))
+-   **api:** [#1977](https://github.com/betagouv/api-subventions-asso/issues/1977) disable inactive for two years ([#2021](https://github.com/betagouv/api-subventions-asso/issues/2021)) ([b6c49eb](https://github.com/betagouv/api-subventions-asso/commit/b6c49eb599987282767cf4bdc54a98119668595d))
+-   **api:** add last activity date on user ([#2052](https://github.com/betagouv/api-subventions-asso/issues/2052)) ([dc5e482](https://github.com/betagouv/api-subventions-asso/commit/dc5e482fbf2656d9054da0d475da80f49ae5e6ff))
+-   **api:** adds logs to mongo connection ([#2041](https://github.com/betagouv/api-subventions-asso/issues/2041)) ([bad833b](https://github.com/betagouv/api-subventions-asso/commit/bad833b4f30e4e4496c42eb5e2e38ccb2432114e))
+-   **api:** create and use isMongoDuplicateError helper ([cb06585](https://github.com/betagouv/api-subventions-asso/commit/cb06585b85c0c99b22b707ef8aee8d3dceed0780))
+-   **api:** enhance osiris deploy tool description ([b07bb2e](https://github.com/betagouv/api-subventions-asso/commit/b07bb2e45ac688358540df6ba6edebbc25ae9048))
+-   **api:** fix comment on scaling app name instead of url ([8139320](https://github.com/betagouv/api-subventions-asso/commit/813932046f8d1ecef81343742ce8fa5a1c1d95c3))
+-   **api:** update osiris types comment ([3752ba2](https://github.com/betagouv/api-subventions-asso/commit/3752ba29aea9a401ba6ccb9b2c9b8135ecac6990))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/api-subventions-asso/issues/2022)) ([5946414](https://github.com/betagouv/api-subventions-asso/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
+## [0.44.2](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.44.2) (2024-01-23)
+
+### Bug Fixes
+
+-   **api:** ignore rna-siren duplicate error ([f17a69e](https://github.com/betagouv/api-subventions-asso/commit/f17a69e94639a8360b548111cefeffe15775de11))
+-   **api:** remove duplicate rna siren on database ([#2087](https://github.com/betagouv/api-subventions-asso/issues/2087)) ([22f7d8b](https://github.com/betagouv/api-subventions-asso/commit/22f7d8bc6baa617c60f4727dea36e3ecca8dd153))
+
+# [0.44.0](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **api:** bad conflict merge resolution ([8496f2e](https://github.com/betagouv/api-subventions-asso/commit/8496f2ed8329bbae11e25ee46a68e176ce8da170))
+-   **api:** dac documents is not an array its object ([#2040](https://github.com/betagouv/api-subventions-asso/issues/2040)) ([062bd29](https://github.com/betagouv/api-subventions-asso/commit/062bd29014e0c3612602a875382451e53a656259))
+-   **api:** establishment can be undefined in api asso ([#2039](https://github.com/betagouv/api-subventions-asso/issues/2039)) ([db8ff22](https://github.com/betagouv/api-subventions-asso/commit/db8ff2266d4e3b7cc08a6aa7bdac256cb168f852))
+-   **api:** fix error when ds return a 200 http code but wrong auth ([#2037](https://github.com/betagouv/api-subventions-asso/issues/2037)) ([cd4b31f](https://github.com/betagouv/api-subventions-asso/commit/cd4b31f6d979cd25097f953810d9de2dd81de0d3))
+-   **api:** send to sentry real error when brevo update crash ([#2036](https://github.com/betagouv/api-subventions-asso/issues/2036)) ([c642b62](https://github.com/betagouv/api-subventions-asso/commit/c642b62eae04099b438ac1a83b0f1f8b1ca19b11))
+-   **api:** stringify body on sentry error in brevo contact ([#2035](https://github.com/betagouv/api-subventions-asso/issues/2035)) ([a2c175b](https://github.com/betagouv/api-subventions-asso/commit/a2c175b07b8a361e6d2ca38bb1b9acfdd99e8e79))
+
+### Features
+
+-   **api:** [#1031](https://github.com/betagouv/api-subventions-asso/issues/1031) disable users never seen for 6 months and notify them ([#2073](https://github.com/betagouv/api-subventions-asso/issues/2073)) ([85b64b3](https://github.com/betagouv/api-subventions-asso/commit/85b64b35bf0acb49c67fcded5583ca45543942ce))
+-   **api:** [#1032](https://github.com/betagouv/api-subventions-asso/issues/1032) warn users before auto deletion because never seen ([#2074](https://github.com/betagouv/api-subventions-asso/issues/2074)) ([189d747](https://github.com/betagouv/api-subventions-asso/commit/189d7477843b90c30b3bf441e38855004f17bfd1))
+-   **api:** [#1977](https://github.com/betagouv/api-subventions-asso/issues/1977) disable inactive for two years ([#2021](https://github.com/betagouv/api-subventions-asso/issues/2021)) ([b6c49eb](https://github.com/betagouv/api-subventions-asso/commit/b6c49eb599987282767cf4bdc54a98119668595d))
+-   **api:** add last activity date on user ([#2052](https://github.com/betagouv/api-subventions-asso/issues/2052)) ([dc5e482](https://github.com/betagouv/api-subventions-asso/commit/dc5e482fbf2656d9054da0d475da80f49ae5e6ff))
+-   **api:** adds logs to mongo connection ([#2041](https://github.com/betagouv/api-subventions-asso/issues/2041)) ([bad833b](https://github.com/betagouv/api-subventions-asso/commit/bad833b4f30e4e4496c42eb5e2e38ccb2432114e))
+-   **api:** create and use isMongoDuplicateError helper ([cb06585](https://github.com/betagouv/api-subventions-asso/commit/cb06585b85c0c99b22b707ef8aee8d3dceed0780))
+-   **api:** enhance osiris deploy tool description ([b07bb2e](https://github.com/betagouv/api-subventions-asso/commit/b07bb2e45ac688358540df6ba6edebbc25ae9048))
+-   **api:** fix comment on scaling app name instead of url ([8139320](https://github.com/betagouv/api-subventions-asso/commit/813932046f8d1ecef81343742ce8fa5a1c1d95c3))
+-   **api:** update osiris types comment ([3752ba2](https://github.com/betagouv/api-subventions-asso/commit/3752ba29aea9a401ba6ccb9b2c9b8135ecac6990))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/api-subventions-asso/issues/2022)) ([5946414](https://github.com/betagouv/api-subventions-asso/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
+## [0.43.3](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.43.3) (2024-01-23)
+
+### Bug Fixes
+
+-   **api:** remove duplicate rna siren on database ([91c669a](https://github.com/betagouv/api-subventions-asso/commit/91c669a7b702f02a5f13262e2bb2801fc7c20de8))
+
+# [0.44.0](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **api:** bad conflict merge resolution ([8496f2e](https://github.com/betagouv/api-subventions-asso/commit/8496f2ed8329bbae11e25ee46a68e176ce8da170))
+-   **api:** dac documents is not an array its object ([#2040](https://github.com/betagouv/api-subventions-asso/issues/2040)) ([062bd29](https://github.com/betagouv/api-subventions-asso/commit/062bd29014e0c3612602a875382451e53a656259))
+-   **api:** establishment can be undefined in api asso ([#2039](https://github.com/betagouv/api-subventions-asso/issues/2039)) ([db8ff22](https://github.com/betagouv/api-subventions-asso/commit/db8ff2266d4e3b7cc08a6aa7bdac256cb168f852))
+-   **api:** fix error when ds return a 200 http code but wrong auth ([#2037](https://github.com/betagouv/api-subventions-asso/issues/2037)) ([cd4b31f](https://github.com/betagouv/api-subventions-asso/commit/cd4b31f6d979cd25097f953810d9de2dd81de0d3))
+-   **api:** send to sentry real error when brevo update crash ([#2036](https://github.com/betagouv/api-subventions-asso/issues/2036)) ([c642b62](https://github.com/betagouv/api-subventions-asso/commit/c642b62eae04099b438ac1a83b0f1f8b1ca19b11))
+-   **api:** stringify body on sentry error in brevo contact ([#2035](https://github.com/betagouv/api-subventions-asso/issues/2035)) ([a2c175b](https://github.com/betagouv/api-subventions-asso/commit/a2c175b07b8a361e6d2ca38bb1b9acfdd99e8e79))
+
+### Features
+
+-   **api:** [#1031](https://github.com/betagouv/api-subventions-asso/issues/1031) disable users never seen for 6 months and notify them ([#2073](https://github.com/betagouv/api-subventions-asso/issues/2073)) ([85b64b3](https://github.com/betagouv/api-subventions-asso/commit/85b64b35bf0acb49c67fcded5583ca45543942ce))
+-   **api:** [#1032](https://github.com/betagouv/api-subventions-asso/issues/1032) warn users before auto deletion because never seen ([#2074](https://github.com/betagouv/api-subventions-asso/issues/2074)) ([189d747](https://github.com/betagouv/api-subventions-asso/commit/189d7477843b90c30b3bf441e38855004f17bfd1))
+-   **api:** [#1977](https://github.com/betagouv/api-subventions-asso/issues/1977) disable inactive for two years ([#2021](https://github.com/betagouv/api-subventions-asso/issues/2021)) ([b6c49eb](https://github.com/betagouv/api-subventions-asso/commit/b6c49eb599987282767cf4bdc54a98119668595d))
+-   **api:** add last activity date on user ([#2052](https://github.com/betagouv/api-subventions-asso/issues/2052)) ([dc5e482](https://github.com/betagouv/api-subventions-asso/commit/dc5e482fbf2656d9054da0d475da80f49ae5e6ff))
+-   **api:** adds logs to mongo connection ([#2041](https://github.com/betagouv/api-subventions-asso/issues/2041)) ([bad833b](https://github.com/betagouv/api-subventions-asso/commit/bad833b4f30e4e4496c42eb5e2e38ccb2432114e))
+-   **api:** create and use isMongoDuplicateError helper ([cb06585](https://github.com/betagouv/api-subventions-asso/commit/cb06585b85c0c99b22b707ef8aee8d3dceed0780))
+-   **api:** enhance osiris deploy tool description ([b07bb2e](https://github.com/betagouv/api-subventions-asso/commit/b07bb2e45ac688358540df6ba6edebbc25ae9048))
+-   **api:** fix comment on scaling app name instead of url ([8139320](https://github.com/betagouv/api-subventions-asso/commit/813932046f8d1ecef81343742ce8fa5a1c1d95c3))
+-   **api:** update osiris types comment ([3752ba2](https://github.com/betagouv/api-subventions-asso/commit/3752ba29aea9a401ba6ccb9b2c9b8135ecac6990))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/api-subventions-asso/issues/2022)) ([5946414](https://github.com/betagouv/api-subventions-asso/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
+## [0.43.2](https://github.com/betagouv/api-subventions-asso/compare/v0.43.1...v0.43.2) (2024-01-22)
+
+### Bug Fixes
+
+-   **api:** catch error on recherche entreprise api is hs ([91b1c8d](https://github.com/betagouv/api-subventions-asso/commit/91b1c8d817e852f8ef503a1e24d5a0a20555c5b4))
 
 ## [0.43.1](https://github.com/betagouv/api-subventions-asso/compare/v0.43.0...v0.43.1) (2024-01-10)
 

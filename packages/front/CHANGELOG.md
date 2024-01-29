@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.5](https://github.com/betagouv/datasubvention/compare/v0.44.4...v0.44.5) (2024-01-26)
+
+### Bug Fixes
+
+-   **front:** clear search duplicate alert ([de9091c](https://github.com/betagouv/datasubvention/commit/de9091c7553b24d34d3ae42b98ee71a8f94153b5))
+-   **front:** don't send credentials to geo.api ([94f6de8](https://github.com/betagouv/datasubvention/commit/94f6de89fcbba8b86935b3b59b0769e3349cc769))
+
+## [0.44.4](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.4) (2024-01-25)
+
+### Bug Fixes
+
+-   **api:** ignore rna-siren duplicate error ([#2093](https://github.com/betagouv/datasubvention/issues/2093)) ([09031b7](https://github.com/betagouv/datasubvention/commit/09031b7306b404c767ed3934d062b86a9c5d811d))
+-   ensure to use cookie everywhere with exact expiration ([#2098](https://github.com/betagouv/datasubvention/issues/2098)) ([633cded](https://github.com/betagouv/datasubvention/commit/633cdedb85d7345339127c893f334f53f9ed2aa1))
+-   **front:** ensure line separation in dashboard intro ([#2084](https://github.com/betagouv/datasubvention/issues/2084)) ([9756ae7](https://github.com/betagouv/datasubvention/commit/9756ae711fbf0a66fe4e4b4fbd3722d46756dbd5))
+
 # [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
 
 ### Bug Fixes
@@ -14,6 +29,51 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 -   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
 -   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/datasubvention/issues/2075)) ([101f143](https://github.com/betagouv/datasubvention/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
+## [0.44.3](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.3) (2024-01-24)
+
+### Bug Fixes
+
+-   **api:** ignore rna-siren duplicate error ([#2093](https://github.com/betagouv/datasubvention/issues/2093)) ([09031b7](https://github.com/betagouv/datasubvention/commit/09031b7306b404c767ed3934d062b86a9c5d811d))
+
+### Reverts
+
+-   Revert "feat(front): wording and layout in subv dashboard (#2075)" ([b87230b](https://github.com/betagouv/datasubvention/commit/b87230bccec075e4d58569db453fa1819d7d6382)), closes [#2075](https://github.com/betagouv/datasubvention/issues/2075)
+
+# [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **front:** fix wrong error when user dont write email ([#2034](https://github.com/betagouv/datasubvention/issues/2034)) ([8b80f6c](https://github.com/betagouv/datasubvention/commit/8b80f6c6b75b5c615efdbec64abe111a4d438ff4))
+-   **front:** in error catcher an error maybe an native error or axios … ([#2038](https://github.com/betagouv/datasubvention/issues/2038)) ([98424a6](https://github.com/betagouv/datasubvention/commit/98424a642ddcd2fd6feb0831068ad58927c555be))
+
+### Features
+
+-   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
+-   **front:** wording and layout in subv dashboard ([#2075](https://github.com/betagouv/datasubvention/issues/2075)) ([101f143](https://github.com/betagouv/datasubvention/commit/101f143ba28d47accdb0d766c63283c9d5c94b85))
+-   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
+
+## [0.44.2](https://github.com/betagouv/datasubvention/compare/v0.43.2...v0.44.2) (2024-01-23)
+
+### Bug Fixes
+
+## [0.44.1](https://github.com/betagouv/datasubvention/compare/v0.44.0...v0.44.1) (2024-01-23)
+
+### Bug Fixes
+
+-   **front:** fix spacing ([6822896](https://github.com/betagouv/datasubvention/commit/6822896a41baaa3b0a894cad83bf72ebebbf6e05))
+
+# [0.44.0](https://github.com/betagouv/datasubvention/compare/v0.43.1...v0.44.0) (2024-01-22)
+
+### Bug Fixes
+
+-   **front:** fix wrong error when user dont write email ([#2034](https://github.com/betagouv/datasubvention/issues/2034)) ([8b80f6c](https://github.com/betagouv/datasubvention/commit/8b80f6c6b75b5c615efdbec64abe111a4d438ff4))
+-   **front:** in error catcher an error maybe an native error or axios … ([#2038](https://github.com/betagouv/datasubvention/issues/2038)) ([98424a6](https://github.com/betagouv/datasubvention/commit/98424a642ddcd2fd6feb0831068ad58927c555be))
+
+### Features
+
+-   [#1993](https://github.com/betagouv/datasubvention/issues/1993) display rna-siren duplicates ([95fe7cc](https://github.com/betagouv/datasubvention/commit/95fe7cc4b4877f9d9a6b188b5296743ccae74b31))
 -   use auth cookie on api transaction ([#2022](https://github.com/betagouv/datasubvention/issues/2022)) ([5946414](https://github.com/betagouv/datasubvention/commit/5946414db868cf4a586bc8d5bb143cdfcc80d9db))
 
 ## [0.43.1](https://github.com/betagouv/datasubvention/compare/v0.43.0...v0.43.1) (2024-01-10)

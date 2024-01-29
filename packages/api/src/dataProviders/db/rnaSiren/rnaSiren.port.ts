@@ -12,6 +12,7 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
     async createIndexes() {
         await this.collection.createIndex({ rna: 1 });
         await this.collection.createIndex({ siren: 1 });
+        await this.collection.createIndex({ rna: 1, siren: 1 }, { unique: true });
     }
 
     async insert(entity: RnaSirenEntity) {
@@ -20,7 +21,7 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
         } catch (e: unknown) {
             if (isMongoDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
-                throw buildDuplicateIndexError<RnaSirenDbo>(e);
+                return; // we can safely ignore it
             }
             throw e;
         }

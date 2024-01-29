@@ -7,7 +7,7 @@ import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/assoc
 
 export class AssociationController {
     titles = [
-        "Subventions",
+        "Tableau de bord",
         /**, "Statistiques",*/
         "Pièces administratives",
         "Établissements",
