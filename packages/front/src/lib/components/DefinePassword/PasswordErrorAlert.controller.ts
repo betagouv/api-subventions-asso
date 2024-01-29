@@ -14,7 +14,6 @@ const DEFAULT_ERROR_MESSAGE = "Une erreur est survenue lors de la création de v
 
 export default class PasswordErrorAlertController {
     constructor(public error) {
-        this.error = error;
     }
 
     get errorMessage() {
