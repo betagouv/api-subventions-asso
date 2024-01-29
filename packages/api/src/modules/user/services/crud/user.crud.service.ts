@@ -19,6 +19,7 @@ import userActivationService from "../activation/user.activation.service";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import { UserServiceErrors } from "../../user.enum";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
+import { getNewJwtExpireDate } from "../../user.helper";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
@@ -83,10 +84,9 @@ export class UserCrudService {
             lastActivityDate: null,
         };
 
-        const now = new Date();
         const jwtParams = {
             token: userAuthService.buildJWTToken(partialUser as UserDto),
-            expirateDate: new Date(now.getTime() + JWT_EXPIRES_TIME),
+            expirateDate: getNewJwtExpireDate(),
         };
 
         const user = {
