@@ -41,7 +41,8 @@ export class DauphinService
      */
 
     isDemandesSubventionsProvider = true;
-    isDocumentProvider = false; // only while we no longer have access
+    isDocumentProvider = false; // only while we no longer have access.
+    // when we do again, be careful to skip "liste des dirigeants" because of political insecurities
 
     // Applications
 

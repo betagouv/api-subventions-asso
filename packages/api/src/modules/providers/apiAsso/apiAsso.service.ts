@@ -25,6 +25,7 @@ export class ApiAssoService
     extends ProviderCore
     implements AssociationsProvider, EtablissementProvider, DocumentProvider
 {
+    // API documented in part "contrat d'interface" https://lecompteasso.associations.gouv.fr/lapi-association/
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
     constructor() {
@@ -124,7 +125,13 @@ export class ApiAssoService
     }
 
     private filterRnaDocuments(documents: StructureRnaDocumentDto[]) {
-        const acceptedType = ["MD", "LDC", "PV", "STC"];
+        const acceptedType = [
+            "MD", // récépissé de modification
+            "CR", //"Récépissé de création"
+            "LDC", // liste des dirigeants
+            "PV", // procès verbal
+            "STC", // statuts
+        ];
 
         const sortByYearAndTimeAsc = (a: StructureRnaDocumentDto, b: StructureRnaDocumentDto) => {
             return parseFloat(`${a.annee}.${a.time}`) - parseFloat(`${b.annee}.${b.time}`);
@@ -143,14 +150,18 @@ export class ApiAssoService
 
     private filterDacDocuments(documents: StructureDacDocumentDto[]) {
         const acceptedType = [
-            "RFA",
-            "BPA",
-            "RCA",
-            "RAR",
-            "CAP",
+            "RFA", // rapports financier ou moral
+            "BPA", // budget prévisionnel annuel
+            "RCA", // Rapport du commissaire aux compte
+            "RAR", // Rapport d'activité
+            "CPA", // comptes du dernier exercice clôt
             "Jeunesse et Education Populaire (JEP)",
             "Education nationale",
-            "Formation",
+            "Formation", // L'habilitation d'organisme de formation
+            "Service Civique", // agrement service civique
+            "AGR", // arrêté de l'agrement
+            "AFF", // Attestation d’affiliation
+            "PRS", // Projet associatif
         ];
 
         const sortByTimeDepotAsc = (a: StructureDacDocumentDto, b: StructureDacDocumentDto) =>
@@ -190,7 +201,9 @@ export class ApiAssoService
                 // When api have one document, it is not an array but a single object
                 documents = [documents];
             } else {
-                const errorMessage = "API-ASSO structure do not contain documents or format is not supported. Structure identifier => " + structureIdentifier;
+                const errorMessage =
+                    "API-ASSO structure do not contain documents or format is not supported. Structure identifier => " +
+                    structureIdentifier;
                 Sentry.captureException(new Error(errorMessage));
                 console.error(errorMessage);
                 return [];
