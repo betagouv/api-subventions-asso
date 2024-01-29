@@ -1,6 +1,5 @@
 import documentPort from "./documents.port";
 import { DATASUB_URL } from "$env/static/public";
-import authService from "$lib/resources/auth/auth.service";
 
 export class DocumentService {
     getBlob(localDocUrl) {
@@ -12,11 +11,12 @@ export class DocumentService {
             RIB: "RIB",
             "Avis Situation Insee": "Avis de situation (INSEE)",
             MD: "Récépissé de modification",
+            CR: "Récépissé de création",
             LDC: "Liste des dirigeants",
             PV: "Procès verbal",
             STC: "Statuts",
             RAR: "Rapport d'activité",
-            RAF: "Rapport financier",
+            RFA: "Rapport financier",
             BPA: "Budget prévisionnel annuel",
             RCA: "Rapport du commissaire aux compte",
             "Education nationale": `Agrément Education Nationale`,
