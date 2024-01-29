@@ -22,6 +22,10 @@ export class DocumentService {
             "Education nationale": `Agrément Education Nationale`,
             "Jeunesse et Education Populaire (JEP)": `Agrément jeunesse et éducation populaire`,
             Formation: "L'habilitation d'organisme de formation",
+            "Service Civique" : "Agrément service civique",
+            "AGR": "Arrêté d'agrément",
+            "AFF": "Attestation d’affiliation",
+            "PRS": "Projet associatif",
         };
 
         const compareLabelledDocs = (docA, docB) => {

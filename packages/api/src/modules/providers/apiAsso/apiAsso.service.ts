@@ -158,6 +158,10 @@ export class ApiAssoService
             "Jeunesse et Education Populaire (JEP)",
             "Education nationale",
             "Formation", // L'habilitation d'organisme de formation
+            "Service Civique", // agrement service civique
+            "AGR", // arrêté de l'agrement
+            "AFF", // Attestation d’affiliation
+            "PRS", // Projet associatif
         ];
 
         const sortByTimeDepotAsc = (a: StructureDacDocumentDto, b: StructureDacDocumentDto) =>
