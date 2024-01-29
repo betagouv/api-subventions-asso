@@ -26,7 +26,7 @@
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
-        {#if documents && documents.some}
+        {#if documents?.some}
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.
