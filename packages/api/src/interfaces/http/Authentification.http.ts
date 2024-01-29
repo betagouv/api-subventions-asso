@@ -48,16 +48,16 @@ export class AuthentificationHttp extends Controller {
 
         if (req.user) {
             const cookieOption: CookieOptions = {
-                secure: false,
+                secure: true,
                 sameSite: "none",
                 domain: DOMAIN,
                 expires: req.user.jwt.expirateDate,
                 httpOnly: true,
             };
 
-            if (!DEV) {
-                cookieOption.domain = DOMAIN;
-                cookieOption.secure = true;
+            if (DEV) {
+                cookieOption.domain = undefined;
+                cookieOption.secure = false;
             }
 
             req.res?.cookie("token", req.user.jwt.token, cookieOption);
