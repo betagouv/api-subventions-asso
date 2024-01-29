@@ -1,10 +1,11 @@
 import documentsService from "../../modules/documents/documents.service";
 import SpyInstance = jest.SpyInstance;
 import { DocumentHttp } from "./Document.http";
+import { IncomingMessage } from "http";
 
 describe("DocumentController", () => {
     const CONTENT_TYPE = "mimeType";
-    const STREAM = { headers: { "content-type": CONTENT_TYPE } };
+    const STREAM = { headers: { "content-type": CONTENT_TYPE } } as IncomingMessage;
     const DECODED_PATH = "/a/b";
     const ENCODED_PATH = "%2Fa%2Fb";
     const PROVIDER_ID = "providerId";
