@@ -58,7 +58,7 @@ export class DocumentsService {
             ),
         );
 
-        return (result.flat() as Document[]).filter(doc => doc.type && doc.type.value !== "LDC"); // skip "Liste des dirigeants" because of political insecurities
+        return (result.flat() as Document[])
     }
 
     private async aggregateDocuments(id: StructureIdentifiers): Promise<(Document | null)[]> {
