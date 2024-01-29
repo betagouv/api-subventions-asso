@@ -17,7 +17,6 @@ const estabDocsTitleByType = {
 };
 
 export class DocumentsController {
-    // element: Store<HTMLElement | null>;
     documentsPromise: Store<
         Promise<null | {
             assoDocs: DocumentEntity[];

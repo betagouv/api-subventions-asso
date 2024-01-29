@@ -29,13 +29,13 @@ export const flattenProviderValue = providerValueObject => {
     return providerValueObjectProps.reduce(reduceProviderValues, {});
 };
 
-export const getObjectWithMetadata = providerValueObject => {
-    if (typeof providerValueObject !== "object" || Array.isArray(providerValueObject)) return providerValueObject;
+export const getObjectWithMetadata = providerValuesObject => {
+    // if not a ProviderValues
+    if (typeof providerValuesObject !== "object" || Array.isArray(providerValuesObject)) return providerValuesObject;
     return {
-        ...flattenProviderValue(providerValueObject),
-        provider: getProvider(providerValueObject.nom),
-        // WTF ?
-        date: new Date(getDate(providerValueObject.nom)),
+        ...flattenProviderValue(providerValuesObject),
+        provider: getProvider(providerValuesObject.nom),
+        date: new Date(getDate(providerValuesObject.nom)),
     };
 };
 
