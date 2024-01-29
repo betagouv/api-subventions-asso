@@ -14,7 +14,7 @@ export default class DefinePasswordController {
     validatePassword: () => void;
     checkConfirm: () => void;
 
-    // Create Entity PasswordValidation Entity ?
+    // Create PasswordValidation Entity ?
     constructor(public values: { password: string; confirmPwd: string }) {
         this.values = values;
         this.passwordErrorMsg = "Le mot de passe ne respecte pas le format demandé";

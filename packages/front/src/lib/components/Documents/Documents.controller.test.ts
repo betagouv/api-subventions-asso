@@ -33,7 +33,6 @@ describe("Documents.controller", () => {
         vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
         // @ts-expect-error: partial association
         associationStore["currentAssociation"] = new Store(ASSOCIATION);
-        // = new Store(ASSOCIATION);
     });
 
     describe("_getAssociationDocument", () => {

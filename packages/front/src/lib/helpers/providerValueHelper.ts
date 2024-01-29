@@ -30,7 +30,6 @@ export const flattenProviderValue = providerValueObject => {
 };
 
 export const getObjectWithMetadata = providerValuesObject => {
-    // if not a ProviderValues
     if (typeof providerValuesObject !== "object" || Array.isArray(providerValuesObject)) return providerValuesObject;
     return {
         ...flattenProviderValue(providerValuesObject),
