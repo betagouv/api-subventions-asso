@@ -10,6 +10,9 @@ export function isMongoDuplicateError(error: unknown): error is MongoServerError
 export const buildDuplicateIndexError = <T>(error: MongoServerError): DuplicateIndexError<T> | MongoServerError => {
     // MongoServerError default errors are stored in writeErrors
     // c.f https://www.mongodb.com/docs/v4.4/reference/method/db.collection.insertMany/#behaviors
-    if (!error.writeErrors) return error;
-    return new DuplicateIndexError<T>(error.message, error.writeErrors.map(writeError => writeError.err.op as T) || []);
+    if (!error.writeErrors && !error.keyValue) return error;
+    return new DuplicateIndexError<T>(
+        error.message,
+        error?.writeErrors?.map(writeError => writeError.err.op as T) || error.keyValue || [],
+    );
 };
