@@ -13,8 +13,7 @@ const ERROR_MESSAGES = {
 const DEFAULT_ERROR_MESSAGE = "Une erreur est survenue lors de la création de votre compte.";
 
 export default class PasswordErrorAlertController {
-    constructor(error) {
-        this.error = error;
+    constructor(public error) {
     }
 
     get errorMessage() {

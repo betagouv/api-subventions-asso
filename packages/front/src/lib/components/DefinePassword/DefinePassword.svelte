@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import DefinePasswordController from "./DefinePassword.controller";
     import PasswordInput from "$lib/dsfr/PasswordInput.svelte";
 
@@ -20,13 +20,13 @@
             label="Mot de passe"
             bind:value={values.password}
             error={$showPasswordError}
-            errorMsg={$showPasswordError ? passwordErrorMsg : undefined} />
+            errorMsg={$showPasswordError ? passwordErrorMsg : null} />
     </div>
     <div class="fr-fieldset__element">
         <PasswordInput
             label="Confirmation de mot de passe"
             bind:value={values.confirmPwd}
             error={$showConfirmError}
-            errorMsg={$showConfirmError ? confirmPwdErrorMsg : undefined} />
+            errorMsg={$showConfirmError ? confirmPwdErrorMsg : null} />
     </div>
 </fieldset>

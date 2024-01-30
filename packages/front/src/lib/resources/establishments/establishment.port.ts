@@ -1,3 +1,4 @@
+import type { Document } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class EstablishmentPort {
@@ -11,7 +12,7 @@ class EstablishmentPort {
         return (await requestsService.get(path))?.data?.etablissement;
     }
 
-    async getDocuments(identifier) {
+    async getDocuments(identifier): Promise<Document[]> {
         const anwser = await requestsService.get(`/etablissement/${identifier}/documents`);
         return anwser?.data?.documents;
     }

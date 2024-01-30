@@ -1,12 +1,8 @@
-import documentPort from "./documents.port";
 import { DATASUB_URL } from "$env/static/public";
+import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
 export class DocumentService {
-    getBlob(localDocUrl) {
-        return documentPort.getBlob(localDocUrl);
-    }
-
-    async formatAndSortDocuments(documents) {
+    formatAndSortDocuments(documents): DocumentEntity[] {
         const documentLabels = {
             RIB: "RIB",
             "Avis Situation Insee": "Avis de situation (INSEE)",
@@ -22,10 +18,10 @@ export class DocumentService {
             "Education nationale": `Agrément Education Nationale`,
             "Jeunesse et Education Populaire (JEP)": `Agrément jeunesse et éducation populaire`,
             Formation: "L'habilitation d'organisme de formation",
-            "Service Civique" : "Agrément service civique",
-            "AGR": "Arrêté d'agrément",
-            "AFF": "Attestation d’affiliation",
-            "PRS": "Projet associatif",
+            "Service Civique": "Agrément service civique",
+            AGR: "Arrêté d'agrément",
+            AFF: "Attestation d’affiliation",
+            PRS: "Projet associatif",
         };
 
         const compareLabelledDocs = (docA, docB) => {
