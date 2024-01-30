@@ -172,3 +172,9 @@ describe("front end app unit tests examples", () => {
 Les tests d'intégration sont présents dans le dosser `test` à la racine du projet. Leur nom de fichier se termine par `spec.ts`. Ils ne doivent tester que les fonctionnalités de bout en bout. Comme les routes HTTP ou les CLI.
 
 Pour ce faire, nous avons décidé d'utiliser le snapshot de Jest pour garder ces tests simples et concis. Dans l'exemple type d'un test d'intégration présent dans `/tests/example.spec.ts` on y voit l'utilisation de `.toMatchSnapshot()` qui crée un snapshot à la première exécution et qui valide le test. Il faut dans un premier temps s'assurer via un test manuel que la fonctionnalité fonctionne bien correctement. Les autres exécutions de `.toMatchSnapshot()` vont ensuite comparer le snapshot présent (et versionné sur Github) à celui re-généré. Si le nouveau snapshot ne "match" pas le premier, et que c'est lié à une modification de la fonctionnalité, il est nécessaire de mettre à jour le snapshot. Pour ce faire, il faut utiliser l'option `--updateSnapshot` (ou `-u`) de Jest. La commande pour mettre à jour tout un fichier de test est la suivante : `npm run test:integ -- -u nom-du-fichier.spec`. Mais il est également possible de mettre à jour tous les fichiers tests en même temps (`npm run test:integ -- -u`) ou de mettre à jour le snapshot d'un seul test (a.k.a `describe`) au sein d'un fichier (`npm run test:integ -- nom-du-fichier.spec -u -t test-name`).
+
+
+### Package UNIX nécessaire
+
+- zip 
+- tar 

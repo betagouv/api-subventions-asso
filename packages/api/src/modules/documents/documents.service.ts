@@ -111,7 +111,8 @@ export class DocumentsService {
                 ? await this.getDocumentBySiren(identifier)
                 : await this.getDocumentBySiret(identifier);
 
-        if (!documents) throw new Error("No documents found");
+        if (!documents) throw new Error("No document found");
+
         const folderName = `${identifier}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
@@ -147,7 +148,7 @@ export class DocumentsService {
     }
 
     private async getDocumentStreamByUrl(url: string) {
-        const urlObj = new URL(url, FRONT_OFFICE_URL)
+        const urlObj = new URL(url, FRONT_OFFICE_URL);
         const providerId = urlObj.pathname.split("/")[2];
         const id = urlObj.searchParams.get("url") || "";
         return this.getDocumentStream(providerId, decodeURIComponent(id));
