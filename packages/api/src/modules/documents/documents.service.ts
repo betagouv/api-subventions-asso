@@ -125,7 +125,13 @@ export class DocumentsService {
         const zipCmd = `zip -j /tmp/${folderName}.zip "${documentsPath.join('" "')}"`;
         childProcess.execSync(zipCmd);
         fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
-        return fs.createReadStream(`/tmp/${folderName}.zip`);
+        const stream = fs.createReadStream(`/tmp/${folderName}.zip`);
+
+        stream.on("end", () => {
+            fs.rmSync(`/tmp/${folderName}.zip`);
+        });
+
+        return stream;
     }
 
     private async downloadDocument(folderName: string, document: Document): Promise<string | null> {

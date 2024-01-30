@@ -473,6 +473,9 @@ describe("Documents Service", () => {
         let execSyncSpy: jest.SpyInstance;
 
         const FAKE_DOCUMENT = "FAKE_DOCUMENT";
+        const FAKE_STREAM = {
+            on: jest.fn(),
+        };
 
         beforeAll(() => {
             getDocumentByRnaSpy = jest.spyOn(documentsService, "getDocumentByRna");
@@ -487,7 +490,7 @@ describe("Documents Service", () => {
             rmSyncSpy = jest.spyOn(fs, "rmSync");
             rmSyncSpy.mockImplementation(jest.fn());
             createReadStreamSpy = jest.spyOn(fs, "createReadStream");
-            createReadStreamSpy.mockImplementation(jest.fn());
+            createReadStreamSpy.mockReturnValue(FAKE_STREAM);
 
             // childProcess (zip)
             execSyncSpy = jest.spyOn(childProcess, "execSync");
@@ -583,15 +586,30 @@ describe("Documents Service", () => {
 
         it("should call createReadStream and return stream", async () => {
             const SIRET = "12345678912345";
-            const fakeStream = "FAKE_STREAM";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            createReadStreamSpy.mockReturnValueOnce(fakeStream);
             const actual = await documentsService.getDocumentsFiles(SIRET);
             expect(createReadStreamSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
-            expect(actual).toBe(fakeStream);
+            expect(actual).toBe(FAKE_STREAM);
+        });
+
+        it("should call remove file after end of stream", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
+            await documentsService.getDocumentsFiles(SIRET);
+
+            const lastStreamOnCall = FAKE_STREAM.on.mock.lastCall;
+
+            const callbackOnLastStream = lastStreamOnCall[1];
+
+            callbackOnLastStream();
+
+            expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
         });
     });
 });

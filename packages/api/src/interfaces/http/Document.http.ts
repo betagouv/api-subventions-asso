@@ -12,7 +12,6 @@ export class DocumentHttp extends Controller {
         const stream = await documentService.getDocumentsFiles(identifier);
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
-
         return stream;
     }
 
