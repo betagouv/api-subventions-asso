@@ -41,9 +41,20 @@ export class DumpService {
         const users = await userCrudService.find();
         console.log("users: ", users.length);
 
-        if (users.length) await metabaseDumpRepo.upsertUsers(users);
+        if (users.length) {
+            await metabaseDumpRepo.upsertUsers(users);
+            await this.patchWithPipedriveData();
+        }
 
         await configurationsService.setLastPublishDumpDate(now);
+    }
+
+    importPipedriveData(data) {
+        return metabaseDumpRepo.savePipedrive(data);
+    }
+
+    private patchWithPipedriveData() {
+        return metabaseDumpRepo.patchWithPipedriveData();
     }
 }
 
