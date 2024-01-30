@@ -1,5 +1,5 @@
 import fs from "fs";
-import { execSync } from "child_process";
+import childProcess from "child_process";
 import { IncomingMessage } from "http";
 import { Rna, Siren, Siret, Document } from "dto";
 import * as Sentry from "@sentry/node";
@@ -111,7 +111,7 @@ export class DocumentsService {
                 ? await this.getDocumentBySiren(identifier)
                 : await this.getDocumentBySiret(identifier);
 
-        if (!documents) throw new Error("No document found");
+        if (!documents || documents.length == 0) throw new Error("No document found");
 
         const folderName = `${identifier}-${new Date().getTime()}`;
 
@@ -122,9 +122,8 @@ export class DocumentsService {
         });
 
         const documentsPath = (await Promise.all(documentsPathPromises)).filter(document => document) as string[];
-
         const zipCmd = `zip -j /tmp/${folderName}.zip "${documentsPath.join('" "')}"`;
-        execSync(zipCmd);
+        childProcess.execSync(zipCmd);
         fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
         return fs.createReadStream(`/tmp/${folderName}.zip`);
     }

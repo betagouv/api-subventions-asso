@@ -1,3 +1,5 @@
+import fs from "fs";
+import childProcess from "child_process";
 import documentsService from "./documents.service";
 
 jest.mock("../providers");
@@ -363,7 +365,7 @@ describe("Documents Service", () => {
     });
 
     describe("aggregate", () => {
-        const documents = [{type: "TEST"}, {type: "TEST"}];
+        const documents = [{ type: "TEST" }, { type: "TEST" }];
         const fn = jest.fn(async () => documents);
         const providers = [
             {
@@ -457,6 +459,139 @@ describe("Documents Service", () => {
             const expected = RES;
             const actual = await documentsService.getGenericDocumentStream(HTTP, URL);
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("getDocumentsFiles", () => {
+        let getDocumentByRnaSpy: jest.SpyInstance;
+        let getDocumentBySirenSpy: jest.SpyInstance;
+        let getDocumentBySiretSpy: jest.SpyInstance;
+        let downloadDocumentSpy: jest.SpyInstance;
+        let mkdirSyncSpy: jest.SpyInstance;
+        let rmSyncSpy: jest.SpyInstance;
+        let createReadStreamSpy: jest.SpyInstance;
+        let execSyncSpy: jest.SpyInstance;
+
+        const FAKE_DOCUMENT = "FAKE_DOCUMENT";
+
+        beforeAll(() => {
+            getDocumentByRnaSpy = jest.spyOn(documentsService, "getDocumentByRna");
+            getDocumentBySirenSpy = jest.spyOn(documentsService, "getDocumentBySiren");
+            getDocumentBySiretSpy = jest.spyOn(documentsService, "getDocumentBySiret");
+            // @ts-ignore downloadDocument
+            downloadDocumentSpy = jest.spyOn(documentsService, "downloadDocument");
+
+            // FS
+            mkdirSyncSpy = jest.spyOn(fs, "mkdirSync");
+            mkdirSyncSpy.mockImplementation(jest.fn());
+            rmSyncSpy = jest.spyOn(fs, "rmSync");
+            rmSyncSpy.mockImplementation(jest.fn());
+            createReadStreamSpy = jest.spyOn(fs, "createReadStream");
+            createReadStreamSpy.mockImplementation(jest.fn());
+
+            // childProcess (zip)
+            execSyncSpy = jest.spyOn(childProcess, "execSync");
+            execSyncSpy.mockImplementation(jest.fn());
+        });
+
+        it("should call getDocumentByRna", async () => {
+            const RNA = "W00000000";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.rna);
+            getDocumentByRnaSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            await documentsService.getDocumentsFiles(RNA);
+
+            expect(getDocumentByRnaSpy).toHaveBeenCalledWith(RNA);
+        });
+
+        it("should call getDocumentBySiren", async () => {
+            const SIREN = "123456789";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siren);
+            getDocumentBySirenSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            await documentsService.getDocumentsFiles(SIREN);
+
+            expect(getDocumentBySirenSpy).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("should call getDocumentBySiret", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            await documentsService.getDocumentsFiles(SIRET);
+
+            expect(getDocumentBySiretSpy).toHaveBeenCalledWith(SIRET);
+        });
+
+        it("should throw an error when identifier type is unknown", async () => {
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(undefined);
+            await expect(documentsService.getDocumentsFiles("SIRET")).rejects.toThrow();
+        });
+
+        it("should throw an error no documents found", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([]);
+            await expect(documentsService.getDocumentsFiles(SIRET)).rejects.toThrow();
+        });
+
+        it("should call mkdir", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            await documentsService.getDocumentsFiles(SIRET);
+            expect(mkdirSyncSpy).toBeCalled();
+        });
+
+        it("should call downloadDocument", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            await documentsService.getDocumentsFiles(SIRET);
+            expect(downloadDocumentSpy).toBeCalledWith(expect.any(String), FAKE_DOCUMENT);
+        });
+
+        it("should call execSync", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
+            await documentsService.getDocumentsFiles(SIRET);
+            expect(execSyncSpy).toBeCalledWith(
+                expect.stringMatching('zip -j /tmp/12345678912345-([0-9]+).zip "/fake/path"'),
+            );
+        });
+
+        it("should call rmSync", async () => {
+            const SIRET = "12345678912345";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
+            await documentsService.getDocumentsFiles(SIRET);
+            expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
+                recursive: true,
+                force: true,
+            });
+        });
+
+        it("should call createReadStream and return stream", async () => {
+            const SIRET = "12345678912345";
+            const fakeStream = "FAKE_STREAM";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            getDocumentBySiretSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
+            downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
+            createReadStreamSpy.mockReturnValueOnce(fakeStream);
+            const actual = await documentsService.getDocumentsFiles(SIRET);
+            expect(createReadStreamSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
+            expect(actual).toBe(fakeStream);
         });
     });
 });
