@@ -104,12 +104,7 @@ export class DocumentsService {
 
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
-        const documents =
-            type === StructureIdentifiersEnum.rna
-                ? await this.getDocumentByRna(identifier)
-                : type === StructureIdentifiersEnum.siren
-                ? await this.getDocumentBySiren(identifier)
-                : await this.getDocumentBySiret(identifier);
+        const documents = (await (await this.aggregateDocuments(identifier)).filter(d => d)) as Document[];
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 

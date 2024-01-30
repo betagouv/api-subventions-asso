@@ -42,4 +42,28 @@ describe("DocumentController", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("downloadDocuments", () => {
+        let getDocumentsFilesSpy: jest.SpyInstance;
+        const stream = {};
+
+        beforeAll(() => {
+            getDocumentsFilesSpy = jest.spyOn(documentsService, "getDocumentsFiles");
+            getDocumentsFilesSpy.mockResolvedValue(stream);
+            documentController = new DocumentHttp();
+            setHeaderMock = jest.spyOn(documentController, "setHeader").mockImplementation(jest.fn());
+        });
+
+        it("should set headers", async () => {
+            await documentController.downloadDocuments("test");
+            expect(setHeaderMock).toHaveBeenCalledWith("Content-Type", "application/zip");
+            expect(setHeaderMock).toHaveBeenCalledWith("Content-Disposition", "inline");
+        });
+
+        it("should return stream", async () => {
+            const expected = stream;
+            const actual = await documentController.downloadDocuments("test");
+            expect(actual).toEqual(expected);
+        });
+    });
 });
