@@ -24,7 +24,7 @@ export class DocumentsController {
             some: boolean;
         }>
     >;
-    element: HTMLElement | null;
+    element?: HTMLElement;
 
     constructor(
         public resourceType: ResourceType,
@@ -34,8 +34,6 @@ export class DocumentsController {
         this.resourceType = resourceType;
         this.documentsPromise = new Store(new Promise(() => null));
         this.resource = resource;
-        // set from bind:this in Svelte component when mounted
-        this.element = null;
     }
 
     get resourceNameWithDemonstrative() {
