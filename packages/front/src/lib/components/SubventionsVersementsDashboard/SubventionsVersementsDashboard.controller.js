@@ -126,7 +126,6 @@ export default class SubventionsVersementsDashboardController {
     }
 
     _updateExercices(exercices) {
-        console.log(exercices);
         this.exercices = exercices;
         this.exercicesOptions.set(this._buildExercices());
 
