@@ -14,11 +14,12 @@
     export let resource: AssociationEntity | unknown;
     export let resourceType: ResourceType = "association";
 
-    let element;
-    const controller = new DocumentsController(resourceType, resource, element);
+    const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
 
-    onMount(() => controller.onMount());
+    onMount(() => {
+        controller.onMount();
+    });
 </script>
 
 <div bind:this={controller.element}>

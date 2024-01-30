@@ -24,16 +24,18 @@ export class DocumentsController {
             some: boolean;
         }>
     >;
+    element: HTMLElement | null;
 
     constructor(
         public resourceType: ResourceType,
         // TODO: replace unknown with EstablishmentEntity when created
         public resource: AssociationEntity | unknown,
-        public element: HTMLElement | undefined,
     ) {
         this.resourceType = resourceType;
         this.documentsPromise = new Store(new Promise(() => null));
         this.resource = resource;
+        // set from bind:this in Svelte component when mounted
+        this.element = null;
     }
 
     get resourceNameWithDemonstrative() {
@@ -87,6 +89,7 @@ export class DocumentsController {
     }
 
     async onMount() {
+        // Svelte component mounted so bind:this replaced this.element with current node element
         await waitElementIsVisible(this.element as HTMLElement);
         const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
