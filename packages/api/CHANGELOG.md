@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.6](https://github.com/betagouv/api-subventions-asso/compare/v0.44.5...v0.44.6) (2024-01-30)
+
+### Bug Fixes
+
+-   **api:** update build duplicate index error for use with single error ([48d1905](https://github.com/betagouv/api-subventions-asso/commit/48d1905efb66dfa63f7ab676bf834b8c21303517))
+
 ## [0.44.4](https://github.com/betagouv/api-subventions-asso/compare/v0.43.2...v0.44.4) (2024-01-25)
 
 ### Bug Fixes
