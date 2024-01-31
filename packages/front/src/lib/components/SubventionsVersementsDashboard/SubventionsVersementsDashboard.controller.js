@@ -120,6 +120,8 @@ export default class SubventionsVersementsDashboardController {
 
         const computedExercices = [...new Set(this._fullElements.map(element => element.year))].sort((a, b) => a - b);
 
+        // only update selected exercice if we have at least one fetched from SSE at this point
+        if (!computedExercices.length) return;
         this._updateExercices(computedExercices);
     }
 
