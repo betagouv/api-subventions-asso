@@ -13,7 +13,7 @@
 
 <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-8">
-        <h3>Demandes de subventions collectées</h3>
+        <h3 class="fr-h4">Demandes de subventions collectées</h3>
         <p class="fr-mb-0">D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.</p>
         <p class="asterisk">
             Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées au
@@ -21,7 +21,7 @@
         </p>
     </div>
     <div class="fr-col-4">
-        <h3>Versements réalisés</h3>
+        <h3 class="fr-h4">Versements réalisés</h3>
         <p>
             Total des versements en <b>{year}</b>
             :
@@ -36,6 +36,5 @@
     .asterisk {
         font-weight: bold;
         font-style: italic;
-        font-size: 0.875rem;
     }
 </style>

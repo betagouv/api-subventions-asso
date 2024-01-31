@@ -16,7 +16,7 @@
 
 <div bind:this={element}>
     {#if $currentAssoSimplifiedEtabs.length}
-        <h3>Les établissements rattachés à cette association</h3>
+        <h2>Les établissements rattachés à cette association</h2>
         <div class="fr-grid-row fr-grid-row--gutters">
             {#each $currentAssoSimplifiedEtabs as establishment}
                 <EstablishmentCard
