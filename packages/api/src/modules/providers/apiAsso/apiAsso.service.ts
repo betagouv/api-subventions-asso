@@ -80,6 +80,10 @@ export class ApiAssoService
         return ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructure);
     }
 
+    private getDefaultDateModifSiren(structure: StructureDto | SirenStructureDto) {
+        return structure.identite?.date_creation_sirene || "1900-01-01";
+    }
+
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
 
@@ -87,19 +91,27 @@ export class ApiAssoService
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
             const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren}`);
-            if (!structure || hasEmptyProperties(structure.identite) || !structure.identite.date_modif_siren)
-                return null;
+            if (!structure || hasEmptyProperties(structure.identite)) return null;
+            if (!structure.identite.date_modif_siren)
+                structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
             return ApiAssoDtoAdapter.sirenStructureToAssociation(structure);
         }
-        if (!sirenStructure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
+        if (!sirenStructure?.identite || !Object.keys(sirenStructure.identite).length) return null; // sometimes an empty shell object if given by the api
+
+        if (!sirenStructure.identite.date_modif_siren)
+            sirenStructure.identite.date_modif_siren = this.getDefaultDateModifSiren(sirenStructure);
+
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
     private async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
 
-        if (!structure) return null;
-        if (hasEmptyProperties(structure.identite) || !structure.identite?.date_modif_siren) return null; // sometimes an empty shell object if given by the api
+        if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
+            return null; // sometimes an empty shell object if given by the api
+
+        if (!structure.identite.date_modif_siren)
+            structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
 
         const establishments = Array.isArray(structure.etablissements.etablissement)
             ? structure.etablissements.etablissement
@@ -190,7 +202,9 @@ export class ApiAssoService
                 // When api have one document, it is not an array but a single object
                 documents = [documents];
             } else {
-                const errorMessage = "API-ASSO structure do not contain documents or format is not supported. Structure identifier => " + structureIdentifier;
+                const errorMessage =
+                    "API-ASSO structure do not contain documents or format is not supported. Structure identifier => " +
+                    structureIdentifier;
                 Sentry.captureException(new Error(errorMessage));
                 console.error(errorMessage);
                 return [];
