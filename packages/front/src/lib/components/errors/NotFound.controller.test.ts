@@ -23,7 +23,7 @@ describe("NotFoundController", () => {
 
         it("sets app with return value from context", () => {
             const ctrl = new NotFoundController();
-            const expected = getContext();
+            const expected = getContext("");
             const actual = ctrl.app;
             expect(actual).toEqual(expected);
         });

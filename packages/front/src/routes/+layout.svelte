@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { setContext } from "svelte";
     import "../global.css";
     import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css";
@@ -27,6 +27,7 @@
     });
 
     // Options disponibles à l'initialisation du DSFR
+    // @ts-expect-error: DSFR
     window.dsfr = {
         verbose: false,
         mode: "runtime",
