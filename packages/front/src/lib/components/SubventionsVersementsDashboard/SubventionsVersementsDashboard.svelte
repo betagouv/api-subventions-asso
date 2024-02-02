@@ -64,7 +64,7 @@
             Voir la liste des fournisseurs de données
         </Button>
     </div>
-    <div class="fr-grid-row fr-mt-6w compact-columns">
+    <div class="fr-mt-6w compact-columns">
         {#if $elements?.length}
             <div class="fr-mb-6w">
                 <SubventionsVersementsStatistique elements={$elements} year={$selectedYear} />
