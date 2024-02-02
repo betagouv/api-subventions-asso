@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.45.0](https://github.com/betagouv/datasubvention/compare/v0.44.6...v0.45.0) (2024-02-02)
+
+### Bug Fixes
+
+-   fix api doc type ids ([1c77aab](https://github.com/betagouv/datasubvention/commit/1c77aab8c4adc17d2d2b29be0009ae9b8a28ea2e))
+-   **front:** [#2030](https://github.com/betagouv/datasubvention/issues/2030) do not update exercice if none is defined yet ([#2117](https://github.com/betagouv/datasubvention/issues/2117)) ([61bd13d](https://github.com/betagouv/datasubvention/commit/61bd13d6e968048e6efcbb552a11b40368ced4de))
+
+### Features
+
+-   **front:** check user connection before page load ([1286f4a](https://github.com/betagouv/datasubvention/commit/1286f4ae8e58c19a52f15a1a89b0b0ac43049cec))
+-   more api asso docs ([a65acfe](https://github.com/betagouv/datasubvention/commit/a65acfe5d3fc9a79190e5d7e125d839a10a55e34))
+
 ## [0.44.6](https://github.com/betagouv/datasubvention/compare/v0.44.5...v0.44.6) (2024-01-30)
 
 **Note:** Version bump only for package front

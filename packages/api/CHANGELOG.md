@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.45.0](https://github.com/betagouv/api-subventions-asso/compare/v0.44.6...v0.45.0) (2024-02-02)
+
+### Bug Fixes
+
+-   **api:** more api asso docs ([21a373a](https://github.com/betagouv/api-subventions-asso/commit/21a373a0fb0f5148b30ce5a5a1ceadcac27d7a04))
+-   **api:** set default date_modif_siren with a private method ([#2134](https://github.com/betagouv/api-subventions-asso/issues/2134)) ([351234f](https://github.com/betagouv/api-subventions-asso/commit/351234fdb303b4b64698a1c3e52dd8ef2ea0e082))
+-   disable secure and remove domain for auth cookie in dev mode ([#2103](https://github.com/betagouv/api-subventions-asso/issues/2103)) ([254b719](https://github.com/betagouv/api-subventions-asso/commit/254b719bc1c21fe89832fc0be6ed3dd9c6c0a229))
+-   fix api doc type ids ([1c77aab](https://github.com/betagouv/api-subventions-asso/commit/1c77aab8c4adc17d2d2b29be0009ae9b8a28ea2e))
+
+### Features
+
+-   **api:** [#2083](https://github.com/betagouv/api-subventions-asso/issues/2083) add multiple download files in zip ([#2111](https://github.com/betagouv/api-subventions-asso/issues/2111)) ([42d6e51](https://github.com/betagouv/api-subventions-asso/commit/42d6e51a2b8afa37e5606bf678a6e85336185e76))
+-   **api:** parse pipedrive data and patch metebase users with it ([6fdc3f1](https://github.com/betagouv/api-subventions-asso/commit/6fdc3f15210e09c5a32d6eb0f9ef9f715d731ac6))
+-   **api:** reactivate rgpd cron to test irl ([8aed8fb](https://github.com/betagouv/api-subventions-asso/commit/8aed8fb95b1a8550e2da7ba85b79253475525bb5))
+-   more api asso docs ([a65acfe](https://github.com/betagouv/api-subventions-asso/commit/a65acfe5d3fc9a79190e5d7e125d839a10a55e34))
+
 ## [0.44.6](https://github.com/betagouv/api-subventions-asso/compare/v0.44.5...v0.44.6) (2024-01-30)
 
 ### Bug Fixes
