@@ -1,10 +1,11 @@
 import documentsService from "../../modules/documents/documents.service";
 import SpyInstance = jest.SpyInstance;
 import { DocumentHttp } from "./Document.http";
+import { IncomingMessage } from "http";
 
 describe("DocumentController", () => {
     const CONTENT_TYPE = "mimeType";
-    const STREAM = { headers: { "content-type": CONTENT_TYPE } };
+    const STREAM = { headers: { "content-type": CONTENT_TYPE } } as IncomingMessage;
     const DECODED_PATH = "/a/b";
     const ENCODED_PATH = "%2Fa%2Fb";
     const PROVIDER_ID = "providerId";
@@ -38,6 +39,30 @@ describe("DocumentController", () => {
         it("returns stream from document service", async () => {
             const expected = STREAM;
             const actual = await documentController.getDocumentStream(PROVIDER_ID, ENCODED_PATH);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("downloadDocuments", () => {
+        let getDocumentsFilesSpy: jest.SpyInstance;
+        const stream = {};
+
+        beforeAll(() => {
+            getDocumentsFilesSpy = jest.spyOn(documentsService, "getDocumentsFiles");
+            getDocumentsFilesSpy.mockResolvedValue(stream);
+            documentController = new DocumentHttp();
+            setHeaderMock = jest.spyOn(documentController, "setHeader").mockImplementation(jest.fn());
+        });
+
+        it("should set headers", async () => {
+            await documentController.downloadDocuments("test");
+            expect(setHeaderMock).toHaveBeenCalledWith("Content-Type", "application/zip");
+            expect(setHeaderMock).toHaveBeenCalledWith("Content-Disposition", "inline");
+        });
+
+        it("should return stream", async () => {
+            const expected = stream;
+            const actual = await documentController.downloadDocuments("test");
             expect(actual).toEqual(expected);
         });
     });

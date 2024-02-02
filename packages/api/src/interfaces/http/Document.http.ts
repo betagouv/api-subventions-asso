@@ -1,11 +1,20 @@
 import { Route, Get, Controller, Tags, Security, Response, Query, Path } from "tsoa";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import documentService from "../../modules/documents/documents.service";
+import { StructureIdentifiers } from "../../@types";
 
 @Route("document")
 @Security("jwt")
 @Tags("Document Controller")
 export class DocumentHttp extends Controller {
+    @Get("/downloads/{identifier}")
+    public async downloadDocuments(@Path() identifier: StructureIdentifiers) {
+        const stream = await documentService.getDocumentsFiles(identifier);
+        this.setHeader("Content-Type", "application/zip");
+        this.setHeader("Content-Disposition", "inline");
+        return stream;
+    }
+
     /**
      * Télécharge un document dauphin
      * @param providerId

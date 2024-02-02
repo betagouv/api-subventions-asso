@@ -1,3 +1,5 @@
+import fs from "fs";
+import childProcess from "child_process";
 import { IncomingMessage } from "http";
 import { Rna, Siren, Siret, Document } from "dto";
 import * as Sentry from "@sentry/node";
@@ -6,6 +8,7 @@ import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
+import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import DocumentProvider from "./@types/DocumentsProvider";
 
 export class DocumentsService {
@@ -77,7 +80,7 @@ export class DocumentsService {
         return await this.aggregate(documentProviders, method, id);
     }
 
-    getDocumentStream(providerId: string, docId: string) {
+    getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
         const service = providersById[providerId];
         if ("getSpecificDocumentStream" in service) return service.getSpecificDocumentStream(docId);
         return this.getGenericDocumentStream(service.http, docId);
@@ -95,6 +98,62 @@ export class DocumentsService {
                 },
             })
         ).data;
+    }
+    async getDocumentsFiles(identifier: StructureIdentifiers) {
+        const type = getIdentifierType(identifier);
+
+        if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
+
+        const documents = (await (await this.aggregateDocuments(identifier)).filter(d => d)) as Document[];
+
+        if (!documents || documents.length == 0) throw new Error("No document found");
+
+        const folderName = `${identifier}-${new Date().getTime()}`;
+
+        fs.mkdirSync("/tmp/" + folderName);
+
+        const documentsPathPromises = documents.map(document => {
+            return this.downloadDocument(folderName, document);
+        });
+
+        const documentsPath = (await Promise.all(documentsPathPromises)).filter(document => document) as string[];
+        const zipCmd = `zip -j /tmp/${folderName}.zip "${documentsPath.join('" "')}"`;
+        childProcess.execSync(zipCmd);
+        fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
+        const stream = fs.createReadStream(`/tmp/${folderName}.zip`);
+
+        // end event is same event of finish but for read stream
+        stream.on("end", () => {
+            fs.rmSync(`/tmp/${folderName}.zip`);
+        });
+
+        return stream;
+    }
+
+    private async downloadDocument(folderName: string, document: Document): Promise<string | null> {
+        try {
+            const documentPath = `/tmp/${folderName}/${document.type.value}-${document.nom.value}`;
+            const stream = (await this.getDocumentStreamByUrl(document.url.value)).pipe(
+                fs.createWriteStream(documentPath),
+            );
+            return new Promise((resolve, reject) => {
+                // finish event is same event of end but for write stream
+                stream.on("finish", () => {
+                    resolve(documentPath);
+                });
+                stream.on("error", reject);
+            });
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+
+    private async getDocumentStreamByUrl(url: string) {
+        const urlObj = new URL(url, FRONT_OFFICE_URL);
+        const providerId = urlObj.pathname.split("/")[2];
+        const id = urlObj.searchParams.get("url") || "";
+        return this.getDocumentStream(providerId, decodeURIComponent(id));
     }
 }
 
