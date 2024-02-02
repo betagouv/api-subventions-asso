@@ -122,6 +122,7 @@ export class DocumentsService {
         fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
         const stream = fs.createReadStream(`/tmp/${folderName}.zip`);
 
+        // end event is same event of finish but for read stream
         stream.on("end", () => {
             fs.rmSync(`/tmp/${folderName}.zip`);
         });
@@ -136,6 +137,7 @@ export class DocumentsService {
                 fs.createWriteStream(documentPath),
             );
             return new Promise((resolve, reject) => {
+                // finish event is same event of end but for write stream
                 stream.on("finish", () => {
                     resolve(documentPath);
                 });
