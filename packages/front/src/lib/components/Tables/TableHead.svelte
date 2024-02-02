@@ -45,7 +45,7 @@
     div :global(.fr-btn) {
         transform: rotate(-90deg);
         background-color: transparent;
-        color: #e3e3fd;
+        color: var(--blue-france-sun-113-625);
         margin-left: -0.5rem;
     }
 
@@ -54,9 +54,9 @@
     }
 
     div :global(.fr-btn):hover {
-        color: #000091;
+        color: var(--blue-france-sun-113-625-hover);
     }
     div.active :global(.fr-btn) {
-        color: #000091;
+        color: var(--blue-france-sun-113-625-active);
     }
 </style>

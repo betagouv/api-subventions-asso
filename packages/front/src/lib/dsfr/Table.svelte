@@ -39,10 +39,18 @@
         border: 2px solid #2e2e2e;
     }
 
-    .custom-table :global(tbody td),
+    .custom-table {
+        margin-bottom: 0px;
+    }
+
+    .custom-table :global(tbody tr),
     .custom-table :global(thead th) {
         border-bottom: 1px #e5e5e5 solid;
         background-color: var(--background-default-grey);
+    }
+
+    .custom-table :global(tbody tr):last-of-type {
+        border-bottom: none;
     }
 
     .custom-table :global(tr.clickable) {

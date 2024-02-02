@@ -31,8 +31,8 @@
 {#await promise}
     <Spinner description="Chargement des demandes de subventions en cours ..." />
 {:then _null}
-    <div class="fr-grid-row fr-mt-3w fr-py-2w flex space-between">
-        <h2>Tableau de bord</h2>
+    <div class="fr-grid-row fr-pt-4w fr-pb-2w flex space-between">
+        <h2>Subventions</h2>
         <div class="baseline">
             {#if $elements && $elements.length}
                 <Button
@@ -46,7 +46,7 @@
             {/if}
         </div>
     </div>
-    <div class="fr-grid-row fr-py-4w flex space-between">
+    <div class="fr-grid-row flex space-between">
         <div class="fr-col-3">
             {#if $exercicesOptions.length}
                 <Select
@@ -64,15 +64,17 @@
             Voir la liste des fournisseurs de données
         </Button>
     </div>
-    <div class="fr-py-3w compact-columns">
+    <div class="fr-mt-6w compact-columns">
         {#if $elements?.length}
-            <SubventionsVersementsStatistique elements={$elements} year={$selectedYear} />
+            <div class="fr-mb-6w">
+                <SubventionsVersementsStatistique elements={$elements} year={$selectedYear} />
+            </div>
             {#if $loaderStateStore.status != "end"}
                 <Alert type="info" title="Récupération en cours des subventions chez nos fournisseurs ...">
                     <ProgressBar percent={$loaderStateStore.percent} />
                 </Alert>
             {/if}
-            <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-grid-row">
                 <div class="fr-col-8">
                     <SubventionTable
                         elements={$elements}
