@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import NotFoundController from "./NotFound.controller";
     import svg404 from "$lib/assets/images/svg404.svg";
 
