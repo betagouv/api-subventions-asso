@@ -388,15 +388,22 @@ describe("ApiAssoService", () => {
                 etablissement: { length: 1 },
             };
             let mockSendRequest: jest.SpyInstance;
+            let mockGetDefaultDateModifSiren: jest.SpyInstance;
 
             beforeAll(() => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
                 // @ts-ignore sendRequest is private Method
                 mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(ASSO_WITH_STRUCTURES);
+                mockGetDefaultDateModifSiren = jest
+                    // @ts-expect-error: mock private method
+                    .spyOn(apiAssoService, "getDefaultDateModifSiren")
+                    // @ts-expect-error: mock
+                    .mockReturnValue("1900-01-01");
             });
 
             afterAll(() => {
                 mockSendRequest.mockRestore();
+                mockGetDefaultDateModifSiren.mockRestore();
             });
 
             it("should send a request", async () => {
@@ -417,17 +424,6 @@ describe("ApiAssoService", () => {
                 expect(actual).toBe(expected);
             });
 
-            it("should return null if date_modif_siren is null", async () => {
-                const expected = null;
-                mockSendRequest.mockResolvedValueOnce({
-                    data: true,
-                    etablissement: { length: 1 },
-                    identite: { date_modif_siren: null },
-                });
-                const actual = await apiAssoService.findAssociationBySiren(RNA);
-                expect(actual).toBe(expected);
-            });
-
             it("should return null if structure identite has empty properties", async () => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
                 // @ts-expect-error: mock wrong api response
@@ -442,6 +438,43 @@ describe("ApiAssoService", () => {
                 await apiAssoService.findAssociationBySiren(SIREN);
                 expect(ApiAssoDtoAdapter.sirenStructureToAssociation).toBeCalledWith(expected);
             });
+
+            it("should call getDefaultDateModifSiren()", async () => {
+                const STRUCTURE = {
+                    ...ASSO_WITH_STRUCTURES,
+                    identite: { date_modif_siren: undefined },
+                };
+                mockSendRequest.mockResolvedValueOnce(STRUCTURE);
+                await apiAssoService.findAssociationBySiren(SIREN);
+                expect(mockGetDefaultDateModifSiren).toHaveBeenCalledWith(STRUCTURE);
+            });
+        });
+    });
+
+    describe("getDefaultDateModifSiren", () => {
+        it.each`
+            structure
+            ${{}}
+            ${{ identite: {} }}
+            ${{ identifie: { date_creation_sirene: undefined } }}
+            ${{ identifie: { date_creation_sirene: null } }}
+        `("should return default value", ({ structure }) => {
+            const expected = "1900-01-01";
+            // @ts-expect-error: private method
+            const actual = apiAssoService.getDefaultDateModifSiren(structure);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return date_creation_sirene", () => {
+            const STRUCTURE = {
+                identite: {
+                    date_creation_sirene: "2000-01-01",
+                },
+            };
+            const expected = STRUCTURE.identite.date_creation_sirene;
+            // @ts-expect-error: private method
+            const actual = apiAssoService.getDefaultDateModifSiren(STRUCTURE);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -514,11 +547,17 @@ describe("ApiAssoService", () => {
             const SIREN = "000000000";
 
             let mockSendRequest: jest.SpyInstance;
+            let mockGetDefaultDateModifSiren: jest.SpyInstance;
             let toEtablissementMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-ignore sendRequest is private method
                 mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockReturnValue(fixtureAsso);
+                mockGetDefaultDateModifSiren = jest
+                    // @ts-expect-error: private method
+                    .spyOn(apiAssoService, "getDefaultDateModifSiren")
+                    // @ts-expect-error:
+                    .mockReturnValue("1900-01-01");
                 toEtablissementMock = jest
                     .spyOn(ApiAssoDtoAdapter, "toEtablissement")
                     .mockImplementation(data => data as unknown as Etablissement);
@@ -526,6 +565,7 @@ describe("ApiAssoService", () => {
 
             afterAll(() => {
                 mockSendRequest.mockRestore();
+                mockGetDefaultDateModifSiren.mockRestore();
                 toEtablissementMock.mockRestore();
             });
 
@@ -560,6 +600,14 @@ describe("ApiAssoService", () => {
                 await apiAssoService.findEtablissementsBySiren(SIREN);
 
                 expect(toEtablissementMock).toHaveBeenCalledTimes(2);
+            });
+
+            it("should call getDefaultDateModifSiren()", async () => {
+                const STRUCTURE = { ...fixtureAsso, identite: { date_modif_siren: undefined } };
+                mockSendRequest.mockResolvedValueOnce(STRUCTURE);
+                // @ts-expect-error: private method
+                await apiAssoService.findEtablissementsBySiren(SIREN);
+                expect(mockGetDefaultDateModifSiren).toHaveBeenCalledWith(STRUCTURE);
             });
         });
     });
