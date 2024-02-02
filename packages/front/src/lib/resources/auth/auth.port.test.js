@@ -92,6 +92,29 @@ describe("AuthPort", () => {
         });
     });
 
+    describe("logout()", () => {
+        it("calls logout route", async () => {
+            const PATH = "/auth/logout";
+            vi.mocked(requestsService.get).mockResolvedValueOnce(true);
+            await authPort.logout();
+            expect(requestsService.get).toBeCalledWith(PATH);
+        });
+
+        it("returns true if success", async () => {
+            vi.mocked(requestsService.get).mockResolvedValueOnce("anything");
+            const expected = true;
+            const actual = await authPort.logout();
+            expect(actual).toBe(expected);
+        });
+
+        it("returns false if failed", async () => {
+            vi.mocked(requestsService.get).mockRejectedValueOnce(new Error("anything"));
+            const expected = false;
+            const actual = await authPort.logout();
+            expect(actual).toBe(expected);
+        });
+    });
+
     describe("activate", () => {
         const FAKE_TOKEN = "activation token";
         const DATA = { USER: "" };

@@ -9,7 +9,7 @@ export class UsersService {
 
     async deleteCurrentUser() {
         await userPort.deleteSelfUser();
-        authService.logout(true);
+        await authService.logout(true);
     }
 
     getSelfUser() {

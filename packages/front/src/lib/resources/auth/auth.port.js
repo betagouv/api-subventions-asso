@@ -21,6 +21,13 @@ export class AuthPort {
         });
     }
 
+    logout() {
+        return requestsService
+            .get("/auth/logout")
+            .then(_value => true)
+            .catch(_error => false);
+    }
+
     forgetPassword(email) {
         const path = `${this.BASE_PATH}/forget-password`;
         return requestsService.post(path, { email }).then(() => true);

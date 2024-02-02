@@ -1,17 +1,17 @@
 import { SignupErrorCodes, ResetPasswordErrorCodes } from "dto";
-import { UnauthorizedError } from "../../errors";
 import authPort from "$lib/resources/auth/auth.port";
-import requestsService from "$lib/services/requests.service";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
-import { page } from "$lib/store/kit.store";
-import localStorageService from "$lib/services/localStorage.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { isAdmin } from "$lib/services/user.service";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
+import userService from "$lib/resources/users/user.service";
+import Store from "$lib/core/Store";
 
 export class AuthService {
-    USER_LOCAL_STORAGE_KEY = "datasubvention-user";
+    constructor() {
+        this.connectedUser = new Store(null);
+    }
 
     signup(signupUser) {
         if (!signupUser?.email) {
@@ -37,44 +37,52 @@ export class AuthService {
 
     loginByUser(user) {
         checkOrDropSearchHistory(user._id);
-        localStorageService.setItem(this.USER_LOCAL_STORAGE_KEY, user);
-        this.setUserInApp();
+        this.setUserInApp(user);
         crispService.setUserEmail(user.email);
 
         return user;
     }
 
-    setUserInApp() {
-        const user = this.getCurrentUser();
+    setUserInApp(user) {
+        if (!user) return;
+        this.connectedUser.set(user);
         if (user) crispService.setUserEmail(user.email);
     }
 
-    initUserInApp() {
-        this.setUserInApp();
-        requestsService.addErrorHook(UnauthorizedError, error => {
-            // if the unauthorized error is triggered from a login error, we do not redirect/reload to the /auth/login page
-            if (error.__nativeError__.request.responseURL.includes("/auth/login")) return;
-            const queryUrl = encodeURIComponent(page.value.url.pathname);
-            this.logout(false);
-            goToUrl(`/auth/login?url=${queryUrl}`, true, true);
-        });
+    async initUserInApp() {
+        if (this.connectedUser.value) return true;
+        try {
+            const user = await userService.getSelfUser();
+            this.setUserInApp(user);
+            return true;
+        } catch (_e) {
+            console.info("user not connected");
+            return false;
+        }
     }
 
-    logout(reload = true) {
-        localStorageService.removeItem(this.USER_LOCAL_STORAGE_KEY);
+    async logout(reload = true) {
+        await authPort.logout();
+        this.connectedUser.set(null);
         crispService.resetSession();
         if (reload) goToUrl("/auth/login", false, true);
     }
 
     getCurrentUser() {
-        return localStorageService.getItem(this.USER_LOCAL_STORAGE_KEY).value;
+        return this.connectedUser.value;
     }
 
     controlAuth(requiredLevel = AuthLevels.USER) {
-        if (requiredLevel === AuthLevels.NONE) return;
+        if (requiredLevel === AuthLevels.NONE) return true;
         const user = this.getCurrentUser();
-        if (!user) return this.redirectToLogin();
-        if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) goToUrl("/");
+        if (!user) {
+            this.redirectToLogin();
+            return false;
+        } else if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) {
+            goToUrl("/");
+            return false;
+        }
+        return true;
     }
 
     redirectToLogin() {
