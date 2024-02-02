@@ -7,7 +7,7 @@ import { DauphinCron } from "./interfaces/cron/Dauphin.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
 import { DEV } from "./configurations/env.conf";
-// import { RgpdCron } from "./interfaces/cron/Rgpd.cron"; // TODO put back after fixing anonymization
+import { RgpdCron } from "./interfaces/cron/Rgpd.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,
@@ -15,7 +15,7 @@ const controllers: CronController[] = [
     DauphinCron,
     DumpCron,
     HistoryUniteLegalCron,
-    // RgpdCron, // TODO put back after fixing anonymization
+    RgpdCron,
 ];
 
 export const scheduler = new ToadScheduler();
