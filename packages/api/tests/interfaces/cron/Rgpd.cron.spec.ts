@@ -18,21 +18,31 @@ describe("Rgpd Cron", () => {
     describe("removeInactiveUsers()", () => {
         beforeEach(async () => {
             await Promise.all([
+                // last activity more than two years ago
                 userRepository.create({
                     ...USER_DBO,
                     email: "old-user1@mail.com",
                     lastActivityDate: new Date("2020-12-12"),
                 }),
+                // user just came to the solution
                 userRepository.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     lastActivityDate: new Date(NOW),
                 }),
+                // user never activated for 6 months
                 userRepository.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 6, -1),
                     lastActivityDate: null,
+                }),
+                // user activated account more than 6 months ago
+                userRepository.create({
+                    ...USER_DBO,
+                    email: "normal-user@mail.com",
+                    signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 10),
+                    lastActivityDate: new Date(NOW),
                 }),
             ]);
         });
@@ -60,6 +70,11 @@ describe("Rgpd Cron", () => {
                     active: false,
                     profileToComplete: false,
                     disable: true,
+                },
+                {
+                    firstName: "Prénom",
+                    lastName: "NOM",
+                    active: true,
                 },
             ];
             expect(users).toMatchObject(expected);
@@ -91,16 +106,25 @@ describe("Rgpd Cron", () => {
     describe("warnInactiveUsers()", () => {
         beforeEach(async () => {
             await Promise.all([
+                // user just came to the solution
                 userRepository.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     lastActivityDate: new Date(NOW),
                 }),
+                // user never activated for 5 months
                 userRepository.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 5),
                     lastActivityDate: null,
+                }),
+                // user activated for 5 months that came
+                userRepository.create({
+                    ...USER_DBO,
+                    email: "normal-user@mail.com",
+                    lastActivityDate: new Date(NOW),
+                    signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 5, NOW.getDate() - 1),
                 }),
             ]);
         });
