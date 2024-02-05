@@ -20,6 +20,7 @@ describe("ScdlCli", () => {
     const PRODUCER_ID = "PRODUCER_ID";
     const PRODUCER_NAME = "PRODUCER_NAME";
     const GRANT = { ...MiscScdlGrant };
+    const STORABLE_DATA = { ...GRANT, __data__: {} };
     const CSV_CONTENT = "CSV_CONTENT";
     const PRODUCER_ENTITY = {
         _id: new ObjectId(),
@@ -35,7 +36,7 @@ describe("ScdlCli", () => {
     beforeEach(() => {
         mockedFs.readFileSync.mockReturnValue(CSV_CONTENT);
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
-        mockedScdlGrantParser.parseCsv.mockReturnValue([GRANT]);
+        mockedScdlGrantParser.parseCsv.mockReturnValue([STORABLE_DATA]);
         cli = new ScdlCli();
     });
 
@@ -81,7 +82,7 @@ describe("ScdlCli", () => {
             await cli.parse(FILE_PATH, PRODUCER_ID, new Date());
             expect(scdlService.createManyGrants).toHaveBeenCalledWith([
                 {
-                    ...GRANT,
+                    ...STORABLE_DATA,
                     producerId: expect.any(String),
                 },
             ]);

@@ -1,5 +1,5 @@
-import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
+import { ScdlStorableData } from "../@types/ScdlStorableData";
 
-export default interface MiscScdlGrantEntity extends ScdlGrantEntity {
+export default interface MiscScdlGrantEntity extends ScdlStorableData {
     producerId: string;
 }

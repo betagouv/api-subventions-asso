@@ -4,6 +4,7 @@ import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
+import { ScdlStorableData } from "./@types/ScdlStorableData";
 
 export default class ScdlGrantParser {
     protected static isGrantValid(grant: ScdlGrantEntity) {
@@ -20,7 +21,7 @@ export default class ScdlGrantParser {
         return true;
     }
 
-    static parseCsv(chunk: Buffer, delimiter = ";"): ScdlGrantEntity[] {
+    static parseCsv(chunk: Buffer, delimiter = ";") {
         const parsedChunk = csvSyncParser.parse(chunk, {
             columns: true,
             skip_empty_lines: true,
@@ -28,15 +29,11 @@ export default class ScdlGrantParser {
             trim: true,
         });
 
-        const storableChunk: ScdlGrantEntity[] = [];
+        const storableChunk: ScdlStorableData[] = [];
 
         for (const parsedData of parsedChunk) {
-            const storableData = ParserHelper.indexDataByPathObject(
-                SCDL_MAPPER,
-                parsedData,
-            ) as unknown as ScdlGrantEntity;
-
-            if (this.isGrantValid(storableData)) storableChunk.push(storableData);
+            const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlGrantEntity;
+            if (this.isGrantValid(entity)) storableChunk.push({ ...entity, __data__: parsedData });
         }
         return storableChunk;
     }

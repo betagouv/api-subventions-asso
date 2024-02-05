@@ -33,7 +33,7 @@ describe("ScdlService", () => {
     });
     describe("createData()", () => {
         it("should call miscScdlGrantRepository.createMany()", async () => {
-            const GRANTS = [{ ...MiscScdlGrantFixture, producerId: "" }];
+            const GRANTS = [{ ...MiscScdlGrantFixture, producerId: "", __data__: {} }];
             await scdlService.createManyGrants(GRANTS);
             expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith(GRANTS);
         });
