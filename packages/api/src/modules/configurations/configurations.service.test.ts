@@ -34,10 +34,12 @@ describe("ConfigurationService", () => {
     });
 
     describe("updateConfigEntity()", () => {
-        it("should call repository", () => {
+        it("should call repository", async () => {
+            // @ts-expect-error -- mock
+            upsertMock.mockResolvedValueOnce({});
             const UPDATED_DATA = ["DATA"];
             const expected = [CONFIG_NAME, { data: UPDATED_DATA }];
-            configurationsService.updateConfigEntity(CONFIG_NAME, UPDATED_DATA);
+            await configurationsService.updateConfigEntity(CONFIG_NAME, UPDATED_DATA);
             expect(upsertMock).toHaveBeenCalledWith(...expected);
         });
     });
