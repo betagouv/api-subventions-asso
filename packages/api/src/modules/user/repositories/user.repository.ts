@@ -4,7 +4,6 @@ import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
-import { JWT_EXPIRES_TIME } from "../../../configurations/jwt.conf";
 import UserDbo, { UserNotPersisted } from "./dbo/UserDbo";
 
 export class UserRepository extends MongoRepository<UserDbo> {
@@ -50,13 +49,15 @@ export class UserRepository extends MongoRepository<UserDbo> {
         return this.find(query);
     }
 
-    async findNotActivatedSince(date: Date): Promise<UserDto[]> {
+    async findNotActivatedSince(date: Date, lastWarned: Date | undefined = undefined): Promise<UserDto[]> {
         const query: Filter<UserDbo> = {
             lastActivityDate: null,
             signupAt: { $lt: date },
             roles: { $ne: "admin" },
             disable: { $ne: true },
         };
+        // @ts-expect-error -- query too strictly typed
+        if (lastWarned) query.signupAt["$gt"] = lastWarned;
         return this.find(query);
     }
 

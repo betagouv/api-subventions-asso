@@ -5,6 +5,7 @@ import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoCo
 import axios from "axios";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
+import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
 
 describe("Rgpd Cron", () => {
     const NOW = new Date();
@@ -13,6 +14,8 @@ describe("Rgpd Cron", () => {
 
     beforeEach(() => {
         cron = new RgpdCron();
+        // emulate first call
+        configurationsService.updateConfigEntity(CONFIGURATION_NAMES.LAST_RGPD_WARNED_DATE, undefined);
     });
 
     describe("removeInactiveUsers()", () => {
@@ -63,15 +66,15 @@ describe("Rgpd Cron", () => {
                     active: true,
                 },
                 {
+                    firstName: "Prénom",
+                    lastName: "NOM",
+                    active: true,
+                },
+                {
                     firstName: "",
                     lastName: "",
                     active: false,
                     disable: true,
-                },
-                {
-                    firstName: "Prénom",
-                    lastName: "NOM",
-                    active: true,
                 },
             ];
             expect(users).toMatchObject(expected);
@@ -156,6 +159,16 @@ describe("Rgpd Cron", () => {
             const actualToken = actualLink.match(/^http:\/\/localhost:5173\/auth\/reset-password\/(.*)/)[1];
             const foundReset = await userResetRepository.findByToken(actualToken);
             expect(foundReset).not.toBeNull();
+        });
+
+        it("does not notify already notified users", async () => {
+            await cron.warnInactiveUsers(); // first call inits last warned date
+            // @ts-expect-error -- test private instance
+            jest.mocked(brevoMailNotifyPipe.apiInstance.sendTransacEmail).mockClear();
+            await cron.warnInactiveUsers();
+            // @ts-expect-error -- test private instance
+            const actual = jest.mocked(brevoMailNotifyPipe.apiInstance.sendTransacEmail).mock.calls.length;
+            expect(actual).toBe(0);
         });
     });
 });
