@@ -52,7 +52,8 @@ export class UserRepository extends MongoRepository<UserDbo> {
 
     async findNotActivatedSince(date: Date): Promise<UserDto[]> {
         const query: Filter<UserDbo> = {
-            $or: [{ lastActivityDate: null }, { signupAt: { $lt: date } }],
+            lastActivityDate: null,
+            signupAt: { $lt: date },
             roles: { $ne: "admin" },
             disable: { $ne: true },
         };
