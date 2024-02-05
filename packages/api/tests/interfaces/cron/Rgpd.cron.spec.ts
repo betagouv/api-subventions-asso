@@ -55,20 +55,17 @@ describe("Rgpd Cron", () => {
                     firstName: "",
                     lastName: "",
                     active: false,
-                    profileToComplete: false,
                     disable: true,
                 },
                 {
                     firstName: "Prénom",
                     lastName: "NOM",
                     active: true,
-                    profileToComplete: false,
                 },
                 {
                     firstName: "",
                     lastName: "",
                     active: false,
-                    profileToComplete: false,
                     disable: true,
                 },
                 {
