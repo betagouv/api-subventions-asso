@@ -20,8 +20,12 @@ export class ConfigurationsService {
         };
     }
 
-    updateConfigEntity<T>(entity, data: T): ConfigurationEntity<T> {
+    private _updateConfigEntity<T>(entity, data: T): ConfigurationEntity<T> {
         return { ...entity, data, updatedAt: new Date() };
+    }
+
+    updateConfigEntity<T>(name: string, data: T) {
+        return configurationsRepository.upsert(name, { data });
     }
 
     getDauphinToken() {
@@ -65,7 +69,7 @@ export class ConfigurationsService {
         if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
         await configurationsRepository.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
-            this.updateConfigEntity(document, [...document.data, domain]),
+            this._updateConfigEntity(document, [...document.data, domain]),
         );
         return domain;
     }
