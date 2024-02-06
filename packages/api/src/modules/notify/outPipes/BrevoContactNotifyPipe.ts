@@ -100,7 +100,10 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
 
     private userActivated(data: NotificationDataTypes[NotificationType.USER_ACTIVATED]) {
         const updateContact = new Brevo.UpdateContact();
-        updateContact.attributes = { COMPTE_ACTIVE: true };
+        updateContact.attributes = {
+            COMPTE_ACTIVE: true,
+            LIEN_ACTIVATION: "",
+        };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance
             .updateContact(data.email, updateContact)
