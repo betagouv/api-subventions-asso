@@ -29,14 +29,17 @@ describe("ScdlCli", () => {
         lastUpdate: new Date(),
     };
     const EXPORT_DATE = new Date();
-
+    const UNIQUE_ID = "UNIQUE_ID";
     const FILE_PATH = "FILE_PATH";
+    const STORABLE_DATA_ARRAY = [STORABLE_DATA];
 
     let cli: ScdlCli;
     beforeEach(() => {
         mockedFs.readFileSync.mockReturnValue(CSV_CONTENT);
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
-        mockedScdlGrantParser.parseCsv.mockReturnValue([STORABLE_DATA]);
+        // @ts-expect-error: private method
+        mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
+        mockedScdlGrantParser.parseCsv.mockReturnValue(STORABLE_DATA_ARRAY);
         cli = new ScdlCli();
     });
 
@@ -80,12 +83,7 @@ describe("ScdlCli", () => {
 
         it("should call scdlService.createManyGrants()", async () => {
             await cli.parse(FILE_PATH, PRODUCER_ID, new Date());
-            expect(scdlService.createManyGrants).toHaveBeenCalledWith([
-                {
-                    ...STORABLE_DATA,
-                    producerId: expect.any(String),
-                },
-            ]);
+            expect(scdlService.createManyGrants).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ID);
         });
 
         it("if DuplicateIndexError arises, doesn't fail and logs", async () => {

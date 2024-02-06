@@ -1,8 +1,9 @@
 import MongoRepository from "../../../../shared/MongoRepository";
 import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
+import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 
-export class MiscScdlGrantRepository extends MongoRepository<MiscScdlGrantEntity> {
+export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly joinIndexes = {
         miscScdlProducer: "producerId",
@@ -12,7 +13,7 @@ export class MiscScdlGrantRepository extends MongoRepository<MiscScdlGrantEntity
         return this.collection.find({}).toArray();
     }
 
-    public async createMany(entities: MiscScdlGrantEntity[]) {
+    public async createMany(entities: ScdlGrantDbo[]) {
         return this.collection.insertMany(entities, { ordered: false }).catch(error => {
             if (isMongoDuplicateError(error)) {
                 throw buildDuplicateIndexError<MiscScdlGrantEntity[]>(error);

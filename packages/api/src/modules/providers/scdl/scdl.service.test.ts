@@ -9,6 +9,7 @@ import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
 
 describe("ScdlService", () => {
     const PRODUCER_ID = "ID";
+    const UNIQUE_ID = "UNIQUE_ID";
     describe("getProvider()", () => {
         it("should call miscScdlProducerRepository.create()", async () => {
             await scdlService.getProducer(PRODUCER_ID);
@@ -31,11 +32,27 @@ describe("ScdlService", () => {
             expect(miscScdlProducersRepository.update).toHaveBeenCalledWith(PRODUCER_ID, SET_OBJECT);
         });
     });
-    describe("createData()", () => {
+    describe("createManyGrants()", () => {
+        let mockBuildGrantUniqueId: jest.SpyInstance;
+
+        beforeEach(
+            () =>
+                // @ts-expect-error: private method
+                (mockBuildGrantUniqueId = jest.spyOn(scdlService, "_buildGrantUniqueId").mockReturnValue(UNIQUE_ID)),
+        );
+
+        it("should call _buildGrantUniqueId()", async () => {
+            const GRANTS = [{ ...MiscScdlGrantFixture, __data__: {} }];
+            await scdlService.createManyGrants(GRANTS, PRODUCER_ID);
+            expect(mockBuildGrantUniqueId).toHaveBeenCalledWith(GRANTS[0], PRODUCER_ID);
+        });
+
         it("should call miscScdlGrantRepository.createMany()", async () => {
-            const GRANTS = [{ ...MiscScdlGrantFixture, producerId: "", __data__: {} }];
-            await scdlService.createManyGrants(GRANTS);
-            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith(GRANTS);
+            const GRANTS = [{ ...MiscScdlGrantFixture, __data__: {} }];
+            await scdlService.createManyGrants(GRANTS, PRODUCER_ID);
+            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith([
+                { ...GRANTS[0], _id: UNIQUE_ID, producerId: PRODUCER_ID },
+            ]);
         });
     });
 });

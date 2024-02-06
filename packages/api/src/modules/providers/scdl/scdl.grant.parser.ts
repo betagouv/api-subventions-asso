@@ -4,7 +4,7 @@ import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
-import { ScdlStorableData } from "./@types/ScdlStorableData";
+import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 
 export default class ScdlGrantParser {
     protected static isGrantValid(grant: ScdlGrantEntity) {
@@ -29,7 +29,7 @@ export default class ScdlGrantParser {
             trim: true,
         });
 
-        const storableChunk: ScdlStorableData[] = [];
+        const storableChunk: ScdlStorableGrant[] = [];
 
         for (const parsedData of parsedChunk) {
             const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlGrantEntity;
