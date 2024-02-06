@@ -102,6 +102,12 @@ export class UserActivationService {
             },
             true,
         )) as Omit<UserDbo, "hashPassword">;
+
+        notifyService.notify(NotificationType.USER_LOGGED, {
+            email: user.email,
+            date: new Date(),
+        });
+
         return await userAuthService.updateJwt(userUpdated);
     }
 
