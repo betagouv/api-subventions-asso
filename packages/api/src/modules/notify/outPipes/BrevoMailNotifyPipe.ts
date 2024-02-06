@@ -1,4 +1,5 @@
 import Brevo from "@getbrevo/brevo";
+import * as Sentry from "@sentry/node";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
@@ -85,6 +86,7 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
             });
             return true;
         } catch (error) {
+            Sentry.captureException(error);
             return false;
         }
     }
