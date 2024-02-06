@@ -3,6 +3,8 @@ import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
 jest.mock("./repositories/miscScdlGrant.repository");
 import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
 jest.mock("./repositories/miscScdlProducer.repository");
+import { getMD5 } from "../../../shared/helpers/StringHelper";
+jest.mock("../../../shared/helpers/StringHelper");
 
 import MiscScdlGrantFixture from "./__fixtures__/MiscScdlGrant";
 import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
@@ -32,6 +34,16 @@ describe("ScdlService", () => {
             expect(miscScdlProducersRepository.update).toHaveBeenCalledWith(PRODUCER_ID, SET_OBJECT);
         });
     });
+
+    describe("_buildGrantUniqueId()", () => {
+        it("should call getMD5()", async () => {
+            const DATA = {};
+            // @ts-expect-error: call private method
+            await scdlService._buildGrantUniqueId({ __data__: DATA }, PRODUCER_ID);
+            expect(jest.mocked(getMD5)).toHaveBeenCalledWith(`${PRODUCER_ID}-${JSON.stringify(DATA)}`);
+        });
+    });
+
     describe("createManyGrants()", () => {
         let mockBuildGrantUniqueId: jest.SpyInstance;
 

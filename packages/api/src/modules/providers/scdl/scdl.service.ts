@@ -14,10 +14,8 @@ export class ScdlService {
         return miscScdlProducersRepository.create(entity);
     }
 
-    private _buildGrantUniqueId(grant, producerId) {
-        return getMD5(
-            `${producerId}-${grant.allocatorSiret}-${grant.associationSiret}-${grant.decisionReference}-${grant.conventionDate}-${grant.object}-${grant.amount}`,
-        );
+    private _buildGrantUniqueId(grant: ScdlStorableGrant, producerId: string) {
+        return getMD5(`${producerId}-${JSON.stringify(grant.__data__)}`);
     }
 
     createManyGrants(grants: ScdlStorableGrant[], producerId: string) {
