@@ -187,6 +187,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             territorialScope: "ECHELON_COLLECTIVITE",
             lastName: "NOM",
             firstName: "PRENOM",
+            lastActivityDate: "DERNIERE_CONNEXION",
         };
 
         function buildAttributesObject(data) {

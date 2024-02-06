@@ -128,6 +128,7 @@ describe("BrevoContactNotifyPipe", () => {
             territorialScope: TerritorialScopeEnum.DEPARTMENTAL,
             lastName: "NOM",
             firstName: "PRENOM",
+            lastActivityDate: new Date("2023-04-06"),
         };
 
         it("should call updateContact()", async () => {
