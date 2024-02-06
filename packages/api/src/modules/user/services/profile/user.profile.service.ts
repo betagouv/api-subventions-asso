@@ -149,6 +149,7 @@ export class UserProfileService {
         const userWithJwt = await userAuthService.updateJwt(activeUser);
 
         notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
+        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
 
         return userWithJwt;
     }

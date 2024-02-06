@@ -71,9 +71,6 @@ export class UserAuthService {
             hashPassword: await userAuthService.getHashPassword(password),
             active: true,
         });
-
-        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
-
         return { user: userUpdated };
     }
 
