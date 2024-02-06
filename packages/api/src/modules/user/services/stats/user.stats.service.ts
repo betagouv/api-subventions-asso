@@ -7,6 +7,7 @@ import userResetRepository from "../../repositories/user-reset.repository";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
+import { NotificationDataTypes } from "../../../notify/@types/NotificationDataTypes";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
@@ -55,6 +56,33 @@ export class UserStatsService {
             };
 
             await notifyService.notify(NotificationType.USER_ALREADY_EXIST, data);
+        }
+    }
+
+    async updateAllUsersInSubTools() {
+        const users = await userRepository.findAll();
+
+        for (const user of users) {
+            if (user.disable) continue;
+
+            let reset: null | UserReset = null;
+            if (!user.active) {
+                reset = await userResetRepository.findOneByUserId(user._id);
+            }
+
+            const data = {
+                email: user.email,
+                firstname: user.firstName,
+                lastname: user.lastName,
+                agentType: user.agentType,
+                jobType: user.jobType,
+                url: reset ? `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}?active=true` : undefined,
+                active: user.active,
+                signupAt: user.signupAt,
+                lastActivityDate: user.lastActivityDate,
+            } as NotificationDataTypes[NotificationType.USER_UPDATED];
+
+            await notifyService.notify(NotificationType.USER_UPDATED, data);
         }
     }
 }

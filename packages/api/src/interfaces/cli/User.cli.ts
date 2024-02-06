@@ -43,4 +43,8 @@ export default class UserCli {
     async notifyAllUsersInSubTools() {
         await userStatsService.notifyAllUsersInSubTools();
     }
+
+    async updateAllUsersInSubTools() {
+        await userStatsService.updateAllUsersInSubTools();
+    }
 }
