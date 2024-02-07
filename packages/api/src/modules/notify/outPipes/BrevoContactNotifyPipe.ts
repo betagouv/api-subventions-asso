@@ -231,6 +231,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             .then(() => true)
             .catch(error => {
                 Sentry.captureException(error);
+                console.error("error updating contact", { email: data.email, error });
                 return false;
             });
     }

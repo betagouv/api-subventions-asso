@@ -8,6 +8,7 @@ import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import { NotificationDataTypes } from "../../../notify/@types/NotificationDataTypes";
+import ExecutionSyncStack from "../../../../shared/ExecutionSyncStack";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
@@ -60,7 +61,15 @@ export class UserStatsService {
     }
 
     async updateAllUsersInSubTools() {
+        const updateContactsStack = new ExecutionSyncStack<
+            NotificationDataTypes[NotificationType.USER_UPDATED],
+            boolean
+        >(
+            data => notifyService.notify(NotificationType.USER_UPDATED, data),
+            100, // brevo limits calls to /contacts to 10 per second so 100 per ms https://developers.brevo.com/docs/api-limits#general-rate-limiting
+        );
         const users = await userRepository.findAll();
+        const promises: Promise<boolean>[] = [];
 
         for (const user of users) {
             if (user.disable) continue;
@@ -82,8 +91,9 @@ export class UserStatsService {
                 lastActivityDate: user.lastActivityDate,
             } as NotificationDataTypes[NotificationType.USER_UPDATED];
 
-            await notifyService.notify(NotificationType.USER_UPDATED, data);
+            promises.push(updateContactsStack.addOperation(data));
         }
+        await Promise.all(promises);
     }
 }
 
