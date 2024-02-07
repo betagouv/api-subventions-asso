@@ -23,12 +23,24 @@ describe("ConfigurationService", () => {
         });
     });
 
-    describe("updateConfigEntity()", () => {
+    describe("generateConfiguationEntity()", () => {
         it("should return entity", () => {
             const UPDATED_DATA = ["DATA"];
             const expected = { ...EMPTY_ENTITY, data: UPDATED_DATA };
-            const actual = configurationsService.updateConfigEntity(EMPTY_ENTITY, UPDATED_DATA);
+            // @ts-expect-error -- test private
+            const actual = configurationsService.generateConfiguationEntity(EMPTY_ENTITY, UPDATED_DATA);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("updateConfigEntity()", () => {
+        it("should call repository", async () => {
+            // @ts-expect-error -- mock
+            upsertMock.mockResolvedValueOnce({});
+            const UPDATED_DATA = ["DATA"];
+            const expected = [CONFIG_NAME, { data: UPDATED_DATA }];
+            await configurationsService.updateConfigEntity(CONFIG_NAME, UPDATED_DATA);
+            expect(upsertMock).toHaveBeenCalledWith(...expected);
         });
     });
 
