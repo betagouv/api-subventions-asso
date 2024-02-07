@@ -23,12 +23,12 @@ describe("ConfigurationService", () => {
         });
     });
 
-    describe("_updateConfigEntity()", () => {
+    describe("generateConfiguationEntity()", () => {
         it("should return entity", () => {
             const UPDATED_DATA = ["DATA"];
             const expected = { ...EMPTY_ENTITY, data: UPDATED_DATA };
             // @ts-expect-error -- test private
-            const actual = configurationsService._updateConfigEntity(EMPTY_ENTITY, UPDATED_DATA);
+            const actual = configurationsService.generateConfiguationEntity(EMPTY_ENTITY, UPDATED_DATA);
             expect(actual).toEqual(expected);
         });
     });

@@ -21,7 +21,7 @@ export class ConfigurationsService {
         };
     }
 
-    private _updateConfigEntity<T>(entity, data: T): ConfigurationEntity<T> {
+    private generateConfiguationEntity<T>(entity, data: T): ConfigurationEntity<T> {
         return { ...entity, data, updatedAt: new Date() };
     }
 
@@ -70,7 +70,7 @@ export class ConfigurationsService {
         if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
         await configurationsRepository.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
-            this._updateConfigEntity(document, [...document.data, domain]),
+            this.generateConfiguationEntity(document, [...document.data, domain]),
         );
         return domain;
     }
