@@ -141,6 +141,7 @@ export class UserProfileService {
                 ...safeUserInfo,
                 active: true,
                 profileToComplete: false,
+                lastActivityDate: new Date(),
             },
             true,
         )) as Omit<UserDbo, "hashPassword">;

@@ -27,6 +27,12 @@ jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
 import notifyService from "../../../notify/notify.service";
 
+jest.mock("../../../configurations/repositories/configurations.repository");
+import configurationsRepository from "../../../configurations/repositories/configurations.repository";
+
+jest.mock("../../../configurations/configurations.service");
+import configurationsService from "../../../configurations/configurations.service";
+
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -282,7 +288,15 @@ describe("user rgpd service", () => {
 
         it("finds users never seen for 5 month", async () => {
             await userRgpdService.warnDisableInactive();
-            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN);
+            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN, undefined);
+        });
+
+        it("finds users never seen for 5 month since last call", async () => {
+            const DATE = new Date("2023-05-01");
+            // @ts-expect-error -- partial mock
+            jest.mocked(configurationsRepository.getByName).mockResolvedValueOnce({ data: DATE });
+            await userRgpdService.warnDisableInactive();
+            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN, DATE);
         });
 
         it("calls reset for each found user", async () => {
@@ -294,6 +308,11 @@ describe("user rgpd service", () => {
             await userRgpdService.warnDisableInactive();
             const actual = jest.mocked(notifyService.notify).mock.calls;
             expect(actual).toMatchSnapshot();
+        });
+
+        it("saves warning date", async () => {
+            await userRgpdService.warnDisableInactive();
+            expect(configurationsService.updateConfigEntity).toHaveBeenCalledWith("LAST-RGPD-WARNED-DATE", THEN);
         });
 
         describe("if one reset fails", () => {
