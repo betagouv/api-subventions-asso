@@ -1,5 +1,9 @@
+const { connectDB } = require("../src/shared/MongoConnection");
+
 module.exports = {
     async up(db) {
+        await connectDB();
+
         await db
             .collection("log")
             .aggregate([
