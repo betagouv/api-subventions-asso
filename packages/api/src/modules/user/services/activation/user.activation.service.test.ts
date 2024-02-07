@@ -289,10 +289,11 @@ describe("user activation service", () => {
             expect(mockedUserResetRepository.remove).toHaveBeenCalledWith(RESET_DOCUMENT);
         });
 
-        it("should notify USER_ACTIVATED", async () => {
+        it("should notify USER_LOGGED", async () => {
             await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
-            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_ACTIVATED, {
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
                 email: USER_EMAIL,
+                date: expect.any(Date),
             });
         });
 
@@ -304,6 +305,7 @@ describe("user activation service", () => {
                     ...USER_WITHOUT_SECRET,
                     hashPassword: PASSWORD,
                     active: true,
+                    lastActivityDate: expect.any(Date),
                 },
                 true,
             );

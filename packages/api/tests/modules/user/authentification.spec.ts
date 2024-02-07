@@ -221,6 +221,7 @@ describe("AuthentificationController, /auth", () => {
                         signupAt: expect.any(String),
                         _id: expect.any(String),
                         jwt: { expirateDate: expect.any(String), token: expect.any(String) },
+                        lastActivityDate: expect.any(String),
                     }),
                 );
         });

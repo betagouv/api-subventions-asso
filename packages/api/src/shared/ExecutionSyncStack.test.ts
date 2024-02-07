@@ -1,4 +1,6 @@
 import ExecutionSyncStack from "./ExecutionSyncStack";
+import { waitPromise } from "./helpers/WaitHelper";
+jest.mock("./helpers/WaitHelper");
 
 describe("ExecutionSyncStack", () => {
     let stack: ExecutionSyncStack<string, string>;
@@ -107,7 +109,7 @@ describe("ExecutionSyncStack", () => {
 
         it("should check if all promise as been resolved", async () => {
             const resolver = jest.fn();
-            // @ts-ignore stackLines is private attribut
+            // @ts-ignore stackLines is private attribute
             stack.stackLines.push(
                 {
                     entity: "hello",
@@ -129,6 +131,34 @@ describe("ExecutionSyncStack", () => {
             await stack.executeOperations();
 
             expect(resolver).toBeCalledTimes(3);
+        });
+
+        it("waits between each task", async () => {
+            const TIME = 10;
+            const timedStack = new ExecutionSyncStack(async entity => entity, TIME);
+            // @ts-ignore stackLines is private attribute
+            timedStack.stackLines.push(
+                {
+                    entity: "hello",
+                    rejecter: jest.fn(),
+                    resolver: jest.fn(),
+                },
+                {
+                    entity: "hello",
+                    rejecter: jest.fn(),
+                    resolver: jest.fn(),
+                },
+                {
+                    entity: "hello",
+                    rejecter: jest.fn(),
+                    resolver: jest.fn(),
+                },
+            );
+            // @ts-ignore executeOperations is private method
+            await timedStack.executeOperations();
+
+            expect(waitPromise).toHaveBeenCalledTimes(3);
+            expect(waitPromise).toHaveBeenLastCalledWith(10);
         });
     });
 });

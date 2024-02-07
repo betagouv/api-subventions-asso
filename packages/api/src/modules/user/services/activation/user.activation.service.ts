@@ -87,8 +87,9 @@ export class UserActivationService {
         const hashPassword = await userAuthService.getHashPassword(password);
 
         await userResetRepository.remove(reset as UserReset);
+        const date = new Date();
 
-        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
+        notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date });
 
         const userUpdated = (await userRepository.update(
             {
@@ -96,6 +97,7 @@ export class UserActivationService {
                 hashPassword,
                 active: true,
                 profileToComplete: false,
+                lastActivityDate: date,
             },
             true,
         )) as Omit<UserDbo, "hashPassword">;

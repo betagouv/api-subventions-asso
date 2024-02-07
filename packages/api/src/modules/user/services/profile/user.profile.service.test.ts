@@ -269,5 +269,12 @@ describe("user profile service", () => {
             const actual = await userProfileService.activate("token", USER_ACTIVATION_INFO);
             expect(actual).toEqual(expected);
         });
+
+        it("sets lastActivityDate", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            const actual = jest.mocked(userRepository.update).mock.calls[0][0]?.lastActivityDate;
+
+            expect(actual).toEqual(expect.any(Date));
+        });
     });
 });

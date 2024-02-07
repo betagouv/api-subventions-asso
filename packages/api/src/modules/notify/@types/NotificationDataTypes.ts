@@ -42,7 +42,8 @@ export interface NotificationDataTypes {
         email: string;
         date: Date;
     };
-    [NotificationType.USER_UPDATED]: Omit<UserActivationInfoDto, "password"> & FutureUserDto;
+    [NotificationType.USER_UPDATED]: Omit<UserActivationInfoDto, "password"> &
+        FutureUserDto & { lastActivityDate?: Date | null };
     [NotificationType.USER_CONFLICT]: FutureUserDto;
     [NotificationType.SIGNUP_BAD_DOMAIN]: FutureUserDto;
     [NotificationType.TEST_EMAIL]: {
