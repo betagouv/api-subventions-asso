@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { connectDB } = require("../build/src/shared/MongoConnection");
+
 module.exports = {
     async up(db) {
+        await connectDB();
+
         await db
             .collection("log")
             .aggregate([
@@ -43,7 +48,7 @@ module.exports = {
         await db.collection("users-last-activity").createIndex({ email: 1 }, { unique: true });
         await db.renameCollection("users", "users-save");
         await db.renameCollection("users-last-activity", "users");
-        await db.dropCollection("logs");
+        await db.dropCollection("log-last-activity");
     },
 
     async down(db) {
