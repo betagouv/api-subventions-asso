@@ -5,7 +5,7 @@ Array [
   Array [
     "https://mattermost.incubateur.net/hooks/qefuswbp9fybdjf97yqxo93cqr",
     Object {
-      "channel": "datasubvention---bizdev",
+      "channel": "datasubvention---comptes-app",
       "icon_emoji": "door",
       "text": "[test] Les comptes suivants ont été supprimés pour inactivité trop longue.
 
