@@ -202,7 +202,9 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                         acc[ATTRIBUTES_MAPPING[key]] = AGENT_TYPE_LABEL_MAPPING[data[key]];
                         break;
                     case "jobType":
-                        acc[ATTRIBUTES_MAPPING[key]] = data[key].map(job => JOB_TYPE_LABEL_MAPPING[job]).join(",");
+                        acc[ATTRIBUTES_MAPPING[key]] = (data[key] || [])
+                            .map(job => JOB_TYPE_LABEL_MAPPING[job])
+                            .join(",");
                         break;
                     case "decentralizedLevel":
                         acc[ATTRIBUTES_MAPPING[key]] = ADMIN_TERRITORIAL_LEVEL_LABEL_MAPPING[data[key]];
@@ -231,7 +233,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             .then(() => true)
             .catch(error => {
                 Sentry.captureException(error);
-                console.error("error updating contact", { email: data.email, error });
+                console.error("error updating contact", { email: data.email, error: error.response._body });
                 return false;
             });
     }
