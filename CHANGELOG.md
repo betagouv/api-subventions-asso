@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.45.3](https://github.com/betagouv/api-subventions-asso/compare/v0.45.1...v0.45.3) (2024-02-08)
+
+### Bug Fixes
+
+-   **api:** connect db in migration ([e74f788](https://github.com/betagouv/api-subventions-asso/commit/e74f788bfe04046bc3591560fd9e2bd628bb6c28))
+-   **api:** do not actually disable users that would not have been warned ([a8462e0](https://github.com/betagouv/api-subventions-asso/commit/a8462e07a9431d893a133fbced170a479f08907b))
+
+### Features
+
+-   **api:** final arrow colors ([1a51e40](https://github.com/betagouv/api-subventions-asso/commit/1a51e4095d3d38cf696d1f19b1aebf0c99978ccc))
+
 ## [0.45.2](https://github.com/betagouv/api-subventions-asso/compare/v0.45.1...v0.45.2) (2024-02-07)
 
 ### Bug Fixes
