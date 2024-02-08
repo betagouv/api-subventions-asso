@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.45.4](https://github.com/betagouv/api-subventions-asso/compare/v0.45.3...v0.45.4) (2024-02-08)
+
+### Bug Fixes
+
+-   **api:** brevo update resilient to undefined jobType ([d0a40bb](https://github.com/betagouv/api-subventions-asso/commit/d0a40bbde130c9f1888eaef7b72421e861188190))
+
 ## [0.45.3](https://github.com/betagouv/api-subventions-asso/compare/v0.45.1...v0.45.3) (2024-02-08)
 
 ### Bug Fixes
