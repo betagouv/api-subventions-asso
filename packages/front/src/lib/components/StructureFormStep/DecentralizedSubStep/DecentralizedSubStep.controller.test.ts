@@ -47,10 +47,8 @@ describe("DecentralizedSubStep", () => {
         it.each`
             store
             ${"departmentOptions"}
-            ${"regionOptions"}
             ${"structureOptions"}
         `("initializes $store store", ({ store }) => {
-            // @ts-expect-error generic value for testing
             const actual = (ctrl[store] as Store<never[]>).value;
             const expected: never[] = [];
             expect(actual).toEqual(expected);
@@ -120,7 +118,6 @@ describe("DecentralizedSubStep", () => {
         describe.each`
             methodName                | terrLevel
             ${"onChoosingDepartment"} | ${AdminTerritorialLevel.DEPARTMENTAL}
-            ${"onChoosingRegion"}     | ${AdminTerritorialLevel.REGIONAL}
         `("case $terrLevel", ({ methodName, terrLevel }) => {
             let terrSpy: MockInstance;
             let filterStructuresSpy: MockInstance;
@@ -213,7 +210,6 @@ describe("DecentralizedSubStep", () => {
     describe.each`
         optionStoreName        | testedMethod              | geoServiceMethod     | expectedTransform
         ${"departmentOptions"} | ${"onChoosingDepartment"} | ${"getDepartements"} | ${"50 - terr"}
-        ${"regionOptions"}     | ${"onChoosingRegion"}     | ${"getRegions"}      | ${"terr"}
     `("onChoosingDepartment", ({ optionStoreName, testedMethod, geoServiceMethod, expectedTransform }) => {
         beforeAll(() => {
             ctrl = new DecentralizedSubStepController();
@@ -225,7 +221,6 @@ describe("DecentralizedSubStep", () => {
         beforeAll(() => {
             // @ts-expect-error -- test private
             fillOptionsSpy = vi.spyOn(ctrl, "fillOptionsOnce");
-            // @ts-expect-error -- generic test code
             ctrl[optionStoreName].value = TERR_OPTIONS;
         });
 

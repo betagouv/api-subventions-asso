@@ -4,6 +4,7 @@
     import Input from "$lib/dsfr/Input.svelte";
     import AutocompleteSelect from "$lib/components/AutocompleteSelect/AutocompleteSelect.svelte";
     import Radio from "$lib/dsfr/Radio.svelte";
+    import RegionField from "$lib/components/StructureFormStep/RegionField/RegionField.svelte";
 
     // when we will do validation, the substep will send the conclusion
     // about allowing to submit in this variable that should be bound by the parent
@@ -16,7 +17,7 @@
     };
 
     const ctrl = new DecentralizedSubStepController();
-    const { departmentOptions, regionOptions, structureOptions } = ctrl;
+    const { departmentOptions, structureOptions } = ctrl;
 
     ctrl.init(values);
 </script>
@@ -39,12 +40,7 @@
         </div>
     {:else if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL}
         <div class="fr-fieldset__element fr-mb-4v">
-            <AutocompleteSelect
-                options={$regionOptions}
-                bind:value={values.decentralizedTerritory}
-                label="Quelle est votre région ?"
-                on:change
-                placeholder="Ex : Occitanie" />
+            <RegionField bind:value={values.decentralizedTerritory} label="Quelle est votre région ?" />
         </div>
     {/if}
 
