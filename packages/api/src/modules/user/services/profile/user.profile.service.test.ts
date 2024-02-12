@@ -75,6 +75,7 @@ describe("user profile service", () => {
             it("should throw if agentType is wrong", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     agentType: "WRONG_VALUE",
                 });
                 expect(actual).toMatchSnapshot();
@@ -88,6 +89,7 @@ describe("user profile service", () => {
             it("should throw an error", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     agentType: "WRONG_VALUE",
                 });
                 expect(actual).toMatchSnapshot();
@@ -101,6 +103,7 @@ describe("user profile service", () => {
             it("should throw an error", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     structure: 6,
                 });
                 expect(actual).toMatchSnapshot();
@@ -114,6 +117,7 @@ describe("user profile service", () => {
             it("should throw an error", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     territorialScope: "WRONG_SCOPE",
                 });
                 expect(actual).toMatchSnapshot();

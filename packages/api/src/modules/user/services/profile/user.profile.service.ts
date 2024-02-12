@@ -26,8 +26,13 @@ import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 
 export class UserProfileService {
-    validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
-        const { password, agentType, jobType, structure } = userInfo;
+    validateUserProfileData(
+        userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
+        withPassword = true,
+    ): { valid: false; error: Error } | { valid: true } {
+        const { agentType, jobType, structure, region } = userInfo;
+        let password = "";
+        if (withPassword && "password" in userInfo) password = userInfo?.password;
         const validations = [
             {
                 value: agentType,
@@ -93,7 +98,7 @@ export class UserProfileService {
         return error ? { valid: false, error: error as BadRequestError } : { valid: true };
     }
 
-    sanitizeUserProfileData(unsafeUserInfo) {
+    sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
         const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
@@ -132,8 +137,11 @@ export class UserProfileService {
         const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo);
+        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo) as UserActivationInfoDto & {
+            hashPassword: string;
+        };
         safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
+        // @ts-expect-error -- intermediate type
         delete safeUserInfo.password;
         const activeUser = (await userRepository.update(
             {
@@ -142,7 +150,7 @@ export class UserProfileService {
                 active: true,
                 profileToComplete: false,
                 lastActivityDate: new Date(),
-            },
+            } as Omit<UserDbo, "jwt">,
             true,
         )) as Omit<UserDbo, "hashPassword">;
 

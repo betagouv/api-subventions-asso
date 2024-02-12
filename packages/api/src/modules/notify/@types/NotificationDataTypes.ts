@@ -1,4 +1,4 @@
-import { FutureUserDto, UserActivationInfoDto, UserDto } from "dto";
+import { FutureUserDto, UserActivationInfoDto } from "dto";
 import { NotificationType } from "./NotificationType";
 
 export interface NotificationDataTypes {
