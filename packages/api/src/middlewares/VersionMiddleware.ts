@@ -6,7 +6,6 @@ export const versionMiddleware = async (req, _res, next) => {
         _res.redirect(`/v2${req.url}`);
     } else {
         req.apiVersion = version;
-        console.log(req.url);
         console.log(`currently using API ${version}`);
         next();
     }
