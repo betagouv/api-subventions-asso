@@ -27,6 +27,8 @@ export interface UserActivationInfoDto {
     service?: string;
     phoneNumber?: string;
     structure?: string;
+    // TODO: verify from GEO API
+    region?: string;
     decentralizedLevel?: AdminTerritorialLevel;
     // TODO: verify from GEO API
     decentralizedTerritory?: string;
@@ -41,6 +43,8 @@ export interface UpdatableUser {
     service?: string;
     phoneNumber?: string;
     structure?: string;
+    // TODO: verify from GEO API
+    region?: string;
     decentralizedLevel?: AdminTerritorialLevel;
     // TODO: verify from GEO API
     decentralizedTerritory?: string;

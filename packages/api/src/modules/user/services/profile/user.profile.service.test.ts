@@ -110,6 +110,20 @@ describe("user profile service", () => {
             });
         });
 
+        describe("region", () => {
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                const actual = userProfileService.validateUserProfileData({
+                    ...validInput,
+                    // @ts-expect-error -- test errors in input
+                    region: 6,
+                });
+                expect(actual).toMatchSnapshot();
+            });
+        });
+
         describe("territorialScope", () => {
             const mockList = [mockedUserCheckService.passwordValidator];
             beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));

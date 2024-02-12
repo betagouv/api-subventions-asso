@@ -56,6 +56,12 @@ export class UserProfileService {
                 method: value => !value || typeof value == "string",
                 error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
             },
+            {
+                value: region,
+                // TODO: verify from GEO API
+                method: value => !value || typeof value == "string",
+                error: new BadRequestError(dedent`Mauvaise valeur pour la région.`),
+            },
         ];
 
         if (withPassword)
@@ -99,7 +105,13 @@ export class UserProfileService {
     }
 
     sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
-        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
+        const fieldsToSanitize = [
+            "service",
+            "phoneNumber",
+            "structure",
+            "decentralizedTerritory, firstName, lastName",
+            "region",
+        ];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
             if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
