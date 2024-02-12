@@ -297,6 +297,13 @@ describe("user activation service", () => {
             });
         });
 
+        it("should notify USER_ACTIVATED", async () => {
+            await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
+            expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_ACTIVATED, {
+                email: USER_EMAIL,
+            });
+        });
+
         it("should update user", async () => {
             mockedUserAuthService.getHashPassword.mockResolvedValueOnce(PASSWORD);
             await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);

@@ -240,6 +240,21 @@ describe("user profile service", () => {
             });
         });
 
+        it("should notify user activated", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_ACTIVATED, {
+                email: USER_WITHOUT_SECRET.email,
+            });
+        });
+
+        it("should notify user logged in", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
+                email: USER_WITHOUT_SECRET.email,
+                date: expect.any(Date),
+            });
+        });
+
         it("should call validateUserProfileData()", async () => {
             const expected = USER_ACTIVATION_INFO;
             await userProfileService.activate("token", USER_ACTIVATION_INFO);
