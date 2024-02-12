@@ -29,6 +29,7 @@
     export let options: { value: string; label: string }[];
     export let label = "";
     export let placeholder = "";
+    export let hint = "";
 
     const listId = `list-${id}`;
     let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
@@ -49,6 +50,7 @@
     <div class="group fr-input-group">
         <label for={id} class="fr-label">
             {label}
+            {#if hint}<span class="fr-hint-text">{hint}</span>{/if}
         </label>
         <div class="fr-input-wrap">
             <input

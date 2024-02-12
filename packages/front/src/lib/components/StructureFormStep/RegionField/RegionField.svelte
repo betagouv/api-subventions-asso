@@ -5,6 +5,7 @@
 
     export let value;
     export let label = "Quelle est votre région ?";
+    export let hint = "";
     let element;
 
     const ctrl = new RegionFieldController();
@@ -14,5 +15,5 @@
 </script>
 
 <div class="container" bind:this={element}>
-    <AutocompleteSelect options={$regionOptions} bind:value {label} on:change placeholder="Ex : Occitanie" />
+    <AutocompleteSelect options={$regionOptions} bind:value {label} on:change placeholder="Ex : Occitanie" {hint} />
 </div>
