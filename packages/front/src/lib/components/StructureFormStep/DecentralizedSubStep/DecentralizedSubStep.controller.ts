@@ -5,15 +5,14 @@ import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 import Dispatch from "$lib/core/Dispatch";
-
-type Option = { value: string; label: string };
+import type { Option } from "$lib/types/FieldOption";
 
 export default class DecentralizedSubStepController {
     private allStructures: AdminStructureDto[];
-    public structureOptions: Store<Option[]>;
-    public departmentOptions: Store<Option[]>;
-    public regionOptions: Store<Option[]>;
-    public levelOptions: Option[] = [
+    public structureOptions: Store<Option<string>[]>;
+    public departmentOptions: Store<Option<string>[]>;
+    public regionOptions: Store<Option<string>[]>;
+    public levelOptions: Option<AdminTerritorialLevel>[] = [
         { value: AdminTerritorialLevel.DEPARTMENTAL, label: "Départemental" },
         { value: AdminTerritorialLevel.INTERDEPARTMENTAL, label: "Interdépartemental" },
         { value: AdminTerritorialLevel.REGIONAL, label: "Régional" },
@@ -64,7 +63,7 @@ export default class DecentralizedSubStepController {
     }
 
     private async fillOptionsOnce(
-        optionStore: Store<Option[]>,
+        optionStore: Store<Option<string>[]>,
         serviceMethod: () => Promise<{ code: string; nom: string }[]>,
         transform: (reg: { code: string; nom: string }) => string,
         sort = false,
