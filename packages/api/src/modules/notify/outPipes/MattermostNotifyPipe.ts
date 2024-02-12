@@ -7,7 +7,7 @@ import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { ENV } from "../../../configurations/env.conf";
 
 enum MattermostChannels {
-    BIZDEV = "datasubvention---bizdev",
+    ACCOUNTS = "datasubvention---comptes-app",
 }
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
@@ -56,7 +56,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: MattermostChannels.BIZDEV,
+            channel: MattermostChannels.ACCOUNTS,
             username: "Suppression de compte",
             icon_emoji: "door",
         });
@@ -74,7 +74,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: MattermostChannels.BIZDEV,
+            channel: MattermostChannels.ACCOUNTS,
             username: "Suppression de comptes",
             icon_emoji: "door",
         });
@@ -87,7 +87,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
 
         return this.sendMessage({
             text: message,
-            channel: MattermostChannels.BIZDEV,
+            channel: MattermostChannels.ACCOUNTS,
             username: "Nom de domaine rejeté",
             icon_emoji: "no_entry",
         });

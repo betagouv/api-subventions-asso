@@ -2,7 +2,7 @@
 
 exports[`MattermostNotifyPipe badEmailDomain sends message with proper payload 1`] = `
 Object {
-  "channel": "datasubvention---bizdev",
+  "channel": "datasubvention---comptes-app",
   "icon_emoji": "no_entry",
   "text": "L'inscription de l'utilisateur some@email.fr a échouée car le nom de domaine de l'adresse mail n'est pas accepté.",
   "username": "Nom de domaine rejeté",
@@ -11,7 +11,7 @@ Object {
 
 exports[`MattermostNotifyPipe batchUsersDeleted sends message with proper payload 1`] = `
 Object {
-  "channel": "datasubvention---bizdev",
+  "channel": "datasubvention---comptes-app",
   "icon_emoji": "door",
   "text": "Les comptes suivants ont été supprimés pour inactivité trop longue.
 
@@ -24,7 +24,7 @@ N'oubliez pas de supprimer toutes leurs données !",
 
 exports[`MattermostNotifyPipe userDeleted sends message with proper payload with false selfDeleted 1`] = `
 Object {
-  "channel": "datasubvention---bizdev",
+  "channel": "datasubvention---comptes-app",
   "icon_emoji": "door",
   "text": "Le compte de Prénom NOM (email) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !",
   "username": "Suppression de compte",
@@ -33,7 +33,7 @@ Object {
 
 exports[`MattermostNotifyPipe userDeleted sends message with proper payload with truthy selfDeleted 1`] = `
 Object {
-  "channel": "datasubvention---bizdev",
+  "channel": "datasubvention---comptes-app",
   "icon_emoji": "door",
   "text": "Prénom NOM (email) a supprimé son compte, veuillez supprimer toutes ses données !",
   "username": "Suppression de compte",
