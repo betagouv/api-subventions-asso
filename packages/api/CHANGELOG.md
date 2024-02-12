@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.45.4](https://github.com/betagouv/api-subventions-asso/compare/v0.45.3...v0.45.4) (2024-02-08)
+
+### Bug Fixes
+
+-   **api:** brevo update resilient to undefined jobType ([d0a40bb](https://github.com/betagouv/api-subventions-asso/commit/d0a40bbde130c9f1888eaef7b72421e861188190))
+
+## [0.45.3](https://github.com/betagouv/api-subventions-asso/compare/v0.45.1...v0.45.3) (2024-02-08)
+
+### Bug Fixes
+
+-   **api:** connect db in migration ([e74f788](https://github.com/betagouv/api-subventions-asso/commit/e74f788bfe04046bc3591560fd9e2bd628bb6c28))
+-   **api:** do not actually disable users that would not have been warned ([a8462e0](https://github.com/betagouv/api-subventions-asso/commit/a8462e07a9431d893a133fbced170a479f08907b))
+
+## [0.45.2](https://github.com/betagouv/api-subventions-asso/compare/v0.45.1...v0.45.2) (2024-02-07)
+
+### Bug Fixes
+
+-   **api:** connect db in migration ([283dff5](https://github.com/betagouv/api-subventions-asso/commit/283dff5dd97cdb54590053812e235faf3d6cf4ec))
+
+## [0.45.1](https://github.com/betagouv/api-subventions-asso/compare/v0.45.0...v0.45.1) (2024-02-07)
+
+### Bug Fixes
+
+-   **api:** better select users to delete or warn ([#2156](https://github.com/betagouv/api-subventions-asso/issues/2156)) ([e2baefa](https://github.com/betagouv/api-subventions-asso/commit/e2baefac14e19f60e06baece27ed97890c2b60d6))
+-   **api:** keep lastActivtyDate to date and sync brevo last connexion ([#2162](https://github.com/betagouv/api-subventions-asso/issues/2162)) ([71b309d](https://github.com/betagouv/api-subventions-asso/commit/71b309d9f88887ca2220b3aedff174401def93f5))
+
 # [0.45.0](https://github.com/betagouv/api-subventions-asso/compare/v0.44.6...v0.45.0) (2024-02-02)
 
 ### Bug Fixes

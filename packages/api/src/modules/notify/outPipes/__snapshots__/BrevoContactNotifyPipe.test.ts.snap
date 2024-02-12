@@ -26,6 +26,7 @@ Array [
       "CATEGORIE": "Agent public d’une collectivité territoriale",
       "COMPETENCE_TERRITORIALE": "Interdépartemental",
       "COMPTE_ACTIVE": true,
+      "DERNIERE_CONNEXION": 2023-04-06T00:00:00.000Z,
       "ECHELON_COLLECTIVITE": "Départemental",
       "ECHELON_TERRITORIAL": "ECHELON_TERRITORIAL",
       "NOM": "NOM",

@@ -1,3 +1,5 @@
+import { waitPromise } from "./helpers/WaitHelper";
+
 interface OperationStackLine<EntityType, OperationResultType> {
     entity: EntityType;
     resolver: (result: OperationResultType) => void;
@@ -12,7 +14,10 @@ export default class ExecutionSyncStack<EntityType, OperationResultType> {
     private inProgress = false;
     private stackLines: OperationStackLine<EntityType, OperationResultType>[] = [];
 
-    constructor(private operationExecutor: OperationExecutor<EntityType, OperationResultType>) {}
+    constructor(
+        private operationExecutor: OperationExecutor<EntityType, OperationResultType>,
+        private waitIntervalMs: number = 0,
+    ) {}
 
     addOperation(entity: EntityType): Promise<OperationResultType> {
         return new Promise((resolver, rejecter) => {
@@ -32,14 +37,14 @@ export default class ExecutionSyncStack<EntityType, OperationResultType> {
 
         let operationLine: OperationStackLine<EntityType, OperationResultType> | undefined;
         while ((operationLine = this.stackLines.shift())) {
-            if (!operationLine) continue; // It's just for TS, because while stop if operationLine is undefined
-
+            if (!operationLine) continue; // It's just for TS, because while stops if operationLine is undefined
             try {
                 const result = await this.operationExecutor(operationLine.entity);
                 operationLine.resolver(result);
             } catch (e) {
                 operationLine.rejecter(e);
             }
+            if (this.waitIntervalMs) await waitPromise(this.waitIntervalMs);
         }
         this.inProgress = false;
     }

@@ -9,6 +9,11 @@ import BrevoNotifyPipe from "./BrevoNotifyPipe";
 
 const SENDIND_BLUE_CONTACT_LISTS = [Number(API_SENDINBLUE_CONTACT_LIST)];
 
+/*
+ * COMPTE_ACTIVE does not mean that the account is currently active, only that it has been through firstActivation
+ * specifically, a user that had activated the account then lost they password, would have `active: false` on db
+ * but COMPTE_ACTIVE: true on brevo */
+
 export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
     private apiInstance: Brevo.ContactsApi;
 
@@ -187,6 +192,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             territorialScope: "ECHELON_COLLECTIVITE",
             lastName: "NOM",
             firstName: "PRENOM",
+            lastActivityDate: "DERNIERE_CONNEXION",
         };
 
         function buildAttributesObject(data) {
@@ -196,7 +202,9 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                         acc[ATTRIBUTES_MAPPING[key]] = AGENT_TYPE_LABEL_MAPPING[data[key]];
                         break;
                     case "jobType":
-                        acc[ATTRIBUTES_MAPPING[key]] = data[key].map(job => JOB_TYPE_LABEL_MAPPING[job]).join(",");
+                        acc[ATTRIBUTES_MAPPING[key]] = (data[key] || [])
+                            .map(job => JOB_TYPE_LABEL_MAPPING[job])
+                            .join(",");
                         break;
                     case "decentralizedLevel":
                         acc[ATTRIBUTES_MAPPING[key]] = ADMIN_TERRITORIAL_LEVEL_LABEL_MAPPING[data[key]];
@@ -217,7 +225,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
 
         const updateContact = new Brevo.UpdateContact();
         const attributes: Record<string, string | boolean> = buildAttributesObject(data);
-        attributes.COMPTE_ACTIVE = true; // TODO le rendre configurable ?
+        attributes.COMPTE_ACTIVE = true;
         updateContact.attributes = attributes;
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance
@@ -225,6 +233,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             .then(() => true)
             .catch(error => {
                 Sentry.captureException(error);
+                console.error("error updating contact", { email: data.email, error: error.response._body });
                 return false;
             });
     }

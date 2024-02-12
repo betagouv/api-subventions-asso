@@ -9,6 +9,7 @@ export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
+    LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
 }
 
 export class ConfigurationsService {
@@ -20,8 +21,12 @@ export class ConfigurationsService {
         };
     }
 
-    updateConfigEntity<T>(entity, data: T): ConfigurationEntity<T> {
+    private generateConfiguationEntity<T>(entity, data: T): ConfigurationEntity<T> {
         return { ...entity, data, updatedAt: new Date() };
+    }
+
+    updateConfigEntity<T>(name: string, data: T) {
+        return configurationsRepository.upsert(name, { data });
     }
 
     getDauphinToken() {
@@ -65,7 +70,7 @@ export class ConfigurationsService {
         if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
         await configurationsRepository.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
-            this.updateConfigEntity(document, [...document.data, domain]),
+            this.generateConfiguationEntity(document, [...document.data, domain]),
         );
         return domain;
     }

@@ -27,6 +27,12 @@ jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
 import notifyService from "../../../notify/notify.service";
 
+jest.mock("../../../configurations/repositories/configurations.repository");
+import configurationsRepository from "../../../configurations/repositories/configurations.repository";
+
+jest.mock("../../../configurations/configurations.service");
+import configurationsService from "../../../configurations/configurations.service";
+
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -34,6 +40,7 @@ const mockedNotifyService = jest.mocked(notifyService);
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userActivationService from "../activation/user.activation.service";
+import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
 
 jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
@@ -240,6 +247,24 @@ describe("user rgpd service", () => {
             expect(disableMock).toHaveBeenCalledTimes(2);
         });
 
+        it("does not include 6 months users before STALL_RGPD_CRON_6_MONTHS_DELETION", async () => {
+            jest.useFakeTimers();
+            const NOW = new Date(
+                STALL_RGPD_CRON_6_MONTHS_DELETION.getFullYear(),
+                STALL_RGPD_CRON_6_MONTHS_DELETION.getMonth() - 1,
+                STALL_RGPD_CRON_6_MONTHS_DELETION.getDate(),
+            );
+            const THEN = new Date(
+                STALL_RGPD_CRON_6_MONTHS_DELETION.getFullYear(),
+                STALL_RGPD_CRON_6_MONTHS_DELETION.getMonth() - 7,
+                STALL_RGPD_CRON_6_MONTHS_DELETION.getDate() - 1,
+            );
+            jest.setSystemTime(NOW);
+            await userRgpdService.bulkDisableInactive();
+            expect(disableMock).toHaveBeenCalledTimes(1);
+            jest.useRealTimers();
+        });
+
         it("does not notify if no result", async () => {
             jest.mocked(userRepository.findInactiveSince).mockResolvedValueOnce([]);
             jest.mocked(userRepository.findNotActivatedSince).mockResolvedValueOnce([]);
@@ -282,7 +307,15 @@ describe("user rgpd service", () => {
 
         it("finds users never seen for 5 month", async () => {
             await userRgpdService.warnDisableInactive();
-            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN);
+            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN, undefined);
+        });
+
+        it("finds users never seen for 5 month since last call", async () => {
+            const DATE = new Date("2023-05-01");
+            // @ts-expect-error -- partial mock
+            jest.mocked(configurationsRepository.getByName).mockResolvedValueOnce({ data: DATE });
+            await userRgpdService.warnDisableInactive();
+            expect(userRepository.findNotActivatedSince).toHaveBeenCalledWith(THEN, DATE);
         });
 
         it("calls reset for each found user", async () => {
@@ -294,6 +327,11 @@ describe("user rgpd service", () => {
             await userRgpdService.warnDisableInactive();
             const actual = jest.mocked(notifyService.notify).mock.calls;
             expect(actual).toMatchSnapshot();
+        });
+
+        it("saves warning date", async () => {
+            await userRgpdService.warnDisableInactive();
+            expect(configurationsService.updateConfigEntity).toHaveBeenCalledWith("LAST-RGPD-WARNED-DATE", THEN);
         });
 
         describe("if one reset fails", () => {

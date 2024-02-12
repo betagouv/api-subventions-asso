@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.45.4](https://github.com/betagouv/datasubvention/compare/v0.45.3...v0.45.4) (2024-02-08)
+
+**Note:** Version bump only for package front
+
+## [0.45.3](https://github.com/betagouv/datasubvention/compare/v0.45.1...v0.45.3) (2024-02-08)
+
+### Features
+
+-   **api:** final arrow colors ([1a51e40](https://github.com/betagouv/datasubvention/commit/1a51e4095d3d38cf696d1f19b1aebf0c99978ccc))
+
 # [0.45.0](https://github.com/betagouv/datasubvention/compare/v0.44.6...v0.45.0) (2024-02-02)
 
 ### Bug Fixes

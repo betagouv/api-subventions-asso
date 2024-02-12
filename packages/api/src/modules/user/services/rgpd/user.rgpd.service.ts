@@ -12,6 +12,9 @@ import userCrudService from "../crud/user.crud.service";
 import { DefaultObject } from "../../../../@types";
 import userActivationService from "../activation/user.activation.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+import configurationsRepository from "../../../configurations/repositories/configurations.repository";
+import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
+import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
@@ -80,8 +83,13 @@ export class UserRgpdService {
         const subscriptionNotActivatedLimit = new Date(now.valueOf());
         subscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 6);
         const neverSeenUsersToDisable = await userRepository.findNotActivatedSince(subscriptionNotActivatedLimit);
+        if (STALL_RGPD_CRON_6_MONTHS_DELETION < now)
+            console.log(`rgpdCron: ${neverSeenUsersToDisable.length} seraient supprimés si la feature était activée`);
 
-        const usersToDisable = [...inactiveUsersToDisable, ...neverSeenUsersToDisable];
+        const usersToDisable = [
+            ...inactiveUsersToDisable,
+            ...(STALL_RGPD_CRON_6_MONTHS_DELETION < now ? neverSeenUsersToDisable : []), // TODO clean after the 2024-07-08
+        ];
         const disablePromises = usersToDisable.map(user =>
             this.disable(user, false, true).catch(e => {
                 Sentry.captureException(e);
@@ -109,10 +117,15 @@ export class UserRgpdService {
      * The users that did not log in for 2 years will be warned via pure brevo automation */
     async warnDisableInactive() {
         const now = new Date();
-
+        const lastWarningWave = (
+            await configurationsRepository.getByName<Date>(CONFIGURATION_NAMES.LAST_RGPD_WARNED_DATE)
+        )?.data;
         const lastSubscriptionNotActivatedLimit = new Date(now.valueOf());
         lastSubscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 5);
-        const usersToWarn = await userRepository.findNotActivatedSince(lastSubscriptionNotActivatedLimit);
+        const usersToWarn = await userRepository.findNotActivatedSince(
+            lastSubscriptionNotActivatedLimit,
+            lastWarningWave,
+        );
 
         const promises = usersToWarn.map(user =>
             userActivationService
@@ -128,6 +141,10 @@ export class UserRgpdService {
                     Sentry.captureException(error);
                     return false;
                 }),
+        );
+        await configurationsService.updateConfigEntity(
+            CONFIGURATION_NAMES.LAST_RGPD_WARNED_DATE,
+            lastSubscriptionNotActivatedLimit,
         );
         const results = await Promise.all(promises);
         return results.every(Boolean);
