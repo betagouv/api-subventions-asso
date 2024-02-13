@@ -5,11 +5,10 @@
 
     import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
     import Pagination from "$lib/dsfr/Pagination.svelte";
-    import Store from "$lib/core/Store";
 
     const controller = new EstablishmentsController(currentAssoSimplifiedEtabs);
 
-    const { visibleEstablishments, totalPage, currentPage } = controller;
+    const { visibleEstablishments, totalPages, currentPage } = controller;
 </script>
 
 <div>
@@ -25,8 +24,10 @@
                 {/key}
             {/each}
         </div>
-        <div>
-            <Pagination {totalPage} {currentPage} />
+        <div class="fr-grid-row">
+            <div class="fr-mx-auto fr-mt-3w">
+                <Pagination {totalPages} {currentPage} />
+            </div>
         </div>
     {:else}
         <DataNotFound content="Nous sommes désolés, nous n'avons trouvé aucun établissement lié à cette association" />

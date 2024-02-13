@@ -1,23 +1,23 @@
 <script lang="ts">
     import type Store from "$lib/core/Store";
 
-    export let totalPage: Store<number>;
+    export let totalPages: Store<number>;
     export let currentPage: Store<number>;
 
     const changePage = (page: number) => {
-        if (page < 1 || page > totalPage.value) return;
+        if (page < 1 || page > totalPages.value) return;
         currentPage.set(page);
     };
 
-    const visibleLinks: { current: boolean; pageNumber: number }[] = [];
+    const visibleLinks: { isCurrent: boolean; pageNumber: number }[] = [];
 
     currentPage.subscribe(currentIndex => {
         visibleLinks.length = 0;
 
-        for (let i = 0; i < $totalPage; i++) {
+        for (let i = 0; i < $totalPages; i++) {
             const pageNumber = i + 1;
             visibleLinks.push({
-                current: pageNumber === currentIndex,
+                isCurrent: pageNumber === currentIndex,
                 pageNumber: pageNumber,
             });
         }
@@ -41,7 +41,7 @@
             <li>
                 <a
                     class="fr-pagination__link"
-                    aria-current={visibleLink.current ? "page" : null}
+                    aria-current={visibleLink.isCurrent ? "page" : null}
                     title="Page {visibleLink.pageNumber}"
                     href="#{visibleLink.pageNumber}"
                     on:click={() => changePage(visibleLink.pageNumber)}>
@@ -49,7 +49,7 @@
                 </a>
             </li>
         {/each}
-        {#if $currentPage != $totalPage}
+        {#if $currentPage != $totalPages}
             <li>
                 <a
                     class="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label"

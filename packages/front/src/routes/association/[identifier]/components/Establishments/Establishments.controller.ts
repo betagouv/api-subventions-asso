@@ -3,7 +3,7 @@ import type { SimplifiedEstablishment } from "$lib/resources/establishments/type
 
 export class EstablishmentsController {
     visibleEstablishments: Store<SimplifiedEstablishment[]> = new Store([]);
-    totalPage: Store<number> = new Store(1);
+    totalPages: Store<number> = new Store(1);
     currentPage: Store<number> = new Store(1);
 
     static MAX_ESTABLISHMENTS_BY_PAGE = 9;
@@ -17,7 +17,7 @@ export class EstablishmentsController {
     }
 
     onEstablishementsUpdated() {
-        this.totalPage.set(
+        this.totalPages.set(
             Math.ceil(this.establishmentsStore.value.length / EstablishmentsController.MAX_ESTABLISHMENTS_BY_PAGE),
         );
         this.currentPage.set(1);
