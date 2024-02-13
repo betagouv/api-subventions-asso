@@ -94,13 +94,26 @@ export class MetabaseDumpRepository {
                                 },
                             },
                         },
+                        // region for everyone but central agents
+                        region: {
+                            $cond: {
+                                if: { $eq: ["$agentType", AgentTypeEnum.CENTRAL_ADMIN] },
+                                then: "$$REMOVE",
+                                else: {
+                                    $cond: {
+                                        if: { $eq: ["$region", "Administration centrale"] },
+                                        then: "$$REMOVE",
+                                        else: "$region",
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
 
                 // clean
                 {
                     $project: {
-                        region: 0,
                         department: 0,
                         pipedriveData: 0,
                     },
