@@ -1,6 +1,6 @@
 <script lang="ts">
-    import EstablishmentCard from "./EstablishmentCard.svelte";
-    import { EstablishmentsController } from "./Establishments/Establishments.controller";
+    import EstablishmentCard from "../EstablishmentCard.svelte";
+    import { EstablishmentsController } from "./Establishments.controller";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
 
     import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";

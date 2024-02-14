@@ -1,5 +1,5 @@
 <script>
-    import Etablissements from "./Etablissements.svelte";
+    import Establishments from "./Establishments/Establishments.svelte";
     import Bodacc from "./Bodacc/Bodacc.svelte";
     import Tabs from "$lib/dsfr/Tabs.svelte";
     import TabContent from "$lib/dsfr/TabContent.svelte";
@@ -23,7 +23,7 @@
                 {:else if index === 1}
                     <Documents resource={$currentAssociation} />
                 {:else if index === 2}
-                    <Etablissements />
+                    <Establishments />
                 {:else}
                     <Bodacc bodacc={$currentAssociation.bodacc} />
                 {/if}
