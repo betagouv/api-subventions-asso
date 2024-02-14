@@ -52,7 +52,7 @@ export class GeoService extends ProviderCore {
         await geoRepository.insertMany(entities);
     }
 
-    async getRegionFromDepartement(departmentLabel: string | undefined) {
+    async getRegionFromDepartment(departmentLabel: string | undefined) {
         if (!departmentLabel) return undefined;
         const departmentName = departmentLabel.match(/\d+ - (.+)/)?.[1];
         if (!departmentName) return undefined;

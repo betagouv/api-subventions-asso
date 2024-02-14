@@ -188,7 +188,7 @@ export class UserProfileService {
         if (userInfo.decentralizedLevel === AdminTerritorialLevel.REGIONAL)
             userInfo.region = userInfo.decentralizedTerritory;
         if (userInfo.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL)
-            userInfo.region = await geoService.getRegionFromDepartement(userInfo.decentralizedTerritory);
+            userInfo.region = await geoService.getRegionFromDepartment(userInfo.decentralizedTerritory);
     }
 }
 
