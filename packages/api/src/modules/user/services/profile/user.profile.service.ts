@@ -24,6 +24,7 @@ import userAuthService from "../auth/user.auth.service";
 import UserDbo from "../../repositories/dbo/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
+import geoService from "../../../providers/geoApi/geo.service";
 
 export class UserProfileService {
     validateUserProfileData(
@@ -128,6 +129,7 @@ export class UserProfileService {
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
+        await this.deduceRegion(safeUserInfo); // TODO test call
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
 
         const safeUpdatedUser = removeSecrets(updatedUser);
@@ -152,9 +154,12 @@ export class UserProfileService {
         const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo) as UserActivationInfoDto & {
             hashPassword: string;
         };
+        await this.deduceRegion(safeUserInfo); // TODO test call
+
         safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
         // @ts-expect-error -- intermediate type
         delete safeUserInfo.password;
+
         const activeUser = (await userRepository.update(
             {
                 ...user,
@@ -176,6 +181,14 @@ export class UserProfileService {
         });
 
         return userWithJwt;
+    }
+
+    private async deduceRegion(userInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
+        if (userInfo.agentType !== AgentTypeEnum.DECONCENTRATED_ADMIN) return;
+        if (userInfo.decentralizedLevel === AdminTerritorialLevel.REGIONAL)
+            userInfo.region = userInfo.decentralizedTerritory;
+        if (userInfo.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL)
+            userInfo.region = await geoService.getRegionFromDepartement(userInfo.decentralizedTerritory);
     }
 }
 
