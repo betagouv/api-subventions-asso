@@ -25,7 +25,9 @@ export class EstablishmentsController {
 
     onFilter(filter) {
         this.filteredEstablishments.set(
-            this.establishmentsStore.value.filter(estab => estab.adresse?.code_postal?.startsWith(filter)),
+            this.establishmentsStore.value.filter(
+                estab => estab.adresse?.code_postal?.startsWith(filter) || estab.siret.includes(filter),
+            ),
         );
         this.setTotalPages();
         this.renderPage();
@@ -39,7 +41,6 @@ export class EstablishmentsController {
 
     onEstablishementsUpdated() {
         this.setTotalPages();
-        // this.currentPage.set(1);
         this.renderPage();
     }
 
