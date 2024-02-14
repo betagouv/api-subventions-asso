@@ -22,6 +22,7 @@ import DumpCli from "./interfaces/cli/Dump.cli";
 import ScdlCli from "./interfaces/cli/Scdl.cli";
 import HistoryUniteLegalCli from "./interfaces/cli/HistoryUniteLegal.cli";
 import { initIndexes } from "./shared/MongoInit";
+import GeoCli from "./interfaces/cli/Geo.cli";
 
 async function main() {
     await connectDB();
@@ -47,6 +48,7 @@ async function main() {
         DumpCli,
         ScdlCli,
         HistoryUniteLegalCli,
+        GeoCli,
     ];
 
     const args = process.argv.slice(2);
