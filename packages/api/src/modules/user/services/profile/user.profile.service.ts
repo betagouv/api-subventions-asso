@@ -133,7 +133,7 @@ export class UserProfileService {
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
 
         const safeUpdatedUser = removeSecrets(updatedUser);
-        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
+        await notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser); // await needed in a migration, better management in #2180
         return safeUpdatedUser;
     }
 
