@@ -11,7 +11,10 @@
 
     const visibleLinks: { isCurrent: boolean; pageNumber: number }[] = [];
 
-    currentPage.subscribe(currentIndex => {
+    currentPage.subscribe(currentPage => definePages(currentPage));
+    totalPages.subscribe(_totalPages => definePages(1));
+
+    function definePages(currentIndex) {
         visibleLinks.length = 0;
 
         for (let i = 0; i < $totalPages; i++) {
@@ -21,7 +24,7 @@
                 pageNumber: pageNumber,
             });
         }
-    });
+    }
 </script>
 
 <!-- svelte-ignore a11y-no-redundant-roles -->

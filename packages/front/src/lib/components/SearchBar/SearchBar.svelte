@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from "svelte";
     // build a unique id from timestamp if not given
     export let id = Date.now().toString();
