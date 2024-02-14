@@ -1,4 +1,5 @@
 import Brevo from "@getbrevo/brevo";
+import * as Sentry from "@sentry/node";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
@@ -11,6 +12,7 @@ export enum TemplateEnum {
     alreadySubscribed = 152,
     autoDeletion = 156,
     warnDeletion = 155,
+    activated = 135,
 }
 
 export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
@@ -35,6 +37,8 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
                 return this.batchUsersDeleted(data);
             case NotificationType.WARN_NEW_USER_TO_BE_DELETED:
                 return this.warnUsersBeforeAutoDeletion(data);
+            case NotificationType.USER_ACTIVATED:
+                return this.greetActivated(data);
             default:
                 return Promise.resolve(false);
         }
@@ -69,6 +73,10 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
         return this.sendMail(data.email, data, TemplateEnum.warnDeletion);
     }
 
+    private greetActivated(data: NotificationDataTypes[NotificationType.USER_ACTIVATED]) {
+        return this.sendMail(data.email, data, TemplateEnum.activated);
+    }
+
     async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {
         const sendSmtpEmail = new Brevo.SendSmtpEmail();
         sendSmtpEmail.templateId = templateId;
@@ -85,6 +93,7 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
             });
             return true;
         } catch (error) {
+            Sentry.captureException(error);
             return false;
         }
     }

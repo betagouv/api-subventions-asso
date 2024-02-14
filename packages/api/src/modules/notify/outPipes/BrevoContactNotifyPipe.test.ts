@@ -88,7 +88,7 @@ describe("BrevoContactNotifyPipe", () => {
             // @ts-expect-error userCreated is private method
             await BrevoContactNotifyPipe.userActivated({ email: USER_EMAIL });
             expect(mockUpdateContact).toHaveBeenCalledWith(USER_EMAIL, {
-                attributes: { COMPTE_ACTIVE: true },
+                attributes: { COMPTE_ACTIVE: true, LIEN_ACTIVATION: "" },
                 listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
             });
         });
