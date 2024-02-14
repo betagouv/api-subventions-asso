@@ -18,7 +18,7 @@
 <div class="fr-grid-row fr-grid-row--center fr-my-6v">
     <div class="fr-col-8">
         <div class="search-bar">
-            <SearchBar bind:value={$inputSearch} on:submit={() => ctrl.onSubmit()} />
+            <SearchBar bind:value={$inputSearch} on:submit={e => ctrl.onSubmit(e.detail)} />
         </div>
     </div>
 </div>

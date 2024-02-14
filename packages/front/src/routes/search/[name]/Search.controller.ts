@@ -7,9 +7,9 @@ import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
 import associationService from "$lib/resources/associations/association.service";
 
 export default class SearchController {
+    inputSearch: Store<string>;
     associations: Store<unknown[]>;
     searchPromise: Store<Promise<unknown>>;
-    inputSearch: Store<string>;
     duplicatesFromIdentifier: Store<string[] | null>;
 
     constructor(name) {
@@ -35,7 +35,7 @@ export default class SearchController {
                 } else this.duplicatesFromIdentifier.set(null);
                 this.associations.set(associations);
                 // reload same page to save search in history
-                goto(`/search/${this.inputSearch.value}`, { replaceState: true });
+                goto(`/search/${name}`, { replaceState: true });
             }
         });
     }
@@ -49,11 +49,12 @@ export default class SearchController {
         return nbAssos > 1 ? `${nbAssos} résultats trouvés.` : `${nbAssos} résultat trouvé.`;
     }
 
-    onSubmit() {
-        if (isSiret(this.inputSearch.value)) {
-            this.gotoEstablishment(this.inputSearch.value);
+    onSubmit(input) {
+        this.inputSearch.set(input);
+        if (isSiret(input)) {
+            this.gotoEstablishment(input);
         } else {
-            const encodedValue = encodeQuerySearch(this.inputSearch.value);
+            const encodedValue = encodeQuerySearch(input);
             this.searchPromise.set(this.fetchAssociationFromName(encodedValue));
         }
     }
