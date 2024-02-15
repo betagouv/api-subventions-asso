@@ -20,6 +20,13 @@ At least 8 characters in length, but no more than 32.],
 }
 `;
 
+exports[`user profile service validateUserProfileData() region should throw an error 1`] = `
+Object {
+  "error": [Error: Mauvaise valeur pour la région.],
+  "valid": false,
+}
+`;
+
 exports[`user profile service validateUserProfileData() structure should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour la structure.],
