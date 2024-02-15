@@ -129,7 +129,7 @@ export class UserProfileService {
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
-        await this.deduceRegion(safeUserInfo); // TODO test call
+        await this.deduceRegion(safeUserInfo);
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
 
         const safeUpdatedUser = removeSecrets(updatedUser);
@@ -154,7 +154,7 @@ export class UserProfileService {
         const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo) as UserActivationInfoDto & {
             hashPassword: string;
         };
-        await this.deduceRegion(safeUserInfo); // TODO test call
+        await this.deduceRegion(safeUserInfo);
 
         safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
         // @ts-expect-error -- intermediate type
