@@ -13,7 +13,9 @@
 
 <div>
     {#if $establishmentsStore.length && $associationStore}
-        <h2>{$establishmentsStore.length} Les établissements rattachés à cette association</h2>
+        <h2>
+            {$establishmentsStore.length} établissement{$establishmentsStore.length > 1 ? "s" : ""} rattachés à cette association
+        </h2>
         <div class="fr-grid-row fr-mb-8v">
             <div class="fr-col-4">
                 <SearchBar
