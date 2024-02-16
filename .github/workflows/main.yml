@@ -46,7 +46,7 @@ jobs:
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
             - run: npm run lint
-    tests:
+    tests-api-integ:
         runs-on: ubuntu-latest
         needs: build
         steps:
@@ -61,4 +61,39 @@ jobs:
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
-            - run: npm test
+            - run: npm run test:integ
+              working-directory: "./packages/api"
+    tests-api-unit:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: "18.17"
+            - uses: actions/cache@v3
+              with:
+                  path: |
+                      **/tsoa/
+                      **/build/
+                      **/node_modules/
+                  key: ${{ runner.os }}-node-${{ github.run_id }}
+            - run: npm run test:unit
+              working-directory: "./packages/api"
+    tests-front:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: "18.17"
+            - uses: actions/cache@v3
+              with:
+                  path: |
+                      **/tsoa/
+                      **/build/
+                      **/node_modules/
+                  key: ${{ runner.os }}-node-${{ github.run_id }}
+            - run: npm run test
+              working-directory: "./packages/front"
