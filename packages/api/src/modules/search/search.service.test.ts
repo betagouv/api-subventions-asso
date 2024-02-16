@@ -74,7 +74,7 @@ describe("SearchService", () => {
             expect(actual).toMatchInlineSnapshot(`
                 Object {
                   "nbPages": 1,
-                  "page": 1,
+                  "page": 2,
                   "results": Array [],
                   "totalResults": 1,
                 }
