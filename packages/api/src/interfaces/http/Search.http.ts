@@ -1,4 +1,4 @@
-import { Controller, Get, Response, Route, Security, Tags, Query } from "tsoa";
+import { Controller, Get, Response, Route, Security, Tags, Query, Path } from "tsoa";
 import { PaginatedAssociationNameDto } from "dto";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 
@@ -18,7 +18,7 @@ export class SearchHttp extends Controller {
     @Response<HttpErrorInterface>("404", "Aucune association trouvée", {
         message: "Could not match any association with given input : ${input}",
     })
-    public findAssociations(input: string, @Query() page = "1"): Promise<PaginatedAssociationNameDto> {
+    public findAssociations(@Path() input: string, @Query() page = "1"): Promise<PaginatedAssociationNameDto> {
         return searchService.getAssociationsKeys(decodeURIComponent(input), Number.parseInt(page));
     }
 }

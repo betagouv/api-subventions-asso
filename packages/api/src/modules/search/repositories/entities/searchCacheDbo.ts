@@ -1,5 +1,4 @@
 import { AssociationNameDto } from "dto";
-import { ObjectId } from "mongodb";
 
 export default class SearchCacheEntity {
     public timestamp: Date;

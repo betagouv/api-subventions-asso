@@ -29,7 +29,7 @@ export class SearchService {
 
         return {
             nbPages: Math.ceil(nbResults / SearchService.PAGE_SIZE),
-            page: 1,
+            page,
             results: results.slice((page - 1) * SearchService.PAGE_SIZE, page * SearchService.PAGE_SIZE),
             totalResults: results.length,
         };
