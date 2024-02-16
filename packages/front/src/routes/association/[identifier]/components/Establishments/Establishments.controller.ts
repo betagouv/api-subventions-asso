@@ -24,13 +24,15 @@ export class EstablishmentsController {
     }
 
     onFilter(filter) {
-        this.filteredEstablishments.set(
-            this.establishmentsStore.value.filter(
-                estab => estab.adresse?.code_postal?.startsWith(filter) || estab.siret.includes(filter),
-            ),
-        );
+        this.filteredEstablishments.set(this.filterEstablishments(filter));
         this.setTotalPages();
         this.renderPage();
+    }
+
+    private filterEstablishments(filter) {
+        return this.establishmentsStore.value.filter(
+            estab => estab.adresse?.code_postal?.startsWith(filter) || estab.siret.includes(filter),
+        );
     }
 
     resetFilter() {
@@ -57,6 +59,7 @@ export class EstablishmentsController {
             EstablishmentsController.MAX_ESTABLISHMENTS_BY_PAGE * (page - 1),
             EstablishmentsController.MAX_ESTABLISHMENTS_BY_PAGE * page,
         );
+        console.log(visibleEstablishments);
         this.visibleEstablishments.set(visibleEstablishments);
     }
 
