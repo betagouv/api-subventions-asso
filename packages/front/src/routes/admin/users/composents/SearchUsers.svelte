@@ -1,10 +1,11 @@
 <script>
-    import { compareTwoStrings } from "string-similarity";
+    import _ from "lodash";
+    import { stringSimilarity } from "string-similarity-js";
 
     export let users;
 
     let search = "";
-    const updateSearch = () => {
+    const _updateSearch = () => {
         if (search.length < 2) return;
 
         const searchString = search.toLowerCase();
@@ -15,11 +16,13 @@
             }
 
             return (
-                compareTwoStrings(searchString, userB.email.toLowerCase()) -
-                compareTwoStrings(searchString, userA.email.toLowerCase())
+                stringSimilarity(searchString, userB.email.toLowerCase()) -
+                stringSimilarity(searchString, userA.email.toLowerCase())
             );
         });
     };
+
+    const updateSearch = _.debounce(_updateSearch, 200);
 
     $: search, updateSearch();
 </script>
