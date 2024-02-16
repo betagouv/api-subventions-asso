@@ -38,14 +38,16 @@ export class GeoService extends ProviderCore {
                 regions.forEach((region: GeoRegionDto) => regionsMap.set(region.code, region)),
             ),
         ]);
-        // @ts-expect-error -- type error is handled by filtering
         const entities: GeoEntity[] = departments
-            .map(department => ({
-                departmentName: department.nom,
-                departmentCode: department.code,
-                regionCode: regionsMap.get(department.codeRegion)?.code,
-                regionName: regionsMap.get(department.codeRegion)?.nom,
-            }))
+            .map(
+                department =>
+                    ({
+                        departmentName: department.nom,
+                        departmentCode: department.code,
+                        regionCode: regionsMap.get(department.codeRegion)?.code,
+                        regionName: regionsMap.get(department.codeRegion)?.nom,
+                    } as GeoEntity),
+            )
             .filter(almostEntity => almostEntity.regionCode && almostEntity.regionName);
 
         await geoRepository.deleteAll();
