@@ -23,6 +23,13 @@ export class EstablishmentsController {
         });
     }
 
+    get title() {
+        const nbEstablishments = this.establishmentsStore.value.length;
+        let specificity = "établissement rattaché";
+        if (nbEstablishments > 1) specificity = "établissements rattachés";
+        return `${nbEstablishments} ${specificity} à cette association`;
+    }
+
     onFilter(filter) {
         this.filteredEstablishments.set(this.filterEstablishments(filter));
         this.setTotalPages();
