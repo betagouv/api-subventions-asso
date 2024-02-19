@@ -1,5 +1,5 @@
 import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
-import { shortISOPeriodRegExp, shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { shortISORegExp } from "../../../shared/helpers/DateHelper";
 
 const OFFICIAL_MAPPER = {
     allocatorName: "nomAttribuant",
@@ -11,7 +11,8 @@ const OFFICIAL_MAPPER = {
     associationRna: "rnaBeneficiaire",
     object: "object",
     amount: "montant",
-    paymentConditions: "nature",
+    paymentNature: "nature",
+    paymentConditions: "conditionsVersement",
     paymentStartDate: "datesPeriodeVersement",
     paymentEndDate: "datesPeriodeVersement",
     idRAE: "idRAE",
@@ -43,6 +44,7 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
         path: [[...getMapperVariants("amount"), "Montant total de la subvention*"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
+    paymentNature: [[...getMapperVariants("paymentNature")]],
     paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
         path: [

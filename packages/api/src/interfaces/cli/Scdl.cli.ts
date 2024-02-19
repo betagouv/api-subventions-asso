@@ -24,20 +24,21 @@ export default class ScdlCli {
 
         const fileContent = fs.readFileSync(file);
 
-        const grants = ScdlGrantParser.parseCsv(fileContent, delimeter);
+        const entities = ScdlGrantParser.parseCsv(fileContent, delimeter);
 
-        console.log(`start persisting ${grants.length} grants`);
-        const entities: MiscScdlGrantEntity[] = grants.map(grant => ({ ...grant, producerId: producerId }));
+        console.log(`start persisting ${entities.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            await scdlService.createManyGrants(entities);
+            await scdlService.createManyGrants(entities, producerId);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
         }
         console.log(`${duplicates.length} duplicated entries. Here are some of them: `);
         console.log(duplicates.slice(0, 5));
+        console.log("Updating producer's last update date");
         await scdlService.updateProducer(producerId, { lastUpdate: exportDate });
+        console.log("Parsing ended successfuly !");
     }
 }

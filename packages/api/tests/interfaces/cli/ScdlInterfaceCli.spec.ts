@@ -8,8 +8,6 @@ import miscScdlGrantRepository from "../../../src/modules/providers/scdl/reposit
 const PRODUCER_ID = "PRODUCER_ID";
 const PRODUCER_NAME = "PRODUCER_NAME";
 
-// jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
-
 describe("SCDL CLI", () => {
     let cli;
 
@@ -44,7 +42,7 @@ describe("SCDL CLI", () => {
             );
             const grants = await miscScdlGrantRepository.findAll();
             const expectedAny = grants.map(grant => ({
-                _id: expect.any(ObjectId),
+                _id: expect.any(String),
             }));
             expect(grants).toMatchSnapshot(expectedAny);
         });

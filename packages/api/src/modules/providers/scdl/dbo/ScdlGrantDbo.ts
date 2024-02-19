@@ -1,8 +1,7 @@
-import { ObjectId } from "mongodb";
-import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
+import { DefaultObject } from "../../../../@types";
+import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
 
-export interface ScdlGrantDbo extends ScdlGrantEntity {
-    // in English as it is internal code
-    _id: ObjectId;
-    producerId: string;
+export interface ScdlGrantDbo extends MiscScdlGrantEntity {
+    _id: string;
+    __data__: DefaultObject<string>;
 }
