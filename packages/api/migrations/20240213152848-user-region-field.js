@@ -1,7 +1,7 @@
 const userProfileService = require("../build/src/modules/user/services/profile/user.profile.service").default;
 const geoService = require("../build/src/modules/providers/geoApi/geo.service").default;
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const ExecutionSyncStack = require("../build/src/shared/ExecutionSyncStack");
+const ExecutionSyncStack = require("../build/src/shared/ExecutionSyncStack").default;
 
 module.exports = {
     async up(db) {
