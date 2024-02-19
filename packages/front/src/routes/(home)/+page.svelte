@@ -9,7 +9,7 @@
     const { query } = data;
 
     const ctrl = new HomeController(query);
-    const { input, searchHistory } = ctrl;
+    const { searchHistory } = ctrl;
 </script>
 
 <Messages />
@@ -28,7 +28,7 @@
 <div class="fr-grid-row fr-grid-row--center fr-mt-6v">
     <div class="fr-col-8">
         <div class="search-bar">
-            <SearchBar bind:value={$input} on:submit={() => ctrl.onSubmit()} />
+            <SearchBar on:submit={e => ctrl.onSubmit(e.detail)} />
         </div>
     </div>
 </div>

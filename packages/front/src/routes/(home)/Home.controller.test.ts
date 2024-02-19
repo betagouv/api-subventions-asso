@@ -5,24 +5,18 @@ vi.mock("$lib/helpers/validatorHelper");
 vi.mock("$app/navigation", () => ({ goto: vi.fn() }));
 
 describe("HomeController", () => {
-    let ctrl = new HomeController();
-    beforeAll(() => (ctrl = new HomeController()));
+    let ctrl;
+
+    beforeEach(() => {
+        ctrl = new HomeController();
+    });
 
     describe("constructor", () => {
-        beforeEach(() => (ctrl = new HomeController()));
-
         it.each`
             parameterName       | expected
             ${"successMessage"} | ${undefined}
         `("initializes correctly $parameterName", ({ parameterName, expected }) => {
             expect(ctrl[parameterName]).toEqual(expected);
-        });
-
-        it.each`
-            parameterName | expected
-            ${"input"}    | ${""}
-        `("initializes correctly $parameterName store", ({ parameterName, expected }) => {
-            expect(ctrl[parameterName].value).toEqual(expected);
         });
 
         it("initializes correctly successMessage", () => {

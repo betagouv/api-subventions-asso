@@ -1,22 +1,20 @@
+import type { ReadStore } from "$lib/core/Store";
 import { getSearchHistory } from "$lib/services/searchHistory.service";
-import Store, { ReadStore } from "$lib/core/Store";
 import { goto } from "$app/navigation";
 import { encodeQuerySearch } from "$lib/helpers/urlHelper";
 import type { SearchHistory } from "$lib/types/SearchHistory";
 
 export class HomeController {
     searchHistory: ReadStore<SearchHistory[]>;
-    input: Store<string>;
     successMessage: { title: string; content: string } | undefined;
 
     constructor(query: { [k: string]: string } = {}) {
         this.searchHistory = getSearchHistory();
-        this.input = new Store("");
         this.successMessage = this._getSuccessMessage(query.success);
     }
 
-    onSubmit() {
-        goto(`/search/${encodeQuerySearch(this.input.value)}`);
+    onSubmit(input) {
+        goto(`/search/${encodeQuerySearch(input)}`);
     }
 
     _getSuccessMessage(successKey) {
