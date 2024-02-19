@@ -5,15 +5,13 @@ import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 import Dispatch from "$lib/core/Dispatch";
-
-type Option = { value: string; label: string };
+import type { Option } from "$lib/types/FieldOption";
 
 export default class DecentralizedSubStepController {
     private allStructures: AdminStructureDto[];
-    public structureOptions: Store<Option[]>;
-    public departmentOptions: Store<Option[]>;
-    public regionOptions: Store<Option[]>;
-    public levelOptions: Option[] = [
+    public structureOptions: Store<Option<string>[]>;
+    public departmentOptions: Store<Option<string>[]>;
+    public levelOptions: Option<AdminTerritorialLevel>[] = [
         { value: AdminTerritorialLevel.DEPARTMENTAL, label: "Départemental" },
         { value: AdminTerritorialLevel.INTERDEPARTMENTAL, label: "Interdépartemental" },
         { value: AdminTerritorialLevel.REGIONAL, label: "Régional" },
@@ -24,7 +22,6 @@ export default class DecentralizedSubStepController {
 
     constructor() {
         this.departmentOptions = new Store([]);
-        this.regionOptions = new Store([]);
         this.structureOptions = new Store([]);
         this.allStructures = [];
         this.dispatch = Dispatch.getDispatcher();
@@ -41,7 +38,6 @@ export default class DecentralizedSubStepController {
             this.filterStructureOptions(AdminTerritorialLevel.DEPARTMENTAL);
         }
         if (level === AdminTerritorialLevel.REGIONAL) {
-            this.onChoosingRegion();
             this.filterStructureOptions(AdminTerritorialLevel.REGIONAL);
         }
     }
@@ -64,7 +60,7 @@ export default class DecentralizedSubStepController {
     }
 
     private async fillOptionsOnce(
-        optionStore: Store<Option[]>,
+        optionStore: Store<Option<string>[]>,
         serviceMethod: () => Promise<{ code: string; nom: string }[]>,
         transform: (reg: { code: string; nom: string }) => string,
         sort = false,
@@ -85,9 +81,5 @@ export default class DecentralizedSubStepController {
             geoService.getDepartements,
             (dep: { code: string; nom: string }) => `${dep.code} - ${dep.nom}`,
         );
-    }
-
-    private onChoosingRegion() {
-        return this.fillOptionsOnce(this.regionOptions, geoService.getRegions, (reg: { nom: string }) => reg.nom, true);
     }
 }

@@ -7,11 +7,7 @@ import DecentralizedSubStep from "./DecentralizedSubStep/DecentralizedSubStep.sv
 import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
-
-type Option = {
-    value: AgentJobTypeEnum;
-    label: string;
-};
+import type { Option } from "$lib/types/FieldOption";
 
 interface Context {
     agentType: AgentTypeEnum;
@@ -42,7 +38,7 @@ export default class StructureFormStepController {
         },
     };
 
-    public readonly jobTypeOptions: Option[] = [
+    public readonly jobTypeOptions: Option<AgentJobTypeEnum>[] = [
         { value: AgentJobTypeEnum.ADMINISTRATOR, label: "Gestionnaire administratif et financier" },
         {
             value: AgentJobTypeEnum.EXPERT,

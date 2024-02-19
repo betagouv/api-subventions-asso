@@ -2,11 +2,7 @@ import type { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
-
-type Option = {
-    value: AgentTypeEnum | "none";
-    label: string;
-};
+import type { Option } from "$lib/types/FieldOption";
 
 export default class AgentTypeStepController {
     private static htmlErrorMessage =
@@ -14,7 +10,7 @@ export default class AgentTypeStepController {
 
     private readonly dispatch: (_: string) => void;
     public readonly errorMessage: Store<string>;
-    public readonly options: Option[] = [
+    public readonly options: Option<AgentTypeEnum | "none">[] = [
         ...subscriptionFormService.agentTypeOptions,
         {
             label: "Aucune des propositions ci-dessus",
@@ -27,7 +23,7 @@ export default class AgentTypeStepController {
         this.errorMessage = new Store("");
     }
 
-    onUpdate(option: Option) {
+    onUpdate(option: Option<AgentTypeEnum | "none">) {
         const error = option.value === "none";
         this.errorMessage.set(error ? AgentTypeStepController.htmlErrorMessage : "");
         this.dispatch(error ? "error" : "valid");

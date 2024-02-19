@@ -24,10 +24,16 @@ import userAuthService from "../auth/user.auth.service";
 import UserDbo from "../../repositories/dbo/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
+import geoService from "../../../providers/geoApi/geo.service";
 
 export class UserProfileService {
-    validateUserProfileData(userInfo, withPassword = true): { valid: false; error: Error } | { valid: true } {
-        const { password, agentType, jobType, structure } = userInfo;
+    validateUserProfileData(
+        userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
+        withPassword = true,
+    ): { valid: false; error: Error } | { valid: true } {
+        const { agentType, jobType, structure, region } = userInfo;
+        let password = "";
+        if (withPassword && "password" in userInfo) password = userInfo?.password;
         const validations = [
             {
                 value: agentType,
@@ -50,6 +56,12 @@ export class UserProfileService {
                 value: structure,
                 method: value => !value || typeof value == "string",
                 error: new BadRequestError(dedent`Mauvaise valeur pour la structure.`),
+            },
+            {
+                value: region,
+                // TODO: verify from GEO API
+                method: value => !value || typeof value == "string",
+                error: new BadRequestError(dedent`Mauvaise valeur pour la région.`),
             },
         ];
 
@@ -93,8 +105,14 @@ export class UserProfileService {
         return error ? { valid: false, error: error as BadRequestError } : { valid: true };
     }
 
-    sanitizeUserProfileData(unsafeUserInfo) {
-        const fieldsToSanitize = ["service", "phoneNumber", "structure", "decentralizedTerritory, firstName, lastName"];
+    sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
+        const fieldsToSanitize = [
+            "service",
+            "phoneNumber",
+            "structure",
+            "decentralizedTerritory, firstName, lastName",
+            "region",
+        ];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
             if (field in unsafeUserInfo) sanitizedUserInfo[field] = sanitizeToPlainText(unsafeUserInfo[field]);
@@ -111,10 +129,11 @@ export class UserProfileService {
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
+        await this.deduceRegion(safeUserInfo);
         const updatedUser = await userRepository.update({ ...user, ...safeUserInfo });
 
         const safeUpdatedUser = removeSecrets(updatedUser);
-        notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser);
+        await notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser); // await needed in a migration, better management in #2180
         return safeUpdatedUser;
     }
 
@@ -132,9 +151,15 @@ export class UserProfileService {
         const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo);
+        const safeUserInfo = userProfileService.sanitizeUserProfileData(userInfo) as UserActivationInfoDto & {
+            hashPassword: string;
+        };
+        await this.deduceRegion(safeUserInfo);
+
         safeUserInfo.hashPassword = await userAuthService.getHashPassword(safeUserInfo.password);
+        // @ts-expect-error -- intermediate type
         delete safeUserInfo.password;
+
         const activeUser = (await userRepository.update(
             {
                 ...user,
@@ -142,7 +167,7 @@ export class UserProfileService {
                 active: true,
                 profileToComplete: false,
                 lastActivityDate: new Date(),
-            },
+            } as Omit<UserDbo, "jwt">,
             true,
         )) as Omit<UserDbo, "hashPassword">;
 
@@ -156,6 +181,14 @@ export class UserProfileService {
         });
 
         return userWithJwt;
+    }
+
+    private async deduceRegion(userInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
+        if (userInfo.agentType !== AgentTypeEnum.DECONCENTRATED_ADMIN) return;
+        if (userInfo.decentralizedLevel === AdminTerritorialLevel.REGIONAL)
+            userInfo.region = userInfo.decentralizedTerritory;
+        if (userInfo.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL)
+            userInfo.region = await geoService.getRegionFromDepartment(userInfo.decentralizedTerritory);
     }
 }
 

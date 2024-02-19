@@ -1,4 +1,4 @@
-import type { GeoRegionDto, GeoDepartementDto } from "./dto/GeoDepartementDto";
+import type { GeoRegionDto, GeoDepartementDto } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 export class GeoPort {

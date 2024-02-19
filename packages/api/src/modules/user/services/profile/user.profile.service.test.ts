@@ -5,39 +5,49 @@ import {
     USER_SECRETS,
     USER_WITHOUT_SECRET,
 } from "../../__fixtures__/user.fixture";
-import { AgentTypeEnum } from "dto";
+import { AdminTerritorialLevel, AgentTypeEnum, UpdatableUser, UserActivationInfoDto } from "dto";
 import userProfileService from "./user.profile.service";
 
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
-jest.mock("../../../../shared/helpers/StringHelper");
-const mockedStringHelper = jest.mocked(stringHelper);
 import userAuthService from "../auth/user.auth.service";
-jest.mock("../auth/user.auth.service");
-const mockedUserAuthService = jest.mocked(userAuthService);
 import userCheckService from "../check/user.check.service";
-jest.mock("../check/user.check.service");
-const mockedUserCheckService = jest.mocked(userCheckService);
 import userActivationService from "../activation/user.activation.service";
-jest.mock("../activation/user.activation.service");
-const mockedUserActivationService = jest.mocked(userActivationService);
 import userCrudService from "../crud/user.crud.service";
-jest.mock("../crud/user.crud.service");
-const mockedUserCrudService = jest.mocked(userCrudService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userRepository from "../../repositories/user.repository";
-jest.mock("../../repositories/user.repository");
-const mockedUserRepository = jest.mocked(userRepository);
 import userResetRepository from "../../repositories/user-reset.repository";
-jest.mock("../../repositories/user-reset.repository");
-const mockedUserResetRepository = jest.mocked(userResetRepository);
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
+import geoService from "../../../providers/geoApi/geo.service";
+
+jest.mock("../../../providers/geoApi/geo.service");
+
+jest.mock("../../../../shared/helpers/StringHelper");
+const mockedStringHelper = jest.mocked(stringHelper);
+jest.mock("../auth/user.auth.service");
+const mockedUserAuthService = jest.mocked(userAuthService);
+jest.mock("../check/user.check.service");
+const mockedUserCheckService = jest.mocked(userCheckService);
+jest.mock("../activation/user.activation.service");
+const mockedUserActivationService = jest.mocked(userActivationService);
+jest.mock("../crud/user.crud.service");
+const mockedUserCrudService = jest.mocked(userCrudService);
+jest.mock("../../repositories/user.repository");
+const mockedUserRepository = jest.mocked(userRepository);
+jest.mock("../../repositories/user-reset.repository");
+const mockedUserResetRepository = jest.mocked(userResetRepository);
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 
 describe("user profile service", () => {
+    let deduceRegionSpy: jest.SpyInstance;
+    beforeAll(() => {
+        // @ts-expect-error -- private spy
+        deduceRegionSpy = jest.spyOn(userProfileService, "deduceRegion");
+    });
+
     describe("validateUserProfileData()", () => {
         const validInput = {
             password: "m0t de Passe.",
@@ -75,6 +85,7 @@ describe("user profile service", () => {
             it("should throw if agentType is wrong", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     agentType: "WRONG_VALUE",
                 });
                 expect(actual).toMatchSnapshot();
@@ -88,6 +99,7 @@ describe("user profile service", () => {
             it("should throw an error", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     agentType: "WRONG_VALUE",
                 });
                 expect(actual).toMatchSnapshot();
@@ -101,7 +113,22 @@ describe("user profile service", () => {
             it("should throw an error", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     structure: 6,
+                });
+                expect(actual).toMatchSnapshot();
+            });
+        });
+
+        describe("region", () => {
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                const actual = userProfileService.validateUserProfileData({
+                    ...validInput,
+                    // @ts-expect-error -- test errors in input
+                    region: 6,
                 });
                 expect(actual).toMatchSnapshot();
             });
@@ -114,6 +141,7 @@ describe("user profile service", () => {
             it("should throw an error", () => {
                 const actual = userProfileService.validateUserProfileData({
                     ...validInput,
+                    // @ts-expect-error -- test errors in input
                     territorialScope: "WRONG_SCOPE",
                 });
                 expect(actual).toMatchSnapshot();
@@ -173,9 +201,19 @@ describe("user profile service", () => {
             expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
         });
 
-        it("should call userRepository.update() with sanitized data", async () => {
+        it("calls deduceRegion with sanitized data", async () => {
             await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(userRepository.update).toHaveBeenCalledWith({ ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO });
+            expect(deduceRegionSpy).toHaveBeenCalledWith(USER_ACTIVATION_INFO);
+        });
+
+        it("should call userRepository.update() with sanitized and completed data", async () => {
+            deduceRegionSpy.mockImplementationOnce(data => (data.modified = true));
+            await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            expect(userRepository.update).toHaveBeenCalledWith({
+                modified: true,
+                ...USER_WITHOUT_SECRET,
+                ...USER_ACTIVATION_INFO,
+            });
         });
 
         it("should notify user updated", async () => {
@@ -267,6 +305,19 @@ describe("user profile service", () => {
             expect(mockSanitizeUserProfileData).toHaveBeenCalledWith(expected);
         });
 
+        it("calls deduceRegion with sanitized data", async () => {
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            expect(deduceRegionSpy).toHaveBeenCalledWith(USER_ACTIVATION_INFO);
+        });
+
+        it("should call userRepository.update() with sanitized and completed data", async () => {
+            deduceRegionSpy.mockImplementationOnce(data => (data.modified = true));
+            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            // @ts-expect-error -- test
+            const actual = jest.mocked(userRepository.update).mock?.calls?.[0]?.[0]?.modified;
+            expect(actual).toBeTruthy();
+        });
+
         it("update user's jwt", async () => {
             await userProfileService.activate("token", USER_ACTIVATION_INFO);
             expect(mockedUserAuthService.updateJwt).toHaveBeenCalledWith({
@@ -290,6 +341,60 @@ describe("user profile service", () => {
             const actual = jest.mocked(userRepository.update).mock.calls[0][0]?.lastActivityDate;
 
             expect(actual).toEqual(expect.any(Date));
+        });
+    });
+
+    describe("deduceRegion", () => {
+        const REGION = "Région";
+        const DEPARTMENT = "00 - Département";
+        let USER_INFO: Partial<UpdatableUser> | UserActivationInfoDto;
+
+        it("does nothing if not decentralized admin agent", async () => {
+            USER_INFO = { agentType: AgentTypeEnum.CENTRAL_ADMIN };
+            const expected = { ...USER_INFO };
+            // @ts-expect-error -- private spy
+            await userProfileService.deduceRegion(USER_INFO);
+            const actual = USER_INFO; // modifies args
+            expect(actual).toEqual(expected);
+        });
+
+        it("copies territory to region if level is regional", async () => {
+            USER_INFO = {
+                agentType: AgentTypeEnum.DECONCENTRATED_ADMIN,
+                decentralizedLevel: AdminTerritorialLevel.REGIONAL,
+                decentralizedTerritory: REGION,
+            };
+            const expected = REGION;
+            // @ts-expect-error -- private spy
+            await userProfileService.deduceRegion(USER_INFO);
+            const actual = USER_INFO.region; // modifies args
+            expect(actual).toBe(expected);
+        });
+
+        it("calls geoService if level is departmental", async () => {
+            USER_INFO = {
+                agentType: AgentTypeEnum.DECONCENTRATED_ADMIN,
+                decentralizedLevel: AdminTerritorialLevel.DEPARTMENTAL,
+                decentralizedTerritory: DEPARTMENT,
+            };
+            jest.mocked(geoService.getRegionFromDepartment).mockResolvedValueOnce(REGION);
+            // @ts-expect-error -- private spy
+            await userProfileService.deduceRegion(USER_INFO);
+            expect(geoService.getRegionFromDepartment).toHaveBeenCalledWith(DEPARTMENT);
+        });
+
+        it("sets region to value from geoService if level is departmental", async () => {
+            USER_INFO = {
+                agentType: AgentTypeEnum.DECONCENTRATED_ADMIN,
+                decentralizedLevel: AdminTerritorialLevel.DEPARTMENTAL,
+                decentralizedTerritory: DEPARTMENT,
+            };
+            jest.mocked(geoService.getRegionFromDepartment).mockResolvedValueOnce(REGION);
+            const expected = REGION;
+            // @ts-expect-error -- private spy
+            await userProfileService.deduceRegion(USER_INFO);
+            const actual = USER_INFO.region; // modifies args
+            expect(actual).toBe(expected);
         });
     });
 });

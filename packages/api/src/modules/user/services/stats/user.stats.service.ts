@@ -51,6 +51,7 @@ export class UserStatsService {
                 email: user.email,
                 firstname: user.firstName,
                 lastname: user.lastName,
+                region: user.region,
                 url: reset ? `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}?active=true` : undefined,
                 active: user.active,
                 signupAt: user.signupAt,
@@ -61,6 +62,7 @@ export class UserStatsService {
     }
 
     async updateAllUsersInSubTools() {
+        // TODO fix because UPDATE always sets USER_ACTIVE to true but it should not
         const updateContactsStack = new ExecutionSyncStack<
             NotificationDataTypes[NotificationType.USER_UPDATED],
             boolean
@@ -85,6 +87,7 @@ export class UserStatsService {
                 lastname: user.lastName,
                 agentType: user.agentType,
                 jobType: user.jobType,
+                region: user.region,
                 url: reset ? `${FRONT_OFFICE_URL}/auth/reset-password/${reset.token}?active=true` : undefined,
                 active: user.active,
                 signupAt: user.signupAt,

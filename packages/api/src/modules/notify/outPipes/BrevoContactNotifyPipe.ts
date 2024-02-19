@@ -196,6 +196,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
             lastName: "NOM",
             firstName: "PRENOM",
             lastActivityDate: "DERNIERE_CONNEXION",
+            region: "REGION",
         };
 
         function buildAttributesObject(data) {

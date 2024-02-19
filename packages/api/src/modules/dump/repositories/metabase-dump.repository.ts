@@ -1,4 +1,5 @@
 import * as mongoDB from "mongodb";
+import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
 import {
     MONGO_METABASE_DBNAME,
     MONGO_METABASE_PASSWORD,
@@ -60,12 +61,12 @@ export class MetabaseDumpRepository {
                 { $addFields: { pipedriveData: { $arrayElemAt: ["$pipedriveData", 0] } } },
 
                 // merge pipedrive data with data from api
-                {
-                    $replaceRoot: { newRoot: { $mergeObjects: ["$pipedriveData", "$$ROOT"] } },
-                },
-                // jobType is an array so $replaceRoot always keeps original data
+                { $replaceRoot: { newRoot: { $mergeObjects: ["$pipedriveData", "$$ROOT"] } } },
+
+                // adjust data formats
                 {
                     $addFields: {
+                        // jobType is an array so $replaceRoot always keeps original data
                         jobType: {
                             $cond: {
                                 if: { $eq: ["$jobType", []] },
@@ -79,20 +80,30 @@ export class MetabaseDumpRepository {
                                 else: "$jobType",
                             },
                         },
-                    },
-                },
-                // territory is deduced depending on decentralizedLevel
-                {
-                    $addFields: {
+                        // territory is deduced depending on decentralizedLevel
                         decentralizedTerritory: {
                             $cond: {
-                                if: { $eq: ["$decentralizedLevel", "DEPARTMENTAL"] },
+                                if: { $eq: ["$decentralizedLevel", TerritorialScopeEnum.DEPARTMENTAL] },
                                 then: "$department",
                                 else: {
                                     $cond: {
-                                        if: { $eq: ["$decentralizedLevel", "REGIONAL"] },
+                                        if: { $eq: ["$decentralizedLevel", TerritorialScopeEnum.REGIONAL] },
                                         then: "$region",
                                         else: "$$REMOVE",
+                                    },
+                                },
+                            },
+                        },
+                        // region for everyone but central agents
+                        region: {
+                            $cond: {
+                                if: { $eq: ["$agentType", AgentTypeEnum.CENTRAL_ADMIN] },
+                                then: "$$REMOVE",
+                                else: {
+                                    $cond: {
+                                        if: { $eq: ["$region", "Administration centrale"] },
+                                        then: "$$REMOVE",
+                                        else: "$region",
                                     },
                                 },
                             },
@@ -103,7 +114,6 @@ export class MetabaseDumpRepository {
                 // clean
                 {
                     $project: {
-                        region: 0,
                         department: 0,
                         pipedriveData: 0,
                     },
