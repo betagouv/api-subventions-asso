@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.46.0](https://github.com/betagouv/datasubvention/compare/v0.45.4...v0.46.0) (2024-02-19)
+
+### Features
+
+-   2114 new user field "region" synced with brevo and metabase ([#2194](https://github.com/betagouv/datasubvention/issues/2194)) ([486e5dc](https://github.com/betagouv/datasubvention/commit/486e5dc22b510e08f36a8811ebecd7efecaf4b31))
+
 # [0.45.0](https://github.com/betagouv/datasubvention/compare/v0.44.6...v0.45.0) (2024-02-02)
 
 **Note:** Version bump only for package dto

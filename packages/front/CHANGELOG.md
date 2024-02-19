@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.46.0](https://github.com/betagouv/datasubvention/compare/v0.45.4...v0.46.0) (2024-02-19)
+
+### Bug Fixes
+
+-   **front:** handle plural for establishments tab title ([#2206](https://github.com/betagouv/datasubvention/issues/2206)) ([aa249d1](https://github.com/betagouv/datasubvention/commit/aa249d1027656d97d65b41427ff607a876425a51))
+
+### Features
+
+-   2114 new user field "region" synced with brevo and metabase ([#2194](https://github.com/betagouv/datasubvention/issues/2194)) ([486e5dc](https://github.com/betagouv/datasubvention/commit/486e5dc22b510e08f36a8811ebecd7efecaf4b31))
+-   **front:** [#2061](https://github.com/betagouv/datasubvention/issues/2061) add filtering on establishments ([#2182](https://github.com/betagouv/datasubvention/issues/2182)) ([3ddbae8](https://github.com/betagouv/datasubvention/commit/3ddbae8a661b1e6436cf8646aba178c67d3ab7d8)), closes [#2060](https://github.com/betagouv/datasubvention/issues/2060)
+-   **front:** add pagination on etablissements ([#2177](https://github.com/betagouv/datasubvention/issues/2177)) ([57a41ce](https://github.com/betagouv/datasubvention/commit/57a41ce2bf97164b7a35def9d4087931b06b1ae0))
+
 ## [0.45.4](https://github.com/betagouv/datasubvention/compare/v0.45.3...v0.45.4) (2024-02-08)
 
 **Note:** Version bump only for package front

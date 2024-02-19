@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.46.0](https://github.com/betagouv/api-subventions-asso/compare/v0.45.4...v0.46.0) (2024-02-19)
+
+### Features
+
+-   2114 new user field "region" synced with brevo and metabase ([#2194](https://github.com/betagouv/api-subventions-asso/issues/2194)) ([486e5dc](https://github.com/betagouv/api-subventions-asso/commit/486e5dc22b510e08f36a8811ebecd7efecaf4b31))
+-   **api:** [#2145](https://github.com/betagouv/api-subventions-asso/issues/2145) enhance scdl parsing ([#2155](https://github.com/betagouv/api-subventions-asso/issues/2155)) ([4a36d6a](https://github.com/betagouv/api-subventions-asso/commit/4a36d6a79d5bd7098b10dc73d821e1e6ef49f36d))
+-   **api:** 2071 send email on account first activation ([#2176](https://github.com/betagouv/api-subventions-asso/issues/2176)) ([b4e8fde](https://github.com/betagouv/api-subventions-asso/commit/b4e8fde0e2fb4d5a615861b9ad864aa21ea38ab5))
+-   **api:** specific mattermost channel ([888fe2f](https://github.com/betagouv/api-subventions-asso/commit/888fe2f4e5ccb7046facb48d726b1fd8c70fc1e5))
+
 ## [0.45.4](https://github.com/betagouv/api-subventions-asso/compare/v0.45.3...v0.45.4) (2024-02-08)
 
 ### Bug Fixes
