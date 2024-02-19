@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.46.1](https://github.com/betagouv/api-subventions-asso/compare/v0.46.0...v0.46.1) (2024-02-19)
+
+### Bug Fixes
+
+-   **api:** migration import ([fcd094c](https://github.com/betagouv/api-subventions-asso/commit/fcd094c357ca18d5df978a9d020e284c6f5fb55a))
+
 # [0.46.0](https://github.com/betagouv/api-subventions-asso/compare/v0.45.4...v0.46.0) (2024-02-19)
 
 ### Bug Fixes
