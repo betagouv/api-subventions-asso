@@ -108,9 +108,7 @@ describe("ApiAssoDtoAdapter", () => {
     describe("sirenStructureToAssociation", () => {
         // @ts-expect-error: protected
         const originalFormatEstablishementSiret = ApiAssoDtoAdapter.formatEstablishementSiret;
-        const mockedFormatEstablishementSiret = jest
-            .fn()
-            .mockReturnValue(sirenStructureFixture.etablissements.etablissement);
+        const mockedFormatEstablishementSiret = jest.fn().mockReturnValue(sirenStructureFixture.etablissement);
 
         // @ts-expect-error: protected
         beforeAll(() => (ApiAssoDtoAdapter.formatEstablishementSiret = mockedFormatEstablishementSiret));

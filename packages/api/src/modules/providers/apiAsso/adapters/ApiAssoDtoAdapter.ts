@@ -36,7 +36,7 @@ export default class ApiAssoDtoAdapter {
             ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren),
         );
 
-        const establishmentSiret = this.formatEstablishementSiret(structure.etablissements.etablissement);
+        const establishmentSiret = this.formatEstablishementSiret(structure.etablissement);
 
         return {
             denomination_siren: toPvs(structure.identite.nom),

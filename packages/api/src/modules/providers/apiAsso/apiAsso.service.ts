@@ -114,15 +114,9 @@ export class ApiAssoService
         if (!structure.identite.date_modif_siren)
             structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
 
-        const establishments = Array.isArray(structure.etablissements.etablissement)
-            ? structure.etablissements.etablissement
-            : [structure.etablissements.etablissement];
+        const establishments = structure.etablissement || [];
 
-        const ribs = structure.ribs
-            ? Array.isArray(structure.ribs.rib)
-                ? structure.ribs.rib
-                : [structure.ribs.rib]
-            : [];
+        const ribs = structure.rib || [];
 
         return establishments
             .filter(establishment => establishment)
