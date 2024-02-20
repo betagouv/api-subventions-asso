@@ -2,7 +2,6 @@
     import { HomeController } from "./Home.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
-    import Messages from "$lib/components/Messages/Messages.svelte";
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
 
     export let data;
@@ -11,8 +10,6 @@
     const ctrl = new HomeController(query);
     const { searchHistory } = ctrl;
 </script>
-
-<Messages />
 
 {#if ctrl.successMessage}
     <Alert type="success" title={ctrl.successMessage.title}>

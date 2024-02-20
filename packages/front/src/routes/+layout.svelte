@@ -15,6 +15,7 @@
     import { ENV } from "$env/static/public";
     import trackerService from "$lib/services/tracker.service";
     import SkipLinks from "$lib/dsfr/SkipLinks.svelte";
+    import MainInfoBanner from "$lib/components/MainInfoBanner/MainInfoBanner.svelte";
 
     export let data;
 
@@ -55,6 +56,7 @@
         <div class="stick-footer">
             <div class:main-view={$page.data.withBlueBanner}>
                 <Header />
+                <MainInfoBanner />
                 <div class="fr-container fr-mb-8w">
                     <main id="content">
                         <Breadcrumb crumbs={data.crumbs} />
