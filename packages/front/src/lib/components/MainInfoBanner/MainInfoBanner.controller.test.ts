@@ -1,3 +1,5 @@
+import { SvelteComponent } from "svelte";
+vi.mock("svelte");
 import { MainInfoBannerController } from "./MainInfoBanner.controller";
 
 describe("MainInfoBannerController", () => {
@@ -6,6 +8,7 @@ describe("MainInfoBannerController", () => {
     beforeEach(() => {
         controller = new MainInfoBannerController();
     });
+
     describe("define props", () => {
         it("should have startTitle", () => {
             const expected = "Certaines informations de votre profil sont manquantes. N’oubliez pas de ";
@@ -35,6 +38,16 @@ describe("MainInfoBannerController", () => {
             const expected = "Ne plus afficher ce message";
             const actual = controller.closeMsg;
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("close()", () => {
+        beforeEach(() => {
+            controller.component = { $destroy: vi.fn() };
+        });
+        it("should destroy component", () => {
+            controller.close();
+            expect(controller.component.$destroy).toHaveBeenCalledTimes(1);
         });
     });
 });

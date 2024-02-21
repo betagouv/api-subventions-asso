@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { setContext } from "svelte";
     import "../global.css";
     import "@gouvfr/dsfr/dist/dsfr/dsfr.min.css";
     import "@gouvfr/dsfr/dist/utility/icons/icons.min.css";
     import "@gouvfr/dsfr/dist/dsfr/dsfr.module.min.js";
 
+    import { AppController } from "./App.controller";
     import Auth from "$lib/components/Auth/Auth.svelte";
     import GenericModal from "$lib/dsfr/GenericModal.svelte";
     import Header from "$lib/components/Header/Header.svelte";
@@ -12,29 +12,20 @@
     import Theme from "$lib/components/Theme.svelte";
     import Breadcrumb from "$lib/dsfr/Breadcrumb.svelte";
     import { page } from "$lib/store/kit.store";
-    import { ENV } from "$env/static/public";
-    import trackerService from "$lib/services/tracker.service";
+
     import SkipLinks from "$lib/dsfr/SkipLinks.svelte";
     import MainInfoBanner from "$lib/components/MainInfoBanner/MainInfoBanner.svelte";
 
     export let data;
 
-    setContext("app", {
-        getEnv: () => ENV,
-        getName: () => "Data.Subvention",
-        getDescription: () => "Les dernières informations sur les associations et leurs subventions",
-        getContact: () => "contact@datasubvention.beta.gouv.fr",
-        getRepo: () => "https://github.com/betagouv/api-subventions-asso",
-    });
-
+    const ctrl = new AppController();
+    const { displayBanner } = ctrl;
     // Options disponibles à l'initialisation du DSFR
     // @ts-expect-error: DSFR
     window.dsfr = {
         verbose: false,
         mode: "runtime",
     };
-
-    trackerService.init(ENV);
 </script>
 
 <svelte:head>
@@ -56,7 +47,9 @@
         <div class="stick-footer">
             <div class:main-view={$page.data.withBlueBanner}>
                 <Header />
-                <MainInfoBanner />
+                {#if $displayBanner}
+                    <MainInfoBanner />
+                {/if}
                 <div class="fr-container fr-mb-8w">
                     <main id="content">
                         <Breadcrumb crumbs={data.crumbs} />

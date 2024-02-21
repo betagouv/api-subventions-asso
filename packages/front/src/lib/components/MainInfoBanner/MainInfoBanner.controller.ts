@@ -1,4 +1,5 @@
 import type { SvelteComponent } from "svelte";
+import localStorageService from "$lib/services/localStorage.service";
 
 export class MainInfoBannerController {
     public startTitle = "Certaines informations de votre profil sont manquantes. N’oubliez pas de ";
@@ -6,10 +7,10 @@ export class MainInfoBannerController {
     public linkLabel = "compléter vos informations ici";
     public linkUrl = "/user/profile";
     public closeMsg = "Ne plus afficher ce message";
-
-    constructor(public component: SvelteComponent) {}
+    public component: SvelteComponent | undefined;
 
     close() {
-        this.component.$destroy();
+        localStorageService.setItem("hide-main-info-banner", "true");
+        (this.component as SvelteComponent).$destroy();
     }
 }

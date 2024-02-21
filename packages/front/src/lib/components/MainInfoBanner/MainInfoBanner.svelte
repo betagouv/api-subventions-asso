@@ -2,13 +2,12 @@
     import { MainInfoBannerController } from "./MainInfoBanner.controller";
     import InformationBanner from "$lib/dsfr/InformationBanner.svelte";
 
-    let component;
-    let ctrl = new MainInfoBannerController(component);
+    let ctrl = new MainInfoBannerController();
 </script>
 
 <InformationBanner
-    bind:this={component}
-    on:click={() => component.$destroy()}
+    bind:this={ctrl.component}
+    on:click={() => ctrl.close()}
     startTitle={ctrl.startTitle}
     endTitle={ctrl.endTitle}
     linkLabel={ctrl.linkLabel}
