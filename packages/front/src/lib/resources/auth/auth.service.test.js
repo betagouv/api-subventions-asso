@@ -6,6 +6,7 @@ import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { goToUrl } from "$lib/services/router.service";
 import userService from "$lib/resources/users/user.service";
+import localStorageService from "$lib/services/localStorage.service";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -169,6 +170,11 @@ describe("authService", () => {
         it("sets crisp email value", async () => {
             await authService.loginByUser(user);
             expect(crispService.setUserEmail).toBeCalledWith(EMAIL);
+        });
+
+        it("drops hide-main-info-banner from local storage", async () => {
+            await authService.loginByUser(user);
+            expect(vi.mocked(localStorageService).setItem).toHaveBeenCalledWith("hide-main-info-banner", undefined);
         });
 
         it("should return user", async () => {

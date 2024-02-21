@@ -24,7 +24,6 @@ export class LocalStorageService {
     }
 
     setItem(key: string, value: string) {
-        console.log("setItem");
         if (value === undefined) return this.removeItem(key);
         localStorage.setItem(key, JSON.stringify(value));
         this._updateLocalStorage();

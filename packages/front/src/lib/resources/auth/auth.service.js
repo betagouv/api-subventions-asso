@@ -7,6 +7,7 @@ import { isAdmin } from "$lib/services/user.service";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import userService from "$lib/resources/users/user.service";
 import Store from "$lib/core/Store";
+import localStorageService from "$lib/services/localStorage.service";
 
 export class AuthService {
     constructor() {
@@ -37,6 +38,7 @@ export class AuthService {
 
     loginByUser(user) {
         checkOrDropSearchHistory(user._id);
+        localStorageService.setItem("hide-main-info-banner", undefined);
         this.setUserInApp(user);
         crispService.setUserEmail(user.email);
 
