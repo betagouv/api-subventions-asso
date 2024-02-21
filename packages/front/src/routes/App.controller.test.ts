@@ -15,7 +15,7 @@ vi.mock("$app/stores");
 
 describe("AppController", () => {
     const ENV = "TEST";
-    const mockSetter = vi.fn(() => console.log("spySetter"));
+    const mockSetter = vi.fn();
     let controller: AppController;
 
     beforeAll(() => {
@@ -42,7 +42,7 @@ describe("AppController", () => {
     });
 
     describe("handleBannerDisplay", () => {
-        it.only("should set displayBanner to false if on profile page", () => {
+        it("should set displayBanner to false if on profile page", () => {
             controller.handleBannerDisplay("/user/profile");
             expect(mockSetter).toHaveBeenCalledWith(false);
         });
@@ -50,7 +50,21 @@ describe("AppController", () => {
         it("should call localStorageService", () => {
             vi.mocked(localStorageService).getItem.mockResolvedValue(new Store(true));
             controller.handleBannerDisplay("/");
-            expect(localStorageService.getItem).toHaveBeenCalledWith("hide-main-info-banner", true);
+            expect(localStorageService.getItem).toHaveBeenCalledWith("hide-main-info-banner", false);
+        });
+
+        it("should set displayBanner to false from localStorage", () => {
+            // @ts-expect-error: mock
+            vi.mocked(localStorageService).getItem.mockReturnValue({ value: false });
+            controller.handleBannerDisplay("/");
+            expect(mockSetter).toHaveBeenCalledWith(true);
+        });
+
+        it("should set displayBanner to true from localStorage", () => {
+            // @ts-expect-error: mock
+            vi.mocked(localStorageService).getItem.mockReturnValue({ value: "true" });
+            controller.handleBannerDisplay("/");
+            expect(mockSetter).toHaveBeenCalledWith(false);
         });
     });
 });

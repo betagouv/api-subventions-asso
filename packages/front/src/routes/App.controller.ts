@@ -28,12 +28,10 @@ export class AppController {
     }
 
     handleBannerDisplay(url: string) {
-        console.log(url);
         if (url === "/user/profile") {
-            console.log(this.displayBanner);
             this.displayBanner.set(false);
             return;
         }
-        this.displayBanner.set(Boolean(localStorageService.getItem("hide-main-info-banner", true).value));
+        this.displayBanner.set(!localStorageService.getItem("hide-main-info-banner", false).value);
     }
 }
