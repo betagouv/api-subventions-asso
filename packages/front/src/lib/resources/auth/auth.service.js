@@ -3,7 +3,6 @@ import authPort from "$lib/resources/auth/auth.port";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
-import { isAdmin } from "$lib/services/user.service";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import userService from "$lib/resources/users/user.service";
 import Store from "$lib/core/Store";
@@ -48,6 +47,7 @@ export class AuthService {
     setUserInApp(user) {
         if (!user) return;
         this.connectedUser.set(user);
+        console.log(user);
         if (user) crispService.setUserEmail(user.email);
     }
 
@@ -80,11 +80,15 @@ export class AuthService {
         if (!user) {
             this.redirectToLogin();
             return false;
-        } else if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) {
+        } else if (requiredLevel === AuthLevels.ADMIN && !this._isAdmin(user)) {
             goToUrl("/");
             return false;
         }
         return true;
+    }
+
+    _isAdmin(user) {
+        return user?.roles?.includes("admin");
     }
 
     redirectToLogin() {

@@ -236,10 +236,14 @@ describe("authService", () => {
 
     describe("controlAuth", () => {
         let getUserSpy;
+        let mockIsAdmin;
 
         beforeAll(() => {
+            mockIsAdmin = vi.spyOn(authService, "_isAdmin").mockReturnValue(true);
             getUserSpy = vi.spyOn(authService, "getCurrentUser");
         });
+
+        afterAll(() => mockIsAdmin.mockRestore());
 
         function correctReturn(requiredLevel, user, expected) {
             if (user) getUserSpy.mockReturnValueOnce(user);
@@ -264,12 +268,14 @@ describe("authService", () => {
         });
 
         it("redirect to home if user not admin and admin required", () => {
+            mockIsAdmin.mockReturnValueOnce(false);
             getUserSpy.mockReturnValueOnce({ roles: [] });
             authService.controlAuth(AuthLevels.ADMIN);
             expect(goToUrl).toHaveBeenCalledWith("/");
         });
 
         it("returns false if user not admin and admin required", () => {
+            mockIsAdmin.mockReturnValueOnce(false);
             correctReturn(AuthLevels.ADMIN, { roles: [] }, false);
         });
 
@@ -281,6 +287,20 @@ describe("authService", () => {
             correctReturn(AuthLevels.USER, { roles: [] }, true);
         });
         /* eslint-enable vitest/expect-expect */
+    });
+
+    describe("_isAdmin", () => {
+        const USER = { email: "test@mail.fr", lastname: "", firstname: "", roles: ["user", "admin"] };
+        it("should return true", () => {
+            const expected = true;
+            const actual = authService._isAdmin(USER);
+            expect(actual).toEqual(expected);
+        });
+        it("should return false", () => {
+            const expected = false;
+            const actual = authService._isAdmin({ ...USER, roles: ["user"] });
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("logout", () => {
