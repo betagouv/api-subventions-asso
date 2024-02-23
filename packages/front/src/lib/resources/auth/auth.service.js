@@ -5,12 +5,12 @@ import crispService from "$lib/services/crisp.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import userService from "$lib/resources/users/user.service";
-import Store from "$lib/core/Store";
 import localStorageService from "$lib/services/localStorage.service";
+import { connectedUser } from "$lib/store/user.store";
 
 export class AuthService {
     constructor() {
-        this.connectedUser = new Store(null);
+        this.connectedUser = connectedUser;
     }
 
     signup(signupUser) {
@@ -47,7 +47,6 @@ export class AuthService {
     setUserInApp(user) {
         if (!user) return;
         this.connectedUser.set(user);
-        console.log(user);
         if (user) crispService.setUserEmail(user.email);
     }
 
