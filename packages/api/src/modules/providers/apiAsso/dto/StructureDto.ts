@@ -165,7 +165,7 @@ export default interface StructureDto {
             bp?: string;
             cedex?: string;
             cp?: string;
-            commune?: number;
+            commune?: string;
             code_insee?: number;
         };
         adresse_siege_sirene?: {
