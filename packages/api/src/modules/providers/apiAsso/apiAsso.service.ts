@@ -1,4 +1,5 @@
 import { Rna, Siren, Siret, Association, Etablissement, Document } from "dto";
+import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
@@ -114,15 +115,9 @@ export class ApiAssoService
         if (!structure.identite.date_modif_siren)
             structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
 
-        const establishments = Array.isArray(structure.etablissements.etablissement)
-            ? structure.etablissements.etablissement
-            : [structure.etablissements.etablissement];
+        const establishments = structure.etablissement || [];
 
-        const ribs = structure.ribs
-            ? Array.isArray(structure.ribs.rib)
-                ? structure.ribs.rib
-                : [structure.ribs.rib]
-            : [];
+        const ribs = structure.rib || [];
 
         return establishments
             .filter(establishment => establishment)
@@ -226,6 +221,13 @@ export class ApiAssoService
 
     private async fetchDocuments(identifier: AssociationIdentifiers) {
         const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifier}`);
+
+        if (typeof result == "string") {
+            const parser = new XMLParser();
+            const jsonResult = parser.parse(result) as StructureDocumentDto;
+            return jsonResult?.asso?.documents;
+        }
+
         return result?.asso?.documents;
     }
 
@@ -239,6 +241,7 @@ export class ApiAssoService
 
     private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[]> {
         const documents = await this.fetchDocuments(identifier);
+
         if (!documents) return [];
 
         const filteredRnaDocument = this.filterRnaDocuments(documents.document_rna || []);

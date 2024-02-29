@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.46.3](https://github.com/betagouv/api-subventions-asso/compare/v0.46.1...v0.46.3) (2024-02-29)
+
+### Bug Fixes
+
+-   **api,dto:** structure fixture ([8d11e94](https://github.com/betagouv/api-subventions-asso/commit/8d11e94d442b55b2954235b3db3dbe55d379296f))
+-   **api:** adapts to api asso migration ([04575f9](https://github.com/betagouv/api-subventions-asso/commit/04575f9c0ae44837452121962be2b6bd61d33a54))
+-   **api:** parse documents from xml to json in api asso ([#2230](https://github.com/betagouv/api-subventions-asso/issues/2230)) ([ed0b3f2](https://github.com/betagouv/api-subventions-asso/commit/ed0b3f2e0db9c3331009891d08a36640546b8665))
+
+## [0.46.2](https://github.com/betagouv/api-subventions-asso/compare/v0.46.1...v0.46.2) (2024-02-28)
+
+### Bug Fixes
+
+-   **api,dto:** structure fixture ([8d11e94](https://github.com/betagouv/api-subventions-asso/commit/8d11e94d442b55b2954235b3db3dbe55d379296f))
+-   **api:** adapts to api asso migration ([04575f9](https://github.com/betagouv/api-subventions-asso/commit/04575f9c0ae44837452121962be2b6bd61d33a54))
+
+## [0.46.1](https://github.com/betagouv/api-subventions-asso/compare/v0.46.0...v0.46.1) (2024-02-19)
+
+### Bug Fixes
+
+-   **api:** migration import ([fcd094c](https://github.com/betagouv/api-subventions-asso/commit/fcd094c357ca18d5df978a9d020e284c6f5fb55a))
+
 # [0.46.0](https://github.com/betagouv/api-subventions-asso/compare/v0.45.4...v0.46.0) (2024-02-19)
 
 ### Features

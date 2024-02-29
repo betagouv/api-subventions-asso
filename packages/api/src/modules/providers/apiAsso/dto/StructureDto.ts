@@ -165,7 +165,7 @@ export default interface StructureDto {
             bp?: string;
             cedex?: string;
             cp?: string;
-            commune?: number;
+            commune?: string;
             code_insee?: number;
         };
         adresse_siege_sirene?: {
@@ -200,7 +200,7 @@ export default interface StructureDto {
         site_web?: string;
         publication_internet?: boolean;
     };
-    reseaux_affiliation: {
+    reseau_affiliation: {
         id_rna: string;
         id_siren: number; // not tested since 2023-11-15 change
         nom: string;
@@ -215,15 +215,13 @@ export default interface StructureDto {
         url: string | number;
     }[];
     composition_reseau: {
-        membre: {
-            nom: string;
-            id_rna: string;
-            objet: string;
-            id_siren: number;
-            adresse: string;
-        };
-    };
-    adherents_personnes_morales: {
+        nom: string;
+        id_rna: string;
+        objet: string;
+        id_siren: number;
+        adresse: string;
+    }[];
+    adherent_personne_morales: {
         nom: string;
         siret: number;
         id: number;
@@ -237,21 +235,19 @@ export default interface StructureDto {
         date_attribution: string;
         url: string | number;
     }[];
-    rhs: {
-        rh: {
-            annee: number;
-            nb_adherents: number;
-            nb_adherents_h: number;
-            nb_adherents_f: number;
-            nb_benevoles: number;
-            nb_volontaires: number;
-            nb_salaries: number;
-            nb_salaries_etpt: number;
-            nb_emplois_aides: number;
-            nb_personnels_detaches: number;
-            cumul_top_5_salaires: number;
-            id_siret: number;
-        };
+    rh: {
+        annee: number;
+        nb_adherents: number;
+        nb_adherents_h: number;
+        nb_adherents_f: number;
+        nb_benevoles: number;
+        nb_volontaires: number;
+        nb_salaries: number;
+        nb_salaries_etpt: number;
+        nb_emplois_aides: number;
+        nb_personnels_detaches: number;
+        cumul_top_5_salaires: number;
+        id_siret: number;
     }[];
     compte: {
         annee: number;
@@ -265,10 +261,8 @@ export default interface StructureDto {
         resultat: number;
         id_siret: number;
     }[];
-    etablissements: { etablissement: StructureEtablissementDto | StructureEtablissementDto[] };
-    ribs: {
-        rib: StructureRibDto[] | StructureRibDto;
-    };
+    etablissement: StructureEtablissementDto[];
+    rib: StructureRibDto[];
     commentaire?: {
         note: string;
     };

@@ -61,7 +61,5 @@ export interface SirenStructureDto {
         };
     };
     nbEtabsActifs: number;
-    etablissements: {
-        etablissement?: SirenStructureEtablissementDto[] | SirenStructureEtablissementDto;
-    };
+    etablissement?: SirenStructureEtablissementDto[];
 }
