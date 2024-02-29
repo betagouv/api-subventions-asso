@@ -56,7 +56,7 @@ describe("AppController", () => {
             expect(vi.mocked(trackerService).init).toHaveBeenCalledWith(ENV);
         });
 
-        it("should subscribe to page and connectedUser stores", () => {
+        it("should subscribe to stores", () => {
             expect(mockSubscribe).toHaveBeenCalled();
         });
     });
