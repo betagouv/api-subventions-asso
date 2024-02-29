@@ -32,7 +32,6 @@ export class UsersService {
             [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: ["region", "territorialScope"].concat(sharedMandatoryFields),
         };
 
-        // const user = authService.getCurrentUser() as UserDto;
         const mandatoryFields = mandatoryFieldsByAgentType[user.agentType];
 
         if (user.agentType === AgentTypeEnum.DECONCENTRATED_ADMIN) {
