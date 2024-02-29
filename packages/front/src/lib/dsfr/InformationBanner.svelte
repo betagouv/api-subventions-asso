@@ -1,5 +1,9 @@
 <script>
+    import { createEventDispatcher } from "svelte";
+
     export let closeBtn = false;
+
+    const dispatch = createEventDispatcher();
 </script>
 
 <div class="fr-notice fr-notice--info override">
@@ -10,7 +14,9 @@
                 <slot />
             </p>
             {#if closeBtn}
-                <button on:click class="fr-btn--close fr-btn" title="Masquer le message">Masquer le message</button>
+                <button on:click={() => dispatch("close")} class="fr-btn--close fr-btn" title="Masquer le message">
+                    Masquer le message
+                </button>
             {/if}
         </div>
     </div>

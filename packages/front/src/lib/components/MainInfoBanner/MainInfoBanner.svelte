@@ -5,7 +5,7 @@
     let ctrl = new MainInfoBannerController();
 </script>
 
-<InformationBanner bind:this={ctrl.component} on:click={() => ctrl.close()} closeBtn={true}>
+<InformationBanner bind:this={ctrl.component} on:close={() => ctrl.close()} closeBtn={true}>
     <!-- ok because not from user input and only defined once in controller -->
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html ctrl.title}
