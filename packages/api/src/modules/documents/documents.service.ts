@@ -61,7 +61,7 @@ export class DocumentsService {
             ),
         );
 
-        return (result.flat() as Document[])
+        return result.flat() as Document[];
     }
 
     private async aggregateDocuments(id: StructureIdentifiers): Promise<(Document | null)[]> {
@@ -77,7 +77,8 @@ export class DocumentsService {
                 ? "getDocumentsBySiren"
                 : "getDocumentsBySiret";
 
-        return await this.aggregate(documentProviders, method, id);
+        const result = await this.aggregate(documentProviders, method, id);
+        return result;
     }
 
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
