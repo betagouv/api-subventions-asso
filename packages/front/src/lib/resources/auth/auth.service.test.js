@@ -174,7 +174,7 @@ describe("authService", () => {
 
         it("drops hide-main-info-banner from local storage", async () => {
             await authService.loginByUser(user);
-            expect(vi.mocked(localStorageService).setItem).toHaveBeenCalledWith("hide-main-info-banner", undefined);
+            expect(vi.mocked(localStorageService).removeItem).toHaveBeenCalledWith("hide-main-info-banner");
         });
 
         it("should return user", async () => {
