@@ -22,9 +22,9 @@ class AssociationPort {
         return (await requestsService.get(path))?.data?.documents;
     }
 
-    async search(lookup) {
-        const path = `/search/associations/${lookup}`;
-        return (await requestsService.get(path))?.data?.result;
+    async search(lookup: string, page = 1) {
+        const path = `/search/associations/${lookup}?page=${page}`;
+        return (await requestsService.get(path))?.data;
     }
 }
 

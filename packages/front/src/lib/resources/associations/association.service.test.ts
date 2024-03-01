@@ -133,8 +133,14 @@ describe("AssociationService", () => {
 
     describe("_searchByText", () => {
         it("calls port", async () => {
+            const PAGE = 2;
+            await associationService._searchByText(SIREN, PAGE);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, PAGE);
+        });
+
+        it("calls port with default PAGE", async () => {
             await associationService._searchByText(SIREN);
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, 1);
         });
 
         it("returns result from port", async () => {
@@ -157,12 +163,18 @@ describe("AssociationService", () => {
         });
 
         it("calls _searchByText", async () => {
+            const PAGE = 2;
+            await associationService.search(SIREN, PAGE);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, PAGE);
+        });
+
+        it("calls _searchByText with default PAGE", async () => {
             await associationService.search(SIREN);
-            expect(mockByText).toHaveBeenCalledWith(SIREN);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, 1);
         });
 
         it("returns result from search text if not empty", async () => {
-            const expected = ["a", "b"];
+            const expected = { nbPages: 1, page: 1, results: ["a", "b"], totalResults: 2 };
             mockByText.mockResolvedValueOnce(expected);
             const actual = await associationService.search(SIREN);
             expect(actual).toEqual(expected);
@@ -202,7 +214,7 @@ describe("AssociationService", () => {
         it("returns an empty list if arg is not an identifier and searchByText is empty-handed", async () => {
             mockedIdentifierHelper.isRna.mockReturnValueOnce(false);
             mockedIdentifierHelper.isStartOfSiret.mockReturnValueOnce(false);
-            const expected = [];
+            const expected = { nbPages: 1, page: 1, results: [], totalResults: 0 };
             const actual = await associationService.search(SIREN);
             expect(actual).toEqual(expected);
         });
