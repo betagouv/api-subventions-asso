@@ -7,13 +7,13 @@ import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
 import associationService from "$lib/resources/associations/association.service";
 
 export default class SearchController {
-    inputSearch: Store<string>;
+    inputSearch: Store<string | undefined>;
     associations = new Store<PaginatedAssociationNameDto>({ nbPages: 1, page: 1, totalResults: 0, results: [] });
     searchPromise: Store<Promise<unknown>>;
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
 
-    constructor(name) {
+    constructor(name = "") {
         this.inputSearch = new Store(decodeQuerySearch(name));
         this.searchPromise = new Store(returnInfinitPromise());
         this.duplicatesFromIdentifier = new Store(null);
