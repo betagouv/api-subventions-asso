@@ -1,11 +1,11 @@
 <script lang="ts">
     import type Store from "$lib/core/Store";
 
-    export let totalPages: Store<number>;
+    export let totalPages: number;
     export let currentPage: Store<number>;
 
     const changePage = (page: number) => {
-        if (page < 1 || page > totalPages.value) return;
+        if (page < 1 || page > totalPages) return;
         currentPage.set(page);
     };
 
@@ -17,7 +17,7 @@
     function definePages(currentIndex) {
         visibleLinks.length = 0;
 
-        for (let i = 0; i < $totalPages; i++) {
+        for (let i = 0; i < totalPages; i++) {
             const pageNumber = i + 1;
             visibleLinks.push({
                 isCurrent: pageNumber === currentIndex,
@@ -52,7 +52,7 @@
                 </a>
             </li>
         {/each}
-        {#if $currentPage != $totalPages}
+        {#if $currentPage != totalPages}
             <li>
                 <a
                     class="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label"
