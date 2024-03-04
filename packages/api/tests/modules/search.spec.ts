@@ -59,7 +59,7 @@ describe("/search", () => {
             });
         });
 
-        it("should return other that first page", async () => {
+        it("should return other than first page", async () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture[0].name}?page=2`)
                 .set("x-access-token", await createAndGetUserToken())

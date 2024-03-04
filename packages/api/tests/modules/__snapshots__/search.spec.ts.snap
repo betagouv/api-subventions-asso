@@ -28,7 +28,7 @@ Object {
 }
 `;
 
-exports[`/search /associations/{input} should return other that first page 1`] = `
+exports[`/search /associations/{input} should return other than first page 1`] = `
 Object {
   "nbPages": 1,
   "page": 2,
