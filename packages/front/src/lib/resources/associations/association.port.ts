@@ -1,4 +1,4 @@
-import type { Association, Document } from "dto";
+import type { Association, Document, PaginatedAssociationNameDto } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class AssociationPort {
@@ -24,7 +24,7 @@ class AssociationPort {
 
     async search(lookup: string, page = 1) {
         const path = `/search/associations/${lookup}?page=${page}`;
-        return (await requestsService.get(path))?.data;
+        return (await requestsService.get(path))?.data as PaginatedAssociationNameDto;
     }
 }
 
