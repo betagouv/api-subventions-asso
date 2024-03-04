@@ -8,7 +8,7 @@ import associationService from "$lib/resources/associations/association.service"
 
 export default class SearchController {
     inputSearch: Store<string | undefined>;
-    associations = new Store<PaginatedAssociationNameDto>({ nbPages: 1, page: 1, totalResults: 0, results: [] });
+    associations = new Store<PaginatedAssociationNameDto>({ nbPages: 1, page: 1, total: 0, results: [] });
     searchPromise: Store<Promise<unknown>>;
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
@@ -22,7 +22,7 @@ export default class SearchController {
 
     async fetchAssociationFromName(name = "", page = 1) {
         const associations = await associationService.search(name, page);
-        if ((isSiren(name) || isRna(name)) && associations.totalResults === 1) {
+        if ((isSiren(name) || isRna(name)) && associations.total === 1) {
             const asso = associations.results[0];
             return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
         } else {
@@ -49,7 +49,7 @@ export default class SearchController {
     }
 
     updateNbEtabsLabel() {
-        const nbAssos = this.associations.value.totalResults;
+        const nbAssos = this.associations.value.total;
         return nbAssos > 1 ? `${nbAssos} résultats trouvés.` : `${nbAssos} résultat trouvé.`;
     }
 

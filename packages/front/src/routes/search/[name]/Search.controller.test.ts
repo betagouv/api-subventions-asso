@@ -18,7 +18,7 @@ describe("SearchController", () => {
             nbPages: 1,
             page: 1,
             results: [RNA_SIREN_1, RNA_SIREN_2],
-            totalResults: 2,
+            total: 2,
         };
 
         it("should set duplicate store", async () => {

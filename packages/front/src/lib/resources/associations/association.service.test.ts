@@ -174,7 +174,7 @@ describe("AssociationService", () => {
         });
 
         it("returns result from search text if not empty", async () => {
-            const expected = { nbPages: 1, page: 1, results: ["a", "b"], totalResults: 2 };
+            const expected = { nbPages: 1, page: 1, results: ["a", "b"], total: 2 };
             mockByText.mockResolvedValueOnce(expected);
             const actual = await associationService.search(SIREN);
             expect(actual).toEqual(expected);
@@ -214,7 +214,7 @@ describe("AssociationService", () => {
         it("returns an empty list if arg is not an identifier and searchByText is empty-handed", async () => {
             mockedIdentifierHelper.isRna.mockReturnValueOnce(false);
             mockedIdentifierHelper.isStartOfSiret.mockReturnValueOnce(false);
-            const expected = { nbPages: 1, page: 1, results: [], totalResults: 0 };
+            const expected = { nbPages: 1, page: 1, results: [], total: 0 };
             const actual = await associationService.search(SIREN);
             expect(actual).toEqual(expected);
         });

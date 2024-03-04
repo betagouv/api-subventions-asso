@@ -40,16 +40,16 @@ class AssociationService {
 
     async search(lookup, page = 1): Promise<PaginatedAssociationNameDto> {
         const results = await this._searchByText(lookup, page);
-        if (results?.totalResults) return results;
+        if (results?.total) return results;
 
         // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
         if (isRna(lookup) || isStartOfSiret(lookup)) {
             const potentielDuplicates = await this._searchByIdentifier(lookup.toString());
             // we make up pagination because it is unlikely to have multiple pages of duplicates
-            return { nbPages: 1, page: 1, results: potentielDuplicates, totalResults: potentielDuplicates.length };
+            return { nbPages: 1, page: 1, results: potentielDuplicates, total: potentielDuplicates.length };
         }
 
-        return { nbPages: 1, page: 1, results: [], totalResults: 0 };
+        return { nbPages: 1, page: 1, results: [], total: 0 };
     }
 
     async _searchByIdentifier(identifier) {
