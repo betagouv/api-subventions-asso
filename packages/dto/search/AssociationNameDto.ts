@@ -12,5 +12,5 @@ export interface PaginatedAssociationNameDto {
     results: AssociationNameDto[];
     nbPages: number;
     page: number;
-    totalResults: number;
+    total: number;
 }

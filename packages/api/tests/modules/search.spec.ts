@@ -41,7 +41,7 @@ describe("/search", () => {
                 results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
                 nbPages: 1,
                 page: 1,
-                totalResults: 1,
+                total: 1,
             });
         });
 
@@ -55,7 +55,7 @@ describe("/search", () => {
                 results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
                 nbPages: 1,
                 page: 1,
-                totalResults: 1,
+                total: 1,
             });
         });
 
@@ -69,7 +69,7 @@ describe("/search", () => {
                 results: [],
                 nbPages: 1,
                 page: 2,
-                totalResults: 1,
+                total: 1,
             });
         });
     });

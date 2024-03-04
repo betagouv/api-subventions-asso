@@ -10,7 +10,7 @@ Object {
       "siren": "775684970",
     },
   ],
-  "totalResults": 1,
+  "total": 1,
 }
 `;
 
@@ -24,7 +24,7 @@ Object {
       "siren": "775684970",
     },
   ],
-  "totalResults": 1,
+  "total": 1,
 }
 `;
 
@@ -33,6 +33,6 @@ Object {
   "nbPages": 1,
   "page": 2,
   "results": Array [],
-  "totalResults": 1,
+  "total": 1,
 }
 `;

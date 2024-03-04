@@ -19,7 +19,7 @@ export class SearchService {
                 nbPages: Math.ceil(resultsFromCache.total / SearchService.PAGE_SIZE),
                 page,
                 results: resultsFromCache.results,
-                totalResults: resultsFromCache.total,
+                total: resultsFromCache.total,
             };
 
         // nothing in cache
@@ -31,7 +31,7 @@ export class SearchService {
             nbPages: Math.ceil(nbResults / SearchService.PAGE_SIZE),
             page,
             results: results.slice((page - 1) * SearchService.PAGE_SIZE, page * SearchService.PAGE_SIZE),
-            totalResults: results.length,
+            total: results.length,
         };
     }
 

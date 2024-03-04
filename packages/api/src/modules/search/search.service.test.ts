@@ -45,7 +45,7 @@ describe("SearchService", () => {
                   "results": Array [
                     "something",
                   ],
-                  "totalResults": 1,
+                  "total": 1,
                 }
             `);
         });
@@ -76,7 +76,7 @@ describe("SearchService", () => {
                   "nbPages": 1,
                   "page": 2,
                   "results": Array [],
-                  "totalResults": 1,
+                  "total": 1,
                 }
             `);
         });
