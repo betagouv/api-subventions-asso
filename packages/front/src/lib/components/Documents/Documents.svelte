@@ -9,6 +9,7 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+    import Button from "$lib/dsfr/Button.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -16,6 +17,7 @@
 
     const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
+    const zipPromise = controller.zipPromise;
 
     onMount(() => {
         controller.onMount();
@@ -28,6 +30,19 @@
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
         {#if documents?.some}
+            <div class="fr-grid-row">
+                <div class="fr-ml-auto fr-mb-3w">
+                    <Button
+                        iconPosition="right"
+                        icon="download-line"
+                        trackerName="download-zip"
+                        title="Tout télécharger"
+                        on:click={() => controller.downloadAll()}>
+                        Tout télécharger
+                    </Button>
+                </div>
+            </div>
+
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.

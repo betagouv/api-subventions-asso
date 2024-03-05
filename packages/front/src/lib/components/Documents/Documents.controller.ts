@@ -7,6 +7,8 @@ import { currentAssociation } from "$lib/store/association.store";
 import type { ResourceType } from "$lib/types/ResourceType";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+import documentService from "$lib/resources/document/document.service";
+
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
     establishment: "cet établissement",
@@ -25,6 +27,7 @@ export class DocumentsController {
         }>
     >;
     element?: HTMLElement;
+    zipPromise: Store<Promise<void | null>>;
 
     constructor(
         public resourceType: ResourceType,
@@ -33,6 +36,7 @@ export class DocumentsController {
     ) {
         this.resourceType = resourceType;
         this.documentsPromise = new Store(new Promise(() => null));
+        this.zipPromise = new Store(new Promise(resolve => resolve(null)));
         this.resource = resource;
     }
 
@@ -91,5 +95,19 @@ export class DocumentsController {
         await waitElementIsVisible(this.element as HTMLElement);
         const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
+    }
+
+    async downloadAll() {
+        // @ts-expect-error -- missing type
+        const identifier = this.resource?.rna || this.resource?.siren || this.resource?.siret;
+        const promise = documentService.getAllDocs(identifier).then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `documents_${identifier}.zip`);
+            link.setAttribute("target", "_blank");
+            document.body.appendChild(link);
+            link.click();
+        });
     }
 }
