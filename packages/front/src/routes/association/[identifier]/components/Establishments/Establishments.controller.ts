@@ -66,7 +66,6 @@ export class EstablishmentsController {
             EstablishmentsController.MAX_ESTABLISHMENTS_BY_PAGE * (page - 1),
             EstablishmentsController.MAX_ESTABLISHMENTS_BY_PAGE * page,
         );
-        console.log(visibleEstablishments);
         this.visibleEstablishments.set(visibleEstablishments);
     }
 

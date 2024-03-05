@@ -3,14 +3,14 @@ import authPort from "$lib/resources/auth/auth.port";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
-import { isAdmin } from "$lib/services/user.service";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import userService from "$lib/resources/users/user.service";
-import Store from "$lib/core/Store";
+import localStorageService from "$lib/services/localStorage.service";
+import { connectedUser } from "$lib/store/user.store";
 
 export class AuthService {
     constructor() {
-        this.connectedUser = new Store(null);
+        this.connectedUser = connectedUser;
     }
 
     signup(signupUser) {
@@ -37,6 +37,7 @@ export class AuthService {
 
     loginByUser(user) {
         checkOrDropSearchHistory(user._id);
+        localStorageService.removeItem("hide-main-info-banner");
         this.setUserInApp(user);
         crispService.setUserEmail(user.email);
 
@@ -78,11 +79,15 @@ export class AuthService {
         if (!user) {
             this.redirectToLogin();
             return false;
-        } else if (requiredLevel === AuthLevels.ADMIN && !isAdmin(user)) {
+        } else if (requiredLevel === AuthLevels.ADMIN && !this._isAdmin(user)) {
             goToUrl("/");
             return false;
         }
         return true;
+    }
+
+    _isAdmin(user) {
+        return user?.roles?.includes("admin");
     }
 
     redirectToLogin() {
