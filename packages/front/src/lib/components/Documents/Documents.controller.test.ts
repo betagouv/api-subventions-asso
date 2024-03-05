@@ -4,14 +4,19 @@ import establishmentService from "$lib/resources/establishments/establishment.se
 import * as associationStore from "$lib/store/association.store";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
 import Store from "$lib/core/Store";
+import documentService from "$lib/resources/document/document.service";
+import documentHelper from "$lib/helpers/document.helper";
+import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
 vi.mock("$lib/resources/documents/documents.service");
+vi.mock("$lib/helpers/document.helper");
 vi.mock("$lib/resources/associations/association.service");
 vi.mock("$lib/resources/establishments/establishment.service");
 vi.mock("$lib/store/association.store", () => ({
     currentAssociation: undefined,
 }));
 vi.mock("$lib/helpers/visibilityHelper");
+vi.mock("$lib/resources/document/document.service");
 
 describe("Documents.controller", () => {
     let ctrl;
@@ -230,6 +235,64 @@ describe("Documents.controller", () => {
                 await documentsPromise;
                 expect(ctrl._organizeDocuments).toHaveBeenCalledWith(DOCS);
             });
+        });
+    });
+
+    describe("downloadAll", () => {
+        beforeAll(() => {
+            // @ts-expect-error - mock
+            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+        });
+
+        afterAll(() => {
+            vi.mocked(documentService.getAllDocs).mockReset();
+        });
+
+        it.each`
+            identifier | structure
+            ${"SIREN"} | ${ASSOCIATION}
+            ${"RNA"}   | ${{ rna: "RNA" }}
+            ${"SIRET"} | ${ESTABLISHMENT}
+        `("gets docs by $identifier", ({ identifier, structure }) => {
+            ctrl.resource = structure;
+            ctrl.downloadAll();
+            expect(documentService.getAllDocs).toHaveBeenCalledWith(identifier);
+
+            vi.mocked(documentService.getAllDocs).mockClear();
+            ctrl.resource = ASSOCIATION;
+        });
+
+        it("calls documentHelper.download with promise from documentService", () => {
+            const PROMISE = "PROMISE" as unknown as Promise<Blob>;
+            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(PROMISE);
+            ctrl.downloadAll();
+            expect(documentHelper.download).toHaveBeenCalledWith(PROMISE, "documents_SIREN.zip");
+        });
+
+        it("if download is quicker than 750 ms, does not set zipPromise", async () => {
+            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
+            vi.useFakeTimers();
+            vi.mocked(documentHelper.download).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
+
+            const test = ctrl.downloadAll();
+            vi.advanceTimersByTime(600);
+            expect(zipSetSpy).not.toHaveBeenCalled();
+            vi.runAllTimers();
+            await test;
+            vi.useRealTimers();
+        });
+
+        it("if download is slower than 750 ms, sets zipPromise", async () => {
+            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
+            vi.useFakeTimers();
+            vi.mocked(documentHelper.download).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 2000)));
+
+            const test = ctrl.downloadAll();
+            vi.advanceTimersByTime(800);
+            expect(zipSetSpy).toHaveBeenCalled();
+            vi.runAllTimers();
+            await test;
+            vi.useRealTimers();
         });
     });
 });
