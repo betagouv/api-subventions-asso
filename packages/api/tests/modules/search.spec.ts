@@ -21,13 +21,13 @@ describe("/search", () => {
             Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.insert(fixture)));
         });
 
-        it("should return 204", async () => {
+        it("should return 200", async () => {
             const response = await request(g.app)
                 .get(`/search/associations/NOT_FOUND_ASSO}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(204);
+            expect(response.statusCode).toBe(200);
         });
 
         it("should return an Association from its Siren", async () => {
@@ -38,9 +38,13 @@ describe("/search", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                result: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
+                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
+                nbPages: 1,
+                page: 1,
+                total: 1,
             });
         });
+
         it("should return an AssociationNameEntity from its name", async () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture[0].name}`)
@@ -48,7 +52,24 @@ describe("/search", () => {
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                result: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
+                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
+                nbPages: 1,
+                page: 1,
+                total: 1,
+            });
+        });
+
+        it("should return other than first page", async () => {
+            const response = await request(g.app)
+                .get(`/search/associations/${AssociationNameFixture[0].name}?page=2`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot({
+                results: [],
+                nbPages: 1,
+                page: 2,
+                total: 1,
             });
         });
     });

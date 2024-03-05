@@ -2,22 +2,37 @@
 
 exports[`/search /associations/{input} should return an Association from its Siren 1`] = `
 Object {
-  "result": Array [
+  "nbPages": 1,
+  "page": 1,
+  "results": Array [
     Object {
       "name": "ASSOCIATION AURORE",
       "siren": "775684970",
     },
   ],
+  "total": 1,
 }
 `;
 
 exports[`/search /associations/{input} should return an AssociationNameEntity from its name 1`] = `
 Object {
-  "result": Array [
+  "nbPages": 1,
+  "page": 1,
+  "results": Array [
     Object {
       "name": "ASSOCIATION AURORE",
       "siren": "775684970",
     },
   ],
+  "total": 1,
+}
+`;
+
+exports[`/search /associations/{input} should return other than first page 1`] = `
+Object {
+  "nbPages": 1,
+  "page": 2,
+  "results": Array [],
+  "total": 1,
 }
 `;
