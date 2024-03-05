@@ -24,7 +24,6 @@ describe("Documents.controller", () => {
     const ESTABLISHMENT = { siret: "SIRET" };
 
     beforeAll(() => {
-        // @ts-expect-error: use partial association
         const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
@@ -139,11 +138,10 @@ describe("Documents.controller", () => {
 
         it("calls _removeDuplicates with results from services", async () => {
             const DOC_ASSO = { __meta__: { siret: "SIRET" }, name: "from asso" };
-            const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" };
+            const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" } as unknown as DocumentEntity;
 
             // @ts-expect-error: mock
             vi.mocked(associationService).getDocuments.mockResolvedValueOnce([DOC_ASSO]);
-            // @ts-expect-error: mock
             vi.mocked(establishmentService).getDocuments.mockResolvedValueOnce([DOC_ETAB]);
 
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
