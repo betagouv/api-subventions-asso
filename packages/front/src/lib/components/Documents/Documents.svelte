@@ -25,7 +25,7 @@
 </script>
 
 <div bind:this={controller.element}>
-    <h2 class="sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
+    <h2 class="fr-sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
@@ -54,7 +54,7 @@
 
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mt-6w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
+                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
                 <!-- change top margin when we have download all button -->
                 <div class="fr-grid-row fr-grid-row--gutters">
                     {#each documents.assoDocs as document}
