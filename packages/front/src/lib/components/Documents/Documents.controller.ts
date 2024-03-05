@@ -8,6 +8,7 @@ import type { ResourceType } from "$lib/types/ResourceType";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 import documentService from "$lib/resources/document/document.service";
+import documentHelper from "$lib/helpers/document.helper";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
@@ -100,15 +101,7 @@ export class DocumentsController {
     async downloadAll() {
         // @ts-expect-error -- missing type
         const identifier = this.resource?.rna || this.resource?.siren || this.resource?.siret;
-        const promise = documentService.getAllDocs(identifier).then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", `documents_${identifier}.zip`);
-            link.setAttribute("target", "_blank");
-            document.body.appendChild(link);
-            link.click();
-        });
+        const promise = documentHelper.download(documentService.getAllDocs(identifier), `documents_${identifier}.zip`);
         await new Promise(resolve => setTimeout(resolve, 750)); // weird if message appears and leaves right ahead
         this.zipPromise.set(promise);
     }

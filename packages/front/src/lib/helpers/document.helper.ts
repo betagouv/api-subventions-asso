@@ -36,6 +36,17 @@ export class DocumentHelper {
 
         return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}` }));
     }
+
+    async download(blobPromise: Promise<Blob>, fileName: string) {
+        const blob = await blobPromise;
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+    }
 }
 
 const documentHelper = new DocumentHelper();
