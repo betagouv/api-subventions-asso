@@ -1,7 +1,7 @@
 import { DATASUB_URL } from "$env/static/public";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
-export class DocumentService {
+export class DocumentHelper {
     formatAndSortDocuments(documents): DocumentEntity[] {
         const documentLabels = {
             RIB: "RIB",
@@ -38,6 +38,6 @@ export class DocumentService {
     }
 }
 
-const documentService = new DocumentService();
+const documentHelper = new DocumentHelper();
 
-export default documentService;
+export default documentHelper;

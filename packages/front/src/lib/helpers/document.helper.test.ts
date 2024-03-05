@@ -1,8 +1,9 @@
 vi.mock("./documents.port");
-import documentService from "./documents.service";
+import documentHelper from "./document.helper";
+
 vi.mock("$env/static/public", () => ({ DATASUB_URL: "https://api.fr" }));
 
-describe("DocumentService", () => {
+describe("DocumentHelper", () => {
     const DOCUMENTS = [
         { type: "RIB", url: "/rib" },
         { type: "RAR", url: "/rar" },
@@ -22,7 +23,7 @@ describe("DocumentService", () => {
                     url: "https://api.fr/rib",
                 },
             ];
-            const actual = documentService.formatAndSortDocuments(DOCUMENTS);
+            const actual = documentHelper.formatAndSortDocuments(DOCUMENTS);
             expect(actual).toEqual(expected);
         });
     });
