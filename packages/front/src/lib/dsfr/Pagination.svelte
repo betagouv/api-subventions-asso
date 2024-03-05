@@ -1,36 +1,65 @@
 <script lang="ts">
     import type Store from "$lib/core/Store";
 
-    export let totalPages: Store<number>;
+    export let totalPages: number;
     export let currentPage: Store<number>;
 
     const changePage = (page: number) => {
-        if (page < 1 || page > totalPages.value) return;
+        if (page < 1 || page > totalPages) return;
         currentPage.set(page);
     };
 
-    const visibleLinks: { isCurrent: boolean; pageNumber: number }[] = [];
+    function numbersBetween(a: number, b: number) {
+        return Array.from({ length: b - a + 1 }, (_, index) => index + a);
+    }
 
-    currentPage.subscribe(currentPage => definePages(currentPage));
-    totalPages.subscribe(_totalPages => definePages(1));
+    let visibleLinks: (number | null)[] = [];
 
-    function definePages(currentIndex) {
-        visibleLinks.length = 0;
+    currentPage.subscribe(currentPage => (visibleLinks = definePages(currentPage)));
 
-        for (let i = 0; i < $totalPages; i++) {
-            const pageNumber = i + 1;
-            visibleLinks.push({
-                isCurrent: pageNumber === currentIndex,
-                pageNumber: pageNumber,
-            });
+    function definePages(currentPage: number) {
+        const maxVisiblePages = 10;
+        const smallSliceSize = 1;
+        const sliceSize = 3;
+
+        // all pages
+        if (totalPages <= maxVisiblePages) {
+            return numbersBetween(1, totalPages);
         }
+
+        // first n pages
+        if (currentPage < sliceSize + 1) {
+            return [
+                ...numbersBetween(1, Math.max(sliceSize, currentPage + 1)),
+                null,
+                ...numbersBetween(totalPages - sliceSize + 1, totalPages),
+            ];
+        }
+
+        // last n pages
+        if (currentPage > totalPages - sliceSize) {
+            return [
+                ...numbersBetween(1, sliceSize),
+                null,
+                ...numbersBetween(Math.min(totalPages - sliceSize + 1, currentPage - 1), totalPages),
+            ];
+        }
+
+        // slices
+        return [
+            ...numbersBetween(1, sliceSize),
+            null,
+            ...numbersBetween(currentPage - smallSliceSize, currentPage + smallSliceSize),
+            null,
+            ...numbersBetween(totalPages - sliceSize + 1, totalPages),
+        ];
     }
 </script>
 
 <!-- svelte-ignore a11y-no-redundant-roles -->
 <nav role="navigation" class="fr-pagination" aria-label="Pagination">
     <ul class="fr-pagination__list">
-        {#if $currentPage != 1}
+        {#if $currentPage !== 1}
             <li>
                 <a
                     class="fr-pagination__link fr-pagination__link--prev fr-pagination__link--lg-label"
@@ -41,18 +70,26 @@
             </li>
         {/if}
         {#each visibleLinks as visibleLink}
-            <li>
-                <a
-                    class="fr-pagination__link"
-                    aria-current={visibleLink.isCurrent ? "page" : null}
-                    title="Page {visibleLink.pageNumber}"
-                    href="#{visibleLink.pageNumber}"
-                    on:click={() => changePage(visibleLink.pageNumber)}>
-                    {visibleLink.pageNumber}
-                </a>
-            </li>
+            {#if visibleLink}
+                <li>
+                    <a
+                        class="fr-pagination__link"
+                        aria-current={visibleLink === $currentPage ? "page" : null}
+                        title="Page {visibleLink}"
+                        href="#{visibleLink}"
+                        on:click={() => {
+                            if (visibleLink) changePage(visibleLink);
+                        }}>
+                        {visibleLink}
+                    </a>
+                </li>
+            {:else}
+                <li>
+                    <span class="fr-pagination__link fr-label--disabled">...</span>
+                </li>
+            {/if}
         {/each}
-        {#if $currentPage != $totalPages}
+        {#if $currentPage !== totalPages}
             <li>
                 <a
                     class="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label"

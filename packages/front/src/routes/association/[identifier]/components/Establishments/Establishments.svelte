@@ -37,7 +37,9 @@
         {#if $totalPages > 1}
             <div class="fr-grid-row">
                 <div class="fr-mx-auto fr-mt-3w">
-                    <Pagination {totalPages} {currentPage} />
+                    {#key $totalPages}
+                        <Pagination totalPages={$totalPages} {currentPage} />
+                    {/key}
                 </div>
             </div>
         {/if}
