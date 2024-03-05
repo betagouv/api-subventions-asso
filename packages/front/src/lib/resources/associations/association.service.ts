@@ -1,3 +1,4 @@
+import type { PaginatedAssociationNameDto } from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.adapter";
@@ -37,16 +38,18 @@ class AssociationService {
         return documentService.formatAndSortDocuments(documents);
     }
 
-    async search(lookup) {
-        const results = await this._searchByText(lookup);
-        if (results?.length) return results;
+    async search(lookup, page = 1): Promise<PaginatedAssociationNameDto> {
+        const results = await this._searchByText(lookup, page);
+        if (results?.total) return results;
 
         // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
         if (isRna(lookup) || isStartOfSiret(lookup)) {
-            return await this._searchByIdentifier(lookup.toString());
+            const potentielDuplicates = await this._searchByIdentifier(lookup.toString());
+            // we make up pagination because it is unlikely to have multiple pages of duplicates
+            return { nbPages: 1, page: 1, results: potentielDuplicates, total: potentielDuplicates.length };
         }
 
-        return [];
+        return { nbPages: 1, page: 1, results: [], total: 0 };
     }
 
     async _searchByIdentifier(identifier) {
@@ -70,8 +73,8 @@ class AssociationService {
         ];
     }
 
-    _searchByText(lookup: string) {
-        return associationPort.search(lookup);
+    _searchByText(lookup: string, page = 1) {
+        return associationPort.search(lookup, page);
     }
 }
 

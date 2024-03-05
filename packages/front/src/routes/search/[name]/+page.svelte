@@ -4,12 +4,13 @@
     import Spinner from "$lib/components/Spinner.svelte";
     import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
+    import Pagination from "$lib/dsfr/Pagination.svelte";
 
     export let data;
     const { name } = data.params;
 
     const ctrl = new SearchController(name);
-    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier } = ctrl;
+    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier, currentPage } = ctrl;
 
     let nbResultLabel;
     $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
@@ -41,10 +42,18 @@
         </div>
     {/if}
     <div class="fr-grid-row fr-grid-row--gutters search-layout">
-        {#each $associations as simplifiedAsso}
+        {#each $associations.results as simplifiedAsso}
             <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
         {/each}
     </div>
+
+    {#if $associations.nbPages > 1}
+        <div class="fr-grid-row fr-mt-5w">
+            <div class="fr-mx-auto">
+                <Pagination totalPages={$associations.nbPages} {currentPage} />
+            </div>
+        </div>
+    {/if}
 {/await}
 
 <style>

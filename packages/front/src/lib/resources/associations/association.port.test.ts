@@ -35,14 +35,20 @@ describe("AssociationPort", () => {
 
     describe("search", () => {
         it("calls requestsService get", async () => {
-            const expected = `/search/associations/${SIREN}`;
+            const expected = `/search/associations/${SIREN}?page=2`;
+            await associationPort.search(SIREN, 2);
+            expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
+        });
+
+        it("calls requestsService get with default page", async () => {
+            const expected = `/search/associations/${SIREN}?page=1`;
             await associationPort.search(SIREN);
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
-        it("return association list from requestsService result", async () => {
-            const expected = [];
-            const RES = { data: { result: expected } };
+        it("return paginated associations from requestsService result", async () => {
+            const expected = {};
+            const RES = { data: expected };
             // @ts-expect-error: mock
             mockedRequestService.get.mockResolvedValueOnce(RES);
             const actual = await associationPort.search(SIREN);

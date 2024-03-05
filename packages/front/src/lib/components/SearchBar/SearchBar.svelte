@@ -5,7 +5,7 @@
     export let large = true;
     export let placeholder = "Nom, n°RNA, n°SIREN ou SIRET";
     export let disableIfEmpty = true;
-    export let value = undefined;
+    export let value: string | undefined = undefined;
     export let label = undefined;
 
     const dispatch = createEventDispatcher();
