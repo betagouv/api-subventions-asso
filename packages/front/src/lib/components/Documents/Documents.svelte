@@ -48,6 +48,10 @@
                 fournisseurs de données.
             </Alert>
 
+            {#await $zipPromise}
+                <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
+            {/await}
+
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
                 <h3 class="fr-h2 fr-mt-6w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>

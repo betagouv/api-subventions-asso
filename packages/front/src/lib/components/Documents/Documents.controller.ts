@@ -109,5 +109,7 @@ export class DocumentsController {
             document.body.appendChild(link);
             link.click();
         });
+        await new Promise(resolve => setTimeout(resolve, 750)); // weird if message appears and leaves right ahead
+        this.zipPromise.set(promise);
     }
 }
