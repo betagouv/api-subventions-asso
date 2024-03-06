@@ -7,6 +7,10 @@ import { currentAssociation } from "$lib/store/association.store";
 import type { ResourceType } from "$lib/types/ResourceType";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+import documentService from "$lib/resources/document/document.service";
+import documentHelper from "$lib/helpers/document.helper";
+import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
+
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
     establishment: "cet établissement",
@@ -25,6 +29,7 @@ export class DocumentsController {
         }>
     >;
     element?: HTMLElement;
+    zipPromise: Store<Promise<void | null>>;
 
     constructor(
         public resourceType: ResourceType,
@@ -32,7 +37,8 @@ export class DocumentsController {
         public resource: AssociationEntity | unknown,
     ) {
         this.resourceType = resourceType;
-        this.documentsPromise = new Store(new Promise(() => null));
+        this.documentsPromise = new Store(returnInfinitePromise());
+        this.zipPromise = new Store(Promise.resolve(null));
         this.resource = resource;
     }
 
@@ -91,5 +97,17 @@ export class DocumentsController {
         await waitElementIsVisible(this.element as HTMLElement);
         const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
+    }
+
+    async downloadAll() {
+        // @ts-expect-error -- missing type
+        const identifier = this.resource?.siren || this.resource?.rna || this.resource?.siret;
+        const promise = documentService
+            .getAllDocs(identifier)
+            .then(blob => documentHelper.download(blob, `documents_${identifier}.zip`));
+        setTimeout(() => {
+            this.zipPromise.set(promise);
+        }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
+        await promise;
     }
 }

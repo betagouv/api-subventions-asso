@@ -7,7 +7,7 @@ import { siretToSiren } from "$lib/helpers/sirenHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
 import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.adapter";
-import documentService from "$lib/services/documents.service";
+import documentHelper from "$lib/helpers/document.helper";
 
 class AssociationService {
     incExtractData(identifier) {
@@ -35,7 +35,7 @@ class AssociationService {
     async getDocuments(identifier) {
         const result = await associationPort.getDocuments(identifier);
         const documents = result.map(document => getObjectWithMetadata(document));
-        return documentService.formatAndSortDocuments(documents);
+        return documentHelper.formatAndSortDocuments(documents);
     }
 
     async search(lookup, page = 1): Promise<PaginatedAssociationNameDto> {

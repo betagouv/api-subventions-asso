@@ -1,7 +1,7 @@
 import { DATASUB_URL } from "$env/static/public";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
-export class DocumentService {
+export class DocumentHelper {
     formatAndSortDocuments(documents): DocumentEntity[] {
         const documentLabels = {
             RIB: "RIB",
@@ -36,8 +36,20 @@ export class DocumentService {
 
         return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}` }));
     }
+
+    download(blob: Blob, fileName: string) {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName);
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+    }
 }
 
-const documentService = new DocumentService();
+const documentHelper = new DocumentHelper();
 
-export default documentService;
+export default documentHelper;

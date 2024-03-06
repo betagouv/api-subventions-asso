@@ -9,6 +9,7 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+    import Button from "$lib/dsfr/Button.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -16,6 +17,7 @@
 
     const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
+    const zipPromise = controller.zipPromise;
 
     onMount(() => {
         controller.onMount();
@@ -23,19 +25,36 @@
 </script>
 
 <div bind:this={controller.element}>
-    <h2 class="sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
+    <h2 class="fr-sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
         {#if documents?.some}
+            <div class="fr-grid-row">
+                <div class="fr-ml-auto fr-mb-3w">
+                    <Button
+                        iconPosition="right"
+                        icon="download-line"
+                        trackerName="download-zip"
+                        title="Tout télécharger"
+                        on:click={() => controller.downloadAll()}>
+                        Tout télécharger
+                    </Button>
+                </div>
+            </div>
+
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.
             </Alert>
 
+            {#await $zipPromise}
+                <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
+            {/await}
+
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mt-6w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
+                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
                 <!-- change top margin when we have download all button -->
                 <div class="fr-grid-row fr-grid-row--gutters">
                     {#each documents.assoDocs as document}

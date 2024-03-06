@@ -1,7 +1,7 @@
 import type { PaginatedAssociationNameDto, Siret } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
-import { returnInfinitPromise } from "$lib/helpers/promiseHelper";
+import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
 import associationService from "$lib/resources/associations/association.service";
@@ -15,7 +15,7 @@ export default class SearchController {
 
     constructor(name = "") {
         this.inputSearch = new Store(decodeQuerySearch(name));
-        this.searchPromise = new Store(returnInfinitPromise());
+        this.searchPromise = new Store(returnInfinitePromise());
         this.duplicatesFromIdentifier = new Store(null);
         this.currentPage.subscribe(newPage => this.searchPromise.set(this.fetchAssociationFromName(name, newPage)));
     }

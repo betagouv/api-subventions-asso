@@ -4,14 +4,19 @@ import establishmentService from "$lib/resources/establishments/establishment.se
 import * as associationStore from "$lib/store/association.store";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
 import Store from "$lib/core/Store";
+import documentService from "$lib/resources/document/document.service";
+import documentHelper from "$lib/helpers/document.helper";
+import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
 vi.mock("$lib/resources/documents/documents.service");
+vi.mock("$lib/helpers/document.helper");
 vi.mock("$lib/resources/associations/association.service");
 vi.mock("$lib/resources/establishments/establishment.service");
 vi.mock("$lib/store/association.store", () => ({
     currentAssociation: undefined,
 }));
 vi.mock("$lib/helpers/visibilityHelper");
+vi.mock("$lib/resources/document/document.service");
 
 describe("Documents.controller", () => {
     let ctrl;
@@ -19,7 +24,6 @@ describe("Documents.controller", () => {
     const ESTABLISHMENT = { siret: "SIRET" };
 
     beforeAll(() => {
-        // @ts-expect-error: use partial association
         const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
@@ -134,11 +138,10 @@ describe("Documents.controller", () => {
 
         it("calls _removeDuplicates with results from services", async () => {
             const DOC_ASSO = { __meta__: { siret: "SIRET" }, name: "from asso" };
-            const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" };
+            const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" } as unknown as DocumentEntity;
 
             // @ts-expect-error: mock
             vi.mocked(associationService).getDocuments.mockResolvedValueOnce([DOC_ASSO]);
-            // @ts-expect-error: mock
             vi.mocked(establishmentService).getDocuments.mockResolvedValueOnce([DOC_ETAB]);
 
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
@@ -230,6 +233,66 @@ describe("Documents.controller", () => {
                 await documentsPromise;
                 expect(ctrl._organizeDocuments).toHaveBeenCalledWith(DOCS);
             });
+        });
+    });
+
+    describe("downloadAll", () => {
+        beforeAll(() => {
+            // @ts-expect-error - mock
+            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+        });
+
+        afterAll(() => {
+            vi.mocked(documentService.getAllDocs).mockReset();
+        });
+
+        it.each`
+            identifier | structure
+            ${"SIREN"} | ${ASSOCIATION}
+            ${"RNA"}   | ${{ rna: "RNA" }}
+            ${"SIRET"} | ${ESTABLISHMENT}
+        `("gets docs by $identifier", ({ identifier, structure }) => {
+            ctrl.resource = structure;
+            ctrl.downloadAll();
+            expect(documentService.getAllDocs).toHaveBeenCalledWith(identifier);
+
+            vi.mocked(documentService.getAllDocs).mockClear();
+            ctrl.resource = ASSOCIATION;
+        });
+
+        it("calls documentHelper.download with blob from documentService", async () => {
+            const BLOB = "BLOB" as unknown as Blob;
+            vi.mocked(documentService.getAllDocs).mockResolvedValueOnce(BLOB);
+            await ctrl.downloadAll();
+            expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_SIREN.zip");
+        });
+
+        it("if download is quicker than 750 ms, does not set zipPromise", async () => {
+            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
+            vi.useFakeTimers();
+            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
+
+            const test = ctrl.downloadAll();
+            vi.advanceTimersByTime(600);
+            expect(zipSetSpy).not.toHaveBeenCalled();
+            vi.runAllTimers();
+            await test;
+            vi.useRealTimers();
+        });
+
+        it("if download is slower than 750 ms, sets zipPromise", async () => {
+            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
+            vi.useFakeTimers();
+            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(
+                new Promise(resolve => setTimeout(resolve, 2000)),
+            );
+
+            const test = ctrl.downloadAll();
+            vi.advanceTimersByTime(800);
+            expect(zipSetSpy).toHaveBeenCalled();
+            vi.runAllTimers();
+            await test;
+            vi.useRealTimers();
         });
     });
 });
