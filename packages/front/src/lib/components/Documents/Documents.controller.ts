@@ -105,7 +105,7 @@ export class DocumentsController {
         const promise = documentHelper.download(documentService.getAllDocs(identifier), `documents_${identifier}.zip`);
         setTimeout(() => {
             this.zipPromise.set(promise);
-        }, 750); // weird if message appears and leaves right ahead
+        }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await promise;
     }
 }
