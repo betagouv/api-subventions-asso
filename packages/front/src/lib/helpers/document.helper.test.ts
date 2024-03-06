@@ -10,7 +10,7 @@ describe("DocumentHelper", () => {
     ];
 
     describe("formatAndSortDocuments", () => {
-        it("should return formated and sorted documents", () => {
+        it("should return formatted and sorted documents", () => {
             const expected = [
                 {
                     label: "Rapport d'activité",
@@ -32,7 +32,6 @@ describe("DocumentHelper", () => {
         let oldURL, oldCreateElement, oldAppendChild;
 
         const BLOB = "blob" as unknown as Blob; // mock
-        const BLOB_PROMISE = Promise.resolve(BLOB);
         const NAME = "filename";
         const BLOB_URL = "/blob/url";
         const ELEMENT = { href: "", setAttribute: vi.fn(), click: vi.fn() };
@@ -54,6 +53,7 @@ describe("DocumentHelper", () => {
             };
 
             document.body.appendChild = vi.fn();
+            document.body.removeChild = vi.fn();
 
             // @ts-expect-error -- mock window
             document.createElement = vi.fn((..._args) => ELEMENT);
@@ -67,26 +67,32 @@ describe("DocumentHelper", () => {
             document.createElement = oldCreateElement;
         });
 
-        it("creates object url with blob", async () => {
-            await documentHelper.download(BLOB_PROMISE, NAME);
+        it("creates object url with blob", () => {
+            documentHelper.download(BLOB, NAME);
             expect(window.URL.createObjectURL).toHaveBeenCalledWith(BLOB);
         });
 
-        it("create link element", async () => {
-            await documentHelper.download(BLOB_PROMISE, NAME);
+        it("create link element", () => {
+            documentHelper.download(BLOB, NAME);
             expect(document.createElement).toHaveBeenCalledWith("a");
         });
 
-        it("link attributes properly tested", async () => {
-            await documentHelper.download(BLOB_PROMISE, NAME);
-            expect(ELEMENT.href).toBe(BLOB_URL);
+        it("link attributes properly tested", () => {
+            documentHelper.download(BLOB, NAME);
+            expect(ELEMENT.setAttribute).toHaveBeenCalledWith("href", BLOB_URL);
             expect(ELEMENT.setAttribute).toHaveBeenCalledWith("download", NAME);
             expect(ELEMENT.setAttribute).toHaveBeenCalledWith("target", "_blank");
         });
 
-        it("clicks link", async () => {
-            await documentHelper.download(BLOB_PROMISE, NAME);
+        it("clicks link", () => {
+            documentHelper.download(BLOB, NAME);
             expect(ELEMENT.click).toHaveBeenCalled();
+        });
+
+        it("clears download setup", () => {
+            documentHelper.download(BLOB, NAME);
+            expect(document.body.removeChild).toHaveBeenCalledWith(ELEMENT);
+            expect(window.URL.revokeObjectURL).toHaveBeenCalledWith(BLOB_URL);
         });
     });
 });

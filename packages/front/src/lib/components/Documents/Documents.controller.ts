@@ -102,7 +102,9 @@ export class DocumentsController {
     async downloadAll() {
         // @ts-expect-error -- missing type
         const identifier = this.resource?.siren || this.resource?.rna || this.resource?.siret;
-        const promise = documentHelper.download(documentService.getAllDocs(identifier), `documents_${identifier}.zip`);
+        const promise = documentService
+            .getAllDocs(identifier)
+            .then(blob => documentHelper.download(blob, `documents_${identifier}.zip`));
         setTimeout(() => {
             this.zipPromise.set(promise);
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value

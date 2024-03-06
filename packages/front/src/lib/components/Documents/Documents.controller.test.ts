@@ -260,17 +260,17 @@ describe("Documents.controller", () => {
             ctrl.resource = ASSOCIATION;
         });
 
-        it("calls documentHelper.download with promise from documentService", () => {
-            const PROMISE = "PROMISE" as unknown as Promise<Blob>;
-            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(PROMISE);
-            ctrl.downloadAll();
-            expect(documentHelper.download).toHaveBeenCalledWith(PROMISE, "documents_SIREN.zip");
+        it("calls documentHelper.download with blob from documentService", async () => {
+            const BLOB = "BLOB" as unknown as Blob;
+            vi.mocked(documentService.getAllDocs).mockResolvedValueOnce(BLOB);
+            await ctrl.downloadAll();
+            expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_SIREN.zip");
         });
 
         it("if download is quicker than 750 ms, does not set zipPromise", async () => {
             const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
             vi.useFakeTimers();
-            vi.mocked(documentHelper.download).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
+            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
 
             const test = ctrl.downloadAll();
             vi.advanceTimersByTime(600);
@@ -283,7 +283,9 @@ describe("Documents.controller", () => {
         it("if download is slower than 750 ms, sets zipPromise", async () => {
             const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
             vi.useFakeTimers();
-            vi.mocked(documentHelper.download).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 2000)));
+            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(
+                new Promise(resolve => setTimeout(resolve, 2000)),
+            );
 
             const test = ctrl.downloadAll();
             vi.advanceTimersByTime(800);
