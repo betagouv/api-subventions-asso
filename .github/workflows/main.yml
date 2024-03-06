@@ -4,9 +4,9 @@ name: CI
 
 on:
     push:
-        branches: [main, develop]
+        branches: [main, develop, PROD]
     pull_request:
-        branches: [main, develop]
+        branches: [main, develop, PROD]
 
 env:
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
