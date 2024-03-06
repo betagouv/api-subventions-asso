@@ -19,12 +19,10 @@ export default class ChorusParser {
 
         const page = extractionPage.data;
 
-        const data = extractionPage.data;
-
-        const headerRow = data[0] as string[];
+        const headerRow = page[0] as string[];
         const headers = ChorusParser.renameEmptyHeaders(headerRow);
         console.log("Map rows to entities...");
-        const entities = this.rowsToEntities(headers, data.slice(1));
+        const entities = this.rowsToEntities(headers, page.slice(1));
         return entities;
     }
 
