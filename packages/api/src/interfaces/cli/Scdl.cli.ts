@@ -13,7 +13,6 @@ export default class ScdlCli {
         if (!producerName) throw Error("producer NAME is mandatory");
         if (await scdlService.getProducer(producerId)) throw new Error("Producer already exists");
         await scdlService.createProducer({ producerId, producerName, lastUpdate: new Date() });
-        console.log(producerId);
     }
 
     public async parse(file: string, producerId: string, exportDate?: Date | undefined, delimeter = ";") {

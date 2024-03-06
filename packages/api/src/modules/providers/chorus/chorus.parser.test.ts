@@ -177,8 +177,13 @@ describe("ChorusParser", () => {
         const originalRowsToEntities = ChorusParser.rowsToEntities;
         const mockedRowsToEntities = jest.fn();
 
+        const DATA = [HEADERS, ...PAGES];
+
         beforeAll(() => {
-            mockedParserHelper.xlsParse.mockReturnValue([[HEADERS, ...PAGES]]);
+            mockedParserHelper.xlsParseWithPageName.mockReturnValue([
+                { data: [[], []], name: "TAB" },
+                { data: DATA, name: "1. Extraction" },
+            ]);
             // @ts-expect-error: protected
             ChorusParser.renameEmptyHeaders = mockedRenameEmptyHeaders;
             mockedRenameEmptyHeaders.mockReturnValue(FILLED_HEADERS);
@@ -194,11 +199,35 @@ describe("ChorusParser", () => {
             ChorusParser.rowsToEntities = originalRowsToEntities;
         });
 
+        // we use to have a xlsx with only one tab called "1. Extraction"
+        // the current format has 3 tabs and the second one is "1. Extraction"
+        it("should work with old format", () => {
+            const CONTENT = "THIS IS A BUFFER";
+            // @ts-expect-error
+            ChorusParser.parse(CONTENT, () => true);
+            expect(mockedParserHelper.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
+            mockedParserHelper.xlsParseWithPageName.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
+        });
+
         it("should call ParserHelper.xlsParse", () => {
             const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error
             ChorusParser.parse(CONTENT, () => true);
-            expect(mockedParserHelper.xlsParse).toHaveBeenCalledWith(CONTENT);
+            expect(mockedParserHelper.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
+        });
+
+        it("should rename empty headers", () => {
+            const CONTENT = "THIS IS A BUFFER";
+            // @ts-expect-error
+            ChorusParser.parse(CONTENT, () => true);
+            expect(mockedRenameEmptyHeaders).toHaveBeenCalledWith(HEADERS);
+        });
+
+        it("should transform rows to entities", () => {
+            const CONTENT = "THIS IS A BUFFER";
+            // @ts-expect-error
+            ChorusParser.parse(CONTENT, () => true);
+            expect(mockedRowsToEntities).toHaveBeenCalledWith(FILLED_HEADERS, DATA.slice(1));
         });
     });
 });
