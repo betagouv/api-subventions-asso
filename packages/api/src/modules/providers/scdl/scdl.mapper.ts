@@ -29,7 +29,7 @@ function getMapperVariants(prop): string[] {
 const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
 
 export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
-    allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*"]],
+    allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*", "Nom de l attribuant"]],
     allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
         path: [[...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"]],
