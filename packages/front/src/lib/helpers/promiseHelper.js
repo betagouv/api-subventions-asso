@@ -1,1 +1,1 @@
-export const returnInfinitPromise = () => new Promise(() => null);
+export const returnInfinitePromise = () => new Promise(() => null);

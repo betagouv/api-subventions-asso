@@ -9,6 +9,7 @@ import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 import documentService from "$lib/resources/document/document.service";
 import documentHelper from "$lib/helpers/document.helper";
+import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
@@ -36,8 +37,8 @@ export class DocumentsController {
         public resource: AssociationEntity | unknown,
     ) {
         this.resourceType = resourceType;
-        this.documentsPromise = new Store(new Promise(() => null));
-        this.zipPromise = new Store(new Promise(resolve => resolve(null)));
+        this.documentsPromise = new Store(returnInfinitePromise());
+        this.zipPromise = new Store(Promise.resolve(null));
         this.resource = resource;
     }
 
