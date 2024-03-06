@@ -16,7 +16,7 @@
         <div class="svg">
             <img src={padlockSvg} alt="" />
         </div>
-        <h2 class="fr-mt-6v">Mot de passe oublié ?</h2>
+        <h2 class="fr-mt-6v text-center">Mot de passe oublié ?</h2>
         {#await $promise}
             <div class="fr-mb-5w fr-mt-n4w">
                 <Spinner />
@@ -62,10 +62,6 @@
 </div>
 
 <style>
-    h2 {
-        text-align: center;
-    }
-
     .svg {
         width: 80px;
         height: 80px;
