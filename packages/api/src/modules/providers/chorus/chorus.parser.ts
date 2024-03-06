@@ -9,10 +9,15 @@ import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 export default class ChorusParser {
     static parse(content: Buffer) {
         console.log("Open and read file ...");
-        const pages = ParseHelper.xlsParse(content);
+        const pagesWithName = ParseHelper.xlsParseWithPageName(content);
         console.log("Read file end");
 
-        const page = pages[0];
+        const extractionPage = pagesWithName.find(page => page.name.includes("Extraction"));
+        if (!extractionPage?.data) {
+            throw new Error("no data in Extraction tab");
+        }
+
+        const page = extractionPage.data;
 
         const headerRow = page[0] as string[];
         const headers = ChorusParser.renameEmptyHeaders(headerRow);
