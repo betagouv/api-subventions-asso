@@ -199,7 +199,7 @@ describe("ChorusParser", () => {
             ChorusParser.rowsToEntities = originalRowsToEntities;
         });
 
-        // we use to have a xlsx with only one tab called "1. Extraction"
+        // we used to have a xlsx with only one tab called "1. Extraction"
         // the current format has 3 tabs and the second one is "1. Extraction"
         it("should work with old format", () => {
             const CONTENT = "THIS IS A BUFFER";
