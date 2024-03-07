@@ -28,11 +28,23 @@ function getMapperVariants(prop): string[] {
 
 const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
 
+// THIS IS A QUICK WIN
+// TODO #2247 : refactor the process to make mapper customizable by producer
+// Many times conventionDate is not used and another column is used to give the year of exercice
+const OVERRIDE_CONVENTION_DATE = ["annee", "exercice", "dateDecision_Tri"];
+
 export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
     allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*", "Nom de l attribuant"]],
     allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
-        path: [[...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"]],
+        path: [
+            [
+                ...OVERRIDE_CONVENTION_DATE,
+                ...getMapperVariants("conventionDate"),
+                "datedeconvention",
+                "Date de convention*",
+            ],
+        ],
         adapter: value => (value ? new Date(value) : value),
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
