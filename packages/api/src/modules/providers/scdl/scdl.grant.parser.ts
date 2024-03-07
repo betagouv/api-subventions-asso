@@ -29,12 +29,16 @@ export default class ScdlGrantParser {
             trim: true,
         });
 
+        console.log(`${parsedChunk.length} parsed line`);
+
         const storableChunk: ScdlStorableGrant[] = [];
 
         for (const parsedData of parsedChunk) {
             const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlGrantEntity;
             if (this.isGrantValid(entity)) storableChunk.push({ ...entity, __data__: parsedData });
         }
+
+        console.log(`${storableChunk.length} valid entity created from parsed line`);
         return storableChunk;
     }
 }

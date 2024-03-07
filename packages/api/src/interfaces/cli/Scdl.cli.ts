@@ -25,6 +25,10 @@ export default class ScdlCli {
 
         const entities = ScdlGrantParser.parseCsv(fileContent, delimeter);
 
+        if (!entities) {
+            throw new Error("No entities could be created from this files");
+        }
+
         console.log(`start persisting ${entities.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
@@ -35,7 +39,7 @@ export default class ScdlCli {
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
         }
         console.log(`${duplicates.length} duplicated entries. Here are some of them: `);
-        console.log(duplicates.slice(0, 5));
+        // console.log(duplicates.slice(0, 5));
         console.log("Updating producer's last update date");
         await scdlService.updateProducer(producerId, { lastUpdate: exportDate });
         console.log("Parsing ended successfuly !");
