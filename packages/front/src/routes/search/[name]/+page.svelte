@@ -33,14 +33,22 @@
         </div>
     </div>
 {:then _result}
-    <p class="fr-text-md">
-        {nbResultLabel}
-    </p>
-    {#if $duplicatesFromIdentifier}
-        <div class="fr-mb-3w">
-            <DuplicateAlert duplicates={$duplicatesFromIdentifier} />
-        </div>
-    {/if}
+    <div class="fr-mb-3w">
+        <p class="fr-mb-2w">
+            {nbResultLabel}
+        </p>
+        {#if $associations.nbPages > 1}
+            <p class="fr-mb-2w fr-text--bold">
+                Pour faciliter l’affichage des résultats, tapez directement le SIREN ou RNA de l’association recherchée.
+            </p>
+        {/if}
+        {#if $duplicatesFromIdentifier}
+            <div>
+                <DuplicateAlert duplicates={$duplicatesFromIdentifier} />
+            </div>
+        {/if}
+    </div>
+
     <div class="fr-grid-row fr-grid-row--gutters search-layout">
         {#each $associations.results as simplifiedAsso}
             <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />

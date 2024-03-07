@@ -75,3 +75,7 @@ html {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.text-center {
+    text-align: center;
+}
