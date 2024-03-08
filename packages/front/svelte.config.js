@@ -30,7 +30,7 @@ const config = {
                 "connect-src": [
                     "self",
                     process.env.DATASUB_URL || "http://localhost:8080",
-                    "https://client.crisp.chat/ wss://client.relay.crisp.chat/w/b1/",
+                    "https://client.crisp.chat wss://client.relay.crisp.chat",
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",
                     "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io",
