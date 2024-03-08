@@ -1,3 +1,3 @@
 import { ScdlGrantEntity } from "./ScdlGrantEntity";
 
-export type ScdlStorableGrant = ScdlGrantEntity & { __data__: Record<string, unknown> };
+export type ScdlStorableGrant = Omit<ScdlGrantEntity, "allocatorName"> & { __data__: Record<string, unknown> };

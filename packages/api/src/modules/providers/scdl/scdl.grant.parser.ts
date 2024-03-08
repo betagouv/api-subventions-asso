@@ -7,7 +7,7 @@ import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 
 export default class ScdlGrantParser {
-    protected static isGrantValid(grant: ScdlGrantEntity) {
+    protected static isGrantValid(grant: Omit<ScdlGrantEntity, "allocatorName">) {
         // mandatory fields
         if (!isSiret(grant.associationSiret)) return false;
         if (!isValidDate(grant.conventionDate)) return false;
@@ -34,8 +34,15 @@ export default class ScdlGrantParser {
         const storableChunk: ScdlStorableGrant[] = [];
 
         for (const parsedData of parsedChunk) {
-            const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlGrantEntity;
+            const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as Omit<
+                ScdlGrantEntity,
+                "allocatorName"
+            >;
             if (this.isGrantValid(entity)) storableChunk.push({ ...entity, __data__: parsedData });
+            else {
+                console.log(parsedData);
+                break;
+            }
         }
 
         console.log(`${storableChunk.length} valid entity created from parsed line`);

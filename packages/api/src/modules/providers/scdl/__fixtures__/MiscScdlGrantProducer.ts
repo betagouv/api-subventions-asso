@@ -1,6 +1,8 @@
+import MiscScdlProducer from "./MiscScdlProducer";
+
 export default {
     producerId: "52qdju982jduh93912kjdnaaa0",
-    allocatorName: "Région Bretagne",
+    allocatorName: MiscScdlProducer.producerName,
     allocatorSiret: "23350001600040",
     conventionDate: new Date("2017-06-27"),
     decisionReference: "2017-03-103",
@@ -17,9 +19,5 @@ export default {
     UeNotification: true,
     grantPercentage: 0.5,
     aidSystem: "65d5b6c7-102c-4440-ac3b-768f708edc0a",
-    producer: {
-        producerId: "52qdju982jduh93912kjdnaaa0",
-        producerName: "Cabinet du premier ministre",
-        lastUpdate: new Date("2023-10-13"),
-    },
+    producer: MiscScdlProducer,
 };

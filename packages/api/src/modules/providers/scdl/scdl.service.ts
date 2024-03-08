@@ -18,14 +18,20 @@ export class ScdlService {
         return getMD5(`${producerId}-${JSON.stringify(grant.__data__)}`);
     }
 
-    createManyGrants(grants: ScdlStorableGrant[], producerId: string) {
+    async createManyGrants(grants: ScdlStorableGrant[], producerId: string) {
         if (!producerId || typeof producerId !== "string")
             throw new Error("Could not save SCDL grants without a producer ID");
+
+        const producerName = (await this.getProducer(producerId))?.producerName;
+
+        // should not happen but who knows
+        if (!producerName) throw new Error("Could not retrieve producer name");
 
         const dboArray = grants.map(grant => {
             return {
                 ...grant,
                 producerId,
+                allocatorName: producerName,
                 _id: this._buildGrantUniqueId(grant, producerId),
             } as ScdlGrantDbo;
         });

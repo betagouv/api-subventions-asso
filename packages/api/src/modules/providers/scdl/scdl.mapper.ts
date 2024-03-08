@@ -2,7 +2,7 @@ import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { shortISORegExp } from "../../../shared/helpers/DateHelper";
 
 const OFFICIAL_MAPPER = {
-    allocatorName: "nomAttribuant",
+    // we did remove allocatorName from mapper because we chose to define it from MiscScdlProducerEntity
     allocatorSiret: "idAttribuant",
     conventionDate: "dateConvention",
     decisionReference: "referenceDecision",
@@ -31,10 +31,9 @@ const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]
 // THIS IS A QUICK WIN
 // TODO #2247 : refactor the process to make mapper customizable by producer
 // Many times conventionDate is not used and another column is used to give the year of exercice
-const OVERRIDE_CONVENTION_DATE = ["annee", "exercice", "dateDecision_Tri"];
+const OVERRIDE_CONVENTION_DATE = ["Année budgétaire", "annee", "exercice", "dateDecision_Tri"];
 
 export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
-    allocatorName: [[...getMapperVariants("allocatorName"), "Nom attributaire*", "Nom de l attribuant"]],
     allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
     conventionDate: {
         path: [
@@ -48,15 +47,15 @@ export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
         adapter: value => (value ? new Date(value) : value),
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
-    associationName: [[...getMapperVariants("associationName"), "Nom du bénéficiaire*"]],
-    associationSiret: [[...getMapperVariants("associationSiret"), "Identification du bénéficiaire*"]],
+    associationName: [[...getMapperVariants("associationName"), "Nom du bénéficiaire*", "Nom Bénéficiaire"]],
+    associationSiret: [[...getMapperVariants("associationSiret"), "Identification du bénéficiaire*", "Numéro Siret"]],
     associationRna: [[...getMapperVariants("associationRna")]],
-    object: [[...getMapperVariants("object"), "objet", "Objet de la convention"]],
+    object: [[...getMapperVariants("object"), "objet", "Objet de la convention", "Objet du dossier"]],
     amount: {
-        path: [[...getMapperVariants("amount"), "Montant total de la subvention*"]],
+        path: [[...getMapperVariants("amount"), "Montant total de la subvention*", "Montant voté"]],
         adapter: value => (value ? parseFloat(value) : value),
     },
-    paymentNature: [[...getMapperVariants("paymentNature")]],
+    paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention"]],
     paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
     paymentStartDate: {
         path: [
