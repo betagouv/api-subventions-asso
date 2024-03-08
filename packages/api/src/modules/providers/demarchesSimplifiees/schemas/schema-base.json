@@ -1,0 +1,38 @@
+{
+  "schema": [
+    {
+      "from": "siret",
+      "to": "siret"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "transmis_le"
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "dispositif"
+    }
+  ],
+  "commonSchema": [
+    {
+      "to": "siret",
+      "from": "siret"
+    },
+    {
+      "to": "dispositif",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    }
+  ]
+}
