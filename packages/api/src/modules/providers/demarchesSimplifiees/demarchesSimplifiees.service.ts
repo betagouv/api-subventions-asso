@@ -52,7 +52,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
 
                 return DemarchesSimplifieesEntityAdapter.toSubvention(demande, schema);
             })
-            .filter(sub => sub) as DemandeSubvention[];
+            .filter(sub => sub && sub.status.value !== "en_construction") as DemandeSubvention[]; //remove drafts
     }
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
