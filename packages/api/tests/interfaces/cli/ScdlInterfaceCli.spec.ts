@@ -4,9 +4,7 @@ import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
 import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
 import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
-
-const PRODUCER_ID = "PRODUCER_ID";
-const PRODUCER_NAME = "PRODUCER_NAME";
+import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
 
 describe("SCDL CLI", () => {
     let cli;
@@ -16,8 +14,8 @@ describe("SCDL CLI", () => {
     });
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
-            await cli.addProducer(PRODUCER_ID, PRODUCER_NAME);
-            const document = await miscScdlProducersRepository.findByProducerId(PRODUCER_ID);
+            await cli.addProducer(MiscScdlProducer.producerId, MiscScdlProducer.producerName);
+            const document = await miscScdlProducersRepository.findByProducerId(MiscScdlProducer.producerId);
             expect(document).toMatchSnapshot({ _id: expect.any(ObjectId), lastUpdate: expect.any(Date) });
         });
     });
@@ -34,10 +32,10 @@ describe("SCDL CLI", () => {
         });
 
         it("should add grants", async () => {
-            await cli.addProducer(PRODUCER_ID, PRODUCER_NAME);
+            await cli.addProducer(MiscScdlProducer.producerId, MiscScdlProducer.producerName);
             await cli.parse(
                 path.resolve(__dirname, "../../../src/modules/providers/scdl/__fixtures__/SCDL.csv"),
-                PRODUCER_ID,
+                MiscScdlProducer.producerId,
                 new Date(),
             );
             const grants = await miscScdlGrantRepository.findAll();
@@ -50,13 +48,13 @@ describe("SCDL CLI", () => {
         it("should update producer lastUpdate", async () => {
             const EXPORT_DATE = new Date("2023-01-01");
             const expected = EXPORT_DATE;
-            await cli.addProducer(PRODUCER_ID, PRODUCER_NAME);
+            await cli.addProducer(MiscScdlProducer.producerId, MiscScdlProducer.producerName);
             await cli.parse(
                 path.resolve(__dirname, "../../../src/modules/providers/scdl/__fixtures__/SCDL.csv"),
-                PRODUCER_ID,
+                MiscScdlProducer.producerId,
                 EXPORT_DATE,
             );
-            const actual = (await scdlService.getProducer(PRODUCER_ID))?.lastUpdate;
+            const actual = (await scdlService.getProducer(MiscScdlProducer.producerId))?.lastUpdate;
             expect(actual).toEqual(expected);
         });
     });
