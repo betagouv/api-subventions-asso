@@ -39,7 +39,6 @@
             </div>
         {/if}
     </div>
-    <p />
     <div slot="card-end">
         <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}

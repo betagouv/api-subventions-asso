@@ -25,7 +25,7 @@
                         <slot name="card-start" />
                     </div>
                 {/if}
-                <svelte:element this={titleTag} class="fr-card__title fr-{titleStyle}">
+                <svelte:element this={titleTag} class="fr-card__title fr-{titleStyle} min-height-{titleEllipsis}">
                     <a
                         href={url}
                         on:click={onClick}
@@ -55,3 +55,10 @@
         {/if}
     </div>
 </div>
+
+<style>
+    .min-height-3 {
+        /* 3 times line-height */
+        min-height: 5.25rem;
+    }
+</style>
