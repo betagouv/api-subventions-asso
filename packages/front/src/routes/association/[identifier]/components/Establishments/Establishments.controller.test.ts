@@ -1,3 +1,5 @@
+import { onDestroy } from "svelte";
+vi.mock("svelte");
 import type { SpyInstance } from "vitest";
 import { EstablishmentsController } from "./Establishments.controller";
 import Store from "$lib/core/Store";
@@ -23,17 +25,22 @@ describe("EstablishmentsController", () => {
             mockFilterEstablishments = vi
                 // @ts-expect-error: private method
                 .spyOn(controller, "filterEstablishments")
-                // @ts-expect-error: ?
                 .mockReturnValue(FILTERED_ESTABLISHMENTS);
             mockSetTotalPages = vi.spyOn(controller, "setTotalPages").mockImplementation(vi.fn());
             mockRenderPages = vi.spyOn(controller, "renderPage").mockImplementation(vi.fn());
         });
 
-        // afterEach(() => {
-        //     mockFilterEstablishments.mockReset();
-        //     mockSetTotalPages.mockReset();
-        //     mockRenderPages.mockReset();
-        // });
+        afterEach(() => {
+            mockFilterEstablishments.mockReset();
+            mockSetTotalPages.mockReset();
+            mockRenderPages.mockReset();
+        });
+
+        afterAll(() => {
+            mockFilterEstablishments.mockRestore();
+            mockSetTotalPages.mockRestore();
+            mockRenderPages.mockRestore();
+        });
 
         it("should call filterEstablishments()", () => {
             controller.onFilter(FILTER);
