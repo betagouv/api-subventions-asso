@@ -1,5 +1,8 @@
+import { removeWhiteSpace } from "./stringHelper";
+
 export function isSiret(siret) {
-    return typeof siret === "string" && /^\d{14}/.test(siret);
+    if (!siret) return false;
+    return /^\d{14}/.test(removeWhiteSpace(siret));
 }
 
 export function isStartOfSiret(siret) {
@@ -7,12 +10,13 @@ export function isStartOfSiret(siret) {
 }
 
 export function isSiren(siren) {
-    return typeof siren === "string" && /^\d{9}$/.test(siren);
+    if (!siren) return false;
+    return /^\d{9}$/.test(removeWhiteSpace(siren));
 }
 
 export function isRna(rna) {
     if (!rna) return false;
-    return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
+    return /^W\d[A-Z\d]\d{7}$/.test(removeWhiteSpace(rna));
 }
 
 export function isIdentifier(identifier) {

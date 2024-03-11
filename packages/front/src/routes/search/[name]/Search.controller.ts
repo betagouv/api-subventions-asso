@@ -5,6 +5,7 @@ import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
 import associationService from "$lib/resources/associations/association.service";
+import { isAssociation } from "$lib/resources/associations/association.helper";
 
 export default class SearchController {
     inputSearch: Store<string | undefined>;
@@ -12,6 +13,7 @@ export default class SearchController {
     searchPromise: Store<Promise<unknown>>;
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
+    lastSearchCompany = new Store(false);
 
     constructor(name = "") {
         this.inputSearch = new Store(decodeQuerySearch(name));
@@ -21,15 +23,17 @@ export default class SearchController {
     }
 
     async fetchAssociationFromName(name = "", page = 1) {
-        const associations = await associationService.search(name, page);
-        if ((isSiren(name) || isRna(name)) && associations.total === 1) {
-            const asso = associations.results[0];
-            return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
+        this.lastSearchCompany.set(false);
+        const search = await associationService.search(name, page);
+        if ((isSiren(name) || isRna(name)) && search.total === 1) {
+            const asso = search.results[0];
+            if (isAssociation(asso)) return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
+            else this.lastSearchCompany.set(true);
         } else {
             // display alert if there are duplicates in rna-siren links
             if (isSiren(name) || isRna(name)) {
                 this.duplicatesFromIdentifier.set(
-                    associations.results
+                    search.results
                         .map(association =>
                             [association.rna, association.siren].find(identifier => identifier !== name),
                         )
@@ -37,10 +41,10 @@ export default class SearchController {
                 );
             } else this.duplicatesFromIdentifier.set(null);
 
-            this.associations.set(associations);
-            this.currentPage.set(associations.page);
+            this.associations.set(search);
+            this.currentPage.set(search.page);
             // reload same page to save search in history
-            goto(`/search/${name}`, { replaceState: true });
+            goto(`/search/${encodeQuerySearch(name)}`, { replaceState: true });
         }
     }
 
@@ -58,8 +62,7 @@ export default class SearchController {
         if (isSiret(input)) {
             this.gotoEstablishment(input);
         } else {
-            const encodedValue = encodeQuerySearch(input);
-            this.searchPromise.set(this.fetchAssociationFromName(encodedValue, 1));
+            this.searchPromise.set(this.fetchAssociationFromName(input, 1));
         }
     }
 }
