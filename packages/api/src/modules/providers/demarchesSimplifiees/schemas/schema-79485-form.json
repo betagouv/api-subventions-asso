@@ -1,0 +1,75 @@
+{
+  "demarcheId": 79485,
+  "schema": [
+    {
+      "from": "service.nom",
+      "to": "service_instructeur"
+    },
+    {
+      "from": "siret",
+      "to": "siret"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "dispositif"
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "transmis_le"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMTM1MTk2MQ==.value",
+      "to": "actions_proposee[0].intitule"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtNDk2ODIx==.value",
+      "to": "actions_proposee[0].description"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzg1NjAx==.value",
+      "to": "actions_proposee[0].indicateurs"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMTM1MTk2Mg==.value",
+      "to": "montants.demande"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzU0NzkxNw==.value",
+      "to": "montants.total"
+    }
+  ],
+  "commonSchema": [
+    {
+      "to": "siret",
+      "from": "siret"
+    },
+    {
+      "to": "service_instructeur",
+      "from": "service.nom"
+    },
+    {
+      "to": "dispositif",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "montant_demande",
+      "from": "demande.champs.Q2hhbXAtMTM1MTk2Mg==.value"
+    },
+    {
+      "to": "objet",
+      "from": "demande.champs.Q2hhbXAtMTM1MTk2MQ==.value"
+    },
+  ]
+}
