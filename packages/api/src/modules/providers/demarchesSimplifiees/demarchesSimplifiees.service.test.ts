@@ -279,9 +279,9 @@ describe("DemarchesSimplifieesService", () => {
         let toEntitiesMock: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-expect-error mock
             sendQueryMock = jest
                 .spyOn(demarchesSimplifieesService, "sendQuery")
+                // @ts-expect-error mock
                 .mockResolvedValue({ data: { demarche: {} } });
             toEntitiesMock = jest
                 .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
