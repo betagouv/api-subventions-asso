@@ -1,4 +1,5 @@
 import { onDestroy } from "svelte";
+import type { Unsubscriber } from "svelte/store";
 import Store from "$lib/core/Store";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 import type { SimplifiedEstablishment } from "$lib/resources/establishments/types/establishment.types";
@@ -12,7 +13,7 @@ export class EstablishmentsController {
     totalPages: Store<number> = new Store(1);
     currentPage: Store<number> = new Store(1);
     init = true;
-    unsubscribes: unknown[] = [];
+    unsubscribes: Unsubscriber[] = [];
 
     static MAX_ESTABLISHMENTS_BY_PAGE = 9;
 
@@ -48,7 +49,6 @@ export class EstablishmentsController {
         ];
 
         onDestroy(() => {
-            // @ts-expect-error: svelte does not expose Unsubscriber type
             this.unsubscribes.map(unsubscribe => unsubscribe());
         });
     }
