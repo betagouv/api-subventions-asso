@@ -2,7 +2,7 @@
   "demarcheId": 75747,
   "schema": [
     {
-      "from": "service.nom",
+      "value": "Direction Régionale des Affaires Culturelles",
       "to": "service_instructeur"
     },
     {
@@ -61,7 +61,7 @@
     },
     {
       "to": "service_instructeur",
-      "from": "service.nom"
+      "value": "Direction Régionale des Affaires Culturelles"
     },
     {
       "to": "dispositif",
