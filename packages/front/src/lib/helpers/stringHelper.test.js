@@ -99,4 +99,18 @@ describe("StringHelper", () => {
             expect(isPhoneNumber("+331.0000.0.00.00")).toBeFalsy();
         });
     });
+
+    describe("removeWhiteSpace", () => {
+        it("should do nothing", () => {
+            const expected = "1234";
+            const actual = StringHelper.removeWhiteSpace("1234");
+            expect(actual).toEqual(expected);
+        });
+
+        it("should remove white space", () => {
+            const expected = "1234";
+            const actual = StringHelper.removeWhiteSpace("12 34");
+            expect(actual).toEqual(expected);
+        });
+    });
 });

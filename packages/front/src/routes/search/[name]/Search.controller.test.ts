@@ -1,6 +1,8 @@
 import type { SpyInstance } from "vitest";
 
 import SearchController from "./Search.controller";
+import { goto } from "$app/navigation";
+vi.mock("$app/navigation");
 import * as IdentifierHelper from "$lib/helpers/identifierHelper";
 
 vi.mock("$lib/helpers/identifierHelper");
@@ -27,6 +29,11 @@ describe("SearchController", () => {
     };
     beforeAll(() => {
         mockedAssociationService.search.mockResolvedValue(DUPLICATED_RESULTS);
+    });
+
+    afterEach(() => {
+        mockedIdentifierHelper.isRna.mockReset();
+        mockedIdentifierHelper.isSiren.mockReset();
     });
 
     describe("fetchAssociationFromName()", () => {
@@ -65,6 +72,16 @@ describe("SearchController", () => {
             await controller.fetchAssociationFromName("name");
             expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE);
         });
+
+        it("should call goto with encoded input", async () => {
+            const PAGE = 1;
+            mockedIdentifierHelper.isRna.mockReturnValue(false);
+            mockedIdentifierHelper.isSiren.mockReturnValue(false);
+            const controller = new SearchController(RNA);
+            await new Promise(process.nextTick);
+            await controller.fetchAssociationFromName("name");
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE);
+        });
     });
 
     describe("onSubmit", () => {
@@ -90,17 +107,10 @@ describe("SearchController", () => {
             expect(fetchSpy).not.toHaveBeenCalled();
         });
 
-        it("if input is not siret, encode query search", () => {
-            vi.mocked(isSiret).mockReturnValueOnce(false);
-            controller.onSubmit(RNA);
-            expect(encodeQuerySearch).toHaveBeenCalledWith(RNA);
-        });
-
         it("if input is not siret, fetch new result on page one", () => {
             vi.mocked(isSiret).mockReturnValueOnce(false);
-            vi.mocked(encodeQuerySearch).mockReturnValueOnce("ENCODÉ");
             controller.onSubmit(RNA);
-            expect(fetchSpy).toHaveBeenCalledWith("ENCODÉ", 1);
+            expect(fetchSpy).toHaveBeenCalledWith(RNA, 1);
         });
     });
 });
