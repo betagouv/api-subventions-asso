@@ -3,11 +3,11 @@ import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 import { SCDL_MAPPER } from "./scdl.mapper";
-import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
+import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 
 export default class ScdlGrantParser {
-    protected static isGrantValid(grant: Omit<ScdlGrantEntity, "allocatorName">) {
+    protected static isGrantValid(grant: ScdlParsedGrant) {
         // mandatory fields
         if (!isSiret(grant.associationSiret)) return false;
         if (!isValidDate(grant.conventionDate)) return false;
@@ -29,23 +29,16 @@ export default class ScdlGrantParser {
             trim: true,
         });
 
-        console.log(`${parsedChunk.length} parsed line`);
-
         const storableChunk: ScdlStorableGrant[] = [];
 
         for (const parsedData of parsedChunk) {
-            const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as Omit<
-                ScdlGrantEntity,
-                "allocatorName"
-            >;
+            const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlParsedGrant;
             if (this.isGrantValid(entity)) storableChunk.push({ ...entity, __data__: parsedData });
             else {
-                console.log(parsedData);
                 break;
             }
         }
 
-        console.log(`${storableChunk.length} valid entity created from parsed line`);
         return storableChunk;
     }
 }
