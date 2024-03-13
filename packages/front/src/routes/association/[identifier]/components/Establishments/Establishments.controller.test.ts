@@ -1,3 +1,5 @@
+import { onDestroy } from "svelte";
+vi.mock("svelte");
 import type { SpyInstance } from "vitest";
 import { EstablishmentsController } from "./Establishments.controller";
 import Store from "$lib/core/Store";
@@ -21,19 +23,13 @@ describe("EstablishmentsController", () => {
         beforeEach(() => {
             controller.filteredEstablishments = new Store([]);
             mockFilterEstablishments = vi
-                // @ts-expect-error: private method
+                // @ts-expect-error -- private
                 .spyOn(controller, "filterEstablishments")
-                // @ts-expect-error: ?
+                // @ts-expect-error -- weird typing bug, due to private method ?
                 .mockReturnValue(FILTERED_ESTABLISHMENTS);
             mockSetTotalPages = vi.spyOn(controller, "setTotalPages").mockImplementation(vi.fn());
             mockRenderPages = vi.spyOn(controller, "renderPage").mockImplementation(vi.fn());
         });
-
-        // afterEach(() => {
-        //     mockFilterEstablishments.mockReset();
-        //     mockSetTotalPages.mockReset();
-        //     mockRenderPages.mockReset();
-        // });
 
         it("should call filterEstablishments()", () => {
             controller.onFilter(FILTER);

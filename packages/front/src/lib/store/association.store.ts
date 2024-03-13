@@ -14,3 +14,8 @@ currentAssoSimplifiedEtabs.subscribe(establishments => {
     );
     mapSiretPostCodeStore.set(map);
 });
+
+export const cleanStores = () => {
+    currentAssociation.set(undefined);
+    currentAssoSimplifiedEtabs.set([]);
+};

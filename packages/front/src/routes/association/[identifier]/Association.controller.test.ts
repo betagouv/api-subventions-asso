@@ -1,3 +1,5 @@
+import { onDestroy } from "svelte";
+vi.mock("svelte");
 import { AssociationController } from "./Association.controller";
 import associationService from "$lib/resources/associations/association.service";
 import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";

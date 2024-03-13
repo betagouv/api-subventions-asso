@@ -1,9 +1,10 @@
 import type { Rna, Siren } from "dto";
+import { onDestroy } from "svelte";
 import Store from "$lib/core/Store";
 import { isAssociation } from "$lib/resources/associations/association.helper";
 import associationService from "$lib/resources/associations/association.service";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
-import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
+import { cleanStores, currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
 
 export class AssociationController {
     titles = [
@@ -31,6 +32,11 @@ export class AssociationController {
         this.simplifiedEstablishmentPromise = associationService
             .getEstablishments(identifier)
             .then(estabs => currentAssoSimplifiedEtabs.set(estabs));
+
+        // when component is destroyed we want to reset those stores
+        onDestroy(() => {
+            cleanStores();
+        });
     }
 
     get isAssociation() {
