@@ -60,6 +60,14 @@
     {
       "from": "demande.champs.Q2hhbXAtMjM2MzQ5Ng==.value",
       "to": "date_fin"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjM2MzM2Nw==.value",
+      "to": "contact.telephone"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjMzNzMwNA==.value",
+      "to": "contact.email"
     }
   ],
   "commonSchema": [

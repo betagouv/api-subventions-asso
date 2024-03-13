@@ -44,6 +44,14 @@
     {
       "to": "annee_demande",
       "value": 2023
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzQyNjU3.value",
+      "to": "contact.telephone"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzQyNjcw.value",
+      "to": "contact.email"
     }
   ],
   "commonSchema": [
