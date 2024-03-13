@@ -30,18 +30,6 @@ describe("EstablishmentsController", () => {
             mockRenderPages = vi.spyOn(controller, "renderPage").mockImplementation(vi.fn());
         });
 
-        afterEach(() => {
-            mockFilterEstablishments.mockReset();
-            mockSetTotalPages.mockReset();
-            mockRenderPages.mockReset();
-        });
-
-        afterAll(() => {
-            mockFilterEstablishments.mockRestore();
-            mockSetTotalPages.mockRestore();
-            mockRenderPages.mockRestore();
-        });
-
         it("should call filterEstablishments()", () => {
             controller.onFilter(FILTER);
             expect(mockFilterEstablishments).toHaveBeenCalledWith(FILTER);
