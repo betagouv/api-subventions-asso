@@ -1,5 +1,4 @@
 import { onDestroy } from "svelte";
-import type { Unsubscriber } from "svelte/store";
 import Store from "$lib/core/Store";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 import type { SimplifiedEstablishment } from "$lib/resources/establishments/types/establishment.types";
@@ -13,7 +12,6 @@ export class EstablishmentsController {
     totalPages = new Store(1);
     currentPage = new Store(1);
     isLoading = true;
-    unsubscribes: Unsubscriber[] = [];
 
     static MAX_ESTABLISHMENTS_BY_PAGE = 9;
 
@@ -32,7 +30,7 @@ export class EstablishmentsController {
     }
 
     subscribeStores() {
-        this.unsubscribes = [
+        const unsubscribes = [
             this.establishmentsStore.subscribe(estabs => {
                 this.filteredEstablishments.set(estabs);
                 this.onEstablishementsUpdated();
@@ -49,7 +47,7 @@ export class EstablishmentsController {
         ];
 
         onDestroy(() => {
-            this.unsubscribes.map(unsubscribe => unsubscribe());
+            unsubscribes.map(unsubscribe => unsubscribe());
         });
     }
 
