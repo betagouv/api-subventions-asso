@@ -40,6 +40,10 @@
     {
       "from": "demande.champs.Q2hhbXAtMzU0NzkxNw==.value",
       "to": "montants.total"
+    },
+    {
+      "to": "annee_demande",
+      "value": 2023
     }
   ],
   "commonSchema": [
@@ -70,6 +74,10 @@
     {
       "to": "objet",
       "from": "demande.champs.Q2hhbXAtMTM1MTk2MQ==.value"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
     }
   ]
 }
