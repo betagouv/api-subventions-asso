@@ -21,3 +21,7 @@ export function isPhoneNumber(str) {
     const regex = /^\+?[0-9 .-]+$/;
     return regex.test(str);
 }
+
+export function removeWhiteSpace(string) {
+    return [...string].filter(char => char !== " ").join("");
+}
