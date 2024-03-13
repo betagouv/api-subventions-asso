@@ -12,7 +12,7 @@ export class EstablishmentsController {
     visibleEstablishments = new Store<SimplifiedEstablishment[]>([]);
     totalPages = new Store(1);
     currentPage = new Store(1);
-    init = true;
+    isLoading = true;
     unsubscribes: Unsubscriber[] = [];
 
     static MAX_ESTABLISHMENTS_BY_PAGE = 9;
@@ -40,8 +40,8 @@ export class EstablishmentsController {
             this.currentPage.subscribe(() => {
                 // we don't want to listen to the initialization of currentPage
                 // first render must be called from establishmentsStore's update
-                if (this.init) {
-                    this.init = false;
+                if (this.isLoading) {
+                    this.isLoading = false;
                 } else {
                     this.renderPage();
                 }
