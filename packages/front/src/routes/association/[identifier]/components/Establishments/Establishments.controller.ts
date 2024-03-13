@@ -8,10 +8,10 @@ import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/assoc
 export class EstablishmentsController {
     associationStore: Store<AssociationEntity>;
     establishmentsStore: Store<SimplifiedEstablishment[]>;
-    filteredEstablishments: Store<SimplifiedEstablishment[]> = new Store([]);
-    visibleEstablishments: Store<SimplifiedEstablishment[]> = new Store([]);
-    totalPages: Store<number> = new Store(1);
-    currentPage: Store<number> = new Store(1);
+    filteredEstablishments = new Store<SimplifiedEstablishment[]>([]);
+    visibleEstablishments = new Store<SimplifiedEstablishment[]>([]);
+    totalPages = new Store(1);
+    currentPage = new Store(1);
     init = true;
     unsubscribes: Unsubscriber[] = [];
 
