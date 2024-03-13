@@ -34,7 +34,7 @@
       "to": "montants.accorde"
     },
     {
-      "from": "demande.annotations.Q2hhbXAtMjUzNDAzOQ==.value",
+      "from": "demande.chmaps.Q2hhbXAtMjUzNDAzOQ==.value",
       "to": "montants.total"
     },
     {

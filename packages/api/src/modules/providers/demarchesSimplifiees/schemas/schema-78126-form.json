@@ -46,7 +46,7 @@
       "to": "montants.total"
     },
     {
-      "from": "demande.champs.Q2hhbXAtMjUzOTE1Ng==.value",
+      "from": "demande.annotations.Q2hhbXAtMjUzOTE1Ng==.value",
       "to": "montants.propose"
     },
     {
