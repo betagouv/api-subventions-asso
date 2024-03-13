@@ -13,7 +13,7 @@ export default class SearchController {
     searchPromise: Store<Promise<unknown>>;
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
-    lastSearchCompany = new Store(false);
+    isLastSearchCompany = new Store(false);
 
     constructor(name = "") {
         this.inputSearch = new Store(decodeQuerySearch(name));
@@ -23,12 +23,12 @@ export default class SearchController {
     }
 
     async fetchAssociationFromName(name = "", page = 1) {
-        this.lastSearchCompany.set(false);
+        this.isLastSearchCompany.set(false);
         const search = await associationService.search(name, page);
         if ((isSiren(name) || isRna(name)) && search.total === 1) {
             const asso = search.results[0];
             if (isAssociation(asso)) return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
-            else this.lastSearchCompany.set(true);
+            else this.isLastSearchCompany.set(true);
         } else {
             // display alert if there are duplicates in rna-siren links
             if (isSiren(name) || isRna(name)) {

@@ -11,7 +11,8 @@
     const { name } = data.params;
 
     const ctrl = new SearchController(name);
-    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier, currentPage, lastSearchCompany } = ctrl;
+    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier, currentPage, isLastSearchCompany } =
+        ctrl;
 
     let nbResultLabel;
     $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
@@ -34,7 +35,7 @@
         </div>
     </div>
 {:then _result}
-    {#if $lastSearchCompany}
+    {#if $isLastSearchCompany}
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-8">
                 <Alert title="Il semblerait que vous cherchiez une entreprise et non une association. ">
