@@ -4,8 +4,8 @@ exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
 Object {
   "_id": Any<ObjectId>,
   "lastUpdate": Any<Date>,
-  "producerId": "PRODUCER_ID",
-  "producerName": "PRODUCER_NAME",
+  "producerId": "52qdju982jduh93912kjdnaaa0",
+  "producerName": "Région Bretagne",
 }
 `;
 
@@ -33,7 +33,7 @@ Array [
     },
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
-    "allocatorName": "TEST_SOCLE_SCDL",
+    "allocatorName": "Région Bretagne",
     "allocatorSiret": "12000123400023",
     "amount": 45000,
     "associationName": "ANNO_1",
@@ -48,7 +48,7 @@ Array [
     "paymentEndDate": 2019-05-20T00:00:00.000Z,
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
-    "producerId": "PRODUCER_ID",
+    "producerId": "52qdju982jduh93912kjdnaaa0",
   },
   Object {
     "UeNotification": false,
@@ -72,7 +72,7 @@ Array [
     },
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edz27",
-    "allocatorName": "TEST_SOCLE_SCDL",
+    "allocatorName": "Région Bretagne",
     "allocatorSiret": "12000123400023",
     "amount": 50000,
     "associationName": "ANNO_2",
@@ -87,7 +87,7 @@ Array [
     "paymentEndDate": 2022-02-14T00:00:00.000Z,
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
-    "producerId": "PRODUCER_ID",
+    "producerId": "52qdju982jduh93912kjdnaaa0",
   },
   Object {
     "UeNotification": false,
@@ -111,7 +111,7 @@ Array [
     },
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708endyu",
-    "allocatorName": "TEST_SOCLE_SCDL",
+    "allocatorName": "Région Bretagne",
     "allocatorSiret": "12000123400023",
     "amount": 5000,
     "associationName": "ANNO_1",
@@ -126,7 +126,7 @@ Array [
     "paymentEndDate": 2019-05-30T00:00:00.000Z,
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
-    "producerId": "PRODUCER_ID",
+    "producerId": "52qdju982jduh93912kjdnaaa0",
   },
   Object {
     "UeNotification": false,
@@ -150,7 +150,7 @@ Array [
     },
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708mpo8i",
-    "allocatorName": "TEST_SOCLE_SCDL",
+    "allocatorName": "Région Bretagne",
     "allocatorSiret": "12000123400023",
     "amount": 10000,
     "associationName": "ANNO_3",
@@ -165,7 +165,7 @@ Array [
     "paymentEndDate": 2019-10-25T00:00:00.000Z,
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
-    "producerId": "PRODUCER_ID",
+    "producerId": "52qdju982jduh93912kjdnaaa0",
   },
 ]
 `;

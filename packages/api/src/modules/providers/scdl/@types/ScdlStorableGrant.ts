@@ -1,3 +1,3 @@
-import { ScdlGrantEntity } from "./ScdlGrantEntity";
+import { ScdlParsedGrant } from "./ScdlParsedGrant";
 
-export type ScdlStorableGrant = ScdlGrantEntity & { __data__: Record<string, unknown> };
+export type ScdlStorableGrant = ScdlParsedGrant & { __data__: Record<string, unknown> };

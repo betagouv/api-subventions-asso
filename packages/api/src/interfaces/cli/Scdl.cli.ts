@@ -25,6 +25,10 @@ export default class ScdlCli {
 
         const entities = ScdlGrantParser.parseCsv(fileContent, delimeter);
 
+        if (!entities) {
+            throw new Error("No entities could be created from this files");
+        }
+
         console.log(`start persisting ${entities.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
