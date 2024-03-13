@@ -128,6 +128,25 @@ describe("DemarchesSimplifieesService", () => {
 
             expect(actual).toHaveLength(0);
         });
+
+        it("should not return drafts", async () => {
+            const DEMARCHE_ID = 12345;
+            const expected = { demarcheId: DEMARCHE_ID };
+
+            getSchemasByIdsMock.mockResolvedValue({
+                [DEMARCHE_ID]: { id: DEMARCHE_ID },
+            });
+
+            jest.mocked(DemarchesSimplifieesEntityAdapter.toSubvention).mockReturnValueOnce({
+                // @ts-expect-error -- mock
+                status: { value: "en_construction" },
+            });
+
+            // @ts-expect-error entitiesToSubventions is private method
+            const actual = await demarchesSimplifieesService.entitiesToSubventions([expected]);
+
+            expect(actual).toHaveLength(0);
+        });
     });
 
     describe("getDemandeSubventionBySiren", () => {
@@ -260,8 +279,10 @@ describe("DemarchesSimplifieesService", () => {
         let toEntitiesMock: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-expect-error mock
-            sendQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue({ data: { demarche: {}} });
+            sendQueryMock = jest
+                .spyOn(demarchesSimplifieesService, "sendQuery")
+                // @ts-expect-error mock
+                .mockResolvedValue({ data: { demarche: {} } });
             toEntitiesMock = jest
                 .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
                 // @ts-expect-error disable ts form return type of toEntities
@@ -284,7 +305,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call toEntities", async () => {
-            const expected = { data: { demarche: true} };
+            const expected = { data: { demarche: true } };
 
             sendQueryMock.mockResolvedValueOnce(expected);
 
@@ -294,7 +315,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should upsert data", async () => {
-            const expected = { data: { demarche: true} };
+            const expected = { data: { demarche: true } };
 
             sendQueryMock.mockResolvedValueOnce(expected);
 

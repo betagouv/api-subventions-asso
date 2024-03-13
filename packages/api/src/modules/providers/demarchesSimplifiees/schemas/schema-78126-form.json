@@ -1,5 +1,5 @@
 {
-  "demarcheId": 62744,
+  "demarcheId": 78126,
   "schema": [
     {
       "value": "Direction Régionale des Affaires Culturelles",
@@ -14,6 +14,14 @@
       "to": "status"
     },
     {
+      "from": "demande.demarche.title",
+      "to": "dispositif"
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "transmis_le"
+    },
+    {
       "from": "demande.champs.Q2hhbXAtMjM2MzQwMg==.value",
       "to": "actions_proposee[0].intitule"
     },
@@ -26,20 +34,24 @@
       "to": "actions_proposee[0].description"
     },
     {
+      "from": "demande.champs.Q2hhbXAtMjM2MzUxNg==.value",
+      "to": "actions_proposee[0].indicateurs"
+    },
+    {
       "from": "demande.champs.Q2hhbXAtMjUwNjg0MA==.value",
       "to": "montants.demande"
     },
     {
-      "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value",
-      "to": "montants.propose"
+      "from": "demande.champs.Q2hhbXAtMjUzNDAzOQ==.value",
+      "to": "montants.total"
     },
     {
       "from": "demande.annotations.Q2hhbXAtMjUzOTE1Ng==.value",
-      "to": "montants.accorde"
+      "to": "montants.propose"
     },
     {
-      "from": "demande.dateDepot",
-      "to": "transmis_le"
+      "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value",
+      "to": "montants.accorde"
     },
     {
       "from": "demande.champs.Q2hhbXAtMjM2MzQ5NQ==.value",
@@ -50,8 +62,12 @@
       "to": "date_fin"
     },
     {
-      "from": "demande.demarche.title",
-      "to": "dispositif"
+      "from": "demande.champs.Q2hhbXAtMjM2MzM2Nw==.value",
+      "to": "contact.telephone"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjMzNzMwNA==.value",
+      "to": "contact.email"
     }
   ],
   "commonSchema": [
@@ -68,8 +84,16 @@
       "from": "demande.demarche.title"
     },
     {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    },
+    {
       "to": "montant_accorde",
-      "from": "demande.annotations.Q2hhbXAtMjUzOTE1Ng==.value"
+      "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value"
     },
     {
       "to": "montant_demande",
@@ -78,14 +102,6 @@
     {
       "to": "objet",
       "from": "demande.champs.Q2hhbXAtMjM2MzQwMg==.value"
-    },
-    {
-      "to": "providerStatus",
-      "from": "demande.state"
-    },
-    {
-      "to": "dateTransmitted",
-      "from": "demande.dateDepot"
     }
   ]
 }

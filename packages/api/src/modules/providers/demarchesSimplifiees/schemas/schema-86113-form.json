@@ -1,5 +1,5 @@
 {
-  "demarcheId": 62744,
+  "demarcheId": 86113,
   "schema": [
     {
       "value": "Direction Régionale des Affaires Culturelles",
@@ -31,11 +31,11 @@
     },
     {
       "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value",
-      "to": "montants.propose"
+      "to": "montants.accorde"
     },
     {
-      "from": "demande.annotations.Q2hhbXAtMjUzOTE1Ng==.value",
-      "to": "montants.accorde"
+      "from": "demande.chmaps.Q2hhbXAtMjUzNDAzOQ==.value",
+      "to": "montants.total"
     },
     {
       "from": "demande.dateDepot",
@@ -52,6 +52,14 @@
     {
       "from": "demande.demarche.title",
       "to": "dispositif"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjM2MzM2Nw==.value",
+      "to": "contact.telephone"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjMzNzMwNA==.value",
+      "to": "contact.email"
     }
   ],
   "commonSchema": [
@@ -69,7 +77,7 @@
     },
     {
       "to": "montant_accorde",
-      "from": "demande.annotations.Q2hhbXAtMjUzOTE1Ng==.value"
+      "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value"
     },
     {
       "to": "montant_demande",

@@ -2,7 +2,7 @@
   "demarcheId": 62746,
   "schema": [
     {
-      "from": "demande.groupeInstructeur.label",
+      "value": "Direction Régionale des Affaires Culturelles",
       "to": "service_instructeur"
     },
     {
@@ -57,7 +57,7 @@
     },
     {
       "to": "service_instructeur",
-      "from": "demande.groupeInstructeur.label"
+      "value": "Direction Régionale des Affaires Culturelles"
     },
     {
       "to": "dispositif",
