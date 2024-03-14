@@ -70,7 +70,10 @@
         {#if $associations.nbPages > 1}
             <div class="fr-grid-row fr-mt-5w">
                 <div class="fr-mx-auto">
-                    <Pagination totalPages={$associations.nbPages} {currentPage} />
+                    <Pagination
+                        totalPages={$associations.nbPages}
+                        {currentPage}
+                        on:change={e => ctrl.onChangePage(e)} />
                 </div>
             </div>
         {/if}

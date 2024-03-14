@@ -17,9 +17,9 @@ export default class SearchController {
 
     constructor(name = "") {
         this.inputSearch = new Store(decodeQuerySearch(name));
-        this.searchPromise = new Store(returnInfinitePromise());
         this.duplicatesFromIdentifier = new Store(null);
-        this.currentPage.subscribe(newPage => this.searchPromise.set(this.fetchAssociationFromName(name, newPage)));
+        this.searchPromise = new Store(returnInfinitePromise());
+        this.searchPromise.set(this.fetchAssociationFromName(name));
     }
 
     async fetchAssociationFromName(name = "", page = 1) {
@@ -64,5 +64,9 @@ export default class SearchController {
         } else {
             this.searchPromise.set(this.fetchAssociationFromName(input, 1));
         }
+    }
+
+    onChangePage(event: { detail: number }) {
+        this.searchPromise.set(this.fetchAssociationFromName(this.inputSearch.value, event.detail));
     }
 }

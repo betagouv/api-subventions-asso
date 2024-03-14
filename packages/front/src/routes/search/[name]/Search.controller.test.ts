@@ -1,7 +1,6 @@
 import type { SpyInstance } from "vitest";
 
 import SearchController from "./Search.controller";
-import { goto } from "$app/navigation";
 vi.mock("$app/navigation");
 import * as IdentifierHelper from "$lib/helpers/identifierHelper";
 
@@ -111,6 +110,20 @@ describe("SearchController", () => {
             vi.mocked(isSiret).mockReturnValueOnce(false);
             controller.onSubmit(RNA);
             expect(fetchSpy).toHaveBeenCalledWith(RNA, 1);
+        });
+    });
+
+    describe("onChangePage", () => {
+        let fetchSpy;
+
+        it("fetches search results with page from event", () => {
+            const PAGE = 5;
+            const SEARCH = "search";
+            const controller = new SearchController(RNA);
+            fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockResolvedValue([]);
+            controller.inputSearch.value = SEARCH;
+            controller.onChangePage({ detail: PAGE });
+            expect(fetchSpy).toHaveBeenCalledWith(SEARCH, PAGE);
         });
     });
 });

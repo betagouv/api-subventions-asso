@@ -1,5 +1,8 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
     import type Store from "$lib/core/Store";
+
+    const dispatch = createEventDispatcher();
 
     export let totalPages: number;
     export let currentPage: Store<number>;
@@ -7,6 +10,7 @@
     const changePage = (page: number) => {
         if (page < 1 || page > totalPages) return;
         currentPage.set(page);
+        dispatch("change", page);
     };
 
     function numbersBetween(a: number, b: number) {
