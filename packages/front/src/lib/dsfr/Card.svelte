@@ -5,6 +5,7 @@
     export let titleTag = "h3";
     export let titleStyle = titleTag ? titleTag : "h3";
     export let titleEllipsis = 3;
+    export let keepSpaceForTitle = false;
     export let url = "";
     export let target = "";
     export let direction = undefined;
@@ -25,7 +26,9 @@
                         <slot name="card-start" />
                     </div>
                 {/if}
-                <svelte:element this={titleTag} class="fr-card__title fr-{titleStyle}">
+                <svelte:element
+                    this={titleTag}
+                    class="fr-card__title fr-{titleStyle}{keepSpaceForTitle ? ` min-height-${titleEllipsis}` : ''}">
                     <a
                         href={url}
                         on:click={onClick}
@@ -55,3 +58,9 @@
         {/if}
     </div>
 </div>
+
+<style>
+    .min-height-3 {
+        min-height: 3lh;
+    }
+</style>

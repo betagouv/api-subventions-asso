@@ -11,7 +11,7 @@
     const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
 </script>
 
-<Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6">
+<Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6" keepSpaceForTitle={true}>
     <svelte:fragment slot="card-start">
         <p class="card-start fr-card__detail fr-text--sm fr-icon-community-line">Association</p>
     </svelte:fragment>
@@ -39,7 +39,6 @@
             </div>
         {/if}
     </div>
-    <p />
     <div slot="card-end">
         <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}
