@@ -27,11 +27,11 @@
 <div class="fr-grid-row fr-grid-row--center fr-mt-6v">
     <div class="fr-col-8">
         <div class="search-bar">
+            <SearchBar on:submit={e => ctrl.onSubmit(e.detail)} />
             <p class="fr-mt-3w text-center fr-text--lg">
                 Pour effectuer une recherche, privilégiez une entrée par RNA, SIREN ou SIRET. Vous pouvez également
                 rechercher une association par nom.
             </p>
-            <SearchBar on:submit={e => ctrl.onSubmit(e.detail)} />
         </div>
     </div>
 </div>
