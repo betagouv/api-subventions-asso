@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.1](https://github.com/betagouv/datasubvention/compare/v0.47.0...v0.47.1) (2024-03-14)
+
+### Bug Fixes
+
+-   **front:** call docs to download same as to list ([7262516](https://github.com/betagouv/datasubvention/commit/7262516689aaad1a4812ccd4996cf544a4e3e029))
+-   **front:** change search and page ([2d0ddaf](https://github.com/betagouv/datasubvention/commit/2d0ddaf8e3f2c03849b25b3c78bb2be1815ef947))
+-   **front:** stop show profile banner on completion ([9ff5490](https://github.com/betagouv/datasubvention/commit/9ff549074eee18fd8962e63981ae27fb2b4d112f))
+
 # [0.47.0](https://github.com/betagouv/datasubvention/compare/v0.46.5...v0.47.0) (2024-03-14)
 
 ### Bug Fixes

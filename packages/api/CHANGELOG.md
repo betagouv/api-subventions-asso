@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.1](https://github.com/betagouv/api-subventions-asso/compare/v0.47.0...v0.47.1) (2024-03-14)
+
+### Bug Fixes
+
+-   **api:** set file extension in doc name in zip ([1dc4c02](https://github.com/betagouv/api-subventions-asso/commit/1dc4c0244ebed688683f38209cfbcd776e7ec0da))
+
 # [0.47.0](https://github.com/betagouv/api-subventions-asso/compare/v0.46.5...v0.47.0) (2024-03-14)
 
 ### Features
