@@ -248,8 +248,8 @@ describe("Documents.controller", () => {
 
         it.each`
             identifier | structure
-            ${"SIREN"} | ${ASSOCIATION}
-            ${"RNA"}   | ${{ rna: "RNA" }}
+            ${"RNA"}   | ${ASSOCIATION}
+            ${"SIREN"} | ${{ siren: "SIREN" }}
             ${"SIRET"} | ${ESTABLISHMENT}
         `("gets docs by $identifier", ({ identifier, structure }) => {
             ctrl.resource = structure;
@@ -264,7 +264,7 @@ describe("Documents.controller", () => {
             const BLOB = "BLOB" as unknown as Blob;
             vi.mocked(documentService.getAllDocs).mockResolvedValueOnce(BLOB);
             await ctrl.downloadAll();
-            expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_SIREN.zip");
+            expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_RNA.zip");
         });
 
         it("if download is quicker than 750 ms, does not set zipPromise", async () => {

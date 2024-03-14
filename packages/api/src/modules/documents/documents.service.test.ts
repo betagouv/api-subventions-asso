@@ -445,7 +445,6 @@ describe("Documents Service", () => {
                   Object {
                     "headers": Object {
                       "Referrer-Policy": "strict-origin-when-cross-origin",
-                      "accept": "application/json, text/plain, */*",
                       "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
                       "mg-authentication": "true",
                     },

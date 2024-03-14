@@ -1,6 +1,6 @@
 {
     "name": "api",
-    "version": "0.47.0",
+    "version": "0.47.1",
     "description": "",
     "main": "index.js",
     "engines": {
@@ -77,6 +77,7 @@
         "jsonwebtoken": "^9.0.2",
         "lodash": "^4.17.21",
         "migrate-mongo": "^8.2.3",
+        "mime-types": "^2.1.35",
         "moment": "^2.29.4",
         "mongodb": "^4.17.2",
         "node-xlsx": "^0.23.0",

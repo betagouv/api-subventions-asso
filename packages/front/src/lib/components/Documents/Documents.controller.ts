@@ -101,7 +101,7 @@ export class DocumentsController {
 
     async downloadAll() {
         // @ts-expect-error -- missing type
-        const identifier = this.resource?.siren || this.resource?.rna || this.resource?.siret;
+        const identifier = this.resource?.rna || this.resource?.siren || this.resource?.siret;
         const promise = documentService
             .getAllDocs(identifier)
             .then(blob => documentHelper.download(blob, `documents_${identifier}.zip`));
