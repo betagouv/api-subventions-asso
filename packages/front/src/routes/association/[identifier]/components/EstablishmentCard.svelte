@@ -9,7 +9,7 @@
     const { badgesProps } = new EstablishmentCardController(establishment);
 </script>
 
-<Card title={name} url="/etablissement/{establishment.siret}" titleTag="h4">
+<Card title={name} url="/etablissement/{establishment.siret}" titleTag="h4" keepSpaceForTitle={true}>
     <BadgeGroup slot="card-start" badges={[badgesProps]} />
     <EstablishmentPreview {establishment} />
 </Card>
