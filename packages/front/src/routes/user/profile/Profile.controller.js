@@ -4,6 +4,7 @@ import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 import { beforeNavigate, goto } from "$app/navigation";
 import { action, modal } from "$lib/store/modal.store";
+import localStorageService from "$lib/services/localStorage.service";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
@@ -52,6 +53,9 @@ export class ProfileController {
     async onSubmit(data) {
         try {
             await userService.updateProfile(data);
+            if (userService.isProfileFullyCompleted(data)) {
+                localStorageService.setItem("hide-main-info-banner", true);
+            }
             this.saveStatus.set("saved");
         } catch (_e) {
             this.saveStatus.set("error");
